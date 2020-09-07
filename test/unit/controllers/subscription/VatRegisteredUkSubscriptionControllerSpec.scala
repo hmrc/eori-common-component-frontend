@@ -142,7 +142,7 @@ class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with Befo
 
       submitForm(validRequestNo, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("eori-common-component/register-for-cds/matching/review-determine")
+        result.header.headers(LOCATION) should endWith("customs-enrolment-services/register-for-cds/matching/review-determine")
       }
     }
   }

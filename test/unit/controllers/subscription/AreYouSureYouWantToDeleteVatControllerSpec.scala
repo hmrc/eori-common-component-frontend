@@ -74,7 +74,7 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec {
         .thenReturn(Future.successful(None))
       reviewForm() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/eori-common-component/register-for-cds/vat-details-eu-confirm/review"
+        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/register-for-cds/vat-details-eu-confirm/review"
       }
     }
 
@@ -83,7 +83,7 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec {
         .thenReturn(Future.successful(None))
       createForm() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/eori-common-component/register-for-cds/vat-details-eu-confirm"
+        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/register-for-cds/vat-details-eu-confirm"
       }
     }
   }
@@ -159,7 +159,7 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec {
       when(mockSubscriptionVatEUDetailsService.cachedEUVatDetails(any[HeaderCarrier])).thenReturn(emptyVatEuDetails)
       submit(ValidRequest, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("/eori-common-component/register-for-cds/vat-registered-eu/review")
+        result.header.headers(LOCATION) should endWith("/customs-enrolment-services/register-for-cds/vat-registered-eu/review")
       }
     }
 

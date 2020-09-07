@@ -48,10 +48,10 @@ class AllowlistVerificationWithEnrolmentsSpec extends ControllerSpec {
 
       val result = controller
         .form(Journey.Migrate)
-        .apply(SessionBuilder.buildRequestWithSessionAndPath("/eori-common-component/subscribe-for-cds/", defaultUserId))
+        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe-for-cds/", defaultUserId))
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/eori-common-component/subscribe-for-cds/unauthorised")
+      redirectLocation(result) shouldBe Some("/customs-enrolment-services/subscribe-for-cds/unauthorised")
     }
 
     "return Unauthorized (401) when a user attempts to access a route and they do not have an email address" in {
@@ -59,10 +59,10 @@ class AllowlistVerificationWithEnrolmentsSpec extends ControllerSpec {
 
       val result = controller
         .form(Journey.Migrate)
-        .apply(SessionBuilder.buildRequestWithSessionAndPath("/eori-common-component/subscribe-for-cds/", defaultUserId))
+        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe-for-cds/", defaultUserId))
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/eori-common-component/subscribe-for-cds/unauthorised")
+      redirectLocation(result) shouldBe Some("/customs-enrolment-services/subscribe-for-cds/unauthorised")
     }
 
     "return OK (200) when a allowlisted user attempts to access a route" in {
@@ -70,7 +70,7 @@ class AllowlistVerificationWithEnrolmentsSpec extends ControllerSpec {
 
       val result = controller
         .form(Journey.Migrate)
-        .apply(SessionBuilder.buildRequestWithSessionAndPath("/eori-common-component/subscribe-for-cds/", defaultUserId))
+        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe-for-cds/", defaultUserId))
 
       status(result) shouldBe OK
     }
@@ -80,7 +80,7 @@ class AllowlistVerificationWithEnrolmentsSpec extends ControllerSpec {
 
       val result = controller
         .form(Journey.GetYourEORI)
-        .apply(SessionBuilder.buildRequestWithSessionAndPath("/eori-common-component/register-for-cds/", defaultUserId))
+        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/register-for-cds/", defaultUserId))
 
       status(result) shouldBe OK
     }

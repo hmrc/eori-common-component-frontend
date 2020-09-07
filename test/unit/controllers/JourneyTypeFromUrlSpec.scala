@@ -32,25 +32,25 @@ class JourneyTypeFromUrlSpec extends UnitSpec with MockitoSugar {
 
     "be extracted from URL as a string" in {
 
-      when(mockRequest.path).thenReturn("/path1/path2/path3/eori-common-component/some.journey/path4")
+      when(mockRequest.path).thenReturn("/path1/path2/path3/customs-enrolment-services/some.journey/path4")
       journeyTypeTrait.journeyTypeFromUrl shouldBe "some.journey"
 
-      when(mockRequest.path).thenReturn("/eori-common-component/another.journey/path1")
+      when(mockRequest.path).thenReturn("/customs-enrolment-services/another.journey/path1")
       journeyTypeTrait.journeyTypeFromUrl shouldBe "another.journey"
 
-      when(mockRequest.path).thenReturn("/eori-common-component/yetAnotherJourney/")
+      when(mockRequest.path).thenReturn("/customs-enrolment-services/yetAnotherJourney/")
       journeyTypeTrait.journeyTypeFromUrl shouldBe "yetAnotherJourney"
     }
 
     "be extracted from URL as a Journey Type" in {
 
-      when(mockRequest.path).thenReturn("/path1/path2/path3/eori-common-component/register-for-cds/path4")
+      when(mockRequest.path).thenReturn("/path1/path2/path3/customs-enrolment-services/register-for-cds/path4")
       journeyTypeTrait.journeyFromUrl shouldBe Journey.GetYourEORI
 
-      when(mockRequest.path).thenReturn("/eori-common-component/subscribe-for-cds/path1")
+      when(mockRequest.path).thenReturn("/customs-enrolment-services/subscribe-for-cds/path1")
       journeyTypeTrait.journeyFromUrl shouldBe Journey.Migrate
 
-      when(mockRequest.path).thenReturn("/eori-common-component/register-for-cds/")
+      when(mockRequest.path).thenReturn("/customs-enrolment-services/register-for-cds/")
       journeyTypeTrait.journeyFromUrl shouldBe Journey.GetYourEORI
     }
   }

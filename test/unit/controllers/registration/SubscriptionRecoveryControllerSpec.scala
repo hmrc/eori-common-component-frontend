@@ -148,7 +148,7 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
 
       callEnrolmentComplete(journey = Journey.GetYourEORI) { result =>
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result) shouldBe Some("/eori-common-component/register-for-cds/complete")
+        header(LOCATION, result) shouldBe Some("/customs-enrolment-services/register-for-cds/complete")
       }
       verify(mockTaxEnrolmentsService, times(0))
         .issuerCall(anyString, any[Eori], any[Option[LocalDate]])(any[HeaderCarrier], any[ExecutionContext])
@@ -171,7 +171,7 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
 
       callEnrolmentComplete(journey = Journey.Migrate) { result =>
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result) shouldBe Some("/eori-common-component/subscribe-for-cds/complete")
+        header(LOCATION, result) shouldBe Some("/customs-enrolment-services/subscribe-for-cds/complete")
       }
       verify(mockTaxEnrolmentsService).issuerCall(anyString, any[Eori], any[Option[LocalDate]])(
         any[HeaderCarrier],
@@ -197,7 +197,7 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
 
       callEnrolmentComplete(journey = Journey.Migrate) { result =>
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result) shouldBe Some("/eori-common-component/subscribe-for-cds/complete")
+        header(LOCATION, result) shouldBe Some("/customs-enrolment-services/subscribe-for-cds/complete")
       }
       verify(mockTaxEnrolmentsService).issuerCall(anyString, any[Eori], any[Option[LocalDate]])(
         any[HeaderCarrier],
@@ -222,7 +222,7 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
 
       callEnrolmentComplete(journey = Journey.Migrate) { result =>
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result) shouldBe Some("/eori-common-component/subscribe-for-cds/complete")
+        header(LOCATION, result) shouldBe Some("/customs-enrolment-services/subscribe-for-cds/complete")
       }
       verify(mockTaxEnrolmentsService).issuerCall(anyString, any[Eori], any[Option[LocalDate]])(
         any[HeaderCarrier],
@@ -345,7 +345,7 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
 
     callEnrolmentComplete(journey = Journey.GetYourEORI) { result =>
       status(result) shouldBe SEE_OTHER
-      header(LOCATION, result) shouldBe Some("/eori-common-component/register-for-cds/complete")
+      header(LOCATION, result) shouldBe Some("/customs-enrolment-services/register-for-cds/complete")
     }
   }
 

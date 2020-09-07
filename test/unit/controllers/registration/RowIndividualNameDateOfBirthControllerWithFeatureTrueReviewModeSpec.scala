@@ -134,7 +134,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueReviewModeSpec
 
           controllerFixture.showForm { result =>
             status(result) shouldBe SEE_OTHER
-            result.futureValue.header.headers(LOCATION) shouldBe "/eori-common-component/register-for-cds/sign-out"
+            result.futureValue.header.headers(LOCATION) shouldBe "/customs-enrolment-services/register-for-cds/sign-out"
           }
       }
     }
@@ -157,7 +157,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueReviewModeSpec
           submitForm(formData(individualNameAndDateOfBirth)) { result =>
             CdsPage(contentAsString(result)).getElementsHtml(webPage.pageLevelErrorSummaryListXPath) shouldBe empty
             status(result) shouldBe SEE_OTHER
-            result.futureValue.header.headers(LOCATION) shouldBe "/eori-common-component/register-for-cds/matching/review-determine"
+            result.futureValue.header.headers(LOCATION) shouldBe "/customs-enrolment-services/register-for-cds/matching/review-determine"
             verify(mockSubscriptionDetailsService).cacheNameDobDetails(any())(any())
           }
       }

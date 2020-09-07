@@ -230,7 +230,7 @@ class VatDetailsControllerSpec
     "redirect to next page when valid vat number and effective date is supplied and is in review mode" in {
       submitFormInReviewMode(validRequest) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/eori-common-component/register-for-cds/matching/review-determine")
+        result.header.headers("Location") should endWith("/customs-enrolment-services/register-for-cds/matching/review-determine")
       }
     }
 

@@ -48,7 +48,7 @@ class SubscriptionStartSpec extends ViewSpec {
       doc
         .body()
         .getElementsByClass("button--get-started")
-        .attr("href") mustBe "/eori-common-component/subscribe-for-cds/are-you-based-in-uk"
+        .attr("href") mustBe "/customs-enrolment-services/subscribe-for-cds/are-you-based-in-uk"
     }
   }
 }

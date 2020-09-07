@@ -51,13 +51,13 @@ form: Option[Form[_]] = None
 }
 
 @signOutUrl = @{
-    if(journey == Journey.GetYourEORI) "/eori-common-component/register-for-cds/sign-out"
-    else "/eori-common-component/subscribe-for-cds/sign-out"
+    if(journey == Journey.GetYourEORI) "/customs-enrolment-services/register-for-cds/sign-out"
+    else "/customs-enrolment-services/subscribe-for-cds/sign-out"
 }
 
 @keepAliveUrl=  @{
-    if(journey == Journey.GetYourEORI) "/eori-common-component/register-for-cds/keep-alive"
-    else "/eori-common-component/subscribe-for-cds/keep-alive"
+    if(journey == Journey.GetYourEORI) "/customs-enrolment-services/register-for-cds/keep-alive"
+    else "/customs-enrolment-services/subscribe-for-cds/keep-alive"
 }
 
 @getHelpForm = @{

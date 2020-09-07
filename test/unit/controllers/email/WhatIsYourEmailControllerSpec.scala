@@ -102,7 +102,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
       submitFormInCreateMode(EmailFieldsMap, journey = Journey.Migrate) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/eori-common-component/subscribe-for-cds/matching/check-your-email")
+        result.header.headers("Location") should endWith("/customs-enrolment-services/subscribe-for-cds/matching/check-your-email")
 
       }
     }

@@ -28,5 +28,5 @@ object SubscriptionEUVATDetailsPage extends SubscriptionEUVATDetailsPage
 object GYEEUVATNumber extends SubscriptionEUVATDetailsPage {
   override val title = "Are you VAT registered in other EU member countries?"
 
-  val url: String = "/eori-common-component/register-for-cds/vat-details-eu"
+  val url: String = "/customs-enrolment-services/register-for-cds/vat-details-eu"
 }

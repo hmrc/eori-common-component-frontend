@@ -104,7 +104,7 @@ class SixLineAddressControllerSpec extends ControllerSpec with BeforeAndAfter wi
       RowFormBuilder,
       thirdCountrySixLineAddressForm,
       true,
-      "/eori-common-component/register-for-cds/matching/review-determine"
+      "/customs-enrolment-services/register-for-cds/matching/review-determine"
     )
   )
 
