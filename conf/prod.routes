@@ -4,7 +4,7 @@
 GET         /customs-enrolment-services/assets/*file                                                  @controllers.Assets.versioned(path="/public", file: Asset)
 GET         /public/*file                                                          @controllers.Assets.versioned(path="/public", file: Asset)
 
-GET         /customs-enrolment-services/register-for-cds/language/:lang                               @uk.gov.hmrc.customs.rosmfrontend.controllers.EoriLanguageController.switchToLanguage(lang: String)
+GET         /customs-enrolment-services/register/language/:lang                               @uk.gov.hmrc.customs.rosmfrontend.controllers.EoriLanguageController.switchToLanguage(lang: String)
 
 # enrolment-already-exists
 GET         /customs-enrolment-services/enrolment-already-exists                                      @uk.gov.hmrc.customs.rosmfrontend.controllers.EnrolmentAlreadyExistsController.enrolmentAlreadyExists
@@ -13,20 +13,20 @@ GET         /customs-enrolment-services/:journey/display-sign-out               
 GET         /customs-enrolment-services/:journey/sign-out                                             @uk.gov.hmrc.customs.rosmfrontend.controllers.SecuritySignOutController.signOut(journey: Journey.Value)
 
 GET         /customs-enrolment-services/:journey/you-cannot-use-service                               @uk.gov.hmrc.customs.rosmfrontend.controllers.YouCannotUseServiceController.page(journey: Journey.Value)
-GET         /customs-enrolment-services/subscribe-for-cds/unauthorised                                @uk.gov.hmrc.customs.rosmfrontend.controllers.YouCannotUseServiceController.unauthorisedPage()
+GET         /customs-enrolment-services/subscribe/unauthorised                                @uk.gov.hmrc.customs.rosmfrontend.controllers.YouCannotUseServiceController.unauthorisedPage()
 
 GET         /customs-enrolment-services/:journey/keep-alive                                           @uk.gov.hmrc.customs.rosmfrontend.controllers.ApplicationController.keepAlive(journey: Journey.Value)
 
 GET         /customs-enrolment-services/:journey/email-confirmed                                      @uk.gov.hmrc.customs.rosmfrontend.controllers.email.CheckYourEmailController.emailConfirmed(journey: Journey.Value)
 GET         /customs-enrolment-services/:journey/email-confirmed-continue                             @uk.gov.hmrc.customs.rosmfrontend.controllers.email.CheckYourEmailController.emailConfirmedContinue(journey: Journey.Value)
 
-# subscribe-for-cds
-GET         /customs-enrolment-services/subscribe-for-cds                                             @uk.gov.hmrc.customs.rosmfrontend.controllers.ApplicationController.startSubscription
+# subscribe
+GET         /customs-enrolment-services/subscribe                                             @uk.gov.hmrc.customs.rosmfrontend.controllers.ApplicationController.startSubscription
 
-GET         /customs-enrolment-services/subscribe-for-cds/returning                                   @uk.gov.hmrc.customs.rosmfrontend.controllers.migration.ReturnUserController.show
+GET         /customs-enrolment-services/subscribe/returning                                   @uk.gov.hmrc.customs.rosmfrontend.controllers.migration.ReturnUserController.show
 
 GET         /customs-enrolment-services/:journey/are-you-based-in-uk                                  @uk.gov.hmrc.customs.rosmfrontend.controllers.EmailController.form(journey: Journey.Value)
-GET         /customs-enrolment-services/subscribe-for-cds/subscribe                                   @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.MatchingIdController.matchWithIdOnlyForExistingReg
+GET         /customs-enrolment-services/subscribe/subscribe                                   @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.MatchingIdController.matchWithIdOnlyForExistingReg
 
 GET         /customs-enrolment-services/:journey/matching/what-is-your-eori                           @uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.WhatIsYourEoriController.createForm(journey: Journey.Value)
 POST        /customs-enrolment-services/:journey/matching/what-is-your-eori                           @uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.WhatIsYourEoriController.submit(isInReviewMode: Boolean = false, journey: Journey.Value)
@@ -77,45 +77,45 @@ POST        /customs-enrolment-services/:journey/matching/check-your-email      
 
 GET         /customs-enrolment-services/:journey/matching/verify-your-email                           @uk.gov.hmrc.customs.rosmfrontend.controllers.email.CheckYourEmailController.verifyEmailView(journey: Journey.Value)
 
-GET         /customs-enrolment-services/subscribe-for-cds/complete                                    @uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.Sub02Controller.migrationEnd
-GET         /customs-enrolment-services/subscribe-for-cds/pending/:date                               @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.RegisterWithEoriAndIdController.pending(date)
-GET         /customs-enrolment-services/subscribe-for-cds/unsuccessful/:date                          @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.RegisterWithEoriAndIdController.fail(date)
-GET         /customs-enrolment-services/subscribe-for-cds/processing                                  @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.RegisterWithEoriAndIdController.processing
-GET         /customs-enrolment-services/subscribe-for-cds/status-rejected                             @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.RegisterWithEoriAndIdController.rejected
-GET         /customs-enrolment-services/subscribe-for-cds/eori-already-linked                         @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.RegisterWithEoriAndIdController.eoriAlreadyLinked()
-GET         /customs-enrolment-services/subscribe-for-cds/rejected-previously                         @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.RegisterWithEoriAndIdController.rejectedPreviously()
+GET         /customs-enrolment-services/subscribe/complete                                    @uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.Sub02Controller.migrationEnd
+GET         /customs-enrolment-services/subscribe/pending/:date                               @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.RegisterWithEoriAndIdController.pending(date)
+GET         /customs-enrolment-services/subscribe/unsuccessful/:date                          @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.RegisterWithEoriAndIdController.fail(date)
+GET         /customs-enrolment-services/subscribe/processing                                  @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.RegisterWithEoriAndIdController.processing
+GET         /customs-enrolment-services/subscribe/status-rejected                             @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.RegisterWithEoriAndIdController.rejected
+GET         /customs-enrolment-services/subscribe/eori-already-linked                         @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.RegisterWithEoriAndIdController.eoriAlreadyLinked()
+GET         /customs-enrolment-services/subscribe/rejected-previously                         @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.RegisterWithEoriAndIdController.rejectedPreviously()
 
-GET         /customs-enrolment-services/subscribe-for-cds/download/pdf                                @uk.gov.hmrc.customs.rosmfrontend.controllers.EoriDownloadController.download()
-GET         /customs-enrolment-services/subscribe-for-cds/download/text                               @uk.gov.hmrc.customs.rosmfrontend.controllers.EoriTextDownloadController.download()
+GET         /customs-enrolment-services/subscribe/download/pdf                                @uk.gov.hmrc.customs.rosmfrontend.controllers.EoriDownloadController.download()
+GET         /customs-enrolment-services/subscribe/download/text                               @uk.gov.hmrc.customs.rosmfrontend.controllers.EoriTextDownloadController.download()
 
-# register-for-cds Get An Eori
-GET         /customs-enrolment-services/register-for-cds                                              @uk.gov.hmrc.customs.rosmfrontend.controllers.ApplicationController.start
+# register Get An Eori
+GET         /customs-enrolment-services/register                                              @uk.gov.hmrc.customs.rosmfrontend.controllers.ApplicationController.start
 
-GET         /customs-enrolment-services/register-for-cds/accessibility-statement                      @uk.gov.hmrc.customs.rosmfrontend.controllers.ApplicationController.accessibilityStatement()
+GET         /customs-enrolment-services/register/accessibility-statement                      @uk.gov.hmrc.customs.rosmfrontend.controllers.ApplicationController.accessibilityStatement()
 
-GET         /customs-enrolment-services/register-for-cds/isle-of-man                                  @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.IsleOfManController.form()
-POST        /customs-enrolment-services/register-for-cds/isle-of-man                                  @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.IsleOfManController.submit()
+GET         /customs-enrolment-services/register/isle-of-man                                  @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.IsleOfManController.form()
+POST        /customs-enrolment-services/register/isle-of-man                                  @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.IsleOfManController.submit()
 
-GET         /customs-enrolment-services/register-for-cds/are-you-vat-registered-in-uk                 @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.VatRegisteredUkController.form()
-POST        /customs-enrolment-services/register-for-cds/are-you-vat-registered-in-uk                 @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.VatRegisteredUkController.submit()
+GET         /customs-enrolment-services/register/are-you-vat-registered-in-uk                 @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.VatRegisteredUkController.form()
+POST        /customs-enrolment-services/register/are-you-vat-registered-in-uk                 @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.VatRegisteredUkController.submit()
 
 GET         /customs-enrolment-services/:journey/you-need-different-service-iom                       @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.YouNeedADifferentServiceIomController.form(journey: Journey.Value)
 
 GET         /customs-enrolment-services/:journey/review-details                                       @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.CheckYourDetailsRegisterController.reviewDetails(journey: Journey.Value)
 POST        /customs-enrolment-services/:journey/subscribe                                            @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.CheckYourDetailsRegisterController.submitDetails(journey: Journey.Value)
 
-GET         /customs-enrolment-services/register-for-cds/download/pdf                                 @uk.gov.hmrc.customs.rosmfrontend.controllers.EoriDownloadController.download()
-GET         /customs-enrolment-services/register-for-cds/download/text                                @uk.gov.hmrc.customs.rosmfrontend.controllers.EoriTextDownloadController.download()
+GET         /customs-enrolment-services/register/download/pdf                                 @uk.gov.hmrc.customs.rosmfrontend.controllers.EoriDownloadController.download()
+GET         /customs-enrolment-services/register/download/text                                @uk.gov.hmrc.customs.rosmfrontend.controllers.EoriTextDownloadController.download()
 
-GET         /customs-enrolment-services/register-for-cds/processing                                   @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.ConfirmContactDetailsController.processing
-GET         /customs-enrolment-services/register-for-cds/status-rejected                              @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.ConfirmContactDetailsController.rejected
-GET         /customs-enrolment-services/register-for-cds/rejected                                     @uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.Sub02Controller.rejected
-GET         /customs-enrolment-services/register-for-cds/user-already-has-eori                        @uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.Sub02Controller.eoriAlreadyExists
-GET         /customs-enrolment-services/register-for-cds/user-already-has-eori-associated             @uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.Sub02Controller.eoriAlreadyAssociated
-GET         /customs-enrolment-services/register-for-cds/subscription-in-progress                     @uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.Sub02Controller.subscriptionInProgress
-GET         /customs-enrolment-services/register-for-cds/request-not-processed                        @uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.Sub02Controller.requestNotProcessed
-GET         /customs-enrolment-services/register-for-cds/review                                       @uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.Sub02Controller.pending
-GET         /customs-enrolment-services/register-for-cds/complete                                     @uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.Sub02Controller.end
+GET         /customs-enrolment-services/register/processing                                   @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.ConfirmContactDetailsController.processing
+GET         /customs-enrolment-services/register/status-rejected                              @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.ConfirmContactDetailsController.rejected
+GET         /customs-enrolment-services/register/rejected                                     @uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.Sub02Controller.rejected
+GET         /customs-enrolment-services/register/user-already-has-eori                        @uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.Sub02Controller.eoriAlreadyExists
+GET         /customs-enrolment-services/register/user-already-has-eori-associated             @uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.Sub02Controller.eoriAlreadyAssociated
+GET         /customs-enrolment-services/register/subscription-in-progress                     @uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.Sub02Controller.subscriptionInProgress
+GET         /customs-enrolment-services/register/request-not-processed                        @uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.Sub02Controller.requestNotProcessed
+GET         /customs-enrolment-services/register/review                                       @uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.Sub02Controller.pending
+GET         /customs-enrolment-services/register/complete                                     @uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.Sub02Controller.end
 
 GET         /customs-enrolment-services/:journey/business-details-recovery                    @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.BusinessDetailsRecoveryController.form(journey: Journey.Value)
 GET         /customs-enrolment-services/:journey/business-details-recovery/continue           @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.BusinessDetailsRecoveryController.continue(journey: Journey.Value)
@@ -123,8 +123,8 @@ GET         /customs-enrolment-services/:journey/business-details-recovery/conti
 GET         /customs-enrolment-services/:journey/enrolment-exists-against-groupId                     @uk.gov.hmrc.customs.rosmfrontend.controllers.EnrolmentExistsAgainstGroupIdController.show(journey: Journey.Value)
 GET         /customs-enrolment-services/:journey/enrolment-pending-against-groupId                    @uk.gov.hmrc.customs.rosmfrontend.controllers.EnrolmentPendingAgainstGroupIdController.show(journey: Journey.Value)
 # Return
-GET         /customs-enrolment-services/register-for-cds/return-processing                            @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.UserLocationController.processing
-GET         /customs-enrolment-services/register-for-cds/return-rejected                              @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.UserLocationController.rejected
+GET         /customs-enrolment-services/register/return-processing                            @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.UserLocationController.processing
+GET         /customs-enrolment-services/register/return-rejected                              @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.UserLocationController.rejected
 
 GET         /customs-enrolment-services/:journey/matching/user-location                               @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.UserLocationController.form(journey: Journey.Value)
 POST        /customs-enrolment-services/:journey/matching/user-location                               @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.UserLocationController.submit(journey: Journey.Value)
@@ -162,7 +162,7 @@ POST        /customs-enrolment-services/:journey/matching/row/nino              
 
 GET         /customs-enrolment-services/:journey/complete-enrolment                                   @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.SubscriptionRecoveryController.complete(journey: Journey.Value)
 
-GET         /customs-enrolment-services/register-for-cds/match                                        @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.MatchingIdController.matchWithIdOnly
+GET         /customs-enrolment-services/register/match                                        @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.MatchingIdController.matchWithIdOnly
 
 GET         /customs-enrolment-services/:journey/subscribe-existing                                   @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.RegisterWithEoriAndIdController.registerWithEoriAndId(journey: Journey.Value)
 

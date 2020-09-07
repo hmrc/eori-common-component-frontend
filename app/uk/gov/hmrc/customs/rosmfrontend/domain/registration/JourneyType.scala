@@ -18,8 +18,8 @@ package uk.gov.hmrc.customs.rosmfrontend.domain.registration
 
 object JourneyType {
 
-  val Subscribe = "subscribe-for-cds"
-  val GetAnEori = "register-for-cds"
+  val Subscribe = "subscribe"
+  val GetAnEori = "register"
 
   val validJourneys: Set[String] = Set(Subscribe, GetAnEori)
 }

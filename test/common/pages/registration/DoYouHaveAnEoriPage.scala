@@ -20,7 +20,7 @@ import common.pages.WebPage
 
 trait DoYouHaveAnEoriPage extends WebPage {
 
-  val url: String = "customs-enrolment-services/register-for-cds/matching/eu-organisation"
+  val url: String = "customs-enrolment-services/register/matching/eu-organisation"
 
   override val title = "What are your business details?"
 

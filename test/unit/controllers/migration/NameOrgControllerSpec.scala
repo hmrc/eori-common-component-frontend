@@ -121,7 +121,7 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
       submit(false, correcctForm) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe-for-cds/address"
+        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
       }
     }
 
@@ -137,7 +137,7 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
       submit(true, correcctForm) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe-for-cds/matching/review-determine"
+        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/matching/review-determine"
       }
     }
   }

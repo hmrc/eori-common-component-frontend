@@ -30,21 +30,21 @@ object Journey extends Enumeration {
 
     override def bind(key: String, value: String): Either[String, Journey.Value] =
       value match {
-        case "subscribe-for-cds" => Right(Migrate)
-        case "register-for-cds"  => Right(GetYourEORI)
+        case "subscribe" => Right(Migrate)
+        case "register"  => Right(GetYourEORI)
         case _                   => Left("invalid journey")
       }
 
     override def unbind(key: String, value: Journey.Value): String =
       value match {
-        case Migrate     => "subscribe-for-cds"
-        case GetYourEORI => "register-for-cds"
+        case Migrate     => "subscribe"
+        case GetYourEORI => "register"
       }
   }
 
   def apply(journey: String): Journey.Value = journey match {
-    case "subscribe-for-cds" => Migrate
-    case "register-for-cds"  => GetYourEORI
+    case "subscribe" => Migrate
+    case "register"  => GetYourEORI
   }
 
   implicit def queryBindable(implicit pathBindable: PathBindable[Journey.Value]): QueryStringBindable[Journey.Value] =

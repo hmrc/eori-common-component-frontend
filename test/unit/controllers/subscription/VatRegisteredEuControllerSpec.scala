@@ -111,7 +111,7 @@ class VatRegisteredEuControllerSpec extends ControllerSpec {
       when(mockSubscriptionPage.url).thenReturn(GYEEUVATNumber.url)
       submitForm(ValidRequest) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("register-for-cds/vat-details-eu")
+        result.header.headers(LOCATION) should endWith("register/vat-details-eu")
       }
     }
 
@@ -121,7 +121,7 @@ class VatRegisteredEuControllerSpec extends ControllerSpec {
       when(mockSubscriptionVatEUDetailsService.cachedEUVatDetails(any[HeaderCarrier])).thenReturn(someVatEuDetails)
       submitForm(ValidRequest) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("register-for-cds/vat-details-eu-confirm")
+        result.header.headers(LOCATION) should endWith("register/vat-details-eu-confirm")
       }
     }
 
@@ -134,7 +134,7 @@ class VatRegisteredEuControllerSpec extends ControllerSpec {
       ).thenReturn(DisclosePersonalDetailsConsentPage.url)
       submitForm(ValidRequest) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("/register-for-cds/disclose-personal-details-consent")
+        result.header.headers(LOCATION) should endWith("/register/disclose-personal-details-consent")
       }
     }
   }
@@ -146,7 +146,7 @@ class VatRegisteredEuControllerSpec extends ControllerSpec {
       when(mockSubscriptionVatEUDetailsService.cachedEUVatDetails(any[HeaderCarrier])).thenReturn(emptyVatEuDetails)
       submitForm(ValidRequest, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("register-for-cds/vat-details-eu/review")
+        result.header.headers(LOCATION) should endWith("register/vat-details-eu/review")
       }
     }
 
@@ -156,7 +156,7 @@ class VatRegisteredEuControllerSpec extends ControllerSpec {
       when(mockSubscriptionVatEUDetailsService.cachedEUVatDetails(any[HeaderCarrier])).thenReturn(someVatEuDetails)
       submitForm(ValidRequest, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("register-for-cds/vat-details-eu-confirm/review")
+        result.header.headers(LOCATION) should endWith("register/vat-details-eu-confirm/review")
       }
     }
 
@@ -167,7 +167,7 @@ class VatRegisteredEuControllerSpec extends ControllerSpec {
         .thenReturn(Future.successful[Unit](()))
       submitForm(validRequestNo, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("/register-for-cds/matching/review-determine")
+        result.header.headers(LOCATION) should endWith("/register/matching/review-determine")
       }
     }
   }

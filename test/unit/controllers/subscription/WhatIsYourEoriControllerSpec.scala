@@ -102,7 +102,7 @@ class WhatIsYourEoriControllerSpec
 
     "display the back link for subscribe user journey" in {
       showCreateForm(journey = Journey.Migrate) { result =>
-        verifyBackLinkIn(result)("/customs-enrolment-services/subscribe-for-cds/matching/organisation-type")
+        verifyBackLinkIn(result)("/customs-enrolment-services/subscribe/matching/organisation-type")
       }
     }
 

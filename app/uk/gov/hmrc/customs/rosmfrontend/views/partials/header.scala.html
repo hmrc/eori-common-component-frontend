@@ -28,9 +28,9 @@
 @isLoggedIn = @{!request.session.isEmpty && request.session.get("userId").isDefined}
 
 @journeyHeading = @{
-    if(request.path.contains("/register-for-cds")) {
+    if(request.path.contains("/register")) {
         messages("cds.proposition.name")
-    }else if(request.path.contains("/subscribe-for-cds")) {
+    }else if(request.path.contains("/subscribe")) {
         messages("cds.proposition.name.cds")
     }else {
         ""
@@ -38,7 +38,7 @@
 }
 
 @journey = @{
-    if(request.path.contains("register-for-cds")) Journey.GetYourEORI else Journey.Migrate
+    if(request.path.contains("register")) Journey.GetYourEORI else Journey.Migrate
 }
 
 @betaFeedbackHeaderUrl = @{

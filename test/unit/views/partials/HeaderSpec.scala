@@ -72,7 +72,7 @@ class HeaderSpec extends ControllerSpec {
     "be present with service param equal to CDS" in {
       val result = controller
         .start()
-        .apply(SessionBuilder.buildRequestWithSessionAndPathNoUser(method = "GET", path = "/customs-enrolment-services/register-for-cds/"))
+        .apply(SessionBuilder.buildRequestWithSessionAndPathNoUser(method = "GET", path = "/customs-enrolment-services/register/"))
 
       val page = CdsPage(bodyOf(result))
 

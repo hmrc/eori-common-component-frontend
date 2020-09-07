@@ -97,7 +97,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
         .thenReturn(Future.successful(vatEuDetailsOnLimit))
       createForm() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("register-for-cds/vat-details-eu-confirm")
+        result.header.headers(LOCATION) should endWith("register/vat-details-eu-confirm")
       }
     }
 
@@ -106,7 +106,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
         .thenReturn(Future.successful(vatEuDetailsOnLimit))
       reviewForm() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("register-for-cds/vat-details-eu-confirm/review")
+        result.header.headers(LOCATION) should endWith("register/vat-details-eu-confirm/review")
       }
     }
   }
@@ -131,7 +131,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
         .thenReturn(Future.successful(()))
       submit(validVatIdMap + ("vatNumber" -> "AAAA1234")) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("register-for-cds/vat-details-eu-confirm")
+        result.header.headers(LOCATION) should endWith("register/vat-details-eu-confirm")
       }
     }
 
@@ -142,7 +142,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
         .thenReturn(Future.successful(()))
       submit(validVatIdMap + ("vatNumber" -> "AAAA1234"), isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("register-for-cds/vat-details-eu-confirm/review")
+        result.header.headers(LOCATION) should endWith("register/vat-details-eu-confirm/review")
       }
     }
   }
@@ -176,7 +176,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
 
       submitUpdate(validVatIdMap + ("vatNumber" -> "12345"), index = 12345) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("register-for-cds/vat-details-eu-confirm")
+        result.header.headers(LOCATION) should endWith("register/vat-details-eu-confirm")
       }
     }
 
@@ -208,7 +208,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
 
       submitUpdate(validVatIdMap + ("vatNumber" -> "AAAA1234"), index = 12345) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("register-for-cds/vat-details-eu-confirm")
+        result.header.headers(LOCATION) should endWith("register/vat-details-eu-confirm")
       }
 
       val requestCaptor1: ArgumentCaptor[VatEUDetailsModel] = ArgumentCaptor.forClass(classOf[VatEUDetailsModel])
@@ -237,7 +237,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
 
       submitUpdate(validVatIdMap + ("vatNumber" -> "AAAA1234"), index = 12345, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("register-for-cds/vat-details-eu-confirm/review")
+        result.header.headers(LOCATION) should endWith("register/vat-details-eu-confirm/review")
       }
 
       val requestCaptor1: ArgumentCaptor[VatEUDetailsModel] = ArgumentCaptor.forClass(classOf[VatEUDetailsModel])
@@ -258,7 +258,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
         .thenReturn(Future.successful(None))
       updateForm(index = 12345) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("register-for-cds/vat-details-eu-confirm")
+        result.header.headers(LOCATION) should endWith("register/vat-details-eu-confirm")
       }
     }
 

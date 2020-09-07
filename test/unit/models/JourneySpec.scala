@@ -30,7 +30,7 @@ class JourneySpec extends WordSpec with MustMatchers with EitherValues with Opti
     "bind to `GetYourEORI` from path" in {
 
       val result =
-        pathBindable.bind("key", "register-for-cds").right.value
+        pathBindable.bind("key", "register").right.value
 
       result mustEqual Journey.GetYourEORI
     }
@@ -38,7 +38,7 @@ class JourneySpec extends WordSpec with MustMatchers with EitherValues with Opti
     "bind to `Subscription` from path" in {
 
       val result =
-        pathBindable.bind("key", "subscribe-for-cds").right.value
+        pathBindable.bind("key", "subscribe").right.value
 
       result mustEqual Journey.Migrate
     }
@@ -56,7 +56,7 @@ class JourneySpec extends WordSpec with MustMatchers with EitherValues with Opti
       val result =
         pathBindable.unbind("key", Journey.GetYourEORI)
 
-      result mustEqual "register-for-cds"
+      result mustEqual "register"
     }
 
     "unbind from `Subscription` to path" in {
@@ -64,13 +64,13 @@ class JourneySpec extends WordSpec with MustMatchers with EitherValues with Opti
       val result =
         pathBindable.unbind("key", Journey.Migrate)
 
-      result mustEqual "subscribe-for-cds"
+      result mustEqual "subscribe"
     }
 
     "bind to `GetYourEORI` from query" in {
 
       val result =
-        queryBindable.bind("key", Map("key" -> Seq("register-for-cds"))).value.right.value
+        queryBindable.bind("key", Map("key" -> Seq("register"))).value.right.value
 
       result mustEqual Journey.GetYourEORI
     }
@@ -78,7 +78,7 @@ class JourneySpec extends WordSpec with MustMatchers with EitherValues with Opti
     "bind to `Subscription` from query" in {
 
       val result =
-        queryBindable.bind("key", Map("key" -> Seq("subscribe-for-cds"))).value.right.value
+        queryBindable.bind("key", Map("key" -> Seq("subscribe"))).value.right.value
 
       result mustEqual Journey.Migrate
     }
@@ -96,7 +96,7 @@ class JourneySpec extends WordSpec with MustMatchers with EitherValues with Opti
       val result =
         queryBindable.unbind("key", Journey.GetYourEORI)
 
-      result mustEqual "register-for-cds"
+      result mustEqual "register"
     }
 
     "unbind from `Subscription` to query" in {
@@ -104,7 +104,7 @@ class JourneySpec extends WordSpec with MustMatchers with EitherValues with Opti
       val result =
         queryBindable.unbind("key", Journey.Migrate)
 
-      result mustEqual "subscribe-for-cds"
+      result mustEqual "subscribe"
     }
   }
 }

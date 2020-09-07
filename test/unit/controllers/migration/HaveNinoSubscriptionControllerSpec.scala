@@ -52,7 +52,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
   private val ValidNinoRequest = Map("have-nino" -> "true", "nino" -> "AB123456C")
   private val ValidNinoNoRequest = Map("have-nino" -> "false", "nino" -> "")
 
-  private val nextPageFlowUrl = "/customs-enrolment-services/subscribe-for-cds/address"
+  private val nextPageFlowUrl = "/customs-enrolment-services/subscribe/address"
 
   override protected def beforeEach: Unit = reset(mockSubscriptionDetailsService)
 
@@ -95,7 +95,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
       mockSubscriptionFlow(nextPageFlowUrl)
       submit(Journey.Migrate, ValidNinoRequest) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe-for-cds/address"
+        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
       }
     }
 
@@ -104,7 +104,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
       mockSubscriptionFlow(nextPageFlowUrl)
       submit(Journey.Migrate, ValidNinoNoRequest) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe-for-cds/address"
+        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
       }
       verify(mockSubscriptionDetailsService).clearCachedCustomsId(any[HeaderCarrier])
     }

@@ -210,7 +210,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
     "redirect to the confirm page when successful" in {
       submitForm(ValidRequest, "individual") { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs-enrolment-services/register-for-cds/matching/chooseid/individual")
+        result.header.headers("Location") should endWith("/customs-enrolment-services/register/matching/chooseid/individual")
       }
     }
   }

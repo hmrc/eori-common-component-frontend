@@ -107,25 +107,25 @@ class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with Befo
       }
     }
     "redirect to add vat group page for yes answer" in {
-      val url = "register-for-cds/vat-group"
+      val url = "register/vat-group"
       val sd = SubscriptionDetails(vatRegisteredUk = Some(true))
       subscriptionFlowUrl(url)
 
       submitForm(ValidRequest) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("register-for-cds/vat-group")
+        result.header.headers(LOCATION) should endWith("register/vat-group")
       }
     }
 
     "redirect to eu vat page for no answer" in {
-      val url = "register-for-cds/vat-registered-eu"
+      val url = "register/vat-registered-eu"
       val sd = SubscriptionDetails(vatRegisteredUk = Some(false))
 
       subscriptionFlowUrl(url)
 
       submitForm(validRequestNo) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("register-for-cds/vat-registered-eu")
+        result.header.headers(LOCATION) should endWith("register/vat-registered-eu")
       }
     }
     "redirect to vat groups review page for yes answer and is in review mode" in {
@@ -133,7 +133,7 @@ class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with Befo
 
       submitForm(ValidRequest, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("register-for-cds/what-are-your-uk-vat-details/review")
+        result.header.headers(LOCATION) should endWith("register/what-are-your-uk-vat-details/review")
       }
     }
 
@@ -142,7 +142,7 @@ class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with Befo
 
       submitForm(validRequestNo, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("customs-enrolment-services/register-for-cds/matching/review-determine")
+        result.header.headers(LOCATION) should endWith("customs-enrolment-services/register/matching/review-determine")
       }
     }
   }

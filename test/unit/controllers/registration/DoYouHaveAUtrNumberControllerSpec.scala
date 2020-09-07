@@ -189,7 +189,7 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
       ).thenReturn(Future.successful(true))
       submitForm(ValidUtrRequest, CdsOrganisationType.CharityPublicBodyNotForProfitId) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs-enrolment-services/register-for-cds/matching/confirm")
+        result.header.headers("Location") should endWith("/customs-enrolment-services/register/matching/confirm")
       }
     }
   }
@@ -199,7 +199,7 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
     "direct the user to the Are You VAT Registered in the UK? page" in {
       submitForm(NoUtrRequest, CdsOrganisationType.CharityPublicBodyNotForProfitId) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs-enrolment-services/register-for-cds/are-you-vat-registered-in-uk")
+        result.header.headers("Location") should endWith("/customs-enrolment-services/register/are-you-vat-registered-in-uk")
       }
     }
   }
@@ -233,7 +233,7 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
       submitForm(form = ValidUtrRequest, CdsOrganisationType.ThirdCountryOrganisationId) { result =>
         await(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("register-for-cds/matching/confirm")
+        result.header.headers("Location") should endWith("register/matching/confirm")
         verify(mockMatchingService).matchBusiness(meq(ValidUtr), meq(thirdCountryOrganisation), meq(None), any())(
           any[Request[AnyContent]],
           any[HeaderCarrier]
@@ -245,7 +245,7 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
       submitForm(form = NoUtrRequest, CdsOrganisationType.ThirdCountryOrganisationId) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers("Location") should endWith(
-          s"register-for-cds/matching/address/${CdsOrganisationType.ThirdCountryOrganisationId}"
+          s"register/matching/address/${CdsOrganisationType.ThirdCountryOrganisationId}"
         )
       }
     }
@@ -253,7 +253,7 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
     "redirect to Review page while on review mode" in {
       submitForm(form = NoUtrRequest, CdsOrganisationType.ThirdCountryOrganisationId, isInReviewMode = true) { result =>
         status(await(result)) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("register-for-cds/matching/review-determine")
+        result.header.headers("Location") should endWith("register/matching/review-determine")
       }
     }
   }
@@ -292,14 +292,14 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
       submitForm(form = ValidUtrRequest, CdsOrganisationType.ThirdCountrySoleTraderId) { result =>
         await(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("register-for-cds/matching/confirm")
+        result.header.headers("Location") should endWith("register/matching/confirm")
       }
     }
 
     "redirect to Nino page based on NO answer" in {
       submitForm(form = NoUtrRequest, CdsOrganisationType.ThirdCountrySoleTraderId) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("register-for-cds/matching/row/nino")
+        result.header.headers("Location") should endWith("register/matching/row/nino")
       }
     }
 
