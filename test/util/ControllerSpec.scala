@@ -73,11 +73,11 @@ trait ControllerSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
         AuthBuilder.withNotLoggedInUser(mockAuthConnector)
 
         val result = action.apply(
-          SessionBuilder.buildRequestWithSessionAndPathNoUser(method = "GET", path = s"/eori-common-component/register-for-cds/")
+          SessionBuilder.buildRequestWithSessionAndPathNoUser(method = "GET", path = s"/customs-enrolment-services/register-for-cds/")
         )
         status(result) shouldBe SEE_OTHER
         header(LOCATION, result) shouldBe Some(
-          "/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Feori-common-component%2Fregister-for-cds%2Fmatch&origin=eori-common-component-frontend"
+          "/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fregister-for-cds%2Fmatch&origin=eori-common-component-frontend"
         )
       }
     }
@@ -91,11 +91,11 @@ trait ControllerSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
       AuthBuilder.withNotLoggedInUser(mockAuthConnector)
 
       val result: Future[Result] = action.apply(
-        SessionBuilder.buildRequestWithSessionAndPathNoUser(method = "GET", path = s"/eori-common-component/register-for-cds/")
+        SessionBuilder.buildRequestWithSessionAndPathNoUser(method = "GET", path = s"/customs-enrolment-services/register-for-cds/")
       )
       status(result) shouldBe SEE_OTHER
       header(LOCATION, result) shouldBe Some(
-        "/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Feori-common-component%2Fregister-for-cds%2Fmatch&origin=eori-common-component-frontend"
+        "/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fregister-for-cds%2Fmatch&origin=eori-common-component-frontend"
       )
     }
 
@@ -115,11 +115,11 @@ trait ControllerSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
       AuthBuilder.withNotLoggedInUser(mockAuthConnector)
 
       val result = action.apply(
-        SessionBuilder.buildRequestWithSessionAndPathNoUser(method = "GET", path = s"/eori-common-component/subscribe-for-cds/")
+        SessionBuilder.buildRequestWithSessionAndPathNoUser(method = "GET", path = s"/customs-enrolment-services/subscribe-for-cds/")
       )
       status(result) shouldBe SEE_OTHER
       header(LOCATION, result) shouldBe Some(
-        s"/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Feori-common-component%2Fsubscribe-for-cds%2Fsubscribe&origin=eori-common-component-frontend"
+        s"/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fsubscribe-for-cds%2Fsubscribe&origin=eori-common-component-frontend"
       )
     }
 

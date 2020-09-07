@@ -158,10 +158,10 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
             "Download a PDF with your registration details (21kb)"
           )
           page.getElementsHref(RegistrationCompletePage.DownloadEoriTextLinkXpath) should endWith(
-            "/eori-common-component/subscribe-for-cds/download/text"
+            "/customs-enrolment-services/subscribe-for-cds/download/text"
           )
           page.getElementsHref(RegistrationCompletePage.DownloadEoriLinkXpath) should endWith(
-            "/eori-common-component/subscribe-for-cds/download/pdf"
+            "/customs-enrolment-services/subscribe-for-cds/download/pdf"
           )
 
           page.elementIsPresent(RegistrationCompletePage.LeaveFeedbackLinkXpath) shouldBe true

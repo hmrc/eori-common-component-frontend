@@ -22,7 +22,7 @@ import org.openqa.selenium.By
 trait EnterYourBusinessAddress extends WebPage {
   override val title = "Enter your organisation address"
 
-  val url: String = "/eori-common-component/subscribe-for-cds/address"
+  val url: String = "/customs-enrolment-services/subscribe-for-cds/address"
 
   val suggestionXpath: By = By.xpath("//*[@id='suggestions-list']")
 

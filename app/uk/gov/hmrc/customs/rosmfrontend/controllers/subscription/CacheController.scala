@@ -42,7 +42,7 @@ class CacheController @Inject()(
     implicit request => _: LoggedInUserWithEnrolments =>
       {
         sessionCache.saveSubscriptionDetails(SubscriptionDetails()).map { _ =>
-          Redirect("/eori-common-component/" + implicitly[PathBindable[Journey.Value]].unbind("journey", journey))
+          Redirect("/customs-enrolment-services/" + implicitly[PathBindable[Journey.Value]].unbind("journey", journey))
             .withSession(requestSessionData.sessionForStartAgain)
         }
       }

@@ -101,7 +101,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureFalseSpec
         submitForm(formData(individualNameAndDateOfBirth)) { result =>
           CdsPage(contentAsString(result)).getElementsHtml(webPage.pageLevelErrorSummaryListXPath) shouldBe empty
           status(result) shouldBe SEE_OTHER
-          result.futureValue.header.headers(LOCATION) shouldBe s"/eori-common-component/register-for-cds/matching/address/$organisationType"
+          result.futureValue.header.headers(LOCATION) shouldBe s"/customs-enrolment-services/register-for-cds/matching/address/$organisationType"
           verify(mockSubscriptionDetailsService).cacheNameDobDetails(any())(any())
         }
       }

@@ -47,5 +47,5 @@ class AllowlistFilter @Inject()(appConfig: AppConfig)(implicit val mat: Material
   }
 
   private def journeyType(request: RequestHeader): Option[String] =
-    "(?<=/eori-common-component/)([^\\/]*)".r.findFirstIn(request.path)
+    "(?<=/customs-enrolment-services/)([^\\/]*)".r.findFirstIn(request.path)
 }

@@ -60,10 +60,10 @@ class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach {
 
       val result = controller
         .download()
-        .apply(SessionBuilder.buildRequestWithSessionAndPath("/eori-common-component/subscribe-for-cds/", defaultUserId))
+        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe-for-cds/", defaultUserId))
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/eori-common-component/subscribe-for-cds/unauthorised")
+      redirectLocation(result) shouldBe Some("/customs-enrolment-services/subscribe-for-cds/unauthorised")
     }
 
     "return Unauthorized (401) when a user with no email address attempts to access a route" in {
@@ -71,10 +71,10 @@ class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach {
 
       val result = controller
         .download()
-        .apply(SessionBuilder.buildRequestWithSessionAndPath("/eori-common-component/subscribe-for-cds/", defaultUserId))
+        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe-for-cds/", defaultUserId))
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/eori-common-component/subscribe-for-cds/unauthorised")
+      redirectLocation(result) shouldBe Some("/customs-enrolment-services/subscribe-for-cds/unauthorised")
     }
 
     "return OK (200) when a allowlisted user attempts to access a route" in {
@@ -82,7 +82,7 @@ class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach {
 
       val result = controller
         .download()
-        .apply(SessionBuilder.buildRequestWithSessionAndPath("/eori-common-component/subscribe-for-cds/", defaultUserId))
+        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe-for-cds/", defaultUserId))
 
       status(result) shouldBe OK
     }
@@ -90,7 +90,7 @@ class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach {
     "return OK (200) when the session is allowlisted" in {
       AuthBuilder.withAuthorisedUser("user-2300121", mockAuthConnector, userEmail = None)
       val request = SessionBuilder
-        .buildRequestWithSessionAndPath("/eori-common-component/subscribe-for-cds/", defaultUserId)
+        .buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe-for-cds/", defaultUserId)
         .withSession("allowlisted" -> "true")
 
       val result = controller.download().apply(request)
@@ -103,7 +103,7 @@ class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach {
 
       val result = controller
         .download()
-        .apply(SessionBuilder.buildRequestWithSessionAndPath("/eori-common-component/subscribe-for-cds/", defaultUserId))
+        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe-for-cds/", defaultUserId))
 
       status(result) shouldBe OK
     }
@@ -113,7 +113,7 @@ class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach {
 
       val result = controller
         .download()
-        .apply(SessionBuilder.buildRequestWithSessionAndPath("/eori-common-component/register-for-cds/", defaultUserId))
+        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/register-for-cds/", defaultUserId))
 
       status(result) shouldBe OK
     }

@@ -47,13 +47,13 @@ class VerifyYourEmailSpec extends ViewSpec {
       doc.body
         .getElementById("p2")
         .select("a[href]")
-        .attr("href") mustBe "/eori-common-component/subscribe-for-cds/matching/what-is-your-email"
+        .attr("href") mustBe "/customs-enrolment-services/subscribe-for-cds/matching/what-is-your-email"
     }
     "have an link send it again" in {
       doc.body
         .getElementById("p3")
         .select("a[href]")
-        .attr("href") mustBe "/eori-common-component/subscribe-for-cds/matching/check-your-email"
+        .attr("href") mustBe "/customs-enrolment-services/subscribe-for-cds/matching/check-your-email"
     }
   }
 

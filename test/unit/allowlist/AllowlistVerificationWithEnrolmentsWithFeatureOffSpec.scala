@@ -48,7 +48,7 @@ class AllowlistVerificationWithEnrolmentsWithFeatureOffSpec extends ControllerSp
 
       val result = controller
         .form(Journey.Migrate)
-        .apply(SessionBuilder.buildRequestWithSessionAndPath("/eori-common-component/subscribe-for-cds/", defaultUserId))
+        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe-for-cds/", defaultUserId))
 
       status(result) shouldBe OK
     }
@@ -58,7 +58,7 @@ class AllowlistVerificationWithEnrolmentsWithFeatureOffSpec extends ControllerSp
 
       val result = controller
         .form(Journey.Migrate)
-        .apply(SessionBuilder.buildRequestWithSessionAndPath("/eori-common-component/subscribe-for-cds/", defaultUserId))
+        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe-for-cds/", defaultUserId))
 
       status(result) shouldBe OK
     }

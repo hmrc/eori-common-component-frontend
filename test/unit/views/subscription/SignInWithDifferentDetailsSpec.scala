@@ -56,7 +56,7 @@ class SignInWithDifferentDetailsSpec extends ViewSpec {
 
     "have a sign out button" in {
       docWithName.body.getElementById("sign-out").text mustBe "Sign out"
-      docWithName.body.getElementsByClass("button").attr("href") mustBe "/eori-common-component/subscribe-for-cds/logout"
+      docWithName.body.getElementsByClass("button").attr("href") mustBe "/customs-enrolment-services/subscribe-for-cds/logout"
     }
   }
 
@@ -85,7 +85,7 @@ class SignInWithDifferentDetailsSpec extends ViewSpec {
 
     "have a sign out button" in {
       docWithoutName.body.getElementById("sign-out").text mustBe "Sign out"
-      docWithoutName.body.getElementsByClass("button").attr("href") mustBe "/eori-common-component/subscribe-for-cds/logout"
+      docWithoutName.body.getElementsByClass("button").attr("href") mustBe "/customs-enrolment-services/subscribe-for-cds/logout"
     }
   }
 
