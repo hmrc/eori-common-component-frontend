@@ -61,7 +61,7 @@ trait ControllerSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
 
   private val serviceConfig = new ServicesConfig(config, runMode)
 
-  implicit val appConfig: AppConfig = new AppConfig(config, serviceConfig, runMode, "customs-rosm-frontend")
+  implicit val appConfig: AppConfig = new AppConfig(config, serviceConfig, runMode, "eori-common-component-frontend")
 
   protected def assertNotLoggedInUserShouldBeRedirectedToLoginPage(
     mockAuthConnector: AuthConnector,
