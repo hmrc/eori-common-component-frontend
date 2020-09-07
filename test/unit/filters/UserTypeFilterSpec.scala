@@ -52,7 +52,7 @@ class UserTypeFilterSpec extends ControllerSpec with BeforeAndAfterEach {
 
       val result = controller
         .download()
-        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs/subscribe-for-cds/", defaultUserId))
+        .apply(SessionBuilder.buildRequestWithSessionAndPath("/eori-common-component/subscribe-for-cds/", defaultUserId))
 
       status(result) shouldBe SEE_OTHER
     }
@@ -67,7 +67,7 @@ class UserTypeFilterSpec extends ControllerSpec with BeforeAndAfterEach {
 
       val result = controller
         .download()
-        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs/subscribe-for-cds/", defaultUserId))
+        .apply(SessionBuilder.buildRequestWithSessionAndPath("/eori-common-component/subscribe-for-cds/", defaultUserId))
 
       status(result) shouldBe SEE_OTHER
     }
@@ -82,7 +82,7 @@ class UserTypeFilterSpec extends ControllerSpec with BeforeAndAfterEach {
 
       val result = controller
         .download()
-        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs/subscribe-for-cds/", defaultUserId))
+        .apply(SessionBuilder.buildRequestWithSessionAndPath("/eori-common-component/subscribe-for-cds/", defaultUserId))
 
       await(result).header.headers(LOCATION) should endWith("you-cannot-use-service")
     }
@@ -97,7 +97,7 @@ class UserTypeFilterSpec extends ControllerSpec with BeforeAndAfterEach {
 
       val result = controller
         .download()
-        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs/subscribe-for-cds/", defaultUserId))
+        .apply(SessionBuilder.buildRequestWithSessionAndPath("/eori-common-component/subscribe-for-cds/", defaultUserId))
 
       status(result) shouldBe OK
     }
@@ -112,7 +112,7 @@ class UserTypeFilterSpec extends ControllerSpec with BeforeAndAfterEach {
 
       val result = controller
         .download()
-        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs/subscribe-for-cds/", defaultUserId))
+        .apply(SessionBuilder.buildRequestWithSessionAndPath("/eori-common-component/subscribe-for-cds/", defaultUserId))
 
       status(result) shouldBe OK
     }

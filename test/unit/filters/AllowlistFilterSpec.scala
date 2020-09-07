@@ -51,7 +51,7 @@ class AllowlistFilterSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
     "Do nothing" in {
       when(next.apply(any[RequestHeader])).thenReturn(Future.successful(Results.Ok))
       when(config.allowlistReferrers).thenReturn(Seq("123"))
-      implicit val request = FakeRequest("GET", "/customs/register-for-cds").withHeaders(HeaderNames.REFERER -> "123")
+      implicit val request = FakeRequest("GET", "/eori-common-component/register-for-cds").withHeaders(HeaderNames.REFERER -> "123")
       val result = await(filter.apply(next)(request))
 
       result.session.get("allowlisted") shouldBe None
@@ -59,7 +59,7 @@ class AllowlistFilterSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
   }
 
   "AllowlistFilter on permitted route" should {
-    val requestOnPermittedRoute = FakeRequest("GET", "/customs/subscribe-for-cds")
+    val requestOnPermittedRoute = FakeRequest("GET", "/eori-common-component/subscribe-for-cds")
 
     "Do nothing for blank referer allowlist" in {
       when(next.apply(any[RequestHeader])).thenReturn(Future.successful(Results.Ok))
@@ -115,7 +115,7 @@ class AllowlistFilterSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
       when(next.apply(any[RequestHeader])).thenReturn(Future.successful(Results.Ok))
       when(config.allowlistReferrers).thenReturn(Seq("test"))
       implicit val request =
-        FakeRequest("GET", "/customs/subscribe-for-cds/some-path").withHeaders(HeaderNames.REFERER -> "test")
+        FakeRequest("GET", "/eori-common-component/subscribe-for-cds/some-path").withHeaders(HeaderNames.REFERER -> "test")
 
       val result = await(filter.apply(next)(request))
 

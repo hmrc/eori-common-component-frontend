@@ -26,7 +26,7 @@ import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}
 class EoriLanguageController @Inject()(config: Configuration, languageUtils: LanguageUtils, cc: ControllerComponents)
     extends LanguageController(config, languageUtils, cc) {
   override protected def fallbackURL: String =
-    "/customs/register-for-cds" //This will be always register for cds we might need to add a route for fallback cannot be dynamic
+    "/eori-common-component/register-for-cds" //This will be always register for cds we might need to add a route for fallback cannot be dynamic
   def langToCall(lang: String): String => Call =
     EoriLanguageController.routeToSwitchLanguage
 

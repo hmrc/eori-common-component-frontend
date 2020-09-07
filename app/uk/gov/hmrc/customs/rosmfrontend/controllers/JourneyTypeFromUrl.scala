@@ -22,7 +22,7 @@ import uk.gov.hmrc.customs.rosmfrontend.models.Journey
 
 trait JourneyTypeFromUrl {
   def journeyTypeFromUrl(implicit request: Request[AnyContent]): String =
-    "(?<=/customs/)(.*?)(?=/)".r.findFirstIn(request.path).getOrElse("")
+    "(?<=/eori-common-component/)(.*?)(?=/)".r.findFirstIn(request.path).getOrElse("")
 
   def journeyFromUrl(implicit request: Request[AnyContent]): Journey.Value = journeyTypeFromUrl match {
     case JourneyType.GetAnEori => Journey.GetYourEORI

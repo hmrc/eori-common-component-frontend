@@ -109,7 +109,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
         .thenReturn(Future.successful(Some(true)))
       submitForm(ValidRequest + (yesNoInputName -> answerYes), journey = Journey.Migrate) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs/subscribe-for-cds/matching/verify-your-email")
+        result.header.headers("Location") should endWith("/eori-common-component/subscribe-for-cds/matching/verify-your-email")
       }
     }
 
@@ -128,7 +128,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
 
       submitForm(ValidRequest + (yesNoInputName -> answerYes), journey = Journey.Migrate) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs/subscribe-for-cds/are-you-based-in-uk")
+        result.header.headers("Location") should endWith("/eori-common-component/subscribe-for-cds/are-you-based-in-uk")
       }
     }
 
@@ -146,7 +146,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     "redirect to What is Your Email Address Page on selecting No radio button" in {
       submitForm(ValidRequest + (yesNoInputName -> answerNo), journey = Journey.Migrate) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs/subscribe-for-cds/matching/what-is-your-email")
+        result.header.headers("Location") should endWith("/eori-common-component/subscribe-for-cds/matching/what-is-your-email")
       }
     }
 

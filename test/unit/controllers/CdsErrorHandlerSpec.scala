@@ -53,7 +53,7 @@ class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {
 
       whenReady(cdsErrorHandler.onServerError(mockRegisterRequest, SessionTimeOutException("xyz"))) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs/register-for-cds/display-sign-out"
+        result.header.headers(LOCATION) shouldBe "/eori-common-component/register-for-cds/display-sign-out"
       }
     }
 
@@ -62,7 +62,7 @@ class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {
 
       whenReady(cdsErrorHandler.onServerError(mockRegisterRequest, SessionTimeOutException("xyz"))) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs/subscribe-for-cds/display-sign-out"
+        result.header.headers(LOCATION) shouldBe "/eori-common-component/subscribe-for-cds/display-sign-out"
       }
     }
 

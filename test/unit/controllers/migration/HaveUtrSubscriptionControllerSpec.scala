@@ -52,7 +52,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec {
 
   private val matchUtrSubscriptionView = app.injector.instanceOf[match_utr_subscription]
 
-  private val nextPageFlowUrl = "/customs/subscribe-for-cds/row-nino"
+  private val nextPageFlowUrl = "/eori-common-component/subscribe-for-cds/row-nino"
 
   val controller = new HaveUtrSubscriptionController(
     app,
@@ -141,7 +141,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec {
         .thenReturn(Future.successful(Some(nameOrganisationMatchModel)))
       submit(Journey.Migrate, ValidUtrRequest) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs/subscribe-for-cds/address"
+        result.header.headers(LOCATION) shouldBe "/eori-common-component/subscribe-for-cds/address"
       }
       verify(mockSubscriptionDetailsService, times(1)).cacheNameIdAndCustomsId(meq("orgName"), meq(ValidUtrId))(
         any[HeaderCarrier]
@@ -158,7 +158,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec {
         .thenReturn(Future.successful(Some(nameOrganisationMatchModel)))
       submit(Journey.Migrate, ValidUtrRequest) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs/subscribe-for-cds/address"
+        result.header.headers(LOCATION) shouldBe "/eori-common-component/subscribe-for-cds/address"
       }
       verify(mockSubscriptionDetailsService, times(1)).cacheCustomsId(any[CustomsId])(any[HeaderCarrier])
     }

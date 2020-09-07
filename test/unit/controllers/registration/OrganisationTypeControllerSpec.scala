@@ -156,7 +156,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
           journey = Journey.GetYourEORI
         ) { result =>
           status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) should endWith(s"/customs/register-for-cds/matching/$urlParameter")
+          result.header.headers(LOCATION) should endWith(s"/eori-common-component/register-for-cds/matching/$urlParameter")
         }
       }
 
@@ -175,7 +175,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
           journey = Journey.Migrate
         ) { result =>
           status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe "/customs/subscribe-for-cds/matching/what-is-your-eori"
+          result.header.headers(LOCATION) shouldBe "/eori-common-component/subscribe-for-cds/matching/what-is-your-eori"
         }
       }
 

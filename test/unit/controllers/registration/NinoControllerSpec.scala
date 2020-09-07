@@ -200,7 +200,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter {
         page.getElementsText(NinoMatchPage.pageLevelErrorSummaryListXPath) shouldBe empty
 
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs/register-for-cds/matching/confirm")
+        result.header.headers("Location") should endWith("/eori-common-component/register-for-cds/matching/confirm")
 
         verify(mockMatchingService).matchIndividualWithNino(any(), any(), any())(any[HeaderCarrier])
       }
