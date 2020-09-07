@@ -21,7 +21,7 @@ import common.support.Env
 
 trait SubscriptionCreateEUVatDetailsPage extends WebPage {
 
-  val url: String = Env.frontendHost + "/customs/register-for-cds/vat-registered-eu"
+  val url: String = Env.frontendHost + "/eori-common-component/register-for-cds/vat-registered-eu"
 }
 
 object SubscriptionCreateEUVatDetailsPage extends SubscriptionCreateEUVatDetailsPage {

@@ -17,7 +17,7 @@
 package uk.gov.hmrc.customs.rosmfrontend.logging
 
 object CdsLogger {
-  lazy val logger = play.api.Logger("customs-rosm-frontend")
+  lazy val logger = play.api.Logger("eori-common-component-frontend")
 
   def debug(s: String): Unit = logger.debug(s)
   def info(s: String): Unit = logger.info(s)

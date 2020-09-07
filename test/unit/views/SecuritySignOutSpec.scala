@@ -42,11 +42,11 @@ class SecuritySignOutSpec extends ViewSpec {
 
     "have a Sign in button with the correct href when journey is subscribe" in {
       val doc = Jsoup.parse(contentAsString(view(Journey.Migrate)))
-      doc.body().getElementsByClass("button").attr("href") mustBe "/customs/subscribe-for-cds"
+      doc.body().getElementsByClass("button").attr("href") mustBe "/eori-common-component/subscribe-for-cds"
     }
 
     "have a Sign in button with the correct href when journey is register" in {
-      doc.body().getElementsByClass("button").attr("href") mustBe "/customs/register-for-cds"
+      doc.body().getElementsByClass("button").attr("href") mustBe "/eori-common-component/register-for-cds"
     }
   }
 

@@ -52,7 +52,7 @@ class YouCantUseServiceSpec extends ViewSpec {
     }
 
     "have a Sign out button with the correct href" in {
-      standardOrgDoc.body().getElementsByClass("button").attr("href") mustBe "/customs/subscribe-for-cds/logout"
+      standardOrgDoc.body().getElementsByClass("button").attr("href") mustBe "/eori-common-component/subscribe-for-cds/logout"
     }
   }
 
@@ -79,7 +79,7 @@ class YouCantUseServiceSpec extends ViewSpec {
     }
 
     "have a Sign out button with the correct href" in {
-      agentDoc.body().getElementsByClass("button").attr("href") mustBe "/customs/subscribe-for-cds/logout"
+      agentDoc.body().getElementsByClass("button").attr("href") mustBe "/eori-common-component/subscribe-for-cds/logout"
     }
   }
 

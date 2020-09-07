@@ -30,5 +30,5 @@ trait XPathRegistrationOutcomePage {
 
 abstract class RegistrationOutcomePage(val registrationOutcome: String)
   extends WebPage with XPathRegistrationOutcomePage {
-  protected val baseUrl: String = Env.frontendHost + s"/customs/register-for-cds/$registrationOutcome"
+  protected val baseUrl: String = Env.frontendHost + s"/eori-common-component/register-for-cds/$registrationOutcome"
 }

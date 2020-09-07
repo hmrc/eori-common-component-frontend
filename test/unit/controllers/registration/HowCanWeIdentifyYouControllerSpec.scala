@@ -162,7 +162,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
       ).thenReturn(SubscriptionFlowInfo(3, 5, AddressDetailsSubscriptionFlowPage))
       submitForm(Map("nino" -> "AB123456C", "ninoOrUtrRadio" -> "nino")) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") shouldBe "/customs/subscribe-for-cds/address"
+        result.header.headers("Location") shouldBe "/eori-common-component/subscribe-for-cds/address"
       }
     }
 
@@ -177,7 +177,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
       ).thenReturn(SubscriptionFlowInfo(3, 5, AddressDetailsSubscriptionFlowPage))
       submitForm(Map("utr" -> "2108834503", "ninoOrUtrRadio" -> "utr")) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") shouldBe "/customs/subscribe-for-cds/address"
+        result.header.headers("Location") shouldBe "/eori-common-component/subscribe-for-cds/address"
       }
     }
 
@@ -193,7 +193,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
     "redirect to 'Check your details' page when valid Nino/ Utr is provided" in {
       submitFormInReviewMode(Map("utr" -> "2108834503", "ninoOrUtrRadio" -> "utr")) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") shouldBe "/customs/subscribe-for-cds/matching/review-determine"
+        result.header.headers("Location") shouldBe "/eori-common-component/subscribe-for-cds/matching/review-determine"
       }
     }
 

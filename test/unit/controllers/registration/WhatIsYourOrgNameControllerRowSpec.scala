@@ -79,7 +79,7 @@ class WhatIsYourOrgNameControllerRowSpec extends ControllerSpec with BeforeAndAf
       submitForm(isInReviewMode = false, form = ValidNameRequest) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers("Location") should endWith(
-          "/customs/register-for-cds/matching/utr/third-country-organisation"
+          "/eori-common-component/register-for-cds/matching/utr/third-country-organisation"
         )
         verify(mockSubscriptionDetailsService).cacheNameDetails(any())(any())
       }
@@ -100,7 +100,7 @@ class WhatIsYourOrgNameControllerRowSpec extends ControllerSpec with BeforeAndAf
 
       submitForm(isInReviewMode = true, form = ValidNameRequest) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs/register-for-cds/matching/review-determine")
+        result.header.headers("Location") should endWith("/eori-common-component/register-for-cds/matching/review-determine")
         verify(mockSubscriptionDetailsService).cacheNameDetails(any())(any())
       }
     }

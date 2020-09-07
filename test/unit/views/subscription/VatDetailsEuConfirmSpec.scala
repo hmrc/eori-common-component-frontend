@@ -40,11 +40,11 @@ class VatDetailsEuConfirmSpec extends ViewSpec {
   private val emptyFormUnderLimit: Form[YesNo] = vatRegisteredEuYesNoAnswerForm().bind(invalidRequest)
   private val formUnderLimit: Form[YesNo] = vatRegisteredEuYesNoAnswerForm().bind(ValidRequest)
 
-  private def removeLink(index: Int) = s"customs/register-for-cds/vat-details-eu-remove/$index"
-  private def reviewRemoveLink(index: Int) = s"customs/register-for-cds/vat-details-eu-remove/$index/review"
+  private def removeLink(index: Int) = s"eori-common-component/register-for-cds/vat-details-eu-remove/$index"
+  private def reviewRemoveLink(index: Int) = s"eori-common-component/register-for-cds/vat-details-eu-remove/$index/review"
 
-  private def updateLink(index: Int) = s"customs/register-for-cds/vat-details-eu/update/$index"
-  private def reviewUpdateLink(index: Int) = s"customs/register-for-cds/vat-details-eu/update/$index/review"
+  private def updateLink(index: Int) = s"eori-common-component/register-for-cds/vat-details-eu/update/$index"
+  private def reviewUpdateLink(index: Int) = s"eori-common-component/register-for-cds/vat-details-eu/update/$index/review"
 
   private val VatEuDetailUnderLimit = Seq(VatEUDetailsModel("12345", "FR"))
   private val VatEuDetailsOnLimit = VatEuDetailUnderLimit ++ Seq(

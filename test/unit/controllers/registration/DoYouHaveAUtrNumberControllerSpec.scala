@@ -189,7 +189,7 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
       ).thenReturn(Future.successful(true))
       submitForm(ValidUtrRequest, CdsOrganisationType.CharityPublicBodyNotForProfitId) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs/register-for-cds/matching/confirm")
+        result.header.headers("Location") should endWith("/eori-common-component/register-for-cds/matching/confirm")
       }
     }
   }
@@ -199,7 +199,7 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
     "direct the user to the Are You VAT Registered in the UK? page" in {
       submitForm(NoUtrRequest, CdsOrganisationType.CharityPublicBodyNotForProfitId) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs/register-for-cds/are-you-vat-registered-in-uk")
+        result.header.headers("Location") should endWith("/eori-common-component/register-for-cds/are-you-vat-registered-in-uk")
       }
     }
   }

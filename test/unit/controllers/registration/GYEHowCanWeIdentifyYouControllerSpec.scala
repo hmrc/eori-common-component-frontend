@@ -89,7 +89,7 @@ class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAnd
       submitForm(Map("nino" -> nino, "ninoOrUtrRadio" -> "nino"), CdsOrganisationType.IndividualId, Journey.GetYourEORI) {
         result =>
           status(result) shouldBe SEE_OTHER
-          result.header.headers("Location") shouldBe "/customs/register-for-cds/matching/confirm"
+          result.header.headers("Location") shouldBe "/eori-common-component/register-for-cds/matching/confirm"
       }
     }
 
@@ -109,7 +109,7 @@ class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAnd
       submitForm(Map("utr" -> utr, "ninoOrUtrRadio" -> "utr"), CdsOrganisationType.IndividualId, Journey.GetYourEORI) {
         result =>
           status(result) shouldBe SEE_OTHER
-          result.header.headers("Location") shouldBe "/customs/register-for-cds/matching/confirm"
+          result.header.headers("Location") shouldBe "/eori-common-component/register-for-cds/matching/confirm"
       }
     }
 

@@ -51,7 +51,7 @@ class FooterSpec extends ViewSpec {
     }
 
     "have correct Accessibility link" in {
-      doc.getElementById("accessibility").attr("href") mustBe "/customs/register-for-cds/accessibility-statement"
+      doc.getElementById("accessibility").attr("href") mustBe "/eori-common-component/register-for-cds/accessibility-statement"
     }
   }
 

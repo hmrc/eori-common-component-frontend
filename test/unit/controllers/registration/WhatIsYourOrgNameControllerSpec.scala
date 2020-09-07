@@ -80,7 +80,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
         "charity-public-body-not-for-profit",
         CharityPublicBodyNotForProfitOrganisation,
         "organisation",
-        "/customs/register-for-cds/matching/utr/charity-public-body-not-for-profit",
+        "/eori-common-component/register-for-cds/matching/utr/charity-public-body-not-for-profit",
         UserLocation.Uk,
         false,
         ""
@@ -89,7 +89,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
         "third-country-organisation",
         ThirdCountryOrg,
         "organisation",
-        "/customs/register-for-cds/matching/address/third-country-organisation",
+        "/eori-common-component/register-for-cds/matching/address/third-country-organisation",
         UserLocation.ThirdCountry,
         false,
         ""
@@ -98,7 +98,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
         "third-country-organisation",
         ThirdCountryOrg,
         "organisation",
-        "/customs/register-for-cds/matching/review-determine",
+        "/eori-common-component/register-for-cds/matching/review-determine",
         UserLocation.ThirdCountry,
         true,
         "Test Org Name"

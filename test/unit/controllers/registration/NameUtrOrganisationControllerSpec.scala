@@ -174,7 +174,7 @@ class NameUtrOrganisationControllerSpec extends ControllerSpec with MockitoSugar
         page.getElementsText(registerWithNameAndAddressLink) should startWith(
           "If you are not registered for Self Assessment"
         )
-        page.getElementAttributeHref(registerWithNameAndAddressLinkAnchor) shouldBe "/customs/register-for-cds/matching/address/charity-public-body-not-for-profit"
+        page.getElementAttributeHref(registerWithNameAndAddressLinkAnchor) shouldBe "/eori-common-component/register-for-cds/matching/address/charity-public-body-not-for-profit"
       }
     }
 
@@ -381,7 +381,7 @@ class NameUtrOrganisationControllerSpec extends ControllerSpec with MockitoSugar
       ).thenReturn(Future.successful(true))
       submitForm(ValidNameUtrRequest) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs/register-for-cds/matching/confirm")
+        result.header.headers("Location") should endWith("/eori-common-component/register-for-cds/matching/confirm")
       }
     }
   }
