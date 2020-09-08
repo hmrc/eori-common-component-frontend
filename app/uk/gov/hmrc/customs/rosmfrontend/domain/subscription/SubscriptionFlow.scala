@@ -23,12 +23,12 @@ import uk.gov.hmrc.customs.rosmfrontend.models.Journey
 object SubscriptionFlows {
 
   private val individualFlowConfig = createFlowConfig(
-    Journey.GetYourEORI,
+    Journey.Register,
     List(ContactDetailsSubscriptionFlowPageGetEori, EoriConsentSubscriptionFlowPage)
   )
 
   private val soleTraderFlowConfig = createFlowConfig(
-    Journey.GetYourEORI,
+    Journey.Register,
     List(
       ContactDetailsSubscriptionFlowPageGetEori,
       SicCodeSubscriptionFlowPage,
@@ -42,7 +42,7 @@ object SubscriptionFlows {
   )
 
   private val corporateFlowConfig = createFlowConfig(
-    Journey.GetYourEORI,
+    Journey.Register,
     List(
       DateOfEstablishmentSubscriptionFlowPage,
       ContactDetailsSubscriptionFlowPageGetEori,
@@ -58,7 +58,7 @@ object SubscriptionFlows {
     )
   )
   private val partnershipFlowConfig = createFlowConfig(
-    Journey.GetYourEORI,
+    Journey.Register,
     List(
       DateOfEstablishmentSubscriptionFlowPage,
       ContactDetailsSubscriptionFlowPageGetEori,
@@ -74,12 +74,12 @@ object SubscriptionFlows {
   )
 
   private val thirdCountryIndividualFlowConfig = createFlowConfig(
-    Journey.GetYourEORI,
+    Journey.Register,
     List(ContactDetailsSubscriptionFlowPageGetEori, EoriConsentSubscriptionFlowPage)
   )
 
   private val thirdCountrySoleTraderFlowConfig = createFlowConfig(
-    Journey.GetYourEORI,
+    Journey.Register,
     List(
       ContactDetailsSubscriptionFlowPageGetEori,
       SicCodeSubscriptionFlowPage,
@@ -93,7 +93,7 @@ object SubscriptionFlows {
   )
 
   private val thirdCountryCorporateFlowConfig = createFlowConfig(
-    Journey.GetYourEORI,
+    Journey.Register,
     List(
       DateOfEstablishmentSubscriptionFlowPage,
       ContactDetailsSubscriptionFlowPageGetEori,
@@ -110,7 +110,7 @@ object SubscriptionFlows {
   )
 
   private val soleTraderRegExistingEoriFlowConfig = createFlowConfig(
-    Journey.Migrate,
+    Journey.Subscribe,
     List(
       EoriNumberSubscriptionFlowPage,
       NameDobDetailsSubscriptionFlowPage,
@@ -120,7 +120,7 @@ object SubscriptionFlows {
   )
 
   private val corporateRegExistingEoriFlowConfig = createFlowConfig(
-    Journey.Migrate,
+    Journey.Subscribe,
     List(
       EoriNumberSubscriptionFlowPage,
       NameUtrDetailsSubscriptionFlowPage,
@@ -130,7 +130,7 @@ object SubscriptionFlows {
   )
 
   private val migrationEoriRowSoleTraderAndIndividualFlowConfig = createFlowConfig(
-    Journey.Migrate,
+    Journey.Subscribe,
     List(
       EoriNumberSubscriptionFlowPage,
       NameDobDetailsSubscriptionFlowPage,
@@ -140,7 +140,7 @@ object SubscriptionFlows {
   )
 
   private val migrationEoriRowSoleTraderAndIndividualFlowConfigUtrNinoEnabled = createFlowConfig(
-    Journey.Migrate,
+    Journey.Subscribe,
     List(
       EoriNumberSubscriptionFlowPage,
       NameDobDetailsSubscriptionFlowPage,
@@ -152,7 +152,7 @@ object SubscriptionFlows {
   )
 
   private val migrationEoriRowCorporateFlowConfig = createFlowConfig(
-    Journey.Migrate,
+    Journey.Subscribe,
     List(
       EoriNumberSubscriptionFlowPage,
       NameDetailsSubscriptionFlowPage,
@@ -163,7 +163,7 @@ object SubscriptionFlows {
   )
 
   private val migrationEoriRowCorporateFlowConfigUtrNinoEnabled = createFlowConfig(
-    Journey.Migrate,
+    Journey.Subscribe,
     List(
       EoriNumberSubscriptionFlowPage,
       NameDetailsSubscriptionFlowPage,
@@ -194,7 +194,7 @@ object SubscriptionFlows {
 
   private def createFlowConfig(journey: Journey.Value, flowStepList: List[SubscriptionPage]): SubscriptionFlowConfig =
     journey match {
-      case Journey.Migrate =>
+      case Journey.Subscribe =>
         SubscriptionFlowConfig(
           pageBeforeFirstFlowPage = RegistrationConfirmPage,
           flowStepList,
@@ -268,203 +268,203 @@ sealed abstract class SubscriptionPage(val url: String)
 case object ContactDetailsSubscriptionFlowPageGetEori
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.ContactDetailsController
-        .createForm(journey = Journey.GetYourEORI)
+        .createForm(journey = Journey.Register)
         .url
     )
 
 case object ContactDetailsSubscriptionFlowPageMigrate
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.ContactDetailsController
-        .createForm(journey = Journey.Migrate)
+        .createForm(journey = Journey.Subscribe)
         .url
     )
 
 case object UtrSubscriptionFlowPage
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.migration.routes.HaveUtrSubscriptionController
-        .createForm(journey = Journey.Migrate)
+        .createForm(journey = Journey.Subscribe)
         .url
     )
 
 case object NinoSubscriptionFlowPage
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.migration.routes.HaveNinoSubscriptionController
-        .createForm(journey = Journey.Migrate)
+        .createForm(journey = Journey.Subscribe)
         .url
     )
 
 case object AddressDetailsSubscriptionFlowPage
     extends SubscriptionPage(
-      uk.gov.hmrc.customs.rosmfrontend.controllers.routes.AddressController.createForm(journey = Journey.Migrate).url
+      uk.gov.hmrc.customs.rosmfrontend.controllers.routes.AddressController.createForm(journey = Journey.Subscribe).url
     )
 
 case object NameUtrDetailsSubscriptionFlowPage
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.migration.routes.NameIDOrgController
-        .createForm(journey = Journey.Migrate)
+        .createForm(journey = Journey.Subscribe)
         .url
     )
 
 case object NameDetailsSubscriptionFlowPage
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.migration.routes.NameOrgController
-        .createForm(journey = Journey.Migrate)
+        .createForm(journey = Journey.Subscribe)
         .url
     )
 
 case object NameDobDetailsSubscriptionFlowPage
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.migration.routes.NameDobSoleTraderController
-        .createForm(journey = Journey.Migrate)
+        .createForm(journey = Journey.Subscribe)
         .url
     )
 
 case object HowCanWeIdentifyYouSubscriptionFlowPage
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.HowCanWeIdentifyYouController
-        .createForm(journey = Journey.Migrate)
+        .createForm(journey = Journey.Subscribe)
         .url
     )
 
 case object RowDateOfEstablishmentSubscriptionFlowPage
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.DateOfEstablishmentController
-        .createForm(journey = Journey.Migrate)
+        .createForm(journey = Journey.Subscribe)
         .url
     )
 
 case object DateOfEstablishmentSubscriptionFlowPage
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.DateOfEstablishmentController
-        .createForm(journey = Journey.GetYourEORI)
+        .createForm(journey = Journey.Register)
         .url
     )
 
 case object DateOfEstablishmentSubscriptionFlowPageMigrate
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.DateOfEstablishmentController
-        .createForm(journey = Journey.Migrate)
+        .createForm(journey = Journey.Subscribe)
         .url
     )
 
 case object VatRegisteredUkSubscriptionFlowPage
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.VatRegisteredUkController
-        .createForm(journey = Journey.GetYourEORI)
+        .createForm(journey = Journey.Register)
         .url
     )
 
-//case object VatGroupFlowPage extends SubscriptionPage(uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.VatGroupController.createForm(journey = Journey.GetYourEORI).url)
+//case object VatGroupFlowPage extends SubscriptionPage(uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.VatGroupController.createForm(journey = Journey.Register).url)
 
 case object BusinessShortNameSubscriptionFlowPage
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.BusinessShortNameController
-        .createForm(journey = Journey.GetYourEORI)
+        .createForm(journey = Journey.Register)
         .url
     )
 
 case object VatDetailsSubscriptionFlowPage
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.VatDetailsController
-        .createForm(journey = Journey.GetYourEORI)
+        .createForm(journey = Journey.Register)
         .url
     )
 
 case object VatRegisteredEuSubscriptionFlowPage
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.VatRegisteredEuController
-        .createForm(journey = Journey.GetYourEORI)
+        .createForm(journey = Journey.Register)
         .url
     )
 
 case object VatEUIdsSubscriptionFlowPage
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.VatDetailsEuController
-        .createForm(journey = Journey.GetYourEORI)
+        .createForm(journey = Journey.Register)
         .url
     )
 
 case object VatEUConfirmSubscriptionFlowPage
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.VatDetailsEuConfirmController
-        .createForm(journey = Journey.GetYourEORI)
+        .createForm(journey = Journey.Register)
         .url
     )
 
 case object EoriConsentSubscriptionFlowPage
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.DisclosePersonalDetailsConsentController
-        .createForm(journey = Journey.GetYourEORI)
+        .createForm(journey = Journey.Register)
         .url
     )
 
 case object SicCodeSubscriptionFlowPage
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.SicCodeController
-        .createForm(journey = Journey.GetYourEORI)
+        .createForm(journey = Journey.Register)
         .url
     )
 
 case object EoriNumberSubscriptionFlowPage
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.WhatIsYourEoriController
-        .createForm(journey = Journey.Migrate)
+        .createForm(journey = Journey.Subscribe)
         .url
     )
 
 case object EmailSubscriptionFlowPage
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.email.routes.WhatIsYourEmailController
-        .createForm(journey = Journey.Migrate)
+        .createForm(journey = Journey.Subscribe)
         .url
     )
 
 case object CheckYourEmailSubscriptionFlowPage
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.email.routes.CheckYourEmailController
-        .createForm(journey = Journey.Migrate)
+        .createForm(journey = Journey.Subscribe)
         .url
     )
 
 case object ReviewDetailsPageGetYourEORI
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.routes.DetermineReviewPageController
-        .determineRoute(journey = Journey.GetYourEORI)
+        .determineRoute(journey = Journey.Register)
         .url
     )
 
 case object ReviewDetailsPageSubscription
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.routes.DetermineReviewPageController
-        .determineRoute(journey = Journey.Migrate)
+        .determineRoute(journey = Journey.Subscribe)
         .url
     )
 
 case object RegistrationConfirmPage
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.ConfirmContactDetailsController
-        .form(journey = Journey.GetYourEORI)
+        .form(journey = Journey.Register)
         .url
     )
 
 case object ConfirmIndividualTypePage
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.ConfirmIndividualTypeController
-        .form(journey = Journey.GetYourEORI)
+        .form(journey = Journey.Register)
         .url
     )
 
 case object UserLocationPage
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.UserLocationController
-        .form(journey = Journey.Migrate)
+        .form(journey = Journey.Subscribe)
         .url
     )
 
 case object BusinessDetailsRecoveryPage
     extends SubscriptionPage(
       uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.BusinessDetailsRecoveryController
-        .form(journey = Journey.GetYourEORI)
+        .form(journey = Journey.Register)
         .url
     )
 

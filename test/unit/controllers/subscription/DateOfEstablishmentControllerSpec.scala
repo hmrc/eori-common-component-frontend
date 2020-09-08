@@ -55,11 +55,11 @@ class DateOfEstablishmentControllerSpec
   protected override val formId: String = SubscriptionDateOfBirthPage.formId
   protected override val submitInCreateModeUrl: String =
     uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.DateOfEstablishmentController
-      .submit(isInReviewMode = false, Journey.GetYourEORI)
+      .submit(isInReviewMode = false, Journey.Register)
       .url
   protected override val submitInReviewModeUrl: String =
     uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.DateOfEstablishmentController
-      .submit(isInReviewMode = true, Journey.GetYourEORI)
+      .submit(isInReviewMode = true, Journey.Register)
       .url
 
   private val mockOrgTypeLookup = mock[OrgTypeLookup]
@@ -110,7 +110,7 @@ class DateOfEstablishmentControllerSpec
 
   "Loading the page in create mode for subscription rest of the world" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.Migrate))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.Subscribe))
 
     "display the form" in {
       showCreateForm() { result =>
@@ -126,7 +126,7 @@ class DateOfEstablishmentControllerSpec
 
   "Loading the page in create mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.GetYourEORI))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.Register))
 
     "display the form" in {
       showCreateForm() { result =>
@@ -207,7 +207,7 @@ class DateOfEstablishmentControllerSpec
 
   "Loading the page in review mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.reviewForm(Journey.GetYourEORI))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.reviewForm(Journey.Register))
 
     "display the form" in {
       showReviewForm() { result =>
@@ -308,7 +308,7 @@ class DateOfEstablishmentControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = false, Journey.GetYourEORI)
+      controller.submit(isInReviewMode = false, Journey.Register)
     )
 
     "redirect to next page in subscription flow" in {
@@ -319,7 +319,7 @@ class DateOfEstablishmentControllerSpec
   "Submitting the valid form in review mode" should {
 
     "redirect to the review page" in {
-      submitFormInReviewMode(ValidRequest)(verifyRedirectToReviewPage(Journey.GetYourEORI))
+      submitFormInReviewMode(ValidRequest)(verifyRedirectToReviewPage(Journey.Register))
     }
   }
 
@@ -333,7 +333,7 @@ class DateOfEstablishmentControllerSpec
   private def showCreateForm(
     userId: String = defaultUserId,
     cachedDate: Option[LocalDate] = None,
-    journey: Journey.Value = Journey.GetYourEORI
+    journey: Journey.Value = Journey.Register
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     when(mockSubscriptionBusinessService.maybeCachedDateEstablished(any[HeaderCarrier]))
@@ -343,7 +343,7 @@ class DateOfEstablishmentControllerSpec
     test(result)
   }
 
-  private def showReviewForm(userId: String = defaultUserId, journey: Journey.Value = Journey.GetYourEORI)(
+  private def showReviewForm(userId: String = defaultUserId, journey: Journey.Value = Journey.Register)(
     test: Future[Result] => Any
   ) {
     withAuthorisedUser(userId, mockAuthConnector)
@@ -364,7 +364,7 @@ class DateOfEstablishmentControllerSpec
     form: Map[String, String],
     isInReviewMode: Boolean,
     userId: String = defaultUserId,
-    journey: Journey.Value = Journey.GetYourEORI
+    journey: Journey.Value = Journey.Register
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
 

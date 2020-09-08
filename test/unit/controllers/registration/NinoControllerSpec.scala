@@ -66,7 +66,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter {
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.form(defaultOrganisationType, Journey.GetYourEORI)
+      controller.form(defaultOrganisationType, Journey.Register)
     )
 
     "show the form without errors" in {
@@ -183,7 +183,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter {
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(defaultOrganisationType, Journey.GetYourEORI)
+      controller.submit(defaultOrganisationType, Journey.Register)
     )
 
     "redirect to the confirm page when there's a successful match" in {
@@ -200,7 +200,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter {
         page.getElementsText(NinoMatchPage.pageLevelErrorSummaryListXPath) shouldBe empty
 
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs-enrolment-services/register-for-cds/matching/confirm")
+        result.header.headers("Location") should endWith("/customs-enrolment-services/register/matching/confirm")
 
         verify(mockMatchingService).matchIndividualWithNino(any(), any(), any())(any[HeaderCarrier])
       }
@@ -233,7 +233,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter {
     withAuthorisedUser(userId, mockAuthConnector)
 
     val result = controller
-      .form(organisationType, Journey.GetYourEORI)
+      .form(organisationType, Journey.Register)
       .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }
@@ -246,7 +246,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter {
     withAuthorisedUser(userId, mockAuthConnector)
 
     val result = controller
-      .submit(organisationType, Journey.GetYourEORI)
+      .submit(organisationType, Journey.Register)
       .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }

@@ -111,7 +111,7 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
 
   "Viewing the Organisation Name Matching form" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.complete(Journey.GetYourEORI))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.complete(Journey.Register))
     def setupMockCommon() = {
       when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(mockSubscriptionDetailsHolder))
@@ -146,9 +146,9 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
         .thenReturn(Future.successful(mockOrgRegistrationDetails))
       when(mockOrgRegistrationDetails.safeId).thenReturn(SafeId("testsafeId"))
 
-      callEnrolmentComplete(journey = Journey.GetYourEORI) { result =>
+      callEnrolmentComplete(journey = Journey.Register) { result =>
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result) shouldBe Some("/customs-enrolment-services/register-for-cds/complete")
+        header(LOCATION, result) shouldBe Some("/customs-enrolment-services/register/complete")
       }
       verify(mockTaxEnrolmentsService, times(0))
         .issuerCall(anyString, any[Eori], any[Option[LocalDate]])(any[HeaderCarrier], any[ExecutionContext])
@@ -169,9 +169,9 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
           .issuerCall(anyString, any[Eori], any[Option[LocalDate]])(any[HeaderCarrier], any[ExecutionContext])
       ).thenReturn(Future.successful(NO_CONTENT))
 
-      callEnrolmentComplete(journey = Journey.Migrate) { result =>
+      callEnrolmentComplete(journey = Journey.Subscribe) { result =>
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result) shouldBe Some("/customs-enrolment-services/subscribe-for-cds/complete")
+        header(LOCATION, result) shouldBe Some("/customs-enrolment-services/subscribe/complete")
       }
       verify(mockTaxEnrolmentsService).issuerCall(anyString, any[Eori], any[Option[LocalDate]])(
         any[HeaderCarrier],
@@ -195,9 +195,9 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
           .issuerCall(anyString, any[Eori], any[Option[LocalDate]])(any[HeaderCarrier], any[ExecutionContext])
       ).thenReturn(Future.successful(NO_CONTENT))
 
-      callEnrolmentComplete(journey = Journey.Migrate) { result =>
+      callEnrolmentComplete(journey = Journey.Subscribe) { result =>
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result) shouldBe Some("/customs-enrolment-services/subscribe-for-cds/complete")
+        header(LOCATION, result) shouldBe Some("/customs-enrolment-services/subscribe/complete")
       }
       verify(mockTaxEnrolmentsService).issuerCall(anyString, any[Eori], any[Option[LocalDate]])(
         any[HeaderCarrier],
@@ -220,9 +220,9 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
           .issuerCall(anyString, any[Eori], any[Option[LocalDate]])(any[HeaderCarrier], any[ExecutionContext])
       ).thenReturn(Future.successful(NO_CONTENT))
 
-      callEnrolmentComplete(journey = Journey.Migrate) { result =>
+      callEnrolmentComplete(journey = Journey.Subscribe) { result =>
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result) shouldBe Some("/customs-enrolment-services/subscribe-for-cds/complete")
+        header(LOCATION, result) shouldBe Some("/customs-enrolment-services/subscribe/complete")
       }
       verify(mockTaxEnrolmentsService).issuerCall(anyString, any[Eori], any[Option[LocalDate]])(
         any[HeaderCarrier],
@@ -252,7 +252,7 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
         )(any[HeaderCarrier], any[ExecutionContext])
       ).thenReturn(Future.successful(result = ()))
 
-      callEnrolmentComplete(journey = Journey.GetYourEORI) { result =>
+      callEnrolmentComplete(journey = Journey.Register) { result =>
         status(result) shouldBe SERVICE_UNAVAILABLE
       }
     }
@@ -268,7 +268,7 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
     when(mockCdsFrontendDataCache.sub01Outcome(any[HeaderCarrier])).thenReturn(Future.successful(mockSub01Outcome))
 
     the[IllegalStateException] thrownBy {
-      callEnrolmentComplete(journey = Journey.GetYourEORI) { result =>
+      callEnrolmentComplete(journey = Journey.Register) { result =>
         await(result)
       }
     } should have message "NO ETMPFORMBUNDLENUMBER specified"
@@ -284,7 +284,7 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
     when(mockCdsFrontendDataCache.sub01Outcome(any[HeaderCarrier])).thenReturn(Future.successful(mockSub01Outcome))
 
     the[IllegalStateException] thrownBy {
-      callEnrolmentComplete(journey = Journey.GetYourEORI) { result =>
+      callEnrolmentComplete(journey = Journey.Register) { result =>
         await(result)
       }
     } should have message "NO ETMPFORMBUNDLENUMBER specified"
@@ -300,10 +300,10 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
     when(mockCdsFrontendDataCache.sub01Outcome(any[HeaderCarrier])).thenReturn(Future.successful(mockSub01Outcome))
 
     the[IllegalStateException] thrownBy {
-      callEnrolmentComplete(journey = Journey.GetYourEORI) { result =>
+      callEnrolmentComplete(journey = Journey.Register) { result =>
         await(result)
       }
-    } should have message "GetYourEORI Journey: No email address available."
+    } should have message "Register Journey: No email address available."
   }
 
   "call Enrolment Complete with successful SUB09 call without EmailAddress should throw IllegalStateException" in {
@@ -316,10 +316,10 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
     when(mockCdsFrontendDataCache.sub01Outcome(any[HeaderCarrier])).thenReturn(Future.successful(mockSub01Outcome))
 
     the[IllegalStateException] thrownBy {
-      callEnrolmentComplete(journey = Journey.GetYourEORI) { result =>
+      callEnrolmentComplete(journey = Journey.Register) { result =>
         await(result)
       }
-    } should have message "GetYourEORI Journey: No email address available."
+    } should have message "Register Journey: No email address available."
   }
 
   "call Enrolment Complete with successful SUB09 call without personOfContact should not throw exception" in {
@@ -343,9 +343,9 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
       )(any[HeaderCarrier], any[ExecutionContext])
     ).thenReturn(Future.successful(result = ()))
 
-    callEnrolmentComplete(journey = Journey.GetYourEORI) { result =>
+    callEnrolmentComplete(journey = Journey.Register) { result =>
       status(result) shouldBe SEE_OTHER
-      header(LOCATION, result) shouldBe Some("/customs-enrolment-services/register-for-cds/complete")
+      header(LOCATION, result) shouldBe Some("/customs-enrolment-services/register/complete")
     }
   }
 

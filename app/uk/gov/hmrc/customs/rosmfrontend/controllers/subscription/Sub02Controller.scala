@@ -64,7 +64,7 @@ class Sub02Controller @Inject()(
         .subscribeWithCachedDetails(selectedOrganisationType, journey)
         .flatMap { subscribeResult =>
           (subscribeResult, journey) match {
-            case (_: SubscriptionSuccessful, Journey.GetYourEORI) => {
+            case (_: SubscriptionSuccessful, Journey.Register) => {
               subscriptionDetailsService
                 .saveKeyIdentifiers(groupId, internalId)
                 .map(_ => Redirect(Sub02Controller.end()))

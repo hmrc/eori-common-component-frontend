@@ -58,9 +58,9 @@ class AddressControllerSpec
 
   protected override val formId: String = AddressPage.formId
 
-  protected override def submitInCreateModeUrl: String = submit(isInReviewMode = false, Journey.GetYourEORI).url
+  protected override def submitInCreateModeUrl: String = submit(isInReviewMode = false, Journey.Register).url
 
-  protected override def submitInReviewModeUrl: String = submit(isInReviewMode = true, Journey.GetYourEORI).url
+  protected override def submitInReviewModeUrl: String = submit(isInReviewMode = true, Journey.Register).url
 
   private val mockRequestSessionData = mock[RequestSessionData]
   private val mockCdsFrontendDataCache = mock[SessionCache]
@@ -127,7 +127,7 @@ class AddressControllerSpec
 
   "Subscription Address Controller form in create mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.GetYourEORI))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.Register))
 
     "display title as 'Enter your business address'" in {
       showCreateForm() { result =>
@@ -182,7 +182,7 @@ class AddressControllerSpec
 
   "Subscription Address form in review mode for Individual" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.reviewForm(Journey.Migrate))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.reviewForm(Journey.Subscribe))
 
     "display title as 'Enter your address'" in {
       showReviewForm(userSelectedOrganisationType = Some(CdsOrganisationType.Individual)) { result =>
@@ -232,7 +232,7 @@ class AddressControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = false, Journey.GetYourEORI)
+      controller.submit(isInReviewMode = false, Journey.Register)
     )
 
     "wait until the saveSubscriptionDetailsHolder is completed before progressing" in {
@@ -304,7 +304,7 @@ class AddressControllerSpec
 
     "redirect to review screen" in {
       submitFormInReviewMode(mandatoryFields, userSelectedOrgType = Some(mockOrganisationType))(
-        verifyRedirectToReviewPage(Journey.GetYourEORI)
+        verifyRedirectToReviewPage(Journey.Register)
       )
     }
   }
@@ -420,7 +420,7 @@ class AddressControllerSpec
     when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(organisationRegistrationDetails)
 
     test(
-      controller.submit(isInReviewMode = false, Journey.GetYourEORI)(
+      controller.submit(isInReviewMode = false, Journey.Register)(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )
@@ -447,7 +447,7 @@ class AddressControllerSpec
     when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier])).thenReturn(None)
 
     test(
-      controller.submit(isInReviewMode = false, Journey.Migrate)(
+      controller.submit(isInReviewMode = false, Journey.Subscribe)(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )
@@ -463,7 +463,7 @@ class AddressControllerSpec
     when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(individualRegistrationDetails)
 
     test(
-      controller.submit(isInReviewMode = false, Journey.GetYourEORI)(
+      controller.submit(isInReviewMode = false, Journey.Register)(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )
@@ -480,7 +480,7 @@ class AddressControllerSpec
       .thenReturn(Some(CdsOrganisationType("company")))
 
     test(
-      controller.submit(isInReviewMode = true, Journey.GetYourEORI)(
+      controller.submit(isInReviewMode = true, Journey.Register)(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )
@@ -506,7 +506,7 @@ class AddressControllerSpec
       .thenReturn(userSelectedOrganisationType)
     when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(organisationRegistrationDetails)
 
-    test(controller.createForm(Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.createForm(Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def showReviewForm(
@@ -521,7 +521,7 @@ class AddressControllerSpec
     when(mockSubscriptionBusinessService.addressOrException(any[HeaderCarrier])).thenReturn(dataToEdit)
     when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(individualRegistrationDetails)
 
-    test(controller.reviewForm(Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.reviewForm(Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def verifyAddressFieldExistsAndPopulatedCorrectly(page: CdsPage): Unit = {

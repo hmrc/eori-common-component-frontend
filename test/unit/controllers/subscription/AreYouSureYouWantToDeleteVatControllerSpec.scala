@@ -74,7 +74,7 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec {
         .thenReturn(Future.successful(None))
       reviewForm() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/register-for-cds/vat-details-eu-confirm/review"
+        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/register/vat-details-eu-confirm/review"
       }
     }
 
@@ -83,7 +83,7 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec {
         .thenReturn(Future.successful(None))
       createForm() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/register-for-cds/vat-details-eu-confirm"
+        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/register/vat-details-eu-confirm"
       }
     }
   }
@@ -159,7 +159,7 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec {
       when(mockSubscriptionVatEUDetailsService.cachedEUVatDetails(any[HeaderCarrier])).thenReturn(emptyVatEuDetails)
       submit(ValidRequest, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("/customs-enrolment-services/register-for-cds/vat-registered-eu/review")
+        result.header.headers(LOCATION) should endWith("/customs-enrolment-services/register/vat-registered-eu/review")
       }
     }
 
@@ -200,7 +200,7 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     test(
       controller
-        .createForm(testIndex, journey = Journey.GetYourEORI)
+        .createForm(testIndex, journey = Journey.Register)
         .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     )
   }
@@ -209,7 +209,7 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     test(
       controller
-        .reviewForm(testIndex, journey = Journey.GetYourEORI)
+        .reviewForm(testIndex, journey = Journey.Register)
         .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     )
   }
@@ -218,7 +218,7 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     test(
       controller
-        .submit(testIndex, Journey.GetYourEORI, isInReviewMode: Boolean)
+        .submit(testIndex, Journey.Register, isInReviewMode: Boolean)
         .apply(SessionBuilder.buildRequestWithFormValues(form))
     )
   }

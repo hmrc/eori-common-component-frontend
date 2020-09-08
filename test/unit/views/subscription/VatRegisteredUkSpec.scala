@@ -39,16 +39,16 @@ class VatRegisteredUkSpec extends ViewSpec {
   implicit val request = withFakeCSRF(FakeRequest())
 
   lazy val doc: Document =
-    Jsoup.parse(contentAsString(view(isInReviewMode, form, isIndividualFlow, isPartnership = false, Journey.Migrate)))
+    Jsoup.parse(contentAsString(view(isInReviewMode, form, isIndividualFlow, isPartnership = false, Journey.Subscribe)))
   lazy val docWithErrors: Document = Jsoup.parse(
-    contentAsString(view(isInReviewMode, formWithError, isIndividualFlow, isPartnership = false, Journey.Migrate))
+    contentAsString(view(isInReviewMode, formWithError, isIndividualFlow, isPartnership = false, Journey.Subscribe))
   )
   lazy val docPartnership: Document = Jsoup.parse(
-    contentAsString(view(isInReviewMode, formPartnership, isIndividualFlow, isPartnership = true, Journey.Migrate))
+    contentAsString(view(isInReviewMode, formPartnership, isIndividualFlow, isPartnership = true, Journey.Subscribe))
   )
   lazy val docPartnershipWithErrors: Document = Jsoup.parse(
     contentAsString(
-      view(isInReviewMode, formPartnershipWithError, isIndividualFlow, isPartnership = true, Journey.Migrate)
+      view(isInReviewMode, formPartnershipWithError, isIndividualFlow, isPartnership = true, Journey.Subscribe)
     )
   )
 

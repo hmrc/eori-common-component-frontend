@@ -46,7 +46,7 @@ class SubscriptionService @Inject()(connector: SubscriptionServiceConnector)(imp
     journey: Journey.Value
   )(implicit hc: HeaderCarrier): Future[SubscriptionResult] = {
     val email =
-      if (journey == Journey.GetYourEORI) subscription.contactDetails.map(_.emailAddress) else subscription.email
+      if (journey == Journey.Register) subscription.contactDetails.map(_.emailAddress) else subscription.email
     val request = SubscriptionRequest(SubscriptionCreateRequest(registration, subscription, email))
     subscribeWithConnector(request)
   }

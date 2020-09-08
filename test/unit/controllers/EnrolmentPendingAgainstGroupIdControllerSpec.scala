@@ -50,7 +50,7 @@ class EnrolmentPendingAgainstGroupIdControllerSpec extends ControllerSpec {
   "Enrolment Pending Against GroupId Controller" should {
     "return OK and redirect to the enrolment pending against groupId page" in {
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
-      displayPage(Journey.Migrate) { result =>
+      displayPage(Journey.Subscribe) { result =>
         status(result) shouldBe OK
         val page = CdsPage(bodyOf(result))
         page.title should startWith("You cannot use this service")

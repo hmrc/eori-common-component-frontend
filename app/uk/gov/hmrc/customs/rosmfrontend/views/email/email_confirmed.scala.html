@@ -25,7 +25,7 @@
     <div class="column-two-thirds start_page">
         <h1 class="heading-large">@messages("cds.email-confirmed.title-and-heading")</h1>
 
-        @if(journey==Journey.GetYourEORI){
+        @if(journey==Journey.Register){
             <p id="info">@messages("cds.email-confirmed.para.get-eori")</p>
         } else {
             <p id="info">@messages("cds.email-confirmed.para.get-access")</p>

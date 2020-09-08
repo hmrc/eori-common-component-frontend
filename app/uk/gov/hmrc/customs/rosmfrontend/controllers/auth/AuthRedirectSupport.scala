@@ -20,7 +20,7 @@ import play.api.mvc.{AnyContent, Request, Result}
 import play.api.{Application, Configuration, Environment}
 import uk.gov.hmrc.auth.core.NoActiveSession
 import uk.gov.hmrc.customs.rosmfrontend.controllers.JourneyTypeFromUrl
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey.{GetYourEORI, Migrate}
+import uk.gov.hmrc.customs.rosmfrontend.models.Journey.{Register, Subscribe}
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 
 trait AuthRedirectSupport extends AuthRedirects with JourneyTypeFromUrl {
@@ -36,10 +36,10 @@ trait AuthRedirectSupport extends AuthRedirects with JourneyTypeFromUrl {
   private def continueUrlKey(implicit request: Request[AnyContent]) = {
     val visitedUkPage: Boolean = request.session.get("visited-uk-page").getOrElse("false").toBoolean
     journeyFromUrl match {
-      case Migrate if visitedUkPage =>
+      case Subscribe if visitedUkPage =>
         "external-url.company-auth-frontend.continue-url-subscribe-from-are-you-based-in-uk"
-      case Migrate     => "external-url.company-auth-frontend.continue-url-subscribe"
-      case GetYourEORI => "external-url.company-auth-frontend.continue-url"
+      case Subscribe     => "external-url.company-auth-frontend.continue-url-subscribe"
+      case Register => "external-url.company-auth-frontend.continue-url"
       case _           => throw new IllegalArgumentException("No valid journey found in URL: " + request.path)
     }
   }

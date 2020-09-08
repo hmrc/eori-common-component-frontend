@@ -48,7 +48,7 @@ class VatGroupController @Inject()(
         formWithErrors => BadRequest(vatGroupView(formWithErrors, journey)),
         yesNoAnswer => {
           if (yesNoAnswer.isNo) {
-            Redirect(EmailController.form(Journey.GetYourEORI))
+            Redirect(EmailController.form(Journey.Register))
           } else {
             Redirect(routes.VatGroupsCannotRegisterUsingThisServiceController.form(journey))
           }

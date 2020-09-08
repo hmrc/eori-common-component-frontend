@@ -37,7 +37,7 @@
     }
 }
 
-@journey = @{if(request.path.contains("register-for-cds")) Journey.GetYourEORI else Journey.Migrate}
+@journey = @{if(request.path.contains("register")) Journey.Register else Journey.Subscribe}
 
 @layout_di(messages("cds.you-cant-use-service.heading")) {
 <div class="column-two-thirds">

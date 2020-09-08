@@ -135,7 +135,7 @@ class EmailControllerSpec extends ControllerSpec with AddressPageFactoring with 
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller
-        .form(Journey.Migrate)
+        .form(Journey.Subscribe)
         .apply(SessionBuilder.buildRequestWithSession(userId))
     )
   }

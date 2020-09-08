@@ -80,7 +80,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
         "charity-public-body-not-for-profit",
         CharityPublicBodyNotForProfitOrganisation,
         "organisation",
-        "/customs-enrolment-services/register-for-cds/matching/utr/charity-public-body-not-for-profit",
+        "/customs-enrolment-services/register/matching/utr/charity-public-body-not-for-profit",
         UserLocation.Uk,
         false,
         ""
@@ -89,7 +89,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
         "third-country-organisation",
         ThirdCountryOrg,
         "organisation",
-        "/customs-enrolment-services/register-for-cds/matching/address/third-country-organisation",
+        "/customs-enrolment-services/register/matching/address/third-country-organisation",
         UserLocation.ThirdCountry,
         false,
         ""
@@ -98,7 +98,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
         "third-country-organisation",
         ThirdCountryOrg,
         "organisation",
-        "/customs-enrolment-services/register-for-cds/matching/review-determine",
+        "/customs-enrolment-services/register/matching/review-determine",
         UserLocation.ThirdCountry,
         true,
         "Test Org Name"
@@ -126,7 +126,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
 
         assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
           mockAuthConnector,
-          controller.showForm(reviewMode, organisationType, Journey.GetYourEORI),
+          controller.showForm(reviewMode, organisationType, Journey.Register),
           s", for reviewMode $reviewMode and organisationType $organisationType"
         )
 
@@ -160,7 +160,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
 
           assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
             mockAuthConnector,
-            controller.submit(reviewMode, organisationType, Journey.GetYourEORI),
+            controller.submit(reviewMode, organisationType, Journey.Register),
             s", for reviewMode $reviewMode and organisationType $organisationType"
           )
 
@@ -205,7 +205,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
     withAuthorisedUser(userId, mockAuthConnector)
 
     val result = controller
-      .showForm(isInReviewMode, organisationType, Journey.GetYourEORI)
+      .showForm(isInReviewMode, organisationType, Journey.Register)
       .apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
@@ -218,7 +218,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
-      .submit(isInReviewMode, organisationType, Journey.GetYourEORI)
+      .submit(isInReviewMode, organisationType, Journey.Register)
       .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }

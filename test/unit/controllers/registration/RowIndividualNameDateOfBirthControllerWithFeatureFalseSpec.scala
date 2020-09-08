@@ -70,10 +70,10 @@ class RowIndividualNameDateOfBirthControllerWithFeatureFalseSpec
     }
 
     protected def show(с: RowIndividualNameDateOfBirthController): Action[AnyContent] =
-      с.form(organisationType, Journey.GetYourEORI)
+      с.form(organisationType, Journey.Register)
 
     protected def submit(c: RowIndividualNameDateOfBirthController): Action[AnyContent] =
-      c.submit(false, organisationType, Journey.GetYourEORI)
+      c.submit(false, organisationType, Journey.Register)
 
     def formData(thirdCountryIndividual: IndividualNameAndDateOfBirth): Map[String, String] =
       form.mapping.unbind(thirdCountryIndividual)
@@ -101,7 +101,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureFalseSpec
         submitForm(formData(individualNameAndDateOfBirth)) { result =>
           CdsPage(contentAsString(result)).getElementsHtml(webPage.pageLevelErrorSummaryListXPath) shouldBe empty
           status(result) shouldBe SEE_OTHER
-          result.futureValue.header.headers(LOCATION) shouldBe s"/customs-enrolment-services/register-for-cds/matching/address/$organisationType"
+          result.futureValue.header.headers(LOCATION) shouldBe s"/customs-enrolment-services/register/matching/address/$organisationType"
           verify(mockSubscriptionDetailsService).cacheNameDobDetails(any())(any())
         }
       }

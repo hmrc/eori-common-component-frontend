@@ -114,7 +114,7 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach {
         val page = CdsPage(bodyOf(result))
         page
           .formAction("user-location-form") shouldBe uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.UserLocationController
-          .submit(Journey.GetYourEORI)
+          .submit(Journey.Register)
           .url
       })
     }
@@ -166,7 +166,7 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach {
     withAuthorisedUser(userId, mockAuthConnector, userAffinityGroup = affinityGroup)
 
     val result = controller
-      .form(Journey.GetYourEORI)
+      .form(Journey.Register)
       .apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
@@ -178,7 +178,7 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach {
     withAuthorisedUser(userId, mockAuthConnector, userAffinityGroup = affinityGroup)
 
     val result = controller
-      .form(Journey.Migrate)
+      .form(Journey.Subscribe)
       .apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }

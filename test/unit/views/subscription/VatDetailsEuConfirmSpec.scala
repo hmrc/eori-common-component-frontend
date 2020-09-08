@@ -40,11 +40,11 @@ class VatDetailsEuConfirmSpec extends ViewSpec {
   private val emptyFormUnderLimit: Form[YesNo] = vatRegisteredEuYesNoAnswerForm().bind(invalidRequest)
   private val formUnderLimit: Form[YesNo] = vatRegisteredEuYesNoAnswerForm().bind(ValidRequest)
 
-  private def removeLink(index: Int) = s"customs-enrolment-services/register-for-cds/vat-details-eu-remove/$index"
-  private def reviewRemoveLink(index: Int) = s"customs-enrolment-services/register-for-cds/vat-details-eu-remove/$index/review"
+  private def removeLink(index: Int) = s"customs-enrolment-services/register/vat-details-eu-remove/$index"
+  private def reviewRemoveLink(index: Int) = s"customs-enrolment-services/register/vat-details-eu-remove/$index/review"
 
-  private def updateLink(index: Int) = s"customs-enrolment-services/register-for-cds/vat-details-eu/update/$index"
-  private def reviewUpdateLink(index: Int) = s"customs-enrolment-services/register-for-cds/vat-details-eu/update/$index/review"
+  private def updateLink(index: Int) = s"customs-enrolment-services/register/vat-details-eu/update/$index"
+  private def reviewUpdateLink(index: Int) = s"customs-enrolment-services/register/vat-details-eu/update/$index/review"
 
   private val VatEuDetailUnderLimit = Seq(VatEUDetailsModel("12345", "FR"))
   private val VatEuDetailsOnLimit = VatEuDetailUnderLimit ++ Seq(
@@ -139,7 +139,7 @@ class VatDetailsEuConfirmSpec extends ViewSpec {
         emptyFormUnderLimit,
         isInReviewMode = false,
         VatEuDetailUnderLimit,
-        Journey.GetYourEORI,
+        Journey.Register,
         vatLimitNotReached = true
       )
     )
@@ -150,19 +150,19 @@ class VatDetailsEuConfirmSpec extends ViewSpec {
         formUnderLimit,
         isInReviewMode = false,
         VatEuDetailUnderLimit,
-        Journey.GetYourEORI,
+        Journey.Register,
         vatLimitNotReached = true
       )
     )
   )
   private lazy val docOnLimit: Document = Jsoup.parse(
     contentAsString(
-      view(formUnderLimit, isInReviewMode = false, VatEuDetailsOnLimit, Journey.GetYourEORI, vatLimitNotReached = false)
+      view(formUnderLimit, isInReviewMode = false, VatEuDetailsOnLimit, Journey.Register, vatLimitNotReached = false)
     )
   )
   private lazy val docOnLimitInReview: Document = Jsoup.parse(
     contentAsString(
-      view(formUnderLimit, isInReviewMode = true, VatEuDetailsOnLimit, Journey.GetYourEORI, vatLimitNotReached = false)
+      view(formUnderLimit, isInReviewMode = true, VatEuDetailsOnLimit, Journey.Register, vatLimitNotReached = false)
     )
   )
 }

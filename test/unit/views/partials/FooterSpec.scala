@@ -24,7 +24,7 @@ import uk.gov.hmrc.customs.rosmfrontend.views.html.partials.footer
 import util.ViewSpec
 
 class FooterSpec extends ViewSpec {
-  implicit val request = withFakeCSRF(FakeRequest.apply("GET", "/register-for-cds"))
+  implicit val request = withFakeCSRF(FakeRequest.apply("GET", "/register"))
 
   private val view = app.injector.instanceOf[footer]
 
@@ -51,7 +51,7 @@ class FooterSpec extends ViewSpec {
     }
 
     "have correct Accessibility link" in {
-      doc.getElementById("accessibility").attr("href") mustBe "/customs-enrolment-services/register-for-cds/accessibility-statement"
+      doc.getElementById("accessibility").attr("href") mustBe "/customs-enrolment-services/register/accessibility-statement"
     }
   }
 

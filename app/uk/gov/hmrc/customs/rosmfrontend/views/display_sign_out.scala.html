@@ -23,8 +23,8 @@
 @(journey: Journey.Value)(implicit messages: Messages, request: Request[_])
 
 @redirectUrl = @{journey match {
-    case Journey.GetYourEORI => ApplicationController.start.url
-    case Journey.Migrate => ApplicationController.startSubscription.url
+    case Journey.Register => ApplicationController.start.url
+    case Journey.Subscribe => ApplicationController.startSubscription.url
 }}
 
 @layout_di(messages("cds.security-sign-out.heading")) {

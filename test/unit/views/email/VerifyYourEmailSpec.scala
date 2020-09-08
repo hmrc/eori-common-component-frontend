@@ -47,19 +47,19 @@ class VerifyYourEmailSpec extends ViewSpec {
       doc.body
         .getElementById("p2")
         .select("a[href]")
-        .attr("href") mustBe "/customs-enrolment-services/subscribe-for-cds/matching/what-is-your-email"
+        .attr("href") mustBe "/customs-enrolment-services/subscribe/matching/what-is-your-email"
     }
     "have an link send it again" in {
       doc.body
         .getElementById("p3")
         .select("a[href]")
-        .attr("href") mustBe "/customs-enrolment-services/subscribe-for-cds/matching/check-your-email"
+        .attr("href") mustBe "/customs-enrolment-services/subscribe/matching/check-your-email"
     }
   }
 
   lazy val doc: Document = {
     val email = "test@example.com"
-    val result = view(Some(email), Journey.Migrate)
+    val result = view(Some(email), Journey.Subscribe)
     Jsoup.parse(contentAsString(result))
   }
 

@@ -63,7 +63,7 @@ class ApplicationControllerWithAllowlistVerificationSpec extends ControllerSpec 
       withAuthorisedUser(defaultUserId, mockAuthConnector, userEmail = Some("not@example.com"))
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
 
-      controller.logout(Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSession(defaultUserId)) map { _ =>
+      controller.logout(Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId)) map { _ =>
         verify(mockSessionCache).remove(any[HeaderCarrier])
       }
     }

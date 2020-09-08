@@ -102,12 +102,12 @@ class VatRegisteredEuSpec extends ViewSpec {
 
   private lazy val individualDoc: Document = Jsoup.parse(
     contentAsString(
-      view(isInReviewMode = false, form, isIndividualSubscriptionFlow = true, isPartnership = false, Journey.Migrate)
+      view(isInReviewMode = false, form, isIndividualSubscriptionFlow = true, isPartnership = false, Journey.Subscribe)
     )
   )
   private lazy val nonIndividualDocInReview: Document = Jsoup.parse(
     contentAsString(
-      view(isInReviewMode = true, form, isIndividualSubscriptionFlow = false, isPartnership = false, Journey.Migrate)
+      view(isInReviewMode = true, form, isIndividualSubscriptionFlow = false, isPartnership = false, Journey.Subscribe)
     )
   )
   private lazy val docWithErrors: Document = Jsoup.parse(
@@ -117,7 +117,7 @@ class VatRegisteredEuSpec extends ViewSpec {
         formWithError,
         isIndividualSubscriptionFlow = true,
         isPartnership = false,
-        Journey.Migrate
+        Journey.Subscribe
       )
     )
   )
@@ -128,7 +128,7 @@ class VatRegisteredEuSpec extends ViewSpec {
         partnershipForm,
         isIndividualSubscriptionFlow = false,
         isPartnership = true,
-        Journey.Migrate
+        Journey.Subscribe
       )
     )
   )
@@ -139,7 +139,7 @@ class VatRegisteredEuSpec extends ViewSpec {
         partnershipFormWithError,
         isIndividualSubscriptionFlow = false,
         isPartnership = true,
-        Journey.Migrate
+        Journey.Subscribe
       )
     )
   )

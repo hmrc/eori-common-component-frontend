@@ -69,7 +69,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      nameDobController.form(defaultOrganisationType, Journey.GetYourEORI)
+      nameDobController.form(defaultOrganisationType, Journey.Register)
     )
 
     "display the form" in {
@@ -198,7 +198,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      nameDobController.submit(defaultOrganisationType, Journey.GetYourEORI)
+      nameDobController.submit(defaultOrganisationType, Journey.Register)
     )
 
     "be successful when all mandatory fields filled" in {
@@ -210,7 +210,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
     "redirect to the confirm page when successful" in {
       submitForm(ValidRequest, "individual") { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs-enrolment-services/register-for-cds/matching/chooseid/individual")
+        result.header.headers("Location") should endWith("/customs-enrolment-services/register/matching/chooseid/individual")
       }
     }
   }
@@ -219,7 +219,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
     withAuthorisedUser(userId, mockAuthConnector)
 
     val result =
-      nameDobController.form("individual", Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSession(userId))
+      nameDobController.form("individual", Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
 
@@ -229,7 +229,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
     withAuthorisedUser(userId, mockAuthConnector)
 
     val result = nameDobController
-      .submit(organisationType, Journey.GetYourEORI)
+      .submit(organisationType, Journey.Register)
       .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
 
     test(result)

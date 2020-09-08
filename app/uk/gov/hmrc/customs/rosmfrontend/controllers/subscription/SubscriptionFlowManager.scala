@@ -120,19 +120,19 @@ class SubscriptionFlowManager @Inject()(
     val subscribePrefix = (userLocation, journey, registrationDetails.customsId, rowHaveUtrEnabled) match {
       case (
           Some(UserLocation.Eu) | Some(UserLocation.Islands) | Some(UserLocation.ThirdCountry),
-          Journey.Migrate,
+          Journey.Subscribe,
           None,
           true
           ) =>
         "migration-eori-row-utrNino-enabled-"
       case (
           Some(UserLocation.Eu) | Some(UserLocation.Islands) | Some(UserLocation.ThirdCountry),
-          Journey.Migrate,
+          Journey.Subscribe,
           _,
           _
           ) =>
         "migration-eori-row-"
-      case (_, Journey.Migrate, _, _) => "migration-eori-" // This means UK
+      case (_, Journey.Subscribe, _, _) => "migration-eori-" // This means UK
       case _                          => ""
     }
 
@@ -140,9 +140,9 @@ class SubscriptionFlowManager @Inject()(
       (registrationDetails, maybeOrgType, rowHaveUtrEnabled, registrationDetails.customsId, journey) match {
         case (_: RegistrationDetailsOrganisation, Some(CdsOrganisationType.Partnership), _, _, _) =>
           SubscriptionFlow(subscribePrefix + PartnershipSubscriptionFlow.name)
-        case (_: RegistrationDetailsOrganisation, _, true, None, Journey.Migrate) =>
+        case (_: RegistrationDetailsOrganisation, _, true, None, Journey.Subscribe) =>
           SubscriptionFlow(subscribePrefix + OrganisationSubscriptionFlow.name)
-        case (_: RegistrationDetailsIndividual, _, true, None, Journey.Migrate) =>
+        case (_: RegistrationDetailsIndividual, _, true, None, Journey.Subscribe) =>
           SubscriptionFlow(subscribePrefix + IndividualSubscriptionFlow.name)
         case (_: RegistrationDetailsOrganisation, _, _, _, _) =>
           SubscriptionFlow(subscribePrefix + OrganisationSubscriptionFlow.name)

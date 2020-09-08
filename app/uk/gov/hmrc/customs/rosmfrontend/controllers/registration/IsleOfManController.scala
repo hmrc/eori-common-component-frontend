@@ -53,6 +53,6 @@ class IsleOfManController @Inject()(
 
   def destinationsByAnswer(yesNoAnswer: YesNo)(implicit request: Request[AnyContent]): Result = yesNoAnswer match {
     case theAnswer if theAnswer.isYes => Redirect(VatRegisteredUkController.form())
-    case _                            => Redirect(VatGroupController.createForm(Journey.GetYourEORI))
+    case _                            => Redirect(VatGroupController.createForm(Journey.Register))
   }
 }

@@ -162,33 +162,33 @@ class MatchOrganisationUtrSpec extends ViewSpec {
   lazy val doc: Document = getDoc(form)
 
   private def getDoc(form: Form[UtrMatchModel]) = {
-    val result = view(form, nonSoleTraderType, "", Journey.GetYourEORI)
+    val result = view(form, nonSoleTraderType, "", Journey.Register)
     val doc = Jsoup.parse(contentAsString(result))
     doc
   }
 
   lazy val docWithNoSelectionError: Document = {
-    val result = view(formWithNoSelectionError, nonSoleTraderType, "", Journey.GetYourEORI)
+    val result = view(formWithNoSelectionError, nonSoleTraderType, "", Journey.Register)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val docWithNoUtrEnteredError: Document = {
-    val result = view(formWithNoUtrEnteredError, nonSoleTraderType, "", Journey.GetYourEORI)
+    val result = view(formWithNoUtrEnteredError, nonSoleTraderType, "", Journey.Register)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val docAsSoleTraderIndividual: Document = {
-    val result = view(form, soleTraderType, "", Journey.GetYourEORI)
+    val result = view(form, soleTraderType, "", Journey.Register)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val docWithNoSelectionErrorAsSoleTrader: Document = {
-    val result = view(formWithNoSelectionError, soleTraderType, "", Journey.GetYourEORI)
+    val result = view(formWithNoSelectionError, soleTraderType, "", Journey.Register)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val docWithNoUtrEnteredErrorAsSoleTrader: Document = {
-    val result = view(formWithNoUtrEnteredError, soleTraderType, "", Journey.GetYourEORI)
+    val result = view(formWithNoUtrEnteredError, soleTraderType, "", Journey.Register)
     Jsoup.parse(contentAsString(result))
   }
 

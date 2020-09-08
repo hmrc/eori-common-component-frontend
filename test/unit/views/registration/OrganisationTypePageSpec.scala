@@ -50,7 +50,7 @@ class OrganisationTypePageSpec extends ViewSpec {
 
   private lazy val doc = {
     implicit val request = withFakeCSRF(FakeRequest().withSession(("selected-user-location", "third-country")))
-    val result = view(form, Some("third-country"), Journey.GetYourEORI)
+    val result = view(form, Some("third-country"), Journey.Register)
     Jsoup.parse(contentAsString(result))
   }
 }

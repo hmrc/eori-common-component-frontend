@@ -86,7 +86,7 @@ class SubscriptionServiceSpec
           dateOfBirth
         ),
         subscriptionGenerateResponse,
-        Journey.Migrate
+        Journey.Subscribe
       )
       assertSameJson(Json.toJson(result.actualConnectorRequest), individualAutomaticSubscriptionRequestJson)
     }
@@ -264,7 +264,7 @@ class SubscriptionServiceSpec
       val caught = intercept[Upstream5xxResponse] {
         await(
           service
-            .subscribe(organisationRegistrationDetails, fullyPopulatedSubscriptionDetails, None, Journey.GetYourEORI)(
+            .subscribe(organisationRegistrationDetails, fullyPopulatedSubscriptionDetails, None, Journey.Register)(
               mockHeaderCarrier
             )
         )
@@ -281,7 +281,7 @@ class SubscriptionServiceSpec
       val caught = intercept[IllegalStateException] {
         await(
           service
-            .subscribe(organisationRegistrationDetails, fullyPopulatedSubscriptionDetails, None, Journey.GetYourEORI)(
+            .subscribe(organisationRegistrationDetails, fullyPopulatedSubscriptionDetails, None, Journey.Register)(
               mockHeaderCarrier
             )
         )
@@ -301,7 +301,7 @@ class SubscriptionServiceSpec
         val caught = intercept[IllegalStateException] {
           await(
             service
-              .subscribe(organisationRegistrationDetails, fullyPopulatedSubscriptionDetails, None, Journey.GetYourEORI)(
+              .subscribe(organisationRegistrationDetails, fullyPopulatedSubscriptionDetails, None, Journey.Register)(
                 mockHeaderCarrier
               )
           )
@@ -322,7 +322,7 @@ class SubscriptionServiceSpec
 
       val res = await(
         service
-          .subscribe(organisationRegistrationDetails, fullyPopulatedSubscriptionDetails, None, Journey.GetYourEORI)(
+          .subscribe(organisationRegistrationDetails, fullyPopulatedSubscriptionDetails, None, Journey.Register)(
             mockHeaderCarrier
           )
       )
@@ -341,7 +341,7 @@ class SubscriptionServiceSpec
 
       val res = await(
         service
-          .subscribe(organisationRegistrationDetails, fullyPopulatedSubscriptionDetails, None, Journey.GetYourEORI)(
+          .subscribe(organisationRegistrationDetails, fullyPopulatedSubscriptionDetails, None, Journey.Register)(
             mockHeaderCarrier
           )
       )
@@ -360,7 +360,7 @@ class SubscriptionServiceSpec
 
       val res = await(
         service
-          .subscribe(organisationRegistrationDetails, fullyPopulatedSubscriptionDetails, None, Journey.GetYourEORI)(
+          .subscribe(organisationRegistrationDetails, fullyPopulatedSubscriptionDetails, None, Journey.Register)(
             mockHeaderCarrier
           )
       )
@@ -381,7 +381,7 @@ class SubscriptionServiceSpec
 
       val res = await(
         service
-          .subscribe(organisationRegistrationDetails, fullyPopulatedSubscriptionDetails, None, Journey.GetYourEORI)(
+          .subscribe(organisationRegistrationDetails, fullyPopulatedSubscriptionDetails, None, Journey.Register)(
             mockHeaderCarrier
           )
       )
@@ -402,7 +402,7 @@ class SubscriptionServiceSpec
 
       val res = await(
         service
-          .subscribe(organisationRegistrationDetails, fullyPopulatedSubscriptionDetails, None, Journey.GetYourEORI)(
+          .subscribe(organisationRegistrationDetails, fullyPopulatedSubscriptionDetails, None, Journey.Register)(
             mockHeaderCarrier
           )
       )
@@ -415,7 +415,7 @@ class SubscriptionServiceSpec
 
       the[IllegalStateException] thrownBy {
         val holder = fullyPopulatedSubscriptionDetails.copy(dateEstablished = None)
-        service.subscribe(organisationRegistrationDetails, holder, None, Journey.GetYourEORI)(mockHeaderCarrier)
+        service.subscribe(organisationRegistrationDetails, holder, None, Journey.Register)(mockHeaderCarrier)
       } should have message "Date Established must be present for an organisation subscription"
 
     }
@@ -431,7 +431,7 @@ class SubscriptionServiceSpec
       val service = constructService(_ => None)
       the[AssertionError] thrownBy {
         val holder = fullyPopulatedSubscriptionDetails.copy(sicCode = None)
-        service.subscribe(organisationRegistrationDetails, holder, None, Journey.GetYourEORI)(mockHeaderCarrier)
+        service.subscribe(organisationRegistrationDetails, holder, None, Journey.Register)(mockHeaderCarrier)
       } should have message "assertion failed: SicCode/Principal Economic Activity must be present for an organisation subscription"
     }
   }
@@ -533,7 +533,7 @@ class SubscriptionServiceSpec
     etmpOrganisationType: Option[EtmpOrganisationType],
     subscriptionContactDetails: ContactDetailsModel = subscriptionContactDetailsModel,
     personalDataDisclosureConsent: Boolean = false,
-    journey: Journey.Value = Journey.GetYourEORI
+    journey: Journey.Value = Journey.Register
   ): Unit = {
 
     val registrationDetailsWithOrgTypeAdded =
@@ -606,7 +606,7 @@ class SubscriptionServiceSpec
     ),
     organisationType: Option[CdsOrganisationType] = None,
     subscriptionResponse: SubscriptionResponse,
-    journey: Journey.Value = Journey.GetYourEORI
+    journey: Journey.Value = Journey.Register
   ): SubscriptionCallResult = {
 
     val subscribeDataCaptor = ArgumentCaptor.forClass(classOf[SubscriptionRequest])
@@ -626,7 +626,7 @@ class SubscriptionServiceSpec
   private def makeSubscribeWhenAutoAllowed(
     registrationDetails: RegistrationDetails,
     subscriptionResponse: SubscriptionResponse,
-    journey: Journey.Value = Journey.GetYourEORI
+    journey: Journey.Value = Journey.Register
   ): SubscriptionCallResult = {
     val subscribeDataCaptor = ArgumentCaptor.forClass(classOf[SubscriptionRequest])
     val service = constructService(

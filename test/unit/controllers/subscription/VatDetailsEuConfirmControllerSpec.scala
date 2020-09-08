@@ -100,7 +100,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
         .thenReturn(Future.successful(Seq()))
       displayForm() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("/customs-enrolment-services/register-for-cds/vat-registered-eu")
+        result.header.headers(LOCATION) should endWith("/customs-enrolment-services/register/vat-registered-eu")
         verify(mockSubscriptionVatEUDetailsService, times(1)).cachedEUVatDetails(any[HeaderCarrier])
       }
     }
@@ -110,7 +110,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
         .thenReturn(Future.successful(Seq()))
       reviewForm() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("/customs-enrolment-services/register-for-cds/vat-registered-eu/review")
+        result.header.headers(LOCATION) should endWith("/customs-enrolment-services/register/vat-registered-eu/review")
         verify(mockSubscriptionVatEUDetailsService, times(1)).cachedEUVatDetails(any[HeaderCarrier])
       }
     }
@@ -123,12 +123,12 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
         .thenReturn(Future.successful(VatEuDetailUnderLimit))
       submitForm(ValidRequest) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("/customs-enrolment-services/register-for-cds/vat-details-eu")
+        result.header.headers(LOCATION) should endWith("/customs-enrolment-services/register/vat-details-eu")
       }
     }
 
     "redirect to disclose personal details eu page when yes selected" in {
-      val url = "/customs-enrolment-services/register-for-cds/disclose-personal-details-consent"
+      val url = "/customs-enrolment-services/register/disclose-personal-details-consent"
       when(mockSubscriptionVatEUDetailsService.cachedEUVatDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(VatEuDetailUnderLimit))
       when(mockSubscriptionFlowManager.stepInformation(any())(any[HeaderCarrier], any[Request[AnyContent]]))
@@ -151,7 +151,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
         .thenReturn(Future.successful(VatEuDetailUnderLimit))
       submitForm(ValidRequest, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("/customs-enrolment-services/register-for-cds/vat-details-eu/review")
+        result.header.headers(LOCATION) should endWith("/customs-enrolment-services/register/vat-details-eu/review")
       }
     }
 
@@ -160,7 +160,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
         .thenReturn(Future.successful(VatEuDetailUnderLimit))
       submitForm(validRequestNo, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("/customs-enrolment-services/register-for-cds/matching/review-determine")
+        result.header.headers(LOCATION) should endWith("/customs-enrolment-services/register/matching/review-determine")
       }
     }
   }
@@ -171,12 +171,12 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
         .thenReturn(Future.successful(VatEuDetailsOnLimit))
       submitForm(invalidRequest, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("/customs-enrolment-services/register-for-cds/matching/review-determine")
+        result.header.headers(LOCATION) should endWith("/customs-enrolment-services/register/matching/review-determine")
       }
     }
 
     "redirect to disclose personal details eu page when yes selected" in {
-      val url = "/customs-enrolment-services/register-for-cds/disclose-personal-details-consent"
+      val url = "/customs-enrolment-services/register/disclose-personal-details-consent"
       when(mockSubscriptionVatEUDetailsService.cachedEUVatDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(VatEuDetailsOnLimit))
       when(mockSubscriptionFlowManager.stepInformation(any())(any[HeaderCarrier], any[Request[AnyContent]]))
@@ -194,12 +194,12 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
 
   private def displayForm()(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.createForm(Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    await(test(controller.createForm(Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
   private def reviewForm()(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.reviewForm(Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    await(test(controller.reviewForm(Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
   private def submitForm(form: Map[String, String], isInReviewMode: Boolean = false)(test: Future[Result] => Any) {
@@ -207,7 +207,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
     await(
       test(
         controller
-          .submit(isInReviewMode, Journey.GetYourEORI)
+          .submit(isInReviewMode, Journey.Register)
           .apply(SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form))
       )
     )

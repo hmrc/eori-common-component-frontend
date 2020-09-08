@@ -44,11 +44,11 @@ class ApplicationController @Inject()(
     extends CdsController(mcc) {
 
   def start: Action[AnyContent] = Action { implicit request =>
-    Ok(viewStart(Journey.GetYourEORI))
+    Ok(viewStart(Journey.Register))
   }
 
   def startSubscription: Action[AnyContent] = Action { implicit request =>
-    Ok(migrationStart(Journey.Migrate))
+    Ok(migrationStart(Journey.Subscribe))
   }
 
   def accessibilityStatement(): Action[AnyContent] = Action { implicit request =>
@@ -58,12 +58,12 @@ class ApplicationController @Inject()(
   def logout(journey: Journey.Value): Action[AnyContent] = Action.async { implicit request =>
     authorised(AuthProviders(GovernmentGateway)) {
       journey match {
-        case Journey.GetYourEORI => {
+        case Journey.Register => {
           cdsFrontendDataCache.remove map { _ =>
             Redirect(appConfig.feedbackLink).withNewSession
           }
         }
-        case Journey.Migrate => {
+        case Journey.Subscribe => {
           cdsFrontendDataCache.remove map { _ =>
             Redirect(appConfig.feedbackLinkSubscribe).withNewSession
           }

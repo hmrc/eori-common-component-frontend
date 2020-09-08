@@ -20,19 +20,24 @@ import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.customs.rosmfrontend.models.Journey
 
 case class RecipientDetails(
-  journey: Journey.Value,
-  recipientEmailAddress: String,
-  recipientFullName: String,
-  orgName: Option[String],
-  completionDate: Option[String] = None
-)
+                             journey: Journey.Value,
+                             service: String,
+                             recipientEmailAddress: String,
+                             recipientFullName: String,
+                             orgName: Option[String],
+                             completionDate: Option[String] = None
+                           )
 
 object RecipientDetails {
   implicit val jsonFormat: OFormat[RecipientDetails] = Json.format[RecipientDetails]
 
+  def apply(journey: Journey.Value, recipientEmailAddress: String, recipientFullName: String, orgName: Option[String], completionDate: Option[String]): RecipientDetails =
+    new RecipientDetails(journey, "ATaR", recipientEmailAddress, recipientFullName, orgName, completionDate)
+
   def apply(journey: Journey.Value, contactDetails: ContactDetails): RecipientDetails =
     RecipientDetails(
       journey,
+      "ATaR",
       contactDetails.emailAddress,
       contactDetails.fullName,
       orgName = None,

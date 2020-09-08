@@ -62,7 +62,7 @@ class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAnd
   "Viewing the form " should {
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.form(CdsOrganisationType.IndividualId, Journey.GetYourEORI)
+      controller.form(CdsOrganisationType.IndividualId, Journey.Register)
     )
   }
 
@@ -70,7 +70,7 @@ class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAnd
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(CdsOrganisationType.IndividualId, Journey.GetYourEORI)
+      controller.submit(CdsOrganisationType.IndividualId, Journey.Register)
     )
 
     "redirect to the Confirm page when a nino is matched" in {
@@ -86,10 +86,10 @@ class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAnd
           .matchIndividualWithNino(ArgumentMatchers.eq(nino), any[Individual], any())(any[HeaderCarrier])
       ).thenReturn(Future.successful(true))
 
-      submitForm(Map("nino" -> nino, "ninoOrUtrRadio" -> "nino"), CdsOrganisationType.IndividualId, Journey.GetYourEORI) {
+      submitForm(Map("nino" -> nino, "ninoOrUtrRadio" -> "nino"), CdsOrganisationType.IndividualId, Journey.Register) {
         result =>
           status(result) shouldBe SEE_OTHER
-          result.header.headers("Location") shouldBe "/customs-enrolment-services/register-for-cds/matching/confirm"
+          result.header.headers("Location") shouldBe "/customs-enrolment-services/register/matching/confirm"
       }
     }
 
@@ -106,10 +106,10 @@ class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAnd
           .matchIndividualWithId(ArgumentMatchers.eq(Utr(utr)), any[Individual], any())(any[HeaderCarrier])
       ).thenReturn(Future.successful(true))
 
-      submitForm(Map("utr" -> utr, "ninoOrUtrRadio" -> "utr"), CdsOrganisationType.IndividualId, Journey.GetYourEORI) {
+      submitForm(Map("utr" -> utr, "ninoOrUtrRadio" -> "utr"), CdsOrganisationType.IndividualId, Journey.Register) {
         result =>
           status(result) shouldBe SEE_OTHER
-          result.header.headers("Location") shouldBe "/customs-enrolment-services/register-for-cds/matching/confirm"
+          result.header.headers("Location") shouldBe "/customs-enrolment-services/register/matching/confirm"
       }
     }
 
@@ -125,7 +125,7 @@ class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAnd
           .matchIndividualWithNino(ArgumentMatchers.eq(nino), any[Individual], any())(any[HeaderCarrier])
       ).thenReturn(Future.successful(false))
 
-      submitForm(Map("nino" -> nino, "ninoOrUtrRadio" -> "nino"), CdsOrganisationType.IndividualId, Journey.GetYourEORI) {
+      submitForm(Map("nino" -> nino, "ninoOrUtrRadio" -> "nino"), CdsOrganisationType.IndividualId, Journey.Register) {
         result =>
           status(result) shouldBe BAD_REQUEST
           val page = CdsPage(bodyOf(result))
@@ -145,7 +145,7 @@ class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAnd
           .matchIndividualWithId(ArgumentMatchers.eq(Utr(utr)), any[Individual], any())(any[HeaderCarrier])
       ).thenReturn(Future.successful(false))
 
-      submitForm(Map("utr" -> utr, "ninoOrUtrRadio" -> "utr"), CdsOrganisationType.IndividualId, Journey.GetYourEORI) {
+      submitForm(Map("utr" -> utr, "ninoOrUtrRadio" -> "utr"), CdsOrganisationType.IndividualId, Journey.Register) {
         result =>
           status(result) shouldBe BAD_REQUEST
           val page = CdsPage(bodyOf(result))

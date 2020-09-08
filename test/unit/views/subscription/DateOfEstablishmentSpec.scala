@@ -85,17 +85,17 @@ class DateOfEstablishmentSpec extends ViewSpec {
   }
 
   lazy val doc: Document = {
-    val result = view(form, isInReviewMode, orgType = CorporateBody, isRestOfWorldJourney = false, Journey.Migrate)
+    val result = view(form, isInReviewMode, orgType = CorporateBody, isRestOfWorldJourney = false, Journey.Subscribe)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val docRestOfWorld: Document = {
-    val result = view(form, isInReviewMode, orgType = CorporateBody, isRestOfWorldJourney = true, Journey.Migrate)
+    val result = view(form, isInReviewMode, orgType = CorporateBody, isRestOfWorldJourney = true, Journey.Subscribe)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val docLlp: Document = {
-    val result = view(form, isInReviewMode, orgType = LLP, isRestOfWorldJourney = false, Journey.Migrate)
+    val result = view(form, isInReviewMode, orgType = LLP, isRestOfWorldJourney = false, Journey.Subscribe)
     Jsoup.parse(contentAsString(result))
   }
 

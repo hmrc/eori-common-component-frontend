@@ -67,10 +67,10 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueReviewModeSpec
     )(global)
 
     protected def show(с: RowIndividualNameDateOfBirthController): Action[AnyContent] =
-      с.reviewForm(organisationType, Journey.GetYourEORI)
+      с.reviewForm(organisationType, Journey.Register)
 
     protected def submit(c: RowIndividualNameDateOfBirthController): Action[AnyContent] =
-      c.submit(true, organisationType, Journey.GetYourEORI)
+      c.submit(true, organisationType, Journey.Register)
 
     def formData(thirdCountryIndividual: IndividualNameAndDateOfBirth): Map[String, String] =
       form.mapping.unbind(thirdCountryIndividual)
@@ -89,7 +89,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueReviewModeSpec
       withControllerFixture { controllerFixture =>
         assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
           controllerFixture.mockAuthConnector,
-          controllerFixture.controller.reviewForm(organisationType, Journey.GetYourEORI)
+          controllerFixture.controller.reviewForm(organisationType, Journey.Register)
         )
       }
 
@@ -115,7 +115,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueReviewModeSpec
             assertPresentOnPage(webPage.familyNameElement)
             assertPresentOnPage(webPage.dateOfBirthElement)
             page.getElementAttributeAction(webPage.formElement) shouldBe RowIndividualNameDateOfBirthController
-              .reviewForm(organisationType, Journey.GetYourEORI)
+              .reviewForm(organisationType, Journey.Register)
               .url
 
             page.getElementValue(webPage.givenNameElement) shouldBe "firstName"
@@ -134,7 +134,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueReviewModeSpec
 
           controllerFixture.showForm { result =>
             status(result) shouldBe SEE_OTHER
-            result.futureValue.header.headers(LOCATION) shouldBe "/customs-enrolment-services/register-for-cds/sign-out"
+            result.futureValue.header.headers(LOCATION) shouldBe "/customs-enrolment-services/register/sign-out"
           }
       }
     }
@@ -144,7 +144,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueReviewModeSpec
       withControllerFixture { controllerFixture =>
         assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
           controllerFixture.mockAuthConnector,
-          controllerFixture.controller.submit(true, organisationType, Journey.GetYourEORI)
+          controllerFixture.controller.submit(true, organisationType, Journey.Register)
         )
       }
 
@@ -157,7 +157,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueReviewModeSpec
           submitForm(formData(individualNameAndDateOfBirth)) { result =>
             CdsPage(contentAsString(result)).getElementsHtml(webPage.pageLevelErrorSummaryListXPath) shouldBe empty
             status(result) shouldBe SEE_OTHER
-            result.futureValue.header.headers(LOCATION) shouldBe "/customs-enrolment-services/register-for-cds/matching/review-determine"
+            result.futureValue.header.headers(LOCATION) shouldBe "/customs-enrolment-services/register/matching/review-determine"
             verify(mockSubscriptionDetailsService).cacheNameDobDetails(any())(any())
           }
       }

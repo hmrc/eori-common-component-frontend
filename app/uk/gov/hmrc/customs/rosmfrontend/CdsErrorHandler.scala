@@ -63,7 +63,7 @@ class CdsErrorHandler @Inject()(
       case sessionTimeOut: SessionTimeOutException => {
         CdsLogger.error("Session time out: " + sessionTimeOut.errorMessage, exception)
         val journey: Journey.Value =
-          if (request.path.contains("register-for-cds")) Journey.GetYourEORI else Journey.Migrate
+          if (request.path.contains("register")) Journey.Register else Journey.Subscribe
         Future.successful(Redirect(SecuritySignOutController.displayPage(journey)).withNewSession)
       }
       case _ => {

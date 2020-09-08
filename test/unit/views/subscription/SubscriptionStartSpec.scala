@@ -28,7 +28,7 @@ class SubscriptionStartSpec extends ViewSpec {
 
   private val view = app.injector.instanceOf[migration_start]
 
-  lazy val doc = Jsoup.parse(contentAsString(view(Journey.Migrate)))
+  lazy val doc = Jsoup.parse(contentAsString(view(Journey.Subscribe)))
 
   "Subscription Start Page" should {
 
@@ -48,7 +48,7 @@ class SubscriptionStartSpec extends ViewSpec {
       doc
         .body()
         .getElementsByClass("button--get-started")
-        .attr("href") mustBe "/customs-enrolment-services/subscribe-for-cds/are-you-based-in-uk"
+        .attr("href") mustBe "/customs-enrolment-services/subscribe/are-you-based-in-uk"
     }
   }
 }

@@ -25,7 +25,7 @@ trait VatDetailsEuConfirmPage extends WebPage {
 
   override val title = "You have added VAT details for 1 EU member country"
 
-  val url: String = Env.frontendHost + "/customs-enrolment-services/register-for-cds/vat-details-eu-confirm"
+  val url: String = Env.frontendHost + "/customs-enrolment-services/register/vat-details-eu-confirm"
 }
 
 object VatDetailsEuConfirmPage extends VatDetailsEuConfirmPage {

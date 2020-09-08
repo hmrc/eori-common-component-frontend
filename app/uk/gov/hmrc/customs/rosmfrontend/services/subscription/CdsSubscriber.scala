@@ -96,9 +96,9 @@ class CdsSubscriber @Inject()(
       customId <- if (isRow) cachedCustomsIdF else Future.successful(None)
     } yield {
       (journey, isRow, customId) match {
-        case (Journey.Migrate, true, Some(_)) => migrationEoriUK //Has NINO/UTR as identifier UK journey
-        case (Journey.Migrate, true, None)             => migrationEoriROW //ROW
-        case (Journey.Migrate, false, _)               => migrationEoriUK //UK Journey
+        case (Journey.Subscribe, true, Some(_)) => migrationEoriUK //Has NINO/UTR as identifier UK journey
+        case (Journey.Subscribe, true, None)             => migrationEoriROW //ROW
+        case (Journey.Subscribe, false, _)               => migrationEoriUK //UK Journey
         case _                                         => subscribeEori //Journey Get An EORI
       }
     }
@@ -139,7 +139,7 @@ class CdsSubscriber @Inject()(
           throw new IllegalStateException(s"No contact details available to save for formBundleId $formBundleId")
         )
       RecipientDetails(
-        Journey.GetYourEORI,
+        Journey.Register,
         contactDetails.emailAddress,
         contactDetails.fullName,
         Some(registrationDetails.name),
@@ -201,7 +201,7 @@ class CdsSubscriber @Inject()(
     callHandle(
       subscriptionResult,
       RecipientDetails(
-        Journey.Migrate,
+        Journey.Subscribe,
         email,
         subDetails.contactDetails.map(_.fullName).getOrElse(""),
         Some(regDetails.name),
@@ -237,7 +237,7 @@ class CdsSubscriber @Inject()(
         val orgName = Some(subDetails.name)
         callHandle(
           subscriptionResult,
-          RecipientDetails(Journey.Migrate, email, name.getOrElse(""), orgName, completionDate),
+          RecipientDetails(Journey.Subscribe, email, name.getOrElse(""), orgName, completionDate),
           id,
           subDetails.eoriNumber.map(Eori),
           SafeId(id.id)

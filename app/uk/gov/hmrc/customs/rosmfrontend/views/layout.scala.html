@@ -31,11 +31,11 @@ form: Option[Form[_]] = None
 @isLoggedIn = @{!request.session.isEmpty && request.session.get("userId").isDefined}
 
 @journey = @{
-    if(request.path.contains("register-for-cds")) Journey.GetYourEORI else Journey.Migrate
+    if(request.path.contains("register")) Journey.Register else Journey.Subscribe
 }
 
 @journeyName = @{
-    if(journey == Journey.GetYourEORI) messages("cds.proposition.name")
+    if(journey == Journey.Register) messages("cds.proposition.name")
     else messages("cds.proposition.name.cds")
 }
 
@@ -51,17 +51,17 @@ form: Option[Form[_]] = None
 }
 
 @signOutUrl = @{
-    if(journey == Journey.GetYourEORI) "/customs-enrolment-services/register-for-cds/sign-out"
-    else "/customs-enrolment-services/subscribe-for-cds/sign-out"
+    if(journey == Journey.Register) "/customs-enrolment-services/register/sign-out"
+    else "/customs-enrolment-services/subscribe/sign-out"
 }
 
 @keepAliveUrl=  @{
-    if(journey == Journey.GetYourEORI) "/customs-enrolment-services/register-for-cds/keep-alive"
-    else "/customs-enrolment-services/subscribe-for-cds/keep-alive"
+    if(journey == Journey.Register) "/customs-enrolment-services/register/keep-alive"
+    else "/customs-enrolment-services/subscribe/keep-alive"
 }
 
 @getHelpForm = @{
-if(journey == Journey.GetYourEORI) (reportAProblemLink(appConfig.reportAProblemPartialUrlGetAnEori, appConfig.reportAProblemNonJSUrlGetAnEori))
+if(journey == Journey.Register) (reportAProblemLink(appConfig.reportAProblemPartialUrlGetAnEori, appConfig.reportAProblemNonJSUrlGetAnEori))
 else (reportAProblemLink(appConfig.reportAProblemPartialUrlGetAccess, appConfig.reportAProblemNonJSUrlGetAccess))
 }
 

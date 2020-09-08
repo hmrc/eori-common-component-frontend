@@ -118,7 +118,7 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
       submitForm(yesNinoSubmitData) { result =>
         await(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("register-for-cds/matching/confirm")
+        result.header.headers("Location") should endWith("register/matching/confirm")
         val expectedIndividual = Individual.withLocalDate("First name", None, "Last name", new LocalDate(2015, 10, 15))
         verify(mockMatchingService).matchIndividualWithId(meq(validNino), meq(expectedIndividual), any())(
           any[HeaderCarrier]
@@ -133,7 +133,7 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
       submitForm(noNinoSubmitData) { result =>
         await(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("register-for-cds/matching/address/third-country-sole-trader")
+        result.header.headers("Location") should endWith("register/matching/address/third-country-sole-trader")
       }
     }
 
@@ -195,7 +195,7 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     test(
       doYouHaveNinoController
-        .displayForm(Journey.GetYourEORI)
+        .displayForm(Journey.Register)
         .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     )
   }
@@ -204,7 +204,7 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     test(
       doYouHaveNinoController
-        .submit(Journey.GetYourEORI)
+        .submit(Journey.Register)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form))
     )
   }

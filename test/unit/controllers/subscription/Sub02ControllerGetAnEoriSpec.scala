@@ -99,7 +99,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
   "Subscribe" should {
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      subscriptionController.subscribe(Journey.GetYourEORI)
+      subscriptionController.subscribe(Journey.Register)
     )
   }
 
@@ -138,7 +138,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
           await(result)
           verify(mockCdsSubscriber).subscribeWithCachedDetails(
             meq(Some(mockCdsOrganisationType)),
-            meq(Journey.GetYourEORI)
+            meq(Journey.Register)
           )(any[HeaderCarrier], any[Request[AnyContent]])
         }
       }
@@ -163,7 +163,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       subscribeForGetYourEORI(organisationTypeOption = None) { result =>
         {
           await(result)
-          verify(mockCdsSubscriber).subscribeWithCachedDetails(meq(None), meq(Journey.GetYourEORI))(
+          verify(mockCdsSubscriber).subscribeWithCachedDetails(meq(None), meq(Journey.Register))(
             any[HeaderCarrier],
             any[Request[AnyContent]]
           )
@@ -463,7 +463,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
     withAuthorisedUser(userId, mockAuthConnector)
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]]))
       .thenReturn(organisationTypeOption)
-    test(subscriptionController.subscribe(Journey.GetYourEORI)(SessionBuilder.buildRequestWithSession(userId)))
+    test(subscriptionController.subscribe(Journey.Register)(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def invokeMigrationEnd(test: Future[Result] => Any) = {

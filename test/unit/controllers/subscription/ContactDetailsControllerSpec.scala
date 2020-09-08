@@ -59,9 +59,9 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   protected override val mockSubscriptionFlowManager: SubscriptionFlowManager = mock[SubscriptionFlowManager]
   protected override val formId: String = SubscriptionContactDetailsPage.formId
   protected override val submitInCreateModeUrl: String =
-    ContactDetailsController.submit(isInReviewMode = false, Journey.GetYourEORI).url
+    ContactDetailsController.submit(isInReviewMode = false, Journey.Register).url
   protected override val submitInReviewModeUrl: String =
-    ContactDetailsController.submit(isInReviewMode = true, Journey.GetYourEORI).url
+    ContactDetailsController.submit(isInReviewMode = true, Journey.Register).url
 
   private val mockRequestSessionData = mock[RequestSessionData]
   private val mockRegistrationDetails = mock[RegistrationDetails](RETURNS_DEEP_STUBS)
@@ -124,22 +124,22 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   val formModesGYE = Table(
     ("formMode", "showFormFunction"),
     (
-      "create GetYourEORI",
+      "create Register",
       (flow: SubscriptionFlow, orgType: EtmpOrganisationType) => showCreateForm(flow, orgType = orgType)(_)
     ),
-    ("review GetYourEORI", (flow: SubscriptionFlow, orgType: EtmpOrganisationType) => showReviewForm(flow)(_))
+    ("review Register", (flow: SubscriptionFlow, orgType: EtmpOrganisationType) => showReviewForm(flow)(_))
   )
 
   val formModesMigrate = Table(
     ("formMode", "showFormFunction"),
     (
-      "create Migrate",
+      "create Subscribe",
       (flow: SubscriptionFlow, orgType: EtmpOrganisationType) =>
-        showCreateForm(flow, orgType = orgType, journey = Journey.Migrate)(_)
+        showCreateForm(flow, orgType = orgType, journey = Journey.Subscribe)(_)
     ),
     (
-      "review Migrate",
-      (flow: SubscriptionFlow, orgType: EtmpOrganisationType) => showReviewForm(flow, journey = Journey.Migrate)(_)
+      "review Subscribe",
+      (flow: SubscriptionFlow, orgType: EtmpOrganisationType) => showReviewForm(flow, journey = Journey.Subscribe)(_)
     )
   )
 
@@ -267,7 +267,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
   forAll(orgTypeFlows) {
     case (flow, expectedLabel, orgType) =>
-      s"throw IllegalStateException when no address details cached in subscription flow $flow for mode create Migrate" in {
+      s"throw IllegalStateException when no address details cached in subscription flow $flow for mode create Subscribe" in {
         setupMockSubscriptionFlowManager(ContactDetailsSubscriptionFlowPageMigrate)
         when(mockRegistrationDetails.address).thenReturn(defaultAddress)
         when(mockSubscriptionDetailsHolderService.cachedCustomsId(any[HeaderCarrier]))
@@ -277,7 +277,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         when(mockSubscriptionDetailsHolderService.cachedAddressDetails(any[HeaderCarrier]))
           .thenReturn(Future.successful(None))
 
-        showCreateForm(flow, journey = Journey.Migrate, orgType = orgType) { result =>
+        showCreateForm(flow, journey = Journey.Subscribe, orgType = orgType) { result =>
           val caught = intercept[IllegalStateException] {
             await(result)
           }
@@ -285,7 +285,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         }
       }
 
-      s"redirect to next page in subscription flow $flow for mode create Migrate" in {
+      s"redirect to next page in subscription flow $flow for mode create Subscribe" in {
         setupMockSubscriptionFlowManager(ContactDetailsSubscriptionFlowPageMigrate)
         when(mockRegistrationDetails.address).thenReturn(defaultAddress)
 
@@ -302,7 +302,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
               .thenReturn(Future.successful(None))
         }
 
-        showCreateForm(flow, journey = Journey.Migrate, orgType = orgType) { result =>
+        showCreateForm(flow, journey = Journey.Subscribe, orgType = orgType) { result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers(LOCATION) should endWith("next-page-url")
           verify(mockSubscriptionFlowManager, times(1))
@@ -310,11 +310,11 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         }
       }
 
-      s"fill fields with contact details if stored in cache (new address entered) in subscription flow $flow for Migrate" in {
+      s"fill fields with contact details if stored in cache (new address entered) in subscription flow $flow for Subscribe" in {
         mockMigrate()
         when(mockSubscriptionBusinessService.cachedContactDetailsModel(any[HeaderCarrier]))
           .thenReturn(Some(contactDetailsModel))
-        showCreateForm(flow, journey = Journey.Migrate, orgType = orgType) { result =>
+        showCreateForm(flow, journey = Journey.Subscribe, orgType = orgType) { result =>
           val page = CdsPage(bodyOf(result))
           page.getElementText(emailLabelXPath) shouldBe emailAddressFieldLabel
           page.getElementText(emailFieldXPath) shouldBe Email
@@ -333,7 +333,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
   "Viewing the create form " should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.GetYourEORI))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.Register))
 
     "display back link correctly" in {
       showCreateForm()(verifyBackLinkInCreateModeRegister)
@@ -415,7 +415,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
   "Viewing the review form " should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.reviewForm(Journey.GetYourEORI))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.reviewForm(Journey.Register))
 
     "display relevant data in form fields when subscription details exist in the cache" in {
 
@@ -460,11 +460,11 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       }
     }
 
-    "display the contact details stored in the cache under as 'subscription details' for Migrate" in {
+    "display the contact details stored in the cache under as 'subscription details' for Subscribe" in {
       mockMigrate()
       mockFunctionWithRegistrationDetails(mockRegistrationDetails)
       when(mockSubscriptionBusinessService.cachedContactDetailsModel).thenReturn(Some(revisedContactDetailsModel))
-      showReviewForm(contactDetailsModel = revisedContactDetailsModel, journey = Journey.Migrate) { result =>
+      showReviewForm(contactDetailsModel = revisedContactDetailsModel, journey = Journey.Subscribe) { result =>
         val page = CdsPage(bodyOf(result))
         page.getElementValue(fullNameFieldXPath) shouldBe FullName
         page.getElementText(emailLabelXPath) shouldBe emailAddressFieldLabel
@@ -483,7 +483,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = false, Journey.GetYourEORI)
+      controller.submit(isInReviewMode = false, Journey.Register)
     )
 
     "save the details when user chooses to use Registered Address for GYE journey" in {
@@ -494,7 +494,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       }
     }
 
-    "save the details when user chooses to use Registered Address for Migrate journey" in {
+    "save the details when user chooses to use Registered Address for Subscribe journey" in {
       val cachedAddressDetails = Some(
         AddressViewModel(street = "Line 1 line 2", city = "line 3", postcode = Some("SE28 1AA"), countryCode = "GB")
       )
@@ -504,7 +504,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       when(mockRegistrationDetailsService.cacheAddress(any())(any[HeaderCarrier]())).thenReturn(Future.successful(true))
       setupMockSubscriptionFlowManager(ContactDetailsSubscriptionFlowPageMigrate)
 
-      submitFormInCreateMode(createFormAllFieldsWhenUseRegAddressMap, journey = Journey.Migrate) { result =>
+      submitFormInCreateMode(createFormAllFieldsWhenUseRegAddressMap, journey = Journey.Subscribe) { result =>
         await(result)
         verify(mockSubscriptionDetailsHolderService).cachedAddressDetails(any[HeaderCarrier])
         verify(mockRegistrationDetailsService).cacheAddress(any[Address])(any[HeaderCarrier])
@@ -521,7 +521,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       }
     }
 
-    "save the details when user chooses not to use Registered Address for Migrate journey" in {
+    "save the details when user chooses not to use Registered Address for Subscribe journey" in {
       val cachedAddressDetails = Some(
         AddressViewModel(street = "Line 1 line 2", city = "line 3", postcode = Some("SE28 1AA"), countryCode = "GB")
       )
@@ -531,7 +531,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       when(mockRegistrationDetailsService.cacheAddress(any())(any[HeaderCarrier]())).thenReturn(Future.successful(true))
       setupMockSubscriptionFlowManager(ContactDetailsSubscriptionFlowPageMigrate)
 
-      submitFormInCreateMode(createFormAllFieldsWhenNotUsingRegAddressMap, journey = Journey.Migrate) { result =>
+      submitFormInCreateMode(createFormAllFieldsWhenNotUsingRegAddressMap, journey = Journey.Subscribe) { result =>
         await(result)
         verify(mockSubscriptionDetailsHolderService)
           .cacheContactDetails(meq(createContactDetailsViewModelWhenNotUsingRegAddress), meq(false))(any[HeaderCarrier])
@@ -783,12 +783,12 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   //    }
   //
   //    "redirect to the review page when details are valid" in {
-  //      submitFormInReviewMode(createFormMandatoryFieldsMap)(verifyRedirectToReviewPage(Journey.GetYourEORI))
+  //      submitFormInReviewMode(createFormMandatoryFieldsMap)(verifyRedirectToReviewPage(Journey.Register))
   //    }
   //
   //    "not overwrite contact details with registration details when returning to the check your answers page" in {
   //      withAuthorisedUser(defaultUserId, mockAuthConnector)
-  //      controller.submit(isInReviewMode = true, Journey.GetYourEORI)(SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, createFormMandatoryFieldsMap))
+  //      controller.submit(isInReviewMode = true, Journey.Register)(SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, createFormMandatoryFieldsMap))
   //      verify(mockCdsFrontendDataCache, never).registrationDetails(any[HeaderCarrier])
   //    }
   //  }
@@ -811,7 +811,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   private def submitFormInCreateMode(
     form: Map[String, String],
     userId: String = defaultUserId,
-    journey: Journey.Value = Journey.GetYourEORI
+    journey: Journey.Value = Journey.Register
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     test(
@@ -825,16 +825,16 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   ) {
     withAuthorisedUser(userId, mockAuthConnector)
     test(
-      controller.submit(isInReviewMode = true, Journey.GetYourEORI)(
+      controller.submit(isInReviewMode = true, Journey.Register)(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )
   }
 
   private def showCreateForm(
-    subscriptionFlow: SubscriptionFlow = OrganisationSubscriptionFlow,
-    journey: Journey.Value = Journey.GetYourEORI,
-    orgType: EtmpOrganisationType = CorporateBody
+                              subscriptionFlow: SubscriptionFlow = OrganisationSubscriptionFlow,
+                              journey: Journey.Value = Journey.Register,
+                              orgType: EtmpOrganisationType = CorporateBody
   )(test: Future[Result] => Any) {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
@@ -847,7 +847,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   private def showReviewForm(
     subscriptionFlow: SubscriptionFlow = OrganisationSubscriptionFlow,
     contactDetailsModel: ContactDetailsModel = contactDetailsModel,
-    journey: Journey.Value = Journey.GetYourEORI
+    journey: Journey.Value = Journey.Register
   )(test: Future[Result] => Any) {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 

@@ -88,7 +88,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      organisationTypeController.form(Journey.GetYourEORI)
+      organisationTypeController.form(Journey.Register)
     )
 
     forAll(userLocations) { userLocation =>
@@ -123,11 +123,11 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      organisationTypeController.submit(Journey.GetYourEORI)
+      organisationTypeController.submit(Journey.Register)
     )
 
     "ensure an organisation type has been selected" in {
-      submitForm(mandatoryMap.filterKeys(_ != "organisation-type"), journey = Journey.GetYourEORI) { result =>
+      submitForm(mandatoryMap.filterKeys(_ != "organisation-type"), journey = Journey.Register) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
         page.getElementsText(EuOrgOrIndividualPage.pageLevelErrorSummaryListXPath) shouldBe ProblemWithSelectionError
@@ -153,10 +153,10 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
         submitForm(
           Map("organisation-type" -> option),
           organisationType = Some(cdsOrganisationType),
-          journey = Journey.GetYourEORI
+          journey = Journey.Register
         ) { result =>
           status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) should endWith(s"/customs-enrolment-services/register-for-cds/matching/$urlParameter")
+          result.header.headers(LOCATION) should endWith(s"/customs-enrolment-services/register/matching/$urlParameter")
         }
       }
 
@@ -172,10 +172,10 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
         submitForm(
           Map("organisation-type" -> option),
           organisationType = Some(cdsOrganisationType),
-          journey = Journey.Migrate
+          journey = Journey.Subscribe
         ) { result =>
           status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe-for-cds/matching/what-is-your-eori"
+          result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/matching/what-is-your-eori"
         }
       }
 
@@ -183,7 +183,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
         submitForm(
           mandatoryMap + ("organisation-type" -> option),
           organisationType = Some(cdsOrganisationType),
-          journey = Journey.GetYourEORI
+          journey = Journey.Register
         ) { result =>
           await(result) //this is needed to ensure the future is completed before the verify is called
           verify(mockRequestSessionData).sessionWithOrganisationTypeAdded(ArgumentMatchers.eq(cdsOrganisationType))(
@@ -206,7 +206,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
         submitForm(
           Map("organisation-type" -> option),
           organisationType = Some(cdsOrganisationType),
-          journey = Journey.Migrate
+          journey = Journey.Subscribe
         ) { result =>
           await(result) //this is needed to ensure the future is completed before the verify is called
           verify(mockRequestSessionData)
@@ -224,13 +224,13 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
 
     when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(userLocation)
 
-    test(organisationTypeController.form(Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(organisationTypeController.form(Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   def showFormWithUnauthenticatedUser(test: Future[Result] => Any) {
     withNotLoggedInUser(mockAuthConnector)
 
-    test(organisationTypeController.form(Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSessionNoUser))
+    test(organisationTypeController.form(Journey.Register).apply(SessionBuilder.buildRequestWithSessionNoUser))
   }
 
   def submitForm(

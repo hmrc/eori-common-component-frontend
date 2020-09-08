@@ -49,20 +49,20 @@ class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {
     }
 
     "redirect to registration security sign out" in {
-      val mockRegisterRequest = FakeRequest(method = "GET", path = "register-for-cds")
+      val mockRegisterRequest = FakeRequest(method = "GET", path = "register")
 
       whenReady(cdsErrorHandler.onServerError(mockRegisterRequest, SessionTimeOutException("xyz"))) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/register-for-cds/display-sign-out"
+        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/register/display-sign-out"
       }
     }
 
     "redirect to subscription security sign out" in {
-      val mockRegisterRequest = FakeRequest(method = "GET", "subscribe-for-cds")
+      val mockRegisterRequest = FakeRequest(method = "GET", "subscribe")
 
       whenReady(cdsErrorHandler.onServerError(mockRegisterRequest, SessionTimeOutException("xyz"))) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe-for-cds/display-sign-out"
+        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/display-sign-out"
       }
     }
 

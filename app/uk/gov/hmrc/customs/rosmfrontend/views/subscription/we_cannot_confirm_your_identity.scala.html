@@ -24,7 +24,7 @@
 
 
 @tryAgainURL = @{
-    if (isInReviewMode) VatDetailsController.reviewForm(Journey.GetYourEORI) else VatDetailsController.createForm(Journey.GetYourEORI)
+    if (isInReviewMode) VatDetailsController.reviewForm(Journey.Register) else VatDetailsController.createForm(Journey.Register)
 }
 
 @layout_di(messages("cds.subscription.vat-details.cannot-identify-you.heading")) {

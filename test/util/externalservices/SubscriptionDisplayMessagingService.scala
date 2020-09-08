@@ -27,9 +27,9 @@ object SubscriptionDisplayMessagingService {
 
   private def subscriptionPath(id: String, requestAcknowledgementReference: String, journey: Journey.Value): String =
     journey match {
-      case Journey.GetYourEORI =>
+      case Journey.Register =>
         s"/subscription-display?regime=CDS&taxPayerID=$id&acknowledgementReference=$requestAcknowledgementReference"
-      case Journey.Migrate =>
+      case Journey.Subscribe =>
         s"/subscription-display?regime=CDS&EORI=$id&acknowledgementReference=$requestAcknowledgementReference"
     }
 

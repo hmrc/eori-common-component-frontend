@@ -40,7 +40,7 @@ trait AccessController extends JourneyTypeFromUrl with AllowlistVerification wit
     }
 
   def isPermitted(email: Option[String])(implicit request: Request[AnyContent]): Boolean =
-    journeyFromUrl == Journey.GetYourEORI || isAllowlisted(email)
+    journeyFromUrl == Journey.Register || isAllowlisted(email)
 
   def isPermittedUserType(affinityGroup: Option[AffinityGroup], credentialRole: Option[CredentialRole]): Boolean =
     affinityGroup match {

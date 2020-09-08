@@ -72,10 +72,10 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   "What Is Your Email form in create mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(Journey.Migrate))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(Journey.Subscribe))
 
     "display title as 'What is your email address'" in {
-      showCreateForm(journey = Journey.Migrate) { result =>
+      showCreateForm(journey = Journey.Subscribe) { result =>
         val page = CdsPage(bodyOf(result))
         page.title() should startWith("What is your email address?")
       }
@@ -84,14 +84,14 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   "What Is Your Email form" should {
     "be mandatory" in {
-      submitFormInCreateMode(unpopulatedEmailFieldsMap, journey = Journey.Migrate) { result =>
+      submitFormInCreateMode(unpopulatedEmailFieldsMap, journey = Journey.Subscribe) { result =>
         status(result) shouldBe BAD_REQUEST
       }
     }
 
     "be restricted to 50 characters for email length" in {
       val maxEmail = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx@xxxxxxxxxx"
-      submitFormInCreateMode(unpopulatedEmailFieldsMap ++ Map("email" -> maxEmail), journey = Journey.Migrate) {
+      submitFormInCreateMode(unpopulatedEmailFieldsMap ++ Map("email" -> maxEmail), journey = Journey.Subscribe) {
         result =>
           status(result) shouldBe BAD_REQUEST
 
@@ -100,9 +100,9 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
     "be valid for correct email format" in {
 
-      submitFormInCreateMode(EmailFieldsMap, journey = Journey.Migrate) { result =>
+      submitFormInCreateMode(EmailFieldsMap, journey = Journey.Subscribe) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs-enrolment-services/subscribe-for-cds/matching/check-your-email")
+        result.header.headers("Location") should endWith("/customs-enrolment-services/subscribe/matching/check-your-email")
 
       }
     }

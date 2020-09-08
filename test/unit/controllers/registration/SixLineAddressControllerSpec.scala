@@ -104,7 +104,7 @@ class SixLineAddressControllerSpec extends ControllerSpec with BeforeAndAfter wi
       RowFormBuilder,
       thirdCountrySixLineAddressForm,
       true,
-      "/customs-enrolment-services/register-for-cds/matching/review-determine"
+      "/customs-enrolment-services/register/matching/review-determine"
     )
   )
 
@@ -152,7 +152,7 @@ class SixLineAddressControllerSpec extends ControllerSpec with BeforeAndAfter wi
 
       assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
         mockAuthConnector,
-        controller.showForm(reviewMode, organisationType, Journey.GetYourEORI),
+        controller.showForm(reviewMode, organisationType, Journey.Register),
         s", for reviewMode [$reviewMode] and organisationType $organisationType"
       )
 
@@ -282,7 +282,7 @@ class SixLineAddressControllerSpec extends ControllerSpec with BeforeAndAfter wi
 
       assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
         mockAuthConnector,
-        controller.submit(reviewMode, organisationType, Journey.GetYourEORI),
+        controller.submit(reviewMode, organisationType, Journey.Register),
         s", for reviewMode [$reviewMode] and organisationType $organisationType"
       )
 
@@ -389,7 +389,7 @@ class SixLineAddressControllerSpec extends ControllerSpec with BeforeAndAfter wi
     when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier])).thenReturn(None)
 
     test(
-      controller.submit(false, CdsOrganisationType.ThirdCountryIndividualId, Journey.GetYourEORI)(
+      controller.submit(false, CdsOrganisationType.ThirdCountryIndividualId, Journey.Register)(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )
@@ -422,7 +422,7 @@ class SixLineAddressControllerSpec extends ControllerSpec with BeforeAndAfter wi
 
     test(
       controller
-        .showForm(reviewMode, cdsOrgType, Journey.GetYourEORI)
+        .showForm(reviewMode, cdsOrgType, Journey.Register)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, formValues))
     )
   }
@@ -435,7 +435,7 @@ class SixLineAddressControllerSpec extends ControllerSpec with BeforeAndAfter wi
 
     test(
       controller
-        .submit(reviewMode, cdsOrgType, Journey.GetYourEORI)
+        .submit(reviewMode, cdsOrgType, Journey.Register)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, formValues))
     )
   }

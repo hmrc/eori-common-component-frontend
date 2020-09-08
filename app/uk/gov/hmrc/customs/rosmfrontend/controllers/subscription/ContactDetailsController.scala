@@ -62,7 +62,7 @@ class ContactDetailsController @Inject()(
   def createForm(journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       journey match {
-        case Journey.Migrate =>
+        case Journey.Subscribe =>
           val f = for {
             orgType <- orgTypeLookup.etmpOrgType
 
@@ -90,14 +90,14 @@ class ContactDetailsController @Inject()(
             }
           }
           f.flatMap(identity)
-        case Journey.GetYourEORI => populateFormGYE(journey)(false)
+        case Journey.Register => populateFormGYE(journey)(false)
       }
     }
 
   def reviewForm(journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       journey match {
-        case Journey.Migrate => populateFormGYE(journey)(true)
+        case Journey.Subscribe => populateFormGYE(journey)(true)
         case _               => populateFormGYE(journey)(true)
       }
     }
@@ -129,7 +129,7 @@ class ContactDetailsController @Inject()(
           },
           formData => {
             journey match {
-              case Journey.Migrate =>
+              case Journey.Subscribe =>
                 storeContactDetailsMigrate(formData, email, isInReviewMode, journey)
               case _ =>
                 storeContactDetails(formData, email, isInReviewMode, journey)
@@ -155,7 +155,7 @@ class ContactDetailsController @Inject()(
           )
         case _ =>
           journey match {
-            case Journey.GetYourEORI =>
+            case Journey.Register =>
               cdsFrontendDataCache.registrationDetails.map(rd => AddressViewModel(rd.address))
             case _ =>
               subscriptionDetailsService.cachedAddressDetails.map {
@@ -220,7 +220,7 @@ class ContactDetailsController @Inject()(
           (inReviewMode, journey) match {
             case (true, _) =>
               Redirect(DetermineReviewPageController.determineRoute(journey))
-            case (_, Journey.GetYourEORI) =>
+            case (_, Journey.Register) =>
               Redirect(
                 subscriptionFlowManager
                   .stepInformation(ContactDetailsSubscriptionFlowPageGetEori)

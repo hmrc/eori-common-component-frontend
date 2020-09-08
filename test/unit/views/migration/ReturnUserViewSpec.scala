@@ -29,7 +29,7 @@ class ReturnUserViewSpec extends ViewSpec {
   private val view = app.injector.instanceOf[return_user]
   implicit val request = withFakeCSRF(FakeRequest())
 
-  lazy val doc: Document = Jsoup.parse(contentAsString(view(Journey.Migrate)))
+  lazy val doc: Document = Jsoup.parse(contentAsString(view(Journey.Subscribe)))
 
   "The 'Checking the status of your application' Page" should {
 

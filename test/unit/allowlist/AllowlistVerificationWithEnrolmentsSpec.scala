@@ -47,30 +47,30 @@ class AllowlistVerificationWithEnrolmentsSpec extends ControllerSpec {
       AuthBuilder.withAuthorisedUser(defaultUserId, auth, userEmail = Some("not@example.com"))
 
       val result = controller
-        .form(Journey.Migrate)
-        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe-for-cds/", defaultUserId))
+        .form(Journey.Subscribe)
+        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe/", defaultUserId))
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/customs-enrolment-services/subscribe-for-cds/unauthorised")
+      redirectLocation(result) shouldBe Some("/customs-enrolment-services/subscribe/unauthorised")
     }
 
     "return Unauthorized (401) when a user attempts to access a route and they do not have an email address" in {
       AuthBuilder.withAuthorisedUser(defaultUserId, auth, userEmail = None)
 
       val result = controller
-        .form(Journey.Migrate)
-        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe-for-cds/", defaultUserId))
+        .form(Journey.Subscribe)
+        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe/", defaultUserId))
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/customs-enrolment-services/subscribe-for-cds/unauthorised")
+      redirectLocation(result) shouldBe Some("/customs-enrolment-services/subscribe/unauthorised")
     }
 
     "return OK (200) when a allowlisted user attempts to access a route" in {
       AuthBuilder.withAuthorisedUser(defaultUserId, auth, userEmail = Some("mister_allow@example.com"))
 
       val result = controller
-        .form(Journey.Migrate)
-        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe-for-cds/", defaultUserId))
+        .form(Journey.Subscribe)
+        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe/", defaultUserId))
 
       status(result) shouldBe OK
     }
@@ -79,8 +79,8 @@ class AllowlistVerificationWithEnrolmentsSpec extends ControllerSpec {
       AuthBuilder.withAuthorisedUser(defaultUserId, auth, userEmail = Some("not@example.com"))
 
       val result = controller
-        .form(Journey.GetYourEORI)
-        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/register-for-cds/", defaultUserId))
+        .form(Journey.Register)
+        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/register/", defaultUserId))
 
       status(result) shouldBe OK
     }

@@ -97,7 +97,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
         .thenReturn(Future.successful(vatEuDetailsOnLimit))
       createForm() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("register-for-cds/vat-details-eu-confirm")
+        result.header.headers(LOCATION) should endWith("register/vat-details-eu-confirm")
       }
     }
 
@@ -106,7 +106,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
         .thenReturn(Future.successful(vatEuDetailsOnLimit))
       reviewForm() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("register-for-cds/vat-details-eu-confirm/review")
+        result.header.headers(LOCATION) should endWith("register/vat-details-eu-confirm/review")
       }
     }
   }
@@ -131,7 +131,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
         .thenReturn(Future.successful(()))
       submit(validVatIdMap + ("vatNumber" -> "AAAA1234")) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("register-for-cds/vat-details-eu-confirm")
+        result.header.headers(LOCATION) should endWith("register/vat-details-eu-confirm")
       }
     }
 
@@ -142,7 +142,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
         .thenReturn(Future.successful(()))
       submit(validVatIdMap + ("vatNumber" -> "AAAA1234"), isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("register-for-cds/vat-details-eu-confirm/review")
+        result.header.headers(LOCATION) should endWith("register/vat-details-eu-confirm/review")
       }
     }
   }
@@ -176,7 +176,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
 
       submitUpdate(validVatIdMap + ("vatNumber" -> "12345"), index = 12345) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("register-for-cds/vat-details-eu-confirm")
+        result.header.headers(LOCATION) should endWith("register/vat-details-eu-confirm")
       }
     }
 
@@ -208,7 +208,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
 
       submitUpdate(validVatIdMap + ("vatNumber" -> "AAAA1234"), index = 12345) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("register-for-cds/vat-details-eu-confirm")
+        result.header.headers(LOCATION) should endWith("register/vat-details-eu-confirm")
       }
 
       val requestCaptor1: ArgumentCaptor[VatEUDetailsModel] = ArgumentCaptor.forClass(classOf[VatEUDetailsModel])
@@ -237,7 +237,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
 
       submitUpdate(validVatIdMap + ("vatNumber" -> "AAAA1234"), index = 12345, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("register-for-cds/vat-details-eu-confirm/review")
+        result.header.headers(LOCATION) should endWith("register/vat-details-eu-confirm/review")
       }
 
       val requestCaptor1: ArgumentCaptor[VatEUDetailsModel] = ArgumentCaptor.forClass(classOf[VatEUDetailsModel])
@@ -258,7 +258,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
         .thenReturn(Future.successful(None))
       updateForm(index = 12345) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("register-for-cds/vat-details-eu-confirm")
+        result.header.headers(LOCATION) should endWith("register/vat-details-eu-confirm")
       }
     }
 
@@ -275,12 +275,12 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
 
   private def createForm()(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.createForm(Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    await(test(controller.createForm(Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
   private def reviewForm()(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.reviewForm(Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    await(test(controller.reviewForm(Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
   private def submit(form: Map[String, String], isInReviewMode: Boolean = false)(test: Future[Result] => Any) = {
@@ -288,7 +288,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
     await(
       test(
         controller
-          .submit(Journey.GetYourEORI, isInReviewMode: Boolean)
+          .submit(Journey.Register, isInReviewMode: Boolean)
           .apply(SessionBuilder.buildRequestWithFormValues(form))
       )
     )
@@ -301,7 +301,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
     await(
       test(
         controller
-          .submitUpdate(index, Journey.GetYourEORI, isInReviewMode: Boolean)
+          .submitUpdate(index, Journey.Register, isInReviewMode: Boolean)
           .apply(SessionBuilder.buildRequestWithFormValues(form))
       )
     )
@@ -311,7 +311,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     await(
       test(
-        controller.updateForm(index, Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+        controller.updateForm(index, Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
       )
     )
   }
@@ -321,7 +321,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
     await(
       test(
         controller
-          .reviewUpdateForm(index, Journey.GetYourEORI)
+          .reviewUpdateForm(index, Journey.Register)
           .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
       )
     )
