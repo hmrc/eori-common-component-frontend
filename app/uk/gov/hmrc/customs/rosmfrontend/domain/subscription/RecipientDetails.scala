@@ -32,12 +32,12 @@ object RecipientDetails {
   implicit val jsonFormat: OFormat[RecipientDetails] = Json.format[RecipientDetails]
 
   def apply(journey: Journey.Value, recipientEmailAddress: String, recipientFullName: String, orgName: Option[String], completionDate: Option[String]): RecipientDetails =
-    new RecipientDetails(journey, "ATar", recipientEmailAddress, recipientFullName, orgName, completionDate)
+    new RecipientDetails(journey, "ATaR", recipientEmailAddress, recipientFullName, orgName, completionDate)
 
   def apply(journey: Journey.Value, contactDetails: ContactDetails): RecipientDetails =
     RecipientDetails(
       journey,
-      "ATar",
+      "ATaR",
       contactDetails.emailAddress,
       contactDetails.fullName,
       orgName = None,

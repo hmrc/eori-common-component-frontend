@@ -67,7 +67,7 @@ class HandleSubscriptionConnectorSpec extends IntegrationTestsSpec with ScalaFut
         |        "formBundleId": "$formBundleId",
         |        "recipientDetails": {
         |            "journey" : "Register",
-        |            "service" : "ATar",
+        |            "service" : "ATaR",
         |            "recipientFullName": "John Doe",
         |            "recipientEmailAddress": "john.doe@example.com",
         |            "orgName": "orgName",
