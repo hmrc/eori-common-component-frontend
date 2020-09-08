@@ -51,11 +51,11 @@ class AllowlistVerificationWithFeatureOffSpec
   protected override val formId: String = NameDobSoleTraderPage.formId
   protected override val submitInCreateModeUrl: String =
     uk.gov.hmrc.customs.rosmfrontend.controllers.migration.routes.NameDobSoleTraderController
-      .submit(isInReviewMode = false, Journey.Migrate)
+      .submit(isInReviewMode = false, Journey.Subscribe)
       .url
   protected override val submitInReviewModeUrl: String =
     uk.gov.hmrc.customs.rosmfrontend.controllers.migration.routes.NameDobSoleTraderController
-      .submit(isInReviewMode = true, Journey.Migrate)
+      .submit(isInReviewMode = true, Journey.Subscribe)
       .url
 
   private val mockRequestSessionData = mock[RequestSessionData]
@@ -97,7 +97,7 @@ class AllowlistVerificationWithFeatureOffSpec
     "return OK (200) when a non-allowlisted user attempts to access a route and the feature is OFF" in {
       AuthBuilder.withAuthorisedUser("user-1236213", mockAuthConnector, userEmail = Some("not@example.com"))
 
-      val result = controller.createForm(Journey.Migrate).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+      val result = controller.createForm(Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       status(result) shouldBe OK
     }
@@ -105,7 +105,7 @@ class AllowlistVerificationWithFeatureOffSpec
     "return OK (200) when a allowlisted user attempts to access a route and the feature is OFF" in {
       AuthBuilder.withAuthorisedUser("user-2300121", mockAuthConnector, userEmail = Some("mister_allow@example.com"))
 
-      val result = controller.createForm(Journey.Migrate).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+      val result = controller.createForm(Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       status(result) shouldBe OK
     }
@@ -113,7 +113,7 @@ class AllowlistVerificationWithFeatureOffSpec
     "return OK (200) when a user with no email address attempts to access a route and the feature is OFF" in {
       AuthBuilder.withAuthorisedUser("user-2300121", mockAuthConnector, userEmail = None)
 
-      val result = controller.createForm(Journey.Migrate).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+      val result = controller.createForm(Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       status(result) shouldBe OK
     }

@@ -91,7 +91,7 @@ class ApplicationControllerSpec extends ControllerSpec {
 
   def invokeLogoutWithAuthenticatedUser(userId: String = defaultUserId)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
-    test(controller.logout(Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.logout(Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   def invokeStartFormWithUnauthenticatedUser(userId: String = defaultUserId)(test: Future[Result] => Any) {
@@ -103,6 +103,6 @@ class ApplicationControllerSpec extends ControllerSpec {
   }
 
   def invokeKeepAliveWithUnauthenticatedUser(userId: String = defaultUserId)(test: Future[Result] => Any) {
-    test(controller.keepAlive(Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSessionNoUser))
+    test(controller.keepAlive(Journey.Register).apply(SessionBuilder.buildRequestWithSessionNoUser))
   }
 }

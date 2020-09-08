@@ -66,7 +66,7 @@ class WhatIsYourOrgNameControllerRowSpec extends ControllerSpec with BeforeAndAf
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = false, "third-country-organisation", Journey.GetYourEORI),
+      controller.submit(isInReviewMode = false, "third-country-organisation", Journey.Register),
       "and isInReviewMode is false"
     )
     "redirect to the 'Do you have a UTR? page when isInReviewMode is false" in {
@@ -88,7 +88,7 @@ class WhatIsYourOrgNameControllerRowSpec extends ControllerSpec with BeforeAndAf
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = true, "third-country-organisation", Journey.GetYourEORI),
+      controller.submit(isInReviewMode = true, "third-country-organisation", Journey.Register),
       "and isInReviewMode is true"
     )
     "redirect to the Determine Review page when isInReviewMode is true" in {
@@ -111,7 +111,7 @@ class WhatIsYourOrgNameControllerRowSpec extends ControllerSpec with BeforeAndAf
   ) {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
-      .submit(isInReviewMode, "third-country-organisation", Journey.GetYourEORI)
+      .submit(isInReviewMode, "third-country-organisation", Journey.Register)
       .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }

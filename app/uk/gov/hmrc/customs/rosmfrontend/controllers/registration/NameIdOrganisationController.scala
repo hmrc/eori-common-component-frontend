@@ -121,7 +121,7 @@ class NameIdOrganisationController @Inject()(
           matchBusiness(conf.createCustomsId(formData.id), formData.name, None, conf.matchingServiceType, internalId).map {
             case true =>
               journey match {
-                case Journey.Migrate =>
+                case Journey.Subscribe =>
                   Redirect(
                     uk.gov.hmrc.customs.rosmfrontend.controllers.routes.AddressController.createForm(journey).url
                   )

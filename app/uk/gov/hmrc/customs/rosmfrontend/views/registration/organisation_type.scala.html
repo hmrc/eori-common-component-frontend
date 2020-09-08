@@ -60,8 +60,8 @@
         CdsOrganisationType.ThirdCountryIndividualId -> messages("cds.matching.organisation-type.radio.individual.label"))
 
     (selectedUserLocation, journey) match {
-        case (Some(UserLocation.Uk), Journey.Migrate) => ukOptionsFirstScreen
-        case (Some(_), Journey.Migrate) => rowOptionsFirstScreen
+        case (Some(UserLocation.Uk), Journey.Subscribe) => ukOptionsFirstScreen
+        case (Some(_), Journey.Subscribe) => rowOptionsFirstScreen
         case (Some(UserLocation.Uk), _) => ukOptionsFirstScreen
         case (Some(UserLocation.Eu), _) => euOptions
         case (Some(UserLocation.ThirdCountry), _) => thirdCountryOptions

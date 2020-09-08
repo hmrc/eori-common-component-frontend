@@ -49,10 +49,10 @@ class BusinessShortNameControllerSpec
   protected override val formId: String = ShortNamePage.formId
 
   protected override def submitInCreateModeUrl: String =
-    BusinessShortNameController.submit(isInReviewMode = false, Journey.GetYourEORI).url
+    BusinessShortNameController.submit(isInReviewMode = false, Journey.Register).url
 
   protected override def submitInReviewModeUrl: String =
-    BusinessShortNameController.submit(isInReviewMode = true, Journey.GetYourEORI).url
+    BusinessShortNameController.submit(isInReviewMode = true, Journey.Register).url
 
   private val mockOrgTypeLookup = mock[OrgTypeLookup]
   private val mockRequestSession = mock[RequestSessionData]
@@ -93,7 +93,7 @@ class BusinessShortNameControllerSpec
   }
 
   "Displaying the form in create mode" should {
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.GetYourEORI))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.Register))
 
     "display title as 'Does your organisation use a shortened name?' for non partnership org type" in {
       showCreateForm(orgType = CorporateBody) { result =>
@@ -172,7 +172,7 @@ class BusinessShortNameControllerSpec
 
   "Displaying the form in review mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.reviewForm(Journey.GetYourEORI))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.reviewForm(Journey.Register))
 
     "display title as 'Does your organisation use a shortened name?'" in {
       showReviewForm() { result =>
@@ -208,7 +208,7 @@ class BusinessShortNameControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = false, Journey.GetYourEORI)
+      controller.submit(isInReviewMode = false, Journey.Register)
     )
 
     "wait until the saveSubscriptionDetailsHolder is completed before progressing" in {
@@ -242,7 +242,7 @@ class BusinessShortNameControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = true, Journey.GetYourEORI)
+      controller.submit(isInReviewMode = true, Journey.Register)
     )
 
     "wait until the saveSubscriptionDetailsHolder is completed before progressing" in {
@@ -257,7 +257,7 @@ class BusinessShortNameControllerSpec
     }
 
     "redirect to review screen" in {
-      submitFormInReviewMode(mandatoryShortNameFieldsMap)(verifyRedirectToReviewPage(Journey.GetYourEORI))
+      submitFormInReviewMode(mandatoryShortNameFieldsMap)(verifyRedirectToReviewPage(Journey.Register))
     }
   }
 
@@ -381,7 +381,7 @@ class BusinessShortNameControllerSpec
     when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(orgType))
 
     test(
-      controller.submit(isInReviewMode = false, Journey.GetYourEORI)(
+      controller.submit(isInReviewMode = false, Journey.Register)(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )
@@ -397,7 +397,7 @@ class BusinessShortNameControllerSpec
     when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(orgType))
 
     test(
-      controller.submit(isInReviewMode = true, Journey.GetYourEORI)(
+      controller.submit(isInReviewMode = true, Journey.Register)(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )
@@ -416,7 +416,7 @@ class BusinessShortNameControllerSpec
   private def showCreateForm(
     userId: String = defaultUserId,
     orgType: EtmpOrganisationType = CorporateBody,
-    journey: Journey.Value = Journey.GetYourEORI
+    journey: Journey.Value = Journey.Register
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
 
@@ -429,7 +429,7 @@ class BusinessShortNameControllerSpec
     dataToEdit: BusinessShortName = mandatoryShortNameFieldsAsShortName,
     userId: String = defaultUserId,
     orgType: EtmpOrganisationType = CorporateBody,
-    journey: Journey.Value = Journey.GetYourEORI
+    journey: Journey.Value = Journey.Register
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
 

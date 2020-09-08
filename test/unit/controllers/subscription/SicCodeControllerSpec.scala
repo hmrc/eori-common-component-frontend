@@ -58,12 +58,12 @@ class SicCodeControllerSpec
 
   protected override def submitInCreateModeUrl: String =
     uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.SicCodeController
-      .submit(isInReviewMode = false, Journey.GetYourEORI)
+      .submit(isInReviewMode = false, Journey.Register)
       .url
 
   protected override def submitInReviewModeUrl: String =
     uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.SicCodeController
-      .submit(isInReviewMode = true, Journey.GetYourEORI)
+      .submit(isInReviewMode = true, Journey.Register)
       .url
 
   private val mockOrgTypeLookup = mock[OrgTypeLookup]
@@ -100,7 +100,7 @@ class SicCodeControllerSpec
 
   "Subscription Sic Code form in create mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.GetYourEORI))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.Register))
 
     "display title as 'What is the Standard Industrial Classification (SIC) code for your organisation?' for non-partnership org type" in {
       showCreateForm(orgType = CorporateBody, userSelectedOrgType = Company) { result =>
@@ -113,7 +113,7 @@ class SicCodeControllerSpec
       showCreateForm(
         orgType = CorporateBody,
         userSelectedOrgType = Company,
-        journey = Journey.GetYourEORI,
+        journey = Journey.Register,
         userLocation = Some("UK")
       ) { result =>
         val page = CdsPage(bodyOf(result))
@@ -282,7 +282,7 @@ class SicCodeControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = false, Journey.GetYourEORI)
+      controller.submit(isInReviewMode = false, Journey.Register)
     )
 
     "wait until the saveSubscriptionDetailsHolder is completed before progressing" in {
@@ -318,7 +318,7 @@ class SicCodeControllerSpec
 
     "redirect to review screen" in {
       submitFormInReviewMode(populatedSicCodeFieldsMap, userSelectedOrgType = Company)(
-        verifyRedirectToReviewPage(Journey.GetYourEORI)
+        verifyRedirectToReviewPage(Journey.Register)
       )
     }
   }
@@ -416,11 +416,11 @@ class SicCodeControllerSpec
   }
 
   private def submitFormInCreateMode(
-    form: Map[String, String],
-    userId: String = defaultUserId,
-    orgType: EtmpOrganisationType = CorporateBody,
-    journey: Journey.Value = Journey.GetYourEORI,
-    userSelectedOrgType: CdsOrganisationType
+                                      form: Map[String, String],
+                                      userId: String = defaultUserId,
+                                      orgType: EtmpOrganisationType = CorporateBody,
+                                      journey: Journey.Value = Journey.Register,
+                                      userSelectedOrgType: CdsOrganisationType
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
 
@@ -435,11 +435,11 @@ class SicCodeControllerSpec
   }
 
   private def submitFormInReviewMode(
-    form: Map[String, String],
-    userId: String = defaultUserId,
-    orgType: EtmpOrganisationType = CorporateBody,
-    journey: Journey.Value = Journey.GetYourEORI,
-    userSelectedOrgType: CdsOrganisationType
+                                      form: Map[String, String],
+                                      userId: String = defaultUserId,
+                                      orgType: EtmpOrganisationType = CorporateBody,
+                                      journey: Journey.Value = Journey.Register,
+                                      userSelectedOrgType: CdsOrganisationType
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
 
@@ -464,11 +464,11 @@ class SicCodeControllerSpec
   }
 
   private def showCreateForm(
-    userId: String = defaultUserId,
-    orgType: EtmpOrganisationType = CorporateBody,
-    journey: Journey.Value = Journey.GetYourEORI,
-    userSelectedOrgType: CdsOrganisationType,
-    userLocation: Option[String] = Some("uk")
+                              userId: String = defaultUserId,
+                              orgType: EtmpOrganisationType = CorporateBody,
+                              journey: Journey.Value = Journey.Register,
+                              userSelectedOrgType: CdsOrganisationType,
+                              userLocation: Option[String] = Some("uk")
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
 
@@ -481,11 +481,11 @@ class SicCodeControllerSpec
   }
 
   private def showReviewForm(
-    dataToEdit: String = sic,
-    userId: String = defaultUserId,
-    orgType: EtmpOrganisationType = CorporateBody,
-    journey: Journey.Value = Journey.GetYourEORI,
-    userSelectedOrgType: CdsOrganisationType
+                              dataToEdit: String = sic,
+                              userId: String = defaultUserId,
+                              orgType: EtmpOrganisationType = CorporateBody,
+                              journey: Journey.Value = Journey.Register,
+                              userSelectedOrgType: CdsOrganisationType
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
 

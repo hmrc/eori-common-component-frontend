@@ -319,7 +319,7 @@ class SubscriptionFlowManagerSpec
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(mockIndividualRegistrationDetails))
       val (subscriptionPage, session) = await(
-        controller.startSubscriptionFlow(Some(ConfirmIndividualTypePage), Journey.GetYourEORI)(mockHC, mockRequest)
+        controller.startSubscriptionFlow(Some(ConfirmIndividualTypePage), Journey.Register)(mockHC, mockRequest)
       )
 
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
@@ -335,7 +335,7 @@ class SubscriptionFlowManagerSpec
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(mockOrgRegistrationDetails))
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(Journey.GetYourEORI)(mockHC, mockRequest))
+        await(controller.startSubscriptionFlow(Journey.Register)(mockHC, mockRequest))
 
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
@@ -351,7 +351,7 @@ class SubscriptionFlowManagerSpec
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(mockIndividualRegistrationDetails))
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(Journey.GetYourEORI)(mockHC, mockRequest))
+        await(controller.startSubscriptionFlow(Journey.Register)(mockHC, mockRequest))
 
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
@@ -364,7 +364,7 @@ class SubscriptionFlowManagerSpec
       when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(mockOrgRegistrationDetails))
-      val (subscriptionPage, session) = await(controller.startSubscriptionFlow(Journey.Migrate)(mockHC, mockRequest))
+      val (subscriptionPage, session) = await(controller.startSubscriptionFlow(Journey.Subscribe)(mockHC, mockRequest))
 
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
@@ -379,7 +379,7 @@ class SubscriptionFlowManagerSpec
 
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(mockOrgRegistrationDetails))
-      val (subscriptionPage, session) = await(controller.startSubscriptionFlow(Journey.Migrate)(mockHC, mockRequest))
+      val (subscriptionPage, session) = await(controller.startSubscriptionFlow(Journey.Subscribe)(mockHC, mockRequest))
 
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
@@ -427,7 +427,7 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(RegistrationDetailsIndividual()))
 
-      val (subscriptionPage, session) = await(controller.startSubscriptionFlow(Journey.Migrate)(mockHC, mockRequest))
+      val (subscriptionPage, session) = await(controller.startSubscriptionFlow(Journey.Subscribe)(mockHC, mockRequest))
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
       verify(mockRequestSessionData).storeUserSubscriptionFlow(
@@ -443,7 +443,7 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(RegistrationDetailsIndividual()))
 
-      val (subscriptionPage, session) = await(controller.startSubscriptionFlow(Journey.Migrate)(mockHC, mockRequest))
+      val (subscriptionPage, session) = await(controller.startSubscriptionFlow(Journey.Subscribe)(mockHC, mockRequest))
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
       verify(mockRequestSessionData).storeUserSubscriptionFlow(
@@ -458,7 +458,7 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(RegistrationDetailsOrganisation()))
 
-      val (subscriptionPage, session) = await(controller.startSubscriptionFlow(Journey.Migrate)(mockHC, mockRequest))
+      val (subscriptionPage, session) = await(controller.startSubscriptionFlow(Journey.Subscribe)(mockHC, mockRequest))
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
       verify(mockRequestSessionData).storeUserSubscriptionFlow(

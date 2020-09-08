@@ -23,7 +23,7 @@
 @layout_di(messages("cds.you-cant-use-service.heading")) {
     <div class="column-two-thirds">
             <h1 id="page-heading" class="heading-large">@messages("cds.you-cant-use-service.heading")</h1>
-            @if(journey == Journey.GetYourEORI) {
+            @if(journey == Journey.Register) {
             <p id="info">@messages("cds.enrolment-already-exists-against-groupid-gye.paragraph")</p>
             <h2 class="heading-small" id="steps-header">@messages("cds.enrolment-already-exists-against-groupid-gye-steps.heading")</h2>
             } else {

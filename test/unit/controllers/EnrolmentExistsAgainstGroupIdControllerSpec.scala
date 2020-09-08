@@ -50,7 +50,7 @@ class EnrolmentExistsAgainstGroupIdControllerSpec extends ControllerSpec {
   "Enrolment Exists Against GroupId Controller" should {
     "return OK and redirect to the enrolment exists against groupId page" in {
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
-      displayPage(Journey.GetYourEORI) { result =>
+      displayPage(Journey.Register) { result =>
         status(result) shouldBe OK
         val page = CdsPage(bodyOf(result))
         page.title should startWith("You cannot use this service")

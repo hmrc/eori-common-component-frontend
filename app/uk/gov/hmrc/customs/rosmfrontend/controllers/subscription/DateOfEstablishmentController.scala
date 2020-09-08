@@ -130,8 +130,8 @@ class DateOfEstablishmentController @Inject()(
 
   private def getSubscriptionPage(journey: Journey.Value, location: Boolean) =
     (journey, location) match {
-      case (Journey.Migrate, true) => RowDateOfEstablishmentSubscriptionFlowPage
-      case (Journey.Migrate, false) =>
+      case (Journey.Subscribe, true) => RowDateOfEstablishmentSubscriptionFlowPage
+      case (Journey.Subscribe, false) =>
         DateOfEstablishmentSubscriptionFlowPageMigrate
       case _ => DateOfEstablishmentSubscriptionFlowPage
     }

@@ -147,13 +147,13 @@ class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with Befo
     }
   }
 
-  private def createForm(journey: Journey.Value = Journey.GetYourEORI)(test: Future[Result] => Any) = {
+  private def createForm(journey: Journey.Value = Journey.Register)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     mockIsIndividual()
     test(controller.createForm(journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }
 
-  private def reviewForm(journey: Journey.Value = Journey.GetYourEORI)(test: Future[Result] => Any) {
+  private def reviewForm(journey: Journey.Value = Journey.Register)(test: Future[Result] => Any) {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     mockIsIndividual()
     when(mockSubscriptionBusinessService.getCachedVatRegisteredUk(any[HeaderCarrier])).thenReturn(true)
@@ -167,7 +167,7 @@ class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with Befo
     mockIsIndividual()
     test(
       controller
-        .submit(isInReviewMode: Boolean, Journey.GetYourEORI)
+        .submit(isInReviewMode: Boolean, Journey.Register)
         .apply(SessionBuilder.buildRequestWithFormValues(form))
     )
   }

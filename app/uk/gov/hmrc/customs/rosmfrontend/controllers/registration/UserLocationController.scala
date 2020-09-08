@@ -96,7 +96,7 @@ class UserLocationController @Inject()(
           (journey, details.location, loggedInUser.internalId) match {
             case (_, Some(UserLocation.Iom), Some(_)) =>
               Future.successful(Redirect(YouNeedADifferentServiceIomController.form(journey)))
-            case (Journey.GetYourEORI, Some(location), Some(id)) if UserLocation.isRow(location) =>
+            case (Journey.Register, Some(location), Some(id)) if UserLocation.isRow(location) =>
               forRow(journey, InternalId(id), location)
             case _ =>
               Future.successful(
@@ -112,7 +112,7 @@ class UserLocationController @Inject()(
 
   private def sessionInfoBasedOnJourney(journey: Journey.Value, location: Option[String]): String =
     journey match {
-      case Journey.GetYourEORI =>
+      case Journey.Register =>
         location match {
           case Some(UserLocation.ThirdCountry) => "third-country"
           case Some(UserLocation.Eu)           => "eu"
@@ -150,12 +150,12 @@ class UserLocationController @Inject()(
                 case true =>
                   Redirect(
                     SignInWithDifferentDetailsController
-                      .form(Journey.GetYourEORI)
+                      .form(Journey.Register)
                   )
                 case false =>
                   Redirect(
                     SubscriptionRecoveryController
-                      .complete(Journey.GetYourEORI)
+                      .complete(Journey.Register)
                   )
               }
           }

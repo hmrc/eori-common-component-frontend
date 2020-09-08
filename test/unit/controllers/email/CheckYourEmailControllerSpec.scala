@@ -92,10 +92,10 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
 
   "Displaying the Check Your Email Page" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(Journey.Migrate))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(Journey.Subscribe))
 
     "display title as 'Check your email address'" in {
-      showForm(journey = Journey.Migrate) { result =>
+      showForm(journey = Journey.Subscribe) { result =>
         val page = CdsPage(bodyOf(result))
         page.title() should startWith("Check your email address")
       }
@@ -107,7 +107,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     "redirect to Verify Your Email Address page for unverified email address" in {
       when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(true)))
-      submitForm(ValidRequest + (yesNoInputName -> answerYes), journey = Journey.Migrate) { result =>
+      submitForm(ValidRequest + (yesNoInputName -> answerYes), journey = Journey.Subscribe) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers("Location") should endWith("/customs-enrolment-services/subscribe/matching/verify-your-email")
       }
@@ -126,7 +126,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(false)))
 
-      submitForm(ValidRequest + (yesNoInputName -> answerYes), journey = Journey.Migrate) { result =>
+      submitForm(ValidRequest + (yesNoInputName -> answerYes), journey = Journey.Subscribe) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers("Location") should endWith("/customs-enrolment-services/subscribe/are-you-based-in-uk")
       }
@@ -137,21 +137,21 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
         .thenReturn(Future.successful(None))
 
       the[IllegalStateException] thrownBy {
-        submitForm(ValidRequest + (yesNoInputName -> answerYes), journey = Journey.Migrate) { result =>
+        submitForm(ValidRequest + (yesNoInputName -> answerYes), journey = Journey.Subscribe) { result =>
           status(result) shouldBe SEE_OTHER
         }
       } should have message "CreateEmailVerificationRequest Failed"
     }
 
     "redirect to What is Your Email Address Page on selecting No radio button" in {
-      submitForm(ValidRequest + (yesNoInputName -> answerNo), journey = Journey.Migrate) { result =>
+      submitForm(ValidRequest + (yesNoInputName -> answerNo), journey = Journey.Subscribe) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers("Location") should endWith("/customs-enrolment-services/subscribe/matching/what-is-your-email")
       }
     }
 
     "display an error message when no option is selected" in {
-      submitForm(ValidRequest - yesNoInputName, journey = Journey.Migrate) { result =>
+      submitForm(ValidRequest - yesNoInputName, journey = Journey.Subscribe) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
         page.getElementsText(CheckYourEmailPage.pageLevelErrorSummaryListXPath) shouldBe problemWithSelectionError
@@ -162,7 +162,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
 
   "Redirecting to Verify Your Email Address Page" should {
     "display title as 'Verify your email address'" in {
-      verifyEmailViewForm(journey = Journey.Migrate) { result =>
+      verifyEmailViewForm(journey = Journey.Subscribe) { result =>
         val page = CdsPage(bodyOf(result))
         page.title() should startWith("Verify your email address")
       }

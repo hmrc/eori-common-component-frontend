@@ -21,7 +21,7 @@ import play.api.mvc.{PathBindable, QueryStringBindable}
 
 object Journey extends Enumeration {
 
-  val GetYourEORI, Migrate = Value
+  val Register, Subscribe = Value
 
   implicit val reads: Reads[Journey.Value] = Reads.enumNameReads(Journey)
   implicit val writes: Writes[Journey.Value] = Writes.enumNameWrites
@@ -30,21 +30,21 @@ object Journey extends Enumeration {
 
     override def bind(key: String, value: String): Either[String, Journey.Value] =
       value match {
-        case "subscribe" => Right(Migrate)
-        case "register"  => Right(GetYourEORI)
+        case "subscribe" => Right(Subscribe)
+        case "register"  => Right(Register)
         case _                   => Left("invalid journey")
       }
 
     override def unbind(key: String, value: Journey.Value): String =
       value match {
-        case Migrate     => "subscribe"
-        case GetYourEORI => "register"
+        case Subscribe     => "subscribe"
+        case Register => "register"
       }
   }
 
   def apply(journey: String): Journey.Value = journey match {
-    case "subscribe" => Migrate
-    case "register"  => GetYourEORI
+    case "subscribe" => Subscribe
+    case "register"  => Register
   }
 
   implicit def queryBindable(implicit pathBindable: PathBindable[Journey.Value]): QueryStringBindable[Journey.Value] =

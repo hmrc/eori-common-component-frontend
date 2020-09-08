@@ -49,7 +49,7 @@ class EnrolmentExistsAgainstGroupIdViewSpec extends ViewSpec {
         .text mustBe "The Government Gateway ID you used is part of a team that already has an EORI linked to it."
     }
 
-    "display the correct text for Migrate" in {
+    "display the correct text for Subscribe" in {
       migrateDoc
         .body()
         .getElementById("info")
@@ -69,11 +69,11 @@ class EnrolmentExistsAgainstGroupIdViewSpec extends ViewSpec {
       gyeDoc.body().getElementById("step6").text mustBe "Save and exit."
     }
 
-    "display the correct headee for Migrate" in {
+    "display the correct header for Subscribe" in {
       migrateDoc.body().getElementById("steps-header").text mustBe "To give yourself access to CDS:"
     }
   }
 
-  private lazy val gyeDoc: Document = Jsoup.parse(contentAsString(view(Journey.GetYourEORI)))
-  private lazy val migrateDoc: Document = Jsoup.parse(contentAsString(view(Journey.Migrate)))
+  private lazy val gyeDoc: Document = Jsoup.parse(contentAsString(view(Journey.Register)))
+  private lazy val migrateDoc: Document = Jsoup.parse(contentAsString(view(Journey.Subscribe)))
 }

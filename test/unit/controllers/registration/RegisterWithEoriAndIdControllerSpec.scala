@@ -172,7 +172,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
-      controller.registerWithEoriAndId(Journey.Migrate)
+      controller.registerWithEoriAndId(Journey.Subscribe)
     )
     val processingDateResponse: String = "19 April 2018"
     val emailVerificationTimestamp = TestData.emailVerificationTimestamp
@@ -657,7 +657,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         {
           status(result) shouldBe SEE_OTHER
           result.header.headers(LOCATION) shouldBe SignInWithDifferentDetailsController
-            .form(journey = Journey.Migrate)
+            .form(journey = Journey.Subscribe)
             .url
           verify(mockReg06Service).sendOrganisationRequest(any(), any(), any())
           verify(mockSubscriptionStatusService)
@@ -702,7 +702,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         {
           status(result) shouldBe SEE_OTHER
           result.header.headers(LOCATION) shouldBe SubscriptionRecoveryController
-            .complete(Journey.Migrate)
+            .complete(Journey.Subscribe)
             .url
           verify(mockReg06Service).sendOrganisationRequest(any(), any(), any())
           verify(mockSubscriptionStatusService)
@@ -1009,7 +1009,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
   }
 
   private def regExistingEori(test: Future[Result] => Any) {
-    test(controller.registerWithEoriAndId(Journey.Migrate)(SessionBuilder.buildRequestWithSession(defaultUserId)))
+    test(controller.registerWithEoriAndId(Journey.Subscribe)(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }
 
   private def invokeProcessing(test: Future[Result] => Any) {

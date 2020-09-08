@@ -195,7 +195,7 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     test(
       doYouHaveNinoController
-        .displayForm(Journey.GetYourEORI)
+        .displayForm(Journey.Register)
         .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     )
   }
@@ -204,7 +204,7 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     test(
       doYouHaveNinoController
-        .submit(Journey.GetYourEORI)
+        .submit(Journey.Register)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form))
     )
   }

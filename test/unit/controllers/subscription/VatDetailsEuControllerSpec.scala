@@ -275,12 +275,12 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
 
   private def createForm()(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.createForm(Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    await(test(controller.createForm(Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
   private def reviewForm()(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.reviewForm(Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    await(test(controller.reviewForm(Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
   private def submit(form: Map[String, String], isInReviewMode: Boolean = false)(test: Future[Result] => Any) = {
@@ -288,7 +288,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
     await(
       test(
         controller
-          .submit(Journey.GetYourEORI, isInReviewMode: Boolean)
+          .submit(Journey.Register, isInReviewMode: Boolean)
           .apply(SessionBuilder.buildRequestWithFormValues(form))
       )
     )
@@ -301,7 +301,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
     await(
       test(
         controller
-          .submitUpdate(index, Journey.GetYourEORI, isInReviewMode: Boolean)
+          .submitUpdate(index, Journey.Register, isInReviewMode: Boolean)
           .apply(SessionBuilder.buildRequestWithFormValues(form))
       )
     )
@@ -311,7 +311,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     await(
       test(
-        controller.updateForm(index, Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+        controller.updateForm(index, Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
       )
     )
   }
@@ -321,7 +321,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
     await(
       test(
         controller
-          .reviewUpdateForm(index, Journey.GetYourEORI)
+          .reviewUpdateForm(index, Journey.Register)
           .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
       )
     )

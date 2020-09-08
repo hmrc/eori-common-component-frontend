@@ -80,17 +80,17 @@ class SUB09SubscriptionDisplayConnectorSpec extends IntegrationTestsSpec with Sc
       SubscriptionDisplayMessagingService.returnSubscriptionDisplayWhenReceiveRequest(
         requestEori,
         requestAcknowledgementReference,
-        Journey.Migrate
+        Journey.Subscribe
       )
       await(connector.subscriptionDisplay(reqEori)) mustBe Right(expectedResponse)
     }
 
-    "return successful response with OK status when subscription display service returns 200, for taxPayerId and journey is GetYourEORI" in {
+    "return successful response with OK status when subscription display service returns 200, for taxPayerId and journey is Register" in {
 
       SubscriptionDisplayMessagingService.returnSubscriptionDisplayWhenReceiveRequest(
         requestTaxPayerId,
         requestAcknowledgementReference,
-        Journey.GetYourEORI
+        Journey.Register
       )
       await(connector.subscriptionDisplay(reqTaxPayerId)) mustBe Right(expectedResponse)
     }
@@ -100,7 +100,7 @@ class SUB09SubscriptionDisplayConnectorSpec extends IntegrationTestsSpec with Sc
       SubscriptionDisplayMessagingService.returnSubscriptionDisplayWhenReceiveRequest(
         requestTaxPayerId,
         requestAcknowledgementReference,
-        Journey.GetYourEORI,
+        Journey.Register,
         returnedStatus = SERVICE_UNAVAILABLE
       )
       await(connector.subscriptionDisplay(reqTaxPayerId)) mustBe Left(ServiceUnavailableResponse)

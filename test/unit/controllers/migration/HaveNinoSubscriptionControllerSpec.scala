@@ -67,7 +67,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
 
   "HaveNinoSubscriptionController createForm" should {
     "return OK and display correct page" in {
-      createForm(Journey.Migrate) { result =>
+      createForm(Journey.Subscribe) { result =>
         status(result) shouldBe OK
         val page = CdsPage(bodyOf(result))
         page.title should include(SubscriptionNinoPage.title)
@@ -77,14 +77,14 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
 
   "HaveNinoSubscriptionController submit" should {
     "return BadRequest when no option selected" in {
-      submit(Journey.Migrate, Map.empty[String, String]) { result =>
+      submit(Journey.Subscribe, Map.empty[String, String]) { result =>
         status(result) shouldBe BAD_REQUEST
       }
     }
 
     "return BadRequest when invalidUtr provided" in {
       val invalidNino = "01234567890123"
-      submit(Journey.Migrate, Map("have-nino" -> "true", "nino" -> invalidNino)) { result =>
+      submit(Journey.Subscribe, Map("have-nino" -> "true", "nino" -> invalidNino)) { result =>
         status(result) shouldBe BAD_REQUEST
       }
     }
@@ -93,7 +93,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
       when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
         .thenReturn(Future.successful(()))
       mockSubscriptionFlow(nextPageFlowUrl)
-      submit(Journey.Migrate, ValidNinoRequest) { result =>
+      submit(Journey.Subscribe, ValidNinoRequest) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
       }
@@ -102,7 +102,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
     "cache None for CustomsId and redirect to Address Page of the flow" in {
       when(mockSubscriptionDetailsService.clearCachedCustomsId(any[HeaderCarrier])).thenReturn(Future.successful(()))
       mockSubscriptionFlow(nextPageFlowUrl)
-      submit(Journey.Migrate, ValidNinoNoRequest) { result =>
+      submit(Journey.Subscribe, ValidNinoNoRequest) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
       }

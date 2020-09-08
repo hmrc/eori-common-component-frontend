@@ -98,12 +98,12 @@ class OrganisationTypeController @Inject()(
         },
         organisationType => {
           journey match {
-            case Journey.Migrate =>
+            case Journey.Subscribe =>
               registrationDetailsService.initialiseCacheWithRegistrationDetails(organisationType) flatMap { ok =>
                 if (ok) startSubscription(organisationType)
                 else throw new IllegalStateException(s"Unable to save $organisationType registration in cache")
               }
-            case Journey.GetYourEORI =>
+            case Journey.Register =>
               registrationDetailsService.initialiseCacheWithRegistrationDetails(organisationType) flatMap { ok =>
                 if (ok)
                   Future.successful(

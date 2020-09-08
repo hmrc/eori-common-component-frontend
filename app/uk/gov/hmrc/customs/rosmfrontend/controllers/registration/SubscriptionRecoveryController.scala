@@ -68,9 +68,9 @@ class SubscriptionRecoveryController @Inject()(
           customId <- if (isRow) cachedCustomsIdF else Future.successful(None)
         } yield {
           (journey, isRow, customId) match {
-            case (Journey.Migrate, true, Some(_)) => subscribeForCDS // UK journey
-            case (Journey.Migrate, true, None)             => subscribeForCDSROW //subscribeForCDSROW //ROW
-            case (Journey.Migrate, false, _)               => subscribeForCDS //UK Journey
+            case (Journey.Subscribe, true, Some(_)) => subscribeForCDS // UK journey
+            case (Journey.Subscribe, true, None)             => subscribeForCDSROW //subscribeForCDSROW //ROW
+            case (Journey.Subscribe, false, _)               => subscribeForCDS //UK Journey
             case _                                         => subscribeGetAnEori //Journey Get An EORI
           }
         }
@@ -90,7 +90,7 @@ class SubscriptionRecoveryController @Inject()(
         case Right(subscriptionDisplayResponse) =>
           val email = subscriptionDisplayResponse.responseDetail.contactInformation
             .flatMap(_.emailAddress)
-            .getOrElse(throw new IllegalStateException("GetYourEORI Journey: No email address available."))
+            .getOrElse(throw new IllegalStateException("Register Journey: No email address available."))
           val eori = subscriptionDisplayResponse.responseDetail.EORINo
             .getOrElse(throw new IllegalStateException("no eori found in the response"))
           onSUB09Success(
@@ -99,7 +99,7 @@ class SubscriptionRecoveryController @Inject()(
             safeId,
             Eori(eori),
             subscriptionDisplayResponse,
-            Journey.GetYourEORI
+            Journey.Register
           )(Redirect(Sub02Controller.end()))
         case Left(_) =>
           Future.successful(ServiceUnavailable(errorTemplateView()))
@@ -133,7 +133,7 @@ class SubscriptionRecoveryController @Inject()(
             safeId,
             Eori(eori),
             subscriptionDisplayResponse,
-            Journey.Migrate
+            Journey.Subscribe
           )(Redirect(Sub02Controller.migrationEnd()))
         case Left(_) =>
           Future.successful(ServiceUnavailable(errorTemplateView()))
@@ -161,7 +161,7 @@ class SubscriptionRecoveryController @Inject()(
             safeId,
             Eori(eori),
             subscriptionDisplayResponse,
-            Journey.Migrate
+            Journey.Subscribe
           )(Redirect(Sub02Controller.migrationEnd()))
         case Left(_) =>
           Future.successful(ServiceUnavailable(errorTemplateView()))
@@ -207,7 +207,7 @@ class SubscriptionRecoveryController @Inject()(
               SafeId(safeId)
             )
             .flatMap(_ => {
-              if (journey == Journey.Migrate) {
+              if (journey == Journey.Subscribe) {
                 issuerCall(eori, formBundleId, subscriptionDisplayResponse)(redirect)
               } else {
                 Future.successful(redirect)

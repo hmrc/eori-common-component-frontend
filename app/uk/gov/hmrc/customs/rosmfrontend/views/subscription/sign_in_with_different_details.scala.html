@@ -30,7 +30,7 @@ case None => {@messages("cds.subscription.sign-in-with-different-details.para1-n
 }
 
 @journey = @{
-    if(request.path.contains("register")) Journey.GetYourEORI else Journey.Migrate
+    if(request.path.contains("register")) Journey.Register else Journey.Subscribe
 }
 
 

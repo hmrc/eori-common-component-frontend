@@ -98,32 +98,32 @@ class WhatIsYourEoriSpec extends ViewSpec {
   }
 
   lazy val doc: Document = {
-    val result = view(form, isInReviewMode, isRestOfWorldJourney = false, Journey.Migrate)
+    val result = view(form, isInReviewMode, isRestOfWorldJourney = false, Journey.Subscribe)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val docWithInvalidError: Document = {
-    val result = view(formWithInvalidError, isInReviewMode, isRestOfWorldJourney, Journey.Migrate)
+    val result = view(formWithInvalidError, isInReviewMode, isRestOfWorldJourney, Journey.Subscribe)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val docWithInvalidGbEoriError: Document = {
-    val result = view(formWithInvalidGbEoriError, isInReviewMode, isRestOfWorldJourney, Journey.Migrate)
+    val result = view(formWithInvalidGbEoriError, isInReviewMode, isRestOfWorldJourney, Journey.Subscribe)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val docWithTooShortError: Document = {
-    val result = view(formWithTooShortError, isInReviewMode, isRestOfWorldJourney, Journey.Migrate)
+    val result = view(formWithTooShortError, isInReviewMode, isRestOfWorldJourney, Journey.Subscribe)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val docWithTooLongError: Document = {
-    val result = view(formWithTooLongError, isInReviewMode, isRestOfWorldJourney, Journey.Migrate)
+    val result = view(formWithTooLongError, isInReviewMode, isRestOfWorldJourney, Journey.Subscribe)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val docWithEmptyFieldError: Document = {
-    val result = view(formWithEmptyFieldError, isInReviewMode, isRestOfWorldJourney, Journey.Migrate)
+    val result = view(formWithEmptyFieldError, isInReviewMode, isRestOfWorldJourney, Journey.Subscribe)
     Jsoup.parse(contentAsString(result))
   }
 }

@@ -76,10 +76,10 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueSpec
     }
 
     protected def show(с: RowIndividualNameDateOfBirthController): Action[AnyContent] =
-      с.form(organisationType, Journey.GetYourEORI)
+      с.form(organisationType, Journey.Register)
 
     protected def submit(c: RowIndividualNameDateOfBirthController): Action[AnyContent] =
-      c.submit(false, organisationType, Journey.GetYourEORI)
+      c.submit(false, organisationType, Journey.Register)
 
     def formData(thirdCountryIndividual: IndividualNameAndDateOfBirth): Map[String, String] =
       form.mapping.unbind(thirdCountryIndividual)
@@ -100,7 +100,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueSpec
       withControllerFixture { controllerFixture =>
         assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
           controllerFixture.mockAuthConnector,
-          controllerFixture.controller.form(organisationType, Journey.GetYourEORI)
+          controllerFixture.controller.form(organisationType, Journey.Register)
         )
       }
 
@@ -118,7 +118,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueSpec
             assertPresentOnPage(webPage.familyNameElement)
             assertPresentOnPage(webPage.dateOfBirthElement)
             page.getElementAttributeAction(webPage.formElement) shouldBe uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.RowIndividualNameDateOfBirthController
-              .form(organisationType, Journey.GetYourEORI)
+              .form(organisationType, Journey.Register)
               .url
           }
       }
@@ -129,7 +129,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueSpec
       withControllerFixture { controllerFixture =>
         assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
           controllerFixture.mockAuthConnector,
-          controllerFixture.controller.submit(false, organisationType, Journey.GetYourEORI)
+          controllerFixture.controller.submit(false, organisationType, Journey.Register)
         )
       }
 

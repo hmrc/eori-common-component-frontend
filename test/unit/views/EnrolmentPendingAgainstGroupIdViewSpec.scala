@@ -49,7 +49,7 @@ class EnrolmentPendingAgainstGroupIdViewSpec extends ViewSpec {
         .text mustBe "The Government Gateway ID you used to sign in is part of a team that has already applied for an EORI number. This application is being processed."
     }
 
-    "display the correct text for Migrate" in {
+    "display the correct text for Subscribe" in {
       migrateDoc
         .body()
         .getElementById("info")
@@ -57,7 +57,7 @@ class EnrolmentPendingAgainstGroupIdViewSpec extends ViewSpec {
     }
   }
 
-  private lazy val gyeDoc: Document = Jsoup.parse(contentAsString(view(Journey.GetYourEORI)))
-  private lazy val migrateDoc: Document = Jsoup.parse(contentAsString(view(Journey.Migrate)))
+  private lazy val gyeDoc: Document = Jsoup.parse(contentAsString(view(Journey.Register)))
+  private lazy val migrateDoc: Document = Jsoup.parse(contentAsString(view(Journey.Subscribe)))
 
 }

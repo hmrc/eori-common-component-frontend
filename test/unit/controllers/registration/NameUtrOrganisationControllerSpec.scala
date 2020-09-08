@@ -102,7 +102,7 @@ class NameUtrOrganisationControllerSpec extends ControllerSpec with MockitoSugar
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.form(defaultOrganisationType, Journey.GetYourEORI)
+      controller.form(defaultOrganisationType, Journey.Register)
     )
 
     "display the form" in {
@@ -190,7 +190,7 @@ class NameUtrOrganisationControllerSpec extends ControllerSpec with MockitoSugar
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(defaultOrganisationType, Journey.GetYourEORI)
+      controller.submit(defaultOrganisationType, Journey.Register)
     )
 
     "ensure a valid Organisation Type has been passed" in {
@@ -391,7 +391,7 @@ class NameUtrOrganisationControllerSpec extends ControllerSpec with MockitoSugar
   ) {
     withAuthorisedUser(userId, mockAuthConnector)
 
-    test(controller.form(organisationType, Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.form(organisationType, Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   def submitForm(
@@ -403,7 +403,7 @@ class NameUtrOrganisationControllerSpec extends ControllerSpec with MockitoSugar
 
     test(
       controller
-        .submit(organisationType, Journey.GetYourEORI)
+        .submit(organisationType, Journey.Register)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }

@@ -41,8 +41,8 @@ class SignInWithDifferentDetailsController @Inject()(
   def form(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       val name = journey match {
-        case Journey.GetYourEORI => cdsFrontendDataCache.registrationDetails.map(_.name)
-        case Journey.Migrate     => cdsFrontendDataCache.subscriptionDetails.map(_.name)
+        case Journey.Register => cdsFrontendDataCache.registrationDetails.map(_.name)
+        case Journey.Subscribe     => cdsFrontendDataCache.subscriptionDetails.map(_.name)
         case _                   => throw new IllegalArgumentException("No a valid journey")
       }
 

@@ -51,11 +51,11 @@ class VatDetailsControllerSpec
   protected override val formId: String = "vat-details-form"
   protected override val submitInCreateModeUrl: String =
     uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.VatDetailsController
-      .submit(isInReviewMode = false, Journey.GetYourEORI)
+      .submit(isInReviewMode = false, Journey.Register)
       .url
   protected override val submitInReviewModeUrl: String =
     uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.VatDetailsController
-      .submit(isInReviewMode = true, Journey.GetYourEORI)
+      .submit(isInReviewMode = true, Journey.Register)
       .url
   private val mockVatControlListConnector = mock[VatControlListConnector]
 
@@ -91,7 +91,7 @@ class VatDetailsControllerSpec
 
   "Loading the page in create mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.Migrate))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.Subscribe))
 
     "display the form" in {
       showCreateForm()(verifyFormActionInCreateMode)
@@ -286,7 +286,7 @@ class VatDetailsControllerSpec
   private def showCreateForm(
     userId: String = defaultUserId,
     cachedDate: Option[LocalDate] = None,
-    journey: Journey.Value = Journey.GetYourEORI
+    journey: Journey.Value = Journey.Register
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     when(mockSubscriptionBusinessService.maybeCachedDateEstablished(any[HeaderCarrier]))
@@ -309,7 +309,7 @@ class VatDetailsControllerSpec
       .thenReturn(Future.successful(()))
     test(
       controller
-        .submit(false, Journey.GetYourEORI)
+        .submit(false, Journey.Register)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form))
     )
   }
@@ -318,7 +318,7 @@ class VatDetailsControllerSpec
     form: Map[String, String],
     isInReviewMode: Boolean,
     userId: String = defaultUserId,
-    journey: Journey.Value = Journey.GetYourEORI
+    journey: Journey.Value = Journey.Register
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     val vatControlResponse = VatControlListResponse(Some("Z9 1AA"), Some("2009-11-24"))

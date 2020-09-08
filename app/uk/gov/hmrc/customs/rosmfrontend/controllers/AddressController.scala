@@ -79,7 +79,7 @@ class AddressController @Inject()(
           address => {
             subscriptionDetailsHolderService.cacheAddressDetails(address)
             journey match {
-              case Journey.Migrate =>
+              case Journey.Subscribe =>
                 subscriptionDetailsHolderService
                   .cacheAddressDetails(address)
                   .map(
@@ -112,7 +112,7 @@ class AddressController @Inject()(
       subscriptionDetailsService.cachedCustomsId flatMap { cid =>
         val (countriesToInclude, countriesInCountryPicker) =
           (rd.customsId, cid, journey) match {
-            case (_, _, Journey.Migrate) =>
+            case (_, _, Journey.Subscribe) =>
               countries.getCountryParametersForAllCountries()
             case (Some(_: Utr | _: Nino), _, _) | (_, Some(_: Utr | _: Nino), _) =>
               countries.getCountryParameters(None)

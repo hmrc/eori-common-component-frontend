@@ -124,6 +124,6 @@ class OrganisationTypeViewSpec extends ControllerSpec with MockitoSugar with Bef
     val request = maybeOrgType.map { orgType =>
       SessionBuilder.buildRequestWithSessionAndOrgType(userId, orgType.id)
     }.getOrElse(SessionBuilder.buildRequestWithSession(userId))
-    test(organisationTypeController.form(Journey.GetYourEORI).apply(request))
+    test(organisationTypeController.form(Journey.Register).apply(request))
   }
 }

@@ -45,12 +45,12 @@ class WhatIsYourEoriControllerSpec
 
   protected override def submitInCreateModeUrl: String =
     uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.WhatIsYourEoriController
-      .submit(isInReviewMode = false, Journey.Migrate)
+      .submit(isInReviewMode = false, Journey.Subscribe)
       .url
 
   protected override def submitInReviewModeUrl: String =
     uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.WhatIsYourEoriController
-      .submit(isInReviewMode = true, Journey.Migrate)
+      .submit(isInReviewMode = true, Journey.Subscribe)
       .url
 
   private val mockRequestSessionData = mock[RequestSessionData]
@@ -83,31 +83,31 @@ class WhatIsYourEoriControllerSpec
 
   "Subscription What Is Your Eori Number form in create mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(Journey.Migrate))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(Journey.Subscribe))
 
     "display title as 'Enter your EORI number'" in {
-      showCreateForm(journey = Journey.Migrate) { result =>
+      showCreateForm(journey = Journey.Subscribe) { result =>
         val page = CdsPage(bodyOf(result))
         page.title() should startWith("What is your EORI number?")
       }
     }
 
     "submit in create mode" in {
-      showCreateForm(journey = Journey.Migrate)(verifyFormActionInCreateMode)
+      showCreateForm(journey = Journey.Subscribe)(verifyFormActionInCreateMode)
     }
 
     "display the back link" in {
-      showCreateForm(journey = Journey.Migrate)(verifyBackLinkInCreateModeSubscribe)
+      showCreateForm(journey = Journey.Subscribe)(verifyBackLinkInCreateModeSubscribe)
     }
 
     "display the back link for subscribe user journey" in {
-      showCreateForm(journey = Journey.Migrate) { result =>
+      showCreateForm(journey = Journey.Subscribe) { result =>
         verifyBackLinkIn(result)("/customs-enrolment-services/subscribe/matching/organisation-type")
       }
     }
 
     "have Eori Number input field without data if not cached previously" in {
-      showCreateForm(journey = Journey.Migrate) { result =>
+      showCreateForm(journey = Journey.Subscribe) { result =>
         val page = CdsPage(bodyOf(result))
         verifyEoriNumberFieldExistsWithNoData(page)
       }
@@ -116,14 +116,14 @@ class WhatIsYourEoriControllerSpec
     "have Eori Number input field prepopulated if cached previously" in {
       when(mockSubscriptionBusinessService.cachedEoriNumber(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(EoriNumber)))
-      showCreateForm(journey = Journey.Migrate) { result =>
+      showCreateForm(journey = Journey.Subscribe) { result =>
         val page = CdsPage(bodyOf(result))
         verifyEoriNumberFieldExistsAndPopulatedCorrectly(page)
       }
     }
 
     "display the correct text for the continue button" in {
-      showCreateForm(journey = Journey.Migrate)({ result =>
+      showCreateForm(journey = Journey.Subscribe)({ result =>
         val page = CdsPage(bodyOf(result))
         page.getElementValue(EoriNumberPage.continueButtonXpath) shouldBe ContinueButtonTextInCreateMode
       })
@@ -133,7 +133,7 @@ class WhatIsYourEoriControllerSpec
 
   "Subscription Eori Number form in review mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.reviewForm(Journey.Migrate))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.reviewForm(Journey.Subscribe))
 
     "display title as 'Enter your EORI number'" in {
       showReviewForm() { result =>
@@ -172,7 +172,7 @@ class WhatIsYourEoriControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
-      controller.submit(isInReviewMode = false, Journey.Migrate)
+      controller.submit(isInReviewMode = false, Journey.Subscribe)
     )
 
     "wait until the saveSubscriptionDetailsHolder is completed before progressing" in {
@@ -222,12 +222,12 @@ class WhatIsYourEoriControllerSpec
     }
 
     "redirect to review screen" in {
-      submitFormInReviewMode(populatedEoriNumberFieldsMap)(verifyRedirectToReviewPage(Journey.Migrate))
+      submitFormInReviewMode(populatedEoriNumberFieldsMap)(verifyRedirectToReviewPage(Journey.Subscribe))
     }
 
     "redirect to review screen for unmatched user" in {
       when(mockRequestSessionData.mayBeUnMatchedUser(any[Request[AnyContent]])).thenReturn(Some("true"))
-      submitFormInReviewMode(populatedEoriNumberFieldsMap)(verifyRedirectToReviewPage(Journey.Migrate))
+      submitFormInReviewMode(populatedEoriNumberFieldsMap)(verifyRedirectToReviewPage(Journey.Subscribe))
     }
   }
 
@@ -305,7 +305,7 @@ class WhatIsYourEoriControllerSpec
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(userSelectedOrgType)
 
     test(
-      controller.submit(isInReviewMode = false, Journey.Migrate)(
+      controller.submit(isInReviewMode = false, Journey.Subscribe)(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )
@@ -321,7 +321,7 @@ class WhatIsYourEoriControllerSpec
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(userSelectedOrgType)
 
     test(
-      controller.submit(isInReviewMode = true, Journey.Migrate)(
+      controller.submit(isInReviewMode = true, Journey.Subscribe)(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )
@@ -361,7 +361,7 @@ class WhatIsYourEoriControllerSpec
       .thenReturn(userSelectedOrganisationType)
     when(mockSubscriptionBusinessService.getCachedEoriNumber(any[HeaderCarrier])).thenReturn(dataToEdit)
 
-    test(controller.reviewForm(Journey.Migrate).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.reviewForm(Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def verifyEoriNumberFieldExistsAndPopulatedCorrectly(page: CdsPage): Unit =

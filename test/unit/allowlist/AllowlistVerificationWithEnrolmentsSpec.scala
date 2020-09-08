@@ -47,7 +47,7 @@ class AllowlistVerificationWithEnrolmentsSpec extends ControllerSpec {
       AuthBuilder.withAuthorisedUser(defaultUserId, auth, userEmail = Some("not@example.com"))
 
       val result = controller
-        .form(Journey.Migrate)
+        .form(Journey.Subscribe)
         .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe/", defaultUserId))
 
       status(result) shouldBe SEE_OTHER
@@ -58,7 +58,7 @@ class AllowlistVerificationWithEnrolmentsSpec extends ControllerSpec {
       AuthBuilder.withAuthorisedUser(defaultUserId, auth, userEmail = None)
 
       val result = controller
-        .form(Journey.Migrate)
+        .form(Journey.Subscribe)
         .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe/", defaultUserId))
 
       status(result) shouldBe SEE_OTHER
@@ -69,7 +69,7 @@ class AllowlistVerificationWithEnrolmentsSpec extends ControllerSpec {
       AuthBuilder.withAuthorisedUser(defaultUserId, auth, userEmail = Some("mister_allow@example.com"))
 
       val result = controller
-        .form(Journey.Migrate)
+        .form(Journey.Subscribe)
         .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe/", defaultUserId))
 
       status(result) shouldBe OK
@@ -79,7 +79,7 @@ class AllowlistVerificationWithEnrolmentsSpec extends ControllerSpec {
       AuthBuilder.withAuthorisedUser(defaultUserId, auth, userEmail = Some("not@example.com"))
 
       val result = controller
-        .form(Journey.GetYourEORI)
+        .form(Journey.Register)
         .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/register/", defaultUserId))
 
       status(result) shouldBe OK

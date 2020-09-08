@@ -45,13 +45,13 @@ class JourneyTypeFromUrlSpec extends UnitSpec with MockitoSugar {
     "be extracted from URL as a Journey Type" in {
 
       when(mockRequest.path).thenReturn("/path1/path2/path3/customs-enrolment-services/register/path4")
-      journeyTypeTrait.journeyFromUrl shouldBe Journey.GetYourEORI
+      journeyTypeTrait.journeyFromUrl shouldBe Journey.Register
 
       when(mockRequest.path).thenReturn("/customs-enrolment-services/subscribe/path1")
-      journeyTypeTrait.journeyFromUrl shouldBe Journey.Migrate
+      journeyTypeTrait.journeyFromUrl shouldBe Journey.Subscribe
 
       when(mockRequest.path).thenReturn("/customs-enrolment-services/register/")
-      journeyTypeTrait.journeyFromUrl shouldBe Journey.GetYourEORI
+      journeyTypeTrait.journeyFromUrl shouldBe Journey.Register
     }
   }
 }

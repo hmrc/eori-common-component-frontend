@@ -115,7 +115,7 @@ class BusinessDetailsRecoveryController @Inject()(
 
   private def sessionInfoBasedOnJourney(journey: Journey.Value, location: Option[String]): String =
     journey match {
-      case Journey.GetYourEORI =>
+      case Journey.Register =>
         location match {
           case Some(UserLocation.ThirdCountry) => "third-country"
           case Some(UserLocation.Eu)           => "eu"

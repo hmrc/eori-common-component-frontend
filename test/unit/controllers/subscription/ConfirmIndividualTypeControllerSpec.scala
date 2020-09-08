@@ -77,7 +77,7 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
 
   "Viewing the selection form" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.form(Journey.GetYourEORI))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.form(Journey.Register))
 
     "show the page without errors" in showForm { result =>
       status(result) shouldBe OK
@@ -90,7 +90,7 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
 
       page.getElementAttributeHref(backLinkXPath) shouldBe previousPageUrl
       page.formAction(formId) shouldBe uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.ConfirmIndividualTypeController
-        .submit(Journey.GetYourEORI)
+        .submit(Journey.Register)
         .url
     }
 
@@ -124,7 +124,7 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
 
   "Submitting the correct form" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.submit(Journey.GetYourEORI))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.submit(Journey.Register))
 
     "redirect to subscription flow first page with updated session" in {
       submitForm(validRequestData) { result =>
@@ -133,7 +133,7 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
         verify(mockSubscriptionFlowManager).startSubscriptionFlow(
           ArgumentMatchers.any[Option[SubscriptionPage]],
           ArgumentMatchers.eq(selectedIndividualType),
-          ArgumentMatchers.eq(Journey.GetYourEORI)
+          ArgumentMatchers.eq(Journey.Register)
         )(ArgumentMatchers.any[HeaderCarrier], ArgumentMatchers.any[Request[AnyContent]])
         verify(mockRequestSessionData).sessionWithOrganisationTypeAdded(
           ArgumentMatchers.eq(anotherMockSession),
@@ -154,7 +154,7 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
     when(mockRequestSessionData.sessionWithoutOrganisationType(ArgumentMatchers.any[Request[AnyContent]]))
       .thenReturn(mockSession)
 
-    val result = controller.form(Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSession(aUserId))
+    val result = controller.form(Journey.Register).apply(SessionBuilder.buildRequestWithSession(aUserId))
     test(result)
   }
 
@@ -178,7 +178,7 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
     ).thenReturn(Future.successful(mockFlowStart))
 
     val result =
-      controller.submit(Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSessionAndFormValues(aUserId, form))
+      controller.submit(Journey.Register).apply(SessionBuilder.buildRequestWithSessionAndFormValues(aUserId, form))
     test(result)
   }
 }

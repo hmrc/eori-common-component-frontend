@@ -36,6 +36,6 @@ class ReturnUserController @Inject()(
     extends CdsController(mcc) {
 
   def show(): Action[AnyContent] = Action { implicit request =>
-    Ok(view(Journey.Migrate))
+    Ok(view(Journey.Subscribe))
   }
 }

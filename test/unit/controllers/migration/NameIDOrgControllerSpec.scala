@@ -52,11 +52,11 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
   protected override val formId: String = NameIdDetailsPage.formId
   protected override val submitInCreateModeUrl: String =
     uk.gov.hmrc.customs.rosmfrontend.controllers.migration.routes.NameIDOrgController
-      .submit(isInReviewMode = false, Journey.GetYourEORI)
+      .submit(isInReviewMode = false, Journey.Register)
       .url
   protected override val submitInReviewModeUrl: String =
     uk.gov.hmrc.customs.rosmfrontend.controllers.migration.routes.NameIDOrgController
-      .submit(isInReviewMode = true, Journey.GetYourEORI)
+      .submit(isInReviewMode = true, Journey.Register)
       .url
 
   private val mockRequestSessionData = mock[RequestSessionData]
@@ -143,7 +143,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
   "Viewing the create form " should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.GetYourEORI))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.Register))
 
     "display back link correctly" in {
       showCreateForm()(verifyBackLinkInCreateModeRegister)
@@ -181,7 +181,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
   "Viewing the review form " should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.reviewForm(Journey.GetYourEORI))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.reviewForm(Journey.Register))
 
     "display relevant data in form fields when subscription details exist in the cache" in {
       when(mockSubscriptionBusinessService.getCachedNameIdViewModel).thenReturn(NameIdDetailsPage.filledValues)
@@ -212,7 +212,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = false, Journey.GetYourEORI)
+      controller.submit(isInReviewMode = false, Journey.Register)
     )
 
     "save the details" in {
@@ -291,7 +291,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = true, Journey.GetYourEORI)
+      controller.submit(isInReviewMode = true, Journey.Register)
     )
 
     "allow resubmission in review mode when details are invalid" in {
@@ -299,7 +299,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     }
 
     "redirect to the review page when details are valid" in {
-      submitFormInReviewMode(createFormAllFieldsUtrMap)(verifyRedirectToReviewPage(Journey.GetYourEORI))
+      submitFormInReviewMode(createFormAllFieldsUtrMap)(verifyRedirectToReviewPage(Journey.Register))
     }
   }
 
@@ -344,7 +344,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
   ) {
     withAuthorisedUser(userId, mockAuthConnector)
 
-    val result = controller.submit(isInReviewMode = false, Journey.GetYourEORI)(
+    val result = controller.submit(isInReviewMode = false, Journey.Register)(
       SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
     )
     test(result)
@@ -355,7 +355,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
   ) {
     withAuthorisedUser(userId, mockAuthConnector)
 
-    val result = controller.submit(isInReviewMode = true, Journey.GetYourEORI)(
+    val result = controller.submit(isInReviewMode = true, Journey.Register)(
       SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
     )
     test(result)
@@ -368,7 +368,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
 
-    val result = controller.createForm(Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+    val result = controller.createForm(Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     test(result)
   }
 
@@ -381,7 +381,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     when(mockSubscriptionBusinessService.getCachedNameIdViewModel(any[HeaderCarrier]))
       .thenReturn(Future.successful(NameIdDetailsPage.filledValues))
 
-    val result = controller.reviewForm(Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+    val result = controller.reviewForm(Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     test(result)
   }
 

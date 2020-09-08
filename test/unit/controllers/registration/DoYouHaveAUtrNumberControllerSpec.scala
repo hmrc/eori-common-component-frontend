@@ -80,7 +80,7 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.form(CdsOrganisationType.CharityPublicBodyNotForProfitId, Journey.GetYourEORI)
+      controller.form(CdsOrganisationType.CharityPublicBodyNotForProfitId, Journey.Register)
     )
 
     "display the form" in {
@@ -111,7 +111,7 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(CdsOrganisationType.CharityPublicBodyNotForProfitId, Journey.GetYourEORI)
+      controller.submit(CdsOrganisationType.CharityPublicBodyNotForProfitId, Journey.Register)
     )
 
     "ensure UTR has been entered when organisation type is 'CdsOrganisationType.CharityPublicBodyNotForProfitId'" in {
@@ -337,7 +337,7 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
   def showForm(organisationType: String, userId: String = defaultUserId)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     val result =
-      controller.form(organisationType, Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSession(userId))
+      controller.form(organisationType, Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
 
@@ -349,7 +349,7 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
-      .submit(organisationType, Journey.GetYourEORI, isInReviewMode)
+      .submit(organisationType, Journey.Register, isInReviewMode)
       .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }

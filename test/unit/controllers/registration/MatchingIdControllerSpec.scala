@@ -63,7 +63,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach {
       val result: Result = await(controller.matchWithIdOnly().apply(SessionBuilder.buildRequestWithSession(userId)))
 
       status(result) shouldBe SEE_OTHER
-      assertRedirectToUserLocationPage(result, Journey.GetYourEORI)
+      assertRedirectToUserLocationPage(result, Journey.Register)
       verifyZeroInteractions(mockMatchingService)
     }
 
@@ -78,7 +78,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach {
       status(result) shouldBe SEE_OTHER
       result.header.headers("Location") should be(
         uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.ConfirmContactDetailsController
-          .form(Journey.GetYourEORI)
+          .form(Journey.Register)
           .url
       )
     }
@@ -94,7 +94,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach {
       val result = await(controller.matchWithIdOnly().apply(SessionBuilder.buildRequestWithSession(userId)))
 
       status(result) shouldBe SEE_OTHER
-      assertRedirectToUserLocationPage(result, Journey.GetYourEORI)
+      assertRedirectToUserLocationPage(result, Journey.Register)
     }
 
     "for Journey GetAnEori redirect to Confirm page when a match found with SA UTR only" in {
@@ -108,7 +108,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach {
       status(result) shouldBe SEE_OTHER
       result.header.headers("Location") should be(
         uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.ConfirmContactDetailsController
-          .form(Journey.GetYourEORI)
+          .form(Journey.Register)
           .url
       )
     }
@@ -124,7 +124,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach {
       status(result) shouldBe SEE_OTHER
       result.header.headers("Location") should be(
         uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.ConfirmContactDetailsController
-          .form(Journey.GetYourEORI)
+          .form(Journey.Register)
           .url
       )
     }
@@ -140,7 +140,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach {
       status(result) shouldBe SEE_OTHER
       result.header.headers("Location") should be(
         uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.ConfirmContactDetailsController
-          .form(Journey.GetYourEORI)
+          .form(Journey.Register)
           .url
       )
     }
@@ -188,7 +188,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach {
         await(controller.matchWithIdOnlyForExistingReg().apply(SessionBuilder.buildRequestWithSession(userId)))
 
       status(result) shouldBe SEE_OTHER
-      assertRedirectToUserLocationPage(result, Journey.Migrate)
+      assertRedirectToUserLocationPage(result, Journey.Subscribe)
     }
   }
 

@@ -200,7 +200,7 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     test(
       controller
-        .createForm(testIndex, journey = Journey.GetYourEORI)
+        .createForm(testIndex, journey = Journey.Register)
         .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     )
   }
@@ -209,7 +209,7 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     test(
       controller
-        .reviewForm(testIndex, journey = Journey.GetYourEORI)
+        .reviewForm(testIndex, journey = Journey.Register)
         .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     )
   }
@@ -218,7 +218,7 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     test(
       controller
-        .submit(testIndex, Journey.GetYourEORI, isInReviewMode: Boolean)
+        .submit(testIndex, Journey.Register, isInReviewMode: Boolean)
         .apply(SessionBuilder.buildRequestWithFormValues(form))
     )
   }

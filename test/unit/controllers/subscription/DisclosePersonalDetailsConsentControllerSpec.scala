@@ -49,11 +49,11 @@ class DisclosePersonalDetailsConsentControllerSpec
   protected override val formId: String = DisclosePersonalDetailsConsentPage.formId
   protected override val submitInCreateModeUrl: String =
     uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.DisclosePersonalDetailsConsentController
-      .submit(isInReviewMode = false, Journey.GetYourEORI)
+      .submit(isInReviewMode = false, Journey.Register)
       .url
   protected override val submitInReviewModeUrl: String =
     uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.DisclosePersonalDetailsConsentController
-      .submit(isInReviewMode = true, Journey.GetYourEORI)
+      .submit(isInReviewMode = true, Journey.Register)
       .url
 
   private val mockRequestSession = mock[RequestSessionData]
@@ -142,7 +142,7 @@ class DisclosePersonalDetailsConsentControllerSpec
 
   "Loading the page in create mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.GetYourEORI))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.Register))
 
     "set form action url to submit in create mode" in {
       showCreateForm()(verifyFormActionInCreateMode)
@@ -155,7 +155,7 @@ class DisclosePersonalDetailsConsentControllerSpec
 
   "Loading the page in review mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.reviewForm(Journey.GetYourEORI))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.reviewForm(Journey.Register))
 
     "set form action url to submit in review mode" in {
       showReviewForm()(verifyFormSubmitsInReviewMode)
@@ -214,7 +214,7 @@ class DisclosePersonalDetailsConsentControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = true, Journey.GetYourEORI)
+      controller.submit(isInReviewMode = true, Journey.Register)
     )
 
     "allow resubmission in review mode when details are invalid" in {
@@ -222,7 +222,7 @@ class DisclosePersonalDetailsConsentControllerSpec
     }
 
     "redirect to review page when details are valid" in {
-      submitFormInReviewMode(ValidRequest)(verifyRedirectToReviewPage(Journey.GetYourEORI))
+      submitFormInReviewMode(ValidRequest)(verifyRedirectToReviewPage(Journey.Register))
     }
   }
 
@@ -240,7 +240,7 @@ class DisclosePersonalDetailsConsentControllerSpec
   private def showCreateForm(
     subscriptionFlow: SubscriptionFlow = OrganisationSubscriptionFlow,
     userId: String = defaultUserId,
-    journey: Journey.Value = Journey.GetYourEORI
+    journey: Journey.Value = Journey.Register
   )(test: (Future[Result]) => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
 
@@ -253,7 +253,7 @@ class DisclosePersonalDetailsConsentControllerSpec
     subscriptionFlow: SubscriptionFlow = OrganisationSubscriptionFlow,
     previouslyAnswered: Boolean = true,
     userId: String = defaultUserId,
-    journey: Journey.Value = Journey.GetYourEORI
+    journey: Journey.Value = Journey.Register
   )(test: (Future[Result]) => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
 
@@ -275,7 +275,7 @@ class DisclosePersonalDetailsConsentControllerSpec
     form: Map[String, String],
     isInReviewMode: Boolean = false,
     userId: String = defaultUserId,
-    journey: Journey.Value = Journey.GetYourEORI
+    journey: Journey.Value = Journey.Register
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     when(mockSubscriptionFlowManager.currentSubscriptionFlow(any[Request[AnyContent]]))

@@ -41,15 +41,15 @@ class MatchingIdController @Inject()(
   def matchWithIdOnly(): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => loggedInUser: LoggedInUserWithEnrolments =>
       matchLoggedInUserAndRedirect(loggedInUser) {
-        Redirect(UserLocationController.form(Journey.GetYourEORI))
+        Redirect(UserLocationController.form(Journey.Register))
       } {
-        Redirect(ConfirmContactDetailsController.form(Journey.GetYourEORI))
+        Redirect(ConfirmContactDetailsController.form(Journey.Register))
       }
   }
 
   def matchWithIdOnlyForExistingReg(): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
-      Future.successful(Redirect(UserLocationController.form(Journey.Migrate)))
+      Future.successful(Redirect(UserLocationController.form(Journey.Subscribe)))
   }
 
   private def matchLoggedInUserAndRedirect(loggedInUser: LoggedInUserWithEnrolments)(

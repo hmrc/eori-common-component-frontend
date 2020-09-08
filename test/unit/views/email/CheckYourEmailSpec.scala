@@ -54,7 +54,7 @@ class CheckYourEmailSpec extends ViewSpec {
 
   lazy val doc: Document = {
     val email = "test@example.com"
-    val result = view(Some(email), form, isInReviewMode, Journey.Migrate)
+    val result = view(Some(email), form, isInReviewMode, Journey.Subscribe)
     Jsoup.parse(contentAsString(result))
   }
 }

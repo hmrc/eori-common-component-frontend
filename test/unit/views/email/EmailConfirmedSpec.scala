@@ -39,7 +39,7 @@ class EmailConfirmedSpec extends ViewSpec {
     "have the correct class on the h1" in {
       migrateDoc.body.getElementsByTag("h1").hasClass("heading-large") mustBe true
     }
-    "have an correct text for Migrate journey" in {
+    "have an correct text for Subscribe journey" in {
       migrateDoc.body
         .getElementById("info")
         .text() mustBe "You can continue with your application to get access to CDS."
@@ -55,12 +55,12 @@ class EmailConfirmedSpec extends ViewSpec {
   }
 
   lazy val migrateDoc: Document = {
-    val result = view(Journey.Migrate)
+    val result = view(Journey.Subscribe)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val getEoriDoc: Document = {
-    val result = view(Journey.GetYourEORI)
+    val result = view(Journey.Register)
     Jsoup.parse(contentAsString(result))
   }
 

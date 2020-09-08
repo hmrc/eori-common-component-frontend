@@ -159,9 +159,9 @@ class CheckYourEmailController @Inject()(
 
   def toResult(journey: Journey.Value)(implicit request: Request[AnyContent], hc: HeaderCarrier): Result =
     journey match {
-      case Journey.GetYourEORI =>
+      case Journey.Register =>
         Redirect(MatchingIdController.matchWithIdOnly())
-      case Journey.Migrate =>
+      case Journey.Subscribe =>
         Redirect(MatchingIdController.matchWithIdOnlyForExistingReg())
     }
 

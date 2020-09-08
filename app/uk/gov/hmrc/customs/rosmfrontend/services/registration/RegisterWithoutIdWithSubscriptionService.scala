@@ -48,7 +48,7 @@ class RegisterWithoutIdWithSubscriptionService @Inject()(
     def isRow = UserLocation.isRow(requestSessionData)
 
     def applicableForRegistration(rd: RegistrationDetails) =
-      rd.safeId.id.isEmpty && isRow && journey.equals(Journey.GetYourEORI)
+      rd.safeId.id.isEmpty && isRow && journey.equals(Journey.Register)
 
     sessionCache.registrationDetails flatMap {
       case rd if applicableForRegistration(rd) =>

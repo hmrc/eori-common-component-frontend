@@ -38,11 +38,11 @@
 }
 
 @journey = @{
-    if(request.path.contains("register")) Journey.GetYourEORI else Journey.Migrate
+    if(request.path.contains("register")) Journey.Register else Journey.Subscribe
 }
 
 @betaFeedbackHeaderUrl = @{
-    if(journey == Journey.GetYourEORI) "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=CDS"
+    if(journey == Journey.Register) "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=CDS"
     else "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=get-access-cds"
 }
 

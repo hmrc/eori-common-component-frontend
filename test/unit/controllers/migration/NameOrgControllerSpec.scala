@@ -143,15 +143,15 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach {
   }
 
   private def createForm()(test: Future[Result] => Assertion) =
-    test(nameOrgController.createForm(Journey.Migrate).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+    test(nameOrgController.createForm(Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
 
   private def reviewForm()(test: Future[Result] => Assertion) =
-    test(nameOrgController.reviewForm(Journey.Migrate).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+    test(nameOrgController.reviewForm(Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
 
   private def submit(isInReviewMode: Boolean, form: Map[String, String])(test: Future[Result] => Assertion) =
     test(
       nameOrgController
-        .submit(isInReviewMode, Journey.Migrate)
+        .submit(isInReviewMode, Journey.Subscribe)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form))
     )
 

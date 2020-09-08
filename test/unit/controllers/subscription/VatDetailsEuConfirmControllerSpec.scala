@@ -194,12 +194,12 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
 
   private def displayForm()(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.createForm(Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    await(test(controller.createForm(Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
   private def reviewForm()(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.reviewForm(Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    await(test(controller.reviewForm(Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
   private def submitForm(form: Map[String, String], isInReviewMode: Boolean = false)(test: Future[Result] => Any) {
@@ -207,7 +207,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
     await(
       test(
         controller
-          .submit(isInReviewMode, Journey.GetYourEORI)
+          .submit(isInReviewMode, Journey.Register)
           .apply(SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form))
       )
     )

@@ -70,17 +70,17 @@ class WhatIsYourEmailSpec extends ViewSpec {
   }
 
   lazy val MigrateDoc: Document = {
-    val result = view(form, Journey.Migrate)
+    val result = view(form, Journey.Subscribe)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val GYEDoc: Document = {
-    val result = view(form, Journey.GetYourEORI)
+    val result = view(form, Journey.Register)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val docWithErrors: Document = {
-    val result = view(formWithError, Journey.Migrate)
+    val result = view(formWithError, Journey.Subscribe)
     Jsoup.parse(contentAsString(result))
   }
 }

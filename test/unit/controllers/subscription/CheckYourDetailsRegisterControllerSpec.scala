@@ -111,7 +111,7 @@ class CheckYourDetailsRegisterControllerSpec
   }
 
   "Reviewing the details" should {
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.reviewDetails(Journey.GetYourEORI))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.reviewDetails(Journey.Register))
 
     "return ok when data has been provided" in {
       showForm() { result =>
@@ -745,14 +745,14 @@ class CheckYourDetailsRegisterControllerSpec
 
   "submitting the form" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.submitDetails(Journey.GetYourEORI))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.submitDetails(Journey.Register))
 
     "redirect to next screen" in {
       when(
         mockRegisterWithoutIdWithSubscription
           .rowRegisterWithoutIdWithSubscription(any(), any())(any[HeaderCarrier], any())
       ).thenReturn(Future.successful(Results.Ok))
-      submitForm(Map.empty, journey = Journey.GetYourEORI)(verifyRedirectToNextPageIn(_)("next-page-url"))
+      submitForm(Map.empty, journey = Journey.Register)(verifyRedirectToNextPageIn(_)("next-page-url"))
       verify(mockRegisterWithoutIdWithSubscription, times(1))
         .rowRegisterWithoutIdWithSubscription(any(), any())(any[HeaderCarrier], any())
     }
@@ -786,7 +786,7 @@ class CheckYourDetailsRegisterControllerSpec
     page.getElementText(RegistrationReviewPage.UKVatIdentificationNumbersReviewLinkXpath) shouldBe RegistrationReviewPage
       .changeAnswerText("UK VAT Number")
     page.getElementsHref(RegistrationReviewPage.UKVatIdentificationNumbersReviewLinkXpath) shouldBe VatRegisteredUkController
-      .reviewForm(Journey.GetYourEORI)
+      .reviewForm(Journey.Register)
       .url
   }
 
@@ -830,7 +830,7 @@ class CheckYourDetailsRegisterControllerSpec
 
     when(mockSubscriptionFlow.isIndividualFlow).thenReturn(isIndividualSubscriptionFlow)
 
-    test(controller.reviewDetails(Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSession(userId)(app)))
+    test(controller.reviewDetails(Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId)(app)))
   }
 
   private def submitForm(

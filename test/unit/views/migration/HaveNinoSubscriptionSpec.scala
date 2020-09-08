@@ -95,7 +95,7 @@ class HaveNinoSubscriptionSpec extends ViewSpec {
     }
   }
 
-  lazy val doc: Document = Jsoup.parse(contentAsString(view(standardForm, Journey.Migrate)))
-  lazy val docWithNoOptionSelected: Document = Jsoup.parse(contentAsString(view(noOptionSelectedForm, Journey.Migrate)))
-  lazy val docWithIncorrectNino: Document = Jsoup.parse(contentAsString(view(incorrectNinoForm, Journey.Migrate)))
+  lazy val doc: Document = Jsoup.parse(contentAsString(view(standardForm, Journey.Subscribe)))
+  lazy val docWithNoOptionSelected: Document = Jsoup.parse(contentAsString(view(noOptionSelectedForm, Journey.Subscribe)))
+  lazy val docWithIncorrectNino: Document = Jsoup.parse(contentAsString(view(incorrectNinoForm, Journey.Subscribe)))
 }

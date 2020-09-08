@@ -67,10 +67,10 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueReviewModeSpec
     )(global)
 
     protected def show(с: RowIndividualNameDateOfBirthController): Action[AnyContent] =
-      с.reviewForm(organisationType, Journey.GetYourEORI)
+      с.reviewForm(organisationType, Journey.Register)
 
     protected def submit(c: RowIndividualNameDateOfBirthController): Action[AnyContent] =
-      c.submit(true, organisationType, Journey.GetYourEORI)
+      c.submit(true, organisationType, Journey.Register)
 
     def formData(thirdCountryIndividual: IndividualNameAndDateOfBirth): Map[String, String] =
       form.mapping.unbind(thirdCountryIndividual)
@@ -89,7 +89,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueReviewModeSpec
       withControllerFixture { controllerFixture =>
         assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
           controllerFixture.mockAuthConnector,
-          controllerFixture.controller.reviewForm(organisationType, Journey.GetYourEORI)
+          controllerFixture.controller.reviewForm(organisationType, Journey.Register)
         )
       }
 
@@ -115,7 +115,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueReviewModeSpec
             assertPresentOnPage(webPage.familyNameElement)
             assertPresentOnPage(webPage.dateOfBirthElement)
             page.getElementAttributeAction(webPage.formElement) shouldBe RowIndividualNameDateOfBirthController
-              .reviewForm(organisationType, Journey.GetYourEORI)
+              .reviewForm(organisationType, Journey.Register)
               .url
 
             page.getElementValue(webPage.givenNameElement) shouldBe "firstName"
@@ -144,7 +144,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueReviewModeSpec
       withControllerFixture { controllerFixture =>
         assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
           controllerFixture.mockAuthConnector,
-          controllerFixture.controller.submit(true, organisationType, Journey.GetYourEORI)
+          controllerFixture.controller.submit(true, organisationType, Journey.Register)
         )
       }
 

@@ -45,7 +45,7 @@ class SecuritySignOutControllerSpec extends ControllerSpec {
   "Security Sign Out Controller" should {
     "return Ok 200 when displayPage method is requested" in {
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
-      displayPage(Journey.GetYourEORI) { result =>
+      displayPage(Journey.Register) { result =>
         status(result) shouldBe OK
         val page = CdsPage(bodyOf(result))
         page.title should startWith("For your security, we signed you out")
@@ -54,7 +54,7 @@ class SecuritySignOutControllerSpec extends ControllerSpec {
 
     "return Ok 303 when signOut method is requested" in {
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
-      signOut(Journey.GetYourEORI) { result =>
+      signOut(Journey.Register) { result =>
         status(result) shouldBe SEE_OTHER
       }
       verify(mockSessionCache).remove(any[HeaderCarrier])

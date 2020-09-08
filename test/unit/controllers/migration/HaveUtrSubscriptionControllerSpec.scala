@@ -70,7 +70,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec {
     "return OK and display correct page when orgType is Company" in {
 
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
-      createForm(Journey.Migrate) { result =>
+      createForm(Journey.Subscribe) { result =>
         status(result) shouldBe OK
         val page = CdsPage(bodyOf(result))
         page.title should include(SubscriptionRowCompanyUtr.title)
@@ -81,7 +81,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec {
     "return OK and display correct page when orgType is Sole Trader" in {
 
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(SoleTrader))
-      createForm(Journey.Migrate) { result =>
+      createForm(Journey.Subscribe) { result =>
         status(result) shouldBe OK
         val page = CdsPage(bodyOf(result))
         page.title should include(SubscriptionRowIndividualsUtr.title)
@@ -93,7 +93,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec {
     "return OK and display correct page when orgType is Individual" in {
 
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Individual))
-      createForm(Journey.Migrate) { result =>
+      createForm(Journey.Subscribe) { result =>
         status(result) shouldBe OK
         val page = CdsPage(bodyOf(result))
         page.title should include(SubscriptionRowIndividualsUtr.title)
@@ -103,7 +103,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec {
     "throws an exception if orgType is not found" in {
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
       intercept[IllegalStateException] {
-        createForm(Journey.Migrate)(result => status(result))
+        createForm(Journey.Subscribe)(result => status(result))
       }.getMessage shouldBe "No organisation type selected by user"
     }
   }
@@ -112,13 +112,13 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec {
     "throws an exception if orgType is not found" in {
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
       intercept[IllegalStateException] {
-        submit(Journey.Migrate, ValidUtrRequest)(result => status(result))
+        submit(Journey.Subscribe, ValidUtrRequest)(result => status(result))
       }.getMessage shouldBe "No organisation type selected by user"
     }
 
     "return BadRequest when no option selected" in {
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
-      submit(Journey.Migrate, Map.empty[String, String]) { result =>
+      submit(Journey.Subscribe, Map.empty[String, String]) { result =>
         status(result) shouldBe BAD_REQUEST
       }
     }
@@ -126,7 +126,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec {
     "return BadRequest when invalidUtr provided" in {
       val invalidUtr = "0123456789"
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
-      submit(Journey.Migrate, ValidUtrRequest + ("utr" -> invalidUtr)) { result =>
+      submit(Journey.Subscribe, ValidUtrRequest + ("utr" -> invalidUtr)) { result =>
         status(result) shouldBe BAD_REQUEST
       }
     }
@@ -139,7 +139,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec {
         .thenReturn(Future.successful(()))
       when(mockSubscriptionDetailsService.cachedNameDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(nameOrganisationMatchModel)))
-      submit(Journey.Migrate, ValidUtrRequest) { result =>
+      submit(Journey.Subscribe, ValidUtrRequest) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
       }
@@ -156,7 +156,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec {
         .thenReturn(Future.successful(()))
       when(mockSubscriptionDetailsService.cachedNameDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(nameOrganisationMatchModel)))
-      submit(Journey.Migrate, ValidUtrRequest) { result =>
+      submit(Journey.Subscribe, ValidUtrRequest) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
       }
@@ -170,14 +170,14 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec {
         .thenReturn(Future.successful(()))
       when(mockSubscriptionDetailsService.cachedNameDetails(any[HeaderCarrier])).thenReturn(Future.successful(None))
       intercept[IllegalStateException] {
-        submit(Journey.Migrate, ValidUtrRequest)(result => status(result))
+        submit(Journey.Subscribe, ValidUtrRequest)(result => status(result))
       }.getMessage shouldBe "No business name or CustomsId cached"
     }
 
     "redirect to next page in the flow when 'No' UTR selected" in {
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(SoleTrader))
       mockSubscriptionFlow(nextPageFlowUrl)
-      submit(Journey.Migrate, NoUtrRequest) { result =>
+      submit(Journey.Subscribe, NoUtrRequest) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe nextPageFlowUrl
       }

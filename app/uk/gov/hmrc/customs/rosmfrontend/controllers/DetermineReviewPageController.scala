@@ -38,7 +38,7 @@ class DetermineReviewPageController @Inject()(
   def determineRoute(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       journey match {
-        case Journey.Migrate =>
+        case Journey.Subscribe =>
           Future.successful(Redirect(CheckYourDetailsController.reviewDetails(journey = journey).url))
         case _ => Future.successful(Redirect(CheckYourDetailsRegisterController.reviewDetails(journey).url))
       }

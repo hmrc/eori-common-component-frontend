@@ -47,7 +47,7 @@ class AllowlistVerificationWithEnrolmentsWithFeatureOffSpec extends ControllerSp
       AuthBuilder.withAuthorisedUser(defaultUserId, auth, userEmail = Some("not@example.com"))
 
       val result = controller
-        .form(Journey.Migrate)
+        .form(Journey.Subscribe)
         .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe/", defaultUserId))
 
       status(result) shouldBe OK
@@ -57,7 +57,7 @@ class AllowlistVerificationWithEnrolmentsWithFeatureOffSpec extends ControllerSp
       AuthBuilder.withAuthorisedUser(defaultUserId, auth, userEmail = Some("mister_allow@example.com"))
 
       val result = controller
-        .form(Journey.Migrate)
+        .form(Journey.Subscribe)
         .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe/", defaultUserId))
 
       status(result) shouldBe OK

@@ -87,7 +87,7 @@ class CheckYourDetailsControllerSpec
 
   "Reviewing the details" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.reviewDetails(Journey.Migrate))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.reviewDetails(Journey.Subscribe))
 
     "return ok when data has been provided" in {
       when(mockCdsDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(existingOrganisationRegistrationDetails)
@@ -107,6 +107,6 @@ class CheckYourDetailsControllerSpec
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(userSelectedOrgType)
     when(mockSubscriptionFlow.isIndividualFlow).thenReturn(isIndividualSubscriptionFlow)
 
-    test(controller.reviewDetails(Journey.Migrate).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.reviewDetails(Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 }

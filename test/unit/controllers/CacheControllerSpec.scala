@@ -46,14 +46,14 @@ class CacheControllerSpec extends ControllerSpec {
 
   "Cache controller" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.clearCache(Journey.Migrate))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.clearCache(Journey.Subscribe))
 
     "clear cache for subscription holder for subscription journey" in {
       withAuthorisedUser(userId, mockAuthConnector)
       when(mockSessionCache.saveSubscriptionDetails(any[SubscriptionDetails])(any[HeaderCarrier]))
         .thenReturn(Future.successful(true))
       val result: Result =
-        await(controller.clearCache(Journey.Migrate).apply(SessionBuilder.buildRequestWithSession(userId)))
+        await(controller.clearCache(Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(userId)))
 
       status(result) shouldBe SEE_OTHER
       result.header.headers("Location") should be(ApplicationController.startSubscription().url)
@@ -65,7 +65,7 @@ class CacheControllerSpec extends ControllerSpec {
       when(mockSessionCache.saveSubscriptionDetails(any[SubscriptionDetails])(any[HeaderCarrier]))
         .thenReturn(Future.successful(true))
       val result: Result =
-        await(controller.clearCache(Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSession(userId)))
+        await(controller.clearCache(Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId)))
       status(result) shouldBe SEE_OTHER
       result.header.headers("Location") should be(ApplicationController.start().url)
       assertSessionDoesNotContainKeys(result.session)

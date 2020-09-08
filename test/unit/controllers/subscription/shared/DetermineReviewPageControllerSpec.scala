@@ -46,7 +46,7 @@ class DetermineReviewPageControllerSpec extends ControllerSpec with BeforeAndAft
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.determineRoute(Journey.GetYourEORI)
+      controller.determineRoute(Journey.Register)
     )
 
     "redirect to to correct page when session data is set with the key journeyType.Subscribe" in {
@@ -56,7 +56,7 @@ class DetermineReviewPageControllerSpec extends ControllerSpec with BeforeAndAft
         awaitedResult.header.headers.get("Location") shouldBe
           Some(
             uk.gov.hmrc.customs.rosmfrontend.controllers.migration.routes.CheckYourDetailsController
-              .reviewDetails(Journey.Migrate)
+              .reviewDetails(Journey.Subscribe)
               .url
           )
       }
@@ -70,7 +70,7 @@ class DetermineReviewPageControllerSpec extends ControllerSpec with BeforeAndAft
         awaitedResult.header.headers.get("Location") shouldBe
           Some(
             uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.CheckYourDetailsRegisterController
-              .reviewDetails(Journey.GetYourEORI)
+              .reviewDetails(Journey.Register)
               .url
           )
       }
@@ -81,7 +81,7 @@ class DetermineReviewPageControllerSpec extends ControllerSpec with BeforeAndAft
     val aUserId = defaultUserId
     withAuthorisedUser(aUserId, mockAuthConnector)
 
-    val result = controller.determineRoute(Journey.GetYourEORI).apply(SessionBuilder.buildRequestWithSession(aUserId))
+    val result = controller.determineRoute(Journey.Register).apply(SessionBuilder.buildRequestWithSession(aUserId))
     test(result)
   }
 
@@ -89,7 +89,7 @@ class DetermineReviewPageControllerSpec extends ControllerSpec with BeforeAndAft
     val aUserId = defaultUserId
     withAuthorisedUser(aUserId, mockAuthConnector)
 
-    val result = controller.determineRoute(Journey.Migrate).apply(SessionBuilder.buildRequestWithSession(aUserId))
+    val result = controller.determineRoute(Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(aUserId))
     test(result)
   }
 }

@@ -28,7 +28,7 @@ class SubscriptionStartSpec extends ViewSpec {
 
   private val view = app.injector.instanceOf[migration_start]
 
-  lazy val doc = Jsoup.parse(contentAsString(view(Journey.Migrate)))
+  lazy val doc = Jsoup.parse(contentAsString(view(Journey.Subscribe)))
 
   "Subscription Start Page" should {
 

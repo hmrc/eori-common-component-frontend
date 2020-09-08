@@ -111,25 +111,25 @@ class VatDetailsEuSpec extends ViewSpec {
   }
 
   private lazy val doc: Document =
-    Jsoup.parse(contentAsString(view(form, countries.eu, updateDetails = false, Journey.GetYourEORI, isInReviewMode)))
+    Jsoup.parse(contentAsString(view(form, countries.eu, updateDetails = false, Journey.Register, isInReviewMode)))
   private lazy val docForEdit: Document = Jsoup.parse(
     contentAsString(
-      view(formForUpdate, countries.eu, updateDetails = true, Journey.GetYourEORI, isInReviewMode = false)
+      view(formForUpdate, countries.eu, updateDetails = true, Journey.Register, isInReviewMode = false)
     )
   )
   private lazy val docWithEmptyErrors: Document = Jsoup.parse(
     contentAsString(
-      view(formWithNoSelectionError, countries.eu, updateDetails = false, Journey.GetYourEORI, isInReviewMode)
+      view(formWithNoSelectionError, countries.eu, updateDetails = false, Journey.Register, isInReviewMode)
     )
   )
   private lazy val vatNumErrorIllegalCharacters: Document = Jsoup.parse(
     contentAsString(
-      view(formWithIncorrectVatNumber, countries.eu, updateDetails = false, Journey.GetYourEORI, isInReviewMode)
+      view(formWithIncorrectVatNumber, countries.eu, updateDetails = false, Journey.Register, isInReviewMode)
     )
   )
   private lazy val vatNumErrorLong: Document = Jsoup.parse(
     contentAsString(
-      view(formWithLongVatDetails, countries.eu, updateDetails = false, Journey.GetYourEORI, isInReviewMode)
+      view(formWithLongVatDetails, countries.eu, updateDetails = false, Journey.Register, isInReviewMode)
     )
   )
 }

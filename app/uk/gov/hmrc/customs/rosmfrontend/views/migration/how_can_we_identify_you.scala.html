@@ -44,7 +44,7 @@
             </legend>
 
             @helper.form(
-            if(journey == Journey.Migrate)
+            if(journey == Journey.Subscribe)
                 HowCanWeIdentifyYouController.submit(isInReviewMode, journey)
             else
                 GYEHowCanWeIdentifyYouController.submit(organisationType.getOrElse(throw new IllegalArgumentException("Missing Organisation type")), journey), 'id -> "nino-utr-form") {

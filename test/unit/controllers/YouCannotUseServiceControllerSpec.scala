@@ -40,7 +40,7 @@ class YouCannotUseServiceControllerSpec extends ControllerSpec {
 
   "YouCannotUseService Controller" should {
     "return Unauthorised 401 when page method is requested" in {
-      page(Journey.GetYourEORI) { result =>
+      page(Journey.Register) { result =>
         status(result) shouldBe UNAUTHORIZED
         val page = CdsPage(bodyOf(result))
         page.title should startWith(messages("cds.you-cant-use-service.heading"))

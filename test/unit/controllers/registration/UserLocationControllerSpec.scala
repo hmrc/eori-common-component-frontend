@@ -140,7 +140,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
 
   "Viewing the user location form" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.form(Journey.GetYourEORI))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.form(Journey.Register))
     "display the form with no errors" in {
       showForm() { result =>
         status(result) shouldBe OK
@@ -152,7 +152,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
 
   "Submitting the form" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.submit(Journey.GetYourEORI))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.submit(Journey.Register))
 
     "ensure a location option has been selected" in {
       submitForm(ValidRequest - locationFieldName) { result =>
@@ -181,7 +181,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
       submitForm(ValidRequest + (locationFieldName -> UserLocation.Iom)) { result =>
         status(result) shouldBe SEE_OTHER
         val expectedUrl =
-          YouNeedADifferentServiceIomController.form(Journey.GetYourEORI).url
+          YouNeedADifferentServiceIomController.form(Journey.Register).url
         result.header.headers(LOCATION) should endWith(expectedUrl)
       }
     }
@@ -199,7 +199,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
     "redirect to OrganisationTypeController form when 'Iom' is selected" in {
       subscriptionStatus() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith(OrganisationTypeController.form(Journey.GetYourEORI).url)
+        result.header.headers(LOCATION) should endWith(OrganisationTypeController.form(Journey.Register).url)
       }
     }
 
@@ -212,9 +212,9 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
       error.getMessage shouldBe "User Location not set"
     }
 
-    "return IllegalStateException when Migrate journey is selected and location is not set" in {
+    "return IllegalStateException when Subscribe journey is selected and location is not set" in {
       val error = intercept[IllegalStateException] {
-        subscriptionStatus(Journey.Migrate, None) { result =>
+        subscriptionStatus(Journey.Subscribe, None) { result =>
           await(result)
         }
       }
@@ -259,16 +259,16 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         mockSubscriptionFlowManager.startSubscriptionFlow(
           meq(Some(UserLocationPage)),
           meq(CdsOrganisationType.ThirdCountryIndividual),
-          meq(Journey.GetYourEORI)
+          meq(Journey.Register)
         )(any[HeaderCarrier], any[Request[AnyContent]])
       ).thenReturn(Future.successful(mockFlowStart))
 
       val test =
-        controller.cacheAndRedirect(Journey.GetYourEORI, "third-country")
+        controller.cacheAndRedirect(Journey.Register, "third-country")
       val result = await(test(Right(RegistrationDisplayResponse(mock[ResponseCommon], Some(responseDetail)))))
 
       status(result) shouldBe SEE_OTHER
-      result.header.headers(LOCATION) should endWith(BusinessDetailsRecoveryController.form(Journey.GetYourEORI).url)
+      result.header.headers(LOCATION) should endWith(BusinessDetailsRecoveryController.form(Journey.Register).url)
     }
 
     "cache registration display response and redirect to BusinessDetailsRecoveryPage for organisation response" in {
@@ -291,21 +291,21 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         mockSubscriptionFlowManager.startSubscriptionFlow(
           meq(Some(UserLocationPage)),
           meq(CdsOrganisationType.ThirdCountryOrganisation),
-          meq(Journey.GetYourEORI)
+          meq(Journey.Register)
         )(any[HeaderCarrier], any[Request[AnyContent]])
       ).thenReturn(Future.successful(mockFlowStart))
 
       val test =
-        controller.cacheAndRedirect(Journey.GetYourEORI, "third-country")
+        controller.cacheAndRedirect(Journey.Register, "third-country")
       val result = await(test(Right(RegistrationDisplayResponse(mock[ResponseCommon], Some(responseDetail)))))
 
       status(result) shouldBe SEE_OTHER
-      result.header.headers(LOCATION) should endWith(BusinessDetailsRecoveryController.form(Journey.GetYourEORI).url)
+      result.header.headers(LOCATION) should endWith(BusinessDetailsRecoveryController.form(Journey.Register).url)
     }
 
     "return service unavailable response when failed to retrieve registration display response" in {
       val test =
-        controller.cacheAndRedirect(Journey.GetYourEORI, "third-country")
+        controller.cacheAndRedirect(Journey.Register, "third-country")
       val result = await(test(Left(ServiceUnavailableResponse)))
 
       status(result) shouldBe SERVICE_UNAVAILABLE
@@ -317,7 +317,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
 
     test(
       controller
-        .form(Journey.GetYourEORI)
+        .form(Journey.Register)
         .apply(SessionBuilder.buildRequestWithSession(userId))
     )
   }
@@ -327,7 +327,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
 
     test(
       controller
-        .submit(Journey.GetYourEORI)
+        .submit(Journey.Register)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }
@@ -348,8 +348,8 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
   }
 
   private def subscriptionStatus(
-    journey: Journey.Value = Journey.GetYourEORI,
-    location: Option[String] = Some(UserLocation.Iom)
+                                  journey: Journey.Value = Journey.Register,
+                                  location: Option[String] = Some(UserLocation.Iom)
   )(test: Future[Result] => Any) = {
 
     val subStatus: PreSubscriptionStatus = NewSubscription
@@ -410,7 +410,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         submitForm(ValidRequest + (locationFieldName -> selectedOptionValue)) { result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers(LOCATION) should endWith(
-            SignInWithDifferentDetailsController.form(Journey.GetYourEORI).url
+            SignInWithDifferentDetailsController.form(Journey.Register).url
           )
         }
       }
@@ -429,7 +429,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
           status(result) shouldBe SEE_OTHER
           result.header.headers(LOCATION) should endWith(
             SubscriptionRecoveryController
-              .complete(Journey.GetYourEORI)
+              .complete(Journey.Register)
               .url
           )
         }
@@ -476,7 +476,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         ) {}
 
         val result = controller
-          .submit(Journey.GetYourEORI)
+          .submit(Journey.Register)
           .apply(
             SessionBuilder.buildRequestWithSessionAndFormValues(
               defaultUserId,
@@ -485,7 +485,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
           )
 
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith(BusinessDetailsRecoveryController.form(Journey.GetYourEORI).url)
+        result.header.headers(LOCATION) should endWith(BusinessDetailsRecoveryController.form(Journey.Register).url)
       }
 
       s"redirect to BusinessDetailsRecoveryController when SubscriptionRejected status and registration display is enabled and when '$selectedOptionValue' is selected" in {
@@ -530,7 +530,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         ) {}
 
         val result = controller
-          .submit(Journey.GetYourEORI)
+          .submit(Journey.Register)
           .apply(
             SessionBuilder.buildRequestWithSessionAndFormValues(
               defaultUserId,
@@ -539,7 +539,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
           )
 
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith(BusinessDetailsRecoveryController.form(Journey.GetYourEORI).url)
+        result.header.headers(LOCATION) should endWith(BusinessDetailsRecoveryController.form(Journey.Register).url)
       }
 
     } else if (selectedOptionValue == UserLocation.Uk) {
@@ -550,7 +550,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         submitForm(ValidRequest + (locationFieldName -> selectedOptionValue)) { result =>
           status(result) shouldBe SEE_OTHER
           val expectedUrl =
-            OrganisationTypeController.form(Journey.GetYourEORI).url
+            OrganisationTypeController.form(Journey.Register).url
           result.header.headers(LOCATION) should endWith(expectedUrl)
         }
       }

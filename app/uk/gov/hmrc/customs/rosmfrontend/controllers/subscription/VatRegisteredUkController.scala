@@ -104,7 +104,7 @@ class VatRegisteredUkController @Inject()(
               _ =>
                 if (isInReviewMode) {
                   if (yesNoAnswer.isYes) {
-                    Future.successful(Redirect(VatDetailsController.reviewForm(journey = Journey.GetYourEORI).url))
+                    Future.successful(Redirect(VatDetailsController.reviewForm(journey = Journey.Register).url))
                   } else {
                     subscriptionDetailsService.clearCachedUkVatDetails
                     Future.successful(Redirect(DetermineReviewPageController.determineRoute(journey).url))

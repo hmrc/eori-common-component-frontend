@@ -172,13 +172,13 @@ class VatRegisteredEuControllerSpec extends ControllerSpec {
     }
   }
 
-  private def createForm(journey: Journey.Value = Journey.GetYourEORI)(test: Future[Result] => Any) = {
+  private def createForm(journey: Journey.Value = Journey.Register)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     mockIsIndividual()
     test(controller.createForm(journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }
 
-  private def reviewForm(journey: Journey.Value = Journey.GetYourEORI)(test: Future[Result] => Any) {
+  private def reviewForm(journey: Journey.Value = Journey.Register)(test: Future[Result] => Any) {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     mockIsIndividual()
     when(mockSessionCache.subscriptionDetails).thenReturn(any)
@@ -191,7 +191,7 @@ class VatRegisteredEuControllerSpec extends ControllerSpec {
     mockIsIndividual()
     test(
       controller
-        .submit(isInReviewMode: Boolean, Journey.GetYourEORI)
+        .submit(isInReviewMode: Boolean, Journey.Register)
         .apply(SessionBuilder.buildRequestWithFormValues(form))
     )
   }

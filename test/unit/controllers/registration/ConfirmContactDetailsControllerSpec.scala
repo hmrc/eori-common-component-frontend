@@ -121,7 +121,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
   "Reviewing the details" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.form(Journey.GetYourEORI))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.form(Journey.Register))
 
     "return ok when data has been provided" in {
       mockCacheWithRegistrationDetails(organisationRegistrationDetails)
@@ -186,7 +186,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       invokeConfirm() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.OrganisationTypeController
-          .form(Journey.GetYourEORI)
+          .form(Journey.Register)
           .url
         verify(mockCdsFrontendDataCache).remove(any[HeaderCarrier])
       }
@@ -283,7 +283,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
   "Selecting Yes" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.submit(Journey.GetYourEORI))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.submit(Journey.Register))
 
     "redirect to the page defined by subscription flow start when service returns NewSubscription for organisation" in {
       when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier]))
@@ -346,7 +346,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       invokeConfirmContactDetailsWithSelectedOption() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.ConfirmIndividualTypeController
-          .form(Journey.GetYourEORI)
+          .form(Journey.Register)
           .url
       }
     }
@@ -373,7 +373,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       invokeConfirmContactDetailsWithSelectedOption() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.ConfirmIndividualTypeController
-          .form(Journey.GetYourEORI)
+          .form(Journey.Register)
           .url
       }
     }
@@ -418,7 +418,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       invokeConfirmContactDetailsWithSelectedOption() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.SignInWithDifferentDetailsController
-          .form(Journey.GetYourEORI)
+          .form(Journey.Register)
           .url
       }
     }
@@ -440,7 +440,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       invokeConfirmContactDetailsWithSelectedOption() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.SubscriptionRecoveryController
-          .complete(Journey.GetYourEORI)
+          .complete(Journey.Register)
           .url
       }
     }
@@ -484,7 +484,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       invokeConfirmContactDetailsWithSelectedOption(selectedOption = "no") { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.OrganisationTypeController
-          .form(Journey.GetYourEORI)
+          .form(Journey.Register)
           .url
       }
     }
@@ -531,7 +531,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       invokeConfirmContactDetailsWithSelectedOption(selectedOption = "wrong-address") { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe uk.gov.hmrc.customs.rosmfrontend.controllers.routes.AddressController
-          .createForm(Journey.GetYourEORI)
+          .createForm(Journey.Register)
           .url
       }
     }
@@ -616,7 +616,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller
-        .form(Journey.GetYourEORI)
+        .form(Journey.Register)
         .apply(SessionBuilder.buildRequestWithSession(userId))
     )
   }
@@ -628,7 +628,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller
-        .submit(Journey.GetYourEORI)
+        .submit(Journey.Register)
         .apply(
           SessionBuilder.buildRequestWithSessionAndFormValues(userId, Map("yes-no-wrong-address" -> selectedOption))
         )
@@ -641,7 +641,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller
-        .submit(Journey.GetYourEORI)
+        .submit(Journey.Register)
         .apply(SessionBuilder.buildRequestWithSession(userId))
     )
   }

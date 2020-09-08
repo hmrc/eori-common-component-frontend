@@ -25,7 +25,7 @@ trait JourneyTypeFromUrl {
     "(?<=/customs-enrolment-services/)(.*?)(?=/)".r.findFirstIn(request.path).getOrElse("")
 
   def journeyFromUrl(implicit request: Request[AnyContent]): Journey.Value = journeyTypeFromUrl match {
-    case JourneyType.GetAnEori => Journey.GetYourEORI
-    case _                     => Journey.Migrate
+    case JourneyType.GetAnEori => Journey.Register
+    case _                     => Journey.Subscribe
   }
 }
