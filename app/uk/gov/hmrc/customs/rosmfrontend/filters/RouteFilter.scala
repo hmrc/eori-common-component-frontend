@@ -19,12 +19,19 @@ package uk.gov.hmrc.customs.rosmfrontend.filters
 import akka.stream.Materializer
 import javax.inject.Inject
 import play.api.mvc.{Filter, RequestHeader, Result}
+import play.mvc.Http.Status.NOT_FOUND
+import uk.gov.hmrc.customs.rosmfrontend.CdsErrorHandler
+import uk.gov.hmrc.customs.rosmfrontend.config.AppConfig
 
 import scala.concurrent.Future
 
-class RouteFilter @Inject()()(implicit val mat: Materializer)
+class RouteFilter @Inject()(appConfig: AppConfig, errorHandler: CdsErrorHandler)(implicit val mat: Materializer)
     extends Filter {
 
-  override def apply(next: RequestHeader => Future[Result])(rh: RequestHeader): Future[Result] =
-    next(rh)
+  override def apply(next: RequestHeader => Future[Result])(rh: RequestHeader): Future[Result] = {
+      appConfig.blockedRoutesRegex.exists(_.findFirstIn(rh.uri).isDefined) match {
+        case false => next(rh)
+        case true => errorHandler.onClientError(rh, NOT_FOUND, "Blocked routes")
+      }
+  }
 }

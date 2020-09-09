@@ -21,6 +21,7 @@ import play.api.Configuration
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
 import scala.concurrent.duration.{Duration, MINUTES}
+import scala.util.matching.Regex
 
 @Singleton
 class AppConfig @Inject()(
@@ -45,6 +46,8 @@ class AppConfig @Inject()(
 
   lazy val feedbackLink = config.get[String]("external-url.feedback-survey")
   lazy val feedbackLinkSubscribe = config.get[String]("external-url.feedback-survey-subscribe")
+
+  lazy val blockedRoutesRegex: Seq[Regex] = config.get[String]("routes-to-block").split(',').map(_.r).toSeq
 
   //get help link feedback for Get an EORI
   val reportAProblemPartialUrlGetAnEori: String =

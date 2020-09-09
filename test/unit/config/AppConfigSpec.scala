@@ -26,6 +26,11 @@ class AppConfigSpec extends ControllerSpec {
 
   "AppConfig" should {
 
+    "have blockedRoutesRegex defined" in {
+      appConfig.blockedRoutesRegex.size shouldBe 1
+      appConfig.blockedRoutesRegex.head.pattern.pattern() shouldBe "register"
+    }
+
     "have ttl defined" in {
       appConfig.ttl shouldBe Duration(40, TimeUnit.MINUTES)
     }
