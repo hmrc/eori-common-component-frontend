@@ -23,7 +23,6 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.mvc.{RequestHeader, Result, Results}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.customs.rosmfrontend.CdsErrorHandler
@@ -32,7 +31,7 @@ import uk.gov.hmrc.customs.rosmfrontend.filters.RouteFilter
 
 import scala.concurrent.Future
 
-class RouteFilterSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach with GuiceOneAppPerSuite {
+class RouteFilterSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
 
   implicit val system = ActorSystem()
   implicit val mat: Materializer = ActorMaterializer()
