@@ -4,7 +4,7 @@
 GET         /customs-enrolment-services/assets/*file                                                  @controllers.Assets.versioned(path="/public", file: Asset)
 GET         /public/*file                                                          @controllers.Assets.versioned(path="/public", file: Asset)
 
-GET         /customs-enrolment-services/register/language/:lang                               @uk.gov.hmrc.customs.rosmfrontend.controllers.EoriLanguageController.switchToLanguage(lang: String)
+GET         /customs-enrolment-services/language/:lang                               @uk.gov.hmrc.customs.rosmfrontend.controllers.EoriLanguageController.switchToLanguage(lang: String)
 
 # enrolment-already-exists
 GET         /customs-enrolment-services/enrolment-already-exists                                      @uk.gov.hmrc.customs.rosmfrontend.controllers.EnrolmentAlreadyExistsController.enrolmentAlreadyExists
