@@ -6,6 +6,8 @@ GET         /public/*file                                                       
 
 GET         /customs-enrolment-services/language/:lang                               @uk.gov.hmrc.customs.rosmfrontend.controllers.EoriLanguageController.switchToLanguage(lang: String)
 
+GET         /customs-enrolment-services/get-eori                                     @uk.gov.hmrc.customs.rosmfrontend.controllers.RegisterRedirectController.getEori()
+
 # enrolment-already-exists
 GET         /customs-enrolment-services/enrolment-already-exists                                      @uk.gov.hmrc.customs.rosmfrontend.controllers.EnrolmentAlreadyExistsController.enrolmentAlreadyExists
 
