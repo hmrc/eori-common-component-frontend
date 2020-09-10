@@ -44,6 +44,22 @@ case class SubscriptionDisplayResponseDetail(
     val vi = prefixMapKey("vatIDs.", VATIDs.fold(Map.empty[String, String])(_.flatMap(_.toMap()).toMap))
     m ++ ea ++ ci ++ vi
   }
+
+  def toRequestDetail(SAFE: String): RequestDetail = RequestDetail(
+    SAFE = SAFE,
+    EORINo = EORINo,
+    CDSFullName = CDSFullName,
+    CDSEstablishmentAddress = CDSEstablishmentAddress,
+    establishmentInTheCustomsTerritoryOfTheUnion = establishmentInTheCustomsTerritoryOfTheUnion,
+    typeOfLegalEntity = typeOfLegalEntity,
+    contactInformation = contactInformation,
+    vatIDs = VATIDs.map(_.map(vatId => VatId(vatId.countryCode, vatId.VATID))),
+    consentToDisclosureOfPersonalData = consentToDisclosureOfPersonalData,
+    shortName = shortName,
+    dateOfEstablishment = dateOfEstablishment,
+    typeOfPerson = typeOfPerson,
+    principalEconomicActivity = principalEconomicActivity
+  )
 }
 
 object SubscriptionDisplayResponseDetail {
