@@ -24,7 +24,7 @@ import play.api.{Configuration, Environment}
 import scala.collection.breakOut
 
 @Singleton
-class MovementsMessagesApiProvider @Inject()(environment: Environment, config: Configuration, langs: Langs, httpConfiguration: HttpConfiguration)
+class EccMessagesApiProvider @Inject()(environment: Environment, config: Configuration, langs: Langs, httpConfiguration: HttpConfiguration)
     extends DefaultMessagesApiProvider(environment, config, langs, httpConfiguration) {
 
   override protected def loadAllMessages: Map[String, Map[String, String]] =
