@@ -49,7 +49,7 @@ class AppConfig @Inject()(
   lazy val feedbackLink = config.get[String]("external-url.feedback-survey")
   lazy val feedbackLinkSubscribe = config.get[String]("external-url.feedback-survey-subscribe")
 
-  lazy val getEORILink = config.get[String]("external-url.get-cds-eori")
+  lazy val externalGetEORILink = config.get[String]("external-url.get-cds-eori")
 
   lazy val blockedRoutesRegex: Seq[Regex] = config.get[String]("routes-to-block").split(',').map(_.r).toSeq
 

@@ -26,6 +26,7 @@ import uk.gov.hmrc.customs.rosmfrontend.forms.subscription.SubscriptionForm
 import uk.gov.hmrc.customs.rosmfrontend.models.Journey
 import uk.gov.hmrc.customs.rosmfrontend.views.html.migration.what_is_your_eori
 import util.ViewSpec
+import uk.gov.hmrc.customs.rosmfrontend.controllers._
 
 class WhatIsYourEoriSpec extends ViewSpec {
   val form: Form[EoriNumberViewModel] = SubscriptionForm.eoriNumberForm
@@ -48,10 +49,10 @@ class WhatIsYourEoriSpec extends ViewSpec {
 
   "What Is Your EORI page" should {
     "display correct title" in {
-      doc.title must startWith("What is your EORI number?")
+      doc.title must startWith("What is your GB EORI number?")
     }
     "have the correct heading text" in {
-      doc.body.getElementsByClass("heading-large").text() mustBe "What is your EORI number?"
+      doc.body.getElementsByClass("heading-large").text() mustBe "What is your GB EORI number?"
     }
     "have the correct text in the label" in {
       doc.body
@@ -60,6 +61,9 @@ class WhatIsYourEoriSpec extends ViewSpec {
     }
     "have an input of type 'text'" in {
       doc.body.getElementById("eori-number").attr("type") mustBe "text"
+    }
+    "have a link to 'Get EORI'" in {
+      doc.body.getElementsByAttributeValue("href", routes.RegisterRedirectController.getEori().url ).text() mustBe "Register for an EORI"
     }
 
     "display a field level error message when the Eori is invalid" in {

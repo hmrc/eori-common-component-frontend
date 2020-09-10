@@ -85,10 +85,10 @@ class WhatIsYourEoriControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(Journey.Subscribe))
 
-    "display title as 'Enter your EORI number'" in {
+    "display title as 'What is your GB EORI number?'" in {
       showCreateForm(journey = Journey.Subscribe) { result =>
         val page = CdsPage(bodyOf(result))
-        page.title() should startWith("What is your EORI number?")
+        page.title() should startWith("What is your GB EORI number?")
       }
     }
 
@@ -135,10 +135,10 @@ class WhatIsYourEoriControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.reviewForm(Journey.Subscribe))
 
-    "display title as 'Enter your EORI number'" in {
+    "display title as 'What is your GB EORI number'" in {
       showReviewForm() { result =>
         val page = CdsPage(bodyOf(result))
-        page.title() should startWith("What is your EORI number?")
+        page.title() should startWith("What is your GB EORI number?")
       }
     }
 

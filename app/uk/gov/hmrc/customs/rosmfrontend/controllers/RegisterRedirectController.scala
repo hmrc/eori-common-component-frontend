@@ -34,6 +34,6 @@ class RegisterRedirectController @Inject()(
   extends CdsController(mcc) {
 
   def getEori(): Action[AnyContent] = Action { implicit request =>
-    Redirect(appConfig.getEORILink)
+    Redirect(appConfig.externalGetEORILink)
   }
 }
