@@ -458,7 +458,6 @@ cds.subscription.nino.error.wrong-length=The National Insurance number must be 9
 #What is your Eori
 cds.subscription.enter-eori-number.page.title=What is your EORI number?
 cds.subscription.enter-eori-number.heading=What is your EORI number?
-cds.subscription.enter-eori-number.label=What is your EORI number?
 cds.subscription.enter-eori-number.hint=The number starts with GB and is then followed by 12 digits, For example, GB345834921000.
 cds.matching-error.eori=Enter an EORI number in the right format
 cds.matching-error.eori.isEmpty=Enter your EORI number

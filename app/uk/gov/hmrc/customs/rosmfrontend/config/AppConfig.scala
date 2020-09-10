@@ -33,6 +33,8 @@ class AppConfig @Inject()(
 
   lazy val env: String = runMode.env
 
+  lazy val messageFiles: Seq[String] =  config.get[Seq[String]]("messages.file.names")
+
   lazy val ttl: Duration = Duration.create(config.get[String]("cds-frontend-cache.ttl"))
   lazy val allowlistReferrers: Seq[String] =
     config.get[String]("allowlist-referrers").split(',').map(_.trim).filter(_.nonEmpty)
@@ -46,6 +48,8 @@ class AppConfig @Inject()(
 
   lazy val feedbackLink = config.get[String]("external-url.feedback-survey")
   lazy val feedbackLinkSubscribe = config.get[String]("external-url.feedback-survey-subscribe")
+
+  lazy val externalGetEORILink = config.get[String]("external-url.get-cds-eori")
 
   lazy val blockedRoutesRegex: Seq[Regex] = config.get[String]("routes-to-block").split(',').map(_.r).toSeq
 

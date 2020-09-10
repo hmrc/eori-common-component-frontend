@@ -50,6 +50,11 @@
         <p><input class="button" type="submit" value='@uk.gov.hmrc.customs.rosmfrontend.views.helpers.subscription.ViewHelper.continueButtonText(isInReviewMode)'></p>
     }
 
+    <p>
+        @messages("cds.subscription.enter-eori-number.no-eori")
+        <a href=@uk.gov.hmrc.customs.rosmfrontend.controllers.routes.RegisterRedirectController.getEori()>@messages("cds.subscription.enter-eori-number.no-eori.link")</a>
+    </p>
+
     @helpers.helpAndSupport()
 
 </div>

@@ -416,7 +416,6 @@ cds.subscription.nino.error.empty=Nodwch eich rhif Yswiriant Gwladol
 cds.subscription.nino.error.wrong-length=Rhaid i’r rhif Yswiriant Gwladol fod yn 9 o gymeriadau
 cds.subscription.enter-eori-number.page.title=Beth yw’ch rhif EORI?
 cds.subscription.enter-eori-number.heading=Beth yw’ch rhif EORI?
-cds.subscription.enter-eori-number.label=Beth yw’ch rhif EORI?
 cds.subscription.enter-eori-number.hint=Mae’r rhif yn dechrau gyda GB ac yna’n cael ei ddilyn gan 12 digid, er enghraifft, GB345834921000.
 cds.matching-error.eori=Nodwch rif EORI yn y fformat cywir
 cds.matching-error.eori.isEmpty=Nodwch eich rhif EORI
