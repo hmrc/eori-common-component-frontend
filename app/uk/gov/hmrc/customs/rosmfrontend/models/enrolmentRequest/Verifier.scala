@@ -18,10 +18,10 @@ package uk.gov.hmrc.customs.rosmfrontend.models.enrolmentRequest
 
 import play.api.libs.json.Json
 
-case class GovernmentGatewayEnrolmentRequest(identifiers: Seq[Identifier], verifiers: Seq[Verifier])
+case class Verifier(key: String, value: String)
 
-object GovernmentGatewayEnrolmentRequest {
-  implicit val jsonFormat = Json.format[GovernmentGatewayEnrolmentRequest]
+object Verifier {
+  implicit val jsonFormat = Json.format[Verifier]
+
+  def fromKeyValuePair(keyValuePair: KeyValuePair): Verifier = Verifier(keyValuePair.key, keyValuePair.value)
 }
-
-

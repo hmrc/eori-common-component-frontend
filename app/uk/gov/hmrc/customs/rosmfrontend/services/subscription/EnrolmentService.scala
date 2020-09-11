@@ -19,8 +19,8 @@ package uk.gov.hmrc.customs.rosmfrontend.services.subscription
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.customs.rosmfrontend.connector.{EnrolmentStoreProxyConnector, TaxEnrolmentsConnector}
 import uk.gov.hmrc.customs.rosmfrontend.controllers.auth.EnrolmentExtractor
-import uk.gov.hmrc.customs.rosmfrontend.domain.{Identifier, LoggedInUserWithEnrolments, Verifier}
-import uk.gov.hmrc.customs.rosmfrontend.models.enrolmentRequest.{GovernmentGatewayEnrolmentRequest, KnownFactsQuery}
+import uk.gov.hmrc.customs.rosmfrontend.domain.LoggedInUserWithEnrolments
+import uk.gov.hmrc.customs.rosmfrontend.models.enrolmentRequest.{GovernmentGatewayEnrolmentRequest, Identifier, KnownFactsQuery, Verifier}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
