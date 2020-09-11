@@ -23,6 +23,7 @@ import uk.gov.hmrc.customs.rosmfrontend.audit.Auditable
 import uk.gov.hmrc.customs.rosmfrontend.config.AppConfig
 import uk.gov.hmrc.customs.rosmfrontend.domain.{EnrolmentResponse, EnrolmentStoreProxyResponse}
 import uk.gov.hmrc.customs.rosmfrontend.logging.CdsLogger
+import uk.gov.hmrc.customs.rosmfrontend.models.enrolmentRequest.{KnownFacts, KnownFactsQuery}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -66,6 +67,12 @@ class EnrolmentStoreProxyConnector @Inject()(http: HttpClient, appConfig: AppCon
       eventType = "EnrolmentStoreProxyCall"
     )
   }
+
+  def queryKnownFactsByIdentifiers(knownFactsQuery: KnownFactsQuery)(implicit hc: HeaderCarrier): Future[Option[KnownFacts]] =
+    http.POST[KnownFactsQuery, Option[KnownFacts]](
+      s"$baseUrl/$serviceContext/enrolment-store-proxy/enrolment-store/enrolments",
+      knownFactsQuery
+    )
 
   object AuditHelp {
     implicit def httpResponseToJsvalue(httpResponse: HttpResponse): JsValue =

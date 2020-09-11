@@ -18,11 +18,20 @@ package uk.gov.hmrc.customs.rosmfrontend.domain
 
 import org.joda.time.format.DateTimeFormat
 import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.customs.rosmfrontend.models.enrolmentRequest.KeyValuePair
 
 case class Identifier(key: String, value: String)
 
 object Identifier {
   implicit val jsonFormat = Json.format[Identifier]
+}
+
+case class Verifier(key: String, value: String)
+
+object Verifier {
+  implicit val jsonFormat = Json.format[Verifier]
+
+  def fromKeyValuePair(keyValuePair: KeyValuePair): Verifier = Verifier(keyValuePair.key, keyValuePair.value)
 }
 
 case class TaxEnrolmentsResponse(serviceName: String)

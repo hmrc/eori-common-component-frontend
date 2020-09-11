@@ -23,6 +23,7 @@ import uk.gov.hmrc.customs.rosmfrontend.audit.Auditable
 import uk.gov.hmrc.customs.rosmfrontend.config.AppConfig
 import uk.gov.hmrc.customs.rosmfrontend.domain._
 import uk.gov.hmrc.customs.rosmfrontend.logging.CdsLogger
+import uk.gov.hmrc.customs.rosmfrontend.models.enrolmentRequest.GovernmentGatewayEnrolmentRequest
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -79,6 +80,13 @@ class TaxEnrolmentsConnector @Inject()(http: HttpClient, appConfig: AppConfig, a
       }
     }
   }
+
+  // Service name need to be enrolment Key - e.g. HMRC-CUS-ORG, HMRC-ATAR-ORG
+  def enrolAndActivate(enrolmentKey: String, request: GovernmentGatewayEnrolmentRequest)(implicit hc: HeaderCarrier): Future[HttpResponse] =
+  http.PUT[GovernmentGatewayEnrolmentRequest, HttpResponse](
+    url = s"$baseUrl/$serviceContext/tax-enrolments/service/$enrolmentKey/enrolment",
+    body = request
+  )
 
   private def auditCall(url: String, request: TaxEnrolmentsRequest, response: HttpResponse)(
     implicit hc: HeaderCarrier
