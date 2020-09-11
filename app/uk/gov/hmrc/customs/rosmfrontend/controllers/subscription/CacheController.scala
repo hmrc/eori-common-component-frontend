@@ -42,7 +42,8 @@ class CacheController @Inject()(
     implicit request => _: LoggedInUserWithEnrolments =>
       {
         sessionCache.saveSubscriptionDetails(SubscriptionDetails()).map { _ =>
-          Redirect("/customs-enrolment-services/" + implicitly[PathBindable[Journey.Value]].unbind("journey", journey))
+          // TODO - get current service name from somewhere
+          Redirect("/customs-enrolment-services/atar/" + implicitly[PathBindable[Journey.Value]].unbind("journey", journey))
             .withSession(requestSessionData.sessionForStartAgain)
         }
       }

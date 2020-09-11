@@ -20,10 +20,10 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment}
 import uk.gov.hmrc.customs.rosmfrontend.controllers.ApplicationController
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.customs.rosmfrontend.models.{Journey, Service}
+import uk.gov.hmrc.customs.rosmfrontend.services.cache.SessionCache
 import uk.gov.hmrc.customs.rosmfrontend.views.html.migration.migration_start
 import uk.gov.hmrc.customs.rosmfrontend.views.html.{accessibility_statement, start}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
@@ -63,20 +63,46 @@ class ApplicationControllerSpec extends ControllerSpec {
       }
     }
 
-    "allow unauthenticated users to access the start with subscription page" in {
-      invokeStartFormSubscriptionWithUnauthenticatedUser() { result =>
-        status(result) shouldBe OK
-        CdsPage(bodyOf(result)).title should startWith("Get access to the Customs Declaration Service (CDS)")
+    "direct authenticated users to start subscription" in {
+      invokeStartFormSubscriptionWithAuthenticatedUser() { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("are-you-based-in-uk")
+      }
+    }
+
+    "direct authenticated users with CDS enrolment to start short-cut subscription" in {
+      val cdsEnrolment = Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", "GB134123")
+      invokeStartFormSubscriptionWithAuthenticatedUser(enrolment = Some(cdsEnrolment)) { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("check-existing-eori")
+      }
+    }
+
+    "inform authenticated users with ATAR enrolment that subscription exists" in {
+      val atarEnrolment = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", "GB134123")
+      invokeStartFormSubscriptionWithAuthenticatedUser(enrolment = Some(atarEnrolment)) { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("enrolment-already-exists")
       }
     }
   }
 
   "Navigating to logout" should {
-    "logout an authenticated user" in {
+    "logout an authenticated user for register" in {
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
 
-      invokeLogoutWithAuthenticatedUser() { result =>
+      invokeLogoutWithAuthenticatedUser(journey = Journey.Register) { result =>
         session(result).get(SessionKeys.userId) shouldBe None
+        await(result).header.headers("Location") should endWith("feedback/CDS")
+      }
+    }
+
+    "logout an authenticated user for subscribe" in {
+      when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
+
+      invokeLogoutWithAuthenticatedUser(journey = Journey.Subscribe) { result =>
+        session(result).get(SessionKeys.userId) shouldBe None
+        await(result).header.headers("Location") should endWith("feedback/get-access-cds")
       }
     }
   }
@@ -89,17 +115,18 @@ class ApplicationControllerSpec extends ControllerSpec {
     }
   }
 
-  def invokeLogoutWithAuthenticatedUser(userId: String = defaultUserId)(test: Future[Result] => Any) {
+  def invokeLogoutWithAuthenticatedUser(userId: String = defaultUserId, journey: Journey.Value)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
-    test(controller.logout(Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.logout(journey).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   def invokeStartFormWithUnauthenticatedUser(userId: String = defaultUserId)(test: Future[Result] => Any) {
     test(controller.start.apply(SessionBuilder.buildRequestWithSessionNoUser))
   }
 
-  def invokeStartFormSubscriptionWithUnauthenticatedUser(userId: String = defaultUserId)(test: Future[Result] => Any) {
-    test(controller.startSubscription.apply(SessionBuilder.buildRequestWithSessionNoUser))
+  def invokeStartFormSubscriptionWithAuthenticatedUser(userId: String = defaultUserId, enrolment: Option[Enrolment] = None)(test: Future[Result] => Any) {
+    withAuthorisedUser(userId, mockAuthConnector, otherEnrolments = enrolment.map(e => Set(e)).getOrElse(Set.empty))
+    test(controller.startSubscription(Service.ATar).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   def invokeKeepAliveWithUnauthenticatedUser(userId: String = defaultUserId)(test: Future[Result] => Any) {

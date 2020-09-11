@@ -23,6 +23,7 @@ import play.api.mvc._
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
+import uk.gov.hmrc.customs.rosmfrontend.models.Service
 import uk.gov.hmrc.customs.rosmfrontend.views.html.subscription.registration_exists
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
@@ -38,11 +39,7 @@ class EnrolmentAlreadyExistsController @Inject()(
 
   override def messagesApi: MessagesApi = currentApp.injector.instanceOf[MessagesApi]
 
-  def enrolmentAlreadyExists(): Action[AnyContent] = Action.async { implicit request =>
-    authorised(AuthProviders(GovernmentGateway))
-      .retrieve(allEnrolments) { allEnrolments =>
-        val eoriNumber = allEnrolments.getEnrolment("HMRC-CUS-ORG").flatMap(_.getIdentifier("EORINumber").map(_.value))
-        Future.successful(Ok(registrationExistsView(eoriNumber)))
-      }
+  def enrolmentAlreadyExists(service: Service.Value): Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(Ok(registrationExistsView(service)))
   }
 }

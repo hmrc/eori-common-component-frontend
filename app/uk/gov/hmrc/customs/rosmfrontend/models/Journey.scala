@@ -18,6 +18,7 @@ package uk.gov.hmrc.customs.rosmfrontend.models
 
 import play.api.libs.json.{Reads, Writes}
 import play.api.mvc.{PathBindable, QueryStringBindable}
+import uk.gov.hmrc.customs.rosmfrontend.util.Constants
 
 object Journey extends Enumeration {
 
@@ -31,20 +32,20 @@ object Journey extends Enumeration {
     override def bind(key: String, value: String): Either[String, Journey.Value] =
       value match {
         case "subscribe" => Right(Subscribe)
-        case "register"  => Right(Register)
-        case _                   => Left("invalid journey")
+        case "register" => Right(Register)
+        case _ => Left(Constants.INVALID_PATH_PARAM)
       }
 
     override def unbind(key: String, value: Journey.Value): String =
       value match {
-        case Subscribe     => "subscribe"
+        case Subscribe => "subscribe"
         case Register => "register"
       }
   }
 
   def apply(journey: String): Journey.Value = journey match {
     case "subscribe" => Subscribe
-    case "register"  => Register
+    case "register" => Register
   }
 
   implicit def queryBindable(implicit pathBindable: PathBindable[Journey.Value]): QueryStringBindable[Journey.Value] =

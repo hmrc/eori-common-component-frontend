@@ -39,6 +39,7 @@ object AuthBuilder {
     saUtrId: Option[String] = None,
     payeNinoId: Option[String] = None,
     cdsEnrolmentId: Option[String] = None,
+    otherEnrolments: Set[Enrolment] = Set.empty,
     userAffinityGroup: AffinityGroup = AffinityGroup.Organisation,
     userEmail: Option[String] = Some("testuser@hmrc.gov.uk"),
     userCredentials: Option[Credentials] = Some(Credentials("SomeCredId", "GovernmentGateway")),
@@ -63,7 +64,7 @@ object AuthBuilder {
       saUtrId.map(saUtr => Enrolment("IR-SA").withIdentifier("UTR", saUtr)),
       payeNinoId.map(nino => Enrolment("HMRC-NI").withIdentifier("NINO", nino)),
       cdsEnrolmentId.map(eoriNumber => Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eoriNumber))
-    ).flatten
+    ).flatten ++ otherEnrolments
 
     when(
       mockAuthConnector.authorise(

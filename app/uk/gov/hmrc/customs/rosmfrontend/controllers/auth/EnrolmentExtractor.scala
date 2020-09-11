@@ -17,13 +17,14 @@
 package uk.gov.hmrc.customs.rosmfrontend.controllers.auth
 
 import uk.gov.hmrc.customs.rosmfrontend.domain.{Eori, LoggedInUserWithEnrolments, Nino, Utr}
+import uk.gov.hmrc.customs.rosmfrontend.models.Service
 
 trait EnrolmentExtractor {
   private def identifierFor(
-    enrolmentKey: String,
-    identifierName: String,
-    loggedInUser: LoggedInUserWithEnrolments
-  ): Option[String] =
+                             enrolmentKey: String,
+                             identifierName: String,
+                             loggedInUser: LoggedInUserWithEnrolments
+                           ): Option[String] =
     loggedInUser.enrolments
       .getEnrolment(enrolmentKey)
       .flatMap(
@@ -33,8 +34,16 @@ trait EnrolmentExtractor {
             .map(identifier => identifier.value)
       )
 
-  def enrolledEori(loggedInUser: LoggedInUserWithEnrolments): Option[Eori] =
+  def enrolledForService(loggedInUser: LoggedInUserWithEnrolments, service: Service.Value): Option[Eori] = service match {
+    case Service.ATar => enrolledATar(loggedInUser)
+    case _ => None
+  }
+
+  def enrolledCds(loggedInUser: LoggedInUserWithEnrolments): Option[Eori] =
     identifierFor("HMRC-CUS-ORG", "EORINumber", loggedInUser).map(Eori)
+
+  def enrolledATar(loggedInUser: LoggedInUserWithEnrolments): Option[Eori] =
+    identifierFor("HMRC-ATAR-ORG", "EORINumber", loggedInUser).map(Eori)
 
   def enrolledCtUtr(loggedInUser: LoggedInUserWithEnrolments): Option[Utr] =
     identifierFor("IR-CT", "UTR", loggedInUser).map(Utr)

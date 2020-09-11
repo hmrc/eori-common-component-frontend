@@ -9,7 +9,10 @@ GET         /customs-enrolment-services/language/:lang                          
 GET         /customs-enrolment-services/get-eori                                     @uk.gov.hmrc.customs.rosmfrontend.controllers.RegisterRedirectController.getEori()
 
 # enrolment-already-exists
-GET         /customs-enrolment-services/enrolment-already-exists                                      @uk.gov.hmrc.customs.rosmfrontend.controllers.EnrolmentAlreadyExistsController.enrolmentAlreadyExists
+GET         /customs-enrolment-services/:service/enrolment-already-exists                      @uk.gov.hmrc.customs.rosmfrontend.controllers.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service: Service.Value)
+
+# check-existing-eori
+GET         /customs-enrolment-services/:service/check-existing-eori                           @uk.gov.hmrc.customs.rosmfrontend.controllers.HasExistingEoriController.displayPage(service: Service.Value)
 
 GET         /customs-enrolment-services/:journey/display-sign-out                                     @uk.gov.hmrc.customs.rosmfrontend.controllers.SecuritySignOutController.displayPage(journey: Journey.Value)
 GET         /customs-enrolment-services/:journey/sign-out                                             @uk.gov.hmrc.customs.rosmfrontend.controllers.SecuritySignOutController.signOut(journey: Journey.Value)
@@ -23,12 +26,12 @@ GET         /customs-enrolment-services/:journey/email-confirmed                
 GET         /customs-enrolment-services/:journey/email-confirmed-continue                             @uk.gov.hmrc.customs.rosmfrontend.controllers.email.CheckYourEmailController.emailConfirmedContinue(journey: Journey.Value)
 
 # subscribe
-GET         /customs-enrolment-services/subscribe                                             @uk.gov.hmrc.customs.rosmfrontend.controllers.ApplicationController.startSubscription
+GET         /customs-enrolment-services/:service/subscribe                                            @uk.gov.hmrc.customs.rosmfrontend.controllers.ApplicationController.startSubscription(service: Service.Value)
 
 GET         /customs-enrolment-services/subscribe/returning                                   @uk.gov.hmrc.customs.rosmfrontend.controllers.migration.ReturnUserController.show
 
 GET         /customs-enrolment-services/:journey/are-you-based-in-uk                                  @uk.gov.hmrc.customs.rosmfrontend.controllers.EmailController.form(journey: Journey.Value)
-GET         /customs-enrolment-services/subscribe/subscribe                                   @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.MatchingIdController.matchWithIdOnlyForExistingReg
+GET         /customs-enrolment-services/subscribe/match-for-existing-registration                     @uk.gov.hmrc.customs.rosmfrontend.controllers.registration.MatchingIdController.matchWithIdOnlyForExistingReg
 
 GET         /customs-enrolment-services/:journey/matching/what-is-your-eori                           @uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.WhatIsYourEoriController.createForm(journey: Journey.Value)
 POST        /customs-enrolment-services/:journey/matching/what-is-your-eori                           @uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.WhatIsYourEoriController.submit(isInReviewMode: Boolean = false, journey: Journey.Value)

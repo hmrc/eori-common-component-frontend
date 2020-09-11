@@ -98,13 +98,6 @@ trait ControllerSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
         "/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fregister%2Fmatch&origin=eori-common-component-frontend"
       )
     }
-
-    s"redirect to Complete page when a user already has an EORI enrolment on GG for a Get An EORI Journey $additionalLabel" in {
-      withAuthorisedUser(defaultUserId, mockAuthConnector, cdsEnrolmentId = cdsEnrolmentId)
-
-      val result = action.apply(SessionBuilder.buildRequestWithSession(defaultUserId))
-      status(result) shouldBe SEE_OTHER
-    }
   }
 
   protected def assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
@@ -121,13 +114,6 @@ trait ControllerSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
       header(LOCATION, result) shouldBe Some(
         s"/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fsubscribe%2Fsubscribe&origin=eori-common-component-frontend"
       )
-    }
-
-    "redirect to Complete page when a user already has an EORI enrolment on GG for a Subscription Journey" in {
-      withAuthorisedUser(defaultUserId, mockAuthConnector, cdsEnrolmentId = cdsEnrolmentId)
-
-      val result = action.apply(SessionBuilder.buildRequestWithSession(defaultUserId))
-      status(result) shouldBe SEE_OTHER
     }
   }
 

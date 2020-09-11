@@ -14,28 +14,26 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.customs.rosmfrontend.controllers.routes._
 @import uk.gov.hmrc.customs.rosmfrontend.views.html._
-@import uk.gov.hmrc.customs.rosmfrontend.models.Journey
 @import uk.gov.hmrc.customs.rosmfrontend.models.Service
+@import uk.gov.hmrc.customs.rosmfrontend.views.ServiceName.serviceName
 
 
 @this(layout_di: layout)
-@(journey: Journey.Value)(implicit messages: Messages, request: Request[_])
+@(service: Service.Value, eoriNumber: String)(implicit request: Request[_], messages: Messages)
 
-@redirectUrl = @{journey match {
-    case Journey.Register => ApplicationController.start.url
-        // TODO - pass in service
-    case Journey.Subscribe => ApplicationController.startSubscription(Service.ATar).url
-}}
-
-@layout_di(messages("cds.security-sign-out.heading")) {
+@layout_di(messages("cds.has-existing-eori.title")) {
 <div class="column-two-thirds">
-    <header class="page-header">
-        <h1 class="heading-large">@messages("cds.security-sign-out.heading")</h1>
-    </header>
-    <p class="form-hint" id="hint">@messages("cds.security-sign-out.note")</p>
-        <a class="button" href='@redirectUrl' role="button">@messages("cds.security-sign-in")</a>
+
+    <h1 class="heading-large">@messages("cds.has-existing-eori.heading")</h1>
+
+    <p id="para1">@messages("cds.has-existing-eori.para1")</p>
+    <p id="eoriNum">@eoriNumber</p>
+    <p id="para2">@messages("cds.has-existing-eori.para2", serviceName(service))</p>
+    <p id="para3">@messages("cds.has-existing-eori.para3")</p>
+
+    <a href="/todo" class="button" id="continue">
+        @messages("cds.navigation.continue") </a>
     @helpers.helpAndSupport()
 </div>
 }

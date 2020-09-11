@@ -24,14 +24,13 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, allEnrolments, internalId, email => ggEmail, _}
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.customs.rosmfrontend.controllers.auth.{AccessController, AuthRedirectSupport, EnrolmentExtractor}
-import uk.gov.hmrc.customs.rosmfrontend.controllers.routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExists
 import uk.gov.hmrc.customs.rosmfrontend.domain._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
 abstract class CdsController(mcc: MessagesControllerComponents)(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with AuthorisedFunctions with AuthRedirectSupport
+  extends FrontendController(mcc) with I18nSupport with AuthorisedFunctions with AuthRedirectSupport
     with EnrolmentExtractor with AccessController {
 
   def authConnector: AuthConnector
@@ -79,23 +78,19 @@ abstract class CdsController(mcc: MessagesControllerComponents)(implicit ec: Exe
     }
 
   private def transformRequest(
-    requestProcessor: Either[RequestProcessorExtended, RequestProcessorSimple],
-    userAffinityGroup: Option[AffinityGroup],
-    userInternalId: Option[String],
-    userAllEnrolments: Enrolments,
-    currentUserEmail: Option[String],
-    userCredentialRole: Option[CredentialRole],
-    groupId: Option[String]
-  )(implicit request: Request[AnyContent]) = {
-    val cdsLoggedInUser =
+                                requestProcessor: Either[RequestProcessorExtended, RequestProcessorSimple],
+                                userAffinityGroup: Option[AffinityGroup],
+                                userInternalId: Option[String],
+                                userAllEnrolments: Enrolments,
+                                currentUserEmail: Option[String],
+                                userCredentialRole: Option[CredentialRole],
+                                groupId: Option[String]
+                              )(implicit request: Request[AnyContent]) = {
+    val loggedInUser =
       LoggedInUserWithEnrolments(userAffinityGroup, userInternalId, userAllEnrolments, currentUserEmail, groupId)
 
     permitUserOrRedirect(userAffinityGroup, userCredentialRole, currentUserEmail) {
-      enrolledEori(cdsLoggedInUser) match {
-        case Some(_) => Future.successful(Redirect(enrolmentAlreadyExists()))
-        case None =>
-          requestProcessor fold (_(request)(userInternalId)(cdsLoggedInUser), _(request)(cdsLoggedInUser))
-      }
+      requestProcessor fold(_ (request)(userInternalId)(loggedInUser), _ (request)(loggedInUser))
     }
   }
 }

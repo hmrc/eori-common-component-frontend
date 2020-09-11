@@ -23,7 +23,8 @@ import play.api.mvc._
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthProviders}
 import uk.gov.hmrc.customs.rosmfrontend.config.AppConfig
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
+import uk.gov.hmrc.customs.rosmfrontend.domain.LoggedInUserWithEnrolments
+import uk.gov.hmrc.customs.rosmfrontend.models.{Journey, Service}
 import uk.gov.hmrc.customs.rosmfrontend.services.cache.SessionCache
 import uk.gov.hmrc.customs.rosmfrontend.views.html.migration.migration_start
 import uk.gov.hmrc.customs.rosmfrontend.views.html.{accessibility_statement, start}
@@ -32,23 +33,32 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ApplicationController @Inject()(
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
-  mcc: MessagesControllerComponents,
-  viewStart: start,
-  migrationStart: migration_start,
-  accessibilityStatementView: accessibility_statement,
-  cdsFrontendDataCache: SessionCache,
-  appConfig: AppConfig
-)(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-    extends CdsController(mcc) {
+                                       override val currentApp: Application,
+                                       override val authConnector: AuthConnector,
+                                       mcc: MessagesControllerComponents,
+                                       viewStart: start,
+                                       migrationStart: migration_start,
+                                       accessibilityStatementView: accessibility_statement,
+                                       cdsFrontendDataCache: SessionCache,
+                                       appConfig: AppConfig
+                                     )(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
+  extends CdsController(mcc) {
 
   def start: Action[AnyContent] = Action { implicit request =>
     Ok(viewStart(Journey.Register))
   }
 
-  def startSubscription: Action[AnyContent] = Action { implicit request =>
-    Ok(migrationStart(Journey.Subscribe))
+  def startSubscription(service: Service.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+    implicit request =>
+      implicit loggedInUser: LoggedInUserWithEnrolments =>
+
+        enrolledForService(loggedInUser, service) match {
+          case Some(_) => Future.successful(Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service)))
+          case None => enrolledCds(loggedInUser) match {
+            case Some(_) => Future.successful(Redirect(routes.HasExistingEoriController.displayPage(service)))
+            case None => Future.successful(Redirect(routes.EmailController.form(Journey.Subscribe)))
+          }
+        }
   }
 
   def accessibilityStatement(): Action[AnyContent] = Action { implicit request =>

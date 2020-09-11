@@ -28,6 +28,7 @@ import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
 import uk.gov.hmrc.customs.rosmfrontend.controllers.routes._
 import play.api.mvc.Results._
 import uk.gov.hmrc.customs.rosmfrontend.models.Journey
+import uk.gov.hmrc.customs.rosmfrontend.util.Constants
 import uk.gov.hmrc.customs.rosmfrontend.views.html.{client_error_template, error_template, notFound}
 
 import scala.concurrent.Future
@@ -51,6 +52,7 @@ class CdsErrorHandler @Inject()(
 
     statusCode match {
       case NOT_FOUND => Future.successful(Results.NotFound(notFoundView()))
+      case BAD_REQUEST if message == Constants.INVALID_PATH_PARAM => Future.successful(Results.NotFound(notFoundView()))
       case _         => Future.successful(Results.InternalServerError(clientErrorTemplateView(message)))
     }
   }
