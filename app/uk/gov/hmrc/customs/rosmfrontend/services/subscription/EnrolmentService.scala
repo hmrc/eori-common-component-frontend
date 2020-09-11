@@ -33,7 +33,10 @@ class EnrolmentService @Inject()(
 
   // This will be retrieved from config, probably list of all possible services and retrieving the enrolment key
   // Temporary solution
-  private val serviceNameToEnrolmentKey: Map[String, String] = Map("atar" -> "HMRC-ATAR-ORG")
+  private val serviceNameToEnrolmentKey: Map[String, String] = Map(
+    "atar" -> "HMRC-ATAR-ORG",
+    "gvms" -> "HMRC-GVMS-ORG"
+  )
 
   def enrolWithExistingCDSEnrolment(loggedInUser: LoggedInUserWithEnrolments, serviceName: String)(
     implicit hc: HeaderCarrier
