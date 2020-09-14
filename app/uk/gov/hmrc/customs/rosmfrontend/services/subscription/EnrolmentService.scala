@@ -42,7 +42,7 @@ class EnrolmentService @Inject()(
     implicit hc: HeaderCarrier
   ): Future[Int] = {
 
-    val eori = enrolledEori(loggedInUser).map(_.id).getOrElse(throw MissingEnrolmentException())
+    val eori = enrolledCds(loggedInUser).map(_.id).getOrElse(throw MissingEnrolmentException())
     val enrolmentKey =
       serviceNameToEnrolmentKey
         .find{ case (service, _) => service == serviceName }
