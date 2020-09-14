@@ -30,6 +30,7 @@ class TaxEnrolmentsService @Inject()(taxEnrolmentsConnector: TaxEnrolmentsConnec
 
   private val serviceName = "HMRC-CUS-ORG"
 
+  // TODO This method is not necessary, we can remove it
   def doesEnrolmentExist(safeId: SafeId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
     taxEnrolmentsConnector.getEnrolments(safeId.id).map { enrolments =>
       enrolments.exists(_.serviceName == serviceName)
