@@ -76,7 +76,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
       }
     }
 
-    "return bad request (400) on failure" in {
+    "throw exception on failure" in {
       intercept[FailedEnrolmentException](
         enrol(Service.ATaR, INTERNAL_SERVER_ERROR) { result => status(result) }).getMessage should endWith(INTERNAL_SERVER_ERROR.toString)
     }
