@@ -57,7 +57,7 @@ class CacheControllerSpec extends ControllerSpec {
         await(controller.clearCache(Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(userId)))
 
       status(result) shouldBe SEE_OTHER
-      result.header.headers("Location") should be(ApplicationController.startSubscription(Service.ATar).url)
+      result.header.headers("Location") should be(ApplicationController.startSubscription(Service.ATaR).url)
       assertSessionDoesNotContainKeys(result.session)
     }
 

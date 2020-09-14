@@ -22,7 +22,7 @@ import uk.gov.hmrc.customs.rosmfrontend.util.Constants
 
 object Service extends Enumeration {
 
-  val ATar = Value
+  val ATaR = Value
 
   private val atarPath = "atar"
 
@@ -33,18 +33,18 @@ object Service extends Enumeration {
 
     override def bind(key: String, value: String): Either[String, Service.Value] =
       value match {
-        case `atarPath` => Right(ATar)
+        case `atarPath` => Right(ATaR)
         case _                   => Left(Constants.INVALID_PATH_PARAM)
       }
 
     override def unbind(key: String, value: Service.Value): String =
       value match {
-        case ATar     => atarPath
+        case ATaR     => atarPath
       }
   }
 
   def apply(journey: String): Service.Value = journey match {
-    case `atarPath` => ATar
+    case `atarPath` => ATaR
   }
 
   implicit def queryBindable(implicit pathBindable: PathBindable[Service.Value]): QueryStringBindable[Service.Value] =

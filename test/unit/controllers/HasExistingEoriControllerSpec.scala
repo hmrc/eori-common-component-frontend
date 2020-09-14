@@ -41,11 +41,11 @@ class HasExistingEoriControllerSpec extends ControllerSpec {
 
     "throw exception when user does not have existing CDS enrolment" in {
       intercept[IllegalStateException](
-        displayPage(Service.ATar) { result => status(result) }).getMessage should startWith("No EORI found in enrolments")
+        displayPage(Service.ATaR) { result => status(result) }).getMessage should startWith("No EORI found in enrolments")
     }
 
     "return Ok 200 when displayPage method is requested" in {
-      displayPage(Service.ATar, Some("GB123456463324")) { result =>
+      displayPage(Service.ATaR, Some("GB123456463324")) { result =>
         status(result) shouldBe OK
         val page = CdsPage(bodyOf(result))
         page.title should startWith("Your Government Gateway user ID is linked to an EORI")

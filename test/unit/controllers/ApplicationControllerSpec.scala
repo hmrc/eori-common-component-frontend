@@ -126,7 +126,7 @@ class ApplicationControllerSpec extends ControllerSpec {
 
   def invokeStartFormSubscriptionWithAuthenticatedUser(userId: String = defaultUserId, enrolment: Option[Enrolment] = None)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector, otherEnrolments = enrolment.map(e => Set(e)).getOrElse(Set.empty))
-    test(controller.startSubscription(Service.ATar).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.startSubscription(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   def invokeKeepAliveWithUnauthenticatedUser(userId: String = defaultUserId)(test: Future[Result] => Any) {

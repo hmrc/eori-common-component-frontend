@@ -35,7 +35,7 @@ trait EnrolmentExtractor {
       )
 
   def enrolledForService(loggedInUser: LoggedInUserWithEnrolments, service: Service.Value): Option[Eori] = service match {
-    case Service.ATar => enrolledATar(loggedInUser)
+    case Service.ATaR => enrolledATar(loggedInUser)
     case _ => None
   }
 
