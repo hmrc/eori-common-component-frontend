@@ -20,6 +20,7 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.customs.rosmfrontend.connector.{EnrolmentStoreProxyConnector, TaxEnrolmentsConnector}
 import uk.gov.hmrc.customs.rosmfrontend.controllers.auth.EnrolmentExtractor
 import uk.gov.hmrc.customs.rosmfrontend.domain.LoggedInUserWithEnrolments
+import uk.gov.hmrc.customs.rosmfrontend.models.Service
 import uk.gov.hmrc.customs.rosmfrontend.models.enrolmentRequest.{GovernmentGatewayEnrolmentRequest, Identifier, KnownFactsQuery, Verifier}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -31,22 +32,11 @@ class EnrolmentService @Inject()(
   taxEnrolmentsConnector: TaxEnrolmentsConnector
 )(implicit ec: ExecutionContext) extends EnrolmentExtractor {
 
-  // This will be retrieved from config, probably list of all possible services and retrieving the enrolment key
-  // Temporary solution
-  private val serviceNameToEnrolmentKey: Map[String, String] = Map(
-    "atar" -> "HMRC-ATAR-ORG",
-    "gvms" -> "HMRC-GVMS-ORG"
-  )
-
-  def enrolWithExistingCDSEnrolment(loggedInUser: LoggedInUserWithEnrolments, serviceName: String)(
+  def enrolWithExistingCDSEnrolment(loggedInUser: LoggedInUserWithEnrolments, service: Service)(
     implicit hc: HeaderCarrier
   ): Future[Int] = {
 
     val eori = enrolledCds(loggedInUser).map(_.id).getOrElse(throw MissingEnrolmentException())
-    val enrolmentKey =
-      serviceNameToEnrolmentKey
-        .find{ case (service, _) => service == serviceName }
-        .map { case (_, enrolmentKey) => enrolmentKey }.getOrElse(throw MissingEnrolmentException())
 
     enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(KnownFactsQuery(eori)).flatMap {
       case Some(knownFacts) =>
@@ -55,10 +45,10 @@ class EnrolmentService @Inject()(
 
         val governmentGatewayEnrolmentRequest = GovernmentGatewayEnrolmentRequest(
           identifiers = List(Identifier("EORINumber", eori)),
-          verifiers = cdsEnrolmentVerifiers.map(Verifier.fromKeyValuePair(_))
+          verifiers = cdsEnrolmentVerifiers.map(Verifier.fromKeyValuePair)
         )
 
-        taxEnrolmentsConnector.enrolAndActivate(enrolmentKey, governmentGatewayEnrolmentRequest).map(_.status)
+        taxEnrolmentsConnector.enrolAndActivate(service.enrolmentKey, governmentGatewayEnrolmentRequest).map(_.status)
       case _ => throw MissingEnrolmentException()
     }
   }

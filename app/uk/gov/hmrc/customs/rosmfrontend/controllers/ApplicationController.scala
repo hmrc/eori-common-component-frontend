@@ -48,7 +48,7 @@ class ApplicationController @Inject()(
     Ok(viewStart(Journey.Register))
   }
 
-  def startSubscription(service: Service.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def startSubscription(service: Service): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request =>
       implicit loggedInUser: LoggedInUserWithEnrolments =>
 

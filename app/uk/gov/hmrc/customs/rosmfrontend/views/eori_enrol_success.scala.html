@@ -19,7 +19,7 @@
 
 
 @this(layout_di: layout)
-@(eori: String, service: Service.Value)(implicit messages: Messages, request: Request[_])
+@(eori: String, service: Service)(implicit messages: Messages, request: Request[_])
 
 @layout_di(messages("eds.existing-eori.enrolment.confirmation.title")) {
     <div class="column-two-thirds">

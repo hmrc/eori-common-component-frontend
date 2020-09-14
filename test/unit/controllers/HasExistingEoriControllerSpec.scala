@@ -98,18 +98,18 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
   }
 
-  private def displayPage(service: Service.Value, cdsEnrolmentId: Option[String] = None)(test: Future[Result] => Any) = {
+  private def displayPage(service: Service, cdsEnrolmentId: Option[String] = None)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector, cdsEnrolmentId = cdsEnrolmentId)
     await(test(controller.displayPage(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
-  private def enrol(service: Service.Value, responseStatus: Int)(test: Future[Result] => Any) = {
+  private def enrol(service: Service, responseStatus: Int)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    when(mockEnrolmentService.enrolWithExistingCDSEnrolment(any[LoggedInUserWithEnrolments], any[String])(any())).thenReturn(Future(responseStatus))
+    when(mockEnrolmentService.enrolWithExistingCDSEnrolment(any[LoggedInUserWithEnrolments], any[Service])(any())).thenReturn(Future(responseStatus))
     await(test(controller.enrol(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
-  private def enrolSuccess(service: Service.Value, cdsEnrolmentId: Option[String] = None)(test: Future[Result] => Any) = {
+  private def enrolSuccess(service: Service, cdsEnrolmentId: Option[String] = None)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector, cdsEnrolmentId = cdsEnrolmentId)
     await(test(controller.enrolSuccess(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
