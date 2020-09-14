@@ -13,6 +13,7 @@ GET         /customs-enrolment-services/:service/enrolment-already-exists       
 
 # check-existing-eori
 GET         /customs-enrolment-services/:service/check-existing-eori                           @uk.gov.hmrc.customs.rosmfrontend.controllers.HasExistingEoriController.displayPage(service: Service.Value)
+POST        /customs-enrolment-services/:service/check-existing-eori                           @uk.gov.hmrc.customs.rosmfrontend.controllers.HasExistingEoriController.enrol(service: Service.Value)
 
 GET         /customs-enrolment-services/:journey/display-sign-out                                     @uk.gov.hmrc.customs.rosmfrontend.controllers.SecuritySignOutController.displayPage(journey: Journey.Value)
 GET         /customs-enrolment-services/:journey/sign-out                                             @uk.gov.hmrc.customs.rosmfrontend.controllers.SecuritySignOutController.signOut(journey: Journey.Value)

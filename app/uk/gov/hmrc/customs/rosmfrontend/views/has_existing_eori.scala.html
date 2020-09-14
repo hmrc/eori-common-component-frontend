@@ -17,6 +17,7 @@
 @import uk.gov.hmrc.customs.rosmfrontend.views.html._
 @import uk.gov.hmrc.customs.rosmfrontend.models.Service
 @import uk.gov.hmrc.customs.rosmfrontend.views.ServiceName.serviceName
+@import views.html.helper._
 
 
 @this(layout_di: layout)
@@ -32,8 +33,12 @@
     <p id="para2">@messages("cds.has-existing-eori.para2", serviceName(service))</p>
     <p id="para3">@messages("cds.has-existing-eori.para3")</p>
 
-    <a href="/todo" class="button" id="continue">
-        @messages("cds.navigation.continue") </a>
+    @helper.form(uk.gov.hmrc.customs.rosmfrontend.controllers.routes.HasExistingEoriController.enrol(service)) {
+        @CSRF.formField
+
+        <p><input class="button" type="submit" value='@uk.gov.hmrc.customs.rosmfrontend.views.helpers.subscription.ViewHelper.continueButtonText(false)'></p>
+    }
+
     @helpers.helpAndSupport()
 </div>
 }
