@@ -84,7 +84,7 @@ class TaxEnrolmentsConnector @Inject()(http: HttpClient, appConfig: AppConfig, a
   // Service name need to be enrolment Key - e.g. HMRC-CUS-ORG, HMRC-ATAR-ORG
   def enrolAndActivate(enrolmentKey: String, request: GovernmentGatewayEnrolmentRequest)(implicit hc: HeaderCarrier): Future[HttpResponse] =
   http.PUT[GovernmentGatewayEnrolmentRequest, HttpResponse](
-    url = s"$baseUrl/$serviceContext/tax-enrolments/service/$enrolmentKey/enrolment",
+    url = s"$baseUrl/$serviceContext/service/$enrolmentKey/enrolment",
     body = request
   )
 

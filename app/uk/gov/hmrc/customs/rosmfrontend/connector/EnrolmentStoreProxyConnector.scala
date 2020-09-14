@@ -70,7 +70,7 @@ class EnrolmentStoreProxyConnector @Inject()(http: HttpClient, appConfig: AppCon
 
   def queryKnownFactsByIdentifiers(knownFactsQuery: KnownFactsQuery)(implicit hc: HeaderCarrier): Future[Option[KnownFacts]] =
     http.POST[KnownFactsQuery, Option[KnownFacts]](
-      s"$baseUrl/$serviceContext/enrolment-store-proxy/enrolment-store/enrolments",
+      s"$baseUrl/$serviceContext/enrolment-store/enrolments",
       knownFactsQuery
     )
 
