@@ -49,5 +49,3 @@ object Service {
     override def unbind(key: String, value: Service): String = stringBinder.unbind(key, value.name)
   }
 }
-
-case class UnsupportedServiceException() extends Exception("Unsupported service")
