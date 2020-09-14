@@ -8,8 +8,6 @@ GET         /customs-enrolment-services/language/:lang                          
 
 GET         /customs-enrolment-services/get-eori                                     @uk.gov.hmrc.customs.rosmfrontend.controllers.RegisterRedirectController.getEori()
 
-POST        /customs-enrolment-services/:serviceName/enrol                                   @uk.gov.hmrc.customs.rosmfrontend.controllers.EnrolWithCdsEnrolmentController.enrol(serviceName)
-
 # enrolment-already-exists
 GET         /customs-enrolment-services/enrolment-already-exists                                      @uk.gov.hmrc.customs.rosmfrontend.controllers.EnrolmentAlreadyExistsController.enrolmentAlreadyExists
 
