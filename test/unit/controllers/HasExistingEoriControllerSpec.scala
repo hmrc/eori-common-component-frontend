@@ -20,9 +20,9 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
-import play.api.test.Helpers._
+import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, _}
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.controllers.HasExistingEoriController
+import uk.gov.hmrc.customs.rosmfrontend.controllers.{FailedEnrolmentException, HasExistingEoriController}
 import uk.gov.hmrc.customs.rosmfrontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.customs.rosmfrontend.models.Service
 import uk.gov.hmrc.customs.rosmfrontend.services.subscription.EnrolmentService
@@ -77,9 +77,8 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "return bad request (400) on failure" in {
-      enrol(Service.ATaR, INTERNAL_SERVER_ERROR) { result =>
-        status(result) shouldBe BAD_REQUEST
-      }
+      intercept[FailedEnrolmentException](
+        enrol(Service.ATaR, INTERNAL_SERVER_ERROR) { result => status(result) }).getMessage should endWith(INTERNAL_SERVER_ERROR.toString)
     }
   }
 
