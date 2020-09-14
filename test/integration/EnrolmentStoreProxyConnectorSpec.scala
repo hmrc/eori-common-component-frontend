@@ -142,7 +142,7 @@ class EnrolmentStoreProxyConnectorSpec extends IntegrationTestsSpec with ScalaFu
       val date = LocalDate.now().toString
       val verifiers = List(KeyValuePair(key = "DATEOFESTABLISHMENT", value = date))
       val knownFact = KnownFact(List.empty, verifiers)
-      val knownFacts = KnownFacts("atar", List(knownFact))
+      val knownFacts = KnownFacts("HMRC-CUS-ORG", List(knownFact))
 
       val expectedKnownFactsUrl = "/enrolment-store-proxy/enrolment-store/enrolments"
 

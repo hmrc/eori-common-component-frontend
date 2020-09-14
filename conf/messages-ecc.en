@@ -16,3 +16,6 @@ cds.enrolment.already.exists.continue=Goto {0}.
 
 cds.service.friendly.name.default=the service
 cds.service.friendly.name.atar=Advance Tariff Rulings
+
+eds.existing-eori.enrolment.confirmation.title=Application complete
+eds.existing-eori.enrolment.confirmation.heading=Application complete

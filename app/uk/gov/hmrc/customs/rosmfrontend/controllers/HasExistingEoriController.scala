@@ -22,7 +22,8 @@ import play.api.mvc._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.customs.rosmfrontend.domain._
 import uk.gov.hmrc.customs.rosmfrontend.models.Service
-import uk.gov.hmrc.customs.rosmfrontend.views.html.has_existing_eori
+import uk.gov.hmrc.customs.rosmfrontend.services.subscription.EnrolmentService
+import uk.gov.hmrc.customs.rosmfrontend.views.html.{eori_enrol_success, has_existing_eori}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,7 +32,9 @@ class HasExistingEoriController @Inject()(
                                            override val currentApp: Application,
                                            override val authConnector: AuthConnector,
                                            hasExistingEoriView: has_existing_eori,
-                                           mcc: MessagesControllerComponents
+                                           enrolSuccessView: eori_enrol_success,
+                                           mcc: MessagesControllerComponents,
+                                           enrolmentService: EnrolmentService
                                          )(implicit ec: ExecutionContext)
   extends CdsController(mcc) {
 
@@ -41,7 +44,25 @@ class HasExistingEoriController @Inject()(
         Future.successful(Ok(hasExistingEoriView(service, existingEori.id)))
   }
 
+  def enrol(service: Service.Value): Action[AnyContent] =
+    ggAuthorisedUserWithEnrolmentsAction { implicit request =>
+      user: LoggedInUserWithEnrolments =>
+        enrolmentService.enrolWithExistingCDSEnrolment(user, service.toString.toLowerCase).map {
+          case NO_CONTENT => Redirect(routes.HasExistingEoriController.enrolSuccess(service))
+          case status => throw FailedEnrolmentException(status)
+        }
+    }
+
+  def enrolSuccess(service: Service.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+    implicit request =>
+      implicit loggedInUser: LoggedInUserWithEnrolments =>
+        Future.successful(Ok(enrolSuccessView(existingEori.id, service)))
+  }
+
   private def existingEori(implicit loggedInUser: LoggedInUserWithEnrolments) = {
     enrolledCds(loggedInUser).getOrElse(throw new IllegalStateException("No EORI found in enrolments"))
   }
 }
+
+
+case class FailedEnrolmentException(status: Int) extends Exception(s"Enrolment failed with status $status")

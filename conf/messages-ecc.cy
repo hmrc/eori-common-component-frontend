@@ -16,3 +16,6 @@ cds.enrolment.already.exists.continue=TRANSLATE Goto {0}.
 
 cds.service.friendly.name.default=TRANSLATE the service
 cds.service.friendly.name.atar=TRANSLATE Advance Tariff Rulings
+
+eds.existing-eori.enrolment.confirmation.title=TRANSLATE Application complete
+eds.existing-eori.enrolment.confirmation.heading=TRANSLATE Application complete
