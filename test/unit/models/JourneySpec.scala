@@ -48,7 +48,7 @@ class JourneySpec extends WordSpec with MustMatchers with EitherValues with Opti
       val result =
         pathBindable.bind("key", "foobar").left.value
 
-      result mustEqual "invalid journey"
+      result mustEqual "invalid value"
     }
 
     "unbind from `Register` to path" in {
@@ -88,7 +88,7 @@ class JourneySpec extends WordSpec with MustMatchers with EitherValues with Opti
       val result =
         queryBindable.bind("key", Map("key" -> Seq("foobar"))).value.left.value
 
-      result mustEqual "invalid journey"
+      result mustEqual "invalid value"
     }
 
     "unbind from `Register` to query" in {

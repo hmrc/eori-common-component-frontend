@@ -20,18 +20,20 @@
 
 
 @this(layout_di: layout)
-@(service: Service.Value)(implicit messages: Messages, request: Request[_])
+@(service: Service.Value, eoriNumber: String)(implicit request: Request[_], messages: Messages)
 
-@layout_di(messages("cds.enrolment.already.exists.title")) {
-    <div class="column-two-thirds">
+@layout_di(messages("cds.has-existing-eori.title")) {
+<div class="column-two-thirds">
 
-        <h1 id="page-heading" class="heading-large">@messages("cds.enrolment.already.exists.heading")</h1>
+    <h1 class="heading-large">@messages("cds.has-existing-eori.heading")</h1>
 
-        <p id="para1">@messages("cds.enrolment.already.exists.para1", serviceName(service))</p>
+    <p id="para1">@messages("cds.has-existing-eori.para1")</p>
+    <p id="eoriNum">@eoriNumber</p>
+    <p id="para2">@messages("cds.has-existing-eori.para2", serviceName(service))</p>
+    <p id="para3">@messages("cds.has-existing-eori.para3")</p>
 
-        <a href="/todo" id="continue">@messages("cds.enrolment.already.exists.continue", serviceName(service)) </a>
-
-        @helpers.helpAndSupport()
-
-    </div>
+    <a href="/todo" class="button" id="continue">
+        @messages("cds.navigation.continue") </a>
+    @helpers.helpAndSupport()
+</div>
 }

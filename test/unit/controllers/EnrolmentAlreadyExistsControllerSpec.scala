@@ -20,10 +20,12 @@ import common.pages.RegistrationCompletePage
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.customs.rosmfrontend.controllers.EnrolmentAlreadyExistsController
+import uk.gov.hmrc.customs.rosmfrontend.models.Service
 import uk.gov.hmrc.customs.rosmfrontend.views.html.subscription.registration_exists
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.SessionBuilder
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class EnrolmentAlreadyExistsControllerSpec extends ControllerSpec {
@@ -41,20 +43,15 @@ class EnrolmentAlreadyExistsControllerSpec extends ControllerSpec {
 
       withAuthorisedUser(defaultUserId, mockAuthConnector, cdsEnrolmentId = cdsEnrolmentId)
       val result =
-        await(controller.enrolmentAlreadyExists().apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+        await(controller.enrolmentAlreadyExists(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
 
       status(result) shouldBe OK
 
       val page = CdsPage(bodyOf(result))
 
-      page.title should startWith("You already have access to the Customs Declaration Service")
-      page.getElementsText(RegistrationCompletePage.pageHeadingXpath) shouldBe "You already have access to the Customs Declaration Service"
-      val Some(eori) = cdsEnrolmentId
-      page.getElementsText(RegistrationCompletePage.eoriNumberXpath) shouldBe s"EORI number: $eori"
+      page.title should startWith("There is a problem")
+      page.getElementsText(RegistrationCompletePage.pageHeadingXpath) shouldBe "There is a problem"
 
-      page.elementIsPresent(RegistrationCompletePage.LeaveFeedbackLinkXpath) shouldBe true
-      page.getElementsText(RegistrationCompletePage.LeaveFeedbackLinkXpath) shouldBe "What did you think of this service? (opens in a new window or tab)"
-      page.getElementsHref(RegistrationCompletePage.LeaveFeedbackLinkXpath) shouldBe "/feedback/CDS"
     }
   }
 }

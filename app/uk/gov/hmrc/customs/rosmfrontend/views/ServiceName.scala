@@ -14,9 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.customs.rosmfrontend.util
+package uk.gov.hmrc.customs.rosmfrontend.views
 
-object Constants {
-  val ONE = 1
-  val INVALID_PATH_PARAM = "invalid value"
+import play.api.i18n.Messages
+import uk.gov.hmrc.customs.rosmfrontend.models.Service
+
+object ServiceName {
+
+  private val default = "cds.service.friendly.name.default"
+
+  def serviceName(service: Service.Value)(implicit messages: Messages) = {
+    val key = s"cds.service.friendly.name.${service.toString.toLowerCase}"
+    if(messages.isDefinedAt(key)) messages(key) else messages(default)
+
+  }
 }
