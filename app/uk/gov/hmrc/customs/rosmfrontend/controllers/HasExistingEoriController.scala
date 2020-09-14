@@ -24,6 +24,7 @@ import uk.gov.hmrc.customs.rosmfrontend.domain._
 import uk.gov.hmrc.customs.rosmfrontend.models.Service
 import uk.gov.hmrc.customs.rosmfrontend.services.subscription.EnrolmentService
 import uk.gov.hmrc.customs.rosmfrontend.views.html.has_existing_eori
+import uk.gov.hmrc.customs.rosmfrontend.views.html.eori_enrol_success
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -32,6 +33,7 @@ class HasExistingEoriController @Inject()(
                                            override val currentApp: Application,
                                            override val authConnector: AuthConnector,
                                            hasExistingEoriView: has_existing_eori,
+                                           enrolSuccessView: eori_enrol_success,
                                            mcc: MessagesControllerComponents,
                                            enrolmentService: EnrolmentService
                                          )(implicit ec: ExecutionContext)
@@ -45,12 +47,17 @@ class HasExistingEoriController @Inject()(
 
   def enrol(service: Service.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => user: LoggedInUserWithEnrolments =>
-      // Instead of successful enrolment message we will redirect to confirmation screen
       enrolmentService.enrolWithExistingCDSEnrolment(user, service.toString.toLowerCase).map {
-        case NO_CONTENT => Ok("Enrolment successful")
+        case NO_CONTENT => Redirect(routes.HasExistingEoriController.enrolSuccess(service))
         case _ => BadRequest("Enrolment failed")
       }
     }
+
+  def enrolSuccess(service: Service.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+    implicit request =>
+      implicit loggedInUser: LoggedInUserWithEnrolments =>
+        Future.successful(Ok(enrolSuccessView(existingEori.id)))
+  }
 
   private def existingEori(implicit loggedInUser: LoggedInUserWithEnrolments) = {
     enrolledCds(loggedInUser).getOrElse(throw new IllegalStateException("No EORI found in enrolments"))

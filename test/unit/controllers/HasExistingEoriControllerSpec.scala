@@ -21,7 +21,8 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.customs.rosmfrontend.controllers.HasExistingEoriController
 import uk.gov.hmrc.customs.rosmfrontend.models.Service
-import uk.gov.hmrc.customs.rosmfrontend.views.html.has_existing_eori
+import uk.gov.hmrc.customs.rosmfrontend.services.subscription.EnrolmentService
+import uk.gov.hmrc.customs.rosmfrontend.views.html.{eori_enrol_success, has_existing_eori}
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.SessionBuilder
@@ -31,11 +32,13 @@ import scala.concurrent.Future
 
 class HasExistingEoriControllerSpec extends ControllerSpec {
   private val mockAuthConnector = mock[AuthConnector]
+  private val mockEnrolmentService = mock[EnrolmentService]
 
   private val hasExistingEoriView = app.injector.instanceOf[has_existing_eori]
+  private val eoriEnrolSuccessView = app.injector.instanceOf[eori_enrol_success]
 
   private val controller =
-    new HasExistingEoriController(app, mockAuthConnector, hasExistingEoriView, mcc)
+    new HasExistingEoriController(app, mockAuthConnector, hasExistingEoriView, eoriEnrolSuccessView, mcc, mockEnrolmentService)
 
   "Has Existing EORI Controller" should {
 
