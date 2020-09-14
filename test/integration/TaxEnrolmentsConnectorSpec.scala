@@ -16,6 +16,8 @@
 
 package integration
 
+import java.time.LocalDate
+
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -24,6 +26,7 @@ import play.api.test.Helpers.{BAD_REQUEST, NO_CONTENT}
 import play.mvc.Http.Status.{FORBIDDEN, INTERNAL_SERVER_ERROR}
 import uk.gov.hmrc.customs.rosmfrontend.connector.TaxEnrolmentsConnector
 import uk.gov.hmrc.customs.rosmfrontend.domain.{TaxEnrolmentsRequest, TaxEnrolmentsResponse}
+import uk.gov.hmrc.customs.rosmfrontend.models.enrolmentRequest.{GovernmentGatewayEnrolmentRequest, Identifier, KeyValuePair, Verifier}
 import uk.gov.hmrc.http._
 import util.externalservices.ExternalServicesConfig._
 import util.externalservices.TaxEnrolmentsService
@@ -146,6 +149,22 @@ class TaxEnrolmentsConnectorSpec extends IntegrationTestsSpec with ScalaFutures 
         BAD_REQUEST
       )
       taxEnrolmentsConnector.enrol(taxEnrolmentsRequest, formBundleId).futureValue mustBe BAD_REQUEST
+    }
+
+    "return NO_CONTENT for enrolAndActivate when call is successful" in {
+
+      val request = GovernmentGatewayEnrolmentRequest(
+        identifiers = List(Identifier("EORINumber", "GB123456789012")),
+        verifiers = List(KeyValuePair(key = "DATEOFESTABLISHMENT", value = LocalDate.now().toString)).map(Verifier.fromKeyValuePair(_))
+      )
+
+      TaxEnrolmentsService.returnEnrolmentResponseWhenReceiveRequest(
+        "/tax-enrolments/service/HMRC-ATAR-ORG/enrolment",
+        Json.toJson(request).toString,
+        NO_CONTENT
+      )
+
+      taxEnrolmentsConnector.enrolAndActivate("HMRC-ATAR-ORG", request).futureValue.status mustBe NO_CONTENT
     }
   }
 }

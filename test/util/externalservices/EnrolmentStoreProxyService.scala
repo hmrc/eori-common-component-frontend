@@ -81,4 +81,15 @@ object EnrolmentStoreProxyService {
             .withHeader(CONTENT_TYPE, JSON)
         )
     )
+
+  def stubTheEnrolmentStoreProxyPostResponse(url: String, response: String, status: Int): Unit =
+    stubFor(
+      post(urlEqualTo(url))
+        .willReturn(
+          aResponse()
+            .withStatus(status)
+            .withBody(response)
+            .withHeader(CONTENT_TYPE, JSON)
+        )
+    )
 }

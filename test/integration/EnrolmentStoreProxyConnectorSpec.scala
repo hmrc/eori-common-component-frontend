@@ -16,6 +16,8 @@
 
 package integration
 
+import java.time.LocalDate
+
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -23,6 +25,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.mvc.Http.Status._
 import uk.gov.hmrc.customs.rosmfrontend.connector.EnrolmentStoreProxyConnector
 import uk.gov.hmrc.customs.rosmfrontend.domain.{EnrolmentResponse, EnrolmentStoreProxyResponse}
+import uk.gov.hmrc.customs.rosmfrontend.models.enrolmentRequest.{KeyValuePair, KnownFact, KnownFacts, KnownFactsQuery}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import util.externalservices.EnrolmentStoreProxyService
 import util.externalservices.ExternalServicesConfig._
@@ -132,6 +135,26 @@ class EnrolmentStoreProxyConnectorSpec extends IntegrationTestsSpec with ScalaFu
         await(enrolmentStoreProxyConnector.getEnrolmentByGroupId(groupId))
       }
       caught.getMessage must startWith("Enrolment Store Proxy Status : 400")
+    }
+
+    "return known facts" in {
+
+      val date = LocalDate.now().toString
+      val verifiers = List(KeyValuePair(key = "DATEOFESTABLISHMENT", value = date))
+      val knownFact = KnownFact(List.empty, verifiers)
+      val knownFacts = KnownFacts("atar", List(knownFact))
+
+      val expectedKnownFactsUrl = "/enrolment-store-proxy/enrolment-store/enrolments"
+
+      EnrolmentStoreProxyService.stubTheEnrolmentStoreProxyPostResponse(
+        expectedKnownFactsUrl,
+        Json.toJson(knownFacts).toString(),
+        OK
+      )
+
+      val request = KnownFactsQuery("GB123456789012")
+
+      enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(request).futureValue mustBe Some(knownFacts)
     }
   }
 }
