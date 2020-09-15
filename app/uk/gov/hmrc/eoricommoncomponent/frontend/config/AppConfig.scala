@@ -18,6 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.config
 
 import javax.inject.{Inject, Named, Singleton}
 import play.api.Configuration
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
 import scala.concurrent.duration.{Duration, MINUTES}
@@ -47,6 +48,8 @@ class AppConfig @Inject() (
 
   private lazy val serviceIdentifierGetAccess =
     config.get[String]("microservice.services.contact-frontend.serviceIdentifierGetAccess")
+
+  def serviceReturnUrl(service: Service) = config.get[String](s"external-url.service-return.${service.name}")
 
   lazy val feedbackLink          = config.get[String]("external-url.feedback-survey")
   lazy val feedbackLinkSubscribe = config.get[String]("external-url.feedback-survey-subscribe")

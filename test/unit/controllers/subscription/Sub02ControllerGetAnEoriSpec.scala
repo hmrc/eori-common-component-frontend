@@ -323,9 +323,9 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
                 |You should only share it with trusted business partners or approved customs representatives. For example, you should give it to your courier or freight forwarder. They will use it to make customs declarations on your behalf.
                 | """)
           page.elementIsPresent(RegistrationCompletePage.LeaveFeedbackLinkXpath) shouldBe true
-          page.getElementsText(
-            RegistrationCompletePage.LeaveFeedbackLinkXpath
-          ) shouldBe "What did you think of this service? (opens in a new window or tab)"
+          page.getElementsText(RegistrationCompletePage.LeaveFeedbackLinkXpath) should include(
+            "What did you think of this service?"
+          )
           page.getElementsHref(RegistrationCompletePage.LeaveFeedbackLinkXpath) shouldBe "/feedback/CDS"
       }
     }

@@ -60,7 +60,7 @@ class Sub02SubscriptionInProgressSpec extends ViewSpec {
     "have the feedback link" in {
       doc
         .getElementById("what-you-think")
-        .text() mustBe "What did you think of this service? (opens in a new window or tab)"
+        .text() must include("What did you think of this service?")
       doc.getElementById("feedback_link").attributes().get("href").mustBe("/feedback/CDS")
     }
   }
