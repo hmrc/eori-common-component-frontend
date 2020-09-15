@@ -26,20 +26,20 @@ import org.scalatest.prop.TableDrivenPropertyChecks.forAll
 import org.scalatest.prop.Tables.Table
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
-import uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.SicCodeController
-import uk.gov.hmrc.customs.rosmfrontend.domain.CdsOrganisationType.{
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SicCodeController
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType.{
   Company,
   Individual,
   SoleTrader,
   ThirdCountryOrganisation,
   Partnership => CdsPartnership
 }
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.SicCodeSubscriptionFlowPage
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.RequestSessionData
-import uk.gov.hmrc.customs.rosmfrontend.services.organisation.OrgTypeLookup
-import uk.gov.hmrc.customs.rosmfrontend.views.html.subscription.sic_code
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SicCodeSubscriptionFlowPage
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.sic_code
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.StringThings._
@@ -57,12 +57,12 @@ class SicCodeControllerSpec
   protected override val formId: String = SicCodePage.formId
 
   protected override def submitInCreateModeUrl: String =
-    uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.SicCodeController
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.SicCodeController
       .submit(isInReviewMode = false, Journey.Register)
       .url
 
   protected override def submitInReviewModeUrl: String =
-    uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.SicCodeController
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.SicCodeController
       .submit(isInReviewMode = true, Journey.Register)
       .url
 

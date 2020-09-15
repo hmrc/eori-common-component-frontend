@@ -17,9 +17,9 @@
 package unit.domain
 
 import base.UnitSpec
-import uk.gov.hmrc.customs.rosmfrontend.domain
-import uk.gov.hmrc.customs.rosmfrontend.domain.CdsOrganisationType._
-import uk.gov.hmrc.customs.rosmfrontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 
 class EtmpOrganisationTypeSpec extends UnitSpec {
 

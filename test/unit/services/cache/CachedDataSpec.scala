@@ -20,10 +20,10 @@ import base.UnitSpec
 import org.joda.time.DateTime
 import org.scalatest.mockito.MockitoSugar
 import uk.gov.hmrc.cache.model.Id
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.{Address, ResponseCommon}
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.SubscriptionDetails
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.CachedData
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, ResponseCommon}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.CachedData
 
 class CachedDataSpec extends UnitSpec with MockitoSugar {
 

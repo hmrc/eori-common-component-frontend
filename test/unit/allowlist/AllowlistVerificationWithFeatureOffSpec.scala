@@ -25,13 +25,13 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
-import uk.gov.hmrc.customs.rosmfrontend.controllers.migration.NameDobSoleTraderController
-import uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.SubscriptionFlowManager
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.NameDobDetailsSubscriptionFlowPage
-import uk.gov.hmrc.customs.rosmfrontend.domain.{CdsOrganisationType, NameDobMatchModel, RegistrationDetails}
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.customs.rosmfrontend.views.html.migration.enter_your_details
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameDobSoleTraderController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NameDobDetailsSubscriptionFlowPage
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, NameDobMatchModel, RegistrationDetails}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.enter_your_details
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.subscription.SubscriptionFlowSpec
 import util.builders.{AuthBuilder, SessionBuilder}
@@ -50,11 +50,11 @@ class AllowlistVerificationWithFeatureOffSpec
   protected override val mockSubscriptionFlowManager: SubscriptionFlowManager = mock[SubscriptionFlowManager]
   protected override val formId: String = NameDobSoleTraderPage.formId
   protected override val submitInCreateModeUrl: String =
-    uk.gov.hmrc.customs.rosmfrontend.controllers.migration.routes.NameDobSoleTraderController
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController
       .submit(isInReviewMode = false, Journey.Subscribe)
       .url
   protected override val submitInReviewModeUrl: String =
-    uk.gov.hmrc.customs.rosmfrontend.controllers.migration.routes.NameDobSoleTraderController
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController
       .submit(isInReviewMode = true, Journey.Subscribe)
       .url
 

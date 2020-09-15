@@ -19,7 +19,7 @@ package unit.forms
 import base.UnitSpec
 import play.api.data.Form
 import play.api.data.Forms.{mapping, nonEmptyText}
-import uk.gov.hmrc.customs.rosmfrontend.forms.FormValidation._
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation._
 
 class ConditionalValidatePostcodeFormSpec extends UnitSpec {
 

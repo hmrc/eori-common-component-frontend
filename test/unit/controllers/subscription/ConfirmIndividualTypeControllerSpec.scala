@@ -17,21 +17,21 @@
 package unit.controllers.subscription
 
 import common.pages.subscription.ConfirmIndividualTypePage._
-import uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.{
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{
   ConfirmIndividualTypeController,
   SubscriptionFlowManager
 }
-import uk.gov.hmrc.customs.rosmfrontend.domain.CdsOrganisationType
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.SubscriptionPage
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionPage
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfter
 import play.api.mvc._
 import play.api.test.Helpers._
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.RequestSessionData
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.views.html.subscription.confirm_individual_type
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.confirm_individual_type
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
@@ -89,7 +89,7 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
       page.radioButtonIsUnchecked(optionIndividualXpath) shouldBe true
 
       page.getElementAttributeHref(backLinkXPath) shouldBe previousPageUrl
-      page.formAction(formId) shouldBe uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.ConfirmIndividualTypeController
+      page.formAction(formId) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ConfirmIndividualTypeController
         .submit(Journey.Register)
         .url
     }

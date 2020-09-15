@@ -25,14 +25,14 @@ import org.scalatest.BeforeAndAfter
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.controllers.registration.GYEHowCanWeIdentifyYouController
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.Individual
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.SubscriptionDetails
-import uk.gov.hmrc.customs.rosmfrontend.domain.{CdsOrganisationType, NameDobMatchModel, Utr}
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.SessionCache
-import uk.gov.hmrc.customs.rosmfrontend.services.registration.MatchingService
-import uk.gov.hmrc.customs.rosmfrontend.views.html.migration.how_can_we_identify_you
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.GYEHowCanWeIdentifyYouController
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, NameDobMatchModel, Utr}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.MatchingService
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec

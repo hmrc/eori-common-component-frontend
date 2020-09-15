@@ -24,12 +24,12 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.controllers.registration.WhatIsYourOrgNameController
-import uk.gov.hmrc.customs.rosmfrontend.domain.registration.UserLocation
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.RequestSessionData
-import uk.gov.hmrc.customs.rosmfrontend.services.subscription.SubscriptionDetailsService
-import uk.gov.hmrc.customs.rosmfrontend.views.html.registration.what_is_your_org_name
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.WhatIsYourOrgNameController
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.what_is_your_org_name
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser

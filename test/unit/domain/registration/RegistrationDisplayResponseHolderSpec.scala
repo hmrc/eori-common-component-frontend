@@ -18,9 +18,9 @@ package unit.domain.registration
 
 import base.UnitSpec
 import play.api.libs.json.Json
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.Address
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.matching.{ContactResponse, IndividualResponse}
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.registration.{RegistrationDisplayResponse, RegistrationDisplayResponseHolder, ResponseCommon, ResponseDetail}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.{ContactResponse, IndividualResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.registration.{RegistrationDisplayResponse, RegistrationDisplayResponseHolder, ResponseCommon, ResponseDetail}
 
 class RegistrationDisplayResponseHolderSpec extends UnitSpec {
 

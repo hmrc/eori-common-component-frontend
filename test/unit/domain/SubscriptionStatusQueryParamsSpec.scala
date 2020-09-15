@@ -17,7 +17,7 @@
 package unit.domain
 
 import base.UnitSpec
-import uk.gov.hmrc.customs.rosmfrontend.domain.{SubscriptionStatusQueryParams, TaxPayerId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{SubscriptionStatusQueryParams, TaxPayerId}
 import org.joda.time.DateTime
 
 class SubscriptionStatusQueryParamsSpec extends UnitSpec {

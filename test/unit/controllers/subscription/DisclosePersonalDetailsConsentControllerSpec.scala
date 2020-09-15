@@ -27,12 +27,12 @@ import org.scalatest.prop.TableDrivenPropertyChecks._
 import org.scalatest.prop.Tables.Table
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
-import uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.DisclosePersonalDetailsConsentController
-import uk.gov.hmrc.customs.rosmfrontend.domain.YesNo
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription._
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.RequestSessionData
-import uk.gov.hmrc.customs.rosmfrontend.views.html.subscription.disclose_personal_details_consent
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.DisclosePersonalDetailsConsentController
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.YesNo
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.disclose_personal_details_consent
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
@@ -48,11 +48,11 @@ class DisclosePersonalDetailsConsentControllerSpec
 
   protected override val formId: String = DisclosePersonalDetailsConsentPage.formId
   protected override val submitInCreateModeUrl: String =
-    uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.DisclosePersonalDetailsConsentController
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DisclosePersonalDetailsConsentController
       .submit(isInReviewMode = false, Journey.Register)
       .url
   protected override val submitInReviewModeUrl: String =
-    uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.DisclosePersonalDetailsConsentController
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DisclosePersonalDetailsConsentController
       .submit(isInReviewMode = true, Journey.Register)
       .url
 

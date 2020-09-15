@@ -16,8 +16,8 @@
 
 package util.builders
 
-import uk.gov.hmrc.customs.rosmfrontend.domain.CdsOrganisationType
-import uk.gov.hmrc.customs.rosmfrontend.forms.MatchingForms._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
 
 object OrganisationTypeBuilder {
 

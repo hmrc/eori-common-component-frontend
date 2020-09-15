@@ -24,11 +24,11 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import uk.gov.hmrc.customs.rosmfrontend.controllers.registration.NameDobController
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.SubscriptionDetails
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.SessionCache
-import uk.gov.hmrc.customs.rosmfrontend.views.html.registration.match_namedob
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.NameDobController
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.match_namedob
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import unit.controllers.subscription.SubscriptionFlowTestSupport

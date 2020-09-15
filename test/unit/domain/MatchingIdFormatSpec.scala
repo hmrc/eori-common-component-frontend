@@ -18,7 +18,7 @@ package unit.domain
 
 import base.UnitSpec
 import play.api.libs.json.{JsSuccess, JsValue, Json}
-import uk.gov.hmrc.customs.rosmfrontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 
 class MatchingIdFormatSpec extends UnitSpec {
 

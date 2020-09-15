@@ -17,9 +17,9 @@
 package util.builders.matching
 
 import common.RegistrationOutcome.{PENDING, PROCESSING, RegistrationOutcome}
-import uk.gov.hmrc.customs.rosmfrontend.domain.NameMatch
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.matching.Organisation
-import uk.gov.hmrc.customs.rosmfrontend.forms.MatchingForms.organisationNameForm
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NameMatch
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.Organisation
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.organisationNameForm
 
 object OrganisationNameFormBuilder {
 

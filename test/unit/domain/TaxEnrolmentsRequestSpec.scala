@@ -19,8 +19,8 @@ package unit.domain
 import base.UnitSpec
 import org.joda.time.LocalDate
 import play.api.libs.json.Json
-import uk.gov.hmrc.customs.rosmfrontend.domain.{KeyValue, TaxEnrolmentsRequest}
-import uk.gov.hmrc.customs.rosmfrontend.domain.TaxEnrolmentsRequest._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{KeyValue, TaxEnrolmentsRequest}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.TaxEnrolmentsRequest._
 
 class TaxEnrolmentsRequestSpec extends UnitSpec {
   val expectedTaxEnrolmentsRequestJson = Json.parse("""{

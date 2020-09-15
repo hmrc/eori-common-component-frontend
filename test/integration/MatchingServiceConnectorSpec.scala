@@ -16,8 +16,8 @@
 
 package integration
 
-import uk.gov.hmrc.customs.rosmfrontend.connector.MatchingServiceConnector
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.matching.{MatchingRequestHolder, MatchingResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.MatchingServiceConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.{MatchingRequestHolder, MatchingResponse}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder

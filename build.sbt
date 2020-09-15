@@ -42,7 +42,7 @@ lazy val microservice = (project in file("."))
     allResolvers,
     scoverageSettings,
     twirlSettings,
-    TwirlKeys.templateImports += "uk.gov.hmrc.customs.rosmfrontend.models._"
+    TwirlKeys.templateImports += "uk.gov.hmrc.eoricommoncomponent.frontend.models._"
   )
 
 def filterTestsOnPackageName(rootPackage: String): String => Boolean = {
@@ -72,12 +72,12 @@ lazy val integrationTestSettings =
 lazy val commonSettings: Seq[Setting[_]] = publishingSettings ++ defaultSettings()
 
 lazy val playSettings: Seq[Setting[_]] = Seq(
-  routesImport ++= Seq("uk.gov.hmrc.customs.rosmfrontend.domain._"),
-  RoutesKeys.routesImport += "uk.gov.hmrc.customs.rosmfrontend.models._"
+  routesImport ++= Seq("uk.gov.hmrc.eoricommoncomponent.frontend.domain._"),
+  RoutesKeys.routesImport += "uk.gov.hmrc.eoricommoncomponent.frontend.models._"
 )
 
 lazy val twirlSettings: Seq[Setting[_]] = Seq(
-  TwirlKeys.templateImports ++= Seq("uk.gov.hmrc.customs.rosmfrontend.views.html._", "uk.gov.hmrc.customs.rosmfrontend.domain._")
+  TwirlKeys.templateImports ++= Seq("uk.gov.hmrc.eoricommoncomponent.frontend.views.html._", "uk.gov.hmrc.eoricommoncomponent.frontend.domain._")
 )
 
 lazy val scoverageSettings = {

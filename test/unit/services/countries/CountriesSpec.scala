@@ -20,7 +20,7 @@ import org.scalatest.{Matchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
-import uk.gov.hmrc.customs.rosmfrontend.services.countries.{Countries, Country}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.{Countries, Country}
 
 class CountriesSpec extends WordSpec with Matchers with GuiceOneAppPerSuite {
 

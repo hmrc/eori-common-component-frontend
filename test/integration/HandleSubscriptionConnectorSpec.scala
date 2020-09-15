@@ -26,8 +26,8 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.mvc.Http.MimeTypes
-import uk.gov.hmrc.customs.rosmfrontend.connector.HandleSubscriptionConnector
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.subscription.HandleSubscriptionRequest
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.HandleSubscriptionConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.HandleSubscriptionRequest
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, NotFoundException, Upstream5xxResponse}
 import util.WireMockRunner
 import util.externalservices.ExternalServicesConfig.{Host, Port}

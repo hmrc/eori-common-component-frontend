@@ -22,9 +22,9 @@ import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfter
 import org.scalatest.mockito.MockitoSugar
-import uk.gov.hmrc.customs.rosmfrontend.connector.TaxEnrolmentsConnector
-import uk.gov.hmrc.customs.rosmfrontend.domain.{Eori, SafeId, TaxEnrolmentsRequest, TaxEnrolmentsResponse}
-import uk.gov.hmrc.customs.rosmfrontend.services.subscription.TaxEnrolmentsService
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.TaxEnrolmentsConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Eori, SafeId, TaxEnrolmentsRequest, TaxEnrolmentsResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.TaxEnrolmentsService
 import uk.gov.hmrc.http.HeaderCarrier
 import play.api.test.Helpers._
 

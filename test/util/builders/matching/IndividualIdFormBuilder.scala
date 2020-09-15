@@ -16,8 +16,8 @@
 
 package util.builders.matching
 
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.Individual
-import uk.gov.hmrc.customs.rosmfrontend.domain.{Eori, Utr}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Eori, Utr}
 
 object IndividualIdFormBuilder {
 

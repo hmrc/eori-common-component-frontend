@@ -24,20 +24,20 @@ import org.scalatest.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.connector.{SUB09SubscriptionDisplayConnector, ServiceUnavailableResponse}
-import uk.gov.hmrc.customs.rosmfrontend.controllers.registration.SubscriptionRecoveryController
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.{RecipientDetails, SubscriptionDetails}
-import uk.gov.hmrc.customs.rosmfrontend.forms.models.subscription.ContactDetailsModel
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.RandomUUIDGenerator
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.customs.rosmfrontend.services.subscription.{
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{SUB09SubscriptionDisplayConnector, ServiceUnavailableResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.SubscriptionRecoveryController
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{RecipientDetails, SubscriptionDetails}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactDetailsModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.RandomUUIDGenerator
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   HandleSubscriptionService,
   SubscriptionDetailsService,
   TaxEnrolmentsService
 }
-import uk.gov.hmrc.customs.rosmfrontend.views.html.error_template
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser

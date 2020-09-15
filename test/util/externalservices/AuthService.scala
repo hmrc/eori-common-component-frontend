@@ -22,7 +22,7 @@ import play.api.http.Status
 import play.api.libs.json.Json
 import play.mvc.Http.HeaderNames.AUTHORIZATION
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
-import uk.gov.hmrc.customs.rosmfrontend.domain.CustomsId
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CustomsId
 
 trait AuthService {
 

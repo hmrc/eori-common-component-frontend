@@ -26,17 +26,17 @@ import org.scalacheck.Gen
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
-import uk.gov.hmrc.customs.rosmfrontend.controllers.AddressController
-import uk.gov.hmrc.customs.rosmfrontend.controllers.routes.AddressController.submit
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.AddressDetailsSubscriptionFlowPage
-import uk.gov.hmrc.customs.rosmfrontend.domain.{CdsOrganisationType, RegistrationDetails, SafeId}
-import uk.gov.hmrc.customs.rosmfrontend.forms.models.subscription.AddressViewModel
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.customs.rosmfrontend.services.countries.{AllCountriesExceptIomInCountryPicker, Countries, Country}
-import uk.gov.hmrc.customs.rosmfrontend.services.subscription.SubscriptionDetailsService
-import uk.gov.hmrc.customs.rosmfrontend.views.html.address
-import uk.gov.hmrc.customs.rosmfrontend.views.html.registration.confirm_contact_details
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.AddressController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.submit
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.AddressDetailsSubscriptionFlowPage
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, RegistrationDetails, SafeId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.{AllCountriesExceptIomInCountryPicker, Countries, Country}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.address
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.confirm_contact_details
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import unit.controllers.subscription.{

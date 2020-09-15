@@ -17,7 +17,7 @@
 package unit.models
 
 import base.UnitSpec
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription._
 
 import scala.collection.Map
 

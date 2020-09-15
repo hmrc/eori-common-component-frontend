@@ -23,11 +23,11 @@ import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.customs.rosmfrontend.domain.YesNo
-import uk.gov.hmrc.customs.rosmfrontend.forms.MatchingForms._
-import uk.gov.hmrc.customs.rosmfrontend.forms.models.subscription.VatEUDetailsModel
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.views.html.subscription.vat_details_eu_confirm
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.YesNo
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.VatEUDetailsModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_details_eu_confirm
 import util.ViewSpec
 import util.builders.YesNoFormBuilder._
 

@@ -21,10 +21,10 @@ import org.mockito.Mockito.{verify, _}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.controllers.SecuritySignOutController
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.SessionCache
-import uk.gov.hmrc.customs.rosmfrontend.views.html.display_sign_out
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.SecuritySignOutController
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.display_sign_out
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser

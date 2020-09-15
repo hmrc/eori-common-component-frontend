@@ -23,17 +23,17 @@ import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import play.api.mvc.{Action, AnyContent, Request, Results}
-import uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.Sub02Controller
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.ResponseCommon._
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging._
-import uk.gov.hmrc.customs.rosmfrontend.domain.registration.UserLocation
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.SubscriptionDetails
-import uk.gov.hmrc.customs.rosmfrontend.forms.models.subscription.ContactDetailsModel
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.customs.rosmfrontend.services.organisation.OrgTypeLookup
-import uk.gov.hmrc.customs.rosmfrontend.services.registration.{RegisterWithoutIdService, RegisterWithoutIdWithSubscriptionService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.ResponseCommon._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactDetailsModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{RegisterWithoutIdService, RegisterWithoutIdWithSubscriptionService}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.global

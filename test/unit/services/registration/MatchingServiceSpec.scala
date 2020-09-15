@@ -21,18 +21,18 @@ import org.mockito.Mockito.{verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers, Mockito}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
-import uk.gov.hmrc.customs.rosmfrontend.connector.MatchingServiceConnector
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.Individual
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.matching.{MatchingRequestHolder, MatchingResponse, Organisation}
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.MatchingServiceConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.{MatchingRequestHolder, MatchingResponse, Organisation}
 import util.builders.matching.NinoFormBuilder
 import play.api.libs.json._
 import play.api.mvc.{AnyContent, Request}
 import play.mvc.Http.Status.INTERNAL_SERVER_ERROR
-import uk.gov.hmrc.customs.rosmfrontend.services.RequestCommonGenerator
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.customs.rosmfrontend.services.mapping.RegistrationDetailsCreator
-import uk.gov.hmrc.customs.rosmfrontend.services.registration.MatchingService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.MatchingService
 import uk.gov.hmrc.http.{HeaderCarrier, Upstream5xxResponse}
 
 import scala.concurrent.ExecutionContext.global

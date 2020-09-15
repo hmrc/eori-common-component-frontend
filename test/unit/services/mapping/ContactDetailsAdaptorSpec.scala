@@ -18,8 +18,8 @@ package unit.services.mapping
 
 import base.UnitSpec
 import common.support.testdata.GenTestRunner
-import uk.gov.hmrc.customs.rosmfrontend.forms.models.subscription.AddressViewModel.{sixLineAddressLine1MaxLength, sixLineAddressLine2MaxLength, townCityMaxLength}
-import uk.gov.hmrc.customs.rosmfrontend.services.mapping.ContactDetailsAdaptor
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel.{sixLineAddressLine1MaxLength, sixLineAddressLine2MaxLength, townCityMaxLength}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.ContactDetailsAdaptor
 
 class ContactDetailsAdaptorSpec extends UnitSpec with GenTestRunner {
 

@@ -17,8 +17,8 @@
 package unit.domain.messaging
 
 import base.UnitSpec
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.RegistrationInfoRequest
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.RegistrationInfoRequest
 
 class RegistrationInfoRequestSpec extends UnitSpec {
 

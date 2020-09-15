@@ -27,19 +27,19 @@ import org.scalatest.{BeforeAndAfter, BeforeAndAfterEach, mock => _}
 import play.api.mvc._
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.controllers.registration.SixLineAddressController
-import uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.SubscriptionFlowManager
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.Address
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.SubscriptionPage
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.forms.MatchingForms._
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.customs.rosmfrontend.services.countries.{AllCountriesExceptIomInCountryPicker, Countries, Country}
-import uk.gov.hmrc.customs.rosmfrontend.services.mapping.RegistrationDetailsCreator
-import uk.gov.hmrc.customs.rosmfrontend.services.registration.RegistrationDetailsService
-import uk.gov.hmrc.customs.rosmfrontend.services.subscription.SubscriptionDetailsService
-import uk.gov.hmrc.customs.rosmfrontend.views.html.registration.six_line_address
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.SixLineAddressController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionPage
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.{AllCountriesExceptIomInCountryPicker, Countries, Country}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDetailsService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.six_line_address
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec

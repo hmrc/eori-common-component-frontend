@@ -27,15 +27,15 @@ import org.scalatest.prop.TableFor2
 import org.scalatest.prop.Tables.Table
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
-import uk.gov.hmrc.customs.rosmfrontend.controllers.migration.NameIDOrgController
-import uk.gov.hmrc.customs.rosmfrontend.controllers.migration.NameIdOrganisationDisplayMode.RegisteredCompanyDM
-import uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.SubscriptionFlowManager
-import uk.gov.hmrc.customs.rosmfrontend.domain.{RegistrationDetails, _}
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription._
-import uk.gov.hmrc.customs.rosmfrontend.forms.MatchingForms.nameUtrOrganisationForm
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.customs.rosmfrontend.views.html.migration.nameId
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameIDOrgController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameIdOrganisationDisplayMode.RegisteredCompanyDM
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{RegistrationDetails, _}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.nameUtrOrganisationForm
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.nameId
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import unit.controllers.subscription.SubscriptionFlowSpec
@@ -51,11 +51,11 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
   protected override val mockSubscriptionFlowManager: SubscriptionFlowManager = mock[SubscriptionFlowManager]
   protected override val formId: String = NameIdDetailsPage.formId
   protected override val submitInCreateModeUrl: String =
-    uk.gov.hmrc.customs.rosmfrontend.controllers.migration.routes.NameIDOrgController
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController
       .submit(isInReviewMode = false, Journey.Register)
       .url
   protected override val submitInReviewModeUrl: String =
-    uk.gov.hmrc.customs.rosmfrontend.controllers.migration.routes.NameIDOrgController
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController
       .submit(isInReviewMode = true, Journey.Register)
       .url
 

@@ -21,7 +21,7 @@ import java.util.UUID
 import play.api.Application
 import play.api.mvc.AnyContentAsFormUrlEncoded
 import play.api.test.{CSRFTokenHelper, FakeRequest}
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.RequestSessionDataKeys
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionDataKeys
 import uk.gov.hmrc.http.SessionKeys
 
 object SessionBuilder {

@@ -21,10 +21,10 @@ import org.mockito.Mockito.when
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.controllers.EnrolmentExistsAgainstGroupIdController
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.SessionCache
-import uk.gov.hmrc.customs.rosmfrontend.views.html.enrolment_exists_against_group_id
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EnrolmentExistsAgainstGroupIdController
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.enrolment_exists_against_group_id
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser

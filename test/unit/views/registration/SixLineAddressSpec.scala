@@ -21,11 +21,11 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.customs.rosmfrontend.domain.SixLineAddressMatchModel
-import uk.gov.hmrc.customs.rosmfrontend.forms.MatchingForms._
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.countries._
-import uk.gov.hmrc.customs.rosmfrontend.views.html.registration.six_line_address
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.SixLineAddressMatchModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries._
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.six_line_address
 import util.ViewSpec
 
 class SixLineAddressSpec extends ViewSpec {

@@ -16,9 +16,9 @@
 
 package util.builders.matching
 
-import uk.gov.hmrc.customs.rosmfrontend.domain.NinoMatch
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.Individual
-import uk.gov.hmrc.customs.rosmfrontend.forms.MatchingForms._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NinoMatch
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
 import org.joda.time.LocalDate
 
 object NinoFormBuilder {

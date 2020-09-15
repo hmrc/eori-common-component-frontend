@@ -16,7 +16,7 @@
 
 package common.support.testdata.subscription
 
-import uk.gov.hmrc.customs.rosmfrontend.forms.models.subscription.{ContactDetailsModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{ContactDetailsModel}
 
 object SubscriptionContactDetailsModelBuilder {
 

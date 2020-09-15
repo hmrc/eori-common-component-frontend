@@ -17,8 +17,8 @@
 package util.builders
 
 import common.support.testdata.TestData
-import uk.gov.hmrc.customs.rosmfrontend.domain.Eori
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.matching.Organisation
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.Eori
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.Organisation
 import org.joda.time.LocalDate
 
 object NameEoriEuOrganisationFormBuilder {

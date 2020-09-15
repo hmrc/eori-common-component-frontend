@@ -18,7 +18,7 @@ package unit.services.mapping
 
 import base.UnitSpec
 import common.support.testdata.GenTestRunner
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.{MessagingServiceParam, ResponseCommon}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{MessagingServiceParam, ResponseCommon}
 import org.joda.time.DateTime
 import util.scalacheck.TestDataGenerators
 

@@ -22,8 +22,8 @@ import common.pages.registration.VatRegisteredUkPage
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.controllers.registration.VatRegisteredUkController
-import uk.gov.hmrc.customs.rosmfrontend.views.html.registration.vat_registered_uk
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.VatRegisteredUkController
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.vat_registered_uk
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.SessionBuilder

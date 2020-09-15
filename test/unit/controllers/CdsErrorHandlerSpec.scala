@@ -21,9 +21,9 @@ import play.api.Configuration
 import play.api.test.FakeRequest
 import play.api.test.Helpers.LOCATION
 import play.mvc.Http.Status._
-import uk.gov.hmrc.customs.rosmfrontend.CdsErrorHandler
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.SessionTimeOutException
-import uk.gov.hmrc.customs.rosmfrontend.views.html.{client_error_template, error_template, notFound}
+import uk.gov.hmrc.eoricommoncomponent.frontend.CdsErrorHandler
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionTimeOutException
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{client_error_template, error_template, notFound}
 import util.ControllerSpec
 
 class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {

@@ -20,7 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.customs.rosmfrontend.views.html.subscription.sign_in_with_different_details
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.sign_in_with_different_details
 import util.ViewSpec
 
 class SignInWithDifferentDetailsSpec extends ViewSpec {

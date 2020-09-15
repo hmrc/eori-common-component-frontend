@@ -28,21 +28,21 @@ import org.scalatest.{BeforeAndAfterEach, mock => _}
 import play.api.mvc._
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.controllers.registration.{
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.{
   CheckYourDetailsRegisterController,
   ConfirmContactDetailsController
 }
-import uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.SubscriptionFlowManager
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.Address
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.{SubscriptionDetails, SubscriptionPage}
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.customs.rosmfrontend.services.organisation.OrgTypeLookup
-import uk.gov.hmrc.customs.rosmfrontend.services.registration._
-import uk.gov.hmrc.customs.rosmfrontend.services.subscription._
-import uk.gov.hmrc.customs.rosmfrontend.views.html.registration.confirm_contact_details
-import uk.gov.hmrc.customs.rosmfrontend.views.html.subscription.{sub01_outcome_processing, sub01_outcome_rejected}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubscriptionDetails, SubscriptionPage}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration._
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.confirm_contact_details
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{sub01_outcome_processing, sub01_outcome_rejected}
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
@@ -185,7 +185,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
       invokeConfirm() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.OrganisationTypeController
+        result.header.headers(LOCATION) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.OrganisationTypeController
           .form(Journey.Register)
           .url
         verify(mockCdsFrontendDataCache).remove(any[HeaderCarrier])
@@ -345,7 +345,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       mockNewSubscriptionFromSubscriptionStatus()
       invokeConfirmContactDetailsWithSelectedOption() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.ConfirmIndividualTypeController
+        result.header.headers(LOCATION) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ConfirmIndividualTypeController
           .form(Journey.Register)
           .url
       }
@@ -372,14 +372,14 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
       invokeConfirmContactDetailsWithSelectedOption() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.ConfirmIndividualTypeController
+        result.header.headers(LOCATION) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ConfirmIndividualTypeController
           .form(Journey.Register)
           .url
       }
     }
 
     val redirectUrl =
-      uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.ConfirmContactDetailsController
+      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.ConfirmContactDetailsController
         .processing()
         .url
     val subscriptionStatus = SubscriptionProcessing
@@ -417,7 +417,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
       invokeConfirmContactDetailsWithSelectedOption() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.SignInWithDifferentDetailsController
+        result.header.headers(LOCATION) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.SignInWithDifferentDetailsController
           .form(Journey.Register)
           .url
       }
@@ -439,7 +439,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
       invokeConfirmContactDetailsWithSelectedOption() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.SubscriptionRecoveryController
+        result.header.headers(LOCATION) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.SubscriptionRecoveryController
           .complete(Journey.Register)
           .url
       }
@@ -483,7 +483,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
       invokeConfirmContactDetailsWithSelectedOption(selectedOption = "no") { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.OrganisationTypeController
+        result.header.headers(LOCATION) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.OrganisationTypeController
           .form(Journey.Register)
           .url
       }
@@ -530,7 +530,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
       invokeConfirmContactDetailsWithSelectedOption(selectedOption = "wrong-address") { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe uk.gov.hmrc.customs.rosmfrontend.controllers.routes.AddressController
+        result.header.headers(LOCATION) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController
           .createForm(Journey.Register)
           .url
       }

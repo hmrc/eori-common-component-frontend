@@ -20,7 +20,7 @@ import org.scalacheck.Gen
 import uk.gov.hmrc.auth.core
 import uk.gov.hmrc.auth.core.retrieve.Credentials
 import uk.gov.hmrc.auth.core.{AffinityGroup, CredentialRole}
-import uk.gov.hmrc.customs.rosmfrontend.domain.{Nino, Utr}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Nino, Utr}
 
 case class User(
                  internalId: String,

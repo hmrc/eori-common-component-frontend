@@ -30,16 +30,16 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.controllers.registration.CheckYourDetailsRegisterController
-import uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes._
-import uk.gov.hmrc.customs.rosmfrontend.domain.CdsOrganisationType.{Partnership, _}
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.{BusinessShortName, SubscriptionDetails, SubscriptionFlow}
-import uk.gov.hmrc.customs.rosmfrontend.forms.models.subscription.{AddressViewModel, VatEUDetailsModel}
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.customs.rosmfrontend.services.registration.RegisterWithoutIdWithSubscriptionService
-import uk.gov.hmrc.customs.rosmfrontend.views.html.registration.check_your_details_register
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.CheckYourDetailsRegisterController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType.{Partnership, _}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{BusinessShortName, SubscriptionDetails, SubscriptionFlow}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, VatEUDetailsModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegisterWithoutIdWithSubscriptionService
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.check_your_details_register
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec

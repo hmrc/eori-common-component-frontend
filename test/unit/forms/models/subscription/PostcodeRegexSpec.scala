@@ -17,7 +17,7 @@
 package unit.forms.models.subscription
 
 import base.UnitSpec
-import uk.gov.hmrc.customs.rosmfrontend.forms.FormValidation.postcodeRegex
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation.postcodeRegex
 
 class PostcodeRegexSpec extends UnitSpec {
   "PostcodeRegex  should match" when {

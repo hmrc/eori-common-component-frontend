@@ -20,7 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.customs.rosmfrontend.views.html.partials.footer
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.partials.footer
 import util.ViewSpec
 
 class FooterSpec extends ViewSpec {

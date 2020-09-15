@@ -20,13 +20,13 @@ import base.UnitSpec
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.mockito.MockitoSugar
-import uk.gov.hmrc.customs.rosmfrontend.connector.{RegistrationDisplayConnector, ServiceUnavailableResponse}
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.matching.ResponseDetail
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.registration.{RegistrationDisplayResponse, ResponseCommon}
-import uk.gov.hmrc.customs.rosmfrontend.domain.{RegistrationDetailsIndividual, RegistrationDetailsOrganisation, SafeId}
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.SessionCache
-import uk.gov.hmrc.customs.rosmfrontend.services.mapping.RegistrationDetailsCreator
-import uk.gov.hmrc.customs.rosmfrontend.services.registration.RegistrationDisplayService
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{RegistrationDisplayConnector, ServiceUnavailableResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.ResponseDetail
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.registration.{RegistrationDisplayResponse, ResponseCommon}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{RegistrationDetailsIndividual, RegistrationDetailsOrganisation, SafeId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDisplayService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}

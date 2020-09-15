@@ -20,7 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.customs.rosmfrontend.views.html.subscription.sub01_outcome_rejected
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.sub01_outcome_rejected
 import util.ViewSpec
 
 class Sub01OutcomeRejectedSpec extends ViewSpec {

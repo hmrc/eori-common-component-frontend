@@ -16,7 +16,7 @@
 
 package util.builders
 
-import uk.gov.hmrc.customs.rosmfrontend.domain.registration.UserLocation
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 
 object UserLocationFormBuilder {
 

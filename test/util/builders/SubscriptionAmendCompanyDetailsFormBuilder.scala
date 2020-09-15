@@ -16,8 +16,8 @@
 
 package util.builders
 
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription._
-import uk.gov.hmrc.customs.rosmfrontend.forms.subscription.SubscriptionForm
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm
 import org.joda.time.LocalDate
 
 object SubscriptionAmendCompanyDetailsFormBuilder {

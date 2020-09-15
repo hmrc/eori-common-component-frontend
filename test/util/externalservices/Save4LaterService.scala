@@ -21,7 +21,7 @@ import play.api.libs.json.Json
 import play.mvc.Http.HeaderNames.CONTENT_TYPE
 import play.mvc.Http.MimeTypes.JSON
 import play.mvc.Http.Status._
-import uk.gov.hmrc.customs.rosmfrontend.forms.models.email.EmailStatus
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.http.HeaderCarrier
 
 object Save4LaterService {

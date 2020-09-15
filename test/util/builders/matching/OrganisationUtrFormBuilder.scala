@@ -16,9 +16,9 @@
 
 package util.builders.matching
 
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.matching.Organisation
-import uk.gov.hmrc.customs.rosmfrontend.domain.{Utr, UtrMatchModel}
-import uk.gov.hmrc.customs.rosmfrontend.forms.MatchingForms.utrForm
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.Organisation
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Utr, UtrMatchModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.utrForm
 import util.builders.matching.OrganisationNameFormBuilder.ValidName
 
 object OrganisationUtrFormBuilder {

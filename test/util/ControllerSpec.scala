@@ -35,7 +35,7 @@ import unit.controllers.CdsPage
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthBuilder, SessionBuilder}
 import play.api.i18n.Lang._
-import uk.gov.hmrc.customs.rosmfrontend.config.AppConfig
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
 import scala.concurrent.Future

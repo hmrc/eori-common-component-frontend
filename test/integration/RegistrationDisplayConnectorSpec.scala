@@ -21,8 +21,8 @@ import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.mvc.Http.Status._
-import uk.gov.hmrc.customs.rosmfrontend.connector.{RegistrationDisplayConnector, ServiceUnavailableResponse}
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.registration.{
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{RegistrationDisplayConnector, ServiceUnavailableResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.registration.{
   RegistrationDisplayRequestHolder,
   RegistrationDisplayResponseHolder
 }

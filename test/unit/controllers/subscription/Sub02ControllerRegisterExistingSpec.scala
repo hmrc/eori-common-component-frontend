@@ -24,15 +24,15 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.connector.PdfGeneratorConnector
-import uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.Sub02Controller
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.ResponseCommon
-import uk.gov.hmrc.customs.rosmfrontend.domain.registration.UserLocation
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.customs.rosmfrontend.services.subscription._
-import uk.gov.hmrc.customs.rosmfrontend.views.html.migration.migration_success
-import uk.gov.hmrc.customs.rosmfrontend.views.html.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.PdfGeneratorConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.ResponseCommon
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.migration_success
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec

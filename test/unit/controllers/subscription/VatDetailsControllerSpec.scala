@@ -23,19 +23,19 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import uk.gov.hmrc.customs.rosmfrontend.connector.{
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{
   InvalidResponse,
   NotFoundResponse,
   ServiceUnavailableResponse,
   VatControlListConnector
 }
-import uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.VatDetailsController
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.VatDetailsSubscriptionFlowPage
-import uk.gov.hmrc.customs.rosmfrontend.domain.{VatControlListRequest, VatControlListResponse}
-import uk.gov.hmrc.customs.rosmfrontend.forms.models.subscription.VatDetails
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.views.html.error_template
-import uk.gov.hmrc.customs.rosmfrontend.views.html.subscription.{vat_details, we_cannot_confirm_your_identity}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.VatDetailsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.VatDetailsSubscriptionFlowPage
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{VatControlListRequest, VatControlListResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.VatDetails
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{vat_details, we_cannot_confirm_your_identity}
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -50,11 +50,11 @@ class VatDetailsControllerSpec
 
   protected override val formId: String = "vat-details-form"
   protected override val submitInCreateModeUrl: String =
-    uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.VatDetailsController
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatDetailsController
       .submit(isInReviewMode = false, Journey.Register)
       .url
   protected override val submitInReviewModeUrl: String =
-    uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.VatDetailsController
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatDetailsController
       .submit(isInReviewMode = true, Journey.Register)
       .url
   private val mockVatControlListConnector = mock[VatControlListConnector]

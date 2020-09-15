@@ -21,8 +21,8 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.mockito.MockitoSugar
-import uk.gov.hmrc.customs.rosmfrontend.domain.LoggedInUser
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.{ClearCacheAndRegistrationIdentificationService, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUser
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{ClearCacheAndRegistrationIdentificationService, SessionCache}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.global

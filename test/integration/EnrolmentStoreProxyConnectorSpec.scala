@@ -23,9 +23,9 @@ import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
 import play.mvc.Http.Status._
-import uk.gov.hmrc.customs.rosmfrontend.connector.EnrolmentStoreProxyConnector
-import uk.gov.hmrc.customs.rosmfrontend.domain.{EnrolmentResponse, EnrolmentStoreProxyResponse}
-import uk.gov.hmrc.customs.rosmfrontend.models.enrolmentRequest.{KeyValuePair, KnownFact, KnownFacts, KnownFactsQuery}
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.EnrolmentStoreProxyConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, EnrolmentStoreProxyResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.{KeyValuePair, KnownFact, KnownFacts, KnownFactsQuery}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import util.externalservices.EnrolmentStoreProxyService
 import util.externalservices.ExternalServicesConfig._

@@ -24,10 +24,10 @@ import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.mvc.Http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR}
-import uk.gov.hmrc.customs.rosmfrontend.connector.RegisterWithoutIdConnector
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging._
-import uk.gov.hmrc.customs.rosmfrontend.forms.models.subscription.ContactDetailsModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.RegisterWithoutIdConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging._
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactDetailsModel
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream4xxResponse, Upstream5xxResponse}
 import util.WireMockRunner
 import util.externalservices.ExternalServicesConfig._

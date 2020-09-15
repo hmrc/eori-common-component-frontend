@@ -21,10 +21,10 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.customs.rosmfrontend.domain.{CdsOrganisationType, UtrMatchModel}
-import uk.gov.hmrc.customs.rosmfrontend.forms.MatchingForms.utrForm
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.views.html.migration.match_utr_subscription
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, UtrMatchModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.utrForm
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_utr_subscription
 import util.ViewSpec
 
 class HaveUtrSubscriptionSpec extends ViewSpec {

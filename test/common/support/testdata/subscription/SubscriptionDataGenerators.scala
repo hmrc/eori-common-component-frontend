@@ -17,11 +17,11 @@
 package common.support.testdata.subscription
 
 import org.scalacheck.Gen
-import uk.gov.hmrc.customs.rosmfrontend.domain.VatIdentification
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.Address
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.subscription.ContactInformation
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.ContactDetails
-import uk.gov.hmrc.customs.rosmfrontend.forms.models.subscription.ContactDetailsModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.VatIdentification
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.ContactInformation
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetails
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactDetailsModel
 
 trait SubscriptionDataGenerators {
 

@@ -21,8 +21,8 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.config.AppConfig
-import uk.gov.hmrc.customs.rosmfrontend.controllers.RegisterRedirectController
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.RegisterRedirectController
 import util.ControllerSpec
 import util.builders.SessionBuilder
 
