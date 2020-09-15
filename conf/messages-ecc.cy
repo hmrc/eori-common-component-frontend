@@ -19,3 +19,8 @@ cds.service.friendly.name.atar=TRANSLATE Advance Tariff Rulings
 
 eds.existing-eori.enrolment.confirmation.title=TRANSLATE Application complete
 eds.existing-eori.enrolment.confirmation.heading=TRANSLATE Application complete
+eds.existing-eori.enrolment.confirmation.heading=TRANSLATE Application complete
+eds.existing-eori.enrolment.confirmation.para1=TRANSLATE You are now enrolled to the {0} service.
+
+cds.subscription.outcomes.feedback=TRANSLATE What did you think of this service?
+cds.subscription.outcomes.feedback.hint=TRANSLATE (takes 30 seconds) 
