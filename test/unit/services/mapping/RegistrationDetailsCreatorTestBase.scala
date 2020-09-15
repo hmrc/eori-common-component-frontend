@@ -39,4 +39,5 @@ private[mapping] trait TestMatchingModels {
     processingDate = new DateTime(System.currentTimeMillis),
     returnParameters = Some(List(MessagingServiceParam("SAP_NUMBER", sapNumber)))
   )
+
 }

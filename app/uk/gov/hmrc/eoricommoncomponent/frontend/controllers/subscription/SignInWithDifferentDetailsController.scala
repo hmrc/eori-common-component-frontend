@@ -29,7 +29,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.sign_in_
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class SignInWithDifferentDetailsController @Inject()(
+class SignInWithDifferentDetailsController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   cdsFrontendDataCache: SessionCache,
@@ -41,9 +41,9 @@ class SignInWithDifferentDetailsController @Inject()(
   def form(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       val name = journey match {
-        case Journey.Register => cdsFrontendDataCache.registrationDetails.map(_.name)
-        case Journey.Subscribe     => cdsFrontendDataCache.subscriptionDetails.map(_.name)
-        case _                   => throw new IllegalArgumentException("No a valid journey")
+        case Journey.Register  => cdsFrontendDataCache.registrationDetails.map(_.name)
+        case Journey.Subscribe => cdsFrontendDataCache.subscriptionDetails.map(_.name)
+        case _                 => throw new IllegalArgumentException("No a valid journey")
       }
 
       name map { n =>
@@ -51,4 +51,5 @@ class SignInWithDifferentDetailsController @Inject()(
         Ok(signInWithDifferentDetailsView(optionalName))
       }
   }
+
 }

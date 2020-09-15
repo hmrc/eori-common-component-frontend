@@ -38,26 +38,28 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class UserGroupIdSubscriptionStatusCheckServiceSpec
     extends UnitSpec with MockitoSugar with BeforeAndAfterEach with ScalaFutures {
-  private val mockSubscriptionStatusService = mock[SubscriptionStatusService]
-  private val mockEnrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
-  private val mockSave4LaterConnector = mock[Save4LaterConnector]
-  private implicit val hc: HeaderCarrier = mock[HeaderCarrier]
-  private implicit val rq: Request[AnyContent] = mock[Request[AnyContent]]
-  private implicit val reads: Reads[CacheIds] = mock[Reads[CacheIds]]
+  private val mockSubscriptionStatusService     = mock[SubscriptionStatusService]
+  private val mockEnrolmentStoreProxyService    = mock[EnrolmentStoreProxyService]
+  private val mockSave4LaterConnector           = mock[Save4LaterConnector]
+  private implicit val hc: HeaderCarrier        = mock[HeaderCarrier]
+  private implicit val rq: Request[AnyContent]  = mock[Request[AnyContent]]
+  private implicit val reads: Reads[CacheIds]   = mock[Reads[CacheIds]]
   private implicit val writes: Writes[CacheIds] = mock[Writes[CacheIds]]
-  private val safeId = SafeId("safeId")
-  private val groupId = GroupId("groupId-123")
-  private val internalId = InternalId("internalId-123")
-  private val cacheIds = CacheIds(internalId, safeId)
+  private val safeId                            = SafeId("safeId")
+  private val groupId                           = GroupId("groupId-123")
+  private val internalId                        = InternalId("internalId-123")
+  private val cacheIds                          = CacheIds(internalId, safeId)
+
   private val service = new UserGroupIdSubscriptionStatusCheckService(
     mockSubscriptionStatusService,
     mockEnrolmentStoreProxyService,
     mockSave4LaterConnector
   )
 
-  private def continue: Future[Result] = Future.successful(Redirect("/continue"))
+  private def continue: Future[Result]        = Future.successful(Redirect("/continue"))
   private def groupIsEnrolled: Future[Result] = Future.successful(Redirect("/blocked/groupIsEnrolled"))
   private def userIsInProcess: Future[Result] = Future.successful(Redirect("/blocked/userIsInProcess"))
+
   private def otherUserWithinGroupIsInProcess: Future[Result] =
     Future.successful(Redirect("/blocked/otherUserWithinGroupIsInProcess"))
 
@@ -76,7 +78,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
     "block the user for the groupID if enrolment exists" in {
 
       val result: Result = service
-        .checksToProceed(groupId, internalId) { continue } { groupIsEnrolled } { userIsInProcess } {
+        .checksToProceed(groupId, internalId)(continue)(groupIsEnrolled)(userIsInProcess) {
           otherUserWithinGroupIsInProcess
         }
         .futureValue
@@ -96,7 +98,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
         .thenReturn(Future.successful(SubscriptionProcessing))
 
       val result: Result = service
-        .checksToProceed(groupId, internalId) { continue } { groupIsEnrolled } { userIsInProcess } {
+        .checksToProceed(groupId, internalId)(continue)(groupIsEnrolled)(userIsInProcess) {
           otherUserWithinGroupIsInProcess
         }
         .futureValue
@@ -117,7 +119,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
         .thenReturn(Future.successful(SubscriptionProcessing))
 
       val result: Result = service
-        .checksToProceed(groupId, internalId) { continue } { groupIsEnrolled } { userIsInProcess } {
+        .checksToProceed(groupId, internalId)(continue)(groupIsEnrolled)(userIsInProcess) {
           otherUserWithinGroupIsInProcess
         }
         .futureValue
@@ -139,7 +141,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
       when(mockSave4LaterConnector.delete(any[String])(any[HeaderCarrier])).thenReturn(Future.successful(()))
 
       val result: Result = service
-        .checksToProceed(groupId, internalId) { continue } { groupIsEnrolled } { userIsInProcess } {
+        .checksToProceed(groupId, internalId)(continue)(groupIsEnrolled)(userIsInProcess) {
           otherUserWithinGroupIsInProcess
         }
         .futureValue
@@ -161,7 +163,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
       when(mockSave4LaterConnector.delete(any[String])(any[HeaderCarrier])).thenReturn(Future.successful(()))
 
       val result: Result = service
-        .checksToProceed(groupId, internalId) { continue } { groupIsEnrolled } { userIsInProcess } {
+        .checksToProceed(groupId, internalId)(continue)(groupIsEnrolled)(userIsInProcess) {
           otherUserWithinGroupIsInProcess
         }
         .futureValue
@@ -180,7 +182,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
       ).thenReturn(Future.successful(None))
 
       val result: Result = service
-        .checksToProceed(groupId, internalId) { continue } { groupIsEnrolled } { userIsInProcess } {
+        .checksToProceed(groupId, internalId)(continue)(groupIsEnrolled)(userIsInProcess) {
           otherUserWithinGroupIsInProcess
         }
         .futureValue

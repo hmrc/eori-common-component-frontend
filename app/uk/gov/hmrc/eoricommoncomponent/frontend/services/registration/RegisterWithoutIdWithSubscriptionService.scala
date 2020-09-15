@@ -32,7 +32,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RegisterWithoutIdWithSubscriptionService @Inject()(
+class RegisterWithoutIdWithSubscriptionService @Inject() (
   registerWithoutIdService: RegisterWithoutIdService,
   sessionCache: SessionCache,
   requestSessionData: RequestSessionData,
@@ -40,10 +40,10 @@ class RegisterWithoutIdWithSubscriptionService @Inject()(
   sub02Controller: Sub02Controller
 )(implicit ec: ExecutionContext) {
 
-  def rowRegisterWithoutIdWithSubscription(
-    loggedInUser: LoggedInUserWithEnrolments,
-    journey: Journey.Value
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
+  def rowRegisterWithoutIdWithSubscription(loggedInUser: LoggedInUserWithEnrolments, journey: Journey.Value)(implicit
+    hc: HeaderCarrier,
+    request: Request[AnyContent]
+  ): Future[Result] = {
 
     def isRow = UserLocation.isRow(requestSessionData)
 
@@ -60,10 +60,10 @@ class RegisterWithoutIdWithSubscriptionService @Inject()(
   def createSubscription(journey: Journey.Value)(implicit request: Request[AnyContent]): Future[Result] =
     sub02Controller.subscribe(journey)(request)
 
-  private def rowServiceCall(
-    loggedInUser: LoggedInUserWithEnrolments,
-    journey: Journey.Value
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]) = {
+  private def rowServiceCall(loggedInUser: LoggedInUserWithEnrolments, journey: Journey.Value)(implicit
+    hc: HeaderCarrier,
+    request: Request[AnyContent]
+  ) = {
 
     def registerWithoutIdWithSubscription(
       orgType: Option[EtmpOrganisationType],
@@ -91,9 +91,9 @@ class RegisterWithoutIdWithSubscriptionService @Inject()(
 
     for {
       orgType <- orgTypeLookup.etmpOrgType
-      rd <- sessionCache.registrationDetails
-      sd <- sessionCache.subscriptionDetails
-      call <- registerWithoutIdWithSubscription(orgType, rd, sd)
+      rd      <- sessionCache.registrationDetails
+      sd      <- sessionCache.subscriptionDetails
+      call    <- registerWithoutIdWithSubscription(orgType, rd, sd)
     } yield call
   }
 
@@ -119,7 +119,7 @@ class RegisterWithoutIdWithSubscriptionService @Inject()(
               sub02Controller.subscribe(journey)(request)
             case _ =>
               throw new RuntimeException("Registration of individual FAILED")
-        }
+          }
     ) match {
       case Some(f) => f
       case None =>
@@ -147,4 +147,5 @@ class RegisterWithoutIdWithSubscriptionService @Inject()(
         case _ =>
           throw new RuntimeException("Registration of organisation FAILED")
       }
+
 }

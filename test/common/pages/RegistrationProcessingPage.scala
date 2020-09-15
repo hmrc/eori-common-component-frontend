@@ -18,8 +18,8 @@ package common.pages
 
 object RegistrationProcessingPage extends WebPage {
   val processedDateXpath = "//*[@id='processed-date']"
-  override val title = "The EORI application is being processed"
-  val heading = "The EORI application for orgName is being processed"
-  val individualHeading = "The EORI application for Name is being processed"
-  val pageHeadingXpath = "//*[@id='page-heading']"
+  override val title     = "The EORI application is being processed"
+  val heading            = "The EORI application for orgName is being processed"
+  val individualHeading  = "The EORI application for Name is being processed"
+  val pageHeadingXpath   = "//*[@id='page-heading']"
 }

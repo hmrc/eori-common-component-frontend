@@ -37,10 +37,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class CacheControllerSpec extends ControllerSpec {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockSessionCache = mock[SessionCache]
-  private val requestSessionData = new RequestSessionData()
-  private val userId: String = "someUserId"
+  private val mockAuthConnector    = mock[AuthConnector]
+  private val mockSessionCache     = mock[SessionCache]
+  private val requestSessionData   = new RequestSessionData()
+  private val userId: String       = "someUserId"
   private implicit val mockRequest = mock[Request[AnyContent]]
 
   val controller = new CacheController(app, mockAuthConnector, mockSessionCache, mcc, requestSessionData)
@@ -62,7 +62,7 @@ class CacheControllerSpec extends ControllerSpec {
     }
 
     // TODO - remove test or add service support to get EORI (register)
-    "clear cache for subscription holder for get an eori journey" ignore  {
+    "clear cache for subscription holder for get an eori journey" ignore {
       withAuthorisedUser(userId, mockAuthConnector)
       when(mockSessionCache.saveSubscriptionDetails(any[SubscriptionDetails])(any[HeaderCarrier]))
         .thenReturn(Future.successful(true))
@@ -80,4 +80,5 @@ class CacheControllerSpec extends ControllerSpec {
       key("subscription-flow"),
       key("uri-before-subscription-flow")
     )
+
 }

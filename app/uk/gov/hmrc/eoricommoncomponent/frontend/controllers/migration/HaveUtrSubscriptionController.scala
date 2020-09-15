@@ -35,7 +35,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class HaveUtrSubscriptionController @Inject()(
+class HaveUtrSubscriptionController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   requestSessionData: RequestSessionData,
@@ -67,8 +67,8 @@ class HaveUtrSubscriptionController @Inject()(
       }
   }
 
-  private def destinationsByAnswer(form: UtrMatchModel, journey: Journey.Value, orgType: CdsOrganisationType)(
-    implicit hc: HeaderCarrier,
+  private def destinationsByAnswer(form: UtrMatchModel, journey: Journey.Value, orgType: CdsOrganisationType)(implicit
+    hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] =
     form.haveUtr match {
@@ -92,8 +92,8 @@ class HaveUtrSubscriptionController @Inject()(
       }).map( _ => Redirect(AddressController.createForm(journey)))
     }
    */
-  private def cacheNameIdDetails(form: UtrMatchModel, journey: Journey.Value)(
-    implicit hc: HeaderCarrier
+  private def cacheNameIdDetails(form: UtrMatchModel, journey: Journey.Value)(implicit
+    hc: HeaderCarrier
   ): Future[Result] =
     for {
       optionalName <- subscriptionDetailsService.cachedNameDetails
@@ -105,8 +105,8 @@ class HaveUtrSubscriptionController @Inject()(
       Redirect(AddressController.createForm(journey))
     }
 
-  private lazy val noUtrException = throw new IllegalStateException("User selected 'Yes' for Utr but no Utr found")
-  private lazy val noOrgTypeSelected = throw new IllegalStateException("No organisation type selected by user")
+  private lazy val noUtrException     = throw new IllegalStateException("User selected 'Yes' for Utr but no Utr found")
+  private lazy val noOrgTypeSelected  = throw new IllegalStateException("No organisation type selected by user")
   private lazy val noBusinessNameOrId = throw new IllegalStateException("No business name or CustomsId cached")
 
 }

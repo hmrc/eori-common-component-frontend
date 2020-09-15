@@ -32,33 +32,33 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statem
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ApplicationController @Inject()(
-                                       override val currentApp: Application,
-                                       override val authConnector: AuthConnector,
-                                       mcc: MessagesControllerComponents,
-                                       viewStart: start,
-                                       migrationStart: migration_start,
-                                       accessibilityStatementView: accessibility_statement,
-                                       cdsFrontendDataCache: SessionCache,
-                                       appConfig: AppConfig
-                                     )(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-  extends CdsController(mcc) {
+class ApplicationController @Inject() (
+  override val currentApp: Application,
+  override val authConnector: AuthConnector,
+  mcc: MessagesControllerComponents,
+  viewStart: start,
+  migrationStart: migration_start,
+  accessibilityStatementView: accessibility_statement,
+  cdsFrontendDataCache: SessionCache,
+  appConfig: AppConfig
+)(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
+    extends CdsController(mcc) {
 
   def start: Action[AnyContent] = Action { implicit request =>
     Ok(viewStart(Journey.Register))
   }
 
   def startSubscription(service: Service): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
-    implicit request =>
-      implicit loggedInUser: LoggedInUserWithEnrolments =>
-
-        enrolledForService(loggedInUser, service) match {
-          case Some(_) => Future.successful(Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service)))
-          case None => enrolledCds(loggedInUser) match {
+    implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
+      enrolledForService(loggedInUser, service) match {
+        case Some(_) =>
+          Future.successful(Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service)))
+        case None =>
+          enrolledCds(loggedInUser) match {
             case Some(_) => Future.successful(Redirect(routes.HasExistingEoriController.displayPage(service)))
-            case None => Future.successful(Redirect(routes.EmailController.form(Journey.Subscribe)))
+            case None    => Future.successful(Redirect(routes.EmailController.form(Journey.Subscribe)))
           }
-        }
+      }
   }
 
   def accessibilityStatement(): Action[AnyContent] = Action { implicit request =>
@@ -68,16 +68,14 @@ class ApplicationController @Inject()(
   def logout(journey: Journey.Value): Action[AnyContent] = Action.async { implicit request =>
     authorised(AuthProviders(GovernmentGateway)) {
       journey match {
-        case Journey.Register => {
+        case Journey.Register =>
           cdsFrontendDataCache.remove map { _ =>
             Redirect(appConfig.feedbackLink).withNewSession
           }
-        }
-        case Journey.Subscribe => {
+        case Journey.Subscribe =>
           cdsFrontendDataCache.remove map { _ =>
             Redirect(appConfig.feedbackLinkSubscribe).withNewSession
           }
-        }
       }
     } recover withAuthRecovery(request)
   }
@@ -85,4 +83,5 @@ class ApplicationController @Inject()(
   def keepAlive(journey: Journey.Value): Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok("Ok"))
   }
+
 }

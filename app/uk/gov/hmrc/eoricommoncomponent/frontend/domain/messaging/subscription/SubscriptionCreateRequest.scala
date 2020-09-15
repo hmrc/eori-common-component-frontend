@@ -28,15 +28,20 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, Reque
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{ContactDetails, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{CdsToEtmpOrganisationType, OrganisationTypeConfiguration}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
+  CdsToEtmpOrganisationType,
+  OrganisationTypeConfiguration
+}
 
 case class SubscriptionCreateRequest(requestCommon: RequestCommon, requestDetail: RequestDetail)
     extends CaseClassAuditHelper {
+
   def keyValueMap(): Map[String, String] = {
-    val m = requestCommon.keyValueMap()
+    val m  = requestCommon.keyValueMap()
     val rd = requestDetail.keyValueMap()
     m ++ rd
   }
+
 }
 
 object SubscriptionCreateRequest {
@@ -117,9 +122,9 @@ object SubscriptionCreateRequest {
     cdsOrgType: Option[CdsOrganisationType],
     dateEstablished: LocalDate
   ): SubscriptionRequest = {
-    val org = CdsToEtmpOrganisationType(cdsOrgType) orElse CdsToEtmpOrganisationType(reg)
+    val org                                = CdsToEtmpOrganisationType(cdsOrgType) orElse CdsToEtmpOrganisationType(reg)
     val ukVatId: Option[VatIdentification] = sub.ukVatDetails.map(vd => VatIdentification(Some("GB"), Some(vd.number)))
-    val euVatIds = sub.vatIdentificationList
+    val euVatIds                           = sub.vatIdentificationList
 
     SubscriptionRequest(
       SubscriptionCreateRequest(
@@ -250,4 +255,5 @@ object SubscriptionCreateRequest {
 
     vis map removeEmpty flatMap removeEmptyList
   }
+
 }

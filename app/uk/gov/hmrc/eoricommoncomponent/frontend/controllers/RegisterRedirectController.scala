@@ -25,15 +25,16 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class RegisterRedirectController @Inject()(
-                                            override val currentApp: Application,
-                                            override val authConnector: AuthConnector,
-                                            mcc: MessagesControllerComponents,
-                                            appConfig: AppConfig
-                                          )(implicit ec: ExecutionContext)
-  extends CdsController(mcc) {
+class RegisterRedirectController @Inject() (
+  override val currentApp: Application,
+  override val authConnector: AuthConnector,
+  mcc: MessagesControllerComponents,
+  appConfig: AppConfig
+)(implicit ec: ExecutionContext)
+    extends CdsController(mcc) {
 
   def getEori(): Action[AnyContent] = Action { implicit request =>
     Redirect(appConfig.externalGetEORILink)
   }
+
 }

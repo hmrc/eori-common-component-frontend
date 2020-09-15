@@ -28,13 +28,13 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_
 import util.ViewSpec
 
 class HowCanWeIdentifyYouSpec extends ViewSpec {
-  val form: Form[NinoOrUtr] = ninoOrUtrForm
+  val form: Form[NinoOrUtr]                    = ninoOrUtrForm
   val formWithNothingSelected: Form[NinoOrUtr] = ninoOrUtrForm.bind(Map("ninoOrUtrRadio" -> ""))
-  val formWithNinoSelected: Form[NinoOrUtr] = ninoOrUtrForm.bind(Map("ninoOrUtrRadio" -> "nino", "nino" -> ""))
-  val formWithUtrSelected: Form[NinoOrUtr] = ninoOrUtrForm.bind(Map("ninoOrUtrRadio" -> "utr", "utr" -> ""))
+  val formWithNinoSelected: Form[NinoOrUtr]    = ninoOrUtrForm.bind(Map("ninoOrUtrRadio" -> "nino", "nino" -> ""))
+  val formWithUtrSelected: Form[NinoOrUtr]     = ninoOrUtrForm.bind(Map("ninoOrUtrRadio" -> "utr", "utr" -> ""))
 
-  val isInReviewMode = false
-  val previousPageUrl = "/"
+  val isInReviewMode   = false
+  val previousPageUrl  = "/"
   implicit val request = withFakeCSRF(FakeRequest())
 
   private val view = app.injector.instanceOf[how_can_we_identify_you]
@@ -104,10 +104,14 @@ class HowCanWeIdentifyYouSpec extends ViewSpec {
   }
 
   lazy val doc: Document = Jsoup.parse(contentAsString(view(form, isInReviewMode, Journey.Subscribe)))
+
   lazy val docWithRadioButtonsError: Document =
     Jsoup.parse(contentAsString(view(formWithNothingSelected, isInReviewMode, Journey.Subscribe)))
+
   lazy val docWithNoNinoError: Document =
     Jsoup.parse(contentAsString(view(formWithNinoSelected, isInReviewMode, Journey.Subscribe)))
+
   lazy val docWithNoUtrError: Document =
     Jsoup.parse(contentAsString(view(formWithUtrSelected, isInReviewMode, Journey.Subscribe)))
+
 }

@@ -31,9 +31,8 @@ object DateTuple {
   ): Mapping[Option[LocalDate]] = {
     def tuple2Date(tuple: (Option[String], Option[String], Option[String])) = tuple match {
       case (Some(y), Some(m), Some(d)) =>
-        try {
-          Some(new LocalDate(y.trim.toInt, m.trim.toInt, d.trim.toInt))
-        } catch {
+        try Some(new LocalDate(y.trim.toInt, m.trim.toInt, d.trim.toInt))
+        catch {
           case e: Exception if validate => throw e
           case _: Throwable             => None
         }
@@ -53,14 +52,14 @@ object DateTuple {
           case (None, None, None) => true
 
           case (yearOption, monthOption, dayOption) if validate =>
-            Try({
+            Try {
               val y = yearOption.getOrElse(throw new Exception("Year missing")).trim.toInt
               if (!(1000 to 9999 contains y)) throw new Exception("Year must be 4 digits")
 
               val m = monthOption.getOrElse(throw new Exception("Month missing"))
               val d = dayOption.getOrElse(throw new Exception("Day missing"))
               new LocalDate(y, m.trim.toInt, d.trim.toInt)
-            }).isSuccess
+            }.isSuccess
 
           case _ => true
         }

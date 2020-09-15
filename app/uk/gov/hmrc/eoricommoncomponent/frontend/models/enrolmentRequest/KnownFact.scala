@@ -18,10 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest
 
 import play.api.libs.json.{Json, OFormat}
 
-case class KnownFact(
-  identifiers: List[KeyValuePair],
-  verifiers:   List[KeyValuePair]
-)
+case class KnownFact(identifiers: List[KeyValuePair], verifiers: List[KeyValuePair])
 
 object KnownFact {
   implicit val format: OFormat[KnownFact] = Json.format[KnownFact]

@@ -29,16 +29,17 @@ object AddressViewModel {
 
   val sixLineAddressLine1MaxLength = 35
   val sixLineAddressLine2MaxLength = 34
-  val townCityMaxLength = 35
+  val townCityMaxLength            = 35
 
   def apply(sixLineAddress: Address): AddressViewModel = {
     val line1 = (sixLineAddress.addressLine1.trim.take(sixLineAddressLine1MaxLength) + " " + sixLineAddress.addressLine2
       .getOrElse("")
       .trim
       .take(sixLineAddressLine2MaxLength)).trim
-    val townCity = sixLineAddress.addressLine3.getOrElse("").trim.take(townCityMaxLength)
-    val postCode = sixLineAddress.postalCode
+    val townCity    = sixLineAddress.addressLine3.getOrElse("").trim.take(townCityMaxLength)
+    val postCode    = sixLineAddress.postalCode
     val countryCode = sixLineAddress.countryCode
     AddressViewModel(line1, townCity, postCode, countryCode)
   }
+
 }

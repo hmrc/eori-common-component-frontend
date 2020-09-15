@@ -17,13 +17,14 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription
 
 sealed trait SubscriptionStatus
-case object Pending extends SubscriptionStatus
-case object Rejected extends SubscriptionStatus
+
+case object Pending      extends SubscriptionStatus
+case object Rejected     extends SubscriptionStatus
 case object InProcessing extends SubscriptionStatus
-case object Invalid extends SubscriptionStatus
-case object End extends SubscriptionStatus
-case object Subscribe extends SubscriptionStatus
-case object Generate extends SubscriptionStatus
-case object Worklist extends SubscriptionStatus
-case object Link extends SubscriptionStatus
-case object Fail extends SubscriptionStatus
+case object Invalid      extends SubscriptionStatus
+case object End          extends SubscriptionStatus
+case object Subscribe    extends SubscriptionStatus
+case object Generate     extends SubscriptionStatus
+case object Worklist     extends SubscriptionStatus
+case object Link         extends SubscriptionStatus
+case object Fail         extends SubscriptionStatus

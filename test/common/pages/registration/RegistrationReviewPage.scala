@@ -20,12 +20,12 @@ import common.pages.WebPage
 
 class RegistrationReviewPage extends WebPage {
 
-  val BusinessNameXPath = "//td[@id='review-tbl__business-name']"
+  val BusinessNameXPath           = "//td[@id='review-tbl__business-name']"
   val BusinessNameReviewLinkXPath = "//a[@id='review-tbl__business-name_change']"
 
   val BusinessNameAndAddressLabelXPath = "//th[@id='review-tbl__name-and-address_heading']"
 
-  val UKVatIdentificationNumberXpath = "//td[@id='review-tbl__gb-vat_number']"
+  val UKVatIdentificationNumberXpath      = "//td[@id='review-tbl__gb-vat_number']"
   val UKVatIdentificationNumberXpathLabel = "//td[@id='review-tbl__gb-vat_number_heading']"
 
   val UKVatIdentificationPostcodeXpath = "//td[@id='review-tbl__gb-vat_postcode']"
@@ -62,18 +62,18 @@ class RegistrationReviewPage extends WebPage {
 
   val DateOfEstablishmentLabelXPath = "//tr[@id='review-tbl__doe']/th"
 
-  val IndividualDateOfBirthXPath = "//td[@id='review-tbl__date-of-birth']"
+  val IndividualDateOfBirthXPath           = "//td[@id='review-tbl__date-of-birth']"
   val IndividualDateOfBirthReviewLinkXPath = "//a[@id='review-tbl__date-of-birth_change']"
 
   val IndividualDateOfBirthLabelXPath = "//td[@id='review-tbl__date-of-birth_heading']"
 
   val PrincipalEconomicActivityXPath = "//td[@id='review-tbl__activity']"
 
-  val AddressXPath = "//td[@id='review-tbl__address']"
+  val AddressXPath           = "//td[@id='review-tbl__address']"
   val AddressReviewLinkXPath = "//a[@id='review-tbl__address_change']"
 
-  val SixLineAddressXPath = "//td[@id='review-tbl__six_line_address']"
-  val SixLineAddressXPathLabel = "//td[@id='review-tbl__six_line_address_heading']"
+  val SixLineAddressXPath           = "//td[@id='review-tbl__six_line_address']"
+  val SixLineAddressXPathLabel      = "//td[@id='review-tbl__six_line_address_heading']"
   val SixLineAddressReviewLinkXPath = "//a[@id='review-tbl__six_line_address_change']"
 
   val AddressHeadingXPath = "//th[@id='review-tbl__address_heading']"
@@ -82,7 +82,7 @@ class RegistrationReviewPage extends WebPage {
 
   val UtrLabelXPath = "//*[@id='review-tbl__utr_heading']"
 
-  val FullNameXPath = "//td[@id='review-tbl__full-name']"
+  val FullNameXPath           = "//td[@id='review-tbl__full-name']"
   val FullNameReviewLinkXPath = "//a[@id='review-tbl__full-name_change']"
 
   val organisationAddressValueXpath = "//*[@id='review-tbl__six_line_address']"

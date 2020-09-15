@@ -28,43 +28,41 @@ class ConditionalValidatePostcodeFormSpec extends UnitSpec {
     val ukCountryCodeList = List("GB", "GG", "JE")
     for {
       countryCode <- ukCountryCodeList
-    } yield {
-      s"For $countryCode" should {
-        "only accept valid postcode " in {
-          val data = Map("postcode" -> "N9 0DL", "countryCode" -> countryCode)
-          val res = form.bind(data)
-          assert(res.errors.isEmpty)
-        }
-
-        "fail when a postcode is invalid" in {
-          val data = Map("postcode" -> "", "countryCode" -> countryCode)
-          val res = form.bind(data)
-          assert(res.errors.nonEmpty)
-        }
+    } yield s"For $countryCode" should {
+      "only accept valid postcode " in {
+        val data = Map("postcode" -> "N9 0DL", "countryCode" -> countryCode)
+        val res  = form.bind(data)
+        assert(res.errors.isEmpty)
       }
 
+      "fail when a postcode is invalid" in {
+        val data = Map("postcode" -> "", "countryCode" -> countryCode)
+        val res  = form.bind(data)
+        assert(res.errors.nonEmpty)
+      }
     }
 
     "For Non-Uk Postcodes" should {
       "only accept up to 9 Chars" in {
         val data = Map("postcode" -> "123456789", "countryCode" -> "FR")
-        val res = form.bind(data)
+        val res  = form.bind(data)
         assert(res.errors.isEmpty)
       }
       "fail when a postcode is over 9 Chars" in {
         val data = Map("postcode" -> "A10Character", "countryCode" -> "FR")
-        val res = form.bind(data)
+        val res  = form.bind(data)
         assert(res.errors.nonEmpty)
       }
       "accept an empty postcode" in {
         val data = Map("postcode" -> "", "countryCode" -> "FR")
-        val res = form.bind(data)
+        val res  = form.bind(data)
         assert(res.errors.isEmpty)
       }
     }
   }
 
   case class Model(countryCode: String, postcode: Option[String])
+
   lazy val form = Form(
     mapping("countryCode" -> nonEmptyText, "postcode" -> postcodeMapping)(Model.apply)(Model.unapply)
   )

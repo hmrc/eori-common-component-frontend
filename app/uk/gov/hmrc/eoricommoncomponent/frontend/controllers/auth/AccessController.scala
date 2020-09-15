@@ -48,4 +48,5 @@ trait AccessController extends JourneyTypeFromUrl with AllowlistVerification wit
       case Some(Organisation) => credentialRole.fold(false)(cr => cr == User)
       case _                  => true
     }
+
 }

@@ -25,6 +25,7 @@ object EmailVerificationRequestHttpParser {
   type EmailVerificationRequestResponse = Either[EmailVerificationRequestFailure, EmailVerificationRequestSuccess]
 
   implicit object CreateEmailVerificationRequestHttpReads extends HttpReads[EmailVerificationRequestResponse] {
+
     override def read(method: String, url: String, response: HttpResponse): EmailVerificationRequestResponse =
       response.status match {
         case CREATED =>
@@ -40,6 +41,7 @@ object EmailVerificationRequestHttpParser {
           )
           Left(EmailVerificationRequestFailure(status, response.body))
       }
+
   }
 
   sealed trait EmailVerificationRequestSuccess

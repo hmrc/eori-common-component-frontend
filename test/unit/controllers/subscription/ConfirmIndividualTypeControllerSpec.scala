@@ -43,10 +43,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndAfter {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockRequestSessionData = mock[RequestSessionData]
+  private val mockAuthConnector           = mock[AuthConnector]
+  private val mockRequestSessionData      = mock[RequestSessionData]
   private val mockSubscriptionFlowManager = mock[SubscriptionFlowManager]
-  private val confirmIndividualTypeView = app.injector.instanceOf[confirm_individual_type]
+  private val confirmIndividualTypeView   = app.injector.instanceOf[confirm_individual_type]
 
   private val controller = new ConfirmIndividualTypeController(
     app,
@@ -58,18 +58,18 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
   )
 
   private val mockSubscriptionPage = mock[SubscriptionPage]
-  private val mockSession = mock[Session]
-  private val anotherMockSession = mock[Session]
-  private val mockRequestHeader = mock[RequestHeader]
-  private val mockFlowStart = (mockSubscriptionPage, anotherMockSession)
+  private val mockSession          = mock[Session]
+  private val anotherMockSession   = mock[Session]
+  private val mockRequestHeader    = mock[RequestHeader]
+  private val mockFlowStart        = (mockSubscriptionPage, anotherMockSession)
 
-  private val testSessionData = Map[String, String]("some_session_key" -> "some_session_value")
+  private val testSessionData              = Map[String, String]("some_session_key" -> "some_session_value")
   private val testSubscriptionStartPageUrl = "some_page_url"
 
   private val ErrorSelectSoleTraderOrIndividual = "Select sole trader or individual"
 
   private val selectedIndividualType = CdsOrganisationType.Individual
-  private val validRequestData = Map("individual-type" -> selectedIndividualType.id)
+  private val validRequestData       = Map("individual-type" -> selectedIndividualType.id)
 
   before {
     reset(mockRequestSessionData)
@@ -89,7 +89,9 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
       page.radioButtonIsUnchecked(optionIndividualXpath) shouldBe true
 
       page.getElementAttributeHref(backLinkXPath) shouldBe previousPageUrl
-      page.formAction(formId) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ConfirmIndividualTypeController
+      page.formAction(
+        formId
+      ) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ConfirmIndividualTypeController
         .submit(Journey.Register)
         .url
     }
@@ -181,4 +183,5 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
       controller.submit(Journey.Register).apply(SessionBuilder.buildRequestWithSessionAndFormValues(aUserId, form))
     test(result)
   }
+
 }

@@ -47,7 +47,7 @@ import scala.concurrent.Future
 
 class NameUtrOrganisationControllerSpec extends ControllerSpec with MockitoSugar with BeforeAndAfterEach {
 
-  private val mockAuthConnector = mock[AuthConnector]
+  private val mockAuthConnector   = mock[AuthConnector]
   private val mockMatchingService = mock[MatchingService]
 
   private val matchNameIdOrganisationView = app.injector.instanceOf[match_name_id_organisation]
@@ -55,9 +55,9 @@ class NameUtrOrganisationControllerSpec extends ControllerSpec with MockitoSugar
   private val controller =
     new NameIdOrganisationController(app, mockAuthConnector, mcc, matchNameIdOrganisationView, mockMatchingService)
 
-  private val utrDescriptionPartnership = "Partnership Self Assessment Unique Taxpayer Reference (UTR) number"
+  private val utrDescriptionPartnership    = "Partnership Self Assessment Unique Taxpayer Reference (UTR) number"
   private val utrDescriptionCorporationTax = "Corporation Tax Unique Taxpayer Reference (UTR) number"
-  private val utrDescriptionOrganisation = "Organisation Self Assessment Unique Taxpayer Reference (UTR) number"
+  private val utrDescriptionOrganisation   = "Organisation Self Assessment Unique Taxpayer Reference (UTR) number"
 
   private val organisationTypeOrganisations =
     Table(
@@ -77,10 +77,12 @@ class NameUtrOrganisationControllerSpec extends ControllerSpec with MockitoSugar
         utrDescriptionOrganisation
       )
     )
+
   private val NameMaxLength = 105
 
-  private val UtrInvalidError = "Enter a valid UTR number"
+  private val UtrInvalidError     = "Enter a valid UTR number"
   private val UtrWrongLengthError = "The UTR number must be 10 numbers"
+
   private val BusinessNotMatchedError =
     "Your business details have not been found. Check that your details are correct and try again."
 
@@ -117,43 +119,40 @@ class NameUtrOrganisationControllerSpec extends ControllerSpec with MockitoSugar
     }
 
     forAll(organisationTypeOrganisations) { (organisationType, _, _, _) =>
-      {
-
-        s"ensure the labels are correct for $organisationType" in {
-          submitForm(form = ValidNameUtrRequest + ("name" -> ""), organisationType) { result =>
-            status(result) shouldBe BAD_REQUEST
-            val page = CdsPage(bodyOf(result))
-            val labelForName = organisationType match {
-              case "partnership" => "Registered partnership name Enter your registered partnership name"
-              case "limited-liability-partnership" =>
-                "Registered partnership name This is on your certificate of incorporation from Companies House. Enter your registered partnership name"
-              case "charity-public-body-not-for-profit" =>
-                "Organisation name This is on your certificate of incorporation from Companies House. Enter your registered organisation name"
-              case _ =>
-                "Registered company name This is on your certificate of incorporation from Companies House. Enter your registered organisation name"
-            }
-            val labelForUtr = organisationType match {
-              case "partnership" => "Partnership Self Assessment Unique Taxpayer Reference (UTR) number"
-              case "limited-liability-partnership" =>
-                "Partnership Self Assessment Unique Taxpayer Reference (UTR) number"
-              case "charity-public-body-not-for-profit" =>
-                "Organisation Self Assessment Unique Taxpayer Reference (UTR) number"
-              case _ => "Corporation Tax Unique Taxpayer Reference (UTR) number"
-            }
-
-            val UtrHintText = organisationType match {
-              case "partnership" | "limited-liability-partnership" =>
-                " This is 10 numbers, for example 1234567890. It will be on partnership tax returns and other letters about your partnership. It may be called 'reference', 'UTR' or 'official use'. You can find a lost UTR number (opens in a new window or tab)."
-              case _ =>
-                " This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Corporation Tax. It may be called 'reference', 'UTR' or 'official use'. You can find a lost UTR number (opens in a new window or tab)."
-            }
-
-            val UtrHintTextLink = "https://www.gov.uk/find-lost-utr-number"
-
-            page.getElementsText(labelForNameXpath) shouldBe labelForName
-            page.getElementsText(labelForUtrXpath) shouldBe labelForUtr + UtrHintText
-            page.getElementsHref(linkInUtrHintTextXpath) shouldBe UtrHintTextLink
+      s"ensure the labels are correct for $organisationType" in {
+        submitForm(form = ValidNameUtrRequest + ("name" -> ""), organisationType) { result =>
+          status(result) shouldBe BAD_REQUEST
+          val page = CdsPage(bodyOf(result))
+          val labelForName = organisationType match {
+            case "partnership" => "Registered partnership name Enter your registered partnership name"
+            case "limited-liability-partnership" =>
+              "Registered partnership name This is on your certificate of incorporation from Companies House. Enter your registered partnership name"
+            case "charity-public-body-not-for-profit" =>
+              "Organisation name This is on your certificate of incorporation from Companies House. Enter your registered organisation name"
+            case _ =>
+              "Registered company name This is on your certificate of incorporation from Companies House. Enter your registered organisation name"
           }
+          val labelForUtr = organisationType match {
+            case "partnership" => "Partnership Self Assessment Unique Taxpayer Reference (UTR) number"
+            case "limited-liability-partnership" =>
+              "Partnership Self Assessment Unique Taxpayer Reference (UTR) number"
+            case "charity-public-body-not-for-profit" =>
+              "Organisation Self Assessment Unique Taxpayer Reference (UTR) number"
+            case _ => "Corporation Tax Unique Taxpayer Reference (UTR) number"
+          }
+
+          val UtrHintText = organisationType match {
+            case "partnership" | "limited-liability-partnership" =>
+              " This is 10 numbers, for example 1234567890. It will be on partnership tax returns and other letters about your partnership. It may be called 'reference', 'UTR' or 'official use'. You can find a lost UTR number (opens in a new window or tab)."
+            case _ =>
+              " This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Corporation Tax. It may be called 'reference', 'UTR' or 'official use'. You can find a lost UTR number (opens in a new window or tab)."
+          }
+
+          val UtrHintTextLink = "https://www.gov.uk/find-lost-utr-number"
+
+          page.getElementsText(labelForNameXpath) shouldBe labelForName
+          page.getElementsText(labelForUtrXpath) shouldBe labelForUtr + UtrHintText
+          page.getElementsHref(linkInUtrHintTextXpath) shouldBe UtrHintTextLink
         }
       }
     }
@@ -174,7 +173,9 @@ class NameUtrOrganisationControllerSpec extends ControllerSpec with MockitoSugar
         page.getElementsText(registerWithNameAndAddressLink) should startWith(
           "If you are not registered for Self Assessment"
         )
-        page.getElementAttributeHref(registerWithNameAndAddressLinkAnchor) shouldBe "/customs-enrolment-services/register/matching/address/charity-public-body-not-for-profit"
+        page.getElementAttributeHref(
+          registerWithNameAndAddressLinkAnchor
+        ) shouldBe "/customs-enrolment-services/register/matching/address/charity-public-body-not-for-profit"
       }
     }
 
@@ -204,83 +205,85 @@ class NameUtrOrganisationControllerSpec extends ControllerSpec with MockitoSugar
     }
 
     forAll(organisationTypeOrganisations) { (organisationType, organisation, nameDescription, utrDescription) =>
-      {
-        s"ensure name has been entered when organisation type is $organisationType" in {
-          submitForm(form = ValidNameUtrRequest + ("name" -> ""), organisationType) { result =>
+      s"ensure name has been entered when organisation type is $organisationType" in {
+        submitForm(form = ValidNameUtrRequest + ("name" -> ""), organisationType) { result =>
+          status(result) shouldBe BAD_REQUEST
+          val page = CdsPage(bodyOf(result))
+          if (organisationType == "partnership" || organisationType == "limited-liability-partnership") {
+            page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your registered partnership name"
+            page.getElementsText(fieldLevelErrorName) shouldBe "Enter your registered partnership name"
+          } else {
+            page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your registered organisation name"
+            page.getElementsText(fieldLevelErrorName) shouldBe "Enter your registered organisation name"
+          }
+          page.getElementsText("title") should startWith("Error: ")
+        }
+      }
+
+      s"ensure UTR has been entered when organisation type is $organisationType" in {
+        submitForm(form = ValidNameUtrRequest + ("utr" -> ""), organisationType) { result =>
+          status(result) shouldBe BAD_REQUEST
+          val page = CdsPage(bodyOf(result))
+          page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your UTR number"
+          page.getElementsText(fieldLevelErrorUtr) shouldBe "Enter your UTR number"
+          page.getElementsText("title") should startWith("Error: ")
+        }
+      }
+
+      s"ensure name does not exceed maximum length when organisation type is $organisationType" in {
+        submitForm(form = ValidNameUtrRequest + ("name" -> oversizedString(NameMaxLength)), organisationType) {
+          result =>
             status(result) shouldBe BAD_REQUEST
             val page = CdsPage(bodyOf(result))
             if (organisationType == "partnership" || organisationType == "limited-liability-partnership") {
-              page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your registered partnership name"
-              page.getElementsText(fieldLevelErrorName) shouldBe "Enter your registered partnership name"
+              page.getElementsText(
+                pageLevelErrorSummaryListXPath
+              ) shouldBe "The partnership name must be 105 characters or less"
+              page.getElementsText(fieldLevelErrorName) shouldBe "The partnership name must be 105 characters or less"
             } else {
-              page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your registered organisation name"
-              page.getElementsText(fieldLevelErrorName) shouldBe "Enter your registered organisation name"
+              page.getElementsText(
+                pageLevelErrorSummaryListXPath
+              ) shouldBe "The organisation name must be 105 characters or less"
+              page.getElementsText(fieldLevelErrorName) shouldBe "The organisation name must be 105 characters or less"
             }
             page.getElementsText("title") should startWith("Error: ")
-          }
         }
+      }
 
-        s"ensure UTR has been entered when organisation type is $organisationType" in {
-          submitForm(form = ValidNameUtrRequest + ("utr" -> ""), organisationType) { result =>
-            status(result) shouldBe BAD_REQUEST
-            val page = CdsPage(bodyOf(result))
-            page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your UTR number"
-            page.getElementsText(fieldLevelErrorUtr) shouldBe "Enter your UTR number"
-            page.getElementsText("title") should startWith("Error: ")
-          }
+      s"ensure when UTR is present it is of expected length when organisation type is $organisationType" in {
+        submitForm(form = ValidNameUtrRequest + ("utr" -> "123456789"), organisationType) { result =>
+          status(result) shouldBe BAD_REQUEST
+          val page = CdsPage(bodyOf(result))
+          page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe UtrWrongLengthError
+          page.getElementsText(fieldLevelErrorUtr) shouldBe UtrWrongLengthError
+          page.getElementsText("title") should startWith("Error: ")
         }
+      }
 
-        s"ensure name does not exceed maximum length when organisation type is $organisationType" in {
-          submitForm(form = ValidNameUtrRequest + ("name" -> oversizedString(NameMaxLength)), organisationType) {
-            result =>
-              status(result) shouldBe BAD_REQUEST
-              val page = CdsPage(bodyOf(result))
-              if (organisationType == "partnership" || organisationType == "limited-liability-partnership") {
-                page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The partnership name must be 105 characters or less"
-                page.getElementsText(fieldLevelErrorName) shouldBe "The partnership name must be 105 characters or less"
-              } else {
-                page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The organisation name must be 105 characters or less"
-                page.getElementsText(fieldLevelErrorName) shouldBe "The organisation name must be 105 characters or less"
-              }
-              page.getElementsText("title") should startWith("Error: ")
-          }
+      s"ensure when UTR is correctly formatted it is a valid UTR when organisation type is $organisationType" in {
+        val invalidUtr = "0123456789"
+        submitForm(form = ValidNameUtrRequest + ("utr" -> invalidUtr), organisationType) { result =>
+          status(result) shouldBe BAD_REQUEST
+          val page = CdsPage(bodyOf(result))
+          page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe UtrInvalidError
+          page.getElementsText(fieldLevelErrorUtr) shouldBe UtrInvalidError
+          page.getElementsText("title") should startWith("Error: ")
         }
+      }
 
-        s"ensure when UTR is present it is of expected length when organisation type is $organisationType" in {
-          submitForm(form = ValidNameUtrRequest + ("utr" -> "123456789"), organisationType) { result =>
-            status(result) shouldBe BAD_REQUEST
-            val page = CdsPage(bodyOf(result))
-            page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe UtrWrongLengthError
-            page.getElementsText(fieldLevelErrorUtr) shouldBe UtrWrongLengthError
-            page.getElementsText("title") should startWith("Error: ")
-          }
-        }
-
-        s"ensure when UTR is correctly formatted it is a valid UTR when organisation type is $organisationType" in {
-          val invalidUtr = "0123456789"
-          submitForm(form = ValidNameUtrRequest + ("utr" -> invalidUtr), organisationType) { result =>
-            status(result) shouldBe BAD_REQUEST
-            val page = CdsPage(bodyOf(result))
-            page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe UtrInvalidError
-            page.getElementsText(fieldLevelErrorUtr) shouldBe UtrInvalidError
-            page.getElementsText("title") should startWith("Error: ")
-          }
-        }
-
-        s"send a request to the business matching service when organisation type is $organisationType" in {
-          when(
-            mockMatchingService.matchBusiness(any[Utr], any[Organisation], any[Option[LocalDate]], any())(
-              any[Request[AnyContent]],
-              any[HeaderCarrier]
-            )
-          ).thenReturn(Future.successful(true))
-          submitForm(ValidNameUtrRequest, organisationType) { result =>
-            await(result)
-            verify(mockMatchingService).matchBusiness(meq(ValidUtr), meq(organisation), meq(None), any())(
-              any[Request[AnyContent]],
-              any[HeaderCarrier]
-            )
-          }
+      s"send a request to the business matching service when organisation type is $organisationType" in {
+        when(
+          mockMatchingService.matchBusiness(any[Utr], any[Organisation], any[Option[LocalDate]], any())(
+            any[Request[AnyContent]],
+            any[HeaderCarrier]
+          )
+        ).thenReturn(Future.successful(true))
+        submitForm(ValidNameUtrRequest, organisationType) { result =>
+          await(result)
+          verify(mockMatchingService).matchBusiness(meq(ValidUtr), meq(organisation), meq(None), any())(
+            any[Request[AnyContent]],
+            any[HeaderCarrier]
+          )
         }
       }
     }
@@ -407,4 +410,5 @@ class NameUtrOrganisationControllerSpec extends ControllerSpec with MockitoSugar
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }
+
 }

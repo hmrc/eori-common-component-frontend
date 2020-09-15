@@ -37,8 +37,8 @@ object SessionBuilder {
   def buildRequestWithSession(userId: String)(implicit app: Application) =
     addToken(FakeRequest().withSession(sessionMap(userId): _*))
 
-  def buildRequestWithSessionAndFormValues(userId: String, form: Map[String, String])(
-    implicit app: Application
+  def buildRequestWithSessionAndFormValues(userId: String, form: Map[String, String])(implicit
+    app: Application
   ): FakeRequest[AnyContentAsFormUrlEncoded] =
     buildRequestWithSession(userId).withFormUrlEncodedBody(form.toList: _*)
 
@@ -79,8 +79,9 @@ object SessionBuilder {
     FakeRequest(method, path).withSession(sessionMap(userId): _*).withFormUrlEncodedBody(form.toList: _*)
 
   def buildRequestWithSessionAndOrgType(userId: String, orgTypeId: String)(implicit app: Application) = {
-    val list = (RequestSessionDataKeys.selectedOrganisationType -> orgTypeId) :: sessionMap(userId)
+    val list    = (RequestSessionDataKeys.selectedOrganisationType -> orgTypeId) :: sessionMap(userId)
     val request = FakeRequest().withSession(list: _*)
     addToken(request)
   }
+
 }

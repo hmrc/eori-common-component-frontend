@@ -35,7 +35,7 @@ import scala.concurrent.Future
 
 class SecuritySignOutControllerSpec extends ControllerSpec {
   private val mockAuthConnector = mock[AuthConnector]
-  private val mockSessionCache = mock[SessionCache]
+  private val mockSessionCache  = mock[SessionCache]
 
   private val displaySignOutView = app.injector.instanceOf[display_sign_out]
 
@@ -70,4 +70,5 @@ class SecuritySignOutControllerSpec extends ControllerSpec {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     await(test(controller.signOut(journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
+
 }

@@ -45,10 +45,10 @@ class WhatIsYourOrgNameControllerRowSpec extends ControllerSpec with BeforeAndAf
     .configure("features.rowHaveUtrEnabled" -> true)
     .build()
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockRequestSessionData = mock[RequestSessionData]
+  private val mockAuthConnector              = mock[AuthConnector]
+  private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
-  private val whatIsYourOrgNameView = app.injector.instanceOf[what_is_your_org_name]
+  private val whatIsYourOrgNameView          = app.injector.instanceOf[what_is_your_org_name]
 
   private val controller = new WhatIsYourOrgNameController(
     app,
@@ -100,7 +100,9 @@ class WhatIsYourOrgNameControllerRowSpec extends ControllerSpec with BeforeAndAf
 
       submitForm(isInReviewMode = true, form = ValidNameRequest) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs-enrolment-services/register/matching/review-determine")
+        result.header.headers("Location") should endWith(
+          "/customs-enrolment-services/register/matching/review-determine"
+        )
         verify(mockSubscriptionDetailsService).cacheNameDetails(any())(any())
       }
     }
@@ -115,4 +117,5 @@ class WhatIsYourOrgNameControllerRowSpec extends ControllerSpec with BeforeAndAf
       .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }
+
 }

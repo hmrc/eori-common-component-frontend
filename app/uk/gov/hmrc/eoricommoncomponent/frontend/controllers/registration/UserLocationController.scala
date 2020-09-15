@@ -34,13 +34,16 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.Registrati
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{NewSubscription, _}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration._
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{sub01_outcome_processing, sub01_outcome_rejected}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{
+  sub01_outcome_processing,
+  sub01_outcome_rejected
+}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class UserLocationController @Inject()(
+class UserLocationController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   requestSessionData: RequestSessionData,
@@ -70,16 +73,15 @@ class UserLocationController @Inject()(
       continue(journey)
     }
 
-  private def forRow(journey: Journey.Value, internalId: InternalId, location: String)(
-    implicit request: Request[AnyContent],
+  private def forRow(journey: Journey.Value, internalId: InternalId, location: String)(implicit
+    request: Request[AnyContent],
     hc: HeaderCarrier
   ) =
     subscriptionStatusBasedOnSafeId(internalId).map {
-      case (NewSubscription | SubscriptionRejected, Some(safeId)) => {
+      case (NewSubscription | SubscriptionRejected, Some(safeId)) =>
         registrationDisplayService
           .requestDetails(safeId)
           .flatMap(cacheAndRedirect(journey, location))
-      }
       case (status, _) =>
         subscriptionStatus(status, internalId, journey, Some(location))
     }.flatMap(identity)
@@ -87,11 +89,10 @@ class UserLocationController @Inject()(
   def submit(journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
       userLocationForm.bindFromRequest.fold(
-        formWithErrors => {
+        formWithErrors =>
           Future.successful(
             BadRequest(userLocationView(formWithErrors, journey, isAffinityOrganisation(loggedInUser.affinityGroup)))
-          )
-        },
+          ),
         details =>
           (journey, details.location, loggedInUser.internalId) match {
             case (_, Some(UserLocation.Iom), Some(_)) =>
@@ -106,7 +107,7 @@ class UserLocationController @Inject()(
                       .sessionWithUserLocationAdded(sessionInfoBasedOnJourney(journey, details.location))
                   )
               )
-        }
+          }
       )
     }
 
@@ -158,7 +159,7 @@ class UserLocationController @Inject()(
                       .complete(Journey.Register)
                   )
               }
-          }
+            }
       )
 
   def subscriptionStatus(
@@ -178,8 +179,8 @@ class UserLocationController @Inject()(
         )
     }
 
-  def cacheAndRedirect(journey: Journey.Value, location: String)(
-    implicit request: Request[AnyContent],
+  def cacheAndRedirect(journey: Journey.Value, location: String)(implicit
+    request: Request[AnyContent],
     hc: HeaderCarrier
   ): Either[_, RegistrationDisplayResponse] => Future[Result] = {
 
@@ -207,4 +208,5 @@ class UserLocationController @Inject()(
         .map(_.processedDate)
         .map(processedDate => Ok(sub01OutcomeRejected(None, processedDate)))
   }
+
 }

@@ -24,10 +24,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EnrolmentStoreProxyService @Inject()(enrolmentStoreProxyConnector: EnrolmentStoreProxyConnector) {
+class EnrolmentStoreProxyService @Inject() (enrolmentStoreProxyConnector: EnrolmentStoreProxyConnector) {
 
-  private val state = "Activated"
+  private val state   = "Activated"
   private val service = "HMRC-CUS-ORG"
+
   def isEnrolmentAssociatedToGroup(
     groupId: GroupId
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
@@ -37,4 +38,5 @@ class EnrolmentStoreProxyService @Inject()(enrolmentStoreProxyConnector: Enrolme
       .map { enrolment =>
         enrolment.exists(x => x.state == state && x.service == service)
       }
+
 }

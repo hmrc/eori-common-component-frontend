@@ -27,8 +27,8 @@ class SubscriptionCompleteSpec extends ViewSpec {
 
   implicit val request = withFakeCSRF(FakeRequest())
 
-  val eori = "GB123445562"
-  val orgName = "Test Organisation Name"
+  val eori       = "GB123445562"
+  val orgName    = "Test Organisation Name"
   val issuedDate = "01 Jan 2019"
 
   private val view = app.injector.instanceOf[subscription_outcome]

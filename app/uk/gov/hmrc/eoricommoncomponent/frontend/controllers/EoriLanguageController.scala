@@ -23,8 +23,9 @@ import play.api.mvc.{Call, ControllerComponents}
 import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}
 
 @Singleton
-class EoriLanguageController @Inject()(config: Configuration, languageUtils: LanguageUtils, cc: ControllerComponents)
+class EoriLanguageController @Inject() (config: Configuration, languageUtils: LanguageUtils, cc: ControllerComponents)
     extends LanguageController(config, languageUtils, cc) {
+
   override protected def fallbackURL: String =
     "/customs-enrolment-services/register" //This will be always register for cds we might need to add a route for fallback cannot be dynamic
   def langToCall(lang: String): String => Call =
@@ -32,12 +33,15 @@ class EoriLanguageController @Inject()(config: Configuration, languageUtils: Lan
 
   override def languageMap: Map[String, Lang] =
     EoriLanguageController.languageMap
+
 }
 
 object EoriLanguageController {
+
   def routeToSwitchLanguage: String => Call =
     (lang: String) => routes.EoriLanguageController.switchToLanguage(lang)
 
   def languageMap: Map[String, Lang] =
     Map("english" -> Lang("en"), "cymraeg" -> Lang("cy"))
+
 }

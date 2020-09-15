@@ -34,4 +34,5 @@ trait OrganisationAddressFormBuilder {
 
   def asForm(addressForm: Form[SixLineAddressMatchModel]): Map[String, String] =
     addressForm.mapping.unbind(asOrganisationAddress)
+
 }

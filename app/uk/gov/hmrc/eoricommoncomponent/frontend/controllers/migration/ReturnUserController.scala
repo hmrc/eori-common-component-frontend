@@ -27,7 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.return_user
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class ReturnUserController @Inject()(
+class ReturnUserController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   view: return_user,
@@ -38,4 +38,5 @@ class ReturnUserController @Inject()(
   def show(): Action[AnyContent] = Action { implicit request =>
     Ok(view(Journey.Subscribe))
   }
+
 }

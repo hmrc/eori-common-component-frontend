@@ -35,7 +35,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class GYEHowCanWeIdentifyYouController @Inject()(
+class GYEHowCanWeIdentifyYouController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   matchingService: MatchingService,
@@ -47,7 +47,9 @@ class GYEHowCanWeIdentifyYouController @Inject()(
 
   def form(organisationType: String, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      Future.successful(Ok(howCanWeIdentifyYouView(ninoOrUtrForm, isInReviewMode = false, journey, Some(organisationType))))
+      Future.successful(
+        Ok(howCanWeIdentifyYouView(ninoOrUtrForm, isInReviewMode = false, journey, Some(organisationType)))
+      )
     }
 
   def submit(organisationType: String, journey: Journey.Value): Action[AnyContent] =
@@ -55,17 +57,15 @@ class GYEHowCanWeIdentifyYouController @Inject()(
       ninoOrUtrForm.bindFromRequest.fold(
         formWithErrors =>
           Future.successful(
-            BadRequest(
-              howCanWeIdentifyYouView(formWithErrors, isInReviewMode = false, journey, Some(organisationType))
-            )
-        ),
+            BadRequest(howCanWeIdentifyYouView(formWithErrors, isInReviewMode = false, journey, Some(organisationType)))
+          ),
         formData =>
           matchOnId(formData, InternalId(loggedInUser.internalId)).map {
             case true =>
               Redirect(ConfirmContactDetailsController.form(journey))
             case false =>
               matchNotFoundBadRequest(formData, organisationType, journey)
-        }
+          }
       )
     }
 
@@ -97,4 +97,5 @@ class GYEHowCanWeIdentifyYouController @Inject()(
         dateOfBirth = nameDobDetails.dateOfBirth
       )
     }
+
 }

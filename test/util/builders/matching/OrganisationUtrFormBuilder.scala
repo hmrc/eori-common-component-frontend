@@ -25,13 +25,12 @@ object OrganisationUtrFormBuilder {
 
   val ValidUtrId: String = "2108834503"
 
-
-  val ValidUtr = Utr(ValidUtrId)
-  val ValidUtrRequest = Map("have-utr" -> "true", "utr" -> ValidUtrId)
-  val NoUtrRequest = Map("have-utr" -> "false")
+  val ValidUtr               = Utr(ValidUtrId)
+  val ValidUtrRequest        = Map("have-utr" -> "true", "utr" -> ValidUtrId)
+  val NoUtrRequest           = Map("have-utr" -> "false")
   val ValidIncorporatedUtrId = "2108834503"
 
-  val mandatoryUtrFields: UtrMatchModel = utrForm.bind(ValidUtrRequest).value.get
+  val mandatoryUtrFields: UtrMatchModel         = utrForm.bind(ValidUtrRequest).value.get
   val charityPublicBodyNotForProfitOrganisation = Organisation(ValidName, "Unincorporated Body")
-  val thirdCountryOrganisation = Organisation(ValidName, "Corporate Body")
+  val thirdCountryOrganisation                  = Organisation(ValidName, "Corporate Body")
 }

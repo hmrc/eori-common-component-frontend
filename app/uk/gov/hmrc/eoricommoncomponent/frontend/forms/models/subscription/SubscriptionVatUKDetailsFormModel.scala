@@ -24,6 +24,7 @@ case class SubscriptionVatUKDetailsFormModel(hasGbVats: Boolean, gbVats: Option[
     case (true, Some(list)) => list
     case _                  => Nil
   }
+
 }
 
 object SubscriptionVatUKDetailsFormModel {
@@ -44,4 +45,5 @@ object SubscriptionVatUKDetailsFormModel {
         val (countryCodes, numbers) = vatIds.map(id => id.countryCode.getOrElse("") -> id.number.getOrElse("")).unzip
         Some(countryCodes -> numbers)
     }
+
 }

@@ -19,10 +19,9 @@ package common.pages
 abstract class RegistrationOutcomeRejectedPage extends WebPage
 
 object RegistrationRejectedPage extends RegistrationOutcomeRejectedPage {
-  override val title = "The EORI application has been unsuccessful"
+  override val title     = "The EORI application has been unsuccessful"
   val processedDateXpath = "//*[@id='processed-date']"
-  val heading = "The EORI application for orgName has been unsuccessful"
-  val individualHeading = "The EORI application for Name has been unsuccessful"
-  val pageHeadingXpath = "//*[@id='page-heading']"
+  val heading            = "The EORI application for orgName has been unsuccessful"
+  val individualHeading  = "The EORI application for Name has been unsuccessful"
+  val pageHeadingXpath   = "//*[@id='page-heading']"
 }
-

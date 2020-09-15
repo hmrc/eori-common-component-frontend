@@ -30,10 +30,10 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
 @Singleton
-class PdfGeneratorConnector @Inject()(http: WSClient, appConfig: AppConfig) {
+class PdfGeneratorConnector @Inject() (http: WSClient, appConfig: AppConfig) {
 
   private val loggerComponentId = "PdfGeneratorConnector"
-  private val baseUrl: String = appConfig.pdfGeneratorBaseUrl
+  private val baseUrl: String   = appConfig.pdfGeneratorBaseUrl
 
   private lazy val url = s"$baseUrl/pdf-generator-service/generate"
 
@@ -50,4 +50,5 @@ class PdfGeneratorConnector @Inject()(http: WSClient, appConfig: AppConfig) {
           Future.failed(e)
       }
   }
+
 }

@@ -28,10 +28,11 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SubscriptionStatusConnector @Inject()(http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit ec: ExecutionContext)
-    extends CaseClassAuditHelper {
+class SubscriptionStatusConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
+  ec: ExecutionContext
+) extends CaseClassAuditHelper {
 
-  private val url = appConfig.getServiceUrl("subscription-status")
+  private val url               = appConfig.getServiceUrl("subscription-status")
   private val loggerComponentId = "SubscriptionStatusConnector"
 
   def status(request: SubscriptionStatusQueryParams)(implicit hc: HeaderCarrier): Future[SubscriptionStatusResponse] =
@@ -58,4 +59,5 @@ class SubscriptionStatusConnector @Inject()(http: HttpClient, appConfig: AppConf
       details = Json.toJson(RequestResponse(request.jsObject(), response.jsObject())),
       eventType = "displayCustomsSubscriptionStatus"
     )
+
 }

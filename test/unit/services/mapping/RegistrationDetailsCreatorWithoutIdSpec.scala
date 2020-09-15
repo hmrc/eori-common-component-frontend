@@ -42,44 +42,42 @@ class RegistrationDetailsCreatorWithoutIdSpec extends RegistrationDetailsCreator
       addressLine2 <- Gen.alphaStr.asOption
       addressLine3 <- Gen.alphaStr
       addressLine4 <- Gen.alphaStr.asOption
-      postcode <- Gen.alphaStr.asOption
-      country <- Gen.alphaStr
-    } yield
-      SixLineAddressMatchModel(
-        lineOne = addressLine1,
-        lineTwo = addressLine2,
-        lineThree = addressLine3,
-        lineFour = addressLine4,
-        postcode = postcode,
-        country = country
-      )
+      postcode     <- Gen.alphaStr.asOption
+      country      <- Gen.alphaStr
+    } yield SixLineAddressMatchModel(
+      lineOne = addressLine1,
+      lineTwo = addressLine2,
+      lineThree = addressLine3,
+      lineFour = addressLine4,
+      postcode = postcode,
+      country = country
+    )
 
     val organisationNameGen = for {
       name <- Gen.alphaStr
     } yield name
 
     for {
-      response <- registerWithoutIDResponseGen
-      organisationName <- organisationNameGen
+      response            <- registerWithoutIDResponseGen
+      organisationName    <- organisationNameGen
       organisationAddress <- organisationAddressGen
-    } yield
-      (response, organisationName, organisationAddress) ->
-        RegistrationDetailsOrganisation(
-          customsId = None,
-          sapNumber = TaxPayerId(sapNumber),
-          safeId = SafeId("safe-id"),
-          name = organisationName,
-          address = Address(
-            addressLine1 = organisationAddress.lineOne,
-            addressLine2 = organisationAddress.lineTwo,
-            addressLine3 = Some(organisationAddress.lineThree),
-            addressLine4 = organisationAddress.lineFour,
-            postalCode = organisationAddress.postcode,
-            countryCode = organisationAddress.country
-          ),
-          dateOfEstablishment = None,
-          etmpOrganisationType = None
-        )
+    } yield (response, organisationName, organisationAddress) ->
+      RegistrationDetailsOrganisation(
+        customsId = None,
+        sapNumber = TaxPayerId(sapNumber),
+        safeId = SafeId("safe-id"),
+        name = organisationName,
+        address = Address(
+          addressLine1 = organisationAddress.lineOne,
+          addressLine2 = organisationAddress.lineTwo,
+          addressLine3 = Some(organisationAddress.lineThree),
+          addressLine4 = organisationAddress.lineFour,
+          postalCode = organisationAddress.postcode,
+          countryCode = organisationAddress.country
+        ),
+        dateOfEstablishment = None,
+        etmpOrganisationType = None
+      )
   }
 
   private val organisationWithoutIdForNameAndAddressTestCases
@@ -89,43 +87,41 @@ class RegistrationDetailsCreatorWithoutIdSpec extends RegistrationDetailsCreator
       addressLine2 <- Gen.alphaStr.asOption
       addressLine3 <- Gen.alphaStr
       addressLine4 <- Gen.alphaStr.asOption
-      postcode <- Gen.alphaStr.asOption
-      country <- Gen.alphaStr
-    } yield
-      SixLineAddressMatchModel(
-        lineOne = addressLine1,
-        lineTwo = addressLine2,
-        lineThree = addressLine3,
-        lineFour = addressLine4,
-        postcode = postcode,
-        country = country
-      )
+      postcode     <- Gen.alphaStr.asOption
+      country      <- Gen.alphaStr
+    } yield SixLineAddressMatchModel(
+      lineOne = addressLine1,
+      lineTwo = addressLine2,
+      lineThree = addressLine3,
+      lineFour = addressLine4,
+      postcode = postcode,
+      country = country
+    )
 
     val organisationNameGen = for {
       name <- Gen.alphaStr
     } yield name
 
     for {
-      organisationName <- organisationNameGen
+      organisationName    <- organisationNameGen
       organisationAddress <- organisationAddressGen
-    } yield
-      (organisationName, organisationAddress) ->
-        RegistrationDetailsOrganisation(
-          customsId = None,
-          sapNumber = TaxPayerId(""),
-          safeId = SafeId(""),
-          name = organisationName,
-          address = Address(
-            addressLine1 = organisationAddress.lineOne,
-            addressLine2 = organisationAddress.lineTwo,
-            addressLine3 = Some(organisationAddress.lineThree),
-            addressLine4 = organisationAddress.lineFour,
-            postalCode = organisationAddress.postcode,
-            countryCode = organisationAddress.country
-          ),
-          dateOfEstablishment = None,
-          etmpOrganisationType = None
-        )
+    } yield (organisationName, organisationAddress) ->
+      RegistrationDetailsOrganisation(
+        customsId = None,
+        sapNumber = TaxPayerId(""),
+        safeId = SafeId(""),
+        name = organisationName,
+        address = Address(
+          addressLine1 = organisationAddress.lineOne,
+          addressLine2 = organisationAddress.lineTwo,
+          addressLine3 = Some(organisationAddress.lineThree),
+          addressLine4 = organisationAddress.lineFour,
+          postalCode = organisationAddress.postcode,
+          countryCode = organisationAddress.country
+        ),
+        dateOfEstablishment = None,
+        etmpOrganisationType = None
+      )
   }
 
   private val addressFromOrganisationAddressTestCases: Gen[((SixLineAddressMatchModel), Address)] = {
@@ -134,30 +130,28 @@ class RegistrationDetailsCreatorWithoutIdSpec extends RegistrationDetailsCreator
       addressLine2 <- Gen.alphaStr.asOption
       addressLine3 <- Gen.alphaStr
       addressLine4 <- Gen.alphaStr.asOption
-      postcode <- Gen.alphaStr.asOption
-      country <- Gen.alphaStr
-    } yield
-      SixLineAddressMatchModel(
-        lineOne = addressLine1,
-        lineTwo = addressLine2,
-        lineThree = addressLine3,
-        lineFour = addressLine4,
-        postcode = postcode,
-        country = country
-      )
+      postcode     <- Gen.alphaStr.asOption
+      country      <- Gen.alphaStr
+    } yield SixLineAddressMatchModel(
+      lineOne = addressLine1,
+      lineTwo = addressLine2,
+      lineThree = addressLine3,
+      lineFour = addressLine4,
+      postcode = postcode,
+      country = country
+    )
 
     for {
       organisationAddress <- organisationAddressGen
-    } yield
-      organisationAddress ->
-        Address(
-          addressLine1 = organisationAddress.lineOne,
-          addressLine2 = organisationAddress.lineTwo,
-          addressLine3 = Some(organisationAddress.lineThree),
-          addressLine4 = organisationAddress.lineFour,
-          postalCode = organisationAddress.postcode,
-          countryCode = organisationAddress.country
-        )
+    } yield organisationAddress ->
+      Address(
+        addressLine1 = organisationAddress.lineOne,
+        addressLine2 = organisationAddress.lineTwo,
+        addressLine3 = Some(organisationAddress.lineThree),
+        addressLine4 = organisationAddress.lineFour,
+        postalCode = organisationAddress.postcode,
+        countryCode = organisationAddress.country
+      )
   }
 
   private val addressFromAddressViewModelTestCases: Gen[((AddressViewModel), Address)] = {
@@ -166,97 +160,96 @@ class RegistrationDetailsCreatorWithoutIdSpec extends RegistrationDetailsCreator
       addressLine2 <- Gen.alphaStr.asOption
       addressLine3 <- Gen.alphaStr
       addressLine4 <- Gen.alphaStr.asOption
-      postcode <- Gen.alphaStr.asOption
-      country <- Gen.alphaStr
-    } yield
-      AddressViewModel(
-        street = addressLine1 + " " + addressLine2,
-        city = addressLine3,
-        postcode = postcode,
-        countryCode = country
-      )
+      postcode     <- Gen.alphaStr.asOption
+      country      <- Gen.alphaStr
+    } yield AddressViewModel(
+      street = addressLine1 + " " + addressLine2,
+      city = addressLine3,
+      postcode = postcode,
+      countryCode = country
+    )
 
     for {
       addressViewModel <- addressViewModelGen
-    } yield
-      addressViewModel ->
-        Address(
-          addressLine1 = addressViewModel.street,
-          addressLine2 = None,
-          addressLine3 = Some(addressViewModel.city),
-          addressLine4 = None,
-          postalCode = addressViewModel.postcode,
-          countryCode = addressViewModel.countryCode
-        )
+    } yield addressViewModel ->
+      Address(
+        addressLine1 = addressViewModel.street,
+        addressLine2 = None,
+        addressLine3 = Some(addressViewModel.city),
+        addressLine4 = None,
+        postalCode = addressViewModel.postcode,
+        countryCode = addressViewModel.countryCode
+      )
   }
 
   private val individualWithoutIdTestCases: Gen[
     ((RegisterWithoutIDResponse, IndividualNameAndDateOfBirth, SixLineAddressMatchModel), RegistrationDetailsIndividual)
   ] = {
     val individualNameAndDateOfBirthGen = for {
-      firstName <- Gen.alphaStr
-      middleName <- Gen.alphaStr.asOption
-      lastName <- Gen.alphaStr
+      firstName    <- Gen.alphaStr
+      middleName   <- Gen.alphaStr.asOption
+      lastName     <- Gen.alphaStr
       addressLine1 <- Gen.alphaStr
       addressLine2 <- Gen.alphaStr
       addressLine3 <- Gen.alphaStr.asOption
       addressLine4 <- Gen.alphaStr.asOption
-      postcode <- Gen.alphaStr.asOption
-      country <- Gen.alphaStr
-      dateOfBirth <- dateOfBirthGenerator
-    } yield
-      IndividualNameAndDateOfBirth(
-        firstName = firstName,
-        middleName = middleName,
-        lastName = lastName,
-        dateOfBirth = dateOfBirth
-      )
+      postcode     <- Gen.alphaStr.asOption
+      country      <- Gen.alphaStr
+      dateOfBirth  <- dateOfBirthGenerator
+    } yield IndividualNameAndDateOfBirth(
+      firstName = firstName,
+      middleName = middleName,
+      lastName = lastName,
+      dateOfBirth = dateOfBirth
+    )
 
     val individualSoleTraderAddressGen = for {
       addressLine1 <- Gen.alphaStr
       addressLine2 <- Gen.alphaStr.asOption
       addressLine3 <- Gen.alphaStr
       addressLine4 <- Gen.alphaStr.asOption
-      postcode <- Gen.alphaStr.asOption
-      country <- Gen.alphaStr
-    } yield
-      SixLineAddressMatchModel(
-        lineOne = addressLine1,
-        lineTwo = addressLine2,
-        lineThree = addressLine3,
-        lineFour = addressLine4,
-        postcode = postcode,
-        country = country
-      )
+      postcode     <- Gen.alphaStr.asOption
+      country      <- Gen.alphaStr
+    } yield SixLineAddressMatchModel(
+      lineOne = addressLine1,
+      lineTwo = addressLine2,
+      lineThree = addressLine3,
+      lineFour = addressLine4,
+      postcode = postcode,
+      country = country
+    )
 
     for {
-      response <- registerWithoutIDResponseGen
-      individualData <- individualNameAndDateOfBirthGen
+      response                        <- registerWithoutIDResponseGen
+      individualData                  <- individualNameAndDateOfBirthGen
       individualSoleTraderAddressData <- individualSoleTraderAddressGen
-    } yield
-      (response, individualData, individualSoleTraderAddressData) ->
-        RegistrationDetailsIndividual(
-          customsId = None,
-          sapNumber = TaxPayerId(sapNumber),
-          safeId = SafeId("safe-id"),
-          name = individualData.fullName,
-          address = Address(
-            addressLine1 = individualSoleTraderAddressData.lineOne,
-            addressLine2 = individualSoleTraderAddressData.lineTwo,
-            addressLine3 = Some(individualSoleTraderAddressData.lineThree),
-            addressLine4 = individualSoleTraderAddressData.lineFour,
-            postalCode = individualSoleTraderAddressData.postcode,
-            countryCode = individualSoleTraderAddressData.country
-          ),
-          dateOfBirth = individualData.dateOfBirth
-        )
+    } yield (response, individualData, individualSoleTraderAddressData) ->
+      RegistrationDetailsIndividual(
+        customsId = None,
+        sapNumber = TaxPayerId(sapNumber),
+        safeId = SafeId("safe-id"),
+        name = individualData.fullName,
+        address = Address(
+          addressLine1 = individualSoleTraderAddressData.lineOne,
+          addressLine2 = individualSoleTraderAddressData.lineTwo,
+          addressLine3 = Some(individualSoleTraderAddressData.lineThree),
+          addressLine4 = individualSoleTraderAddressData.lineFour,
+          postalCode = individualSoleTraderAddressData.postcode,
+          countryCode = individualSoleTraderAddressData.country
+        ),
+        dateOfBirth = individualData.dateOfBirth
+      )
   }
 
   "RegistrationDetailsCreator from RegisterWithoutIDResponse" should {
 
     "create organisation registration details" in testWithGen(organisationWithoutIdTestCases) {
       case ((registerWithoutIDResponse, organisationName, organisationAddress), expectedOrganisationDetails) =>
-        registrationDetailsCreator.registrationDetails(registerWithoutIDResponse, organisationName, organisationAddress) shouldBe expectedOrganisationDetails
+        registrationDetailsCreator.registrationDetails(
+          registerWithoutIDResponse,
+          organisationName,
+          organisationAddress
+        ) shouldBe expectedOrganisationDetails
     }
 
     "create Address from OrganisationAddress" in testWithGen(addressFromOrganisationAddressTestCases) {
@@ -271,8 +264,8 @@ class RegistrationDetailsCreatorWithoutIdSpec extends RegistrationDetailsCreator
 
     "create individual registration details" in testWithGen(individualWithoutIdTestCases) {
       case (
-          (registerWithoutIDResponse, individualNameAndDateOfBirth, individualSoleTraderAddressData),
-          expectedIndividualDetails
+            (registerWithoutIDResponse, individualNameAndDateOfBirth, individualSoleTraderAddressData),
+            expectedIndividualDetails
           ) =>
         registrationDetailsCreator.registrationDetails(
           registerWithoutIDResponse,
@@ -283,7 +276,7 @@ class RegistrationDetailsCreatorWithoutIdSpec extends RegistrationDetailsCreator
 
     "throw if organisation response does not provide SAP number" in testWithGen(organisationWithoutIdTestCases) {
       case ((validResponse, organisationName, organisationAddress), _) =>
-        val withoutSap = validResponse.responseCommon.copy(returnParameters = None)
+        val withoutSap         = validResponse.responseCommon.copy(returnParameters = None)
         val responseWithoutSap = validResponse.copy(responseCommon = withoutSap)
 
         val caught = intercept[IllegalArgumentException] {
@@ -295,7 +288,7 @@ class RegistrationDetailsCreatorWithoutIdSpec extends RegistrationDetailsCreator
 
     "throw if individual response does not provide SAP number" in testWithGen(individualWithoutIdTestCases) {
       case ((validResponse, individualNameAndDateOfBirth, individualSoleTraderAddressData), _) =>
-        val withoutSap = validResponse.responseCommon.copy(returnParameters = None)
+        val withoutSap         = validResponse.responseCommon.copy(returnParameters = None)
         val responseWithoutSap = validResponse.copy(responseCommon = withoutSap)
 
         val caught = intercept[IllegalArgumentException] {

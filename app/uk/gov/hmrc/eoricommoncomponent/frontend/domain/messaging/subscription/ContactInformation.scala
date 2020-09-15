@@ -55,4 +55,5 @@ object ContactInformation extends CommonHeader {
         faxNumber = cd.fax
       )
     }
+
 }

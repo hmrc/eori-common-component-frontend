@@ -29,7 +29,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_grou
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class VatGroupController @Inject()(
+class VatGroupController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   mcc: MessagesControllerComponents,
@@ -46,13 +46,12 @@ class VatGroupController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(vatGroupView(formWithErrors, journey)),
-        yesNoAnswer => {
-          if (yesNoAnswer.isNo) {
+        yesNoAnswer =>
+          if (yesNoAnswer.isNo)
             Redirect(EmailController.form(Journey.Register))
-          } else {
+          else
             Redirect(routes.VatGroupsCannotRegisterUsingThisServiceController.form(journey))
-          }
-        }
       )
   }
+
 }

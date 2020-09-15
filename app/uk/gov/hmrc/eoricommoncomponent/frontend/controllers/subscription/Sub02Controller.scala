@@ -36,7 +36,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class Sub02Controller @Inject()(
+class Sub02Controller @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   requestSessionData: RequestSessionData,
@@ -52,28 +52,27 @@ class Sub02Controller @Inject()(
   sub01OutcomeRejected: sub01_outcome_rejected,
   subscriptionOutcomeView: subscription_outcome,
   cdsSubscriber: CdsSubscriber
-)(implicit ec: ExecutionContext) extends CdsController(mcc) {
+)(implicit ec: ExecutionContext)
+    extends CdsController(mcc) {
 
   def subscribe(journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
       val selectedOrganisationType: Option[CdsOrganisationType] =
         requestSessionData.userSelectedOrganisationType
       val internalId = InternalId(loggedInUser.internalId)
-      val groupId = GroupId(loggedInUser.groupId)
+      val groupId    = GroupId(loggedInUser.groupId)
       cdsSubscriber
         .subscribeWithCachedDetails(selectedOrganisationType, journey)
         .flatMap { subscribeResult =>
           (subscribeResult, journey) match {
-            case (_: SubscriptionSuccessful, Journey.Register) => {
+            case (_: SubscriptionSuccessful, Journey.Register) =>
               subscriptionDetailsService
                 .saveKeyIdentifiers(groupId, internalId)
                 .map(_ => Redirect(Sub02Controller.end()))
-            }
-            case (_: SubscriptionPending, _) => {
+            case (_: SubscriptionPending, _) =>
               subscriptionDetailsService
                 .saveKeyIdentifiers(groupId, internalId)
                 .map(_ => Redirect(Sub02Controller.pending()))
-            }
             case (SubscriptionFailed(EoriAlreadyExists, _), _) =>
               Future.successful(Redirect(Sub02Controller.eoriAlreadyExists()))
             case (SubscriptionFailed(EoriAlreadyAssociated, _), _) =>
@@ -98,34 +97,33 @@ class Sub02Controller @Inject()(
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
         sub02Outcome <- sessionCache.sub02Outcome
-        _ <- sessionCache.remove
-        _ <- sessionCache.saveSub02Outcome(sub02Outcome)
-      } yield
-        Ok(
-          subscriptionOutcomeView(
-            sub02Outcome.eori
-              .getOrElse("EORI not populated from Sub02 response."),
-            sub02Outcome.fullName,
-            sub02Outcome.processedDate
-          )
+        _            <- sessionCache.remove
+        _            <- sessionCache.saveSub02Outcome(sub02Outcome)
+      } yield Ok(
+        subscriptionOutcomeView(
+          sub02Outcome.eori
+            .getOrElse("EORI not populated from Sub02 response."),
+          sub02Outcome.fullName,
+          sub02Outcome.processedDate
         )
+      )
   }
 
   def migrationEnd: Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
-      if (UserLocation.isRow(requestSessionData)) {
+      if (UserLocation.isRow(requestSessionData))
         subscriptionDetailsService.cachedCustomsId flatMap {
           case Some(_) => renderPageWithName
           case _       => renderPageWithNameRow
         }
-      } else renderPageWithName
+      else renderPageWithName
   }
 
   def rejected: Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
         sub02Outcome <- sessionCache.sub02Outcome
-        _ <- sessionCache.remove
+        _            <- sessionCache.remove
       } yield Ok(sub01OutcomeRejected(Some(sub02Outcome.fullName), sub02Outcome.processedDate))
   }
 
@@ -133,7 +131,7 @@ class Sub02Controller @Inject()(
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         sub02Outcome <- sessionCache.sub02Outcome
-        _ <- sessionCache.remove
+        _            <- sessionCache.remove
       } yield Ok(sub02EoriAlreadyExists(sub02Outcome.fullName, sub02Outcome.processedDate))
     }
 
@@ -141,7 +139,7 @@ class Sub02Controller @Inject()(
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         sub02Outcome <- sessionCache.sub02Outcome
-        _ <- sessionCache.remove
+        _            <- sessionCache.remove
       } yield Ok(sub02EoriAlreadyAssociatedView(sub02Outcome.fullName, sub02Outcome.processedDate))
     }
 
@@ -149,7 +147,7 @@ class Sub02Controller @Inject()(
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         sub02Outcome <- sessionCache.sub02Outcome
-        _ <- sessionCache.remove
+        _            <- sessionCache.remove
       } yield Ok(sub02SubscriptionInProgressView(sub02Outcome.fullName, sub02Outcome.processedDate))
     }
 
@@ -164,7 +162,7 @@ class Sub02Controller @Inject()(
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
         sub02Outcome <- sessionCache.sub02Outcome
-        _ <- sessionCache.remove
+        _            <- sessionCache.remove
       } yield Ok(sub01OutcomeView(Some(sub02Outcome.fullName), sub02Outcome.processedDate))
   }
 
@@ -174,23 +172,23 @@ class Sub02Controller @Inject()(
         _.responseDetail.flatMap(_.responseData.map(_.trader.fullName))
       )
       sub02Outcome <- sessionCache.sub02Outcome
-      _ <- sessionCache.remove
+      _            <- sessionCache.remove
       _ <- sessionCache.saveSub02Outcome(
         Sub02Outcome(sub02Outcome.processedDate, name.getOrElse(""), sub02Outcome.eori)
       )
-    } yield
-      Ok(
-        migrationSuccessView(
-          sub02Outcome.eori,
-          name.getOrElse(throw new IllegalStateException("Name not populated from reg06")),
-          sub02Outcome.processedDate
-        )
+    } yield Ok(
+      migrationSuccessView(
+        sub02Outcome.eori,
+        name.getOrElse(throw new IllegalStateException("Name not populated from reg06")),
+        sub02Outcome.processedDate
       )
+    )
 
   private def renderPageWithNameRow(implicit hc: HeaderCarrier, request: Request[_]) =
     for {
       sub02Outcome <- sessionCache.sub02Outcome
-      _ <- sessionCache.remove
-      _ <- sessionCache.saveSub02Outcome(sub02Outcome)
+      _            <- sessionCache.remove
+      _            <- sessionCache.saveSub02Outcome(sub02Outcome)
     } yield Ok(migrationSuccessView(sub02Outcome.eori, sub02Outcome.fullName, sub02Outcome.processedDate))
+
 }

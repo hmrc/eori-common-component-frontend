@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
 @Singleton
-class HandleSubscriptionConnector @Inject()(http: HttpClient, appConfig: AppConfig)(implicit ec: ExecutionContext) {
+class HandleSubscriptionConnector @Inject() (http: HttpClient, appConfig: AppConfig)(implicit ec: ExecutionContext) {
 
   val LoggerComponentId = "HandleSubscriptionConnector"
 
@@ -41,12 +41,11 @@ class HandleSubscriptionConnector @Inject()(http: HttpClient, appConfig: AppConf
     val headers = Seq(ACCEPT -> "application/vnd.hmrc.1.0+json", CONTENT_TYPE -> MimeTypes.JSON)
     http.POST[HandleSubscriptionRequest, HttpResponse](url, request, headers) map { response =>
       response.status match {
-        case OK | NO_CONTENT => {
+        case OK | NO_CONTENT =>
           CdsLogger.info(
             s"[$LoggerComponentId][call] complete for call to $url and headers ${hc.headers}. Status:${response.status}"
           )
           ()
-        }
         case _ => throw new BadRequestException(s"Status:${response.status}")
       }
     } recoverWith {
@@ -64,4 +63,5 @@ class HandleSubscriptionConnector @Inject()(http: HttpClient, appConfig: AppConf
         Future.failed(e)
     }
   }
+
 }

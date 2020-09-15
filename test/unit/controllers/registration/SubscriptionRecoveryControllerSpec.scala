@@ -24,7 +24,10 @@ import org.scalatest.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{SUB09SubscriptionDisplayConnector, ServiceUnavailableResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{
+  SUB09SubscriptionDisplayConnector,
+  ServiceUnavailableResponse
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.SubscriptionRecoveryController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{RecipientDetails, SubscriptionDetails}
@@ -49,19 +52,19 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSugar with BeforeAndAfterEach {
 
-  private val mockAuthConnector = mock[AuthConnector]
+  private val mockAuthConnector                      = mock[AuthConnector]
   private val mockCdsFrontendDataCache: SessionCache = mock[SessionCache]
-  private val mockSUB09SubscriptionDisplayConnector = mock[SUB09SubscriptionDisplayConnector]
-  private val mockSub01Outcome = mock[Sub01Outcome]
-  private val mockHandleSubscriptionService = mock[HandleSubscriptionService]
-  private val mockOrgRegistrationDetails = mock[RegistrationDetailsOrganisation]
-  private val mockSubscriptionDetailsHolder = mock[SubscriptionDetails]
-  private val mockRegisterWithEoriAndIdResponse = mock[RegisterWithEoriAndIdResponse]
-  private val mockRandomUUIDGenerator = mock[RandomUUIDGenerator]
-  private val contactDetails = mock[ContactDetailsModel]
-  private val mockTaxEnrolmentsService = mock[TaxEnrolmentsService]
-  private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
-  private val mockRequestSessionData = mock[RequestSessionData]
+  private val mockSUB09SubscriptionDisplayConnector  = mock[SUB09SubscriptionDisplayConnector]
+  private val mockSub01Outcome                       = mock[Sub01Outcome]
+  private val mockHandleSubscriptionService          = mock[HandleSubscriptionService]
+  private val mockOrgRegistrationDetails             = mock[RegistrationDetailsOrganisation]
+  private val mockSubscriptionDetailsHolder          = mock[SubscriptionDetails]
+  private val mockRegisterWithEoriAndIdResponse      = mock[RegisterWithEoriAndIdResponse]
+  private val mockRandomUUIDGenerator                = mock[RandomUUIDGenerator]
+  private val contactDetails                         = mock[ContactDetailsModel]
+  private val mockTaxEnrolmentsService               = mock[TaxEnrolmentsService]
+  private val mockSubscriptionDetailsService         = mock[SubscriptionDetailsService]
+  private val mockRequestSessionData                 = mock[RequestSessionData]
 
   private val errorTemplateView = app.injector.instanceOf[error_template]
 
@@ -80,7 +83,7 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
   )
 
   def registerWithEoriAndIdResponseDetail: Option[RegisterWithEoriAndIdResponseDetail] = {
-    val trader = Trader(fullName = "New trading", shortName = "nt")
+    val trader               = Trader(fullName = "New trading", shortName = "nt")
     val establishmentAddress = EstablishmentAddress(streetAndNumber = "new street", city = "leeds", countryCode = "GB")
     val responseData: ResponseData = ResponseData(
       SAFEID = "SomeSafeId",
@@ -354,4 +357,5 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
     withAuthorisedUser(userId, mockAuthConnector)
     test(controller.complete(journey).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
+
 }

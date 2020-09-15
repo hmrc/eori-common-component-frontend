@@ -32,8 +32,8 @@ class HaveNinoSubscriptionSpec extends ViewSpec {
   implicit val request = withFakeCSRF(FakeRequest())
 
   private val standardForm: Form[NinoMatchModel] = rowIndividualsNinoForm
-  private val noOptionSelectedForm = rowIndividualsNinoForm.bind(Map.empty[String, String])
-  private val incorrectNinoForm = rowIndividualsNinoForm.bind(Map("have-nino" -> "true", "nino" -> "012345789!@#$"))
+  private val noOptionSelectedForm               = rowIndividualsNinoForm.bind(Map.empty[String, String])
+  private val incorrectNinoForm                  = rowIndividualsNinoForm.bind(Map("have-nino" -> "true", "nino" -> "012345789!@#$"))
 
   private val view = app.injector.instanceOf[match_nino_subscription]
 
@@ -96,6 +96,9 @@ class HaveNinoSubscriptionSpec extends ViewSpec {
   }
 
   lazy val doc: Document = Jsoup.parse(contentAsString(view(standardForm, Journey.Subscribe)))
-  lazy val docWithNoOptionSelected: Document = Jsoup.parse(contentAsString(view(noOptionSelectedForm, Journey.Subscribe)))
+
+  lazy val docWithNoOptionSelected: Document =
+    Jsoup.parse(contentAsString(view(noOptionSelectedForm, Journey.Subscribe)))
+
   lazy val docWithIncorrectNino: Document = Jsoup.parse(contentAsString(view(incorrectNinoForm, Journey.Subscribe)))
 }

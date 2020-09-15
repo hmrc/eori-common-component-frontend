@@ -30,7 +30,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SubscriptionService @Inject()(connector: SubscriptionServiceConnector)(implicit ec: ExecutionContext) {
+class SubscriptionService @Inject() (connector: SubscriptionServiceConnector)(implicit ec: ExecutionContext) {
 
   def subscribe(
     registration: RegistrationDetails,
@@ -135,4 +135,5 @@ class SubscriptionService @Inject()(connector: SubscriptionServiceConnector)(imp
         _.paramValue
       )
   }
+
 }

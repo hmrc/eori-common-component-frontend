@@ -23,7 +23,10 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers.{LOCATION, _}
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{SubscriptionFlowManager, VatRegisteredUkController}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{
+  SubscriptionFlowManager,
+  VatRegisteredUkController
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.YesNo
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   SubscriptionDetails,
@@ -33,7 +36,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionBusinessService,
+  SubscriptionDetailsService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_registered_uk
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
@@ -47,13 +53,13 @@ import scala.concurrent.Future
 
 class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockSubscriptionFlowManager = mock[SubscriptionFlowManager]
+  private val mockAuthConnector               = mock[AuthConnector]
+  private val mockSubscriptionFlowManager     = mock[SubscriptionFlowManager]
   private val mockSubscriptionBusinessService = mock[SubscriptionBusinessService]
-  private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
-  private val mockSubscriptionFlow = mock[SubscriptionFlow]
-  private val mockRequestSession = mock[RequestSessionData]
-  private val vatRegisteredUkView = app.injector.instanceOf[vat_registered_uk]
+  private val mockSubscriptionDetailsService  = mock[SubscriptionDetailsService]
+  private val mockSubscriptionFlow            = mock[SubscriptionFlow]
+  private val mockRequestSession              = mock[RequestSessionData]
+  private val vatRegisteredUkView             = app.injector.instanceOf[vat_registered_uk]
 
   override def beforeEach: Unit = {
     reset(
@@ -65,7 +71,7 @@ class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with Befo
       mockRequestSession
     )
     when(mockSubscriptionDetailsService.cacheVatRegisteredUk(any[YesNo])(any[HeaderCarrier]))
-      .thenReturn(Future.successful({}))
+      .thenReturn(Future.successful {})
   }
 
   private val controller = new VatRegisteredUkController(
@@ -108,7 +114,7 @@ class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with Befo
     }
     "redirect to add vat group page for yes answer" in {
       val url = "register/vat-group"
-      val sd = SubscriptionDetails(vatRegisteredUk = Some(true))
+      val sd  = SubscriptionDetails(vatRegisteredUk = Some(true))
       subscriptionFlowUrl(url)
 
       submitForm(ValidRequest) { result =>
@@ -119,7 +125,7 @@ class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with Befo
 
     "redirect to eu vat page for no answer" in {
       val url = "register/vat-registered-eu"
-      val sd = SubscriptionDetails(vatRegisteredUk = Some(false))
+      val sd  = SubscriptionDetails(vatRegisteredUk = Some(false))
 
       subscriptionFlowUrl(url)
 
@@ -178,7 +184,7 @@ class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with Befo
   }
 
   private def subscriptionFlowUrl(url: String) = {
-    val mockSubscriptionPage = mock[SubscriptionPage]
+    val mockSubscriptionPage     = mock[SubscriptionPage]
     val mockSubscriptionFlowInfo = mock[SubscriptionFlowInfo]
     when(mockSubscriptionFlowManager.stepInformation(any())(any[HeaderCarrier], any[Request[AnyContent]]))
       .thenReturn(mockSubscriptionFlowInfo)

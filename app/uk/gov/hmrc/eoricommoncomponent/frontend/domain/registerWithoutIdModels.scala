@@ -47,13 +47,14 @@ case class RegisterWithoutIdReqDetails(
   val ignoredFields = List("contactDetails", "address", "organisation", "individual")
 
   def keyValueMap(): Map[String, String] = {
-    val m = toMap(this, ignoredFields = ignoredFields)
+    val m  = toMap(this, ignoredFields = ignoredFields)
     val cd = prefixMapKey("contactDetail.", contactDetails.toMap())
     val am = prefixMapKey("address.", address.toMap())
     val om = prefixMapKey("organisation.", organisation.fold(Map.empty[String, String])(_.toMap()))
     val im = prefixMapKey("individual.", individual.fold(Map.empty[String, String])(_.toMap()))
     m ++ cd ++ am ++ om ++ im
   }
+
 }
 
 object RegisterWithoutIdReqDetails {
@@ -86,6 +87,7 @@ object RegisterWithoutIdReqDetails {
     )
     RegisterWithoutIdReqDetails(cd, address = address, individual = Some(individual))
   }
+
 }
 
 case class RegisterWithoutIDRequest(requestCommon: RequestCommon, requestDetail: RegisterWithoutIdReqDetails)
@@ -101,8 +103,10 @@ object RegisterWithoutIdRequestHolder {
 }
 
 case class RegisterWithoutIdResponseDetail(SAFEID: String, ARN: Option[String]) extends CaseClassAuditHelper {
+
   def keyValueMap(): Map[String, String] =
     toMap(this)
+
 }
 
 object RegisterWithoutIdResponseDetail {
@@ -113,6 +117,7 @@ case class RegisterWithoutIDResponse(
   responseCommon: ResponseCommon,
   responseDetail: Option[RegisterWithoutIdResponseDetail]
 ) {
+
   def keyValueMap(): Map[String, String] = {
     val rc = responseCommon.keyValueMap()
     responseDetail match {
@@ -120,6 +125,7 @@ case class RegisterWithoutIDResponse(
       case _        => rc
     }
   }
+
 }
 
 object RegisterWithoutIDResponse {

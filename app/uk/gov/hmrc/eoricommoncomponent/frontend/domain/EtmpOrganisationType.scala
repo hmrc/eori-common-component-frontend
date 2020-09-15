@@ -56,12 +56,12 @@ case object NA extends EtmpOrganisationType {
 object EtmpOrganisationType {
 
   private val cdsToEtmpOrgType = Map(
-    CompanyId -> CorporateBody,
-    PartnershipId -> Partnership,
-    LimitedLiabilityPartnershipId -> LLP,
+    CompanyId                       -> CorporateBody,
+    PartnershipId                   -> Partnership,
+    LimitedLiabilityPartnershipId   -> LLP,
     CharityPublicBodyNotForProfitId -> UnincorporatedBody,
-    EUOrganisationId -> CorporateBody,
-    ThirdCountryOrganisationId -> CorporateBody
+    EUOrganisationId                -> CorporateBody,
+    ThirdCountryOrganisationId      -> CorporateBody
   )
 
   def apply(cdsOrgType: CdsOrganisationType): EtmpOrganisationType = cdsToEtmpOrgType.getOrElse(cdsOrgType.id, NA)
@@ -94,4 +94,5 @@ object EtmpOrganisationType {
   implicit val etmpOrgWrites: Writes[EtmpOrganisationType] = new Writes[EtmpOrganisationType] {
     def writes(org: EtmpOrganisationType): JsValue = Json.toJson(CdsOrganisationType(unapply(org)))
   }
+
 }

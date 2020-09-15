@@ -27,9 +27,11 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RegisterWithoutIdConnector @Inject()(http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit ec: ExecutionContext) {
+class RegisterWithoutIdConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
+  ec: ExecutionContext
+) {
 
-  private val url = appConfig.getServiceUrl("register-without-id")
+  private val url               = appConfig.getServiceUrl("register-without-id")
   private val loggerComponentId = "RegisterWithoutIdConnector"
 
   def register(request: RegisterWithoutIDRequest)(implicit hc: HeaderCarrier): Future[RegisterWithoutIDResponse] = {
@@ -60,8 +62,8 @@ class RegisterWithoutIdConnector @Inject()(http: HttpClient, appConfig: AppConfi
       eventType = "CustomsRegistrationWithoutIdSubmitted"
     )
 
-  private def auditCallResponse(url: String, response: RegisterWithoutIdResponseHolder)(
-    implicit hc: HeaderCarrier
+  private def auditCallResponse(url: String, response: RegisterWithoutIdResponseHolder)(implicit
+    hc: HeaderCarrier
   ): Unit =
     audit.sendDataEvent(
       transactionName = "customs-registration-without-id",
@@ -70,4 +72,5 @@ class RegisterWithoutIdConnector @Inject()(http: HttpClient, appConfig: AppConfi
         .keyValueMap(),
       eventType = "CustomsRegistrationWithoutIdResult"
     )
+
 }

@@ -31,7 +31,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{EnrolmentStoreProxyService, SubscriptionStatusService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  EnrolmentStoreProxyService,
+  SubscriptionStatusService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.{Save4LaterService, UserGroupIdSubscriptionStatusCheckService}
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
@@ -43,13 +46,14 @@ import scala.concurrent.Future
 
 class EmailControllerSpec extends ControllerSpec with AddressPageFactoring with MockitoSugar with BeforeAndAfterEach {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockEmailVerificationService = mock[EmailVerificationService]
-  private val mockSave4LaterService = mock[Save4LaterService]
-  private val mockSessionCache = mock[SessionCache]
-  private val mockSave4LaterConnector = mock[Save4LaterConnector]
+  private val mockAuthConnector              = mock[AuthConnector]
+  private val mockEmailVerificationService   = mock[EmailVerificationService]
+  private val mockSave4LaterService          = mock[Save4LaterService]
+  private val mockSessionCache               = mock[SessionCache]
+  private val mockSave4LaterConnector        = mock[Save4LaterConnector]
   private val mockEnrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
-  private val mockSubscriptionStatusService = mock[SubscriptionStatusService]
+  private val mockSubscriptionStatusService  = mock[SubscriptionStatusService]
+
   private val mockUserGroupIdSubscriptionStatusCheckService =
     new UserGroupIdSubscriptionStatusCheckService(
       mockSubscriptionStatusService,
@@ -139,4 +143,5 @@ class EmailControllerSpec extends ControllerSpec with AddressPageFactoring with 
         .apply(SessionBuilder.buildRequestWithSession(userId))
     )
   }
+
 }

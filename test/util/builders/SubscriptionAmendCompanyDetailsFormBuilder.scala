@@ -22,38 +22,42 @@ import org.joda.time.LocalDate
 
 object SubscriptionAmendCompanyDetailsFormBuilder {
 
-  val withoutShortName = "false"
-  val withShortName = "true"
-  val ShortName = "Shortened Name"
-  val sic = "99996"
-  val DateEstablishedString = "2015-06-22"
-  val DateEstablished = LocalDate.parse(DateEstablishedString)
+  val withoutShortName             = "false"
+  val withShortName                = "true"
+  val ShortName                    = "Shortened Name"
+  val sic                          = "99996"
+  val DateEstablishedString        = "2015-06-22"
+  val DateEstablished              = LocalDate.parse(DateEstablishedString)
   val DateEstablishedForPublicBody = LocalDate.parse("1900-01-01")
-  val EoriNumber = "GB123456789000"
-  val Email = "test@example.com"
+  val EoriNumber                   = "GB123456789000"
+  val Email                        = "test@example.com"
 
   val mandatoryShortNameFieldsMap = Map("use-short-name" -> withoutShortName)
+
   val mandatoryShortNameFields: CompanyShortNameViewModel =
     SubscriptionForm.subscriptionCompanyShortNameForm.bind(mandatoryShortNameFieldsMap).value.get
+
   val mandatoryShortNameFieldsAsShortName = BusinessShortName(mandatoryShortNameFields.shortName)
 
   val allShortNameFieldsMap = mandatoryShortNameFieldsMap + (
     "use-short-name" -> withShortName,
-    "short-name" -> ShortName
+    "short-name"     -> ShortName
   )
 
   val emptyShortNameFieldsMap = Map("use-short-name" -> "", "short-name" -> "")
+
   val allShortNameFields: CompanyShortNameViewModel =
     SubscriptionForm.subscriptionCompanyShortNameForm.bind(allShortNameFieldsMap).value.get
+
   val allShortNameFieldsAsShortName = BusinessShortName(allShortNameFields.shortName)
 
   val mandatoryFieldsMap = Map(
-    "use-short-name" -> withoutShortName,
-    "date-established.day" -> DateEstablished.dayOfMonth.getAsString,
+    "use-short-name"         -> withoutShortName,
+    "date-established.day"   -> DateEstablished.dayOfMonth.getAsString,
     "date-established.month" -> DateEstablished.monthOfYear.getAsString,
-    "date-established.year" -> DateEstablished.year.getAsString,
-    "sic" -> sic,
-    "eori-number" -> EoriNumber
+    "date-established.year"  -> DateEstablished.year.getAsString,
+    "sic"                    -> sic,
+    "eori-number"            -> EoriNumber
   )
 
   val mandatoryFieldsMapWithoutDateOfEstablishment = Map("use-short-name" -> withoutShortName, "sic" -> sic)

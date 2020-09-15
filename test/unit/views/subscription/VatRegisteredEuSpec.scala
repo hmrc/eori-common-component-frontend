@@ -28,11 +28,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_regi
 import util.ViewSpec
 
 class VatRegisteredEuSpec extends ViewSpec {
-  val form: Form[YesNo] = vatRegisteredEuYesNoAnswerForm()
-  val formWithError: Form[YesNo] = vatRegisteredEuYesNoAnswerForm().bind(Map("yes-no-answer" -> ""))
-  val partnershipForm: Form[YesNo] = vatRegisteredEuYesNoAnswerForm(true)
+  val form: Form[YesNo]                     = vatRegisteredEuYesNoAnswerForm()
+  val formWithError: Form[YesNo]            = vatRegisteredEuYesNoAnswerForm().bind(Map("yes-no-answer" -> ""))
+  val partnershipForm: Form[YesNo]          = vatRegisteredEuYesNoAnswerForm(true)
   val partnershipFormWithError: Form[YesNo] = vatRegisteredEuYesNoAnswerForm(true).bind(Map("yes-no-answer" -> ""))
-  implicit val request = withFakeCSRF(FakeRequest())
+  implicit val request                      = withFakeCSRF(FakeRequest())
 
   private val view = app.injector.instanceOf[vat_registered_eu]
 
@@ -105,11 +105,13 @@ class VatRegisteredEuSpec extends ViewSpec {
       view(isInReviewMode = false, form, isIndividualSubscriptionFlow = true, isPartnership = false, Journey.Subscribe)
     )
   )
+
   private lazy val nonIndividualDocInReview: Document = Jsoup.parse(
     contentAsString(
       view(isInReviewMode = true, form, isIndividualSubscriptionFlow = false, isPartnership = false, Journey.Subscribe)
     )
   )
+
   private lazy val docWithErrors: Document = Jsoup.parse(
     contentAsString(
       view(
@@ -121,6 +123,7 @@ class VatRegisteredEuSpec extends ViewSpec {
       )
     )
   )
+
   private lazy val partnershipDoc: Document = Jsoup.parse(
     contentAsString(
       view(
@@ -132,6 +135,7 @@ class VatRegisteredEuSpec extends ViewSpec {
       )
     )
   )
+
   private lazy val partnershipDocWithErrors: Document = Jsoup.parse(
     contentAsString(
       view(

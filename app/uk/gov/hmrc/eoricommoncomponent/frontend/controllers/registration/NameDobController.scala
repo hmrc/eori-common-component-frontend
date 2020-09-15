@@ -32,7 +32,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class NameDobController @Inject()(
+class NameDobController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   mcc: MessagesControllerComponents,
@@ -50,14 +50,12 @@ class NameDobController @Inject()(
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       enterNameDobForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(matchNameDobView(formWithErrors, organisationType, journey))),
-        formData => {
-          submitNewDetails(formData, organisationType, journey)
-        }
+        formData => submitNewDetails(formData, organisationType, journey)
       )
     }
 
-  private def submitNewDetails(formData: NameDobMatchModel, organisationType: String, journey: Journey.Value)(
-    implicit hc: HeaderCarrier,
+  private def submitNewDetails(formData: NameDobMatchModel, organisationType: String, journey: Journey.Value)(implicit
+    hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] =
     cdsFrontendDataCache.saveSubscriptionDetails(SubscriptionDetails(nameDobDetails = Some(formData))).map { _ =>
@@ -66,4 +64,5 @@ class NameDobController @Inject()(
           .form(organisationType, journey)
       )
     }
+
 }

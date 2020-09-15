@@ -27,13 +27,13 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.isle_of_
 import util.ViewSpec
 
 class IsleOfManViewSpec extends ViewSpec {
-  val form: Form[YesNo] = isleOfManYesNoAnswerForm()
+  val form: Form[YesNo]          = isleOfManYesNoAnswerForm()
   val formWithError: Form[YesNo] = isleOfManYesNoAnswerForm().bind(Map("yes-no-answer" -> ""))
 
-  private val view = app.injector.instanceOf[isle_of_man]
+  private val view     = app.injector.instanceOf[isle_of_man]
   implicit val request = withFakeCSRF(FakeRequest())
 
-  lazy val doc: Document = Jsoup.parse(contentAsString(view(form)))
+  lazy val doc: Document           = Jsoup.parse(contentAsString(view(form)))
   lazy val docWithErrors: Document = Jsoup.parse(contentAsString(view(formWithError)))
 
   "The 'Is your organisation based in the Isle of Man?' Page" should {

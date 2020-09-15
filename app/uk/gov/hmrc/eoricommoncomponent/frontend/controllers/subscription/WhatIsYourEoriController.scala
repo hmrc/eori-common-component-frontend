@@ -29,14 +29,17 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriNu
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm.eoriNumberForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionBusinessService,
+  SubscriptionDetailsService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class WhatIsYourEoriController @Inject()(
+class WhatIsYourEoriController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   subscriptionBusinessService: SubscriptionBusinessService,
@@ -50,11 +53,9 @@ class WhatIsYourEoriController @Inject()(
 
   def createForm(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
-      {
-        subscriptionBusinessService.cachedEoriNumber.map(
-          eori => populateView(eori, isInReviewMode = false, journey = journey)
-        )
-      }
+      subscriptionBusinessService.cachedEoriNumber.map(
+        eori => populateView(eori, isInReviewMode = false, journey = journey)
+      )
   }
 
   def reviewForm(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
@@ -67,33 +68,31 @@ class WhatIsYourEoriController @Inject()(
   def submit(isInReviewMode: Boolean, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       eoriNumberForm.bindFromRequest.fold(
-        formWithErrors => {
+        formWithErrors =>
           Future.successful(
             BadRequest(
               whatIsYourEoriView(formWithErrors, isInReviewMode, UserLocation.isRow(requestSessionData), journey)
             )
-          )
-        },
-        formData => {
-          submitNewDetails(formData, isInReviewMode, journey)
-        }
+          ),
+        formData => submitNewDetails(formData, isInReviewMode, journey)
       )
     }
 
-  private def populateView(eoriNumber: Option[String], isInReviewMode: Boolean, journey: Journey.Value)(
-    implicit hc: HeaderCarrier,
+  private def populateView(eoriNumber: Option[String], isInReviewMode: Boolean, journey: Journey.Value)(implicit
+    hc: HeaderCarrier,
     request: Request[AnyContent]
   ) = {
     val form = eoriNumber.map(EoriNumberViewModel).fold(eoriNumberForm)(eoriNumberForm.fill)
     Ok(whatIsYourEoriView(form, isInReviewMode, UserLocation.isRow(requestSessionData), journey))
   }
 
-  private def submitNewDetails(formData: EoriNumberViewModel, isInReviewMode: Boolean, journey: Journey.Value)(
-    implicit hc: HeaderCarrier,
+  private def submitNewDetails(formData: EoriNumberViewModel, isInReviewMode: Boolean, journey: Journey.Value)(implicit
+    hc: HeaderCarrier,
     request: Request[AnyContent]
   ) =
     subscriptionDetailsHolderService.cacheEoriNumber(formData.eoriNumber).map { _ =>
       if (isInReviewMode) Redirect(DetermineReviewPageController.determineRoute(journey))
       else Redirect(subscriptionFlowManager.stepInformation(EoriNumberSubscriptionFlowPage).nextPage.url)
     }
+
 }

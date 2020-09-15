@@ -16,7 +16,11 @@
 
 package unit.controllers.registration
 
-import common.pages.matching.{IndividualNameAndDateOfBirthPage, ThirdCountryIndividualNameAndDateOfBirthPage, ThirdCountrySoleTraderNameAndDateOfBirthPage}
+import common.pages.matching.{
+  IndividualNameAndDateOfBirthPage,
+  ThirdCountryIndividualNameAndDateOfBirthPage,
+  ThirdCountrySoleTraderNameAndDateOfBirthPage
+}
 import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
@@ -53,7 +57,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueReviewModeSpec
 
   class ControllerFixture(organisationType: String, form: Form[IndividualNameAndDateOfBirth])
       extends AbstractControllerFixture[RowIndividualNameDateOfBirthController] {
-    val mockRegistrationInfo = mock[IndividualRegistrationInfo]
+    val mockRegistrationInfo           = mock[IndividualRegistrationInfo]
     val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
 
     private val rowIndividualNameDob = app.injector.instanceOf[row_individual_name_dob]
@@ -74,6 +78,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueReviewModeSpec
 
     def formData(thirdCountryIndividual: IndividualNameAndDateOfBirth): Map[String, String] =
       form.mapping.unbind(thirdCountryIndividual)
+
   }
 
   abstract class IndividualNameAndDateOfBirthBehaviour(
@@ -157,7 +162,9 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueReviewModeSpec
           submitForm(formData(individualNameAndDateOfBirth)) { result =>
             CdsPage(contentAsString(result)).getElementsHtml(webPage.pageLevelErrorSummaryListXPath) shouldBe empty
             status(result) shouldBe SEE_OTHER
-            result.futureValue.header.headers(LOCATION) shouldBe "/customs-enrolment-services/register/matching/review-determine"
+            result.futureValue.header.headers(
+              LOCATION
+            ) shouldBe "/customs-enrolment-services/register/matching/review-determine"
             verify(mockSubscriptionDetailsService).cacheNameDobDetails(any())(any())
           }
       }
@@ -169,12 +176,13 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueReviewModeSpec
     protected def testControllerWithModel(
       formModelGens: IndividualGens[LocalDate]
     )(test: (ControllerFixture, IndividualNameAndDateOfBirth) => Unit): Unit =
-      check(Prop.forAllNoShrink(individualNameAndDateOfBirthGenerator(formModelGens))({ individualNameAndDateOfBirth =>
+      check(Prop.forAllNoShrink(individualNameAndDateOfBirthGenerator(formModelGens)) { individualNameAndDateOfBirth =>
         withControllerFixture { controllerFixture =>
           test.apply(controllerFixture, individualNameAndDateOfBirth)
           Prop.proved
         }
-      }))
+      })
+
   }
 
   abstract class ThirdCountryIndividualBehaviour(webPage: IndividualNameAndDateOfBirthPage)

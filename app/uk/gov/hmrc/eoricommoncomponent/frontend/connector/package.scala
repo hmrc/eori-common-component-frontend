@@ -19,8 +19,12 @@ package uk.gov.hmrc.eoricommoncomponent.frontend
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 package object connector {
+
   implicit val httpReads: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
+
     override def read(method: String, url: String, response: HttpResponse) =
       response
+
   }
+
 }

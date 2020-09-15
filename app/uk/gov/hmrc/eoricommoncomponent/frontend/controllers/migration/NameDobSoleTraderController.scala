@@ -27,14 +27,17 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NameDobDetai
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.enterNameDobForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionBusinessService,
+  SubscriptionDetailsService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class NameDobSoleTraderController @Inject()(
+class NameDobSoleTraderController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   subscriptionBusinessService: SubscriptionBusinessService,
@@ -50,11 +53,7 @@ class NameDobSoleTraderController @Inject()(
   def createForm(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.cachedSubscriptionNameDobViewModel flatMap { maybeCachedNameDobViewModel =>
-        populateOkView(
-          maybeCachedNameDobViewModel,
-          isInReviewMode = false,
-          journey
-        )
+        populateOkView(maybeCachedNameDobViewModel, isInReviewMode = false, journey)
       }
   }
 
@@ -68,7 +67,7 @@ class NameDobSoleTraderController @Inject()(
   def submit(isInReviewMode: Boolean, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       enterNameDobForm.bindFromRequest.fold(
-        formWithErrors => {
+        formWithErrors =>
           cdsFrontendDataCache.registrationDetails map { _ =>
             BadRequest(
               enterYourDetails(
@@ -78,11 +77,8 @@ class NameDobSoleTraderController @Inject()(
                 requestSessionData.selectedUserLocationWithIslands
               )
             )
-          }
-        },
-        formData => {
-          storeNameDobDetails(formData, isInReviewMode, journey)
-        }
+          },
+        formData => storeNameDobDetails(formData, isInReviewMode, journey)
       )
     }
 
@@ -100,17 +96,19 @@ class NameDobSoleTraderController @Inject()(
     }
   }
 
-  private def storeNameDobDetails(formData: NameDobMatchModel, inReviewMode: Boolean, journey: Journey.Value)(
-    implicit hc: HeaderCarrier,
+  private def storeNameDobDetails(formData: NameDobMatchModel, inReviewMode: Boolean, journey: Journey.Value)(implicit
+    hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] =
     subscriptionDetailsHolderService.cacheNameDobDetails(formData).map { _ =>
-      if (inReviewMode) {
+      if (inReviewMode)
         Redirect(
-          uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController.determineRoute(journey)
+          uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController.determineRoute(
+            journey
+          )
         )
-      } else {
+      else
         Redirect(subscriptionFlowManager.stepInformation(NameDobDetailsSubscriptionFlowPage).nextPage.url)
-      }
     }
+
 }

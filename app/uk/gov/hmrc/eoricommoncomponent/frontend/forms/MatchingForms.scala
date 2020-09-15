@@ -27,39 +27,41 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.{mandatoryDateTo
 import uk.gov.hmrc.domain.Nino
 import uk.gov.voa.play.form.ConditionalMappings._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation._
+
 object MatchingForms {
 
-  val Length35 = 35
-  val Length34 = 34
-  private val Length2 = 2
+  val Length35          = 35
+  val Length34          = 34
+  private val Length2   = 2
   private val nameRegex = "[a-zA-Z0-9-' ]*"
+
   private def validUtrFormat(utr: Option[String]): Boolean = {
 
-    val ZERO = 0
-    val ONE = 1
-    val TWO = 2
+    val ZERO  = 0
+    val ONE   = 1
+    val TWO   = 2
     val THREE = 3
-    val FOUR = 4
-    val FIVE = 5
-    val SIX = 6
+    val FOUR  = 4
+    val FIVE  = 5
+    val SIX   = 6
     val SEVEN = 7
     val EIGHT = 8
-    val NINE = 9
-    val TEN = 10
+    val NINE  = 9
+    val TEN   = 10
 
     def isValidUtr(remainder: Int, checkDigit: Int): Boolean = {
       val mapOfRemainders = Map(
-        ZERO -> TWO,
-        ONE -> ONE,
-        TWO -> NINE,
+        ZERO  -> TWO,
+        ONE   -> ONE,
+        TWO   -> NINE,
         THREE -> EIGHT,
-        FOUR -> SEVEN,
-        FIVE -> SIX,
-        SIX -> FIVE,
+        FOUR  -> SEVEN,
+        FIVE  -> SIX,
+        SIX   -> FIVE,
         SEVEN -> FOUR,
         EIGHT -> THREE,
-        NINE -> TWO,
-        TEN -> ONE
+        NINE  -> TWO,
+        TEN   -> ONE
       )
       mapOfRemainders.get(remainder).contains(checkDigit)
     }
@@ -68,15 +70,13 @@ object MatchingForms {
       case Some(u) =>
         val utrWithoutK = u.trim.stripSuffix("K").stripSuffix("k")
         utrWithoutK.length == TEN && utrWithoutK.forall(_.isDigit) && {
-          val actualUtr = utrWithoutK.toList
-          val checkDigit = actualUtr.head.asDigit
-          val restOfUtr = actualUtr.tail
-          val weights = List(SIX, SEVEN, EIGHT, NINE, TEN, FIVE, FOUR, THREE, TWO)
-          val weightedUtr = for ((w1, u1) <- weights zip restOfUtr) yield {
-            w1 * u1.asDigit
-          }
-          val total = weightedUtr.sum
-          val remainder = total % 11
+          val actualUtr   = utrWithoutK.toList
+          val checkDigit  = actualUtr.head.asDigit
+          val restOfUtr   = actualUtr.tail
+          val weights     = List(SIX, SEVEN, EIGHT, NINE, TEN, FIVE, FOUR, THREE, TWO)
+          val weightedUtr = for ((w1, u1) <- weights zip restOfUtr) yield w1 * u1.asDigit
+          val total       = weightedUtr.sum
+          val remainder   = total % 11
           isValidUtr(remainder, checkDigit)
         }
       case None => false
@@ -93,9 +93,7 @@ object MatchingForms {
     "organisation-type" -> optional(text)
       .verifying(
         "cds.matching.organisation-type.page-error.organisation-type-field.error.required",
-        x => {
-          x.fold(false)(oneOf(CdsOrganisationType.validOrganisationTypes.keySet).apply(_))
-        }
+        x => x.fold(false)(oneOf(CdsOrganisationType.validOrganisationTypes.keySet).apply(_))
       )
       .transform[CdsOrganisationType](
         o =>
@@ -105,16 +103,17 @@ object MatchingForms {
                 o.getOrElse(throw new IllegalArgumentException("Could not create CdsOrganisationType for empty ID."))
               )
               .id
-        ),
+          ),
         x => Some(x.id)
       )
   )
 
   val userLocationForm: Form[UserLocationDetails] = Form(
     "location" -> optional(text)
-      .verifying("cds.registration.user-location.error.location", x => {
-        x.fold(false)(oneOf(UserLocation.validLocations).apply(_))
-      })
+      .verifying(
+        "cds.registration.user-location.error.location",
+        x => x.fold(false)(oneOf(UserLocation.validLocations).apply(_))
+      )
       .transform[UserLocationDetails](o => UserLocationDetails(o), x => x.location)
   )
 
@@ -243,7 +242,7 @@ object MatchingForms {
   val ninoForm: Form[NinoMatch] = Form(
     mapping(
       "first-name" -> text.verifying(validFirstName),
-      "last-name" -> text.verifying(validLastName),
+      "last-name"  -> text.verifying(validLastName),
       "date-of-birth" -> mandatoryDateTodayOrBefore(
         onEmptyError = "cds.registration-model.form-error.date-of-birth.empty",
         onInvalidDateError = "cds.registration-model.form-error.date-of-birth"
@@ -254,9 +253,9 @@ object MatchingForms {
 
   val enterNameDobForm: Form[NameDobMatchModel] = Form(
     mapping(
-      "first-name" -> text.verifying(validFirstName),
+      "first-name"  -> text.verifying(validFirstName),
       "middle-name" -> optional(text.verifying(validMiddleName)),
-      "last-name" -> text.verifying(validLastName),
+      "last-name"   -> text.verifying(validLastName),
       "date-of-birth" -> mandatoryDateTodayOrBefore(
         onEmptyError = "cds.registration-model.form-error.date-of-birth.empty",
         onInvalidDateError = "cds.registration-model.form-error.date-of-birth"
@@ -324,7 +323,7 @@ object MatchingForms {
   val ninoOrUtrForm: Form[NinoOrUtr] = Form(
     mapping(
       "nino" -> mandatoryIfEqual("ninoOrUtrRadio", "nino", text.verifying(validNino)),
-      "utr" -> mandatoryIfEqual("ninoOrUtrRadio", "utr", text.verifying(validUtr)),
+      "utr"  -> mandatoryIfEqual("ninoOrUtrRadio", "utr", text.verifying(validUtr)),
       "ninoOrUtrRadio" -> optional(text)
         .verifying("cds.subscription.nino.utr.invalid", _.fold(false)(x => x.trim.nonEmpty))
     )(NinoOrUtr.apply)(NinoOrUtr.unapply)
@@ -351,10 +350,10 @@ object MatchingForms {
   private def sixLineAddressFormFactory(countryConstraints: Constraint[String]*): Form[SixLineAddressMatchModel] =
     Form(
       mapping(
-        "line-1" -> text.verifying(validLine1),
-        "line-2" -> optional(text.verifying(validLine2)),
-        "line-3" -> text.verifying(validLine3),
-        "line-4" -> optional(text.verifying(validLine4)),
+        "line-1"   -> text.verifying(validLine1),
+        "line-2"   -> optional(text.verifying(validLine2)),
+        "line-3"   -> text.verifying(validLine3),
+        "line-4"   -> optional(text.verifying(validLine4)),
         "postcode" -> postcodeMapping,
         "countryCode" -> mandatoryString("cds.matching-error.country.invalid")(s => s.length == Length2)
           .verifying(countryConstraints: _*)
@@ -401,10 +400,10 @@ object MatchingForms {
       value.countryCode
     )
 
-  val thirdCountryIndividualNameDateOfBirthForm: Form[IndividualNameAndDateOfBirth] = {
+  val thirdCountryIndividualNameDateOfBirthForm: Form[IndividualNameAndDateOfBirth] =
     Form(
       mapping(
-        "given-name" -> text.verifying(validGivenName),
+        "given-name"  -> text.verifying(validGivenName),
         "middle-name" -> optional(text.verifying(validMiddleName)),
         "family-name" -> text.verifying(validFamilyName),
         "date-of-birth" -> mandatoryDateTodayOrBefore(
@@ -413,7 +412,6 @@ object MatchingForms {
         )
       )(IndividualNameAndDateOfBirth.apply)(IndividualNameAndDateOfBirth.unapply)
     )
-  }
 
   val organisationNameForm: Form[NameMatchModel] = Form(
     mapping("name" -> text.verifying(validOrganisationName))(NameMatchModel.apply)(NameMatchModel.unapply)
@@ -428,7 +426,7 @@ object MatchingForms {
   val utrForm: Form[UtrMatchModel] = Form(
     mapping(
       "have-utr" -> optional(boolean).verifying(validHaveUtr),
-      "utr" -> mandatoryIfTrue("have-utr", text.verifying(validUtr))
+      "utr"      -> mandatoryIfTrue("have-utr", text.verifying(validUtr))
     )(UtrMatchModel.apply)(UtrMatchModel.unapply)
   )
 
@@ -441,7 +439,8 @@ object MatchingForms {
   val rowIndividualsNinoForm: Form[NinoMatchModel] = Form(
     mapping(
       "have-nino" -> optional(boolean).verifying(validHaveNino),
-      "nino" -> mandatoryIfTrue("have-nino", text.verifying(validNino))
+      "nino"      -> mandatoryIfTrue("have-nino", text.verifying(validNino))
     )(NinoMatchModel.apply)(NinoMatchModel.unapply)
   )
+
 }

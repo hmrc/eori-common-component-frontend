@@ -27,24 +27,24 @@ sealed trait AddressDetailsPage extends WebPage {
 
   val continueButtonXpath = "//*[@class='button']"
 
-  val streetFieldXPath = "//*[@id='street']"
+  val streetFieldXPath           = "//*[@id='street']"
   val streetFieldLevelErrorXPath = "//*[@id='street-outer']//span[@class='error-message']"
 
-  val cityFieldXPath = "//*[@id='city']"
+  val cityFieldXPath           = "//*[@id='city']"
   val cityFieldLevelErrorXPath = "//*[@id='city-outer']//span[@class='error-message']"
 
   val countryFieldLevelErrorXPath = "//*[@id='country-outer']//span[@class='error-message']"
 
   val countryCodeFieldXPath = "//*[@id='countryCode']"
 
-  val postcodeFieldXPath = "//*[@id='postcode']"
+  val postcodeFieldXPath           = "//*[@id='postcode']"
   val postcodeFieldLevelErrorXPath = "//*[@id='postcode-outer']//span[@class='error-message']"
 
   val filledValues =
     AddressViewModel(street = "Line 1", city = "city name", postcode = Some("SE28 1AA"), countryCode = "ZZ")
+
 }
 
-trait AddressPage extends AddressDetailsPage {
-}
+trait AddressPage extends AddressDetailsPage {}
 
 object AddressPage extends AddressPage

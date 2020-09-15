@@ -25,7 +25,12 @@ import play.api.libs.json.{JsValue, Json}
 import play.mvc.Http.Status._
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.EnrolmentStoreProxyConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, EnrolmentStoreProxyResponse}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.{KeyValuePair, KnownFact, KnownFacts, KnownFactsQuery}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.{
+  KeyValuePair,
+  KnownFact,
+  KnownFacts,
+  KnownFactsQuery
+}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import util.externalservices.EnrolmentStoreProxyService
 import util.externalservices.ExternalServicesConfig._
@@ -35,18 +40,19 @@ class EnrolmentStoreProxyConnectorSpec extends IntegrationTestsSpec with ScalaFu
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
       Map(
-        "microservice.services.enrolment-store-proxy.host" -> Host,
-        "microservice.services.enrolment-store-proxy.port" -> Port,
+        "microservice.services.enrolment-store-proxy.host"    -> Host,
+        "microservice.services.enrolment-store-proxy.port"    -> Port,
         "microservice.services.enrolment-store-proxy.context" -> "enrolment-store-proxy",
-        "auditing.enabled" -> false,
-        "auditing.consumer.baseUri.host" -> Host,
-        "auditing.consumer.baseUri.port" -> Port
+        "auditing.enabled"                                    -> false,
+        "auditing.consumer.baseUri.host"                      -> Host,
+        "auditing.consumer.baseUri.port"                      -> Port
       )
     )
     .build()
 
   private lazy val enrolmentStoreProxyConnector = app.injector.instanceOf[EnrolmentStoreProxyConnector]
-  private val groupId = "2e4589d9-484c-468a-8099-02a06fb1cd8c"
+  private val groupId                           = "2e4589d9-484c-468a-8099-02a06fb1cd8c"
+
   private val expectedGetUrl =
     s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments?type=principal&service=HMRC-CUS-ORG"
 
@@ -139,9 +145,9 @@ class EnrolmentStoreProxyConnectorSpec extends IntegrationTestsSpec with ScalaFu
 
     "return known facts" in {
 
-      val date = LocalDate.now().toString
-      val verifiers = List(KeyValuePair(key = "DATEOFESTABLISHMENT", value = date))
-      val knownFact = KnownFact(List.empty, verifiers)
+      val date       = LocalDate.now().toString
+      val verifiers  = List(KeyValuePair(key = "DATEOFESTABLISHMENT", value = date))
+      val knownFact  = KnownFact(List.empty, verifiers)
       val knownFacts = KnownFacts("HMRC-CUS-ORG", List(knownFact))
 
       val expectedKnownFactsUrl = "/enrolment-store-proxy/enrolment-store/enrolments"

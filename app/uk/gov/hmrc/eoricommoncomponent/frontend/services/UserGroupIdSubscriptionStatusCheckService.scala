@@ -27,7 +27,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class UserGroupIdSubscriptionStatusCheckService @Inject()(
+class UserGroupIdSubscriptionStatusCheckService @Inject() (
   subscriptionStatusService: SubscriptionStatusService,
   enrolmentStoreProxyService: EnrolmentStoreProxyService,
   save4LaterConnector: Save4LaterConnector
@@ -41,33 +41,27 @@ class UserGroupIdSubscriptionStatusCheckService @Inject()(
   )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] =
     enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(groupId).flatMap {
       case true => groupIsEnrolled //Block the user
-      case false => {
+      case false =>
         save4LaterConnector
           .get[CacheIds](groupId.id, CachedData.groupIdKey)
           .flatMap {
-            case Some(cacheIds) => {
+            case Some(cacheIds) =>
               subscriptionStatusService
                 .getStatus(idType, cacheIds.safeId.id)
                 .flatMap {
-                  case NewSubscription | SubscriptionRejected => {
+                  case NewSubscription | SubscriptionRejected =>
                     save4LaterConnector
                       .delete(groupId.id)
                       .flatMap(_ => continue) // Delete and then proceed normal
-                  }
-                  case _ => {
-                    if (cacheIds.internalId == internalId) {
+                  case _ =>
+                    if (cacheIds.internalId == internalId)
                       userIsInProcess
-                    } else {
+                    else
                       otherUserWithinGroupIsInProcess
-                    }
-                  }
                 }
-            }
-            case _ => {
+            case _ =>
               continue
-            }
           }
-      }
     }
 
 }

@@ -35,15 +35,17 @@ abstract case class Address(
   postalCode: Option[String],
   countryCode: String
 ) extends CaseClassAuditHelper {
+
   override def toMap(caseClassObject: AnyRef = this, ignoredFields: List[String] = List.empty): Map[String, String] =
     Map(
       "addressLine1" -> addressLine1,
       "addressLine2" -> addressLine2.getOrElse(""),
       "addressLine3" -> addressLine3.getOrElse(""),
       "addressLine4" -> addressLine4.getOrElse(""),
-      "postalCode" -> postalCode.getOrElse(""),
-      "countryCode" -> countryCode
+      "postalCode"   -> postalCode.getOrElse(""),
+      "countryCode"  -> countryCode
     )
+
 }
 
 object Address {
@@ -65,6 +67,7 @@ object Address {
       postalCode.filter(_.nonEmpty),
       countryCode.toUpperCase()
     ) {}
+
 }
 
 trait IndividualName {
@@ -102,29 +105,33 @@ object Individual {
 trait CommonHeader {
 
   private def dateTimeWritesIsoUtc: Writes[DateTime] = new Writes[DateTime] {
+
     def writes(d: org.joda.time.DateTime): JsValue =
       JsString(d.toString(ISODateTimeFormat.dateTimeNoMillis().withZoneUTC()))
+
   }
 
   private def dateTimeReadsIso: Reads[DateTime] = new Reads[DateTime] {
+
     def reads(value: JsValue): JsResult[DateTime] =
-      try {
-        JsSuccess(ISODateTimeFormat.dateTimeParser.parseDateTime(value.as[String]))
-      } catch {
+      try JsSuccess(ISODateTimeFormat.dateTimeParser.parseDateTime(value.as[String]))
+      catch {
         case e: Exception => JsError(s"Could not parse '${value.toString()}' as an ISO date. Reason: $e")
       }
+
   }
 
-  implicit val dateTimeReads = dateTimeReadsIso
+  implicit val dateTimeReads  = dateTimeReadsIso
   implicit val dateTimeWrites = dateTimeWritesIsoUtc
 }
 
 case class MessagingServiceParam(paramName: String, paramValue: String) extends CaseClassAuditHelper {
+
   private val param1CamelCase =
     if (paramName.contains("_")) paramName.toLowerCase().replace("sap_number", "sapNumber")
     else paramName
 
-  val ignoredFields = List("keyValueParams", "param1CamelCase")
+  val ignoredFields                       = List("keyValueParams", "param1CamelCase")
   val keyValueParams: Map[String, String] = Map(param1CamelCase -> paramValue)
 
   def keyValueMap(): Map[String, String] = toMap(this, ignoredFields = ignoredFields)
@@ -134,10 +141,10 @@ object MessagingServiceParam {
   implicit val formats = Json.format[MessagingServiceParam]
 
   val positionParamName = "POSITION"
-  val Generate = "GENERATE"
-  val Link = "LINK"
-  val Pending = "WORKLIST"
-  val Fail = "FAIL"
+  val Generate          = "GENERATE"
+  val Link              = "LINK"
+  val Pending           = "WORKLIST"
+  val Fail              = "FAIL"
 
   val formBundleIdParamName = "ETMPFORMBUNDLENUMBER"
 }
@@ -158,15 +165,16 @@ case class RequestCommon(
   val ignoredFields = List("requestParameters")
 
   def keyValueMap(): Map[String, String] = {
-    val m = toMap(this, ignoredFields = ignoredFields)
+    val m  = toMap(this, ignoredFields = ignoredFields)
     val rp = requestParameters.fold(Map.empty[String, String])(_.flatMap(_.toMap()).toMap)
     m ++ rp
   }
+
 }
 
 object RequestCommon extends CommonHeader {
   implicit val requestParamFormat = Json.format[RequestParameter]
-  implicit val formats = Json.format[RequestCommon]
+  implicit val formats            = Json.format[RequestCommon]
 }
 
 case class ResponseCommon(
@@ -178,20 +186,21 @@ case class ResponseCommon(
   val ignoredFields = List("returnParameters")
 
   def keyValueMap(): Map[String, String] = {
-    val m = toMap(this, ignoredFields = ignoredFields)
+    val m  = toMap(this, ignoredFields = ignoredFields)
     val rp = returnParameters.fold(Map.empty[String, String])(_.flatMap(_.toMap()).toMap)
     m ++ rp
   }
 
   def keyValueMapNamedParams(): Map[String, String] = {
-    val m = toMap(this, ignoredFields = ignoredFields)
+    val m  = toMap(this, ignoredFields = ignoredFields)
     val rp = returnParameters.fold(Map.empty[String, String])(_.flatMap(_.keyValueParams).toMap)
     m ++ rp
   }
+
 }
 
 object ResponseCommon extends CommonHeader {
-  val StatusOK = "OK"
-  val StatusNotOK = "NOT_OK"
+  val StatusOK         = "OK"
+  val StatusNotOK      = "NOT_OK"
   implicit val formats = Json.format[ResponseCommon]
 }

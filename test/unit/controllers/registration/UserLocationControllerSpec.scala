@@ -59,7 +59,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.Registrati
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.user_location
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{sub01_outcome_processing, sub01_outcome_rejected}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{
+  sub01_outcome_processing,
+  sub01_outcome_rejected
+}
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
@@ -74,20 +77,23 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
 
   private val mockAuthConnector = mock[AuthConnector]
 
-  private val mockRequestSessionData = mock[RequestSessionData]
-  private val mockSessionCache = mock[SessionCache]
-  private val mockSave4LaterService = mock[Save4LaterService]
-  private val mockSubscriptionStatusService = mock[SubscriptionStatusService]
-  private val mockTaxEnrolmentsService = mock[TaxEnrolmentsService]
+  private val mockRequestSessionData         = mock[RequestSessionData]
+  private val mockSessionCache               = mock[SessionCache]
+  private val mockSave4LaterService          = mock[Save4LaterService]
+  private val mockSubscriptionStatusService  = mock[SubscriptionStatusService]
+  private val mockTaxEnrolmentsService       = mock[TaxEnrolmentsService]
   private val mockRegistrationDisplayService = mock[RegistrationDisplayService]
-  private val mockSubscriptionFlowManager = mock[SubscriptionFlowManager]
+  private val mockSubscriptionFlowManager    = mock[SubscriptionFlowManager]
   private val mockEnrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
 
   private val userLocationView = app.injector.instanceOf[user_location]
+
   private val sub01OutcomeProcessing =
     app.injector.instanceOf[sub01_outcome_processing]
+
   private val sub01OutcomeRejected =
     app.injector.instanceOf[sub01_outcome_rejected]
+
   private val errorTemplate = app.injector.instanceOf[error_template]
 
   private val controller = new UserLocationController(
@@ -241,7 +247,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
     implicit val fakeRequest = FakeRequest()
 
     "cache registration display response and redirect to BusinessDetailsRecoveryPage for individual response" in {
-      val mockSession = mock[Session]
+      val mockSession   = mock[Session]
       val mockFlowStart = (BusinessDetailsRecoveryPage, mockSession)
       val responseDetail = ResponseDetail(
         "",
@@ -272,7 +278,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
     }
 
     "cache registration display response and redirect to BusinessDetailsRecoveryPage for organisation response" in {
-      val mockSession = mock[Session]
+      val mockSession   = mock[Session]
       val mockFlowStart = (BusinessDetailsRecoveryPage, mockSession)
       val responseDetail = ResponseDetail(
         "",
@@ -348,12 +354,12 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
   }
 
   private def subscriptionStatus(
-                                  journey: Journey.Value = Journey.Register,
-                                  location: Option[String] = Some(UserLocation.Iom)
+    journey: Journey.Value = Journey.Register,
+    location: Option[String] = Some(UserLocation.Iom)
   )(test: Future[Result] => Any) = {
 
     val subStatus: PreSubscriptionStatus = NewSubscription
-    implicit val hc: HeaderCarrier = mock[HeaderCarrier]
+    implicit val hc: HeaderCarrier       = mock[HeaderCarrier]
     implicit val rq: Request[AnyContent] = mock[Request[AnyContent]]
 
     test(controller.subscriptionStatus(subStatus, InternalId("InternalID"), journey, location)(rq, hc))
@@ -437,7 +443,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
       s"redirect to BusinessDetailsRecoveryController when NewSubscription status and registration display is enabled and when '$selectedOptionValue' is selected" in {
         val mockResponseCommon = mock[ResponseCommon]
         val mockResponseDetail = mock[ResponseDetail]
-        val mockSession = mock[Session]
+        val mockSession        = mock[Session]
         val mockFlowStart =
           (ContactDetailsSubscriptionFlowPageGetEori, mockSession)
 
@@ -491,7 +497,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
       s"redirect to BusinessDetailsRecoveryController when SubscriptionRejected status and registration display is enabled and when '$selectedOptionValue' is selected" in {
         val mockResponseCommon = mock[ResponseCommon]
         val mockResponseDetail = mock[ResponseDetail]
-        val mockSession = mock[Session]
+        val mockSession        = mock[Session]
         val mockFlowStart =
           (ContactDetailsSubscriptionFlowPageGetEori, mockSession)
 
@@ -542,8 +548,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         result.header.headers(LOCATION) should endWith(BusinessDetailsRecoveryController.form(Journey.Register).url)
       }
 
-    } else if (selectedOptionValue == UserLocation.Uk) {
-
+    } else if (selectedOptionValue == UserLocation.Uk)
       s"redirect to organisation type page  when '$selectedOptionValue' is selected" in {
         when(mockSave4LaterService.fetchSafeId(any[InternalId])(any[HeaderCarrier])).thenReturn(Future.successful(None))
 
@@ -554,7 +559,6 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
           result.header.headers(LOCATION) should endWith(expectedUrl)
         }
       }
-    }
   }
 
   "Viewing application state" should {

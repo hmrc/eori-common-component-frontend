@@ -29,11 +29,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class HeaderSpec extends ControllerSpec {
 
-  private val mockAuthConnector = mock[AuthConnector]
+  private val mockAuthConnector    = mock[AuthConnector]
   private val mockCdsFrontendCache = mock[SessionCache]
 
-  private val viewStart = app.injector.instanceOf[start]
-  private val migrationStart = app.injector.instanceOf[migration_start]
+  private val viewStart                  = app.injector.instanceOf[start]
+  private val migrationStart             = app.injector.instanceOf[migration_start]
   private val accessibilityStatementView = app.injector.instanceOf[accessibility_statement]
 
   private val controller = new ApplicationController(
@@ -72,11 +72,19 @@ class HeaderSpec extends ControllerSpec {
     "be present with service param equal to CDS" in {
       val result = controller
         .start()
-        .apply(SessionBuilder.buildRequestWithSessionAndPathNoUser(method = "GET", path = "/customs-enrolment-services/register/"))
+        .apply(
+          SessionBuilder.buildRequestWithSessionAndPathNoUser(
+            method = "GET",
+            path = "/customs-enrolment-services/register/"
+          )
+        )
 
       val page = CdsPage(bodyOf(result))
 
-      page.getElementAttribute("//a[@id='feedback-link']", "href") shouldBe "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=CDS"
+      page.getElementAttribute(
+        "//a[@id='feedback-link']",
+        "href"
+      ) shouldBe "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=CDS"
     }
   }
 }

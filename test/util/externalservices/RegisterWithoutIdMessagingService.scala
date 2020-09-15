@@ -79,4 +79,5 @@ object RegisterWithoutIdMessagingService {
 
   def verifyRegisterWithoutIdIsCalled(): Unit =
     verify(postRequestedFor(RegistrationPath))
+
 }

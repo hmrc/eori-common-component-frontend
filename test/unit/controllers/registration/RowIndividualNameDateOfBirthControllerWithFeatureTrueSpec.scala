@@ -16,7 +16,11 @@
 
 package unit.controllers.registration
 
-import common.pages.matching.{IndividualNameAndDateOfBirthPage, ThirdCountryIndividualNameAndDateOfBirthPage, ThirdCountrySoleTraderNameAndDateOfBirthPage}
+import common.pages.matching.{
+  IndividualNameAndDateOfBirthPage,
+  ThirdCountryIndividualNameAndDateOfBirthPage,
+  ThirdCountrySoleTraderNameAndDateOfBirthPage
+}
 import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
@@ -83,6 +87,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueSpec
 
     def formData(thirdCountryIndividual: IndividualNameAndDateOfBirth): Map[String, String] =
       form.mapping.unbind(thirdCountryIndividual)
+
   }
 
   val emulatedFailure = new UnsupportedOperationException("Emulation of service call failure")
@@ -117,7 +122,9 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueSpec
             assertPresentOnPage(webPage.middleNameElement)
             assertPresentOnPage(webPage.familyNameElement)
             assertPresentOnPage(webPage.dateOfBirthElement)
-            page.getElementAttributeAction(webPage.formElement) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.RowIndividualNameDateOfBirthController
+            page.getElementAttributeAction(
+              webPage.formElement
+            ) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.RowIndividualNameDateOfBirthController
               .form(organisationType, Journey.Register)
               .url
           }
@@ -141,7 +148,9 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueSpec
           submitForm(formData(individualNameAndDateOfBirth)) { result =>
             CdsPage(contentAsString(result)).getElementsHtml(webPage.pageLevelErrorSummaryListXPath) shouldBe empty
             status(result) shouldBe SEE_OTHER
-            result.futureValue.header.headers(LOCATION) shouldBe s"/customs-enrolment-services/register/matching/utr/$organisationType"
+            result.futureValue.header.headers(
+              LOCATION
+            ) shouldBe s"/customs-enrolment-services/register/matching/utr/$organisationType"
             verify(mockSubscriptionDetailsService).cacheNameDobDetails(any())(any())
           }
       }
@@ -208,9 +217,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueSpec
     "middle name" should {
       import webPage.{fieldLevelErrorMiddleName, middleNameField, MiddleName}
 
-      passOptionalFieldCheck()(
-        emptyFieldModelGens = validFormModelGens.copy(middleNameGen = emptyString.asOption)
-      )
+      passOptionalFieldCheck()(emptyFieldModelGens = validFormModelGens.copy(middleNameGen = emptyString.asOption))
 
       "not allow invalid characters" in testControllerWithModel(
         validFormModelGens.copy(middleNameGen = emptyString.asOption)
@@ -320,8 +327,8 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueSpec
           import controllerFixture._
           assertInvalidField(
             formData(individualNameAndDateOfBirth) + (dateOfBirthDayField -> tomorrow.getDayOfMonth.toString,
-            dateOfBirthMonthField -> tomorrow.getMonthOfYear.toString,
-            dateOfBirthYearField -> tomorrow.getYear.toString),
+            dateOfBirthMonthField                                         -> tomorrow.getMonthOfYear.toString,
+            dateOfBirthYearField                                          -> tomorrow.getYear.toString),
             webPage
           )(DateOfBirth, fieldLevelErrorDateOfBirth, FutureDate)
       }
@@ -361,7 +368,6 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueSpec
           saveRegistrationDetailsMockSuccess()
 
           submitForm(formData(individualNameAndDateOfBirth)) { result =>
-
             status(result) shouldBe SEE_OTHER
             CdsPage(bodyOf(result.futureValue)).getElementsHtml(webPage.pageLevelErrorSummaryListXPath) shouldBe empty
           }
@@ -371,12 +377,13 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueSpec
     protected def testControllerWithModel(
       formModelGens: IndividualGens[LocalDate]
     )(test: (ControllerFixture, IndividualNameAndDateOfBirth) => Unit): Unit =
-      check(Prop.forAllNoShrink(individualNameAndDateOfBirthGenerator(formModelGens))({ individualNameAndDateOfBirth =>
+      check(Prop.forAllNoShrink(individualNameAndDateOfBirthGenerator(formModelGens)) { individualNameAndDateOfBirth =>
         withControllerFixture { controllerFixture =>
           test.apply(controllerFixture, individualNameAndDateOfBirth)
           Prop.proved
         }
-      }))
+      })
+
   }
 
   abstract class ThirdCountryIndividualBehaviour(webPage: IndividualNameAndDateOfBirthPage)

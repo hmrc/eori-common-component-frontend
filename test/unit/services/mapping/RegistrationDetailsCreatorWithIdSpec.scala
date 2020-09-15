@@ -33,14 +33,14 @@ class RegistrationDetailsCreatorWithIdSpec extends RegistrationDetailsCreatorTes
     addressLine2 <- Gen.alphaStr.asOption
     addressLine3 <- Gen.alphaStr.asOption
     addressLine4 <- Gen.alphaStr.asOption
-    postcode <- Gen.alphaStr.asOption
-    country <- Gen.alphaStr
+    postcode     <- Gen.alphaStr.asOption
+    country      <- Gen.alphaStr
   } yield Address(addressLine1, addressLine2, addressLine3, addressLine4, postcode, country)
 
   private val contactResponseGen = for {
-    phoneNumber <- Gen.alphaStr.asOption
+    phoneNumber  <- Gen.alphaStr.asOption
     mobileNumber <- Gen.alphaStr.asOption
-    faxNumber <- Gen.alphaStr.asOption
+    faxNumber    <- Gen.alphaStr.asOption
     emailAddress <- Gen.alphaStr.asOption
   } yield ContactResponse(phoneNumber, mobileNumber, faxNumber, emailAddress)
 
@@ -51,117 +51,120 @@ class RegistrationDetailsCreatorWithIdSpec extends RegistrationDetailsCreatorTes
   private val organisationWithIdTestCases: Gen[(FromMatchingWithIdArguments, RegistrationDetailsOrganisation)] = {
     val organisationResponseGen = for {
       organisationName <- Gen.alphaStr
-      code <- Gen.alphaStr.asOption
-      isAGroup <- Arbitrary.arbitrary[Boolean].asOption
+      code             <- Gen.alphaStr.asOption
+      isAGroup         <- Arbitrary.arbitrary[Boolean].asOption
     } yield OrganisationResponse(organisationName, code, isAGroup, Some("Partnership"))
 
     def organisationResponseDetailGen(organisationResponse: OrganisationResponse, address: Address) =
       for {
-        arn <- Gen.alphaStr.asOption
-        isEditable <- Arbitrary.arbitrary[Boolean]
-        isAnAgent <- Arbitrary.arbitrary[Boolean]
+        arn             <- Gen.alphaStr.asOption
+        isEditable      <- Arbitrary.arbitrary[Boolean]
+        isAnAgent       <- Arbitrary.arbitrary[Boolean]
         contactResponse <- contactResponseGen
-      } yield
-        ResponseDetail(
-          SAFEID = "safe-id",
-          ARN = arn,
-          isEditable = isEditable,
-          isAnAgent = isAnAgent,
-          isAnIndividual = false,
-          individual = None,
-          organisation = Some(organisationResponse),
-          address = address,
-          contactDetails = contactResponse
-        )
+      } yield ResponseDetail(
+        SAFEID = "safe-id",
+        ARN = arn,
+        isEditable = isEditable,
+        isAnAgent = isAnAgent,
+        isAnIndividual = false,
+        individual = None,
+        organisation = Some(organisationResponse),
+        address = address,
+        contactDetails = contactResponse
+      )
 
     for {
-      organisationResponse <- organisationResponseGen
-      address <- addressGen
+      organisationResponse       <- organisationResponseGen
+      address                    <- addressGen
       organisationResponseDetail <- organisationResponseDetailGen(organisationResponse, address)
-      customsId <- customsIdGen
-      capturedDate <- dateOfBirthGenerator.asOption
-    } yield
-      (RegisterWithIDResponse(responseCommon, Some(organisationResponseDetail)), customsId, capturedDate) ->
-        RegistrationDetailsOrganisation(
-          customsId = Some(customsId),
-          sapNumber = TaxPayerId(sapNumber),
-          safeId = SafeId("safe-id"),
-          name = organisationResponse.organisationName,
-          address = address,
-          dateOfEstablishment = capturedDate,
-          etmpOrganisationType = organisationResponse.organisationType.map(EtmpOrganisationType(_))
-        )
+      customsId                  <- customsIdGen
+      capturedDate               <- dateOfBirthGenerator.asOption
+    } yield (RegisterWithIDResponse(responseCommon, Some(organisationResponseDetail)), customsId, capturedDate) ->
+      RegistrationDetailsOrganisation(
+        customsId = Some(customsId),
+        sapNumber = TaxPayerId(sapNumber),
+        safeId = SafeId("safe-id"),
+        name = organisationResponse.organisationName,
+        address = address,
+        dateOfEstablishment = capturedDate,
+        etmpOrganisationType = organisationResponse.organisationType.map(EtmpOrganisationType(_))
+      )
   }
 
   private val individualWithIdTestCases: Gen[(FromMatchingWithIdArguments, RegistrationDetailsIndividual)] = {
     def individualResponseGen(dateOfBirth: Option[String]) =
       for {
-        firstName <- Gen.alphaStr
+        firstName  <- Gen.alphaStr
         middleName <- Gen.alphaStr.asOption
-        lastName <- Gen.alphaStr
-      } yield
-        IndividualResponse(
-          firstName = firstName,
-          middleName = middleName,
-          lastName = lastName,
-          dateOfBirth = dateOfBirth
-        )
+        lastName   <- Gen.alphaStr
+      } yield IndividualResponse(
+        firstName = firstName,
+        middleName = middleName,
+        lastName = lastName,
+        dateOfBirth = dateOfBirth
+      )
 
     def individualResponseDetailGen(individualResponse: IndividualResponse, address: Address) =
       for {
-        arn <- Gen.alphaStr.asOption
-        isEditable <- Arbitrary.arbitrary[Boolean]
-        isAnAgent <- Arbitrary.arbitrary[Boolean]
+        arn             <- Gen.alphaStr.asOption
+        isEditable      <- Arbitrary.arbitrary[Boolean]
+        isAnAgent       <- Arbitrary.arbitrary[Boolean]
         contactResponse <- contactResponseGen
-      } yield
-        ResponseDetail(
-          SAFEID = "safe-id",
-          ARN = arn,
-          isEditable = isEditable,
-          isAnAgent = isAnAgent,
-          isAnIndividual = true,
-          individual = Some(individualResponse),
-          organisation = None,
-          address = address,
-          contactDetails = contactResponse
-        )
+      } yield ResponseDetail(
+        SAFEID = "safe-id",
+        ARN = arn,
+        isEditable = isEditable,
+        isAnAgent = isAnAgent,
+        isAnIndividual = true,
+        individual = Some(individualResponse),
+        organisation = None,
+        address = address,
+        contactDetails = contactResponse
+      )
 
     for {
       dateOfBirthInResponse <- dateOfBirthGenerator.asOption
-      individualResponse <- individualResponseGen(dateOfBirthInResponse.map(_.toString))
-      address <- addressGen
+      individualResponse    <- individualResponseGen(dateOfBirthInResponse.map(_.toString))
+      address               <- addressGen
 
       individualResponseDetail <- individualResponseDetailGen(individualResponse, address)
-      customsId <- customsIdGen
+      customsId                <- customsIdGen
       capturedDate <- if (dateOfBirthInResponse.isEmpty) dateOfBirthGenerator.asMandatoryOption
       else dateOfBirthGenerator.asOption
-    } yield
-      (RegisterWithIDResponse(responseCommon, Some(individualResponseDetail)), customsId, capturedDate) ->
-        RegistrationDetailsIndividual(
-          customsId = Some(customsId),
-          sapNumber = TaxPayerId(sapNumber),
-          safeId = SafeId("safe-id"),
-          name = individualResponse.fullName,
-          address = address,
-          dateOfBirth = (dateOfBirthInResponse orElse capturedDate).getOrElse(fail("Test data error"))
-        )
+    } yield (RegisterWithIDResponse(responseCommon, Some(individualResponseDetail)), customsId, capturedDate) ->
+      RegistrationDetailsIndividual(
+        customsId = Some(customsId),
+        sapNumber = TaxPayerId(sapNumber),
+        safeId = SafeId("safe-id"),
+        name = individualResponse.fullName,
+        address = address,
+        dateOfBirth = (dateOfBirthInResponse orElse capturedDate).getOrElse(fail("Test data error"))
+      )
   }
 
   "RegistrationDetailsCreator from RegisterWithIDResponse" should {
 
     "create organisation registration details" in testWithGen(organisationWithIdTestCases) {
       case ((response, customsId, capturedDate), expectedOrganisationDetails) =>
-        registrationDetailsCreator.registrationDetails(response, customsId, capturedDate) shouldBe expectedOrganisationDetails
+        registrationDetailsCreator.registrationDetails(
+          response,
+          customsId,
+          capturedDate
+        ) shouldBe expectedOrganisationDetails
     }
 
     "create individual registration details" in testWithGen(individualWithIdTestCases) {
       case ((response, customsId, capturedDate), expectedIndividualDetails) =>
-        registrationDetailsCreator.registrationDetails(response, customsId, capturedDate) shouldBe expectedIndividualDetails
+        registrationDetailsCreator.registrationDetails(
+          response,
+          customsId,
+          capturedDate
+        ) shouldBe expectedIndividualDetails
     }
 
     "throw if organisation response does not provide SAP number" in testWithGen(organisationWithIdTestCases) {
       case ((validResponse, customsId, capturedDate), _) =>
-        val withoutSap = validResponse.responseCommon.copy(returnParameters = None)
+        val withoutSap         = validResponse.responseCommon.copy(returnParameters = None)
         val responseWithoutSap = validResponse.copy(responseCommon = withoutSap)
 
         val caught = intercept[IllegalArgumentException] {
@@ -173,7 +176,7 @@ class RegistrationDetailsCreatorWithIdSpec extends RegistrationDetailsCreatorTes
 
     "throw if individual response does not provide SAP number" in testWithGen(individualWithIdTestCases) {
       case ((validResponse, customsId, capturedDate), _) =>
-        val withoutSap = validResponse.responseCommon.copy(returnParameters = None)
+        val withoutSap         = validResponse.responseCommon.copy(returnParameters = None)
         val responseWithoutSap = validResponse.copy(responseCommon = withoutSap)
 
         val caught = intercept[IllegalArgumentException] {
@@ -187,10 +190,10 @@ class RegistrationDetailsCreatorWithIdSpec extends RegistrationDetailsCreatorTes
       individualWithIdTestCases
     ) {
       case ((validResponse, customsId, _), _) =>
-        val Some(responseDetail) = validResponse.responseDetail
-        val withoutDateOfBirth = responseDetail.individual.map(_.copy(dateOfBirth = None))
+        val Some(responseDetail)      = validResponse.responseDetail
+        val withoutDateOfBirth        = responseDetail.individual.map(_.copy(dateOfBirth = None))
         val responseDetailWithoutDate = responseDetail.copy(individual = withoutDateOfBirth)
-        val response = validResponse.copy(responseDetail = Some(responseDetailWithoutDate))
+        val response                  = validResponse.copy(responseDetail = Some(responseDetailWithoutDate))
 
         val caught = intercept[IllegalArgumentException] {
           registrationDetailsCreator.registrationDetails(response, customsId, capturedDate = None)

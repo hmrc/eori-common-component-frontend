@@ -27,15 +27,16 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionDat
 
 class RequestSessionDataSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
 
-  private val requestSessionData = new RequestSessionData()
-  private implicit val mockRequest = mock[Request[AnyContent]]
-  private val existingSessionValues = Map("someExistingValue" -> "value")
+  private val requestSessionData       = new RequestSessionData()
+  private implicit val mockRequest     = mock[Request[AnyContent]]
+  private val existingSessionValues    = Map("someExistingValue" -> "value")
   private val existingSession: Session = Session(existingSessionValues)
-  private val mockOrganisationType = mock[CdsOrganisationType]
-  private val testOrganisationTypeId = "arbitrary_organisation_type"
+  private val mockOrganisationType     = mock[CdsOrganisationType]
+  private val testOrganisationTypeId   = "arbitrary_organisation_type"
+
   private val existingSessionBeforeStartAgain = Map(
-    "selected-organisation-type" -> "Org Type",
-    "subscription-flow" -> "sub-flow",
+    "selected-organisation-type"   -> "Org Type",
+    "subscription-flow"            -> "sub-flow",
     "uri-before-subscription-flow" -> "uri-before-sub-flow"
   )
 

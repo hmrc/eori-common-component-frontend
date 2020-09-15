@@ -27,9 +27,9 @@ import util.ViewSpec
 
 class BusinessDetailsRecoveryViewSpec extends ViewSpec {
 
-  private val name = "Org Name"
-  private val address = AddressViewModel("street", "city", Some("SE28 1AA"), "GB")
-  private val corporateBody = Some(CorporateBody)
+  private val name             = "Org Name"
+  private val address          = AddressViewModel("street", "city", Some("SE28 1AA"), "GB")
+  private val corporateBody    = Some(CorporateBody)
   private implicit val request = withFakeCSRF(FakeRequest())
 
   private val view = app.injector.instanceOf[business_details_recovery]

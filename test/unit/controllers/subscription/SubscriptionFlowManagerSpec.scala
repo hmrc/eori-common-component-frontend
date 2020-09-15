@@ -29,7 +29,11 @@ import play.api.mvc.{AnyContent, Request, Session}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{IndividualSubscriptionFlow, _}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, RegistrationDetailsIndividual, RegistrationDetailsOrganisation}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
+  CdsOrganisationType,
+  RegistrationDetailsIndividual,
+  RegistrationDetailsOrganisation
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
@@ -46,15 +50,17 @@ class SubscriptionFlowManagerSpec
     .configure(Map("features.rowHaveUtrEnabled" -> false))
     .build()
 
-  private val mockRequestSessionData = mock[RequestSessionData]
+  private val mockRequestSessionData   = mock[RequestSessionData]
   private val mockCdsFrontendDataCache = mock[SessionCache]
+
   val controller =
     new SubscriptionFlowManager(app, mockRequestSessionData, mockCdsFrontendDataCache)(global)
-  private val mockOrgRegistrationDetails = mock[RegistrationDetailsOrganisation]
-  private val mockIndividualRegistrationDetails = mock[RegistrationDetailsIndividual]
-  private val mockSession = mock[Session]
 
-  private val mockHC = mock[HeaderCarrier]
+  private val mockOrgRegistrationDetails        = mock[RegistrationDetailsOrganisation]
+  private val mockIndividualRegistrationDetails = mock[RegistrationDetailsIndividual]
+  private val mockSession                       = mock[Session]
+
+  private val mockHC      = mock[HeaderCarrier]
   private val mockRequest = mock[Request[AnyContent]]
 
   private val mockSubscriptionFlow = mock[SubscriptionFlow]
@@ -80,7 +86,9 @@ class SubscriptionFlowManagerSpec
       when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]]))
         .thenThrow(noSubscriptionFlowInSessionException)
 
-      intercept[IllegalStateException](controller.currentSubscriptionFlow(mockRequest)) shouldBe noSubscriptionFlowInSessionException
+      intercept[IllegalStateException](
+        controller.currentSubscriptionFlow(mockRequest)
+      ) shouldBe noSubscriptionFlowInSessionException
     }
   }
 
@@ -318,9 +326,8 @@ class SubscriptionFlowManagerSpec
 
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(mockIndividualRegistrationDetails))
-      val (subscriptionPage, session) = await(
-        controller.startSubscriptionFlow(Some(ConfirmIndividualTypePage), Journey.Register)(mockHC, mockRequest)
-      )
+      val (subscriptionPage, session) =
+        await(controller.startSubscriptionFlow(Some(ConfirmIndividualTypePage), Journey.Register)(mockHC, mockRequest))
 
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
@@ -399,13 +406,15 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
     .configure(Map("features.rowHaveUtrEnabled" -> true))
     .build()
 
-  private val mockRequestSessionData = mock[RequestSessionData]
+  private val mockRequestSessionData   = mock[RequestSessionData]
   private val mockCdsFrontendDataCache = mock[SessionCache]
+
   val controller =
     new SubscriptionFlowManager(app, mockRequestSessionData, mockCdsFrontendDataCache)(global)
+
   private val mockSession = mock[Session]
 
-  private val mockHC = mock[HeaderCarrier]
+  private val mockHC      = mock[HeaderCarrier]
   private val mockRequest = mock[Request[AnyContent]]
 
   val noSubscriptionFlowInSessionException = new IllegalStateException("No subscription flow in session.")

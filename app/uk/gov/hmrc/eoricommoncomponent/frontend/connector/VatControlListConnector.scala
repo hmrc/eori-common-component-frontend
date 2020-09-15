@@ -26,9 +26,9 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class VatControlListConnector @Inject()(http: HttpClient, appConfig: AppConfig)(implicit ec: ExecutionContext) {
+class VatControlListConnector @Inject() (http: HttpClient, appConfig: AppConfig)(implicit ec: ExecutionContext) {
 
-  private val url = appConfig.getServiceUrl("vat-known-facts-control-list")
+  private val url               = appConfig.getServiceUrl("vat-known-facts-control-list")
   private val loggerComponentId = "VatControlListConnector"
 
   def vatControlList(
@@ -47,4 +47,5 @@ class VatControlListConnector @Inject()(http: HttpClient, appConfig: AppConfig)(
         CdsLogger.error(s"[$loggerComponentId][status] vat-known-facts-control-list failed. url: $url, error: $e", e)
         throw e
     }
+
 }

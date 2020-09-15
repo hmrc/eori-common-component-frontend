@@ -49,18 +49,20 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEach {
 
   protected override val mockSubscriptionFlowManager: SubscriptionFlowManager = mock[SubscriptionFlowManager]
-  protected override val formId: String = NameIdDetailsPage.formId
+  protected override val formId: String                                       = NameIdDetailsPage.formId
+
   protected override val submitInCreateModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController
       .submit(isInReviewMode = false, Journey.Register)
       .url
+
   protected override val submitInReviewModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController
       .submit(isInReviewMode = true, Journey.Register)
       .url
 
-  private val mockRequestSessionData = mock[RequestSessionData]
-  private val mockRegistrationDetails = mock[RegistrationDetails](RETURNS_DEEP_STUBS)
+  private val mockRequestSessionData   = mock[RequestSessionData]
+  private val mockRegistrationDetails  = mock[RegistrationDetails](RETURNS_DEEP_STUBS)
   private val mockCdsFrontendDataCache = mock[SessionCache]
 
   private val nameIdView = app.injector.instanceOf[nameId]
@@ -129,9 +131,9 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
           .thenReturn(Future.successful(Some(NameIdDetailsPage.filledValues)))
 
         showFormFunction(MigrationEoriOrganisationSubscriptionFlow) { result =>
-          val page = CdsPage(bodyOf(result))
+          val page         = CdsPage(bodyOf(result))
           val expectedName = s"${NameIdDetailsPage.filledValues.name}"
-          val expectedUtr = s"${NameIdDetailsPage.filledValues.id}"
+          val expectedUtr  = s"${NameIdDetailsPage.filledValues.id}"
 
           page.getElementValue(nameFieldXPath) shouldBe expectedName
           page.getElementValue(utrFieldXPath) shouldBe expectedUtr
@@ -160,9 +162,9 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       when(mockSubscriptionBusinessService.cachedNameIdOrganisationViewModel(any[HeaderCarrier]))
         .thenReturn(Some(NameIdDetailsPage.filledValues))
       showCreateForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page         = CdsPage(bodyOf(result))
         val expectedName = s"${NameIdDetailsPage.filledValues.name}"
-        val expectedUtr = s"${NameIdDetailsPage.filledValues.id}"
+        val expectedUtr  = s"${NameIdDetailsPage.filledValues.id}"
 
         page.getElementValue(nameFieldXPath) shouldBe expectedName
         page.getElementValue(utrFieldXPath) shouldBe expectedUtr
@@ -187,9 +189,9 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       when(mockSubscriptionBusinessService.getCachedNameIdViewModel).thenReturn(NameIdDetailsPage.filledValues)
 
       showReviewForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page         = CdsPage(bodyOf(result))
         val expectedName = s"${NameIdDetailsPage.filledValues.name}"
-        val expectedUtr = s"${NameIdDetailsPage.filledValues.id}"
+        val expectedUtr  = s"${NameIdDetailsPage.filledValues.id}"
 
         page.getElementValue(nameFieldXPath) shouldBe expectedName
         page.getElementValue(utrFieldXPath) shouldBe expectedUtr
@@ -239,7 +241,9 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       submitFormInCreateMode(createFormAllFieldsUtrMap + (nameFieldName -> List.fill(106)("D").mkString)) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The organisation name must be 105 characters or less"
+        page.getElementsText(
+          pageLevelErrorSummaryListXPath
+        ) shouldBe "The organisation name must be 105 characters or less"
         page.getElementsText(nameFieldLevelErrorXPath) shouldBe "The organisation name must be 105 characters or less"
         page.getElementsText("title") should startWith("Error: ")
         verifyZeroInteractions(mockSubscriptionBusinessService)
@@ -261,7 +265,9 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       submitFormInCreateMode(createEmptyFormUtrMap) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your registered organisation name Enter your UTR number"
+        page.getElementsText(
+          pageLevelErrorSummaryListXPath
+        ) shouldBe "Enter your registered organisation name Enter your UTR number"
         page.getElementsText("title") should startWith("Error: ")
       }
     }

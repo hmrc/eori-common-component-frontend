@@ -26,7 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 class JourneyTypeFromUrlSpec extends UnitSpec with MockitoSugar {
 
   private implicit val mockRequest: Request[AnyContent] = mock[Request[AnyContent]]
-  private val journeyTypeTrait = new JourneyTypeFromUrl {}
+  private val journeyTypeTrait                          = new JourneyTypeFromUrl {}
 
   "Journey type" can {
 

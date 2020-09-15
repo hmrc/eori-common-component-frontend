@@ -47,20 +47,22 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEach {
 
   protected override val mockSubscriptionFlowManager: SubscriptionFlowManager = mock[SubscriptionFlowManager]
-  protected override val formId: String = NameDobSoleTraderPage.formId
+  protected override val formId: String                                       = NameDobSoleTraderPage.formId
+
   protected override val submitInCreateModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController
       .submit(isInReviewMode = false, Journey.Subscribe)
       .url
+
   protected override val submitInReviewModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController
       .submit(isInReviewMode = true, Journey.Subscribe)
       .url
 
-  private val mockRequestSessionData = mock[RequestSessionData]
-  private val mockRegistrationDetails = mock[RegistrationDetails](RETURNS_DEEP_STUBS)
+  private val mockRequestSessionData   = mock[RequestSessionData]
+  private val mockRegistrationDetails  = mock[RegistrationDetails](RETURNS_DEEP_STUBS)
   private val mockCdsFrontendDataCache = mock[SessionCache]
-  private val enterYourDetails = app.injector.instanceOf[enter_your_details]
+  private val enterYourDetails         = app.injector.instanceOf[enter_your_details]
 
   private val controller = new NameDobSoleTraderController(
     app,
@@ -76,7 +78,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
   private val emulatedFailure = new UnsupportedOperationException("Emulation of service call failure")
 
-  private val stringContaining36Characters = "Abcdef ghi-jklm - nopqrstuvwxyz ABCD"
+  private val stringContaining36Characters      = "Abcdef ghi-jklm - nopqrstuvwxyz ABCD"
   private val stringContainingInvalidCharacters = "John Doe%"
 
   override def beforeEach: Unit = {
@@ -130,8 +132,8 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
           val page = CdsPage(bodyOf(result))
 
           val expectedFirstName = s"${NameDobSoleTraderPage.filledValues.firstName}"
-          val expectedLastName = s"${NameDobSoleTraderPage.filledValues.lastName}"
-          val expectedDob = s"${NameDobSoleTraderPage.filledValues.dateOfBirth}"
+          val expectedLastName  = s"${NameDobSoleTraderPage.filledValues.lastName}"
+          val expectedDob       = s"${NameDobSoleTraderPage.filledValues.dateOfBirth}"
 
           page.getElementValue(firstNameFieldXPath) shouldBe expectedFirstName
           page.getElementValue(lastNameFieldXPath) shouldBe expectedLastName
@@ -160,10 +162,10 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
       when(mockSubscriptionBusinessService.cachedSubscriptionNameDobViewModel(any[HeaderCarrier]))
         .thenReturn(Some(NameDobSoleTraderPage.filledValues))
       showCreateForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page              = CdsPage(bodyOf(result))
         val expectedFirstName = s"${NameDobSoleTraderPage.filledValues.firstName}"
-        val expectedLastName = s"${NameDobSoleTraderPage.filledValues.lastName}"
-        val expectedDob = s"${NameDobSoleTraderPage.filledValues.dateOfBirth}"
+        val expectedLastName  = s"${NameDobSoleTraderPage.filledValues.lastName}"
+        val expectedDob       = s"${NameDobSoleTraderPage.filledValues.dateOfBirth}"
 
         page.getElementValue(firstNameFieldXPath) shouldBe expectedFirstName
         page.getElementValue(lastNameFieldXPath) shouldBe expectedLastName
@@ -192,10 +194,10 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
         .thenReturn(NameDobSoleTraderPage.filledValues)
 
       showReviewForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page              = CdsPage(bodyOf(result))
         val expectedFirstName = s"${NameDobSoleTraderPage.filledValues.firstName}"
-        val expectedLastName = s"${NameDobSoleTraderPage.filledValues.lastName}"
-        val expectedDob = s"${NameDobSoleTraderPage.filledValues.dateOfBirth}"
+        val expectedLastName  = s"${NameDobSoleTraderPage.filledValues.lastName}"
+        val expectedDob       = s"${NameDobSoleTraderPage.filledValues.dateOfBirth}"
 
         page.getElementValue(firstNameFieldXPath) shouldBe expectedFirstName
         page.getElementValue(lastNameFieldXPath) shouldBe expectedLastName
@@ -253,7 +255,9 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     }
 
     "validation error when first name has invalid characters" in {
-      submitFormInCreateMode(createFormAllFieldsNameDobMap + (firstNameFieldName -> stringContainingInvalidCharacters)) {
+      submitFormInCreateMode(
+        createFormAllFieldsNameDobMap + (firstNameFieldName -> stringContainingInvalidCharacters)
+      ) {
         result =>
           val page = CdsPage(bodyOf(result))
           page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a first name without invalid characters"
@@ -328,7 +332,9 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     "validation error when YEAR of birth is in the future" in {
       submitFormInCreateMode(createFormAllFieldsNameDobInFutureMap) { result =>
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "You must specify a date that is not in the future"
+        page.getElementsText(
+          pageLevelErrorSummaryListXPath
+        ) shouldBe "You must specify a date that is not in the future"
         page.getElementsText(dobFieldLevelErrorXPath) shouldBe "You must specify a date that is not in the future"
         page.getElementsText("title") should startWith("Error: ")
         verifyZeroInteractions(mockSubscriptionBusinessService)
@@ -338,7 +344,9 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     "display page level errors when nothing is entered" in {
       submitFormInCreateMode(createEmptyFormNameDobMap) { result =>
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your first name Enter your last name Enter your date of birth"
+        page.getElementsText(
+          pageLevelErrorSummaryListXPath
+        ) shouldBe "Enter your first name Enter your last name Enter your date of birth"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -381,30 +389,30 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
   }
 
   val createFormAllFieldsNameDobMap: Map[String, String] = Map(
-    firstNameFieldName -> "Test First Name",
-    lastNameFieldName -> "Test Last Name",
+    firstNameFieldName  -> "Test First Name",
+    lastNameFieldName   -> "Test Last Name",
     middleNameFieldName -> "Test Middle Name",
-    dobDayFieldName -> "03",
-    dobMonthFieldName -> "09",
-    dobYearFieldName -> "1983"
+    dobDayFieldName     -> "03",
+    dobMonthFieldName   -> "09",
+    dobYearFieldName    -> "1983"
   )
 
   val createEmptyFormNameDobMap: Map[String, String] = Map(
     firstNameFieldName -> "",
-    lastNameFieldName -> "",
-    dobDayFieldName -> "",
-    dobMonthFieldName -> "",
-    dobYearFieldName -> ""
+    lastNameFieldName  -> "",
+    dobDayFieldName    -> "",
+    dobMonthFieldName  -> "",
+    dobYearFieldName   -> ""
   )
 
   def createFormAllFieldsNameDobInFutureMap: Map[String, String] = {
     val todayPlusOneYear = LocalDate.now().plusYears(1)
     Map(
       firstNameFieldName -> "Test First Name",
-      lastNameFieldName -> "Test Last Name",
-      dobDayFieldName -> "03",
-      dobMonthFieldName -> "09",
-      dobYearFieldName -> todayPlusOneYear.toString("YYYY")
+      lastNameFieldName  -> "Test Last Name",
+      dobDayFieldName    -> "03",
+      dobMonthFieldName  -> "09",
+      dobYearFieldName   -> todayPlusOneYear.toString("YYYY")
     )
   }
 
@@ -473,4 +481,5 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     (("0000" + page.getElementValue(dateOfBirthYearFieldXPath)) takeRight 4) + '-' + (("00" + page.getElementValue(
       dateOfBirthMonthFieldXPath
     )) takeRight 2) + '-' + (("00" + page.getElementValue(dateOfBirthDayFieldXPath)) takeRight 2)
+
 }

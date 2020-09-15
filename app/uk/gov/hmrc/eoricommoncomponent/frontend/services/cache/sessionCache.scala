@@ -81,22 +81,25 @@ sealed case class CachedData(
 }
 
 object CachedData {
-  val regDetailsKey = "regDetails"
-  val regInfoKey = "regInfo"
-  val subDetailsKey = "subDetails"
-  val sub01OutcomeKey = "sub01Outcome"
-  val sub02OutcomeKey = "sub02Outcome"
+  val regDetailsKey                    = "regDetails"
+  val regInfoKey                       = "regInfo"
+  val subDetailsKey                    = "subDetails"
+  val sub01OutcomeKey                  = "sub01Outcome"
+  val sub02OutcomeKey                  = "sub02Outcome"
   val registerWithEoriAndIdResponseKey = "registerWithEoriAndIdResponse"
-  val emailKey = "email"
-  val safeIdKey = "safeId"
-  val groupIdKey = "cachedGroupId"
-  implicit val format = Json.format[CachedData]
+  val emailKey                         = "email"
+  val safeIdKey                        = "safeId"
+  val groupIdKey                       = "cachedGroupId"
+  implicit val format                  = Json.format[CachedData]
 }
 
 @Singleton
-class SessionCache @Inject()(appConfig: AppConfig, mongo: ReactiveMongoComponent, save4LaterService: Save4LaterService)(
-  implicit ec: ExecutionContext
-) extends CacheMongoRepository("session-cache", appConfig.ttl.toSeconds)(mongo.mongoConnector.db, ec) {
+class SessionCache @Inject() (
+  appConfig: AppConfig,
+  mongo: ReactiveMongoComponent,
+  save4LaterService: Save4LaterService
+)(implicit ec: ExecutionContext)
+    extends CacheMongoRepository("session-cache", appConfig.ttl.toSeconds)(mongo.mongoConnector.db, ec) {
 
   private def sessionId(implicit hc: HeaderCarrier): Id =
     hc.sessionId match {
@@ -114,7 +117,7 @@ class SessionCache @Inject()(appConfig: AppConfig, mongo: ReactiveMongoComponent
     orgType: Option[CdsOrganisationType] = None
   )(implicit hc: HeaderCarrier): Future[Boolean] =
     for {
-      _ <- save4LaterService.saveOrgType(internalId, orgType)
+      _                <- save4LaterService.saveOrgType(internalId, orgType)
       createdOrUpdated <- createOrUpdate(sessionId, regDetailsKey, Json.toJson(rd)) map (_ => true)
     } yield createdOrUpdated
 
@@ -124,8 +127,8 @@ class SessionCache @Inject()(appConfig: AppConfig, mongo: ReactiveMongoComponent
     orgType: Option[CdsOrganisationType] = None
   )(implicit hc: HeaderCarrier): Future[Boolean] =
     for {
-      _ <- save4LaterService.saveSafeId(internalId, rd.safeId)
-      _ <- save4LaterService.saveOrgType(internalId, orgType)
+      _                <- save4LaterService.saveSafeId(internalId, rd.safeId)
+      _                <- save4LaterService.saveOrgType(internalId, orgType)
       createdOrUpdated <- createOrUpdate(sessionId, regDetailsKey, Json.toJson(rd)) map (_ => true)
     } yield createdOrUpdated
 
@@ -154,15 +157,13 @@ class SessionCache @Inject()(appConfig: AppConfig, mongo: ReactiveMongoComponent
       case Some(Cache(_, Some(data), _, _)) =>
         Json.fromJson[CachedData](data) match {
           case d: JsSuccess[CachedData] => t(d.value, sessionId)
-          case _ => {
+          case _ =>
             CdsLogger.error(s"No Session data is cached for the sessionId : ${sessionId.id}")
             throw SessionTimeOutException(s"No Session data is cached for the sessionId : ${sessionId.id}")
-          }
         }
-      case _ => {
+      case _ =>
         CdsLogger.error(s"No match session id for signed in user with session: ${sessionId.id}")
         throw SessionTimeOutException(s"No match session id for signed in user with session : ${sessionId.id}")
-      }
     }
 
   def subscriptionDetails(implicit hc: HeaderCarrier): Future[SubscriptionDetails] =
@@ -194,6 +195,7 @@ class SessionCache @Inject()(appConfig: AppConfig, mongo: ReactiveMongoComponent
 
   def remove(implicit hc: HeaderCarrier): Future[Boolean] =
     removeById(sessionId.id) map (x => x.writeErrors.isEmpty && x.writeConcernError.isEmpty)
+
 }
 
 case class SessionTimeOutException(errorMessage: String) extends NoStackTrace

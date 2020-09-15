@@ -34,8 +34,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class UserTypeFilterSpec extends ControllerSpec with BeforeAndAfterEach {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockCache = mock[SessionCache]
+  private val mockAuthConnector          = mock[AuthConnector]
+  private val mockCache                  = mock[SessionCache]
   private val eoriNumberTextDownloadView = app.injector.instanceOf[eori_number_text_download]
 
   private val controller =

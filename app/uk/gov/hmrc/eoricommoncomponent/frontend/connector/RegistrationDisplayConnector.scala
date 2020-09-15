@@ -27,7 +27,7 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
-class RegistrationDisplayConnector @Inject()(http: HttpClient, appConfig: AppConfig, audit: Auditable) {
+class RegistrationDisplayConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable) {
 
   private val loggerComponentId = "RegistrationDisplayConnector"
 
@@ -42,26 +42,26 @@ class RegistrationDisplayConnector @Inject()(http: HttpClient, appConfig: AppCon
       auditCallResponse(url, resp)
       Right(resp.registrationDisplayResponse)
     } recover {
-      case NonFatal(e) => {
+      case NonFatal(e) =>
         CdsLogger.error(s"[$loggerComponentId] registration-display failed. url: $url, error: $e")
         Left(ServiceUnavailableResponse)
-      }
     }
   }
 
-  private def auditCallRequest(url: String, request: RegistrationDisplayRequestHolder)(
-    implicit hc: HeaderCarrier
+  private def auditCallRequest(url: String, request: RegistrationDisplayRequestHolder)(implicit
+    hc: HeaderCarrier
   ): Unit =
     audit.sendDataEvent(
       transactionName = "customs-registration-display",
       path = url,
-      detail = Map("txName" -> "CustomsRegistrationDisplaySubmitted") ++ request.registrationDisplayRequest.requestCommon
-        .keyValueMap(),
+      detail =
+        Map("txName" -> "CustomsRegistrationDisplaySubmitted") ++ request.registrationDisplayRequest.requestCommon
+          .keyValueMap(),
       eventType = "CustomsRegistrationDisplaySubmitted"
     )
 
-  private def auditCallResponse(url: String, response: RegistrationDisplayResponseHolder)(
-    implicit hc: HeaderCarrier
+  private def auditCallResponse(url: String, response: RegistrationDisplayResponseHolder)(implicit
+    hc: HeaderCarrier
   ): Unit =
     audit.sendDataEvent(
       transactionName = "customs-registration-display",
@@ -70,4 +70,5 @@ class RegistrationDisplayConnector @Inject()(http: HttpClient, appConfig: AppCon
         .keyValueMap(),
       eventType = "CustomsRegistrationDisplayResult"
     )
+
 }

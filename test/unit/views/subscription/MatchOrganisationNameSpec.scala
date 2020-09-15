@@ -28,12 +28,12 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.what_is_
 import util.ViewSpec
 
 class MatchOrganisationNameSpec extends ViewSpec {
-  val form: Form[NameMatchModel] = organisationNameForm
+  val form: Form[NameMatchModel]          = organisationNameForm
   val formWithError: Form[NameMatchModel] = organisationNameForm.bind(Map("name" -> ""))
-  val isInReviewMode = false
-  val previousPageUrl = "/"
-  val organisationType = "charity-public-body-not-for-profit"
-  implicit val request = withFakeCSRF(FakeRequest())
+  val isInReviewMode                      = false
+  val previousPageUrl                     = "/"
+  val organisationType                    = "charity-public-body-not-for-profit"
+  implicit val request                    = withFakeCSRF(FakeRequest())
 
   private val view = app.injector.instanceOf[what_is_your_org_name]
 
@@ -68,9 +68,10 @@ class MatchOrganisationNameSpec extends ViewSpec {
   }
 
   lazy val doc: Document = getDoc(form)
+
   private def getDoc(form: Form[NameMatchModel]) = {
     val result = view(false, form, organisationType, Journey.Register)
-    val doc = Jsoup.parse(contentAsString(result))
+    val doc    = Jsoup.parse(contentAsString(result))
     doc
   }
 
@@ -78,4 +79,5 @@ class MatchOrganisationNameSpec extends ViewSpec {
     val result = view(false, formWithError, organisationType, Journey.Register)
     Jsoup.parse(contentAsString(result))
   }
+
 }

@@ -56,16 +56,17 @@ case class ResponseCommon(
   val ignoredFields = List("returnParameters")
 
   def keyValueMap(): Map[String, String] = {
-    val m = toMap(this, ignoredFields = ignoredFields)
+    val m  = toMap(this, ignoredFields = ignoredFields)
     val rp = returnParameters.fold(Map.empty[String, String])(_.flatMap(_.toMap()).toMap)
     m ++ rp
   }
 
   def keyValueMapNamedParams(): Map[String, String] = {
-    val m = toMap(this, ignoredFields = ignoredFields)
+    val m  = toMap(this, ignoredFields = ignoredFields)
     val rp = returnParameters.fold(Map.empty[String, String])(_.flatMap(_.keyValueParams).toMap)
     m ++ rp
   }
+
 }
 
 object ResponseCommon {
@@ -73,11 +74,13 @@ object ResponseCommon {
 }
 
 case class RegistrationDisplayResponse(responseCommon: ResponseCommon, responseDetail: Option[ResponseDetail]) {
+
   def keyValueMap(): Map[String, String] = {
     val rc = responseCommon.keyValueMap()
     val rs = responseDetail.fold(Map.empty[String, String])(_.toMap())
     rc ++ rs
   }
+
 }
 
 object RegistrationDisplayResponse {

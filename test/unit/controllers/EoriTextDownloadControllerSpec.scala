@@ -36,7 +36,7 @@ import scala.concurrent.Future
 
 class EoriTextDownloadControllerSpec extends ControllerSpec with BeforeAndAfterEach {
   val mockAuthConnector = mock[AuthConnector]
-  val mockCache = mock[SessionCache]
+  val mockCache         = mock[SessionCache]
 
   private val eoriNumberTextDownloadView = app.injector.instanceOf[eori_number_text_download]
 
@@ -80,7 +80,7 @@ class EoriTextDownloadControllerSpec extends ControllerSpec with BeforeAndAfterE
       val result = await(controller.download().apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
 
       val content = contentAsString(result)
-      val lines = content.split('\n').drop(1)
+      val lines   = content.split('\n').drop(1)
       lines.length shouldBe 6
       lines.forall(_.endsWith('\r'.toString)) shouldBe true
     }

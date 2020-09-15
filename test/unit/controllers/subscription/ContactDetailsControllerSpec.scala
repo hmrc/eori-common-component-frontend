@@ -27,7 +27,10 @@ import org.scalatest.prop.Tables.Table
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{ContactDetailsController, SubscriptionFlowManager}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{
+  ContactDetailsController,
+  SubscriptionFlowManager
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
@@ -57,24 +60,26 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEach {
 
   protected override val mockSubscriptionFlowManager: SubscriptionFlowManager = mock[SubscriptionFlowManager]
-  protected override val formId: String = SubscriptionContactDetailsPage.formId
+  protected override val formId: String                                       = SubscriptionContactDetailsPage.formId
+
   protected override val submitInCreateModeUrl: String =
     ContactDetailsController.submit(isInReviewMode = false, Journey.Register).url
+
   protected override val submitInReviewModeUrl: String =
     ContactDetailsController.submit(isInReviewMode = true, Journey.Register).url
 
-  private val mockRequestSessionData = mock[RequestSessionData]
-  private val mockRegistrationDetails = mock[RegistrationDetails](RETURNS_DEEP_STUBS)
-  private val mockSubscriptionDetails = mock[SubscriptionDetails](RETURNS_DEEP_STUBS)
+  private val mockRequestSessionData         = mock[RequestSessionData]
+  private val mockRegistrationDetails        = mock[RegistrationDetails](RETURNS_DEEP_STUBS)
+  private val mockSubscriptionDetails        = mock[SubscriptionDetails](RETURNS_DEEP_STUBS)
   private val mockRegistrationDetailsService = mock[RegistrationDetailsService]
   private val mockRegistrationDetailsCreator = mock[RegistrationDetailsCreator]
 
   private val hintTextTelAndFax = "Only enter numbers, for example 01632 960 001"
 
   private val mockCdsFrontendDataCache = mock[SessionCache]
-  private val mockCountries = mock[Countries]
-  private val mockOrgTypeLookup = mock[OrgTypeLookup]
-  private val contactDetailsView = app.injector.instanceOf[contact_details]
+  private val mockCountries            = mock[Countries]
+  private val mockOrgTypeLookup        = mock[OrgTypeLookup]
+  private val contactDetailsView       = app.injector.instanceOf[contact_details]
 
   private val MessageKeyPrefix = "cds.subscription.contact-details.page-error"
 
@@ -169,7 +174,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       s"display address correctly when only mandatory fields are populated for mode $formMode" in {
         when(mockRegistrationDetails.address).thenReturn(defaultAddressWithMandatoryValuesOnly)
         showFormFunction(OrganisationSubscriptionFlow, CorporateBody) { result =>
-          val page = CdsPage(bodyOf(result))
+          val page            = CdsPage(bodyOf(result))
           val expectedAddress = s"${defaultAddressWithMandatoryValuesOnly.addressLine1}<br>$defaultCountryName"
           page.getElementsHtml(registeredAddressParaXPath) shouldBe expectedAddress
         }
@@ -177,10 +182,10 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
       s"display country correctly when EU address is used for mode $formMode" in {
         val addressFirstLine = "euAddressFirstLine"
-        val euAddress = Address(addressFirstLine, None, None, None, None, "PL")
+        val euAddress        = Address(addressFirstLine, None, None, None, None, "PL")
         when(mockRegistrationDetails.address).thenReturn(euAddress)
         showFormFunction(OrganisationSubscriptionFlow, CorporateBody) { result =>
-          val page = CdsPage(bodyOf(result))
+          val page            = CdsPage(bodyOf(result))
           val expectedAddress = s"$addressFirstLine<br>Poland"
           page.getElementsHtml(registeredAddressParaXPath) shouldBe expectedAddress
         }
@@ -188,10 +193,10 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
       s"display country correctly when non-EU address is used for mode $formMode" in {
         val addressFirstLine = "nonEuAddressFirstLine"
-        val nonEuAddress = Address(addressFirstLine, None, None, None, None, "CA")
+        val nonEuAddress     = Address(addressFirstLine, None, None, None, None, "CA")
         when(mockRegistrationDetails.address).thenReturn(nonEuAddress)
         showFormFunction(OrganisationSubscriptionFlow, CorporateBody) { result =>
-          val page = CdsPage(bodyOf(result))
+          val page            = CdsPage(bodyOf(result))
           val expectedAddress = s"$addressFirstLine<br>Canada"
           page.getElementsHtml(registeredAddressParaXPath) shouldBe expectedAddress
         }
@@ -231,7 +236,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         when(mockSubscriptionDetailsHolderService.cachedAddressDetails(any[HeaderCarrier]))
           .thenReturn(Future.successful(cachedAddressDetails))
         showFormFunction(OrganisationSubscriptionFlow, CorporateBody) { result =>
-          val page = CdsPage(bodyOf(result))
+          val page            = CdsPage(bodyOf(result))
           val expectedAddress = s"${defaultAddressWithMandatoryValuesOnly.addressLine1}<br>$defaultCountryName"
           page.getElementsHtml(registeredAddressParaXPath) shouldBe expectedAddress
         }
@@ -244,7 +249,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         when(mockSubscriptionDetailsHolderService.cachedAddressDetails(any[HeaderCarrier]))
           .thenReturn(Future.successful(cachedAddressDetails))
         showFormFunction(OrganisationSubscriptionFlow, CorporateBody) { result =>
-          val page = CdsPage(bodyOf(result))
+          val page            = CdsPage(bodyOf(result))
           val expectedAddress = s"euAddressFirstLine<br>Poland"
           page.getElementsHtml(registeredAddressParaXPath) shouldBe expectedAddress
         }
@@ -257,7 +262,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         when(mockSubscriptionDetailsHolderService.cachedAddressDetails(any[HeaderCarrier]))
           .thenReturn(Future.successful(cachedAddressDetails))
         showFormFunction(OrganisationSubscriptionFlow, CorporateBody) { result =>
-          val page = CdsPage(bodyOf(result))
+          val page            = CdsPage(bodyOf(result))
           val expectedAddress = s"nonEuAddressFirstLine<br>Canada"
           page.getElementsHtml(registeredAddressParaXPath) shouldBe expectedAddress
         }
@@ -343,7 +348,9 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       showCreateForm() { result =>
         val page = CdsPage(bodyOf(result))
         page.getElementsText(headingXPath) shouldBe "Who can we contact?"
-        page.getElementsText(introXPath) shouldBe "We will use these details to contact you about your EORI number. We will also use them to contact you if there are any issues with your customs activities."
+        page.getElementsText(
+          introXPath
+        ) shouldBe "We will use these details to contact you about your EORI number. We will also use them to contact you if there are any issues with your customs activities."
       }
     }
 
@@ -767,11 +774,11 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
     "redirect to next page without validating contact address when 'Is this the right contact address' is Yes and country code is GB" in {
       val params = Map(
-        fullNameFieldName -> FullName,
-        emailFieldName -> Email,
-        telephoneFieldName -> Telephone,
+        fullNameFieldName                 -> FullName,
+        emailFieldName                    -> Email,
+        telephoneFieldName                -> Telephone,
         useRegisteredAddressFlagFieldName -> "true",
-        countryCodeFieldName -> "GB"
+        countryCodeFieldName              -> "GB"
       )
       submitFormInCreateMode(params)(verifyRedirectToNextPageInCreateMode)
     }
@@ -832,9 +839,9 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   }
 
   private def showCreateForm(
-                              subscriptionFlow: SubscriptionFlow = OrganisationSubscriptionFlow,
-                              journey: Journey.Value = Journey.Register,
-                              orgType: EtmpOrganisationType = CorporateBody
+    subscriptionFlow: SubscriptionFlow = OrganisationSubscriptionFlow,
+    journey: Journey.Value = Journey.Register,
+    orgType: EtmpOrganisationType = CorporateBody
   )(test: Future[Result] => Any) {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
@@ -871,4 +878,5 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         .cacheContactDetails(any[ContactDetailsModel], any[Boolean])(any[HeaderCarrier])
     ).thenReturn(Future.failed(exception))
   }
+
 }

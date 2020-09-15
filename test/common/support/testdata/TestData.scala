@@ -19,9 +19,9 @@ package common.support.testdata
 import org.joda.time.{DateTime, DateTimeZone}
 
 object TestData {
-  val Eori: String = "EN123456789012345"
-  val Name: String = "John Doe"
-  val ProcessedDate: String = "01 May 2016"
-  val TaxPayerID: String = "0100086619"
+  val Eori: String               = "EN123456789012345"
+  val Name: String               = "John Doe"
+  val ProcessedDate: String      = "01 May 2016"
+  val TaxPayerID: String         = "0100086619"
   val emailVerificationTimestamp = new DateTime(DateTimeZone.UTC)
 }

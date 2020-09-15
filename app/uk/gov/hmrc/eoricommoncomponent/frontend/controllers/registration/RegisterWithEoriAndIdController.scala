@@ -40,7 +40,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RegisterWithEoriAndIdController @Inject()(
+class RegisterWithEoriAndIdController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   requestSessionData: RequestSessionData,
@@ -58,7 +58,8 @@ class RegisterWithEoriAndIdController @Inject()(
   subscriptionOutcomeFailView: subscription_outcome_fail,
   reg06EoriAlreadyLinked: reg06_eori_already_linked,
   taxEnrolmentsService: TaxEnrolmentsService
-)(implicit ec: ExecutionContext) extends CdsController(mcc) {
+)(implicit ec: ExecutionContext)
+    extends CdsController(mcc) {
 
   def registerWithEoriAndId(journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser =>
@@ -72,29 +73,30 @@ class RegisterWithEoriAndIdController @Inject()(
       }
     }
 
-  private def sendRequest()(implicit request: Request[AnyContent], loggedInUser: LoggedInUserWithEnrolments): Future[Boolean] = {
+  private def sendRequest()(implicit
+    request: Request[AnyContent],
+    loggedInUser: LoggedInUserWithEnrolments
+  ): Future[Boolean] = {
     for {
-      regDetails <- cache.registrationDetails
+      regDetails      <- cache.registrationDetails
       cachedCustomsId <- subscriptionDetailsService.cachedCustomsId
-    } yield {
-      (regDetails, cachedCustomsId, isRow) match {
-        case (_: RegistrationDetailsOrganisation, Some(_), true) =>
-          reg06Service.sendOrganisationRequest
-        case (_: RegistrationDetailsOrganisation, None, true) =>
-          matchingService.sendOrganisationRequestForMatchingService
-        case (_: RegistrationDetailsOrganisation, _, false) =>
-          reg06Service.sendOrganisationRequest
-        case (_: RegistrationDetailsIndividual, Some(_), true) =>
-          reg06Service.sendIndividualRequest
-        case (_: RegistrationDetailsIndividual, None, true) =>
-          matchingService.sendIndividualRequestForMatchingService
-        case _ => reg06Service.sendIndividualRequest
-      }
+    } yield (regDetails, cachedCustomsId, isRow) match {
+      case (_: RegistrationDetailsOrganisation, Some(_), true) =>
+        reg06Service.sendOrganisationRequest
+      case (_: RegistrationDetailsOrganisation, None, true) =>
+        matchingService.sendOrganisationRequestForMatchingService
+      case (_: RegistrationDetailsOrganisation, _, false) =>
+        reg06Service.sendOrganisationRequest
+      case (_: RegistrationDetailsIndividual, Some(_), true) =>
+        reg06Service.sendIndividualRequest
+      case (_: RegistrationDetailsIndividual, None, true) =>
+        matchingService.sendIndividualRequestForMatchingService
+      case _ => reg06Service.sendIndividualRequest
     }
   }.flatMap(identity)
 
-  private def handleRowResponse(journey: Journey.Value)(
-    implicit request: Request[AnyContent],
+  private def handleRowResponse(journey: Journey.Value)(implicit
+    request: Request[AnyContent],
     loggedInUser: LoggedInUserWithEnrolments,
     hc: HeaderCarrier
   ): Future[Result] = subscriptionDetailsService.cachedCustomsId flatMap {
@@ -144,7 +146,7 @@ class RegisterWithEoriAndIdController @Inject()(
   def processing: Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
-        name <- cachedName
+        name          <- cachedName
         processedDate <- cache.sub01Outcome.map(_.processedDate)
       } yield Ok(sub01OutcomeProcessingView(Some(name), processedDate))
   }
@@ -152,7 +154,7 @@ class RegisterWithEoriAndIdController @Inject()(
   def rejected: Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
-        name <- cachedName
+        name          <- cachedName
         processedDate <- cache.sub01Outcome.map(_.processedDate)
       } yield Ok(sub01OutcomeRejectedView(Some(name), processedDate))
   }
@@ -164,7 +166,7 @@ class RegisterWithEoriAndIdController @Inject()(
           _.eoriNumber.getOrElse(throw new IllegalStateException("No EORI found in cache"))
         )
         name <- cache.subscriptionDetails.map(_.name)
-        _ <- cache.remove
+        _    <- cache.remove
       } yield Ok(subscriptionOutcomePendingView(eori, date, name))
     }
 
@@ -172,7 +174,7 @@ class RegisterWithEoriAndIdController @Inject()(
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         name <- cache.subscriptionDetails.map(_.name)
-        _ <- cache.remove
+        _    <- cache.remove
       } yield Ok(subscriptionOutcomeFailView(date, name))
     }
 
@@ -181,7 +183,7 @@ class RegisterWithEoriAndIdController @Inject()(
       for {
         name <- cache.subscriptionDetails.map(_.name)
         date <- cache.registerWithEoriAndIdResponse.map(_.responseCommon.processingDate)
-        _ <- cache.remove
+        _    <- cache.remove
       } yield Ok(reg06EoriAlreadyLinked(name, date))
     }
 
@@ -190,32 +192,30 @@ class RegisterWithEoriAndIdController @Inject()(
       for {
         name <- cache.subscriptionDetails.map(_.name)
         date <- cache.registerWithEoriAndIdResponse.map(r => dateTimeFormat.print(r.responseCommon.processingDate))
-        _ <- cache.remove
+        _    <- cache.remove
       } yield Ok(sub01OutcomeRejectedView(Some(name), date))
     }
 
   private def handleErrorCodes(statusText: Option[String])(implicit request: Request[AnyContent]): Future[Result] =
     statusText match {
-      case _ if statusText.contains(EoriAlreadyLinked) => {
+      case _ if statusText.contains(EoriAlreadyLinked) =>
         CdsLogger.warn("Reg06 EoriAlreadyLinked")
         Future.successful(Redirect(RegisterWithEoriAndIdController.eoriAlreadyLinked()))
-      }
-      case _ if statusText.contains(IDLinkedWithEori) => {
+      case _ if statusText.contains(IDLinkedWithEori) =>
         CdsLogger.warn("Reg06 IDLinkedWithEori")
         Future.successful(Redirect(RegisterWithEoriAndIdController.eoriAlreadyLinked()))
-      }
       case _ if statusText.contains(RejectedPreviouslyAndRetry) =>
         Future.successful(Redirect(RegisterWithEoriAndIdController.rejectedPreviously()))
       case _ => Future.successful(ServiceUnavailable(errorTemplateView()))
     }
 
-  private def onSuccessfulSubscriptionStatusSubscribe(journey: Journey.Value)(
-    implicit request: Request[AnyContent],
+  private def onSuccessfulSubscriptionStatusSubscribe(journey: Journey.Value)(implicit
+    request: Request[AnyContent],
     loggedInUser: LoggedInUserWithEnrolments,
     hc: HeaderCarrier
   ): Future[Result] = {
     val internalId = InternalId(loggedInUser.internalId)
-    val groupId = GroupId(loggedInUser.groupId)
+    val groupId    = GroupId(loggedInUser.groupId)
     cdsSubscriber
       .subscribeWithCachedDetails(requestSessionData.userSelectedOrganisationType, journey)
       .flatMap {
@@ -248,10 +248,10 @@ class RegisterWithEoriAndIdController @Inject()(
       case SubscriptionExists => handleExistingSubscription(safeId, journey)
     }
 
-  private def handleExistingSubscription(
-    safeId: SafeId,
-    journey: Journey.Value
-  )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] =
+  private def handleExistingSubscription(safeId: SafeId, journey: Journey.Value)(implicit
+    request: Request[AnyContent],
+    hc: HeaderCarrier
+  ): Future[Result] =
     taxEnrolmentsService.doesEnrolmentExist(safeId).map {
       case true => Redirect(SignInWithDifferentDetailsController.form(journey))
       case false =>
@@ -264,4 +264,5 @@ class RegisterWithEoriAndIdController @Inject()(
 
   private def isRow(implicit request: Request[AnyContent]) =
     UserLocation.isRow(requestSessionData)
+
 }

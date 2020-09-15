@@ -24,9 +24,9 @@ import play.api.data.Forms._
 
 object YesNoWrongAddress {
 
-  val yesAnswered = "yes"
+  val yesAnswered  = "yes"
   val wrongAddress = "wrong-address"
-  val noAnswered = "no"
+  val noAnswered   = "no"
 
   private val validYesNoWrongAddress = Set(yesAnswered, noAnswered, wrongAddress)
 
@@ -37,15 +37,18 @@ object YesNoWrongAddress {
           optional(text).verifying("yes-no-wrong-address.error", x => x.fold(false)(oneOf(validYesNoWrongAddress)))
       )(YesNoWrongAddress.apply)(YesNoWrongAddress.unapply)
     )
+
 }
 
 case class YesNoWrongAddress(yesNoWrongAddress: Option[String]) {
+
   def areDetailsCorrect: YesNoWrong = yesNoWrongAddress match {
     case Some("yes")           => Yes
     case Some("no")            => No
     case Some("wrong-address") => WrongAddress
     case _                     => Invalid
   }
+
 }
 
 sealed trait YesNoWrong

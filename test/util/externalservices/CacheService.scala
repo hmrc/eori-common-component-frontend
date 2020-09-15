@@ -28,8 +28,8 @@ import scala.concurrent.{Await, Future}
 
 object CacheService {
 
-  def addRegistrationDetailsToCache(sessionId: String, reviewDetails: RegistrationDetails)(
-    implicit app: Application
+  def addRegistrationDetailsToCache(sessionId: String, reviewDetails: RegistrationDetails)(implicit
+    app: Application
   ): Unit =
     awaitResult(cache(app).saveRegistrationDetails(reviewDetails)(hc(sessionId)))
 
@@ -44,7 +44,7 @@ object CacheService {
   ): Unit =
     awaitResult(cache(app).saveSubscriptionDetails(holder)(hc(sessionId)))
 
-  private def cache(app: Application) = app.injector.instanceOf[SessionCache]
-  private def hc(sessionId: String) = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
+  private def cache(app: Application)                                            = app.injector.instanceOf[SessionCache]
+  private def hc(sessionId: String)                                              = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
   private def awaitResult[T](future: Future[T], atMost: Duration = 5.seconds): T = Await.result(future, atMost)
 }

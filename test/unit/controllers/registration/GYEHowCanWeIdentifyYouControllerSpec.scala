@@ -44,8 +44,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAfter {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockMatchingService = mock[MatchingService]
+  private val mockAuthConnector     = mock[AuthConnector]
+  private val mockMatchingService   = mock[MatchingService]
   private val mockFrontendDataCache = mock[SessionCache]
 
   private val howCanWeIdentifyYouView = app.injector.instanceOf[how_can_we_identify_you]
@@ -129,7 +129,9 @@ class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAnd
         result =>
           status(result) shouldBe BAD_REQUEST
           val page = CdsPage(bodyOf(result))
-          page.getElementsText(RegisterHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath) shouldBe "Your details have not been found. Check that your details are correct and then try again."
+          page.getElementsText(
+            RegisterHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
+          ) shouldBe "Your details have not been found. Check that your details are correct and then try again."
       }
     }
 
@@ -149,7 +151,9 @@ class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAnd
         result =>
           status(result) shouldBe BAD_REQUEST
           val page = CdsPage(bodyOf(result))
-          page.getElementsText(RegisterHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath) shouldBe "Your details have not been found. Check that your details are correct and then try again."
+          page.getElementsText(
+            RegisterHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
+          ) shouldBe "Your details have not been found. Check that your details are correct and then try again."
       }
     }
   }
@@ -160,4 +164,5 @@ class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAnd
     withAuthorisedUser(userId, mockAuthConnector)
     test(controller.submit(orgType, journey).apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)))
   }
+
 }

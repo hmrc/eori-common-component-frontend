@@ -35,6 +35,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach {
+
   implicit override lazy val app: Application = new GuiceApplicationBuilder()
     .disable[com.kenshoo.play.metrics.PlayModule]
     .configure("metrics.enabled" -> false)
@@ -42,7 +43,7 @@ class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach {
     .build()
 
   private val mockAuthConnector = mock[AuthConnector]
-  private val mockCache = mock[SessionCache]
+  private val mockCache         = mock[SessionCache]
 
   private val eoriNumberTextDownloadView = app.injector.instanceOf[eori_number_text_download]
 

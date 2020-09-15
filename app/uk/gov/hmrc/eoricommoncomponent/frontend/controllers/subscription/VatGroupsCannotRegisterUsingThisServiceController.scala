@@ -27,7 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_grou
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class VatGroupsCannotRegisterUsingThisServiceController @Inject()(
+class VatGroupsCannotRegisterUsingThisServiceController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   view: vat_groups_cannot_register_using_this_service,
@@ -38,4 +38,5 @@ class VatGroupsCannotRegisterUsingThisServiceController @Inject()(
   def form(journey: Journey.Value): Action[AnyContent] = Action { implicit request =>
     Ok(view())
   }
+
 }

@@ -32,7 +32,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.match_ni
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class NinoController @Inject()(
+class NinoController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   mcc: MessagesControllerComponents,
@@ -49,10 +49,8 @@ class NinoController @Inject()(
   def submit(organisationType: String, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
       ninoForm.bindFromRequest.fold(
-        invalidForm => {
-          Future.successful(BadRequest(matchNinoView(invalidForm, organisationType, journey)))
-        },
-        form => {
+        invalidForm => Future.successful(BadRequest(matchNinoView(invalidForm, organisationType, journey))),
+        form =>
           matchingService.matchIndividualWithNino(
             form.nino,
             Individual.withLocalDate(form.firstName, form.lastName, form.dateOfBirth),
@@ -69,7 +67,7 @@ class NinoController @Inject()(
                 .fill(form)
               BadRequest(matchNinoView(errorForm, organisationType, journey))
           }
-        }
       )
     }
+
 }

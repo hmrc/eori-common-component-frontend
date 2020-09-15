@@ -38,18 +38,18 @@ class RegisterWithoutIdConnectorSpec extends IntegrationTestsSpec with ScalaFutu
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
       Map(
-        "microservice.services.eori-common-component-hods-proxy.host" -> Host,
-        "microservice.services.eori-common-component-hods-proxy.port" -> Port,
+        "microservice.services.eori-common-component-hods-proxy.host"                        -> Host,
+        "microservice.services.eori-common-component-hods-proxy.port"                        -> Port,
         "microservice.services.eori-common-component-hods-proxy.register-without-id.context" -> "register-without-id",
-        "auditing.enabled" -> true,
-        "auditing.consumer.baseUri.host" -> Host,
-        "auditing.consumer.baseUri.port" -> Port
+        "auditing.enabled"                                                                   -> true,
+        "auditing.consumer.baseUri.host"                                                     -> Host,
+        "auditing.consumer.baseUri.port"                                                     -> Port
       )
     )
     .build()
 
   private lazy val registerWithoutIdConnector = app.injector.instanceOf[RegisterWithoutIdConnector]
-  val expectedPostUrl = "/register-without-id"
+  val expectedPostUrl                         = "/register-without-id"
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 

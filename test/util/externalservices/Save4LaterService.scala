@@ -54,12 +54,12 @@ object Save4LaterService {
 
   val responseJson = Json.parse(body)
 
-  val id = "id-12345678"
+  val id       = "id-12345678"
   val emailKey = "email"
 
-  val groupdId = "groupId-abcd-1234"
+  val groupdId    = "groupId-abcd-1234"
   val groupdIdRcm = "gg-id-rcm-cases"
-  val key = "cachedGroupId"
+  val key         = "cachedGroupId"
 
   case class User(name: String, tel: Int)
 
@@ -67,26 +67,26 @@ object Save4LaterService {
     implicit val jsonFormat = Json.format[User]
   }
 
-  val expectedUrl = s"/save4later/$id/$emailKey"
-  val expectedUrlGroupIdRcm = s"/save4later/$groupdIdRcm/$key"
+  val expectedUrl              = s"/save4later/$id/$emailKey"
+  val expectedUrlGroupIdRcm    = s"/save4later/$groupdIdRcm/$key"
   val expectedPutGroupIdUrlRcm = s"/save4later/$groupdIdRcm/$key"
-  val expectedPutGroupIdUrl = s"/save4later/$groupdId/$key"
-  val expectedDeleteUrl = s"/save4later/$id"
+  val expectedPutGroupIdUrl    = s"/save4later/$groupdId/$key"
+  val expectedDeleteUrl        = s"/save4later/$id"
   val expectedDeleteUrlGroupId = s"/save4later/$groupdIdRcm"
 
   val regexIntId = "([0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12})"
 
-  private val intId = "a14b5b18-9444-4ea1-99ad-a667047682ad"
-  private val safeIdKey = "safeId"
-  private val orgTypeKey = "orgType"
+  private val intId         = "a14b5b18-9444-4ea1-99ad-a667047682ad"
+  private val safeIdKey     = "safeId"
+  private val orgTypeKey    = "orgType"
   private val mongoEmailKey = "email"
 
-  private val emailNotVerified = EmailStatus("john.doe@example.com")
-  private val emailVerified = EmailStatus("john.doe@example.com", isVerified = true)
+  private val emailNotVerified       = EmailStatus("john.doe@example.com")
+  private val emailVerified          = EmailStatus("john.doe@example.com", isVerified = true)
   private val emailConfirmedVerified = EmailStatus("john.doe@example.com", isVerified = true, Some(true))
 
-  private val emailNotVerifiedJson = Json.toJson(emailNotVerified).toString()
-  private val emailVerifiedJson = Json.toJson(emailVerified).toString()
+  private val emailNotVerifiedJson       = Json.toJson(emailNotVerified).toString()
+  private val emailVerifiedJson          = Json.toJson(emailVerified).toString()
   private val emailConfirmedVerifiedJson = Json.toJson(emailConfirmedVerified).toString()
 
   val safeIdMongoStubUrl = s"/save4later/$regexIntId/$safeIdKey"
@@ -186,6 +186,7 @@ object Save4LaterService {
 
   def stubSave4LaterEmailNotVerifiedGET() =
     stubSave4LaterGETResponse(emailMongoStubUrl, emailNotVerifiedJson, OK)
+
   def stubSave4LaterEmailVerifiedGetEmail() =
     stubSave4LaterGETResponse(emailMongoStubUrl, emailVerifiedJson, OK)
 

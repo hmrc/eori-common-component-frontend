@@ -44,12 +44,12 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockSubscriptionFlowManager = mock[SubscriptionFlowManager]
-  private val mockSubscriptionFlowInfo = mock[SubscriptionFlowInfo]
-  private val mockSubscriptionPage = mock[SubscriptionPage]
+  private val mockAuthConnector                   = mock[AuthConnector]
+  private val mockSubscriptionFlowManager         = mock[SubscriptionFlowManager]
+  private val mockSubscriptionFlowInfo            = mock[SubscriptionFlowInfo]
+  private val mockSubscriptionPage                = mock[SubscriptionPage]
   private val mockSubscriptionVatEUDetailsService = mock[SubscriptionVatEUDetailsService]
-  private val vatDetailsEuConfirmView = app.injector.instanceOf[vat_details_eu_confirm]
+  private val vatDetailsEuConfirmView             = app.injector.instanceOf[vat_details_eu_confirm]
 
   private val controller = new VatDetailsEuConfirmController(
     app,
@@ -61,6 +61,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
   )
 
   private val VatEuDetailUnderLimit = Seq(VatEUDetailsModel("12345", "FR"))
+
   private val VatEuDetailsOnLimit = VatEuDetailUnderLimit ++ Seq(
     VatEUDetailsModel("12345", "CZ"),
     VatEUDetailsModel("12345", "ES"),
@@ -212,4 +213,5 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
       )
     )
   }
+
 }

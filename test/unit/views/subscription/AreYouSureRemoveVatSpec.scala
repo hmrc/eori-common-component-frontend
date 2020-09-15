@@ -30,10 +30,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.are_you_
 import util.ViewSpec
 
 class AreYouSureRemoveVatSpec extends ViewSpec {
-  private val form: Form[YesNo] = removeVatYesNoAnswer
-  private val formWithError: Form[YesNo] = removeVatYesNoAnswer.bind(Map("yes-no-answer" -> ""))
+  private val form: Form[YesNo]             = removeVatYesNoAnswer
+  private val formWithError: Form[YesNo]    = removeVatYesNoAnswer.bind(Map("yes-no-answer" -> ""))
   private val vatDetails: VatEUDetailsModel = VatEUDetailsModel("FR", "12345")
-  implicit val request = withFakeCSRF(FakeRequest())
+  implicit val request                      = withFakeCSRF(FakeRequest())
 
   private val view = app.injector.instanceOf[are_you_sure_remove_vat]
 
@@ -71,6 +71,8 @@ class AreYouSureRemoveVatSpec extends ViewSpec {
 
   private lazy val doc: Document =
     Jsoup.parse(contentAsString(view(form, Journey.Subscribe, vatDetails, isInReviewMode = false)))
+
   private lazy val docWithErrors: Document =
     Jsoup.parse(contentAsString(view(formWithError, Journey.Subscribe, vatDetails, isInReviewMode = false)))
+
 }

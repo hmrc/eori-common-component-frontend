@@ -17,11 +17,11 @@
 package util.builders.matching
 
 object CharityPublicBodyNotForProfitFormBuilder extends OrganisationAddressFormBuilder {
-  val LineOne = "Line 1"
-  val LineTwo = "line 2"
-  val LineThree = "line 3"
-  val LineFour = "city name"
-  val Postcode = "SE28 1AA"
-  val Country = "United Kingdom"
+  val LineOne     = "Line 1"
+  val LineTwo     = "line 2"
+  val LineThree   = "line 3"
+  val LineFour    = "city name"
+  val Postcode    = "SE28 1AA"
+  val Country     = "United Kingdom"
   val CountryCode = "GB"
 }

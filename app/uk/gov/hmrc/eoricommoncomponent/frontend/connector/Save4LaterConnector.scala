@@ -29,28 +29,29 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
 @Singleton
-class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit ec: ExecutionContext) {
+class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
+  ec: ExecutionContext
+) {
 
   val LoggerComponentId = "Save4LaterConnector"
 
-  def get[T](
-    id: String,
-    key: String
-  )(implicit hc: HeaderCarrier, reads: Reads[T], writes: Writes[T]): Future[Option[T]] = {
+  def get[T](id: String, key: String)(implicit
+    hc: HeaderCarrier,
+    reads: Reads[T],
+    writes: Writes[T]
+  ): Future[Option[T]] = {
     val url = s"${appConfig.handleSubscriptionBaseUrl}/save4later/$id/$key"
     CdsLogger.info(s"[$LoggerComponentId][call] GET: $url")
     http.GET[HttpResponse](url) map { response =>
       CdsLogger.info(s"[$LoggerComponentId][call] complete for call to $url and headers ${hc.headers}")
 
       response.status match {
-        case OK => {
+        case OK =>
           auditCallResponse(url, response.json)
           Some(response.json.as[T])
-        }
-        case NOT_FOUND => {
+        case NOT_FOUND =>
           auditCallResponse(url, response.status)
           None
-        }
         case _ => throw new BadRequestException(s"Status:${response.status}")
       }
     } recoverWith {
@@ -63,11 +64,11 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
     }
   }
 
-  def put[T](
-    id: String,
-    key: String,
-    payload: JsValue
-  )(implicit hc: HeaderCarrier, reads: Reads[T], writes: Writes[T]): Future[Unit] = {
+  def put[T](id: String, key: String, payload: JsValue)(implicit
+    hc: HeaderCarrier,
+    reads: Reads[T],
+    writes: Writes[T]
+  ): Future[Unit] = {
     val url = s"${appConfig.handleSubscriptionBaseUrl}/save4later/$id/$key"
     CdsLogger.info(s"[$LoggerComponentId][call] PUT: $url")
     auditCallRequest(url, payload)
@@ -109,10 +110,10 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
     }
   }
 
-  private def auditCallRequest[T](
-    url: String,
-    request: JsValue
-  )(implicit hc: HeaderCarrier, reads: HttpReads[T]): Future[Unit] =
+  private def auditCallRequest[T](url: String, request: JsValue)(implicit
+    hc: HeaderCarrier,
+    reads: HttpReads[T]
+  ): Future[Unit] =
     Future {
       audit.sendExtendedDataEvent(
         transactionName = "Save4laterRequest",
@@ -122,10 +123,10 @@ class Save4LaterConnector @Inject()(http: HttpClient, appConfig: AppConfig, audi
       )
     }
 
-  private def auditCallResponse[T](
-    url: String,
-    response: T
-  )(implicit hc: HeaderCarrier, writes: Writes[T]): Future[Unit] =
+  private def auditCallResponse[T](url: String, response: T)(implicit
+    hc: HeaderCarrier,
+    writes: Writes[T]
+  ): Future[Unit] =
     Future {
       audit.sendExtendedDataEvent(
         transactionName = "Save4laterResponse",

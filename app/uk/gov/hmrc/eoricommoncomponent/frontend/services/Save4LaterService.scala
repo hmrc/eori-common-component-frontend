@@ -25,19 +25,19 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class Save4LaterService @Inject()(save4LaterConnector: Save4LaterConnector)(implicit ec: ExecutionContext) {
+class Save4LaterService @Inject() (save4LaterConnector: Save4LaterConnector)(implicit ec: ExecutionContext) {
 
-  private val safeIdKey = "safeId"
+  private val safeIdKey  = "safeId"
   private val orgTypeKey = "orgType"
-  private val emailKey = "email"
+  private val emailKey   = "email"
 
   def saveSafeId(internalId: InternalId, safeId: SafeId)(implicit hc: HeaderCarrier): Future[Unit] = {
     Logger.info("saving SafeId to mongo")
     save4LaterConnector.put[SafeId](internalId.id, safeIdKey, safeId)
   }
 
-  def saveOrgType(internalId: InternalId, mayBeOrgType: Option[CdsOrganisationType])(
-    implicit hc: HeaderCarrier
+  def saveOrgType(internalId: InternalId, mayBeOrgType: Option[CdsOrganisationType])(implicit
+    hc: HeaderCarrier
   ): Future[Unit] = {
     Logger.info("saving OrganisationType to mongo")
     save4LaterConnector

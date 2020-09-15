@@ -67,6 +67,7 @@ class RegistrationDetailsFormatSpec extends UnitSpec {
     dateOfEstablishment = Some(LocalDate.parse("1961-04-12")),
     etmpOrganisationType = Some(CorporateBody)
   )
+
   val organisationJsonWithDate = Json.parse("""
       |{
       |   "sapNumber":{ "id": "sapNumber"},
@@ -88,11 +89,12 @@ class RegistrationDetailsFormatSpec extends UnitSpec {
     """.stripMargin)
 
   val dateOfBirth = {
-    val year = 1961
+    val year  = 1961
     val month = 4
-    val day = 12
+    val day   = 12
     new LocalDate(year, month, day)
   }
+
   val individualDetails = RegistrationDetailsIndividual(
     customsId = None,
     TaxPayerId("sapNumber"),

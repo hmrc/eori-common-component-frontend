@@ -31,7 +31,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.AddressDetail
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries._
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionBusinessService,
+  SubscriptionDetailsService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.confirm_contact_details
 import uk.gov.hmrc.http.HeaderCarrier
@@ -39,7 +42,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AddressController @Inject()(
+class AddressController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   subscriptionBusinessService: SubscriptionBusinessService,
@@ -73,9 +76,7 @@ class AddressController @Inject()(
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       addressDetailsCreateForm().bindFromRequest
         .fold(
-          formWithErrors => {
-            populateCountriesToInclude(isInReviewMode, journey, formWithErrors, BadRequest)
-          },
+          formWithErrors => populateCountriesToInclude(isInReviewMode, journey, formWithErrors, BadRequest),
           address => {
             subscriptionDetailsHolderService.cacheAddressDetails(address)
             journey match {
@@ -84,16 +85,15 @@ class AddressController @Inject()(
                   .cacheAddressDetails(address)
                   .map(
                     _ =>
-                      if (isInReviewMode) {
+                      if (isInReviewMode)
                         Redirect(DetermineReviewPageController.determineRoute(journey))
-                      } else {
+                      else
                         Redirect(
                           subscriptionFlowManager
                             .stepInformation(AddressDetailsSubscriptionFlowPage)
                             .nextPage
                             .url
                         )
-                    }
                   )
               case _ =>
                 showReviewPage(address, isInReviewMode, journey)
@@ -138,16 +138,17 @@ class AddressController @Inject()(
       }
     }
 
-  private def populateOkView(address: Option[AddressViewModel], isInReviewMode: Boolean, journey: Journey.Value)(
-    implicit hc: HeaderCarrier,
-    request: Request[AnyContent]
-  ): Future[Result] = {
+  private def populateOkView(
+    address: Option[AddressViewModel],
+    isInReviewMode: Boolean,
+    journey: Journey.Value
+  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
     lazy val form = address.fold(addressDetailsCreateForm())(addressDetailsCreateForm().fill(_))
     populateCountriesToInclude(isInReviewMode, journey, form, Ok)
   }
 
-  private def showReviewPage(address: AddressViewModel, inReviewMode: Boolean, journey: Journey.Value)(
-    implicit hc: HeaderCarrier,
+  private def showReviewPage(address: AddressViewModel, inReviewMode: Boolean, journey: Journey.Value)(implicit
+    hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] = {
     val etmpOrgType = requestSessionData.userSelectedOrganisationType
@@ -155,29 +156,26 @@ class AddressController @Inject()(
       .getOrElse(throw new IllegalStateException("No Etmp org type"))
 
     subscriptionDetailsHolderService.cacheAddressDetails(address).flatMap { _ =>
-      {
-        if (inReviewMode) {
-          Future.successful(Redirect(DetermineReviewPageController.determineRoute(journey)))
-        } else {
-          cdsFrontendDataCache.registrationDetails map {
-            case RegistrationDetailsIndividual(customsId, _, _, name, _, _) =>
-              Ok(confirmContactDetails(name, address, customsId, None, YesNoWrongAddress.createForm(), journey))
-            case RegistrationDetailsOrganisation(customsId, _, _, name, _, _, _) =>
-              Ok(
-                confirmContactDetails(
-                  name,
-                  address,
-                  customsId,
-                  Some(etmpOrgType),
-                  YesNoWrongAddress.createForm(),
-                  journey
-                )
+      if (inReviewMode)
+        Future.successful(Redirect(DetermineReviewPageController.determineRoute(journey)))
+      else
+        cdsFrontendDataCache.registrationDetails map {
+          case RegistrationDetailsIndividual(customsId, _, _, name, _, _) =>
+            Ok(confirmContactDetails(name, address, customsId, None, YesNoWrongAddress.createForm(), journey))
+          case RegistrationDetailsOrganisation(customsId, _, _, name, _, _, _) =>
+            Ok(
+              confirmContactDetails(
+                name,
+                address,
+                customsId,
+                Some(etmpOrgType),
+                YesNoWrongAddress.createForm(),
+                journey
               )
-            case _ =>
-              throw new IllegalStateException("No details stored in cache for this session")
-          }
+            )
+          case _ =>
+            throw new IllegalStateException("No details stored in cache for this session")
         }
-      }
     }
   }
 
@@ -188,4 +186,5 @@ class AddressController @Inject()(
       oType == CdsOrganisationType.ThirdCountryIndividual ||
       oType == CdsOrganisationType.ThirdCountrySoleTrader
     }
+
 }

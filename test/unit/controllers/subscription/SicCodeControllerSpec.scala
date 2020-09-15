@@ -66,9 +66,9 @@ class SicCodeControllerSpec
       .submit(isInReviewMode = true, Journey.Register)
       .url
 
-  private val mockOrgTypeLookup = mock[OrgTypeLookup]
+  private val mockOrgTypeLookup      = mock[OrgTypeLookup]
   private val mockRequestSessionData = mock[RequestSessionData]
-  private val sicCodeView = app.injector.instanceOf[sic_code]
+  private val sicCodeView            = app.injector.instanceOf[sic_code]
 
   private val controller = new SicCodeController(
     app,
@@ -83,7 +83,7 @@ class SicCodeControllerSpec
   )
 
   private val emulatedFailure = new UnsupportedOperationException("Emulation of service call failure")
-  private val sicCodeError = thereIsAProblemWithThe("SIC code")
+  private val sicCodeError    = thereIsAProblemWithThe("SIC code")
 
   override def beforeEach: Unit = {
     reset(
@@ -117,14 +117,18 @@ class SicCodeControllerSpec
         userLocation = Some("UK")
       ) { result =>
         val page = CdsPage(bodyOf(result))
-        page.getElementText(sicDescriptionLabelXpath) shouldBe "A SIC code is a 5 digit number that helps HMRC identify what your organisation does. You can search the register on Companies House for your SIC code (opens in a new window or tab)."
+        page.getElementText(
+          sicDescriptionLabelXpath
+        ) shouldBe "A SIC code is a 5 digit number that helps HMRC identify what your organisation does. You can search the register on Companies House for your SIC code (opens in a new window or tab)."
       }
     }
 
     "display heading as 'What is the Standard Industrial Classification (SIC) code for your organisation?' for non-partnership org type" in {
       showCreateForm(orgType = CorporateBody, userSelectedOrgType = Company) { result =>
         val page = CdsPage(bodyOf(result))
-        page.getElementText(SicCodePage.headingXpath) shouldBe "What is the Standard Industrial Classification (SIC) code for your organisation?"
+        page.getElementText(
+          SicCodePage.headingXpath
+        ) shouldBe "What is the Standard Industrial Classification (SIC) code for your organisation?"
       }
     }
 
@@ -138,7 +142,9 @@ class SicCodeControllerSpec
     "display heading as 'What is the Standard Industrial Classification (SIC) code for your partnership?' for Partnership org type" in {
       showCreateForm(orgType = Partnership, userSelectedOrgType = CdsPartnership) { result =>
         val page = CdsPage(bodyOf(result))
-        page.getElementText(SicCodePage.headingXpath) shouldBe "What is the Standard Industrial Classification (SIC) code for your partnership?"
+        page.getElementText(
+          SicCodePage.headingXpath
+        ) shouldBe "What is the Standard Industrial Classification (SIC) code for your partnership?"
       }
     }
 
@@ -152,7 +158,9 @@ class SicCodeControllerSpec
     "display heading as 'What is the Standard Industrial Classification (SIC) code for your partnership?' for LLP org type" in {
       showCreateForm(orgType = LLP, userSelectedOrgType = CdsPartnership) { result =>
         val page = CdsPage(bodyOf(result))
-        page.getElementText(SicCodePage.headingXpath) shouldBe "What is the Standard Industrial Classification (SIC) code for your partnership?"
+        page.getElementText(
+          SicCodePage.headingXpath
+        ) shouldBe "What is the Standard Industrial Classification (SIC) code for your partnership?"
       }
     }
 
@@ -192,14 +200,16 @@ class SicCodeControllerSpec
       s"display heading as 'Enter a Standard Industrial Classification (SIC) code that describes what your business does' for $orgType (NA) org type" in {
         showCreateForm(orgType = NA, userSelectedOrgType = userSelectedOrgType) { result =>
           val page = CdsPage(bodyOf(result))
-          page.getElementText(SicCodePage.headingXpath) shouldBe "Enter a Standard Industrial Classification (SIC) code that describes what your business does"
+          page.getElementText(
+            SicCodePage.headingXpath
+          ) shouldBe "Enter a Standard Industrial Classification (SIC) code that describes what your business does"
         }
       }
 
       s"display correct description for $orgType (NA) org type" in {
         showCreateForm(orgType = NA, userSelectedOrgType = userSelectedOrgType) {
           val hintText = userSelectedOrgType match {
-            case (SoleTrader) =>
+            case SoleTrader =>
               "A SIC code is a 5 digit number that helps HMRC identify what your business does. If you do not have one, you can search for a relevant SIC code on Companies House (opens in a new window or tab)."
             case _ =>
               "A SIC code is a 5 digit number that helps HMRC identify what your organisation does. If you do not have one, you can search for a relevant SIC code on Companies House (opens in a new window or tab)."
@@ -243,10 +253,10 @@ class SicCodeControllerSpec
     }
 
     "display the correct text for the continue button" in {
-      showCreateForm(userSelectedOrgType = Company)({ result =>
+      showCreateForm(userSelectedOrgType = Company) { result =>
         val page = CdsPage(bodyOf(result))
         page.getElementValue(SicCodePage.continueButtonXpath) shouldBe ContinueButtonTextInCreateMode
-      })
+      }
     }
   }
 
@@ -271,10 +281,10 @@ class SicCodeControllerSpec
     }
 
     "display the correct text for the continue button" in {
-      showReviewForm(userSelectedOrgType = Company)({ result =>
+      showReviewForm(userSelectedOrgType = Company) { result =>
         val page = CdsPage(bodyOf(result))
         page.getElementValue(SicCodePage.continueButtonXpath) shouldBe ContinueButtonTextInReviewMode
-      })
+      }
     }
   }
 
@@ -343,7 +353,9 @@ class SicCodeControllerSpec
       submitFormInCreateMode(Map("sic" -> ""), userSelectedOrgType = Company) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath) shouldEqual "Enter a SIC code"
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
+        ) shouldEqual "Enter a SIC code"
         page.getElementsText(SubscriptionAmendCompanyDetailsPage.sicFieldLevelErrorXpath) shouldEqual "Enter a SIC code"
       }
     }
@@ -352,7 +364,9 @@ class SicCodeControllerSpec
       submitFormInCreateMode(Map("sic" -> 5.spaces), userSelectedOrgType = Company) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath) shouldEqual "Enter a SIC code"
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
+        ) shouldEqual "Enter a SIC code"
         page.getElementsText(SubscriptionAmendCompanyDetailsPage.sicFieldLevelErrorXpath) shouldEqual "Enter a SIC code"
       }
     }
@@ -361,8 +375,12 @@ class SicCodeControllerSpec
       submitFormInCreateMode(Map("sic" -> "G1A3"), userSelectedOrgType = Company) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath) shouldBe "Enter a SIC code in the right format"
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.sicFieldLevelErrorXpath) shouldEqual "Enter a SIC code in the right format"
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "Enter a SIC code in the right format"
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.sicFieldLevelErrorXpath
+        ) shouldEqual "Enter a SIC code in the right format"
       }
     }
 
@@ -370,8 +388,12 @@ class SicCodeControllerSpec
       submitFormInCreateMode(Map("sic" -> "123"), userSelectedOrgType = Company) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath) shouldBe "The SIC code must be more than 3 digits"
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.sicFieldLevelErrorXpath) shouldEqual "The SIC code must be more than 3 digits"
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "The SIC code must be more than 3 digits"
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.sicFieldLevelErrorXpath
+        ) shouldEqual "The SIC code must be more than 3 digits"
       }
     }
 
@@ -379,8 +401,12 @@ class SicCodeControllerSpec
       submitFormInCreateMode(Map("sic" -> "123456"), userSelectedOrgType = Company) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath) shouldBe "The SIC code must be 5 digits or less"
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.sicFieldLevelErrorXpath) shouldEqual "The SIC code must be 5 digits or less"
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "The SIC code must be 5 digits or less"
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.sicFieldLevelErrorXpath
+        ) shouldEqual "The SIC code must be 5 digits or less"
       }
     }
 
@@ -403,12 +429,20 @@ class SicCodeControllerSpec
         val page = CdsPage(bodyOf(result))
         userSelectedOrgType match {
           case SoleTrader =>
-            page.getElementsText(sicDescriptionLabelXpath) shouldBe "A SIC code is a 5 digit number that helps HMRC identify what your business does. In some countries it is also known as a trade number. If you do not have one, you can search for a relevant SIC code on Companies House (opens in a new window or tab)."
-            page.getElementText(SicCodePage.headingXpath) shouldBe "Enter a Standard Industrial Classification (SIC) code that describes what your business does"
+            page.getElementsText(
+              sicDescriptionLabelXpath
+            ) shouldBe "A SIC code is a 5 digit number that helps HMRC identify what your business does. In some countries it is also known as a trade number. If you do not have one, you can search for a relevant SIC code on Companies House (opens in a new window or tab)."
+            page.getElementText(
+              SicCodePage.headingXpath
+            ) shouldBe "Enter a Standard Industrial Classification (SIC) code that describes what your business does"
             page.getElementsHref("//*[@id='description']/a") shouldBe "https://resources.companieshouse.gov.uk/sic/"
           case ThirdCountryOrganisation =>
-            page.getElementsText(sicDescriptionLabelXpath) shouldBe "A SIC code is a 5 digit number that helps HMRC identify what your organisation does. In some countries it is also known as a trade number. If you do not have one, you can search for a relevant SIC code on Companies House (opens in a new window or tab)."
-            page.getElementText(SicCodePage.headingXpath) shouldBe "What is the Standard Industrial Classification (SIC) code for your organisation?"
+            page.getElementsText(
+              sicDescriptionLabelXpath
+            ) shouldBe "A SIC code is a 5 digit number that helps HMRC identify what your organisation does. In some countries it is also known as a trade number. If you do not have one, you can search for a relevant SIC code on Companies House (opens in a new window or tab)."
+            page.getElementText(
+              SicCodePage.headingXpath
+            ) shouldBe "What is the Standard Industrial Classification (SIC) code for your organisation?"
             page.getElementsHref("//*[@id='description']/a") shouldBe "https://resources.companieshouse.gov.uk/sic/"
         }
       }
@@ -416,11 +450,11 @@ class SicCodeControllerSpec
   }
 
   private def submitFormInCreateMode(
-                                      form: Map[String, String],
-                                      userId: String = defaultUserId,
-                                      orgType: EtmpOrganisationType = CorporateBody,
-                                      journey: Journey.Value = Journey.Register,
-                                      userSelectedOrgType: CdsOrganisationType
+    form: Map[String, String],
+    userId: String = defaultUserId,
+    orgType: EtmpOrganisationType = CorporateBody,
+    journey: Journey.Value = Journey.Register,
+    userSelectedOrgType: CdsOrganisationType
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
 
@@ -435,11 +469,11 @@ class SicCodeControllerSpec
   }
 
   private def submitFormInReviewMode(
-                                      form: Map[String, String],
-                                      userId: String = defaultUserId,
-                                      orgType: EtmpOrganisationType = CorporateBody,
-                                      journey: Journey.Value = Journey.Register,
-                                      userSelectedOrgType: CdsOrganisationType
+    form: Map[String, String],
+    userId: String = defaultUserId,
+    orgType: EtmpOrganisationType = CorporateBody,
+    journey: Journey.Value = Journey.Register,
+    userSelectedOrgType: CdsOrganisationType
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
 
@@ -464,11 +498,11 @@ class SicCodeControllerSpec
   }
 
   private def showCreateForm(
-                              userId: String = defaultUserId,
-                              orgType: EtmpOrganisationType = CorporateBody,
-                              journey: Journey.Value = Journey.Register,
-                              userSelectedOrgType: CdsOrganisationType,
-                              userLocation: Option[String] = Some("uk")
+    userId: String = defaultUserId,
+    orgType: EtmpOrganisationType = CorporateBody,
+    journey: Journey.Value = Journey.Register,
+    userSelectedOrgType: CdsOrganisationType,
+    userLocation: Option[String] = Some("uk")
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
 
@@ -481,11 +515,11 @@ class SicCodeControllerSpec
   }
 
   private def showReviewForm(
-                              dataToEdit: String = sic,
-                              userId: String = defaultUserId,
-                              orgType: EtmpOrganisationType = CorporateBody,
-                              journey: Journey.Value = Journey.Register,
-                              userSelectedOrgType: CdsOrganisationType
+    dataToEdit: String = sic,
+    userId: String = defaultUserId,
+    orgType: EtmpOrganisationType = CorporateBody,
+    journey: Journey.Value = Journey.Register,
+    userSelectedOrgType: CdsOrganisationType
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
 
@@ -502,4 +536,5 @@ class SicCodeControllerSpec
 
   private def verifyPrincipalEconomicActivityFieldExistsWithNoData(page: CdsPage): Unit =
     page.getElementValueForLabel(SubscriptionAmendCompanyDetailsPage.sicLabelXpath) shouldBe empty
+
 }

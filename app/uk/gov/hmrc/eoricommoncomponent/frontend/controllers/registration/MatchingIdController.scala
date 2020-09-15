@@ -31,12 +31,13 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class MatchingIdController @Inject()(
+class MatchingIdController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   matchingService: MatchingService,
   mcc: MessagesControllerComponents
-)(implicit ec: ExecutionContext) extends CdsController(mcc) with EnrolmentExtractor with FeatureFlags {
+)(implicit ec: ExecutionContext)
+    extends CdsController(mcc) with EnrolmentExtractor with FeatureFlags {
 
   def matchWithIdOnly(): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => loggedInUser: LoggedInUserWithEnrolments =>
@@ -58,7 +59,7 @@ class MatchingIdController @Inject()(
     if (matchingEnabled) {
       lazy val ctUtr = enrolledCtUtr(loggedInUser)
       lazy val saUtr = enrolledSaUtr(loggedInUser)
-      lazy val nino = enrolledNino(loggedInUser)
+      lazy val nino  = enrolledNino(loggedInUser)
 
       (ctUtr orElse saUtr orElse nino).fold(ifEmpty = Future.successful(redirectOrganisationTypePage)) { utrOrNino =>
         matchingService.matchBusinessWithIdOnly(utrOrNino, loggedInUser) map {
@@ -66,7 +67,7 @@ class MatchingIdController @Inject()(
           case false => redirectOrganisationTypePage
         }
       }
-    } else {
+    } else
       Future.successful(redirectOrganisationTypePage)
-    }
+
 }

@@ -36,7 +36,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SixLineAddressController @Inject()(
+class SixLineAddressController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   regDetailsCreator: RegistrationDetailsCreator,
@@ -57,7 +57,7 @@ class SixLineAddressController @Inject()(
     journey: Journey.Value
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
     val formByOrgType = formsByOrganisationTypes(request)(organisationType)
-    lazy val form = address.map(ad => createSixLineAddress(ad)).fold(formByOrgType)(formByOrgType.fill)
+    lazy val form     = address.map(ad => createSixLineAddress(ad)).fold(formByOrgType)(formByOrgType.fill)
     val (countriesToInclude, countriesInCountryPicker) =
       countries.getCountryParameters(requestSessionData.selectedUserLocationWithIslands)
     Future.successful(
@@ -100,7 +100,7 @@ class SixLineAddressController @Inject()(
                 journey
               )
             )
-        ),
+          ),
         formData => submitAddressDetails(isInReviewMode, formData, journey)
       )
     }
@@ -110,22 +110,23 @@ class SixLineAddressController @Inject()(
     formData: SixLineAddressMatchModel,
     journey: Journey.Value
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
-    if (isInReviewMode) {
+    if (isInReviewMode)
       registrationDetailsService
         .cacheAddress(regDetailsCreator.registrationAddress(formData))
         .map(
           _ =>
             Redirect(
-              uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController.determineRoute(journey)
-          )
+              uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController.determineRoute(
+                journey
+              )
+            )
         )
-    } else {
+    else
       registrationDetailsService.cacheAddress(regDetailsCreator.registrationAddress(formData)).flatMap { _ =>
         subscriptionFlowManager.startSubscriptionFlow(journey)
       } map {
         case (firstSubscriptionPage, session) => Redirect(firstSubscriptionPage.url).withSession(session)
       }
-    }
 
   private def assertOrganisationTypeIsValid(organisationType: String)(implicit request: Request[AnyContent]): Unit =
     require(
@@ -141,4 +142,5 @@ class SixLineAddressController @Inject()(
 
     Map("third-country-organisation" -> form, "third-country-individual" -> form, "third-country-sole-trader" -> form)
   }
+
 }

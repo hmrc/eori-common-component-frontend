@@ -29,9 +29,11 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class EnrolmentStoreProxyConnector @Inject()(http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit ec: ExecutionContext) {
+class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
+  ec: ExecutionContext
+) {
 
-  private val baseUrl = appConfig.enrolmentStoreProxyBaseUrl
+  private val baseUrl        = appConfig.enrolmentStoreProxyBaseUrl
   private val serviceContext = appConfig.enrolmentStoreProxyServiceContext
 
   private val loggerComponentId = "EnrolmentStoreProxyConnector"
@@ -68,19 +70,24 @@ class EnrolmentStoreProxyConnector @Inject()(http: HttpClient, appConfig: AppCon
     )
   }
 
-  def queryKnownFactsByIdentifiers(knownFactsQuery: KnownFactsQuery)(implicit hc: HeaderCarrier): Future[Option[KnownFacts]] =
+  def queryKnownFactsByIdentifiers(
+    knownFactsQuery: KnownFactsQuery
+  )(implicit hc: HeaderCarrier): Future[Option[KnownFacts]] =
     http.POST[KnownFactsQuery, Option[KnownFacts]](
       s"$baseUrl/$serviceContext/enrolment-store/enrolments",
       knownFactsQuery
     )
 
   object AuditHelp {
+
     implicit def httpResponseToJsvalue(httpResponse: HttpResponse): JsValue =
       new Writes[HttpResponse] {
+
         override def writes(o: HttpResponse): JsValue =
           if (o.body.nonEmpty)
-            Json.obj("status" -> o.status, "body" -> o.json)
+            Json.obj("status"    -> o.status, "body" -> o.json)
           else Json.obj("status" -> o.status)
+
       }.writes(httpResponse)
 
   }

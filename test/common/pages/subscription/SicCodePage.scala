@@ -35,7 +35,6 @@ sealed trait SicCodePageCommon extends WebPage {
   val sicLabelXpath = "//*label[@for='sic']"
 }
 
-trait SicCodePage extends SicCodePageCommon {
-}
+trait SicCodePage extends SicCodePageCommon {}
 
 object SicCodePage extends SicCodePage

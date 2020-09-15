@@ -32,21 +32,22 @@ import util.externalservices.ExternalServicesConfig._
 import util.externalservices.{AuditService, RegisterWithEoriAndIdMessagingService}
 
 class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
+
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
       Map(
-        "microservice.services.eori-common-component-hods-proxy.host" -> Host,
-        "microservice.services.eori-common-component-hods-proxy.port" -> Port,
+        "microservice.services.eori-common-component-hods-proxy.host"                              -> Host,
+        "microservice.services.eori-common-component-hods-proxy.port"                              -> Port,
         "microservice.services.eori-common-component-hods-proxy.register-with-eori-and-id.context" -> "register-with-eori-and-id",
-        "auditing.enabled" -> true,
-        "auditing.consumer.baseUri.host" -> Host,
-        "auditing.consumer.baseUri.port" -> Port
+        "auditing.enabled"                                                                         -> true,
+        "auditing.consumer.baseUri.host"                                                           -> Host,
+        "auditing.consumer.baseUri.port"                                                           -> Port
       )
     )
     .build()
 
   private lazy val RegisterWithEoriAndIdConnector = app.injector.instanceOf[RegisterWithEoriAndIdConnector]
-  val expectedPostUrl = "/register-with-eori-and-id"
+  val expectedPostUrl                             = "/register-with-eori-and-id"
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -216,6 +217,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
       """.stripMargin).toString
 
   private val responseTime = (new DateTime).withDate(2018, 1, 16).withTime(9, 0, 0, 0)
+
   val organisationUtrResponse = RegisterWithEoriAndIdResponseHolder(
     RegisterWithEoriAndIdResponse(
       ResponseCommon("OK", None, responseTime, None),

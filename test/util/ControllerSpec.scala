@@ -73,7 +73,10 @@ trait ControllerSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
         AuthBuilder.withNotLoggedInUser(mockAuthConnector)
 
         val result = action.apply(
-          SessionBuilder.buildRequestWithSessionAndPathNoUser(method = "GET", path = s"/customs-enrolment-services/register/")
+          SessionBuilder.buildRequestWithSessionAndPathNoUser(
+            method = "GET",
+            path = s"/customs-enrolment-services/register/"
+          )
         )
         status(result) shouldBe SEE_OTHER
         header(LOCATION, result) shouldBe Some(
@@ -86,36 +89,40 @@ trait ControllerSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
     mockAuthConnector: AuthConnector,
     action: Action[AnyContent],
     additionalLabel: String = ""
-  ): Unit = {
+  ): Unit =
     s"redirect to GG login when request is not authenticated when the Journey is for a Get An EORI Journey $additionalLabel" in {
       AuthBuilder.withNotLoggedInUser(mockAuthConnector)
 
       val result: Future[Result] = action.apply(
-        SessionBuilder.buildRequestWithSessionAndPathNoUser(method = "GET", path = s"/customs-enrolment-services/register/")
+        SessionBuilder.buildRequestWithSessionAndPathNoUser(
+          method = "GET",
+          path = s"/customs-enrolment-services/register/"
+        )
       )
       status(result) shouldBe SEE_OTHER
       header(LOCATION, result) shouldBe Some(
         "/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fregister%2Fmatch&origin=eori-common-component-frontend"
       )
     }
-  }
 
   protected def assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
     mockAuthConnector: AuthConnector,
     action: Action[AnyContent]
-  ): Unit = {
+  ): Unit =
     "redirect to GG login when request is not authenticated when the Journey is for a Subscription Journey" in {
       AuthBuilder.withNotLoggedInUser(mockAuthConnector)
 
       val result = action.apply(
-        SessionBuilder.buildRequestWithSessionAndPathNoUser(method = "GET", path = s"/customs-enrolment-services/subscribe/")
+        SessionBuilder.buildRequestWithSessionAndPathNoUser(
+          method = "GET",
+          path = s"/customs-enrolment-services/subscribe/"
+        )
       )
       status(result) shouldBe SEE_OTHER
       header(LOCATION, result) shouldBe Some(
         s"/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fsubscribe%2Fsubscribe&origin=eori-common-component-frontend"
       )
     }
-  }
 
   def assertCustomPageLevelError(
     result: Future[Result],
@@ -155,7 +162,7 @@ trait ControllerSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
 
   trait AbstractControllerFixture[C <: FrontendController] {
     val mockAuthConnector = mock[AuthConnector]
-    val userId = defaultUserId
+    val userId            = defaultUserId
 
     val controller: C
 
@@ -184,7 +191,9 @@ trait ControllerSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
         page.getElementsText(webPage.pageLevelErrorSummaryListXPath) shouldBe errorMessage
-        withClue(s"Not found in the page: field level error block for '$problemField' with xpath $fieldLevelErrorXPath") {
+        withClue(
+          s"Not found in the page: field level error block for '$problemField' with xpath $fieldLevelErrorXPath"
+        ) {
           page.elementIsPresent(fieldLevelErrorXPath) shouldBe true
         }
         page.getElementsText(fieldLevelErrorXPath) shouldBe errorMessage
@@ -193,19 +202,21 @@ trait ControllerSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
 
     def assertPresentOnPage(page: CdsPage)(elementXpath: String): Unit =
       withClue(s"Element xpath not present in page: $elementXpath")(page.elementIsPresent(elementXpath) shouldBe true)
+
   }
 
   implicit val hc = mock[HeaderCarrier]
 
-  val Required = "This field is required"
-  var NoSelection = "Please select one of the options"
-  val InvalidDate = "Please enter a valid date, for example '31 3 1980'"
-  val FutureDate = "You must specify a date that is not in the future"
-  val enterAValidEori = "Enter an EORI number in the right format"
-  val enterAGbEori = "Enter an EORI number that starts with GB"
+  val Required              = "This field is required"
+  var NoSelection           = "Please select one of the options"
+  val InvalidDate           = "Please enter a valid date, for example '31 3 1980'"
+  val FutureDate            = "You must specify a date that is not in the future"
+  val enterAValidEori       = "Enter an EORI number in the right format"
+  val enterAGbEori          = "Enter an EORI number that starts with GB"
   val defaultUserId: String = s"user-${UUID.randomUUID}"
 
   val helpAndSupportLabelXpath: String = "//*[@id='helpAndSupport']"
+
   val helpAndSupportText: String =
     "Help and support Telephone: 0300 322 7067 Open 8am to 6pm, Monday to Friday (closed bank holidays)."
 

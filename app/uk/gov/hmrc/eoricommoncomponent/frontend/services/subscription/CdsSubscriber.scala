@@ -29,7 +29,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CdsSubscriber @Inject()(
+class CdsSubscriber @Inject() (
   subscriptionService: SubscriptionService,
   sessionCache: SessionCache,
   handleSubscriptionService: HandleSubscriptionService,
@@ -37,19 +37,19 @@ class CdsSubscriber @Inject()(
   requestSessionData: RequestSessionData
 )(implicit ec: ExecutionContext) {
 
-  def subscribeWithCachedDetails(
-    cdsOrganisationType: Option[CdsOrganisationType],
-    journey: Journey.Value
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[SubscriptionResult] = {
+  def subscribeWithCachedDetails(cdsOrganisationType: Option[CdsOrganisationType], journey: Journey.Value)(implicit
+    hc: HeaderCarrier,
+    request: Request[AnyContent]
+  ): Future[SubscriptionResult] = {
     def migrationEoriUK: Future[SubscriptionResult] =
       for {
         subscriptionDetailsHolder <- sessionCache.subscriptionDetails
         eori = subscriptionDetailsHolder.eoriNumber.getOrElse(
           throw new IllegalStateException("Eori not found in cache")
         )
-        email <- sessionCache.email
+        email               <- sessionCache.email
         registrationDetails <- sessionCache.registerWithEoriAndIdResponse(hc)
-        subscriptionResult <- subscriptionService.existingReg(registrationDetails, Eori(eori), email)
+        subscriptionResult  <- subscriptionService.existingReg(registrationDetails, Eori(eori), email)
         _ <- onSubscriptionResultForUKSubscribe(
           subscriptionResult,
           registrationDetails,
@@ -67,40 +67,34 @@ class CdsSubscriber @Inject()(
           journey
         )
         _ <- onSubscriptionResult(subscriptionResult, registrationDetails, maybeSubscriptionDetails)
-      } yield {
-        subscriptionResult
-      }
+      } yield subscriptionResult
 
     def migrationEoriROW: Future[SubscriptionResult] =
       for {
         registrationDetails <- sessionCache.registrationDetails(hc)
         subscriptionDetails <- sessionCache.subscriptionDetails
-        email <- sessionCache.email
+        email               <- sessionCache.email
         subscriptionResult <- subscriptionService.subscribeWithMandatoryOnly(
           registrationDetails,
           subscriptionDetails,
           journey
         )
         _ <- onSubscriptionResultForRowSubscribe(subscriptionResult, registrationDetails, subscriptionDetails, email)
-      } yield {
-        subscriptionResult
-      }
+      } yield subscriptionResult
 
-    val isRowF = Future.successful(UserLocation.isRow(requestSessionData))
-    val journeyF = Future.successful(journey)
+    val isRowF           = Future.successful(UserLocation.isRow(requestSessionData))
+    val journeyF         = Future.successful(journey)
     val cachedCustomsIdF = subscriptionDetailsService.cachedCustomsId
 
     val result = for {
-      isRow <- isRowF
-      journey <- journeyF
+      isRow    <- isRowF
+      journey  <- journeyF
       customId <- if (isRow) cachedCustomsIdF else Future.successful(None)
-    } yield {
-      (journey, isRow, customId) match {
-        case (Journey.Subscribe, true, Some(_)) => migrationEoriUK //Has NINO/UTR as identifier UK journey
-        case (Journey.Subscribe, true, None)             => migrationEoriROW //ROW
-        case (Journey.Subscribe, false, _)               => migrationEoriUK //UK Journey
-        case _                                         => subscribeEori //Journey Get An EORI
-      }
+    } yield (journey, isRow, customId) match {
+      case (Journey.Subscribe, true, Some(_)) => migrationEoriUK  //Has NINO/UTR as identifier UK journey
+      case (Journey.Subscribe, true, None)    => migrationEoriROW //ROW
+      case (Journey.Subscribe, false, _)      => migrationEoriUK  //UK Journey
+      case _                                  => subscribeEori    //Journey Get An EORI
     }
     result.flatMap(identity)
   }
@@ -109,8 +103,8 @@ class CdsSubscriber @Inject()(
     registrationDetails: RegistrationDetails,
     mayBeCdsOrganisationType: Option[CdsOrganisationType],
     journey: Journey.Value
-  )(
-    implicit hc: HeaderCarrier,
+  )(implicit
+    hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[(SubscriptionResult, Option[SubscriptionDetails])] =
     for {
@@ -130,7 +124,7 @@ class CdsSubscriber @Inject()(
   )(implicit hc: HeaderCarrier): Future[Unit] = {
 
     val sapNumber = registrationDetails.sapNumber
-    val safeId = registrationDetails.safeId
+    val safeId    = registrationDetails.safeId
 
     def recipientDetails(formBundleId: String, processingDate: String) = {
       val contactDetails = subscriptionDetails
@@ -220,14 +214,16 @@ class CdsSubscriber @Inject()(
     email: String
   )(implicit hc: HeaderCarrier): Future[Unit] = {
 
-    val taxPayerId = regDetails.responseDetail.flatMap(_.responseData.map(r => TaxPayerId(r.SAFEID)))
+    val taxPayerId  = regDetails.responseDetail.flatMap(_.responseData.map(r => TaxPayerId(r.SAFEID)))
     val contactName = regDetails.responseDetail.flatMap(_.responseData.flatMap(_.contactDetail.map(_.contactName)))
 
     val completionDate = Some(subscriptionResult.processingDate)
 
     subscriptionResult match {
       case success: SubscriptionSuccessful =>
-        sessionCache.saveSub02Outcome(Sub02Outcome(success.processingDate, "", Some(success.eori.id))) //TODO  name is blank
+        sessionCache.saveSub02Outcome(
+          Sub02Outcome(success.processingDate, "", Some(success.eori.id))
+        ) //TODO  name is blank
       case _ => //TODO needs clarification
     }
 
@@ -242,10 +238,9 @@ class CdsSubscriber @Inject()(
           subDetails.eoriNumber.map(Eori),
           SafeId(id.id)
         )
-      case _ => {
+      case _ =>
         CdsLogger.error("No contact details available to save")
         Future.failed(throw new IllegalStateException("No contact details available to save)"))
-      }
     }
   }
 
@@ -277,4 +272,5 @@ class CdsSubscriber @Inject()(
         )
       case _ => Future.successful(())
     }
+
 }

@@ -49,15 +49,16 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   private val controller =
     new WhatIsYourEmailController(app, mockAuthConnector, mcc, whatIsYourEmailView, mockSave4LaterService)
-  val email = "test@example.com"
+
+  val email       = "test@example.com"
   val emailStatus = EmailStatus(email)
 
   val internalId = "InternalID"
-  val jsonValue = Json.toJson(emailStatus)
-  val data = Map(internalId -> jsonValue)
-  val cacheMap = CacheMap(internalId, data)
+  val jsonValue  = Json.toJson(emailStatus)
+  val data       = Map(internalId -> jsonValue)
+  val cacheMap   = CacheMap(internalId, data)
 
-  val EmailFieldsMap = Map("email" -> email)
+  val EmailFieldsMap            = Map("email" -> email)
   val unpopulatedEmailFieldsMap = Map("email" -> "")
 
   override def beforeEach: Unit = {
@@ -102,7 +103,9 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
       submitFormInCreateMode(EmailFieldsMap, journey = Journey.Subscribe) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs-enrolment-services/subscribe/matching/check-your-email")
+        result.header.headers("Location") should endWith(
+          "/customs-enrolment-services/subscribe/matching/check-your-email"
+        )
 
       }
     }
@@ -112,9 +115,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     test: Future[Result] => Any
   ) {
     withAuthorisedUser(userId, mockAuthConnector)
-    val result = controller.submit(journey)(
-      SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
-    )
+    val result = controller.submit(journey)(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }
 

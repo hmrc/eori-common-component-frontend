@@ -36,7 +36,7 @@ case class SafeId(override val id: String) extends CustomsId
 
 case class TaxPayerId(override val id: String) extends CustomsId {
   private val MDGTaxPayerIdLength = 42
-  val mdgTaxPayerId: String = id + "0" * (MDGTaxPayerIdLength - id.length)
+  val mdgTaxPayerId: String       = id + "0" * (MDGTaxPayerIdLength - id.length)
 }
 
 object TaxPayerId {
@@ -44,46 +44,56 @@ object TaxPayerId {
 }
 
 object SafeId {
-  implicit val format = Json.format[SafeId]
+  implicit val format                                = Json.format[SafeId]
   implicit def toJsonFormat(safeId: SafeId): JsValue = Json.toJson(safeId)
 }
+
 case class InternalId(id: String)
+
 object InternalId {
+
   def apply(id: Option[String]): InternalId =
     new InternalId(id.getOrElse(throw new IllegalArgumentException("InternalId is missing")))
+
   implicit val format = Json.format[InternalId]
 }
 
 case class GroupId(id: String)
+
 object GroupId {
+
   def apply(id: Option[String]): GroupId =
     new GroupId(id.getOrElse(throw new IllegalArgumentException("GroupId is missing")))
+
   implicit val format = Json.format[GroupId]
 }
 
 case class CacheIds(internalId: InternalId, safeId: SafeId)
+
 object CacheIds {
+
   def apply(mayBeInternalId: Option[String], mayBeSafeId: Option[String]): CacheIds = {
     val internalId = InternalId(mayBeInternalId.getOrElse(throw new IllegalArgumentException("InternalId missing")))
-    val safeId = SafeId(mayBeSafeId.getOrElse(throw new IllegalArgumentException("SafeId missing")))
+    val safeId     = SafeId(mayBeSafeId.getOrElse(throw new IllegalArgumentException("SafeId missing")))
     new CacheIds(internalId, safeId)
   }
-  implicit val jsonFormat = Json.format[CacheIds]
+
+  implicit val jsonFormat                                = Json.format[CacheIds]
   implicit def toJsonFormat(cacheIds: CacheIds): JsValue = Json.toJson(cacheIds)
 }
 
 object CustomsId {
-  private val utr = "utr"
-  private val eori = "eori"
-  private val nino = "nino"
-  private val safeId = "safeId"
+  private val utr        = "utr"
+  private val eori       = "eori"
+  private val nino       = "nino"
+  private val safeId     = "safeId"
   private val taxPayerId = "taxPayerId"
 
   private val idTypeMapping = Map[String, String => CustomsId](
-    utr -> Utr,
-    eori -> Eori,
-    nino -> Nino,
-    safeId -> (s => SafeId(s)),
+    utr        -> Utr,
+    eori       -> Eori,
+    nino       -> Nino,
+    safeId     -> (s => SafeId(s)),
     taxPayerId -> (s => TaxPayerId(s))
   )
 
@@ -103,6 +113,7 @@ object CustomsId {
       case TaxPayerId(id) => Json.obj(taxPayerId -> id)
     }
   )
+
 }
 
 case class UserLocationDetails(location: Option[String])

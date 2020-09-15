@@ -29,9 +29,11 @@ case class SubscriptionSuccessful(
   processingDate: String,
   emailVerificationTimestamp: Option[DateTime]
 ) extends SubscriptionResult
+
 case class SubscriptionPending(
   formBundleId: String,
   processingDate: String,
   emailVerificationTimestamp: Option[DateTime]
 ) extends SubscriptionResult
+
 case class SubscriptionFailed(failureReason: String, processingDate: String) extends SubscriptionResult

@@ -50,13 +50,13 @@ import scala.concurrent.Future
 
 class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar with BeforeAndAfterEach {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockMatchingService = mock[MatchingService]
-  private val mockMatchingConnector = mock[MatchingServiceConnector]
-  private val mockMatchingRequestHolder = mock[MatchingRequestHolder]
-  private val mockMatchingResponse = mock[MatchingResponse]
+  private val mockAuthConnector              = mock[AuthConnector]
+  private val mockMatchingService            = mock[MatchingService]
+  private val mockMatchingConnector          = mock[MatchingServiceConnector]
+  private val mockMatchingRequestHolder      = mock[MatchingRequestHolder]
+  private val mockMatchingResponse           = mock[MatchingResponse]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
-  private val matchOrganisationUtrView = app.injector.instanceOf[match_organisation_utr]
+  private val matchOrganisationUtrView       = app.injector.instanceOf[match_organisation_utr]
 
   private val controller = new DoYouHaveAUtrNumberController(
     app,
@@ -68,8 +68,10 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
   )
 
   private val UtrInvalidError = "Enter a valid UTR number"
+
   private val BusinessNotMatchedError =
     "Your business details have not been found. Check that your details are correct and try again."
+
   private val IndividualNotMatchedError =
     "Your details have not been found. Check that your details are correct and then try again."
 
@@ -99,7 +101,7 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
           status(result) shouldBe BAD_REQUEST
           val page = CdsPage(bodyOf(result))
 
-          val labelForUtr = "Corporation Tax UTR number"
+          val labelForUtr  = "Corporation Tax UTR number"
           val errorMessage = "Enter your UTR number"
 
           page.getElementsText(labelForUtrXpath) shouldBe labelForUtr + " " + errorMessage
@@ -199,7 +201,9 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
     "direct the user to the Are You VAT Registered in the UK? page" in {
       submitForm(NoUtrRequest, CdsOrganisationType.CharityPublicBodyNotForProfitId) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs-enrolment-services/register/are-you-vat-registered-in-uk")
+        result.header.headers("Location") should endWith(
+          "/customs-enrolment-services/register/are-you-vat-registered-in-uk"
+        )
       }
     }
   }
@@ -214,7 +218,9 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
         )
         page.h1 shouldBe "Does your organisation have a Unique Taxpayer Reference (UTR) number issued in the UK?"
 
-        page.getElementsText("//*[@id='intro']") shouldBe "You will have a UTR number if your organisation pays corporation tax in the UK."
+        page.getElementsText(
+          "//*[@id='intro']"
+        ) shouldBe "You will have a UTR number if your organisation pays corporation tax in the UK."
       }
     }
   }
@@ -266,7 +272,9 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
           "Do you have a Self Assessment Unique Taxpayer Reference (UTR) number issued in the UK?"
         )
         page.h1 shouldBe "Do you have a Self Assessment Unique Taxpayer Reference (UTR) number issued in the UK?"
-        page.getElementsText("//*[@id='intro']") shouldBe "You will have a self assessment UTR number if you registered for Self Assessment in the UK."
+        page.getElementsText(
+          "//*[@id='intro']"
+        ) shouldBe "You will have a self assessment UTR number if you registered for Self Assessment in the UK."
       }
     }
     "contain a proper content for individuals" in {
@@ -276,7 +284,9 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
           "Do you have a Self Assessment Unique Taxpayer Reference (UTR) number issued in the UK?"
         )
         page.h1 shouldBe "Do you have a Self Assessment Unique Taxpayer Reference (UTR) number issued in the UK?"
-        page.getElementsText("//*[@id='intro']") shouldBe "You will have a self assessment UTR number if you registered for Self Assessment in the UK."
+        page.getElementsText(
+          "//*[@id='intro']"
+        ) shouldBe "You will have a self assessment UTR number if you registered for Self Assessment in the UK."
       }
     }
   }
@@ -353,4 +363,5 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
       .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }
+
 }

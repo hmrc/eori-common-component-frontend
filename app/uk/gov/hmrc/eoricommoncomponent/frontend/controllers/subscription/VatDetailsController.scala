@@ -46,7 +46,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class VatDetailsController @Inject()(
+class VatDetailsController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   subscriptionFlowManager: SubscriptionFlowManager,
@@ -75,15 +75,14 @@ class VatDetailsController @Inject()(
 
   def submit(isInReviewMode: Boolean, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      vatDetailsForm.bindFromRequest.fold(formWithErrors => {
-        Future.successful(BadRequest(vatDetailsView(formWithErrors, isInReviewMode, journey)))
-      }, formData => {
-        lookupVatDetails(formData, isInReviewMode, journey)
-      })
+      vatDetailsForm.bindFromRequest.fold(
+        formWithErrors => Future.successful(BadRequest(vatDetailsView(formWithErrors, isInReviewMode, journey))),
+        formData => lookupVatDetails(formData, isInReviewMode, journey)
+      )
     }
 
-  private def lookupVatDetails(vatForm: VatDetails, isInReviewMode: Boolean, journey: Journey.Value)(
-    implicit hc: HeaderCarrier,
+  private def lookupVatDetails(vatForm: VatDetails, isInReviewMode: Boolean, journey: Journey.Value)(implicit
+    hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] = {
 
@@ -100,23 +99,21 @@ class VatDetailsController @Inject()(
 
     vatControlListConnector.vatControlList(VatControlListRequest(vatForm.number)).flatMap {
       case Right(knownFacts) =>
-        if (confirmKnownFacts(knownFacts)) {
+        if (confirmKnownFacts(knownFacts))
           subscriptionDetailsService
             .cacheUkVatDetails(vatForm)
             .map(
               _ =>
-                if (isInReviewMode) {
+                if (isInReviewMode)
                   Redirect(
                     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
                       .determineRoute(journey)
                   )
-                } else {
+                else
                   Redirect(subscriptionFlowManager.stepInformation(VatDetailsSubscriptionFlowPage).nextPage.url)
-              }
             )
-        } else {
+        else
           Future.successful(Redirect(VatDetailsController.vatDetailsNotMatched(isInReviewMode, journey)))
-        }
       case Left(errorResponse) =>
         errorResponse match {
           case NotFoundResponse =>
@@ -132,4 +129,5 @@ class VatDetailsController @Inject()(
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       Future.successful(Ok(weCannotConfirmYourIdentity(isInReviewMode)))
     }
+
 }

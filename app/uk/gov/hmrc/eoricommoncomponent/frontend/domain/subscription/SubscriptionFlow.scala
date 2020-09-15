@@ -22,10 +22,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 
 object SubscriptionFlows {
 
-  private val individualFlowConfig = createFlowConfig(
-    Journey.Register,
-    List(ContactDetailsSubscriptionFlowPageGetEori, EoriConsentSubscriptionFlowPage)
-  )
+  private val individualFlowConfig =
+    createFlowConfig(Journey.Register, List(ContactDetailsSubscriptionFlowPageGetEori, EoriConsentSubscriptionFlowPage))
 
   private val soleTraderFlowConfig = createFlowConfig(
     Journey.Register,
@@ -57,6 +55,7 @@ object SubscriptionFlows {
       EoriConsentSubscriptionFlowPage
     )
   )
+
   private val partnershipFlowConfig = createFlowConfig(
     Journey.Register,
     List(
@@ -73,10 +72,8 @@ object SubscriptionFlows {
     )
   )
 
-  private val thirdCountryIndividualFlowConfig = createFlowConfig(
-    Journey.Register,
-    List(ContactDetailsSubscriptionFlowPageGetEori, EoriConsentSubscriptionFlowPage)
-  )
+  private val thirdCountryIndividualFlowConfig =
+    createFlowConfig(Journey.Register, List(ContactDetailsSubscriptionFlowPageGetEori, EoriConsentSubscriptionFlowPage))
 
   private val thirdCountrySoleTraderFlowConfig = createFlowConfig(
     Journey.Register,
@@ -175,21 +172,21 @@ object SubscriptionFlows {
   )
 
   val flows: Map[SubscriptionFlow, SubscriptionFlowConfig] = Map(
-    OrganisationSubscriptionFlow -> corporateFlowConfig,
-    PartnershipSubscriptionFlow -> partnershipFlowConfig,
-    SoleTraderSubscriptionFlow -> soleTraderFlowConfig,
-    IndividualSubscriptionFlow -> individualFlowConfig,
-    ThirdCountryOrganisationSubscriptionFlow -> thirdCountryCorporateFlowConfig,
-    ThirdCountrySoleTraderSubscriptionFlow -> thirdCountrySoleTraderFlowConfig,
-    ThirdCountryIndividualSubscriptionFlow -> thirdCountryIndividualFlowConfig,
-    MigrationEoriOrganisationSubscriptionFlow -> corporateRegExistingEoriFlowConfig,
-    MigrationEoriSoleTraderSubscriptionFlow -> soleTraderRegExistingEoriFlowConfig,
-    MigrationEoriIndividualSubscriptionFlow -> soleTraderRegExistingEoriFlowConfig,
-    MigrationEoriRowOrganisationSubscriptionFlow -> migrationEoriRowCorporateFlowConfig,
-    MigrationEoriRowSoleTraderSubscriptionFlow -> migrationEoriRowSoleTraderAndIndividualFlowConfig,
-    MigrationEoriRowIndividualSubscriptionFlow -> migrationEoriRowSoleTraderAndIndividualFlowConfig,
+    OrganisationSubscriptionFlow                               -> corporateFlowConfig,
+    PartnershipSubscriptionFlow                                -> partnershipFlowConfig,
+    SoleTraderSubscriptionFlow                                 -> soleTraderFlowConfig,
+    IndividualSubscriptionFlow                                 -> individualFlowConfig,
+    ThirdCountryOrganisationSubscriptionFlow                   -> thirdCountryCorporateFlowConfig,
+    ThirdCountrySoleTraderSubscriptionFlow                     -> thirdCountrySoleTraderFlowConfig,
+    ThirdCountryIndividualSubscriptionFlow                     -> thirdCountryIndividualFlowConfig,
+    MigrationEoriOrganisationSubscriptionFlow                  -> corporateRegExistingEoriFlowConfig,
+    MigrationEoriSoleTraderSubscriptionFlow                    -> soleTraderRegExistingEoriFlowConfig,
+    MigrationEoriIndividualSubscriptionFlow                    -> soleTraderRegExistingEoriFlowConfig,
+    MigrationEoriRowOrganisationSubscriptionFlow               -> migrationEoriRowCorporateFlowConfig,
+    MigrationEoriRowSoleTraderSubscriptionFlow                 -> migrationEoriRowSoleTraderAndIndividualFlowConfig,
+    MigrationEoriRowIndividualSubscriptionFlow                 -> migrationEoriRowSoleTraderAndIndividualFlowConfig,
     MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow -> migrationEoriRowCorporateFlowConfigUtrNinoEnabled,
-    MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow -> migrationEoriRowSoleTraderAndIndividualFlowConfigUtrNinoEnabled
+    MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow  -> migrationEoriRowSoleTraderAndIndividualFlowConfigUtrNinoEnabled
   )
 
   private def createFlowConfig(journey: Journey.Value, flowStepList: List[SubscriptionPage]): SubscriptionFlowConfig =
@@ -257,10 +254,12 @@ case object MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow
     extends SubscriptionFlow("migration-eori-row-utrNino-enabled-Individual", isIndividualFlow = true)
 
 object SubscriptionFlow {
+
   def apply(flowName: String): SubscriptionFlow =
     SubscriptionFlows.flows.keys
       .find(_.name == flowName)
       .fold(throw new IllegalStateException(s"Incorrect Subscription flowname $flowName"))(identity)
+
 }
 
 sealed abstract class SubscriptionPage(val url: String)
@@ -295,7 +294,9 @@ case object NinoSubscriptionFlowPage
 
 case object AddressDetailsSubscriptionFlowPage
     extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.createForm(journey = Journey.Subscribe).url
+      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.createForm(journey =
+        Journey.Subscribe
+      ).url
     )
 
 case object NameUtrDetailsSubscriptionFlowPage

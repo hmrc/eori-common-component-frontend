@@ -21,45 +21,45 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.Contac
 
 object SubscriptionContactDetailsFormBuilder {
 
-  val FullName = "Full Name"
-  val Email = "john.doe@example.com"
-  val Telephone = "01632961234"
-  val Fax = "01632961235"
-  val Street = "Line 1"
-  val City = "city name"
-  val Postcode = "SE28 1AA"
-  val CountryCode = "FR"
-  val Country = "France"
+  val FullName           = "Full Name"
+  val Email              = "john.doe@example.com"
+  val Telephone          = "01632961234"
+  val Fax                = "01632961235"
+  val Street             = "Line 1"
+  val City               = "city name"
+  val Postcode           = "SE28 1AA"
+  val CountryCode        = "FR"
+  val Country            = "France"
   val RevisedCountryCode = "AL"
-  val RevisedCountry = "Albania"
+  val RevisedCountry     = "Albania"
 
-  val fullNameFieldName = "full-name"
-  val emailFieldName = "email"
-  val telephoneFieldName = "telephone"
-  val faxFieldName = "fax"
+  val fullNameFieldName                 = "full-name"
+  val emailFieldName                    = "email"
+  val telephoneFieldName                = "telephone"
+  val faxFieldName                      = "fax"
   val useRegisteredAddressFlagFieldName = "use-registered-address"
-  val streetFieldName = "street"
-  val cityFieldName = "city"
-  val postcodeFieldName = "postcode"
-  val countryCodeFieldName = "countryCode"
-  val countryFieldName = s"$countryCodeFieldName-auto-complete"
+  val streetFieldName                   = "street"
+  val cityFieldName                     = "city"
+  val postcodeFieldName                 = "postcode"
+  val countryCodeFieldName              = "countryCode"
+  val countryFieldName                  = s"$countryCodeFieldName-auto-complete"
 
   val createFormMandatoryFieldsMap: Map[String, String] = Map(
-    fullNameFieldName -> FullName,
-    emailFieldName -> Email,
-    telephoneFieldName -> Telephone,
+    fullNameFieldName                 -> FullName,
+    emailFieldName                    -> Email,
+    telephoneFieldName                -> Telephone,
     useRegisteredAddressFlagFieldName -> "true"
   )
 
   val editFormFields: Map[String, String] = Map(
-    fullNameFieldName -> FullName,
-    emailFieldName -> Email,
-    telephoneFieldName -> Telephone,
-    faxFieldName -> Fax,
-    streetFieldName -> Street,
-    cityFieldName -> City,
-    postcodeFieldName -> Postcode,
-    countryFieldName -> Country,
+    fullNameFieldName    -> FullName,
+    emailFieldName       -> Email,
+    telephoneFieldName   -> Telephone,
+    faxFieldName         -> Fax,
+    streetFieldName      -> Street,
+    cityFieldName        -> City,
+    postcodeFieldName    -> Postcode,
+    countryFieldName     -> Country,
     countryCodeFieldName -> CountryCode
   )
 
@@ -102,25 +102,25 @@ object SubscriptionContactDetailsFormBuilder {
     contactDetailsModel.copy(useAddressFromRegistrationDetails = true)
 
   val createFormMandatoryFieldsWhenNotUsingRegAddressMap: Map[String, String] = Map(
-    fullNameFieldName -> FullName,
-    emailFieldName -> Email,
-    telephoneFieldName -> Telephone,
+    fullNameFieldName                 -> FullName,
+    emailFieldName                    -> Email,
+    telephoneFieldName                -> Telephone,
     useRegisteredAddressFlagFieldName -> "false",
-    streetFieldName -> Street,
-    cityFieldName -> City,
-    postcodeFieldName -> "",
-    countryFieldName -> Country,
-    countryCodeFieldName -> CountryCode
+    streetFieldName                   -> Street,
+    cityFieldName                     -> City,
+    postcodeFieldName                 -> "",
+    countryFieldName                  -> Country,
+    countryCodeFieldName              -> CountryCode
   )
 
   val createFormAllFieldsWhenNotUsingRegAddressMap: Map[String, String] =
     createFormMandatoryFieldsWhenNotUsingRegAddressMap ++ Map(
-      faxFieldName -> Fax,
-      streetFieldName -> Street,
-      cityFieldName -> City,
-      postcodeFieldName -> Postcode,
+      faxFieldName         -> Fax,
+      streetFieldName      -> Street,
+      cityFieldName        -> City,
+      postcodeFieldName    -> Postcode,
       countryCodeFieldName -> CountryCode,
-      countryFieldName -> Country
+      countryFieldName     -> Country
     )
 
   val createContactDetailsViewModelWhenNotUsingRegAddress = ContactDetailsModel(
@@ -136,10 +136,10 @@ object SubscriptionContactDetailsFormBuilder {
   )
 
   val createFormAllFieldsWhenUseRegAddressMap: Map[String, String] = Map(
-    fullNameFieldName -> FullName,
-    emailFieldName -> Email,
-    telephoneFieldName -> Telephone,
-    faxFieldName -> Fax,
+    fullNameFieldName                 -> FullName,
+    emailFieldName                    -> Email,
+    telephoneFieldName                -> Telephone,
+    faxFieldName                      -> Fax,
     useRegisteredAddressFlagFieldName -> "true"
   )
 
@@ -156,10 +156,10 @@ object SubscriptionContactDetailsFormBuilder {
   )
 
   val createFormAllFieldsEmptyMap: Map[String, String] = Map(
-    fullNameFieldName -> "",
-    emailFieldName -> "",
-    telephoneFieldName -> "",
-    faxFieldName -> "",
+    fullNameFieldName                 -> "",
+    emailFieldName                    -> "",
+    telephoneFieldName                -> "",
+    faxFieldName                      -> "",
     useRegisteredAddressFlagFieldName -> ""
   )
 

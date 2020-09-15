@@ -44,4 +44,5 @@ trait PdfGeneratorServiceStub extends WireMockRunner {
   private def request() =
     post(urlPathEqualTo("/pdf-generator-service/generate"))
       .withHeader(CONTENT_TYPE, matching(MimeTypes.JSON))
+
 }

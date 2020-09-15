@@ -34,7 +34,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.CheckYo
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType.{Partnership, _}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{BusinessShortName, SubscriptionDetails, SubscriptionFlow}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  BusinessShortName,
+  SubscriptionDetails,
+  SubscriptionFlow
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, VatEUDetailsModel}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
@@ -62,13 +66,13 @@ class CheckYourDetailsRegisterControllerSpec
     extends ControllerSpec with BusinessDatesOrganisationTypeTables with ReviewPageOrganisationTypeTables
     with BeforeAndAfterEach {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockSessionCache = mock[SessionCache]
-  private val mockSubscriptionDetailsHolder = mock[SubscriptionDetails]
+  private val mockAuthConnector                     = mock[AuthConnector]
+  private val mockSessionCache                      = mock[SessionCache]
+  private val mockSubscriptionDetailsHolder         = mock[SubscriptionDetails]
   private val mockRegisterWithoutIdWithSubscription = mock[RegisterWithoutIdWithSubscriptionService]
-  private val mockSubscriptionFlow = mock[SubscriptionFlow]
-  private val mockRequestSession = mock[RequestSessionData]
-  private val checkYourDetailsRegisterView = app.injector.instanceOf[check_your_details_register]
+  private val mockSubscriptionFlow                  = mock[SubscriptionFlow]
+  private val mockRequestSession                    = mock[RequestSessionData]
+  private val checkYourDetailsRegisterView          = app.injector.instanceOf[check_your_details_register]
 
   val controller = new CheckYourDetailsRegisterController(
     app,
@@ -84,6 +88,7 @@ class CheckYourDetailsRegisterControllerSpec
 
   private val addressDetails =
     AddressViewModel(street = "street", city = "city", postcode = Some("SE28 1AA"), countryCode = "GB")
+
   private val shortName = "Company Details Short name"
 
   private val dateOfEstablishmentOrDob = LocalDate.parse("1980-01-01")
@@ -158,16 +163,22 @@ class CheckYourDetailsRegisterControllerSpec
 
         page.getElementsText(RegistrationReviewPage.FullNameReviewLinkXPath) shouldBe RegistrationReviewPage
           .changeAnswerText("Full name")
-        page.getElementsHref(RegistrationReviewPage.FullNameReviewLinkXPath) shouldBe "/customs-enrolment-services/register/matching/row-name-date-of-birth/sole-trader/review"
+        page.getElementsHref(
+          RegistrationReviewPage.FullNameReviewLinkXPath
+        ) shouldBe "/customs-enrolment-services/register/matching/row-name-date-of-birth/sole-trader/review"
 
         page.getElementsText(RegistrationReviewPage.IndividualDateOfBirthXPath) shouldBe
           strim("""
                 |23 July 1980
               """)
 
-        page.getElementsText(RegistrationReviewPage.IndividualDateOfBirthReviewLinkXPath) shouldBe RegistrationReviewPage
+        page.getElementsText(
+          RegistrationReviewPage.IndividualDateOfBirthReviewLinkXPath
+        ) shouldBe RegistrationReviewPage
           .changeAnswerText("Date of birth")
-        page.getElementsHref(RegistrationReviewPage.IndividualDateOfBirthReviewLinkXPath) shouldBe "/customs-enrolment-services/register/matching/row-name-date-of-birth/sole-trader/review"
+        page.getElementsHref(
+          RegistrationReviewPage.IndividualDateOfBirthReviewLinkXPath
+        ) shouldBe "/customs-enrolment-services/register/matching/row-name-date-of-birth/sole-trader/review"
 
         page.elementIsPresent(RegistrationReviewPage.DateOfEstablishmentLabelXPath) shouldBe false
         page.elementIsPresent(RegistrationReviewPage.DateOfEstablishmentXPath) shouldBe false
@@ -436,7 +447,9 @@ class CheckYourDetailsRegisterControllerSpec
       page.title should startWith("Check your answers")
 
       page.getElementsText(SubscriptionExistingDetailsReviewPage.startAgainLinkXPath) shouldBe "Start again"
-      page.getElementsHref(SubscriptionExistingDetailsReviewPage.startAgainLinkXPath) shouldBe "/customs-enrolment-services/register/start-again"
+      page.getElementsHref(
+        SubscriptionExistingDetailsReviewPage.startAgainLinkXPath
+      ) shouldBe "/customs-enrolment-services/register/start-again"
 
       page.getElementsText(SubscriptionExistingDetailsReviewPage.BusinessNameLabelXpath) shouldBe "Organisation name"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.BusinessNameValueXpath) shouldBe "orgName"
@@ -444,7 +457,9 @@ class CheckYourDetailsRegisterControllerSpec
       page.getElementsText(SubscriptionExistingDetailsReviewPage.UtrNoLabelXPath) shouldBe "Corporation Tax UTR number"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.UtrNoLabelValueXPath) shouldBe "7280616009"
 
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.LimitedAddressLabelXpath) shouldBe "Organisation address"
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.LimitedAddressLabelXpath
+      ) shouldBe "Organisation address"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.LimitedAddressValueXpath) shouldBe
         strim("""
             |street
@@ -454,11 +469,17 @@ class CheckYourDetailsRegisterControllerSpec
           """)
       page.elementIsPresent(SubscriptionExistingDetailsReviewPage.LimitedAddressReviewLink) shouldBe false
 
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.DateOfEstablishmentLabelXPath) shouldBe "Date of establishment"
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.DateOfEstablishmentLabelXPath
+      ) shouldBe "Date of establishment"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.DateOfEstablishmentXPath) shouldBe "23 July 1980"
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.DateOfEstablishmentReviewLinkXPath) shouldBe SubscriptionExistingDetailsReviewPage
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.DateOfEstablishmentReviewLinkXPath
+      ) shouldBe SubscriptionExistingDetailsReviewPage
         .changeAnswerText("Date of establishment")
-      page.getElementsHref(SubscriptionExistingDetailsReviewPage.DateOfEstablishmentReviewLinkXPath) shouldBe "/customs-enrolment-services/register/date-established/review"
+      page.getElementsHref(
+        SubscriptionExistingDetailsReviewPage.DateOfEstablishmentReviewLinkXPath
+      ) shouldBe "/customs-enrolment-services/register/date-established/review"
 
       page.getElementsText(SubscriptionExistingDetailsReviewPage.ContactDetailsXPathLabel) shouldBe "Contact"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.ContactDetailsXPath) shouldBe
@@ -472,47 +493,87 @@ class CheckYourDetailsRegisterControllerSpec
             |SE28 1AA
             |France
           """)
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.ContactDetailsReviewLinkXPath) shouldBe SubscriptionExistingDetailsReviewPage
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.ContactDetailsReviewLinkXPath
+      ) shouldBe SubscriptionExistingDetailsReviewPage
         .changeAnswerText("Contact")
-      page.getElementsHref(SubscriptionExistingDetailsReviewPage.ContactDetailsReviewLinkXPath) shouldBe "/customs-enrolment-services/register/contact-details/review"
+      page.getElementsHref(
+        SubscriptionExistingDetailsReviewPage.ContactDetailsReviewLinkXPath
+      ) shouldBe "/customs-enrolment-services/register/contact-details/review"
 
       page.getElementsText(SubscriptionExistingDetailsReviewPage.ShortNameXPathLabel) shouldBe "Shortened name"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.ShortNameXPath) shouldBe "Short Name"
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.ShortNameReviewLinkXPath) shouldBe SubscriptionExistingDetailsReviewPage
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.ShortNameReviewLinkXPath
+      ) shouldBe SubscriptionExistingDetailsReviewPage
         .changeAnswerText("Shortened name")
-      page.getElementsHref(SubscriptionExistingDetailsReviewPage.ShortNameReviewLinkXPath) shouldBe "/customs-enrolment-services/register/company-short-name/review"
+      page.getElementsHref(
+        SubscriptionExistingDetailsReviewPage.ShortNameReviewLinkXPath
+      ) shouldBe "/customs-enrolment-services/register/company-short-name/review"
 
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.NatureOfBusinessXPathLabel) shouldBe "Standard Industrial Classification (SIC) code"
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.NatureOfBusinessXPathLabel
+      ) shouldBe "Standard Industrial Classification (SIC) code"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.NatureOfBusinessXPath) shouldBe "9999"
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.NatureOfBusinessReviewLinkXPath) shouldBe SubscriptionExistingDetailsReviewPage
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.NatureOfBusinessReviewLinkXPath
+      ) shouldBe SubscriptionExistingDetailsReviewPage
         .changeAnswerText("Standard Industrial Classification (SIC) code")
-      page.getElementsHref(SubscriptionExistingDetailsReviewPage.NatureOfBusinessReviewLinkXPath) shouldBe "/customs-enrolment-services/register/sic-code/review"
+      page.getElementsHref(
+        SubscriptionExistingDetailsReviewPage.NatureOfBusinessReviewLinkXPath
+      ) shouldBe "/customs-enrolment-services/register/sic-code/review"
 
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.UKVatIdentificationNumbersXpathLabel) shouldBe "UK VAT Number"
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.UKVatIdentificationNumbersXpathLabel
+      ) shouldBe "UK VAT Number"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.UKVatIdentificationNumbersXpath) shouldBe "123456789"
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.UKVatIdentificationPostcodeXpathLabel) shouldBe "Postcode of your UK VAT registration address"
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.UKVatIdentificationPostcodeXpathLabel
+      ) shouldBe "Postcode of your UK VAT registration address"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.UKVatIdentificationPostcodeXpath) shouldBe "SE28 1AA"
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.UKVatIdentificationDateXpathLabel) shouldBe "UK VAT effective date"
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.UKVatIdentificationDateXpathLabel
+      ) shouldBe "UK VAT effective date"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.UKVatIdentificationDateXpath) shouldBe "1 January 2017"
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.UKVatIdentificationNumbersReviewLinkXpath) shouldBe SubscriptionExistingDetailsReviewPage
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.UKVatIdentificationNumbersReviewLinkXpath
+      ) shouldBe SubscriptionExistingDetailsReviewPage
         .changeAnswerText("UK VAT Number")
-      page.getElementsHref(SubscriptionExistingDetailsReviewPage.UKVatIdentificationNumbersReviewLinkXpath) shouldBe "/customs-enrolment-services/register/vat-registered-uk/review"
+      page.getElementsHref(
+        SubscriptionExistingDetailsReviewPage.UKVatIdentificationNumbersReviewLinkXpath
+      ) shouldBe "/customs-enrolment-services/register/vat-registered-uk/review"
 
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.EUVatIdentificationNumbersXpathLabel) shouldBe "EU VAT numbers"
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.EUVatIdentificationNumbersXpathLabel
+      ) shouldBe "EU VAT numbers"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.EUVatIdentificationNumbersXpath) shouldBe
         strim("""
             |VAT-2 - France
             |VAT-3 - Poland
           """)
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.EUVatIdentificationNumbersReviewLinkXpath) shouldBe SubscriptionExistingDetailsReviewPage
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.EUVatIdentificationNumbersReviewLinkXpath
+      ) shouldBe SubscriptionExistingDetailsReviewPage
         .changeAnswerText("EU VAT numbers")
-      page.getElementsHref(SubscriptionExistingDetailsReviewPage.EUVatIdentificationNumbersReviewLinkXpath) shouldBe "/customs-enrolment-services/register/vat-details-eu-confirm/review"
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.EUDisclosureReviewLinkXpath) shouldBe SubscriptionExistingDetailsReviewPage
+      page.getElementsHref(
+        SubscriptionExistingDetailsReviewPage.EUVatIdentificationNumbersReviewLinkXpath
+      ) shouldBe "/customs-enrolment-services/register/vat-details-eu-confirm/review"
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.EUDisclosureReviewLinkXpath
+      ) shouldBe SubscriptionExistingDetailsReviewPage
         .changeAnswerText("Organisation details included on the EORI checker")
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.EUDisclosureConsentXPathLabel) shouldBe "Organisation details included on the EORI checker"
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.EUDisclosureConsentXPath) shouldBe "Yes - I want my organisation name and address on the EORI checker"
-      page.getElementsHref(SubscriptionExistingDetailsReviewPage.EUDisclosureReviewLinkXpath) shouldBe "/customs-enrolment-services/register/disclose-personal-details-consent/review"
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.ConfirmAndRegisterInfoXpath) shouldBe "By sending this application you confirm that the information you are providing is correct and complete."
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.EUDisclosureConsentXPathLabel
+      ) shouldBe "Organisation details included on the EORI checker"
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.EUDisclosureConsentXPath
+      ) shouldBe "Yes - I want my organisation name and address on the EORI checker"
+      page.getElementsHref(
+        SubscriptionExistingDetailsReviewPage.EUDisclosureReviewLinkXpath
+      ) shouldBe "/customs-enrolment-services/register/disclose-personal-details-consent/review"
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.ConfirmAndRegisterInfoXpath
+      ) shouldBe "By sending this application you confirm that the information you are providing is correct and complete."
     }
   }
 
@@ -533,15 +594,23 @@ class CheckYourDetailsRegisterControllerSpec
       page.title should startWith("Check your answers")
 
       page.getElementsText(SubscriptionExistingDetailsReviewPage.startAgainLinkXPath) shouldBe "Start again"
-      page.getElementsHref(SubscriptionExistingDetailsReviewPage.startAgainLinkXPath) shouldBe "/customs-enrolment-services/register/start-again"
+      page.getElementsHref(
+        SubscriptionExistingDetailsReviewPage.startAgainLinkXPath
+      ) shouldBe "/customs-enrolment-services/register/start-again"
 
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.BusinessNameLabelXpath) shouldBe "Registered partnership name"
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.BusinessNameLabelXpath
+      ) shouldBe "Registered partnership name"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.BusinessNameValueXpath) shouldBe "orgName"
 
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.UtrNoLabelXPath) shouldBe "Partnership Self Assessment UTR number"
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.UtrNoLabelXPath
+      ) shouldBe "Partnership Self Assessment UTR number"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.UtrNoLabelValueXPath) shouldBe "7280616009"
 
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.LimitedAddressLabelXpath) shouldBe "Partnership address"
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.LimitedAddressLabelXpath
+      ) shouldBe "Partnership address"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.LimitedAddressValueXpath) shouldBe
         strim("""
             |street
@@ -551,11 +620,17 @@ class CheckYourDetailsRegisterControllerSpec
           """)
       page.elementIsPresent(SubscriptionExistingDetailsReviewPage.LimitedAddressReviewLink) shouldBe false
 
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.DateOfEstablishmentLabelXPath) shouldBe "Date of establishment"
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.DateOfEstablishmentLabelXPath
+      ) shouldBe "Date of establishment"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.DateOfEstablishmentXPath) shouldBe "23 July 1980"
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.DateOfEstablishmentReviewLinkXPath) shouldBe SubscriptionExistingDetailsReviewPage
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.DateOfEstablishmentReviewLinkXPath
+      ) shouldBe SubscriptionExistingDetailsReviewPage
         .changeAnswerText("Date of establishment")
-      page.getElementsHref(SubscriptionExistingDetailsReviewPage.DateOfEstablishmentReviewLinkXPath) shouldBe "/customs-enrolment-services/register/date-established/review"
+      page.getElementsHref(
+        SubscriptionExistingDetailsReviewPage.DateOfEstablishmentReviewLinkXPath
+      ) shouldBe "/customs-enrolment-services/register/date-established/review"
 
       page.getElementsText(SubscriptionExistingDetailsReviewPage.ContactDetailsXPathLabel) shouldBe "Contact"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.ContactDetailsXPath) shouldBe
@@ -569,48 +644,88 @@ class CheckYourDetailsRegisterControllerSpec
             |SE28 1AA
             |France
           """)
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.ContactDetailsReviewLinkXPath) shouldBe SubscriptionExistingDetailsReviewPage
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.ContactDetailsReviewLinkXPath
+      ) shouldBe SubscriptionExistingDetailsReviewPage
         .changeAnswerText("Contact")
-      page.getElementsHref(SubscriptionExistingDetailsReviewPage.ContactDetailsReviewLinkXPath) shouldBe "/customs-enrolment-services/register/contact-details/review"
+      page.getElementsHref(
+        SubscriptionExistingDetailsReviewPage.ContactDetailsReviewLinkXPath
+      ) shouldBe "/customs-enrolment-services/register/contact-details/review"
 
       page.getElementsText(SubscriptionExistingDetailsReviewPage.ShortNameXPathLabel) shouldBe "Shortened name"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.ShortNameXPath) shouldBe "Short Name"
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.ShortNameReviewLinkXPath) shouldBe SubscriptionExistingDetailsReviewPage
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.ShortNameReviewLinkXPath
+      ) shouldBe SubscriptionExistingDetailsReviewPage
         .changeAnswerText("Shortened name")
-      page.getElementsHref(SubscriptionExistingDetailsReviewPage.ShortNameReviewLinkXPath) shouldBe "/customs-enrolment-services/register/company-short-name/review"
+      page.getElementsHref(
+        SubscriptionExistingDetailsReviewPage.ShortNameReviewLinkXPath
+      ) shouldBe "/customs-enrolment-services/register/company-short-name/review"
 
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.NatureOfBusinessXPathLabel) shouldBe "Standard Industrial Classification (SIC) code"
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.NatureOfBusinessXPathLabel
+      ) shouldBe "Standard Industrial Classification (SIC) code"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.NatureOfBusinessXPath) shouldBe "9999"
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.NatureOfBusinessReviewLinkXPath) shouldBe SubscriptionExistingDetailsReviewPage
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.NatureOfBusinessReviewLinkXPath
+      ) shouldBe SubscriptionExistingDetailsReviewPage
         .changeAnswerText("Standard Industrial Classification (SIC) code")
-      page.getElementsHref(SubscriptionExistingDetailsReviewPage.NatureOfBusinessReviewLinkXPath) shouldBe "/customs-enrolment-services/register/sic-code/review"
+      page.getElementsHref(
+        SubscriptionExistingDetailsReviewPage.NatureOfBusinessReviewLinkXPath
+      ) shouldBe "/customs-enrolment-services/register/sic-code/review"
 
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.UKVatIdentificationNumbersXpathLabel) shouldBe "UK VAT Number"
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.UKVatIdentificationNumbersXpathLabel
+      ) shouldBe "UK VAT Number"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.UKVatIdentificationNumbersXpath) shouldBe "123456789"
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.UKVatIdentificationPostcodeXpathLabel) shouldBe "Postcode of your UK VAT registration address"
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.UKVatIdentificationPostcodeXpathLabel
+      ) shouldBe "Postcode of your UK VAT registration address"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.UKVatIdentificationPostcodeXpath) shouldBe "SE28 1AA"
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.UKVatIdentificationDateXpathLabel) shouldBe "UK VAT effective date"
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.UKVatIdentificationDateXpathLabel
+      ) shouldBe "UK VAT effective date"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.UKVatIdentificationDateXpath) shouldBe "1 January 2017"
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.UKVatIdentificationNumbersReviewLinkXpath) shouldBe SubscriptionExistingDetailsReviewPage
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.UKVatIdentificationNumbersReviewLinkXpath
+      ) shouldBe SubscriptionExistingDetailsReviewPage
         .changeAnswerText("UK VAT Number")
-      page.getElementsHref(SubscriptionExistingDetailsReviewPage.UKVatIdentificationNumbersReviewLinkXpath) shouldBe "/customs-enrolment-services/register/vat-registered-uk/review"
+      page.getElementsHref(
+        SubscriptionExistingDetailsReviewPage.UKVatIdentificationNumbersReviewLinkXpath
+      ) shouldBe "/customs-enrolment-services/register/vat-registered-uk/review"
 
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.EUVatIdentificationNumbersXpathLabel) shouldBe "EU VAT numbers"
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.EUVatIdentificationNumbersXpathLabel
+      ) shouldBe "EU VAT numbers"
 
       page.getElementsText(SubscriptionExistingDetailsReviewPage.EUVatIdentificationNumbersXpath) shouldBe
         strim("""
             |VAT-2 - France
             |VAT-3 - Poland
           """)
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.EUVatIdentificationNumbersReviewLinkXpath) shouldBe SubscriptionExistingDetailsReviewPage
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.EUVatIdentificationNumbersReviewLinkXpath
+      ) shouldBe SubscriptionExistingDetailsReviewPage
         .changeAnswerText("EU VAT numbers")
-      page.getElementsHref(SubscriptionExistingDetailsReviewPage.EUVatIdentificationNumbersReviewLinkXpath) shouldBe "/customs-enrolment-services/register/vat-details-eu-confirm/review"
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.EUDisclosureReviewLinkXpath) shouldBe SubscriptionExistingDetailsReviewPage
+      page.getElementsHref(
+        SubscriptionExistingDetailsReviewPage.EUVatIdentificationNumbersReviewLinkXpath
+      ) shouldBe "/customs-enrolment-services/register/vat-details-eu-confirm/review"
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.EUDisclosureReviewLinkXpath
+      ) shouldBe SubscriptionExistingDetailsReviewPage
         .changeAnswerText("Partnership details included on the EORI checker")
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.EUDisclosureConsentXPathLabel) shouldBe "Partnership details included on the EORI checker"
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.EUDisclosureConsentXPath) shouldBe "Yes - I want my partnership name and address on the EORI checker"
-      page.getElementsHref(SubscriptionExistingDetailsReviewPage.EUDisclosureReviewLinkXpath) shouldBe "/customs-enrolment-services/register/disclose-personal-details-consent/review"
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.ConfirmAndRegisterInfoXpath) shouldBe "By sending this application you confirm that the information you are providing is correct and complete."
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.EUDisclosureConsentXPathLabel
+      ) shouldBe "Partnership details included on the EORI checker"
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.EUDisclosureConsentXPath
+      ) shouldBe "Yes - I want my partnership name and address on the EORI checker"
+      page.getElementsHref(
+        SubscriptionExistingDetailsReviewPage.EUDisclosureReviewLinkXpath
+      ) shouldBe "/customs-enrolment-services/register/disclose-personal-details-consent/review"
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.ConfirmAndRegisterInfoXpath
+      ) shouldBe "By sending this application you confirm that the information you are providing is correct and complete."
     }
   }
 
@@ -783,9 +898,13 @@ class CheckYourDetailsRegisterControllerSpec
     page.getElementsText(RegistrationReviewPage.UKVatIdentificationNumberXpath) shouldBe "123456789"
     page.getElementsText(RegistrationReviewPage.UKVatIdentificationPostcodeXpath) shouldBe "SE28 1AA"
     page.getElementsText(RegistrationReviewPage.UKVatIdentificationDateXpath) shouldBe "1 January 2017"
-    page.getElementText(RegistrationReviewPage.UKVatIdentificationNumbersReviewLinkXpath) shouldBe RegistrationReviewPage
+    page.getElementText(
+      RegistrationReviewPage.UKVatIdentificationNumbersReviewLinkXpath
+    ) shouldBe RegistrationReviewPage
       .changeAnswerText("UK VAT Number")
-    page.getElementsHref(RegistrationReviewPage.UKVatIdentificationNumbersReviewLinkXpath) shouldBe VatRegisteredUkController
+    page.getElementsHref(
+      RegistrationReviewPage.UKVatIdentificationNumbersReviewLinkXpath
+    ) shouldBe VatRegisteredUkController
       .reviewForm(Journey.Register)
       .url
   }
@@ -797,7 +916,9 @@ class CheckYourDetailsRegisterControllerSpec
           |VAT-3 - Poland
         """)
 
-    page.getElementText(RegistrationReviewPage.EUVatIdentificationNumbersReviewLinkXpath) shouldBe RegistrationReviewPage
+    page.getElementText(
+      RegistrationReviewPage.EUVatIdentificationNumbersReviewLinkXpath
+    ) shouldBe RegistrationReviewPage
       .changeAnswerText("EU VAT numbers")
   }
 
@@ -825,7 +946,9 @@ class CheckYourDetailsRegisterControllerSpec
 
     when(mockRequestSession.userSelectedOrganisationType(any[Request[AnyContent]]))
       .thenReturn(Some(userSelectedOrgType))
-    if (userSelectedOrgType.id == CdsOrganisationType.PartnershipId || userSelectedOrgType.id == CdsOrganisationType.LimitedLiabilityPartnershipId)
+    if (
+      userSelectedOrgType.id == CdsOrganisationType.PartnershipId || userSelectedOrgType.id == CdsOrganisationType.LimitedLiabilityPartnershipId
+    )
       when(mockRequestSession.isPartnership(any[Request[AnyContent]])).thenReturn(true)
 
     when(mockSubscriptionFlow.isIndividualFlow).thenReturn(isIndividualSubscriptionFlow)
@@ -858,4 +981,5 @@ class CheckYourDetailsRegisterControllerSpec
       case _ =>
         when(mockSessionCache.registrationDetails(any[HeaderCarrier])).thenReturn(organisationRegistrationDetails)
     }
+
 }

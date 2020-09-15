@@ -46,7 +46,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_regi
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class VatRegisteredEuController @Inject()(
+class VatRegisteredEuController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   subscriptionBusinessService: SubscriptionBusinessService,
@@ -105,17 +105,16 @@ class VatRegisteredEuController @Inject()(
                   journey
                 )
               )
-          ),
-          yesNoAnswer => {
+            ),
+          yesNoAnswer =>
             subscriptionDetailsService.cacheVatRegisteredEu(yesNoAnswer).flatMap { _ =>
               redirect(isInReviewMode, yesNoAnswer, journey)
             }
-          }
         )
     }
 
-  private def redirect(isInReviewMode: Boolean, yesNoAnswer: YesNo, journey: Journey.Value)(
-    implicit rq: Request[AnyContent]
+  private def redirect(isInReviewMode: Boolean, yesNoAnswer: YesNo, journey: Journey.Value)(implicit
+    rq: Request[AnyContent]
   ): Future[Result] =
     subscriptionVatEUDetailsService.cachedEUVatDetails flatMap { cachedEuVatDetails =>
       (isInReviewMode, yesNoAnswer.isYes) match {
@@ -141,8 +140,8 @@ class VatRegisteredEuController @Inject()(
         }
     }
 
-  private def redirectForNoAnswer(journey: Journey.Value, isInReviewMode: Boolean)(
-    implicit rq: Request[AnyContent]
+  private def redirectForNoAnswer(journey: Journey.Value, isInReviewMode: Boolean)(implicit
+    rq: Request[AnyContent]
   ): Future[Result] =
     subscriptionVatEUDetailsService.saveOrUpdate(Seq.empty) flatMap { _ =>
       if (isInReviewMode) Future.successful(Redirect(DetermineReviewPageController.determineRoute(journey).url))
@@ -154,4 +153,5 @@ class VatRegisteredEuController @Inject()(
 
   private def redirectWithFlowManager(subPage: SubscriptionPage)(implicit rq: Request[AnyContent]) =
     Future.successful(Redirect(subscriptionFlowManager.stepInformation(subPage).nextPage.url))
+
 }

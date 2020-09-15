@@ -30,7 +30,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.check_yo
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class CheckYourDetailsRegisterController @Inject()(
+class CheckYourDetailsRegisterController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   sessionCache: SessionCache,
@@ -71,4 +71,5 @@ class CheckYourDetailsRegisterController @Inject()(
       registerWithoutIdWithSubscription
         .rowRegisterWithoutIdWithSubscription(loggedInUser, journey)
   }
+
 }

@@ -131,7 +131,9 @@ class AppConfigSpec extends ControllerSpec {
       appConfig.getServiceUrl("subscribe") shouldBe "http://localhost:6753/subscribe"
     }
     "return service url for vat-known-facts-control-list" in {
-      appConfig.getServiceUrl("vat-known-facts-control-list") shouldBe "http://localhost:6753/vat-known-facts-control-list"
+      appConfig.getServiceUrl(
+        "vat-known-facts-control-list"
+      ) shouldBe "http://localhost:6753/vat-known-facts-control-list"
     }
 
   }

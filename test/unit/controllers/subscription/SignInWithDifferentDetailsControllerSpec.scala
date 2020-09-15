@@ -38,11 +38,11 @@ import scala.concurrent.Future
 class SignInWithDifferentDetailsControllerSpec
     extends ControllerSpec with BeforeAndAfterEach with SubscriptionFlowReviewModeTestSupport {
 
-  protected override val formId: String = ShortNamePage.formId
+  protected override val formId: String                = ShortNamePage.formId
   protected override val submitInReviewModeUrl: String = ""
 
-  private val mockCdsFrontendDataCache = mock[SessionCache]
-  private val mockRegistrationDetails = mock[RegistrationDetails](RETURNS_DEEP_STUBS)
+  private val mockCdsFrontendDataCache       = mock[SessionCache]
+  private val mockRegistrationDetails        = mock[RegistrationDetails](RETURNS_DEEP_STUBS)
   private val signInWithDifferentDetailsView = app.injector.instanceOf[sign_in_with_different_details]
   when(mockRegistrationDetails.name).thenReturn("Test Org Name")
 
@@ -65,7 +65,9 @@ class SignInWithDifferentDetailsControllerSpec
     "display para1 as 'Test Org Name has already registered for CDS with a different Government Gateway.'" in {
       showCreateForm() { result =>
         val page = CdsPage(bodyOf(result))
-        page.getElementsText("//*[@id='para1']") shouldBe "Test Org Name has already registered for CDS with a different Government Gateway."
+        page.getElementsText(
+          "//*[@id='para1']"
+        ) shouldBe "Test Org Name has already registered for CDS with a different Government Gateway."
       }
     }
   }
@@ -80,4 +82,5 @@ class SignInWithDifferentDetailsControllerSpec
   private def mockFunctionWithRegistrationDetails(registrationDetails: RegistrationDetails) {
     when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(registrationDetails)
   }
+
 }

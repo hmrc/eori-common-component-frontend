@@ -35,9 +35,9 @@ import scala.concurrent.Future
 class AllowlistFilterSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
 
   private implicit val system: ActorSystem = ActorSystem()
-  private implicit val mat: Materializer = ActorMaterializer()
-  private val config = mock[AppConfig]
-  private val next = mock[RequestHeader => Future[Result]]
+  private implicit val mat: Materializer   = ActorMaterializer()
+  private val config                       = mock[AppConfig]
+  private val next                         = mock[RequestHeader => Future[Result]]
 
   private def filter: AllowlistFilter = new AllowlistFilter(config)
 
@@ -50,7 +50,8 @@ class AllowlistFilterSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
     "Do nothing" in {
       when(next.apply(any[RequestHeader])).thenReturn(Future.successful(Results.Ok))
       when(config.allowlistReferrers).thenReturn(Seq("123"))
-      implicit val request = FakeRequest("GET", "/customs-enrolment-services/register").withHeaders(HeaderNames.REFERER -> "123")
+      implicit val request =
+        FakeRequest("GET", "/customs-enrolment-services/register").withHeaders(HeaderNames.REFERER -> "123")
       val result = await(filter.apply(next)(request))
 
       result.session.get("allowlisted") shouldBe None

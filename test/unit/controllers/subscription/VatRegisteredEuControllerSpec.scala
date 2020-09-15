@@ -23,9 +23,16 @@ import org.mockito.Mockito.when
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers.{LOCATION, _}
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{SubscriptionFlowManager, VatRegisteredEuController}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{
+  SubscriptionFlowManager,
+  VatRegisteredEuController
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.YesNo
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubscriptionFlow, SubscriptionFlowInfo, SubscriptionPage}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  SubscriptionFlow,
+  SubscriptionFlowInfo,
+  SubscriptionPage
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.VatEUDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
@@ -47,20 +54,20 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class VatRegisteredEuControllerSpec extends ControllerSpec {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockSubscriptionFlowManager = mock[SubscriptionFlowManager]
+  private val mockAuthConnector                   = mock[AuthConnector]
+  private val mockSubscriptionFlowManager         = mock[SubscriptionFlowManager]
   private val mockSubscriptionVatEUDetailsService = mock[SubscriptionVatEUDetailsService]
-  private val mockSubscriptionBusinessService = mock[SubscriptionBusinessService]
-  private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
-  private val mockSubscriptionFlow = mock[SubscriptionFlow]
-  private val mockSubscriptionFlowInfo = mock[SubscriptionFlowInfo]
-  private val mockSessionCache = mock[SessionCache]
-  private val mockSubscriptionPage = mock[SubscriptionPage]
-  private val mockRequestSession = mock[RequestSessionData]
-  private val vatRegisteredEuView = app.injector.instanceOf[vat_registered_eu]
+  private val mockSubscriptionBusinessService     = mock[SubscriptionBusinessService]
+  private val mockSubscriptionDetailsService      = mock[SubscriptionDetailsService]
+  private val mockSubscriptionFlow                = mock[SubscriptionFlow]
+  private val mockSubscriptionFlowInfo            = mock[SubscriptionFlowInfo]
+  private val mockSessionCache                    = mock[SessionCache]
+  private val mockSubscriptionPage                = mock[SubscriptionPage]
+  private val mockRequestSession                  = mock[RequestSessionData]
+  private val vatRegisteredEuView                 = app.injector.instanceOf[vat_registered_eu]
 
   private val emptyVatEuDetails: Seq[VatEUDetailsModel] = Seq.empty
-  private val someVatEuDetails: Seq[VatEUDetailsModel] = Seq(VatEUDetailsModel("1234", "FR"))
+  private val someVatEuDetails: Seq[VatEUDetailsModel]  = Seq(VatEUDetailsModel("1234", "FR"))
 
   private val controller = new VatRegisteredEuController(
     app,
@@ -200,4 +207,5 @@ class VatRegisteredEuControllerSpec extends ControllerSpec {
     when(mockSubscriptionFlowManager.currentSubscriptionFlow(any[Request[AnyContent]])).thenReturn(mockSubscriptionFlow)
     when(mockSubscriptionFlow.isIndividualFlow).thenReturn(true)
   }
+
 }

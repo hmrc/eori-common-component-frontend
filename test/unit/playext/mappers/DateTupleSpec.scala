@@ -26,16 +26,16 @@ import uk.gov.hmrc.play.mappers.DateFields._
 
 class DateTupleSpec extends UnitSpec {
 
-  private val customError = "some.custom.error.key"
-  private val defaultDateTuple = DateTuple.dateTuple()
-  private val customDateTuple = DateTuple.dateTuple(invalidDateError = customError)
+  private val customError            = "some.custom.error.key"
+  private val defaultDateTuple       = DateTuple.dateTuple()
+  private val customDateTuple        = DateTuple.dateTuple(invalidDateError = customError)
   private val nonValidatingDateTuple = DateTuple.dateTuple(validate = false)
 
-  private val d = "15"
-  private val m = "7"
-  private val y = "2010"
+  private val d            = "15"
+  private val m            = "7"
+  private val y            = "2010"
   private val validRequest = Map(day -> d, month -> m, year -> y)
-  private val defaultDate = LocalDate.parse("2010-7-15")
+  private val defaultDate  = LocalDate.parse("2010-7-15")
 
   private val allMappings = Table(
     ("date mapping label", "date mapping instance"),
@@ -175,8 +175,8 @@ class DateTupleSpec extends UnitSpec {
     }
   }
 
-  private def assertSuccessfulBinding(request: Map[String, String], expectedResult: Option[LocalDate])(
-    implicit dateMapping: Mapping[Option[LocalDate]]
+  private def assertSuccessfulBinding(request: Map[String, String], expectedResult: Option[LocalDate])(implicit
+    dateMapping: Mapping[Option[LocalDate]]
   ) {
     dateMapping.bind(request) shouldBe Right(expectedResult)
   }

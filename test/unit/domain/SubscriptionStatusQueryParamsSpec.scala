@@ -23,7 +23,7 @@ import org.joda.time.DateTime
 class SubscriptionStatusQueryParamsSpec extends UnitSpec {
 
   val receiptDate = DateTime.parse("2016-3-17T9:30:47.114")
-  val taxPayerId = TaxPayerId("1234567890").mdgTaxPayerId
+  val taxPayerId  = TaxPayerId("1234567890").mdgTaxPayerId
   "SubscriptionStatusQueryParamsSpec" should {
     "create a valid URL query string" in {
       val query: SubscriptionStatusQueryParams = SubscriptionStatusQueryParams(
@@ -35,8 +35,8 @@ class SubscriptionStatusQueryParamsSpec extends UnitSpec {
 
       query.queryParams shouldBe Seq(
         "receiptDate" -> "2016-03-17T09:30:47Z",
-        "regime" -> "CDS",
-        "taxPayerID" -> taxPayerId
+        "regime"      -> "CDS",
+        "taxPayerID"  -> taxPayerId
       )
     }
   }

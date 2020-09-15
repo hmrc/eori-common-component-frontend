@@ -36,7 +36,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CheckYourEmailController @Inject()(
+class CheckYourEmailController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   save4LaterService: Save4LaterService,
@@ -49,30 +49,28 @@ class CheckYourEmailController @Inject()(
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) with FeatureFlags {
 
-  private def populateView(email: Option[String], isInReviewMode: Boolean, journey: Journey.Value)(
-    implicit hc: HeaderCarrier,
+  private def populateView(email: Option[String], isInReviewMode: Boolean, journey: Journey.Value)(implicit
+    hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] =
     Future.successful(
       Ok(checkYourEmailView(email, confirmEmailYesNoAnswerForm, isInReviewMode = isInReviewMode, journey = journey))
     )
 
-  private def populateEmailVerificationView(
-    email: Option[String],
-    journey: Journey.Value
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
+  private def populateEmailVerificationView(email: Option[String], journey: Journey.Value)(implicit
+    hc: HeaderCarrier,
+    request: Request[AnyContent]
+  ): Future[Result] =
     Future.successful(Ok(verifyYourEmail(email, journey = journey)))
 
   def createForm(journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
-      {
-        save4LaterService.fetchEmail(InternalId(userWithEnrolments.internalId)) flatMap {
-          _.fold {
-            Logger.warn("[CheckYourEmailController][createForm] -   emailStatus cache none")
-            populateView(None, isInReviewMode = false, journey = journey)
-          } { emailStatus =>
-            populateView(Some(emailStatus.email), isInReviewMode = false, journey = journey)
-          }
+      save4LaterService.fetchEmail(InternalId(userWithEnrolments.internalId)) flatMap {
+        _.fold {
+          Logger.warn("[CheckYourEmailController][createForm] -   emailStatus cache none")
+          populateView(None, isInReviewMode = false, journey = journey)
+        } { emailStatus =>
+          populateView(Some(emailStatus.email), isInReviewMode = false, journey = journey)
         }
       }
     }
@@ -82,7 +80,7 @@ class CheckYourEmailController @Inject()(
       confirmEmailYesNoAnswerForm
         .bindFromRequest()
         .fold(
-          formWithErrors => {
+          formWithErrors =>
             save4LaterService
               .fetchEmail(InternalId(userWithEnrolments.internalId))
               .flatMap {
@@ -105,8 +103,7 @@ class CheckYourEmailController @Inject()(
                     )
                   )
                 }
-              }
-          },
+              },
           yesNoAnswer =>
             locationByAnswer(InternalId(userWithEnrolments.internalId), yesNoAnswer, isInReviewMode, journey)
         )
@@ -114,39 +111,32 @@ class CheckYourEmailController @Inject()(
 
   def verifyEmailView(journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
-      {
-        save4LaterService.fetchEmail(InternalId(userWithEnrolments.internalId)) flatMap { emailStatus =>
-          emailStatus.fold {
-            Logger.warn("[CheckYourEmailController][verifyEmailView] -  emailStatus cache none")
-            populateEmailVerificationView(None, journey = journey)
-          } { email =>
-            populateEmailVerificationView(Some(email.email), journey = journey)
-          }
+      save4LaterService.fetchEmail(InternalId(userWithEnrolments.internalId)) flatMap { emailStatus =>
+        emailStatus.fold {
+          Logger.warn("[CheckYourEmailController][verifyEmailView] -  emailStatus cache none")
+          populateEmailVerificationView(None, journey = journey)
+        } { email =>
+          populateEmailVerificationView(Some(email.email), journey = journey)
         }
       }
     }
 
   def emailConfirmed(journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
-      {
-        save4LaterService.fetchEmail(InternalId(userWithEnrolments.internalId)) flatMap { emailStatus =>
-          emailStatus.fold {
-            Logger.warn("[CheckYourEmailController][emailConfirmed] -  emailStatus cache none")
-            Future.successful(Redirect(SecuritySignOutController.signOut(journey)))
-          } { email =>
-            {
-              if (email.isConfirmed.getOrElse(false)) {
-                Future.successful(toResult(journey))
-              } else {
-                save4LaterService
-                  .saveEmail(InternalId(userWithEnrolments.internalId), email.copy(isConfirmed = Some(true)))
-                  .map { _ =>
-                    Ok(emailConfirmedView(journey))
-                  }
-
+      save4LaterService.fetchEmail(InternalId(userWithEnrolments.internalId)) flatMap { emailStatus =>
+        emailStatus.fold {
+          Logger.warn("[CheckYourEmailController][emailConfirmed] -  emailStatus cache none")
+          Future.successful(Redirect(SecuritySignOutController.signOut(journey)))
+        } { email =>
+          if (email.isConfirmed.getOrElse(false))
+            Future.successful(toResult(journey))
+          else
+            save4LaterService
+              .saveEmail(InternalId(userWithEnrolments.internalId), email.copy(isConfirmed = Some(true)))
+              .map { _ =>
+                Ok(emailConfirmedView(journey))
               }
-            }
-          }
+
         }
       }
 
@@ -165,8 +155,8 @@ class CheckYourEmailController @Inject()(
         Redirect(MatchingIdController.matchWithIdOnlyForExistingReg())
     }
 
-  private def submitNewDetails(internalId: InternalId, isInReviewMode: Boolean, journey: Journey.Value)(
-    implicit hc: HeaderCarrier,
+  private def submitNewDetails(internalId: InternalId, isInReviewMode: Boolean, journey: Journey.Value)(implicit
+    hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] =
     save4LaterService.fetchEmail(internalId) flatMap {
@@ -174,10 +164,13 @@ class CheckYourEmailController @Inject()(
         Logger.warn("[CheckYourEmailController][submitNewDetails] -  emailStatus cache none")
         throw new IllegalStateException("[CheckYourEmailController][submitNewDetails] - emailStatus cache none")
       } { emailStatus =>
-        emailVerificationService.createEmailVerificationRequest(emailStatus.email, EmailController.form(journey).url) flatMap {
+        emailVerificationService.createEmailVerificationRequest(
+          emailStatus.email,
+          EmailController.form(journey).url
+        ) flatMap {
           case Some(true) =>
             Future.successful(Redirect(CheckYourEmailController.verifyEmailView(journey)))
-          case Some(false) => {
+          case Some(false) =>
             Logger.warn(
               "[CheckYourEmailController][sendVerification] - " +
                 "Unable to send email verification request. Service responded with 'already verified'"
@@ -189,7 +182,6 @@ class CheckYourEmailController @Inject()(
                   Redirect(EmailController.form(journey))
                 }
               }
-          }
           case _ =>
             throw new IllegalStateException("CreateEmailVerificationRequest Failed")
         }
@@ -206,4 +198,5 @@ class CheckYourEmailController @Inject()(
       submitNewDetails(internalId, isInReviewMode, journey)
     case _ => Future(Redirect(WhatIsYourEmailController.createForm(journey)))
   }
+
 }

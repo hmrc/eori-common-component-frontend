@@ -22,7 +22,10 @@ import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.mockito.MockitoSugar
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUser
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{ClearCacheAndRegistrationIdentificationService, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  ClearCacheAndRegistrationIdentificationService,
+  SessionCache
+}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.global
@@ -30,11 +33,11 @@ import scala.concurrent.Future
 
 class ClearCacheAndRegistrationIdentificationServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfterAll {
   val mockSessionCache: SessionCache = mock[SessionCache]
-  val loggedInUserId = "user-id"
-  val Failure = new RuntimeException("something bad has happened")
+  val loggedInUserId                 = "user-id"
+  val Failure                        = new RuntimeException("something bad has happened")
 
   implicit val headerCarrier: HeaderCarrier = mock[HeaderCarrier]
-  val mockLoggedInUser: LoggedInUser = mock[LoggedInUser]
+  val mockLoggedInUser: LoggedInUser        = mock[LoggedInUser]
 
   override protected def beforeAll() {
     when(mockLoggedInUser.userId()).thenReturn(loggedInUserId)

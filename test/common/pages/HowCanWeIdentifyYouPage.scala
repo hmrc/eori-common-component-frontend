@@ -20,12 +20,10 @@ trait HowCanWeIdentifyYouPage extends WebPage {
   override val title = "What information can we use to confirm your identity?"
 
   val fieldLevelErrorNino = "//*[@id='nino-outer']//span[@class='error-message']"
-  val fieldLevelErrorUtr = "//*[@id='utr-outer']//span[@class='error-message']"
+  val fieldLevelErrorUtr  = "//*[@id='utr-outer']//span[@class='error-message']"
 
 }
 
-object SubscribeHowCanWeIdentifyYouPage extends HowCanWeIdentifyYouPage {
-}
+object SubscribeHowCanWeIdentifyYouPage extends HowCanWeIdentifyYouPage {}
 
-object RegisterHowCanWeIdentifyYouPage extends HowCanWeIdentifyYouPage {
-}
+object RegisterHowCanWeIdentifyYouPage extends HowCanWeIdentifyYouPage {}

@@ -27,10 +27,10 @@ class CountriesSpec extends WordSpec with Matchers with GuiceOneAppPerSuite {
   implicit override lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
       Map(
-        "countriesFilename" -> "test-countries.json",
-        "mdgCountryCodesFilename" -> "test-mdg-country-codes.csv",
-        "mdgNotIomCountryCodesFilename" -> "test-mdg-not-iom-country-codes.csv",
-        "mdgEuCountryCodesFilename" -> "test-mdg-eu-country-codes.csv",
+        "countriesFilename"              -> "test-countries.json",
+        "mdgCountryCodesFilename"        -> "test-mdg-country-codes.csv",
+        "mdgNotIomCountryCodesFilename"  -> "test-mdg-not-iom-country-codes.csv",
+        "mdgEuCountryCodesFilename"      -> "test-mdg-eu-country-codes.csv",
         "mdgIslandsCountryCodesFilename" -> "test-mdg-islands-country-codes.csv"
       )
     )

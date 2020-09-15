@@ -30,9 +30,16 @@ import play.mvc.Http.Status._
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SubscriptionServiceConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionCreateResponse._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{SubscriptionRequest, SubscriptionResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
+  SubscriptionRequest,
+  SubscriptionResponse
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{BusinessShortName, SubscriptionDetails}
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactDetailsModel, VatDetails}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
+  AddressViewModel,
+  ContactDetailsModel,
+  VatDetails
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.EtmpTypeOfPerson
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
@@ -151,36 +158,33 @@ class SubscriptionServiceSpec
     }
 
     "call connector with correct values when organisation type has been manually selected" in {
-      val cdsOrganisationTypeGenerator = Gen.oneOf(cdsOrganisationTypeToTypeOfPersonMap.keys.toSeq)
-      val etmpOrganisationTypeGenerator = Gen.oneOf(etmpOrganisationTypeToTypeOfPersonMap.keys.toSeq)
+      val cdsOrganisationTypeGenerator             = Gen.oneOf(cdsOrganisationTypeToTypeOfPersonMap.keys.toSeq)
+      val etmpOrganisationTypeGenerator            = Gen.oneOf(etmpOrganisationTypeToTypeOfPersonMap.keys.toSeq)
       val vatIdsGenerator: List[VatIdentification] = List(VatIdentification(Some("GB"), Some("123456789")))
-      check(
-        Prop.forAllNoShrink(cdsOrganisationTypeGenerator, etmpOrganisationTypeGenerator, vatIdsGenerator)(
-          (cdsOrganisationType, etmpOrganisationType, vatIds) => {
-            val expectedRequest = requestJson(
-              businessName,
-              vatIds,
-              Some(EtmpOrganisationType.apply(cdsOrganisationType)),
-              expectedDateEstablishedString = dateEstablishedString
-            )
-            assertOrganisationSubscriptionRequest(
-              expectedRequest,
-              subscriptionSuccessResult,
-              vatIds,
-              Some(cdsOrganisationType),
-              Some(etmpOrganisationType)
-            )
-            Prop.proved
-          }
-        )
-      )
+      check(Prop.forAllNoShrink(cdsOrganisationTypeGenerator, etmpOrganisationTypeGenerator, vatIdsGenerator) {
+        (cdsOrganisationType, etmpOrganisationType, vatIds) =>
+          val expectedRequest = requestJson(
+            businessName,
+            vatIds,
+            Some(EtmpOrganisationType.apply(cdsOrganisationType)),
+            expectedDateEstablishedString = dateEstablishedString
+          )
+          assertOrganisationSubscriptionRequest(
+            expectedRequest,
+            subscriptionSuccessResult,
+            vatIds,
+            Some(cdsOrganisationType),
+            Some(etmpOrganisationType)
+          )
+          Prop.proved
+      })
     }
 
     "call connector with correct person type when user is an organisation and organisation type has not been manually selected" in {
-      val etmpOrganisationTypeGenerator = Gen.oneOf(etmpOrganisationTypeToTypeOfPersonMap.keys.toSeq)
+      val etmpOrganisationTypeGenerator            = Gen.oneOf(etmpOrganisationTypeToTypeOfPersonMap.keys.toSeq)
       val vatIdsGenerator: List[VatIdentification] = List(VatIdentification(Some("GB"), Some("123456789")))
 
-      check(Prop.forAllNoShrink(etmpOrganisationTypeGenerator, vatIdsGenerator)((etmpOrganisationType, vatIds) => {
+      check(Prop.forAllNoShrink(etmpOrganisationTypeGenerator, vatIdsGenerator) { (etmpOrganisationType, vatIds) =>
         val expectedRequest =
           requestJson(name = businessName, vatIds = vatIds, organisationType = Some(etmpOrganisationType))
         assertOrganisationSubscriptionRequest(
@@ -196,13 +200,13 @@ class SubscriptionServiceSpec
           Some(etmpOrganisationType)
         )
         Prop.proved
-      }))
+      })
     }
 
     "call connector with correct person type when user is an organisation and organisation type has not been manually selected and organisation type is not available from matching" in {
       val vatIdsGenerator = Gen.oneOf(List(VatIdentification(Some("GB"), Some("123456789"))))
 
-      check(Prop.forAllNoShrink(vatIdsGenerator)(vatIds => {
+      check(Prop.forAllNoShrink(vatIdsGenerator) { vatIds =>
         val expectedRequest = requestJson(
           name = businessName,
           vatIds = List(vatIds),
@@ -218,14 +222,14 @@ class SubscriptionServiceSpec
           etmpOrganisationType = None
         )
         Prop.proved
-      }))
+      })
     }
 
     "call connector with correct person type when user is an individual and organisation type has not been manually selected" in {
-      val vatIdsGenerator = Gen.oneOf(List(VatIdentification(Some("GB"), Some("123456789"))))
+      val vatIdsGenerator                = Gen.oneOf(List(VatIdentification(Some("GB"), Some("123456789"))))
       val vatDetails: Option[VatDetails] = ukVatDetails
 
-      check(Prop.forAllNoShrink(vatIdsGenerator)(vatIds => {
+      check(Prop.forAllNoShrink(vatIdsGenerator) { vatIds =>
         val expectedRequest = requestJsonIndividual(
           name = individualName,
           vatIds = List(vatIds),
@@ -234,7 +238,7 @@ class SubscriptionServiceSpec
         )
         assertIndividualSubscriptionRequest(expectedRequest, subscriptionSuccessResult, vatDetails)
         Prop.proved
-      }))
+      })
     }
 
     "call connector with date of birth captured in subscription flow when user is an individual" in {
@@ -296,7 +300,7 @@ class SubscriptionServiceSpec
             when(connectorMock.subscribe(ArgumentMatchers.any())(ArgumentMatchers.any()))
               .thenReturn(
                 Future.successful(subscriptionResponseWithoutFormBundleIdJson(positionValue).as[SubscriptionResponse])
-            )
+              )
         )
         val caught = intercept[IllegalStateException] {
           await(
@@ -376,7 +380,7 @@ class SubscriptionServiceSpec
           when(connectorMock.subscribe(ArgumentMatchers.any())(ArgumentMatchers.any()))
             .thenReturn(
               Future.successful(subscriptionFailedResponseJson(SubscriptionInProgress)).as[SubscriptionResponse]
-          )
+            )
       )
 
       val res = await(
@@ -397,7 +401,7 @@ class SubscriptionServiceSpec
           when(connectorMock.subscribe(ArgumentMatchers.any())(ArgumentMatchers.any()))
             .thenReturn(
               Future.successful(subscriptionFailedResponseJson(EoriAlreadyAssociated)).as[SubscriptionResponse]
-          )
+            )
       )
 
       val res = await(
@@ -440,16 +444,16 @@ class SubscriptionServiceSpec
 
     "truncate sic code to 4 numbers by removing the rightmost number" in {
       val service = constructService(_ => None)
-      val holder = fullyPopulatedSubscriptionDetails.copy(sicCode = Some("12750"))
-      val req = service.createRequest(organisationRegistrationDetails, holder, None)
+      val holder  = fullyPopulatedSubscriptionDetails.copy(sicCode = Some("12750"))
+      val req     = service.createRequest(organisationRegistrationDetails, holder, None)
 
       req.subscriptionCreateRequest.requestDetail.principalEconomicActivity shouldBe Some("1275")
     }
 
     "replace empty city with a dash" in {
       val service = constructService(_ => None)
-      val holder = fullyPopulatedSubscriptionDetails.copy(
-        addressDetails = Some(AddressViewModel("some street", "", Some("AB99 3DW"), "GB"))
+      val holder = fullyPopulatedSubscriptionDetails.copy(addressDetails =
+        Some(AddressViewModel("some street", "", Some("AB99 3DW"), "GB"))
       )
       val req = service.createRequest(organisationRegistrationDetails, holder, None)
 
@@ -458,8 +462,8 @@ class SubscriptionServiceSpec
 
     "replace empty postcode with a None" in {
       val service = constructService(_ => None)
-      val holder = fullyPopulatedSubscriptionDetails.copy(
-        addressDetails = Some(AddressViewModel("some street", "", Some(""), "GB"))
+      val holder = fullyPopulatedSubscriptionDetails.copy(addressDetails =
+        Some(AddressViewModel("some street", "", Some(""), "GB"))
       )
       val req = service.createRequest(organisationRegistrationDetails, holder, None)
 
@@ -468,15 +472,15 @@ class SubscriptionServiceSpec
 
     "have correct person type for Individual Subscription" in {
       val service = constructService(_ => None)
-      val holder = fullyPopulatedSubscriptionDetails.copy(sicCode = Some("12750"))
-      val req = service.createRequest(individualRegistrationDetails, holder, None)
+      val holder  = fullyPopulatedSubscriptionDetails.copy(sicCode = Some("12750"))
+      val req     = service.createRequest(individualRegistrationDetails, holder, None)
 
       req.subscriptionCreateRequest.requestDetail.typeOfPerson shouldBe Some(EtmpTypeOfPerson.NaturalPerson)
     }
 
     "throw an exception when unexpected registration details received" in {
       val service = constructService(_ => None)
-      val holder = fullyPopulatedSubscriptionDetails.copy(sicCode = Some("12750"))
+      val holder  = fullyPopulatedSubscriptionDetails.copy(sicCode = Some("12750"))
       val thrown = intercept[IllegalStateException] {
         service.createRequest(RegistrationDetails.rdSafeId(SafeId("safeid")), holder, None)
       }
@@ -485,7 +489,7 @@ class SubscriptionServiceSpec
 
     "throw an exception when date of Establishment is None" in {
       val service = constructService(_ => None)
-      val holder = fullyPopulatedSubscriptionDetails.copy(dateEstablished = None)
+      val holder  = fullyPopulatedSubscriptionDetails.copy(dateEstablished = None)
       val thrown = intercept[IllegalStateException] {
         service.createRequest(
           organisationRegistrationDetails,
@@ -498,8 +502,8 @@ class SubscriptionServiceSpec
 
     "populate the SubscriptionCreate Request when there is a plus (+) sign in the request on telephone number" in {
       val service = constructService(_ => None)
-      val holder = fullyPopulatedSubscriptionDetailsWithPlusSignInTelephone
-      val req = service.createRequest(organisationRegistrationDetails, holder, Some(CdsOrganisationType("company")))
+      val holder  = fullyPopulatedSubscriptionDetailsWithPlusSignInTelephone
+      val req     = service.createRequest(organisationRegistrationDetails, holder, Some(CdsOrganisationType("company")))
       req.subscriptionCreateRequest.requestDetail.contactInformation.flatMap(_.telephoneNumber) shouldBe Some(
         "+01632961234"
       )
@@ -508,15 +512,15 @@ class SubscriptionServiceSpec
 
     "populate the SubscriptionCreate Request when there is a plus (+) sign in the request on fax number" in {
       val service = constructService(_ => None)
-      val holder = fullyPopulatedSubscriptionDetailsWithPlusSignInFaxNumber
-      val req = service.createRequest(organisationRegistrationDetails, holder, Some(CdsOrganisationType("company")))
+      val holder  = fullyPopulatedSubscriptionDetailsWithPlusSignInFaxNumber
+      val req     = service.createRequest(organisationRegistrationDetails, holder, Some(CdsOrganisationType("company")))
       req.subscriptionCreateRequest.requestDetail.contactInformation.flatMap(_.faxNumber) shouldBe Some("+01632961234")
     }
 
     "populate the SubscriptionCreate Request when there is a plus (+) sign in the request on telephone and fax number" in {
       val service = constructService(_ => None)
-      val holder = fullyPopulatedSubscriptionDetailsWithPlusSignInTelAndFaxNumber
-      val req = service.createRequest(organisationRegistrationDetails, holder, Some(CdsOrganisationType("company")))
+      val holder  = fullyPopulatedSubscriptionDetailsWithPlusSignInTelAndFaxNumber
+      val req     = service.createRequest(organisationRegistrationDetails, holder, Some(CdsOrganisationType("company")))
       req.subscriptionCreateRequest.requestDetail.contactInformation.flatMap(_.faxNumber) shouldBe Some("+01632961235")
       req.subscriptionCreateRequest.requestDetail.contactInformation.flatMap(_.telephoneNumber) shouldBe Some(
         "+01632961234"
@@ -688,4 +692,5 @@ class SubscriptionServiceSpec
     assertSameRequestCommon
     assertSameRequestDetail
   }
+
 }

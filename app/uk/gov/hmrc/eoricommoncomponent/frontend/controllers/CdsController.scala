@@ -23,14 +23,18 @@ import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, allEnrolments, internalId, email => ggEmail, _}
 import uk.gov.hmrc.auth.core.retrieve.~
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AccessController, AuthRedirectSupport, EnrolmentExtractor}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
+  AccessController,
+  AuthRedirectSupport,
+  EnrolmentExtractor
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
 abstract class CdsController(mcc: MessagesControllerComponents)(implicit ec: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport with AuthorisedFunctions with AuthRedirectSupport
+    extends FrontendController(mcc) with I18nSupport with AuthorisedFunctions with AuthRedirectSupport
     with EnrolmentExtractor with AccessController {
 
   def authConnector: AuthConnector
@@ -45,10 +49,11 @@ abstract class CdsController(mcc: MessagesControllerComponents)(implicit ec: Exe
 
   private type RequestProcessorSimple =
     Request[AnyContent] => LoggedInUserWithEnrolments => Future[Result]
+
   private type RequestProcessorExtended =
     Request[AnyContent] => Option[String] => LoggedInUserWithEnrolments => Future[Result]
 
-  private val baseRetrievals = ggEmail and credentialRole and affinityGroup
+  private val baseRetrievals     = ggEmail and credentialRole and affinityGroup
   private val extendedRetrievals = baseRetrievals and internalId and allEnrolments and groupIdentifier
 
   def ggAuthorisedUserAction(requestProcessor: Request[AnyContent] => Future[Result]): Action[AnyContent] =
@@ -78,19 +83,20 @@ abstract class CdsController(mcc: MessagesControllerComponents)(implicit ec: Exe
     }
 
   private def transformRequest(
-                                requestProcessor: Either[RequestProcessorExtended, RequestProcessorSimple],
-                                userAffinityGroup: Option[AffinityGroup],
-                                userInternalId: Option[String],
-                                userAllEnrolments: Enrolments,
-                                currentUserEmail: Option[String],
-                                userCredentialRole: Option[CredentialRole],
-                                groupId: Option[String]
-                              )(implicit request: Request[AnyContent]) = {
+    requestProcessor: Either[RequestProcessorExtended, RequestProcessorSimple],
+    userAffinityGroup: Option[AffinityGroup],
+    userInternalId: Option[String],
+    userAllEnrolments: Enrolments,
+    currentUserEmail: Option[String],
+    userCredentialRole: Option[CredentialRole],
+    groupId: Option[String]
+  )(implicit request: Request[AnyContent]) = {
     val loggedInUser =
       LoggedInUserWithEnrolments(userAffinityGroup, userInternalId, userAllEnrolments, currentUserEmail, groupId)
 
     permitUserOrRedirect(userAffinityGroup, userCredentialRole, currentUserEmail) {
-      requestProcessor fold(_ (request)(userInternalId)(loggedInUser), _ (request)(loggedInUser))
+      requestProcessor fold (_(request)(userInternalId)(loggedInUser), _(request)(loggedInUser))
     }
   }
+
 }

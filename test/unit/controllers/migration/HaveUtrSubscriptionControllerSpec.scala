@@ -43,12 +43,12 @@ import scala.concurrent.Future
 
 class HaveUtrSubscriptionControllerSpec extends ControllerSpec {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockRequestSessionData = mock[RequestSessionData]
-  private val mockSubscriptionFlowManager = mock[SubscriptionFlowManager]
+  private val mockAuthConnector              = mock[AuthConnector]
+  private val mockRequestSessionData         = mock[RequestSessionData]
+  private val mockSubscriptionFlowManager    = mock[SubscriptionFlowManager]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
-  private val mockSubscriptionFlowInfo = mock[SubscriptionFlowInfo]
-  private val mockSubscriptionPage = mock[SubscriptionPage]
+  private val mockSubscriptionFlowInfo       = mock[SubscriptionFlowInfo]
+  private val mockSubscriptionPage           = mock[SubscriptionPage]
 
   private val matchUtrSubscriptionView = app.injector.instanceOf[match_utr_subscription]
 
@@ -202,4 +202,5 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec {
     when(mockSubscriptionFlowInfo.nextPage).thenReturn(mockSubscriptionPage)
     when(mockSubscriptionPage.url).thenReturn(url)
   }
+
 }

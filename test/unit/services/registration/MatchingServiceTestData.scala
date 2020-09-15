@@ -24,27 +24,31 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, Indiv
 import util.builders.matching.NinoFormBuilder
 
 trait MatchingServiceTestData {
-  val ninoId: String = NinoFormBuilder.Nino
-  val establishmentDate: LocalDate = LocalDate.parse("1961-04-12")
-  val CorporateBody = "Corporate Body"
-  val Partnership = "Partnership"
-  val UnincorporatedBody = "Unincorporated Body"
-  val individualFirstName = "John"
-  val individualMiddleName = "Middle"
-  val individualLastName = "Doe"
-  val individualDateOfBirth = "1999-12-20"
+  val ninoId: String                        = NinoFormBuilder.Nino
+  val establishmentDate: LocalDate          = LocalDate.parse("1961-04-12")
+  val CorporateBody                         = "Corporate Body"
+  val Partnership                           = "Partnership"
+  val UnincorporatedBody                    = "Unincorporated Body"
+  val individualFirstName                   = "John"
+  val individualMiddleName                  = "Middle"
+  val individualLastName                    = "Doe"
+  val individualDateOfBirth                 = "1999-12-20"
   val individualLocalDateOfBirth: LocalDate = LocalDate.parse(individualDateOfBirth)
-  val individual: Individual = Individual.noMiddle(individualFirstName, individualLastName, individualDateOfBirth)
+  val individual: Individual                = Individual.noMiddle(individualFirstName, individualLastName, individualDateOfBirth)
+
   val individualWithMiddleName =
     Individual(individualFirstName, Some(individualMiddleName), individualLastName, individualDateOfBirth)
-  val utrId = "2108834503"
-  val utr = Utr(utrId)
-  val eoriId = "eor-123"
-  val eori = Eori(eoriId)
-  val nino = Nino(ninoId)
+
+  val utrId                 = "2108834503"
+  val utr                   = Utr(utrId)
+  val eoriId                = "eor-123"
+  val eori                  = Eori(eoriId)
+  val nino                  = Nino(ninoId)
   val someEstablishmentDate = Some(establishmentDate)
+
   val ExpectedRequestCommon =
     RequestCommon("CDS", new DateTime("2016-07-08T08:35:13Z"), "4482baa8-1c84-4d23-a8db-3fc180325e7a")
+
   val matchedAddress = Address("Line 1", Some("line 2"), Some("line 3"), Some("line 4"), Some("SE28 1AA"), "GB")
 
   def utrOnlyRequestJson(utrIdToMatch: String, isAnAgent: Boolean): JsValue =
@@ -86,6 +90,7 @@ trait MatchingServiceTestData {
          |  }
          |}
         """.stripMargin)
+
   val eoriAndNameRequestJson: JsValue =
     Json.parse(s"""{
          |  "registerWithIDRequest": {
@@ -107,6 +112,7 @@ trait MatchingServiceTestData {
          |  }
          |}
         """.stripMargin)
+
   val utrIndividualRequestJson: JsValue =
     Json.parse(s"""{
          |  "registerWithIDRequest": {
@@ -129,6 +135,7 @@ trait MatchingServiceTestData {
          |  }
          |}
         """.stripMargin)
+
   val eoriIndividualRequestJson: JsValue =
     Json.parse(s"""{
          |  "registerWithIDRequest": {
@@ -152,6 +159,7 @@ trait MatchingServiceTestData {
          |  }
          |}
         """.stripMargin)
+
   val ninoIndividualRequestJson: JsValue =
     Json.parse(s"""{
          |  "registerWithIDRequest": {
@@ -174,6 +182,7 @@ trait MatchingServiceTestData {
          |  }
          |}
         """.stripMargin)
+
   val ninoRequestJson: JsValue =
     Json.parse(s"""{
          |  "registerWithIDRequest": {
@@ -191,6 +200,7 @@ trait MatchingServiceTestData {
          |  }
          |}
         """.stripMargin)
+
   val successResponse: JsValue =
     Json.parse("""
         |{
@@ -231,7 +241,9 @@ trait MatchingServiceTestData {
         |  }
         |}
       """.stripMargin)
+
   val matchSuccessResponse: MatchingResponse = successResponse.as[MatchingResponse]
+
   val successResponseMandatoryFields: JsValue =
     Json.parse("""
         |{
@@ -259,7 +271,9 @@ trait MatchingServiceTestData {
         |  }
         |}
       """.stripMargin)
+
   val matchSuccessResponseMandatoryFields: MatchingResponse = successResponseMandatoryFields.as[MatchingResponse]
+
   val successResponseWithoutOrganisationType: JsValue =
     Json.parse("""
         |{
@@ -291,8 +305,10 @@ trait MatchingServiceTestData {
         |  }
         |}
       """.stripMargin)
+
   val matchSuccessResponseWithoutOrganisationType: MatchingResponse =
     successResponseWithoutOrganisationType.as[MatchingResponse]
+
   val successResponseIndividual: JsValue =
     Json.parse(s"""
          |{
@@ -332,7 +348,9 @@ trait MatchingServiceTestData {
          |  }
          |}
     """.stripMargin)
+
   val matchIndividualSuccessResponse: MatchingResponse = successResponseIndividual.as[MatchingResponse]
+
   val successResponseIndividualWithMiddleName: JsValue =
     Json.parse(s"""
          |{
@@ -373,6 +391,8 @@ trait MatchingServiceTestData {
          |  }
          |}
     """.stripMargin)
+
   val matchIndividualWithMiddleNameSuccessResponse: MatchingResponse =
     successResponseIndividualWithMiddleName.as[MatchingResponse]
+
 }

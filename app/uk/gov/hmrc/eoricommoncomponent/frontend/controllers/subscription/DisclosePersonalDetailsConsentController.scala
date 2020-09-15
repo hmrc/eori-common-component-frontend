@@ -27,13 +27,16 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{LoggedInUserWithEnrolmen
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionBusinessService,
+  SubscriptionDetailsService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.disclose_personal_details_consent
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DisclosePersonalDetailsConsentController @Inject()(
+class DisclosePersonalDetailsConsentController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   subscriptionDetailsService: SubscriptionDetailsService,
@@ -65,17 +68,15 @@ class DisclosePersonalDetailsConsentController @Inject()(
       for {
         isConsentDisclosed <- subscriptionBusinessService.getCachedPersonalDataDisclosureConsent
         yesNo: YesNo = YesNo(isConsentDisclosed)
-      } yield {
-        Ok(
-          disclosePersonalDetailsConsentView(
-            isInReviewMode = true,
-            disclosePersonalDetailsYesNoAnswerForm.fill(yesNo),
-            isIndividualFlow,
-            requestSessionData.isPartnership,
-            journey
-          )
+      } yield Ok(
+        disclosePersonalDetailsConsentView(
+          isInReviewMode = true,
+          disclosePersonalDetailsYesNoAnswerForm.fill(yesNo),
+          isIndividualFlow,
+          requestSessionData.isPartnership,
+          journey
         )
-      }
+      )
   }
 
   def submit(isInReviewMode: Boolean, journey: Journey.Value): Action[AnyContent] =
@@ -94,21 +95,20 @@ class DisclosePersonalDetailsConsentController @Inject()(
                   journey
                 )
               )
-          ),
-          yesNoAnswer => {
+            ),
+          yesNoAnswer =>
             subscriptionDetailsService.cacheConsentToDisclosePersonalDetails(yesNoAnswer).flatMap { _ =>
-              if (isInReviewMode) {
+              if (isInReviewMode)
                 Future.successful(Redirect(DetermineReviewPageController.determineRoute(journey).url))
-              } else {
+              else
                 Future.successful(
                   Redirect(subscriptionFlowManager.stepInformation(EoriConsentSubscriptionFlowPage).nextPage.url)
                 )
-              }
             }
-          }
         )
     }
 
   private def isIndividualFlow(implicit rq: Request[AnyContent]) =
     subscriptionFlowManager.currentSubscriptionFlow.isIndividualFlow
+
 }

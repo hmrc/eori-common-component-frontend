@@ -32,17 +32,17 @@ class Save4LaterConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
       Map(
         "microservice.services.handle-subscription.host" -> Host,
         "microservice.services.handle-subscription.port" -> Port,
-        "auditing.enabled" -> true,
-        "auditing.consumer.baseUri.host" -> Host,
-        "auditing.consumer.baseUri.port" -> Port
+        "auditing.enabled"                               -> true,
+        "auditing.consumer.baseUri.host"                 -> Host,
+        "auditing.consumer.baseUri.port"                 -> Port
       )
     )
     .build()
 
   private lazy val save4LaterConnector = app.injector.instanceOf[Save4LaterConnector]
-  private val expectedGetUrl = s"/save4later/$id/$key"
-  private val expectedPutUrl = s"/save4later/$id/$key"
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  private val expectedGetUrl           = s"/save4later/$id/$key"
+  private val expectedPutUrl           = s"/save4later/$id/$key"
+  implicit val hc: HeaderCarrier       = HeaderCarrier()
 
   before {
     resetMockServer()
@@ -93,7 +93,7 @@ class Save4LaterConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
 
     "return successful response with NoContent status for delete" in {
       stubSave4LaterDELETE()
-      save4LaterConnector.delete[HttpResponse](id).futureValue mustBe (())
+      save4LaterConnector.delete[HttpResponse](id).futureValue mustBe ()
     }
 
     "return  BadRequestException with response status NOT FOUND status for unknown entry" in {

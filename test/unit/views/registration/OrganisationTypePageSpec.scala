@@ -28,9 +28,9 @@ import util.ViewSpec
 
 class OrganisationTypePageSpec extends ViewSpec {
   private val form: Form[CdsOrganisationType] = organisationTypeDetailsForm
-  private val thirdCountryOrganisationLabel = "label[for=organisation-type-third-country-organisation]"
-  private val thirdCountrySoleTraderLabel = "label[for=organisation-type-third-country-sole-trader]"
-  private val thirdCountryIndividualLabel = "label[for=organisation-type-third-country-individual]"
+  private val thirdCountryOrganisationLabel   = "label[for=organisation-type-third-country-organisation]"
+  private val thirdCountrySoleTraderLabel     = "label[for=organisation-type-third-country-sole-trader]"
+  private val thirdCountryIndividualLabel     = "label[for=organisation-type-third-country-individual]"
 
   private val view = app.injector.instanceOf[organisation_type]
 
@@ -50,7 +50,8 @@ class OrganisationTypePageSpec extends ViewSpec {
 
   private lazy val doc = {
     implicit val request = withFakeCSRF(FakeRequest().withSession(("selected-user-location", "third-country")))
-    val result = view(form, Some("third-country"), Journey.Register)
+    val result           = view(form, Some("third-country"), Journey.Register)
     Jsoup.parse(contentAsString(result))
   }
+
 }

@@ -39,30 +39,31 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
 
   implicit val hc: HeaderCarrier = mock[HeaderCarrier]
 
-  private val mockCdsFrontendDataCache = mock[SessionCache]
-  private val mockRegistrationDetailsCreator = mock[RegistrationDetailsCreator]
-  private val registrationInfo = mock[RegistrationInfo]
-  private val mockRegistrationDetails = mock[RegistrationDetails]
-  private val mockContactDetailsAdaptor = mock[ContactDetailsAdaptor]
-  private val mockSubscriptionDetailsHolder = mock[SubscriptionDetails]
+  private val mockCdsFrontendDataCache          = mock[SessionCache]
+  private val mockRegistrationDetailsCreator    = mock[RegistrationDetailsCreator]
+  private val registrationInfo                  = mock[RegistrationInfo]
+  private val mockRegistrationDetails           = mock[RegistrationDetails]
+  private val mockContactDetailsAdaptor         = mock[ContactDetailsAdaptor]
+  private val mockSubscriptionDetailsHolder     = mock[SubscriptionDetails]
   private val mockpersonalDataDisclosureConsent = mock[Option[Boolean]]
-  private val mockContactDetailsModel = mock[ContactDetailsModel]
-  private val mockBusinessShortName = mock[BusinessShortName]
+  private val mockContactDetailsModel           = mock[ContactDetailsModel]
+  private val mockBusinessShortName             = mock[BusinessShortName]
 
-  private val expectedDate = LocalDate.now()
+  private val expectedDate      = LocalDate.now()
   private val maybeExpectedDate = Some(expectedDate)
 
   val sicCode = Some("someSicCode")
 
   private val subscriptionBusinessService =
     new SubscriptionBusinessService(mockCdsFrontendDataCache)(global)
-  private val eoriNumericLength = 15
-  private val eoriId = "GB" + Random.nextString(eoriNumericLength)
-  private val eori = Eori(eoriId)
-  val maybeEoriId = Some(eoriId)
+
+  private val eoriNumericLength   = 15
+  private val eoriId              = "GB" + Random.nextString(eoriNumericLength)
+  private val eori                = Eori(eoriId)
+  val maybeEoriId                 = Some(eoriId)
   val mayBeCachedAddressViewModel = Some(AddressViewModel("Address Line 1", "city", Some("postcode"), "GB"))
-  val nameIdOrganisationDetails = Some(NameIdOrganisationMatchModel("OrgName", "ID"))
-  val customsIDUTR = Some(Utr("ID"))
+  val nameIdOrganisationDetails   = Some(NameIdOrganisationMatchModel("OrgName", "ID"))
+  val customsIDUTR                = Some(Utr("ID"))
 
   val email = Some("OrgName@example.com")
 

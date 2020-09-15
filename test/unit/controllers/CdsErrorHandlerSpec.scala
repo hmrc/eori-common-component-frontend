@@ -29,9 +29,9 @@ import util.ControllerSpec
 class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {
   val configuration = mock[Configuration]
 
-  private val errorTemplateView = app.injector.instanceOf[error_template]
+  private val errorTemplateView       = app.injector.instanceOf[error_template]
   private val clientErrorTemplateView = app.injector.instanceOf[client_error_template]
-  private val notFoundView = app.injector.instanceOf[notFound]
+  private val notFoundView            = app.injector.instanceOf[notFound]
 
   val cdsErrorHandler =
     new CdsErrorHandler(messagesApi, configuration, errorTemplateView, clientErrorTemplateView, notFoundView)

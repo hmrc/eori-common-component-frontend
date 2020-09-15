@@ -44,32 +44,35 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
 
   implicit val hc: HeaderCarrier = mock[HeaderCarrier]
 
-  private val mockSessionCache = mock[SessionCache]
+  private val mockSessionCache               = mock[SessionCache]
   private val mockRegistrationDetailsCreator = mock[RegistrationDetailsCreator]
-  private val registrationInfo = mock[RegistrationInfo]
-  private val mockRegistrationDetails = mock[RegistrationDetails]
-  private val mockSave4LaterConnector = mock[Save4LaterConnector]
+  private val registrationInfo               = mock[RegistrationInfo]
+  private val mockRegistrationDetails        = mock[RegistrationDetails]
+  private val mockSave4LaterConnector        = mock[Save4LaterConnector]
 
-  private val mockContactDetailsAdaptor = mock[ContactDetailsAdaptor]
-  private val mockSubscriptionDetailsHolder = mock[SubscriptionDetails]
+  private val mockContactDetailsAdaptor         = mock[ContactDetailsAdaptor]
+  private val mockSubscriptionDetailsHolder     = mock[SubscriptionDetails]
   private val mockpersonalDataDisclosureConsent = mock[Option[Boolean]]
 
   private val expectedDate = LocalDate.now()
-  private val sicCode = "someSicCode"
+  private val sicCode      = "someSicCode"
+
   private val addressDetails =
     AddressViewModel(street = "street", city = "city", postcode = Some("postcode"), countryCode = "GB")
-  private val nameId = NameIdOrganisationMatchModel(name = "orgname", id = "ID")
+
+  private val nameId       = NameIdOrganisationMatchModel(name = "orgname", id = "ID")
   private val customsIdUTR = Utr("utrxxxxx")
 
   private val subscriptionDetailsHolderService =
     new SubscriptionDetailsService(mockSessionCache, mockContactDetailsAdaptor, mockSave4LaterConnector)(global)
 
   private val eoriNumericLength = 15
-  private val eoriId = "GB" + Random.nextString(eoriNumericLength)
-  private val eori = Eori(eoriId)
+  private val eoriId            = "GB" + Random.nextString(eoriNumericLength)
+  private val eori              = Eori(eoriId)
 
   private val contactDetailsViewModelWhenNotUsingRegisteredAddress =
     SubscriptionContactDetailsFormBuilder.createContactDetailsViewModelWhenNotUsingRegAddress
+
   private val contactDetailsViewModelWhenUsingRegisteredAddress =
     SubscriptionContactDetailsFormBuilder.createContactDetailsViewModelWhenUseRegAddress
 
@@ -104,11 +107,11 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
 
   "Calling saveKeyIdentifiers" should {
     "save saveKeyIdentifiers in mongo" in {
-      val groupId = GroupId("groupId")
+      val groupId    = GroupId("groupId")
       val internalId = InternalId("internalId")
-      val safeId = SafeId("safeId")
-      val key = "cachedGroupId"
-      val cacheIds = CacheIds(internalId, safeId)
+      val safeId     = SafeId("safeId")
+      val key        = "cachedGroupId"
+      val cacheIds   = CacheIds(internalId, safeId)
       when(mockSessionCache.safeId).thenReturn(Future.successful(SafeId("safeId")))
       when(
         mockSave4LaterConnector.put[CacheIds](
@@ -118,7 +121,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
         )(any(), any(), any())
       ).thenReturn(Future.successful(()))
       val expected = await(subscriptionDetailsHolderService.saveKeyIdentifiers(groupId, internalId))
-      expected shouldBe (())
+      expected shouldBe ()
     }
   }
 
@@ -386,7 +389,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
   "Calling updateSubscriptionDetails" should {
     "update cache with subscription details having name and dob details only" in {
       val businessShortName = BusinessShortName(Some("shortName"))
-      val nameDobDetails = NameDobMatchModel("fname", Some("mname"), "lname", new LocalDate(2019, 1, 1))
+      val nameDobDetails    = NameDobMatchModel("fname", Some("mname"), "lname", new LocalDate(2019, 1, 1))
       when(mockSessionCache.subscriptionDetails).thenReturn(
         Future.successful(
           SubscriptionDetails(nameDobDetails = Some(nameDobDetails), businessShortName = Some(businessShortName))
@@ -403,7 +406,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
 
     "update cache with subscription details having organisation name details only" in {
       val nameOrganisationDetails = NameOrganisationMatchModel("fname")
-      val businessShortName = BusinessShortName(Some("shortName"))
+      val businessShortName       = BusinessShortName(Some("shortName"))
       when(mockSessionCache.subscriptionDetails).thenReturn(
         Future.successful(
           SubscriptionDetails(

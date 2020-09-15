@@ -26,4 +26,5 @@ object StringThings {
 
     def of(f: () => String): String = of(f.apply())
   }
+
 }

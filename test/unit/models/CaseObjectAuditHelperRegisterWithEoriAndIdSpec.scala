@@ -163,14 +163,14 @@ class CaseObjectAuditHelperRegisterWithEoriAndIdSpec extends UnitSpec {
     "create audit map" in {
       val contactDetailMap = contactDetailsFromJson.keyValueMap()
       contactDetailMap shouldBe Map(
-        "email" -> "asp@example.com",
-        "address.postalCode" -> "POSTCODE",
-        "address.city" -> "city",
-        "contactName" -> "First Last",
-        "address.countryCode" -> "GB",
+        "email"                   -> "asp@example.com",
+        "address.postalCode"      -> "POSTCODE",
+        "address.city"            -> "city",
+        "contactName"             -> "First Last",
+        "address.countryCode"     -> "GB",
         "address.streetAndNumber" -> "98 streetAndNumber",
-        "fax" -> "89067",
-        "phone" -> "1234567"
+        "fax"                     -> "89067",
+        "phone"                   -> "1234567"
       )
       contactDetailMap.size shouldBe 8
 
@@ -181,9 +181,9 @@ class CaseObjectAuditHelperRegisterWithEoriAndIdSpec extends UnitSpec {
     "create audit map" in {
       val addresssMap = addressFromJson.toMap()
       addresssMap shouldBe Map(
-        "postalCode" -> "POSTCODE",
-        "city" -> "city",
-        "countryCode" -> "GB",
+        "postalCode"      -> "POSTCODE",
+        "city"            -> "city",
+        "countryCode"     -> "GB",
         "streetAndNumber" -> "98 streetAndNumber"
       )
       addresssMap.size shouldBe 4
@@ -230,39 +230,39 @@ class CaseObjectAuditHelperRegisterWithEoriAndIdSpec extends UnitSpec {
     "create audit map" in {
       val registerWithEoriAndIdResponseMap = registerWithEoriAndIdResponse.keyValueMap()
       registerWithEoriAndIdResponseMap shouldBe Map(
-        "thirdCountryIDNumber.1" -> "1234",
-        "VATIDs.countryCode.1" -> "GB",
-        "dateOfEstablishmentBirth" -> "2018-05-16",
-        "contactDetail.email" -> "asp@example.com",
-        "address.postalCode" -> "SS16 1TU",
-        "VATIDs.vatNumber.0" -> "1234",
-        "caseNumber" -> "C001",
-        "outcome" -> "PASS",
-        "thirdCountryIDNumber.2" -> "67890",
-        "processingDate" -> "2001-12-17T09:30:47.000Z",
-        "contactDetail.phone" -> "1234567",
-        "address.city" -> "London",
-        "expiryDate" -> "2018-05-16",
-        "legalStatus" -> "Official",
-        "contactDetail.contactName" -> "Joe Smith",
-        "address.countryCode" -> "GB",
-        "contactDetail.address.postalCode" -> "SS16 5BH",
-        "address.streetAndNumber" -> "98 High Street",
-        "hasInternetPublication" -> "false",
-        "hasEstablishmentInCustomsTerritory" -> "true",
-        "contactDetail.fax" -> "89067",
-        "personType" -> "9",
-        "status" -> "OK",
-        "principalEconomicActivity" -> "P001",
-        "VATIDs.countryCode.0" -> "AD",
+        "thirdCountryIDNumber.1"                -> "1234",
+        "VATIDs.countryCode.1"                  -> "GB",
+        "dateOfEstablishmentBirth"              -> "2018-05-16",
+        "contactDetail.email"                   -> "asp@example.com",
+        "address.postalCode"                    -> "SS16 1TU",
+        "VATIDs.vatNumber.0"                    -> "1234",
+        "caseNumber"                            -> "C001",
+        "outcome"                               -> "PASS",
+        "thirdCountryIDNumber.2"                -> "67890",
+        "processingDate"                        -> "2001-12-17T09:30:47.000Z",
+        "contactDetail.phone"                   -> "1234567",
+        "address.city"                          -> "London",
+        "expiryDate"                            -> "2018-05-16",
+        "legalStatus"                           -> "Official",
+        "contactDetail.contactName"             -> "Joe Smith",
+        "address.countryCode"                   -> "GB",
+        "contactDetail.address.postalCode"      -> "SS16 5BH",
+        "address.streetAndNumber"               -> "98 High Street",
+        "hasInternetPublication"                -> "false",
+        "hasEstablishmentInCustomsTerritory"    -> "true",
+        "contactDetail.fax"                     -> "89067",
+        "personType"                            -> "9",
+        "status"                                -> "OK",
+        "principalEconomicActivity"             -> "P001",
+        "VATIDs.countryCode.0"                  -> "AD",
         "contactDetail.address.streetAndNumber" -> "98 London Road",
-        "SAFEID" -> "XA1234567890123",
-        "startDate" -> "2018-05-15",
-        "VATIDs.vatNumber.1" -> "4567",
-        "trader.shortName" -> "Mr S",
-        "trader.fullName" -> "john doe",
-        "contactDetail.address.city" -> "SouthEnd",
-        "contactDetail.address.countryCode" -> "GB"
+        "SAFEID"                                -> "XA1234567890123",
+        "startDate"                             -> "2018-05-15",
+        "VATIDs.vatNumber.1"                    -> "4567",
+        "trader.shortName"                      -> "Mr S",
+        "trader.fullName"                       -> "john doe",
+        "contactDetail.address.city"            -> "SouthEnd",
+        "contactDetail.address.countryCode"     -> "GB"
       )
       registerWithEoriAndIdResponseMap.size shouldBe 33
 
@@ -279,8 +279,8 @@ class CaseObjectAuditHelperRegisterWithEoriAndIdSpec extends UnitSpec {
     "create audit map" in {
       val requestCommonFromMap = requestCommonFromJson.keyValueMap()
       requestCommonFromMap shouldBe Map(
-        "regime" -> "CDS",
-        "receiptDate" -> "2001-12-17T09:30:47.000Z",
+        "regime"                   -> "CDS",
+        "receiptDate"              -> "2001-12-17T09:30:47.000Z",
         "acknowledgementReference" -> "2438490385338590358"
       )
       requestCommonFromMap.size shouldBe 3
@@ -300,11 +300,11 @@ class CaseObjectAuditHelperRegisterWithEoriAndIdSpec extends UnitSpec {
     "create audit map" in {
       val rregisterModeIdMap = registerModeIdJson.keyValueMap()
       rregisterModeIdMap shouldBe Map(
-        "IDNumber" -> "45646757",
+        "IDNumber"          -> "45646757",
         "organisation.type" -> "0001",
-        "isNameMatched" -> "false",
+        "isNameMatched"     -> "false",
         "organisation.name" -> "pg",
-        "IDType" -> "UTR"
+        "IDType"            -> "UTR"
       )
       rregisterModeIdMap.size shouldBe 5
     }
@@ -327,11 +327,11 @@ class CaseObjectAuditHelperRegisterWithEoriAndIdSpec extends UnitSpec {
     "create audit map" in {
       val registerModeEoriMap = registerModeEoriJson.keyValueMap()
       registerModeEoriMap shouldBe Map(
-        "address.postalCode" -> "BN1 6HJ",
-        "fullName" -> "Piyush Goyal",
-        "EORI" -> "GB012345678911",
-        "address.city" -> "Brighton",
-        "address.countryCode" -> "GB",
+        "address.postalCode"      -> "BN1 6HJ",
+        "fullName"                -> "Piyush Goyal",
+        "EORI"                    -> "GB012345678911",
+        "address.city"            -> "Brighton",
+        "address.countryCode"     -> "GB",
         "address.streetAndNumber" -> "55 West Street"
       )
       registerModeEoriMap.size shouldBe 6
@@ -341,20 +341,20 @@ class CaseObjectAuditHelperRegisterWithEoriAndIdSpec extends UnitSpec {
     "create audit map" in {
       val registerWithEoriAndIdRequestMap = registerWithEoriAndIdRequestFromJson.keyValueMap()
       registerWithEoriAndIdRequestMap shouldBe Map(
-        "receiptDate" -> "2001-12-17T09:30:47.000Z",
-        "IDNumber" -> "45646757",
-        "organisation.type" -> "0001",
-        "isNameMatched" -> "false",
-        "email" -> "pg@example.com",
-        "regime" -> "CDS",
-        "address.postalCode" -> "BN1 6HJ",
-        "fullName" -> "Piyush Goyal",
-        "EORI" -> "GB012345678911",
-        "address.city" -> "Brighton",
-        "organisation.name" -> "pg",
-        "IDType" -> "UTR",
-        "address.countryCode" -> "GB",
-        "address.streetAndNumber" -> "55 West Street",
+        "receiptDate"              -> "2001-12-17T09:30:47.000Z",
+        "IDNumber"                 -> "45646757",
+        "organisation.type"        -> "0001",
+        "isNameMatched"            -> "false",
+        "email"                    -> "pg@example.com",
+        "regime"                   -> "CDS",
+        "address.postalCode"       -> "BN1 6HJ",
+        "fullName"                 -> "Piyush Goyal",
+        "EORI"                     -> "GB012345678911",
+        "address.city"             -> "Brighton",
+        "organisation.name"        -> "pg",
+        "IDType"                   -> "UTR",
+        "address.countryCode"      -> "GB",
+        "address.streetAndNumber"  -> "55 West Street",
         "acknowledgementReference" -> "2438490385338590358"
       )
       registerWithEoriAndIdRequestMap.size shouldBe 15

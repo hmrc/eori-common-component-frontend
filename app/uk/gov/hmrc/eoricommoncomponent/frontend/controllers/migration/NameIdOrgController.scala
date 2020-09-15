@@ -33,14 +33,17 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionBusinessService,
+  SubscriptionDetailsService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.nameId
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class NameIDOrgController @Inject()(
+class NameIDOrgController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   subscriptionBusinessService: SubscriptionBusinessService,
@@ -60,18 +63,16 @@ class NameIDOrgController @Inject()(
 
   def createForm(journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      {
-        subscriptionBusinessService.cachedNameIdOrganisationViewModel flatMap { cachedNameUtrViewModel =>
-          val selectedOrganisationType =
-            requestSessionData.userSelectedOrganisationType.map(_.id)
-          populateOkView(
-            cachedNameUtrViewModel,
-            selectedOrganisationType.getOrElse(""),
-            OrganisationTypeConfigurations(selectedOrganisationType.getOrElse("")),
-            isInReviewMode = false,
-            journey
-          )
-        }
+      subscriptionBusinessService.cachedNameIdOrganisationViewModel flatMap { cachedNameUtrViewModel =>
+        val selectedOrganisationType =
+          requestSessionData.userSelectedOrganisationType.map(_.id)
+        populateOkView(
+          cachedNameUtrViewModel,
+          selectedOrganisationType.getOrElse(""),
+          OrganisationTypeConfigurations(selectedOrganisationType.getOrElse("")),
+          isInReviewMode = false,
+          journey
+        )
       }
     }
 
@@ -94,7 +95,7 @@ class NameIDOrgController @Inject()(
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       form.bindFromRequest
         .fold(
-          formWithErrors => {
+          formWithErrors =>
             cdsFrontendDataCache.registrationDetails map { registrationDetails =>
               val selectedOrganisationType =
                 requestSessionData.userSelectedOrganisationType.map(_.id)
@@ -107,11 +108,8 @@ class NameIDOrgController @Inject()(
                   journey
                 )
               )
-            }
-          },
-          formData => {
-            storeNameUtrDetails(formData, isInReviewMode, journey)
-          }
+            },
+          formData => storeNameUtrDetails(formData, isInReviewMode, journey)
         )
     }
 
@@ -141,20 +139,18 @@ class NameIDOrgController @Inject()(
       .cacheNameIdDetails(formData)
       .map(
         _ =>
-          if (inReviewMode) {
+          if (inReviewMode)
             Redirect(
               uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
                 .determineRoute(journey)
             )
-
-          } else {
+          else
             Redirect(
               subscriptionFlowManager
                 .stepInformation(NameUtrDetailsSubscriptionFlowPage)
                 .nextPage
                 .url
             )
-        }
       )
 
   trait Configuration {
@@ -171,7 +167,7 @@ class NameIDOrgController @Inject()(
     isNameAddressRegistrationAvailable: Boolean = false
   ) extends Configuration {
     lazy val form: Form[NameIdOrganisationMatchModel] = nameUtrOrganisationForm
-    def createCustomsId(utr: String): Utr = Utr(utr)
+    def createCustomsId(utr: String): Utr             = Utr(utr)
   }
 
   def invalidOrganisationType(organisationType: String): Any =
@@ -179,8 +175,8 @@ class NameIDOrgController @Inject()(
 
   private val OrganisationTypeConfigurations: Map[String, Configuration] =
     Map(
-      CdsOrganisationType.CompanyId -> UtrConfiguration("Corporate Body", displayMode = RegisteredCompanyDM),
-      CdsOrganisationType.PartnershipId -> UtrConfiguration("Partnership", displayMode = PartnershipDM),
+      CdsOrganisationType.CompanyId                     -> UtrConfiguration("Corporate Body", displayMode = RegisteredCompanyDM),
+      CdsOrganisationType.PartnershipId                 -> UtrConfiguration("Partnership", displayMode = PartnershipDM),
       CdsOrganisationType.LimitedLiabilityPartnershipId -> UtrConfiguration("LLP", displayMode = PartnershipDM),
       CdsOrganisationType.CharityPublicBodyNotForProfitId -> UtrConfiguration(
         "Unincorporated Body",
@@ -188,11 +184,12 @@ class NameIDOrgController @Inject()(
         isNameAddressRegistrationAvailable = true
       )
     )
+
 }
 
 object NameIdOrganisationDisplayMode {
   val RegisteredCompanyDM = "registered-company"
-  val CompanyDM = "company"
-  val PartnershipDM = "partnership"
-  val OrganisationModeDM = "organisation"
+  val CompanyDM           = "company"
+  val PartnershipDM       = "partnership"
+  val OrganisationModeDM  = "organisation"
 }

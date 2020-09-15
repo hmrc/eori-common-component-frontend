@@ -76,6 +76,7 @@ case class RegistrationDetailsSafeId(
 ) extends RegistrationDetails
 
 object RegistrationDetails {
+
   def individual(
     sapNumber: String,
     safeId: SafeId,
@@ -108,8 +109,8 @@ object RegistrationDetails {
   def rdSafeId(safeId: SafeId): RegistrationDetailsSafeId =
     RegistrationDetailsSafeId(safeId, Address("", Some(""), Some(""), Some(""), Some(""), ""), TaxPayerId(""), None, "")
 
-  private val orgFormat = Json.format[RegistrationDetailsOrganisation]
-  private val individualFormat = Json.format[RegistrationDetailsIndividual]
+  private val orgFormat                = Json.format[RegistrationDetailsOrganisation]
+  private val individualFormat         = Json.format[RegistrationDetailsIndividual]
   private val registrationSafeIdFormat = Json.format[RegistrationDetailsSafeId]
 
   implicit val formats = Format[RegistrationDetails](
@@ -129,9 +130,11 @@ object RegistrationDetails {
       case regSafeId: RegistrationDetailsSafeId          => registrationSafeIdFormat.writes(regSafeId)
     }
   )
+
 }
 
 object RegistrationDetailsIndividual {
+
   def apply(fullName: String, dateOfBirth: LocalDate): RegistrationDetailsIndividual =
     new RegistrationDetailsIndividual(
       None,
@@ -151,9 +154,11 @@ object RegistrationDetailsIndividual {
       Address("", None, None, None, None, ""),
       LocalDate.now
     )
+
 }
 
 object RegistrationDetailsOrganisation {
+
   def apply(): RegistrationDetailsOrganisation =
     new RegistrationDetailsOrganisation(
       None,
@@ -164,4 +169,5 @@ object RegistrationDetailsOrganisation {
       None,
       None
     )
+
 }

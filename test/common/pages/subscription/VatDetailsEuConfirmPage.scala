@@ -29,11 +29,15 @@ trait VatDetailsEuConfirmPage extends WebPage {
 }
 
 object VatDetailsEuConfirmPage extends VatDetailsEuConfirmPage {
+
   def apply(numberOfEuCountries: String): VatDetailsEuConfirmPage = new VatDetailsEuConfirmPage {
+
     override val title =
       if (numberOfEuCountries.toInt <= 1)
         s"You have added VAT details for $numberOfEuCountries EU member country"
       else
         s"You have added VAT details for $numberOfEuCountries EU member countries"
+
   }
+
 }

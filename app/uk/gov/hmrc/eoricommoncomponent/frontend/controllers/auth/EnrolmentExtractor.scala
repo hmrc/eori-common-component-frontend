@@ -20,11 +20,12 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Eori, LoggedInUserWithEn
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 trait EnrolmentExtractor {
+
   private def identifierFor(
-                             enrolmentKey: String,
-                             identifierName: String,
-                             loggedInUser: LoggedInUserWithEnrolments
-                           ): Option[String] =
+    enrolmentKey: String,
+    identifierName: String,
+    loggedInUser: LoggedInUserWithEnrolments
+  ): Option[String] =
     loggedInUser.enrolments
       .getEnrolment(enrolmentKey)
       .flatMap(
@@ -36,7 +37,7 @@ trait EnrolmentExtractor {
 
   def enrolledForService(loggedInUser: LoggedInUserWithEnrolments, service: Service): Option[Eori] = service match {
     case Service.ATaR => enrolledATar(loggedInUser)
-    case _ => None
+    case _            => None
   }
 
   def enrolledCds(loggedInUser: LoggedInUserWithEnrolments): Option[Eori] =
@@ -53,4 +54,5 @@ trait EnrolmentExtractor {
 
   def enrolledNino(loggedInUser: LoggedInUserWithEnrolments): Option[Nino] =
     identifierFor("HMRC-NI", "NINO", loggedInUser).map(Nino)
+
 }

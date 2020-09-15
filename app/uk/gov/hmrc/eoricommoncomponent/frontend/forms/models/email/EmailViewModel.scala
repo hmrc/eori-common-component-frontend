@@ -24,6 +24,8 @@ case class EmailStatus(email: String, isVerified: Boolean = false, isConfirmed: 
 
 object EmailStatus {
   implicit val jsonFormat = Json.format[EmailStatus]
+
   implicit def toJsonFormat(emailStatus: EmailStatus): JsValue =
     Json.toJson(emailStatus)
+
 }

@@ -41,7 +41,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SubscriptionRecoveryController @Inject()(
+class SubscriptionRecoveryController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   handleSubscriptionService: HandleSubscriptionService,
@@ -58,58 +58,52 @@ class SubscriptionRecoveryController @Inject()(
 
   def complete(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
-      {
-        val isRowF = Future.successful(UserLocation.isRow(requestSessionData))
-        val journeyF = Future.successful(journey)
-        val cachedCustomsIdF = subscriptionDetailsService.cachedCustomsId
-        val result = for {
-          isRow <- isRowF
-          journey <- journeyF
-          customId <- if (isRow) cachedCustomsIdF else Future.successful(None)
-        } yield {
-          (journey, isRow, customId) match {
-            case (Journey.Subscribe, true, Some(_)) => subscribeForCDS // UK journey
-            case (Journey.Subscribe, true, None)             => subscribeForCDSROW //subscribeForCDSROW //ROW
-            case (Journey.Subscribe, false, _)               => subscribeForCDS //UK Journey
-            case _                                         => subscribeGetAnEori //Journey Get An EORI
-          }
-        }
-        result.flatMap(identity)
+      val isRowF           = Future.successful(UserLocation.isRow(requestSessionData))
+      val journeyF         = Future.successful(journey)
+      val cachedCustomsIdF = subscriptionDetailsService.cachedCustomsId
+      val result = for {
+        isRow    <- isRowF
+        journey  <- journeyF
+        customId <- if (isRow) cachedCustomsIdF else Future.successful(None)
+      } yield (journey, isRow, customId) match {
+        case (Journey.Subscribe, true, Some(_)) => subscribeForCDS    // UK journey
+        case (Journey.Subscribe, true, None)    => subscribeForCDSROW //subscribeForCDSROW //ROW
+        case (Journey.Subscribe, false, _)      => subscribeForCDS    //UK Journey
+        case _                                  => subscribeGetAnEori //Journey Get An EORI
       }
+      result.flatMap(identity)
   }
 
   private def subscribeGetAnEori(implicit ec: ExecutionContext, request: Request[AnyContent]): Future[Result] = {
     val result = for {
       registrationDetails <- sessionCache.registrationDetails
-      safeId = registrationDetails.safeId.id
+      safeId          = registrationDetails.safeId.id
       queryParameters = ("taxPayerID" -> safeId) :: buildQueryParams
-      sub09Result <- SUB09Connector.subscriptionDisplay(queryParameters)
+      sub09Result  <- SUB09Connector.subscriptionDisplay(queryParameters)
       sub01Outcome <- sessionCache.sub01Outcome
-    } yield {
-      sub09Result match {
-        case Right(subscriptionDisplayResponse) =>
-          val email = subscriptionDisplayResponse.responseDetail.contactInformation
-            .flatMap(_.emailAddress)
-            .getOrElse(throw new IllegalStateException("Register Journey: No email address available."))
-          val eori = subscriptionDisplayResponse.responseDetail.EORINo
-            .getOrElse(throw new IllegalStateException("no eori found in the response"))
-          onSUB09Success(
-            sub01Outcome.processedDate,
-            email,
-            safeId,
-            Eori(eori),
-            subscriptionDisplayResponse,
-            Journey.Register
-          )(Redirect(Sub02Controller.end()))
-        case Left(_) =>
-          Future.successful(ServiceUnavailable(errorTemplateView()))
-      }
+    } yield sub09Result match {
+      case Right(subscriptionDisplayResponse) =>
+        val email = subscriptionDisplayResponse.responseDetail.contactInformation
+          .flatMap(_.emailAddress)
+          .getOrElse(throw new IllegalStateException("Register Journey: No email address available."))
+        val eori = subscriptionDisplayResponse.responseDetail.EORINo
+          .getOrElse(throw new IllegalStateException("no eori found in the response"))
+        onSUB09Success(
+          sub01Outcome.processedDate,
+          email,
+          safeId,
+          Eori(eori),
+          subscriptionDisplayResponse,
+          Journey.Register
+        )(Redirect(Sub02Controller.end()))
+      case Left(_) =>
+        Future.successful(ServiceUnavailable(errorTemplateView()))
     }
     result.flatMap(identity)
   }
 
-  private def subscribeForCDS(
-    implicit ec: ExecutionContext,
+  private def subscribeForCDS(implicit
+    ec: ExecutionContext,
     request: Request[AnyContent],
     hc: HeaderCarrier
   ): Future[Result] = {
@@ -121,23 +115,21 @@ class SubscriptionRecoveryController @Inject()(
         .flatMap(_.responseData.map(_.SAFEID))
         .getOrElse(throw new IllegalStateException("no SAFEID found in the response"))
       queryParameters = ("EORI" -> eori) :: buildQueryParams
-      sub09Result <- SUB09Connector.subscriptionDisplay(queryParameters)
+      sub09Result  <- SUB09Connector.subscriptionDisplay(queryParameters)
       sub01Outcome <- sessionCache.sub01Outcome
-      email <- sessionCache.email
-    } yield {
-      sub09Result match {
-        case Right(subscriptionDisplayResponse) =>
-          onSUB09Success(
-            sub01Outcome.processedDate,
-            email,
-            safeId,
-            Eori(eori),
-            subscriptionDisplayResponse,
-            Journey.Subscribe
-          )(Redirect(Sub02Controller.migrationEnd()))
-        case Left(_) =>
-          Future.successful(ServiceUnavailable(errorTemplateView()))
-      }
+      email        <- sessionCache.email
+    } yield sub09Result match {
+      case Right(subscriptionDisplayResponse) =>
+        onSUB09Success(
+          sub01Outcome.processedDate,
+          email,
+          safeId,
+          Eori(eori),
+          subscriptionDisplayResponse,
+          Journey.Subscribe
+        )(Redirect(Sub02Controller.migrationEnd()))
+      case Left(_) =>
+        Future.successful(ServiceUnavailable(errorTemplateView()))
     }
     result.flatMap(identity)
   }
@@ -146,26 +138,24 @@ class SubscriptionRecoveryController @Inject()(
     val result = for {
       subscriptionDetails <- sessionCache.subscriptionDetails
       registrationDetails <- sessionCache.registrationDetails
-      eori = subscriptionDetails.eoriNumber.getOrElse(throw new IllegalStateException("no eori found in the cache"))
-      safeId = registrationDetails.safeId.id
+      eori            = subscriptionDetails.eoriNumber.getOrElse(throw new IllegalStateException("no eori found in the cache"))
+      safeId          = registrationDetails.safeId.id
       queryParameters = ("EORI" -> eori) :: buildQueryParams
-      sub09Result <- SUB09Connector.subscriptionDisplay(queryParameters)
+      sub09Result  <- SUB09Connector.subscriptionDisplay(queryParameters)
       sub01Outcome <- sessionCache.sub01Outcome
-      email <- sessionCache.email
-    } yield {
-      sub09Result match {
-        case Right(subscriptionDisplayResponse) =>
-          onSUB09Success(
-            sub01Outcome.processedDate,
-            email,
-            safeId,
-            Eori(eori),
-            subscriptionDisplayResponse,
-            Journey.Subscribe
-          )(Redirect(Sub02Controller.migrationEnd()))
-        case Left(_) =>
-          Future.successful(ServiceUnavailable(errorTemplateView()))
-      }
+      email        <- sessionCache.email
+    } yield sub09Result match {
+      case Right(subscriptionDisplayResponse) =>
+        onSUB09Success(
+          sub01Outcome.processedDate,
+          email,
+          safeId,
+          Eori(eori),
+          subscriptionDisplayResponse,
+          Journey.Subscribe
+        )(Redirect(Sub02Controller.migrationEnd()))
+      case Left(_) =>
+        Future.successful(ServiceUnavailable(errorTemplateView()))
     }
     result.flatMap(identity)
   }
@@ -206,13 +196,12 @@ class SubscriptionRecoveryController @Inject()(
               emailVerificationTimestamp,
               SafeId(safeId)
             )
-            .flatMap(_ => {
-              if (journey == Journey.Subscribe) {
+            .flatMap { _ =>
+              if (journey == Journey.Subscribe)
                 issuerCall(eori, formBundleId, subscriptionDisplayResponse)(redirect)
-              } else {
+              else
                 Future.successful(redirect)
-              }
-            })
+            }
       )
   }
 

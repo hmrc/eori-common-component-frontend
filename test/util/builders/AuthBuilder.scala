@@ -73,16 +73,16 @@ object AuthBuilder {
           .eq(email and credentialRole and affinityGroup and internalId and allEnrolments and groupIdentifier)
       )(any(), any())
     ).thenReturn(
-        Future.successful(
+      Future.successful(
+        new ~(
           new ~(
-            new ~(
-              new ~(new ~(new ~(userEmail, userCredentialRole), Option(userAffinityGroup)), Option(userId)),
-              Enrolments(userEnrolments)
-            ),
-            groupId
-          )
+            new ~(new ~(new ~(userEmail, userCredentialRole), Option(userAffinityGroup)), Option(userId)),
+            Enrolments(userEnrolments)
+          ),
+          groupId
         )
       )
+    )
 
     when(
       mockAuthConnector.authorise(
@@ -92,19 +92,19 @@ object AuthBuilder {
         )
       )(any(), any())
     ).thenReturn(
-        Future.successful(
+      Future.successful(
+        new ~(
           new ~(
             new ~(
-              new ~(
-                new ~(new ~(new ~(userEmail, userCredentialRole), Option(userAffinityGroup)), Option(userId)),
-                Enrolments(userEnrolments)
-              ),
-              userCredentials
+              new ~(new ~(new ~(userEmail, userCredentialRole), Option(userAffinityGroup)), Option(userId)),
+              Enrolments(userEnrolments)
             ),
-            groupId
-          )
+            userCredentials
+          ),
+          groupId
         )
       )
+    )
 
     when(mockAuthConnector.authorise(any(), retrieval = ArgumentMatchers.eq(allEnrolments))(any(), any()))
       .thenReturn(Future.successful(Enrolments(userEnrolments)))

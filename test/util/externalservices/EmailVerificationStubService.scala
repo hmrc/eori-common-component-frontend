@@ -49,15 +49,19 @@ object EmailVerificationStubService {
 
   def stubEmailVerified() =
     stubTheVerifiedEmailResponse(expectedVerifiedEmailPostUrl, emailVerifiedResponseJson.toString, OK)
+
   def stubEmailNotVerified() =
     stubTheVerifiedEmailResponse(expectedVerifiedEmailPostUrl, emailVerificationNotFoundJson.toString, NOT_FOUND)
+
   def stubEmailVerifiedInternalServerError() =
     stubTheVerifiedEmailResponse(expectedVerifiedEmailPostUrl, internalServerErrorJson.toString, INTERNAL_SERVER_ERROR)
 
   def stubVerificationRequestSent() =
     stubVerificationRequest(expectedPostUrl, "", CREATED)
+
   def stubEmailAlreadyVerified() =
     stubVerificationRequest(expectedPostUrl, "", CONFLICT)
+
   def stubVerificationRequestError() =
     stubVerificationRequest(expectedPostUrl, internalServerErrorJson.toString(), INTERNAL_SERVER_ERROR)
 

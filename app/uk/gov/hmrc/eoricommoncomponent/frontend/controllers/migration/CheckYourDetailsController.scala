@@ -28,8 +28,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionDa
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.check_your_details
 
 import scala.concurrent.ExecutionContext
+
 @Singleton
-class CheckYourDetailsController @Inject()(
+class CheckYourDetailsController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   cdsFrontendCache: SessionCache,
@@ -43,28 +44,26 @@ class CheckYourDetailsController @Inject()(
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
         subscriptionDetailsHolder <- cdsFrontendCache.subscriptionDetails
-        email <- cdsFrontendCache.email
-      } yield {
-        Ok(
-          checkYourDetailsView(
-            isThirdCountrySubscription = isThirdCountrySubscriptionFlow,
-            isIndividualSubscriptionFlow = requestSessionData.userSubscriptionFlow.isIndividualFlow,
-            organisationType = requestSessionData.userSelectedOrganisationType,
-            addressDetails = subscriptionDetailsHolder.addressDetails,
-            contactDetails = subscriptionDetailsHolder.contactDetails,
-            principalEconomicActivity = subscriptionDetailsHolder.sicCode,
-            eoriNumber = subscriptionDetailsHolder.eoriNumber,
-            email = Some(email),
-            nameIdOrganisationDetails = subscriptionDetailsHolder.nameIdOrganisationDetails,
-            nameOrganisationDetails = subscriptionDetailsHolder.nameOrganisationDetails,
-            nameDobDetails = subscriptionDetailsHolder.nameDobDetails,
-            dateEstablished = subscriptionDetailsHolder.dateEstablished,
-            idDetails = subscriptionDetailsHolder.idDetails,
-            customsId = subscriptionDetailsHolder.customsId,
-            journey = journey
-          )
+        email                     <- cdsFrontendCache.email
+      } yield Ok(
+        checkYourDetailsView(
+          isThirdCountrySubscription = isThirdCountrySubscriptionFlow,
+          isIndividualSubscriptionFlow = requestSessionData.userSubscriptionFlow.isIndividualFlow,
+          organisationType = requestSessionData.userSelectedOrganisationType,
+          addressDetails = subscriptionDetailsHolder.addressDetails,
+          contactDetails = subscriptionDetailsHolder.contactDetails,
+          principalEconomicActivity = subscriptionDetailsHolder.sicCode,
+          eoriNumber = subscriptionDetailsHolder.eoriNumber,
+          email = Some(email),
+          nameIdOrganisationDetails = subscriptionDetailsHolder.nameIdOrganisationDetails,
+          nameOrganisationDetails = subscriptionDetailsHolder.nameOrganisationDetails,
+          nameDobDetails = subscriptionDetailsHolder.nameDobDetails,
+          dateEstablished = subscriptionDetailsHolder.dateEstablished,
+          idDetails = subscriptionDetailsHolder.idDetails,
+          customsId = subscriptionDetailsHolder.customsId,
+          journey = journey
         )
-      }
+      )
   }
 
   private def isThirdCountrySubscriptionFlow(implicit request: Request[AnyContent]): Boolean =
@@ -74,4 +73,5 @@ class CheckYourDetailsController @Inject()(
         true
       case _ => false
     }
+
 }

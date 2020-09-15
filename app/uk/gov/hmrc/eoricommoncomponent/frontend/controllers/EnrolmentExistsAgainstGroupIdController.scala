@@ -28,16 +28,18 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.enrolment_exists_agai
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class EnrolmentExistsAgainstGroupIdController @Inject()(
+class EnrolmentExistsAgainstGroupIdController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   sessionCache: SessionCache,
   mcc: MessagesControllerComponents,
   enrolmentExistsAgainstGroupId: enrolment_exists_against_group_id
-)(implicit ec: ExecutionContext) extends CdsController(mcc) {
+)(implicit ec: ExecutionContext)
+    extends CdsController(mcc) {
 
   def show(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       sessionCache.remove.map(_ => Ok(enrolmentExistsAgainstGroupId(journey)))
   }
+
 }

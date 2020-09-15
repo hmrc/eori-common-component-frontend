@@ -31,7 +31,7 @@ trait AuthService {
   import uk.gov.hmrc.auth.core.authorise._
   import uk.gov.hmrc.auth.core.retrieve._
 
-  val authUrl = "/auth/authorise"
+  val authUrl                = "/auth/authorise"
   private val authUrlMatcher = urlEqualTo(authUrl)
 
   private def bearerTokenMatcher(user: User) = equalTo("Bearer " + user.bearerToken)
@@ -51,7 +51,7 @@ trait AuthService {
     stubFor(
       post(authUrlMatcher)
         .withRequestBody(equalToJson(authRequestJson(AuthProviders(GovernmentGateway))()))
-//      .withHeader(AUTHORIZATION, bearerTokenMatcher(user))
+        //      .withHeader(AUTHORIZATION, bearerTokenMatcher(user))
         .willReturn(
           aResponse()
             .withStatus(Status.OK)
@@ -69,7 +69,7 @@ trait AuthService {
             )
           )
         )
-//      .withHeader(AUTHORIZATION, bearerTokenMatcher(user))
+        //      .withHeader(AUTHORIZATION, bearerTokenMatcher(user))
         .willReturn(
           aResponse()
             .withStatus(Status.OK)
@@ -167,4 +167,5 @@ trait AuthService {
          |}
       """.stripMargin
     }
+
 }

@@ -47,20 +47,22 @@ class DisclosePersonalDetailsConsentControllerSpec
     extends ControllerSpec with SubscriptionFlowSpec with MockitoSugar with BeforeAndAfterEach {
 
   protected override val formId: String = DisclosePersonalDetailsConsentPage.formId
+
   protected override val submitInCreateModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DisclosePersonalDetailsConsentController
       .submit(isInReviewMode = false, Journey.Register)
       .url
+
   protected override val submitInReviewModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DisclosePersonalDetailsConsentController
       .submit(isInReviewMode = true, Journey.Register)
       .url
 
-  private val mockRequestSession = mock[RequestSessionData]
+  private val mockRequestSession                 = mock[RequestSessionData]
   private val disclosePersonalDetailsConsentView = app.injector.instanceOf[disclose_personal_details_consent]
 
   private val problemWithSelectionError = "Tell us if you want to include your name and address on the EORI checker"
-  private val yesNoInputName = "yes-no-answer"
+  private val yesNoInputName            = "yes-no-answer"
 
   private val controller = new DisclosePersonalDetailsConsentController(
     app,
@@ -98,7 +100,7 @@ class DisclosePersonalDetailsConsentControllerSpec
   override def beforeEach() {
     reset(mockSubscriptionDetailsHolderService, mockSubscriptionFlowManager)
     when(mockSubscriptionDetailsHolderService.cacheConsentToDisclosePersonalDetails(any[YesNo])(any[HeaderCarrier]))
-      .thenReturn(Future.successful({}))
+      .thenReturn(Future.successful {})
     setupMockSubscriptionFlowManager(EoriConsentSubscriptionFlowPage)
   }
 
@@ -119,11 +121,10 @@ class DisclosePersonalDetailsConsentControllerSpec
               val html: String = bodyOf(result)
               html should include("id=\"yes-no-answer-true\"")
               html should include("id=\"yes-no-answer-false\"")
-              if (subscriptionFlow.isIndividualFlow) {
+              if (subscriptionFlow.isIndividualFlow)
                 html should include("Do you want to include your name and address on the EORI checker?")
-              } else {
+              else
                 html should include("Do you want to include your organisation name and address on the EORI checker?")
-              }
             }
           }
 
@@ -166,26 +167,28 @@ class DisclosePersonalDetailsConsentControllerSpec
     }
 
     "display yes when the user's previous answer of yes is in the cache" in {
-      showReviewForm(previouslyAnswered = true)({ result =>
+      showReviewForm(previouslyAnswered = true) { result =>
         val page = CdsPage(bodyOf(result))
         page.radioButtonIsChecked(DisclosePersonalDetailsConsentPage.noToDiscloseInputXpath) shouldBe false
         page.radioButtonIsChecked(DisclosePersonalDetailsConsentPage.yesToDiscloseInputXpath) shouldBe true
-      })
+      }
     }
 
     "display no when the user's previous answer of no is in the cache" in {
-      showReviewForm(previouslyAnswered = false)({ result =>
+      showReviewForm(previouslyAnswered = false) { result =>
         val page = CdsPage(bodyOf(result))
         page.radioButtonIsChecked(DisclosePersonalDetailsConsentPage.noToDiscloseInputXpath) shouldBe true
         page.radioButtonIsChecked(DisclosePersonalDetailsConsentPage.yesToDiscloseInputXpath) shouldBe false
-      })
+      }
     }
 
     "display the correct text for the continue button" in {
-      showReviewForm()({ result =>
+      showReviewForm() { result =>
         val page = CdsPage(bodyOf(result))
-        page.getElementValue(DisclosePersonalDetailsConsentPage.continueButtonXpath) shouldBe ContinueButtonTextInReviewMode
-      })
+        page.getElementValue(
+          DisclosePersonalDetailsConsentPage.continueButtonXpath
+        ) shouldBe ContinueButtonTextInReviewMode
+      }
     }
   }
 
@@ -194,8 +197,12 @@ class DisclosePersonalDetailsConsentControllerSpec
       submitForm(ValidRequest - yesNoInputName) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(DisclosePersonalDetailsConsentPage.pageLevelErrorSummaryListXPath) shouldBe problemWithSelectionError
-        page.getElementsText(DisclosePersonalDetailsConsentPage.fieldLevelErrorYesNoAnswer) shouldBe problemWithSelectionError
+        page.getElementsText(
+          DisclosePersonalDetailsConsentPage.pageLevelErrorSummaryListXPath
+        ) shouldBe problemWithSelectionError
+        page.getElementsText(
+          DisclosePersonalDetailsConsentPage.fieldLevelErrorYesNoAnswer
+        ) shouldBe problemWithSelectionError
       }
     }
 
@@ -204,8 +211,12 @@ class DisclosePersonalDetailsConsentControllerSpec
       submitForm(ValidRequest + (yesNoInputName -> invalidOption)) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(DisclosePersonalDetailsConsentPage.pageLevelErrorSummaryListXPath) shouldBe problemWithSelectionError
-        page.getElementsText(DisclosePersonalDetailsConsentPage.fieldLevelErrorYesNoAnswer) shouldBe problemWithSelectionError
+        page.getElementsText(
+          DisclosePersonalDetailsConsentPage.pageLevelErrorSummaryListXPath
+        ) shouldBe problemWithSelectionError
+        page.getElementsText(
+          DisclosePersonalDetailsConsentPage.fieldLevelErrorYesNoAnswer
+        ) shouldBe problemWithSelectionError
       }
     }
   }
@@ -286,4 +297,5 @@ class DisclosePersonalDetailsConsentControllerSpec
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }
+
 }

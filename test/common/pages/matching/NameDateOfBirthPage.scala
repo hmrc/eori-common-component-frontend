@@ -38,5 +38,4 @@ abstract class NameDateOfBirthPage extends WebPage {
 
 }
 
-object NameDateOfBirthPage extends NameDateOfBirthPage {
-}
+object NameDateOfBirthPage extends NameDateOfBirthPage {}

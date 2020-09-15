@@ -33,7 +33,7 @@ import scala.concurrent.ExecutionContext.global
 
 class DetermineReviewPageControllerSpec extends ControllerSpec with BeforeAndAfter {
 
-  private val mockAuthConnector = mock[AuthConnector]
+  private val mockAuthConnector      = mock[AuthConnector]
   private val mockRequestSessionData = mock[RequestSessionData]
 
   private val controller = new DetermineReviewPageController(app, mockAuthConnector, mcc)(global)
@@ -44,10 +44,7 @@ class DetermineReviewPageControllerSpec extends ControllerSpec with BeforeAndAft
 
   "Determine Review controller" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
-      mockAuthConnector,
-      controller.determineRoute(Journey.Register)
-    )
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.determineRoute(Journey.Register))
 
     "redirect to to correct page when session data is set with the key journeyType.Subscribe" in {
       determinRouteSubscription { result =>
@@ -92,4 +89,5 @@ class DetermineReviewPageControllerSpec extends ControllerSpec with BeforeAndAft
     val result = controller.determineRoute(Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(aUserId))
     test(result)
   }
+
 }

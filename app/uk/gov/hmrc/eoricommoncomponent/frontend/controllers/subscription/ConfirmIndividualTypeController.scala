@@ -31,7 +31,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.confirm_
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ConfirmIndividualTypeController @Inject()(
+class ConfirmIndividualTypeController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   requestSessionData: RequestSessionData,
@@ -51,18 +51,17 @@ class ConfirmIndividualTypeController @Inject()(
 
   def submit(journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      {
-        confirmIndividualTypeForm.bindFromRequest.fold(
-          invalidForm => Future.successful(BadRequest(confirmIndividualTypeView(invalidForm, journey))),
-          selectedIndividualType =>
-            subscriptionFlowManager
-              .startSubscriptionFlow(Some(ConfirmIndividualTypePage), selectedIndividualType, journey) map {
-              case (page, newSession) =>
-                val sessionWithOrganisationType =
-                  requestSessionData.sessionWithOrganisationTypeAdded(newSession, selectedIndividualType)
-                Redirect(page.url).withSession(sessionWithOrganisationType)
+      confirmIndividualTypeForm.bindFromRequest.fold(
+        invalidForm => Future.successful(BadRequest(confirmIndividualTypeView(invalidForm, journey))),
+        selectedIndividualType =>
+          subscriptionFlowManager
+            .startSubscriptionFlow(Some(ConfirmIndividualTypePage), selectedIndividualType, journey) map {
+            case (page, newSession) =>
+              val sessionWithOrganisationType =
+                requestSessionData.sessionWithOrganisationTypeAdded(newSession, selectedIndividualType)
+              Redirect(page.url).withSession(sessionWithOrganisationType)
           }
-        )
-      }
+      )
     }
+
 }

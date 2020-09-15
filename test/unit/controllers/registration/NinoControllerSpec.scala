@@ -42,7 +42,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class NinoControllerSpec extends ControllerSpec with BeforeAndAfter {
 
-  private val mockAuthConnector = mock[AuthConnector]
+  private val mockAuthConnector   = mock[AuthConnector]
   private val mockMatchingService = mock[MatchingService]
 
   private val matchNinoView = app.injector.instanceOf[match_nino]
@@ -55,9 +55,9 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter {
 
   val defaultOrganisationType = "individual"
 
-  val FirstName = "Enter your first name"
-  val LastName = "Enter your last name"
-  val Nino = "Enter your National Insurance number"
+  val FirstName   = "Enter your first name"
+  val LastName    = "Enter your last name"
+  val Nino        = "Enter your National Insurance number"
   val DateOfBirth = "Date of birth"
 
   val InvalidNino = "Enter a National Insurance number in the right format"
@@ -93,8 +93,12 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter {
       submitForm(NinoFormBuilder.asForm + ("first-name" -> oversizedString(35))) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(NinoMatchPage.pageLevelErrorSummaryListXPath) shouldBe "The first name must be 35 characters or less"
-        page.getElementsText(NinoMatchPage.fieldLevelErrorFirstName) shouldBe "The first name must be 35 characters or less"
+        page.getElementsText(
+          NinoMatchPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "The first name must be 35 characters or less"
+        page.getElementsText(
+          NinoMatchPage.fieldLevelErrorFirstName
+        ) shouldBe "The first name must be 35 characters or less"
       }
     }
   }
@@ -114,8 +118,12 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter {
       submitForm(NinoFormBuilder.asForm + ("last-name" -> oversizedString(35))) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(NinoMatchPage.pageLevelErrorSummaryListXPath) shouldBe "The last name must be 35 characters or less"
-        page.getElementsText(NinoMatchPage.fieldLevelErrorLastName) shouldBe "The last name must be 35 characters or less"
+        page.getElementsText(
+          NinoMatchPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "The last name must be 35 characters or less"
+        page.getElementsText(
+          NinoMatchPage.fieldLevelErrorLastName
+        ) shouldBe "The last name must be 35 characters or less"
       }
     }
   }
@@ -125,7 +133,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter {
     "be mandatory" in {
       submitForm(
         NinoFormBuilder.asForm + ("date-of-birth.day" -> "", "date-of-birth.month" -> "",
-        "date-of-birth.year" -> "")
+        "date-of-birth.year"                          -> "")
       ) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
@@ -138,8 +146,12 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter {
       submitForm(NinoFormBuilder.asForm + ("date-of-birth.day" -> "32")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(NinoMatchPage.pageLevelErrorSummaryListXPath) shouldBe "Enter a date of birth in the right format"
-        page.getElementsText(NinoMatchPage.fieldLevelErrorDateOfBirth) shouldBe "Enter a date of birth in the right format"
+        page.getElementsText(
+          NinoMatchPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "Enter a date of birth in the right format"
+        page.getElementsText(
+          NinoMatchPage.fieldLevelErrorDateOfBirth
+        ) shouldBe "Enter a date of birth in the right format"
       }
     }
 
@@ -147,12 +159,14 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter {
       val tomorrow = LocalDate.now().plusDays(1)
       submitForm(
         NinoFormBuilder.asForm + ("date-of-birth.day" -> tomorrow.getDayOfMonth.toString,
-        "date-of-birth.month" -> tomorrow.getMonthOfYear.toString,
-        "date-of-birth.year" -> tomorrow.getYear.toString)
+        "date-of-birth.month"                         -> tomorrow.getMonthOfYear.toString,
+        "date-of-birth.year"                          -> tomorrow.getYear.toString)
       ) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "You must specify a date that is not in the future"
+        page.getElementsText(
+          pageLevelErrorSummaryListXPath
+        ) shouldBe "You must specify a date that is not in the future"
         page.getElementsText(fieldLevelErrorDateOfBirth) shouldBe "You must specify a date that is not in the future"
         page.getElementsText("title") should startWith("Error: ")
       }
@@ -218,7 +232,9 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter {
       submitForm(form = NinoFormBuilder.asForm) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(NinoMatchPage.pageLevelErrorSummaryListXPath) shouldBe "Your details have not been found. Check that your details are correct and then try again."
+        page.getElementsText(
+          NinoMatchPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "Your details have not been found. Check that your details are correct and then try again."
 
         verify(mockMatchingService).matchIndividualWithNino(any(), any(), any())(any[HeaderCarrier])
       }
@@ -250,4 +266,5 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter {
       .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }
+
 }

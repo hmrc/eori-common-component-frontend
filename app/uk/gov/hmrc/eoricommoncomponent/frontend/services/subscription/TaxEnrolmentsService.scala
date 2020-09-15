@@ -26,7 +26,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class TaxEnrolmentsService @Inject()(taxEnrolmentsConnector: TaxEnrolmentsConnector) {
+class TaxEnrolmentsService @Inject() (taxEnrolmentsConnector: TaxEnrolmentsConnector) {
 
   private val serviceName = "HMRC-CUS-ORG"
 
@@ -36,8 +36,8 @@ class TaxEnrolmentsService @Inject()(taxEnrolmentsConnector: TaxEnrolmentsConnec
       enrolments.exists(_.serviceName == serviceName)
     }
 
-  def issuerCall(formBundleId: String, eori: Eori, dateOfEstablishment: Option[LocalDate])(
-    implicit hc: HeaderCarrier,
+  def issuerCall(formBundleId: String, eori: Eori, dateOfEstablishment: Option[LocalDate])(implicit
+    hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[Int] = {
     val identifiers = List(KeyValue(key = "EORINUMBER", value = eori.id))
@@ -47,4 +47,5 @@ class TaxEnrolmentsService @Inject()(taxEnrolmentsConnector: TaxEnrolmentsConnec
       TaxEnrolmentsRequest(identifiers = identifiers, verifiers = verifiers)
     taxEnrolmentsConnector.enrol(taxEnrolmentsRequest, formBundleId)
   }
+
 }

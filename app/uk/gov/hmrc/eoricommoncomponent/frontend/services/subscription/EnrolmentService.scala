@@ -21,19 +21,25 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{EnrolmentStoreProxyCo
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.EnrolmentExtractor
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.{GovernmentGatewayEnrolmentRequest, Identifier, KnownFactsQuery, Verifier}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.{
+  GovernmentGatewayEnrolmentRequest,
+  Identifier,
+  KnownFactsQuery,
+  Verifier
+}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EnrolmentService @Inject()(
+class EnrolmentService @Inject() (
   enrolmentStoreProxyConnector: EnrolmentStoreProxyConnector,
   taxEnrolmentsConnector: TaxEnrolmentsConnector
-)(implicit ec: ExecutionContext) extends EnrolmentExtractor {
+)(implicit ec: ExecutionContext)
+    extends EnrolmentExtractor {
 
-  def enrolWithExistingCDSEnrolment(loggedInUser: LoggedInUserWithEnrolments, service: Service)(
-    implicit hc: HeaderCarrier
+  def enrolWithExistingCDSEnrolment(loggedInUser: LoggedInUserWithEnrolments, service: Service)(implicit
+    hc: HeaderCarrier
   ): Future[Int] = {
 
     val eori = enrolledCds(loggedInUser).map(_.id).getOrElse(throw MissingEnrolmentException())
@@ -52,6 +58,7 @@ class EnrolmentService @Inject()(
       case _ => throw MissingEnrolmentException()
     }
   }
+
 }
 
 case class MissingEnrolmentException(msg: String = "Missing key enrolment information") extends Exception(msg)

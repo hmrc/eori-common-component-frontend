@@ -31,10 +31,10 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
 
   implicit val request = withFakeCSRF(FakeRequest())
 
-  private val invalidUtr = "0123456789"
+  private val invalidUtr                        = "0123456789"
   private val standardForm: Form[UtrMatchModel] = utrForm
-  private val noOptionSelectedForm = utrForm.bind(Map.empty[String, String])
-  private val incorrectUtrForm = utrForm.bind(Map("have-utr" -> "true", "utr" -> invalidUtr))
+  private val noOptionSelectedForm              = utrForm.bind(Map.empty[String, String])
+  private val incorrectUtrForm                  = utrForm.bind(Map("have-utr" -> "true", "utr" -> invalidUtr))
 
   private val view = app.injector.instanceOf[match_utr_subscription]
 
@@ -116,12 +116,17 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
 
   lazy val companyDoc: Document =
     Jsoup.parse(contentAsString(view(standardForm, CdsOrganisationType.CompanyId, Journey.Subscribe)))
+
   lazy val notSelectedCompanyDoc: Document =
     Jsoup.parse(contentAsString(view(noOptionSelectedForm, CdsOrganisationType.CompanyId, Journey.Subscribe)))
+
   lazy val individualDoc: Document =
     Jsoup.parse(contentAsString(view(standardForm, CdsOrganisationType.SoleTraderId, Journey.Subscribe)))
+
   lazy val notSelectedIndividualDoc: Document =
     Jsoup.parse(contentAsString(view(noOptionSelectedForm, CdsOrganisationType.SoleTraderId, Journey.Subscribe)))
+
   lazy val incorrectUtrDoc: Document =
     Jsoup.parse(contentAsString(view(incorrectUtrForm, CdsOrganisationType.SoleTraderId, Journey.Subscribe)))
+
 }

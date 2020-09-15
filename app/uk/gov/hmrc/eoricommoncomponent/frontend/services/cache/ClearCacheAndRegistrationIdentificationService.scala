@@ -23,13 +23,16 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ClearCacheAndRegistrationIdentificationService @Inject()(sessionCache: SessionCache)(implicit ec: ExecutionContext) {
+class ClearCacheAndRegistrationIdentificationService @Inject() (sessionCache: SessionCache)(implicit
+  ec: ExecutionContext
+) {
 
   // TODO Refactor this method, argument is not used
   def clear(loggedInUser: LoggedInUser)(implicit hc: HeaderCarrier): Future[Unit] =
     for {
       email <- sessionCache.email
-      _ <- sessionCache.remove
-      _ <- sessionCache.saveEmail(email)
+      _     <- sessionCache.remove
+      _     <- sessionCache.saveEmail(email)
     } yield ()
+
 }

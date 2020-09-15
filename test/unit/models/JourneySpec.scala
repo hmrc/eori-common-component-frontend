@@ -24,7 +24,7 @@ class JourneySpec extends WordSpec with MustMatchers with EitherValues with Opti
 
   "Journey" must {
 
-    val pathBindable = implicitly[PathBindable[Journey.Value]]
+    val pathBindable  = implicitly[PathBindable[Journey.Value]]
     val queryBindable = implicitly[QueryStringBindable[Journey.Value]]
 
     "bind to `Register` from path" in {

@@ -58,4 +58,5 @@ object EmailForm {
         .transform[Boolean](str => str.get.toBoolean, bool => Option(String.valueOf(bool)))
     )(YesNo.apply)(YesNo.unapply)
   )
+
 }

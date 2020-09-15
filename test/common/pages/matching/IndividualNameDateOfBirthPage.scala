@@ -17,13 +17,13 @@
 package common.pages.matching
 
 object ThirdCountryIndividualNameAndDateOfBirthPage
-  extends IndividualNameAndDateOfBirthPage("third-country-individual") {
+    extends IndividualNameAndDateOfBirthPage("third-country-individual") {
   override val formElement = "//*[@id='third-country-individual-form']"
 
   override val title = "Enter your details"
 }
 
 object ThirdCountrySoleTraderNameAndDateOfBirthPage
-  extends IndividualNameAndDateOfBirthPage("third-country-sole-trader") {
+    extends IndividualNameAndDateOfBirthPage("third-country-sole-trader") {
   override val formElement = "//*[@id='third-country-sole-trader-form']"
 }

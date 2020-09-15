@@ -22,22 +22,22 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
 
 object NameEoriEuIndividualFormBuilder {
 
-  val ValidFirstName = "John"
-  val ValidMiddleName = "Midle"
-  val ValidLastName = "Doe"
+  val ValidFirstName         = "John"
+  val ValidMiddleName        = "Midle"
+  val ValidLastName          = "Doe"
   val ValidDateOfBirthString = "2015-10-15"
 
   val ValidEoriId = TestData.Eori
-  val ValidEori = Eori(ValidEoriId)
+  val ValidEori   = Eori(ValidEoriId)
 
   val ValidEoriRequestWithoutMiddleName = Map(
-    "yes-no-answer" -> true.toString,
-    "registration-model.first-name" -> ValidFirstName,
-    "registration-model.last-name" -> ValidLastName,
-    "registration-model.eori" -> ValidEoriId,
-    "registration-model.date-of-birth.day" -> "15",
+    "yes-no-answer"                          -> true.toString,
+    "registration-model.first-name"          -> ValidFirstName,
+    "registration-model.last-name"           -> ValidLastName,
+    "registration-model.eori"                -> ValidEoriId,
+    "registration-model.date-of-birth.day"   -> "15",
     "registration-model.date-of-birth.month" -> "10",
-    "registration-model.date-of-birth.year" -> "2015"
+    "registration-model.date-of-birth.year"  -> "2015"
   )
 
   val ValidEoriRequestWithMiddleName = ValidEoriRequestWithoutMiddleName +
@@ -47,4 +47,5 @@ object NameEoriEuIndividualFormBuilder {
 
   val ValidEuIndividualWithoutMiddleName =
     Individual(ValidFirstName, middleName = None, ValidLastName, ValidDateOfBirthString)
+
 }

@@ -16,7 +16,11 @@
 
 package unit.controllers.registration
 
-import common.pages.matching.{IndividualNameAndDateOfBirthPage, ThirdCountryIndividualNameAndDateOfBirthPage, ThirdCountrySoleTraderNameAndDateOfBirthPage}
+import common.pages.matching.{
+  IndividualNameAndDateOfBirthPage,
+  ThirdCountryIndividualNameAndDateOfBirthPage,
+  ThirdCountrySoleTraderNameAndDateOfBirthPage
+}
 import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
@@ -77,10 +81,11 @@ class RowIndividualNameDateOfBirthControllerWithFeatureFalseSpec
 
     def formData(thirdCountryIndividual: IndividualNameAndDateOfBirth): Map[String, String] =
       form.mapping.unbind(thirdCountryIndividual)
+
   }
 
   val InvalidDateError: String = InvalidDate
-  val emulatedFailure = new UnsupportedOperationException("Emulation of service call failure")
+  val emulatedFailure          = new UnsupportedOperationException("Emulation of service call failure")
 
   abstract class IndividualNameAndDateOfBirthBehaviour(
     webPage: IndividualNameAndDateOfBirthPage,
@@ -101,7 +106,9 @@ class RowIndividualNameDateOfBirthControllerWithFeatureFalseSpec
         submitForm(formData(individualNameAndDateOfBirth)) { result =>
           CdsPage(contentAsString(result)).getElementsHtml(webPage.pageLevelErrorSummaryListXPath) shouldBe empty
           status(result) shouldBe SEE_OTHER
-          result.futureValue.header.headers(LOCATION) shouldBe s"/customs-enrolment-services/register/matching/address/$organisationType"
+          result.futureValue.header.headers(
+            LOCATION
+          ) shouldBe s"/customs-enrolment-services/register/matching/address/$organisationType"
           verify(mockSubscriptionDetailsService).cacheNameDobDetails(any())(any())
         }
       }
@@ -113,12 +120,13 @@ class RowIndividualNameDateOfBirthControllerWithFeatureFalseSpec
     protected def testControllerWithModel(
       formModelGens: IndividualGens[LocalDate]
     )(test: (ControllerFixture, IndividualNameAndDateOfBirth) => Unit): Unit =
-      check(Prop.forAllNoShrink(individualNameAndDateOfBirthGenerator(formModelGens))({ individualNameAndDateOfBirth =>
+      check(Prop.forAllNoShrink(individualNameAndDateOfBirthGenerator(formModelGens)) { individualNameAndDateOfBirth =>
         withControllerFixture { controllerFixture =>
           test.apply(controllerFixture, individualNameAndDateOfBirth)
           Prop.proved
         }
-      }))
+      })
+
   }
 
   abstract class ThirdCountryIndividualBehaviour(webPage: IndividualNameAndDateOfBirthPage)

@@ -88,4 +88,5 @@ case class CdsPage(html: String) {
     if (selectedElements.size() > 1)
       throw new IllegalStateException(s"More than one element found in the page for xpath $xpath")
   }
+
 }

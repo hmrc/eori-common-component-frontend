@@ -27,13 +27,13 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.vat_regi
 import util.ViewSpec
 
 class VatRegisteredUkSpec extends ViewSpec {
-  val form: Form[YesNo] = vatRegisteredUkYesNoAnswerForm(false)
+  val form: Form[YesNo]          = vatRegisteredUkYesNoAnswerForm(false)
   val formWithError: Form[YesNo] = vatRegisteredUkYesNoAnswerForm(false).bind(Map("yes-no-answer" -> ""))
 
-  private val view = app.injector.instanceOf[vat_registered_uk]
+  private val view     = app.injector.instanceOf[vat_registered_uk]
   implicit val request = withFakeCSRF(FakeRequest())
 
-  lazy val doc: Document = Jsoup.parse(contentAsString(view(form)))
+  lazy val doc: Document           = Jsoup.parse(contentAsString(view(form)))
   lazy val docWithErrors: Document = Jsoup.parse(contentAsString(view(formWithError)))
 
   "The 'Is your organisation VAT registered in the UK?' Page" should {

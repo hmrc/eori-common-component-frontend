@@ -33,7 +33,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.Contac
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{RegisterWithoutIdService, RegisterWithoutIdWithSubscriptionService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{
+  RegisterWithoutIdService,
+  RegisterWithoutIdWithSubscriptionService
+}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.global
@@ -42,27 +45,29 @@ import scala.concurrent.Future
 class RegisterWithoutIdWithSubscriptionServiceSpec
     extends UnitSpec with MockitoSugar with BeforeAndAfterAll with BeforeAndAfterEach {
   private val mockRegisterWithoutIdService = mock[RegisterWithoutIdService]
-  private val mockSessionCache = mock[SessionCache]
-  private val mockRequestSessionData = mock[RequestSessionData]
-  private val mockSub02Controller = mock[Sub02Controller]
-  private val mockOrgTypeLookup = mock[OrgTypeLookup]
-  private val mockRegistrationDetails = mock[RegistrationDetails]
+  private val mockSessionCache             = mock[SessionCache]
+  private val mockRequestSessionData       = mock[RequestSessionData]
+  private val mockSub02Controller          = mock[Sub02Controller]
+  private val mockOrgTypeLookup            = mock[OrgTypeLookup]
+  private val mockRegistrationDetails      = mock[RegistrationDetails]
 
-  private implicit val hc: HeaderCarrier = mock[HeaderCarrier]
+  private implicit val hc: HeaderCarrier       = mock[HeaderCarrier]
   private implicit val rq: Request[AnyContent] = mock[Request[AnyContent]]
 
-  private val loggedInUserId = java.util.UUID.randomUUID.toString
+  private val loggedInUserId   = java.util.UUID.randomUUID.toString
   private val mockLoggedInUser = mock[LoggedInUserWithEnrolments]
-  private val emulatedFailure = new RuntimeException("something bad happened")
+  private val emulatedFailure  = new RuntimeException("something bad happened")
 
   private val okResponse = RegisterWithoutIDResponse(
     ResponseCommon(StatusOK, Some("All OK"), DateTime.now()),
     Some(RegisterWithoutIdResponseDetail("TestSafeId", None))
   )
+
   private val notOKResponse = RegisterWithoutIDResponse(
     ResponseCommon(StatusNotOK, Some("Something went wrong"), DateTime.now()),
     Some(RegisterWithoutIdResponseDetail("TestSafeId", None))
   )
+
   private val contactDetails =
     ContactDetailsModel("John Doe", "john@example.com", "441234987654private ", None, true, None, None, None, None)
 
@@ -164,9 +169,7 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
       await(service.rowRegisterWithoutIdWithSubscription(mockLoggedInUser, Journey.Register)(hc, rq))
 
       verify(mockSub02Controller, times(1)).subscribe(any())
-      verify(mockRegisterWithoutIdService, never).registerOrganisation(anyString(), any(), any(), any(), any())(
-        any()
-      )
+      verify(mockRegisterWithoutIdService, never).registerOrganisation(anyString(), any(), any(), any(), any())(any())
       verify(mockRegisterWithoutIdService, never).registerIndividual(any(), any(), any(), any(), any())(any())
     }
 
@@ -179,9 +182,7 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
       await(service.rowRegisterWithoutIdWithSubscription(mockLoggedInUser, Journey.Subscribe)(hc, rq))
 
       verify(mockSub02Controller, times(1)).subscribe(any())
-      verify(mockRegisterWithoutIdService, never).registerOrganisation(anyString(), any(), any(), any(), any())(
-        any()
-      )
+      verify(mockRegisterWithoutIdService, never).registerOrganisation(anyString(), any(), any(), any(), any())(any())
       verify(mockRegisterWithoutIdService, never).registerIndividual(any(), any(), any(), any(), any())(any())
     }
 
@@ -195,9 +196,7 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
       await(service.rowRegisterWithoutIdWithSubscription(mockLoggedInUser, Journey.Subscribe)(hc, rq))
 
       verify(mockSub02Controller, times(1)).subscribe(any())
-      verify(mockRegisterWithoutIdService, never).registerOrganisation(anyString(), any(), any(), any(), any())(
-        any()
-      )
+      verify(mockRegisterWithoutIdService, never).registerOrganisation(anyString(), any(), any(), any(), any())(any())
       verify(mockRegisterWithoutIdService, never).registerIndividual(any(), any(), any(), any(), any())(any())
     }
 
@@ -212,9 +211,7 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
       await(service.rowRegisterWithoutIdWithSubscription(mockLoggedInUser, Journey.Register)(hc, rq))
 
       verify(mockSub02Controller, times(1)).subscribe(any())
-      verify(mockRegisterWithoutIdService, never).registerOrganisation(anyString(), any(), any(), any(), any())(
-        any()
-      )
+      verify(mockRegisterWithoutIdService, never).registerOrganisation(anyString(), any(), any(), any(), any())(any())
       verify(mockRegisterWithoutIdService, never).registerIndividual(any(), any(), any(), any(), any())(any())
     }
 
@@ -231,9 +228,7 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
 
       verify(mockRegisterWithoutIdService, times(1)).registerIndividual(any(), any(), any(), any(), any())(any())
       verify(mockSub02Controller, times(1)).subscribe(any())
-      verify(mockRegisterWithoutIdService, never).registerOrganisation(anyString(), any(), any(), any(), any())(
-        any()
-      )
+      verify(mockRegisterWithoutIdService, never).registerOrganisation(anyString(), any(), any(), any(), any())(any())
       verify(mockSessionCache, times(2)).registrationDetails(any())
       verify(mockSessionCache).subscriptionDetails(any())
     }
@@ -297,4 +292,5 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
     when(mockAction.apply(any[Request[AnyContent]])).thenReturn(Future.successful(Results.Ok))
     when(mockSub02Controller.subscribe(any())).thenReturn(mockAction)
   }
+
 }

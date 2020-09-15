@@ -34,7 +34,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.are_you_
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AreYouSureYouWantToDeleteVatController @Inject()(
+class AreYouSureYouWantToDeleteVatController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   subscriptionVatEUDetailsService: SubscriptionVatEUDetailsService,
@@ -81,21 +81,20 @@ class AreYouSureYouWantToDeleteVatController @Inject()(
       }
     }
 
-  private def redirectToVatConfirm(journey: Journey.Value, isInReviewMode: Boolean)(
-    implicit request: Request[AnyContent]
+  private def redirectToVatConfirm(journey: Journey.Value, isInReviewMode: Boolean)(implicit
+    request: Request[AnyContent]
   ): Future[Result] =
     subscriptionVatEUDetailsService.cachedEUVatDetails map {
       case Seq() =>
-        if (isInReviewMode) {
+        if (isInReviewMode)
           Redirect(VatRegisteredEuController.reviewForm(journey))
-        } else {
+        else
           Redirect(VatRegisteredEuController.createForm(journey))
-        }
       case _ =>
-        if (isInReviewMode) {
+        if (isInReviewMode)
           Redirect(VatDetailsEuConfirmController.reviewForm(journey))
-        } else {
+        else
           Redirect(VatDetailsEuConfirmController.createForm(journey))
-        }
     }
+
 }

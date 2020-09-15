@@ -25,7 +25,9 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class OrgTypeLookup @Inject()(requestSessionData: RequestSessionData, sessionCache: SessionCache)(implicit ec: ExecutionContext) {
+class OrgTypeLookup @Inject() (requestSessionData: RequestSessionData, sessionCache: SessionCache)(implicit
+  ec: ExecutionContext
+) {
 
   def etmpOrgType(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Option[EtmpOrganisationType]] =
     requestSessionData.userSelectedOrganisationType match {
@@ -36,4 +38,5 @@ class OrgTypeLookup @Inject()(requestSessionData: RequestSessionData, sessionCac
           case _                                                          => throw new IllegalStateException("No Registration details in cache.")
         }
     }
+
 }

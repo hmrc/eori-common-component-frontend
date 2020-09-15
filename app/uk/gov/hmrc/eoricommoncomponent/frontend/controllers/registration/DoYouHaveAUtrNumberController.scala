@@ -40,7 +40,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DoYouHaveAUtrNumberController @Inject()(
+class DoYouHaveAUtrNumberController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   matchingService: MatchingService,
@@ -54,28 +54,18 @@ class DoYouHaveAUtrNumberController @Inject()(
 
   def form(organisationType: String, journey: Journey.Value, isInReviewMode: Boolean = false): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      {
-        Future.successful(
-          Ok(matchOrganisationUtrView(utrForm, organisationType, OrganisationModeDM, journey, isInReviewMode))
-        )
-      }
+      Future.successful(
+        Ok(matchOrganisationUtrView(utrForm, organisationType, OrganisationModeDM, journey, isInReviewMode))
+      )
     }
 
   def submit(organisationType: String, journey: Journey.Value, isInReviewMode: Boolean = false): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
-      {
-        utrForm.bindFromRequest.fold(
-          formWithErrors => Future.successful(BadRequest(view(organisationType, formWithErrors, journey))),
-          formData =>
-            destinationsByAnswer(
-              formData,
-              organisationType,
-              journey,
-              isInReviewMode,
-              InternalId(loggedInUser.internalId)
-          )
-        )
-      }
+      utrForm.bindFromRequest.fold(
+        formWithErrors => Future.successful(BadRequest(view(organisationType, formWithErrors, journey))),
+        formData =>
+          destinationsByAnswer(formData, organisationType, journey, isInReviewMode, InternalId(loggedInUser.internalId))
+      )
     }
 
   private def destinationsByAnswer(
@@ -88,10 +78,9 @@ class DoYouHaveAUtrNumberController @Inject()(
     formData.haveUtr match {
       case Some(true) =>
         matchBusinessOrIndividual(formData, journey, organisationType, internalId)
-      case Some(false) => {
+      case Some(false) =>
         subscriptionDetailsService.updateSubscriptionDetails
         noUtrDestination(organisationType, journey, isInReviewMode)
-      }
       case _ =>
         throw new IllegalArgumentException("Have UTR should be Some(true) or Some(false) but was None")
     }
@@ -117,16 +106,15 @@ class DoYouHaveAUtrNumberController @Inject()(
     organisationType: String,
     journey: Journey.Value
   ): Future[Result] =
-    if (isInReviewMode) {
+    if (isInReviewMode)
       Future.successful(Redirect(DetermineReviewPageController.determineRoute(journey)))
-    } else {
+    else
       Future.successful(
         Redirect(
           SixLineAddressController
             .showForm(isInReviewMode = false, organisationType, journey)
         )
       )
-    }
 
   private def noUtrThirdCountryIndividualsRedirect(journey: Journey.Value): Future[Result] =
     Future.successful(Redirect(DoYouHaveNinoController.displayForm(journey)))
@@ -151,8 +139,8 @@ class DoYouHaveAUtrNumberController @Inject()(
       case None => Future.successful(false)
     }
 
-  private def view(organisationType: String, form: Form[UtrMatchModel], journey: Journey.Value)(
-    implicit request: Request[AnyContent]
+  private def view(organisationType: String, form: Form[UtrMatchModel], journey: Journey.Value)(implicit
+    request: Request[AnyContent]
   ): HtmlFormat.Appendable =
     matchOrganisationUtrView(form, organisationType, OrganisationModeDM, journey)
 
@@ -194,4 +182,5 @@ class DoYouHaveAUtrNumberController @Inject()(
     val errorForm = utrForm.withGlobalError(errorMsg).fill(formData)
     BadRequest(view(organisationType, errorForm, journey))
   }
+
 }

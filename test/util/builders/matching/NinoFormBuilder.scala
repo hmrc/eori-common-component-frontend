@@ -23,10 +23,10 @@ import org.joda.time.LocalDate
 
 object NinoFormBuilder {
 
-  val FirstName = "first"
-  val LastName = "last"
+  val FirstName   = "first"
+  val LastName    = "last"
   val DateOfBirth = new LocalDate(1980, 3, 31)
-  val Nino = "AB123456C"
+  val Nino        = "AB123456C"
 
   def asNinoMatch: NinoMatch = NinoMatch(FirstName, LastName, DateOfBirth, Nino)
 

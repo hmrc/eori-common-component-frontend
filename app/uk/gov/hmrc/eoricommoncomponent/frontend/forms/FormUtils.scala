@@ -29,9 +29,9 @@ object FormUtils {
 
   val dateTimeFormat = DateTimeFormat.forPattern("d MMMM yyyy")
 
-  val messageKeyMandatoryField = "cds.error.mandatory.field"
+  val messageKeyMandatoryField    = "cds.error.mandatory.field"
   val messageKeyInvalidDateFormat = "cds.error.invalid.date.format"
-  val messageKeyFutureDate = "cds.error.future-date"
+  val messageKeyFutureDate        = "cds.error.future-date"
 
   val messageKeyOptionInvalid = "cds.error.option.invalid"
 
@@ -60,10 +60,13 @@ object FormUtils {
     onInvalidDateError: String = messageKeyInvalidDateFormat,
     onDateInFutureError: String = messageKeyFutureDate
   ): Mapping[LocalDate] =
-    mandatoryDate(onEmptyError, onInvalidDateError).verifying(onDateInFutureError, d => {
-      val today = LocalDate.now()
-      d.isEqual(today) || d.isBefore(today)
-    })
+    mandatoryDate(onEmptyError, onInvalidDateError).verifying(
+      onDateInFutureError,
+      d => {
+        val today = LocalDate.now()
+        d.isEqual(today) || d.isBefore(today)
+      }
+    )
 
   def nonEmptyString(error: => String = messageKeyMandatoryField): Constraint[String] = Constraint { s =>
     Option(s).filter(_.trim.nonEmpty).fold[ValidationResult](ifEmpty = Invalid(error))(_ => Valid)
@@ -76,4 +79,5 @@ object FormUtils {
       case Some(value) => c(value)
       case None        => Valid
     }
+
 }

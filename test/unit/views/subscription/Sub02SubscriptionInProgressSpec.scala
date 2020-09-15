@@ -25,9 +25,9 @@ import util.ViewSpec
 
 class Sub02SubscriptionInProgressSpec extends ViewSpec {
 
-  private val name = "Test Name"
-  private val processedDate = "1 March 2019"
-  private val pageTitleExpectedText = "Your EORI application is being processed"
+  private val name                    = "Test Name"
+  private val processedDate           = "1 March 2019"
+  private val pageTitleExpectedText   = "Your EORI application is being processed"
   private val pageHeadingExpectedText = s"The EORI application for $name is being processed"
   private val processDateExpectedText = s"Application received by HMRC on $processedDate"
 

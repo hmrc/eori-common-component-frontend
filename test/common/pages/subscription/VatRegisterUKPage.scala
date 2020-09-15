@@ -24,7 +24,7 @@ trait VatRegisterUKPage extends WebPage {
 
   val fieldLevelErrorYesNoAnswerForUKVat = "//*[@id='yes-no-answer-field']/*[@class='error-message']"
 
-  val ukVatNoXpath = "//*[@id='yes-no-answer-false']"
+  val ukVatNoXpath  = "//*[@id='yes-no-answer-false']"
   val ukVatYesXpath = "//*[@id='yes-no-answer-true']"
 
 }

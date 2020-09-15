@@ -25,7 +25,7 @@ case class RegistrationInfoRequest(regime: String = "CDS", idType: String, idVal
 object RegistrationInfoRequest {
   implicit val jsonFormat = Json.format[RegistrationInfoRequest]
 
-  val UTR = "UTR"
+  val UTR  = "UTR"
   val EORI = "EORI"
   val NINO = "NINO"
   val SAFE = "SAFE"
@@ -41,6 +41,7 @@ object RegistrationInfoRequest {
     }
     RegistrationInfoRequest(idType = idType, idValue = customsId.id)
   }
+
 }
 
 case class RegistrationInfoResponseCommon(status: String, processingDate: DateTime, taxPayerID: String)

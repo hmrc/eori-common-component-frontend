@@ -28,7 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.you_need
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class YouNeedADifferentServiceController @Inject()(
+class YouNeedADifferentServiceController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   youNeedDifferentServiceView: you_need_different_service,
@@ -38,8 +38,7 @@ class YouNeedADifferentServiceController @Inject()(
 
   def form(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
-      {
-        Future.successful(Ok(youNeedDifferentServiceView()))
-      }
+      Future.successful(Ok(youNeedDifferentServiceView()))
   }
+
 }

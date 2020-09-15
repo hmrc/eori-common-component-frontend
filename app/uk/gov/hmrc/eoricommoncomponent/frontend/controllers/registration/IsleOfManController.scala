@@ -29,8 +29,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.isle_of_man
 
 import scala.concurrent.ExecutionContext
+
 @Singleton
-class IsleOfManController @Inject()(
+class IsleOfManController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   view: isle_of_man,
@@ -55,4 +56,5 @@ class IsleOfManController @Inject()(
     case theAnswer if theAnswer.isYes => Redirect(VatRegisteredUkController.form())
     case _                            => Redirect(VatGroupController.createForm(Journey.Register))
   }
+
 }

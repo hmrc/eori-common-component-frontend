@@ -19,9 +19,9 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.forms
 sealed trait FormAction
 
 object FormAction {
-  private val changeLabel = Change.toString
+  private val changeLabel   = Change.toString
   private val continueLabel = Continue.toString
-  private val removeLabel = Remove.toString
+  private val removeLabel   = Remove.toString
 
   def fromUrlEncoded(input: Map[String, Seq[String]]): FormAction =
     input.flatMap {
@@ -30,10 +30,11 @@ object FormAction {
       case (`removeLabel`, values) => Some(Remove(values))
       case _                       => None
     }.headOption.getOrElse(Unknown)
+
 }
 
-case object Unknown extends FormAction
+case object Unknown  extends FormAction
 case object Continue extends FormAction
-case object Change extends FormAction
+case object Change   extends FormAction
 
 case class Remove(keys: Seq[String]) extends FormAction

@@ -33,13 +33,16 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLoo
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationConfirmService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.confirm_contact_details
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{sub01_outcome_processing, sub01_outcome_rejected}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{
+  sub01_outcome_processing,
+  sub01_outcome_rejected
+}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ConfirmContactDetailsController @Inject()(
+class ConfirmContactDetailsController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   registrationConfirmService: RegistrationConfirmService,
@@ -103,7 +106,7 @@ class ConfirmContactDetailsController @Inject()(
         .createForm()
         .bindFromRequest()
         .fold(
-          formWithErrors => {
+          formWithErrors =>
             cdsFrontendDataCache.registrationDetails flatMap {
               case individual: RegistrationDetailsIndividual =>
                 Future.successful(
@@ -140,9 +143,8 @@ class ConfirmContactDetailsController @Inject()(
                 Logger.warn("[ConfirmContactDetailsController.submit] registrationDetails not found")
                 cdsFrontendDataCache.remove
                 Future.successful(Redirect(OrganisationTypeController.form(journey)))
-            }
-          },
-          areDetailsCorrectAnswer => {
+            },
+          areDetailsCorrectAnswer =>
             cdsFrontendDataCache.subscriptionDetails flatMap (
               subDetails =>
                 subDetails.addressDetails match {
@@ -168,14 +170,13 @@ class ConfirmContactDetailsController @Inject()(
                     )
                 }
             )
-          }
         )
     }
 
   def processing: Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
-        name <- cdsFrontendDataCache.registrationDetails.map(_.name)
+        name          <- cdsFrontendDataCache.registrationDetails.map(_.name)
         processedDate <- cdsFrontendDataCache.sub01Outcome.map(_.processedDate)
       } yield Ok(sub01OutcomeProcessingView(Some(name), processedDate))
   }
@@ -183,7 +184,7 @@ class ConfirmContactDetailsController @Inject()(
   def rejected: Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
-        name <- cdsFrontendDataCache.registrationDetails.map(_.name)
+        name          <- cdsFrontendDataCache.registrationDetails.map(_.name)
         processedDate <- cdsFrontendDataCache.sub01Outcome.map(_.processedDate)
       } yield Ok(sub01OutcomeRejected(Some(name), processedDate))
   }
@@ -213,7 +214,7 @@ class ConfirmContactDetailsController @Inject()(
               Redirect(
                 uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.OrganisationTypeController
                   .form(journey)
-            )
+              )
           )
       case WrongAddress =>
         Future.successful(
@@ -260,9 +261,10 @@ class ConfirmContactDetailsController @Inject()(
               SubscriptionRecoveryController
                 .complete(journey)
             )
-      }
+        }
     )
 
   private def concatenateAddress(registrationDetails: RegistrationDetails): AddressViewModel =
     AddressViewModel(registrationDetails.address)
+
 }

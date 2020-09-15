@@ -27,7 +27,7 @@ import uk.gov.hmrc.play.audit.model.{Audit, DataEvent, ExtendedDataEvent}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class Auditable @Inject()(auditConnector: AuditConnector, appConfig: AppConfig)(implicit ec: ExecutionContext) {
+class Auditable @Inject() (auditConnector: AuditConnector, appConfig: AppConfig)(implicit ec: ExecutionContext) {
 
   private val auditSource: String = appConfig.appName
 
@@ -59,4 +59,5 @@ class Auditable @Inject()(auditConnector: AuditConnector, appConfig: AppConfig)(
     auditConnector.sendExtendedEvent(
       ExtendedDataEvent(auditSource, eventType, tags = hc.toAuditTags(transactionName, path) ++ tags, detail = details)
     )
+
 }

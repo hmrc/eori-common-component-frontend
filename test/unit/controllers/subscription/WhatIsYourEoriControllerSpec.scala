@@ -54,7 +54,7 @@ class WhatIsYourEoriControllerSpec
       .url
 
   private val mockRequestSessionData = mock[RequestSessionData]
-  private val whatIsYourEoriView = app.injector.instanceOf[what_is_your_eori]
+  private val whatIsYourEoriView     = app.injector.instanceOf[what_is_your_eori]
 
   private val controller = new WhatIsYourEoriController(
     app,
@@ -123,10 +123,10 @@ class WhatIsYourEoriControllerSpec
     }
 
     "display the correct text for the continue button" in {
-      showCreateForm(journey = Journey.Subscribe)({ result =>
+      showCreateForm(journey = Journey.Subscribe) { result =>
         val page = CdsPage(bodyOf(result))
         page.getElementValue(EoriNumberPage.continueButtonXpath) shouldBe ContinueButtonTextInCreateMode
-      })
+      }
     }
 
   }
@@ -161,10 +161,10 @@ class WhatIsYourEoriControllerSpec
     }
 
     "display the correct text for the continue button" in {
-      showReviewForm()({ result =>
+      showReviewForm() { result =>
         val page = CdsPage(bodyOf(result))
         page.getElementValue(EoriNumberPage.continueButtonXpath) shouldBe ContinueButtonTextInReviewMode
-      })
+      }
     }
   }
 
@@ -251,8 +251,12 @@ class WhatIsYourEoriControllerSpec
       submitFormInCreateMode(unpopulatedEoriNumberFieldsMap) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath) shouldBe "Enter your EORI number"
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.eoriNumberFieldLevelErrorXpath) shouldBe "Enter your EORI number"
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "Enter your EORI number"
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.eoriNumberFieldLevelErrorXpath
+        ) shouldBe "Enter your EORI number"
       }
     }
 
@@ -260,8 +264,12 @@ class WhatIsYourEoriControllerSpec
       submitFormInCreateMode(Map("eori-number" -> "GB3456789012345678")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath) shouldBe "The EORI number must be 17 characters or less"
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.eoriNumberFieldLevelErrorXpath) shouldBe "The EORI number must be 17 characters or less"
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "The EORI number must be 17 characters or less"
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.eoriNumberFieldLevelErrorXpath
+        ) shouldBe "The EORI number must be 17 characters or less"
       }
     }
 
@@ -269,8 +277,12 @@ class WhatIsYourEoriControllerSpec
       submitFormInCreateMode(Map("eori-number" -> "GBX45678901234")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath) shouldBe enterAValidEori
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.eoriNumberFieldLevelErrorXpath) shouldBe enterAValidEori
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
+        ) shouldBe enterAValidEori
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.eoriNumberFieldLevelErrorXpath
+        ) shouldBe enterAValidEori
 
       }
     }
@@ -379,4 +391,5 @@ class WhatIsYourEoriControllerSpec
     status(result) shouldBe SEE_OTHER
     result.header.headers(LOCATION) should endWith(linkToVerify)
   }
+
 }

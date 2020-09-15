@@ -35,8 +35,8 @@ import scala.concurrent.Future
 
 class EnrolmentExistsAgainstGroupIdControllerSpec extends ControllerSpec {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockSessionCache = mock[SessionCache]
+  private val mockAuthConnector                 = mock[AuthConnector]
+  private val mockSessionCache                  = mock[SessionCache]
   private val enrolmentExistsAgainstGroupIdView = app.injector.instanceOf[enrolment_exists_against_group_id]
 
   private val controller = new EnrolmentExistsAgainstGroupIdController(
@@ -62,4 +62,5 @@ class EnrolmentExistsAgainstGroupIdControllerSpec extends ControllerSpec {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     await(test(controller.show(journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
+
 }

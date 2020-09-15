@@ -33,7 +33,7 @@ class YouCannotUseServiceControllerSpec extends ControllerSpec {
   private val mockAuthConnector = mock[AuthConnector]
 
   private val youCantUseServiceView = app.injector.instanceOf[you_cant_use_service]
-  private val unauthorisedView = app.injector.instanceOf[unauthorized]
+  private val unauthorisedView      = app.injector.instanceOf[unauthorized]
 
   private val controller =
     new YouCannotUseServiceController(app, mockAuthConnector, youCantUseServiceView, unauthorisedView, mcc)
@@ -62,7 +62,7 @@ class YouCannotUseServiceControllerSpec extends ControllerSpec {
     await(test(controller.page(journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
-  private def unauthorisedPage()(test: Future[Result] => Any) = {
+  private def unauthorisedPage()(test: Future[Result] => Any) =
     await(test(controller.unauthorisedPage().apply(SessionBuilder.buildRequestWithSessionNoUser)))
-  }
+
 }

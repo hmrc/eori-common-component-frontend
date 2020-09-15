@@ -19,12 +19,12 @@ package common.pages.matching
 trait AddressPageFactoring {
   val PageLevelErrorSummaryListXPath = "//ul[@class='error-summary-list']"
 
-  val fieldLevelErrorAddressLineOne = "//*[@id='line-1-outer']//span[@class='error-message']"
-  val fieldLevelErrorAddressLineTwo = "//*[@id='line-2-outer']//span[@class='error-message']"
+  val fieldLevelErrorAddressLineOne   = "//*[@id='line-1-outer']//span[@class='error-message']"
+  val fieldLevelErrorAddressLineTwo   = "//*[@id='line-2-outer']//span[@class='error-message']"
   val fieldLevelErrorAddressLineThree = "//*[@id='line-3-outer']//span[@class='error-message']"
-  val fieldLevelErrorAddressLineFour = "//*[@id='line-4-outer']//span[@class='error-message']"
-  val fieldLevelErrorPostcode = "//*[@id='postcode-outer']//span[@class='error-message']"
-  val fieldLevelErrorCountry = "//*[@id='country-outer']//span[@class='error-message']"
+  val fieldLevelErrorAddressLineFour  = "//*[@id='line-4-outer']//span[@class='error-message']"
+  val fieldLevelErrorPostcode         = "//*[@id='postcode-outer']//span[@class='error-message']"
+  val fieldLevelErrorCountry          = "//*[@id='country-outer']//span[@class='error-message']"
 }
 
 object AddressPageFactoring extends AddressPageFactoring
