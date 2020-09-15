@@ -25,7 +25,7 @@
 @(implicit messages: Messages, request: Request[_])
 
 
-@isLoggedIn = @{ !request.session.isEmpty }
+@isLoggedIn = @{!request.session.isEmpty && request.session.get("authToken").isDefined}
 
 @journeyHeading = @{
     if(request.path.contains("/register")) {
@@ -84,6 +84,8 @@
     </div>
 
     @language_selection(languageMap, routeToSwitchLanguage, Some("language-toggle"), Some("eori-common-component-frontend"))
+
+    @request.session
 
 </div>
 

@@ -16,7 +16,6 @@
 
 package unit.views.partials
 
-import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
@@ -60,7 +59,9 @@ class HeaderSpec extends ControllerSpec {
     }
 
     "not be present when a user isn't logged in" in {
-      val result = controller.start().apply(FakeRequest())
+      AuthBuilder.withNotLoggedInUser(mockAuthConnector)
+
+      val result = controller.start().apply(SessionBuilder.buildRequestWithSessionNoUser)
 
       val page = CdsPage(bodyOf(result))
       page.elementIsPresent("//a[@id='sign-out']") shouldBe false
