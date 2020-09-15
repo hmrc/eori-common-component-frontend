@@ -18,8 +18,8 @@ package util.scalacheck
 
 import org.joda.time.LocalDate
 import org.scalacheck.{Arbitrary, Gen}
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.forms.MatchingForms
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms
 import util.scalacheck.TestDataGenerators.Implicits._
 
 import scala.language.implicitConversions

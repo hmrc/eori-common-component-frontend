@@ -18,7 +18,7 @@ package integration
 
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import uk.gov.hmrc.customs.rosmfrontend.services.countries.Countries
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
 
 class AllTheCountriesSpec extends WordSpec with Matchers with GuiceOneAppPerSuite {
 

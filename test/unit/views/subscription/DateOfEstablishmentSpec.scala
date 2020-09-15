@@ -22,10 +22,10 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.customs.rosmfrontend.domain.{CorporateBody, LLP}
-import uk.gov.hmrc.customs.rosmfrontend.forms.subscription.SubscriptionForm
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.views.html.subscription.date_of_establishment
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CorporateBody, LLP}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.date_of_establishment
 import util.ViewSpec
 
 class DateOfEstablishmentSpec extends ViewSpec {

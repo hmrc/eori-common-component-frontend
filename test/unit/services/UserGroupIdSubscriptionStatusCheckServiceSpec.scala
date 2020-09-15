@@ -27,10 +27,10 @@ import play.api.libs.json.{Reads, Writes}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers.LOCATION
-import uk.gov.hmrc.customs.rosmfrontend.connector.Save4LaterConnector
-import uk.gov.hmrc.customs.rosmfrontend.domain.{CacheIds, GroupId, InternalId, SafeId}
-import uk.gov.hmrc.customs.rosmfrontend.services.UserGroupIdSubscriptionStatusCheckService
-import uk.gov.hmrc.customs.rosmfrontend.services.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CacheIds, GroupId, InternalId, SafeId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.UserGroupIdSubscriptionStatusCheckService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global

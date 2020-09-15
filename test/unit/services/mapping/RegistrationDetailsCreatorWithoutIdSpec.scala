@@ -17,10 +17,10 @@
 package unit.services.mapping
 
 import org.scalacheck.Gen
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.Address
-import uk.gov.hmrc.customs.rosmfrontend.forms.models.subscription.AddressViewModel
-import uk.gov.hmrc.customs.rosmfrontend.services.mapping.RegistrationDetailsCreator
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
 import util.scalacheck.TestDataGenerators.Implicits._
 
 class RegistrationDetailsCreatorWithoutIdSpec extends RegistrationDetailsCreatorTestBase with TestMatchingModels {

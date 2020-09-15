@@ -23,25 +23,25 @@ import org.scalatest.BeforeAndAfter
 import play.api.mvc.{AnyContent, Request, Result, Session}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.controllers.registration.BusinessDetailsRecoveryController
-import uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.SubscriptionFlowManager
-import uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.{
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.BusinessDetailsRecoveryController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.{
   ContactDetailsController,
   DateOfEstablishmentController
 }
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.Address
-import uk.gov.hmrc.customs.rosmfrontend.domain.registration.UserLocation
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.{
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   BusinessDetailsRecoveryPage,
   ContactDetailsSubscriptionFlowPageGetEori,
   DateOfEstablishmentSubscriptionFlowPage
 }
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.Save4LaterService
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.customs.rosmfrontend.services.organisation.OrgTypeLookup
-import uk.gov.hmrc.customs.rosmfrontend.views.html.registration.business_details_recovery
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.business_details_recovery
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser

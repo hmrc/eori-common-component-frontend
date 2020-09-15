@@ -16,7 +16,7 @@
 
 package util.builders
 
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.{NonUKIdentification, _}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{NonUKIdentification, _}
 import org.joda.time.DateTime
 
 //TODO THIS MUST DIE !!!

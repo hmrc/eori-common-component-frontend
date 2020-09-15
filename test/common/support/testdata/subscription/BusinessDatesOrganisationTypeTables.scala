@@ -16,7 +16,7 @@
 
 package common.support.testdata.subscription
 
-import uk.gov.hmrc.customs.rosmfrontend.domain.CdsOrganisationType._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
 import org.scalatest.prop.Tables.Table
 
 trait BusinessDatesOrganisationTypeTables {

@@ -24,9 +24,9 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers.{BAD_REQUEST, NO_CONTENT}
 import play.mvc.Http.Status.{FORBIDDEN, INTERNAL_SERVER_ERROR}
-import uk.gov.hmrc.customs.rosmfrontend.connector.TaxEnrolmentsConnector
-import uk.gov.hmrc.customs.rosmfrontend.domain.{TaxEnrolmentsRequest, TaxEnrolmentsResponse}
-import uk.gov.hmrc.customs.rosmfrontend.models.enrolmentRequest.{GovernmentGatewayEnrolmentRequest, Identifier, KeyValuePair, Verifier}
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.TaxEnrolmentsConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{TaxEnrolmentsRequest, TaxEnrolmentsResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.{GovernmentGatewayEnrolmentRequest, Identifier, KeyValuePair, Verifier}
 import uk.gov.hmrc.http._
 import util.externalservices.ExternalServicesConfig._
 import util.externalservices.TaxEnrolmentsService

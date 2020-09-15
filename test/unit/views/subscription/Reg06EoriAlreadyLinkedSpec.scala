@@ -21,8 +21,8 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.customs.rosmfrontend.forms.FormUtils.dateTimeFormat
-import uk.gov.hmrc.customs.rosmfrontend.views.html.subscription.reg06_eori_already_linked
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.dateTimeFormat
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.reg06_eori_already_linked
 import util.ViewSpec
 
 class Reg06EoriAlreadyLinkedSpec extends ViewSpec {

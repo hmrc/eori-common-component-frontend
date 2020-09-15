@@ -28,38 +28,38 @@ import play.api.mvc.{AnyContent, Request, Result, Session}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.connector.ServiceUnavailableResponse
-import uk.gov.hmrc.customs.rosmfrontend.controllers.registration.UserLocationController
-import uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes._
-import uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.SubscriptionFlowManager
-import uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.SignInWithDifferentDetailsController
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.Address
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.matching.{
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.ServiceUnavailableResponse
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.UserLocationController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.SignInWithDifferentDetailsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.{
   ContactResponse,
   IndividualResponse,
   OrganisationResponse
 }
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.registration.{
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.registration.{
   RegistrationDisplayResponse,
   ResponseCommon,
   ResponseDetail
 }
-import uk.gov.hmrc.customs.rosmfrontend.domain.registration.UserLocation
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.{
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   BusinessDetailsRecoveryPage,
   ContactDetailsSubscriptionFlowPageGetEori,
   SubscriptionPage,
   UserLocationPage
 }
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.Save4LaterService
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.customs.rosmfrontend.services.registration.RegistrationDisplayService
-import uk.gov.hmrc.customs.rosmfrontend.services.subscription._
-import uk.gov.hmrc.customs.rosmfrontend.views.html.error_template
-import uk.gov.hmrc.customs.rosmfrontend.views.html.registration.user_location
-import uk.gov.hmrc.customs.rosmfrontend.views.html.subscription.{sub01_outcome_processing, sub01_outcome_rejected}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDisplayService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.user_location
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{sub01_outcome_processing, sub01_outcome_rejected}
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec

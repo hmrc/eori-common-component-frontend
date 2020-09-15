@@ -16,8 +16,8 @@
 
 package util.builders.matching
 
-import uk.gov.hmrc.customs.rosmfrontend.domain.{Nino, NinoMatchModel}
-import uk.gov.hmrc.customs.rosmfrontend.forms.MatchingForms.rowIndividualsNinoForm
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Nino, NinoMatchModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.rowIndividualsNinoForm
 
 object DoYouHaveNinoBuilder {
 

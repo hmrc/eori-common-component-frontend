@@ -18,10 +18,10 @@ package unit.services.mapping
 
 import org.joda.time.LocalDate
 import org.scalacheck.{Arbitrary, Gen}
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.Address
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.matching._
-import uk.gov.hmrc.customs.rosmfrontend.services.mapping.RegistrationDetailsCreator
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching._
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
 import util.scalacheck.TestDataGenerators.Implicits._
 
 class RegistrationDetailsCreatorWithIdSpec extends RegistrationDetailsCreatorTestBase with TestMatchingModels {

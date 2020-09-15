@@ -18,11 +18,11 @@ package unit.services.mapping
 
 import base.UnitSpec
 import org.joda.time.LocalDate
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.Address
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.registration.{RegistrationDisplayResponse, ResponseCommon, ResponseDetail}
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.matching.{ContactResponse, IndividualResponse, OrganisationResponse}
-import uk.gov.hmrc.customs.rosmfrontend.services.mapping.RegistrationDetailsCreator
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.registration.{RegistrationDisplayResponse, ResponseCommon, ResponseDetail}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.{ContactResponse, IndividualResponse, OrganisationResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
 
 class RegistrationDetailsCreatorSpec extends UnitSpec {
 

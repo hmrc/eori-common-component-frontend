@@ -18,7 +18,7 @@ package unit.controllers
 
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
-import uk.gov.hmrc.customs.rosmfrontend.controllers.FeatureFlags
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.FeatureFlags
 import util.ControllerSpec
 
 class FeatureFlagsSpec extends ControllerSpec {

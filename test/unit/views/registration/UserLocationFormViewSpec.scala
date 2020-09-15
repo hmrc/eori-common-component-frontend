@@ -22,20 +22,20 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
 import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector}
-import uk.gov.hmrc.customs.rosmfrontend.connector.Save4LaterConnector
-import uk.gov.hmrc.customs.rosmfrontend.controllers.registration.UserLocationController
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.Save4LaterService
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.customs.rosmfrontend.services.registration.RegistrationDisplayService
-import uk.gov.hmrc.customs.rosmfrontend.services.subscription.{
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.UserLocationController
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDisplayService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   EnrolmentStoreProxyService,
   SubscriptionStatusService,
   TaxEnrolmentsService
 }
-import uk.gov.hmrc.customs.rosmfrontend.views.html.error_template
-import uk.gov.hmrc.customs.rosmfrontend.views.html.registration.user_location
-import uk.gov.hmrc.customs.rosmfrontend.views.html.subscription.{sub01_outcome_processing, sub01_outcome_rejected}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.user_location
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{sub01_outcome_processing, sub01_outcome_rejected}
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -113,7 +113,7 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach {
       showForm()({ result =>
         val page = CdsPage(bodyOf(result))
         page
-          .formAction("user-location-form") shouldBe uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.UserLocationController
+          .formAction("user-location-form") shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.UserLocationController
           .submit(Journey.Register)
           .url
       })

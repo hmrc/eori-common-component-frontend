@@ -17,7 +17,7 @@
 package unit.domain
 
 import base.UnitSpec
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.{OrganisationSubscriptionFlow, SubscriptionFlow}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{OrganisationSubscriptionFlow, SubscriptionFlow}
 
 class SubscriptionFlowSpec extends UnitSpec {
 

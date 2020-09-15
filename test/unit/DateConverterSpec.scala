@@ -18,7 +18,7 @@ package unit
 
 import base.UnitSpec
 import org.joda.time.LocalDate
-import uk.gov.hmrc.customs.rosmfrontend.DateConverter
+import uk.gov.hmrc.eoricommoncomponent.frontend.DateConverter
 
 class DateConverterSpec extends UnitSpec {
 

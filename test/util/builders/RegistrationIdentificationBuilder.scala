@@ -17,7 +17,7 @@
 package util.builders
 
 import common.Users._
-import uk.gov.hmrc.customs.rosmfrontend.domain.{RegistrationIdentification, RegistrationIdentificationOutcome, SafeId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{RegistrationIdentification, RegistrationIdentificationOutcome, SafeId}
 
 object RegistrationIdentificationBuilder {
   val ACtOrgUserRegId =

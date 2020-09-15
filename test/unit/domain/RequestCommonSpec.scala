@@ -21,7 +21,7 @@ import java.util.UUID
 import base.UnitSpec
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.libs.json.{JsResultException, JsValue, Json}
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.RequestCommon
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.RequestCommon
 
 class RequestCommonSpec extends UnitSpec {
 

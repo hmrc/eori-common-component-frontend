@@ -23,10 +23,10 @@ import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import play.api.mvc.{AnyContent, Request}
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.{ClearCacheAndRegistrationIdentificationService, RequestSessionData, SessionCache}
-import uk.gov.hmrc.customs.rosmfrontend.services.registration._
-import uk.gov.hmrc.customs.rosmfrontend.services.subscription.{NewSubscription, PreSubscriptionStatus, SubscriptionProcessing, SubscriptionStatusService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{ClearCacheAndRegistrationIdentificationService, RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration._
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{NewSubscription, PreSubscriptionStatus, SubscriptionProcessing, SubscriptionStatusService}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.global

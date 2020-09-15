@@ -26,8 +26,8 @@ import org.scalatest.mockito.MockitoSugar
 import play.api.mvc.{RequestHeader, Result, Results}
 import play.api.test.FakeRequest
 import play.mvc.Http.HeaderNames
-import uk.gov.hmrc.customs.rosmfrontend.config.AppConfig
-import uk.gov.hmrc.customs.rosmfrontend.filters.AllowlistFilter
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+import uk.gov.hmrc.eoricommoncomponent.frontend.filters.AllowlistFilter
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

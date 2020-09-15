@@ -17,10 +17,10 @@
 package unit.views.partials
 
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.controllers.ApplicationController
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.SessionCache
-import uk.gov.hmrc.customs.rosmfrontend.views.html.migration.migration_start
-import uk.gov.hmrc.customs.rosmfrontend.views.html.{accessibility_statement, start}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.migration_start
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, start}
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.{AuthBuilder, SessionBuilder}

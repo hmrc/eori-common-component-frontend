@@ -18,7 +18,7 @@ package unit.domain
 
 import base.UnitSpec
 import play.api.libs.json.Json
-import uk.gov.hmrc.customs.rosmfrontend.domain.TaxEnrolmentsResponse
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.TaxEnrolmentsResponse
 
 class TaxEnrolmentsResponseSpec extends UnitSpec {
   val taxEnrolmentsResponseJson = """{

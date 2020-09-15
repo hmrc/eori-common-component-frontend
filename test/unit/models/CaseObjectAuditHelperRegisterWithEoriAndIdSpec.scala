@@ -17,15 +17,15 @@
 package unit.models
 
 import base.UnitSpec
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.{RequestCommon, ResponseCommon}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{RequestCommon, ResponseCommon}
 
 import scala.collection.Map
 
 class CaseObjectAuditHelperRegisterWithEoriAndIdSpec extends UnitSpec {
 
   import play.api.libs.json.Json
-  import uk.gov.hmrc.customs.rosmfrontend.domain.RegisterWithEoriAndIdRequest
+  import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegisterWithEoriAndIdRequest
 
   val registerWithEoriAndIdRequestFromJson =
     Json.parse("""

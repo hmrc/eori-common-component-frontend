@@ -25,16 +25,16 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import play.api.mvc.{AnyContent, Request}
-import uk.gov.hmrc.customs.rosmfrontend.connector.RegisterWithoutIdConnector
-import uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.Sub02Controller
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging._
-import uk.gov.hmrc.customs.rosmfrontend.forms.models.subscription.ContactDetailsModel
-import uk.gov.hmrc.customs.rosmfrontend.services.RequestCommonGenerator
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.customs.rosmfrontend.services.mapping.RegistrationDetailsCreator
-import uk.gov.hmrc.customs.rosmfrontend.services.organisation.OrgTypeLookup
-import uk.gov.hmrc.customs.rosmfrontend.services.registration.RegisterWithoutIdService
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.RegisterWithoutIdConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging._
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactDetailsModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegisterWithoutIdService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.global

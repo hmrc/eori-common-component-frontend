@@ -17,7 +17,7 @@
 package common.pages.subscription
 
 import common.pages.WebPage
-import uk.gov.hmrc.customs.rosmfrontend.forms.models.subscription.AddressViewModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 
 sealed trait AddressDetailsPage extends WebPage {
 

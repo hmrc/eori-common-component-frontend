@@ -19,7 +19,7 @@ package unit.domain.subscription
 import base.UnitSpec
 import org.joda.time.DateTime
 import play.api.libs.json.Json
-import uk.gov.hmrc.customs.rosmfrontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 
 class SubscriptionStatusModelsSpec extends UnitSpec {
 

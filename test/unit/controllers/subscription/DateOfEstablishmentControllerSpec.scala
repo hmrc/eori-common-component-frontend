@@ -30,16 +30,16 @@ import org.scalatest.prop.TableDrivenPropertyChecks._
 import org.scalatest.prop.Tables.Table
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
-import uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.DateOfEstablishmentController
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.{
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.DateOfEstablishmentController
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   DateOfEstablishmentSubscriptionFlowPage,
   SubscriptionDetails
 }
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.RequestSessionData
-import uk.gov.hmrc.customs.rosmfrontend.services.organisation.OrgTypeLookup
-import uk.gov.hmrc.customs.rosmfrontend.views.html.subscription.date_of_establishment
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.date_of_establishment
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -54,11 +54,11 @@ class DateOfEstablishmentControllerSpec
 
   protected override val formId: String = SubscriptionDateOfBirthPage.formId
   protected override val submitInCreateModeUrl: String =
-    uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.DateOfEstablishmentController
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController
       .submit(isInReviewMode = false, Journey.Register)
       .url
   protected override val submitInReviewModeUrl: String =
-    uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.DateOfEstablishmentController
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController
       .submit(isInReviewMode = true, Journey.Register)
       .url
 

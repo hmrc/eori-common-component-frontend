@@ -16,9 +16,9 @@
 
 package common.support.testdata.registration
 
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.NonUKIdentification
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.NonUKIdentification
 import org.joda.time.LocalDate
-import uk.gov.hmrc.customs.rosmfrontend.domain.{IndividualRegistrationInfo, OrgRegistrationInfo, TaxPayerId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{IndividualRegistrationInfo, OrgRegistrationInfo, TaxPayerId}
 
 object RegistrationInfoGenerator {
 

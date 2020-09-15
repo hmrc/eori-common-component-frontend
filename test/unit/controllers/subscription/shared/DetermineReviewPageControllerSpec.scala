@@ -21,9 +21,9 @@ import org.scalatest.BeforeAndAfter
 import play.api.mvc._
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.controllers.DetermineReviewPageController
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.RequestSessionData
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.DetermineReviewPageController
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.SessionBuilder
@@ -55,7 +55,7 @@ class DetermineReviewPageControllerSpec extends ControllerSpec with BeforeAndAft
         status(awaitedResult) shouldBe SEE_OTHER
         awaitedResult.header.headers.get("Location") shouldBe
           Some(
-            uk.gov.hmrc.customs.rosmfrontend.controllers.migration.routes.CheckYourDetailsController
+            uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.CheckYourDetailsController
               .reviewDetails(Journey.Subscribe)
               .url
           )
@@ -69,7 +69,7 @@ class DetermineReviewPageControllerSpec extends ControllerSpec with BeforeAndAft
         status(awaitedResult) shouldBe SEE_OTHER
         awaitedResult.header.headers.get("Location") shouldBe
           Some(
-            uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.CheckYourDetailsRegisterController
+            uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.CheckYourDetailsRegisterController
               .reviewDetails(Journey.Register)
               .url
           )

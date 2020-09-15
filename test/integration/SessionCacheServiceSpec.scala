@@ -25,13 +25,13 @@ import org.scalatest.mockito.MockitoSugar
 import play.api.libs.json.Json.toJson
 import play.modules.reactivemongo.ReactiveMongoComponent
 import uk.gov.hmrc.cache.model.{Cache, Id}
-import uk.gov.hmrc.customs.rosmfrontend.config.AppConfig
-import uk.gov.hmrc.customs.rosmfrontend.connector.SubscriptionStatusConnector
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.ResponseCommon
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.{BusinessShortName, SubscriptionDetails}
-import uk.gov.hmrc.customs.rosmfrontend.services.Save4LaterService
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.{CachedData, SessionCache, SessionTimeOutException}
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SubscriptionStatusConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.ResponseCommon
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{BusinessShortName, SubscriptionDetails}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{CachedData, SessionCache, SessionTimeOutException}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.mongo.{MongoConnector, MongoSpecSupport}

@@ -19,7 +19,7 @@ package integration
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
-import uk.gov.hmrc.customs.rosmfrontend.connector.Save4LaterConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.http._
 import util.externalservices.AuditService
 import util.externalservices.ExternalServicesConfig._

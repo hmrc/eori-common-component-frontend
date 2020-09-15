@@ -18,8 +18,8 @@ package unit.domain.subscription
 
 import base.UnitSpec
 import org.joda.time.LocalDate
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.SubscriptionDetails
-import uk.gov.hmrc.customs.rosmfrontend.domain.{NameDobMatchModel, NameIdOrganisationMatchModel, NameMatchModel, NameOrganisationMatchModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{NameDobMatchModel, NameIdOrganisationMatchModel, NameMatchModel, NameOrganisationMatchModel}
 
 class SubscriptionDetailsSpec extends UnitSpec {
 

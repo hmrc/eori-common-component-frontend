@@ -16,9 +16,9 @@
 
 package util.builders
 
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.{MessagingServiceParam, ResponseCommon}
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.subscription._
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.ContactDetails
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{MessagingServiceParam, ResponseCommon}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetails
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, LocalDate}
 

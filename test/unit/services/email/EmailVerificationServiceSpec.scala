@@ -24,10 +24,10 @@ import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import play.api.http.Status.BAD_REQUEST
 import play.api.mvc.{AnyContent, Request}
-import uk.gov.hmrc.customs.rosmfrontend.connector.EmailVerificationConnector
-import uk.gov.hmrc.customs.rosmfrontend.connector.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified, EmailVerificationRequestFailure, EmailVerificationRequestResponse, EmailVerificationRequestSent}
-import uk.gov.hmrc.customs.rosmfrontend.connector.httpparsers.EmailVerificationStateHttpParser.{EmailNotVerified, EmailVerificationStateErrorResponse, EmailVerificationStateResponse, EmailVerified}
-import uk.gov.hmrc.customs.rosmfrontend.services.email.EmailVerificationService
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.EmailVerificationConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified, EmailVerificationRequestFailure, EmailVerificationRequestResponse, EmailVerificationRequestSent}
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.EmailVerificationStateHttpParser.{EmailNotVerified, EmailVerificationStateErrorResponse, EmailVerificationStateResponse, EmailVerified}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global

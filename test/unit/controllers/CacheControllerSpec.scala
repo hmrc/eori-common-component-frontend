@@ -22,11 +22,11 @@ import org.mockito.Mockito._
 import play.api.mvc.{AnyContent, Request, Result, Session}
 import play.mvc.Http.Status.SEE_OTHER
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.controllers.routes._
-import uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.CacheController
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.SubscriptionDetails
-import uk.gov.hmrc.customs.rosmfrontend.models.{Journey, Service}
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.CacheController
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser

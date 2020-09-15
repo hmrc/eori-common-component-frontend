@@ -20,9 +20,9 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.customs.rosmfrontend.models.Service
-import uk.gov.hmrc.customs.rosmfrontend.views.ServiceName._
-import uk.gov.hmrc.customs.rosmfrontend.views.html.has_existing_eori
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName._
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.has_existing_eori
 import util.ViewSpec
 
 class HasExistingEoriSpec extends ViewSpec {

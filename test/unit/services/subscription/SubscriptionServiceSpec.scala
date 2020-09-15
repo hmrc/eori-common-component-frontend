@@ -27,15 +27,15 @@ import org.scalatest.prop.Checkers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.mvc.Http.Status._
-import uk.gov.hmrc.customs.rosmfrontend.connector.SubscriptionServiceConnector
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.subscription.SubscriptionCreateResponse._
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.subscription.{SubscriptionRequest, SubscriptionResponse}
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.{BusinessShortName, SubscriptionDetails}
-import uk.gov.hmrc.customs.rosmfrontend.forms.models.subscription.{AddressViewModel, ContactDetailsModel, VatDetails}
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.mapping.EtmpTypeOfPerson
-import uk.gov.hmrc.customs.rosmfrontend.services.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SubscriptionServiceConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionCreateResponse._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{SubscriptionRequest, SubscriptionResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{BusinessShortName, SubscriptionDetails}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactDetailsModel, VatDetails}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.EtmpTypeOfPerson
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.http.{HeaderCarrier, Upstream5xxResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global

@@ -18,7 +18,7 @@ package unit.controllers
 
 import play.api.i18n.Lang
 import play.api.mvc.ControllerComponents
-import uk.gov.hmrc.customs.rosmfrontend.controllers.{routes, EoriLanguageController}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{routes, EoriLanguageController}
 import uk.gov.hmrc.play.language.LanguageUtils
 import util.ControllerSpec
 

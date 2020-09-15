@@ -22,11 +22,11 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
 import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, _}
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.controllers.{FailedEnrolmentException, HasExistingEoriController}
-import uk.gov.hmrc.customs.rosmfrontend.domain.LoggedInUserWithEnrolments
-import uk.gov.hmrc.customs.rosmfrontend.models.Service
-import uk.gov.hmrc.customs.rosmfrontend.services.subscription.EnrolmentService
-import uk.gov.hmrc.customs.rosmfrontend.views.html.{eori_enrol_success, has_existing_eori}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{FailedEnrolmentException, HasExistingEoriController}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentService
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{eori_enrol_success, has_existing_eori}
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.SessionBuilder

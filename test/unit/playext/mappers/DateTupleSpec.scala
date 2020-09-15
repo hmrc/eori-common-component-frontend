@@ -21,7 +21,7 @@ import org.joda.time.LocalDate
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import org.scalatest.prop.Tables.Table
 import play.api.data.{FormError, Mapping}
-import uk.gov.hmrc.customs.rosmfrontend.playext.mappers.DateTuple
+import uk.gov.hmrc.eoricommoncomponent.frontend.playext.mappers.DateTuple
 import uk.gov.hmrc.play.mappers.DateFields._
 
 class DateTupleSpec extends UnitSpec {

@@ -18,11 +18,11 @@ package unit.domain.messaging
 
 import base.UnitSpec
 import play.api.libs.json._
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.matching.IndividualResponse
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.IndividualResponse
 
 class IndividualResponseFormatSpec extends UnitSpec {
 
-  import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.matching.IndividualResponse.formats
+  import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.IndividualResponse.formats
 
   val individualResponseFull = IndividualResponse("John", Some("Middle"), "Doe", Some("1999-12-20"))
   val individualResponseNoMiddle = individualResponseFull.copy(middleName = None)

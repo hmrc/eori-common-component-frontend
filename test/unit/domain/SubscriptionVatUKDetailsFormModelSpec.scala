@@ -17,8 +17,8 @@
 package unit.domain
 
 import base.UnitSpec
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.forms.models.subscription.SubscriptionVatUKDetailsFormModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.SubscriptionVatUKDetailsFormModel
 
 class SubscriptionVatUKDetailsFormModelSpec extends UnitSpec {
 

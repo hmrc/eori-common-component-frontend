@@ -21,12 +21,12 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.customs.rosmfrontend.forms.models.subscription.EoriNumberViewModel
-import uk.gov.hmrc.customs.rosmfrontend.forms.subscription.SubscriptionForm
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.views.html.migration.what_is_your_eori
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriNumberViewModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.what_is_your_eori
 import util.ViewSpec
-import uk.gov.hmrc.customs.rosmfrontend.controllers._
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers._
 
 class WhatIsYourEoriSpec extends ViewSpec {
   val form: Form[EoriNumberViewModel] = SubscriptionForm.eoriNumberForm

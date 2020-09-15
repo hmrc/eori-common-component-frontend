@@ -23,12 +23,12 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
-import uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.WhatIsYourEoriController
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.EoriNumberSubscriptionFlowPage
-import uk.gov.hmrc.customs.rosmfrontend.domain.{CdsOrganisationType, RegistrationDetailsIndividual}
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.RequestSessionData
-import uk.gov.hmrc.customs.rosmfrontend.views.html.migration.what_is_your_eori
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriController
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.EoriNumberSubscriptionFlowPage
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, RegistrationDetailsIndividual}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.what_is_your_eori
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -44,12 +44,12 @@ class WhatIsYourEoriControllerSpec
   protected override val formId: String = EoriNumberPage.formId
 
   protected override def submitInCreateModeUrl: String =
-    uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.WhatIsYourEoriController
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController
       .submit(isInReviewMode = false, Journey.Subscribe)
       .url
 
   protected override def submitInReviewModeUrl: String =
-    uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.WhatIsYourEoriController
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController
       .submit(isInReviewMode = true, Journey.Subscribe)
       .url
 

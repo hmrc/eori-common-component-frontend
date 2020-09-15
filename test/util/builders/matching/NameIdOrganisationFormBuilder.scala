@@ -18,9 +18,9 @@ package util.builders.matching
 
 import common.RegistrationOutcome.{PENDING, RegistrationOutcome}
 import org.joda.time.LocalDate
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.matching.Organisation
-import uk.gov.hmrc.customs.rosmfrontend.domain.{Eori, NameIdOrganisationMatch, Utr}
-import uk.gov.hmrc.customs.rosmfrontend.forms.MatchingForms.nameUtrOrganisationForm
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.Organisation
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Eori, NameIdOrganisationMatch, Utr}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.nameUtrOrganisationForm
 
 object NameIdOrganisationFormBuilder {
 

@@ -18,7 +18,7 @@ package unit.controllers.registration
 
 import common.pages.NinoMatchPage
 import common.pages.matching.NameDateOfBirthPage.{fieldLevelErrorDateOfBirth, pageLevelErrorSummaryListXPath}
-import uk.gov.hmrc.customs.rosmfrontend.controllers.registration.{HowCanWeIdentifyYouController, NinoController}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.{HowCanWeIdentifyYouController, NinoController}
 import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -26,10 +26,10 @@ import org.mockito.{ArgumentMatchers, Mockito}
 import org.scalatest.BeforeAndAfter
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import uk.gov.hmrc.customs.rosmfrontend.services.registration.MatchingService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.MatchingService
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.views.html.registration.match_nino
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.match_nino
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec

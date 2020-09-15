@@ -16,8 +16,8 @@
 
 package util.builders
 
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.Address
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
 import org.joda.time.LocalDate
 
 object RegistrationDetailsBuilder {

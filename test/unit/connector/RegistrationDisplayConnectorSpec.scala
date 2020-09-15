@@ -21,12 +21,12 @@ import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
-import uk.gov.hmrc.customs.rosmfrontend.audit.Auditable
-import uk.gov.hmrc.customs.rosmfrontend.config.AppConfig
-import uk.gov.hmrc.customs.rosmfrontend.connector.{RegistrationDisplayConnector, ServiceUnavailableResponse}
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.Address
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.matching.{ContactResponse, IndividualResponse}
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.registration._
+import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{RegistrationDisplayConnector, ServiceUnavailableResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.{ContactResponse, IndividualResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.registration._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpException}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 

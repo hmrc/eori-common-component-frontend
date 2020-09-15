@@ -18,8 +18,8 @@ package unit.forms
 
 import base.UnitSpec
 import play.api.data.Form
-import uk.gov.hmrc.customs.rosmfrontend.domain.{IndividualNameAndDateOfBirth, NameDobMatchModel, NinoMatch}
-import uk.gov.hmrc.customs.rosmfrontend.forms.MatchingForms
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{IndividualNameAndDateOfBirth, NameDobMatchModel, NinoMatch}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms
 import uk.gov.hmrc.domain.Generator
 
 import scala.util.Random

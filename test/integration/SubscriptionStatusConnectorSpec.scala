@@ -22,8 +22,8 @@ import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
 import play.mvc.Http.Status.{FORBIDDEN, INTERNAL_SERVER_ERROR}
-import uk.gov.hmrc.customs.rosmfrontend.connector.SubscriptionStatusConnector
-import uk.gov.hmrc.customs.rosmfrontend.domain.{
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SubscriptionStatusConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   SubscriptionStatusQueryParams,
   SubscriptionStatusResponseHolder,
   TaxPayerId

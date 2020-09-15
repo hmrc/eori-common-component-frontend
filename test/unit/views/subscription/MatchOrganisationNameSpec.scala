@@ -21,10 +21,10 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.customs.rosmfrontend.domain.NameMatchModel
-import uk.gov.hmrc.customs.rosmfrontend.forms.MatchingForms._
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.views.html.registration.what_is_your_org_name
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NameMatchModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.what_is_your_org_name
 import util.ViewSpec
 
 class MatchOrganisationNameSpec extends ViewSpec {

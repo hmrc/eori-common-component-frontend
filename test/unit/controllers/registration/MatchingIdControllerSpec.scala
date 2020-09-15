@@ -22,11 +22,11 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
 import play.mvc.Http.Status.SEE_OTHER
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.controllers.registration.MatchingIdController
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.RequestSessionData
-import uk.gov.hmrc.customs.rosmfrontend.services.registration.MatchingService
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.MatchingIdController
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.MatchingService
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder._
@@ -77,7 +77,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
       status(result) shouldBe SEE_OTHER
       result.header.headers("Location") should be(
-        uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.ConfirmContactDetailsController
+        uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.ConfirmContactDetailsController
           .form(Journey.Register)
           .url
       )
@@ -107,7 +107,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
       status(result) shouldBe SEE_OTHER
       result.header.headers("Location") should be(
-        uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.ConfirmContactDetailsController
+        uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.ConfirmContactDetailsController
           .form(Journey.Register)
           .url
       )
@@ -123,7 +123,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
       status(result) shouldBe SEE_OTHER
       result.header.headers("Location") should be(
-        uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.ConfirmContactDetailsController
+        uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.ConfirmContactDetailsController
           .form(Journey.Register)
           .url
       )
@@ -139,7 +139,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
       status(result) shouldBe SEE_OTHER
       result.header.headers("Location") should be(
-        uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.ConfirmContactDetailsController
+        uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.ConfirmContactDetailsController
           .form(Journey.Register)
           .url
       )
@@ -194,6 +194,6 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
   private def assertRedirectToUserLocationPage(result: Result, journey: Journey.Value): Unit =
     result.header.headers("Location") should be(
-      uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.UserLocationController.form(journey).url
+      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.UserLocationController.form(journey).url
     )
 }

@@ -25,10 +25,10 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.time.{Millis, Span}
 import play.api.libs.json.{Reads, Writes}
-import uk.gov.hmrc.customs.rosmfrontend.connector.Save4LaterConnector
-import uk.gov.hmrc.customs.rosmfrontend.domain.{CdsOrganisationType, InternalId, SafeId}
-import uk.gov.hmrc.customs.rosmfrontend.forms.models.email.EmailStatus
-import uk.gov.hmrc.customs.rosmfrontend.services.Save4LaterService
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, InternalId, SafeId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global

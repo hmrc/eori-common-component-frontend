@@ -23,18 +23,18 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers.{LOCATION, _}
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.{SubscriptionFlowManager, VatRegisteredUkController}
-import uk.gov.hmrc.customs.rosmfrontend.domain.YesNo
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.{
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{SubscriptionFlowManager, VatRegisteredUkController}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.YesNo
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   SubscriptionDetails,
   SubscriptionFlow,
   SubscriptionFlowInfo,
   SubscriptionPage
 }
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.RequestSessionData
-import uk.gov.hmrc.customs.rosmfrontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
-import uk.gov.hmrc.customs.rosmfrontend.views.html.subscription.vat_registered_uk
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_registered_uk
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec

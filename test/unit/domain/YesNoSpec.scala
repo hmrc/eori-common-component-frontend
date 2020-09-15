@@ -17,7 +17,7 @@
 package unit.domain
 
 import base.UnitSpec
-import uk.gov.hmrc.customs.rosmfrontend.domain.YesNo
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.YesNo
 
 class YesNoSpec extends UnitSpec {
 

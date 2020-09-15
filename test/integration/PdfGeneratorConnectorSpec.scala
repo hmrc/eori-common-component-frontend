@@ -16,7 +16,7 @@
 
 package integration
 
-import uk.gov.hmrc.customs.rosmfrontend.connector.PdfGeneratorConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.PdfGeneratorConnector
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder

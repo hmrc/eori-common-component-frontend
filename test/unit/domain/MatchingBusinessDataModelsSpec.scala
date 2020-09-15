@@ -19,9 +19,9 @@ package unit.domain
 import base.UnitSpec
 import org.joda.time.DateTime
 import play.api.libs.json.Json
-import uk.gov.hmrc.customs.rosmfrontend.domain.SixLineAddressMatchModel
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging._
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.matching._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.SixLineAddressMatchModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching._
 
 class MatchingBusinessDataModelsSpec extends UnitSpec {
 

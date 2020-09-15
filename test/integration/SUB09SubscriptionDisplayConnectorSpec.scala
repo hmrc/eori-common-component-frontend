@@ -22,9 +22,9 @@ import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.mvc.Http.Status._
-import uk.gov.hmrc.customs.rosmfrontend.connector.{SUB09SubscriptionDisplayConnector, ServiceUnavailableResponse}
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.subscription.SubscriptionDisplayResponseHolder
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{SUB09SubscriptionDisplayConnector, ServiceUnavailableResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionDisplayResponseHolder
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.http._
 import util.WireMockRunner
 import util.externalservices.ExternalServicesConfig._

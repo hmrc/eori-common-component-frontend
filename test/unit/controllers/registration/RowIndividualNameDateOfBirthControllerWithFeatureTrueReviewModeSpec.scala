@@ -29,14 +29,14 @@ import play.api.data.Form
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
 import play.api.test.Helpers._
-import uk.gov.hmrc.customs.rosmfrontend.controllers.registration.RowIndividualNameDateOfBirthController
-import uk.gov.hmrc.customs.rosmfrontend.controllers.registration.routes.RowIndividualNameDateOfBirthController
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.forms.MatchingForms
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.customs.rosmfrontend.services.subscription.SubscriptionDetailsService
-import uk.gov.hmrc.customs.rosmfrontend.views.html.registration.row_individual_name_dob
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RowIndividualNameDateOfBirthController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.RowIndividualNameDateOfBirthController
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.row_individual_name_dob
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec

@@ -17,8 +17,8 @@
 package util.builders
 
 import common.support.testdata.TestData
-import uk.gov.hmrc.customs.rosmfrontend.domain.Eori
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.Individual
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.Eori
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
 
 object NameEoriEuIndividualFormBuilder {
 

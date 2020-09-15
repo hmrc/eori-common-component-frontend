@@ -20,8 +20,8 @@ import base.UnitSpec
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Request}
-import uk.gov.hmrc.customs.rosmfrontend.controllers.JourneyTypeFromUrl
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.JourneyTypeFromUrl
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 
 class JourneyTypeFromUrlSpec extends UnitSpec with MockitoSugar {
 

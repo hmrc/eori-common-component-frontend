@@ -17,7 +17,7 @@
 package unit.forms
 
 import base.UnitSpec
-import uk.gov.hmrc.customs.rosmfrontend.forms.subscription.SubscriptionForm
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm
 import util.builders.SubscriptionFormBuilder
 
 class SubscriptionVatDetailsFormSpec extends UnitSpec {

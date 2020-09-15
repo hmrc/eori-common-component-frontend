@@ -18,7 +18,7 @@ package unit.models
 
 import org.scalatest.{EitherValues, MustMatchers, OptionValues, WordSpec}
 import play.api.mvc.{PathBindable, QueryStringBindable}
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 
 class JourneySpec extends WordSpec with MustMatchers with EitherValues with OptionValues {
 

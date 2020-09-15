@@ -17,7 +17,7 @@
 package util.builders.matching
 
 import play.api.data.Form
-import uk.gov.hmrc.customs.rosmfrontend.domain.SixLineAddressMatchModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.SixLineAddressMatchModel
 
 trait OrganisationAddressFormBuilder {
 

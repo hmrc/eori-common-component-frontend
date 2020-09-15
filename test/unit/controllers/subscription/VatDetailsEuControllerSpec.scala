@@ -25,12 +25,12 @@ import org.scalatest.prop.Checkers
 import play.api.mvc.{MessagesControllerComponents, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.{SubscriptionFlowManager, VatDetailsEuController}
-import uk.gov.hmrc.customs.rosmfrontend.forms.models.subscription.VatEUDetailsModel
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.countries.Countries
-import uk.gov.hmrc.customs.rosmfrontend.services.subscription.SubscriptionVatEUDetailsService
-import uk.gov.hmrc.customs.rosmfrontend.views.html.subscription.vat_details_eu
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{SubscriptionFlowManager, VatDetailsEuController}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.VatEUDetailsModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionVatEUDetailsService
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_details_eu
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec

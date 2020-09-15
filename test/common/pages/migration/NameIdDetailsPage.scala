@@ -17,7 +17,7 @@
 package common.pages.migration
 
 import common.pages.WebPage
-import uk.gov.hmrc.customs.rosmfrontend.domain.NameIdOrganisationMatchModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NameIdOrganisationMatchModel
 
 trait NameIdDetailsPage extends WebPage {
 

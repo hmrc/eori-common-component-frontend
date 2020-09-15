@@ -24,14 +24,14 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.controllers.email.CheckYourEmailController
-import uk.gov.hmrc.customs.rosmfrontend.domain.InternalId
-import uk.gov.hmrc.customs.rosmfrontend.forms.models.email.EmailStatus
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.Save4LaterService
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.SessionCache
-import uk.gov.hmrc.customs.rosmfrontend.services.email.EmailVerificationService
-import uk.gov.hmrc.customs.rosmfrontend.views.html.email.{check_your_email, email_confirmed, verify_your_email}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.InternalId
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.{check_your_email, email_confirmed, verify_your_email}
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec

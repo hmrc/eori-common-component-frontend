@@ -21,17 +21,17 @@ import org.joda.time.{DateTime, LocalDate}
 import org.scalacheck.Gen
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.subscription.SubscriptionResponse
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.{Address, MessagingServiceParam, ResponseCommon}
-import uk.gov.hmrc.customs.rosmfrontend.domain.subscription.SubscriptionDetails
-import uk.gov.hmrc.customs.rosmfrontend.forms.models.subscription.{ContactDetailsModel, VatDetails}
-import uk.gov.hmrc.customs.rosmfrontend.services.mapping.{
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionResponse
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, MessagingServiceParam, ResponseCommon}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{ContactDetailsModel, VatDetails}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
   EtmpLegalStatus,
   EtmpTypeOfPerson,
   OrganisationTypeConfiguration
 }
-import uk.gov.hmrc.customs.rosmfrontend.services.subscription.SubscriptionSuccessful
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionSuccessful
 
 trait SubscriptionServiceTestData {
 

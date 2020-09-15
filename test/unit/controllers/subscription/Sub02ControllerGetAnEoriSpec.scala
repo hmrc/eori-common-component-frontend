@@ -25,15 +25,15 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.customs.rosmfrontend.connector.PdfGeneratorConnector
-import uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.{Sub02Controller, routes}
-import uk.gov.hmrc.customs.rosmfrontend.domain._
-import uk.gov.hmrc.customs.rosmfrontend.domain.messaging.subscription.SubscriptionCreateResponse._
-import uk.gov.hmrc.customs.rosmfrontend.models.Journey
-import uk.gov.hmrc.customs.rosmfrontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.customs.rosmfrontend.services.subscription._
-import uk.gov.hmrc.customs.rosmfrontend.views.html.migration.migration_success
-import uk.gov.hmrc.customs.rosmfrontend.views.html.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.PdfGeneratorConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{Sub02Controller, routes}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionCreateResponse._
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.migration_success
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
@@ -289,7 +289,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       subscribeForGetYourEORI() { result =>
         {
           status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe uk.gov.hmrc.customs.rosmfrontend.controllers.subscription.routes.Sub02Controller
+          result.header.headers(LOCATION) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.Sub02Controller
             .requestNotProcessed()
             .url
         }
