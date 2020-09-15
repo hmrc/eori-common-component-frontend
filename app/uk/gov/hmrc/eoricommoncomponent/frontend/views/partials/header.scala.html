@@ -25,7 +25,7 @@
 @(implicit messages: Messages, request: Request[_])
 
 
-@isLoggedIn = @{ true || !request.session.isEmpty && request.session.get("userId").isDefined}
+@isLoggedIn = @{ !request.session.isEmpty }
 
 @journeyHeading = @{
     if(request.path.contains("/register")) {
