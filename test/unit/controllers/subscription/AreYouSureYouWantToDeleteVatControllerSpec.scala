@@ -40,7 +40,7 @@ import scala.concurrent.ExecutionContext.global
 
 class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec {
 
-  private val mockAuthConnector = mock[AuthConnector]
+  private val mockAuthConnector                   = mock[AuthConnector]
   private val mockSubscriptionVatEUDetailsService = mock[SubscriptionVatEUDetailsService]
 
   private val areYouSureRemoveVatView = app.injector.instanceOf[are_you_sure_remove_vat]
@@ -52,11 +52,12 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec {
     mcc,
     areYouSureRemoveVatView
   )(global)
-  private val testIndex = 12345
+
+  private val testIndex             = 12345
   private val someVatEuDetailsModel = VatEUDetailsModel("12334", "FR")
 
   private val emptyVatEuDetails: Seq[VatEUDetailsModel] = Seq.empty
-  private val someVatEuDetails: Seq[VatEUDetailsModel] = Seq(VatEUDetailsModel("1234", "FR"))
+  private val someVatEuDetails: Seq[VatEUDetailsModel]  = Seq(VatEUDetailsModel("1234", "FR"))
 
   "Are you sure you want to delete these vat details page" should {
     "return ok and display correct form when passed index is correct" in {
@@ -222,4 +223,5 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec {
         .apply(SessionBuilder.buildRequestWithFormValues(form))
     )
   }
+
 }

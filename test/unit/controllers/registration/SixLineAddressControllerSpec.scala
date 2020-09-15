@@ -35,7 +35,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.{AllCountriesExceptIomInCountryPicker, Countries, Country}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.{
+  AllCountriesExceptIomInCountryPicker,
+  Countries,
+  Country
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
@@ -53,18 +57,18 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class SixLineAddressControllerSpec extends ControllerSpec with BeforeAndAfter with BeforeAndAfterEach {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockRegistrationDetailsCreator = mock[RegistrationDetailsCreator]
-  private val mockSubscriptionFlowManager = mock[SubscriptionFlowManager]
-  private val mockSessionCache = mock[SessionCache]
-  private val mockRequestSessionData = mock[RequestSessionData]
-  private val mockRegDetails = mock[RegistrationDetails]
+  private val mockAuthConnector                   = mock[AuthConnector]
+  private val mockRegistrationDetailsCreator      = mock[RegistrationDetailsCreator]
+  private val mockSubscriptionFlowManager         = mock[SubscriptionFlowManager]
+  private val mockSessionCache                    = mock[SessionCache]
+  private val mockRequestSessionData              = mock[RequestSessionData]
+  private val mockRegDetails                      = mock[RegistrationDetails]
   private val mockRegistrationDetailsOrganisation = mock[RegistrationDetailsOrganisation]
-  private val mockRegistrationDetailsIndividual = mock[RegistrationDetailsIndividual]
-  private val mockCountries = mock[Countries]
-  private val mockRegistrationDetailsService = mock[RegistrationDetailsService]
-  private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
-  private val sixLineAddressView = app.injector.instanceOf[six_line_address]
+  private val mockRegistrationDetailsIndividual   = mock[RegistrationDetailsIndividual]
+  private val mockCountries                       = mock[Countries]
+  private val mockRegistrationDetailsService      = mock[RegistrationDetailsService]
+  private val mockSubscriptionDetailsService      = mock[SubscriptionDetailsService]
+  private val sixLineAddressView                  = app.injector.instanceOf[six_line_address]
 
   private val controller = new SixLineAddressController(
     app,
@@ -79,20 +83,20 @@ class SixLineAddressControllerSpec extends ControllerSpec with BeforeAndAfter wi
     mockRegistrationDetailsService
   )
 
-  private val mockSubscriptionPage = mock[SubscriptionPage]
+  private val mockSubscriptionPage         = mock[SubscriptionPage]
   private val mockSubscriptionStartSession = mock[Session]
-  private val mockFlowStart = (mockSubscriptionPage, mockSubscriptionStartSession)
+  private val mockFlowStart                = (mockSubscriptionPage, mockSubscriptionStartSession)
 
-  private val testSessionData = Map[String, String]("some_session_key" -> "some_session_value")
+  private val testSessionData              = Map[String, String]("some_session_key" -> "some_session_value")
   private val testSubscriptionStartPageUrl = "some_page_url"
 
-  private val LineOne = "Address line 1"
-  private val LineTwo = "Address line 2 (optional)"
-  private val LineThree = "Town or city"
-  private val LineFour = "Region or state (optional)"
-  private val Postcode = "Postcode"
+  private val LineOne      = "Address line 1"
+  private val LineTwo      = "Address line 2 (optional)"
+  private val LineThree    = "Town or city"
+  private val LineFour     = "Region or state (optional)"
+  private val Postcode     = "Postcode"
   private val CountryLabel = "Country"
-  private val testAddress = Address(LineOne, Some(LineTwo), Some(LineThree), Some(LineFour), Some(Postcode), "FR")
+  private val testAddress  = Address(LineOne, Some(LineTwo), Some(LineThree), Some(LineFour), Some(Postcode), "FR")
 
   val organisationTypesData = Table(
     ("Organisation Type", "Form Builder", "Form", "reviewMode", "expectedRedirectURL"),
@@ -134,16 +138,14 @@ class SixLineAddressControllerSpec extends ControllerSpec with BeforeAndAfter wi
     val formValues = formBuilder.asForm(form)
 
     organisationType match {
-      case "third-country-organisation" => {
+      case "third-country-organisation" =>
         when(mockSessionCache.registrationDetails(any[HeaderCarrier]))
           .thenReturn(Future.successful(mockRegistrationDetailsOrganisation))
         when(mockRegistrationDetailsOrganisation.address).thenReturn(testAddress)
-      }
-      case _ => {
+      case _ =>
         when(mockSessionCache.registrationDetails(any[HeaderCarrier]))
           .thenReturn(Future.successful(mockRegistrationDetailsIndividual))
         when(mockRegistrationDetailsIndividual.name).thenReturn("Test individual name")
-      }
     }
 
     info(s"General checks for [$organisationType]")
@@ -351,17 +353,19 @@ class SixLineAddressControllerSpec extends ControllerSpec with BeforeAndAfter wi
     "throw an error when UTR is provided and GB is entered" in {
       submitFormInCreateModeForIndividualRegistration(
         Map(
-          "line-1" -> "My street",
-          "line-2" -> "My street 2",
-          "line-3" -> "My city",
-          "line-4" -> "My region",
-          "postcode" -> "SE28 1BG",
+          "line-1"      -> "My street",
+          "line-2"      -> "My street 2",
+          "line-3"      -> "My city",
+          "line-4"      -> "My region",
+          "postcode"    -> "SE28 1BG",
           "countryCode" -> "GB"
         )
       ) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(AddressPage.pageLevelErrorSummaryListXPath) shouldBe "The entered country is not acceptable"
+        page.getElementsText(
+          AddressPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "The entered country is not acceptable"
 
         page.getElementsText(AddressPage.countryFieldLevelErrorXPath) shouldBe "The entered country is not acceptable"
       }
@@ -439,4 +443,5 @@ class SixLineAddressControllerSpec extends ControllerSpec with BeforeAndAfter wi
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, formValues))
     )
   }
+
 }

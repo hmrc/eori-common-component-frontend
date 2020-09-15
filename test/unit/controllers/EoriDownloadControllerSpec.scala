@@ -38,11 +38,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class EoriDownloadControllerSpec extends ControllerSpec {
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockPdfGenerator = mock[PdfGeneratorConnector]
+  private val mockAuthConnector                      = mock[AuthConnector]
+  private val mockPdfGenerator                       = mock[PdfGeneratorConnector]
   private val mockCdsFrontendDataCache: SessionCache = mock[SessionCache]
 
-  private val errorTemplateView = app.injector.instanceOf[error_template]
+  private val errorTemplateView      = app.injector.instanceOf[error_template]
   private val eoriNumberDownloadView = app.injector.instanceOf[eori_number_download]
 
   private val controller = new EoriDownloadController(
@@ -67,7 +67,7 @@ class EoriDownloadControllerSpec extends ControllerSpec {
       when(mockSubscribeOutcome.eori).thenReturn(Some("EN123456789012345"))
       when(mockSubscribeOutcome.fullName).thenReturn("John Doe")
 
-      val pdf = ByteString("this is a pdf")
+      val pdf  = ByteString("this is a pdf")
       val html = eoriNumberDownloadView("EN123456789012345", "John Doe", "01 May 2016").toString()
       when(
         mockPdfGenerator.generatePdf(ArgumentMatchers.eq(html))(

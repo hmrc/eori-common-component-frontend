@@ -34,7 +34,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionBusinessService,
+  SubscriptionDetailsService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.nameOrg
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
@@ -47,21 +50,21 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
-  private val mockAuthConnector = mock[AuthConnector]
+  private val mockAuthConnector               = mock[AuthConnector]
   private val mockSubscriptionBusinessService = mock[SubscriptionBusinessService]
-  private val mockSessionCache = mock[SessionCache]
-  private val mockSubscriptionFlowManager = mock[SubscriptionFlowManager]
-  private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
-  private val mockSubscriptionFlowInfo = mock[SubscriptionFlowInfo]
-  private val mockSubscriptionPage = mock[SubscriptionPage]
+  private val mockSessionCache                = mock[SessionCache]
+  private val mockSubscriptionFlowManager     = mock[SubscriptionFlowManager]
+  private val mockSubscriptionDetailsService  = mock[SubscriptionDetailsService]
+  private val mockSubscriptionFlowInfo        = mock[SubscriptionFlowInfo]
+  private val mockSubscriptionPage            = mock[SubscriptionPage]
 
   private val nameOrgView = app.injector.instanceOf[nameOrg]
 
-  private val registrationDetails = RegistrationDetailsOrganisation()
-  private val nameOrgMatchModel = NameOrganisationMatchModel("testName")
+  private val registrationDetails          = RegistrationDetailsOrganisation()
+  private val nameOrgMatchModel            = NameOrganisationMatchModel("testName")
   private val nameIdOrganisationMatchModel = NameIdOrganisationMatchModel("testName", "GB1234567")
-  private val incorrectForm = Map("name" -> "")
-  private val correcctForm = Map("name" -> "testName")
+  private val incorrectForm                = Map("name" -> "")
+  private val correcctForm                 = Map("name" -> "testName")
 
   val nameOrgController = new NameOrgController(
     app,
@@ -161,4 +164,5 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach {
     when(mockSubscriptionFlowInfo.nextPage).thenReturn(mockSubscriptionPage)
     when(mockSubscriptionPage.url).thenReturn(EnterYourBusinessAddress.url)
   }
+
 }

@@ -19,7 +19,11 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.EmailVerificationKeys.{LinkExpiryDurationKey, TemplateIdKey, _}
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.EmailVerificationKeys.{
+  LinkExpiryDurationKey,
+  TemplateIdKey,
+  _
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.EmailVerificationRequestHttpParser.EmailVerificationRequestResponse
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.EmailVerificationStateHttpParser.EmailVerificationStateResponse
 import uk.gov.hmrc.http.HeaderCarrier
@@ -28,9 +32,7 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfig)(
-  implicit ec: ExecutionContext
-) {
+class EmailVerificationConnector @Inject() (http: HttpClient, appConfig: AppConfig)(implicit ec: ExecutionContext) {
 
   private[connector] lazy val checkVerifiedEmailUrl: String =
     s"${appConfig.emailVerificationBaseUrl}/${appConfig.emailVerificationServiceContext}/verified-email-check"
@@ -43,25 +45,26 @@ class EmailVerificationConnector @Inject()(http: HttpClient, appConfig: AppConfi
   )(implicit hc: HeaderCarrier): Future[EmailVerificationStateResponse] =
     http.POST[JsObject, EmailVerificationStateResponse](checkVerifiedEmailUrl, Json.obj("email" -> emailAddress))
 
-  def createEmailVerificationRequest(emailAddress: String, continueUrl: String)(
-    implicit hc: HeaderCarrier
+  def createEmailVerificationRequest(emailAddress: String, continueUrl: String)(implicit
+    hc: HeaderCarrier
   ): Future[EmailVerificationRequestResponse] = {
     val jsonBody =
       Json.obj(
-        EmailKey -> emailAddress,
-        TemplateIdKey -> appConfig.emailVerificationTemplateId,
+        EmailKey              -> emailAddress,
+        TemplateIdKey         -> appConfig.emailVerificationTemplateId,
         TemplateParametersKey -> Json.obj(),
         LinkExpiryDurationKey -> appConfig.emailVerificationLinkExpiryDuration,
-        ContinueUrlKey -> continueUrl
+        ContinueUrlKey        -> continueUrl
       )
     http.POST[JsObject, EmailVerificationRequestResponse](createEmailVerificationRequestUrl, jsonBody)
   }
+
 }
 
 object EmailVerificationKeys {
-  val EmailKey = "email"
-  val TemplateIdKey = "templateId"
+  val EmailKey              = "email"
+  val TemplateIdKey         = "templateId"
   val TemplateParametersKey = "templateParameters"
   val LinkExpiryDurationKey = "linkExpiryDuration"
-  val ContinueUrlKey = "continueUrl"
+  val ContinueUrlKey        = "continueUrl"
 }

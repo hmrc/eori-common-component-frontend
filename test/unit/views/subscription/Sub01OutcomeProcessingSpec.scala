@@ -29,7 +29,7 @@ class Sub01OutcomeProcessingSpec extends ViewSpec {
 
   private val view = app.injector.instanceOf[sub01_outcome_processing]
 
-  val orgName = "Test Organisation Name"
+  val orgName       = "Test Organisation Name"
   val processedDate = "01 Jan 2019"
 
   "Sub01 outcome pending Page with name" should {
@@ -77,6 +77,6 @@ class Sub01OutcomeProcessingSpec extends ViewSpec {
     }
   }
 
-  lazy val docWithName: Document = Jsoup.parse(contentAsString(view(Some(orgName), processedDate)))
+  lazy val docWithName: Document    = Jsoup.parse(contentAsString(view(Some(orgName), processedDate)))
   lazy val docWithoutName: Document = Jsoup.parse(contentAsString(view(None, processedDate)))
 }

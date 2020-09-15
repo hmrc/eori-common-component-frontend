@@ -37,10 +37,10 @@ import scala.concurrent.Future
 class ApplicationControllerSpec extends ControllerSpec {
 
   private val mockAuthConnector = mock[AuthConnector]
-  private val mockSessionCache = mock[SessionCache]
+  private val mockSessionCache  = mock[SessionCache]
 
-  private val startView = app.injector.instanceOf[start]
-  private val migrationStartView = app.injector.instanceOf[migration_start]
+  private val startView                  = app.injector.instanceOf[start]
+  private val migrationStartView         = app.injector.instanceOf[migration_start]
   private val accessibilityStatementView = app.injector.instanceOf[accessibility_statement]
 
   val controller = new ApplicationController(
@@ -115,7 +115,9 @@ class ApplicationControllerSpec extends ControllerSpec {
     }
   }
 
-  def invokeLogoutWithAuthenticatedUser(userId: String = defaultUserId, journey: Journey.Value)(test: Future[Result] => Any) {
+  def invokeLogoutWithAuthenticatedUser(userId: String = defaultUserId, journey: Journey.Value)(
+    test: Future[Result] => Any
+  ) {
     withAuthorisedUser(userId, mockAuthConnector)
     test(controller.logout(journey).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
@@ -124,7 +126,10 @@ class ApplicationControllerSpec extends ControllerSpec {
     test(controller.start.apply(SessionBuilder.buildRequestWithSessionNoUser))
   }
 
-  def invokeStartFormSubscriptionWithAuthenticatedUser(userId: String = defaultUserId, enrolment: Option[Enrolment] = None)(test: Future[Result] => Any) {
+  def invokeStartFormSubscriptionWithAuthenticatedUser(
+    userId: String = defaultUserId,
+    enrolment: Option[Enrolment] = None
+  )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector, otherEnrolments = enrolment.map(e => Set(e)).getOrElse(Set.empty))
     test(controller.startSubscription(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
@@ -132,4 +137,5 @@ class ApplicationControllerSpec extends ControllerSpec {
   def invokeKeepAliveWithUnauthenticatedUser(userId: String = defaultUserId)(test: Future[Result] => Any) {
     test(controller.keepAlive(Journey.Register).apply(SessionBuilder.buildRequestWithSessionNoUser))
   }
+
 }

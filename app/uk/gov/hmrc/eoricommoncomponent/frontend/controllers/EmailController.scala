@@ -37,7 +37,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EmailController @Inject()(
+class EmailController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   emailVerificationService: EmailVerificationService,
@@ -52,6 +52,7 @@ class EmailController @Inject()(
     journey: Journey.Value
   )(implicit request: Request[AnyContent], user: LoggedInUserWithEnrolments): Future[Result] =
     Future.successful(Redirect(EnrolmentExistsAgainstGroupIdController.show(journey)))
+
   private def userIsInProcess(
     journey: Journey.Value
   )(implicit request: Request[AnyContent], user: LoggedInUserWithEnrolments): Future[Result] =
@@ -70,11 +71,11 @@ class EmailController @Inject()(
         Logger.warn(s"[EmailController][form] -  emailStatus cache none ${user.internalId}")
         Future.successful(Redirect(createForm(journey)))
       } { cachedEmailStatus =>
-        if (cachedEmailStatus.isVerified) {
+        if (cachedEmailStatus.isVerified)
           cdsFrontendDataCache.saveEmail(cachedEmailStatus.email) map { _ =>
             Redirect(CheckYourEmailController.emailConfirmed(journey))
           }
-        } else checkWithEmailService(cachedEmailStatus, journey)
+        else checkWithEmailService(cachedEmailStatus, journey)
       }
     }
 
@@ -82,19 +83,19 @@ class EmailController @Inject()(
     ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
       userGroupIdSubscriptionStatusCheckService.checksToProceed(GroupId(user.groupId), InternalId(user.internalId)) {
         continue(journey)
-      } { groupIsEnrolled(journey) } {
+      }(groupIsEnrolled(journey)) {
         userIsInProcess(journey)
-      } { otherUserWithinGroupIsInProcess(journey) }
+      }(otherUserWithinGroupIsInProcess(journey))
 
     }
 
-  private def checkWithEmailService(emailStatus: EmailStatus, journey: Journey.Value)(
-    implicit request: Request[AnyContent],
+  private def checkWithEmailService(emailStatus: EmailStatus, journey: Journey.Value)(implicit
+    request: Request[AnyContent],
     hc: HeaderCarrier,
     userWithEnrolments: LoggedInUserWithEnrolments
   ): Future[Result] =
     emailVerificationService.isEmailVerified(emailStatus.email).flatMap {
-      case Some(true) => {
+      case Some(true) =>
         for {
           _ <- {
             Logger.warn("updated verified email status true to save4later")
@@ -105,14 +106,12 @@ class EmailController @Inject()(
             cdsFrontendDataCache.saveEmail(emailStatus.email)
           }
         } yield Redirect(CheckYourEmailController.emailConfirmed(journey))
-      }
-      case Some(false) => {
+      case Some(false) =>
         Logger.warn("verified email address false")
         Future.successful(Redirect(CheckYourEmailController.verifyEmailView(journey)))
-      }
-      case _ => {
+      case _ =>
         Logger.error("Couldn't verify email address")
         Future.successful(Redirect(CheckYourEmailController.verifyEmailView(journey)))
-      }
     }
+
 }

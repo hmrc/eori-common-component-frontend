@@ -23,14 +23,15 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.Subscription
 
 @Singleton
 class RequestSessionData {
+
   def uriBeforeSubscriptionFlow(implicit request: Request[AnyContent]): Option[String] =
     request.session.data.get(RequestSessionDataKeys.uriBeforeSubscriptionFlow)
 
-  def storeUserSubscriptionFlow(subscriptionFlow: SubscriptionFlow, uriBeforeSubscriptionFlow: String)(
-    implicit request: Request[AnyContent]
+  def storeUserSubscriptionFlow(subscriptionFlow: SubscriptionFlow, uriBeforeSubscriptionFlow: String)(implicit
+    request: Request[AnyContent]
   ): Session =
     request.session + (RequestSessionDataKeys.subscriptionFlow -> subscriptionFlow.name) +
-      (RequestSessionDataKeys.uriBeforeSubscriptionFlow -> uriBeforeSubscriptionFlow)
+      (RequestSessionDataKeys.uriBeforeSubscriptionFlow        -> uriBeforeSubscriptionFlow)
 
   def userSubscriptionFlow(implicit request: Request[AnyContent]): SubscriptionFlow =
     request.session.data.get(RequestSessionDataKeys.subscriptionFlow) match {
@@ -77,8 +78,8 @@ class RequestSessionData {
   def sessionWithUserLocationAdded(userLocation: String)(implicit request: Request[AnyContent]): Session =
     request.session + (RequestSessionDataKeys.selectedUserLocation -> userLocation)
 
-  def existingSessionWithUserLocationAdded(existingSession: Session, userLocation: String)(
-    implicit request: Request[AnyContent]
+  def existingSessionWithUserLocationAdded(existingSession: Session, userLocation: String)(implicit
+    request: Request[AnyContent]
   ): Session =
     existingSession + (RequestSessionDataKeys.selectedUserLocation -> userLocation)
 
@@ -92,12 +93,13 @@ class RequestSessionData {
   def isCompany(implicit request: Request[AnyContent]) = userSelectedOrganisationType.fold(false) { oType =>
     oType == CdsOrganisationType.Company
   }
+
 }
 
 object RequestSessionDataKeys {
-  val selectedOrganisationType = "selected-organisation-type"
-  val selectedUserLocation = "selected-user-location"
-  val subscriptionFlow = "subscription-flow"
+  val selectedOrganisationType  = "selected-organisation-type"
+  val selectedUserLocation      = "selected-user-location"
+  val subscriptionFlow          = "subscription-flow"
   val uriBeforeSubscriptionFlow = "uri-before-subscription-flow"
-  val unmatchedUser = "unmatched-user"
+  val unmatchedUser             = "unmatched-user"
 }

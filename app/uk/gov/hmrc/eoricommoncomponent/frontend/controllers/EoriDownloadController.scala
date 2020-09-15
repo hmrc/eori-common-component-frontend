@@ -29,7 +29,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.eori_num
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EoriDownloadController @Inject()(
+class EoriDownloadController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   cdsFrontendDataCache: SessionCache,
@@ -56,4 +56,5 @@ class EoriDownloadController @Inject()(
         case Left(errorTemplate) => Future.successful(errorTemplate)
       }
   }
+
 }

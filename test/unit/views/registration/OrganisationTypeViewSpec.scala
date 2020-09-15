@@ -42,11 +42,11 @@ import scala.concurrent.Future
 
 class OrganisationTypeViewSpec extends ControllerSpec with MockitoSugar with BeforeAndAfterEach with BeforeAndAfter {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockRequestSessionData = mock[RequestSessionData]
-  private val mockSubscriptionFlowManager = mock[SubscriptionFlowManager]
+  private val mockAuthConnector              = mock[AuthConnector]
+  private val mockRequestSessionData         = mock[RequestSessionData]
+  private val mockSubscriptionFlowManager    = mock[SubscriptionFlowManager]
   private val mockRegistrationDetailsService = mock[RegistrationDetailsService]
-  private val organisationTypeView = app.injector.instanceOf[organisation_type]
+  private val organisationTypeView           = app.injector.instanceOf[organisation_type]
 
   private val organisationTypeController = new OrganisationTypeController(
     app,
@@ -82,8 +82,8 @@ class OrganisationTypeViewSpec extends ControllerSpec with MockitoSugar with Bef
       Table("userLocation", Some(UserLocation.Uk), Some(UserLocation.Eu), Some(UserLocation.ThirdCountry))
 
     forAll(userLocations) { userLocation =>
-      val forUk = userLocation.fold(true)(_ == UserLocation.Uk)
-      val forEu = userLocation.fold(true)(_ == UserLocation.Eu)
+      val forUk           = userLocation.fold(true)(_ == UserLocation.Uk)
+      val forEu           = userLocation.fold(true)(_ == UserLocation.Eu)
       val forThirdCountry = userLocation.fold(true)(_ == UserLocation.ThirdCountry)
 
       s"have all the required input fields while on main screen for user location ${userLocation.getOrElse("None")}" in {
@@ -126,4 +126,5 @@ class OrganisationTypeViewSpec extends ControllerSpec with MockitoSugar with Bef
     }.getOrElse(SessionBuilder.buildRequestWithSession(userId))
     test(organisationTypeController.form(Journey.Register).apply(request))
   }
+
 }

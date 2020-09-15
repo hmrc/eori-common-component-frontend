@@ -47,7 +47,7 @@ class ReturnUserControllerSpec extends ControllerSpec {
 
   }
 
-  private def show()(test: Future[Result] => Any) = {
+  private def show()(test: Future[Result] => Any) =
     await(test(controller.show().apply(SessionBuilder.buildRequestWithSessionNoUser)))
-  }
+
 }

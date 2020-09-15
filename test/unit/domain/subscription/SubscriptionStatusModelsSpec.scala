@@ -27,11 +27,11 @@ class SubscriptionStatusModelsSpec extends UnitSpec {
 
   private val regime = "CDS"
   private val idType = "SAFE"
-  private val id = "XE0000000086619"
+  private val id     = "XE0000000086619"
 
-  private val status = "OK"
+  private val status             = "OK"
   private val subscriptionStatus = "00"
-  private val idValue = Some("IDVALUE")
+  private val idValue            = Some("IDVALUE")
 
   private val expectedJsonWithoutIdValue = Json.parse("""{
       |  "request": {
@@ -63,12 +63,14 @@ class SubscriptionStatusModelsSpec extends UnitSpec {
       |}""".stripMargin)
 
   private val subscriptionStatusRequest = SubscriptionStatusQueryParams(receiptDate, regime, idType, id)
+
   private val subscriptionResponseWithoutIdValue = SubscriptionStatusResponseHolder(
     SubscriptionStatusResponse(
       SubscriptionStatusResponseCommon(status, receiptDate),
       SubscriptionStatusResponseDetail(subscriptionStatus, None)
     )
   )
+
   private val subscriptionResponseWithIdValue = SubscriptionStatusResponseHolder(
     SubscriptionStatusResponse(
       SubscriptionStatusResponseCommon(status, receiptDate),
@@ -78,11 +80,15 @@ class SubscriptionStatusModelsSpec extends UnitSpec {
 
   "SubscriptionStatusModel" should {
     "return a valid json representation request response without idValue" in {
-      Json.toJson(RequestResponse(subscriptionStatusRequest.jsObject(), subscriptionResponseWithoutIdValue.jsObject())) shouldBe expectedJsonWithoutIdValue
+      Json.toJson(
+        RequestResponse(subscriptionStatusRequest.jsObject(), subscriptionResponseWithoutIdValue.jsObject())
+      ) shouldBe expectedJsonWithoutIdValue
     }
 
     "return a valid json representation request response with idValue" in {
-      Json.toJson(RequestResponse(subscriptionStatusRequest.jsObject(), subscriptionResponseWithIdValue.jsObject())) shouldBe expectedJsonWithIdValue
+      Json.toJson(
+        RequestResponse(subscriptionStatusRequest.jsObject(), subscriptionResponseWithIdValue.jsObject())
+      ) shouldBe expectedJsonWithIdValue
     }
 
   }

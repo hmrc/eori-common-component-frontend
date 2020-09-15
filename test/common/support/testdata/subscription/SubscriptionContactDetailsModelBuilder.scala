@@ -41,4 +41,5 @@ object SubscriptionContactDetailsModelBuilder {
     postcode = Some("SE28 1AA"),
     countryCode = Some("FR")
   )
+
 }

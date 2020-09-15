@@ -29,4 +29,5 @@ object DateConverter {
         CdsLogger.warn(s"Could not parse the LocalDate '$dateStr': ${e.getMessage}", e)
         Failure(e)
     }.toOption
+
 }

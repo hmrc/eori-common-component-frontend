@@ -43,4 +43,5 @@ object RegisterWithEoriAndIdMessagingService {
 
   def verifyRegisterWithEoriAndIdNotCalled(): Unit =
     verify(0, postRequestedFor(RegistrationWithEoriAndIdPath))
+
 }

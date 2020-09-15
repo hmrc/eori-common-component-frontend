@@ -19,7 +19,6 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.models
 import play.api.mvc.{PathBindable, QueryStringBindable}
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.Constants
 
-
 sealed trait Service {
   val name: String
   val enrolmentKey: String
@@ -27,8 +26,9 @@ sealed trait Service {
 }
 
 object Service {
+
   case object ATaR extends Service {
-    override val name: String = "atar"
+    override val name: String         = "atar"
     override val enrolmentKey: String = "HMRC-ATAR-ORG"
   }
 
@@ -41,11 +41,11 @@ object Service {
 
     override def bind(key: String, value: String): Either[String, Service] =
       for {
-        name <- stringBinder.bind(key, value).right
+        name    <- stringBinder.bind(key, value).right
         service <- Service.withName(name).toRight(Constants.INVALID_PATH_PARAM).right
       } yield service
 
-
     override def unbind(key: String, value: Service): String = stringBinder.unbind(key, value.name)
   }
+
 }

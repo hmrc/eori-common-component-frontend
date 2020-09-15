@@ -35,7 +35,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionBusinessService,
+  SubscriptionDetailsService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
@@ -48,11 +51,11 @@ import scala.concurrent.Future
 
 class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAfter {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockSubscriptionBusinessService = mock[SubscriptionBusinessService]
-  private val mockSubscriptionFlowManager = mock[SubscriptionFlowManager]
+  private val mockAuthConnector                    = mock[AuthConnector]
+  private val mockSubscriptionBusinessService      = mock[SubscriptionBusinessService]
+  private val mockSubscriptionFlowManager          = mock[SubscriptionFlowManager]
   private val mockSubscriptionDetailsHolderService = mock[SubscriptionDetailsService]
-  private val mockRequestSessionData = mock[RequestSessionData]
+  private val mockRequestSessionData               = mock[RequestSessionData]
 
   private val howCanWeIdentifyYouView = app.injector.instanceOf[how_can_we_identify_you]
 
@@ -90,7 +93,9 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
       submitForm(Map.empty) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath) shouldBe "Tell us how we can identify you"
+        page.getElementsText(
+          SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "Tell us how we can identify you"
       }
     }
 
@@ -98,8 +103,12 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
       submitForm(Map("nino" -> "TOOSHORT", "utr" -> "12345678901", "ninoOrUtrRadio" -> "nino")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath) shouldBe "The National Insurance number must be 9 characters"
-        page.getElementsText(SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorNino) shouldBe "The National Insurance number must be 9 characters"
+        page.getElementsText(
+          SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "The National Insurance number must be 9 characters"
+        page.getElementsText(
+          SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorNino
+        ) shouldBe "The National Insurance number must be 9 characters"
         page.getElementsText(SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorUtr) shouldBe empty
       }
     }
@@ -108,8 +117,12 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
       submitForm(Map("nino" -> "TOOSHORT", "utr" -> "12345678901", "ninoOrUtrRadio" -> "utr")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath) shouldBe "The UTR number must be 10 numbers"
-        page.getElementsText(SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorUtr) shouldBe "The UTR number must be 10 numbers"
+        page.getElementsText(
+          SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "The UTR number must be 10 numbers"
+        page.getElementsText(
+          SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorUtr
+        ) shouldBe "The UTR number must be 10 numbers"
         page.getElementsText(SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorNino) shouldBe empty
       }
     }
@@ -118,7 +131,9 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
       submitForm(Map("nino" -> "TOOSHORT", "utr" -> "12345678901", "ninoOrUtrRadio" -> "")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath) shouldBe "Tell us how we can identify you"
+        page.getElementsText(
+          SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "Tell us how we can identify you"
         page.getElementsText(SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorUtr) shouldBe empty
         page.getElementsText(SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorNino) shouldBe empty
       }
@@ -128,8 +143,12 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
       submitForm(Map("nino" -> "TOOSHORT", "ninoOrUtrRadio" -> "nino")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath) shouldBe "The National Insurance number must be 9 characters"
-        page.getElementsText(SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorNino) shouldBe "The National Insurance number must be 9 characters"
+        page.getElementsText(
+          SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "The National Insurance number must be 9 characters"
+        page.getElementsText(
+          SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorNino
+        ) shouldBe "The National Insurance number must be 9 characters"
       }
     }
 
@@ -137,8 +156,12 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
       submitForm(Map("nino" -> "123456789", "ninoOrUtrRadio" -> "nino")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath) shouldBe "Enter a National Insurance number in the right format"
-        page.getElementsText(SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorNino) shouldBe "Enter a National Insurance number in the right format"
+        page.getElementsText(
+          SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "Enter a National Insurance number in the right format"
+        page.getElementsText(
+          SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorNino
+        ) shouldBe "Enter a National Insurance number in the right format"
       }
     }
 
@@ -146,7 +169,9 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
       submitForm(Map("utr" -> "ABCDE12345", "ninoOrUtrRadio" -> "utr")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath) shouldBe "Enter a valid UTR number"
+        page.getElementsText(
+          SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "Enter a valid UTR number"
         page.getElementsText(SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorUtr) shouldBe "Enter a valid UTR number"
       }
     }
@@ -264,4 +289,5 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
       controller.reviewForm(Journey.Subscribe).apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }
+
 }

@@ -53,16 +53,18 @@ class DateOfEstablishmentControllerSpec
     with SubscriptionFlowReviewModeTestSupport {
 
   protected override val formId: String = SubscriptionDateOfBirthPage.formId
+
   protected override val submitInCreateModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController
       .submit(isInReviewMode = false, Journey.Register)
       .url
+
   protected override val submitInReviewModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController
       .submit(isInReviewMode = true, Journey.Register)
       .url
 
-  private val mockOrgTypeLookup = mock[OrgTypeLookup]
+  private val mockOrgTypeLookup      = mock[OrgTypeLookup]
   private val mockRequestSessionData = mock[RequestSessionData]
 
   private val dateOfEstablishmentView = app.injector.instanceOf[date_of_establishment]
@@ -80,21 +82,21 @@ class DateOfEstablishmentControllerSpec
   )
 
   private val DateOfEstablishmentString = "1962-05-12"
-  private val DateOfEstablishment = LocalDate.parse(DateOfEstablishmentString)
+  private val DateOfEstablishment       = LocalDate.parse(DateOfEstablishmentString)
 
   private val ValidRequest = Map(
-    "date-of-establishment.day" -> DateOfEstablishment.dayOfMonth.getAsString,
+    "date-of-establishment.day"   -> DateOfEstablishment.dayOfMonth.getAsString,
     "date-of-establishment.month" -> DateOfEstablishment.monthOfYear.getAsString,
-    "date-of-establishment.year" -> DateOfEstablishment.year.getAsString
+    "date-of-establishment.year"  -> DateOfEstablishment.year.getAsString
   )
 
   val existingSubscriptionDetailsHolder = SubscriptionDetails()
 
   private val DateOfEstablishmentMissingPageLevelError = "Enter your date of establishment"
   private val DateOfEstablishmentInvalidPageLevelError = DateOfEstablishmentMissingPageLevelError
-  private val DateOfEstablishmentMissingError = "Enter your date of establishment"
-  private val DateOfEstablishmentInvalidError = "Please enter a valid date of establishment"
-  private val DateOfEstablishmentInFutureError = "You cannot enter a date of establishment in the future"
+  private val DateOfEstablishmentMissingError          = "Enter your date of establishment"
+  private val DateOfEstablishmentInvalidError          = "Please enter a valid date of establishment"
+  private val DateOfEstablishmentInFutureError         = "You cannot enter a date of establishment in the future"
 
   override protected def beforeEach(): Unit = {
     reset(mockSubscriptionFlowManager, mockSubscriptionBusinessService, mockSubscriptionDetailsHolderService)
@@ -158,9 +160,15 @@ class DateOfEstablishmentControllerSpec
     "have all the required input fields with data if cached previously" in {
       showCreateForm(cachedDate = Some(DateOfEstablishment)) { result =>
         val page = CdsPage(bodyOf(result))
-        page.getElementValue(SubscriptionDateOfEstablishmentPage.dayOfDateFieldXpath) shouldBe DateOfEstablishment.dayOfMonth.getAsString
-        page.getElementValue(SubscriptionDateOfEstablishmentPage.monthOfDateFieldXpath) shouldBe DateOfEstablishment.monthOfYear.getAsString
-        page.getElementValue(SubscriptionDateOfEstablishmentPage.yearOfDateFieldXpath) shouldBe DateOfEstablishment.year.getAsString
+        page.getElementValue(
+          SubscriptionDateOfEstablishmentPage.dayOfDateFieldXpath
+        ) shouldBe DateOfEstablishment.dayOfMonth.getAsString
+        page.getElementValue(
+          SubscriptionDateOfEstablishmentPage.monthOfDateFieldXpath
+        ) shouldBe DateOfEstablishment.monthOfYear.getAsString
+        page.getElementValue(
+          SubscriptionDateOfEstablishmentPage.yearOfDateFieldXpath
+        ) shouldBe DateOfEstablishment.year.getAsString
       }
     }
 
@@ -169,7 +177,9 @@ class DateOfEstablishmentControllerSpec
       showCreateForm(cachedDate = Some(DateOfEstablishment)) { result =>
         val page = CdsPage(bodyOf(result))
         page.title should startWith("When was the partnership established?")
-        page.getElementsText(SubscriptionPartnershipDateOfEstablishmentPage.dateOfEstablishmentHeadingXPath) shouldBe "When was the partnership established?"
+        page.getElementsText(
+          SubscriptionPartnershipDateOfEstablishmentPage.dateOfEstablishmentHeadingXPath
+        ) shouldBe "When was the partnership established?"
       }
     }
 
@@ -178,7 +188,9 @@ class DateOfEstablishmentControllerSpec
       showCreateForm(cachedDate = Some(DateOfEstablishment)) { result =>
         val page = CdsPage(bodyOf(result))
         page.title should startWith("When was the partnership established?")
-        page.getElementsText(SubscriptionDateOfEstablishmentPage.dateOfEstablishmentHeadingXPath) shouldBe "When was the partnership established?"
+        page.getElementsText(
+          SubscriptionDateOfEstablishmentPage.dateOfEstablishmentHeadingXPath
+        ) shouldBe "When was the partnership established?"
       }
     }
 
@@ -188,7 +200,9 @@ class DateOfEstablishmentControllerSpec
       showCreateForm(cachedDate = Some(DateOfEstablishment)) { result =>
         val page = CdsPage(bodyOf(result))
         page.title should startWith("When was the organisation established?")
-        page.getElementsText(SubscriptionDateOfEstablishmentPage.dateOfEstablishmentHeadingXPath) shouldBe "When was the organisation established?"
+        page.getElementsText(
+          SubscriptionDateOfEstablishmentPage.dateOfEstablishmentHeadingXPath
+        ) shouldBe "When was the organisation established?"
       }
     }
 
@@ -200,7 +214,9 @@ class DateOfEstablishmentControllerSpec
           "Enter the date shown on the organisation's certificate of incorporation. You can find the date your organisation was established on the Companies House register (opens in a new window or tab)"
         )
         page.title should startWith("When was the organisation established?")
-        page.getElementsText(SubscriptionDateOfEstablishmentPage.dateOfEstablishmentHeadingXPath) shouldBe "When was the organisation established?"
+        page.getElementsText(
+          SubscriptionDateOfEstablishmentPage.dateOfEstablishmentHeadingXPath
+        ) shouldBe "When was the organisation established?"
       }
     }
   }
@@ -230,9 +246,15 @@ class DateOfEstablishmentControllerSpec
     "display relevant data in form fields when subscription details exist in the cache" in {
       showReviewForm() { result =>
         val page = CdsPage(bodyOf(result))
-        page.getElementValue(SubscriptionDateOfEstablishmentPage.dayOfDateFieldXpath) shouldBe DateOfEstablishment.dayOfMonth.getAsString
-        page.getElementValue(SubscriptionDateOfEstablishmentPage.monthOfDateFieldXpath) shouldBe DateOfEstablishment.monthOfYear.getAsString
-        page.getElementValue(SubscriptionDateOfEstablishmentPage.yearOfDateFieldXpath) shouldBe DateOfEstablishment.year.getAsString
+        page.getElementValue(
+          SubscriptionDateOfEstablishmentPage.dayOfDateFieldXpath
+        ) shouldBe DateOfEstablishment.dayOfMonth.getAsString
+        page.getElementValue(
+          SubscriptionDateOfEstablishmentPage.monthOfDateFieldXpath
+        ) shouldBe DateOfEstablishment.monthOfYear.getAsString
+        page.getElementValue(
+          SubscriptionDateOfEstablishmentPage.yearOfDateFieldXpath
+        ) shouldBe DateOfEstablishment.year.getAsString
       }
     }
 
@@ -251,12 +273,16 @@ class DateOfEstablishmentControllerSpec
       "be mandatory" in {
         submitFormFunction(
           ValidRequest + ("date-of-establishment.day" -> "", "date-of-establishment.month" -> "",
-          "date-of-establishment.year" -> "")
+          "date-of-establishment.year"                -> "")
         ) { result =>
           status(result) shouldBe BAD_REQUEST
           val page = CdsPage(bodyOf(result))
-          page.getElementsText(SubscriptionDateOfEstablishmentPage.pageLevelErrorSummaryListXPath) shouldBe DateOfEstablishmentMissingPageLevelError
-          page.getElementsText(SubscriptionDateOfEstablishmentPage.dateOfEstablishmentErrorXpath) shouldBe DateOfEstablishmentMissingError
+          page.getElementsText(
+            SubscriptionDateOfEstablishmentPage.pageLevelErrorSummaryListXPath
+          ) shouldBe DateOfEstablishmentMissingPageLevelError
+          page.getElementsText(
+            SubscriptionDateOfEstablishmentPage.dateOfEstablishmentErrorXpath
+          ) shouldBe DateOfEstablishmentMissingError
         }
       }
 
@@ -264,8 +290,12 @@ class DateOfEstablishmentControllerSpec
         submitFormFunction(ValidRequest + ("date-of-establishment.day" -> "32")) { result =>
           status(result) shouldBe BAD_REQUEST
           val page = CdsPage(bodyOf(result))
-          page.getElementsText(SubscriptionDateOfEstablishmentPage.pageLevelErrorSummaryListXPath) shouldBe DateOfEstablishmentInvalidError
-          page.getElementsText(SubscriptionDateOfEstablishmentPage.dateOfEstablishmentErrorXpath) shouldBe DateOfEstablishmentInvalidError
+          page.getElementsText(
+            SubscriptionDateOfEstablishmentPage.pageLevelErrorSummaryListXPath
+          ) shouldBe DateOfEstablishmentInvalidError
+          page.getElementsText(
+            SubscriptionDateOfEstablishmentPage.dateOfEstablishmentErrorXpath
+          ) shouldBe DateOfEstablishmentInvalidError
         }
       }
 
@@ -273,13 +303,17 @@ class DateOfEstablishmentControllerSpec
         val tomorrow = LocalDate.now().plusDays(1)
         submitFormFunction(
           ValidRequest + ("date-of-establishment.day" -> tomorrow.getDayOfMonth.toString,
-          "date-of-establishment.month" -> tomorrow.getMonthOfYear.toString,
-          "date-of-establishment.year" -> tomorrow.getYear.toString)
+          "date-of-establishment.month"               -> tomorrow.getMonthOfYear.toString,
+          "date-of-establishment.year"                -> tomorrow.getYear.toString)
         ) { result =>
           status(result) shouldBe BAD_REQUEST
           val page = CdsPage(bodyOf(result))
-          page.getElementsText(SubscriptionDateOfEstablishmentPage.pageLevelErrorSummaryListXPath) shouldBe DateOfEstablishmentInFutureError
-          page.getElementsText(SubscriptionDateOfEstablishmentPage.dateOfEstablishmentErrorXpath) shouldBe DateOfEstablishmentInFutureError
+          page.getElementsText(
+            SubscriptionDateOfEstablishmentPage.pageLevelErrorSummaryListXPath
+          ) shouldBe DateOfEstablishmentInFutureError
+          page.getElementsText(
+            SubscriptionDateOfEstablishmentPage.dateOfEstablishmentErrorXpath
+          ) shouldBe DateOfEstablishmentInFutureError
         }
       }
     }
@@ -375,4 +409,5 @@ class DateOfEstablishmentControllerSpec
       .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }
+
 }

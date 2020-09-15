@@ -40,4 +40,5 @@ class ContactDetailsAdaptor {
       useAddressFromRegistrationDetails = view.useAddressFromRegistrationDetails
     )
   }
+
 }

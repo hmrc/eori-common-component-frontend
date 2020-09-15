@@ -22,7 +22,10 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.mvc.Http.Status._
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SubscriptionServiceConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{SubscriptionRequest, SubscriptionResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
+  SubscriptionRequest,
+  SubscriptionResponse
+}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream4xxResponse, Upstream5xxResponse}
 import util.externalservices.ExternalServicesConfig.{etmpFormBundleId, Host, Port}
 import util.externalservices.{AuditService, SubscriptionService}
@@ -32,12 +35,12 @@ class SubscriptionServiceConnectorSpec extends IntegrationTestsSpec with ScalaFu
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
       Map(
-        "microservice.services.eori-common-component-hods-proxy.host" -> Host,
-        "microservice.services.eori-common-component-hods-proxy.port" -> Port,
+        "microservice.services.eori-common-component-hods-proxy.host"              -> Host,
+        "microservice.services.eori-common-component-hods-proxy.port"              -> Port,
         "microservice.services.eori-common-component-hods-proxy.subscribe.context" -> "subscribe",
-        "auditing.enabled" -> true,
-        "auditing.consumer.baseUri.host" -> Host,
-        "auditing.consumer.baseUri.port" -> Port
+        "auditing.enabled"                                                         -> true,
+        "auditing.consumer.baseUri.host"                                           -> Host,
+        "auditing.consumer.baseUri.port"                                           -> Port
       )
     )
     .build()

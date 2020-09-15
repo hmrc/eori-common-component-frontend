@@ -23,7 +23,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SubscriptionVatEUDetailsService @Inject()(
+class SubscriptionVatEUDetailsService @Inject() (
   subscriptionBusinessService: SubscriptionBusinessService,
   subscriptionDetailsService: SubscriptionDetailsService
 )(implicit ec: ExecutionContext) {
@@ -42,8 +42,8 @@ class SubscriptionVatEUDetailsService @Inject()(
       subscriptionDetailsService.saveSubscriptionDetails(_ => holder.copy(vatEUDetails = vatEUDetailsParam))
     }
 
-  def updateVatEuDetailsModel(oldVatEUDetail: VatEUDetailsModel, newVatEUDetail: VatEUDetailsModel)(
-    implicit hc: HeaderCarrier
+  def updateVatEuDetailsModel(oldVatEUDetail: VatEUDetailsModel, newVatEUDetail: VatEUDetailsModel)(implicit
+    hc: HeaderCarrier
   ): Future[Seq[VatEUDetailsModel]] =
     cachedEUVatDetails map { cachedDetails =>
       val oldDetailsIndex = cachedDetails.indexOf(oldVatEUDetail)
@@ -59,4 +59,5 @@ class SubscriptionVatEUDetailsService @Inject()(
 
   def removeSingleEuVatDetails(singleVatDetail: VatEUDetailsModel)(implicit hc: HeaderCarrier): Future[Unit] =
     cachedEUVatDetails.map(vatDetails => saveOrUpdate(vatDetails.filterNot(_ == singleVatDetail)))
+
 }

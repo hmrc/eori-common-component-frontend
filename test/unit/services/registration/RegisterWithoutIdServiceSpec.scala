@@ -42,47 +42,56 @@ import scala.concurrent.Future
 
 class RegisterWithoutIdServiceSpec
     extends UnitSpec with ScalaFutures with MockitoSugar with BeforeAndAfterAll with BeforeAndAfterEach {
-  private val mockConnector = mock[RegisterWithoutIdConnector]
-  private val mockReqCommonGen = mock[RequestCommonGenerator]
-  private val mockDetailsCreator = mock[RegistrationDetailsCreator]
-  private val mockRequestCommon = mock[RequestCommon]
-  private val mockSessionCache = mock[SessionCache]
+  private val mockConnector          = mock[RegisterWithoutIdConnector]
+  private val mockReqCommonGen       = mock[RequestCommonGenerator]
+  private val mockDetailsCreator     = mock[RegistrationDetailsCreator]
+  private val mockRequestCommon      = mock[RequestCommon]
+  private val mockSessionCache       = mock[SessionCache]
   private val mockRequestSessionData = mock[RequestSessionData]
-  private val mockSub02Controller = mock[Sub02Controller]
-  private val mockOrgTypeLookup = mock[OrgTypeLookup]
+  private val mockSub02Controller    = mock[Sub02Controller]
+  private val mockOrgTypeLookup      = mock[OrgTypeLookup]
 
-  implicit val hc: HeaderCarrier = mock[HeaderCarrier]
+  implicit val hc: HeaderCarrier       = mock[HeaderCarrier]
   implicit val rq: Request[AnyContent] = mock[Request[AnyContent]]
 
-  private val loggedInUserId = java.util.UUID.randomUUID.toString
+  private val loggedInUserId   = java.util.UUID.randomUUID.toString
   private val mockLoggedInUser = mock[LoggedInUserWithEnrolments]
 
   val Failure = new RuntimeException("something bad has happened")
 
-  val service = new RegisterWithoutIdService(mockConnector, mockReqCommonGen, mockDetailsCreator, mockSessionCache)(global)
+  val service = new RegisterWithoutIdService(mockConnector, mockReqCommonGen, mockDetailsCreator, mockSessionCache)(
+    global
+  )
 
   private val dateOfBirth = {
-    val year = 1980
+    val year        = 1980
     val monthOfYear = 3
-    val dayOfMonth = 31
+    val dayOfMonth  = 31
     new LocalDate(year, monthOfYear, dayOfMonth)
   }
 
   private val individualNameAndDateOfBirth =
     IndividualNameAndDateOfBirth("indName", Some("indMidName"), "indLastName", dateOfBirth)
+
   private val orgName = "orgName"
+
   private val organisationAddress =
     SixLineAddressMatchModel("add1", Some("add2"), "add3", Some("add4"), Some("postcode"), "COUNTRY")
+
   private val organisationAddressWithEmptyPostcode =
     SixLineAddressMatchModel("add1", Some("add2"), "add3", Some("add4"), None, "COUNTRY")
+
   private val address = Address("add1", Some("add2"), Some("add3"), Some("add4"), Some("postcode"), "country")
+
   private val contactDetails = Some(
     ContactDetailsModel("John Doe", "john@example.com", "441234987654", None, true, None, None, None, None)
   )
+
   private val addressWithEmptyPostcode = Address("add1", Some("add2"), Some("add3"), Some("add4"), Some(""), "country")
 
-  private val SAFEID = java.util.UUID.randomUUID.toString
+  private val SAFEID    = java.util.UUID.randomUUID.toString
   private val sapNumber = "sapNumber-123"
+
   private val registrationResponse = RegisterWithoutIdResponseHolder(
     RegisterWithoutIDResponse(
       ResponseCommon(
@@ -109,7 +118,7 @@ class RegisterWithoutIdServiceSpec
     )
 
   private val mockDetailsOrganisation = mock[RegistrationDetailsOrganisation]
-  private val mockDetailsIndividual = mock[RegistrationDetailsIndividual]
+  private val mockDetailsIndividual   = mock[RegistrationDetailsIndividual]
 
   override protected def beforeAll(): Unit = {
     when(mockLoggedInUser.userId()).thenReturn(loggedInUserId)
@@ -337,9 +346,9 @@ class RegisterWithoutIdServiceSpec
 
       mockIndividualRegistrationSuccess()
 
-      await(service.registerIndividual(individualNameAndDateOfBirth, address, contactDetails, mockLoggedInUser)) should be(
-        registrationResponse.registerWithoutIDResponse
-      )
+      await(
+        service.registerIndividual(individualNameAndDateOfBirth, address, contactDetails, mockLoggedInUser)
+      ) should be(registrationResponse.registerWithoutIDResponse)
 
       verify(mockSessionCache).saveRegistrationDetails(ArgumentMatchers.eq(mockDetailsIndividual))(
         ArgumentMatchers.eq(hc)

@@ -24,7 +24,7 @@ import scala.concurrent.duration.{Duration, MINUTES}
 import scala.util.matching.Regex
 
 @Singleton
-class AppConfig @Inject()(
+class AppConfig @Inject() (
   config: Configuration,
   servicesConfig: ServicesConfig,
   runMode: RunMode,
@@ -33,9 +33,10 @@ class AppConfig @Inject()(
 
   lazy val env: String = runMode.env
 
-  lazy val messageFiles: Seq[String] =  config.get[Seq[String]]("messages.file.names")
+  lazy val messageFiles: Seq[String] = config.get[Seq[String]]("messages.file.names")
 
   lazy val ttl: Duration = Duration.create(config.get[String]("cds-frontend-cache.ttl"))
+
   lazy val allowlistReferrers: Seq[String] =
     config.get[String]("allowlist-referrers").split(',').map(_.trim).filter(_.nonEmpty)
 
@@ -43,10 +44,11 @@ class AppConfig @Inject()(
 
   private lazy val serviceIdentifierGetAnEori =
     config.get[String]("microservice.services.contact-frontend.serviceIdentifierGetEori")
+
   private lazy val serviceIdentifierGetAccess =
     config.get[String]("microservice.services.contact-frontend.serviceIdentifierGetAccess")
 
-  lazy val feedbackLink = config.get[String]("external-url.feedback-survey")
+  lazy val feedbackLink          = config.get[String]("external-url.feedback-survey")
   lazy val feedbackLinkSubscribe = config.get[String]("external-url.feedback-survey-subscribe")
 
   lazy val externalGetEORILink = config.get[String]("external-url.get-cds-eori")
@@ -56,24 +58,29 @@ class AppConfig @Inject()(
   //get help link feedback for Get an EORI
   val reportAProblemPartialUrlGetAnEori: String =
     s"$contactBaseUrl/contact/problem_reports_ajax?service=$serviceIdentifierGetAnEori"
+
   val reportAProblemNonJSUrlGetAnEori: String =
     s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifierGetAnEori"
 
   //get help link feedback for Get access to CDS
   val reportAProblemPartialUrlGetAccess: String =
     s"$contactBaseUrl/contact/problem_reports_ajax?service=$serviceIdentifierGetAccess"
+
   val reportAProblemNonJSUrlGetAccess: String =
     s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifierGetAccess"
 
   //email verification service
   lazy val emailVerificationBaseUrl: String = servicesConfig.baseUrl("email-verification")
+
   lazy val emailVerificationServiceContext: String =
     config.get[String]("microservice.services.email-verification.context")
+
   lazy val emailVerificationTemplateId: String =
     config.get[String]("microservice.services.email-verification.templateId")
 
   lazy val emailVerificationLinkExpiryDuration: String =
     config.get[String]("microservice.services.email-verification.linkExpiryDuration")
+
   //handle subscription service
   lazy val handleSubscriptionBaseUrl: String = servicesConfig.baseUrl("handle-subscription")
 
@@ -94,7 +101,9 @@ class AppConfig @Inject()(
 
   def getServiceUrl(proxyServiceName: String): String = {
     val baseUrl = servicesConfig.baseUrl("eori-common-component-hods-proxy")
-    val serviceContext = config.get[String](s"microservice.services.eori-common-component-hods-proxy.$proxyServiceName.context")
+    val serviceContext =
+      config.get[String](s"microservice.services.eori-common-component-hods-proxy.$proxyServiceName.context")
     s"$baseUrl/$serviceContext"
   }
+
 }

@@ -30,7 +30,7 @@ case class MDGResponseCommon(
   val ignoredFields = List("returnParameters")
 
   def keyValueMap(): Map[String, String] = {
-    val m = toMap(this, ignoredFields = ignoredFields)
+    val m  = toMap(this, ignoredFields = ignoredFields)
     val rd = convertToMap(returnParameters.map(_.keyValueMap()))
     m ++ rd
   }
@@ -43,17 +43,19 @@ object MDGResponseCommon extends CommonHeader {
 
 case class SubscriptionCreateResponse(responseCommon: MDGResponseCommon, responseDetail: Option[ResponseDetail])
     extends CaseClassAuditHelper {
+
   def keyValueMap(): Map[String, String] = {
-    val m = responseCommon.keyValueMap()
+    val m  = responseCommon.keyValueMap()
     val rd = responseDetail.fold(Map.empty[String, String])(_.toMap())
     m ++ rd
   }
+
 }
 
 object SubscriptionCreateResponse {
-  implicit val jsonFormat = Json.format[SubscriptionCreateResponse]
-  val EoriAlreadyExists = "069 - EORI already exists for the VAT Number"
+  implicit val jsonFormat    = Json.format[SubscriptionCreateResponse]
+  val EoriAlreadyExists      = "069 - EORI already exists for the VAT Number"
   val SubscriptionInProgress = "068 - Subscription already in-progress or active"
-  val EoriAlreadyAssociated = "070 - There is another EORI already associated to this business partner"
-  val RequestNotProcessed = "003 - Request could not be processed"
+  val EoriAlreadyAssociated  = "070 - There is another EORI already associated to this business partner"
+  val RequestNotProcessed    = "003 - Request could not be processed"
 }

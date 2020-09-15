@@ -27,16 +27,18 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.enrolment_pending_aga
 
 import scala.concurrent.ExecutionContext
 
-class EnrolmentPendingAgainstGroupIdController @Inject()(
+class EnrolmentPendingAgainstGroupIdController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   mcc: MessagesControllerComponents,
   sessionCache: SessionCache,
   enrolmentPendingAgainstGroupId: enrolment_pending_against_group_id
-)(implicit ec: ExecutionContext) extends CdsController(mcc) {
+)(implicit ec: ExecutionContext)
+    extends CdsController(mcc) {
 
   def show(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       sessionCache.remove.map(_ => Ok(enrolmentPendingAgainstGroupId(journey)))
   }
+
 }

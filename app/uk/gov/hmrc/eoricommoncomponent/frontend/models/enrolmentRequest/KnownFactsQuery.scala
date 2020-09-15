@@ -18,10 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest
 
 import play.api.libs.json.{Json, OFormat}
 
-case class KnownFactsQuery(
-  service: String,
-  knownFacts: List[KeyValuePair]
-)
+case class KnownFactsQuery(service: String, knownFacts: List[KeyValuePair])
 
 object KnownFactsQuery {
   implicit val format: OFormat[KnownFactsQuery] = Json.format[KnownFactsQuery]
@@ -29,11 +26,7 @@ object KnownFactsQuery {
   def apply(eoriNumber: String): KnownFactsQuery =
     new KnownFactsQuery(
       service = "HMRC-CUS-ORG",
-      knownFacts = List(
-        KeyValuePair(
-          key = "EORINumber",
-          value = eoriNumber
-        )
-      )
+      knownFacts = List(KeyValuePair(key = "EORINumber", value = eoriNumber))
     )
+
 }

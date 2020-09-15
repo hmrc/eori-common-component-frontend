@@ -34,7 +34,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.organisa
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class OrganisationTypeController @Inject()(
+class OrganisationTypeController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   subscriptionFlowManager: SubscriptionFlowManager,
@@ -60,17 +60,18 @@ class OrganisationTypeController @Inject()(
   private def organisationWhatIsYourOrgName(orgType: String, journey: Journey.Value): Call =
     WhatIsYourOrgNameController.showForm(false, orgType, journey)
 
-  private def matchingDestinations(journey: Journey.Value): Map[CdsOrganisationType, Call] = Map[CdsOrganisationType, Call](
-    Company -> nameIdOrganisationMatching(CompanyId, journey),
-    SoleTrader -> individualMatching(SoleTraderId, journey),
-    Individual -> individualMatching(IndividualId, journey),
-    Partnership -> nameIdOrganisationMatching(PartnershipId, journey),
-    LimitedLiabilityPartnership -> nameIdOrganisationMatching(LimitedLiabilityPartnershipId, journey),
-    CharityPublicBodyNotForProfit -> whatIsYourOrgNameMatching(CharityPublicBodyNotForProfitId, journey),
-    ThirdCountryOrganisation -> organisationWhatIsYourOrgName(ThirdCountryOrganisationId, journey),
-    ThirdCountrySoleTrader -> thirdCountryIndividualMatching(ThirdCountrySoleTraderId, journey),
-    ThirdCountryIndividual -> thirdCountryIndividualMatching(ThirdCountryIndividualId, journey)
-  )
+  private def matchingDestinations(journey: Journey.Value): Map[CdsOrganisationType, Call] =
+    Map[CdsOrganisationType, Call](
+      Company                       -> nameIdOrganisationMatching(CompanyId, journey),
+      SoleTrader                    -> individualMatching(SoleTraderId, journey),
+      Individual                    -> individualMatching(IndividualId, journey),
+      Partnership                   -> nameIdOrganisationMatching(PartnershipId, journey),
+      LimitedLiabilityPartnership   -> nameIdOrganisationMatching(LimitedLiabilityPartnershipId, journey),
+      CharityPublicBodyNotForProfit -> whatIsYourOrgNameMatching(CharityPublicBodyNotForProfitId, journey),
+      ThirdCountryOrganisation      -> organisationWhatIsYourOrgName(ThirdCountryOrganisationId, journey),
+      ThirdCountrySoleTrader        -> thirdCountryIndividualMatching(ThirdCountrySoleTraderId, journey),
+      ThirdCountryIndividual        -> thirdCountryIndividualMatching(ThirdCountryIndividualId, journey)
+    )
 
   def form(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
@@ -96,7 +97,7 @@ class OrganisationTypeController @Inject()(
           val userLocation = requestSessionData.selectedUserLocation
           Future.successful(BadRequest(organisationTypeView(formWithErrors, userLocation, journey)))
         },
-        organisationType => {
+        organisationType =>
           journey match {
             case Journey.Subscribe =>
               registrationDetailsService.initialiseCacheWithRegistrationDetails(organisationType) flatMap { ok =>
@@ -113,7 +114,7 @@ class OrganisationTypeController @Inject()(
                 else throw new IllegalStateException(s"Unable to save $organisationType registration in cache")
               }
           }
-        }
       )
   }
+
 }

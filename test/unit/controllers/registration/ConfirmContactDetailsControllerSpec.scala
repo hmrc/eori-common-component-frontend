@@ -42,7 +42,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLoo
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.confirm_contact_details
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{sub01_outcome_processing, sub01_outcome_rejected}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{
+  sub01_outcome_processing,
+  sub01_outcome_rejected
+}
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
@@ -55,21 +58,25 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
-  private val mockAuthConnector = mock[AuthConnector]
+  private val mockAuthConnector              = mock[AuthConnector]
   private val mockRegistrationConfirmService = mock[RegistrationConfirmService]
-  private val mockRequestSessionData = mock[RequestSessionData]
+  private val mockRequestSessionData         = mock[RequestSessionData]
+
   private val mockSubscriptionDetailsReviewController =
     mock[CheckYourDetailsRegisterController]
-  private val mockCdsFrontendDataCache = mock[SessionCache]
-  private val mockSubscriptionFlowManager = mock[SubscriptionFlowManager]
-  private val mockOrgTypeLookup = mock[OrgTypeLookup]
-  private val mockTaxEnrolmentsService = mock[TaxEnrolmentsService]
+
+  private val mockCdsFrontendDataCache      = mock[SessionCache]
+  private val mockSubscriptionFlowManager   = mock[SubscriptionFlowManager]
+  private val mockOrgTypeLookup             = mock[OrgTypeLookup]
+  private val mockTaxEnrolmentsService      = mock[TaxEnrolmentsService]
   private val mockHandleSubscriptionService = mock[HandleSubscriptionService]
 
   private val confirmContactDetailsView =
     app.injector.instanceOf[confirm_contact_details]
+
   private val sub01OutcomeProcessingView =
     app.injector.instanceOf[sub01_outcome_processing]
+
   private val sub01OutcomeRejected =
     app.injector.instanceOf[sub01_outcome_rejected]
 
@@ -88,21 +95,25 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
     sub01OutcomeRejected
   )
 
-  private val mockSubscriptionPage = mock[SubscriptionPage]
+  private val mockSubscriptionPage         = mock[SubscriptionPage]
   private val mockSubscriptionStartSession = mock[Session]
-  private val mockRequestHeader = mock[RequestHeader]
+  private val mockRequestHeader            = mock[RequestHeader]
+
   private val mockFlowStart =
     (mockSubscriptionPage, mockSubscriptionStartSession)
+
   private val mockSub01Outcome = mock[Sub01Outcome]
-  private val mockRegDetails = mock[RegistrationDetails]
+  private val mockRegDetails   = mock[RegistrationDetails]
 
   private val testSessionData =
     Map[String, String]("some_session_key" -> "some_session_value")
+
   private val testSubscriptionStartPageUrl = "some_page_url"
 
   private val emptyError =
     "Tell us if this is the business you want to register"
-  private val yesNoMissingValueError = "This field is required"
+
+  private val yesNoMissingValueError    = "This field is required"
   private val subscriptionDetailsHolder = SubscriptionDetails()
 
   override def beforeEach {
@@ -185,7 +196,9 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
       invokeConfirm() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.OrganisationTypeController
+        result.header.headers(
+          LOCATION
+        ) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.OrganisationTypeController
           .form(Journey.Register)
           .url
         verify(mockCdsFrontendDataCache).remove(any[HeaderCarrier])
@@ -201,7 +214,9 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
       invokeConfirm() { result =>
         val page = CdsPage(bodyOf(result))
-        page.getElementsText("//*[@id='content']/div/div/dl/div[1]/dt") shouldBe "Partnership Self Assessment UTR number"
+        page.getElementsText(
+          "//*[@id='content']/div/div/dl/div[1]/dt"
+        ) shouldBe "Partnership Self Assessment UTR number"
 
         page.getElementsText(ConfirmPage.fullDetailsXpath) shouldBe strim(
           """123UTRNO orgName Line 1 line 2 line 3 SE28 1AA United Kingdom"""
@@ -345,7 +360,9 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       mockNewSubscriptionFromSubscriptionStatus()
       invokeConfirmContactDetailsWithSelectedOption() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ConfirmIndividualTypeController
+        result.header.headers(
+          LOCATION
+        ) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ConfirmIndividualTypeController
           .form(Journey.Register)
           .url
       }
@@ -372,7 +389,9 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
       invokeConfirmContactDetailsWithSelectedOption() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ConfirmIndividualTypeController
+        result.header.headers(
+          LOCATION
+        ) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ConfirmIndividualTypeController
           .form(Journey.Register)
           .url
       }
@@ -417,7 +436,9 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
       invokeConfirmContactDetailsWithSelectedOption() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.SignInWithDifferentDetailsController
+        result.header.headers(
+          LOCATION
+        ) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.SignInWithDifferentDetailsController
           .form(Journey.Register)
           .url
       }
@@ -439,7 +460,9 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
       invokeConfirmContactDetailsWithSelectedOption() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.SubscriptionRecoveryController
+        result.header.headers(
+          LOCATION
+        ) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.SubscriptionRecoveryController
           .complete(Journey.Register)
           .url
       }
@@ -451,7 +474,9 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
         val page = CdsPage(bodyOf(result))
         page.title should startWith(RegistrationRejectedPage.title)
         page.getElementsText(RegistrationRejectedPage.pageHeadingXpath) shouldBe RegistrationRejectedPage.heading
-        page.getElementsText(RegistrationRejectedPage.processedDateXpath) shouldBe "Application received by HMRC on 22 May 2016"
+        page.getElementsText(
+          RegistrationRejectedPage.processedDateXpath
+        ) shouldBe "Application received by HMRC on 22 May 2016"
       }
     }
 
@@ -461,7 +486,9 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
         val page = CdsPage(bodyOf(result))
         page.title should startWith(RegistrationProcessingPage.title)
         page.getElementsText(RegistrationProcessingPage.pageHeadingXpath) shouldBe RegistrationProcessingPage.heading
-        page.getElementsText(RegistrationProcessingPage.processedDateXpath) shouldBe "Application received by HMRC on 22 May 2016"
+        page.getElementsText(
+          RegistrationProcessingPage.processedDateXpath
+        ) shouldBe "Application received by HMRC on 22 May 2016"
       }
     }
   }
@@ -483,7 +510,9 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
       invokeConfirmContactDetailsWithSelectedOption(selectedOption = "no") { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.OrganisationTypeController
+        result.header.headers(
+          LOCATION
+        ) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.OrganisationTypeController
           .form(Journey.Register)
           .url
       }
@@ -530,7 +559,9 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
       invokeConfirmContactDetailsWithSelectedOption(selectedOption = "wrong-address") { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController
+        result.header.headers(
+          LOCATION
+        ) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController
           .createForm(Journey.Register)
           .url
       }
@@ -549,8 +580,12 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       invokeConfirmContactDetailsWithoutOptionSelected() { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(ConfirmPage.pageLevelErrorSummaryListXPath) shouldBe "Tell us if these are the details you want to use"
-        page.getElementsText(ConfirmPage.fieldLevelErrorYesNoWrongAddress) shouldBe "Tell us if these are the details you want to use"
+        page.getElementsText(
+          ConfirmPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "Tell us if these are the details you want to use"
+        page.getElementsText(
+          ConfirmPage.fieldLevelErrorYesNoWrongAddress
+        ) shouldBe "Tell us if these are the details you want to use"
       }
     }
 
@@ -564,8 +599,12 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       invokeConfirmContactDetailsWithoutOptionSelected() { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(ConfirmPage.pageLevelErrorSummaryListXPath) shouldBe "Tell us if these are the details you want to use"
-        page.getElementsText(ConfirmPage.fieldLevelErrorYesNoWrongAddress) shouldBe "Tell us if these are the details you want to use"
+        page.getElementsText(
+          ConfirmPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "Tell us if these are the details you want to use"
+        page.getElementsText(
+          ConfirmPage.fieldLevelErrorYesNoWrongAddress
+        ) shouldBe "Tell us if these are the details you want to use"
       }
     }
 
@@ -580,8 +619,12 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       invokeConfirmContactDetailsWithSelectedOption(selectedOption = invalidOption) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(ConfirmPage.pageLevelErrorSummaryListXPath) shouldBe "Tell us if these are the details you want to use"
-        page.getElementsText(ConfirmPage.fieldLevelErrorYesNoWrongAddress) shouldBe "Tell us if these are the details you want to use"
+        page.getElementsText(
+          ConfirmPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "Tell us if these are the details you want to use"
+        page.getElementsText(
+          ConfirmPage.fieldLevelErrorYesNoWrongAddress
+        ) shouldBe "Tell us if these are the details you want to use"
       }
     }
   }
@@ -669,4 +712,5 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
         .apply(SessionBuilder.buildRequestWithSession(userId))
     )
   }
+
 }

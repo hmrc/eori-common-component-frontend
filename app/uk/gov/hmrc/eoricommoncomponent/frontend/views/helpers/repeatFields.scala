@@ -28,11 +28,12 @@ object repeatFields {
       case complete if complete.size >= min => complete
       case partial                          =>
         // We don't have enough elements, append indexes starting from the largest
-        val start = partial.max + 1
+        val start  = partial.max + 1
         val needed = min - partial.size
         partial ++ (start until (start + needed))
     }
 
     indexes.map(i => fieldRenderer(field1("[" + i + "]"), field2("[" + i + "]")))
   }
+
 }

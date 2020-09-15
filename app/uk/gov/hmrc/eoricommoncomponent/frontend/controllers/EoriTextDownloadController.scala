@@ -20,14 +20,14 @@ import javax.inject.{Inject, Singleton}
 import play.api.Application
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{LoggedInUserWithEnrolments, Sub02Outcome}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.eori_number_text_download
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EoriTextDownloadController @Inject()(
+class EoriTextDownloadController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   cdsFrontendDataCache: SessionCache,
@@ -36,17 +36,16 @@ class EoriTextDownloadController @Inject()(
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def download(): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction(implicit request => { _: LoggedInUserWithEnrolments =>
+  def download(): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+    implicit request => _: LoggedInUserWithEnrolments =>
       for {
         Some(eori) <- cdsFrontendDataCache.sub02Outcome.map(_.eori)
-        name <- cdsFrontendDataCache.sub02Outcome.map(_.fullName.trim)
+        name       <- cdsFrontendDataCache.sub02Outcome.map(_.fullName.trim)
         processedDate <- cdsFrontendDataCache.sub02Outcome
           .map(_.processedDate)
-      } yield {
-        Ok(eoriNumberTextDownloadView(eori, name, processedDate))
-          .as("plain/text")
-          .withHeaders(CONTENT_DISPOSITION -> "attachment; filename=EORI-number.txt")
-      }
-    })
+      } yield Ok(eoriNumberTextDownloadView(eori, name, processedDate))
+        .as("plain/text")
+        .withHeaders(CONTENT_DISPOSITION -> "attachment; filename=EORI-number.txt")
+  }
+
 }

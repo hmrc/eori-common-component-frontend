@@ -31,16 +31,16 @@ trait AuthRedirectSupport extends AuthRedirects with JourneyTypeFromUrl {
   def currentApp: Application
 
   override lazy val config: Configuration = currentApp.configuration
-  override lazy val env: Environment = Environment(currentApp.path, currentApp.classloader, currentApp.mode)
+  override lazy val env: Environment      = Environment(currentApp.path, currentApp.classloader, currentApp.mode)
 
   private def continueUrlKey(implicit request: Request[AnyContent]) = {
     val visitedUkPage: Boolean = request.session.get("visited-uk-page").getOrElse("false").toBoolean
     journeyFromUrl match {
       case Subscribe if visitedUkPage =>
         "external-url.company-auth-frontend.continue-url-subscribe-from-are-you-based-in-uk"
-      case Subscribe     => "external-url.company-auth-frontend.continue-url-subscribe"
-      case Register => "external-url.company-auth-frontend.continue-url"
-      case _           => throw new IllegalArgumentException("No valid journey found in URL: " + request.path)
+      case Subscribe => "external-url.company-auth-frontend.continue-url-subscribe"
+      case Register  => "external-url.company-auth-frontend.continue-url"
+      case _         => throw new IllegalArgumentException("No valid journey found in URL: " + request.path)
     }
   }
 
@@ -49,4 +49,5 @@ trait AuthRedirectSupport extends AuthRedirects with JourneyTypeFromUrl {
   def withAuthRecovery(implicit request: Request[AnyContent]): PartialFunction[Throwable, Result] = {
     case _: NoActiveSession => toGGLogin(continueUrl = getContinueUrl)
   }
+
 }

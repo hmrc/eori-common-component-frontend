@@ -39,12 +39,13 @@ case class RequestDetail(
   val ignoredFields = List("CDSEstablishmentAddress", "contactInformation", "vatIDs")
 
   def keyValueMap(): Map[String, String] = {
-    val m = toMap(this, ignoredFields = ignoredFields)
+    val m  = toMap(this, ignoredFields = ignoredFields)
     val am = prefixMapKey("address.", CDSEstablishmentAddress.toMap())
     val rd = prefixMapKey("contactInformation.", contactInformation.fold(Map.empty[String, String])(_.toMap()))
     val vm = prefixMapKey("vatIDs.", vatIDs.fold(Map.empty[String, String])(_.flatMap(_.toMap()).toMap))
     m ++ am ++ rd ++ vm
   }
+
 }
 
 object RequestDetail {

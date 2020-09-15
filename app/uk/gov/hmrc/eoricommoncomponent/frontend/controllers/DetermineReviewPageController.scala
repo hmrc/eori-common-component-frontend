@@ -28,7 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DetermineReviewPageController @Inject()(
+class DetermineReviewPageController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   mcc: MessagesControllerComponents
@@ -43,4 +43,5 @@ class DetermineReviewPageController @Inject()(
         case _ => Future.successful(Redirect(CheckYourDetailsRegisterController.reviewDetails(journey).url))
       }
   }
+
 }

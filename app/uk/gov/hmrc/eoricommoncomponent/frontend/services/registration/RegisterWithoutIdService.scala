@@ -30,7 +30,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RegisterWithoutIdService @Inject()(
+class RegisterWithoutIdService @Inject() (
   connector: RegisterWithoutIdConnector,
   requestCommonGenerator: RequestCommonGenerator,
   detailsCreator: RegistrationDetailsCreator,
@@ -96,13 +96,13 @@ class RegisterWithoutIdService @Inject()(
     loggedInUser: LoggedInUser,
     orgType: Option[CdsOrganisationType] = None
   )(implicit hc: HeaderCarrier) =
-    if (registrationDetails.safeId.id.nonEmpty) {
+    if (registrationDetails.safeId.id.nonEmpty)
       sessionCache.saveRegistrationDetailsWithoutId(
         registrationDetails: RegistrationDetails,
         InternalId(loggedInUser.internalId),
         orgType
       )
-    } else {
+    else
       sessionCache.saveRegistrationDetails(registrationDetails: RegistrationDetails)
-    }
+
 }

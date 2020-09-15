@@ -31,13 +31,16 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{LoggedInUserWithEnrolmen
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionBusinessService,
+  SubscriptionDetailsService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_registered_uk
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class VatRegisteredUkController @Inject()(
+class VatRegisteredUkController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   subscriptionBusinessService: SubscriptionBusinessService,
@@ -69,17 +72,15 @@ class VatRegisteredUkController @Inject()(
       for {
         isVatRegisteredUk <- subscriptionBusinessService.getCachedVatRegisteredUk
         yesNo: YesNo = YesNo(isVatRegisteredUk)
-      } yield {
-        Ok(
-          vatRegisteredUkView(
-            isInReviewMode = true,
-            vatRegisteredUkYesNoAnswerForm(requestSessionData.isPartnership).fill(yesNo),
-            isIndividualFlow,
-            requestSessionData.isPartnership,
-            journey
-          )
+      } yield Ok(
+        vatRegisteredUkView(
+          isInReviewMode = true,
+          vatRegisteredUkYesNoAnswerForm(requestSessionData.isPartnership).fill(yesNo),
+          isIndividualFlow,
+          requestSessionData.isPartnership,
+          journey
         )
-      }
+      )
   }
 
   def submit(isInReviewMode: Boolean, journey: Journey.Value): Action[AnyContent] =
@@ -98,35 +99,30 @@ class VatRegisteredUkController @Inject()(
                   journey
                 )
               )
-          ),
-          yesNoAnswer => {
+            ),
+          yesNoAnswer =>
             subscriptionDetailsService.cacheVatRegisteredUk(yesNoAnswer).flatMap {
               _ =>
-                if (isInReviewMode) {
-                  if (yesNoAnswer.isYes) {
+                if (isInReviewMode)
+                  if (yesNoAnswer.isYes)
                     Future.successful(Redirect(VatDetailsController.reviewForm(journey = Journey.Register).url))
-                  } else {
+                  else {
                     subscriptionDetailsService.clearCachedUkVatDetails
                     Future.successful(Redirect(DetermineReviewPageController.determineRoute(journey).url))
                   }
-                } else {
-                  if (yesNoAnswer.isYes) {
-                    Future.successful(
-                      Redirect(
-                        subscriptionFlowManager.stepInformation(VatRegisteredUkSubscriptionFlowPage).nextPage.url
-                      )
-                    )
-                  } else {
-                    Future.successful(
-                      Redirect(subscriptionFlowManager.stepInformation(VatDetailsSubscriptionFlowPage).nextPage.url)
-                    )
-                  }
-                }
+                else if (yesNoAnswer.isYes)
+                  Future.successful(
+                    Redirect(subscriptionFlowManager.stepInformation(VatRegisteredUkSubscriptionFlowPage).nextPage.url)
+                  )
+                else
+                  Future.successful(
+                    Redirect(subscriptionFlowManager.stepInformation(VatDetailsSubscriptionFlowPage).nextPage.url)
+                  )
             }
-          }
         )
     }
 
   private def isIndividualFlow(implicit rq: Request[AnyContent]) =
     subscriptionFlowManager.currentSubscriptionFlow.isIndividualFlow
+
 }

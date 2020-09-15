@@ -20,8 +20,8 @@ import common.pages.WebPage
 
 trait OrganisationNamePage extends WebPage {
   val fieldLevelErrorName = "//*[@id='name-outer']//span[@class='error-message']"
-  val labelForName = "//*label[@for='name']"
-  val labelForNameOuter = "//*[@id='name-outer']//label"
+  val labelForName        = "//*label[@for='name']"
+  val labelForNameOuter   = "//*[@id='name-outer']//label"
 
   override val title = "What is your registered organisation name?"
 

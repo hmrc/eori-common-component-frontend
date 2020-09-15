@@ -18,7 +18,11 @@ package util.builders
 
 import org.joda.time.LocalDate
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{BusinessShortName, SubscriptionDetails}
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{ContactDetailsModel, VatDetails, VatEUDetailsModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
+  ContactDetailsModel,
+  VatDetails,
+  VatEUDetailsModel
+}
 
 object SubscriptionFormBuilder {
 
@@ -27,10 +31,10 @@ object SubscriptionFormBuilder {
 
   val euVats: List[VatEUDetailsModel] = List(VatEUDetailsModel("FR", "VAT-2"), VatEUDetailsModel("PL", "VAT-3"))
 
-  val LegalStatus = "corporate-body-uk"
-  val ShortName = "Short Name"
-  val sic = "9999"
-  val DateEstablished = new LocalDate("1900-11-11")
+  val LegalStatus              = "corporate-body-uk"
+  val ShortName                = "Short Name"
+  val sic                      = "9999"
+  val DateEstablished          = new LocalDate("1900-11-11")
   val DateOfBirthForIndividual = LocalDate.parse("1962-05-12")
 
   private val contactDetailsModel = ContactDetailsModel(
@@ -45,30 +49,30 @@ object SubscriptionFormBuilder {
   )
 
   val orgSubscriptionMandatoryMap = Map(
-    "legal-status" -> LegalStatus,
-    "short-name" -> ShortName,
-    "date-established.day" -> DateEstablished.dayOfMonth.getAsString,
+    "legal-status"           -> LegalStatus,
+    "short-name"             -> ShortName,
+    "date-established.day"   -> DateEstablished.dayOfMonth.getAsString,
     "date-established.month" -> DateEstablished.monthOfYear.getAsString,
-    "date-established.year" -> DateEstablished.year.getAsString,
-    "sic" -> sic
+    "date-established.year"  -> DateEstablished.year.getAsString,
+    "sic"                    -> sic
   )
 
   val vatSubscriptionMandatorySeq = Seq(
-    "vat-gb-id" -> "true",
-    "vat-gb-number[]" -> "123456781",
-    "vat-gb-number[]" -> "123456782",
-    "vat-eu-id" -> "true",
-    "eu-vats.vat-eu-number[]" -> "113456781",
-    "eu-vats.vat-eu-number[]" -> "223456782",
+    "vat-gb-id"                -> "true",
+    "vat-gb-number[]"          -> "123456781",
+    "vat-gb-number[]"          -> "123456782",
+    "vat-eu-id"                -> "true",
+    "eu-vats.vat-eu-number[]"  -> "113456781",
+    "eu-vats.vat-eu-number[]"  -> "223456782",
     "eu-vats.vat-eu-country[]" -> "IN",
     "eu-vats.vat-eu-country[]" -> "CH"
   )
 
   val vatSubscriptionInvalidSeq = Seq(
-    "vat-gb-id" -> "true",
-    "vat-gb-number[]" -> "",
-    "vat-eu-id" -> "true",
-    "eu-vats.vat-eu-number[]" -> "",
+    "vat-gb-id"                -> "true",
+    "vat-gb-number[]"          -> "",
+    "vat-eu-id"                -> "true",
+    "eu-vats.vat-eu-number[]"  -> "",
     "eu-vats.vat-eu-country[]" -> ""
   )
 
@@ -88,4 +92,5 @@ object SubscriptionFormBuilder {
     ukVatDetails = gbVatDetails,
     vatEUDetails = euVats
   )
+
 }

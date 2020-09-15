@@ -28,14 +28,17 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionF
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionBusinessService,
+  SubscriptionDetailsService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.sic_code
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SicCodeController @Inject()(
+class SicCodeController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   subscriptionBusinessService: SubscriptionBusinessService,
@@ -48,8 +51,8 @@ class SicCodeController @Inject()(
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  private def populateView(sicCode: Option[String], isInReviewMode: Boolean, journey: Journey.Value)(
-    implicit hc: HeaderCarrier,
+  private def populateView(sicCode: Option[String], isInReviewMode: Boolean, journey: Journey.Value)(implicit
+    hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] = {
     lazy val form = sicCode.map(SicCodeViewModel).fold(sicCodeform)(sicCodeform.fill)
@@ -101,20 +104,22 @@ class SicCodeController @Inject()(
   private def stepInformation()(implicit hc: HeaderCarrier, request: Request[AnyContent]): SubscriptionFlowInfo =
     subscriptionFlowManager.stepInformation(SicCodeSubscriptionFlowPage)
 
-  private def submitNewDetails(formData: SicCodeViewModel, isInReviewMode: Boolean, journey: Journey.Value)(
-    implicit hc: HeaderCarrier,
+  private def submitNewDetails(formData: SicCodeViewModel, isInReviewMode: Boolean, journey: Journey.Value)(implicit
+    hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] =
     subscriptionDetailsHolderService
       .cacheSicCode(formData.sicCode)
       .map(
         _ =>
-          if (isInReviewMode) {
+          if (isInReviewMode)
             Redirect(
-              uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController.determineRoute(journey)
+              uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController.determineRoute(
+                journey
+              )
             )
-          } else {
+          else
             Redirect(stepInformation().nextPage.url)
-        }
       )
+
 }

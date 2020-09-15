@@ -30,7 +30,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RegistrationDisplayService @Inject()(
+class RegistrationDisplayService @Inject() (
   sessionCache: SessionCache,
   connector: RegistrationDisplayConnector,
   creator: RegistrationDetailsCreator
@@ -62,4 +62,5 @@ class RegistrationDisplayService @Inject()(
       creator.registrationDetails(details)
     sessionCache.saveRegistrationDetails(registrationDetails(response))
   }
+
 }

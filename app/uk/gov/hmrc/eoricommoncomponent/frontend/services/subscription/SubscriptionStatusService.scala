@@ -28,7 +28,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SubscriptionStatusService @Inject()(
+class SubscriptionStatusService @Inject() (
   connector: SubscriptionStatusConnector,
   requestCommonGenerator: RequestCommonGenerator,
   cache: SessionCache
@@ -60,6 +60,7 @@ class SubscriptionStatusService @Inject()(
     checkSubscriptionStatus()
 
   }
+
 }
 
 sealed trait PreSubscriptionStatus

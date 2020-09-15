@@ -31,14 +31,17 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionF
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionBusinessService,
+  SubscriptionDetailsService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.date_of_establishment
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DateOfEstablishmentController @Inject()(
+class DateOfEstablishmentController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   subscriptionFlowManager: SubscriptionFlowManager,
@@ -55,14 +58,13 @@ class DateOfEstablishmentController @Inject()(
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         maybeCachedDateModel <- subscriptionBusinessService.maybeCachedDateEstablished
-        orgType <- orgTypeLookup.etmpOrgType
-      } yield
-        populateView(
-          maybeCachedDateModel,
-          isInReviewMode = false,
-          orgType.getOrElse(throw new OrgTypeNotFoundException()),
-          journey
-        )
+        orgType              <- orgTypeLookup.etmpOrgType
+      } yield populateView(
+        maybeCachedDateModel,
+        isInReviewMode = false,
+        orgType.getOrElse(throw new OrgTypeNotFoundException()),
+        journey
+      )
     }
 
   private def populateView(
@@ -79,14 +81,13 @@ class DateOfEstablishmentController @Inject()(
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         cachedDateModel <- fetchDate
-        orgType <- orgTypeLookup.etmpOrgType
-      } yield
-        populateView(
-          Some(cachedDateModel),
-          isInReviewMode = true,
-          orgType.getOrElse(throw new OrgTypeNotFoundException()),
-          journey
-        )
+        orgType         <- orgTypeLookup.etmpOrgType
+      } yield populateView(
+        Some(cachedDateModel),
+        isInReviewMode = true,
+        orgType.getOrElse(throw new OrgTypeNotFoundException()),
+        journey
+      )
     }
 
   private def fetchDate(implicit hc: HeaderCarrier): Future[LocalDate] =
@@ -108,20 +109,19 @@ class DateOfEstablishmentController @Inject()(
                 )
               )
             case None => throw new OrgTypeNotFoundException()
-        },
+          },
         date =>
           saveDateEstablished(date).map { _ =>
-            if (isInReviewMode) {
+            if (isInReviewMode)
               Redirect(DetermineReviewPageController.determineRoute(journey))
-            } else {
+            else
               Redirect(
                 subscriptionFlowManager
                   .stepInformation(getSubscriptionPage(journey, UserLocation.isRow(requestSessionData)))
                   .nextPage
                   .url
               )
-            }
-        }
+          }
       )
     }
 
@@ -135,4 +135,5 @@ class DateOfEstablishmentController @Inject()(
         DateOfEstablishmentSubscriptionFlowPageMigrate
       case _ => DateOfEstablishmentSubscriptionFlowPage
     }
+
 }

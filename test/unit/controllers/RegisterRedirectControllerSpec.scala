@@ -31,7 +31,7 @@ import scala.concurrent.Future
 
 class RegisterRedirectControllerSpec extends ControllerSpec with BeforeAndAfterEach {
   private val mockAuthConnector = mock[AuthConnector]
-  private val mockAppConfig = mock[AppConfig]
+  private val mockAppConfig     = mock[AppConfig]
 
   private val controller =
     new RegisterRedirectController(app, mockAuthConnector, mcc, mockAppConfig)
@@ -50,7 +50,7 @@ class RegisterRedirectControllerSpec extends ControllerSpec with BeforeAndAfterE
     }
   }
 
-  private def getEori(test: Future[Result] => Any) = {
+  private def getEori(test: Future[Result] => Any) =
     await(test(controller.getEori().apply(SessionBuilder.buildRequestWithSessionNoUser)))
-  }
+
 }

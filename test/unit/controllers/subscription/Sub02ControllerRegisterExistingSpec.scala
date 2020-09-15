@@ -44,21 +44,21 @@ import scala.concurrent.Future
 
 class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndAfterEach {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockRequestSessionData = mock[RequestSessionData]
-  private val mockSessionCache = mock[SessionCache]
-  private val mockCdsSubscriber = mock[CdsSubscriber]
-  private val mockPdfGeneratorService = mock[PdfGeneratorConnector]
+  private val mockAuthConnector              = mock[AuthConnector]
+  private val mockRequestSessionData         = mock[RequestSessionData]
+  private val mockSessionCache               = mock[SessionCache]
+  private val mockCdsSubscriber              = mock[CdsSubscriber]
+  private val mockPdfGeneratorService        = mock[PdfGeneratorConnector]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
 
-  private val migrationSuccessView = app.injector.instanceOf[migration_success]
-  private val sub01OutcomeView = app.injector.instanceOf[sub01_outcome_processing]
-  private val sub02RequestNotProcessed = app.injector.instanceOf[sub02_request_not_processed]
+  private val migrationSuccessView            = app.injector.instanceOf[migration_success]
+  private val sub01OutcomeView                = app.injector.instanceOf[sub01_outcome_processing]
+  private val sub02RequestNotProcessed        = app.injector.instanceOf[sub02_request_not_processed]
   private val sub02SubscriptionInProgressView = app.injector.instanceOf[sub02_subscription_in_progress]
-  private val sub02EoriAlreadyAssociatedView = app.injector.instanceOf[sub02_eori_already_associated]
-  private val sub02EoriAlreadyExists = app.injector.instanceOf[sub02_eori_already_exists]
-  private val sub01OutcomeRejected = app.injector.instanceOf[sub01_outcome_rejected]
-  private val subscriptionOutcomeView = app.injector.instanceOf[subscription_outcome]
+  private val sub02EoriAlreadyAssociatedView  = app.injector.instanceOf[sub02_eori_already_associated]
+  private val sub02EoriAlreadyExists          = app.injector.instanceOf[sub02_eori_already_exists]
+  private val sub01OutcomeRejected            = app.injector.instanceOf[sub01_outcome_rejected]
+  private val subscriptionOutcomeView         = app.injector.instanceOf[subscription_outcome]
 
   private val subscriptionController = new Sub02Controller(
     app,
@@ -78,12 +78,12 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
     mockCdsSubscriber
   )(global)
 
-  val eoriNumberResponse: String = "EORI-Number"
-  val formBundleIdResponse: String = "Form-Bundle-Id"
+  val eoriNumberResponse: String     = "EORI-Number"
+  val formBundleIdResponse: String   = "Form-Bundle-Id"
   val processingDateResponse: String = "19 April 2018"
 
   val statusReceived = "Received"
-  val statusReview = "Review"
+  val statusReview   = "Review"
   val statusDecision = "Decision"
 
   val emulatedFailure = new UnsupportedOperationException("Emulated service call failure.")
@@ -94,7 +94,7 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
   private def stubRegisterWithEoriAndIdResponse(outcomeType: String = "PASS"): RegisterWithEoriAndIdResponse = {
     val processingDate = DateTime.now.withTimeAtStartOfDay()
     val responseCommon = ResponseCommon(status = "OK", processingDate = processingDate)
-    val trader = Trader(fullName = "Name", shortName = "nt")
+    val trader         = Trader(fullName = "Name", shortName = "nt")
     val establishmentAddress =
       EstablishmentAddress(streetAndNumber = "Street", city = "city", postalCode = Some("NE1 1BG"), countryCode = "GB")
     val responseData: ResponseData = ResponseData(
@@ -165,7 +165,9 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
           )
 
           page.elementIsPresent(RegistrationCompletePage.LeaveFeedbackLinkXpath) shouldBe true
-          page.getElementsText(RegistrationCompletePage.LeaveFeedbackLinkXpath) shouldBe "What did you think of this service? (opens in a new window or tab)"
+          page.getElementsText(
+            RegistrationCompletePage.LeaveFeedbackLinkXpath
+          ) shouldBe "What did you think of this service? (opens in a new window or tab)"
           page.getElementsHref(RegistrationCompletePage.LeaveFeedbackLinkXpath) shouldBe "/feedback/CDS"
       }
     }
@@ -175,4 +177,5 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
     withAuthorisedUser(userId, mockAuthConnector)
     test(subscriptionController.migrationEnd.apply(SessionBuilder.buildRequestWithSession(userId)))
   }
+
 }

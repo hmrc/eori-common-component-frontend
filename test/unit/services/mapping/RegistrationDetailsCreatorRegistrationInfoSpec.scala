@@ -28,16 +28,16 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDet
 class RegistrationDetailsCreatorRegistrationInfoSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
 
   private val registrationDetailsCreator = new RegistrationDetailsCreator()
-  private val orgRegInfo = mock[OrgRegistrationInfo](RETURNS_DEEP_STUBS)
-  private val individualRegInfo = mock[IndividualRegistrationInfo](RETURNS_DEEP_STUBS)
-  private val orgType = "Partnership"
-  private val sapNumber = "7656565646"
-  private val firstName = "Jon"
-  private val middleName = "middle"
-  private val lastName = "Doe"
-  private val dob = new LocalDate()
-  private val postcode = "SE28 1AA"
-  private val countryCode = "ZZ"
+  private val orgRegInfo                 = mock[OrgRegistrationInfo](RETURNS_DEEP_STUBS)
+  private val individualRegInfo          = mock[IndividualRegistrationInfo](RETURNS_DEEP_STUBS)
+  private val orgType                    = "Partnership"
+  private val sapNumber                  = "7656565646"
+  private val firstName                  = "Jon"
+  private val middleName                 = "middle"
+  private val lastName                   = "Doe"
+  private val dob                        = new LocalDate()
+  private val postcode                   = "SE28 1AA"
+  private val countryCode                = "ZZ"
 
   override def beforeEach(): Unit = {
     reset(orgRegInfo)

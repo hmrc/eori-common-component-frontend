@@ -27,11 +27,13 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class MatchingServiceConnector @Inject()(http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit ec: ExecutionContext) {
+class MatchingServiceConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
+  ec: ExecutionContext
+) {
 
-  private val url = appConfig.getServiceUrl("register-with-id")
+  private val url               = appConfig.getServiceUrl("register-with-id")
   private val loggerComponentId = "MatchingServiceConnector"
-  val NoMatchFound = "002 - No Match Found"
+  val NoMatchFound              = "002 - No Match Found"
 
   def handleResponse(response: MatchingResponse): Option[MatchingResponse] = {
     val statusTxt = response.registerWithIDResponse.responseCommon.statusText
@@ -75,4 +77,5 @@ class MatchingServiceConnector @Inject()(http: HttpClient, appConfig: AppConfig,
       details = response.jsObject(),
       eventType = "customsRegistrationWithIdConfirmation"
     )
+
 }

@@ -40,7 +40,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class NameIdOrganisationController @Inject()(
+class NameIdOrganisationController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   mcc: MessagesControllerComponents,
@@ -49,8 +49,8 @@ class NameIdOrganisationController @Inject()(
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
   private val RegisteredCompanyDM = "registered-company"
-  private val PartnershipDM = "partnership"
-  private val OrganisationModeDM = "organisation"
+  private val PartnershipDM       = "partnership"
+  private val OrganisationModeDM  = "organisation"
 
   trait Configuration[M <: NameIdOrganisationMatch] {
     def matchingServiceType: String
@@ -69,18 +69,19 @@ class NameIdOrganisationController @Inject()(
     displayMode: String,
     isNameAddressRegistrationAvailable: Boolean = false
   ) extends Configuration[NameIdOrganisationMatchModel] {
+
     val form: Form[NameIdOrganisationMatchModel] = matchingServiceType match {
-      case mST if (mST == "Partnership" || mST == "LLP") => nameUtrPartnershipForm
-      case mST if (mST == "Company")                     => nameUtrCompanyForm
-      case _                                             => nameUtrOrganisationForm
+      case mST if mST == "Partnership" || mST == "LLP" => nameUtrPartnershipForm
+      case mST if mST == "Company"                     => nameUtrCompanyForm
+      case _                                           => nameUtrOrganisationForm
     }
 
     def createCustomsId(utr: String): Utr = Utr(utr)
   }
 
   private val OrganisationTypeConfigurations: Map[String, Configuration[_ <: NameIdOrganisationMatch]] = Map(
-    CdsOrganisationType.CompanyId -> UtrConfiguration("Corporate Body", displayMode = RegisteredCompanyDM),
-    CdsOrganisationType.PartnershipId -> UtrConfiguration("Partnership", displayMode = PartnershipDM),
+    CdsOrganisationType.CompanyId                     -> UtrConfiguration("Corporate Body", displayMode = RegisteredCompanyDM),
+    CdsOrganisationType.PartnershipId                 -> UtrConfiguration("Partnership", displayMode = PartnershipDM),
     CdsOrganisationType.LimitedLiabilityPartnershipId -> UtrConfiguration("LLP", displayMode = PartnershipDM),
     CdsOrganisationType.CharityPublicBodyNotForProfitId -> UtrConfiguration(
       "Unincorporated Body",
@@ -91,19 +92,15 @@ class NameIdOrganisationController @Inject()(
 
   def form(organisationType: String, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      {
-        require(OrganisationTypeConfigurations.contains(organisationType), invalidOrganisationType(organisationType))
-        Future.successful(Ok(view(organisationType, OrganisationTypeConfigurations(organisationType), journey)))
-      }
+      require(OrganisationTypeConfigurations.contains(organisationType), invalidOrganisationType(organisationType))
+      Future.successful(Ok(view(organisationType, OrganisationTypeConfigurations(organisationType), journey)))
     }
 
   def submit(organisationType: String, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
-      {
-        require(OrganisationTypeConfigurations.contains(organisationType), invalidOrganisationType(organisationType))
-        val configuration = OrganisationTypeConfigurations(organisationType)
-        bind(organisationType, configuration, journey, InternalId(loggedInUser.internalId))
-      }
+      require(OrganisationTypeConfigurations.contains(organisationType), invalidOrganisationType(organisationType))
+      val configuration = OrganisationTypeConfigurations(organisationType)
+      bind(organisationType, configuration, journey, InternalId(loggedInUser.internalId))
     }
 
   private def bind[M <: NameIdOrganisationMatch](
@@ -114,16 +111,22 @@ class NameIdOrganisationController @Inject()(
   )(implicit request: Request[AnyContent]): Future[Result] =
     conf.form.bindFromRequest
       .fold(
-        formWithErrors => {
-          Future.successful(BadRequest(view(organisationType, conf, formWithErrors, journey)))
-        },
-        formData => {
-          matchBusiness(conf.createCustomsId(formData.id), formData.name, None, conf.matchingServiceType, internalId).map {
+        formWithErrors => Future.successful(BadRequest(view(organisationType, conf, formWithErrors, journey))),
+        formData =>
+          matchBusiness(
+            conf.createCustomsId(formData.id),
+            formData.name,
+            None,
+            conf.matchingServiceType,
+            internalId
+          ).map {
             case true =>
               journey match {
                 case Journey.Subscribe =>
                   Redirect(
-                    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.createForm(journey).url
+                    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.createForm(
+                      journey
+                    ).url
                   )
                 case _ =>
                   Redirect(
@@ -133,7 +136,6 @@ class NameIdOrganisationController @Inject()(
               }
             case false => matchNotFoundBadRequest(organisationType, conf, formData, journey)
           }
-        }
       )
 
   private def invalidOrganisationType(organisationType: String): Any = s"Invalid organisation type '$organisationType'."
@@ -153,7 +155,7 @@ class NameIdOrganisationController @Inject()(
     formData: M,
     journey: Journey.Value
   )(implicit request: Request[AnyContent]): Result = {
-    val errorMsg = Messages("cds.matching-error.not-found")
+    val errorMsg  = Messages("cds.matching-error.not-found")
     val errorForm = conf.form.withGlobalError(errorMsg).fill(formData)
     BadRequest(view(organisationType, conf, errorForm, journey))
   }
@@ -184,4 +186,5 @@ class NameIdOrganisationController @Inject()(
       conf.isNameAddressRegistrationAvailable,
       journey
     )
+
 }

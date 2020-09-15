@@ -25,8 +25,18 @@ import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import play.api.http.Status.BAD_REQUEST
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.EmailVerificationConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.EmailVerificationRequestHttpParser.{EmailAlreadyVerified, EmailVerificationRequestFailure, EmailVerificationRequestResponse, EmailVerificationRequestSent}
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.EmailVerificationStateHttpParser.{EmailNotVerified, EmailVerificationStateErrorResponse, EmailVerificationStateResponse, EmailVerified}
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.EmailVerificationRequestHttpParser.{
+  EmailAlreadyVerified,
+  EmailVerificationRequestFailure,
+  EmailVerificationRequestResponse,
+  EmailVerificationRequestSent
+}
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.EmailVerificationStateHttpParser.{
+  EmailNotVerified,
+  EmailVerificationStateErrorResponse,
+  EmailVerificationStateResponse,
+  EmailVerified
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -37,12 +47,12 @@ class EmailVerificationServiceSpec
     extends UnitSpec with ScalaFutures with MockitoSugar with BeforeAndAfterAll with BeforeAndAfterEach {
   private val mockConnector = mock[EmailVerificationConnector]
 
-  implicit val hc: HeaderCarrier = mock[HeaderCarrier]
+  implicit val hc: HeaderCarrier       = mock[HeaderCarrier]
   implicit val rq: Request[AnyContent] = mock[Request[AnyContent]]
 
   val service = new EmailVerificationService(mockConnector)
 
-  private val email = "test@example.com"
+  private val email       = "test@example.com"
   private val continueUrl = "/customs-enrolment-services/test-continue-url"
 
   override protected def beforeEach(): Unit =
@@ -69,9 +79,8 @@ class EmailVerificationServiceSpec
       "return Some(true)" in {
 
         mockGetEmailVerificationState(email)(Future.successful(Right(EmailVerified)))
-        val res: Option[Boolean] = {
+        val res: Option[Boolean] =
           await(service.isEmailVerified(email))
-        }
         res shouldBe Some(true)
       }
 
@@ -80,9 +89,8 @@ class EmailVerificationServiceSpec
         "return Some(false)" in {
 
           mockGetEmailVerificationState(email)(Future.successful(Right(EmailNotVerified)))
-          val res: Option[Boolean] = {
+          val res: Option[Boolean] =
             await(service.isEmailVerified(email))
-          }
           res shouldBe Some(false)
         }
       }
@@ -94,9 +102,8 @@ class EmailVerificationServiceSpec
           mockGetEmailVerificationState(email)(
             Future.successful(Left(EmailVerificationStateErrorResponse(BAD_REQUEST, "")))
           )
-          val res: Option[Boolean] = {
+          val res: Option[Boolean] =
             await(service.isEmailVerified(email))
-          }
           res shouldBe None
         }
       }
@@ -109,9 +116,8 @@ class EmailVerificationServiceSpec
 
       "return Some(true)" in {
         mockCreateEmailVerificationRequest(email, continueUrl)(Future.successful(Right(EmailVerificationRequestSent)))
-        val res: Option[Boolean] = {
+        val res: Option[Boolean] =
           await(service.createEmailVerificationRequest(email, continueUrl))
-        }
         res shouldBe Some(true)
       }
     }
@@ -121,9 +127,8 @@ class EmailVerificationServiceSpec
       "return Some(false)" in {
 
         mockCreateEmailVerificationRequest(email, continueUrl)(Future.successful(Right(EmailAlreadyVerified)))
-        val res: Option[Boolean] = {
+        val res: Option[Boolean] =
           await(service.createEmailVerificationRequest(email, continueUrl))
-        }
         res shouldBe Some(false)
       }
     }
@@ -134,9 +139,8 @@ class EmailVerificationServiceSpec
         mockCreateEmailVerificationRequest(email, continueUrl)(
           Future.successful(Left(EmailVerificationRequestFailure(BAD_REQUEST, "")))
         )
-        val res: Option[Boolean] = {
+        val res: Option[Boolean] =
           await(service.createEmailVerificationRequest(email, continueUrl))
-        }
         res shouldBe None
       }
     }

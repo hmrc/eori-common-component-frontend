@@ -40,4 +40,5 @@ object RegistrationDisplay {
             .withHeader(CONTENT_TYPE, JSON)
         )
     )
+
 }

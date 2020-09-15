@@ -23,12 +23,13 @@ import play.modules.reactivemongo.ReactiveMongoHmrcModule
 
 trait UnitTestApp {
   self: GuiceOneAppPerSuite =>
-  implicit override lazy val app: Application = {
+
+  implicit override lazy val app: Application =
     new GuiceApplicationBuilder()
       .disable[com.kenshoo.play.metrics.PlayModule]
       .configure(configMap)
       .disable[ReactiveMongoHmrcModule]
       .build()
-  }
+
   val configMap: Map[String, Boolean] = Map("metrics.enabled" -> false)
 }

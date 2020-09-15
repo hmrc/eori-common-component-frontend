@@ -41,20 +41,20 @@ class EmailVerificationConnectorSpec extends IntegrationTestsSpec with ScalaFutu
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
       Map(
-        "microservice.services.email-verification.host" -> Host,
-        "microservice.services.email-verification.port" -> Port,
-        "microservice.services.email-verification.context" -> "email-verification",
-        "microservice.services.email-verification.templateId" -> "verifyEmailAddresssbt",
+        "microservice.services.email-verification.host"               -> Host,
+        "microservice.services.email-verification.port"               -> Port,
+        "microservice.services.email-verification.context"            -> "email-verification",
+        "microservice.services.email-verification.templateId"         -> "verifyEmailAddresssbt",
         "microservice.services.email-verification.LinkExpiryDuration" -> "P1D",
-        "auditing.enabled" -> false,
-        "auditing.consumer.baseUri.host" -> Host,
-        "auditing.consumer.baseUri.port" -> Port
+        "auditing.enabled"                                            -> false,
+        "auditing.consumer.baseUri.host"                              -> Host,
+        "auditing.consumer.baseUri.port"                              -> Port
       )
     )
     .build()
 
-  private lazy val connector = app.injector.instanceOf[EmailVerificationConnector]
-  private val email = "john.doe@example.com"
+  private lazy val connector      = app.injector.instanceOf[EmailVerificationConnector]
+  private val email               = "john.doe@example.com"
   private val expectedContinueUrl = "/customs-enrolment-services/test-email-continue/"
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -87,7 +87,7 @@ class EmailVerificationConnectorSpec extends IntegrationTestsSpec with ScalaFutu
       "return an EmailVerified response" in {
         EmailVerificationStubService.stubEmailVerified
 
-        val expected = Right(EmailVerified)
+        val expected                               = Right(EmailVerified)
         val result: EmailVerificationStateResponse = await(connector.getEmailVerificationState(email))
 
         result mustBe expected
@@ -99,7 +99,8 @@ class EmailVerificationConnectorSpec extends IntegrationTestsSpec with ScalaFutu
         EmailVerificationStubService.stubEmailNotVerified
 
         val expected = Right(EmailNotVerified)
-        val result: EmailVerificationStateResponse = await(connector.getEmailVerificationState("notverified@example.com"))
+        val result: EmailVerificationStateResponse =
+          await(connector.getEmailVerificationState("notverified@example.com"))
 
         result mustBe expected
       }

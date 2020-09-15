@@ -52,11 +52,12 @@ object VatDetailsForm {
 
   val vatDetailsForm = Form(
     mapping(
-      "postcode" -> text.verifying(validPostcode),
+      "postcode"   -> text.verifying(validPostcode),
       "vat-number" -> text.verifying(validVatNumber),
-      "vat-effective-date" -> mandatoryDateTodayOrBefore(
-        onEmptyError = "cds.subscription.vat-details.vat-effective-date.required.error"
+      "vat-effective-date" -> mandatoryDateTodayOrBefore(onEmptyError =
+        "cds.subscription.vat-details.vat-effective-date.required.error"
       )
     )(VatDetails.apply)(VatDetails.unapply)
   )
+
 }

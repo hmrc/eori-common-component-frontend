@@ -31,14 +31,17 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionF
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionBusinessService,
+  SubscriptionDetailsService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BusinessShortNameController @Inject()(
+class BusinessShortNameController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   subscriptionBusinessService: SubscriptionBusinessService,
@@ -84,37 +87,36 @@ class BusinessShortNameController @Inject()(
   def submit(isInReviewMode: Boolean = false, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       form.bindFromRequest.fold(
-        formWithErrors => {
+        formWithErrors =>
           orgTypeLookup.etmpOrgType map {
             case Some(orgType) =>
               BadRequest(
                 businessShortName(shortNameForm = formWithErrors, isInReviewMode = isInReviewMode, orgType, journey)
               )
             case None => throw new OrgTypeNotFoundException()
-          }
-        },
-        formData => {
-          submitNewDetails(formData, isInReviewMode, journey)
-        }
+          },
+        formData => submitNewDetails(formData, isInReviewMode, journey)
       )
     }
 
-  private def submitNewDetails(formData: CompanyShortNameViewModel, isInReviewMode: Boolean, journey: Journey.Value)(
-    implicit hc: HeaderCarrier,
-    request: Request[AnyContent]
-  ): Future[Result] = {
+  private def submitNewDetails(
+    formData: CompanyShortNameViewModel,
+    isInReviewMode: Boolean,
+    journey: Journey.Value
+  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
     val companyShortName = convertViewModelToModel(formData)
     subscriptionDetailsHolderService
       .cacheCompanyShortName(companyShortName)
       .map(
         _ =>
-          if (isInReviewMode) {
+          if (isInReviewMode)
             Redirect(
-              uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController.determineRoute(journey)
+              uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController.determineRoute(
+                journey
+              )
             )
-          } else {
+          else
             Redirect(subscriptionFlowManager.stepInformation(BusinessShortNameSubscriptionFlowPage).nextPage.url)
-        }
       )
   }
 
@@ -125,4 +127,5 @@ class BusinessShortNameController @Inject()(
 
   private def convertModelToViewModel(model: BusinessShortName): CompanyShortNameViewModel =
     CompanyShortNameViewModel(if (model.shortName.isDefined) Option(true) else Option(false), model.shortName)
+
 }

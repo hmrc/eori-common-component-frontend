@@ -33,7 +33,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, Reg
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.{AllCountriesExceptIomInCountryPicker, Countries, Country}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.{
+  AllCountriesExceptIomInCountryPicker,
+  Countries,
+  Country
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.address
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.confirm_contact_details
@@ -62,16 +66,16 @@ class AddressControllerSpec
 
   protected override def submitInReviewModeUrl: String = submit(isInReviewMode = true, Journey.Register).url
 
-  private val mockRequestSessionData = mock[RequestSessionData]
-  private val mockCdsFrontendDataCache = mock[SessionCache]
-  private val mockRegistrationDetails = mock[RegistrationDetails]
+  private val mockRequestSessionData         = mock[RequestSessionData]
+  private val mockCdsFrontendDataCache       = mock[SessionCache]
+  private val mockRegistrationDetails        = mock[RegistrationDetails]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
-  private val mockCountries = mock[Countries]
-  private val emulatedFailure = new UnsupportedOperationException("Emulation of service call failure")
-  private val mockOrganisationType = mock[CdsOrganisationType]
+  private val mockCountries                  = mock[Countries]
+  private val emulatedFailure                = new UnsupportedOperationException("Emulation of service call failure")
+  private val mockOrganisationType           = mock[CdsOrganisationType]
 
   private val viewConfirmContectDetails = app.injector.instanceOf[confirm_contact_details]
-  private val viewAddress = app.injector.instanceOf[address]
+  private val viewAddress               = app.injector.instanceOf[address]
 
   private val controller = new AddressController(
     app,
@@ -90,12 +94,12 @@ class AddressControllerSpec
 
   def stringOfLengthXGen(minLength: Int): Gen[String] =
     for {
-      single: Char <- Gen.alphaNumChar
+      single: Char       <- Gen.alphaNumChar
       baseString: String <- Gen.listOfN(minLength, Gen.alphaNumChar).map(c => c.mkString)
-      additionalEnding <- Gen.alphaStr
+      additionalEnding   <- Gen.alphaStr
     } yield single + baseString + additionalEnding
 
-  val mandatoryFields = Map("city" -> "city", "street" -> "street", "postcode" -> "SE28 1AA", "countryCode" -> "GB")
+  val mandatoryFields      = Map("city" -> "city", "street" -> "street", "postcode" -> "SE28 1AA", "countryCode" -> "GB")
   val mandatoryFieldsEmpty = Map("city" -> "", "street" -> "", "postcode" -> "", "countryCode" -> "")
 
   val aFewCountries = List(
@@ -161,10 +165,10 @@ class AddressControllerSpec
     }
 
     "display the correct text for the continue button" in {
-      showCreateForm()({ result =>
+      showCreateForm() { result =>
         val page = CdsPage(bodyOf(result))
         page.getElementValue(AddressPage.continueButtonXpath) shouldBe ContinueButtonTextInCreateMode
-      })
+      }
     }
 
   }
@@ -221,10 +225,10 @@ class AddressControllerSpec
     }
 
     "display the correct text for the continue button" in {
-      showReviewForm()({ result =>
+      showReviewForm() { result =>
         val page = CdsPage(bodyOf(result))
         page.getElementValue(AddressPage.continueButtonXpath) shouldBe ContinueButtonTextInReviewMode
-      })
+      }
     }
   }
 
@@ -352,7 +356,7 @@ class AddressControllerSpec
     "not allow spaces to satisfy minimum length requirements" in {
       submitFormInCreateModeForOrganisation(
         Map(
-          "city" -> 10.spaces,
+          "city"   -> 10.spaces,
           "street" -> 7.spaces // we allow spaces for postcode
         )
       ) { result =>
@@ -373,7 +377,9 @@ class AddressControllerSpec
       submitFormInCreateModeForOrganisation(mandatoryFields ++ Map("street" -> streetLine.sample.get)) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(AddressPage.streetFieldLevelErrorXPath) shouldBe "The first line of the address must be 70 characters or less"
+        page.getElementsText(
+          AddressPage.streetFieldLevelErrorXPath
+        ) shouldBe "The first line of the address must be 70 characters or less"
       }
     }
 
@@ -382,7 +388,9 @@ class AddressControllerSpec
       submitFormInCreateModeForOrganisation(mandatoryFields ++ Map("city" -> city.sample.get)) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(AddressPage.cityFieldLevelErrorXPath) shouldBe "The town or city must be 35 characters or less"
+        page.getElementsText(
+          AddressPage.cityFieldLevelErrorXPath
+        ) shouldBe "The town or city must be 35 characters or less"
 
       }
     }
@@ -404,8 +412,12 @@ class AddressControllerSpec
       ) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(AddressPage.pageLevelErrorSummaryListXPath) shouldBe "The postcode must be 9 characters or less"
-        page.getElementsText(AddressPage.postcodeFieldLevelErrorXPath) shouldBe "The postcode must be 9 characters or less"
+        page.getElementsText(
+          AddressPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "The postcode must be 9 characters or less"
+        page.getElementsText(
+          AddressPage.postcodeFieldLevelErrorXPath
+        ) shouldBe "The postcode must be 9 characters or less"
       }
     }
   }
@@ -536,4 +548,5 @@ class AddressControllerSpec
     page.getElementValue(AddressPage.postcodeFieldXPath) shouldBe empty
     page.getElementValue(AddressPage.countryCodeFieldXPath) shouldBe empty
   }
+
 }

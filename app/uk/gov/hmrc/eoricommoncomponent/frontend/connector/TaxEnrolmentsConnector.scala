@@ -30,10 +30,11 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class TaxEnrolmentsConnector @Inject()(http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit ec: ExecutionContext)
-    extends CaseClassAuditHelper {
+class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
+  ec: ExecutionContext
+) extends CaseClassAuditHelper {
 
-  private val baseUrl = appConfig.taxEnrolmentsBaseUrl
+  private val baseUrl        = appConfig.taxEnrolmentsBaseUrl
   val serviceContext: String = appConfig.taxEnrolmentsServiceContext
 
   private val loggerComponentId = "TaxEnrolmentsConnector"
@@ -60,12 +61,9 @@ class TaxEnrolmentsConnector @Inject()(http: HttpClient, appConfig: AppConfig, a
     *  This is a issuer call which ETMP makes but we will do this for migrated users
     *  when subscription status((SUB02 Api CALL)) is 04 (SubscriptionExists)
     */
-  def enrol(
-    request: TaxEnrolmentsRequest,
-    formBundleId: String
-  )(implicit hc: HeaderCarrier): Future[Int] = {
+  def enrol(request: TaxEnrolmentsRequest, formBundleId: String)(implicit hc: HeaderCarrier): Future[Int] = {
     val loggerId = s"[$loggerComponentId]"
-    val url = s"$baseUrl/$serviceContext/subscriptions/$formBundleId/issuer"
+    val url      = s"$baseUrl/$serviceContext/subscriptions/$formBundleId/issuer"
 
     CdsLogger.info(s"$loggerId putUrl: $url")
     http.doPut[TaxEnrolmentsRequest](url, request) map { response: HttpResponse =>
@@ -82,14 +80,16 @@ class TaxEnrolmentsConnector @Inject()(http: HttpClient, appConfig: AppConfig, a
   }
 
   // Service name need to be enrolment Key - e.g. HMRC-CUS-ORG, HMRC-ATAR-ORG
-  def enrolAndActivate(enrolmentKey: String, request: GovernmentGatewayEnrolmentRequest)(implicit hc: HeaderCarrier): Future[HttpResponse] =
-  http.PUT[GovernmentGatewayEnrolmentRequest, HttpResponse](
-    url = s"$baseUrl/$serviceContext/service/$enrolmentKey/enrolment",
-    body = request
-  )
+  def enrolAndActivate(enrolmentKey: String, request: GovernmentGatewayEnrolmentRequest)(implicit
+    hc: HeaderCarrier
+  ): Future[HttpResponse] =
+    http.PUT[GovernmentGatewayEnrolmentRequest, HttpResponse](
+      url = s"$baseUrl/$serviceContext/service/$enrolmentKey/enrolment",
+      body = request
+    )
 
-  private def auditCall(url: String, request: TaxEnrolmentsRequest, response: HttpResponse)(
-    implicit hc: HeaderCarrier
+  private def auditCall(url: String, request: TaxEnrolmentsRequest, response: HttpResponse)(implicit
+    hc: HeaderCarrier
   ): Unit =
     audit.sendExtendedDataEvent(
       transactionName = "Issuer-Call",

@@ -19,10 +19,10 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.logging
 object CdsLogger {
   lazy val logger = play.api.Logger("eori-common-component-frontend")
 
-  def debug(s: String): Unit = logger.debug(s)
-  def info(s: String): Unit = logger.info(s)
-  def warn(s: String): Unit = logger.warn(s)
-  def warn(s: String, e: Throwable): Unit = logger.warn(s, e)
-  def error(s: String): Unit = logger.error(s)
+  def debug(s: String): Unit               = logger.debug(s)
+  def info(s: String): Unit                = logger.info(s)
+  def warn(s: String): Unit                = logger.warn(s)
+  def warn(s: String, e: Throwable): Unit  = logger.warn(s, e)
+  def error(s: String): Unit               = logger.error(s)
   def error(s: String, e: Throwable): Unit = logger.error(s, e)
 }

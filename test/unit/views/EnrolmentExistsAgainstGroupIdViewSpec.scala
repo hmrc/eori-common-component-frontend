@@ -26,7 +26,7 @@ import util.ViewSpec
 
 class EnrolmentExistsAgainstGroupIdViewSpec extends ViewSpec {
 
-  private val view = app.injector.instanceOf[enrolment_exists_against_group_id]
+  private val view     = app.injector.instanceOf[enrolment_exists_against_group_id]
   implicit val request = withFakeCSRF(FakeRequest())
 
   "Enrolment exists against group id page" should {
@@ -74,6 +74,6 @@ class EnrolmentExistsAgainstGroupIdViewSpec extends ViewSpec {
     }
   }
 
-  private lazy val gyeDoc: Document = Jsoup.parse(contentAsString(view(Journey.Register)))
+  private lazy val gyeDoc: Document     = Jsoup.parse(contentAsString(view(Journey.Register)))
   private lazy val migrateDoc: Document = Jsoup.parse(contentAsString(view(Journey.Subscribe)))
 }

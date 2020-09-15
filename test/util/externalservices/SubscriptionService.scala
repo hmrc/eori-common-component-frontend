@@ -238,4 +238,5 @@ object SubscriptionService {
 
   def getRequestMadeToSubscriptionService: String =
     WireMock.findAll(new RequestPatternBuilder(RequestMethod.ANY, SubscribePath)).get(0).getBodyAsString
+
 }

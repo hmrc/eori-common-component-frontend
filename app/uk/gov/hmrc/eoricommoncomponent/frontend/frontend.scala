@@ -21,12 +21,12 @@ import play.twirl.api.{Html, HtmlFormat}
 package object frontend {
 
   implicit class StringExtension(s: String) {
+
     def appendBr: Html =
-      if (notBlank) {
+      if (notBlank)
         Html.apply(s + " <br>")
-      } else {
+      else
         HtmlFormat.empty
-      }
 
     def notBlank: Boolean = s.trim.nonEmpty
   }

@@ -22,7 +22,7 @@ trait VatRegisteredUkPage extends WebPage {
 
   val fieldLevelErrorYesNoAnswer: String = "//*[@id='yes-no-answer-field']//span[@class='error-message']"
 
-  override val title = "Is your organisation VAT registered in the UK?"
+  override val title            = "Is your organisation VAT registered in the UK?"
   val problemWithSelectionError = "Tell us if your organisation is VAT registered in the UK"
 }
 

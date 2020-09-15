@@ -50,11 +50,11 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
     .configure("features.rowHaveUtrEnabled" -> false)
     .build()
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockRequestSessionData = mock[RequestSessionData]
+  private val mockAuthConnector              = mock[AuthConnector]
+  private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
   private val mockNameOrganisationMatchModel = mock[NameOrganisationMatchModel]
-  private val whatIsYourOrgNameView = app.injector.instanceOf[what_is_your_org_name]
+  private val whatIsYourOrgNameView          = app.injector.instanceOf[what_is_your_org_name]
 
   private val controller = new WhatIsYourOrgNameController(
     app,
@@ -122,31 +122,28 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
   "Viewing the Organisation Name Matching form" should {
 
     forAll(organisationTypeOrganisations) { (organisationType, _, _, _, _, reviewMode, expectedName) =>
-      {
+      assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+        mockAuthConnector,
+        controller.showForm(reviewMode, organisationType, Journey.Register),
+        s", for reviewMode $reviewMode and organisationType $organisationType"
+      )
 
-        assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
-          mockAuthConnector,
-          controller.showForm(reviewMode, organisationType, Journey.Register),
-          s", for reviewMode $reviewMode and organisationType $organisationType"
-        )
-
-        s"display the form for $organisationType and reviewMode is $reviewMode" in {
-          when(mockNameOrganisationMatchModel.name).thenReturn(expectedName)
-          showForm(reviewMode) { result =>
-            status(result) shouldBe OK
-            val page = CdsPage(bodyOf(result))
-            page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe empty
-            page.getElementsText(fieldLevelErrorName) shouldBe empty
-            page.getElementValueForLabel(labelForName) shouldBe expectedName
-          }
+      s"display the form for $organisationType and reviewMode is $reviewMode" in {
+        when(mockNameOrganisationMatchModel.name).thenReturn(expectedName)
+        showForm(reviewMode) { result =>
+          status(result) shouldBe OK
+          val page = CdsPage(bodyOf(result))
+          page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe empty
+          page.getElementsText(fieldLevelErrorName) shouldBe empty
+          page.getElementValueForLabel(labelForName) shouldBe expectedName
         }
+      }
 
-        s"ensure the labels are correct for $organisationType and reviewMode is $reviewMode" in {
-          showForm(reviewMode) { result =>
-            status(result) shouldBe OK
-            val page = CdsPage(bodyOf(result))
-            page.getElementsText(labelForNameOuter) shouldBe "What is your registered organisation name?"
-          }
+      s"ensure the labels are correct for $organisationType and reviewMode is $reviewMode" in {
+        showForm(reviewMode) { result =>
+          status(result) shouldBe OK
+          val page = CdsPage(bodyOf(result))
+          page.getElementsText(labelForNameOuter) shouldBe "What is your registered organisation name?"
         }
       }
     }
@@ -156,42 +153,41 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
 
     forAll(organisationTypeOrganisations) {
       (organisationType, _, nameDescription, submitLocation, userLocation, reviewMode, _) =>
-        {
+        assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+          mockAuthConnector,
+          controller.submit(reviewMode, organisationType, Journey.Register),
+          s", for reviewMode $reviewMode and organisationType $organisationType"
+        )
 
-          assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
-            mockAuthConnector,
-            controller.submit(reviewMode, organisationType, Journey.Register),
-            s", for reviewMode $reviewMode and organisationType $organisationType"
-          )
-
-          s"ensure name cannot be empty when organisation type is $organisationType and reviewMode is $reviewMode" in {
-            submitForm(reviewMode, form = Map("name" -> ""), organisationType) { result =>
-              status(result) shouldBe BAD_REQUEST
-              val page = CdsPage(bodyOf(result))
-              page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe nameError(nameDescription)
-              page.getElementsText(fieldLevelErrorName) shouldBe "Enter your registered organisation name"
-              page.getElementsText("title") should startWith("Error: ")
-            }
+        s"ensure name cannot be empty when organisation type is $organisationType and reviewMode is $reviewMode" in {
+          submitForm(reviewMode, form = Map("name" -> ""), organisationType) { result =>
+            status(result) shouldBe BAD_REQUEST
+            val page = CdsPage(bodyOf(result))
+            page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe nameError(nameDescription)
+            page.getElementsText(fieldLevelErrorName) shouldBe "Enter your registered organisation name"
+            page.getElementsText("title") should startWith("Error: ")
           }
+        }
 
-          s"ensure name does not exceed maximum length when organisation type is $organisationType and reviewMode is $reviewMode" in {
-            submitForm(reviewMode, form = Map("name" -> oversizedString(NameMaxLength)), organisationType) { result =>
-              status(result) shouldBe BAD_REQUEST
-              val page = CdsPage(bodyOf(result))
-              page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The organisation name must be 105 characters or less"
-              page.getElementsText(fieldLevelErrorName) shouldBe "The organisation name must be 105 characters or less"
-              page.getElementsText("title") should startWith("Error: ")
-            }
+        s"ensure name does not exceed maximum length when organisation type is $organisationType and reviewMode is $reviewMode" in {
+          submitForm(reviewMode, form = Map("name" -> oversizedString(NameMaxLength)), organisationType) { result =>
+            status(result) shouldBe BAD_REQUEST
+            val page = CdsPage(bodyOf(result))
+            page.getElementsText(
+              pageLevelErrorSummaryListXPath
+            ) shouldBe "The organisation name must be 105 characters or less"
+            page.getElementsText(fieldLevelErrorName) shouldBe "The organisation name must be 105 characters or less"
+            page.getElementsText("title") should startWith("Error: ")
           }
+        }
 
-          s"redirect to the next page when successful when organisation type is $organisationType and reviewMode is $reviewMode" in {
-            when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(userLocation))
+        s"redirect to the next page when successful when organisation type is $organisationType and reviewMode is $reviewMode" in {
+          when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(userLocation))
 
-            submitForm(reviewMode, form = ValidNameRequest, organisationType) { result =>
-              status(result) shouldBe SEE_OTHER
-              result.header.headers("Location") should endWith(submitLocation)
-              verify(mockSubscriptionDetailsService).cacheNameDetails(any())(any[HeaderCarrier])
-            }
+          submitForm(reviewMode, form = ValidNameRequest, organisationType) { result =>
+            status(result) shouldBe SEE_OTHER
+            result.header.headers("Location") should endWith(submitLocation)
+            verify(mockSubscriptionDetailsService).cacheNameDetails(any())(any[HeaderCarrier])
           }
         }
     }
@@ -222,4 +218,5 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
       .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }
+
 }

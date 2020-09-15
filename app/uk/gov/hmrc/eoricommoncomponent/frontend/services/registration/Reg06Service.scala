@@ -26,21 +26,24 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.Subscription
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{CdsToEtmpOrganisationType, OrganisationTypeConfiguration}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
+  CdsToEtmpOrganisationType,
+  OrganisationTypeConfiguration
+}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class Reg06Service @Inject()(
+class Reg06Service @Inject() (
   connector: RegisterWithEoriAndIdConnector,
   reqCommonGenerator: RequestCommonGenerator,
   dataCache: SessionCache,
   requestSessionData: RequestSessionData
 )(implicit ec: ExecutionContext) {
 
-  def sendIndividualRequest(
-    implicit request: Request[AnyContent],
+  def sendIndividualRequest(implicit
+    request: Request[AnyContent],
     loggedInUser: LoggedInUser,
     headerCarrier: HeaderCarrier
   ): Future[Boolean] = {
@@ -88,8 +91,8 @@ class Reg06Service @Inject()(
     }
   }
 
-  def sendOrganisationRequest(
-    implicit request: Request[AnyContent],
+  def sendOrganisationRequest(implicit
+    request: Request[AnyContent],
     loggedInUser: LoggedInUser,
     headerCarrier: HeaderCarrier
   ): Future[Boolean] = {
@@ -147,14 +150,14 @@ class Reg06Service @Inject()(
       case nonUtr => nonUtr
     }
 
-    def save(
-      details: RegisterWithEoriAndIdResponse,
-      subscriptionDetails: SubscriptionDetails
-    )(implicit hc: HeaderCarrier, loggedInUserId: LoggedInUser): Future[Boolean] =
-      if (details.isResponseData) {
+    def save(details: RegisterWithEoriAndIdResponse, subscriptionDetails: SubscriptionDetails)(implicit
+      hc: HeaderCarrier,
+      loggedInUserId: LoggedInUser
+    ): Future[Boolean] =
+      if (details.isResponseData)
         (details.isDoE, details.isPersonType) match {
           case (true, true) => dataCache.saveRegisterWithEoriAndIdResponse(details)
-          case (false, true) => {
+          case (false, true) =>
             val date = subscriptionDetails.dateEstablished.map(_.toString()) orElse subscriptionDetails.nameDobDetails
               .map(_.dateOfBirth.toString())
             dataCache.saveRegisterWithEoriAndIdResponse(
@@ -162,14 +165,13 @@ class Reg06Service @Inject()(
                 .withDateOfEstablishment(date)
                 .getOrElse(throw new IllegalStateException("DOE is missing from REG06 response"))
             )
-          }
           case (true, false) =>
             dataCache.saveRegisterWithEoriAndIdResponse(
               details
                 .withPersonType(maybeOrganisationTypeConfiguration.map(_.typeOfPerson))
                 .getOrElse(throw new IllegalStateException("TypeOfPerson is missing from REG06 response"))
             )
-          case (false, false) => {
+          case (false, false) =>
             val date = subscriptionDetails.dateEstablished.map(_.toString()) orElse subscriptionDetails.nameDobDetails
               .map(_.dateOfBirth.toString())
             val detailsWithDOE: RegisterWithEoriAndIdResponse = details
@@ -179,15 +181,13 @@ class Reg06Service @Inject()(
               .withPersonType(maybeOrganisationTypeConfiguration.map(_.typeOfPerson))
               .getOrElse(throw new IllegalStateException("TypeOfPerson is missing from REG06 response"))
             dataCache.saveRegisterWithEoriAndIdResponse(detailsWithTypeOfPerson)
-          }
         }
-      } else {
+      else
         dataCache.saveRegisterWithEoriAndIdResponse(details)
-      }
 
     for {
       response <- connector.register(RegisterWithEoriAndIdRequest(reqCommonGenerator.generate(), stripKFromUtr(value)))
-      saved <- save(response, subscriptionDetails)
+      saved    <- save(response, subscriptionDetails)
     } yield saved
   }
 

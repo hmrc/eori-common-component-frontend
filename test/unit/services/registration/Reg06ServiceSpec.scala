@@ -32,7 +32,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.Subscription
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{OrganisationTypeConfiguration, RegistrationDetailsCreator}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
+  OrganisationTypeConfiguration,
+  RegistrationDetailsCreator
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.Reg06Service
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -40,17 +43,17 @@ import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
 class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
-  private val mockConnector = mock[RegisterWithEoriAndIdConnector]
-  private val mockReqCommonGen = mock[RequestCommonGenerator]
-  private val mockDetailsCreator = mock[RegistrationDetailsCreator]
-  private val mockRequestCommon = mock[RequestCommon]
-  private val mockDataCache = mock[SessionCache]
+  private val mockConnector          = mock[RegisterWithEoriAndIdConnector]
+  private val mockReqCommonGen       = mock[RequestCommonGenerator]
+  private val mockDetailsCreator     = mock[RegistrationDetailsCreator]
+  private val mockRequestCommon      = mock[RequestCommon]
+  private val mockDataCache          = mock[SessionCache]
   private val mockRequestSessionData = mock[RequestSessionData]
-  private val validDate = "2016-07-08T08:35:13Z"
-  private val validDateTime = DateTime.parse(validDate)
-  implicit val hc: HeaderCarrier = mock[HeaderCarrier]
+  private val validDate              = "2016-07-08T08:35:13Z"
+  private val validDateTime          = DateTime.parse(validDate)
+  implicit val hc: HeaderCarrier     = mock[HeaderCarrier]
 
-  private val loggedInUserId = java.util.UUID.randomUUID.toString
+  private val loggedInUserId   = java.util.UUID.randomUUID.toString
   private val mockLoggedInUser = mock[LoggedInUserWithEnrolments]
 
   val service =
@@ -58,6 +61,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
 
   private val organisationNameAndAddress =
     EoriAndIdNameAndAddress("Full Name", EstablishmentAddress("25 Some Street", "Testville", Some("AB99 3XZ"), "GB"))
+
   private val organisationNameAndAddressNonePostcode =
     EoriAndIdNameAndAddress("Full Name", EstablishmentAddress("25 Some Street", "Testville", None, "GB"))
 
@@ -85,10 +89,12 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
   )
 
   private val subscriptionDetails = SubscriptionDetails(dateEstablished = Some(LocalDate.parse("1978-02-10")))
-  private val subscriptionDetailsForIndividual = SubscriptionDetails(
-    nameDobDetails = Some(NameDobMatchModel("FirstName", None, "LastName", LocalDate.parse("1999-02-11")))
+
+  private val subscriptionDetailsForIndividual = SubscriptionDetails(nameDobDetails =
+    Some(NameDobMatchModel("FirstName", None, "LastName", LocalDate.parse("1999-02-11")))
   )
-  private val personTypeCompany = Some(OrganisationTypeConfiguration.Company)
+
+  private val personTypeCompany    = Some(OrganisationTypeConfiguration.Company)
   private val personTypeIndividual = Some(OrganisationTypeConfiguration.Individual)
 
   private val organisationUtrDetailsNonePostCode = RegisterWithEoriAndIdDetail(
@@ -629,7 +635,9 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         Some(GovGatewayCredentials("some@example.com"))
       )
 
-      await(service.registerWithEoriAndId(orgDetails, subscriptionDetails, personTypeCompany)(hc, mockLoggedInUser)) shouldBe true
+      await(
+        service.registerWithEoriAndId(orgDetails, subscriptionDetails, personTypeCompany)(hc, mockLoggedInUser)
+      ) shouldBe true
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
@@ -655,7 +663,9 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         Some(GovGatewayCredentials("some@example.com"))
       )
 
-      await(service.registerWithEoriAndId(orgDetails, subscriptionDetails, personTypeCompany)(hc, mockLoggedInUser)) shouldBe true
+      await(
+        service.registerWithEoriAndId(orgDetails, subscriptionDetails, personTypeCompany)(hc, mockLoggedInUser)
+      ) shouldBe true
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
@@ -681,7 +691,9 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         Some(GovGatewayCredentials("some@example.com"))
       )
 
-      await(service.registerWithEoriAndId(orgDetails, subscriptionDetails, personTypeCompany)(hc, mockLoggedInUser)) shouldBe true
+      await(
+        service.registerWithEoriAndId(orgDetails, subscriptionDetails, personTypeCompany)(hc, mockLoggedInUser)
+      ) shouldBe true
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
@@ -846,7 +858,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       mockRegistrationSuccess()
 
       when(mockDataCache.saveRegisterWithEoriAndIdResponse(any[RegisterWithEoriAndIdResponse])(any[HeaderCarrier]))
-        .thenReturn(Future.failed((expectedException)))
+        .thenReturn(Future.failed(expectedException))
 
       val caught = intercept[RuntimeException] {
         await(
@@ -879,10 +891,10 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
     "determine correct request for an individual" in {
       val cachedAddressViewModel =
         Some(AddressViewModel("Address Line 1", "city", Some("postcode"), "GB"))
-      val eori = Some("EORINUMBERXXXXXXX")
-      val dob = Some(LocalDate.parse("1976-04-13"))
+      val eori           = Some("EORINUMBERXXXXXXX")
+      val dob            = Some(LocalDate.parse("1976-04-13"))
       val nameDobDetails = Some(NameDobMatchModel("FName", None, "LastName", LocalDate.parse("1976-04-13")))
-      val nino = Some(Nino("NINO1234"))
+      val nino           = Some(Nino("NINO1234"))
 
       val subscriptionDetailsHolder = mock[SubscriptionDetails]
 

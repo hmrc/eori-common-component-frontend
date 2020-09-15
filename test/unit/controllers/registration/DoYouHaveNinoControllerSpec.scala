@@ -44,9 +44,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockMatchingService = mock[MatchingService]
-  private val mockRequestSessionData = mock[RequestSessionData]
+  private val mockAuthConnector              = mock[AuthConnector]
+  private val mockMatchingService            = mock[MatchingService]
+  private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
 
   private val matchNinoRowIndividualView = app.injector.instanceOf[match_nino_row_individual]
@@ -99,7 +99,9 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
         page.elementIsPresent(yesRadioButton) shouldBe true
 
         page.getElementsText(ninoLabelBold) should include("National Insurance number")
-        page.getElementsText(ninoHint) shouldBe "It's on your National Insurance card, benefit letter, payslip or P60. For example, 'QQ123456C'"
+        page.getElementsText(
+          ninoHint
+        ) shouldBe "It's on your National Insurance card, benefit letter, payslip or P60. For example, 'QQ123456C'"
         page.elementIsPresent(ninoInput) shouldBe true
 
         page.getElementsText(fieldLevelErrorNino) shouldBe empty
@@ -184,7 +186,9 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
         submitForm(yesNinoWrongFormatSubmitData) { result =>
           status(result) shouldBe BAD_REQUEST
           val page = CdsPage(bodyOf(result))
-          page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The National Insurance number must be 9 characters"
+          page.getElementsText(
+            pageLevelErrorSummaryListXPath
+          ) shouldBe "The National Insurance number must be 9 characters"
           page.getElementText(fieldLevelErrorNino) shouldBe "The National Insurance number must be 9 characters"
         }
       }
@@ -208,4 +212,5 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form))
     )
   }
+
 }

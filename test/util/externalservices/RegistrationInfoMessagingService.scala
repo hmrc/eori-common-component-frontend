@@ -26,7 +26,7 @@ object RegistrationInfoMessagingService {
 
   import util.builders.RegistrationInfoResponseHolderBuilder._
 
-  val individualResponse: String = Json.toJson(registrationInfoResponseHolder(AnIndividual, None)).toString
+  val individualResponse: String   = Json.toJson(registrationInfoResponseHolder(AnIndividual, None)).toString
   val organisationResponse: String = Json.toJson(registrationInfoResponseHolder(None, AnOrganisation)).toString
 
   private def registrationPath(eori: String): String = s"/registration-display?regime=CDS&idType=EORI&idValue=$eori"
@@ -59,4 +59,5 @@ object RegistrationInfoMessagingService {
             .withHeader(CONTENT_TYPE, JSON)
         )
     )
+
 }

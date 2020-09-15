@@ -19,13 +19,13 @@ package common.pages.matching
 import common.pages.WebPage
 
 object NameIdOrganisationPage extends WebPage {
-  val registerWithNameAndAddressLink = "//*[@id='address-link']"
+  val registerWithNameAndAddressLink       = "//*[@id='address-link']"
   val registerWithNameAndAddressLinkAnchor = s"$registerWithNameAndAddressLink/a"
-  val fieldLevelErrorName = "//*[@id='name-outer']//span[@class='error-message']"
-  val fieldLevelErrorUtr = "//*[@id='utr-outer']//span[@class='error-message']"
-  val labelForNameXpath = "//*[@id='name-outer']//label"
-  val labelForUtrXpath = "//*[@id='utr-outer']/label"
-  val linkInUtrHintTextXpath = "//*[@id='utr-hint']/a"
+  val fieldLevelErrorName                  = "//*[@id='name-outer']//span[@class='error-message']"
+  val fieldLevelErrorUtr                   = "//*[@id='utr-outer']//span[@class='error-message']"
+  val labelForNameXpath                    = "//*[@id='name-outer']//label"
+  val labelForUtrXpath                     = "//*[@id='utr-outer']/label"
+  val linkInUtrHintTextXpath               = "//*[@id='utr-hint']/a"
 
   override val title = "What are your business details?"
 }

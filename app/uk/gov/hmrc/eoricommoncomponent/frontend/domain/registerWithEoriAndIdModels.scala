@@ -34,7 +34,7 @@ case class RegisterWithEoriAndIdRequestCommon(
 )
 
 object RegisterWithEoriAndIdRequestCommon extends CommonHeader {
-  implicit val format = Json.format[RegisterWithEoriAndIdRequestCommon]
+  implicit val format             = Json.format[RegisterWithEoriAndIdRequestCommon]
   implicit val requestParamFormat = Json.format[RequestParameter]
 }
 
@@ -55,10 +55,11 @@ case class RegisterModeEori(EORI: String, fullName: String, address: Establishme
   val ignoredFields = List("address")
 
   def keyValueMap(): Map[String, String] = {
-    val m = toMap(this, ignoredFields = ignoredFields)
+    val m  = toMap(this, ignoredFields = ignoredFields)
     val am = prefixMapKey("address.", address.toMap())
     m ++ am
   }
+
 }
 
 object RegisterModeEori {
@@ -83,7 +84,7 @@ case class RegisterModeId(
   val ignoredFields = List("individual", "organisation")
 
   def keyValueMap(): Map[String, String] = {
-    val m = toMap(this, ignoredFields = ignoredFields)
+    val m  = toMap(this, ignoredFields = ignoredFields)
     val om = prefixMapKey("organisation.", organisation.fold(Map.empty[String, String])(_.toMap()))
     val im = prefixMapKey("individual.", individual.fold(Map.empty[String, String])(_.toMap()))
     m ++ om ++ im
@@ -100,12 +101,14 @@ case class RegisterWithEoriAndIdDetail(
   registerModeID: RegisterModeId,
   govGatewayCredentials: Option[GovGatewayCredentials]
 ) extends CaseClassAuditHelper {
+
   def keyValueMap(): Map[String, String] = {
     val rem = registerModeEORI.keyValueMap()
     val rim = registerModeID.keyValueMap()
     val gcm = govGatewayCredentials.fold(Map.empty[String, String])(_.toMap())
     rem ++ rim ++ gcm
   }
+
 }
 
 object RegisterWithEoriAndIdDetail {
@@ -114,11 +117,13 @@ object RegisterWithEoriAndIdDetail {
 
 case class RegisterWithEoriAndIdRequest(requestCommon: RequestCommon, requestDetail: RegisterWithEoriAndIdDetail)
     extends CaseClassAuditHelper {
+
   def keyValueMap(): Map[String, String] = {
     val rcm = requestCommon.keyValueMap()
     val rdm = requestDetail.keyValueMap()
     rcm ++ rdm
   }
+
 }
 
 object RegisterWithEoriAndIdRequest {
@@ -147,7 +152,7 @@ case class ContactDetail(
   val ignoredFields = List("address")
 
   def keyValueMap(): Map[String, String] = {
-    val m = toMap(this, ignoredFields = ignoredFields)
+    val m          = toMap(this, ignoredFields = ignoredFields)
     val addressMap = prefixMapKey("address.", address.toMap())
     m ++ addressMap
   }
@@ -184,14 +189,15 @@ case class ResponseData(
   val ignoredFields = List("establishmentAddress", "contactDetail", "VATIDs", "thirdCountryIDNumber", "trader")
 
   def keyValueMap(): Map[String, String] = {
-    val m = toMap(this, ignoredFields = ignoredFields)
-    val t = prefixMapKey("trader.", trader.toMap())
-    val a = prefixMapKey("address.", establishmentAddress.toMap())
-    val cd = prefixMapKey("contactDetail.", contactDetail.fold(Map.empty[String, String])(_.keyValueMap()))
-    val tc = thirdCountryIDNumber.fold(Map.empty[String, String])(x => prefixMapKey("thirdCountryIDNumber.", x))
+    val m   = toMap(this, ignoredFields = ignoredFields)
+    val t   = prefixMapKey("trader.", trader.toMap())
+    val a   = prefixMapKey("address.", establishmentAddress.toMap())
+    val cd  = prefixMapKey("contactDetail.", contactDetail.fold(Map.empty[String, String])(_.keyValueMap()))
+    val tc  = thirdCountryIDNumber.fold(Map.empty[String, String])(x => prefixMapKey("thirdCountryIDNumber.", x))
     val vds = VATIDs.fold(Map.empty[String, String])(x => prefixMapKey("VATIDs.", convertToMap(x.map(_.toMap()))))
     m ++ t ++ a ++ cd ++ tc ++ vds
   }
+
 }
 
 object ResponseData {
@@ -206,10 +212,11 @@ case class RegisterWithEoriAndIdResponseDetail(
   val ignoredFields = List("responseData")
 
   def keyValueMap(): Map[String, String] = {
-    val m = toMap(this, ignoredFields = ignoredFields)
+    val m    = toMap(this, ignoredFields = ignoredFields)
     val rdpm = responseData.fold(Map.empty[String, String])(_.keyValueMap())
     m ++ rdpm
   }
+
 }
 
 object RegisterWithEoriAndIdResponseDetail {
@@ -220,6 +227,7 @@ case class RegisterWithEoriAndIdResponse(
   responseCommon: ResponseCommon,
   responseDetail: Option[RegisterWithEoriAndIdResponseDetail]
 ) extends CaseClassAuditHelper {
+
   def keyValueMap(): Map[String, String] = {
     val rc = responseCommon.keyValueMap()
     val rm = responseDetail.fold(Map.empty[String, String])(_.keyValueMap())
@@ -228,25 +236,25 @@ case class RegisterWithEoriAndIdResponse(
 
   def isDoE: Boolean = {
     val doe = for {
-      res <- responseDetail
+      res  <- responseDetail
       data <- res.responseData
-      doe <- data.dateOfEstablishmentBirth
+      doe  <- data.dateOfEstablishmentBirth
     } yield doe
     doe.isDefined
   }
 
   def isPersonType: Boolean = {
     val pt = for {
-      res <- responseDetail
+      res  <- responseDetail
       data <- res.responseData
-      pt <- data.personType
+      pt   <- data.personType
     } yield pt
     pt.isDefined
   }
 
   def isResponseData: Boolean = {
     val data = for {
-      res <- responseDetail
+      res  <- responseDetail
       data <- res.responseData
     } yield data
     data.isDefined
@@ -254,25 +262,22 @@ case class RegisterWithEoriAndIdResponse(
 
   def withPersonType(typeOfPerson: Option[String]): Option[RegisterWithEoriAndIdResponse] =
     for {
-      res <- responseDetail
+      res  <- responseDetail
       data <- res.responseData.map(_.copy(personType = typeOfPerson.map(_.toInt)))
-    } yield {
-      this.copy(responseDetail = Some(res.copy(responseData = Some(data))))
-    }
+    } yield this.copy(responseDetail = Some(res.copy(responseData = Some(data))))
 
   def withDateOfEstablishment(dob: Option[String]): Option[RegisterWithEoriAndIdResponse] =
     for {
-      res <- responseDetail
+      res  <- responseDetail
       data <- res.responseData.map(_.copy(dateOfEstablishmentBirth = dob))
-    } yield {
-      this.copy(responseDetail = Some(res.copy(responseData = Some(data))))
-    }
+    } yield this.copy(responseDetail = Some(res.copy(responseData = Some(data))))
+
 }
 
 object RegisterWithEoriAndIdResponse {
-  implicit val format = Json.format[RegisterWithEoriAndIdResponse]
-  val EoriAlreadyLinked = "600 - EORI already linked to a different ID"
-  val IDLinkedWithEori = "602 - ID already linked to a different EORI"
+  implicit val format            = Json.format[RegisterWithEoriAndIdResponse]
+  val EoriAlreadyLinked          = "600 - EORI already linked to a different ID"
+  val IDLinkedWithEori           = "602 - ID already linked to a different EORI"
   val RejectedPreviouslyAndRetry = "601 - Rejected previously and retry failed"
 }
 
@@ -295,29 +300,25 @@ trait CaseClassAuditHelper {
         }
 
       def fetchValue(acc: Map[String, String], f: Field, value: Any) =
-        if (isLeafNode(value)) {
+        if (isLeafNode(value))
           acc + (f.getName -> value.toString)
-        } else {
+        else
           getKeyValue(acc, value)
-        }
 
       (acc, f) =>
         f.setAccessible(true)
         val value = f.get(caseClassObject)
-        if (value != null) {
+        if (value != null)
           if (isScalaOption(value)) {
             val option = value.asInstanceOf[Option[Any]]
-            if (option.isDefined) {
+            if (option.isDefined)
               fetchValue(acc, f, option.get)
-            } else {
+            else
               acc
-            }
-          } else {
+          } else
             fetchValue(acc, f, value)
-          }
-        } else {
+        else
           acc
-        }
     }
 
   def prefixMapKey(prefix: String, map: Map[String, String]): Map[String, String] =
@@ -330,9 +331,9 @@ trait CaseClassAuditHelper {
     list.zipWithIndex
       .flatMap(
         kv =>
-          kv._1.map(x => {
+          kv._1.map { x =>
             (x._1 + "." + kv._2) -> x._2
-          })
+          }
       )
       .toMap
 

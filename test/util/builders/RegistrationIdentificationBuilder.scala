@@ -17,10 +17,16 @@
 package util.builders
 
 import common.Users._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{RegistrationIdentification, RegistrationIdentificationOutcome, SafeId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
+  RegistrationIdentification,
+  RegistrationIdentificationOutcome,
+  SafeId
+}
 
 object RegistrationIdentificationBuilder {
+
   val ACtOrgUserRegId =
     RegistrationIdentification(ACtOrgUser.internalId, safeId = "XE0000123456789", sapNumber = "0123456789")
+
   val SampleUserRegId = RegistrationIdentificationOutcome("int-0987654321", safeId = Some("XE0000123456789"))
 }

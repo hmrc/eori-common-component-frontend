@@ -25,13 +25,13 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 
 import scala.concurrent.Future
 
-class RouteFilter @Inject()(appConfig: AppConfig, errorHandler: CdsErrorHandler)(implicit val mat: Materializer)
+class RouteFilter @Inject() (appConfig: AppConfig, errorHandler: CdsErrorHandler)(implicit val mat: Materializer)
     extends Filter {
 
-  override def apply(next: RequestHeader => Future[Result])(rh: RequestHeader): Future[Result] = {
-      appConfig.blockedRoutesRegex.exists(_.findFirstIn(rh.uri).isDefined) match {
-        case false => next(rh)
-        case true => errorHandler.onClientError(rh, NOT_FOUND, "Blocked routes")
-      }
-  }
+  override def apply(next: RequestHeader => Future[Result])(rh: RequestHeader): Future[Result] =
+    appConfig.blockedRoutesRegex.exists(_.findFirstIn(rh.uri).isDefined) match {
+      case false => next(rh)
+      case true  => errorHandler.onClientError(rh, NOT_FOUND, "Blocked routes")
+    }
+
 }

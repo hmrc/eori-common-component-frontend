@@ -35,28 +35,28 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.Subscripti
 
 trait SubscriptionServiceTestData {
 
-  val sapNumber = "0123456789"
-  val expectedTaxPayerId = "012345678900000000000000000000000000000000"
-  val businessName = "Test Business Name not really a Ltd"
-  val shortName = "tbnnraltd"
-  val individualName = "John Doe"
-  val dateOfBirthString = "1970-12-31"
-  val dateOfBirth: LocalDate = LocalDate.parse(dateOfBirthString)
-  val dateEstablishedString = "1963-05-01"
-  val dateOfEstablishment: LocalDate = LocalDate.parse(dateEstablishedString)
+  val sapNumber                          = "0123456789"
+  val expectedTaxPayerId                 = "012345678900000000000000000000000000000000"
+  val businessName                       = "Test Business Name not really a Ltd"
+  val shortName                          = "tbnnraltd"
+  val individualName                     = "John Doe"
+  val dateOfBirthString                  = "1970-12-31"
+  val dateOfBirth: LocalDate             = LocalDate.parse(dateOfBirthString)
+  val dateEstablishedString              = "1963-05-01"
+  val dateOfEstablishment: LocalDate     = LocalDate.parse(dateEstablishedString)
   val dateEstablishedStringForPublicBody = "1900-01-01"
-  val principalEconomicActivity = "A123"
-  val ukVatDetails = Some(VatDetails("SE28 1AA", "123456789", LocalDate.parse("2017-01-01")))
+  val principalEconomicActivity          = "A123"
+  val ukVatDetails                       = Some(VatDetails("SE28 1AA", "123456789", LocalDate.parse("2017-01-01")))
 
-  val contactName = "John Doe"
-  val contactStreet = "Line 1"
-  val contactCity = "city name"
-  val contactPostalCode = "SE28 1AA"
+  val contactName        = "John Doe"
+  val contactStreet      = "Line 1"
+  val contactCity        = "city name"
+  val contactPostalCode  = "SE28 1AA"
   val contactCountryCode = "GB"
-  val contactFax = "01632961235"
-  val contactTelephone = "01632961234"
-  val contactEmail = "john.doe@example.com"
-  val capturedEmail = "captured@email.com"
+  val contactFax         = "01632961235"
+  val contactTelephone   = "01632961234"
+  val contactEmail       = "john.doe@example.com"
+  val capturedEmail      = "captured@email.com"
 
   val EmptyVatIds: List[VatIdentification] = Nil
 
@@ -84,27 +84,30 @@ trait SubscriptionServiceTestData {
     Some(contactCountryCode)
   )
 
-  val responseEoriNumber = "ZZZ1ZZZZ23ZZZZZZZ"
-  val responseFormBundleId: String = "Form-Bundle-Id"
-  val processingDateResponse: String = "18 Aug 2016"
+  val responseEoriNumber                   = "ZZZ1ZZZZ23ZZZZZZZ"
+  val responseFormBundleId: String         = "Form-Bundle-Id"
+  val processingDateResponse: String       = "18 Aug 2016"
   val emailVerificationTimestamp: DateTime = TestData.emailVerificationTimestamp
-  val eori = Eori(responseEoriNumber)
+  val eori                                 = Eori(responseEoriNumber)
+
   val subscriptionSuccessResult =
     SubscriptionSuccessful(eori, responseFormBundleId, processingDateResponse, Some(emailVerificationTimestamp))
 
   val cdsOrganisationTypeToTypeOfPersonMap: Map[CdsOrganisationType, OrganisationTypeConfiguration] = Map(
-    CdsOrganisationType("company") -> OrganisationTypeConfiguration.Company,
-    CdsOrganisationType("partnership") -> OrganisationTypeConfiguration.Partnership,
+    CdsOrganisationType("company")                       -> OrganisationTypeConfiguration.Company,
+    CdsOrganisationType("partnership")                   -> OrganisationTypeConfiguration.Partnership,
     CdsOrganisationType("limited-liability-partnership") -> OrganisationTypeConfiguration.LimitedLiabilityPartnership,
-    CdsOrganisationType("charity-public-body-not-for-profit") -> OrganisationTypeConfiguration.CharityPublicBodyNotForProfit,
-    CdsOrganisationType("eu-organisation") -> OrganisationTypeConfiguration.EUOrganisation,
+    CdsOrganisationType(
+      "charity-public-body-not-for-profit"
+    )                                                 -> OrganisationTypeConfiguration.CharityPublicBodyNotForProfit,
+    CdsOrganisationType("eu-organisation")            -> OrganisationTypeConfiguration.EUOrganisation,
     CdsOrganisationType("third-country-organisation") -> OrganisationTypeConfiguration.ThirdCountryOrganisation
   )
 
   val etmpOrganisationTypeToTypeOfPersonMap: Map[EtmpOrganisationType, OrganisationTypeConfiguration] = Map(
-    EtmpOrganisationType("Partnership") -> OrganisationTypeConfiguration.EtmpPartnership,
-    EtmpOrganisationType("LLP") -> OrganisationTypeConfiguration.EtmpLlp,
-    EtmpOrganisationType("Corporate Body") -> OrganisationTypeConfiguration.EtmpCorporateBody,
+    EtmpOrganisationType("Partnership")         -> OrganisationTypeConfiguration.EtmpPartnership,
+    EtmpOrganisationType("LLP")                 -> OrganisationTypeConfiguration.EtmpLlp,
+    EtmpOrganisationType("Corporate Body")      -> OrganisationTypeConfiguration.EtmpCorporateBody,
     EtmpOrganisationType("Unincorporated Body") -> OrganisationTypeConfiguration.EtmpUnincorporatedBody
   )
 
@@ -164,20 +167,20 @@ trait SubscriptionServiceTestData {
   )
 
   def createVatIdentificationsGenerator: Gen[List[VatIdentification]] = {
-    val CountryCodeLength = 2
-    val VatNumberMaxLength = 15
-    val vatNumberGenerator = Gen.numStr retryUntil (_.length <= VatNumberMaxLength)
+    val CountryCodeLength    = 2
+    val VatNumberMaxLength   = 15
+    val vatNumberGenerator   = Gen.numStr retryUntil (_.length <= VatNumberMaxLength)
     val countryCodeGenerator = Gen.listOfN(CountryCodeLength, Gen.alphaChar) map (_.mkString)
     val vatIdentificationGenerator = for {
       countryCode <- Gen.option(countryCodeGenerator)
-      vatNumber <- Gen.option(vatNumberGenerator)
+      vatNumber   <- Gen.option(vatNumberGenerator)
     } yield VatIdentification(countryCode, vatNumber)
 
     val minVatIdsCount = 0
     val maxVatIdsCount = 99
     for {
       numOfVats <- Gen.chooseNum(minVatIdsCount, maxVatIdsCount)
-      vatIds <- Gen.listOfN(numOfVats, vatIdentificationGenerator)
+      vatIds    <- Gen.listOfN(numOfVats, vatIdentificationGenerator)
     } yield vatIds
   }
 
@@ -730,6 +733,7 @@ trait SubscriptionServiceTestData {
       """.stripMargin)
 
   val subscriptionGenerateResponse: SubscriptionResponse = subscriptionGenerateResponseJson.as[SubscriptionResponse]
+
   val subscriptionResponseWithoutPosition: SubscriptionResponse =
     subscriptionResponseWithoutPositionJson.as[SubscriptionResponse]
 

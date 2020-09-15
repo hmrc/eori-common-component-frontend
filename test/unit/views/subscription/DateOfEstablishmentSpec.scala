@@ -30,8 +30,8 @@ import util.ViewSpec
 
 class DateOfEstablishmentSpec extends ViewSpec {
   val form: Form[time.LocalDate] = SubscriptionForm.subscriptionDateOfEstablishmentForm
-  val isInReviewMode = false
-  implicit val request = withFakeCSRF(FakeRequest())
+  val isInReviewMode             = false
+  implicit val request           = withFakeCSRF(FakeRequest())
 
   private val view = app.injector.instanceOf[date_of_establishment]
 

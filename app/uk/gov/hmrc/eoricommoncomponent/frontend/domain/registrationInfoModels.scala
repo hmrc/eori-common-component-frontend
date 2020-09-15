@@ -73,20 +73,25 @@ case class OrgRegistrationInfo(
 
 object RegistrationInfo {
   private val formatsOrganisation = Json.format[OrgRegistrationInfo]
-  private val formatsIndividual = Json.format[IndividualRegistrationInfo]
+  private val formatsIndividual   = Json.format[IndividualRegistrationInfo]
 
-  implicit val formats = Format[RegistrationInfo](Reads { js =>
-    formatsIndividual.reads(js) match {
-      case individual: JsSuccess[IndividualRegistrationInfo] => individual
-      case _                                                 => formatsOrganisation.reads(js)
+  implicit val formats = Format[RegistrationInfo](
+    Reads { js =>
+      formatsIndividual.reads(js) match {
+        case individual: JsSuccess[IndividualRegistrationInfo] => individual
+        case _                                                 => formatsOrganisation.reads(js)
+      }
+    },
+    Writes {
+      case individual: IndividualRegistrationInfo => formatsIndividual.writes(individual)
+      case organisation: OrgRegistrationInfo      => formatsOrganisation.writes(organisation)
     }
-  }, Writes {
-    case individual: IndividualRegistrationInfo => formatsIndividual.writes(individual)
-    case organisation: OrgRegistrationInfo      => formatsOrganisation.writes(organisation)
-  })
+  )
+
 }
 
 object IndividualRegistrationInfo {
+
   def apply(
     firstName: String,
     middleName: Option[String],
@@ -110,4 +115,5 @@ object IndividualRegistrationInfo {
       None,
       false
     )
+
 }

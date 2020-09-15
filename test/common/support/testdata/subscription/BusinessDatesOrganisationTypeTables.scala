@@ -35,4 +35,5 @@ trait BusinessDatesOrganisationTypeTables {
     ThirdCountryOrganisation,
     ThirdCountryIndividual
   )
+
 }

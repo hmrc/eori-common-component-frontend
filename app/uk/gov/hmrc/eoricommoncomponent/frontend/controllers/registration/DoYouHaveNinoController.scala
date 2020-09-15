@@ -39,7 +39,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DoYouHaveNinoController @Inject()(
+class DoYouHaveNinoController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   matchingService: MatchingService,
@@ -57,21 +57,18 @@ class DoYouHaveNinoController @Inject()(
 
   def submit(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => loggedInUser: LoggedInUserWithEnrolments =>
-      {
-        rowIndividualsNinoForm.bindFromRequest.fold(
-          formWithErrors => Future.successful(BadRequest(matchNinoRowIndividualView(formWithErrors, journey))),
-          formData =>
-            formData.haveNino match {
-              case Some(true) =>
-                matchIndividual(Nino(formData.nino.get), journey, formData, InternalId(loggedInUser.internalId))
-              case Some(false) => {
-                subscriptionDetailsService.updateSubscriptionDetails
-                noNinoRedirect(journey)
-              }
-              case _ => throw new IllegalArgumentException("Have NINO should be Some(true) or Some(false) but was None")
+      rowIndividualsNinoForm.bindFromRequest.fold(
+        formWithErrors => Future.successful(BadRequest(matchNinoRowIndividualView(formWithErrors, journey))),
+        formData =>
+          formData.haveNino match {
+            case Some(true) =>
+              matchIndividual(Nino(formData.nino.get), journey, formData, InternalId(loggedInUser.internalId))
+            case Some(false) =>
+              subscriptionDetailsService.updateSubscriptionDetails
+              noNinoRedirect(journey)
+            case _ => throw new IllegalArgumentException("Have NINO should be Some(true) or Some(false) but was None")
           }
-        )
-      }
+      )
   }
 
   private def noNinoRedirect(
@@ -84,7 +81,8 @@ class DoYouHaveNinoController @Inject()(
     }
 
   private def matchIndividual(id: CustomsId, journey: Journey.Value, formData: NinoMatchModel, internalId: InternalId)(
-    implicit request: Request[AnyContent],
+    implicit
+    request: Request[AnyContent],
     hc: HeaderCarrier
   ): Future[Result] =
     subscriptionDetailsService.cachedNameDobDetails flatMap {
@@ -102,11 +100,12 @@ class DoYouHaveNinoController @Inject()(
       case None => Future.successful(matchNotFoundBadRequest(formData, journey))
     }
 
-  private def matchNotFoundBadRequest(formData: NinoMatchModel, journey: Journey.Value)(
-    implicit request: Request[AnyContent]
+  private def matchNotFoundBadRequest(formData: NinoMatchModel, journey: Journey.Value)(implicit
+    request: Request[AnyContent]
   ): Result = {
-    val errorMsg = Messages("cds.matching-error.individual-not-found")
+    val errorMsg  = Messages("cds.matching-error.individual-not-found")
     val errorForm = rowIndividualsNinoForm.withGlobalError(errorMsg).fill(formData)
     BadRequest(matchNinoRowIndividualView(errorForm, journey))
   }
+
 }

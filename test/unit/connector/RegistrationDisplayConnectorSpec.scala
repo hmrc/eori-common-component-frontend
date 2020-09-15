@@ -35,8 +35,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class RegistrationDisplayConnectorSpec extends UnitSpec with MockitoSugar {
 
   val mockHttpClient = mock[HttpClient]
-  val mockConfig = mock[AppConfig]
-  val mockAudit = mock[Auditable]
+  val mockConfig     = mock[AppConfig]
+  val mockAudit      = mock[Auditable]
+
   val testConnector = new RegistrationDisplayConnector(mockHttpClient, mockConfig, mockAudit) {
     override val url: String = "service url"
   }

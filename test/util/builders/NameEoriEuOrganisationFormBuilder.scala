@@ -25,17 +25,17 @@ object NameEoriEuOrganisationFormBuilder {
 
   val ValidName = "John Doe"
 
-  val ValidEoriId = TestData.Eori
-  val ValidEori = Eori(ValidEoriId)
+  val ValidEoriId                     = TestData.Eori
+  val ValidEori                       = Eori(ValidEoriId)
   val ValidDateEstablished: LocalDate = LocalDate.parse("2015-10-15")
 
   val ValidNameEoriRequest = Map(
-    "yes-no-answer" -> true.toString,
-    "registration-model.name" -> ValidName,
-    "registration-model.eori" -> ValidEoriId,
-    "registration-model.date-established.day" -> "15",
+    "yes-no-answer"                             -> true.toString,
+    "registration-model.name"                   -> ValidName,
+    "registration-model.eori"                   -> ValidEoriId,
+    "registration-model.date-established.day"   -> "15",
     "registration-model.date-established.month" -> "10",
-    "registration-model.date-established.year" -> "2015"
+    "registration-model.date-established.year"  -> "2015"
   )
 
   val ValidNoNameEoriRequest = Map("yes-no-answer" -> "false")

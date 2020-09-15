@@ -41,14 +41,14 @@ trait SubscriptionDateCommon extends WebPage {
 object SubscriptionDateOfBirthPage extends SubscriptionDateCommon {
   override val title = "Your details"
 
-  override val formId: String = "date-of-birth-form"
+  override val formId: String          = "date-of-birth-form"
   override protected val dateFieldName = "date-of-birth"
 }
 
 object SubscriptionDateOfEstablishmentPage extends SubscriptionDateCommon {
   override val title = "When was the organisation established?"
 
-  override val formId: String = "date-of-establishment-form"
+  override val formId: String          = "date-of-establishment-form"
   override protected val dateFieldName = "date-of-establishment"
 
   def dateOfEstablishmentLabelXPath: String = "//*[@id='date-of-establishment-label']"
@@ -57,6 +57,6 @@ object SubscriptionDateOfEstablishmentPage extends SubscriptionDateCommon {
 object SubscriptionPartnershipDateOfEstablishmentPage extends SubscriptionDateCommon {
   override val title = "When was the partnership established?"
 
-  override val formId: String = "date-of-establishment-form"
+  override val formId: String          = "date-of-establishment-form"
   override protected val dateFieldName = "date-of-establishment"
 }

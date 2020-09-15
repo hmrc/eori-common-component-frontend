@@ -30,14 +30,14 @@ import util.ViewSpec
 
 class ConfirmContactDetailsViewSpec extends ViewSpec {
 
-  private val name = "Org Name"
-  private val address = AddressViewModel("street", "city", Some("SE28 1AA"), "GB")
-  private val customsIdUtr = Some(Utr("2108834503"))
-  private val customsIdNino = Some(Nino("ZZ123456Z"))
-  private val corporateBody = Some(CorporateBody)
-  private val partnership = Some(Partnership)
+  private val name                          = "Org Name"
+  private val address                       = AddressViewModel("street", "city", Some("SE28 1AA"), "GB")
+  private val customsIdUtr                  = Some(Utr("2108834503"))
+  private val customsIdNino                 = Some(Nino("ZZ123456Z"))
+  private val corporateBody                 = Some(CorporateBody)
+  private val partnership                   = Some(Partnership)
   private val form: Form[YesNoWrongAddress] = YesNoWrongAddress.createForm()
-  private implicit val request = withFakeCSRF(FakeRequest())
+  private implicit val request              = withFakeCSRF(FakeRequest())
 
   private val view = app.injector.instanceOf[confirm_contact_details]
 
@@ -165,4 +165,5 @@ class ConfirmContactDetailsViewSpec extends ViewSpec {
     val result = view(name, address, customsIdUtr, partnership, form, Journey.Register)
     Jsoup.parse(contentAsString(result))
   }
+
 }

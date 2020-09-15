@@ -28,9 +28,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_grou
 import util.ViewSpec
 
 class VatGroupSpec extends ViewSpec {
-  val form: Form[YesNo] = vatGroupYesNoAnswerForm()
+  val form: Form[YesNo]          = vatGroupYesNoAnswerForm()
   val formWithError: Form[YesNo] = vatGroupYesNoAnswerForm().bind(Map("yes-no-answer" -> ""))
-  implicit val request = withFakeCSRF(FakeRequest())
+  implicit val request           = withFakeCSRF(FakeRequest())
 
   private val view = app.injector.instanceOf[vat_group]
 
@@ -78,7 +78,7 @@ class VatGroupSpec extends ViewSpec {
     }
   }
 
-  lazy val doc: Document = Jsoup.parse(contentAsString(view(form, Journey.Subscribe)))
+  lazy val doc: Document           = Jsoup.parse(contentAsString(view(form, Journey.Subscribe)))
   lazy val docWithErrors: Document = Jsoup.parse(contentAsString(view(formWithError, Journey.Subscribe)))
 
 }

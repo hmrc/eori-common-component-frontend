@@ -25,7 +25,8 @@ object ServiceName {
 
   def serviceName(service: Service)(implicit messages: Messages) = {
     val key = s"cds.service.friendly.name.${service.name}"
-    if(messages.isDefinedAt(key)) messages(key) else messages(default)
+    if (messages.isDefinedAt(key)) messages(key) else messages(default)
 
   }
+
 }

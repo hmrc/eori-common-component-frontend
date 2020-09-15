@@ -34,14 +34,16 @@ object SubscriptionForm {
   private val validConfirmIndividualTypes = Set(CdsOrganisationType.SoleTraderId, CdsOrganisationType.IndividualId)
 
   private val confirmIndividualTypeError = "cds.confirm-individual-type.error.individual-type"
+
   val confirmIndividualTypeForm: Form[CdsOrganisationType] = Form(
     "individual-type" -> mandatoryString(confirmIndividualTypeError)(oneOf(validConfirmIndividualTypes))
       .transform[CdsOrganisationType](CdsOrganisationType.forId, _.id)
   )
+
   private val Length2 = 2
 
-  private val trueAnswer = "true"
-  private val falseAnswer = "false"
+  private val trueAnswer                     = "true"
+  private val falseAnswer                    = "false"
   private val trueOrFalse: String => Boolean = oneOf(Set(trueAnswer, falseAnswer))
 
   def trueFalseFieldMapping(fieldName: String): (String, Mapping[Boolean]) =
@@ -91,13 +93,15 @@ object SubscriptionForm {
           (vatCountryCodes: List[String], vatNumbers: List[String]) =>
             SubscriptionVatEUDetailsFormModel.stringListsToVats(vatCountryCodes, vatNumbers)
         )(SubscriptionVatEUDetailsFormModel.vatsToStringLists)
-          .verifying("cds.subscription.vat-eu.incomplete.entry", { vatIds =>
-            vatIds.flatMap {
-              case VatIdentification(Some(_), None) => Some(())
-              case VatIdentification(None, Some(_)) => Some(())
-              case _                                => None
-            }.isEmpty
-          })
+          .verifying(
+            "cds.subscription.vat-eu.incomplete.entry",
+            vatIds =>
+              vatIds.flatMap {
+                case VatIdentification(Some(_), None) => Some(())
+                case VatIdentification(None, Some(_)) => Some(())
+                case _                                => None
+              }.isEmpty
+          )
       )
 
     Form(
@@ -242,4 +246,5 @@ object SubscriptionForm {
   val emailForm = Form(
     Forms.mapping("email" -> text.verifying(validEmail))(EmailViewModel.apply)(EmailViewModel.unapply)
   )
+
 }

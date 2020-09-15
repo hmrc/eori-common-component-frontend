@@ -25,7 +25,10 @@ import org.scalatest.prop.Checkers
 import play.api.mvc.{MessagesControllerComponents, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{SubscriptionFlowManager, VatDetailsEuController}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{
+  SubscriptionFlowManager,
+  VatDetailsEuController
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.VatEUDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
@@ -42,9 +45,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with BeforeAndAfterEach {
 
-  private val mockCountries = mock[Countries]
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockSubscriptionFlowManager = mock[SubscriptionFlowManager]
+  private val mockCountries                       = mock[Countries]
+  private val mockAuthConnector                   = mock[AuthConnector]
+  private val mockSubscriptionFlowManager         = mock[SubscriptionFlowManager]
   private val mockSubscriptionVatEUDetailsService = mock[SubscriptionVatEUDetailsService]
 
   private val vatDetailsEuView = app.injector.instanceOf[vat_details_eu]
@@ -62,7 +65,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
   val countries = new Countries(app)
 
   private val ProblemWithVATEUNumberError = "Enter the VAT number"
-  private val duplicateVatNumber = "You have already entered this VAT number. Enter a different VAT number"
+  private val duplicateVatNumber          = "You have already entered this VAT number. Enter a different VAT number"
 
   private val validVatIdMap = Map("vatCountry" -> "FR", "vatNumber" -> "XX123456789")
 
@@ -310,9 +313,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
   private def updateForm(index: Int)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     await(
-      test(
-        controller.updateForm(index, Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
-      )
+      test(controller.updateForm(index, Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
     )
   }
 
@@ -326,4 +327,5 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
       )
     )
   }
+
 }

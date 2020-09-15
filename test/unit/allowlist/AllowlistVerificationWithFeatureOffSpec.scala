@@ -41,6 +41,7 @@ import scala.concurrent.Future
 
 class AllowlistVerificationWithFeatureOffSpec
     extends SubscriptionFlowSpec with GuiceOneAppPerSuite with MockitoSugar with BeforeAndAfterEach {
+
   implicit override lazy val app: Application = new GuiceApplicationBuilder()
     .disable[com.kenshoo.play.metrics.PlayModule]
     .configure("metrics.enabled" -> false)
@@ -48,20 +49,22 @@ class AllowlistVerificationWithFeatureOffSpec
     .build()
 
   protected override val mockSubscriptionFlowManager: SubscriptionFlowManager = mock[SubscriptionFlowManager]
-  protected override val formId: String = NameDobSoleTraderPage.formId
+  protected override val formId: String                                       = NameDobSoleTraderPage.formId
+
   protected override val submitInCreateModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController
       .submit(isInReviewMode = false, Journey.Subscribe)
       .url
+
   protected override val submitInReviewModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController
       .submit(isInReviewMode = true, Journey.Subscribe)
       .url
 
-  private val mockRequestSessionData = mock[RequestSessionData]
-  private val mockRegistrationDetails = mock[RegistrationDetails](RETURNS_DEEP_STUBS)
+  private val mockRequestSessionData   = mock[RequestSessionData]
+  private val mockRegistrationDetails  = mock[RegistrationDetails](RETURNS_DEEP_STUBS)
   private val mockCdsFrontendDataCache = mock[SessionCache]
-  private val enterYourDetails = app.injector.instanceOf[enter_your_details]
+  private val enterYourDetails         = app.injector.instanceOf[enter_your_details]
 
   private val controller = new NameDobSoleTraderController(
     app,

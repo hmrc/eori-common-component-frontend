@@ -25,7 +25,7 @@ import util.ViewSpec
 
 class YouCannotRegisterUsingThisServiceSpec extends ViewSpec {
 
-  private val view = app.injector.instanceOf[vat_groups_cannot_register_using_this_service]
+  private val view     = app.injector.instanceOf[vat_groups_cannot_register_using_this_service]
   implicit val request = withFakeCSRF(FakeRequest())
 
   "The 'You need to use a different service' Page" should {

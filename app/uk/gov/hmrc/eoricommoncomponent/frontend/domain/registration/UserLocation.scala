@@ -22,11 +22,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionDat
 //TODO Make these sealed trait / case object with a isROW fn
 object UserLocation {
 
-  val Uk = "uk"
-  val Iom = "iom"
-  val Eu = "eu"
+  val Uk           = "uk"
+  val Iom          = "iom"
+  val Eu           = "eu"
   val ThirdCountry = "third-country"
-  val Islands = "islands"
+  val Islands      = "islands"
 
   val validLocations: Set[String] = Set(Uk, Iom, Eu, ThirdCountry, Islands)
 

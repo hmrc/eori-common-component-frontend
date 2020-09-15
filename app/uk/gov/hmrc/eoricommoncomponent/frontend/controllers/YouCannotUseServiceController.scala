@@ -28,7 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class YouCannotUseServiceController @Inject()(
+class YouCannotUseServiceController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   youCantUseService: you_cant_use_service,
@@ -47,4 +47,5 @@ class YouCannotUseServiceController @Inject()(
   def unauthorisedPage(): Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Unauthorized(unauthorisedView()))
   }
+
 }

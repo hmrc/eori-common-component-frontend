@@ -36,23 +36,33 @@ class CachedDataSpec extends UnitSpec with MockitoSugar {
     "throw IllegalStateException" when {
 
       "registrationDetails missing " in {
-        intercept[Exception](CachedData().registrationDetails(sessionId)).getMessage shouldBe errorMsg(CachedData.regDetailsKey)
+        intercept[Exception](CachedData().registrationDetails(sessionId)).getMessage shouldBe errorMsg(
+          CachedData.regDetailsKey
+        )
       }
 
       "registerWithEoriAndIdResponse missing " in {
-        intercept[Exception](CachedData().registerWithEoriAndIdResponse(sessionId)).getMessage shouldBe errorMsg(CachedData.registerWithEoriAndIdResponseKey)
+        intercept[Exception](CachedData().registerWithEoriAndIdResponse(sessionId)).getMessage shouldBe errorMsg(
+          CachedData.registerWithEoriAndIdResponseKey
+        )
       }
 
       "sub01Outcome missing " in {
-        intercept[Exception](CachedData().sub01Outcome(sessionId)).getMessage shouldBe errorMsg(CachedData.sub01OutcomeKey)
+        intercept[Exception](CachedData().sub01Outcome(sessionId)).getMessage shouldBe errorMsg(
+          CachedData.sub01OutcomeKey
+        )
       }
 
       "sub02Outcome missing " in {
-        intercept[Exception](CachedData().sub02Outcome(sessionId)).getMessage shouldBe errorMsg(CachedData.sub02OutcomeKey)
+        intercept[Exception](CachedData().sub02Outcome(sessionId)).getMessage shouldBe errorMsg(
+          CachedData.sub02OutcomeKey
+        )
       }
 
       "registrationInfo missing " in {
-        intercept[Exception](CachedData().registrationInfo(sessionId)).getMessage shouldBe errorMsg(CachedData.regInfoKey)
+        intercept[Exception](CachedData().registrationInfo(sessionId)).getMessage shouldBe errorMsg(
+          CachedData.regInfoKey
+        )
       }
 
       "email missing " in {
@@ -75,7 +85,9 @@ class CachedDataSpec extends UnitSpec with MockitoSugar {
 
       "registerWithEoriAndIdResponse" in {
         val safeId = "someSafeId"
-        CachedData(registerWithEoriAndIdResponse = Some(registerWithEoriAndIdResponse(safeId))).safeId(sessionId) shouldBe SafeId(safeId)
+        CachedData(registerWithEoriAndIdResponse = Some(registerWithEoriAndIdResponse(safeId))).safeId(
+          sessionId
+        ) shouldBe SafeId(safeId)
       }
 
       "registrationDetails" in {
@@ -85,7 +97,13 @@ class CachedDataSpec extends UnitSpec with MockitoSugar {
     }
   }
 
-  def registrationDetails(safeId: String) = RegistrationDetailsSafeId(SafeId(safeId), Address("", Some(""), Some(""), Some(""), Some(""), ""), TaxPayerId(""), None, "")
+  def registrationDetails(safeId: String) = RegistrationDetailsSafeId(
+    SafeId(safeId),
+    Address("", Some(""), Some(""), Some(""), Some(""), ""),
+    TaxPayerId(""),
+    None,
+    ""
+  )
 
   def registerWithEoriAndIdResponse(safeId: String) = RegisterWithEoriAndIdResponse(
     ResponseCommon("OK", None, new DateTime, None),
@@ -122,4 +140,5 @@ class CachedDataSpec extends UnitSpec with MockitoSugar {
       )
     )
   )
+
 }

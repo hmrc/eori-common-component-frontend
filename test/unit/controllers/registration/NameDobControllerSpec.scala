@@ -41,7 +41,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with SubscriptionFlowTestSupport {
-  protected override val formId: String = NameDateOfBirthPage.formId
+  protected override val formId: String      = NameDateOfBirthPage.formId
   val mockCdsFrontendDataCache: SessionCache = mock[SessionCache]
 
   private val matchNameDobView = app.injector.instanceOf[match_namedob]
@@ -54,8 +54,8 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
   val defaultOrganisationType = "individual"
 
   private val InvalidDateError = InvalidDate
-  private val FirstNameError = thereIsAProblemWithThe("first name")
-  private val LastNameError = thereIsAProblemWithThe("last name")
+  private val FirstNameError   = thereIsAProblemWithThe("first name")
+  private val LastNameError    = thereIsAProblemWithThe("last name")
   private val DateOfBirthError = "Tell us your date of birth"
 
   def maxLengthError(maxLength: Int, field: String): String =
@@ -168,8 +168,8 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
       val tomorrow = LocalDate.now().plusDays(1)
       submitForm(
         ValidRequest + ("date-of-birth.day" -> tomorrow.getDayOfMonth.toString,
-        "date-of-birth.month" -> tomorrow.getMonthOfYear.toString,
-        "date-of-birth.year" -> tomorrow.getYear.toString),
+        "date-of-birth.month"               -> tomorrow.getMonthOfYear.toString,
+        "date-of-birth.year"                -> tomorrow.getYear.toString),
         "sole-trader"
       ) { result =>
         status(result) shouldBe BAD_REQUEST
@@ -210,7 +210,9 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
     "redirect to the confirm page when successful" in {
       submitForm(ValidRequest, "individual") { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs-enrolment-services/register/matching/chooseid/individual")
+        result.header.headers("Location") should endWith(
+          "/customs-enrolment-services/register/matching/chooseid/individual"
+        )
       }
     }
   }
@@ -234,4 +236,5 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
 
     test(result)
   }
+
 }

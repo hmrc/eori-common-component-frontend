@@ -25,8 +25,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.you_need_different_service_iom
 
 import scala.concurrent.ExecutionContext
+
 @Singleton
-class YouNeedADifferentServiceIomController @Inject()(
+class YouNeedADifferentServiceIomController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   youNeedADifferentService: you_need_different_service_iom,
@@ -37,4 +38,5 @@ class YouNeedADifferentServiceIomController @Inject()(
   def form(journey: Journey.Value): Action[AnyContent] = Action { implicit request =>
     Ok(youNeedADifferentService())
   }
+
 }

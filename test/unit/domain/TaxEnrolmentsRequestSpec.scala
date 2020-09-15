@@ -55,19 +55,19 @@ class TaxEnrolmentsRequestSpec extends UnitSpec {
 
   "TaxEnrolmentsRequest" should {
     "transform to valid format Json" in {
-      val date = LocalDate.parse("2010-04-28")
-      val identifiers = List(KeyValue(key = "EORINUMBER", value = "GB9999999999"))
-      val verifiers = List(KeyValue(key = "DATEOFESTABLISHMENT", value = date.toString(pattern)))
-      val taxEnrolmentsRequest = TaxEnrolmentsRequest(identifiers = identifiers, verifiers = Some(verifiers))
+      val date                     = LocalDate.parse("2010-04-28")
+      val identifiers              = List(KeyValue(key = "EORINUMBER", value = "GB9999999999"))
+      val verifiers                = List(KeyValue(key = "DATEOFESTABLISHMENT", value = date.toString(pattern)))
+      val taxEnrolmentsRequest     = TaxEnrolmentsRequest(identifiers = identifiers, verifiers = Some(verifiers))
       val taxEnrolmentsRequestJson = Json.toJson[TaxEnrolmentsRequest](taxEnrolmentsRequest)
       Json.prettyPrint(taxEnrolmentsRequestJson) shouldBe Json.prettyPrint(expectedTaxEnrolmentsRequestJson)
     }
 
     "transform to valid format Json when DATEOFESTABLISHMENT isa not present" in {
-      val date = LocalDate.parse("2010-04-28")
-      val identifiers = List(KeyValue(key = "EORINUMBER", value = "GB9999999999"))
-      val verifiers = None
-      val taxEnrolmentsRequest = TaxEnrolmentsRequest(identifiers = identifiers, verifiers = verifiers)
+      val date                     = LocalDate.parse("2010-04-28")
+      val identifiers              = List(KeyValue(key = "EORINUMBER", value = "GB9999999999"))
+      val verifiers                = None
+      val taxEnrolmentsRequest     = TaxEnrolmentsRequest(identifiers = identifiers, verifiers = verifiers)
       val taxEnrolmentsRequestJson = Json.toJson[TaxEnrolmentsRequest](taxEnrolmentsRequest)
       Json.prettyPrint(taxEnrolmentsRequestJson) shouldBe Json.prettyPrint(expectedTaxEnrolmentsNoDOERequestJson)
     }

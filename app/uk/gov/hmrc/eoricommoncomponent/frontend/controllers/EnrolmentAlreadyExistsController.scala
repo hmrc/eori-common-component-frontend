@@ -27,17 +27,18 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.ExecutionContext
 
-class EnrolmentAlreadyExistsController @Inject()(
-                                                  val currentApp: Application,
-                                                  override val authConnector: AuthConnector,
-                                                  registrationExistsView: registration_exists,
-                                                  mcc: MessagesControllerComponents
-                                                )(implicit ec: ExecutionContext)
-  extends FrontendController(mcc) with AuthorisedFunctions with I18nSupport {
+class EnrolmentAlreadyExistsController @Inject() (
+  val currentApp: Application,
+  override val authConnector: AuthConnector,
+  registrationExistsView: registration_exists,
+  mcc: MessagesControllerComponents
+)(implicit ec: ExecutionContext)
+    extends FrontendController(mcc) with AuthorisedFunctions with I18nSupport {
 
   override def messagesApi: MessagesApi = currentApp.injector.instanceOf[MessagesApi]
 
   def enrolmentAlreadyExists(service: Service): Action[AnyContent] = Action { implicit request =>
     Ok(registrationExistsView(service))
   }
+
 }

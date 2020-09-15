@@ -42,9 +42,7 @@ case class SubscriptionFlowConfig(
   def determinePageBeforeSubscriptionFlow(uriBeforeSubscriptionFlow: Option[String]): SubscriptionPage =
     uriBeforeSubscriptionFlow.fold(pageBeforeFirstFlowPage)(url => PreviousPage(url))
 
-  def stepInformation(
-    currentPage: SubscriptionPage
-  ): SubscriptionFlowInfo = {
+  def stepInformation(currentPage: SubscriptionPage): SubscriptionFlowInfo = {
 
     val currentPos = pagesInOrder.indexOf(currentPage)
 
@@ -52,14 +50,16 @@ case class SubscriptionFlowConfig(
 
     SubscriptionFlowInfo(stepNumber = currentPos + ONE, totalSteps = pagesInOrder.size, nextPage = nextPage)
   }
+
 }
 
 @Singleton
-class SubscriptionFlowManager @Inject()(
+class SubscriptionFlowManager @Inject() (
   override val currentApp: Application,
   requestSessionData: RequestSessionData,
   cdsFrontendDataCache: SessionCache
-)(implicit ec: ExecutionContext) extends FeatureFlags {
+)(implicit ec: ExecutionContext)
+    extends FeatureFlags {
 
   def currentSubscriptionFlow(implicit request: Request[AnyContent]): SubscriptionFlow =
     requestSessionData.userSubscriptionFlow
@@ -82,10 +82,10 @@ class SubscriptionFlowManager @Inject()(
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[(SubscriptionPage, Session)] =
     startSubscriptionFlow(previousPage, Some(cdsOrganisationType), journey)
 
-  def startSubscriptionFlow(
-    previousPage: Option[SubscriptionPage],
-    journey: Journey.Value
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[(SubscriptionPage, Session)] =
+  def startSubscriptionFlow(previousPage: Option[SubscriptionPage], journey: Journey.Value)(implicit
+    hc: HeaderCarrier,
+    request: Request[AnyContent]
+  ): Future[(SubscriptionPage, Session)] =
     startSubscriptionFlow(previousPage, requestSessionData.userSelectedOrganisationType, journey)
 
   private def startSubscriptionFlow(
@@ -95,18 +95,16 @@ class SubscriptionFlowManager @Inject()(
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[(SubscriptionPage, Session)] = {
     val maybePreviousPageUrl = previousPage.map(page => page.url)
     cdsFrontendDataCache.registrationDetails map { registrationDetails =>
-      {
-        val flow = selectFlow(registrationDetails, orgType, journey)
+      val flow = selectFlow(registrationDetails, orgType, journey)
 
-        logger.info(s"select Subscription flow: ${flow.name}")
-        (
-          SubscriptionFlows(flow).pagesInOrder.head,
-          requestSessionData.storeUserSubscriptionFlow(
-            flow,
-            SubscriptionFlows(flow).determinePageBeforeSubscriptionFlow(maybePreviousPageUrl).url
-          )
+      logger.info(s"select Subscription flow: ${flow.name}")
+      (
+        SubscriptionFlows(flow).pagesInOrder.head,
+        requestSessionData.storeUserSubscriptionFlow(
+          flow,
+          SubscriptionFlows(flow).determinePageBeforeSubscriptionFlow(maybePreviousPageUrl).url
         )
-      }
+      )
     }
   }
 
@@ -119,21 +117,21 @@ class SubscriptionFlowManager @Inject()(
 
     val subscribePrefix = (userLocation, journey, registrationDetails.customsId, rowHaveUtrEnabled) match {
       case (
-          Some(UserLocation.Eu) | Some(UserLocation.Islands) | Some(UserLocation.ThirdCountry),
-          Journey.Subscribe,
-          None,
-          true
+            Some(UserLocation.Eu) | Some(UserLocation.Islands) | Some(UserLocation.ThirdCountry),
+            Journey.Subscribe,
+            None,
+            true
           ) =>
         "migration-eori-row-utrNino-enabled-"
       case (
-          Some(UserLocation.Eu) | Some(UserLocation.Islands) | Some(UserLocation.ThirdCountry),
-          Journey.Subscribe,
-          _,
-          _
+            Some(UserLocation.Eu) | Some(UserLocation.Islands) | Some(UserLocation.ThirdCountry),
+            Journey.Subscribe,
+            _,
+            _
           ) =>
         "migration-eori-row-"
       case (_, Journey.Subscribe, _, _) => "migration-eori-" // This means UK
-      case _                          => ""
+      case _                            => ""
     }
 
     val selectedFlow: SubscriptionFlow =
@@ -155,4 +153,5 @@ class SubscriptionFlowManager @Inject()(
       orgType => SubscriptionFlows.flows.keys.find(_.name == (subscribePrefix + orgType.id)).getOrElse(selectedFlow)
     )
   }
+
 }

@@ -23,6 +23,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.CommonHeader
 
 case class SubscriptionStatusQueryParams(receiptDate: DateTime, regime: String, idType: String, id: String)
     extends CaseClassAuditHelper {
+
   def queryParams: Seq[(String, String)] = {
     val receiptDateAsString = receiptDate.toString(ISODateTimeFormat.dateTimeNoMillis().withZoneUTC())
     Seq("receiptDate" -> receiptDateAsString, "regime" -> regime, idType -> id)
@@ -33,14 +34,17 @@ case class SubscriptionStatusQueryParams(receiptDate: DateTime, regime: String, 
 
   def jsObject(): JsValue =
     Json.toJson(this.keyValueMap())
+
 }
 
 case class SubscriptionStatusResponseCommon(status: String, processingDate: DateTime) extends CaseClassAuditHelper {
+
   def keyValueMap(): Map[String, String] =
     toMap(this)
 
   def jsObject(): JsValue =
     Json.toJson(this.keyValueMap())
+
 }
 
 object SubscriptionStatusResponseCommon extends CommonHeader {
@@ -49,11 +53,13 @@ object SubscriptionStatusResponseCommon extends CommonHeader {
 
 case class SubscriptionStatusResponseDetail(subscriptionStatus: String, idValue: Option[String])
     extends CaseClassAuditHelper {
+
   def keyValueMap(): Map[String, String] =
     toMap(this)
 
   def jsObject(): JsValue =
     Json.toJson(this.keyValueMap())
+
 }
 
 object SubscriptionStatusResponseDetail {
@@ -64,8 +70,10 @@ case class SubscriptionStatusResponse(
   responseCommon: SubscriptionStatusResponseCommon,
   responseDetail: SubscriptionStatusResponseDetail
 ) {
+
   def jsObject(): JsValue =
     responseCommon.jsObject().as[JsObject].deepMerge(responseDetail.jsObject().as[JsObject])
+
 }
 
 object SubscriptionStatusResponse {
@@ -73,8 +81,10 @@ object SubscriptionStatusResponse {
 }
 
 case class SubscriptionStatusResponseHolder(subscriptionStatusResponse: SubscriptionStatusResponse) {
+
   def jsObject(): JsValue =
     subscriptionStatusResponse.jsObject()
+
 }
 
 object SubscriptionStatusResponseHolder {

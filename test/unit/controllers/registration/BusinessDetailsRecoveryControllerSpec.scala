@@ -53,12 +53,12 @@ import scala.concurrent.Future
 
 class BusinessDetailsRecoveryControllerSpec extends ControllerSpec with BeforeAndAfter {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockRequestSessionData = mock[RequestSessionData]
-  private val mockSessionCache = mock[SessionCache]
-  private val mockOrgTypeLookup = mock[OrgTypeLookup]
+  private val mockAuthConnector           = mock[AuthConnector]
+  private val mockRequestSessionData      = mock[RequestSessionData]
+  private val mockSessionCache            = mock[SessionCache]
+  private val mockOrgTypeLookup           = mock[OrgTypeLookup]
   private val mockSubscriptionFlowManager = mock[SubscriptionFlowManager]
-  private val mockSave4LaterService = mock[Save4LaterService]
+  private val mockSave4LaterService       = mock[Save4LaterService]
 
   private val businessDetailsRecoveryView =
     app.injector.instanceOf[business_details_recovery]
@@ -158,7 +158,7 @@ class BusinessDetailsRecoveryControllerSpec extends ControllerSpec with BeforeAn
         case UserLocation.Iom          => "iom"
         case UserLocation.Islands      => "islands"
       }
-      val mockSession = mock[Session]
+      val mockSession   = mock[Session]
       val mockFlowStart = (DateOfEstablishmentSubscriptionFlowPage, mockSession)
 
       when(
@@ -177,9 +177,7 @@ class BusinessDetailsRecoveryControllerSpec extends ControllerSpec with BeforeAn
 
       invokeContinue() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith(
-          DateOfEstablishmentController.createForm(Journey.Register).url
-        )
+        result.header.headers(LOCATION) should endWith(DateOfEstablishmentController.createForm(Journey.Register).url)
       }
     }
 
@@ -204,4 +202,5 @@ class BusinessDetailsRecoveryControllerSpec extends ControllerSpec with BeforeAn
         .apply(SessionBuilder.buildRequestWithSession(userId))
     )
   }
+
 }

@@ -31,15 +31,17 @@ import util.ViewSpec
 class SixLineAddressSpec extends ViewSpec {
 
   private val form: Form[SixLineAddressMatchModel] = thirdCountrySixLineAddressForm
-  private val isInReviewMode = false
-  private implicit val request = withFakeCSRF(FakeRequest())
-  private val ThirdCountryOrganisationId = "third-country-organisation"
+  private val isInReviewMode                       = false
+  private implicit val request                     = withFakeCSRF(FakeRequest())
+  private val ThirdCountryOrganisationId           = "third-country-organisation"
+
   private val aFewCountries = List(
     Country("France", "country:FR"),
     Country("Germany", "country:DE"),
     Country("Italy", "country:IT"),
     Country("Japan", "country:JP")
   )
+
   private val view = app.injector.instanceOf[six_line_address]
 
   "Rest of World (ROW) Enter your organisation address Page" should {
@@ -129,4 +131,5 @@ class SixLineAddressSpec extends ViewSpec {
     )
     Jsoup.parse(contentAsString(result))
   }
+
 }

@@ -24,7 +24,7 @@ import play.mvc.Http.Status.{NOT_FOUND, OK}
 
 object VatControlListMessagingService {
 
-  private val vatEndPoint = s"/vat-known-facts-control-list?vrn=123456789"
+  private val vatEndPoint        = s"/vat-known-facts-control-list?vrn=123456789"
   private val vatUpdatedEndPoint = s"/vat-known-facts-control-list?vrn=123456788"
 
   private val responseWithOk: JsValue =
@@ -41,6 +41,7 @@ object VatControlListMessagingService {
 
   def returnTheVatControlListResponseOK(): Unit =
     stubTheVatControlListResponse(vatEndPoint, responseWithOk.toString(), OK)
+
   def returnTheVatControlUpdatedListResponseOK(): Unit =
     stubTheVatControlListResponse(vatUpdatedEndPoint, responseWithOk.toString(), OK)
 
@@ -68,4 +69,5 @@ object VatControlListMessagingService {
             .withHeader(CONTENT_TYPE, JSON)
         )
     )
+
 }

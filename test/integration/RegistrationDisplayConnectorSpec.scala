@@ -37,11 +37,11 @@ class RegistrationDisplayConnectorSpec extends IntegrationTestsSpec with ScalaFu
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
       Map(
-        "microservice.services.eori-common-component-hods-proxy.host" -> Host,
-        "microservice.services.eori-common-component-hods-proxy.port" -> Port,
+        "microservice.services.eori-common-component-hods-proxy.host"                         -> Host,
+        "microservice.services.eori-common-component-hods-proxy.port"                         -> Port,
         "microservice.services.eori-common-component-hods-proxy.registration-display.context" -> "registration-display",
-        "auditing.consumer.baseUri.host" -> Host,
-        "auditing.consumer.baseUri.port" -> Port
+        "auditing.consumer.baseUri.host"                                                      -> Host,
+        "auditing.consumer.baseUri.port"                                                      -> Port
       )
     )
     .build()

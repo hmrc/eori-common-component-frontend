@@ -33,7 +33,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RowIndividualNameDateOfBirthController @Inject()(
+class RowIndividualNameDateOfBirthController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   subscriptionDetailsService: SubscriptionDetailsService,
@@ -70,7 +70,7 @@ class RowIndividualNameDateOfBirthController @Inject()(
         formWithErrors =>
           Future.successful(
             BadRequest(rowIndividualNameDob(formWithErrors, organisationType, journey, isInReviewMode))
-        ),
+          ),
         form => submitDetails(isInReviewMode, form, organisationType, journey)
       )
     }
@@ -101,4 +101,5 @@ class RowIndividualNameDateOfBirthController @Inject()(
       }
     }
   }
+
 }

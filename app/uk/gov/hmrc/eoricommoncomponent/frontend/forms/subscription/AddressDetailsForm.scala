@@ -28,8 +28,8 @@ object AddressDetailsForm {
   def addressDetailsCreateForm()(implicit messages: Messages): Form[AddressViewModel] =
     Form(
       mapping(
-        "street" -> text.verifying(validLine1),
-        "city" -> text.verifying(validCity),
+        "street"   -> text.verifying(validLine1),
+        "city"     -> text.verifying(validCity),
         "postcode" -> postcodeMapping,
         "countryCode" -> text.verifying(
           "cds.subscription.address-details.countryCode.error.label",

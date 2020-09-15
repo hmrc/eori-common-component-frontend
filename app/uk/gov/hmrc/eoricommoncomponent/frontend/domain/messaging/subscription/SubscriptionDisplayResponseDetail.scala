@@ -38,12 +38,13 @@ case class SubscriptionDisplayResponseDetail(
   val ignoredFields = List("CDSEstablishmentAddress", "contactInformation", "VATIDs")
 
   def keyValueMap(): Map[String, String] = {
-    val m = toMap(this, ignoredFields = ignoredFields)
+    val m  = toMap(this, ignoredFields = ignoredFields)
     val ea = prefixMapKey("address.", CDSEstablishmentAddress.toMap())
     val ci = prefixMapKey("contactInformation.", contactInformation.fold(Map.empty[String, String])(_.toMap()))
     val vi = prefixMapKey("vatIDs.", VATIDs.fold(Map.empty[String, String])(_.flatMap(_.toMap()).toMap))
     m ++ ea ++ ci ++ vi
   }
+
 }
 
 object SubscriptionDisplayResponseDetail {

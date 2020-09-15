@@ -30,7 +30,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class EnrolmentAlreadyExistsControllerSpec extends ControllerSpec {
 
-  private val mockAuthConnector = mock[AuthConnector]
+  private val mockAuthConnector              = mock[AuthConnector]
   private val cdsEnrolmentId: Option[String] = Some("GB1234567890ABCDE")
 
   private val registrationExistsView = app.injector.instanceOf[registration_exists]
@@ -43,7 +43,9 @@ class EnrolmentAlreadyExistsControllerSpec extends ControllerSpec {
 
       withAuthorisedUser(defaultUserId, mockAuthConnector, cdsEnrolmentId = cdsEnrolmentId)
       val result =
-        await(controller.enrolmentAlreadyExists(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+        await(
+          controller.enrolmentAlreadyExists(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+        )
 
       status(result) shouldBe OK
 

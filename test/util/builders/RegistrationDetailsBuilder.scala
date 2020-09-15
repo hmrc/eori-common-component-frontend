@@ -23,8 +23,8 @@ import org.joda.time.LocalDate
 object RegistrationDetailsBuilder {
 
   val defaultCountryName = "United Kingdom"
-  val defaultEmail = "john.doe@example.com"
-  val defaultAddress = Address("Line 1", Some("line 2"), Some("line 3"), Some("line 4"), Some("SE28 1AA"), "GB")
+  val defaultEmail       = "john.doe@example.com"
+  val defaultAddress     = Address("Line 1", Some("line 2"), Some("line 3"), Some("line 4"), Some("SE28 1AA"), "GB")
 
   val defaultAddressWithMandatoryValuesOnly = Address("Line 1", None, None, None, None, "GB")
 
@@ -60,15 +60,20 @@ object RegistrationDetailsBuilder {
 
   val emptyETMPOrgTypeRegistrationDetails: RegistrationDetailsOrganisation =
     DefaultOrganisationRegistrationDetails.copy(etmpOrganisationType = None)
+
   val incorporatedRegistrationDetails =
     DefaultOrganisationRegistrationDetails.copy(etmpOrganisationType = Some(CorporateBody))
-  val individualRegistrationDetails = DefaultIndividualRegistrationDetails
+
+  val individualRegistrationDetails                     = DefaultIndividualRegistrationDetails
   val individualRegistrationDetailsNotIdentifiedByReg01 = DefaultIndividualRegistrationDetails.copy(safeId = SafeId(""))
+
   val existingOrganisationRegistrationDetails = DefaultOrganisationRegistrationDetails
     .copy(etmpOrganisationType = Some(Partnership))
     .withEstablishmentDate("2001-06-09")
+
   val PartneshipRegistrationDetails: RegistrationDetailsOrganisation =
     DefaultOrganisationRegistrationDetails.copy(etmpOrganisationType = Some(Partnership))
+
   val soleTraderRegistrationDetails = DefaultIndividualRegistrationDetails.copy(name = "John Doe Sole Trader")
 
   val sub01Outcome: Sub01Outcome = Sub01Outcome("2016-08-18T14:01:05")
@@ -83,19 +88,28 @@ object RegistrationDetailsBuilder {
     DefaultOrganisationRegistrationDetails.withEstablishmentDate(localDateStr)
 
   implicit class OrganisationDetailsOps(val o: RegistrationDetailsOrganisation) extends AnyVal {
+
     def withCustomsId(maybeCustomsId: Option[CustomsId]): RegistrationDetailsOrganisation =
       o.copy(customsId = maybeCustomsId)
+
     def withBusinessAddress(businessAddress: Address): RegistrationDetailsOrganisation =
       o.copy(address = businessAddress)
+
     def withSapNumber(sapNumber: String): RegistrationDetailsOrganisation = o.copy(sapNumber = TaxPayerId(sapNumber))
+
     def withEstablishmentDate(localDateStr: String): RegistrationDetailsOrganisation =
       o.copy(dateOfEstablishment = Some(LocalDate.parse(localDateStr)))
+
     def withOrganisationType(organisationType: EtmpOrganisationType): RegistrationDetailsOrganisation =
       o.copy(etmpOrganisationType = Option(organisationType))
+
   }
 
   implicit class IndividualDetailsOps(val i: RegistrationDetailsIndividual) extends AnyVal {
+
     def withCustomsId(maybeCustomsId: Option[CustomsId]): RegistrationDetailsIndividual =
       i.copy(customsId = maybeCustomsId)
+
   }
+
 }

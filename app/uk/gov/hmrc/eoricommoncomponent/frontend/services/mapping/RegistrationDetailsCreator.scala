@@ -38,8 +38,8 @@ class RegistrationDetailsCreator {
     capturedDate: Option[LocalDate]
   ): RegistrationDetails = {
     val Some(responseDetail) = response.responseDetail
-    val sapNumber = extractSapNumber(response.responseCommon.returnParameters)
-    if (responseDetail.isAnIndividual) {
+    val sapNumber            = extractSapNumber(response.responseCommon.returnParameters)
+    if (responseDetail.isAnIndividual)
       convertIndividualMatchingResponse(
         responseDetail.individual.get,
         Some(customsId),
@@ -48,7 +48,7 @@ class RegistrationDetailsCreator {
         responseDetail.address,
         dateOfBirth = capturedDate
       )
-    } else {
+    else
       convertOrganisationMatchingResponse(
         responseDetail.organisation.get,
         Some(customsId),
@@ -57,7 +57,6 @@ class RegistrationDetailsCreator {
         responseDetail.address,
         dateOfEstablishment = capturedDate
       )
-    }
   }
 
   def extractSapNumber(returnParameters: Option[List[MessagingServiceParam]]): String =
@@ -77,8 +76,8 @@ class RegistrationDetailsCreator {
     val name = individualResponse.fullName
     val dob =
       individualResponse.dateOfBirth.flatMap(toLocalDate).orElse(dateOfBirth)
-    dob.fold(
-      ifEmpty = throw new IllegalArgumentException(
+    dob.fold(ifEmpty =
+      throw new IllegalArgumentException(
         "Date of Birth is neither provided in registration response nor captured in the application page"
       )
     )(
@@ -166,8 +165,8 @@ class RegistrationDetailsCreator {
     add: SixLineAddressMatchModel
   ): RegistrationDetailsIndividual = {
     val sapNumber = extractSapNumber(response.responseCommon.returnParameters)
-    val address = Address(add.lineOne, add.lineTwo, Some(add.lineThree), add.lineFour, add.postcode, add.country)
-    val name = ind.fullName
+    val address   = Address(add.lineOne, add.lineTwo, Some(add.lineThree), add.lineFour, add.postcode, add.country)
+    val name      = ind.fullName
 
     RegistrationDetails.individual(
       sapNumber,
@@ -211,8 +210,8 @@ class RegistrationDetailsCreator {
       individualResponse.middleName,
       Some(individualResponse.lastName)
     ).flatten mkString " "
-    individualResponse.dateOfBirth.fold(
-      ifEmpty = throw new IllegalArgumentException("Date of Birth is not provided in registration info response")
+    individualResponse.dateOfBirth.fold(ifEmpty =
+      throw new IllegalArgumentException("Date of Birth is not provided in registration info response")
     )(
       dateOfBirth =>
         RegistrationDetails
@@ -239,7 +238,7 @@ class RegistrationDetailsCreator {
     val RegistrationDisplayResponse(responseCommon, Some(responseDetail)) =
       response
     (responseDetail.individual, responseDetail.organisation, responseCommon.taxPayerID) match {
-      case (Some(individual), None, Some(taxPayerId)) => {
+      case (Some(individual), None, Some(taxPayerId)) =>
         convertIndividualMatchingResponse(
           individual,
           None,
@@ -248,8 +247,7 @@ class RegistrationDetailsCreator {
           responseDetail.address,
           dateOfBirth = None
         )
-      }
-      case (None, Some(org), Some(taxPayerId)) => {
+      case (None, Some(org), Some(taxPayerId)) =>
         convertOrganisationMatchingResponse(
           org,
           None,
@@ -258,9 +256,9 @@ class RegistrationDetailsCreator {
           responseDetail.address,
           dateOfEstablishment = None
         )
-      }
       case _ =>
         throw new IllegalStateException("Unexpected Response or Missing Key Information")
     }
   }
+
 }

@@ -29,6 +29,7 @@ import util.builders.{AuthBuilder, SessionBuilder}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class AllowlistVerificationWithEnrolmentsSpec extends ControllerSpec {
+
   implicit override lazy val app: Application = new GuiceApplicationBuilder()
     .disable[com.kenshoo.play.metrics.PlayModule]
     .configure("metrics.enabled" -> false)

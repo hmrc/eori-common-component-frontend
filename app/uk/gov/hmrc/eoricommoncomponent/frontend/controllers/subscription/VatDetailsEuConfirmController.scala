@@ -36,8 +36,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_deta
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
+
 @Singleton
-class VatDetailsEuConfirmController @Inject()(
+class VatDetailsEuConfirmController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   vatEUDetailsService: SubscriptionVatEUDetailsService,
@@ -111,8 +112,8 @@ class VatDetailsEuConfirmController @Inject()(
       )
     }
 
-  private def underVatLimitSubmit(journey: Journey.Value, isInReviewMode: Boolean)(
-    implicit request: Request[AnyContent]
+  private def underVatLimitSubmit(journey: Journey.Value, isInReviewMode: Boolean)(implicit
+    request: Request[AnyContent]
   ): Future[Result] =
     euVatLimitNotReachedYesNoAnswerForm
       .bindFromRequest()
@@ -128,12 +129,12 @@ class VatDetailsEuConfirmController @Inject()(
                 vatLimitNotReached = true
               )
             )
-        },
+          },
         yesNoAnswer => Future.successful(redirect(yesNoAnswer, isInReviewMode, journey))
       )
 
-  private def redirect(yesNoAnswer: YesNo, isInReviewMode: Boolean, journey: Journey.Value)(
-    implicit hc: HeaderCarrier,
+  private def redirect(yesNoAnswer: YesNo, isInReviewMode: Boolean, journey: Journey.Value)(implicit
+    hc: HeaderCarrier,
     rc: Request[AnyContent]
   ): Result =
     (yesNoAnswer.isYes, isInReviewMode) match {
@@ -150,8 +151,8 @@ class VatDetailsEuConfirmController @Inject()(
         )
     }
 
-  private def overVatLimitSubmit(journey: Journey.Value, isInReviewMode: Boolean)(
-    implicit request: Request[AnyContent]
+  private def overVatLimitSubmit(journey: Journey.Value, isInReviewMode: Boolean)(implicit
+    request: Request[AnyContent]
   ): Future[Result] =
     euVatLimitReachedYesNoAnswerForm
       .bindFromRequest()
@@ -161,7 +162,7 @@ class VatDetailsEuConfirmController @Inject()(
             BadRequest(
               vatDetailsEuConfirmView(formWithErrors, isInReviewMode, details, journey, vatLimitNotReached = false)
             )
-        },
+          },
         _ =>
           if (isInReviewMode)
             Future.successful(Redirect(DetermineReviewPageController.determineRoute(journey).url))
@@ -173,6 +174,7 @@ class VatDetailsEuConfirmController @Inject()(
                   .nextPage
                   .url
               )
-          )
+            )
       )
+
 }

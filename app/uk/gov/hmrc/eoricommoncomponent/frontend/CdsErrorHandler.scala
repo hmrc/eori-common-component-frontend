@@ -33,7 +33,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{client_error_templat
 
 import scala.concurrent.Future
 
-class CdsErrorHandler @Inject()(
+class CdsErrorHandler @Inject() (
   val messagesApi: MessagesApi,
   val configuration: Configuration,
   errorTemplateView: error_template,
@@ -41,8 +41,8 @@ class CdsErrorHandler @Inject()(
   notFoundView: notFound
 ) extends FrontendErrorHandler {
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(
-    implicit request: Request[_]
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit
+    request: Request[_]
   ): Html = throw new IllegalStateException("This method should not be used any more.")
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
@@ -51,9 +51,9 @@ class CdsErrorHandler @Inject()(
     implicit val req: Request[_] = Request(request, "")
 
     statusCode match {
-      case NOT_FOUND => Future.successful(Results.NotFound(notFoundView()))
+      case NOT_FOUND                                              => Future.successful(Results.NotFound(notFoundView()))
       case BAD_REQUEST if message == Constants.INVALID_PATH_PARAM => Future.successful(Results.NotFound(notFoundView()))
-      case _         => Future.successful(Results.InternalServerError(clientErrorTemplateView(message)))
+      case _                                                      => Future.successful(Results.InternalServerError(clientErrorTemplateView(message)))
     }
   }
 
@@ -62,16 +62,15 @@ class CdsErrorHandler @Inject()(
     implicit val req: Request[_] = Request(request, "")
 
     exception match {
-      case sessionTimeOut: SessionTimeOutException => {
+      case sessionTimeOut: SessionTimeOutException =>
         CdsLogger.error("Session time out: " + sessionTimeOut.errorMessage, exception)
         val journey: Journey.Value =
           if (request.path.contains("register")) Journey.Register else Journey.Subscribe
         Future.successful(Redirect(SecuritySignOutController.displayPage(journey)).withNewSession)
-      }
-      case _ => {
+      case _ =>
         CdsLogger.error("Internal server error: " + exception.getMessage, exception)
         Future.successful(Results.InternalServerError(errorTemplateView()))
-      }
     }
   }
+
 }

@@ -34,12 +34,12 @@ class VatControlListConnectorSpec extends IntegrationTestsSpec with ScalaFutures
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
       Map(
-        "microservice.services.eori-common-component-hods-proxy.host" -> Host,
-        "microservice.services.eori-common-component-hods-proxy.port" -> Port,
+        "microservice.services.eori-common-component-hods-proxy.host"                                 -> Host,
+        "microservice.services.eori-common-component-hods-proxy.port"                                 -> Port,
         "microservice.services.eori-common-component-hods-proxy.vat-known-facts-control-list.context" -> "vat-known-facts-control-list",
-        "auditing.enabled" -> false,
-        "auditing.consumer.baseUri.host" -> Host,
-        "auditing.consumer.baseUri.port" -> Port
+        "auditing.enabled"                                                                            -> false,
+        "auditing.consumer.baseUri.host"                                                              -> Host,
+        "auditing.consumer.baseUri.port"                                                              -> Port
       )
     )
     .build()
@@ -55,9 +55,9 @@ class VatControlListConnectorSpec extends IntegrationTestsSpec with ScalaFutures
     stopMockServer()
 
   private lazy val vatControlListConnector = app.injector.instanceOf[VatControlListConnector]
-  private val AValidVatRegistrationNumber = "123456789"
-  private val expectedGetUrl = s"/vat-known-facts-control-list?vrn=$AValidVatRegistrationNumber"
-  private val request = VatControlListRequest(vrn = AValidVatRegistrationNumber)
+  private val AValidVatRegistrationNumber  = "123456789"
+  private val expectedGetUrl               = s"/vat-known-facts-control-list?vrn=$AValidVatRegistrationNumber"
+  private val request                      = VatControlListRequest(vrn = AValidVatRegistrationNumber)
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 

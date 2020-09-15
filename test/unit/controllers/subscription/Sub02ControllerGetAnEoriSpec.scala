@@ -26,7 +26,7 @@ import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.PdfGeneratorConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{Sub02Controller, routes}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{routes, Sub02Controller}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionCreateResponse._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
@@ -45,25 +45,25 @@ import scala.concurrent.Future
 
 class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEach {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockRequestSessionData = mock[RequestSessionData]
-  private val mockSessionCache = mock[SessionCache]
-  private val mockCdsSubscriber = mock[CdsSubscriber]
-  private val mockCdsOrganisationType = mock[CdsOrganisationType]
-  private val mockPdfGeneratorService = mock[PdfGeneratorConnector]
-  private val mockRegDetails = mock[RegistrationDetails]
-  private val mockSubscribeOutcome = mock[Sub02Outcome]
+  private val mockAuthConnector              = mock[AuthConnector]
+  private val mockRequestSessionData         = mock[RequestSessionData]
+  private val mockSessionCache               = mock[SessionCache]
+  private val mockCdsSubscriber              = mock[CdsSubscriber]
+  private val mockCdsOrganisationType        = mock[CdsOrganisationType]
+  private val mockPdfGeneratorService        = mock[PdfGeneratorConnector]
+  private val mockRegDetails                 = mock[RegistrationDetails]
+  private val mockSubscribeOutcome           = mock[Sub02Outcome]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
 
-  private val migrationSuccessView = app.injector.instanceOf[migration_success]
-  private val sub01OutcomeView = app.injector.instanceOf[sub01_outcome_processing]
-  private val sub02RequestNotProcessed = app.injector.instanceOf[sub02_request_not_processed]
+  private val migrationSuccessView            = app.injector.instanceOf[migration_success]
+  private val sub01OutcomeView                = app.injector.instanceOf[sub01_outcome_processing]
+  private val sub02RequestNotProcessed        = app.injector.instanceOf[sub02_request_not_processed]
   private val sub02SubscriptionInProgressView = app.injector.instanceOf[sub02_subscription_in_progress]
-  private val sub02EoriAlreadyAssociatedView = app.injector.instanceOf[sub02_eori_already_associated]
-  private val sub02EoriAlreadyExists = app.injector.instanceOf[sub02_eori_already_exists]
-  private val sub01OutcomeRejected = app.injector.instanceOf[sub01_outcome_rejected]
-  private val subscriptionOutcomeView = app.injector.instanceOf[subscription_outcome]
-  private val EORI = "ZZZ1ZZZZ23ZZZZZZZ"
+  private val sub02EoriAlreadyAssociatedView  = app.injector.instanceOf[sub02_eori_already_associated]
+  private val sub02EoriAlreadyExists          = app.injector.instanceOf[sub02_eori_already_exists]
+  private val sub01OutcomeRejected            = app.injector.instanceOf[sub01_outcome_rejected]
+  private val subscriptionOutcomeView         = app.injector.instanceOf[subscription_outcome]
+  private val EORI                            = "ZZZ1ZZZZ23ZZZZZZZ"
 
   private val subscriptionController = new Sub02Controller(
     app,
@@ -83,11 +83,11 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
     mockCdsSubscriber
   )(global)
 
-  val eoriNumberResponse: String = "EORI-Number"
-  val formBundleIdResponse: String = "Form-Bundle-Id"
-  private val processingDate = "12 May 2018"
+  val eoriNumberResponse: String           = "EORI-Number"
+  val formBundleIdResponse: String         = "Form-Bundle-Id"
+  private val processingDate               = "12 May 2018"
   val emailVerificationTimestamp: DateTime = TestData.emailVerificationTimestamp
-  val emulatedFailure = new UnsupportedOperationException("Emulated service call failure.")
+  val emulatedFailure                      = new UnsupportedOperationException("Emulated service call failure.")
 
   override def beforeEach: Unit = {
     reset(mockAuthConnector, mockCdsSubscriber, mockPdfGeneratorService, mockSessionCache)
@@ -124,23 +124,21 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
           any[Request[AnyContent]]
         )
       ).thenReturn(
-          Future.successful(
-            SubscriptionSuccessful(
-              Eori(eoriNumberResponse),
-              formBundleIdResponse,
-              processingDate,
-              Some(emailVerificationTimestamp)
-            )
+        Future.successful(
+          SubscriptionSuccessful(
+            Eori(eoriNumberResponse),
+            formBundleIdResponse,
+            processingDate,
+            Some(emailVerificationTimestamp)
           )
         )
+      )
       subscribeForGetYourEORI(organisationTypeOption = Some(mockCdsOrganisationType)) { result =>
-        {
-          await(result)
-          verify(mockCdsSubscriber).subscribeWithCachedDetails(
-            meq(Some(mockCdsOrganisationType)),
-            meq(Journey.Register)
-          )(any[HeaderCarrier], any[Request[AnyContent]])
-        }
+        await(result)
+        verify(mockCdsSubscriber).subscribeWithCachedDetails(meq(Some(mockCdsOrganisationType)), meq(Journey.Register))(
+          any[HeaderCarrier],
+          any[Request[AnyContent]]
+        )
       }
     }
 
@@ -151,23 +149,21 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
           any[Request[AnyContent]]
         )
       ).thenReturn(
-          Future.successful(
-            SubscriptionSuccessful(
-              Eori(eoriNumberResponse),
-              formBundleIdResponse,
-              processingDate,
-              Some(emailVerificationTimestamp)
-            )
+        Future.successful(
+          SubscriptionSuccessful(
+            Eori(eoriNumberResponse),
+            formBundleIdResponse,
+            processingDate,
+            Some(emailVerificationTimestamp)
           )
         )
+      )
       subscribeForGetYourEORI(organisationTypeOption = None) { result =>
-        {
-          await(result)
-          verify(mockCdsSubscriber).subscribeWithCachedDetails(meq(None), meq(Journey.Register))(
-            any[HeaderCarrier],
-            any[Request[AnyContent]]
-          )
-        }
+        await(result)
+        verify(mockCdsSubscriber).subscribeWithCachedDetails(meq(None), meq(Journey.Register))(
+          any[HeaderCarrier],
+          any[Request[AnyContent]]
+        )
       }
     }
 
@@ -178,21 +174,19 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
           any[Request[AnyContent]]
         )
       ).thenReturn(
-          Future.successful(
-            SubscriptionSuccessful(
-              Eori(eoriNumberResponse),
-              formBundleIdResponse,
-              processingDate,
-              Some(emailVerificationTimestamp)
-            )
+        Future.successful(
+          SubscriptionSuccessful(
+            Eori(eoriNumberResponse),
+            formBundleIdResponse,
+            processingDate,
+            Some(emailVerificationTimestamp)
           )
         )
+      )
 
       subscribeForGetYourEORI() { result =>
-        {
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe routes.Sub02Controller.end().url
-        }
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe routes.Sub02Controller.end().url
       }
     }
 
@@ -203,14 +197,12 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
           any[Request[AnyContent]]
         )
       ).thenReturn(
-          Future.successful(SubscriptionPending(formBundleIdResponse, processingDate, Some(emailVerificationTimestamp)))
-        )
+        Future.successful(SubscriptionPending(formBundleIdResponse, processingDate, Some(emailVerificationTimestamp)))
+      )
 
       subscribeForGetYourEORI() { result =>
-        {
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe routes.Sub02Controller.pending().url
-        }
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe routes.Sub02Controller.pending().url
       }
     }
 
@@ -223,10 +215,8 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       ).thenReturn(Future.successful(SubscriptionFailed("Subscription application has been rejected", processingDate)))
 
       subscribeForGetYourEORI() { result =>
-        {
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe routes.Sub02Controller.rejected().url
-        }
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe routes.Sub02Controller.rejected().url
       }
     }
 
@@ -239,10 +229,8 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       ).thenReturn(Future.successful(SubscriptionFailed(EoriAlreadyExists, processingDate)))
 
       subscribeForGetYourEORI() { result =>
-        {
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe routes.Sub02Controller.eoriAlreadyExists().url
-        }
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe routes.Sub02Controller.eoriAlreadyExists().url
       }
     }
 
@@ -255,10 +243,8 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       ).thenReturn(Future.successful(SubscriptionFailed(EoriAlreadyAssociated, processingDate)))
 
       subscribeForGetYourEORI() { result =>
-        {
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe routes.Sub02Controller.eoriAlreadyAssociated().url
-        }
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe routes.Sub02Controller.eoriAlreadyAssociated().url
       }
     }
 
@@ -271,10 +257,8 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       ).thenReturn(Future.successful(SubscriptionFailed(SubscriptionInProgress, processingDate)))
 
       subscribeForGetYourEORI() { result =>
-        {
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe routes.Sub02Controller.subscriptionInProgress().url
-        }
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe routes.Sub02Controller.subscriptionInProgress().url
       }
     }
 
@@ -287,12 +271,12 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       ).thenReturn(Future.successful(SubscriptionFailed(RequestNotProcessed, processingDate)))
 
       subscribeForGetYourEORI() { result =>
-        {
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.Sub02Controller
-            .requestNotProcessed()
-            .url
-        }
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(
+          LOCATION
+        ) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.Sub02Controller
+          .requestNotProcessed()
+          .url
       }
     }
 
@@ -324,7 +308,9 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
           val page = CdsPage(bodyOf(result))
           verify(mockSessionCache).remove(any[HeaderCarrier])
           page.title should startWith("Application complete")
-          page.getElementsText(RegistrationCompletePage.pageHeadingXpath) shouldBe s"The EORI number for orgName is $EORI"
+          page.getElementsText(
+            RegistrationCompletePage.pageHeadingXpath
+          ) shouldBe s"The EORI number for orgName is $EORI"
           page.getElementsText(RegistrationCompletePage.eoriXpath) shouldBe EORI
           page.getElementsText(RegistrationCompletePage.issuedDateXpath) shouldBe "issued by HMRC on 22 May 2016"
 
@@ -337,7 +323,9 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
                 |You should only share it with trusted business partners or approved customs representatives. For example, you should give it to your courier or freight forwarder. They will use it to make customs declarations on your behalf.
                 | """)
           page.elementIsPresent(RegistrationCompletePage.LeaveFeedbackLinkXpath) shouldBe true
-          page.getElementsText(RegistrationCompletePage.LeaveFeedbackLinkXpath) shouldBe "What did you think of this service? (opens in a new window or tab)"
+          page.getElementsText(
+            RegistrationCompletePage.LeaveFeedbackLinkXpath
+          ) shouldBe "What did you think of this service? (opens in a new window or tab)"
           page.getElementsHref(RegistrationCompletePage.LeaveFeedbackLinkXpath) shouldBe "/feedback/CDS"
       }
     }
@@ -351,7 +339,9 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
           val page = CdsPage(bodyOf(result))
           page.title should startWith(RegistrationRejectedPage.title)
           page.getElementsText(RegistrationRejectedPage.pageHeadingXpath) shouldBe RegistrationRejectedPage.heading
-          page.getElementsText(RegistrationRejectedPage.processedDateXpath) shouldBe "Application received by HMRC on 22 May 2016"
+          page.getElementsText(
+            RegistrationRejectedPage.processedDateXpath
+          ) shouldBe "Application received by HMRC on 22 May 2016"
       }
     }
   }
@@ -487,14 +477,15 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
   }
 
   private def mockNameAndSub02OutcomeRetrieval = {
-    val mrweair = mock[RegisterWithEoriAndIdResponse]
+    val mrweair  = mock[RegisterWithEoriAndIdResponse]
     val mrweaird = mock[RegisterWithEoriAndIdResponseDetail]
-    val rd = mock[ResponseData]
-    val trader = mock[Trader]
+    val rd       = mock[ResponseData]
+    val trader   = mock[Trader]
     when(mockSessionCache.registerWithEoriAndIdResponse(any[HeaderCarrier])).thenReturn(Future.successful(mrweair))
     when(mrweair.responseDetail).thenReturn(Some(mrweaird))
     when(mrweaird.responseData).thenReturn(Some(rd))
     when(rd.trader).thenReturn(trader)
     when(trader.fullName).thenReturn("testName")
   }
+
 }

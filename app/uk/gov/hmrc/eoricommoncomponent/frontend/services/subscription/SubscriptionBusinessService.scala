@@ -20,14 +20,19 @@ import javax.inject.{Inject, Singleton}
 import org.joda.time.LocalDate
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactDetailsModel, VatDetails, VatEUDetailsModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
+  AddressViewModel,
+  ContactDetailsModel,
+  VatDetails,
+  VatEUDetailsModel
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SubscriptionBusinessService @Inject()(cdsFrontendDataCache: SessionCache)(implicit ec: ExecutionContext) {
+class SubscriptionBusinessService @Inject() (cdsFrontendDataCache: SessionCache)(implicit ec: ExecutionContext) {
 
   def getCachedCompanyShortName(implicit hc: HeaderCarrier): Future[BusinessShortName] =
     cdsFrontendDataCache.subscriptionDetails map {
@@ -155,4 +160,5 @@ class SubscriptionBusinessService @Inject()(cdsFrontendDataCache: SessionCache)(
 
   def retrieveSubscriptionDetailsHolder(implicit hc: HeaderCarrier): Future[SubscriptionDetails] =
     cdsFrontendDataCache.subscriptionDetails
+
 }

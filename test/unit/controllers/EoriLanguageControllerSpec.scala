@@ -25,7 +25,7 @@ import util.ControllerSpec
 class EoriLanguageControllerSpec extends ControllerSpec {
 
   private val languageUtils = app.injector.instanceOf[LanguageUtils]
-  private val cc = app.injector.instanceOf[ControllerComponents]
+  private val cc            = app.injector.instanceOf[ControllerComponents]
 
   val controller = new EoriLanguageController(config, languageUtils, cc)
 
@@ -34,13 +34,13 @@ class EoriLanguageControllerSpec extends ControllerSpec {
     "return the page in English language" in {
 
       val language = "english"
-      val f = controller.langToCall(language)
+      val f        = controller.langToCall(language)
       f(language) shouldBe routes.EoriLanguageController.switchToLanguage(language)
     }
 
     "return the page in Welsh language" in {
       val language = "welsh"
-      val f = controller.langToCall(language)
+      val f        = controller.langToCall(language)
       f(language) shouldBe routes.EoriLanguageController.switchToLanguage(language)
     }
 

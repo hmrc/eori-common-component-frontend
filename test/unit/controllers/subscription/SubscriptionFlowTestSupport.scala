@@ -21,7 +21,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{Subscriptio
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import play.api.mvc.{AnyContent, Request}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionBusinessService,
+  SubscriptionDetailsService
+}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.Constants
 import uk.gov.hmrc.http.HeaderCarrier
@@ -31,13 +34,13 @@ trait SubscriptionFlowTestSupport extends ControllerSpec {
 
   protected def formId: String
 
-  protected val nextPageUrl = "next-page-url"
-  protected val nextPage = mock[SubscriptionPage]
+  protected val nextPageUrl              = "next-page-url"
+  protected val nextPage                 = mock[SubscriptionPage]
   protected val subscriptionFlowStepInfo = SubscriptionFlowInfo(stepNumber = 7, totalSteps = 10, nextPage = nextPage)
 
-  protected val mockSubscriptionFlowManager = mock[SubscriptionFlowManager]
-  protected val mockAuthConnector = mock[AuthConnector]
-  protected val mockSubscriptionBusinessService = mock[SubscriptionBusinessService]
+  protected val mockSubscriptionFlowManager          = mock[SubscriptionFlowManager]
+  protected val mockAuthConnector                    = mock[AuthConnector]
+  protected val mockSubscriptionBusinessService      = mock[SubscriptionBusinessService]
   protected val mockSubscriptionDetailsHolderService = mock[SubscriptionDetailsService]
 
   def setupMockSubscriptionFlowManager(currentPage: SubscriptionPage): Unit = {
@@ -45,4 +48,5 @@ trait SubscriptionFlowTestSupport extends ControllerSpec {
     when(mockSubscriptionFlowManager.stepInformation(meq(currentPage))(any[HeaderCarrier], any[Request[AnyContent]]))
       .thenReturn(subscriptionFlowStepInfo)
   }
+
 }

@@ -25,8 +25,10 @@ object VatIdentification {
 
   def apply(countryCode: Option[String], number: Option[String]): VatIdentification =
     new VatIdentification(countryCode.map(_.toUpperCase), number) {}
+
   def apply(countryCode: String, number: String): VatIdentification =
     new VatIdentification(Option(countryCode.toUpperCase), Option(number)) {}
+
 }
 
 case class RegisteredContact(name: String, telephone: String, fax: Option[String], email: String)

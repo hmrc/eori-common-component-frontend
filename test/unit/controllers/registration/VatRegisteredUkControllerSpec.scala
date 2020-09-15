@@ -34,14 +34,14 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class VatRegisteredUkControllerSpec extends ControllerSpec {
 
-  private val yesNoInputName = "yes-no-answer"
-  private val answerYes = true.toString
-  private val answerNo = false.toString
-  private val InvalidOptionValue = "Please select one of the options"
+  private val yesNoInputName         = "yes-no-answer"
+  private val answerYes              = true.toString
+  private val answerNo               = false.toString
+  private val InvalidOptionValue     = "Please select one of the options"
   private val expectedYesRedirectUrl = s"https://www.tax.service.gov.uk/shortforms/form/EORIVAT?details=&vat=yes"
-  private val expectedNoRedirectUrl = s"https://www.tax.service.gov.uk/shortforms/form/EORINonVATImport?details=&vat=no"
+  private val expectedNoRedirectUrl  = s"https://www.tax.service.gov.uk/shortforms/form/EORINonVATImport?details=&vat=no"
 
-  private val mockAuthConnector = mock[AuthConnector]
+  private val mockAuthConnector   = mock[AuthConnector]
   private val vatRegisteredUkView = app.injector.instanceOf[vat_registered_uk]
 
   val controller = new VatRegisteredUkController(app, mockAuthConnector, vatRegisteredUkView, mcc)
@@ -62,8 +62,12 @@ class VatRegisteredUkControllerSpec extends ControllerSpec {
       submitForm(invalidRequest) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(VatRegisteredUkPage.pageLevelErrorSummaryListXPath) shouldBe VatRegisteredUkPage.problemWithSelectionError
-        page.getElementsText(VatRegisteredUkPage.fieldLevelErrorYesNoAnswer) shouldBe VatRegisteredUkPage.problemWithSelectionError
+        page.getElementsText(
+          VatRegisteredUkPage.pageLevelErrorSummaryListXPath
+        ) shouldBe VatRegisteredUkPage.problemWithSelectionError
+        page.getElementsText(
+          VatRegisteredUkPage.fieldLevelErrorYesNoAnswer
+        ) shouldBe VatRegisteredUkPage.problemWithSelectionError
       }
     }
 
@@ -72,8 +76,12 @@ class VatRegisteredUkControllerSpec extends ControllerSpec {
       submitForm(ValidRequest + (yesNoInputName -> invalidOption)) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(VatRegisteredUkPage.pageLevelErrorSummaryListXPath) shouldBe VatRegisteredUkPage.problemWithSelectionError
-        page.getElementsText(VatRegisteredUkPage.fieldLevelErrorYesNoAnswer) shouldBe VatRegisteredUkPage.problemWithSelectionError
+        page.getElementsText(
+          VatRegisteredUkPage.pageLevelErrorSummaryListXPath
+        ) shouldBe VatRegisteredUkPage.problemWithSelectionError
+        page.getElementsText(
+          VatRegisteredUkPage.fieldLevelErrorYesNoAnswer
+        ) shouldBe VatRegisteredUkPage.problemWithSelectionError
       }
     }
 
@@ -99,4 +107,5 @@ class VatRegisteredUkControllerSpec extends ControllerSpec {
   def submitForm(form: Map[String, String])(test: Future[Result] => Any) {
     test(controller.submit().apply(SessionBuilder.buildRequestWithFormValues(form)))
   }
+
 }

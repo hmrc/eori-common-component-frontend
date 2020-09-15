@@ -20,6 +20,8 @@ import com.google.inject.AbstractModule
 import play.api.i18n.DefaultMessagesApiProvider
 
 class MessagesApiProviderModule extends AbstractModule {
+
   override def configure(): Unit =
     bind(classOf[DefaultMessagesApiProvider]).to(classOf[EccMessagesApiProvider])
+
 }

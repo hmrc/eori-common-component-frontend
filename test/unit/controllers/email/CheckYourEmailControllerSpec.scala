@@ -45,8 +45,8 @@ import scala.concurrent.Future
 class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
   private val yesNoInputName = "yes-no-answer"
-  private val answerYes = true.toString
-  private val answerNo = false.toString
+  private val answerYes      = true.toString
+  private val answerNo       = false.toString
 
   private val problemWithSelectionError =
     "Tell us if this is the correct email address"
@@ -56,11 +56,11 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   private val mockEmailVerificationService = mock[EmailVerificationService]
 
   private val mockSave4LaterService = mock[Save4LaterService]
-  private val mockSessionCache = mock[SessionCache]
+  private val mockSessionCache      = mock[SessionCache]
 
   private val checkYourEmailView = app.injector.instanceOf[check_your_email]
   private val emailConfirmedView = app.injector.instanceOf[email_confirmed]
-  private val verifyYourEmail = app.injector.instanceOf[verify_your_email]
+  private val verifyYourEmail    = app.injector.instanceOf[verify_your_email]
 
   private val controller = new CheckYourEmailController(
     app,
@@ -74,13 +74,13 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     mockEmailVerificationService
   )
 
-  val email = "test@example.com"
+  val email       = "test@example.com"
   val emailStatus = EmailStatus(email)
 
   val internalId = "InternalID"
-  val jsonValue = Json.toJson(emailStatus)
-  val data = Map(internalId -> jsonValue)
-  val unit = (())
+  val jsonValue  = Json.toJson(emailStatus)
+  val data       = Map(internalId -> jsonValue)
+  val unit       = ()
 
   override def beforeEach: Unit = {
     when(mockSave4LaterService.fetchEmail(any[InternalId])(any[HeaderCarrier]))
@@ -109,7 +109,9 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
         .thenReturn(Future.successful(Some(true)))
       submitForm(ValidRequest + (yesNoInputName -> answerYes), journey = Journey.Subscribe) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs-enrolment-services/subscribe/matching/verify-your-email")
+        result.header.headers("Location") should endWith(
+          "/customs-enrolment-services/subscribe/matching/verify-your-email"
+        )
       }
     }
 
@@ -146,7 +148,9 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     "redirect to What is Your Email Address Page on selecting No radio button" in {
       submitForm(ValidRequest + (yesNoInputName -> answerNo), journey = Journey.Subscribe) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs-enrolment-services/subscribe/matching/what-is-your-email")
+        result.header.headers("Location") should endWith(
+          "/customs-enrolment-services/subscribe/matching/what-is-your-email"
+        )
       }
     }
 
@@ -194,4 +198,5 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       .apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
+
 }

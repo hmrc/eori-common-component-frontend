@@ -52,27 +52,32 @@ import scala.concurrent.Future
 
 class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockRequestSessionData = mock[RequestSessionData]
-  private val mockCache = mock[SessionCache]
-  private val mockReg06Service = mock[Reg06Service]
-  private val mockMatchingService = mock[MatchingService]
-  private val mockCdsSubscriber = mock[CdsSubscriber]
-  private val mockSubscriptionStatusService = mock[SubscriptionStatusService]
-  private val mockTaxEnrolmentsService = mock[TaxEnrolmentsService]
+  private val mockAuthConnector              = mock[AuthConnector]
+  private val mockRequestSessionData         = mock[RequestSessionData]
+  private val mockCache                      = mock[SessionCache]
+  private val mockReg06Service               = mock[Reg06Service]
+  private val mockMatchingService            = mock[MatchingService]
+  private val mockCdsSubscriber              = mock[CdsSubscriber]
+  private val mockSubscriptionStatusService  = mock[SubscriptionStatusService]
+  private val mockTaxEnrolmentsService       = mock[TaxEnrolmentsService]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
-  private val mockSubscriptionDetails = mock[SubscriptionDetails]
-  private val mockSub01Outcome = mock[Sub01Outcome]
+  private val mockSubscriptionDetails        = mock[SubscriptionDetails]
+  private val mockSub01Outcome               = mock[Sub01Outcome]
 
   private val sub01OutcomeProcessingView =
     app.injector.instanceOf[sub01_outcome_processing]
+
   private val sub01OutcomeRejectedView =
     app.injector.instanceOf[sub01_outcome_rejected]
+
   private val errorTemplateView = app.injector.instanceOf[error_template]
+
   private val subscriptionOutcomePendingView =
     app.injector.instanceOf[subscription_outcome_pending]
+
   private val subscriptionOutcomeFailView =
     app.injector.instanceOf[subscription_outcome_fail]
+
   private val reg06EoriAlreadyLinked =
     app.injector.instanceOf[reg06_eori_already_linked]
 
@@ -123,7 +128,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
     val processingDate = DateTime.now.withTimeAtStartOfDay()
     val responseCommon =
       ResponseCommon(status = "OK", processingDate = processingDate)
-    val trader = Trader(fullName = "New trading", shortName = "nt")
+    val trader               = Trader(fullName = "New trading", shortName = "nt")
     val establishmentAddress = EstablishmentAddress(streetAndNumber = "new street", city = "leeds", countryCode = "GB")
     val responseData: ResponseData = ResponseData(
       SAFEID = "SomeSafeId",
@@ -149,8 +154,10 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
   private val stubRegisterWithEoriAndIdResponseFail =
     stubRegisterWithEoriAndIdResponse("FAIL")
+
   private val stubRegisterWithEoriAndIdResponseDeferred =
     stubRegisterWithEoriAndIdResponse("DEFERRED")
+
   private val stubRegisterWithEoriAndIdResponseExceptionCase =
     stubRegisterWithEoriAndIdResponse("ANYTHING ELSE")
 
@@ -175,7 +182,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       controller.registerWithEoriAndId(Journey.Subscribe)
     )
     val processingDateResponse: String = "19 April 2018"
-    val emailVerificationTimestamp = TestData.emailVerificationTimestamp
+    val emailVerificationTimestamp     = TestData.emailVerificationTimestamp
     "create a subscription for organisation" in {
       when(
         mockCdsSubscriber.subscribeWithCachedDetails(any[Option[CdsOrganisationType]], any[Journey.Value])(
@@ -211,12 +218,10 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(()))
 
       regExistingEori { result =>
-        {
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe Sub02Controller
-            .migrationEnd()
-            .url
-        }
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe Sub02Controller
+          .migrationEnd()
+          .url
       }
     }
 
@@ -255,12 +260,10 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
 
       regExistingEori { result =>
-        {
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe Sub02Controller
-            .migrationEnd()
-            .url
-        }
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe Sub02Controller
+          .migrationEnd()
+          .url
       }
     }
 
@@ -299,12 +302,10 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
 
       regExistingEori { result =>
-        {
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe Sub02Controller
-            .migrationEnd()
-            .url
-        }
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe Sub02Controller
+          .migrationEnd()
+          .url
       }
     }
 
@@ -347,12 +348,10 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       )
 
       regExistingEori { result =>
-        {
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe Sub02Controller
-            .migrationEnd()
-            .url
-        }
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe Sub02Controller
+          .migrationEnd()
+          .url
       }
     }
 
@@ -392,12 +391,10 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(NewSubscription))
 
       regExistingEori { result =>
-        {
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe Sub02Controller
-            .migrationEnd()
-            .url
-        }
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe Sub02Controller
+          .migrationEnd()
+          .url
       }
     }
 
@@ -437,12 +434,10 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
 
       regExistingEori { result =>
-        {
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe Sub02Controller
-            .migrationEnd()
-            .url
-        }
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe Sub02Controller
+          .migrationEnd()
+          .url
       }
     }
 
@@ -477,12 +472,10 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(NewSubscription))
 
       regExistingEori { result =>
-        {
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-            .pending(processingDateResponse)
-            .url
-        }
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+          .pending(processingDateResponse)
+          .url
       }
     }
 
@@ -498,12 +491,10 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
       regExistingEori { result =>
-        {
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-            .fail(DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
-            .url
-        }
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+          .fail(DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
+          .url
       }
     }
 
@@ -533,12 +524,10 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       )
 
       regExistingEori { result =>
-        {
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-            .pending(DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
-            .url
-        }
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+          .pending(DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
+          .url
       }
     }
 
@@ -551,11 +540,9 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponseExceptionCase))
 
       regExistingEori { result =>
-        {
-          the[IllegalStateException] thrownBy {
-            status(result) shouldBe SEE_OTHER
-          } should have message "Unknown RegistrationDetailsOutCome"
-        }
+        the[IllegalStateException] thrownBy {
+          status(result) shouldBe SEE_OTHER
+        } should have message "Unknown RegistrationDetailsOutCome"
       }
     }
 
@@ -571,12 +558,10 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Future.successful(None))
 
       regExistingEori { result =>
-        {
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-            .fail(DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
-            .url
-        }
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+          .fail(DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
+          .url
       }
     }
 
@@ -609,15 +594,13 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(SubscriptionProcessing))
 
       regExistingEori { result =>
-        {
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-            .processing()
-            .url
-          verify(mockReg06Service).sendOrganisationRequest(any(), any(), any())
-          verify(mockSubscriptionStatusService)
-            .getStatus(meq("SAFE"), meq("SomeSafeId"))(any[HeaderCarrier])
-        }
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+          .processing()
+          .url
+        verify(mockReg06Service).sendOrganisationRequest(any(), any(), any())
+        verify(mockSubscriptionStatusService)
+          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any[HeaderCarrier])
       }
     }
 
@@ -654,15 +637,13 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(true))
 
       regExistingEori { result =>
-        {
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe SignInWithDifferentDetailsController
-            .form(journey = Journey.Subscribe)
-            .url
-          verify(mockReg06Service).sendOrganisationRequest(any(), any(), any())
-          verify(mockSubscriptionStatusService)
-            .getStatus(meq("SAFE"), meq("SomeSafeId"))(any[HeaderCarrier])
-        }
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe SignInWithDifferentDetailsController
+          .form(journey = Journey.Subscribe)
+          .url
+        verify(mockReg06Service).sendOrganisationRequest(any(), any(), any())
+        verify(mockSubscriptionStatusService)
+          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any[HeaderCarrier])
       }
     }
 
@@ -699,15 +680,13 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(false))
 
       regExistingEori { result =>
-        {
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe SubscriptionRecoveryController
-            .complete(Journey.Subscribe)
-            .url
-          verify(mockReg06Service).sendOrganisationRequest(any(), any(), any())
-          verify(mockSubscriptionStatusService)
-            .getStatus(meq("SAFE"), meq("SomeSafeId"))(any[HeaderCarrier])
-        }
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe SubscriptionRecoveryController
+          .complete(Journey.Subscribe)
+          .url
+        verify(mockReg06Service).sendOrganisationRequest(any(), any(), any())
+        verify(mockSubscriptionStatusService)
+          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any[HeaderCarrier])
       }
     }
 
@@ -742,12 +721,10 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(()))
 
       regExistingEori { result =>
-        {
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-            .fail(processingDateResponse)
-            .url
-        }
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+          .fail(processingDateResponse)
+          .url
       }
     }
 
@@ -776,12 +753,10 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
       regExistingEori { result =>
-        {
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-            .eoriAlreadyLinked()
-            .url
-        }
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+          .eoriAlreadyLinked()
+          .url
       }
     }
 
@@ -813,12 +788,10 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
       regExistingEori { result =>
-        {
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-            .rejectedPreviously()
-            .url
-        }
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+          .rejectedPreviously()
+          .url
       }
     }
 
@@ -847,9 +820,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
       regExistingEori { result =>
-        {
-          status(result) shouldBe SERVICE_UNAVAILABLE
-        }
+        status(result) shouldBe SERVICE_UNAVAILABLE
       }
     }
 
@@ -867,11 +838,9 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Some(RegisterWithEoriAndIdResponseDetail(Some("PASS"), None)))
 
       regExistingEori { result =>
-        {
-          the[IllegalStateException] thrownBy {
-            status(result) shouldBe OK
-          } should have message "SafeId can't be none"
-        }
+        the[IllegalStateException] thrownBy {
+          status(result) shouldBe OK
+        } should have message "SafeId can't be none"
       }
     }
 
@@ -887,8 +856,12 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         status(result) shouldBe OK
         val page = CdsPage(bodyOf(result))
         page.title() should startWith(RegistrationProcessingPage.title)
-        page.getElementsText(RegistrationProcessingPage.pageHeadingXpath) shouldBe RegistrationProcessingPage.individualHeading
-        page.getElementsText(RegistrationProcessingPage.processedDateXpath) shouldBe "Application received by HMRC on 11 January 2015"
+        page.getElementsText(
+          RegistrationProcessingPage.pageHeadingXpath
+        ) shouldBe RegistrationProcessingPage.individualHeading
+        page.getElementsText(
+          RegistrationProcessingPage.processedDateXpath
+        ) shouldBe "Application received by HMRC on 11 January 2015"
       }
     }
 
@@ -905,8 +878,12 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         status(result) shouldBe OK
         val page = CdsPage(bodyOf(result))
         page.title() should startWith(RegistrationProcessingPage.title)
-        page.getElementsText(RegistrationProcessingPage.pageHeadingXpath) shouldBe RegistrationProcessingPage.individualHeading
-        page.getElementsText(RegistrationProcessingPage.processedDateXpath) shouldBe "Application received by HMRC on 11 January 2015"
+        page.getElementsText(
+          RegistrationProcessingPage.pageHeadingXpath
+        ) shouldBe RegistrationProcessingPage.individualHeading
+        page.getElementsText(
+          RegistrationProcessingPage.processedDateXpath
+        ) shouldBe "Application received by HMRC on 11 January 2015"
       }
     }
 
@@ -922,8 +899,12 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         status(result) shouldBe OK
         val page = CdsPage(bodyOf(result))
         page.title() should startWith(RegistrationRejectedPage.title)
-        page.getElementsText(RegistrationRejectedPage.pageHeadingXpath) shouldBe RegistrationRejectedPage.individualHeading
-        page.getElementsText(RegistrationRejectedPage.processedDateXpath) shouldBe "Application received by HMRC on 11 January 2015"
+        page.getElementsText(
+          RegistrationRejectedPage.pageHeadingXpath
+        ) shouldBe RegistrationRejectedPage.individualHeading
+        page.getElementsText(
+          RegistrationRejectedPage.processedDateXpath
+        ) shouldBe "Application received by HMRC on 11 January 2015"
       }
     }
 
@@ -1055,4 +1036,5 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .rejectedPreviously()
         .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     )
+
 }

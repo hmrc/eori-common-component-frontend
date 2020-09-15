@@ -19,6 +19,8 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription
 import play.api.i18n.Messages
 
 object ViewHelper {
+
   def continueButtonText(isReview: Boolean)(implicit messages: Messages): String =
     if (isReview) messages("cds.navigation.save-and-review") else messages("cds.navigation.continue")
+
 }

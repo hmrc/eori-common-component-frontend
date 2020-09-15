@@ -26,8 +26,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.vat_registered_uk
 
 import scala.concurrent.ExecutionContext
+
 @Singleton
-class VatRegisteredUkController @Inject()(
+class VatRegisteredUkController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   vatRegisteredUkView: vat_registered_uk,
@@ -52,4 +53,5 @@ class VatRegisteredUkController @Inject()(
     case theAnswer if theAnswer.isYes => "https://www.tax.service.gov.uk/shortforms/form/EORIVAT?details=&vat=yes"
     case _                            => "https://www.tax.service.gov.uk/shortforms/form/EORINonVATImport?details=&vat=no"
   }
+
 }

@@ -35,27 +35,31 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEach {
-  private val mockAuthConnector = mock[AuthConnector]
+  private val mockAuthConnector    = mock[AuthConnector]
   private val mockEnrolmentService = mock[EnrolmentService]
 
-  private val hasExistingEoriView = app.injector.instanceOf[has_existing_eori]
+  private val hasExistingEoriView  = app.injector.instanceOf[has_existing_eori]
   private val eoriEnrolSuccessView = app.injector.instanceOf[eori_enrol_success]
 
   private val controller =
-    new HasExistingEoriController(app, mockAuthConnector, hasExistingEoriView, eoriEnrolSuccessView, mcc, mockEnrolmentService)
-
-  override def beforeEach: Unit = {
-    reset(
+    new HasExistingEoriController(
+      app,
       mockAuthConnector,
+      hasExistingEoriView,
+      eoriEnrolSuccessView,
+      mcc,
       mockEnrolmentService
     )
-  }
+
+  override def beforeEach: Unit =
+    reset(mockAuthConnector, mockEnrolmentService)
 
   "Has Existing EORI Controller display page" should {
 
     "throw exception when user does not have existing CDS enrolment" in {
       intercept[IllegalStateException](
-        displayPage(Service.ATaR) { result => status(result) }).getMessage should startWith("No EORI found in enrolments")
+        displayPage(Service.ATaR)(result => status(result))
+      ).getMessage should startWith("No EORI found in enrolments")
     }
 
     "return Ok 200 when displayPage method is requested" in {
@@ -78,7 +82,8 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
     "throw exception on failure" in {
       intercept[FailedEnrolmentException](
-        enrol(Service.ATaR, INTERNAL_SERVER_ERROR) { result => status(result) }).getMessage should endWith(INTERNAL_SERVER_ERROR.toString)
+        enrol(Service.ATaR, INTERNAL_SERVER_ERROR)(result => status(result))
+      ).getMessage should endWith(INTERNAL_SERVER_ERROR.toString)
     }
   }
 
@@ -86,7 +91,8 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
     "throw exception when user does not have existing CDS enrolment" in {
       intercept[IllegalStateException](
-        enrolSuccess(Service.ATaR) { result => status(result) }).getMessage should startWith("No EORI found in enrolments")
+        enrolSuccess(Service.ATaR)(result => status(result))
+      ).getMessage should startWith("No EORI found in enrolments")
     }
 
     "return Ok 200 when enrol confirmation page is requested" in {
@@ -105,7 +111,9 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   private def enrol(service: Service, responseStatus: Int)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    when(mockEnrolmentService.enrolWithExistingCDSEnrolment(any[LoggedInUserWithEnrolments], any[Service])(any())).thenReturn(Future(responseStatus))
+    when(
+      mockEnrolmentService.enrolWithExistingCDSEnrolment(any[LoggedInUserWithEnrolments], any[Service])(any())
+    ).thenReturn(Future(responseStatus))
     await(test(controller.enrol(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
@@ -113,4 +121,5 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     withAuthorisedUser(defaultUserId, mockAuthConnector, cdsEnrolmentId = cdsEnrolmentId)
     await(test(controller.enrolSuccess(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
+
 }

@@ -24,5 +24,4 @@ object Env {
 
   lazy val frontendHost: String = Option(System.getProperty("host")).getOrElse("http://localhost:" + port)
 
-
 }

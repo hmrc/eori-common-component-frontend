@@ -85,10 +85,12 @@ class SignInWithDifferentDetailsSpec extends ViewSpec {
 
     "have a sign out button" in {
       docWithoutName.body.getElementById("sign-out").text mustBe "Sign out"
-      docWithoutName.body.getElementsByClass("button").attr("href") mustBe "/customs-enrolment-services/subscribe/logout"
+      docWithoutName.body.getElementsByClass("button").attr(
+        "href"
+      ) mustBe "/customs-enrolment-services/subscribe/logout"
     }
   }
 
-  lazy val docWithName: Document = Jsoup.parse(contentAsString(view(Some(orgName))))
+  lazy val docWithName: Document    = Jsoup.parse(contentAsString(view(Some(orgName))))
   lazy val docWithoutName: Document = Jsoup.parse(contentAsString(view(None)))
 }

@@ -26,7 +26,12 @@ import play.api.test.Helpers.{BAD_REQUEST, NO_CONTENT}
 import play.mvc.Http.Status.{FORBIDDEN, INTERNAL_SERVER_ERROR}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.TaxEnrolmentsConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{TaxEnrolmentsRequest, TaxEnrolmentsResponse}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.{GovernmentGatewayEnrolmentRequest, Identifier, KeyValuePair, Verifier}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.{
+  GovernmentGatewayEnrolmentRequest,
+  Identifier,
+  KeyValuePair,
+  Verifier
+}
 import uk.gov.hmrc.http._
 import util.externalservices.ExternalServicesConfig._
 import util.externalservices.TaxEnrolmentsService
@@ -38,23 +43,23 @@ class TaxEnrolmentsConnectorSpec extends IntegrationTestsSpec with ScalaFutures 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
       Map(
-        "microservice.services.tax-enrolments.host" -> Host,
-        "microservice.services.tax-enrolments.port" -> Port,
+        "microservice.services.tax-enrolments.host"    -> Host,
+        "microservice.services.tax-enrolments.port"    -> Port,
         "microservice.services.tax-enrolments.context" -> "tax-enrolments",
-        "auditing.enabled" -> false,
-        "auditing.consumer.baseUri.host" -> Host,
-        "auditing.consumer.baseUri.port" -> Port
+        "auditing.enabled"                             -> false,
+        "auditing.consumer.baseUri.host"               -> Host,
+        "auditing.consumer.baseUri.port"               -> Port
       )
     )
     .build()
 
   private lazy val taxEnrolmentsConnector = app.injector.instanceOf[TaxEnrolmentsConnector]
-  private val safeId = "XE111123456789"
-  private val expectedGetUrl = s"/tax-enrolments/businesspartners/$safeId/subscriptions"
+  private val safeId                      = "XE111123456789"
+  private val expectedGetUrl              = s"/tax-enrolments/businesspartners/$safeId/subscriptions"
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private val formBundleId = "bundle-id"
+  private val formBundleId   = "bundle-id"
   private val expectedPutUrl = s"/tax-enrolments/subscriptions/$formBundleId/issuer"
 
   val responseWithOk: JsValue =
@@ -155,7 +160,9 @@ class TaxEnrolmentsConnectorSpec extends IntegrationTestsSpec with ScalaFutures 
 
       val request = GovernmentGatewayEnrolmentRequest(
         identifiers = List(Identifier("EORINumber", "GB123456789012")),
-        verifiers = List(KeyValuePair(key = "DATEOFESTABLISHMENT", value = LocalDate.now().toString)).map(Verifier.fromKeyValuePair(_))
+        verifiers = List(KeyValuePair(key = "DATEOFESTABLISHMENT", value = LocalDate.now().toString)).map(
+          Verifier.fromKeyValuePair(_)
+        )
       )
 
       TaxEnrolmentsService.returnEnrolmentResponseWhenReceiveRequest(

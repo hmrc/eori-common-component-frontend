@@ -44,9 +44,8 @@ trait UnitSpec extends WordSpec with Matchers {
 
   // From github.com.hmrc/hmrctest to have a possibility to remove deprecated hmrctest library
   // TODO Add deprecated, use play.test.Helpers method contentAsString
-  def bodyOf(resultF: Future[Result])(implicit mat: Materializer): Future[String] = {
+  def bodyOf(resultF: Future[Result])(implicit mat: Materializer): Future[String] =
     resultF.map(bodyOf)(global)
-  }
 
   // Convenience to avoid having to wrap andThen() parameters in Future.successful
   // From github.com.hmrc/hmrctest to have a possibility to remove deprecated hmrctest library

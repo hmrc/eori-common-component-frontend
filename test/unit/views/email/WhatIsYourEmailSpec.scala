@@ -27,10 +27,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.what_is_your_em
 import util.ViewSpec
 
 class WhatIsYourEmailSpec extends ViewSpec {
-  val form: Form[EmailViewModel] = EmailForm.emailForm
+  val form: Form[EmailViewModel]          = EmailForm.emailForm
   val formWithError: Form[EmailViewModel] = EmailForm.emailForm.bind(Map("email" -> "invalid"))
-  val previousPageUrl = "/"
-  implicit val request = withFakeCSRF(FakeRequest())
+  val previousPageUrl                     = "/"
+  implicit val request                    = withFakeCSRF(FakeRequest())
 
   val view = app.injector.instanceOf[what_is_your_email]
 
@@ -83,4 +83,5 @@ class WhatIsYourEmailSpec extends ViewSpec {
     val result = view(formWithError, Journey.Subscribe)
     Jsoup.parse(contentAsString(result))
   }
+
 }

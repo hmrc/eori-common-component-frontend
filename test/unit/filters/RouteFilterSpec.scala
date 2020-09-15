@@ -33,10 +33,10 @@ import scala.concurrent.Future
 
 class RouteFilterSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
 
-  implicit val system = ActorSystem()
+  implicit val system            = ActorSystem()
   implicit val mat: Materializer = ActorMaterializer()
-  val errorHandler = mock[CdsErrorHandler]
-  val config = mock[AppConfig]
+  val errorHandler               = mock[CdsErrorHandler]
+  val config                     = mock[AppConfig]
 
   private def filter = new RouteFilter(config, errorHandler)
 

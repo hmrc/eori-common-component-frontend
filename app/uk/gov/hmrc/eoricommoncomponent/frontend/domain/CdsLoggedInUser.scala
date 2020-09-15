@@ -41,6 +41,7 @@ sealed trait LoggedInUser {
     case Some(id) => id
     case _        => throw new IllegalStateException("No internal id returned by Government Gateway.")
   }
+
 }
 
 case class CustomsLoggedInUser(affinityGroup: Option[AffinityGroup], internalId: Option[String]) extends LoggedInUser

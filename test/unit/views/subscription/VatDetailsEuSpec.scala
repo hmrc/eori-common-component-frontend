@@ -37,17 +37,19 @@ class VatDetailsEuSpec extends ViewSpec {
 
   private val view = app.injector.instanceOf[vat_details_eu]
 
-  val form: Form[VatEUDetailsModel] = euVatForm
-  val updateValues = Map("vatNumber" -> "2DSFA311", "vatCountry" -> "DK")
+  val form: Form[VatEUDetailsModel]          = euVatForm
+  val updateValues                           = Map("vatNumber" -> "2DSFA311", "vatCountry" -> "DK")
   val formForUpdate: Form[VatEUDetailsModel] = euVatForm.bind(updateValues)
 
   val formWithNoSelectionError: Form[VatEUDetailsModel] = euVatForm.bind(Map("vatNumber" -> "", "vatCountry" -> ""))
+
   val formWithIncorrectVatNumber: Form[VatEUDetailsModel] =
     euVatForm.bind(Map("vatNumber" -> "1234/23-1b", "vatCountry" -> "FR"))
+
   val formWithLongVatDetails: Form[VatEUDetailsModel] =
     euVatForm.bind(Map("vatNumber" -> "1123134234234231", "vatCountry" -> "SADF"))
 
-  val isInReviewMode = false
+  val isInReviewMode        = false
   val vatEuDetailsForUpdate = Some(VatEUDetailsModel("12345", "DE"))
 
   "Vat Details EU Page" should {
@@ -112,24 +114,25 @@ class VatDetailsEuSpec extends ViewSpec {
 
   private lazy val doc: Document =
     Jsoup.parse(contentAsString(view(form, countries.eu, updateDetails = false, Journey.Register, isInReviewMode)))
+
   private lazy val docForEdit: Document = Jsoup.parse(
-    contentAsString(
-      view(formForUpdate, countries.eu, updateDetails = true, Journey.Register, isInReviewMode = false)
-    )
+    contentAsString(view(formForUpdate, countries.eu, updateDetails = true, Journey.Register, isInReviewMode = false))
   )
+
   private lazy val docWithEmptyErrors: Document = Jsoup.parse(
     contentAsString(
       view(formWithNoSelectionError, countries.eu, updateDetails = false, Journey.Register, isInReviewMode)
     )
   )
+
   private lazy val vatNumErrorIllegalCharacters: Document = Jsoup.parse(
     contentAsString(
       view(formWithIncorrectVatNumber, countries.eu, updateDetails = false, Journey.Register, isInReviewMode)
     )
   )
+
   private lazy val vatNumErrorLong: Document = Jsoup.parse(
-    contentAsString(
-      view(formWithLongVatDetails, countries.eu, updateDetails = false, Journey.Register, isInReviewMode)
-    )
+    contentAsString(view(formWithLongVatDetails, countries.eu, updateDetails = false, Journey.Register, isInReviewMode))
   )
+
 }

@@ -24,7 +24,11 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.VatEUDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService, SubscriptionVatEUDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionBusinessService,
+  SubscriptionDetailsService,
+  SubscriptionVatEUDetailsService
+}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.global
@@ -33,12 +37,12 @@ import scala.concurrent.Future
 class SubscriptionVatEUDetailsServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
 
   private val mockSubscriptionBusinessService = mock[SubscriptionBusinessService]
-  private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
+  private val mockSubscriptionDetailsService  = mock[SubscriptionDetailsService]
 
   implicit val hc: HeaderCarrier = mock[HeaderCarrier]
 
-  private val mockSubscriptionDetails = mock[SubscriptionDetails]
-  private val mockVatEuDetails = mock[VatEUDetailsModel]
+  private val mockSubscriptionDetails                   = mock[SubscriptionDetails]
+  private val mockVatEuDetails                          = mock[VatEUDetailsModel]
   private val previouslyCachedSubscriptionDetailsHolder = SubscriptionDetails(vatEUDetails = Seq(mockVatEuDetails))
 
   private val VatEuDetailsForUpdate = Seq(VatEUDetailsModel("12345", "FR"), VatEUDetailsModel("54321", "DE"))
@@ -166,7 +170,7 @@ class SubscriptionVatEUDetailsServiceSpec extends UnitSpec with MockitoSugar wit
     }
 
     "fails when details for update not found in cache" in {
-      val vatEuUpdate = VatEUDetailsModel("54321", "ES")
+      val vatEuUpdate             = VatEUDetailsModel("54321", "ES")
       val nonExistingVatReference = VatEUDetailsModel("12345", "PL")
 
       when(mockSubscriptionBusinessService.getCachedVatEuDetailsModel(meq(hc)))

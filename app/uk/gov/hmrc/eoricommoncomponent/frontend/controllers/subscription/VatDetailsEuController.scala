@@ -37,7 +37,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class VatDetailsEuController @Inject()(
+class VatDetailsEuController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   vatEUDetailsService: SubscriptionVatEUDetailsService,
@@ -73,12 +73,11 @@ class VatDetailsEuController @Inject()(
               BadRequest(
                 vatDetailsEuView(formWithErrors, countries.eu, isInReviewMode = isInReviewMode, journey = journey)
               )
-          ),
-          validFormModel => {
+            ),
+          validFormModel =>
             validAddition(validFormModel, vatEUDetailsModel).fold(
               storeVatDetails(validFormModel, journey, isInReviewMode)
             )(badRequest(euVatForm.fill(validFormModel), _, isInReviewMode = isInReviewMode, journey = journey))
-          }
         )
       }
     }
@@ -101,8 +100,8 @@ class VatDetailsEuController @Inject()(
                       updateDetails = true
                     )
                   )
-              ),
-              newEuVatDetails => {
+                ),
+              newEuVatDetails =>
                 validAddition(newEuVatDetails, vatEUDetailsModel, isChanged(oldEuVatDetails, newEuVatDetails))
                   .fold(updateDetails(oldEuVatDetails, newEuVatDetails, journey, isInReviewMode))(
                     badRequest(
@@ -114,7 +113,6 @@ class VatDetailsEuController @Inject()(
                       isInReviewMode
                     )
                   )
-              }
             )
           }
         case _ => throw new IllegalStateException("Vat for update not found")
@@ -161,8 +159,8 @@ class VatDetailsEuController @Inject()(
       }
   }
 
-  private def storeVatDetails(formData: VatEUDetailsModel, journey: Journey.Value, isInReviewMode: Boolean)(
-    implicit hc: HeaderCarrier,
+  private def storeVatDetails(formData: VatEUDetailsModel, journey: Journey.Value, isInReviewMode: Boolean)(implicit
+    hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] =
     vatEUDetailsService.saveOrUpdate(formData) flatMap (_ => goToConfirmVat(journey, isInReviewMode))
@@ -218,4 +216,5 @@ class VatDetailsEuController @Inject()(
       case false => Future.successful(Redirect(VatDetailsEuConfirmController.createForm(journey)))
       case _     => Future.successful(Redirect(VatDetailsEuConfirmController.reviewForm(journey)))
     }
+
 }

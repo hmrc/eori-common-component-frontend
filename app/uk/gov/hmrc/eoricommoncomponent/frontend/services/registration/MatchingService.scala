@@ -32,7 +32,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class MatchingService @Inject()(
+class MatchingService @Inject() (
   matchingConnector: MatchingServiceConnector,
   requestCommonGenerator: RequestCommonGenerator,
   detailsCreator: RegistrationDetailsCreator,
@@ -40,9 +40,10 @@ class MatchingService @Inject()(
   requestSessionData: RequestSessionData
 )(implicit ec: ExecutionContext) {
 
-  private val UTR = "UTR"
+  private val UTR  = "UTR"
   private val EORI = "EORI"
   private val NINO = "NINO"
+
   private val CustomsIdsMap: Map[Class[_ <: CustomsId], String] =
     Map(classOf[Utr] -> UTR, classOf[Eori] -> EORI, classOf[Nino] -> NINO)
 
@@ -51,8 +52,8 @@ class MatchingService @Inject()(
   ): RegistrationDetails =
     detailsCreator.registrationDetails(response.registerWithIDResponse, customsId, capturedDate)
 
-  def sendOrganisationRequestForMatchingService(
-    implicit request: Request[AnyContent],
+  def sendOrganisationRequestForMatchingService(implicit
+    request: Request[AnyContent],
     loggedInUser: LoggedInUser,
     headerCarrier: HeaderCarrier
   ): Future[Boolean] =
@@ -74,8 +75,8 @@ class MatchingService @Inject()(
       )
     } yield result
 
-  def sendIndividualRequestForMatchingService(
-    implicit request: Request[AnyContent],
+  def sendIndividualRequestForMatchingService(implicit
+    request: Request[AnyContent],
     loggedInUser: LoggedInUser,
     headerCarrier: HeaderCarrier
   ): Future[Boolean] =
@@ -84,13 +85,13 @@ class MatchingService @Inject()(
       nameDob = subscription.nameDobDetails.getOrElse(
         throw new IllegalStateException("Name / DOB missing from subscription")
       )
-      eori = subscription.eoriNumber.getOrElse(throw new IllegalStateException("EORI number missing from subscription"))
+      eori       = subscription.eoriNumber.getOrElse(throw new IllegalStateException("EORI number missing from subscription"))
       individual = Individual(nameDob.firstName, None, nameDob.lastName, nameDob.dateOfBirth.toString)
       result <- matchIndividualWithId(Eori(eori), individual, InternalId(loggedInUser.internalId))
     } yield result
 
-  def matchBusinessWithIdOnly(customsId: CustomsId, loggedInUser: LoggedInUser)(
-    implicit hc: HeaderCarrier
+  def matchBusinessWithIdOnly(customsId: CustomsId, loggedInUser: LoggedInUser)(implicit
+    hc: HeaderCarrier
   ): Future[Boolean] =
     for {
       maybeMatchFound <- matchingConnector.lookup(idOnlyMatchRequest(customsId, loggedInUser.isAgent))
@@ -135,15 +136,15 @@ class MatchingService @Inject()(
       )
   }
 
-  def matchIndividualWithId(customsId: CustomsId, individual: Individual, internalId: InternalId)(
-    implicit hc: HeaderCarrier
+  def matchIndividualWithId(customsId: CustomsId, individual: Individual, internalId: InternalId)(implicit
+    hc: HeaderCarrier
   ): Future[Boolean] =
     matchingConnector
       .lookup(individualIdMatchRequest(customsId, individual))
       .flatMap(storeInCacheIfFound(convert(customsId, toLocalDate(individual.dateOfBirth)), internalId))
 
-  def matchIndividualWithNino(nino: String, individual: Individual, internalId: InternalId)(
-    implicit hc: HeaderCarrier
+  def matchIndividualWithNino(nino: String, individual: Individual, internalId: InternalId)(implicit
+    hc: HeaderCarrier
   ): Future[Boolean] =
     matchingConnector
       .lookup(individualNinoMatchRequest(nino, individual))
@@ -209,4 +210,5 @@ class MatchingService @Inject()(
         RequestDetail(NINO, nino, requiresNameMatch = true, isAnAgent = false, individual = Some(individual))
       )
     )
+
 }

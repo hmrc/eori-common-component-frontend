@@ -52,9 +52,9 @@ class HandleSubscriptionConnectorSpec extends IntegrationTestsSpec with ScalaFut
       Map(
         "microservice.services.handle-subscription.host" -> Host,
         "microservice.services.handle-subscription.port" -> Port,
-        "auditing.enabled" -> true,
-        "auditing.consumer.baseUri.host" -> Host,
-        "auditing.consumer.baseUri.port" -> Port
+        "auditing.enabled"                               -> true,
+        "auditing.consumer.baseUri.host"                 -> Host,
+        "auditing.consumer.baseUri.port"                 -> Port
       )
     )
     .build()
@@ -113,7 +113,7 @@ class HandleSubscriptionConnectorSpec extends IntegrationTestsSpec with ScalaFut
         serviceRequestJson.toString,
         NO_CONTENT
       )
-      handleSubscriptionConnector.call(handleSubscriptionRequest).futureValue mustBe (())
+      handleSubscriptionConnector.call(handleSubscriptionRequest).futureValue mustBe ()
     }
 
     "return a failed future when handle subscription endpoint returns 400" in {

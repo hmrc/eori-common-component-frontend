@@ -40,20 +40,19 @@ import scala.concurrent.Future
 class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach with ScalaFutures {
 
   private val enrolmentStoreProxyConnector = mock[EnrolmentStoreProxyConnector]
-  private val taxEnrolmentsConnector = mock[TaxEnrolmentsConnector]
-  private val headerCarrier = HeaderCarrier()
+  private val taxEnrolmentsConnector       = mock[TaxEnrolmentsConnector]
+  private val headerCarrier                = HeaderCarrier()
 
   private val enrolmentService = new EnrolmentService(enrolmentStoreProxyConnector, taxEnrolmentsConnector)(global)
 
   private val eori = "GB123456789012"
+
   private val enrolments =
     Enrolments(Set(Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", eori)), "")))
 
-  override protected def beforeEach(): Unit = {
-
+  override protected def beforeEach(): Unit =
     when(taxEnrolmentsConnector.enrolAndActivate(any(), any())(any()))
       .thenReturn(Future.successful(HttpResponse(NO_CONTENT, "")))
-  }
 
   override protected def afterEach(): Unit = {
     reset(enrolmentStoreProxyConnector, taxEnrolmentsConnector)
@@ -67,9 +66,9 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
 
       "user has eori and all calls are successful" in {
 
-        val date = LocalDate.now().toString
-        val verifiers = List(KeyValuePair(key = "DATEOFESTABLISHMENT", value = date))
-        val knownFact = KnownFact(List.empty, verifiers)
+        val date       = LocalDate.now().toString
+        val verifiers  = List(KeyValuePair(key = "DATEOFESTABLISHMENT", value = date))
+        val knownFact  = KnownFact(List.empty, verifiers)
         val knownFacts = KnownFacts("atar", List(knownFact))
 
         when(enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(any())(any()))

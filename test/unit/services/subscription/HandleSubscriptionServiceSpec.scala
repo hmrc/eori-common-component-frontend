@@ -37,20 +37,21 @@ class HandleSubscriptionServiceSpec extends UnitSpec with MockitoSugar with Befo
 
   private val mockHandleSubscriptionConnector = mock[HandleSubscriptionConnector]
 
-  private val service = new HandleSubscriptionService(mockHandleSubscriptionConnector)
-  private implicit val hc: HeaderCarrier = HeaderCarrier()
+  private val service                       = new HandleSubscriptionService(mockHandleSubscriptionConnector)
+  private implicit val hc: HeaderCarrier    = HeaderCarrier()
   private implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
 
   before {
     reset(mockHandleSubscriptionConnector)
   }
 
-  val formBundleId: String = "formBundleId"
-  val recipientDetails: RecipientDetails = RecipientDetails(Journey.Register, "", "", None, None)
-  val sapNumber: TaxPayerId = TaxPayerId("id")
-  val eori: Option[Eori] = Some(Eori("eori"))
+  val formBundleId: String                         = "formBundleId"
+  val recipientDetails: RecipientDetails           = RecipientDetails(Journey.Register, "", "", None, None)
+  val sapNumber: TaxPayerId                        = TaxPayerId("id")
+  val eori: Option[Eori]                           = Some(Eori("eori"))
   val emailVerificationTimestamp: Option[DateTime] = Some(TestData.emailVerificationTimestamp)
-  val safeId: SafeId = SafeId("id")
+  val safeId: SafeId                               = SafeId("id")
+
   val handleSubscriptionRequest = HandleSubscriptionRequest(
     recipientDetails,
     formBundleId,
@@ -64,14 +65,14 @@ class HandleSubscriptionServiceSpec extends UnitSpec with MockitoSugar with Befo
 
     "call handle subscription connector with a valid handle subscription request" in {
       when(mockHandleSubscriptionConnector.call(any[HandleSubscriptionRequest])(any[HeaderCarrier]))
-        .thenReturn(Future.successful({}))
+        .thenReturn(Future.successful {})
       service.handleSubscription(formBundleId, recipientDetails, sapNumber, eori, emailVerificationTimestamp, safeId)
       verify(mockHandleSubscriptionConnector).call(meq(handleSubscriptionRequest))(meq(hc))
     }
 
     "generate new time stamp for email verification when not available" in {
       when(mockHandleSubscriptionConnector.call(any[HandleSubscriptionRequest])(any[HeaderCarrier]))
-        .thenReturn(Future.successful({}))
+        .thenReturn(Future.successful {})
       service.handleSubscription(formBundleId, recipientDetails, sapNumber, eori, None, safeId)
       verify(mockHandleSubscriptionConnector).call(any[HandleSubscriptionRequest])(any[HeaderCarrier])
     }

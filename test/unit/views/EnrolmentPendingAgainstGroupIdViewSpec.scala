@@ -26,7 +26,7 @@ import util.ViewSpec
 
 class EnrolmentPendingAgainstGroupIdViewSpec extends ViewSpec {
 
-  private val view = app.injector.instanceOf[enrolment_pending_against_group_id]
+  private val view     = app.injector.instanceOf[enrolment_pending_against_group_id]
   implicit val request = withFakeCSRF(FakeRequest())
 
   "Enrolment Pending against group id page" should {
@@ -57,7 +57,7 @@ class EnrolmentPendingAgainstGroupIdViewSpec extends ViewSpec {
     }
   }
 
-  private lazy val gyeDoc: Document = Jsoup.parse(contentAsString(view(Journey.Register)))
+  private lazy val gyeDoc: Document     = Jsoup.parse(contentAsString(view(Journey.Register)))
   private lazy val migrateDoc: Document = Jsoup.parse(contentAsString(view(Journey.Subscribe)))
 
 }

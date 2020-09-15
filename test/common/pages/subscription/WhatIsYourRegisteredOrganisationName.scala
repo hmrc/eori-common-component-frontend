@@ -26,5 +26,4 @@ trait WhatIsYourRegisteredOrganisationName extends WebPage {
 
 object WhatIsYourRegisteredOrganisationName extends WhatIsYourRegisteredOrganisationName
 
-object RowRegisterOrganisationName extends WhatIsYourRegisteredOrganisationName {
-}
+object RowRegisterOrganisationName extends WhatIsYourRegisteredOrganisationName {}

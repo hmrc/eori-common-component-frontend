@@ -50,7 +50,9 @@ class EtmpOrganisationTypeSpec extends UnitSpec {
     }
 
     "throw an exception when invalid id is applied to EtmpOrganisationType" in {
-      intercept[IllegalArgumentException](EtmpOrganisationType("invalidId")).getMessage shouldBe "I got an invalidId as an ETMP Organisation Type but I wanted one of \"Partnership\", \"LLP\", \"Corporate Body\", \"Unincorporated Body\""
+      intercept[IllegalArgumentException](
+        EtmpOrganisationType("invalidId")
+      ).getMessage shouldBe "I got an invalidId as an ETMP Organisation Type but I wanted one of \"Partnership\", \"LLP\", \"Corporate Body\", \"Unincorporated Body\""
     }
 
     "toString needs to be defined for each ETMP Organisation Type" in {

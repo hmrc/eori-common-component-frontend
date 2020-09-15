@@ -21,7 +21,7 @@ import common.pages.WebPage
 trait ConfirmPage extends WebPage {
 
   val BusinessAddressXPath = "//dd[@class='cya-answer']"
-  val fullDetailsXpath = "//dd[@class='cya-answer']"
+  val fullDetailsXpath     = "//dd[@class='cya-answer']"
 
   val fieldLevelErrorYesNoWrongAddress = "//*[@id='yes-no-wrong-address-fieldset']//span[@class='error-message']"
 

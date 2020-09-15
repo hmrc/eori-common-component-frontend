@@ -25,19 +25,26 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import scala.io.Source
 
 @Singleton
-class Countries @Inject()(app: Application) {
+class Countries @Inject() (app: Application) {
+
   private val countriesFilename: String =
     app.configuration.get[String]("countriesFilename")
+
   private val mdgCountryCodesFilename: String =
     app.configuration.get[String]("mdgCountryCodesFilename")
+
   private val mdgNotIomCountryCodesFilename: String =
     app.configuration.get[String]("mdgNotIomCountryCodesFilename")
+
   private val mdgEuCountryCodesFilename: String =
     app.configuration.get[String]("mdgEuCountryCodesFilename")
+
   private val mdgThirdCountryCodesFilename: String =
     app.configuration.get[String]("mdgThirdCountryCodesFilename")
+
   private val mdgIslandsCountryCodesFilename: String =
     app.configuration.get[String]("mdgIslandsCountryCodesFilename")
+
   private def mdgCountryCodes(fileName: String): List[String] =
     Source
       .fromInputStream(app.classloader.getResourceAsStream(fileName))
@@ -65,16 +72,17 @@ class Countries @Inject()(app: Application) {
   private def countryCode: String => String = cc => cc.split(":")(1).trim
 
   val all: List[Country] = countries filter (c => mdgCountryCodes(mdgCountryCodesFilename) contains c.countryCode)
-  val allExceptIom: List[Country] = countries filter (
-    c => mdgCountryCodes(mdgNotIomCountryCodesFilename) contains c.countryCode
-  )
+
+  val allExceptIom: List[Country] =
+    countries filter (c => mdgCountryCodes(mdgNotIomCountryCodesFilename) contains c.countryCode)
+
   val eu: List[Country] = countries filter (c => mdgCountryCodes(mdgEuCountryCodesFilename) contains c.countryCode)
-  val third: List[Country] = countries filter (
-    c => mdgCountryCodes(mdgThirdCountryCodesFilename) contains c.countryCode
-  )
-  val islands: List[Country] = countries filter (
-    c => mdgCountryCodes(mdgIslandsCountryCodesFilename) contains c.countryCode
-  )
+
+  val third: List[Country] =
+    countries filter (c => mdgCountryCodes(mdgThirdCountryCodesFilename) contains c.countryCode)
+
+  val islands: List[Country] =
+    countries filter (c => mdgCountryCodes(mdgIslandsCountryCodesFilename) contains c.countryCode)
 
   def getCountryParameters(location: Option[String]): (List[Country], CountriesInCountryPicker) = location match {
     case Some(UserLocation.Eu) => (eu, EUCountriesInCountryPicker)
@@ -86,13 +94,14 @@ class Countries @Inject()(app: Application) {
 
   def getCountryParametersForAllCountries(): (List[Country], CountriesInCountryPicker) =
     (all, AllCountriesInCountryPicker)
+
 }
 
 sealed trait CountriesInCountryPicker
 
-case object AllCountriesInCountryPicker extends CountriesInCountryPicker
+case object AllCountriesInCountryPicker          extends CountriesInCountryPicker
 case object AllCountriesExceptIomInCountryPicker extends CountriesInCountryPicker
-case object EUCountriesInCountryPicker extends CountriesInCountryPicker
-case object ThirdCountriesInCountryPicker extends CountriesInCountryPicker
-case object IslandsInCountryPicker extends CountriesInCountryPicker
-case object NoCountriesInCountryPicker extends CountriesInCountryPicker
+case object EUCountriesInCountryPicker           extends CountriesInCountryPicker
+case object ThirdCountriesInCountryPicker        extends CountriesInCountryPicker
+case object IslandsInCountryPicker               extends CountriesInCountryPicker
+case object NoCountriesInCountryPicker           extends CountriesInCountryPicker

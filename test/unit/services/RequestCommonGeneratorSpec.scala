@@ -29,7 +29,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services._
 class RequestCommonGeneratorSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
 
   private val mockUUIDGenerator = mock[RandomUUIDGenerator]
-  private val mockClock = mock[UtcClock](RETURNS_DEEP_STUBS)
+  private val mockClock         = mock[UtcClock](RETURNS_DEEP_STUBS)
   private val expectedReference = "a83f4bfed34d445cba186c2e97f7d133"
 
   private val generator = new RequestCommonGenerator(mockUUIDGenerator, mockClock)

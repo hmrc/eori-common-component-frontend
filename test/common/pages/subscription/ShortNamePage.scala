@@ -31,7 +31,6 @@ sealed trait ShortNamePageCommon extends WebPage {
   val continueButtonXpath = "//*[@class='button']"
 }
 
-trait ShortNamePage extends ShortNamePageCommon {
-}
+trait ShortNamePage extends ShortNamePageCommon {}
 
 object ShortNamePage extends ShortNamePage

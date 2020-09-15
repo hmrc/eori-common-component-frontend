@@ -32,7 +32,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class WhatIsYourEmailController @Inject()(
+class WhatIsYourEmailController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   mcc: MessagesControllerComponents,
@@ -41,10 +41,10 @@ class WhatIsYourEmailController @Inject()(
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) with FeatureFlags {
 
-  private def populateView(
-    email: Option[String],
-    journey: Journey.Value
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
+  private def populateView(email: Option[String], journey: Journey.Value)(implicit
+    hc: HeaderCarrier,
+    request: Request[AnyContent]
+  ): Future[Result] = {
     lazy val form = email.map(EmailViewModel).fold(emailForm) {
       emailForm.fill
     }
@@ -53,22 +53,24 @@ class WhatIsYourEmailController @Inject()(
 
   def createForm(journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-        populateView(None, journey = journey)
+      populateView(None, journey = journey)
     }
 
   def submit(journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
       emailForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(whatIsYourEmailView(emailForm = formWithErrors, journey = journey))),
+        formWithErrors =>
+          Future.successful(BadRequest(whatIsYourEmailView(emailForm = formWithErrors, journey = journey))),
         formData => submitNewDetails(InternalId(userWithEnrolments.internalId), formData, journey)
       )
     }
 
-  private def submitNewDetails(internalId: InternalId, formData: EmailViewModel, journey: Journey.Value)(
-    implicit hc: HeaderCarrier,
+  private def submitNewDetails(internalId: InternalId, formData: EmailViewModel, journey: Journey.Value)(implicit
+    hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] =
     save4LaterService
       .saveEmail(internalId, EmailStatus(formData.email))
       .flatMap(_ => Future.successful(Redirect(routes.CheckYourEmailController.createForm(journey))))
+
 }

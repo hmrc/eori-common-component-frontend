@@ -42,15 +42,15 @@ class RegistrationDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
 
   private val mockSessionCache = mock[SessionCache]
 
-  private val startingOrgName = "BEFORE Blank"
-  private val updatedOrgName = "AFTER Test Org Name"
-  private val startingSafeId = SafeId("SAFEID")
+  private val startingOrgName      = "BEFORE Blank"
+  private val updatedOrgName       = "AFTER Test Org Name"
+  private val startingSafeId       = SafeId("SAFEID")
   private val startingBlankAddress = Address("BLANK", None, None, None, None, "BLANK")
-  private val updatedAddress = Address("Line 1", Some("line 2"), Some("line 3"), Some("line 4"), Some("SE28 1AA"), "GB")
+  private val updatedAddress       = Address("Line 1", Some("line 2"), Some("line 3"), Some("line 4"), Some("SE28 1AA"), "GB")
 
   private val startingBlankFullName = "BEFORE Blank full name"
-  private val updatedFullName = "Full name UPDATED"
-  private val updatedDateOfBirth = LocalDate.parse("1976-04-08")
+  private val updatedFullName       = "Full name UPDATED"
+  private val updatedDateOfBirth    = LocalDate.parse("1976-04-08")
 
   private val emptyRegDetailsIndividual = RegistrationDetailsIndividual(
     None,
@@ -60,6 +60,7 @@ class RegistrationDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
     Address("", None, None, None, None, ""),
     startingDate
   )
+
   private val emptyRegDetailsOrganisation = RegistrationDetailsOrganisation(
     None,
     TaxPayerId(""),
@@ -79,6 +80,7 @@ class RegistrationDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
     Some(startingDate),
     None
   )
+
   private val startingRegDetailsIndividual = RegistrationDetailsIndividual(
     None,
     TaxPayerId(""),
@@ -87,6 +89,7 @@ class RegistrationDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
     startingBlankAddress,
     startingDate
   )
+
   private val updatedRegDetailsIndividual = RegistrationDetailsIndividual(updatedFullName, updatedDateOfBirth)
 
   private val registrationDetailsService = new RegistrationDetailsService(mockSessionCache)(global)

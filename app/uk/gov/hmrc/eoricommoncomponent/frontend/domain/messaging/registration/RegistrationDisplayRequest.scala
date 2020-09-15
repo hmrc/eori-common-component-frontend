@@ -25,10 +25,11 @@ case class RequestCommon(receiptDate: DateTime, requestParameters: Seq[RequestPa
   val ignoredFields = List("receiptDate", "requestParameters")
 
   def keyValueMap(): Map[String, String] = {
-    val m = toMap(this, ignoredFields = ignoredFields)
+    val m  = toMap(this, ignoredFields = ignoredFields)
     val rp = requestParameters.flatMap(_.toMap())
     m ++ rp
   }
+
 }
 
 object RequestCommon extends CommonHeader {

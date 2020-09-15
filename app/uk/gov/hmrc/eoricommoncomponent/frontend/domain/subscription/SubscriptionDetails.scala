@@ -52,11 +52,14 @@ case class SubscriptionDetails(
 ) {
 
   def name: String =
-    nameIdOrganisationDetails.map(_.name) orElse nameOrganisationDetails.map(_.name) orElse nameDobDetails.map(_.name) orElse nameDetails
+    nameIdOrganisationDetails.map(_.name) orElse nameOrganisationDetails.map(_.name) orElse nameDobDetails.map(
+      _.name
+    ) orElse nameDetails
       .map(_.name) getOrElse (throw new IllegalArgumentException("Name is missing"))
 
   def vatIdentificationList: List[VatIdentification] =
     vatEUDetails.map(x => VatIdentification(countryCode = x.vatCountry, number = x.vatNumber)).toList
+
 }
 
 object SubscriptionDetails {

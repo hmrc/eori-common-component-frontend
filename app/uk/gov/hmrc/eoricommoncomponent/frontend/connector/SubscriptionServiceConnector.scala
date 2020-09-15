@@ -19,7 +19,10 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{SubscriptionRequest, SubscriptionResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
+  SubscriptionRequest,
+  SubscriptionResponse
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -28,9 +31,11 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
 @Singleton
-class SubscriptionServiceConnector @Inject()(http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit ec: ExecutionContext) {
+class SubscriptionServiceConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
+  ec: ExecutionContext
+) {
 
-  private val url = appConfig.getServiceUrl("subscribe")
+  private val url               = appConfig.getServiceUrl("subscribe")
   private val loggerComponentId = "SubscriptionServiceConnector"
 
   def subscribe(request: SubscriptionRequest)(implicit hc: HeaderCarrier): Future[SubscriptionResponse] = {
@@ -71,4 +76,5 @@ class SubscriptionServiceConnector @Inject()(http: HttpClient, appConfig: AppCon
       detail = Map("txName" -> "SubscriptionResult") ++ response.subscriptionCreateResponse.keyValueMap(),
       eventType = "SubscriptionResult"
     )
+
 }

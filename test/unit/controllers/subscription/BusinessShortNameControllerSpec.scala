@@ -28,7 +28,10 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.BusinessShortNameController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{BusinessShortName, BusinessShortNameSubscriptionFlowPage}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  BusinessShortName,
+  BusinessShortNameSubscriptionFlowPage
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
@@ -54,9 +57,9 @@ class BusinessShortNameControllerSpec
   protected override def submitInReviewModeUrl: String =
     BusinessShortNameController.submit(isInReviewMode = true, Journey.Register).url
 
-  private val mockOrgTypeLookup = mock[OrgTypeLookup]
+  private val mockOrgTypeLookup  = mock[OrgTypeLookup]
   private val mockRequestSession = mock[RequestSessionData]
-  private val businessShortName = app.injector.instanceOf[business_short_name]
+  private val businessShortName  = app.injector.instanceOf[business_short_name]
 
   val allFieldsMap = Map("use-short-name" -> withShortName, "short-name" -> ShortName)
 
@@ -74,11 +77,11 @@ class BusinessShortNameControllerSpec
     mockOrgTypeLookup
   )
 
-  private val emulatedFailure = new UnsupportedOperationException("Emulation of service call failure")
-  private val useShortNameError = "Tell us if your organisation uses a shortened name"
+  private val emulatedFailure              = new UnsupportedOperationException("Emulation of service call failure")
+  private val useShortNameError            = "Tell us if your organisation uses a shortened name"
   private val partnershipUseShortNameError = "Tell us if your partnership uses a shortened name"
-  private val shortNameError = "Enter your organisation's shortened name"
-  private val partnershipShortNameError = "Enter your partnership's shortened name"
+  private val shortNameError               = "Enter your organisation's shortened name"
+  private val partnershipShortNameError    = "Enter your partnership's shortened name"
 
   override def beforeEach: Unit = {
     reset(
@@ -162,10 +165,10 @@ class BusinessShortNameControllerSpec
     }
 
     "display the correct text for the continue button" in {
-      showCreateForm()({ result =>
+      showCreateForm() { result =>
         val page = CdsPage(bodyOf(result))
         page.getElementValue(ShortNamePage.continueButtonXpath) shouldBe ContinueButtonTextInCreateMode
-      })
+      }
     }
 
   }
@@ -197,10 +200,10 @@ class BusinessShortNameControllerSpec
     }
 
     "display the correct text for the continue button" in {
-      showReviewForm()({ result =>
+      showReviewForm() { result =>
         val page = CdsPage(bodyOf(result))
         page.getElementValue(ShortNamePage.continueButtonXpath) shouldBe ContinueButtonTextInReviewMode
-      })
+      }
     }
   }
 
@@ -280,7 +283,9 @@ class BusinessShortNameControllerSpec
     "display errors in the same order as the fields appear on the page when 'use short name' is not answered" in {
       submitFormInCreateMode(emptyShortNameFieldsMap) { result =>
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath) shouldBe useShortNameError
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
+        ) shouldBe useShortNameError
       }
     }
 
@@ -295,7 +300,9 @@ class BusinessShortNameControllerSpec
       when(mockRequestSession.isPartnership(any())).thenReturn(true)
       submitFormInCreateMode(emptyShortNameFieldsMap) { result =>
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath) shouldBe partnershipUseShortNameError
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
+        ) shouldBe partnershipUseShortNameError
       }
     }
 
@@ -303,7 +310,9 @@ class BusinessShortNameControllerSpec
       when(mockRequestSession.isPartnership(any())).thenReturn(true)
       submitFormInCreateMode(emptyShortNameFieldsMap + ("use-short-name" -> withShortName)) { result =>
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath) shouldBe partnershipShortNameError
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
+        ) shouldBe partnershipShortNameError
       }
     }
   }
@@ -316,8 +325,12 @@ class BusinessShortNameControllerSpec
       submitFormInCreateMode(emptyShortNameFieldsMap) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath) shouldBe useShortNameError
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.useShortNameFieldLevelErrorXpath) shouldBe useShortNameError
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
+        ) shouldBe useShortNameError
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.useShortNameFieldLevelErrorXpath
+        ) shouldBe useShortNameError
       }
     }
 
@@ -356,8 +369,12 @@ class BusinessShortNameControllerSpec
         result =>
           status(result) shouldBe BAD_REQUEST
           val page = CdsPage(bodyOf(result))
-          page.getElementsText(SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath) shouldBe shortNameError
-          page.getElementsText(SubscriptionAmendCompanyDetailsPage.shortNameFieldLevelErrorXpath) shouldBe shortNameError
+          page.getElementsText(
+            SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
+          ) shouldBe shortNameError
+          page.getElementsText(
+            SubscriptionAmendCompanyDetailsPage.shortNameFieldLevelErrorXpath
+          ) shouldBe shortNameError
       }
     }
 
@@ -365,8 +382,12 @@ class BusinessShortNameControllerSpec
       submitFormInCreateMode(allShortNameFieldsMap + ("short-name" -> oversizedString(70))) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath) shouldBe "The shortened name must be 70 characters or less"
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.shortNameFieldLevelErrorXpath) shouldBe "The shortened name must be 70 characters or less"
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "The shortened name must be 70 characters or less"
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.shortNameFieldLevelErrorXpath
+        ) shouldBe "The shortened name must be 70 characters or less"
       }
     }
   }
@@ -440,8 +461,11 @@ class BusinessShortNameControllerSpec
   }
 
   private def verifyShortNameFieldExistAndPopulatedCorrectly(page: CdsPage, testData: BusinessShortName): Unit =
-    Some(page.getElementValueForLabel(SubscriptionAmendCompanyDetailsPage.shortNameLabelXpath)) shouldBe testData.shortName
+    Some(
+      page.getElementValueForLabel(SubscriptionAmendCompanyDetailsPage.shortNameLabelXpath)
+    ) shouldBe testData.shortName
 
   private def verifyShortNameFieldExistWithNoData(page: CdsPage): Unit =
     page.getElementValueForLabel(ShortNamePage.shortNameLabelXpath) shouldBe empty
+
 }

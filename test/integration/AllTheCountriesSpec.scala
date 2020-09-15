@@ -286,4 +286,5 @@ class AllTheCountriesSpec extends WordSpec with Matchers with GuiceOneAppPerSuit
     "ZM",
     "ZW"
   )
+
 }

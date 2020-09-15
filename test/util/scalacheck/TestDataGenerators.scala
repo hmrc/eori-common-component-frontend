@@ -32,13 +32,13 @@ trait TestDataGenerators {
 
   val nameGenerator: Gen[String] = for {
     nameLength <- Gen.chooseNum(1, maxLengthOfName)
-    name <- Gen.listOfN(nameLength, Gen.alphaChar) map (_.mkString)
+    name       <- Gen.listOfN(nameLength, Gen.alphaChar) map (_.mkString)
   } yield name
 
   val baselineDate = new LocalDate()
 
   val dateOfBirthGenerator = for {
-    days <- Gen.chooseNum(1, 365)
+    days  <- Gen.chooseNum(1, 365)
     years <- Gen.chooseNum(0, 110)
   } yield baselineDate minusYears years minusDays days
 
@@ -46,7 +46,7 @@ trait TestDataGenerators {
 
   val addressLineGenerator = for {
     nameLength <- Gen.chooseNum(1, maxLengthOfAddressLine)
-    address <- Gen.listOfN(nameLength, Gen.alphaNumChar) map (_.mkString)
+    address    <- Gen.listOfN(nameLength, Gen.alphaNumChar) map (_.mkString)
   } yield address
 
   def oversizedNameGenerator(maxLengthConstraint: Int = maxLengthOfName): Gen[String] =
@@ -58,11 +58,11 @@ trait TestDataGenerators {
   // Quick and dirty approach for now, may need to extend this if validation tightens up.
   // TODO: should generate enough space not to breach the limit of an acceptable postcode length.
   val postcodeGenerator = for {
-    area <- Gen.oneOf(Gen.alphaChar map (_.toString), Gen.listOfN(2, Gen.alphaChar) map (_.mkString))
+    area     <- Gen.oneOf(Gen.alphaChar map (_.toString), Gen.listOfN(2, Gen.alphaChar) map (_.mkString))
     district <- Gen.chooseNum(1, 99)
-    space <- Gen.option(Gen.const(" "))
-    sector <- Gen.chooseNum(0, 9)
-    unit <- Gen.listOfN(2, Gen.alphaChar) map (_.mkString)
+    space    <- Gen.option(Gen.const(" "))
+    sector   <- Gen.chooseNum(0, 9)
+    unit     <- Gen.listOfN(2, Gen.alphaChar) map (_.mkString)
     spacePayload = space getOrElse ""
   } yield s"$area$district$spacePayload$sector$unit"
 
@@ -72,7 +72,7 @@ trait TestDataGenerators {
 
   val countryGenerator = for {
     capitalisedCaseCountry <- Gen.oneOf(GBUpperCase, "US", "ES", "NL")
-    convertToLowerCase <- Arbitrary.arbitrary[Boolean]
+    convertToLowerCase     <- Arbitrary.arbitrary[Boolean]
   } yield if (convertToLowerCase) capitalisedCaseCountry.toLowerCase else capitalisedCaseCountry
 
   val countryWithoutGBGenerator = countryGenerator.filter(_.toLowerCase != GBUpperCase.toLowerCase)
@@ -92,19 +92,22 @@ trait TestDataGenerators {
 
     def apply(gens: IndividualGens[E]): Gen[Result] =
       for {
-        firstName <- gens.firstNameGen
+        firstName  <- gens.firstNameGen
         middleName <- gens.middleNameGen
-        lastName <- gens.lastNameGen
-        extraBit <- gens.extraBitGen
+        lastName   <- gens.lastNameGen
+        extraBit   <- gens.extraBitGen
       } yield apply(DataItems(firstName, middleName, lastName, extraBit))
+
   }
 
   def individualNameAndDateOfBirthGens(): IndividualGens[LocalDate] = IndividualGens(extraBitGen = dateOfBirthGenerator)
 
   val individualNameAndDateOfBirthGenerator =
     new AbstractIndividualGenerator[LocalDate, IndividualNameAndDateOfBirth] {
+
       def apply(data: DataItems) =
         IndividualNameAndDateOfBirth(data.firstName, data.middleName, data.lastName, dateOfBirth = data.extraBit)
+
     }
 
   def orgRegistrationDetailsGen(
@@ -120,35 +123,34 @@ trait TestDataGenerators {
   ): Gen[OrgRegistrationInfo] =
     for {
       organisationName <- organisationNameGenerator
-      addressLineOne <- addressLineOneGenerator
-      addressLineTwo <- addressLineTwoGenerator
+      addressLineOne   <- addressLineOneGenerator
+      addressLineTwo   <- addressLineTwoGenerator
       addressLineThree <- addressLineThreeGenerator
-      addressLineFour <- addressLineFourGenerator
-      country <- countryGenerator
-      email <- emailGen
-      phoneNumber <- phoneNumberGen
+      addressLineFour  <- addressLineFourGenerator
+      country          <- countryGenerator
+      email            <- emailGen
+      phoneNumber      <- phoneNumberGen
       postcode <- postcodeGen match {
         case Right(optionalPostcodeGen)                        => optionalPostcodeGen
         case Left(stringPostcodeGen) if country == GBUpperCase => stringPostcodeGen.asMandatoryOption
         case Left(stringPostcodeGen)                           => stringPostcodeGen.asOption
       }
-    } yield
-      OrgRegistrationInfo(
-        organisationName,
-        None,
-        false,
-        TaxPayerId("taxPayerId"),
-        addressLineOne,
-        addressLineTwo,
-        addressLineThree,
-        addressLineFour,
-        postcode,
-        country,
-        email,
-        phoneNumber,
-        None,
-        false
-      )
+    } yield OrgRegistrationInfo(
+      organisationName,
+      None,
+      false,
+      TaxPayerId("taxPayerId"),
+      addressLineOne,
+      addressLineTwo,
+      addressLineThree,
+      addressLineFour,
+      postcode,
+      country,
+      email,
+      phoneNumber,
+      None,
+      false
+    )
 
   //TODO: Can we get rid of this????
   def individualRegistrationDetailsGen(
@@ -166,40 +168,39 @@ trait TestDataGenerators {
     phoneNumberGen: Gen[Option[String]] = Gen.option(Gen.posNum[Int] map (_.toString))
   ): Gen[IndividualRegistrationInfo] =
     for {
-      firstName <- firstNameGenerator
-      middleName <- middleNameGenerator
-      lastName <- lastNameGenerator
-      dob <- optionalDateGen
-      addressLineOne <- addressLineOneGenerator
-      addressLineTwo <- addressLineTwoGenerator
+      firstName        <- firstNameGenerator
+      middleName       <- middleNameGenerator
+      lastName         <- lastNameGenerator
+      dob              <- optionalDateGen
+      addressLineOne   <- addressLineOneGenerator
+      addressLineTwo   <- addressLineTwoGenerator
       addressLineThree <- addressLineThreeGenerator
-      addressLineFour <- addressLineFourGenerator
-      country <- countryGenerator
-      email <- emailGen
-      phoneNumber <- phoneNumberGen
+      addressLineFour  <- addressLineFourGenerator
+      country          <- countryGenerator
+      email            <- emailGen
+      phoneNumber      <- phoneNumberGen
       postcode <- postcodeGen match {
         case Right(optionalPostcodeGen)                        => optionalPostcodeGen
         case Left(stringPostcodeGen) if country == GBUpperCase => stringPostcodeGen.asMandatoryOption
         case Left(stringPostcodeGen)                           => stringPostcodeGen.asOption
       }
-    } yield
-      IndividualRegistrationInfo(
-        firstName,
-        middleName,
-        lastName,
-        dob,
-        TaxPayerId("taxPayerId"),
-        addressLineOne,
-        addressLineTwo,
-        addressLineThree,
-        addressLineFour,
-        postcode,
-        country,
-        email,
-        phoneNumber,
-        None,
-        false
-      )
+    } yield IndividualRegistrationInfo(
+      firstName,
+      middleName,
+      lastName,
+      dob,
+      TaxPayerId("taxPayerId"),
+      addressLineOne,
+      addressLineTwo,
+      addressLineThree,
+      addressLineFour,
+      postcode,
+      country,
+      email,
+      phoneNumber,
+      None,
+      false
+    )
 
   val eoriPrefixLength = 2
 
@@ -219,7 +220,7 @@ trait TestDataGenerators {
   val eoriGenerator = eoriStringGenerator map Eori
 
   val invalidEoriStringGeneratorOne = for {
-    prefix <- Gen.alphaChar map (_.toString)
+    prefix                <- Gen.alphaChar map (_.toString)
     memberStateIdentifier <- Gen.listOf(Gen.numChar) map (_.mkString)
   } yield prefix ++ memberStateIdentifier
 
@@ -240,6 +241,7 @@ object TestDataGenerators {
     }
 
     implicit class StringGenOps(val strings: Gen[String]) extends AnyVal {
+
       def oversized(maxLength: Int)(extraGen: Gen[Char]): Gen[String] =
         for {
           s: String <- strings
@@ -252,5 +254,7 @@ object TestDataGenerators {
 
       def oversizeWithAlphaNumChars(maxLength: Int): Gen[String] = oversized(maxLength)(Gen.alphaNumChar)
     }
+
   }
+
 }

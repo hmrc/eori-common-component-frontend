@@ -49,32 +49,34 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
   implicit override val patienceConfig =
     PatienceConfig(timeout = scaled(Span(10, Seconds)), interval = scaled(Span(15, Millis)))
 
-  private val mockSubscriptionService = mock[SubscriptionService]
-  private val mockCdsFrontendDataCache = mock[SessionCache]
-  private val mockRegistrationConfirmService = mock[RegistrationConfirmService]
-  private val mockSubscriptionFlowManager = mock[SubscriptionFlowManager]
-  private val mockHandleSubscriptionService = mock[HandleSubscriptionService]
+  private val mockSubscriptionService                      = mock[SubscriptionService]
+  private val mockCdsFrontendDataCache                     = mock[SessionCache]
+  private val mockRegistrationConfirmService               = mock[RegistrationConfirmService]
+  private val mockSubscriptionFlowManager                  = mock[SubscriptionFlowManager]
+  private val mockHandleSubscriptionService                = mock[HandleSubscriptionService]
   private val mockRegistrationDetails: RegistrationDetails = mock[RegistrationDetails]
-  private val mockSubscribeOutcome: Sub02Outcome = mock[Sub02Outcome]
-  private val mockRequestSessionData = mock[RequestSessionData]
-  private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
+  private val mockSubscribeOutcome: Sub02Outcome           = mock[Sub02Outcome]
+  private val mockRequestSessionData                       = mock[RequestSessionData]
+  private val mockSubscriptionDetailsService               = mock[SubscriptionDetailsService]
 
-  implicit private val hc: HeaderCarrier = mock[HeaderCarrier]
+  implicit private val hc: HeaderCarrier                = mock[HeaderCarrier]
   implicit private val mockRequest: Request[AnyContent] = mock[Request[AnyContent]]
 
-  private val eori = "EORI-Number"
-  private val formBundleId = "Form-Bundle-Id"
-  private val processingDate = "19 April 2018"
+  private val eori                       = "EORI-Number"
+  private val formBundleId               = "Form-Bundle-Id"
+  private val processingDate             = "19 April 2018"
   private val emailVerificationTimestamp = TestData.emailVerificationTimestamp
-  private val mockCdsOrganisationType = mock[Option[CdsOrganisationType]]
-  private val mockContactDetailsModel = mock[ContactDetailsModel]
-  private val contactDetails = SubscriptionContactDetailsBuilder.contactDetailsWithMandatoryValuesOnly
+  private val mockCdsOrganisationType    = mock[Option[CdsOrganisationType]]
+  private val mockContactDetailsModel    = mock[ContactDetailsModel]
+  private val contactDetails             = SubscriptionContactDetailsBuilder.contactDetailsWithMandatoryValuesOnly
+
   private val subscriptionDetails = SubscriptionDetails(
     contactDetails = Some(mockContactDetailsModel),
     eoriNumber = Some(eori),
     email = Some("test@example.com"),
     nameIdOrganisationDetails = Some(NameIdOrganisationMatchModel("orgname", "orgid"))
   )
+
   private val emulatedFailure = new UnsupportedOperationException("Emulation of service call failure")
 
   private val cdsSubscriber = new CdsSubscriber(
@@ -441,7 +443,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
   private def stubRegister(useContactDetail: Boolean): RegisterWithEoriAndIdResponse = {
     val processingDate = DateTime.now.withTimeAtStartOfDay()
     val responseCommon = ResponseCommon(status = "OK", processingDate = processingDate)
-    val trader = Trader(fullName = "New trading", shortName = "nt")
+    val trader         = Trader(fullName = "New trading", shortName = "nt")
     val establishmentAddress =
       EstablishmentAddress(streetAndNumber = "Street Address", city = "City", countryCode = "GB")
     val cd = if (useContactDetail) Some(ContactDetail(establishmentAddress, "TEST NAME", None, None, None)) else None
@@ -577,4 +579,5 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
     ).thenReturn(Future.successful(SubscriptionFailed("EORI already exists", processingDate)))
     when(mockRegistrationDetails.name).thenReturn(registeredName)
   }
+
 }

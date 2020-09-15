@@ -48,4 +48,5 @@ trait SubscriptionFlowCreateModeTestSupport extends SubscriptionFlowTestSupport 
     status(result) shouldBe SEE_OTHER
     result.header.headers(LOCATION) should endWith(nextPageUrl)
   }
+
 }

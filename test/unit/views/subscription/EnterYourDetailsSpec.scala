@@ -29,9 +29,9 @@ import util.ViewSpec
 
 class EnterYourDetailsSpec extends ViewSpec {
   val form: Form[NameDobMatchModel] = enterNameDobForm
-  val isInReviewMode = false
-  val previousPageUrl = "/"
-  implicit val request = withFakeCSRF(FakeRequest())
+  val isInReviewMode                = false
+  val previousPageUrl               = "/"
+  implicit val request              = withFakeCSRF(FakeRequest())
 
   private val view = app.injector.instanceOf[enter_your_details]
 
@@ -91,4 +91,5 @@ class EnterYourDetailsSpec extends ViewSpec {
     val result = view(form, isInReviewMode, Journey.Subscribe, selectedUserLocationWithIslands = Some("third-country"))
     Jsoup.parse(contentAsString(result))
   }
+
 }

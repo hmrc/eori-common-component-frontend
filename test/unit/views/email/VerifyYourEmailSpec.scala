@@ -25,8 +25,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.verify_your_ema
 import util.ViewSpec
 
 class VerifyYourEmailSpec extends ViewSpec {
-  val isInReviewMode = false
-  val previousPageUrl = "/"
+  val isInReviewMode   = false
+  val previousPageUrl  = "/"
   implicit val request = withFakeCSRF(FakeRequest())
 
   val view = app.injector.instanceOf[verify_your_email]
@@ -58,7 +58,7 @@ class VerifyYourEmailSpec extends ViewSpec {
   }
 
   lazy val doc: Document = {
-    val email = "test@example.com"
+    val email  = "test@example.com"
     val result = view(Some(email), Journey.Subscribe)
     Jsoup.parse(contentAsString(result))
   }

@@ -32,18 +32,18 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
       Map(
-        "microservice.services.eori-common-component-hods-proxy.host" -> Host,
-        "microservice.services.eori-common-component-hods-proxy.port" -> Port,
+        "microservice.services.eori-common-component-hods-proxy.host"          -> Host,
+        "microservice.services.eori-common-component-hods-proxy.port"          -> Port,
         "microservice.services.eori-common-component-hods-proxy.match.context" -> "register-with-id",
-        "auditing.enabled" -> true,
-        "auditing.consumer.baseUri.host" -> Host,
-        "auditing.consumer.baseUri.port" -> Port
+        "auditing.enabled"                                                     -> true,
+        "auditing.consumer.baseUri.host"                                       -> Host,
+        "auditing.consumer.baseUri.port"                                       -> Port
       )
     )
     .build()
 
   private lazy val matchingServiceConnector = app.injector.instanceOf[MatchingServiceConnector]
-  val expectedPostUrl = "/register-with-id"
+  val expectedPostUrl                       = "/register-with-id"
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -77,7 +77,7 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
       """.stripMargin)
 
   private def requestJsonFragment(isAnIndividual: Boolean): String =
-    if (isAnIndividual) {
+    if (isAnIndividual)
       """
         |     "individual": {
         |        "firstName": "John",
@@ -86,7 +86,7 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
         |        "dateOfBirth": "1980-01-01"
         |      },
       """.stripMargin
-    } else {
+    else
       """
         |      "organisation": {
         |        "organisationName": "orgName",
@@ -95,7 +95,6 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
         |        "code": "0001"
         |      },
       """.stripMargin
-    }
 
   private def serviceResponseJsonWithOptionalParams(isAnIndividual: Boolean) =
     Json.parse(s"""
@@ -133,12 +132,11 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
          |}
       """.stripMargin)
 
-  private val serviceResponseJsonOrganisationWithOptionalParams = serviceResponseJsonWithOptionalParams(
-    isAnIndividual = false
-  )
-  private val serviceResponseJsonIndividualWithOptionalParams = serviceResponseJsonWithOptionalParams(
-    isAnIndividual = true
-  )
+  private val serviceResponseJsonOrganisationWithOptionalParams =
+    serviceResponseJsonWithOptionalParams(isAnIndividual = false)
+
+  private val serviceResponseJsonIndividualWithOptionalParams =
+    serviceResponseJsonWithOptionalParams(isAnIndividual = true)
 
   private val matchFailureResponse = Json.parse("""
       |{

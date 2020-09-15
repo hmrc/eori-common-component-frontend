@@ -31,8 +31,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EmailVerificationService @Inject()(emailVerificationConnector: EmailVerificationConnector)(
-  implicit ec: ExecutionContext
+class EmailVerificationService @Inject() (emailVerificationConnector: EmailVerificationConnector)(implicit
+  ec: ExecutionContext
 ) {
 
   def isEmailVerified(email: String)(implicit hc: HeaderCarrier): Future[Option[Boolean]] =
@@ -42,12 +42,13 @@ class EmailVerificationService @Inject()(emailVerificationConnector: EmailVerifi
       case Left(_)                 => None
     }
 
-  def createEmailVerificationRequest(email: String, continueUrl: String)(
-    implicit hc: HeaderCarrier
+  def createEmailVerificationRequest(email: String, continueUrl: String)(implicit
+    hc: HeaderCarrier
   ): Future[Option[Boolean]] =
     emailVerificationConnector.createEmailVerificationRequest(email, continueUrl) map {
       case Right(EmailVerificationRequestSent) => Some(true)
       case Right(EmailAlreadyVerified)         => Some(false)
       case _                                   => None
     }
+
 }

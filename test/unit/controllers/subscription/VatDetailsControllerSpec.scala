@@ -49,18 +49,21 @@ class VatDetailsControllerSpec
     with SubscriptionFlowReviewModeTestSupport {
 
   protected override val formId: String = "vat-details-form"
+
   protected override val submitInCreateModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatDetailsController
       .submit(isInReviewMode = false, Journey.Register)
       .url
+
   protected override val submitInReviewModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatDetailsController
       .submit(isInReviewMode = true, Journey.Register)
       .url
+
   private val mockVatControlListConnector = mock[VatControlListConnector]
 
-  private val vatDetailsView = app.injector.instanceOf[vat_details]
-  private val errorTemplate = app.injector.instanceOf[error_template]
+  private val vatDetailsView              = app.injector.instanceOf[vat_details]
+  private val errorTemplate               = app.injector.instanceOf[error_template]
   private val weCannotConfirmYourIdentity = app.injector.instanceOf[we_cannot_confirm_your_identity]
 
   private val controller = new VatDetailsController(
@@ -77,11 +80,11 @@ class VatDetailsControllerSpec
   )
 
   private val validRequest = Map(
-    "postcode" -> "Z9 1AA",
-    "vat-number" -> "028836662",
-    "vat-effective-date.day" -> "24",
+    "postcode"                 -> "Z9 1AA",
+    "vat-number"               -> "028836662",
+    "vat-effective-date.day"   -> "24",
     "vat-effective-date.month" -> "11",
-    "vat-effective-date.year" -> "2009"
+    "vat-effective-date.year"  -> "2009"
   )
 
   override protected def beforeEach(): Unit = {
@@ -104,8 +107,12 @@ class VatDetailsControllerSpec
       submitFormInCreateMode(validRequest + ("postcode" -> "")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a valid postcode of your VAT registration address"
-        page.getElementsText(vatPostcodeFieldLevelError) shouldBe "Enter a valid postcode of your VAT registration address"
+        page.getElementsText(
+          pageLevelErrorSummaryListXPath
+        ) shouldBe "Enter a valid postcode of your VAT registration address"
+        page.getElementsText(
+          vatPostcodeFieldLevelError
+        ) shouldBe "Enter a valid postcode of your VAT registration address"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -177,14 +184,18 @@ class VatDetailsControllerSpec
     "show error when no effective date is supplied" in {
       submitFormInCreateMode(
         validRequest +
-          ("vat-effective-date.day" -> "",
+          ("vat-effective-date.day"  -> "",
           "vat-effective-date.month" -> "",
-          "vat-effective-date.year" -> "")
+          "vat-effective-date.year"  -> "")
       ) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your effective VAT date, for example '31 3 1980'"
-        page.getElementsText(vatEffectiveDateFieldLevelError) shouldBe "Enter your effective VAT date, for example '31 3 1980'"
+        page.getElementsText(
+          pageLevelErrorSummaryListXPath
+        ) shouldBe "Enter your effective VAT date, for example '31 3 1980'"
+        page.getElementsText(
+          vatEffectiveDateFieldLevelError
+        ) shouldBe "Enter your effective VAT date, for example '31 3 1980'"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -192,14 +203,18 @@ class VatDetailsControllerSpec
     "show error when an invalid effective date is supplied" in {
       submitFormInCreateMode(
         validRequest +
-          ("vat-effective-date.day" -> "31",
+          ("vat-effective-date.day"  -> "31",
           "vat-effective-date.month" -> "04",
-          "vat-effective-date.year" -> "2002")
+          "vat-effective-date.year"  -> "2002")
       ) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Please enter a valid date, for example '31 3 1980'"
-        page.getElementsText(vatEffectiveDateFieldLevelError) shouldBe "Please enter a valid date, for example '31 3 1980'"
+        page.getElementsText(
+          pageLevelErrorSummaryListXPath
+        ) shouldBe "Please enter a valid date, for example '31 3 1980'"
+        page.getElementsText(
+          vatEffectiveDateFieldLevelError
+        ) shouldBe "Please enter a valid date, for example '31 3 1980'"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -208,14 +223,18 @@ class VatDetailsControllerSpec
       val tomorrow = LocalDate.now().plusDays(1)
       submitFormInCreateMode(
         validRequest +
-          ("vat-effective-date.day" -> tomorrow.getDayOfMonth.toString,
+          ("vat-effective-date.day"  -> tomorrow.getDayOfMonth.toString,
           "vat-effective-date.month" -> tomorrow.getMonthOfYear.toString,
-          "vat-effective-date.year" -> tomorrow.getYear.toString)
+          "vat-effective-date.year"  -> tomorrow.getYear.toString)
       ) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "You must specify a date that is not in the future"
-        page.getElementsText(vatEffectiveDateFieldLevelError) shouldBe "You must specify a date that is not in the future"
+        page.getElementsText(
+          pageLevelErrorSummaryListXPath
+        ) shouldBe "You must specify a date that is not in the future"
+        page.getElementsText(
+          vatEffectiveDateFieldLevelError
+        ) shouldBe "You must specify a date that is not in the future"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -230,7 +249,9 @@ class VatDetailsControllerSpec
     "redirect to next page when valid vat number and effective date is supplied and is in review mode" in {
       submitFormInReviewMode(validRequest) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs-enrolment-services/register/matching/review-determine")
+        result.header.headers("Location") should endWith(
+          "/customs-enrolment-services/register/matching/review-determine"
+        )
       }
     }
 
@@ -333,4 +354,5 @@ class VatDetailsControllerSpec
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }
+
 }

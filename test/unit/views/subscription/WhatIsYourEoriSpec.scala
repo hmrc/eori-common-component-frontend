@@ -30,20 +30,26 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers._
 
 class WhatIsYourEoriSpec extends ViewSpec {
   val form: Form[EoriNumberViewModel] = SubscriptionForm.eoriNumberForm
+
   val formWithInvalidError: Form[EoriNumberViewModel] =
     SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> "invalidinvalid"))
+
   val formWithInvalidGbEoriError: Form[EoriNumberViewModel] =
     SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> "GBthatIsNotValid"))
+
   val formWithTooShortError: Form[EoriNumberViewModel] =
     SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> "GB"))
+
   val formWithTooLongError: Form[EoriNumberViewModel] =
     SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> "this eori is too long"))
+
   val formWithEmptyFieldError: Form[EoriNumberViewModel] =
     SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> ""))
-  val isInReviewMode = false
+
+  val isInReviewMode       = false
   val isRestOfWorldJourney = false
-  val previousPageUrl = "/"
-  implicit val request = withFakeCSRF(FakeRequest())
+  val previousPageUrl      = "/"
+  implicit val request     = withFakeCSRF(FakeRequest())
 
   private val view = app.injector.instanceOf[what_is_your_eori]
 
@@ -63,7 +69,10 @@ class WhatIsYourEoriSpec extends ViewSpec {
       doc.body.getElementById("eori-number").attr("type") mustBe "text"
     }
     "have a link to 'Get EORI'" in {
-      doc.body.getElementsByAttributeValue("href", routes.RegisterRedirectController.getEori().url ).text() mustBe "Register for an EORI"
+      doc.body.getElementsByAttributeValue(
+        "href",
+        routes.RegisterRedirectController.getEori().url
+      ).text() mustBe "Register for an EORI"
     }
 
     "display a field level error message when the Eori is invalid" in {
@@ -130,4 +139,5 @@ class WhatIsYourEoriSpec extends ViewSpec {
     val result = view(formWithEmptyFieldError, isInReviewMode, isRestOfWorldJourney, Journey.Subscribe)
     Jsoup.parse(contentAsString(result))
   }
+
 }

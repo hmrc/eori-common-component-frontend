@@ -23,7 +23,10 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.HowCanWeIdentifyYouController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionBusinessService,
+  SubscriptionDetailsService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -34,11 +37,11 @@ import scala.concurrent.Future
 
 class GoogleTagManagerSpec extends ControllerSpec with GuiceOneAppPerSuite with MockitoSugar {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockSubscriptionBusinessService = mock[SubscriptionBusinessService]
-  private val mockSubscriptionFlowManager = mock[SubscriptionFlowManager]
+  private val mockAuthConnector                    = mock[AuthConnector]
+  private val mockSubscriptionBusinessService      = mock[SubscriptionBusinessService]
+  private val mockSubscriptionFlowManager          = mock[SubscriptionFlowManager]
   private val mockSubscriptionDetailsHolderService = mock[SubscriptionDetailsService]
-  private val howCanWeIdentifyYouView = app.injector.instanceOf[how_can_we_identify_you]
+  private val howCanWeIdentifyYouView              = app.injector.instanceOf[how_can_we_identify_you]
 
   private val controller = new HowCanWeIdentifyYouController(
     app,
@@ -61,7 +64,10 @@ class GoogleTagManagerSpec extends ControllerSpec with GuiceOneAppPerSuite with 
     "include a noscript snippet in the body" in {
       showForm(Map.empty) { result =>
         val page = CdsPage(bodyOf(result))
-        page.getElementAttribute("//body/noscript/iframe", "src") shouldBe "https://www.googletagmanager.com/ns.html?id=GTM-NDJKHWK"
+        page.getElementAttribute(
+          "//body/noscript/iframe",
+          "src"
+        ) shouldBe "https://www.googletagmanager.com/ns.html?id=GTM-NDJKHWK"
       }
     }
   }
@@ -72,4 +78,5 @@ class GoogleTagManagerSpec extends ControllerSpec with GuiceOneAppPerSuite with 
       controller.createForm(Journey.Subscribe).apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }
+
 }

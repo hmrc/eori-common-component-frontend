@@ -22,7 +22,10 @@ import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.mvc.Http.Status._
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{SUB09SubscriptionDisplayConnector, ServiceUnavailableResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{
+  SUB09SubscriptionDisplayConnector,
+  ServiceUnavailableResponse
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionDisplayResponseHolder
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.http._
@@ -35,25 +38,27 @@ class SUB09SubscriptionDisplayConnectorSpec extends IntegrationTestsSpec with Sc
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
       Map(
-        "microservice.services.eori-common-component-hods-proxy.host" -> Host,
-        "microservice.services.eori-common-component-hods-proxy.port" -> Port,
+        "microservice.services.eori-common-component-hods-proxy.host"                         -> Host,
+        "microservice.services.eori-common-component-hods-proxy.port"                         -> Port,
         "microservice.services.eori-common-component-hods-proxy.subscription-display.context" -> "subscription-display",
-        "auditing.enabled" -> false,
-        "auditing.consumer.baseUri.host" -> Host,
-        "auditing.consumer.baseUri.port" -> Port
+        "auditing.enabled"                                                                    -> false,
+        "auditing.consumer.baseUri.host"                                                      -> Host,
+        "auditing.consumer.baseUri.port"                                                      -> Port
       )
     )
     .build()
 
-  private lazy val connector = app.injector.instanceOf[SUB09SubscriptionDisplayConnector]
-  private val requestTaxPayerId = "GBE9XSDF10BCKEYAX"
-  private val requestEori = "GB083456789000"
+  private lazy val connector                  = app.injector.instanceOf[SUB09SubscriptionDisplayConnector]
+  private val requestTaxPayerId               = "GBE9XSDF10BCKEYAX"
+  private val requestEori                     = "GB083456789000"
   private val requestAcknowledgementReference = "1234567890ABCDEFG"
+
   private val reqTaxPayerId = Seq(
     ("regime", "CDS"),
     ("taxPayerID", requestTaxPayerId),
     ("acknowledgementReference", requestAcknowledgementReference)
   )
+
   private val reqEori =
     Seq(("regime", "CDS"), ("EORI", requestEori), ("acknowledgementReference", requestAcknowledgementReference))
 

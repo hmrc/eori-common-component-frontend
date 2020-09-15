@@ -35,7 +35,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class WhatIsYourOrgNameController @Inject()(
+class WhatIsYourOrgNameController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   requestSessionData: RequestSessionData,
@@ -68,7 +68,7 @@ class WhatIsYourOrgNameController @Inject()(
         formWithErrors =>
           Future.successful(
             BadRequest(whatIsYourOrgNameView(isInReviewMode, formWithErrors, organisationType, journey))
-        ),
+          ),
         formData => submitOrgNameDetails(isInReviewMode, formData, organisationType, journey)
       )
     }
@@ -80,18 +80,15 @@ class WhatIsYourOrgNameController @Inject()(
     journey: Journey.Value
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
     subscriptionDetailsService.cacheNameDetails(NameOrganisationMatchModel(formData.name)) map { _ =>
-      if (isInReviewMode) {
+      if (isInReviewMode)
         Redirect(DetermineReviewPageController.determineRoute(journey))
-      } else {
-        if (UserLocation.isRow(requestSessionData)) {
-          if (rowHaveUtrEnabled) {
-            Redirect(DoYouHaveAUtrNumberController.form(organisationType, journey, false))
-          } else {
-            Redirect(SixLineAddressController.showForm(false, organisationType, journey))
-          }
-        } else {
+      else if (UserLocation.isRow(requestSessionData))
+        if (rowHaveUtrEnabled)
           Redirect(DoYouHaveAUtrNumberController.form(organisationType, journey, false))
-        }
-      }
+        else
+          Redirect(SixLineAddressController.showForm(false, organisationType, journey))
+      else
+        Redirect(DoYouHaveAUtrNumberController.form(organisationType, journey, false))
     }
+
 }

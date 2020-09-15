@@ -27,18 +27,19 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionF
 import uk.gov.hmrc.eoricommoncomponent.frontend.playext.form.ConditionalMapping
 import uk.gov.voa.play.form.ConditionalMappings.isEqual
 import uk.gov.voa.play.form.MandatoryOptionalMapping
+
 object ContactDetailsForm {
-  private val Length2 = 2
+  private val Length2     = 2
   private val yesAnswered = "true"
-  private val noAnswered = "false"
+  private val noAnswered  = "false"
 
   def contactDetailsCreateForm()(implicit messages: Messages): Form[ContactDetailsViewModel] =
     Form(
       mapping(
         "full-name" -> text.verifying(validFullName),
-        "email" -> optional(text),
+        "email"     -> optional(text),
         "telephone" -> text.verifying(validPhone),
-        "fax" -> optional(text.verifying(validFax)),
+        "fax"       -> optional(text.verifying(validFax)),
         "use-registered-address" -> validMultipleChoiceWithCustomError(
           "cds.subscription.contact-details.error.use-registered-address"
         ),

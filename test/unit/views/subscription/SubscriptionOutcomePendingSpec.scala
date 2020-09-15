@@ -29,8 +29,8 @@ class SubscriptionOutcomePendingSpec extends ViewSpec {
 
   private val view = app.injector.instanceOf[subscription_outcome_pending]
 
-  val orgName = "Test Organisation Name"
-  val eoriNumber = "EORI123"
+  val orgName       = "Test Organisation Name"
+  val eoriNumber    = "EORI123"
   val processedDate = "01 Jan 2019"
 
   "'Subscription Pending' Page" should {

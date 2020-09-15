@@ -29,7 +29,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionDa
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class CacheController @Inject()(
+class CacheController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   sessionCache: SessionCache,
@@ -40,12 +40,13 @@ class CacheController @Inject()(
 
   def clearCache(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
-      {
-        sessionCache.saveSubscriptionDetails(SubscriptionDetails()).map { _ =>
-          // TODO - get current service name from somewhere
-          Redirect("/customs-enrolment-services/atar/" + implicitly[PathBindable[Journey.Value]].unbind("journey", journey))
-            .withSession(requestSessionData.sessionForStartAgain)
-        }
+      sessionCache.saveSubscriptionDetails(SubscriptionDetails()).map { _ =>
+        // TODO - get current service name from somewhere
+        Redirect(
+          "/customs-enrolment-services/atar/" + implicitly[PathBindable[Journey.Value]].unbind("journey", journey)
+        )
+          .withSession(requestSessionData.sessionForStartAgain)
       }
   }
+
 }

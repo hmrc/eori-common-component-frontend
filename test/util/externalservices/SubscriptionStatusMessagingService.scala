@@ -24,10 +24,10 @@ import play.mvc.Http.MimeTypes.JSON
 import play.mvc.Http.Status.OK
 
 object SubscriptionStatusMessagingService {
-  val StatusOk: String = "00"
-  val UserSubscribeAlready: String = "11"
-  val rejectedSub01Status: String = Gen.oneOf("05", "99").sample.get
-  val processingSub01Status: String = Gen.oneOf("01", "11", "14").sample.get
+  val StatusOk: String                             = "00"
+  val UserSubscribeAlready: String                 = "11"
+  val rejectedSub01Status: String                  = Gen.oneOf("05", "99").sample.get
+  val processingSub01Status: String                = Gen.oneOf("01", "11", "14").sample.get
   val subscriptionAlreadyExistsSub01Status: String = "04"
 
   private val SubscriptionStatusPath: UrlPattern = urlMatching("subscription-status")

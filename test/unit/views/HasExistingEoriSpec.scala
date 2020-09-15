@@ -30,7 +30,7 @@ class HasExistingEoriSpec extends ViewSpec {
   implicit val request = withFakeCSRF(FakeRequest())
 
   private val service = Service.ATaR
-  private val eori = "GB234532132435"
+  private val eori    = "GB234532132435"
 
   private val view = app.injector.instanceOf[has_existing_eori]
 

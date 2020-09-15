@@ -27,9 +27,9 @@ import util.ViewSpec
 
 class YouCantUseServiceSpec extends ViewSpec {
 
-  private implicit val request = withFakeCSRF(FakeRequest())
+  private implicit val request      = withFakeCSRF(FakeRequest())
   private val youCantUseServiceView = app.injector.instanceOf[you_cant_use_service]
-  private val sub02View = app.injector.instanceOf[sub02_request_not_processed]
+  private val sub02View             = app.injector.instanceOf[sub02_request_not_processed]
 
   "You cannot use this service page for users of type standard org" should {
 
@@ -52,7 +52,9 @@ class YouCantUseServiceSpec extends ViewSpec {
     }
 
     "have a Sign out button with the correct href" in {
-      standardOrgDoc.body().getElementsByClass("button").attr("href") mustBe "/customs-enrolment-services/subscribe/logout"
+      standardOrgDoc.body().getElementsByClass("button").attr(
+        "href"
+      ) mustBe "/customs-enrolment-services/subscribe/logout"
     }
   }
 
@@ -100,8 +102,8 @@ class YouCantUseServiceSpec extends ViewSpec {
     }
   }
 
-  private lazy val standardOrgDoc: Document = Jsoup.parse(contentAsString(youCantUseServiceView(Some(Organisation))))
-  private lazy val agentDoc: Document = Jsoup.parse(contentAsString(youCantUseServiceView(Some(Agent))))
+  private lazy val standardOrgDoc: Document      = Jsoup.parse(contentAsString(youCantUseServiceView(Some(Organisation))))
+  private lazy val agentDoc: Document            = Jsoup.parse(contentAsString(youCantUseServiceView(Some(Agent))))
   private lazy val cannotUseService003: Document = Jsoup.parse(contentAsString(sub02View()))
 
 }

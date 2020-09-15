@@ -37,22 +37,24 @@ class SubscriptionStatusConnectorSpec extends IntegrationTestsSpec with ScalaFut
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
       Map(
-        "microservice.services.eori-common-component-hods-proxy.port" -> Port,
+        "microservice.services.eori-common-component-hods-proxy.port"                        -> Port,
         "microservice.services.eori-common-component-hods-proxy.subscription-status.context" -> "subscription-status",
-        "auditing.enabled" -> true,
-        "auditing.consumer.baseUri.port" -> Port
+        "auditing.enabled"                                                                   -> true,
+        "auditing.consumer.baseUri.port"                                                     -> Port
       )
     )
     .build()
 
   private val subscriptionStatusConnector = app.injector.instanceOf[SubscriptionStatusConnector]
-  private val AValidTaxPayerID = "1234567890"
-  private val taxPayerId = TaxPayerId(AValidTaxPayerID).mdgTaxPayerId
-  private val Regime = "CDS"
-  private val receiptDate = DateTime.parse("2016-3-17T09:30:47.114")
-  private val colon: String = "%3A"
+  private val AValidTaxPayerID            = "1234567890"
+  private val taxPayerId                  = TaxPayerId(AValidTaxPayerID).mdgTaxPayerId
+  private val Regime                      = "CDS"
+  private val receiptDate                 = DateTime.parse("2016-3-17T09:30:47.114")
+  private val colon: String               = "%3A"
+
   private val expectedGetUrl =
     s"/subscription-status?receiptDate=2016-03-17T09${colon}30${colon}47Z&regime=$Regime&taxPayerID=$taxPayerId"
+
   private val request =
     SubscriptionStatusQueryParams(receiptDate, Regime, "taxPayerID", TaxPayerId(AValidTaxPayerID).mdgTaxPayerId)
 

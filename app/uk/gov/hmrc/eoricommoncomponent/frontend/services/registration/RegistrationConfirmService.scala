@@ -19,22 +19,26 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services.registration
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUser
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{ClearCacheAndRegistrationIdentificationService, RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  ClearCacheAndRegistrationIdentificationService,
+  RequestSessionData,
+  SessionCache
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{PreSubscriptionStatus, SubscriptionStatusService}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RegistrationConfirmService @Inject()(
+class RegistrationConfirmService @Inject() (
   val cdsFrontendCache: SessionCache,
   val subscriptionStatusService: SubscriptionStatusService,
   val requestSessionData: RequestSessionData,
   val clearDataService: ClearCacheAndRegistrationIdentificationService
 )(implicit ec: ExecutionContext) {
 
-  def currentSubscriptionStatus(
-    implicit hc: HeaderCarrier,
+  def currentSubscriptionStatus(implicit
+    hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[PreSubscriptionStatus] = cdsFrontendCache.registrationDetails flatMap { registrationDetails =>
     subscriptionStatusService.getStatus("taxPayerID", registrationDetails.sapNumber.mdgTaxPayerId)
@@ -42,4 +46,5 @@ class RegistrationConfirmService @Inject()(
 
   def clearRegistrationData(loggedInUser: LoggedInUser)(implicit hc: HeaderCarrier): Future[Unit] =
     clearDataService.clear(loggedInUser)
+
 }

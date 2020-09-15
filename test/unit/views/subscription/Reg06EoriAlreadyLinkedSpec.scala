@@ -27,12 +27,12 @@ import util.ViewSpec
 
 class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
 
-  private val name = "John Doe"
-  private val processedDate = DateTime.now()
-  private val expectedPageTitle = "The application for"
-  private val pageHeadingExpectedText = "The application for"
+  private val name                     = "John Doe"
+  private val processedDate            = DateTime.now()
+  private val expectedPageTitle        = "The application for"
+  private val pageHeadingExpectedText  = "The application for"
   private val pageHeadingExpectedText1 = s"$name has been unsuccessful"
-  private val processDateExpectedText = s"Application received by HMRC on ${dateTimeFormat.print(processedDate)}"
+  private val processDateExpectedText  = s"Application received by HMRC on ${dateTimeFormat.print(processedDate)}"
 
   private val view = app.injector.instanceOf[reg06_eori_already_linked]
 

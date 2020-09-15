@@ -19,7 +19,12 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{RegisterWithEoriAndIdRequest, RegisterWithEoriAndIdRequestHolder, RegisterWithEoriAndIdResponse, RegisterWithEoriAndIdResponseHolder}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
+  RegisterWithEoriAndIdRequest,
+  RegisterWithEoriAndIdRequestHolder,
+  RegisterWithEoriAndIdResponse,
+  RegisterWithEoriAndIdResponseHolder
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -27,9 +32,11 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RegisterWithEoriAndIdConnector @Inject()(http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit ec: ExecutionContext) {
+class RegisterWithEoriAndIdConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
+  ec: ExecutionContext
+) {
 
-  private val url = appConfig.getServiceUrl("register-with-eori-and-id")
+  private val url               = appConfig.getServiceUrl("register-with-eori-and-id")
   private val loggerComponentId = "RegisterWithEoriAndIdConnector"
 
   def register(
@@ -62,8 +69,8 @@ class RegisterWithEoriAndIdConnector @Inject()(http: HttpClient, appConfig: AppC
       eventType = "CustomsRegistrationSubmitted"
     )
 
-  private def auditCallResponse(url: String, response: RegisterWithEoriAndIdResponseHolder)(
-    implicit hc: HeaderCarrier
+  private def auditCallResponse(url: String, response: RegisterWithEoriAndIdResponseHolder)(implicit
+    hc: HeaderCarrier
   ): Unit =
     audit.sendDataEvent(
       transactionName = "customs-registration",
@@ -71,4 +78,5 @@ class RegisterWithEoriAndIdConnector @Inject()(http: HttpClient, appConfig: AppC
       detail = Map("txName" -> "CustomsRegistrationResult") ++ response.registerWithEORIAndIDResponse.keyValueMap(),
       eventType = "CustomsRegistrationResult"
     )
+
 }

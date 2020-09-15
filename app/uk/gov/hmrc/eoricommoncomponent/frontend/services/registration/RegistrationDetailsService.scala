@@ -19,14 +19,18 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services.registration
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, RegistrationDetailsIndividual, RegistrationDetailsOrganisation}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
+  CdsOrganisationType,
+  RegistrationDetailsIndividual,
+  RegistrationDetailsOrganisation
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RegistrationDetailsService @Inject()(sessionCache: SessionCache)(implicit ec: ExecutionContext) {
+class RegistrationDetailsService @Inject() (sessionCache: SessionCache)(implicit ec: ExecutionContext) {
 
   def cacheOrgName(orgName: String)(implicit hq: HeaderCarrier): Future[Boolean] =
     sessionCache.registrationDetails.map {
@@ -55,4 +59,5 @@ class RegistrationDetailsService @Inject()(sessionCache: SessionCache)(implicit 
         sessionCache.saveRegistrationDetails(RegistrationDetailsIndividual())
       case _ => sessionCache.saveRegistrationDetails(RegistrationDetailsOrganisation())
     }
+
 }

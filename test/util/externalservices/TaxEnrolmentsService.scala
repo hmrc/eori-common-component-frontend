@@ -25,6 +25,7 @@ import play.mvc.Http.Status.OK
 object TaxEnrolmentsService {
 
   private val issuerEndpoint = s"/tax-enrolments/subscriptions/9876543210/issuer"
+
   private val responseWithEnrolmentsOk: JsValue =
     Json.parse("""[{
         |    "created": 1482329348256,

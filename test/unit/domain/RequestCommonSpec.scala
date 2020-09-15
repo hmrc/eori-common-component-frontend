@@ -25,9 +25,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.RequestCommon
 
 class RequestCommonSpec extends UnitSpec {
 
-  val regime = "CDS"
-  val validReceiptDate = "2016-07-08T08:35:13Z"
-  val invalidReceiptDate = "2016-07-08 08:35:13Z"
+  val regime                   = "CDS"
+  val validReceiptDate         = "2016-07-08T08:35:13Z"
+  val invalidReceiptDate       = "2016-07-08 08:35:13Z"
   val acknowledgementReference = UUID.randomUUID().toString
 
   def requestCommonAsJson(receiptDate: String = validReceiptDate): JsValue =
@@ -49,12 +49,12 @@ class RequestCommonSpec extends UnitSpec {
 
     "serialise receiptDate to ISO format" in {
       val requestCommon = RequestCommon(regime, DateTime.parse(validReceiptDate), acknowledgementReference)
-      val json = Json.toJson[RequestCommon](requestCommon)
+      val json          = Json.toJson[RequestCommon](requestCommon)
       json should be(requestCommonAsJson())
     }
 
     "throw exception when receiptDate in Json is not in expected format" in {
-      val caught = intercept[JsResultException](requestCommonAsJson(invalidReceiptDate).as[RequestCommon])
+      val caught         = intercept[JsResultException](requestCommonAsJson(invalidReceiptDate).as[RequestCommon])
       val expectedPrefix = s"Could not parse "
       val expectedSuffix = s" as an ISO date"
       caught.getMessage should include(expectedPrefix)

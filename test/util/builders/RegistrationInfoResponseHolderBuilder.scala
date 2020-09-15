@@ -22,8 +22,8 @@ import org.joda.time.DateTime
 //TODO THIS MUST DIE !!!
 
 object RegistrationInfoResponseHolderBuilder {
-  val ProcessingDate = new DateTime().withDate(2016, 3, 17).withTime(9, 31, 5, 0)
-  val defaultTaxPayerId = "0100086619"
+  val ProcessingDate          = new DateTime().withDate(2016, 3, 17).withTime(9, 31, 5, 0)
+  val defaultTaxPayerId       = "0100086619"
   val defaultTaxPayerIdPadded = "0100086619" + "0" * 32
 
   val address = RegistrationInfoAddress(
@@ -34,6 +34,7 @@ object RegistrationInfoResponseHolderBuilder {
     postalCode = Some("SE28 1AA"),
     countryCode = "ZZ"
   )
+
   val contactDetails = RegistrationInfoContactDetails(
     phoneNumber = Some("01632961234"),
     mobileNumber = None,
@@ -49,6 +50,7 @@ object RegistrationInfoResponseHolderBuilder {
       dateOfBirth = Some("1989-09-21")
     )
   )
+
   val AnOrganisation = Some(
     RegistrationInfoOrganisation(
       organisationName = "organisationName",
@@ -58,7 +60,7 @@ object RegistrationInfoResponseHolderBuilder {
     )
   )
 
-  val IndividualRegistrationInfoResponseHolder = registrationInfoResponseHolder(AnIndividual, None)
+  val IndividualRegistrationInfoResponseHolder   = registrationInfoResponseHolder(AnIndividual, None)
   val OrganisationRegistrationInfoResponseHolder = registrationInfoResponseHolder(None, AnOrganisation)
 
   val OrganisationRegistrationMandatoryOnlyInfoResponseHolder = registrationInfoResponseHolder(
@@ -129,4 +131,5 @@ object RegistrationInfoResponseHolderBuilder {
       optionalOrganisation = AnOrganisation,
       taxPayerId = taxPayerId
     )
+
 }

@@ -42,6 +42,7 @@ class CheckYourDetailsSpec extends ViewSpec {
   )
 
   private val organisationType = Some(CdsOrganisationType.Company)
+
   private val contactDetails = Some(
     ContactDetailsModel(
       "John Doe",
@@ -55,15 +56,16 @@ class CheckYourDetailsSpec extends ViewSpec {
       Some("GB")
     )
   )
-  private val address = Some(AddressViewModel("Street", "City", Some("Postcode"), "GB"))
-  private val dob = Some(LocalDate.now())
-  private val sicCode = Some("00001")
-  private val eori = Some("ZZ123456789112")
-  private val email = Some("email@example.com")
-  private val utr = Some(Utr("UTRXXXXX"))
-  private val nameIdOrg = Some(NameIdOrganisationMatchModel("Name", utr.get.id))
-  private val dateTime = Some(LocalDate.now())
-  private val nino = Some(Nino("AB123456C"))
+
+  private val address           = Some(AddressViewModel("Street", "City", Some("Postcode"), "GB"))
+  private val dob               = Some(LocalDate.now())
+  private val sicCode           = Some("00001")
+  private val eori              = Some("ZZ123456789112")
+  private val email             = Some("email@example.com")
+  private val utr               = Some(Utr("UTRXXXXX"))
+  private val nameIdOrg         = Some(NameIdOrganisationMatchModel("Name", utr.get.id))
+  private val dateTime          = Some(LocalDate.now())
+  private val nino              = Some(Nino("AB123456C"))
   private val nameDobMatchModel = Some(NameDobMatchModel("FName", None, "LName", LocalDate.parse("2003-04-08")))
 
   private def strim(s: String): String = s.stripMargin.trim.lines mkString " "
@@ -71,7 +73,7 @@ class CheckYourDetailsSpec extends ViewSpec {
   "Check Your Answers Page" should {
     forAll(domIds) { (name, headingId, changeLinkId) =>
       s"have the heading name as non-visual text for $name in the change link" in {
-        val headingText = doc().body.getElementById(headingId).text
+        val headingText    = doc().body.getElementById(headingId).text
         val changeLinkText = doc().body.getElementById(changeLinkId).text
         changeLinkText must include(headingText)
       }
@@ -122,7 +124,9 @@ class CheckYourDetailsSpec extends ViewSpec {
       page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
       page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
       page.getElementById("review-tbl__start-again").text mustBe "Start again"
-      page.body.getElementById("review-tbl__start-again").attr("href") mustBe "/customs-enrolment-services/subscribe/start-again"
+      page.body.getElementById("review-tbl__start-again").attr(
+        "href"
+      ) mustBe "/customs-enrolment-services/subscribe/start-again"
     }
 
     "display the review page for 'Sole Trader' with 'UTR'" in {
@@ -157,7 +161,9 @@ class CheckYourDetailsSpec extends ViewSpec {
       page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
       page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
       page.getElementById("review-tbl__start-again").text mustBe "Start again"
-      page.body.getElementById("review-tbl__start-again").attr("href") mustBe "/customs-enrolment-services/subscribe/start-again"
+      page.body.getElementById("review-tbl__start-again").attr(
+        "href"
+      ) mustBe "/customs-enrolment-services/subscribe/start-again"
     }
 
     "not display the address country code in the UK case" in {
@@ -205,7 +211,9 @@ class CheckYourDetailsSpec extends ViewSpec {
       page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
       page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
       page.getElementById("review-tbl__start-again").text mustBe "Start again"
-      page.body.getElementById("review-tbl__start-again").attr("href") mustBe "/customs-enrolment-services/subscribe/start-again"
+      page.body.getElementById("review-tbl__start-again").attr(
+        "href"
+      ) mustBe "/customs-enrolment-services/subscribe/start-again"
     }
 
     "display the review page for 'Sole Trader' when 'No UTR' is entered" in {
@@ -249,7 +257,9 @@ class CheckYourDetailsSpec extends ViewSpec {
       page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
       page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
       page.getElementById("review-tbl__start-again").text mustBe "Start again"
-      page.body.getElementById("review-tbl__start-again").attr("href") mustBe "/customs-enrolment-services/subscribe/start-again"
+      page.body.getElementById("review-tbl__start-again").attr(
+        "href"
+      ) mustBe "/customs-enrolment-services/subscribe/start-again"
     }
 
     "display address label for the following Company organisation types" in {
@@ -331,4 +341,5 @@ class CheckYourDetailsSpec extends ViewSpec {
     )
     Jsoup.parse(contentAsString(result))
   }
+
 }

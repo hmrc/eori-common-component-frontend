@@ -27,14 +27,17 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.HowCanWeIdentifyYouSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.ninoOrUtrForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionBusinessService,
+  SubscriptionDetailsService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class HowCanWeIdentifyYouController @Inject()(
+class HowCanWeIdentifyYouController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   subscriptionBusinessService: SubscriptionBusinessService,
@@ -65,30 +68,26 @@ class HowCanWeIdentifyYouController @Inject()(
 
   def submit(isInReviewMode: Boolean, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      {
-        ninoOrUtrForm
-          .bindFromRequest()
-          .fold(
-            invalidForm =>
-              Future.successful(BadRequest(howCanWeIdentifyYouView(invalidForm, isInReviewMode, journey))),
-            form =>
-              storeId(form, isInReviewMode, journey)
-          )
-      }
+      ninoOrUtrForm
+        .bindFromRequest()
+        .fold(
+          invalidForm => Future.successful(BadRequest(howCanWeIdentifyYouView(invalidForm, isInReviewMode, journey))),
+          form => storeId(form, isInReviewMode, journey)
+        )
     }
 
-  private def storeId(formData: NinoOrUtr, inReviewMode: Boolean, journey: Journey.Value)(
-    implicit hc: HeaderCarrier,
+  private def storeId(formData: NinoOrUtr, inReviewMode: Boolean, journey: Journey.Value)(implicit
+    hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] =
     subscriptionDetailsHolderService
       .cacheCustomsId(customsId(formData))
-      .map( _ =>
-        if (inReviewMode) {
-          Redirect(DetermineReviewPageController.determineRoute(journey))
-        } else {
-          Redirect(subscriptionFlowManager.stepInformation(HowCanWeIdentifyYouSubscriptionFlowPage).nextPage.url)
-        }
+      .map(
+        _ =>
+          if (inReviewMode)
+            Redirect(DetermineReviewPageController.determineRoute(journey))
+          else
+            Redirect(subscriptionFlowManager.stepInformation(HowCanWeIdentifyYouSubscriptionFlowPage).nextPage.url)
       )
 
   private def customsId(ninoOrUtr: NinoOrUtr): CustomsId = ninoOrUtr match {
@@ -97,4 +96,5 @@ class HowCanWeIdentifyYouController @Inject()(
     case unexpected =>
       throw new IllegalArgumentException("Expected only nino or utr to be populated but got: " + unexpected)
   }
+
 }

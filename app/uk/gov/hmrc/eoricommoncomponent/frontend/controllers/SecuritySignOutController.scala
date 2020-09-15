@@ -29,7 +29,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.display_sign_out
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class SecuritySignOutController @Inject()(
+class SecuritySignOutController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   cdsFrontendDataCache: SessionCache,
@@ -49,4 +49,5 @@ class SecuritySignOutController @Inject()(
       }
     } recover withAuthRecovery(request)
   }
+
 }

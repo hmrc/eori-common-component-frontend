@@ -33,7 +33,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class HaveNinoSubscriptionController @Inject()(
+class HaveNinoSubscriptionController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   subscriptionFlowManager: SubscriptionFlowManager,
@@ -56,10 +56,10 @@ class HaveNinoSubscriptionController @Inject()(
       )
   }
 
-  private def destinationsByAnswer(
-    form: NinoMatchModel,
-    journey: Journey.Value
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
+  private def destinationsByAnswer(form: NinoMatchModel, journey: Journey.Value)(implicit
+    hc: HeaderCarrier,
+    request: Request[AnyContent]
+  ): Future[Result] =
     form.haveNino match {
       case Some(true) =>
         subscriptionDetailsHolderService

@@ -21,7 +21,11 @@ import org.joda.time.LocalDate
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{BusinessShortName, SubscriptionDetails}
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactDetailsModel, VatDetails}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
+  AddressViewModel,
+  ContactDetailsModel,
+  VatDetails
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{CachedData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.ContactDetailsAdaptor
 import uk.gov.hmrc.http.HeaderCarrier
@@ -29,7 +33,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SubscriptionDetailsService @Inject()(
+class SubscriptionDetailsService @Inject() (
   sessionCache: SessionCache,
   contactDetailsAdaptor: ContactDetailsAdaptor,
   save4LaterConnector: Save4LaterConnector
@@ -55,8 +59,8 @@ class SubscriptionDetailsService @Inject()(
     saveSubscriptionDetails(sd => sd.copy(businessShortName = Some(shortName)))
 
   // TODO method return incorrect type
-  def cacheContactDetails(contactDetailsModel: ContactDetailsModel, isInReviewMode: Boolean = false)(
-    implicit hc: HeaderCarrier
+  def cacheContactDetails(contactDetailsModel: ContactDetailsModel, isInReviewMode: Boolean = false)(implicit
+    hc: HeaderCarrier
   ): Future[Unit] =
     contactDetails(contactDetailsModel, isInReviewMode) map { contactDetails =>
       saveSubscriptionDetails(sd => sd.copy(contactDetails = Some(contactDetails)))
@@ -137,14 +141,14 @@ class SubscriptionDetailsService @Inject()(
   def cacheConsentToDisclosePersonalDetails(yesNoAnswer: YesNo)(implicit hq: HeaderCarrier) =
     saveSubscriptionDetails(sd => sd.copy(personalDataDisclosureConsent = Some(yesNoAnswer.isYes)))
 
-  private def contactDetails(view: ContactDetailsModel, isInReviewMode: Boolean)(
-    implicit hc: HeaderCarrier
+  private def contactDetails(view: ContactDetailsModel, isInReviewMode: Boolean)(implicit
+    hc: HeaderCarrier
   ): Future[ContactDetailsModel] =
-    if (!isInReviewMode && view.useAddressFromRegistrationDetails) {
+    if (!isInReviewMode && view.useAddressFromRegistrationDetails)
       sessionCache.registrationDetails map { registrationDetails =>
         contactDetailsAdaptor.toContactDetailsModelWithRegistrationAddress(view, registrationDetails.address)
       }
-    } else Future.successful(view)
+    else Future.successful(view)
 
   def cacheVatRegisteredEu(yesNoAnswer: YesNo)(implicit hq: HeaderCarrier): Future[Unit] =
     for {
@@ -169,4 +173,5 @@ class SubscriptionDetailsService @Inject()(
         )
       )
     }
+
 }

@@ -47,10 +47,10 @@ class CheckYourDetailsControllerSpec
     extends ControllerSpec with BusinessDatesOrganisationTypeTables with ReviewPageOrganisationTypeTables
     with BeforeAndAfterEach {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockCdsDataCache = mock[SessionCache]
+  private val mockAuthConnector      = mock[AuthConnector]
+  private val mockCdsDataCache       = mock[SessionCache]
   private val mockRequestSessionData = mock[RequestSessionData]
-  private val mockSubscriptionFlow = mock[SubscriptionFlow]
+  private val mockSubscriptionFlow   = mock[SubscriptionFlow]
 
   private val checkYourDetailsView = app.injector.instanceOf[check_your_details]
 
@@ -109,4 +109,5 @@ class CheckYourDetailsControllerSpec
 
     test(controller.reviewDetails(Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
+
 }

@@ -18,7 +18,10 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{SubscriptionDisplayResponse, SubscriptionDisplayResponseHolder}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
+  SubscriptionDisplayResponse,
+  SubscriptionDisplayResponseHolder
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -27,9 +30,11 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
 @Singleton
-class SUB09SubscriptionDisplayConnector @Inject()(http: HttpClient, appConfig: AppConfig)(implicit ec: ExecutionContext) {
+class SUB09SubscriptionDisplayConnector @Inject() (http: HttpClient, appConfig: AppConfig)(implicit
+  ec: ExecutionContext
+) {
 
-  private val url = appConfig.getServiceUrl("subscription-display")
+  private val url               = appConfig.getServiceUrl("subscription-display")
   private val loggerComponentId = "SubscriptionDisplayConnector"
 
   def subscriptionDisplay(
@@ -39,9 +44,9 @@ class SUB09SubscriptionDisplayConnector @Inject()(http: HttpClient, appConfig: A
       CdsLogger.info(s"[$loggerComponentId] subscription-display SUB09 successful. url: $url")
       Right(resp.subscriptionDisplayResponse)
     } recover {
-      case NonFatal(e) => {
+      case NonFatal(e) =>
         CdsLogger.error(s"[$loggerComponentId][status] subscription-display SUB09 failed. url: $url, error: $e")
         Left(ServiceUnavailableResponse)
-      }
     }
+
 }

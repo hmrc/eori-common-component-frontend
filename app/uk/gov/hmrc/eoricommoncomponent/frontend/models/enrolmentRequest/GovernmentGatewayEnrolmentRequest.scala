@@ -23,5 +23,3 @@ case class GovernmentGatewayEnrolmentRequest(identifiers: Seq[Identifier], verif
 object GovernmentGatewayEnrolmentRequest {
   implicit val jsonFormat = Json.format[GovernmentGatewayEnrolmentRequest]
 }
-
-

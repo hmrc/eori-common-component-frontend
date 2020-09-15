@@ -91,4 +91,5 @@ object RegistrationInfoGenerator {
     isAGroup = false,
     isAnAgent = false
   )
+
 }

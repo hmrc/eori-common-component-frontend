@@ -35,16 +35,17 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ApplicationControllerWithAllowlistVerificationSpec extends ControllerSpec {
+
   implicit override lazy val app: Application = new GuiceApplicationBuilder()
     .disable[com.kenshoo.play.metrics.PlayModule]
     .configure("metrics.enabled" -> false)
     .configure(Map("allowlistEnabled" -> true, "allowlist" -> "mister_allow@example.com,  bob@example.com"))
     .build()
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockSessionCache = mock[SessionCache]
-  private val startView = app.injector.instanceOf[start]
-  private val migrationStartView = app.injector.instanceOf[migration_start]
+  private val mockAuthConnector          = mock[AuthConnector]
+  private val mockSessionCache           = mock[SessionCache]
+  private val startView                  = app.injector.instanceOf[start]
+  private val migrationStartView         = app.injector.instanceOf[migration_start]
   private val accessibilityStatementView = app.injector.instanceOf[accessibility_statement]
 
   val controller = new ApplicationController(

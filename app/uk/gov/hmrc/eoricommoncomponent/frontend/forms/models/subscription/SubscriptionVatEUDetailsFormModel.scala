@@ -21,10 +21,12 @@ import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.VatIdentification
 
 case class SubscriptionVatEUDetailsFormModel(hasOtherVats: Boolean, vatIds: Option[List[VatIdentification]]) {
+
   def toVatIds: List[VatIdentification] = (hasOtherVats, vatIds) match {
     case (true, Some(list)) => list
     case _                  => Nil
   }
+
 }
 
 object SubscriptionVatEUDetailsFormModel {
@@ -45,6 +47,7 @@ object SubscriptionVatEUDetailsFormModel {
         val (countryCodes, numbers) = vatIds.map(id => id.countryCode.getOrElse("") -> id.number.getOrElse("")).unzip
         Some(countryCodes -> numbers)
     }
+
 }
 
 case class VatEUDetailsModel(vatCountry: String, vatNumber: String) {

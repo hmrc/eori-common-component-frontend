@@ -24,7 +24,11 @@ import org.scalatest.mockito.MockitoSugar
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.MatchingServiceConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.{MatchingRequestHolder, MatchingResponse, Organisation}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.{
+  MatchingRequestHolder,
+  MatchingResponse,
+  Organisation
+}
 import util.builders.matching.NinoFormBuilder
 import play.api.libs.json._
 import play.api.mvc.{AnyContent, Request}
@@ -41,17 +45,17 @@ import scala.concurrent.Future
 class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach with MatchingServiceTestData {
 
   private val mockMatchingServiceConnector = mock[MatchingServiceConnector]
-  private val mockDetailsCreator = mock[RegistrationDetailsCreator]
-  private val mockRequestSessionData = mock[RequestSessionData]
-  private val mockDetails = mock[RegistrationDetails]
+  private val mockDetailsCreator           = mock[RegistrationDetailsCreator]
+  private val mockRequestSessionData       = mock[RequestSessionData]
+  private val mockDetails                  = mock[RegistrationDetails]
 
   private val mockRequest = mock[Request[AnyContent]]
 
-  private val mockHeaderCarrier = mock[HeaderCarrier]
+  private val mockHeaderCarrier          = mock[HeaderCarrier]
   private val mockRequestCommonGenerator = mock[RequestCommonGenerator]
-  private val mockCache = mock[SessionCache]
-  private val loggedInCtUser = mock[LoggedInUser]
-  private val mockInternalId = mock[InternalId]
+  private val mockCache                  = mock[SessionCache]
+  private val loggedInCtUser             = mock[LoggedInUser]
+  private val mockInternalId             = mock[InternalId]
 
   private val service = new MatchingService(
     mockMatchingServiceConnector,
@@ -352,7 +356,9 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
         .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
     ).thenReturn(Future.successful(connectorResponse))
 
-    await(service.matchIndividualWithId(utr, individual, mockInternalId)(mockHeaderCarrier)) shouldBe expectedServiceCallResult
+    await(
+      service.matchIndividualWithId(utr, individual, mockInternalId)(mockHeaderCarrier)
+    ) shouldBe expectedServiceCallResult
 
     val matchBusinessDataCaptor =
       ArgumentCaptor.forClass(classOf[MatchingRequestHolder])
@@ -406,7 +412,9 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
         .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
     ).thenReturn(Future.successful(connectorResponse))
 
-    await(service.matchIndividualWithId(eori, individual, mockInternalId)(mockHeaderCarrier)) shouldBe expectedServiceCallResult
+    await(
+      service.matchIndividualWithId(eori, individual, mockInternalId)(mockHeaderCarrier)
+    ) shouldBe expectedServiceCallResult
 
     val matchBusinessDataCaptor =
       ArgumentCaptor.forClass(classOf[MatchingRequestHolder])
@@ -459,7 +467,9 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
         .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
     ).thenReturn(Future.successful(connectorResponse))
 
-    await(service.matchIndividualWithNino(ninoId, NinoFormBuilder.asIndividual, mockInternalId)(mockHeaderCarrier)) shouldBe serviceCallResult
+    await(
+      service.matchIndividualWithNino(ninoId, NinoFormBuilder.asIndividual, mockInternalId)(mockHeaderCarrier)
+    ) shouldBe serviceCallResult
 
     val matchBusinessDataCaptor =
       ArgumentCaptor.forClass(classOf[MatchingRequestHolder])
@@ -492,7 +502,9 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
         )
       ).thenReturn(mockDetails)
 
-      await(service.matchIndividualWithNino(ninoId, NinoFormBuilder.asIndividual, mockInternalId)(mockHeaderCarrier)) shouldBe true
+      await(
+        service.matchIndividualWithNino(ninoId, NinoFormBuilder.asIndividual, mockInternalId)(mockHeaderCarrier)
+      ) shouldBe true
       verify(mockCache).saveRegistrationDetails(
         ArgumentMatchers.eq(mockDetails),
         ArgumentMatchers.eq(mockInternalId),

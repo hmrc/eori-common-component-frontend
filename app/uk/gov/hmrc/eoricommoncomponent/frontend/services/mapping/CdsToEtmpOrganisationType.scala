@@ -19,16 +19,16 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{RegistrationDetailsIndividual, _}
 
 object EtmpTypeOfPerson {
-  val NaturalPerson = "1"
-  val LegalPerson = "2"
+  val NaturalPerson       = "1"
+  val LegalPerson         = "2"
   val AssociationOfPerson = "3"
 }
 
 object EtmpLegalStatus {
-  val CorporateBody = "Corporate Body"
+  val CorporateBody      = "Corporate Body"
   val UnincorporatedBody = "Unincorporated Body"
-  val Llp = "LLP"
-  val Partnership = "Partnership"
+  val Llp                = "LLP"
+  val Partnership        = "Partnership"
 }
 
 case class OrganisationTypeConfiguration(typeOfPerson: String, legalStatus: String)
@@ -37,51 +37,65 @@ object OrganisationTypeConfiguration {
 
   val Company: OrganisationTypeConfiguration =
     OrganisationTypeConfiguration(EtmpTypeOfPerson.LegalPerson, EtmpLegalStatus.CorporateBody)
+
   val SoleTrader: OrganisationTypeConfiguration =
     OrganisationTypeConfiguration(EtmpTypeOfPerson.NaturalPerson, EtmpLegalStatus.UnincorporatedBody)
+
   val Individual: OrganisationTypeConfiguration =
     OrganisationTypeConfiguration(EtmpTypeOfPerson.NaturalPerson, EtmpLegalStatus.UnincorporatedBody)
+
   val Partnership: OrganisationTypeConfiguration =
     OrganisationTypeConfiguration(EtmpTypeOfPerson.LegalPerson, EtmpLegalStatus.Partnership)
+
   val LimitedLiabilityPartnership: OrganisationTypeConfiguration =
     OrganisationTypeConfiguration(EtmpTypeOfPerson.LegalPerson, EtmpLegalStatus.Llp)
+
   val CharityPublicBodyNotForProfit: OrganisationTypeConfiguration =
     OrganisationTypeConfiguration(EtmpTypeOfPerson.AssociationOfPerson, EtmpLegalStatus.UnincorporatedBody)
+
   val EUOrganisation: OrganisationTypeConfiguration =
     OrganisationTypeConfiguration(EtmpTypeOfPerson.LegalPerson, EtmpLegalStatus.CorporateBody)
+
   val EUIndividual: OrganisationTypeConfiguration =
     OrganisationTypeConfiguration(EtmpTypeOfPerson.NaturalPerson, EtmpLegalStatus.UnincorporatedBody)
+
   val ThirdCountryOrganisation: OrganisationTypeConfiguration =
     OrganisationTypeConfiguration(EtmpTypeOfPerson.LegalPerson, EtmpLegalStatus.CorporateBody)
+
   val ThirdCountrySoleTrader: OrganisationTypeConfiguration =
     OrganisationTypeConfiguration(EtmpTypeOfPerson.NaturalPerson, EtmpLegalStatus.UnincorporatedBody)
+
   val ThirdCountryIndividual: OrganisationTypeConfiguration =
     OrganisationTypeConfiguration(EtmpTypeOfPerson.NaturalPerson, EtmpLegalStatus.UnincorporatedBody)
 
   val EtmpPartnership: OrganisationTypeConfiguration =
     OrganisationTypeConfiguration(EtmpTypeOfPerson.LegalPerson, EtmpLegalStatus.Partnership)
+
   val EtmpLlp: OrganisationTypeConfiguration =
     OrganisationTypeConfiguration(EtmpTypeOfPerson.LegalPerson, EtmpLegalStatus.Llp)
+
   val EtmpCorporateBody: OrganisationTypeConfiguration =
     OrganisationTypeConfiguration(EtmpTypeOfPerson.LegalPerson, EtmpLegalStatus.CorporateBody)
+
   val EtmpUnincorporatedBody: OrganisationTypeConfiguration =
     OrganisationTypeConfiguration(EtmpTypeOfPerson.AssociationOfPerson, EtmpLegalStatus.UnincorporatedBody)
+
 }
 
 object CdsToEtmpOrganisationType {
 
   private val cdsTypeOfPersonMap = Map(
-    CdsOrganisationType.Company -> OrganisationTypeConfiguration.Company,
-    CdsOrganisationType.SoleTrader -> OrganisationTypeConfiguration.SoleTrader,
-    CdsOrganisationType.Individual -> OrganisationTypeConfiguration.Individual,
-    CdsOrganisationType.Partnership -> OrganisationTypeConfiguration.Partnership,
-    CdsOrganisationType.LimitedLiabilityPartnership -> OrganisationTypeConfiguration.LimitedLiabilityPartnership,
+    CdsOrganisationType.Company                       -> OrganisationTypeConfiguration.Company,
+    CdsOrganisationType.SoleTrader                    -> OrganisationTypeConfiguration.SoleTrader,
+    CdsOrganisationType.Individual                    -> OrganisationTypeConfiguration.Individual,
+    CdsOrganisationType.Partnership                   -> OrganisationTypeConfiguration.Partnership,
+    CdsOrganisationType.LimitedLiabilityPartnership   -> OrganisationTypeConfiguration.LimitedLiabilityPartnership,
     CdsOrganisationType.CharityPublicBodyNotForProfit -> OrganisationTypeConfiguration.CharityPublicBodyNotForProfit,
-    CdsOrganisationType.EUOrganisation -> OrganisationTypeConfiguration.EUOrganisation,
-    CdsOrganisationType.EUIndividual -> OrganisationTypeConfiguration.EUIndividual,
-    CdsOrganisationType.ThirdCountryOrganisation -> OrganisationTypeConfiguration.ThirdCountryOrganisation,
-    CdsOrganisationType.ThirdCountrySoleTrader -> OrganisationTypeConfiguration.ThirdCountrySoleTrader,
-    CdsOrganisationType.ThirdCountryIndividual -> OrganisationTypeConfiguration.ThirdCountryIndividual
+    CdsOrganisationType.EUOrganisation                -> OrganisationTypeConfiguration.EUOrganisation,
+    CdsOrganisationType.EUIndividual                  -> OrganisationTypeConfiguration.EUIndividual,
+    CdsOrganisationType.ThirdCountryOrganisation      -> OrganisationTypeConfiguration.ThirdCountryOrganisation,
+    CdsOrganisationType.ThirdCountrySoleTrader        -> OrganisationTypeConfiguration.ThirdCountrySoleTrader,
+    CdsOrganisationType.ThirdCountryIndividual        -> OrganisationTypeConfiguration.ThirdCountryIndividual
   )
 
   private def etmpTypeOfPersonMap(orgType: EtmpOrganisationType) = orgType match {
@@ -101,4 +115,5 @@ object CdsToEtmpOrganisationType {
       Some(OrganisationTypeConfiguration(EtmpTypeOfPerson.NaturalPerson, EtmpLegalStatus.UnincorporatedBody))
     case _ => throw new IllegalStateException("Incomplete cache cannot complete journey")
   }
+
 }

@@ -28,14 +28,17 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NameDetailsS
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.nameOrganisationForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionBusinessService,
+  SubscriptionDetailsService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.nameOrg
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class NameOrgController @Inject()(
+class NameOrgController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   subscriptionBusinessService: SubscriptionBusinessService,
@@ -49,10 +52,8 @@ class NameOrgController @Inject()(
 
   def createForm(journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      {
-        subscriptionBusinessService.cachedNameOrganisationViewModel flatMap { maybeCachedNameViewModel =>
-          populateOkView(maybeCachedNameViewModel, isInReviewMode = false, journey)
-        }
+      subscriptionBusinessService.cachedNameOrganisationViewModel flatMap { maybeCachedNameViewModel =>
+        populateOkView(maybeCachedNameViewModel, isInReviewMode = false, journey)
       }
     }
 
@@ -65,11 +66,13 @@ class NameOrgController @Inject()(
 
   def submit(isInReviewMode: Boolean, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      nameOrganisationForm.bindFromRequest.fold(formWithErrors => {
-        sessionCache.registrationDetails map { registrationDetails =>
-          BadRequest(nameOrgView(formWithErrors, registrationDetails, isInReviewMode, journey))
-        }
-      }, formData => storeNameDetails(formData, isInReviewMode, journey))
+      nameOrganisationForm.bindFromRequest.fold(
+        formWithErrors =>
+          sessionCache.registrationDetails map { registrationDetails =>
+            BadRequest(nameOrgView(formWithErrors, registrationDetails, isInReviewMode, journey))
+          },
+        formData => storeNameDetails(formData, isInReviewMode, journey)
+      )
     }
 
   private def populateOkView(
@@ -85,31 +88,31 @@ class NameOrgController @Inject()(
     }
   }
 
-  private def storeNameDetails(formData: NameOrganisationMatchModel, inReviewMode: Boolean, journey: Journey.Value)(
-    implicit hc: HeaderCarrier,
-    request: Request[AnyContent]
-  ): Future[Result] = {
+  private def storeNameDetails(
+    formData: NameOrganisationMatchModel,
+    inReviewMode: Boolean,
+    journey: Journey.Value
+  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
     for {
-      _ <- subscriptionDetailsService.cacheNameDetails(formData)
+      _             <- subscriptionDetailsService.cacheNameDetails(formData)
       nameIdDetails <- subscriptionDetailsService.cachedNameIdDetails
-    } yield {
-      (nameIdDetails, inReviewMode) match {
-        case (Some(details), true) =>
-          subscriptionDetailsService
-            .cacheNameIdDetails(NameIdOrganisationMatchModel(formData.name, details.id))
-            .map { _ =>
-              Redirect(DetermineReviewPageController.determineRoute(journey))
-            }
-        case (_, _) =>
-          Future.successful(
-            Redirect(
-              subscriptionFlowManager
-                .stepInformation(NameDetailsSubscriptionFlowPage)
-                .nextPage
-                .url
-            )
+    } yield (nameIdDetails, inReviewMode) match {
+      case (Some(details), true) =>
+        subscriptionDetailsService
+          .cacheNameIdDetails(NameIdOrganisationMatchModel(formData.name, details.id))
+          .map { _ =>
+            Redirect(DetermineReviewPageController.determineRoute(journey))
+          }
+      case (_, _) =>
+        Future.successful(
+          Redirect(
+            subscriptionFlowManager
+              .stepInformation(NameDetailsSubscriptionFlowPage)
+              .nextPage
+              .url
           )
-      }
+        )
     }
   }.flatMap(identity)
+
 }

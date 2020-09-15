@@ -44,7 +44,7 @@ class PdfGeneratorConnectorSpec extends IntegrationTestsSpec with PdfGeneratorSe
     .build()
 
   private lazy val pdfGeneratorConnector = app.injector.instanceOf[PdfGeneratorConnector]
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit val hc: HeaderCarrier         = HeaderCarrier()
 
   private val html = "html"
 

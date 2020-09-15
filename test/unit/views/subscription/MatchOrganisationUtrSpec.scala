@@ -28,14 +28,14 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.match_or
 import util.ViewSpec
 
 class MatchOrganisationUtrSpec extends ViewSpec {
-  val form: Form[UtrMatchModel] = utrForm
-  val formWithNoSelectionError: Form[UtrMatchModel] = utrForm.bind(Map.empty[String, String])
+  val form: Form[UtrMatchModel]                      = utrForm
+  val formWithNoSelectionError: Form[UtrMatchModel]  = utrForm.bind(Map.empty[String, String])
   val formWithNoUtrEnteredError: Form[UtrMatchModel] = utrForm.bind(Map("have-utr" -> "true", "utr" -> ""))
-  val isInReviewMode = false
-  val previousPageUrl = "/"
-  val nonSoleTraderType = "charity-public-body-not-for-profit"
-  val soleTraderType = "sole-trader"
-  implicit val request = withFakeCSRF(FakeRequest())
+  val isInReviewMode                                 = false
+  val previousPageUrl                                = "/"
+  val nonSoleTraderType                              = "charity-public-body-not-for-profit"
+  val soleTraderType                                 = "sole-trader"
+  implicit val request                               = withFakeCSRF(FakeRequest())
 
   private val view = app.injector.instanceOf[match_organisation_utr]
 
@@ -163,7 +163,7 @@ class MatchOrganisationUtrSpec extends ViewSpec {
 
   private def getDoc(form: Form[UtrMatchModel]) = {
     val result = view(form, nonSoleTraderType, "", Journey.Register)
-    val doc = Jsoup.parse(contentAsString(result))
+    val doc    = Jsoup.parse(contentAsString(result))
     doc
   }
 

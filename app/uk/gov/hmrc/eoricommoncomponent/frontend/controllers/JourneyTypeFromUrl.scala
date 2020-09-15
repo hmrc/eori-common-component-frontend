@@ -21,6 +21,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.JourneyType
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 
 trait JourneyTypeFromUrl {
+
   def journeyTypeFromUrl(implicit request: Request[AnyContent]): String =
     "(?<=/customs-enrolment-services/)(.*?)(?=/)".r.findFirstIn(request.path).getOrElse("")
 
@@ -28,4 +29,5 @@ trait JourneyTypeFromUrl {
     case JourneyType.GetAnEori => Journey.Register
     case _                     => Journey.Subscribe
   }
+
 }

@@ -24,7 +24,7 @@ import org.joda.time.{DateTime, DateTimeZone}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{RequestCommon, RequestParameter}
 
 @Singleton
-class RequestCommonGenerator @Inject()(uuidGenerator: RandomUUIDGenerator, clock: UtcClock) {
+class RequestCommonGenerator @Inject() (uuidGenerator: RandomUUIDGenerator, clock: UtcClock) {
 
   def generate(requestParameters: Option[Seq[RequestParameter]] = None): RequestCommon =
     RequestCommon(
@@ -36,6 +36,7 @@ class RequestCommonGenerator @Inject()(uuidGenerator: RandomUUIDGenerator, clock
 
   def receiptDate: DateTime =
     new DateTime(clock.generateUtcTime.instant.toEpochMilli, DateTimeZone.UTC)
+
 }
 
 @Singleton

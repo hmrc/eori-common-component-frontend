@@ -37,11 +37,12 @@ case class RequestDetail(
   val ignoredFields = List("organisation", "individual")
 
   def keyValueMap(): Map[String, String] = {
-    val m = toMap(this, ignoredFields = ignoredFields)
+    val m  = toMap(this, ignoredFields = ignoredFields)
     val om = organisation.fold(Map.empty[String, String])(_.toMap())
     val im = individual.fold(Map.empty[String, String])(_.toMap())
     m ++ om ++ im
   }
+
 }
 
 object RequestDetail {
@@ -49,11 +50,13 @@ object RequestDetail {
 }
 
 case class MatchingRequest(requestCommon: RequestCommon, requestDetail: RequestDetail) {
+
   def keyValueMap(): Map[String, String] = {
     val rc = requestCommon.keyValueMap()
     val rm = requestDetail.keyValueMap()
     rc ++ rm
   }
+
 }
 
 object MatchingRequest {
@@ -61,8 +64,10 @@ object MatchingRequest {
 }
 
 case class MatchingRequestHolder(registerWithIDRequest: MatchingRequest) {
+
   def keyValueMap(): Map[String, String] =
     registerWithIDRequest.keyValueMap()
+
 }
 
 object MatchingRequestHolder {
@@ -116,7 +121,7 @@ case class ResponseDetail(
   val ignoredFields = List("organisation", "individual", "contactDetails", "address")
 
   def keyValueMap(): Map[String, String] = {
-    val m = toMap(this, ignoredFields = ignoredFields)
+    val m  = toMap(this, ignoredFields = ignoredFields)
     val om = prefixMapKey("organisation.", organisation.fold(Map.empty[String, String])(_.toMap()))
     val im = prefixMapKey("individual.", individual.fold(Map.empty[String, String])(_.toMap()))
     val cd = prefixMapKey("contactDetail.", contactDetails.toMap())
@@ -126,7 +131,7 @@ case class ResponseDetail(
   }
 
   def jsObject(): JsValue = {
-    val m = Json.toJson(toMap(this, ignoredFields = ignoredFields))
+    val m  = Json.toJson(toMap(this, ignoredFields = ignoredFields))
     val om = Json.toJson(organisation.fold(Map.empty[String, String])(_.toMap()))
     val im = Json.toJson(individual.fold(Map.empty[String, String])(_.toMap()))
     val cd = Json.toJson(Map("contactDetail" -> contactDetails.toMap()))
@@ -145,6 +150,7 @@ case class ResponseDetail(
       )
       .as[JsValue]
   }
+
 }
 
 object ResponseDetail {
@@ -152,6 +158,7 @@ object ResponseDetail {
 }
 
 case class RegisterWithIDResponse(responseCommon: ResponseCommon, responseDetail: Option[ResponseDetail]) {
+
   def keyValueMap(): Map[String, String] = {
     val rc = responseCommon.keyValueMap()
     val rd = responseDetail.map(_.keyValueMap())
@@ -163,6 +170,7 @@ case class RegisterWithIDResponse(responseCommon: ResponseCommon, responseDetail
       .toJson(responseCommon.keyValueMapNamedParams())
       .as[JsObject]
       .deepMerge(responseDetail.fold(Json.toJson(Map.empty[String, String]))(x => x.jsObject()).as[JsObject])
+
 }
 
 object RegisterWithIDResponse {
@@ -170,11 +178,13 @@ object RegisterWithIDResponse {
 }
 
 case class MatchingResponse(registerWithIDResponse: RegisterWithIDResponse) {
+
   def keyValueMap(): Map[String, Object] =
     registerWithIDResponse.keyValueMap()
 
   def jsObject(): JsValue =
     registerWithIDResponse.jsObject()
+
 }
 
 object MatchingResponse {

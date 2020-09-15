@@ -51,13 +51,16 @@ class FooterSpec extends ViewSpec {
     }
 
     "have correct Accessibility link" in {
-      doc.getElementById("accessibility").attr("href") mustBe "/customs-enrolment-services/register/accessibility-statement"
+      doc.getElementById("accessibility").attr(
+        "href"
+      ) mustBe "/customs-enrolment-services/register/accessibility-statement"
     }
   }
 
   lazy val doc: Document = {
     val result = view(messages, request)
-    val doc = Jsoup.parse(contentAsString(result))
+    val doc    = Jsoup.parse(contentAsString(result))
     doc
   }
+
 }

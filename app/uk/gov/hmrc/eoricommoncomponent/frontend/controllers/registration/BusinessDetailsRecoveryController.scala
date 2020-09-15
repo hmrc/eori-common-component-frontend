@@ -35,7 +35,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BusinessDetailsRecoveryController @Inject()(
+class BusinessDetailsRecoveryController @Inject() (
   override val currentApp: Application,
   override val authConnector: AuthConnector,
   requestSessionData: RequestSessionData,
@@ -51,17 +51,13 @@ class BusinessDetailsRecoveryController @Inject()(
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         regDetails <- sessionCache.registrationDetails
-      } yield {
-        regDetails match {
-          case individual: RegistrationDetailsIndividual =>
-            Ok(businessDetailsRecoveryView(individual.name, concatenateAddress(individual), true))
-          case org: RegistrationDetailsOrganisation =>
-            Ok(businessDetailsRecoveryView(org.name, concatenateAddress(org), false))
-          case _ =>
-            throw new IllegalArgumentException(
-              "Required RegistrationDetailsIndividual | RegistrationDetailsOrganisation"
-            )
-        }
+      } yield regDetails match {
+        case individual: RegistrationDetailsIndividual =>
+          Ok(businessDetailsRecoveryView(individual.name, concatenateAddress(individual), true))
+        case org: RegistrationDetailsOrganisation =>
+          Ok(businessDetailsRecoveryView(org.name, concatenateAddress(org), false))
+        case _ =>
+          throw new IllegalArgumentException("Required RegistrationDetailsIndividual | RegistrationDetailsOrganisation")
       }
     }
 
@@ -70,7 +66,7 @@ class BusinessDetailsRecoveryController @Inject()(
       {
         for {
           regDetails <- sessionCache.registrationDetails
-          orgType <- save4LaterService.fetchOrgType(InternalId(userId.internalId))
+          orgType    <- save4LaterService.fetchOrgType(InternalId(userId.internalId))
         } yield {
           val location =
             requestSessionData.selectedUserLocation.getOrElse(throw new IllegalStateException("Location not set"))
@@ -97,7 +93,11 @@ class BusinessDetailsRecoveryController @Inject()(
 
     def startSubscription: CdsOrganisationType => Future[Result] =
       organisationType => {
-        subscriptionFlowManager.startSubscriptionFlow(Some(BusinessDetailsRecoveryPage), organisationType, journey) map {
+        subscriptionFlowManager.startSubscriptionFlow(
+          Some(BusinessDetailsRecoveryPage),
+          organisationType,
+          journey
+        ) map {
           case (page, newSession) =>
             val sessionWithOrganisationType = requestSessionData
               .sessionWithOrganisationTypeAdded(newSession, organisationType)
@@ -129,4 +129,5 @@ class BusinessDetailsRecoveryController @Inject()(
 
   private def concatenateAddress(registrationDetails: RegistrationDetails): AddressViewModel =
     AddressViewModel(registrationDetails.address)
+
 }
