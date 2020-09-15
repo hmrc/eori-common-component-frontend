@@ -38,22 +38,22 @@ class HasExistingEoriController @Inject()(
                                          )(implicit ec: ExecutionContext)
   extends CdsController(mcc) {
 
-  def displayPage(service: Service.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def displayPage(service: Service): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request =>
       implicit loggedInUser: LoggedInUserWithEnrolments =>
         Future.successful(Ok(hasExistingEoriView(service, existingEori.id)))
   }
 
-  def enrol(service: Service.Value): Action[AnyContent] =
+  def enrol(service: Service): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request =>
       user: LoggedInUserWithEnrolments =>
-        enrolmentService.enrolWithExistingCDSEnrolment(user, service.toString.toLowerCase).map {
+        enrolmentService.enrolWithExistingCDSEnrolment(user, service).map {
           case NO_CONTENT => Redirect(routes.HasExistingEoriController.enrolSuccess(service))
           case status => throw FailedEnrolmentException(status)
         }
     }
 
-  def enrolSuccess(service: Service.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def enrolSuccess(service: Service): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request =>
       implicit loggedInUser: LoggedInUserWithEnrolments =>
         Future.successful(Ok(enrolSuccessView(existingEori.id, service)))

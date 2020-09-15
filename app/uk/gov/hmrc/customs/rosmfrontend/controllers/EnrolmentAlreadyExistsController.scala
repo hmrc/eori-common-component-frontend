@@ -37,7 +37,7 @@ class EnrolmentAlreadyExistsController @Inject()(
 
   override def messagesApi: MessagesApi = currentApp.injector.instanceOf[MessagesApi]
 
-  def enrolmentAlreadyExists(service: Service.Value): Action[AnyContent] = Action { implicit request =>
+  def enrolmentAlreadyExists(service: Service): Action[AnyContent] = Action { implicit request =>
     Ok(registrationExistsView(service))
   }
 }

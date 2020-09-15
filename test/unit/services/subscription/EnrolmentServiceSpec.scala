@@ -29,7 +29,8 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{Enrolment, EnrolmentIdentifier, Enrolments}
 import uk.gov.hmrc.customs.rosmfrontend.connector.{EnrolmentStoreProxyConnector, TaxEnrolmentsConnector}
 import uk.gov.hmrc.customs.rosmfrontend.domain.LoggedInUserWithEnrolments
-import uk.gov.hmrc.customs.rosmfrontend.models.enrolmentRequest.{GovernmentGatewayEnrolmentRequest, Identifier, KeyValuePair, KnownFact, KnownFacts, Verifier}
+import uk.gov.hmrc.customs.rosmfrontend.models.Service
+import uk.gov.hmrc.customs.rosmfrontend.models.enrolmentRequest._
 import uk.gov.hmrc.customs.rosmfrontend.services.subscription.{EnrolmentService, MissingEnrolmentException}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
@@ -85,7 +86,7 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
           verifiers = List(Verifier("DATEOFESTABLISHMENT", date))
         )
 
-        val result = enrolmentService.enrolWithExistingCDSEnrolment(loggedInUser, "atar")(headerCarrier)
+        val result = enrolmentService.enrolWithExistingCDSEnrolment(loggedInUser, Service.ATaR)(headerCarrier)
 
         result.futureValue shouldBe NO_CONTENT
 
@@ -103,16 +104,7 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
         val loggedInUser = LoggedInUserWithEnrolments(None, None, Enrolments(Set.empty), None, None)
 
         intercept[MissingEnrolmentException] {
-          await(enrolmentService.enrolWithExistingCDSEnrolment(loggedInUser, "atar")(headerCarrier))
-        }
-      }
-
-      "service is incorrect and there is no enrolment key assigned to the service" in {
-
-        val loggedInUser = LoggedInUserWithEnrolments(None, None, enrolments, None, None)
-
-        intercept[MissingEnrolmentException] {
-          await(enrolmentService.enrolWithExistingCDSEnrolment(loggedInUser, "incorrectService")(headerCarrier))
+          await(enrolmentService.enrolWithExistingCDSEnrolment(loggedInUser, Service.ATaR)(headerCarrier))
         }
       }
 
@@ -124,7 +116,7 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
         val loggedInUser = LoggedInUserWithEnrolments(None, None, enrolments, None, None)
 
         intercept[MissingEnrolmentException] {
-          await(enrolmentService.enrolWithExistingCDSEnrolment(loggedInUser, "atar")(headerCarrier))
+          await(enrolmentService.enrolWithExistingCDSEnrolment(loggedInUser, Service.ATaR)(headerCarrier))
         }
       }
 
@@ -137,7 +129,7 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
         val loggedInUser = LoggedInUserWithEnrolments(None, None, enrolments, None, None)
 
         intercept[MissingEnrolmentException] {
-          await(enrolmentService.enrolWithExistingCDSEnrolment(loggedInUser, "atar")(headerCarrier))
+          await(enrolmentService.enrolWithExistingCDSEnrolment(loggedInUser, Service.ATaR)(headerCarrier))
         }
       }
     }

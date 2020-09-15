@@ -16,42 +16,36 @@
 
 package uk.gov.hmrc.customs.rosmfrontend.models
 
-import play.api.libs.json.{Reads, Writes}
 import play.api.mvc.{PathBindable, QueryStringBindable}
 import uk.gov.hmrc.customs.rosmfrontend.util.Constants
 
-object Service extends Enumeration {
 
-  val ATaR = Value
+sealed trait Service {
+  val name: String
+  val enrolmentKey: String
 
-  private val atarPath = "atar"
+}
 
-  implicit val reads: Reads[Service.Value] = Reads.enumNameReads(Service)
-  implicit val writes: Writes[Service.Value] = Writes.enumNameWrites
-
-  implicit lazy val pathBindable: PathBindable[Service.Value] = new PathBindable[Service.Value] {
-
-    override def bind(key: String, value: String): Either[String, Service.Value] =
-      value match {
-        case `atarPath` => Right(ATaR)
-        case _                   => Left(Constants.INVALID_PATH_PARAM)
-      }
-
-    override def unbind(key: String, value: Service.Value): String =
-      value match {
-        case ATaR     => atarPath
-      }
+object Service {
+  case object ATaR extends Service {
+    override val name: String = "atar"
+    override val enrolmentKey: String = "HMRC-ATAR-ORG"
   }
 
-  def apply(journey: String): Service.Value = journey match {
-    case `atarPath` => ATaR
+  private val supportedServices = Set[Service](ATaR)
+
+  def withName(str: String): Option[Service] =
+    supportedServices.find(_.name == str)
+
+  implicit def binder(implicit stringBinder: PathBindable[String]): PathBindable[Service] = new PathBindable[Service] {
+
+    override def bind(key: String, value: String): Either[String, Service] =
+      for {
+        name <- stringBinder.bind(key, value).right
+        service <- Service.withName(name).toRight(Constants.INVALID_PATH_PARAM).right
+      } yield service
+
+
+    override def unbind(key: String, value: Service): String = stringBinder.unbind(key, value.name)
   }
-
-  implicit def queryBindable(implicit pathBindable: PathBindable[Service.Value]): QueryStringBindable[Service.Value] =
-    new QueryStringBindable[Service.Value] {
-      override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, Service.Value]] =
-        params.get(key).map(seq => pathBindable.bind(key, seq.headOption.getOrElse("")))
-
-      override def unbind(key: String, value: Service.Value): String = pathBindable.unbind(key, value)
-    }
 }

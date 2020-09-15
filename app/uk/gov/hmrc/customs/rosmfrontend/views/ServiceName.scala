@@ -23,8 +23,8 @@ object ServiceName {
 
   private val default = "cds.service.friendly.name.default"
 
-  def serviceName(service: Service.Value)(implicit messages: Messages) = {
-    val key = s"cds.service.friendly.name.${service.toString.toLowerCase}"
+  def serviceName(service: Service)(implicit messages: Messages) = {
+    val key = s"cds.service.friendly.name.${service.name}"
     if(messages.isDefinedAt(key)) messages(key) else messages(default)
 
   }
