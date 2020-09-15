@@ -57,9 +57,9 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
   "Has Existing EORI Controller display page" should {
 
     "throw exception when user does not have existing CDS enrolment" in {
-      intercept[IllegalStateException](
-        displayPage(Service.ATaR)(result => status(result))
-      ).getMessage should startWith("No EORI found in enrolments")
+      intercept[IllegalStateException](displayPage(Service.ATaR)(result => status(result))).getMessage should startWith(
+        "No EORI found in enrolments"
+      )
     }
 
     "return Ok 200 when displayPage method is requested" in {
