@@ -165,9 +165,9 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
           )
 
           page.elementIsPresent(RegistrationCompletePage.LeaveFeedbackLinkXpath) shouldBe true
-          page.getElementsText(
-            RegistrationCompletePage.LeaveFeedbackLinkXpath
-          ) shouldBe "What did you think of this service? (opens in a new window or tab)"
+          page.getElementsText(RegistrationCompletePage.LeaveFeedbackLinkXpath) should include(
+            "What did you think of this service?"
+          )
           page.getElementsHref(RegistrationCompletePage.LeaveFeedbackLinkXpath) shouldBe "/feedback/CDS"
       }
     }

@@ -17,5 +17,8 @@
 @()(implicit messages: Messages)
 
 <div id="what-you-think">
-    <p><a id="feedback_link" href="/feedback/CDS" target="_blank" rel="noopener noreferrer">@messages("cds.subscription.outcomes.feedback")</a></p>
+    <p>
+     <a id="feedback_link" href="/feedback/CDS" rel="noopener noreferrer">@messages("cds.subscription.outcomes.feedback")</a>
+     @messages("cds.subscription.outcomes.feedback.hint")
+    </p>
 </div>

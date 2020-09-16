@@ -9,12 +9,12 @@ GET         /customs-enrolment-services/language/:lang                          
 GET         /customs-enrolment-services/get-eori                                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.RegisterRedirectController.getEori()
 
 # enrolment-already-exists
-GET         /customs-enrolment-services/:service/enrolment-already-exists                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service: Service)
+GET         /customs-enrolment-services/:service/subscribe/enrolment-already-exists                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service: Service)
 
 # check-existing-eori
-GET         /customs-enrolment-services/:service/check-existing-eori                           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.HasExistingEoriController.displayPage(service: Service)
-POST        /customs-enrolment-services/:service/check-existing-eori                           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.HasExistingEoriController.enrol(service: Service)
-GET         /customs-enrolment-services/:service/check-existing-eori/confirmation              @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.HasExistingEoriController.enrolSuccess(service: Service)
+GET         /customs-enrolment-services/:service/subscribe/check-existing-eori                           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.HasExistingEoriController.displayPage(service: Service)
+POST        /customs-enrolment-services/:service/subscribe/check-existing-eori                           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.HasExistingEoriController.enrol(service: Service)
+GET         /customs-enrolment-services/:service/subscribe/check-existing-eori/confirmation              @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.HasExistingEoriController.enrolSuccess(service: Service)
 
 GET         /customs-enrolment-services/:journey/display-sign-out                                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.SecuritySignOutController.displayPage(journey: Journey.Value)
 GET         /customs-enrolment-services/:journey/sign-out                                             @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.SecuritySignOutController.signOut(journey: Journey.Value)

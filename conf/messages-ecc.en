@@ -19,3 +19,7 @@ cds.service.friendly.name.atar=Advance Tariff Rulings
 
 eds.existing-eori.enrolment.confirmation.title=Application complete
 eds.existing-eori.enrolment.confirmation.heading=Application complete
+eds.existing-eori.enrolment.confirmation.para1=You are now enrolled to the {0} service.
+
+cds.subscription.outcomes.feedback=What did you think of this service?
+cds.subscription.outcomes.feedback.hint=(takes 30 seconds)

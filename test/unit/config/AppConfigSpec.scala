@@ -18,6 +18,7 @@ package unit.config
 
 import java.util.concurrent.TimeUnit
 
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import util.ControllerSpec
 
 import scala.concurrent.duration.Duration
@@ -105,6 +106,10 @@ class AppConfigSpec extends ControllerSpec {
 
     "have reportAProblemNonJSUrl defined for subscribe" in {
       appConfig.reportAProblemNonJSUrlGetAccess shouldBe "http://localhost:9250/contact/problem_reports_nonjs?service=get-access-cds"
+    }
+
+    "have service url for ATaR defined" in {
+      appConfig.serviceReturnUrl(Service.ATaR) shouldBe "https://www.gov.uk"
     }
   }
 

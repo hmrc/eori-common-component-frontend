@@ -26,16 +26,16 @@ import uk.gov.hmrc.http.SessionKeys
 
 object SessionBuilder {
 
-  def sessionMap(userId: String): List[(String, String)] = {
+  def sessionMap(authToken: String): List[(String, String)] = {
     val sessionId = s"session-${UUID.randomUUID}"
-    List(SessionKeys.sessionId -> sessionId, SessionKeys.userId -> userId)
+    List(SessionKeys.sessionId -> sessionId, SessionKeys.authToken -> authToken)
   }
 
   def addToken[T](fakeRequest: FakeRequest[T])(implicit app: Application): FakeRequest[T] =
     new FakeRequest(CSRFTokenHelper.addCSRFToken(fakeRequest))
 
-  def buildRequestWithSession(userId: String)(implicit app: Application) =
-    addToken(FakeRequest().withSession(sessionMap(userId): _*))
+  def buildRequestWithSession(authtoken: String)(implicit app: Application) =
+    addToken(FakeRequest().withSession(sessionMap(authtoken): _*))
 
   def buildRequestWithSessionAndFormValues(userId: String, form: Map[String, String])(implicit
     app: Application
@@ -67,19 +67,21 @@ object SessionBuilder {
     FakeRequest(method, path).withSession(SessionKeys.sessionId -> sessionId, "visited-uk-page" -> "true")
   }
 
-  def buildRequestWithSessionAndPath(path: String, userId: String, method: String = "GET")(implicit app: Application) =
-    FakeRequest(method, path).withSession(sessionMap(userId): _*)
+  def buildRequestWithSessionAndPath(path: String, authToken: String, method: String = "GET")(implicit
+    app: Application
+  ) =
+    FakeRequest(method, path).withSession(sessionMap(authToken): _*)
 
   def buildRequestWithSessionAndPathAndFormValues(
     method: String,
     path: String,
-    userId: String,
+    authToken: String,
     form: Map[String, String]
   )(implicit app: Application): FakeRequest[AnyContentAsFormUrlEncoded] =
-    FakeRequest(method, path).withSession(sessionMap(userId): _*).withFormUrlEncodedBody(form.toList: _*)
+    FakeRequest(method, path).withSession(sessionMap(authToken): _*).withFormUrlEncodedBody(form.toList: _*)
 
-  def buildRequestWithSessionAndOrgType(userId: String, orgTypeId: String)(implicit app: Application) = {
-    val list    = (RequestSessionDataKeys.selectedOrganisationType -> orgTypeId) :: sessionMap(userId)
+  def buildRequestWithSessionAndOrgType(authToken: String, orgTypeId: String)(implicit app: Application) = {
+    val list    = (RequestSessionDataKeys.selectedOrganisationType -> orgTypeId) :: sessionMap(authToken)
     val request = FakeRequest().withSession(list: _*)
     addToken(request)
   }
