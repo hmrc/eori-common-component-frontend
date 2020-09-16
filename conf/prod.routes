@@ -24,15 +24,15 @@ GET         /customs-enrolment-services/subscribe/unauthorised                  
 
 GET         /customs-enrolment-services/:journey/keep-alive                                           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.keepAlive(journey: Journey.Value)
 
-GET         /customs-enrolment-services/:journey/email-confirmed                                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.emailConfirmed(journey: Journey.Value)
-GET         /customs-enrolment-services/:journey/email-confirmed-continue                             @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.emailConfirmedContinue(journey: Journey.Value)
+GET         /customs-enrolment-services/:service/:journey/email-confirmed                             @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.emailConfirmed(service: Service, journey: Journey.Value)
+GET         /customs-enrolment-services/:service/:journey/email-confirmed-continue                    @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.emailConfirmedContinue(service: Service, journey: Journey.Value)
 
 # subscribe
 GET         /customs-enrolment-services/:service/subscribe                                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.startSubscription(service: Service)
 
 GET         /customs-enrolment-services/subscribe/returning                                   @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.ReturnUserController.show
 
-GET         /customs-enrolment-services/:journey/are-you-based-in-uk                                  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EmailController.form(journey: Journey.Value)
+GET         /customs-enrolment-services/:service/:journey/are-you-based-in-uk                                  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EmailController.form(service: Service, journey: Journey.Value)
 GET         /customs-enrolment-services/subscribe/match-for-existing-registration                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.MatchingIdController.matchWithIdOnlyForExistingReg
 
 GET         /customs-enrolment-services/:journey/matching/what-is-your-eori                           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriController.createForm(journey: Journey.Value)
@@ -76,13 +76,13 @@ POST        /customs-enrolment-services/:journey/chooseid/review                
 
 GET         /customs-enrolment-services/:journey/start-again                                          @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.CacheController.clearCache(journey: Journey.Value)
 
-GET         /customs-enrolment-services/:journey/matching/what-is-your-email                          @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.WhatIsYourEmailController.createForm(journey: Journey.Value)
-POST        /customs-enrolment-services/:journey/matching/what-is-your-email                          @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.WhatIsYourEmailController.submit(journey: Journey.Value)
+GET         /customs-enrolment-services/:service/:journey/matching/what-is-your-email                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.WhatIsYourEmailController.createForm(service: Service, journey: Journey.Value)
+POST        /customs-enrolment-services/:service/:journey/matching/what-is-your-email                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.WhatIsYourEmailController.submit(service: Service, journey: Journey.Value)
 
-GET         /customs-enrolment-services/:journey/matching/check-your-email                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.createForm(journey: Journey.Value)
-POST        /customs-enrolment-services/:journey/matching/check-your-email                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.submit(isInReviewMode: Boolean = false,journey: Journey.Value)
+GET         /customs-enrolment-services/:service/:journey/matching/check-your-email                   @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.createForm(service: Service, journey: Journey.Value)
+POST        /customs-enrolment-services/:service/:journey/matching/check-your-email                   @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.submit(isInReviewMode: Boolean = false, service: Service, journey: Journey.Value)
 
-GET         /customs-enrolment-services/:journey/matching/verify-your-email                           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.verifyEmailView(journey: Journey.Value)
+GET         /customs-enrolment-services/:service/:journey/matching/verify-your-email                  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.verifyEmailView(service: Service, journey: Journey.Value)
 
 GET         /customs-enrolment-services/subscribe/complete                                    @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller.migrationEnd
 GET         /customs-enrolment-services/subscribe/pending/:date                               @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController.pending(date)

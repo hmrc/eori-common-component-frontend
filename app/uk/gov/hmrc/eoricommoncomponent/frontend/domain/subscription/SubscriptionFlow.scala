@@ -18,7 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription
 
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 
 object SubscriptionFlows {
 
@@ -416,14 +416,14 @@ case object EoriNumberSubscriptionFlowPage
 case object EmailSubscriptionFlowPage
     extends SubscriptionPage(
       uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.WhatIsYourEmailController
-        .createForm(journey = Journey.Subscribe)
+        .createForm(service = Service.NullService, journey = Journey.Subscribe)
         .url
     )
 
 case object CheckYourEmailSubscriptionFlowPage
     extends SubscriptionPage(
       uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.CheckYourEmailController
-        .createForm(journey = Journey.Subscribe)
+        .createForm(service = Service.NullService, journey = Journey.Subscribe)
         .url
     )
 

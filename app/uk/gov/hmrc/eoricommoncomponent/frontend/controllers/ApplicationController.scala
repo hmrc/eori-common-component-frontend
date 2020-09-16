@@ -56,7 +56,7 @@ class ApplicationController @Inject() (
         case None =>
           enrolledCds(loggedInUser) match {
             case Some(_) => Future.successful(Redirect(routes.HasExistingEoriController.displayPage(service)))
-            case None    => Future.successful(Redirect(routes.EmailController.form(Journey.Subscribe)))
+            case None    => Future.successful(Redirect(routes.EmailController.form(service, Journey.Subscribe)))
           }
       }
   }

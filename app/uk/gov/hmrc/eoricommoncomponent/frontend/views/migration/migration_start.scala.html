@@ -15,6 +15,7 @@
  *@
 
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 
 @this(layout_di: layout)
@@ -56,7 +57,7 @@
         </div>
 
         <p>
-            <a class="button button--get-started" href='@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.EmailController.form(journey)' role="button">@messages("cds.start-page.start-now")</a>
+            <a class="button button--get-started" href='@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.EmailController.form(Service.NullService, journey)' role="button">@messages("cds.start-page.start-now")</a>
         </p>
         <p>
             <a href='@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.ReturnUserController.show()'>@messages("cds.start-page.find-details")</a>

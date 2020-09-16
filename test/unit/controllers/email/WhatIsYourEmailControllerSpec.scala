@@ -26,7 +26,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.WhatIsYourEmailController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.InternalId
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.what_is_your_email
 import uk.gov.hmrc.http.HeaderCarrier
@@ -73,7 +73,10 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   "What Is Your Email form in create mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(Journey.Subscribe))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
+      mockAuthConnector,
+      controller.createForm(Service.ATaR, Journey.Subscribe)
+    )
 
     "display title as 'What is your email address'" in {
       showCreateForm(journey = Journey.Subscribe) { result =>
@@ -104,7 +107,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       submitFormInCreateMode(EmailFieldsMap, journey = Journey.Subscribe) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers("Location") should endWith(
-          "/customs-enrolment-services/subscribe/matching/check-your-email"
+          "/customs-enrolment-services/atar/subscribe/matching/check-your-email"
         )
 
       }
@@ -115,14 +118,15 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     test: Future[Result] => Any
   ) {
     withAuthorisedUser(userId, mockAuthConnector)
-    val result = controller.submit(journey)(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
+    val result =
+      controller.submit(Service.ATaR, journey)(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }
 
   private def showCreateForm(userId: String = defaultUserId, journey: Journey.Value)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
-      .createForm(journey)
+      .createForm(Service.ATaR, journey)
       .apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
