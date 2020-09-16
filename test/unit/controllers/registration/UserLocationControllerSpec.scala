@@ -52,7 +52,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   UserLocationPage
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDisplayService
@@ -146,7 +146,10 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
 
   "Viewing the user location form" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.form(Journey.Register))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+      mockAuthConnector,
+      controller.form(Service.ATaR, Journey.Register)
+    )
     "display the form with no errors" in {
       showForm() { result =>
         status(result) shouldBe OK
@@ -158,7 +161,10 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
 
   "Submitting the form" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.submit(Journey.Register))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+      mockAuthConnector,
+      controller.submit(Service.ATaR, Journey.Register)
+    )
 
     "ensure a location option has been selected" in {
       submitForm(ValidRequest - locationFieldName) { result =>
@@ -323,7 +329,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
 
     test(
       controller
-        .form(Journey.Register)
+        .form(Service.ATaR, Journey.Register)
         .apply(SessionBuilder.buildRequestWithSession(userId))
     )
   }
@@ -333,7 +339,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
 
     test(
       controller
-        .submit(Journey.Register)
+        .submit(Service.ATaR, Journey.Register)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }
@@ -482,7 +488,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         ) {}
 
         val result = controller
-          .submit(Journey.Register)
+          .submit(Service.ATaR, Journey.Register)
           .apply(
             SessionBuilder.buildRequestWithSessionAndFormValues(
               defaultUserId,
@@ -536,7 +542,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         ) {}
 
         val result = controller
-          .submit(Journey.Register)
+          .submit(Service.ATaR, Journey.Register)
           .apply(
             SessionBuilder.buildRequestWithSessionAndFormValues(
               defaultUserId,

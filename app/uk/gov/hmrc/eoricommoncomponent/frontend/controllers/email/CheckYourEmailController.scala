@@ -135,7 +135,7 @@ class CheckYourEmailController @Inject() (
           Future.successful(Redirect(SecuritySignOutController.signOut(journey)))
         } { email =>
           if (email.isConfirmed.getOrElse(false))
-            Future.successful(toResult(journey))
+            Future.successful(toResult(service, journey))
           else
             save4LaterService
               .saveEmail(InternalId(userWithEnrolments.internalId), email.copy(isConfirmed = Some(true)))
@@ -150,15 +150,18 @@ class CheckYourEmailController @Inject() (
 
   def emailConfirmedContinue(service: Service, journey: Journey.Value): Action[AnyContent] =
     Action { implicit request =>
-      toResult(journey)
+      toResult(service, journey)
     }
 
-  def toResult(journey: Journey.Value)(implicit request: Request[AnyContent], hc: HeaderCarrier): Result =
+  def toResult(service: Service, journey: Journey.Value)(implicit
+    request: Request[AnyContent],
+    hc: HeaderCarrier
+  ): Result =
     journey match {
       case Journey.Register =>
-        Redirect(MatchingIdController.matchWithIdOnly())
+        Redirect(MatchingIdController.matchWithIdOnly(service))
       case Journey.Subscribe =>
-        Redirect(MatchingIdController.matchWithIdOnlyForExistingReg())
+        Redirect(MatchingIdController.matchWithIdOnlyForExistingReg(service))
     }
 
   private def submitNewDetails(

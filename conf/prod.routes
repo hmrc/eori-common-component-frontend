@@ -32,8 +32,8 @@ GET         /customs-enrolment-services/:service/subscribe                      
 
 GET         /customs-enrolment-services/subscribe/returning                                   @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.ReturnUserController.show
 
-GET         /customs-enrolment-services/:service/:journey/are-you-based-in-uk                                  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EmailController.form(service: Service, journey: Journey.Value)
-GET         /customs-enrolment-services/subscribe/match-for-existing-registration                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.MatchingIdController.matchWithIdOnlyForExistingReg
+GET         /customs-enrolment-services/:service/:journey/are-you-based-in-uk                         @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EmailController.form(service: Service, journey: Journey.Value)
+GET         /customs-enrolment-services/:service/subscribe/match-for-existing-registration            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.MatchingIdController.matchWithIdOnlyForExistingReg(service: Service)
 
 GET         /customs-enrolment-services/:journey/matching/what-is-your-eori                           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriController.createForm(journey: Journey.Value)
 POST        /customs-enrolment-services/:journey/matching/what-is-your-eori                           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriController.submit(isInReviewMode: Boolean = false, journey: Journey.Value)
@@ -133,8 +133,8 @@ GET         /customs-enrolment-services/:journey/enrolment-pending-against-group
 GET         /customs-enrolment-services/register/return-processing                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.UserLocationController.processing
 GET         /customs-enrolment-services/register/return-rejected                              @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.UserLocationController.rejected
 
-GET         /customs-enrolment-services/:journey/matching/user-location                               @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.UserLocationController.form(journey: Journey.Value)
-POST        /customs-enrolment-services/:journey/matching/user-location                               @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.UserLocationController.submit(journey: Journey.Value)
+GET         /customs-enrolment-services/:service/:journey/matching/user-location                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.UserLocationController.form(service: Service, journey: Journey.Value)
+POST        /customs-enrolment-services/:service/:journey/matching/user-location                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.UserLocationController.submit(service: Service, journey: Journey.Value)
 GET         /customs-enrolment-services/:journey/matching/organisation-type                           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.OrganisationTypeController.form(journey: Journey.Value)
 POST        /customs-enrolment-services/:journey/matching/organisation-type                           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.OrganisationTypeController.submit(journey: Journey.Value)
 GET         /customs-enrolment-services/:journey/matching/confirm                                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.ConfirmContactDetailsController.form(journey: Journey.Value)
@@ -169,7 +169,7 @@ POST        /customs-enrolment-services/:journey/matching/row/nino              
 
 GET         /customs-enrolment-services/:journey/complete-enrolment                                   @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.SubscriptionRecoveryController.complete(journey: Journey.Value)
 
-GET         /customs-enrolment-services/register/match                                        @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.MatchingIdController.matchWithIdOnly
+GET         /customs-enrolment-services/:service/register/match                                       @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.MatchingIdController.matchWithIdOnly(service: Service)
 
 GET         /customs-enrolment-services/:journey/subscribe-existing                                   @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController.registerWithEoriAndId(journey: Journey.Value)
 

@@ -458,7 +458,7 @@ case object ConfirmIndividualTypePage
 case object UserLocationPage
     extends SubscriptionPage(
       uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.UserLocationController
-        .form(journey = Journey.Subscribe)
+        .form(service = Service.NullService, journey = Journey.Subscribe)
         .url
     )
 

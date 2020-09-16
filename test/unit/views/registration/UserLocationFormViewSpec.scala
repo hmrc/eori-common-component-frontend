@@ -24,7 +24,7 @@ import play.api.mvc.Result
 import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.UserLocationController
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDisplayService
@@ -122,7 +122,7 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach {
           .formAction(
             "user-location-form"
           ) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.UserLocationController
-          .submit(Journey.Register)
+          .submit(Service.ATaR, Journey.Register)
           .url
       }
     }
@@ -174,7 +174,7 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach {
     withAuthorisedUser(userId, mockAuthConnector, userAffinityGroup = affinityGroup)
 
     val result = controller
-      .form(Journey.Register)
+      .form(Service.ATaR, Journey.Register)
       .apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
@@ -186,7 +186,7 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach {
     withAuthorisedUser(userId, mockAuthConnector, userAffinityGroup = affinityGroup)
 
     val result = controller
-      .form(Journey.Subscribe)
+      .form(Service.ATaR, Journey.Subscribe)
       .apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }

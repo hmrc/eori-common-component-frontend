@@ -27,7 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.registration.RegistrationDisplayResponse
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDisplayService
@@ -63,14 +63,17 @@ class UserLocationController @Inject() (
   private def isAffinityOrganisation(affinityGroup: Option[AffinityGroup]): Boolean =
     affinityGroup.contains(AffinityGroup.Organisation)
 
-  private def continue(
-    journey: Journey.Value
-  )(implicit request: Request[AnyContent], user: LoggedInUserWithEnrolments): Future[Result] =
-    Future.successful(Ok(userLocationView(userLocationForm, journey, isAffinityOrganisation(user.affinityGroup))))
+  private def continue(service: Service, journey: Journey.Value)(implicit
+    request: Request[AnyContent],
+    user: LoggedInUserWithEnrolments
+  ): Future[Result] =
+    Future.successful(
+      Ok(userLocationView(userLocationForm, service, journey, isAffinityOrganisation(user.affinityGroup)))
+    )
 
-  def form(journey: Journey.Value): Action[AnyContent] =
+  def form(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
-      continue(journey)
+      continue(service, journey)
     }
 
   private def forRow(journey: Journey.Value, internalId: InternalId, location: String)(implicit
@@ -86,12 +89,14 @@ class UserLocationController @Inject() (
         subscriptionStatus(status, internalId, journey, Some(location))
     }.flatMap(identity)
 
-  def submit(journey: Journey.Value): Action[AnyContent] =
+  def submit(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
       userLocationForm.bindFromRequest.fold(
         formWithErrors =>
           Future.successful(
-            BadRequest(userLocationView(formWithErrors, journey, isAffinityOrganisation(loggedInUser.affinityGroup)))
+            BadRequest(
+              userLocationView(formWithErrors, service, journey, isAffinityOrganisation(loggedInUser.affinityGroup))
+            )
           ),
         details =>
           (journey, details.location, loggedInUser.internalId) match {
