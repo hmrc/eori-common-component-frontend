@@ -22,10 +22,11 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatDetailsEuConfirmController
 @import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatDetailsEuController
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 
 @this(layout_di: layout)
-@(vatLimitYesNoAnswerForm: Form[YesNo], isInReviewMode: Boolean, vatEuDetailsList: Seq[VatEUDetailsModel], journey: Journey.Value, vatLimitNotReached: Boolean)(implicit messages: Messages, request: Request[_])
+@(vatLimitYesNoAnswerForm: Form[YesNo], isInReviewMode: Boolean, vatEuDetailsList: Seq[VatEUDetailsModel], service: Service, journey: Journey.Value, vatLimitNotReached: Boolean)(implicit messages: Messages, request: Request[_])
 
 @labelForEUCountry(countryCode: String) = @{
     messages(messageKeyForEUCountryCode(countryCode))
@@ -62,7 +63,7 @@
         <fieldset>
             <legend>
                 <h1 class="heading-large" id="titleHeading">@heading</h1>
-                @helper.form(VatDetailsEuConfirmController.submit(isInReviewMode, journey),
+                @helper.form(VatDetailsEuConfirmController.submit(isInReviewMode, service, journey),
                 'id -> "subscriptionVatEUDetailsConfirmForm") {
 
                 @CSRF.formField
@@ -79,12 +80,12 @@
                             @vatDetails.vatNumber
                         </dt>
                         <dt >
-                            <a id='change-tbl__gb-vat_change-@index' href="@if(!isInReviewMode){@VatDetailsEuController.updateForm(vatDetails.index, journey)}else{@VatDetailsEuController.reviewUpdateForm(vatDetails.index, journey)}">
+                            <a id='change-tbl__gb-vat_change-@index' href="@if(!isInReviewMode){@VatDetailsEuController.updateForm(vatDetails.index, service, journey)}else{@VatDetailsEuController.reviewUpdateForm(vatDetails.index, service, journey)}">
                                 @messages("cds.form.change")
                             </a>
                         </dt>
                         <dt>
-                            <a id='review-tbl__gb-vat_remove-@index' href="@if(!isInReviewMode){@AreYouSureYouWantToDeleteVatController.createForm(vatDetails.index, journey)}else{@AreYouSureYouWantToDeleteVatController.reviewForm(vatDetails.index, journey)}">
+                            <a id='review-tbl__gb-vat_remove-@index' href="@if(!isInReviewMode){@AreYouSureYouWantToDeleteVatController.createForm(vatDetails.index, service, journey)}else{@AreYouSureYouWantToDeleteVatController.reviewForm(vatDetails.index, service, journey)}">
                                 @messages("cds.multi.input.delete-entry")
                             </a>
                         </dt>

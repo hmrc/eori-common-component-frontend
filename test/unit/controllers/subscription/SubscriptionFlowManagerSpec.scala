@@ -34,7 +34,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   RegistrationDetailsIndividual,
   RegistrationDetailsOrganisation
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -327,13 +327,18 @@ class SubscriptionFlowManagerSpec
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(mockIndividualRegistrationDetails))
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(Some(ConfirmIndividualTypePage), Journey.Register)(mockHC, mockRequest))
+        await(
+          controller.startSubscriptionFlow(Some(ConfirmIndividualTypePage), Service.ATaR, Journey.Register)(
+            mockHC,
+            mockRequest
+          )
+        )
 
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
 
       verify(mockRequestSessionData)
-        .storeUserSubscriptionFlow(IndividualSubscriptionFlow, ConfirmIndividualTypePage.url)(mockRequest)
+        .storeUserSubscriptionFlow(IndividualSubscriptionFlow, ConfirmIndividualTypePage.url(Service.ATaR))(mockRequest)
     }
 
     "start Corporate Subscription Flow when cached registration details are for an Organisation" in {
@@ -342,13 +347,13 @@ class SubscriptionFlowManagerSpec
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(mockOrgRegistrationDetails))
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(Journey.Register)(mockHC, mockRequest))
+        await(controller.startSubscriptionFlow(Service.ATaR, Journey.Register)(mockHC, mockRequest))
 
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
 
       verify(mockRequestSessionData)
-        .storeUserSubscriptionFlow(OrganisationSubscriptionFlow, RegistrationConfirmPage.url)(mockRequest)
+        .storeUserSubscriptionFlow(OrganisationSubscriptionFlow, RegistrationConfirmPage.url(Service.ATaR))(mockRequest)
     }
 
     "start Corporate Subscription Flow when selected organisation type is Sole Trader" in {
@@ -358,26 +363,31 @@ class SubscriptionFlowManagerSpec
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(mockIndividualRegistrationDetails))
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(Journey.Register)(mockHC, mockRequest))
+        await(controller.startSubscriptionFlow(Service.ATaR, Journey.Register)(mockHC, mockRequest))
 
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
-      verify(mockRequestSessionData).storeUserSubscriptionFlow(SoleTraderSubscriptionFlow, RegistrationConfirmPage.url)(
-        mockRequest
-      )
+      verify(mockRequestSessionData).storeUserSubscriptionFlow(
+        SoleTraderSubscriptionFlow,
+        RegistrationConfirmPage.url(Service.ATaR)
+      )(mockRequest)
     }
 
     "start Corporate Subscription Flow when cached registration details are for an Organisation Reg-existing (a.k.a migration)" in {
       when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(mockOrgRegistrationDetails))
-      val (subscriptionPage, session) = await(controller.startSubscriptionFlow(Journey.Subscribe)(mockHC, mockRequest))
+      val (subscriptionPage, session) =
+        await(controller.startSubscriptionFlow(Service.ATaR, Journey.Subscribe)(mockHC, mockRequest))
 
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
 
       verify(mockRequestSessionData)
-        .storeUserSubscriptionFlow(MigrationEoriOrganisationSubscriptionFlow, RegistrationConfirmPage.url)(mockRequest)
+        .storeUserSubscriptionFlow(
+          MigrationEoriOrganisationSubscriptionFlow,
+          RegistrationConfirmPage.url(Service.ATaR)
+        )(mockRequest)
     }
 
     "start Corporate Subscription Flow when cached registration details are for an Organisation Reg-existing (a.k.a migration) user location is set to channel islands" in {
@@ -386,14 +396,15 @@ class SubscriptionFlowManagerSpec
 
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(mockOrgRegistrationDetails))
-      val (subscriptionPage, session) = await(controller.startSubscriptionFlow(Journey.Subscribe)(mockHC, mockRequest))
+      val (subscriptionPage, session) =
+        await(controller.startSubscriptionFlow(Service.ATaR, Journey.Subscribe)(mockHC, mockRequest))
 
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
 
       verify(mockRequestSessionData).storeUserSubscriptionFlow(
         MigrationEoriRowOrganisationSubscriptionFlow,
-        RegistrationConfirmPage.url
+        RegistrationConfirmPage.url(Service.ATaR)
       )(mockRequest)
     }
   }
@@ -436,12 +447,13 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(RegistrationDetailsIndividual()))
 
-      val (subscriptionPage, session) = await(controller.startSubscriptionFlow(Journey.Subscribe)(mockHC, mockRequest))
+      val (subscriptionPage, session) =
+        await(controller.startSubscriptionFlow(Service.ATaR, Journey.Subscribe)(mockHC, mockRequest))
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
       verify(mockRequestSessionData).storeUserSubscriptionFlow(
         MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow,
-        RegistrationConfirmPage.url
+        RegistrationConfirmPage.url(Service.ATaR)
       )(mockRequest)
     }
 
@@ -452,12 +464,13 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(RegistrationDetailsIndividual()))
 
-      val (subscriptionPage, session) = await(controller.startSubscriptionFlow(Journey.Subscribe)(mockHC, mockRequest))
+      val (subscriptionPage, session) =
+        await(controller.startSubscriptionFlow(Service.ATaR, Journey.Subscribe)(mockHC, mockRequest))
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
       verify(mockRequestSessionData).storeUserSubscriptionFlow(
         MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow,
-        RegistrationConfirmPage.url
+        RegistrationConfirmPage.url(Service.ATaR)
       )(mockRequest)
     }
 
@@ -467,12 +480,13 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(RegistrationDetailsOrganisation()))
 
-      val (subscriptionPage, session) = await(controller.startSubscriptionFlow(Journey.Subscribe)(mockHC, mockRequest))
+      val (subscriptionPage, session) =
+        await(controller.startSubscriptionFlow(Service.ATaR, Journey.Subscribe)(mockHC, mockRequest))
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
       verify(mockRequestSessionData).storeUserSubscriptionFlow(
         MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow,
-        RegistrationConfirmPage.url
+        RegistrationConfirmPage.url(Service.ATaR)
       )(mockRequest)
     }
   }

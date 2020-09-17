@@ -23,7 +23,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.UtrMatchModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.match_organisation_utr
 import util.ViewSpec
 
@@ -162,33 +162,33 @@ class MatchOrganisationUtrSpec extends ViewSpec {
   lazy val doc: Document = getDoc(form)
 
   private def getDoc(form: Form[UtrMatchModel]) = {
-    val result = view(form, nonSoleTraderType, "", Journey.Register)
+    val result = view(form, nonSoleTraderType, "", Service.ATaR, Journey.Register)
     val doc    = Jsoup.parse(contentAsString(result))
     doc
   }
 
   lazy val docWithNoSelectionError: Document = {
-    val result = view(formWithNoSelectionError, nonSoleTraderType, "", Journey.Register)
+    val result = view(formWithNoSelectionError, nonSoleTraderType, "", Service.ATaR, Journey.Register)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val docWithNoUtrEnteredError: Document = {
-    val result = view(formWithNoUtrEnteredError, nonSoleTraderType, "", Journey.Register)
+    val result = view(formWithNoUtrEnteredError, nonSoleTraderType, "", Service.ATaR, Journey.Register)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val docAsSoleTraderIndividual: Document = {
-    val result = view(form, soleTraderType, "", Journey.Register)
+    val result = view(form, soleTraderType, "", Service.ATaR, Journey.Register)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val docWithNoSelectionErrorAsSoleTrader: Document = {
-    val result = view(formWithNoSelectionError, soleTraderType, "", Journey.Register)
+    val result = view(formWithNoSelectionError, soleTraderType, "", Service.ATaR, Journey.Register)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val docWithNoUtrEnteredErrorAsSoleTrader: Document = {
-    val result = view(formWithNoUtrEnteredError, soleTraderType, "", Journey.Register)
+    val result = view(formWithNoUtrEnteredError, soleTraderType, "", Service.ATaR, Journey.Register)
     Jsoup.parse(contentAsString(result))
   }
 

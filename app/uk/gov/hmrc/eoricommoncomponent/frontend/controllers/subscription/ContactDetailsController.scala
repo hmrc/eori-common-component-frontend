@@ -29,7 +29,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{LoggedInUserWithEnrolments, NA}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactDetailsViewModel}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.ContactDetailsForm.contactDetailsCreateForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
@@ -62,7 +62,7 @@ class ContactDetailsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(journey: Journey.Value): Action[AnyContent] =
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       journey match {
         case Journey.Subscribe =>
@@ -79,33 +79,33 @@ class ContactDetailsController @Inject() (
               case _        => subscriptionDetailsService.cachedNameIdDetails
             }
           } yield (cachedCustomsId, cachedNameIdDetails) match {
-            case (None, None) => populateFormGYE(journey)(false)
+            case (None, None) => populateFormGYE(service, journey)(false)
             case _ =>
               Future.successful(
                 Redirect(
                   subscriptionFlowManager
                     .stepInformation(ContactDetailsSubscriptionFlowPageMigrate)
                     .nextPage
-                    .url
+                    .url(service)
                 )
               )
           }
           f.flatMap(identity)
-        case Journey.Register => populateFormGYE(journey)(false)
+        case Journey.Register => populateFormGYE(service, journey)(false)
       }
     }
 
-  def reviewForm(journey: Journey.Value): Action[AnyContent] =
+  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       journey match {
-        case Journey.Subscribe => populateFormGYE(journey)(true)
-        case _                 => populateFormGYE(journey)(true)
+        case Journey.Subscribe => populateFormGYE(service, journey)(true)
+        case _                 => populateFormGYE(service, journey)(true)
       }
     }
 
-  private def populateFormGYE(
-    journey: Journey.Value
-  )(isInReviewMode: Boolean)(implicit request: Request[AnyContent]) = {
+  private def populateFormGYE(service: Service, journey: Journey.Value)(
+    isInReviewMode: Boolean
+  )(implicit request: Request[AnyContent]) = {
     for {
       email          <- cdsFrontendDataCache.email
       contactDetails <- subscriptionBusinessService.cachedContactDetailsModel
@@ -113,26 +113,35 @@ class ContactDetailsController @Inject() (
       contactDetails.map(_.toContactDetailsViewModel),
       Some(email),
       isInReviewMode = isInReviewMode,
+      service,
       journey
     )
   }.flatMap(identity)
 
-  def submit(isInReviewMode: Boolean, journey: Journey.Value): Action[AnyContent] =
+  def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       cdsFrontendDataCache.email flatMap { email =>
         contactDetailsCreateForm().bindFromRequest.fold(
           formWithErrors =>
             createContactDetails(journey).map { contactDetails =>
               BadRequest(
-                contactDetailsView(formWithErrors, countries.all, contactDetails, Some(email), isInReviewMode, journey)
+                contactDetailsView(
+                  formWithErrors,
+                  countries.all,
+                  contactDetails,
+                  Some(email),
+                  isInReviewMode,
+                  service,
+                  journey
+                )
               )
             },
           formData =>
             journey match {
               case Journey.Subscribe =>
-                storeContactDetailsMigrate(formData, email, isInReviewMode, journey)
+                storeContactDetailsMigrate(formData, email, isInReviewMode, service, journey)
               case _ =>
-                storeContactDetails(formData, email, isInReviewMode, journey)
+                storeContactDetails(formData, email, isInReviewMode, service, journey)
             }
         )
       }
@@ -175,6 +184,7 @@ class ContactDetailsController @Inject() (
     contactDetailsModel: Option[ContactDetailsViewModel],
     email: Option[String],
     isInReviewMode: Boolean,
+    service: Service,
     journey: Journey.Value
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
     val form = contactDetailsModel
@@ -182,7 +192,8 @@ class ContactDetailsController @Inject() (
       .fold(contactDetailsCreateForm())(f => contactDetailsCreateForm().fill(f))
 
     createContactDetails(journey) map (
-      contactDetails => Ok(contactDetailsView(form, countries.all, contactDetails, email, isInReviewMode, journey))
+      contactDetails =>
+        Ok(contactDetailsView(form, countries.all, contactDetails, email, isInReviewMode, service, journey))
     )
   }
 
@@ -190,6 +201,7 @@ class ContactDetailsController @Inject() (
     formData: ContactDetailsViewModel,
     email: String,
     isInReviewMode: Boolean,
+    service: Service,
     journey: Journey.Value
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
     for {
@@ -198,13 +210,14 @@ class ContactDetailsController @Inject() (
         regDetailsCreator
           .registrationAddressFromAddressViewModel(cachedAddressDetails.get)
       )
-    } yield storeContactDetails(formData, email, isInReviewMode, journey)
+    } yield storeContactDetails(formData, email, isInReviewMode, service, journey)
   }.flatMap(identity)
 
   private def storeContactDetails(
     formData: ContactDetailsViewModel,
     email: String,
     inReviewMode: Boolean,
+    service: Service,
     journey: Journey.Value
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
     subscriptionDetailsService
@@ -216,20 +229,20 @@ class ContactDetailsController @Inject() (
         _ =>
           (inReviewMode, journey) match {
             case (true, _) =>
-              Redirect(DetermineReviewPageController.determineRoute(journey))
+              Redirect(DetermineReviewPageController.determineRoute(service, journey))
             case (_, Journey.Register) =>
               Redirect(
                 subscriptionFlowManager
                   .stepInformation(ContactDetailsSubscriptionFlowPageGetEori)
                   .nextPage
-                  .url
+                  .url(service)
               )
             case (_, _) =>
               Redirect(
                 subscriptionFlowManager
                   .stepInformation(ContactDetailsSubscriptionFlowPageMigrate)
                   .nextPage
-                  .url
+                  .url(service)
               )
           }
       )

@@ -28,7 +28,7 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.MatchingService
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.match_nino
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
@@ -66,7 +66,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter {
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.form(defaultOrganisationType, Journey.Register)
+      controller.form(defaultOrganisationType, Service.ATaR, Journey.Register)
     )
 
     "show the form without errors" in {
@@ -197,7 +197,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter {
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(defaultOrganisationType, Journey.Register)
+      controller.submit(defaultOrganisationType, Service.ATaR, Journey.Register)
     )
 
     "redirect to the confirm page when there's a successful match" in {
@@ -214,7 +214,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter {
         page.getElementsText(NinoMatchPage.pageLevelErrorSummaryListXPath) shouldBe empty
 
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs-enrolment-services/register/matching/confirm")
+        result.header.headers("Location") should endWith("/customs-enrolment-services/atar/register/matching/confirm")
 
         verify(mockMatchingService).matchIndividualWithNino(any(), any(), any())(any[HeaderCarrier])
       }
@@ -249,7 +249,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter {
     withAuthorisedUser(userId, mockAuthConnector)
 
     val result = controller
-      .form(organisationType, Journey.Register)
+      .form(organisationType, Service.ATaR, Journey.Register)
       .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }
@@ -262,7 +262,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter {
     withAuthorisedUser(userId, mockAuthConnector)
 
     val result = controller
-      .submit(organisationType, Journey.Register)
+      .submit(organisationType, Service.ATaR, Journey.Register)
       .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }

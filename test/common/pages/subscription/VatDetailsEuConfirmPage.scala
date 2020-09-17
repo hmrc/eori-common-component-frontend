@@ -18,6 +18,7 @@ package common.pages.subscription
 
 import common.pages.WebPage
 import common.support.Env
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 trait VatDetailsEuConfirmPage extends WebPage {
 
@@ -25,7 +26,9 @@ trait VatDetailsEuConfirmPage extends WebPage {
 
   override val title = "You have added VAT details for 1 EU member country"
 
-  val url: String = Env.frontendHost + "/customs-enrolment-services/register/vat-details-eu-confirm"
+  def url(service: Service): String =
+    Env.frontendHost + s"/customs-enrolment-services/${service.name}/register/vat-details-eu-confirm"
+
 }
 
 object VatDetailsEuConfirmPage extends VatDetailsEuConfirmPage {

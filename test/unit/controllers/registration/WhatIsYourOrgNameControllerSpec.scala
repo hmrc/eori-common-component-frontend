@@ -30,7 +30,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.WhatIsYourOrgNameController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NameOrganisationMatchModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.what_is_your_org_name
@@ -80,7 +80,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
         "charity-public-body-not-for-profit",
         CharityPublicBodyNotForProfitOrganisation,
         "organisation",
-        "/customs-enrolment-services/register/matching/utr/charity-public-body-not-for-profit",
+        "/customs-enrolment-services/atar/register/matching/utr/charity-public-body-not-for-profit",
         UserLocation.Uk,
         false,
         ""
@@ -89,7 +89,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
         "third-country-organisation",
         ThirdCountryOrg,
         "organisation",
-        "/customs-enrolment-services/register/matching/address/third-country-organisation",
+        "/customs-enrolment-services/atar/register/matching/address/third-country-organisation",
         UserLocation.ThirdCountry,
         false,
         ""
@@ -98,7 +98,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
         "third-country-organisation",
         ThirdCountryOrg,
         "organisation",
-        "/customs-enrolment-services/register/matching/review-determine",
+        "/customs-enrolment-services/atar/register/matching/review-determine",
         UserLocation.ThirdCountry,
         true,
         "Test Org Name"
@@ -124,7 +124,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
     forAll(organisationTypeOrganisations) { (organisationType, _, _, _, _, reviewMode, expectedName) =>
       assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
         mockAuthConnector,
-        controller.showForm(reviewMode, organisationType, Journey.Register),
+        controller.showForm(reviewMode, organisationType, Service.ATaR, Journey.Register),
         s", for reviewMode $reviewMode and organisationType $organisationType"
       )
 
@@ -155,7 +155,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
       (organisationType, _, nameDescription, submitLocation, userLocation, reviewMode, _) =>
         assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
           mockAuthConnector,
-          controller.submit(reviewMode, organisationType, Journey.Register),
+          controller.submit(reviewMode, organisationType, Service.ATaR, Journey.Register),
           s", for reviewMode $reviewMode and organisationType $organisationType"
         )
 
@@ -201,7 +201,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
     withAuthorisedUser(userId, mockAuthConnector)
 
     val result = controller
-      .showForm(isInReviewMode, organisationType, Journey.Register)
+      .showForm(isInReviewMode, organisationType, Service.ATaR, Journey.Register)
       .apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
@@ -214,7 +214,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
-      .submit(isInReviewMode, organisationType, Journey.Register)
+      .submit(isInReviewMode, organisationType, Service.ATaR, Journey.Register)
       .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }

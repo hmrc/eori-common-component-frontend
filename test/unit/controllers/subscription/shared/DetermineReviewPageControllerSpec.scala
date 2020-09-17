@@ -22,7 +22,7 @@ import play.api.mvc._
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.DetermineReviewPageController
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -44,7 +44,10 @@ class DetermineReviewPageControllerSpec extends ControllerSpec with BeforeAndAft
 
   "Determine Review controller" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.determineRoute(Journey.Register))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+      mockAuthConnector,
+      controller.determineRoute(Service.ATaR, Journey.Register)
+    )
 
     "redirect to to correct page when session data is set with the key journeyType.Subscribe" in {
       determinRouteSubscription { result =>
@@ -53,7 +56,7 @@ class DetermineReviewPageControllerSpec extends ControllerSpec with BeforeAndAft
         awaitedResult.header.headers.get("Location") shouldBe
           Some(
             uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.CheckYourDetailsController
-              .reviewDetails(Journey.Subscribe)
+              .reviewDetails(Service.ATaR, Journey.Subscribe)
               .url
           )
       }
@@ -67,7 +70,7 @@ class DetermineReviewPageControllerSpec extends ControllerSpec with BeforeAndAft
         awaitedResult.header.headers.get("Location") shouldBe
           Some(
             uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.CheckYourDetailsRegisterController
-              .reviewDetails(Journey.Register)
+              .reviewDetails(Service.ATaR, Journey.Register)
               .url
           )
       }
@@ -78,7 +81,8 @@ class DetermineReviewPageControllerSpec extends ControllerSpec with BeforeAndAft
     val aUserId = defaultUserId
     withAuthorisedUser(aUserId, mockAuthConnector)
 
-    val result = controller.determineRoute(Journey.Register).apply(SessionBuilder.buildRequestWithSession(aUserId))
+    val result =
+      controller.determineRoute(Service.ATaR, Journey.Register).apply(SessionBuilder.buildRequestWithSession(aUserId))
     test(result)
   }
 
@@ -86,7 +90,8 @@ class DetermineReviewPageControllerSpec extends ControllerSpec with BeforeAndAft
     val aUserId = defaultUserId
     withAuthorisedUser(aUserId, mockAuthConnector)
 
-    val result = controller.determineRoute(Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(aUserId))
+    val result =
+      controller.determineRoute(Service.ATaR, Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(aUserId))
     test(result)
   }
 

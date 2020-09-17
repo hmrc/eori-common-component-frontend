@@ -28,7 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.AddressDetai
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.YesNoWrongAddress
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.AddressDetailsForm.addressDetailsCreateForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
@@ -58,25 +58,25 @@ class AddressController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(journey: Journey.Value): Action[AnyContent] =
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.address.flatMap {
-        populateOkView(_, isInReviewMode = false, journey)
+        populateOkView(_, isInReviewMode = false, service, journey)
       }
     }
 
-  def reviewForm(journey: Journey.Value): Action[AnyContent] =
+  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.addressOrException flatMap { cdm =>
-        populateOkView(Some(cdm), isInReviewMode = true, journey)
+        populateOkView(Some(cdm), isInReviewMode = true, service, journey)
       }
     }
 
-  def submit(isInReviewMode: Boolean, journey: Journey.Value): Action[AnyContent] =
+  def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       addressDetailsCreateForm().bindFromRequest
         .fold(
-          formWithErrors => populateCountriesToInclude(isInReviewMode, journey, formWithErrors, BadRequest),
+          formWithErrors => populateCountriesToInclude(isInReviewMode, service, journey, formWithErrors, BadRequest),
           address => {
             subscriptionDetailsHolderService.cacheAddressDetails(address)
             journey match {
@@ -86,17 +86,17 @@ class AddressController @Inject() (
                   .map(
                     _ =>
                       if (isInReviewMode)
-                        Redirect(DetermineReviewPageController.determineRoute(journey))
+                        Redirect(DetermineReviewPageController.determineRoute(service, journey))
                       else
                         Redirect(
                           subscriptionFlowManager
                             .stepInformation(AddressDetailsSubscriptionFlowPage)
                             .nextPage
-                            .url
+                            .url(service)
                         )
                   )
               case _ =>
-                showReviewPage(address, isInReviewMode, journey)
+                showReviewPage(address, isInReviewMode, service, journey)
             }
           }
         )
@@ -104,6 +104,7 @@ class AddressController @Inject() (
 
   private def populateCountriesToInclude(
     isInReviewMode: Boolean,
+    service: Service,
     journey: Journey.Value,
     form: Form[AddressViewModel],
     status: Status
@@ -127,6 +128,7 @@ class AddressController @Inject() (
               countriesToInclude,
               countriesInCountryPicker,
               isInReviewMode,
+              service,
               journey,
               isIndividualOrSoleTrader,
               requestSessionData.isPartnership,
@@ -141,27 +143,30 @@ class AddressController @Inject() (
   private def populateOkView(
     address: Option[AddressViewModel],
     isInReviewMode: Boolean,
+    service: Service,
     journey: Journey.Value
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
     lazy val form = address.fold(addressDetailsCreateForm())(addressDetailsCreateForm().fill(_))
-    populateCountriesToInclude(isInReviewMode, journey, form, Ok)
+    populateCountriesToInclude(isInReviewMode, service, journey, form, Ok)
   }
 
-  private def showReviewPage(address: AddressViewModel, inReviewMode: Boolean, journey: Journey.Value)(implicit
-    hc: HeaderCarrier,
-    request: Request[AnyContent]
-  ): Future[Result] = {
+  private def showReviewPage(
+    address: AddressViewModel,
+    inReviewMode: Boolean,
+    service: Service,
+    journey: Journey.Value
+  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
     val etmpOrgType = requestSessionData.userSelectedOrganisationType
       .map(EtmpOrganisationType(_))
       .getOrElse(throw new IllegalStateException("No Etmp org type"))
 
     subscriptionDetailsHolderService.cacheAddressDetails(address).flatMap { _ =>
       if (inReviewMode)
-        Future.successful(Redirect(DetermineReviewPageController.determineRoute(journey)))
+        Future.successful(Redirect(DetermineReviewPageController.determineRoute(service, journey)))
       else
         cdsFrontendDataCache.registrationDetails map {
           case RegistrationDetailsIndividual(customsId, _, _, name, _, _) =>
-            Ok(confirmContactDetails(name, address, customsId, None, YesNoWrongAddress.createForm(), journey))
+            Ok(confirmContactDetails(name, address, customsId, None, YesNoWrongAddress.createForm(), service, journey))
           case RegistrationDetailsOrganisation(customsId, _, _, name, _, _, _) =>
             Ok(
               confirmContactDetails(
@@ -170,6 +175,7 @@ class AddressController @Inject() (
                 customsId,
                 Some(etmpOrgType),
                 YesNoWrongAddress.createForm(),
+                service,
                 journey
               )
             )

@@ -30,7 +30,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{
   VatDetailsEuController
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.VatEUDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionVatEUDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_details_eu
@@ -278,12 +278,24 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
 
   private def createForm()(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.createForm(Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    await(
+      test(
+        controller.createForm(Service.ATaR, Journey.Register).apply(
+          SessionBuilder.buildRequestWithSession(defaultUserId)
+        )
+      )
+    )
   }
 
   private def reviewForm()(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.reviewForm(Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    await(
+      test(
+        controller.reviewForm(Service.ATaR, Journey.Register).apply(
+          SessionBuilder.buildRequestWithSession(defaultUserId)
+        )
+      )
+    )
   }
 
   private def submit(form: Map[String, String], isInReviewMode: Boolean = false)(test: Future[Result] => Any) = {
@@ -291,7 +303,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
     await(
       test(
         controller
-          .submit(Journey.Register, isInReviewMode: Boolean)
+          .submit(Service.ATaR, Journey.Register, isInReviewMode: Boolean)
           .apply(SessionBuilder.buildRequestWithFormValues(form))
       )
     )
@@ -304,7 +316,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
     await(
       test(
         controller
-          .submitUpdate(index, Journey.Register, isInReviewMode: Boolean)
+          .submitUpdate(index, Service.ATaR, Journey.Register, isInReviewMode: Boolean)
           .apply(SessionBuilder.buildRequestWithFormValues(form))
       )
     )
@@ -313,7 +325,11 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
   private def updateForm(index: Int)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     await(
-      test(controller.updateForm(index, Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+      test(
+        controller.updateForm(index, Service.ATaR, Journey.Register).apply(
+          SessionBuilder.buildRequestWithSession(defaultUserId)
+        )
+      )
     )
   }
 
@@ -322,7 +338,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
     await(
       test(
         controller
-          .reviewUpdateForm(index, Journey.Register)
+          .reviewUpdateForm(index, Service.ATaR, Journey.Register)
           .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
       )
     )

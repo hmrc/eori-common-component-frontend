@@ -23,7 +23,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.YesNo
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_registered_uk
 import util.ViewSpec
 
@@ -39,19 +39,34 @@ class VatRegisteredUkSpec extends ViewSpec {
   implicit val request = withFakeCSRF(FakeRequest())
 
   lazy val doc: Document =
-    Jsoup.parse(contentAsString(view(isInReviewMode, form, isIndividualFlow, isPartnership = false, Journey.Subscribe)))
+    Jsoup.parse(
+      contentAsString(
+        view(isInReviewMode, form, isIndividualFlow, isPartnership = false, Service.ATaR, Journey.Subscribe)
+      )
+    )
 
   lazy val docWithErrors: Document = Jsoup.parse(
-    contentAsString(view(isInReviewMode, formWithError, isIndividualFlow, isPartnership = false, Journey.Subscribe))
+    contentAsString(
+      view(isInReviewMode, formWithError, isIndividualFlow, isPartnership = false, Service.ATaR, Journey.Subscribe)
+    )
   )
 
   lazy val docPartnership: Document = Jsoup.parse(
-    contentAsString(view(isInReviewMode, formPartnership, isIndividualFlow, isPartnership = true, Journey.Subscribe))
+    contentAsString(
+      view(isInReviewMode, formPartnership, isIndividualFlow, isPartnership = true, Service.ATaR, Journey.Subscribe)
+    )
   )
 
   lazy val docPartnershipWithErrors: Document = Jsoup.parse(
     contentAsString(
-      view(isInReviewMode, formPartnershipWithError, isIndividualFlow, isPartnership = true, Journey.Subscribe)
+      view(
+        isInReviewMode,
+        formPartnershipWithError,
+        isIndividualFlow,
+        isPartnership = true,
+        Service.ATaR,
+        Journey.Subscribe
+      )
     )
   )
 

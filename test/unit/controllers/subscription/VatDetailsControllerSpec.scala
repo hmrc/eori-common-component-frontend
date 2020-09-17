@@ -33,7 +33,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.VatDeta
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.VatDetailsSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{VatControlListRequest, VatControlListResponse}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.VatDetails
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{vat_details, we_cannot_confirm_your_identity}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -52,12 +52,12 @@ class VatDetailsControllerSpec
 
   protected override val submitInCreateModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatDetailsController
-      .submit(isInReviewMode = false, Journey.Register)
+      .submit(isInReviewMode = false, Service.ATaR, Journey.Register)
       .url
 
   protected override val submitInReviewModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatDetailsController
-      .submit(isInReviewMode = true, Journey.Register)
+      .submit(isInReviewMode = true, Service.ATaR, Journey.Register)
       .url
 
   private val mockVatControlListConnector = mock[VatControlListConnector]
@@ -94,7 +94,10 @@ class VatDetailsControllerSpec
 
   "Loading the page in create mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.Subscribe))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+      mockAuthConnector,
+      controller.createForm(Service.ATaR, Journey.Subscribe)
+    )
 
     "display the form" in {
       showCreateForm()(verifyFormActionInCreateMode)
@@ -250,7 +253,7 @@ class VatDetailsControllerSpec
       submitFormInReviewMode(validRequest) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers("Location") should endWith(
-          "/customs-enrolment-services/register/matching/review-determine"
+          "/customs-enrolment-services/atar/register/matching/review-determine"
         )
       }
     }
@@ -313,7 +316,7 @@ class VatDetailsControllerSpec
     when(mockSubscriptionBusinessService.maybeCachedDateEstablished(any[HeaderCarrier]))
       .thenReturn(Future.successful(cachedDate))
 
-    test(controller.createForm(journey).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.createForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def submitFormInCreateMode(form: Map[String, String])(test: Future[Result] => Any): Unit =
@@ -330,7 +333,7 @@ class VatDetailsControllerSpec
       .thenReturn(Future.successful(()))
     test(
       controller
-        .submit(false, Journey.Register)
+        .submit(false, Service.ATaR, Journey.Register)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form))
     )
   }
@@ -350,7 +353,7 @@ class VatDetailsControllerSpec
       .thenReturn(Future.successful(()))
     test(
       controller
-        .submit(isInReviewMode, journey)
+        .submit(isInReviewMode, Service.ATaR, journey)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }

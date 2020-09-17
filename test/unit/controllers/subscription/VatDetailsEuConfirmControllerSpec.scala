@@ -29,7 +29,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubscriptionFlowInfo, SubscriptionPage}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.VatEUDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionVatEUDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_details_eu_confirm
 import uk.gov.hmrc.http.HeaderCarrier
@@ -101,7 +101,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
         .thenReturn(Future.successful(Seq()))
       displayForm() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("/customs-enrolment-services/register/vat-registered-eu")
+        result.header.headers(LOCATION) should endWith("/customs-enrolment-services/atar/register/vat-registered-eu")
         verify(mockSubscriptionVatEUDetailsService, times(1)).cachedEUVatDetails(any[HeaderCarrier])
       }
     }
@@ -111,7 +111,9 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
         .thenReturn(Future.successful(Seq()))
       reviewForm() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("/customs-enrolment-services/register/vat-registered-eu/review")
+        result.header.headers(LOCATION) should endWith(
+          "/customs-enrolment-services/atar/register/vat-registered-eu/review"
+        )
         verify(mockSubscriptionVatEUDetailsService, times(1)).cachedEUVatDetails(any[HeaderCarrier])
       }
     }
@@ -124,7 +126,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
         .thenReturn(Future.successful(VatEuDetailUnderLimit))
       submitForm(ValidRequest) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("/customs-enrolment-services/register/vat-details-eu")
+        result.header.headers(LOCATION) should endWith("/customs-enrolment-services/atar/register/vat-details-eu")
       }
     }
 
@@ -135,7 +137,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
       when(mockSubscriptionFlowManager.stepInformation(any())(any[HeaderCarrier], any[Request[AnyContent]]))
         .thenReturn(mockSubscriptionFlowInfo)
       when(mockSubscriptionFlowInfo.nextPage).thenReturn(mockSubscriptionPage)
-      when(mockSubscriptionPage.url).thenReturn(url)
+      when(mockSubscriptionPage.url(Service.ATaR)).thenReturn(url)
       submitForm(validRequestNo) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) should endWith(url)
@@ -152,7 +154,9 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
         .thenReturn(Future.successful(VatEuDetailUnderLimit))
       submitForm(ValidRequest, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("/customs-enrolment-services/register/vat-details-eu/review")
+        result.header.headers(LOCATION) should endWith(
+          "/customs-enrolment-services/atar/register/vat-details-eu/review"
+        )
       }
     }
 
@@ -161,7 +165,9 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
         .thenReturn(Future.successful(VatEuDetailUnderLimit))
       submitForm(validRequestNo, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("/customs-enrolment-services/register/matching/review-determine")
+        result.header.headers(LOCATION) should endWith(
+          "/customs-enrolment-services/atar/register/matching/review-determine"
+        )
       }
     }
   }
@@ -172,7 +178,9 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
         .thenReturn(Future.successful(VatEuDetailsOnLimit))
       submitForm(invalidRequest, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("/customs-enrolment-services/register/matching/review-determine")
+        result.header.headers(LOCATION) should endWith(
+          "/customs-enrolment-services/atar/register/matching/review-determine"
+        )
       }
     }
 
@@ -183,7 +191,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
       when(mockSubscriptionFlowManager.stepInformation(any())(any[HeaderCarrier], any[Request[AnyContent]]))
         .thenReturn(mockSubscriptionFlowInfo)
       when(mockSubscriptionFlowInfo.nextPage).thenReturn(mockSubscriptionPage)
-      when(mockSubscriptionPage.url).thenReturn(url)
+      when(mockSubscriptionPage.url(Service.ATaR)).thenReturn(url)
       submitForm(invalidRequest) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) should endWith(url)
@@ -195,12 +203,24 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
 
   private def displayForm()(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.createForm(Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    await(
+      test(
+        controller.createForm(Service.ATaR, Journey.Register).apply(
+          SessionBuilder.buildRequestWithSession(defaultUserId)
+        )
+      )
+    )
   }
 
   private def reviewForm()(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.reviewForm(Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    await(
+      test(
+        controller.reviewForm(Service.ATaR, Journey.Register).apply(
+          SessionBuilder.buildRequestWithSession(defaultUserId)
+        )
+      )
+    )
   }
 
   private def submitForm(form: Map[String, String], isInReviewMode: Boolean = false)(test: Future[Result] => Any) {
@@ -208,7 +228,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
     await(
       test(
         controller
-          .submit(isInReviewMode, Journey.Register)
+          .submit(isInReviewMode, Service.ATaR, Journey.Register)
           .apply(SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form))
       )
     )

@@ -26,7 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Subscri
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.UtrSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.utrForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_utr_subscription
@@ -46,39 +46,43 @@ class HaveUtrSubscriptionController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       requestSessionData.userSelectedOrganisationType match {
-        case Some(orgType) => Future.successful(Ok(matchUtrSubscriptionView(utrForm, orgType.id, journey)))
+        case Some(orgType) => Future.successful(Ok(matchUtrSubscriptionView(utrForm, orgType.id, service, journey)))
         case None          => noOrgTypeSelected
       }
   }
 
-  def submit(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def submit(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       requestSessionData.userSelectedOrganisationType match {
         case Some(orgType) =>
           utrForm.bindFromRequest.fold(
             formWithErrors =>
-              Future.successful(BadRequest(matchUtrSubscriptionView(formWithErrors, orgType.id, journey))),
-            formData => destinationsByAnswer(formData, journey, orgType)
+              Future.successful(BadRequest(matchUtrSubscriptionView(formWithErrors, orgType.id, service, journey))),
+            formData => destinationsByAnswer(formData, service, journey, orgType)
           )
         case None => noOrgTypeSelected
       }
   }
 
-  private def destinationsByAnswer(form: UtrMatchModel, journey: Journey.Value, orgType: CdsOrganisationType)(implicit
-    hc: HeaderCarrier,
-    request: Request[AnyContent]
-  ): Future[Result] =
+  private def destinationsByAnswer(
+    form: UtrMatchModel,
+    service: Service,
+    journey: Journey.Value,
+    orgType: CdsOrganisationType
+  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
     form.haveUtr match {
-      case Some(true) if orgType == CdsOrganisationType.Company => cacheNameIdDetails(form, journey)
+      case Some(true) if orgType == CdsOrganisationType.Company => cacheNameIdDetails(form, service, journey)
       case Some(true) =>
         subscriptionDetailsService.cacheCustomsId(Utr(form.id.getOrElse(noUtrException))).map { _ =>
-          Redirect(AddressController.createForm(journey))
+          Redirect(AddressController.createForm(service, journey))
         }
       case Some(false) =>
-        Future.successful(Redirect(subscriptionFlowManager.stepInformation(UtrSubscriptionFlowPage).nextPage.url))
+        Future.successful(
+          Redirect(subscriptionFlowManager.stepInformation(UtrSubscriptionFlowPage).nextPage.url(service))
+        )
       case _ => throw new IllegalStateException("No Data from the form")
     }
 
@@ -92,7 +96,7 @@ class HaveUtrSubscriptionController @Inject() (
       }).map( _ => Redirect(AddressController.createForm(journey)))
     }
    */
-  private def cacheNameIdDetails(form: UtrMatchModel, journey: Journey.Value)(implicit
+  private def cacheNameIdDetails(form: UtrMatchModel, service: Service, journey: Journey.Value)(implicit
     hc: HeaderCarrier
   ): Future[Result] =
     for {
@@ -102,7 +106,7 @@ class HaveUtrSubscriptionController @Inject() (
         case (Some(name), Some(id)) => subscriptionDetailsService.cacheNameIdAndCustomsId(name.name, id)
         case _                      => noBusinessNameOrId
       }
-      Redirect(AddressController.createForm(journey))
+      Redirect(AddressController.createForm(service, journey))
     }
 
   private lazy val noUtrException     = throw new IllegalStateException("User selected 'Yes' for Utr but no Utr found")

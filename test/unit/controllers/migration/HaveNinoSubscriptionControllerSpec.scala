@@ -27,7 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.HaveNinoSu
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CustomsId
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubscriptionFlowInfo, SubscriptionPage}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_nino_subscription
 import uk.gov.hmrc.http.HeaderCarrier
@@ -112,13 +112,19 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
 
   private def createForm(journey: Journey.Value)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.createForm(journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    await(
+      test(controller.createForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+    )
   }
 
   private def submit(journey: Journey.Value, form: Map[String, String])(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     await(
-      test(controller.submit(journey).apply(SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form)))
+      test(
+        controller.submit(Service.ATaR, journey).apply(
+          SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form)
+        )
+      )
     )
   }
 
@@ -126,7 +132,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
     when(mockSubscriptionFlowManager.stepInformation(any())(any[HeaderCarrier], any[Request[AnyContent]]))
       .thenReturn(mockSubscriptionFlowInfo)
     when(mockSubscriptionFlowInfo.nextPage).thenReturn(mockSubscriptionPage)
-    when(mockSubscriptionPage.url).thenReturn(url)
+    when(mockSubscriptionPage.url(any())).thenReturn(url)
   }
 
 }

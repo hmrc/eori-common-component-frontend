@@ -20,6 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.we_cannot_confirm_your_identity
 import util.ViewSpec
 
@@ -58,17 +59,17 @@ class WeCannotConfirmYourIdentitySpec extends ViewSpec {
       doc
         .body()
         .getElementById("try-again")
-        .attr("href") mustBe "/customs-enrolment-services/register/what-are-your-uk-vat-details"
+        .attr("href") mustBe "/customs-enrolment-services/atar/register/what-are-your-uk-vat-details"
     }
 
     "have the VAT Details link for the try again button in review mode" in {
-      val doc = Jsoup.parse(contentAsString(view(true)))
+      val doc = Jsoup.parse(contentAsString(view(true, Service.ATaR)))
       doc
         .body()
         .getElementById("try-again")
-        .attr("href") mustBe "/customs-enrolment-services/register/what-are-your-uk-vat-details/review"
+        .attr("href") mustBe "/customs-enrolment-services/atar/register/what-are-your-uk-vat-details/review"
     }
   }
 
-  lazy val doc: Document = Jsoup.parse(contentAsString(view(false)))
+  lazy val doc: Document = Jsoup.parse(contentAsString(view(false, Service.ATaR)))
 }

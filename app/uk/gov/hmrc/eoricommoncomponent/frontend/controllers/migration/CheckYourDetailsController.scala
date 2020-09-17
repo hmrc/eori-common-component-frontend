@@ -23,7 +23,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.check_your_details
 
@@ -40,31 +40,33 @@ class CheckYourDetailsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def reviewDetails(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      for {
-        subscriptionDetailsHolder <- cdsFrontendCache.subscriptionDetails
-        email                     <- cdsFrontendCache.email
-      } yield Ok(
-        checkYourDetailsView(
-          isThirdCountrySubscription = isThirdCountrySubscriptionFlow,
-          isIndividualSubscriptionFlow = requestSessionData.userSubscriptionFlow.isIndividualFlow,
-          organisationType = requestSessionData.userSelectedOrganisationType,
-          addressDetails = subscriptionDetailsHolder.addressDetails,
-          contactDetails = subscriptionDetailsHolder.contactDetails,
-          principalEconomicActivity = subscriptionDetailsHolder.sicCode,
-          eoriNumber = subscriptionDetailsHolder.eoriNumber,
-          email = Some(email),
-          nameIdOrganisationDetails = subscriptionDetailsHolder.nameIdOrganisationDetails,
-          nameOrganisationDetails = subscriptionDetailsHolder.nameOrganisationDetails,
-          nameDobDetails = subscriptionDetailsHolder.nameDobDetails,
-          dateEstablished = subscriptionDetailsHolder.dateEstablished,
-          idDetails = subscriptionDetailsHolder.idDetails,
-          customsId = subscriptionDetailsHolder.customsId,
-          journey = journey
+  def reviewDetails(service: Service, journey: Journey.Value): Action[AnyContent] =
+    ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        for {
+          subscriptionDetailsHolder <- cdsFrontendCache.subscriptionDetails
+          email                     <- cdsFrontendCache.email
+        } yield Ok(
+          checkYourDetailsView(
+            isThirdCountrySubscription = isThirdCountrySubscriptionFlow,
+            isIndividualSubscriptionFlow = requestSessionData.userSubscriptionFlow.isIndividualFlow,
+            organisationType = requestSessionData.userSelectedOrganisationType,
+            addressDetails = subscriptionDetailsHolder.addressDetails,
+            contactDetails = subscriptionDetailsHolder.contactDetails,
+            principalEconomicActivity = subscriptionDetailsHolder.sicCode,
+            eoriNumber = subscriptionDetailsHolder.eoriNumber,
+            email = Some(email),
+            nameIdOrganisationDetails = subscriptionDetailsHolder.nameIdOrganisationDetails,
+            nameOrganisationDetails = subscriptionDetailsHolder.nameOrganisationDetails,
+            nameDobDetails = subscriptionDetailsHolder.nameDobDetails,
+            dateEstablished = subscriptionDetailsHolder.dateEstablished,
+            idDetails = subscriptionDetailsHolder.idDetails,
+            customsId = subscriptionDetailsHolder.customsId,
+            service = service,
+            journey = journey
+          )
         )
-      )
-  }
+    }
 
   private def isThirdCountrySubscriptionFlow(implicit request: Request[AnyContent]): Boolean =
     requestSessionData.userSubscriptionFlow match {

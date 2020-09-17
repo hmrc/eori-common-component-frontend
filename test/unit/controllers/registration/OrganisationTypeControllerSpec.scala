@@ -31,7 +31,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Subscri
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.EoriNumberSubscriptionFlowPage
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, RequestSessionDataKeys}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.organisation_type
@@ -88,7 +88,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      organisationTypeController.form(Journey.Register)
+      organisationTypeController.form(Service.ATaR, Journey.Register)
     )
 
     forAll(userLocations) { userLocation =>
@@ -123,7 +123,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      organisationTypeController.submit(Journey.Register)
+      organisationTypeController.submit(Service.ATaR, Journey.Register)
     )
 
     "ensure an organisation type has been selected" in {
@@ -156,7 +156,9 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
           journey = Journey.Register
         ) { result =>
           status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) should endWith(s"/customs-enrolment-services/register/matching/$urlParameter")
+          result.header.headers(LOCATION) should endWith(
+            s"/customs-enrolment-services/atar/register/matching/$urlParameter"
+          )
         }
       }
 
@@ -167,7 +169,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
 
         when(
           mockSubscriptionFlowManager
-            .startSubscriptionFlow(any[Journey.Value])(any[HeaderCarrier](), any[Request[AnyContent]]())
+            .startSubscriptionFlow(any[Service], any[Journey.Value])(any[HeaderCarrier](), any[Request[AnyContent]]())
         ).thenReturn(Future.successful((EoriNumberSubscriptionFlowPage, updatedMockSession)))
 
         submitForm(
@@ -176,7 +178,9 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
           journey = Journey.Subscribe
         ) { result =>
           status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/matching/what-is-your-eori"
+          result.header.headers(
+            LOCATION
+          ) shouldBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori"
         }
       }
 
@@ -202,7 +206,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
         ).thenReturn(updatedMockSession)
         when(
           mockSubscriptionFlowManager
-            .startSubscriptionFlow(any[Journey.Value])(any[HeaderCarrier](), any[Request[AnyContent]]())
+            .startSubscriptionFlow(any[Service], any[Journey.Value])(any[HeaderCarrier](), any[Request[AnyContent]]())
         ).thenReturn(Future.successful((EoriNumberSubscriptionFlowPage, updatedMockSession)))
 
         submitForm(
@@ -226,13 +230,21 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
 
     when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(userLocation)
 
-    test(organisationTypeController.form(Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(
+      organisationTypeController.form(Service.ATaR, Journey.Register).apply(
+        SessionBuilder.buildRequestWithSession(userId)
+      )
+    )
   }
 
   def showFormWithUnauthenticatedUser(test: Future[Result] => Any) {
     withNotLoggedInUser(mockAuthConnector)
 
-    test(organisationTypeController.form(Journey.Register).apply(SessionBuilder.buildRequestWithSessionNoUser))
+    test(
+      organisationTypeController.form(Service.ATaR, Journey.Register).apply(
+        SessionBuilder.buildRequestWithSessionNoUser
+      )
+    )
   }
 
   def submitForm(
@@ -252,7 +264,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
 
     test(
       organisationTypeController
-        .submit(journey)
+        .submit(Service.ATaR, journey)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }

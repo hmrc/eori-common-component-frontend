@@ -19,10 +19,11 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.AreYouSureYouWantToDeleteVatController
 @import views.html.helper._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 
 @this(layout_di: layout)
-@(removeVatYesNoAnswer: Form[YesNo], journey: Journey.Value, vatDetail: VatEUDetailsModel, isInReviewMode: Boolean)(implicit request: Request[_], messages: Messages)
+@(removeVatYesNoAnswer: Form[YesNo], service: Service, journey: Journey.Value, vatDetail: VatEUDetailsModel, isInReviewMode: Boolean)(implicit request: Request[_], messages: Messages)
 
 @messageKeyForEUCountryCode(countryCode: String) = @{
     s"cds.country.$countryCode"
@@ -55,7 +56,7 @@
     <fieldset>
         <legend>
             <h1 class="heading-large" id="titleHeading">@heading</h1>
-            @helper.form(AreYouSureYouWantToDeleteVatController.submit(vatDetail.index, journey, isInReviewMode),
+            @helper.form(AreYouSureYouWantToDeleteVatController.submit(vatDetail.index, service, journey, isInReviewMode),
             'id -> "vatDetailEuRemoveCreateForm") {
 
             @CSRF.formField

@@ -28,7 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionF
   subscriptionCompanyShortNameForm,
   subscriptionPartnershipShortNameForm
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
@@ -61,47 +61,55 @@ class BusinessShortNameController @Inject() (
   private def populateView(
     companyShortName: Option[BusinessShortName],
     isInReviewMode: Boolean,
+    service: Service,
     journey: Journey.Value
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
 
     lazy val shortNameForm = companyShortName.map(convertModelToViewModel).fold(form)(form.fill)
 
     orgTypeLookup.etmpOrgType map {
-      case Some(orgType) => Ok(businessShortName(shortNameForm, isInReviewMode, orgType, journey))
+      case Some(orgType) => Ok(businessShortName(shortNameForm, isInReviewMode, orgType, service, journey))
       case None          => throw new OrgTypeNotFoundException()
     }
   }
 
-  def createForm(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
-      subscriptionBusinessService.companyShortName.flatMap(populateView(_, isInReviewMode = false, journey))
+      subscriptionBusinessService.companyShortName.flatMap(populateView(_, isInReviewMode = false, service, journey))
   }
 
-  def reviewForm(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.getCachedCompanyShortName.flatMap(
-        name => populateView(Some(name), isInReviewMode = true, journey)
+        name => populateView(Some(name), isInReviewMode = true, service, journey)
       )
   }
 
-  def submit(isInReviewMode: Boolean = false, journey: Journey.Value): Action[AnyContent] =
+  def submit(isInReviewMode: Boolean = false, service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       form.bindFromRequest.fold(
         formWithErrors =>
           orgTypeLookup.etmpOrgType map {
             case Some(orgType) =>
               BadRequest(
-                businessShortName(shortNameForm = formWithErrors, isInReviewMode = isInReviewMode, orgType, journey)
+                businessShortName(
+                  shortNameForm = formWithErrors,
+                  isInReviewMode = isInReviewMode,
+                  orgType,
+                  service,
+                  journey
+                )
               )
             case None => throw new OrgTypeNotFoundException()
           },
-        formData => submitNewDetails(formData, isInReviewMode, journey)
+        formData => submitNewDetails(formData, isInReviewMode, service, journey)
       )
     }
 
   private def submitNewDetails(
     formData: CompanyShortNameViewModel,
     isInReviewMode: Boolean,
+    service: Service,
     journey: Journey.Value
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
     val companyShortName = convertViewModelToModel(formData)
@@ -112,11 +120,14 @@ class BusinessShortNameController @Inject() (
           if (isInReviewMode)
             Redirect(
               uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController.determineRoute(
+                service,
                 journey
               )
             )
           else
-            Redirect(subscriptionFlowManager.stepInformation(BusinessShortNameSubscriptionFlowPage).nextPage.url)
+            Redirect(
+              subscriptionFlowManager.stepInformation(BusinessShortNameSubscriptionFlowPage).nextPage.url(service)
+            )
       )
   }
 

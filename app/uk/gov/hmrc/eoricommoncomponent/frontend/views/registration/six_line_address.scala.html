@@ -20,9 +20,10 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 @import views.html.helper._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 @this(layout_di: layout)
-@(isInReviewMode: Boolean, addressForm: Form[SixLineAddressMatchModel], countries: List[Country], countriesInCountryPicker: CountriesInCountryPicker, cdsOrgType: String, journey: Journey.Value)(implicit request: Request[AnyContent], messages: Messages)
+@(isInReviewMode: Boolean, addressForm: Form[SixLineAddressMatchModel], countries: List[Country], countriesInCountryPicker: CountriesInCountryPicker, cdsOrgType: String, service: Service, journey: Journey.Value)(implicit request: Request[AnyContent], messages: Messages)
 
 @postCodeLabel = @{
     countriesInCountryPicker match {
@@ -46,7 +47,7 @@
 
         <h1 class="heading-large">@messages(headerLabel)</h1>
 
-        @helper.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.SixLineAddressController.submit(isInReviewMode, cdsOrgType, journey), 'id -> s"$cdsOrgType-form") {
+        @helper.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.SixLineAddressController.submit(isInReviewMode, cdsOrgType, service, journey), 'id -> s"$cdsOrgType-form") {
         @CSRF.formField
 
             @inputTextBoundToForm("line-1", messages("cds.matching.organisation-address.line-1"))

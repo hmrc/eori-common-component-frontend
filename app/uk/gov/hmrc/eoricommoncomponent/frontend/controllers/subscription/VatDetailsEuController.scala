@@ -28,7 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolment
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails.EuVatDetailsLimit
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.VatEUDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm.euVatForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionVatEUDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_details_eu
@@ -48,41 +48,57 @@ class VatDetailsEuController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(journey: Journey.Value, isInReviewMode: Boolean = false): Action[AnyContent] =
+  def createForm(service: Service, journey: Journey.Value, isInReviewMode: Boolean = false): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       isEuVatDetailsSeqOnLimit map {
-        case true => Redirect(VatDetailsEuConfirmController.createForm(journey))
-        case _    => Ok(vatDetailsEuView(euVatForm, countries.eu, isInReviewMode = false, journey = journey))
+        case true => Redirect(VatDetailsEuConfirmController.createForm(service, journey))
+        case _ =>
+          Ok(vatDetailsEuView(euVatForm, countries.eu, isInReviewMode = false, service = service, journey = journey))
       }
     }
 
-  def reviewForm(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       isEuVatDetailsSeqOnLimit map {
-        case true => Redirect(VatDetailsEuConfirmController.reviewForm(journey))
-        case _    => Ok(vatDetailsEuView(euVatForm, countries.eu, isInReviewMode = true, journey = journey))
+        case true => Redirect(VatDetailsEuConfirmController.reviewForm(service, journey))
+        case _ =>
+          Ok(vatDetailsEuView(euVatForm, countries.eu, isInReviewMode = true, service = service, journey = journey))
       }
   }
 
-  def submit(journey: Journey.Value, isInReviewMode: Boolean): Action[AnyContent] =
+  def submit(service: Service, journey: Journey.Value, isInReviewMode: Boolean): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       vatEUDetailsService.cachedEUVatDetails.flatMap { vatEUDetailsModel =>
         euVatForm.bindFromRequest.fold(
           formWithErrors =>
             Future.successful(
               BadRequest(
-                vatDetailsEuView(formWithErrors, countries.eu, isInReviewMode = isInReviewMode, journey = journey)
+                vatDetailsEuView(
+                  formWithErrors,
+                  countries.eu,
+                  isInReviewMode = isInReviewMode,
+                  service = service,
+                  journey = journey
+                )
               )
             ),
           validFormModel =>
             validAddition(validFormModel, vatEUDetailsModel).fold(
-              storeVatDetails(validFormModel, journey, isInReviewMode)
-            )(badRequest(euVatForm.fill(validFormModel), _, isInReviewMode = isInReviewMode, journey = journey))
+              storeVatDetails(validFormModel, service, journey, isInReviewMode)
+            )(
+              badRequest(
+                euVatForm.fill(validFormModel),
+                _,
+                isInReviewMode = isInReviewMode,
+                service = service,
+                journey = journey
+              )
+            )
         )
       }
     }
 
-  def submitUpdate(index: Int, journey: Journey.Value, isInReviewMode: Boolean): Action[AnyContent] =
+  def submitUpdate(index: Int, service: Service, journey: Journey.Value, isInReviewMode: Boolean): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       vatEUDetailsService.vatEuDetails(index) flatMap {
         case Some(oldEuVatDetails) =>
@@ -94,6 +110,7 @@ class VatDetailsEuController @Inject() (
                     vatDetailsEuView(
                       formWithErrors,
                       countries.eu,
+                      service = service,
                       journey = journey,
                       isInReviewMode = isInReviewMode,
                       vatDetails = Option(oldEuVatDetails),
@@ -103,11 +120,12 @@ class VatDetailsEuController @Inject() (
                 ),
               newEuVatDetails =>
                 validAddition(newEuVatDetails, vatEUDetailsModel, isChanged(oldEuVatDetails, newEuVatDetails))
-                  .fold(updateDetails(oldEuVatDetails, newEuVatDetails, journey, isInReviewMode))(
+                  .fold(updateDetails(oldEuVatDetails, newEuVatDetails, service, journey, isInReviewMode))(
                     badRequest(
                       euVatForm.fill(newEuVatDetails),
                       _,
-                      journey = journey,
+                      service,
+                      journey,
                       Option(oldEuVatDetails),
                       updateDetails = true,
                       isInReviewMode
@@ -119,60 +137,67 @@ class VatDetailsEuController @Inject() (
       }
     }
 
-  def updateForm(index: Int, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      vatEUDetailsService.vatEuDetails(index) flatMap {
-        case Some(vatDetails) =>
-          Future.successful(
-            Ok(
-              vatDetailsEuView(
-                euVatForm.fill(vatDetails),
-                countries.eu,
-                updateDetails = true,
-                journey,
-                isInReviewMode = false,
-                Option(vatDetails)
+  def updateForm(index: Int, service: Service, journey: Journey.Value): Action[AnyContent] =
+    ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        vatEUDetailsService.vatEuDetails(index) flatMap {
+          case Some(vatDetails) =>
+            Future.successful(
+              Ok(
+                vatDetailsEuView(
+                  euVatForm.fill(vatDetails),
+                  countries.eu,
+                  updateDetails = true,
+                  service,
+                  journey,
+                  isInReviewMode = false,
+                  Option(vatDetails)
+                )
               )
             )
-          )
-        case _ => goToConfirmVat(journey, isInReviewMode = false)
-      }
-  }
+          case _ => goToConfirmVat(service, journey, isInReviewMode = false)
+        }
+    }
 
-  def reviewUpdateForm(index: Int, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      vatEUDetailsService.vatEuDetails(index) flatMap {
-        case Some(vatDetails) =>
-          Future.successful(
-            Ok(
-              vatDetailsEuView(
-                euVatForm.fill(vatDetails),
-                countries.eu,
-                updateDetails = true,
-                journey,
-                isInReviewMode = true,
-                Option(vatDetails)
+  def reviewUpdateForm(index: Int, service: Service, journey: Journey.Value): Action[AnyContent] =
+    ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        vatEUDetailsService.vatEuDetails(index) flatMap {
+          case Some(vatDetails) =>
+            Future.successful(
+              Ok(
+                vatDetailsEuView(
+                  euVatForm.fill(vatDetails),
+                  countries.eu,
+                  updateDetails = true,
+                  service,
+                  journey,
+                  isInReviewMode = true,
+                  Option(vatDetails)
+                )
               )
             )
-          )
-        case _ => goToConfirmVat(journey, isInReviewMode = true)
-      }
-  }
+          case _ => goToConfirmVat(service, journey, isInReviewMode = true)
+        }
+    }
 
-  private def storeVatDetails(formData: VatEUDetailsModel, journey: Journey.Value, isInReviewMode: Boolean)(implicit
-    hc: HeaderCarrier,
-    request: Request[AnyContent]
-  ): Future[Result] =
-    vatEUDetailsService.saveOrUpdate(formData) flatMap (_ => goToConfirmVat(journey, isInReviewMode))
+  private def storeVatDetails(
+    formData: VatEUDetailsModel,
+    service: Service,
+    journey: Journey.Value,
+    isInReviewMode: Boolean
+  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
+    vatEUDetailsService.saveOrUpdate(formData) flatMap (_ => goToConfirmVat(service, journey, isInReviewMode))
 
   private def updateDetails(
     oldVatDetails: VatEUDetailsModel,
     newVatDetails: VatEUDetailsModel,
+    service: Service,
     journey: Journey.Value,
     isInReviewMode: Boolean
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
     vatEUDetailsService.updateVatEuDetailsModel(oldVatDetails, newVatDetails) flatMap { vatEuDetails =>
-      vatEUDetailsService.saveOrUpdate(vatEuDetails) flatMap (_ => goToConfirmVat(journey, isInReviewMode))
+      vatEUDetailsService.saveOrUpdate(vatEuDetails) flatMap (_ => goToConfirmVat(service, journey, isInReviewMode))
     }
 
   private def isChanged(newEuVatDetails: VatEUDetailsModel, oldEuVatDetails: VatEUDetailsModel): Boolean =
@@ -190,6 +215,7 @@ class VatDetailsEuController @Inject() (
   private def badRequest(
     form: Form[VatEUDetailsModel],
     error: String,
+    service: Service,
     journey: Journey.Value,
     vatEUDetailsModel: Option[VatEUDetailsModel] = None,
     updateDetails: Boolean = false,
@@ -201,6 +227,7 @@ class VatDetailsEuController @Inject() (
           form.withError("vatNumber", error),
           countries.eu,
           updateDetails,
+          service,
           journey,
           isInReviewMode,
           vatEUDetailsModel
@@ -211,10 +238,10 @@ class VatDetailsEuController @Inject() (
   private def isEuVatDetailsSeqOnLimit(implicit hc: HeaderCarrier): Future[Boolean] =
     vatEUDetailsService.cachedEUVatDetails map (_.size == EuVatDetailsLimit)
 
-  private def goToConfirmVat(journey: Journey.Value, isInReviewMode: Boolean) =
+  private def goToConfirmVat(service: Service, journey: Journey.Value, isInReviewMode: Boolean) =
     isInReviewMode match {
-      case false => Future.successful(Redirect(VatDetailsEuConfirmController.createForm(journey)))
-      case _     => Future.successful(Redirect(VatDetailsEuConfirmController.reviewForm(journey)))
+      case false => Future.successful(Redirect(VatDetailsEuConfirmController.createForm(service, journey)))
+      case _     => Future.successful(Redirect(VatDetailsEuConfirmController.reviewForm(service, journey)))
     }
 
 }

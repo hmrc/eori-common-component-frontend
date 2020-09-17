@@ -25,7 +25,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Subscri
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NameDobDetailsSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.enterNameDobForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
@@ -50,21 +50,21 @@ class NameDobSoleTraderController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.cachedSubscriptionNameDobViewModel flatMap { maybeCachedNameDobViewModel =>
-        populateOkView(maybeCachedNameDobViewModel, isInReviewMode = false, journey)
+        populateOkView(maybeCachedNameDobViewModel, isInReviewMode = false, service, journey)
       }
   }
 
-  def reviewForm(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.getCachedSubscriptionNameDobViewModel flatMap { cdm =>
-        populateOkView(Some(cdm), isInReviewMode = true, journey)
+        populateOkView(Some(cdm), isInReviewMode = true, service, journey)
       }
   }
 
-  def submit(isInReviewMode: Boolean, journey: Journey.Value): Action[AnyContent] =
+  def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       enterNameDobForm.bindFromRequest.fold(
         formWithErrors =>
@@ -73,18 +73,20 @@ class NameDobSoleTraderController @Inject() (
               enterYourDetails(
                 formWithErrors,
                 isInReviewMode,
+                service,
                 journey,
                 requestSessionData.selectedUserLocationWithIslands
               )
             )
           },
-        formData => storeNameDobDetails(formData, isInReviewMode, journey)
+        formData => storeNameDobDetails(formData, isInReviewMode, service, journey)
       )
     }
 
   private def populateOkView(
     nameDobViewModel: Option[NameDobMatchModel],
     isInReviewMode: Boolean,
+    service: Service,
     journey: Journey.Value
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
     lazy val form = nameDobViewModel.fold(enterNameDobForm) {
@@ -92,23 +94,26 @@ class NameDobSoleTraderController @Inject() (
     }
 
     cdsFrontendDataCache.registrationDetails map { _ =>
-      Ok(enterYourDetails(form, isInReviewMode, journey, requestSessionData.selectedUserLocationWithIslands))
+      Ok(enterYourDetails(form, isInReviewMode, service, journey, requestSessionData.selectedUserLocationWithIslands))
     }
   }
 
-  private def storeNameDobDetails(formData: NameDobMatchModel, inReviewMode: Boolean, journey: Journey.Value)(implicit
-    hc: HeaderCarrier,
-    request: Request[AnyContent]
-  ): Future[Result] =
+  private def storeNameDobDetails(
+    formData: NameDobMatchModel,
+    inReviewMode: Boolean,
+    service: Service,
+    journey: Journey.Value
+  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
     subscriptionDetailsHolderService.cacheNameDobDetails(formData).map { _ =>
       if (inReviewMode)
         Redirect(
           uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController.determineRoute(
+            service,
             journey
           )
         )
       else
-        Redirect(subscriptionFlowManager.stepInformation(NameDobDetailsSubscriptionFlowPage).nextPage.url)
+        Redirect(subscriptionFlowManager.stepInformation(NameDobDetailsSubscriptionFlowPage).nextPage.url(service))
     }
 
 }

@@ -22,7 +22,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, FeatureFlags}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegisterWithoutIdWithSubscriptionService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.check_your_details_register
@@ -41,35 +41,38 @@ class CheckYourDetailsRegisterController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) with FeatureFlags {
 
-  def reviewDetails(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      for {
-        registration <- sessionCache.registrationDetails
-        subscription <- sessionCache.subscriptionDetails
-      } yield {
-        val consent = subscription.personalDataDisclosureConsent.getOrElse(
-          throw new IllegalStateException("Consent to disclose personal data is missing")
-        )
-        val isUserIdentifiedByRegService = registration.safeId.id.nonEmpty
-        Ok(
-          checkYourDetailsRegisterView(
-            requestSessionData.userSelectedOrganisationType,
-            requestSessionData.isPartnership,
-            registration,
-            subscription,
-            consent,
-            journey,
-            isUserIdentifiedByRegService,
-            rowHaveUtrEnabled
+  def reviewDetails(service: Service, journey: Journey.Value): Action[AnyContent] =
+    ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        for {
+          registration <- sessionCache.registrationDetails
+          subscription <- sessionCache.subscriptionDetails
+        } yield {
+          val consent = subscription.personalDataDisclosureConsent.getOrElse(
+            throw new IllegalStateException("Consent to disclose personal data is missing")
           )
-        )
-      }
-  }
+          val isUserIdentifiedByRegService = registration.safeId.id.nonEmpty
+          Ok(
+            checkYourDetailsRegisterView(
+              requestSessionData.userSelectedOrganisationType,
+              requestSessionData.isPartnership,
+              registration,
+              subscription,
+              consent,
+              service,
+              journey,
+              isUserIdentifiedByRegService,
+              rowHaveUtrEnabled
+            )
+          )
+        }
+    }
 
-  def submitDetails(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => loggedInUser: LoggedInUserWithEnrolments =>
-      registerWithoutIdWithSubscription
-        .rowRegisterWithoutIdWithSubscription(loggedInUser, journey)
-  }
+  def submitDetails(service: Service, journey: Journey.Value): Action[AnyContent] =
+    ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => loggedInUser: LoggedInUserWithEnrolments =>
+        registerWithoutIdWithSubscription
+          .rowRegisterWithoutIdWithSubscription(loggedInUser, journey)
+    }
 
 }

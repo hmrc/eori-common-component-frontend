@@ -37,7 +37,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RowIndi
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.RowIndividualNameDateOfBirthController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.row_individual_name_dob
@@ -71,10 +71,10 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueReviewModeSpec
     )(global)
 
     protected def show(с: RowIndividualNameDateOfBirthController): Action[AnyContent] =
-      с.reviewForm(organisationType, Journey.Register)
+      с.reviewForm(organisationType, Service.ATaR, Journey.Register)
 
     protected def submit(c: RowIndividualNameDateOfBirthController): Action[AnyContent] =
-      c.submit(true, organisationType, Journey.Register)
+      c.submit(true, organisationType, Service.ATaR, Journey.Register)
 
     def formData(thirdCountryIndividual: IndividualNameAndDateOfBirth): Map[String, String] =
       form.mapping.unbind(thirdCountryIndividual)
@@ -94,7 +94,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueReviewModeSpec
       withControllerFixture { controllerFixture =>
         assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
           controllerFixture.mockAuthConnector,
-          controllerFixture.controller.reviewForm(organisationType, Journey.Register)
+          controllerFixture.controller.reviewForm(organisationType, Service.ATaR, Journey.Register)
         )
       }
 
@@ -120,7 +120,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueReviewModeSpec
             assertPresentOnPage(webPage.familyNameElement)
             assertPresentOnPage(webPage.dateOfBirthElement)
             page.getElementAttributeAction(webPage.formElement) shouldBe RowIndividualNameDateOfBirthController
-              .reviewForm(organisationType, Journey.Register)
+              .reviewForm(organisationType, Service.ATaR, Journey.Register)
               .url
 
             page.getElementValue(webPage.givenNameElement) shouldBe "firstName"
@@ -149,7 +149,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueReviewModeSpec
       withControllerFixture { controllerFixture =>
         assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
           controllerFixture.mockAuthConnector,
-          controllerFixture.controller.submit(true, organisationType, Journey.Register)
+          controllerFixture.controller.submit(true, organisationType, Service.ATaR, Journey.Register)
         )
       }
 
@@ -164,7 +164,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueReviewModeSpec
             status(result) shouldBe SEE_OTHER
             result.futureValue.header.headers(
               LOCATION
-            ) shouldBe "/customs-enrolment-services/register/matching/review-determine"
+            ) shouldBe "/customs-enrolment-services/atar/register/matching/review-determine"
             verify(mockSubscriptionDetailsService).cacheNameDobDetails(any())(any())
           }
       }

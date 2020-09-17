@@ -25,10 +25,11 @@
 @import  uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.frontend._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 
 @this(layout_di: layout)
-    @(  isThirdCountrySubscription: Boolean,
+@(  isThirdCountrySubscription: Boolean,
         isIndividualSubscriptionFlow: Boolean,
         organisationType: Option[CdsOrganisationType],
         contactDetails: Option[ContactDetailsModel],
@@ -42,6 +43,7 @@
         dateEstablished: Option[LocalDate],
         idDetails: Option[IdMatchModel],
         customsId: Option[CustomsId],
+        service: Service,
         journey: Journey.Value)(implicit request: Request[_], messages: Messages)
 
 
@@ -164,7 +166,7 @@
                     @eoriNumber
                     </td>
                     <td>
-                        <a id="review-tbl__eori-number_change" href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.reviewForm(journey)">
+                        <a id="review-tbl__eori-number_change" href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.reviewForm(service, journey)">
                             @messages("cds.form.change") <span class="visually-hidden"> @messages("cds.subscription.enter-eori-number.eori-number.label")</span>
                         </a>
                     </td>
@@ -177,7 +179,7 @@
                             @d.name
                             </td>
                             <td>
-                                <a id="review-tbl__org_name_change" href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameOrgController.reviewForm(journey)">
+                                <a id="review-tbl__org_name_change" href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameOrgController.reviewForm(service, journey)">
                                     @messages("cds.form.change") <span class="visually-hidden"> @nameLabel</span>
                                 </a>
                             </td>
@@ -191,7 +193,7 @@
                             @nd.firstName @nd.lastName
                         </td>
                         <td>
-                            <a id="review-tbl__full-name_change" href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.reviewForm(journey)">
+                            <a id="review-tbl__full-name_change" href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.reviewForm(service, journey)">
                                 @messages("cds.form.change") <span class="visually-hidden"> @messages("subscription.check-your-details.full-name.label")</span>
                             </a>
                         </td>
@@ -203,7 +205,7 @@
                         @formatDate(nd.dateOfBirth)
                         </td>
                         <td>
-                            <a id="review-tbl__date-of-birth_change" href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.reviewForm(journey)">
+                            <a id="review-tbl__date-of-birth_change" href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.reviewForm(service, journey)">
                                 @messages("cds.form.change") <span class="visually-hidden"> @messages("subscription.check-your-details.date-of-birth.label")</span>
                             </a>
                         </td>
@@ -218,7 +220,7 @@
                         </td>
                         <td>
                             @if(!isThirdCountrySubscription){
-                            <a id="review-tbl__nino_change" href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController.reviewForm(journey)">
+                            <a id="review-tbl__nino_change" href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController.reviewForm(service, journey)">
                                 @messages("cds.form.change") <span class="visually-hidden"> @messages("cds.nino.label")</span>
                                 }
                             </a>
@@ -234,7 +236,7 @@
                         </td>
                         <td>
                             @if(!isThirdCountrySubscription){
-                            <a id="review-tbl__utr_change" href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController.reviewForm(journey)">
+                            <a id="review-tbl__utr_change" href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController.reviewForm(service, journey)">
                                 @messages("cds.form.change") <span class="visually-hidden"> @messages("cds.utr.label")</span>
                                 }
                             </a>
@@ -250,7 +252,7 @@
                             @n.name
                         </td>
                         <td>
-                            <a id="review-tbl__orgname_change" href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController.reviewForm(journey)">
+                            <a id="review-tbl__orgname_change" href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController.reviewForm(service, journey)">
                                 @messages("cds.form.change") <span class="govuk-visually-hidden"> @nameLabel</span>
                             </a>
                         </td>
@@ -263,7 +265,7 @@
                         </td>
                     @if(!isThirdCountrySubscription){
                     <td>
-                            <a id="review-tbl__utr_change" href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController.reviewForm(journey)">
+                            <a id="review-tbl__utr_change" href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController.reviewForm(service, journey)">
                                 @messages("cds.form.change") <span class="visually-hidden"> @utrLabel</span>
                             </a>
                         </td>
@@ -281,7 +283,7 @@
                             @transformCountryCodeToOptionalLabel(Some(ad.countryCode))
                         </td>
                         <td>
-                            <a id="review-tbl__name-and-address_change" href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.reviewForm(journey)">
+                            <a id="review-tbl__name-and-address_change" href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.reviewForm(service, journey)">
                                 @messages("cds.form.change") <span class="visually-hidden"> @businessDetailsLabel</span>
                             </a>
                         </td>
@@ -301,7 +303,7 @@
                             @transformCountryCodeToOptionalLabel(cd.countryCode).map(_.appendBr)
                         </td>
                         <td>
-                            <a id="review-tbl__contact-details_change" href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactDetailsController.reviewForm(journey)">
+                            <a id="review-tbl__contact-details_change" href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactDetailsController.reviewForm(service, journey)">
                                 @messages("cds.form.change") <span class="visually-hidden"> @messages("cds.form.customs-contact")</span>
                             </a>
                         </td>
@@ -315,7 +317,7 @@
                         </th>
                         <td>@formatDate(de)</td>
                         <td>
-                            <a href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController.reviewForm(journey)">
+                            <a href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController.reviewForm(service, journey)">
                                 @messages("cds.form.change") <span class="visually-hidden"> @messages("cds.date-established.label")</span>
                             </a>
                         </td>

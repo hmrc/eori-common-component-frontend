@@ -27,7 +27,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.DoYouHaveNinoController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, NameDobMatchModel, Nino}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.MatchingService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
@@ -199,7 +199,7 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     test(
       doYouHaveNinoController
-        .displayForm(Journey.Register)
+        .displayForm(Service.ATaR, Journey.Register)
         .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     )
   }
@@ -208,7 +208,7 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     test(
       doYouHaveNinoController
-        .submit(Journey.Register)
+        .submit(Service.ATaR, Journey.Register)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form))
     )
   }

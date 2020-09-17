@@ -27,7 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationConfirmService
@@ -58,7 +58,7 @@ class ConfirmContactDetailsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def form(journey: Journey.Value): Action[AnyContent] =
+  def form(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       cdsFrontendDataCache.registrationDetails flatMap {
         case individual: RegistrationDetailsIndividual =>
@@ -70,6 +70,7 @@ class ConfirmContactDetailsController @Inject() (
                 individual.customsId,
                 None,
                 YesNoWrongAddress.createForm(),
+                service,
                 journey
               )
             )
@@ -85,22 +86,23 @@ class ConfirmContactDetailsController @Inject() (
                   org.customsId,
                   Some(ot),
                   YesNoWrongAddress.createForm(),
+                  service,
                   journey
                 )
               )
             case None =>
               Logger.warn("[ConfirmContactDetailsController.form] organisation type None")
               cdsFrontendDataCache.remove
-              Redirect(OrganisationTypeController.form(journey))
+              Redirect(OrganisationTypeController.form(service, journey))
           }
         case _ =>
           Logger.warn("[ConfirmContactDetailsController.form] registrationDetails not found")
           cdsFrontendDataCache.remove
-          Future.successful(Redirect(OrganisationTypeController.form(journey)))
+          Future.successful(Redirect(OrganisationTypeController.form(service, journey)))
       }
     }
 
-  def submit(journey: Journey.Value): Action[AnyContent] =
+  def submit(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser =>
       YesNoWrongAddress
         .createForm()
@@ -117,6 +119,7 @@ class ConfirmContactDetailsController @Inject() (
                       individual.customsId,
                       None,
                       formWithErrors,
+                      service,
                       journey
                     )
                   )
@@ -131,18 +134,19 @@ class ConfirmContactDetailsController @Inject() (
                         org.customsId,
                         Some(ot),
                         formWithErrors,
+                        service,
                         journey
                       )
                     )
                   case None =>
                     Logger.warn("[ConfirmContactDetailsController.submit] organisation type None")
                     cdsFrontendDataCache.remove
-                    Redirect(OrganisationTypeController.form(journey))
+                    Redirect(OrganisationTypeController.form(service, journey))
                 }
               case _ =>
                 Logger.warn("[ConfirmContactDetailsController.submit] registrationDetails not found")
                 cdsFrontendDataCache.remove
-                Future.successful(Redirect(OrganisationTypeController.form(journey)))
+                Future.successful(Redirect(OrganisationTypeController.form(service, journey)))
             },
           areDetailsCorrectAnswer =>
             cdsFrontendDataCache.subscriptionDetails flatMap (
@@ -152,7 +156,12 @@ class ConfirmContactDetailsController @Inject() (
                     cdsFrontendDataCache
                       .saveSubscriptionDetails(subDetails.copy(addressDetails = Some(a)))
                       .flatMap { _ =>
-                        determineRoute(registrationConfirmService, areDetailsCorrectAnswer.areDetailsCorrect, journey)
+                        determineRoute(
+                          registrationConfirmService,
+                          areDetailsCorrectAnswer.areDetailsCorrect,
+                          service,
+                          journey
+                        )
                       }
 
                   case None =>
@@ -164,6 +173,7 @@ class ConfirmContactDetailsController @Inject() (
                             determineRoute(
                               registrationConfirmService,
                               areDetailsCorrectAnswer.areDetailsCorrect,
+                              service,
                               journey
                             )
                           }
@@ -192,13 +202,14 @@ class ConfirmContactDetailsController @Inject() (
   private def determineRoute(
     registrationConfirmService: RegistrationConfirmService,
     detailsCorrect: YesNoWrong,
+    service: Service,
     journey: Journey.Value
   )(implicit request: Request[AnyContent], loggedInUser: LoggedInUserWithEnrolments) =
     detailsCorrect match {
       case Yes =>
         registrationConfirmService.currentSubscriptionStatus flatMap {
           case NewSubscription | SubscriptionRejected =>
-            onNewSubscription(journey)
+            onNewSubscription(service, journey)
           case SubscriptionProcessing =>
             Future.successful(Redirect(ConfirmContactDetailsController.processing()))
           case SubscriptionExists =>
@@ -213,14 +224,14 @@ class ConfirmContactDetailsController @Inject() (
             _ =>
               Redirect(
                 uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.OrganisationTypeController
-                  .form(journey)
+                  .form(service, journey)
               )
           )
       case WrongAddress =>
         Future.successful(
           Redirect(
             uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController
-              .createForm(journey)
+              .createForm(service, journey)
           )
         )
       case _ =>
@@ -229,7 +240,9 @@ class ConfirmContactDetailsController @Inject() (
         )
     }
 
-  private def onNewSubscription(journey: Journey.Value)(implicit request: Request[AnyContent]): Future[Result] = {
+  private def onNewSubscription(service: Service, journey: Journey.Value)(implicit
+    request: Request[AnyContent]
+  ): Future[Result] = {
     lazy val noSelectedOrganisationType =
       requestSessionData.userSelectedOrganisationType.isEmpty
     cdsFrontendDataCache.registrationDetails flatMap {
@@ -237,13 +250,13 @@ class ConfirmContactDetailsController @Inject() (
         Future.successful(
           Redirect(
             uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ConfirmIndividualTypeController
-              .form(journey)
+              .form(service, journey)
           )
         )
 
       case _ =>
-        subscriptionFlowManager.startSubscriptionFlow(journey).map {
-          case (page, newSession) => Redirect(page.url).withSession(newSession)
+        subscriptionFlowManager.startSubscriptionFlow(service, journey).map {
+          case (page, newSession) => Redirect(page.url(service)).withSession(newSession)
         }
     }
   }

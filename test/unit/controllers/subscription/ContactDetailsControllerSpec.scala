@@ -35,7 +35,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactDetailsModel}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.{Countries, Country}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
@@ -63,10 +63,10 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   protected override val formId: String                                       = SubscriptionContactDetailsPage.formId
 
   protected override val submitInCreateModeUrl: String =
-    ContactDetailsController.submit(isInReviewMode = false, Journey.Register).url
+    ContactDetailsController.submit(isInReviewMode = false, Service.ATaR, Journey.Register).url
 
   protected override val submitInReviewModeUrl: String =
-    ContactDetailsController.submit(isInReviewMode = true, Journey.Register).url
+    ContactDetailsController.submit(isInReviewMode = true, Service.ATaR, Journey.Register).url
 
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockRegistrationDetails        = mock[RegistrationDetails](RETURNS_DEEP_STUBS)
@@ -338,7 +338,10 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
   "Viewing the create form " should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.Register))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+      mockAuthConnector,
+      controller.createForm(Service.ATaR, Journey.Register)
+    )
 
     "display back link correctly" in {
       showCreateForm()(verifyBackLinkInCreateModeRegister)
@@ -422,7 +425,10 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
   "Viewing the review form " should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.reviewForm(Journey.Register))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+      mockAuthConnector,
+      controller.reviewForm(Service.ATaR, Journey.Register)
+    )
 
     "display relevant data in form fields when subscription details exist in the cache" in {
 
@@ -490,7 +496,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = false, Journey.Register)
+      controller.submit(isInReviewMode = false, Service.ATaR, Journey.Register)
     )
 
     "save the details when user chooses to use Registered Address for GYE journey" in {
@@ -823,7 +829,9 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller
-        .submit(isInReviewMode = false, journey)(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
+        .submit(isInReviewMode = false, Service.ATaR, journey)(
+          SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
+        )
     )
   }
 
@@ -832,7 +840,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   ) {
     withAuthorisedUser(userId, mockAuthConnector)
     test(
-      controller.submit(isInReviewMode = true, Journey.Register)(
+      controller.submit(isInReviewMode = true, Service.ATaR, Journey.Register)(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )
@@ -848,7 +856,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(orgType))
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
 
-    test(controller.createForm(journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+    test(controller.createForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }
 
   private def showReviewForm(
@@ -862,7 +870,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     when(mockSubscriptionBusinessService.cachedContactDetailsModel(any[HeaderCarrier]))
       .thenReturn(Some(contactDetailsModel))
 
-    test(controller.reviewForm(journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+    test(controller.reviewForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }
 
   private def registerSaveContactDetailsMockSuccess() {

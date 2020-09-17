@@ -25,7 +25,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Subscri
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NinoSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.rowIndividualsNinoForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_nino_subscription
 import uk.gov.hmrc.http.HeaderCarrier
@@ -43,20 +43,20 @@ class HaveNinoSubscriptionController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
-      Future.successful(Ok(matchNinoSubscriptionView(rowIndividualsNinoForm, journey)))
+      Future.successful(Ok(matchNinoSubscriptionView(rowIndividualsNinoForm, service, journey)))
   }
 
-  def submit(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def submit(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       rowIndividualsNinoForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(matchNinoSubscriptionView(formWithErrors, journey))),
-        formData => destinationsByAnswer(formData, journey)
+        formWithErrors => Future.successful(BadRequest(matchNinoSubscriptionView(formWithErrors, service, journey))),
+        formData => destinationsByAnswer(formData, service, journey)
       )
   }
 
-  private def destinationsByAnswer(form: NinoMatchModel, journey: Journey.Value)(implicit
+  private def destinationsByAnswer(form: NinoMatchModel, service: Service, journey: Journey.Value)(implicit
     hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] =
@@ -64,13 +64,13 @@ class HaveNinoSubscriptionController @Inject() (
       case Some(true) =>
         subscriptionDetailsHolderService
           .cacheCustomsId(Nino(form.nino.getOrElse(noNinoException)))
-          .map(_ => redirectToNextPage())
-      case Some(false) => subscriptionDetailsHolderService.clearCachedCustomsId map (_ => redirectToNextPage())
+          .map(_ => redirectToNextPage(service))
+      case Some(false) => subscriptionDetailsHolderService.clearCachedCustomsId map (_ => redirectToNextPage(service))
       case _           => throw new IllegalStateException("No Data from the form")
     }
 
-  private def redirectToNextPage()(implicit hc: HeaderCarrier, request: Request[AnyContent]): Result =
-    Redirect(subscriptionFlowManager.stepInformation(NinoSubscriptionFlowPage).nextPage.url)
+  private def redirectToNextPage(service: Service)(implicit hc: HeaderCarrier, request: Request[AnyContent]): Result =
+    Redirect(subscriptionFlowManager.stepInformation(NinoSubscriptionFlowPage).nextPage.url(service))
 
   private lazy val noNinoException = throw new IllegalStateException("User selected 'Yes' for Nino but no Nino found")
 }

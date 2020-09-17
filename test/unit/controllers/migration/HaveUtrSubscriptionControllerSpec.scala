@@ -27,7 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Subscri
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubscriptionFlowInfo, SubscriptionPage}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CustomsId, NameOrganisationMatchModel}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_utr_subscription
@@ -141,7 +141,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec {
         .thenReturn(Future.successful(Some(nameOrganisationMatchModel)))
       submit(Journey.Subscribe, ValidUtrRequest) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
+        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/address"
       }
       verify(mockSubscriptionDetailsService, times(1)).cacheNameIdAndCustomsId(meq("orgName"), meq(ValidUtrId))(
         any[HeaderCarrier]
@@ -158,7 +158,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec {
         .thenReturn(Future.successful(Some(nameOrganisationMatchModel)))
       submit(Journey.Subscribe, ValidUtrRequest) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
+        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/address"
       }
       verify(mockSubscriptionDetailsService, times(1)).cacheCustomsId(any[CustomsId])(any[HeaderCarrier])
     }
@@ -186,13 +186,19 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec {
 
   private def createForm(journey: Journey.Value)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.createForm(journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    await(
+      test(controller.createForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+    )
   }
 
   private def submit(journey: Journey.Value, form: Map[String, String])(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     await(
-      test(controller.submit(journey).apply(SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form)))
+      test(
+        controller.submit(Service.ATaR, journey).apply(
+          SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form)
+        )
+      )
     )
   }
 
@@ -200,7 +206,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec {
     when(mockSubscriptionFlowManager.stepInformation(any())(any[HeaderCarrier], any[Request[AnyContent]]))
       .thenReturn(mockSubscriptionFlowInfo)
     when(mockSubscriptionFlowInfo.nextPage).thenReturn(mockSubscriptionPage)
-    when(mockSubscriptionPage.url).thenReturn(url)
+    when(mockSubscriptionPage.url(Service.ATaR)).thenReturn(url)
   }
 
 }

@@ -211,7 +211,9 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
     "redirect to OrganisationTypeController form when 'Iom' is selected" in {
       subscriptionStatus() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith(OrganisationTypeController.form(Journey.Register).url)
+        result.header.headers(LOCATION) should endWith(
+          OrganisationTypeController.form(Service.ATaR, Journey.Register).url
+        )
       }
     }
 
@@ -271,16 +273,19 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         mockSubscriptionFlowManager.startSubscriptionFlow(
           meq(Some(UserLocationPage)),
           meq(CdsOrganisationType.ThirdCountryIndividual),
+          meq(Service.ATaR),
           meq(Journey.Register)
         )(any[HeaderCarrier], any[Request[AnyContent]])
       ).thenReturn(Future.successful(mockFlowStart))
 
       val test =
-        controller.cacheAndRedirect(Journey.Register, "third-country")
+        controller.cacheAndRedirect(Service.ATaR, Journey.Register, "third-country")
       val result = await(test(Right(RegistrationDisplayResponse(mock[ResponseCommon], Some(responseDetail)))))
 
       status(result) shouldBe SEE_OTHER
-      result.header.headers(LOCATION) should endWith(BusinessDetailsRecoveryController.form(Journey.Register).url)
+      result.header.headers(LOCATION) should endWith(
+        BusinessDetailsRecoveryController.form(Service.ATaR, Journey.Register).url
+      )
     }
 
     "cache registration display response and redirect to BusinessDetailsRecoveryPage for organisation response" in {
@@ -303,21 +308,24 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         mockSubscriptionFlowManager.startSubscriptionFlow(
           meq(Some(UserLocationPage)),
           meq(CdsOrganisationType.ThirdCountryOrganisation),
+          meq(Service.ATaR),
           meq(Journey.Register)
         )(any[HeaderCarrier], any[Request[AnyContent]])
       ).thenReturn(Future.successful(mockFlowStart))
 
       val test =
-        controller.cacheAndRedirect(Journey.Register, "third-country")
+        controller.cacheAndRedirect(Service.ATaR, Journey.Register, "third-country")
       val result = await(test(Right(RegistrationDisplayResponse(mock[ResponseCommon], Some(responseDetail)))))
 
       status(result) shouldBe SEE_OTHER
-      result.header.headers(LOCATION) should endWith(BusinessDetailsRecoveryController.form(Journey.Register).url)
+      result.header.headers(LOCATION) should endWith(
+        BusinessDetailsRecoveryController.form(Service.ATaR, Journey.Register).url
+      )
     }
 
     "return service unavailable response when failed to retrieve registration display response" in {
       val test =
-        controller.cacheAndRedirect(Journey.Register, "third-country")
+        controller.cacheAndRedirect(Service.ATaR, Journey.Register, "third-country")
       val result = await(test(Left(ServiceUnavailableResponse)))
 
       status(result) shouldBe SERVICE_UNAVAILABLE
@@ -368,7 +376,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
     implicit val hc: HeaderCarrier       = mock[HeaderCarrier]
     implicit val rq: Request[AnyContent] = mock[Request[AnyContent]]
 
-    test(controller.subscriptionStatus(subStatus, InternalId("InternalID"), journey, location)(rq, hc))
+    test(controller.subscriptionStatus(subStatus, InternalId("InternalID"), Service.ATaR, journey, location)(rq, hc))
   }
 
   private def assertCorrectSessionDataAndRedirect(selectedOptionValue: String): Unit = {
@@ -467,6 +475,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
           mockSubscriptionFlowManager.startSubscriptionFlow(
             any[Option[SubscriptionPage]],
             any[CdsOrganisationType],
+            any[Service],
             any[Journey.Value]
           )(any[HeaderCarrier], any[Request[AnyContent]])
         ).thenReturn(Future.successful(mockFlowStart))
@@ -497,7 +506,9 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
           )
 
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith(BusinessDetailsRecoveryController.form(Journey.Register).url)
+        result.header.headers(LOCATION) should endWith(
+          BusinessDetailsRecoveryController.form(Service.ATaR, Journey.Register).url
+        )
       }
 
       s"redirect to BusinessDetailsRecoveryController when SubscriptionRejected status and registration display is enabled and when '$selectedOptionValue' is selected" in {
@@ -521,6 +532,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
           mockSubscriptionFlowManager.startSubscriptionFlow(
             any[Option[SubscriptionPage]],
             any[CdsOrganisationType],
+            any[Service],
             any[Journey.Value]
           )(any[HeaderCarrier], any[Request[AnyContent]])
         ).thenReturn(Future.successful(mockFlowStart))
@@ -551,7 +563,9 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
           )
 
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith(BusinessDetailsRecoveryController.form(Journey.Register).url)
+        result.header.headers(LOCATION) should endWith(
+          BusinessDetailsRecoveryController.form(Service.ATaR, Journey.Register).url
+        )
       }
 
     } else if (selectedOptionValue == UserLocation.Uk)
@@ -561,7 +575,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         submitForm(ValidRequest + (locationFieldName -> selectedOptionValue)) { result =>
           status(result) shouldBe SEE_OTHER
           val expectedUrl =
-            OrganisationTypeController.form(Journey.Register).url
+            OrganisationTypeController.form(Service.ATaR, Journey.Register).url
           result.header.headers(LOCATION) should endWith(expectedUrl)
         }
       }

@@ -79,7 +79,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach {
       status(result) shouldBe SEE_OTHER
       result.header.headers("Location") should be(
         uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.ConfirmContactDetailsController
-          .form(Journey.Register)
+          .form(Service.ATaR, Journey.Register)
           .url
       )
     }
@@ -109,7 +109,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach {
       status(result) shouldBe SEE_OTHER
       result.header.headers("Location") should be(
         uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.ConfirmContactDetailsController
-          .form(Journey.Register)
+          .form(Service.ATaR, Journey.Register)
           .url
       )
     }
@@ -125,7 +125,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach {
       status(result) shouldBe SEE_OTHER
       result.header.headers("Location") should be(
         uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.ConfirmContactDetailsController
-          .form(Journey.Register)
+          .form(Service.ATaR, Journey.Register)
           .url
       )
     }
@@ -141,7 +141,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach {
       status(result) shouldBe SEE_OTHER
       result.header.headers("Location") should be(
         uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.ConfirmContactDetailsController
-          .form(Journey.Register)
+          .form(Service.ATaR, Journey.Register)
           .url
       )
     }

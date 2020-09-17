@@ -34,7 +34,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.{
   MatchingResponse,
   Organisation
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.MatchingService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.match_organisation_utr
@@ -82,7 +82,7 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.form(CdsOrganisationType.CharityPublicBodyNotForProfitId, Journey.Register)
+      controller.form(CdsOrganisationType.CharityPublicBodyNotForProfitId, Service.ATaR, Journey.Register)
     )
 
     "display the form" in {
@@ -113,7 +113,7 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(CdsOrganisationType.CharityPublicBodyNotForProfitId, Journey.Register)
+      controller.submit(CdsOrganisationType.CharityPublicBodyNotForProfitId, Service.ATaR, Journey.Register)
     )
 
     "ensure UTR has been entered when organisation type is 'CdsOrganisationType.CharityPublicBodyNotForProfitId'" in {
@@ -191,7 +191,7 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
       ).thenReturn(Future.successful(true))
       submitForm(ValidUtrRequest, CdsOrganisationType.CharityPublicBodyNotForProfitId) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs-enrolment-services/register/matching/confirm")
+        result.header.headers("Location") should endWith("/customs-enrolment-services/atar/register/matching/confirm")
       }
     }
   }
@@ -347,7 +347,9 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
   def showForm(organisationType: String, userId: String = defaultUserId)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     val result =
-      controller.form(organisationType, Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId))
+      controller.form(organisationType, Service.ATaR, Journey.Register).apply(
+        SessionBuilder.buildRequestWithSession(userId)
+      )
     test(result)
   }
 
@@ -359,7 +361,7 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
-      .submit(organisationType, Journey.Register, isInReviewMode)
+      .submit(organisationType, Service.ATaR, Journey.Register, isInReviewMode)
       .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }

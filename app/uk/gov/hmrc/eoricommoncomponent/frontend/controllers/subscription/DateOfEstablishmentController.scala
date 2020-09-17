@@ -28,7 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EtmpOrganisationType, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
@@ -54,7 +54,7 @@ class DateOfEstablishmentController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(journey: Journey.Value): Action[AnyContent] =
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         maybeCachedDateModel <- subscriptionBusinessService.maybeCachedDateEstablished
@@ -63,6 +63,7 @@ class DateOfEstablishmentController @Inject() (
         maybeCachedDateModel,
         isInReviewMode = false,
         orgType.getOrElse(throw new OrgTypeNotFoundException()),
+        service,
         journey
       )
     }
@@ -71,13 +72,14 @@ class DateOfEstablishmentController @Inject() (
     cachedDate: Option[LocalDate],
     isInReviewMode: Boolean,
     orgType: EtmpOrganisationType,
+    service: Service,
     journey: Journey.Value
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Result = {
     val form = cachedDate.fold(subscriptionDateOfEstablishmentForm)(subscriptionDateOfEstablishmentForm.fill)
-    Ok(dateOfEstablishmentView(form, isInReviewMode, orgType, UserLocation.isRow(requestSessionData), journey))
+    Ok(dateOfEstablishmentView(form, isInReviewMode, orgType, UserLocation.isRow(requestSessionData), service, journey))
   }
 
-  def reviewForm(journey: Journey.Value): Action[AnyContent] =
+  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         cachedDateModel <- fetchDate
@@ -86,6 +88,7 @@ class DateOfEstablishmentController @Inject() (
         Some(cachedDateModel),
         isInReviewMode = true,
         orgType.getOrElse(throw new OrgTypeNotFoundException()),
+        service,
         journey
       )
     }
@@ -93,7 +96,7 @@ class DateOfEstablishmentController @Inject() (
   private def fetchDate(implicit hc: HeaderCarrier): Future[LocalDate] =
     subscriptionBusinessService.getCachedDateEstablished
 
-  def submit(isInReviewMode: Boolean, journey: Journey.Value): Action[AnyContent] =
+  def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionDateOfEstablishmentForm.bindFromRequest.fold(
         formWithErrors =>
@@ -105,6 +108,7 @@ class DateOfEstablishmentController @Inject() (
                   isInReviewMode,
                   orgType,
                   UserLocation.isRow(requestSessionData),
+                  service,
                   journey
                 )
               )
@@ -113,14 +117,16 @@ class DateOfEstablishmentController @Inject() (
         date =>
           saveDateEstablished(date).map { _ =>
             if (isInReviewMode)
-              Redirect(DetermineReviewPageController.determineRoute(journey))
-            else
+              Redirect(DetermineReviewPageController.determineRoute(service, journey))
+            else {
+              val page = subscriptionFlowManager
+                .stepInformation(getSubscriptionPage(journey, UserLocation.isRow(requestSessionData)))
+                .nextPage
               Redirect(
-                subscriptionFlowManager
-                  .stepInformation(getSubscriptionPage(journey, UserLocation.isRow(requestSessionData)))
-                  .nextPage
-                  .url
+                page
+                  .url(service)
               )
+            }
           }
       )
     }

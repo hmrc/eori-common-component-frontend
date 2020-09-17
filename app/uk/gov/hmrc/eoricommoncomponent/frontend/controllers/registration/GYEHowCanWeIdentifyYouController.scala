@@ -26,7 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.ninoOrUtrForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.MatchingService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration._
@@ -45,26 +45,28 @@ class GYEHowCanWeIdentifyYouController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def form(organisationType: String, journey: Journey.Value): Action[AnyContent] =
+  def form(organisationType: String, service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       Future.successful(
-        Ok(howCanWeIdentifyYouView(ninoOrUtrForm, isInReviewMode = false, journey, Some(organisationType)))
+        Ok(howCanWeIdentifyYouView(ninoOrUtrForm, isInReviewMode = false, service, journey, Some(organisationType)))
       )
     }
 
-  def submit(organisationType: String, journey: Journey.Value): Action[AnyContent] =
+  def submit(organisationType: String, service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
       ninoOrUtrForm.bindFromRequest.fold(
         formWithErrors =>
           Future.successful(
-            BadRequest(howCanWeIdentifyYouView(formWithErrors, isInReviewMode = false, journey, Some(organisationType)))
+            BadRequest(
+              howCanWeIdentifyYouView(formWithErrors, isInReviewMode = false, service, journey, Some(organisationType))
+            )
           ),
         formData =>
           matchOnId(formData, InternalId(loggedInUser.internalId)).map {
             case true =>
-              Redirect(ConfirmContactDetailsController.form(journey))
+              Redirect(ConfirmContactDetailsController.form(service, journey))
             case false =>
-              matchNotFoundBadRequest(formData, organisationType, journey)
+              matchNotFoundBadRequest(formData, organisationType, service, journey)
           }
       )
     }
@@ -78,13 +80,16 @@ class GYEHowCanWeIdentifyYouController @Inject() (
       case _ => Future.successful(false)
     }
 
-  private def matchNotFoundBadRequest(individualFormData: NinoOrUtr, organisationType: String, journey: Journey.Value)(
-    implicit request: Request[AnyContent]
-  ): Result = {
+  private def matchNotFoundBadRequest(
+    individualFormData: NinoOrUtr,
+    organisationType: String,
+    service: Service,
+    journey: Journey.Value
+  )(implicit request: Request[AnyContent]): Result = {
     val errorForm = ninoOrUtrForm
       .withGlobalError(Messages("cds.matching-error.individual-not-found"))
       .fill(individualFormData)
-    BadRequest(howCanWeIdentifyYouView(errorForm, isInReviewMode = false, journey, Some(organisationType)))
+    BadRequest(howCanWeIdentifyYouView(errorForm, isInReviewMode = false, service, journey, Some(organisationType)))
   }
 
   // TODO Get rid of `.get`. Now if there is no information Exception will be thrown, understand what should happen if this is not provided

@@ -76,7 +76,7 @@ class UserLocationController @Inject() (
       continue(service, journey)
     }
 
-  private def forRow(journey: Journey.Value, internalId: InternalId, location: String)(implicit
+  private def forRow(service: Service, journey: Journey.Value, internalId: InternalId, location: String)(implicit
     request: Request[AnyContent],
     hc: HeaderCarrier
   ) =
@@ -84,9 +84,9 @@ class UserLocationController @Inject() (
       case (NewSubscription | SubscriptionRejected, Some(safeId)) =>
         registrationDisplayService
           .requestDetails(safeId)
-          .flatMap(cacheAndRedirect(journey, location))
+          .flatMap(cacheAndRedirect(service, journey, location))
       case (status, _) =>
-        subscriptionStatus(status, internalId, journey, Some(location))
+        subscriptionStatus(status, internalId, service, journey, Some(location))
     }.flatMap(identity)
 
   def submit(service: Service, journey: Journey.Value): Action[AnyContent] =
@@ -103,10 +103,10 @@ class UserLocationController @Inject() (
             case (_, Some(UserLocation.Iom), Some(_)) =>
               Future.successful(Redirect(YouNeedADifferentServiceIomController.form(journey)))
             case (Journey.Register, Some(location), Some(id)) if UserLocation.isRow(location) =>
-              forRow(journey, InternalId(id), location)
+              forRow(service, journey, InternalId(id), location)
             case _ =>
               Future.successful(
-                Redirect(OrganisationTypeController.form(journey))
+                Redirect(OrganisationTypeController.form(service, journey))
                   .withSession(
                     requestSessionData
                       .sessionWithUserLocationAdded(sessionInfoBasedOnJourney(journey, details.location))
@@ -170,6 +170,7 @@ class UserLocationController @Inject() (
   def subscriptionStatus(
     preSubStatus: PreSubscriptionStatus,
     internalId: InternalId,
+    service: Service,
     journey: Journey.Value,
     location: Option[String]
   )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] =
@@ -179,12 +180,12 @@ class UserLocationController @Inject() (
       case SubscriptionExists => handleExistingSubscription(internalId)
       case NewSubscription | SubscriptionRejected =>
         Future.successful(
-          Redirect(OrganisationTypeController.form(journey))
+          Redirect(OrganisationTypeController.form(service, journey))
             .withSession(requestSessionData.sessionWithUserLocationAdded(sessionInfoBasedOnJourney(journey, location)))
         )
     }
 
-  def cacheAndRedirect(journey: Journey.Value, location: String)(implicit
+  def cacheAndRedirect(service: Service, journey: Journey.Value, location: String)(implicit
     request: Request[AnyContent],
     hc: HeaderCarrier
   ): Either[_, RegistrationDisplayResponse] => Future[Result] = {
@@ -192,7 +193,7 @@ class UserLocationController @Inject() (
     case rResponse @ Right(RegistrationDisplayResponse(_, Some(_))) =>
       registrationDisplayService.cacheDetails(rResponse.b).flatMap { _ =>
         Future.successful(
-          Redirect(BusinessDetailsRecoveryController.form(journey)).withSession(
+          Redirect(BusinessDetailsRecoveryController.form(service, journey)).withSession(
             requestSessionData.sessionWithUserLocationAdded(sessionInfoBasedOnJourney(journey, Some(location)))
           )
         )

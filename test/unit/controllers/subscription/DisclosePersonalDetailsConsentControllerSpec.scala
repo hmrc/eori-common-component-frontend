@@ -30,7 +30,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.DisclosePersonalDetailsConsentController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.YesNo
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.disclose_personal_details_consent
 import uk.gov.hmrc.http.HeaderCarrier
@@ -50,12 +50,12 @@ class DisclosePersonalDetailsConsentControllerSpec
 
   protected override val submitInCreateModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DisclosePersonalDetailsConsentController
-      .submit(isInReviewMode = false, Journey.Register)
+      .submit(isInReviewMode = false, Service.ATaR, Journey.Register)
       .url
 
   protected override val submitInReviewModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DisclosePersonalDetailsConsentController
-      .submit(isInReviewMode = true, Journey.Register)
+      .submit(isInReviewMode = true, Service.ATaR, Journey.Register)
       .url
 
   private val mockRequestSession                 = mock[RequestSessionData]
@@ -143,7 +143,10 @@ class DisclosePersonalDetailsConsentControllerSpec
 
   "Loading the page in create mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.Register))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+      mockAuthConnector,
+      controller.createForm(Service.ATaR, Journey.Register)
+    )
 
     "set form action url to submit in create mode" in {
       showCreateForm()(verifyFormActionInCreateMode)
@@ -156,7 +159,10 @@ class DisclosePersonalDetailsConsentControllerSpec
 
   "Loading the page in review mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.reviewForm(Journey.Register))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+      mockAuthConnector,
+      controller.reviewForm(Service.ATaR, Journey.Register)
+    )
 
     "set form action url to submit in review mode" in {
       showReviewForm()(verifyFormSubmitsInReviewMode)
@@ -225,7 +231,7 @@ class DisclosePersonalDetailsConsentControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = true, Journey.Register)
+      controller.submit(isInReviewMode = true, Service.ATaR, Journey.Register)
     )
 
     "allow resubmission in review mode when details are invalid" in {
@@ -257,7 +263,7 @@ class DisclosePersonalDetailsConsentControllerSpec
 
     when(mockSubscriptionFlowManager.currentSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
 
-    test(controller.createForm(journey).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.createForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def showReviewForm(
@@ -273,7 +279,7 @@ class DisclosePersonalDetailsConsentControllerSpec
 
     when(mockSubscriptionFlowManager.currentSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
 
-    test(controller.reviewForm(journey).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.reviewForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def submitFormInCreateMode(form: Map[String, String])(test: Future[Result] => Any): Unit =
@@ -293,7 +299,7 @@ class DisclosePersonalDetailsConsentControllerSpec
       .thenReturn(OrganisationSubscriptionFlow)
     test(
       controller
-        .submit(isInReviewMode, journey)
+        .submit(isInReviewMode, Service.ATaR, journey)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }

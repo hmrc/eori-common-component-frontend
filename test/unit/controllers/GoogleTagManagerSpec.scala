@@ -22,7 +22,7 @@ import play.api.mvc.Result
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.HowCanWeIdentifyYouController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
   SubscriptionDetailsService
@@ -75,7 +75,9 @@ class GoogleTagManagerSpec extends ControllerSpec with GuiceOneAppPerSuite with 
   def showForm(form: Map[String, String], userId: String = defaultUserId)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     test(
-      controller.createForm(Journey.Subscribe).apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
+      controller.createForm(Service.ATaR, Journey.Subscribe).apply(
+        SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
+      )
     )
   }
 

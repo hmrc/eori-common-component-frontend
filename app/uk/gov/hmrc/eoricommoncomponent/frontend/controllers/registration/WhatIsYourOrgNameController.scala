@@ -26,7 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, Feat
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.organisationNameForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.what_is_your_org_name
@@ -49,27 +49,38 @@ class WhatIsYourOrgNameController @Inject() (
     name: Option[String],
     isInReviewMode: Boolean,
     organisationType: String,
+    service: Service,
     journey: Journey.Value
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
     val form = name.map(n => NameMatchModel(n)).fold(organisationNameForm)(organisationNameForm.fill)
-    Future.successful(Ok(whatIsYourOrgNameView(isInReviewMode, form, organisationType, journey)))
+    Future.successful(Ok(whatIsYourOrgNameView(isInReviewMode, form, organisationType, service, journey)))
   }
 
-  def showForm(isInReviewMode: Boolean = false, organisationType: String, journey: Journey.Value): Action[AnyContent] =
+  def showForm(
+    isInReviewMode: Boolean = false,
+    organisationType: String,
+    service: Service,
+    journey: Journey.Value
+  ): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionDetailsService.cachedNameDetails.flatMap(
-        details => populateView(details.map(_.name), isInReviewMode, organisationType, journey)
+        details => populateView(details.map(_.name), isInReviewMode, organisationType, service, journey)
       )
     }
 
-  def submit(isInReviewMode: Boolean = false, organisationType: String, journey: Journey.Value): Action[AnyContent] =
+  def submit(
+    isInReviewMode: Boolean = false,
+    organisationType: String,
+    service: Service,
+    journey: Journey.Value
+  ): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       organisationNameForm.bindFromRequest.fold(
         formWithErrors =>
           Future.successful(
-            BadRequest(whatIsYourOrgNameView(isInReviewMode, formWithErrors, organisationType, journey))
+            BadRequest(whatIsYourOrgNameView(isInReviewMode, formWithErrors, organisationType, service, journey))
           ),
-        formData => submitOrgNameDetails(isInReviewMode, formData, organisationType, journey)
+        formData => submitOrgNameDetails(isInReviewMode, formData, organisationType, service, journey)
       )
     }
 
@@ -77,18 +88,19 @@ class WhatIsYourOrgNameController @Inject() (
     isInReviewMode: Boolean,
     formData: NameMatchModel,
     organisationType: String,
+    service: Service,
     journey: Journey.Value
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
     subscriptionDetailsService.cacheNameDetails(NameOrganisationMatchModel(formData.name)) map { _ =>
       if (isInReviewMode)
-        Redirect(DetermineReviewPageController.determineRoute(journey))
+        Redirect(DetermineReviewPageController.determineRoute(service, journey))
       else if (UserLocation.isRow(requestSessionData))
         if (rowHaveUtrEnabled)
-          Redirect(DoYouHaveAUtrNumberController.form(organisationType, journey, false))
+          Redirect(DoYouHaveAUtrNumberController.form(organisationType, service, journey, false))
         else
-          Redirect(SixLineAddressController.showForm(false, organisationType, journey))
+          Redirect(SixLineAddressController.showForm(false, organisationType, service, journey))
       else
-        Redirect(DoYouHaveAUtrNumberController.form(organisationType, journey, false))
+        Redirect(DoYouHaveAUtrNumberController.form(organisationType, service, journey, false))
     }
 
 }
