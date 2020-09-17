@@ -29,7 +29,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{LoggedInUserWithEnrolments, YesNo}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
@@ -52,7 +52,7 @@ class VatRegisteredUkController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       Future.successful(
         Ok(
@@ -61,13 +61,14 @@ class VatRegisteredUkController @Inject() (
             vatRegisteredUkYesNoAnswerForm(requestSessionData.isPartnership),
             isIndividualFlow,
             requestSessionData.isPartnership,
+            service,
             journey
           )
         )
       )
   }
 
-  def reviewForm(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
         isVatRegisteredUk <- subscriptionBusinessService.getCachedVatRegisteredUk
@@ -78,12 +79,13 @@ class VatRegisteredUkController @Inject() (
           vatRegisteredUkYesNoAnswerForm(requestSessionData.isPartnership).fill(yesNo),
           isIndividualFlow,
           requestSessionData.isPartnership,
+          service,
           journey
         )
       )
   }
 
-  def submit(isInReviewMode: Boolean, journey: Journey.Value): Action[AnyContent] =
+  def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       vatRegisteredUkYesNoAnswerForm(requestSessionData.isPartnership)
         .bindFromRequest()
@@ -96,6 +98,7 @@ class VatRegisteredUkController @Inject() (
                   formWithErrors,
                   isIndividualFlow,
                   requestSessionData.isPartnership,
+                  service,
                   journey
                 )
               )
@@ -105,18 +108,24 @@ class VatRegisteredUkController @Inject() (
               _ =>
                 if (isInReviewMode)
                   if (yesNoAnswer.isYes)
-                    Future.successful(Redirect(VatDetailsController.reviewForm(journey = Journey.Register).url))
+                    Future.successful(
+                      Redirect(VatDetailsController.reviewForm(service, journey = Journey.Register).url)
+                    )
                   else {
                     subscriptionDetailsService.clearCachedUkVatDetails
-                    Future.successful(Redirect(DetermineReviewPageController.determineRoute(journey).url))
+                    Future.successful(Redirect(DetermineReviewPageController.determineRoute(service, journey).url))
                   }
                 else if (yesNoAnswer.isYes)
                   Future.successful(
-                    Redirect(subscriptionFlowManager.stepInformation(VatRegisteredUkSubscriptionFlowPage).nextPage.url)
+                    Redirect(
+                      subscriptionFlowManager.stepInformation(VatRegisteredUkSubscriptionFlowPage).nextPage.url(service)
+                    )
                   )
                 else
                   Future.successful(
-                    Redirect(subscriptionFlowManager.stepInformation(VatDetailsSubscriptionFlowPage).nextPage.url)
+                    Redirect(
+                      subscriptionFlowManager.stepInformation(VatDetailsSubscriptionFlowPage).nextPage.url(service)
+                    )
                   )
             }
         )

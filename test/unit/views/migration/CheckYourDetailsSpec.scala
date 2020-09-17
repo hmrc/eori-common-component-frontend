@@ -25,7 +25,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactDetailsModel}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.check_your_details
 import util.ViewSpec
 
@@ -110,7 +110,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       page.body.getElementById("review-tbl__eori-number").text mustBe "ZZ123456789112"
       page.body
         .getElementById("review-tbl__eori-number_change")
-        .attr("href") mustBe "/customs-enrolment-services/subscribe/matching/what-is-your-eori/review"
+        .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/review"
       page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Address"
       page.body.getElementById("review-tbl__name-and-address").text mustBe strim("""
           |Street
@@ -120,7 +120,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         """)
       page.body
         .getElementById("review-tbl__name-and-address_change")
-        .attr("href") mustBe "/customs-enrolment-services/subscribe/address/review"
+        .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
       page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
       page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
       page.getElementById("review-tbl__start-again").text mustBe "Start again"
@@ -146,7 +146,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       page.body.getElementById("review-tbl__eori-number").text mustBe "ZZ123456789112"
       page.body
         .getElementById("review-tbl__eori-number_change")
-        .attr("href") mustBe "/customs-enrolment-services/subscribe/matching/what-is-your-eori/review"
+        .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/review"
 
       page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Address"
       page.body.getElementById("review-tbl__name-and-address").text mustBe strim("""
@@ -157,7 +157,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         """)
       page.body
         .getElementById("review-tbl__name-and-address_change")
-        .attr("href") mustBe "/customs-enrolment-services/subscribe/address/review"
+        .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
       page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
       page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
       page.getElementById("review-tbl__start-again").text mustBe "Start again"
@@ -188,7 +188,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       page.body.getElementById("review-tbl__eori-number").text mustBe "ZZ123456789112"
       page.body
         .getElementById("review-tbl__eori-number_change")
-        .attr("href") mustBe "/customs-enrolment-services/subscribe/matching/what-is-your-eori/review"
+        .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/review"
       page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Address"
       page.body.getElementById("review-tbl__name-and-address").text mustBe strim("""
           |Street
@@ -207,7 +207,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         """.stripMargin)
       page.body
         .getElementById("review-tbl__name-and-address_change")
-        .attr("href") mustBe "/customs-enrolment-services/subscribe/address/review"
+        .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
       page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
       page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
       page.getElementById("review-tbl__start-again").text mustBe "Start again"
@@ -233,7 +233,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       page.body.getElementById("review-tbl__eori-number").text mustBe "ZZ123456789112"
       page.body
         .getElementById("review-tbl__eori-number_change")
-        .attr("href") mustBe "/customs-enrolment-services/subscribe/matching/what-is-your-eori/review"
+        .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/review"
 
       page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Address"
       page.body.getElementById("review-tbl__name-and-address").text mustBe strim("""
@@ -253,7 +253,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         """.stripMargin)
       page.body
         .getElementById("review-tbl__name-and-address_change")
-        .attr("href") mustBe "/customs-enrolment-services/subscribe/address/review"
+        .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
       page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
       page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
       page.getElementById("review-tbl__start-again").text mustBe "Start again"
@@ -337,6 +337,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       dateTime,
       None,
       customsId,
+      Service.ATaR,
       Journey.Subscribe
     )
     Jsoup.parse(contentAsString(result))

@@ -34,7 +34,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   SubscriptionPage
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.VatEUDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
@@ -104,7 +104,7 @@ class VatRegisteredEuControllerSpec extends ControllerSpec {
 
   "Submitting Vat registered Eu Controller in create mode" should {
     "return to the same location with bad request" in {
-      submitForm(invalidRequest) { result =>
+      submitForm(invalidRequest, Service.ATaR) { result =>
         status(result) shouldBe BAD_REQUEST
       }
     }
@@ -115,8 +115,8 @@ class VatRegisteredEuControllerSpec extends ControllerSpec {
       when(mockSubscriptionFlowManager.stepInformation(any())(any[HeaderCarrier], any[Request[AnyContent]]))
         .thenReturn(mockSubscriptionFlowInfo)
       when(mockSubscriptionFlowInfo.nextPage).thenReturn(mockSubscriptionPage)
-      when(mockSubscriptionPage.url).thenReturn(GYEEUVATNumber.url)
-      submitForm(ValidRequest) { result =>
+      when(mockSubscriptionPage.url(any())).thenReturn(GYEEUVATNumber.url)
+      submitForm(ValidRequest, Service.ATaR) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) should endWith("register/vat-details-eu")
       }
@@ -126,7 +126,7 @@ class VatRegisteredEuControllerSpec extends ControllerSpec {
       when(mockSubscriptionDetailsService.cacheVatRegisteredEu(any[YesNo])(any[HeaderCarrier]))
         .thenReturn(Future.successful[Unit](()))
       when(mockSubscriptionVatEUDetailsService.cachedEUVatDetails(any[HeaderCarrier])).thenReturn(someVatEuDetails)
-      submitForm(ValidRequest) { result =>
+      submitForm(ValidRequest, Service.ATaR) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) should endWith("register/vat-details-eu-confirm")
       }
@@ -137,9 +137,11 @@ class VatRegisteredEuControllerSpec extends ControllerSpec {
         .thenReturn(Future.successful[Unit](()))
       when(mockSubscriptionVatEUDetailsService.cachedEUVatDetails(any[HeaderCarrier])).thenReturn(emptyVatEuDetails)
       when(
-        mockSubscriptionFlowManager.stepInformation(any())(any[HeaderCarrier], any[Request[AnyContent]]).nextPage.url
+        mockSubscriptionFlowManager.stepInformation(any())(any[HeaderCarrier], any[Request[AnyContent]]).nextPage.url(
+          any()
+        )
       ).thenReturn(DisclosePersonalDetailsConsentPage.url)
-      submitForm(ValidRequest) { result =>
+      submitForm(ValidRequest, Service.ATaR) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) should endWith("/register/disclose-personal-details-consent")
       }
@@ -151,7 +153,7 @@ class VatRegisteredEuControllerSpec extends ControllerSpec {
       when(mockSubscriptionDetailsService.cacheVatRegisteredEu(any[YesNo])(any[HeaderCarrier]))
         .thenReturn(Future.successful[Unit](()))
       when(mockSubscriptionVatEUDetailsService.cachedEUVatDetails(any[HeaderCarrier])).thenReturn(emptyVatEuDetails)
-      submitForm(ValidRequest, isInReviewMode = true) { result =>
+      submitForm(ValidRequest, Service.ATaR, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) should endWith("register/vat-details-eu/review")
       }
@@ -161,7 +163,7 @@ class VatRegisteredEuControllerSpec extends ControllerSpec {
       when(mockSubscriptionDetailsService.cacheVatRegisteredEu(any[YesNo])(any[HeaderCarrier]))
         .thenReturn(Future.successful[Unit](()))
       when(mockSubscriptionVatEUDetailsService.cachedEUVatDetails(any[HeaderCarrier])).thenReturn(someVatEuDetails)
-      submitForm(ValidRequest, isInReviewMode = true) { result =>
+      submitForm(ValidRequest, Service.ATaR, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) should endWith("register/vat-details-eu-confirm/review")
       }
@@ -172,7 +174,7 @@ class VatRegisteredEuControllerSpec extends ControllerSpec {
         .thenReturn(Future.successful[Unit](()))
       when(mockSubscriptionVatEUDetailsService.saveOrUpdate(any[Seq[VatEUDetailsModel]])(any[HeaderCarrier]))
         .thenReturn(Future.successful[Unit](()))
-      submitForm(validRequestNo, isInReviewMode = true) { result =>
+      submitForm(validRequestNo, Service.ATaR, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) should endWith("/register/matching/review-determine")
       }
@@ -182,7 +184,7 @@ class VatRegisteredEuControllerSpec extends ControllerSpec {
   private def createForm(journey: Journey.Value = Journey.Register)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     mockIsIndividual()
-    test(controller.createForm(journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+    test(controller.createForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }
 
   private def reviewForm(journey: Journey.Value = Journey.Register)(test: Future[Result] => Any) {
@@ -190,15 +192,17 @@ class VatRegisteredEuControllerSpec extends ControllerSpec {
     mockIsIndividual()
     when(mockSessionCache.subscriptionDetails).thenReturn(any)
     when(mockSubscriptionBusinessService.getCachedVatRegisteredEu).thenReturn(true)
-    test(controller.reviewForm(journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+    test(controller.reviewForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }
 
-  private def submitForm(form: Map[String, String], isInReviewMode: Boolean = false)(test: Future[Result] => Any) {
+  private def submitForm(form: Map[String, String], service: Service, isInReviewMode: Boolean = false)(
+    test: Future[Result] => Any
+  ) {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     mockIsIndividual()
     test(
       controller
-        .submit(isInReviewMode: Boolean, Journey.Register)
+        .submit(isInReviewMode: Boolean, service, Journey.Register)
         .apply(SessionBuilder.buildRequestWithFormValues(form))
     )
   }

@@ -33,7 +33,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.{
   AllCountriesExceptIomInCountryPicker,
@@ -108,7 +108,7 @@ class SixLineAddressControllerSpec extends ControllerSpec with BeforeAndAfter wi
       RowFormBuilder,
       thirdCountrySixLineAddressForm,
       true,
-      "/customs-enrolment-services/register/matching/review-determine"
+      "/customs-enrolment-services/atar/register/matching/review-determine"
     )
   )
 
@@ -120,12 +120,12 @@ class SixLineAddressControllerSpec extends ControllerSpec with BeforeAndAfter wi
   )
 
   override def beforeEach(): Unit = {
-    when(mockSubscriptionPage.url).thenReturn(testSubscriptionStartPageUrl)
+    when(mockSubscriptionPage.url(Service.ATaR)).thenReturn(testSubscriptionStartPageUrl)
     when(mockSubscriptionStartSession.data).thenReturn(testSessionData)
     when(mockCountries.all).thenReturn(aFewCountries)
     when(
       mockSubscriptionFlowManager
-        .startSubscriptionFlow(any[Journey.Value])(any[HeaderCarrier], any[Request[AnyContent]])
+        .startSubscriptionFlow(any[Service], any[Journey.Value])(any[HeaderCarrier], any[Request[AnyContent]])
     ).thenReturn(Future.successful(mockFlowStart))
     when(mockRegistrationDetailsCreator.registrationAddress(any())).thenReturn(testAddress)
     when(mockSessionCache.saveRegistrationDetails(any[RegistrationDetails]())(any[HeaderCarrier]()))
@@ -154,7 +154,7 @@ class SixLineAddressControllerSpec extends ControllerSpec with BeforeAndAfter wi
 
       assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
         mockAuthConnector,
-        controller.showForm(reviewMode, organisationType, Journey.Register),
+        controller.showForm(reviewMode, organisationType, Service.ATaR, Journey.Register),
         s", for reviewMode [$reviewMode] and organisationType $organisationType"
       )
 
@@ -284,7 +284,7 @@ class SixLineAddressControllerSpec extends ControllerSpec with BeforeAndAfter wi
 
       assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
         mockAuthConnector,
-        controller.submit(reviewMode, organisationType, Journey.Register),
+        controller.submit(reviewMode, organisationType, Service.ATaR, Journey.Register),
         s", for reviewMode [$reviewMode] and organisationType $organisationType"
       )
 
@@ -393,7 +393,7 @@ class SixLineAddressControllerSpec extends ControllerSpec with BeforeAndAfter wi
     when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier])).thenReturn(None)
 
     test(
-      controller.submit(false, CdsOrganisationType.ThirdCountryIndividualId, Journey.Register)(
+      controller.submit(false, CdsOrganisationType.ThirdCountryIndividualId, Service.ATaR, Journey.Register)(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )
@@ -426,7 +426,7 @@ class SixLineAddressControllerSpec extends ControllerSpec with BeforeAndAfter wi
 
     test(
       controller
-        .showForm(reviewMode, cdsOrgType, Journey.Register)
+        .showForm(reviewMode, cdsOrgType, Service.ATaR, Journey.Register)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, formValues))
     )
   }
@@ -439,7 +439,7 @@ class SixLineAddressControllerSpec extends ControllerSpec with BeforeAndAfter wi
 
     test(
       controller
-        .submit(reviewMode, cdsOrgType, Journey.Register)
+        .submit(reviewMode, cdsOrgType, Service.ATaR, Journey.Register)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, formValues))
     )
   }

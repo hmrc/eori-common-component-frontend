@@ -30,7 +30,7 @@ import play.api.mvc._
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.confirm_individual_type
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
@@ -77,7 +77,10 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
 
   "Viewing the selection form" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.form(Journey.Register))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+      mockAuthConnector,
+      controller.form(Service.ATaR, Journey.Register)
+    )
 
     "show the page without errors" in showForm { result =>
       status(result) shouldBe OK
@@ -92,7 +95,7 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
       page.formAction(
         formId
       ) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ConfirmIndividualTypeController
-        .submit(Journey.Register)
+        .submit(Service.ATaR, Journey.Register)
         .url
     }
 
@@ -126,7 +129,10 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
 
   "Submitting the correct form" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.submit(Journey.Register))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+      mockAuthConnector,
+      controller.submit(Service.ATaR, Journey.Register)
+    )
 
     "redirect to subscription flow first page with updated session" in {
       submitForm(validRequestData) { result =>
@@ -135,6 +141,7 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
         verify(mockSubscriptionFlowManager).startSubscriptionFlow(
           ArgumentMatchers.any[Option[SubscriptionPage]],
           ArgumentMatchers.eq(selectedIndividualType),
+          ArgumentMatchers.eq(Service.ATaR),
           ArgumentMatchers.eq(Journey.Register)
         )(ArgumentMatchers.any[HeaderCarrier], ArgumentMatchers.any[Request[AnyContent]])
         verify(mockRequestSessionData).sessionWithOrganisationTypeAdded(
@@ -156,7 +163,7 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
     when(mockRequestSessionData.sessionWithoutOrganisationType(ArgumentMatchers.any[Request[AnyContent]]))
       .thenReturn(mockSession)
 
-    val result = controller.form(Journey.Register).apply(SessionBuilder.buildRequestWithSession(aUserId))
+    val result = controller.form(Service.ATaR, Journey.Register).apply(SessionBuilder.buildRequestWithSession(aUserId))
     test(result)
   }
 
@@ -164,7 +171,7 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
     val aUserId = defaultUserId
     withAuthorisedUser(aUserId, mockAuthConnector)
 
-    when(mockSubscriptionPage.url).thenReturn(testSubscriptionStartPageUrl)
+    when(mockSubscriptionPage.url(Service.ATaR)).thenReturn(testSubscriptionStartPageUrl)
     when(mockSession.data).thenReturn(testSessionData)
     when(
       mockRequestSessionData
@@ -175,12 +182,15 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
       mockSubscriptionFlowManager.startSubscriptionFlow(
         ArgumentMatchers.any[Option[SubscriptionPage]],
         cdsOrganisationType = ArgumentMatchers.eq(selectedIndividualType),
+        ArgumentMatchers.any[Service],
         ArgumentMatchers.any[Journey.Value]
       )(ArgumentMatchers.any[HeaderCarrier], ArgumentMatchers.any[Request[AnyContent]])
     ).thenReturn(Future.successful(mockFlowStart))
 
     val result =
-      controller.submit(Journey.Register).apply(SessionBuilder.buildRequestWithSessionAndFormValues(aUserId, form))
+      controller.submit(Service.ATaR, Journey.Register).apply(
+        SessionBuilder.buildRequestWithSessionAndFormValues(aUserId, form)
+      )
     test(result)
   }
 

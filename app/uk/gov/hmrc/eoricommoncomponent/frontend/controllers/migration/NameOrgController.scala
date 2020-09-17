@@ -26,7 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Subscri
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NameDetailsSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.nameOrganisationForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
@@ -50,47 +50,49 @@ class NameOrgController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(journey: Journey.Value): Action[AnyContent] =
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.cachedNameOrganisationViewModel flatMap { maybeCachedNameViewModel =>
-        populateOkView(maybeCachedNameViewModel, isInReviewMode = false, journey)
+        populateOkView(maybeCachedNameViewModel, isInReviewMode = false, service, journey)
       }
     }
 
-  def reviewForm(journey: Journey.Value): Action[AnyContent] =
+  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.getCachedNameViewModel flatMap { nameOrgMatchModel =>
-        populateOkView(Some(nameOrgMatchModel), isInReviewMode = true, journey)
+        populateOkView(Some(nameOrgMatchModel), isInReviewMode = true, service, journey)
       }
     }
 
-  def submit(isInReviewMode: Boolean, journey: Journey.Value): Action[AnyContent] =
+  def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       nameOrganisationForm.bindFromRequest.fold(
         formWithErrors =>
           sessionCache.registrationDetails map { registrationDetails =>
-            BadRequest(nameOrgView(formWithErrors, registrationDetails, isInReviewMode, journey))
+            BadRequest(nameOrgView(formWithErrors, registrationDetails, isInReviewMode, service, journey))
           },
-        formData => storeNameDetails(formData, isInReviewMode, journey)
+        formData => storeNameDetails(formData, isInReviewMode, service, journey)
       )
     }
 
   private def populateOkView(
     maybeNameViewModel: Option[NameOrganisationMatchModel],
     isInReviewMode: Boolean,
+    service: Service,
     journey: Journey.Value
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
     lazy val form =
       maybeNameViewModel.fold(nameOrganisationForm)(nameOrganisationForm.fill)
 
     sessionCache.registrationDetails map { registrationDetails =>
-      Ok(nameOrgView(form, registrationDetails, isInReviewMode, journey))
+      Ok(nameOrgView(form, registrationDetails, isInReviewMode, service, journey))
     }
   }
 
   private def storeNameDetails(
     formData: NameOrganisationMatchModel,
     inReviewMode: Boolean,
+    service: Service,
     journey: Journey.Value
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
     for {
@@ -101,7 +103,7 @@ class NameOrgController @Inject() (
         subscriptionDetailsService
           .cacheNameIdDetails(NameIdOrganisationMatchModel(formData.name, details.id))
           .map { _ =>
-            Redirect(DetermineReviewPageController.determineRoute(journey))
+            Redirect(DetermineReviewPageController.determineRoute(service, journey))
           }
       case (_, _) =>
         Future.successful(
@@ -109,7 +111,7 @@ class NameOrgController @Inject() (
             subscriptionFlowManager
               .stepInformation(NameDetailsSubscriptionFlowPage)
               .nextPage
-              .url
+              .url(service)
           )
         )
     }

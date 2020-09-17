@@ -24,7 +24,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ConfirmIndividualTypePage
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm.confirmIndividualTypeForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.confirm_individual_type
 
@@ -41,25 +41,25 @@ class ConfirmIndividualTypeController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def form(journey: Journey.Value): Action[AnyContent] =
+  def form(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       Future.successful(
-        Ok(confirmIndividualTypeView(confirmIndividualTypeForm, journey))
+        Ok(confirmIndividualTypeView(confirmIndividualTypeForm, service, journey))
           .withSession(requestSessionData.sessionWithoutOrganisationType)
       )
     }
 
-  def submit(journey: Journey.Value): Action[AnyContent] =
+  def submit(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       confirmIndividualTypeForm.bindFromRequest.fold(
-        invalidForm => Future.successful(BadRequest(confirmIndividualTypeView(invalidForm, journey))),
+        invalidForm => Future.successful(BadRequest(confirmIndividualTypeView(invalidForm, service, journey))),
         selectedIndividualType =>
           subscriptionFlowManager
-            .startSubscriptionFlow(Some(ConfirmIndividualTypePage), selectedIndividualType, journey) map {
+            .startSubscriptionFlow(Some(ConfirmIndividualTypePage), selectedIndividualType, service, journey) map {
             case (page, newSession) =>
               val sessionWithOrganisationType =
                 requestSessionData.sessionWithOrganisationTypeAdded(newSession, selectedIndividualType)
-              Redirect(page.url).withSession(sessionWithOrganisationType)
+              Redirect(page.url(service)).withSession(sessionWithOrganisationType)
           }
       )
     }

@@ -26,6 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionDetailsService
 }
 import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.Constants
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
@@ -44,7 +45,7 @@ trait SubscriptionFlowTestSupport extends ControllerSpec {
   protected val mockSubscriptionDetailsHolderService = mock[SubscriptionDetailsService]
 
   def setupMockSubscriptionFlowManager(currentPage: SubscriptionPage): Unit = {
-    when(nextPage.url).thenReturn(nextPageUrl)
+    when(nextPage.url(any[Service])).thenReturn(nextPageUrl)
     when(mockSubscriptionFlowManager.stepInformation(meq(currentPage))(any[HeaderCarrier], any[Request[AnyContent]]))
       .thenReturn(subscriptionFlowStepInfo)
   }

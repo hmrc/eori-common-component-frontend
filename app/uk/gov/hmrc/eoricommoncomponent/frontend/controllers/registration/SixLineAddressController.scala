@@ -25,7 +25,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Subscri
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{LoggedInUser, SixLineAddressMatchModel}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
@@ -54,6 +54,7 @@ class SixLineAddressController @Inject() (
     address: Option[Address],
     isInReviewMode: Boolean,
     organisationType: String,
+    service: Service,
     journey: Journey.Value
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
     val formByOrgType = formsByOrganisationTypes(request)(organisationType)
@@ -68,21 +69,32 @@ class SixLineAddressController @Inject() (
           countriesToInclude,
           countriesInCountryPicker,
           organisationType,
+          service,
           journey
         )
       )
     )
   }
 
-  def showForm(isInReviewMode: Boolean = false, organisationType: String, journey: Journey.Value): Action[AnyContent] =
+  def showForm(
+    isInReviewMode: Boolean = false,
+    organisationType: String,
+    service: Service,
+    journey: Journey.Value
+  ): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser: LoggedInUser =>
       assertOrganisationTypeIsValid(organisationType)
       sessionCache.registrationDetails.flatMap(
-        rd => populateView(Some(rd.address), isInReviewMode, organisationType, journey)
+        rd => populateView(Some(rd.address), isInReviewMode, organisationType, service, journey)
       )
     }
 
-  def submit(isInReviewMode: Boolean = false, organisationType: String, journey: Journey.Value): Action[AnyContent] =
+  def submit(
+    isInReviewMode: Boolean = false,
+    organisationType: String,
+    service: Service,
+    journey: Journey.Value
+  ): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser: LoggedInUser =>
       val (countriesToInclude, countriesInCountryPicker) =
         countries.getCountryParameters(requestSessionData.selectedUserLocationWithIslands)
@@ -97,17 +109,19 @@ class SixLineAddressController @Inject() (
                 countriesToInclude,
                 countriesInCountryPicker,
                 organisationType,
+                service,
                 journey
               )
             )
           ),
-        formData => submitAddressDetails(isInReviewMode, formData, journey)
+        formData => submitAddressDetails(isInReviewMode, formData, service, journey)
       )
     }
 
   private def submitAddressDetails(
     isInReviewMode: Boolean,
     formData: SixLineAddressMatchModel,
+    service: Service,
     journey: Journey.Value
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
     if (isInReviewMode)
@@ -117,15 +131,16 @@ class SixLineAddressController @Inject() (
           _ =>
             Redirect(
               uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController.determineRoute(
+                service,
                 journey
               )
             )
         )
     else
       registrationDetailsService.cacheAddress(regDetailsCreator.registrationAddress(formData)).flatMap { _ =>
-        subscriptionFlowManager.startSubscriptionFlow(journey)
+        subscriptionFlowManager.startSubscriptionFlow(service, journey)
       } map {
-        case (firstSubscriptionPage, session) => Redirect(firstSubscriptionPage.url).withSession(session)
+        case (firstSubscriptionPage, session) => Redirect(firstSubscriptionPage.url(service)).withSession(session)
       }
 
   private def assertOrganisationTypeIsValid(organisationType: String)(implicit request: Request[AnyContent]): Unit =

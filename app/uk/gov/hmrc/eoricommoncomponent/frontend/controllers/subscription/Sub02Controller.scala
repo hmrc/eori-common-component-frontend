@@ -26,7 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.Su
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.migration_success
@@ -55,14 +55,14 @@ class Sub02Controller @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def subscribe(journey: Journey.Value): Action[AnyContent] =
+  def subscribe(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
       val selectedOrganisationType: Option[CdsOrganisationType] =
         requestSessionData.userSelectedOrganisationType
       val internalId = InternalId(loggedInUser.internalId)
       val groupId    = GroupId(loggedInUser.groupId)
       cdsSubscriber
-        .subscribeWithCachedDetails(selectedOrganisationType, journey)
+        .subscribeWithCachedDetails(selectedOrganisationType, service, journey)
         .flatMap { subscribeResult =>
           (subscribeResult, journey) match {
             case (_: SubscriptionSuccessful, Journey.Register) =>

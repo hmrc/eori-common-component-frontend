@@ -23,7 +23,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.YesNo
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_registered_eu
 import util.ViewSpec
 
@@ -102,13 +102,27 @@ class VatRegisteredEuSpec extends ViewSpec {
 
   private lazy val individualDoc: Document = Jsoup.parse(
     contentAsString(
-      view(isInReviewMode = false, form, isIndividualSubscriptionFlow = true, isPartnership = false, Journey.Subscribe)
+      view(
+        isInReviewMode = false,
+        form,
+        isIndividualSubscriptionFlow = true,
+        isPartnership = false,
+        Service.ATaR,
+        Journey.Subscribe
+      )
     )
   )
 
   private lazy val nonIndividualDocInReview: Document = Jsoup.parse(
     contentAsString(
-      view(isInReviewMode = true, form, isIndividualSubscriptionFlow = false, isPartnership = false, Journey.Subscribe)
+      view(
+        isInReviewMode = true,
+        form,
+        isIndividualSubscriptionFlow = false,
+        isPartnership = false,
+        Service.ATaR,
+        Journey.Subscribe
+      )
     )
   )
 
@@ -119,6 +133,7 @@ class VatRegisteredEuSpec extends ViewSpec {
         formWithError,
         isIndividualSubscriptionFlow = true,
         isPartnership = false,
+        Service.ATaR,
         Journey.Subscribe
       )
     )
@@ -131,6 +146,7 @@ class VatRegisteredEuSpec extends ViewSpec {
         partnershipForm,
         isIndividualSubscriptionFlow = false,
         isPartnership = true,
+        Service.ATaR,
         Journey.Subscribe
       )
     )
@@ -143,6 +159,7 @@ class VatRegisteredEuSpec extends ViewSpec {
         partnershipFormWithError,
         isIndividualSubscriptionFlow = false,
         isPartnership = true,
+        Service.ATaR,
         Journey.Subscribe
       )
     )

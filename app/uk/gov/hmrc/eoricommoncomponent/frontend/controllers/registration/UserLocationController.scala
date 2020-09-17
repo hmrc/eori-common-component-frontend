@@ -27,7 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.registration.RegistrationDisplayResponse
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDisplayService
@@ -63,17 +63,20 @@ class UserLocationController @Inject() (
   private def isAffinityOrganisation(affinityGroup: Option[AffinityGroup]): Boolean =
     affinityGroup.contains(AffinityGroup.Organisation)
 
-  private def continue(
-    journey: Journey.Value
-  )(implicit request: Request[AnyContent], user: LoggedInUserWithEnrolments): Future[Result] =
-    Future.successful(Ok(userLocationView(userLocationForm, journey, isAffinityOrganisation(user.affinityGroup))))
+  private def continue(service: Service, journey: Journey.Value)(implicit
+    request: Request[AnyContent],
+    user: LoggedInUserWithEnrolments
+  ): Future[Result] =
+    Future.successful(
+      Ok(userLocationView(userLocationForm, service, journey, isAffinityOrganisation(user.affinityGroup)))
+    )
 
-  def form(journey: Journey.Value): Action[AnyContent] =
+  def form(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
-      continue(journey)
+      continue(service, journey)
     }
 
-  private def forRow(journey: Journey.Value, internalId: InternalId, location: String)(implicit
+  private def forRow(service: Service, journey: Journey.Value, internalId: InternalId, location: String)(implicit
     request: Request[AnyContent],
     hc: HeaderCarrier
   ) =
@@ -81,27 +84,29 @@ class UserLocationController @Inject() (
       case (NewSubscription | SubscriptionRejected, Some(safeId)) =>
         registrationDisplayService
           .requestDetails(safeId)
-          .flatMap(cacheAndRedirect(journey, location))
+          .flatMap(cacheAndRedirect(service, journey, location))
       case (status, _) =>
-        subscriptionStatus(status, internalId, journey, Some(location))
+        subscriptionStatus(status, internalId, service, journey, Some(location))
     }.flatMap(identity)
 
-  def submit(journey: Journey.Value): Action[AnyContent] =
+  def submit(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
       userLocationForm.bindFromRequest.fold(
         formWithErrors =>
           Future.successful(
-            BadRequest(userLocationView(formWithErrors, journey, isAffinityOrganisation(loggedInUser.affinityGroup)))
+            BadRequest(
+              userLocationView(formWithErrors, service, journey, isAffinityOrganisation(loggedInUser.affinityGroup))
+            )
           ),
         details =>
           (journey, details.location, loggedInUser.internalId) match {
             case (_, Some(UserLocation.Iom), Some(_)) =>
               Future.successful(Redirect(YouNeedADifferentServiceIomController.form(journey)))
             case (Journey.Register, Some(location), Some(id)) if UserLocation.isRow(location) =>
-              forRow(journey, InternalId(id), location)
+              forRow(service, journey, InternalId(id), location)
             case _ =>
               Future.successful(
-                Redirect(OrganisationTypeController.form(journey))
+                Redirect(OrganisationTypeController.form(service, journey))
                   .withSession(
                     requestSessionData
                       .sessionWithUserLocationAdded(sessionInfoBasedOnJourney(journey, details.location))
@@ -137,9 +142,10 @@ class UserLocationController @Inject() (
       }
     } yield (preSubscriptionStatus, mayBeSafeId)
 
-  private def handleExistingSubscription(
-    internalId: InternalId
-  )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] =
+  private def handleExistingSubscription(internalId: InternalId, service: Service)(implicit
+    request: Request[AnyContent],
+    hc: HeaderCarrier
+  ): Future[Result] =
     save4LaterService
       .fetchSafeId(internalId)
       .flatMap(
@@ -156,7 +162,7 @@ class UserLocationController @Inject() (
                 case false =>
                   Redirect(
                     SubscriptionRecoveryController
-                      .complete(Journey.Register)
+                      .complete(service, Journey.Register)
                   )
               }
             }
@@ -165,21 +171,22 @@ class UserLocationController @Inject() (
   def subscriptionStatus(
     preSubStatus: PreSubscriptionStatus,
     internalId: InternalId,
+    service: Service,
     journey: Journey.Value,
     location: Option[String]
   )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] =
     preSubStatus match {
       case SubscriptionProcessing =>
         Future.successful(Redirect(UserLocationController.processing()))
-      case SubscriptionExists => handleExistingSubscription(internalId)
+      case SubscriptionExists => handleExistingSubscription(internalId, service)
       case NewSubscription | SubscriptionRejected =>
         Future.successful(
-          Redirect(OrganisationTypeController.form(journey))
+          Redirect(OrganisationTypeController.form(service, journey))
             .withSession(requestSessionData.sessionWithUserLocationAdded(sessionInfoBasedOnJourney(journey, location)))
         )
     }
 
-  def cacheAndRedirect(journey: Journey.Value, location: String)(implicit
+  def cacheAndRedirect(service: Service, journey: Journey.Value, location: String)(implicit
     request: Request[AnyContent],
     hc: HeaderCarrier
   ): Either[_, RegistrationDisplayResponse] => Future[Result] = {
@@ -187,7 +194,7 @@ class UserLocationController @Inject() (
     case rResponse @ Right(RegistrationDisplayResponse(_, Some(_))) =>
       registrationDisplayService.cacheDetails(rResponse.b).flatMap { _ =>
         Future.successful(
-          Redirect(BusinessDetailsRecoveryController.form(journey)).withSession(
+          Redirect(BusinessDetailsRecoveryController.form(service, journey)).withSession(
             requestSessionData.sessionWithUserLocationAdded(sessionInfoBasedOnJourney(journey, Some(location)))
           )
         )

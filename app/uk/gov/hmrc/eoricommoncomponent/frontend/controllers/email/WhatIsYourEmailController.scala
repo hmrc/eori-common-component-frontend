@@ -24,7 +24,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, Feat
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{InternalId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.emailForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.{EmailStatus, EmailViewModel}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -41,36 +41,38 @@ class WhatIsYourEmailController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) with FeatureFlags {
 
-  private def populateView(email: Option[String], journey: Journey.Value)(implicit
+  private def populateView(email: Option[String], service: Service, journey: Journey.Value)(implicit
     hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] = {
     lazy val form = email.map(EmailViewModel).fold(emailForm) {
       emailForm.fill
     }
-    Future.successful(Ok(whatIsYourEmailView(emailForm = form, journey = journey)))
+    Future.successful(Ok(whatIsYourEmailView(emailForm = form, service, journey)))
   }
 
-  def createForm(journey: Journey.Value): Action[AnyContent] =
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      populateView(None, journey = journey)
+      populateView(None, service, journey)
     }
 
-  def submit(journey: Journey.Value): Action[AnyContent] =
+  def submit(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
       emailForm.bindFromRequest.fold(
         formWithErrors =>
-          Future.successful(BadRequest(whatIsYourEmailView(emailForm = formWithErrors, journey = journey))),
-        formData => submitNewDetails(InternalId(userWithEnrolments.internalId), formData, journey)
+          Future.successful(BadRequest(whatIsYourEmailView(emailForm = formWithErrors, service, journey))),
+        formData => submitNewDetails(InternalId(userWithEnrolments.internalId), formData, service, journey)
       )
     }
 
-  private def submitNewDetails(internalId: InternalId, formData: EmailViewModel, journey: Journey.Value)(implicit
-    hc: HeaderCarrier,
-    request: Request[AnyContent]
-  ): Future[Result] =
+  private def submitNewDetails(
+    internalId: InternalId,
+    formData: EmailViewModel,
+    service: Service,
+    journey: Journey.Value
+  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
     save4LaterService
       .saveEmail(internalId, EmailStatus(formData.email))
-      .flatMap(_ => Future.successful(Redirect(routes.CheckYourEmailController.createForm(journey))))
+      .flatMap(_ => Future.successful(Redirect(routes.CheckYourEmailController.createForm(service, journey))))
 
 }

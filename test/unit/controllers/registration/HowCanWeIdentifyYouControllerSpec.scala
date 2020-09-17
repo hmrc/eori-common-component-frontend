@@ -33,7 +33,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   HowCanWeIdentifyYouSubscriptionFlowPage,
   SubscriptionFlowInfo
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
@@ -71,7 +71,10 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
 
   "Loading the page" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.Subscribe))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+      mockAuthConnector,
+      controller.createForm(Service.ATaR, Journey.Subscribe)
+    )
 
     "show the form without errors" in {
       showForm(Map.empty) { result =>
@@ -86,7 +89,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = false, Journey.Subscribe)
+      controller.submit(isInReviewMode = false, Service.ATaR, Journey.Subscribe)
     )
 
     "give a page level error when neither utr or nino are provided" in {
@@ -187,7 +190,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
       ).thenReturn(SubscriptionFlowInfo(3, 5, AddressDetailsSubscriptionFlowPage))
       submitForm(Map("nino" -> "AB123456C", "ninoOrUtrRadio" -> "nino")) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") shouldBe "/customs-enrolment-services/subscribe/address"
+        result.header.headers("Location") shouldBe "/customs-enrolment-services/atar/subscribe/address"
       }
     }
 
@@ -202,7 +205,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
       ).thenReturn(SubscriptionFlowInfo(3, 5, AddressDetailsSubscriptionFlowPage))
       submitForm(Map("utr" -> "2108834503", "ninoOrUtrRadio" -> "utr")) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") shouldBe "/customs-enrolment-services/subscribe/address"
+        result.header.headers("Location") shouldBe "/customs-enrolment-services/atar/subscribe/address"
       }
     }
 
@@ -218,7 +221,9 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
     "redirect to 'Check your details' page when valid Nino/ Utr is provided" in {
       submitFormInReviewMode(Map("utr" -> "2108834503", "ninoOrUtrRadio" -> "utr")) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") shouldBe "/customs-enrolment-services/subscribe/matching/review-determine"
+        result.header.headers(
+          "Location"
+        ) shouldBe "/customs-enrolment-services/atar/subscribe/matching/review-determine"
       }
     }
 
@@ -248,7 +253,9 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
   def showForm(form: Map[String, String], userId: String = defaultUserId)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     test(
-      controller.createForm(Journey.Subscribe).apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
+      controller.createForm(Service.ATaR, Journey.Subscribe).apply(
+        SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
+      )
     )
   }
 
@@ -258,7 +265,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller
-        .submit(isInReviewMode, Journey.Subscribe)
+        .submit(isInReviewMode, Service.ATaR, Journey.Subscribe)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }
@@ -271,7 +278,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
       .thenReturn(Some(CdsOrganisationType(SoleTraderId)))
     test(
       controller
-        .submit(isInReviewMode, Journey.Subscribe)
+        .submit(isInReviewMode, Service.ATaR, Journey.Subscribe)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }
@@ -286,7 +293,9 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
       .thenReturn(Future.successful(customsId))
 
     test(
-      controller.reviewForm(Journey.Subscribe).apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
+      controller.reviewForm(Service.ATaR, Journey.Subscribe).apply(
+        SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
+      )
     )
   }
 

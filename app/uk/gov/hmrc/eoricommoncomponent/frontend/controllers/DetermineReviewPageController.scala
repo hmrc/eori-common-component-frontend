@@ -23,7 +23,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,13 +35,14 @@ class DetermineReviewPageController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def determineRoute(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      journey match {
-        case Journey.Subscribe =>
-          Future.successful(Redirect(CheckYourDetailsController.reviewDetails(journey = journey).url))
-        case _ => Future.successful(Redirect(CheckYourDetailsRegisterController.reviewDetails(journey).url))
-      }
-  }
+  def determineRoute(service: Service, journey: Journey.Value): Action[AnyContent] =
+    ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        journey match {
+          case Journey.Subscribe =>
+            Future.successful(Redirect(CheckYourDetailsController.reviewDetails(service, journey).url))
+          case _ => Future.successful(Redirect(CheckYourDetailsRegisterController.reviewDetails(service, journey).url))
+        }
+    }
 
 }

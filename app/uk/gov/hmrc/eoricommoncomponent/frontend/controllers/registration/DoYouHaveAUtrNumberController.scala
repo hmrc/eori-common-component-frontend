@@ -31,7 +31,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.Organisation
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.utrForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.MatchingService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.match_organisation_utr
@@ -52,41 +52,60 @@ class DoYouHaveAUtrNumberController @Inject() (
 
   private val OrganisationModeDM = "organisation"
 
-  def form(organisationType: String, journey: Journey.Value, isInReviewMode: Boolean = false): Action[AnyContent] =
+  def form(
+    organisationType: String,
+    service: Service,
+    journey: Journey.Value,
+    isInReviewMode: Boolean = false
+  ): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       Future.successful(
-        Ok(matchOrganisationUtrView(utrForm, organisationType, OrganisationModeDM, journey, isInReviewMode))
+        Ok(matchOrganisationUtrView(utrForm, organisationType, OrganisationModeDM, service, journey, isInReviewMode))
       )
     }
 
-  def submit(organisationType: String, journey: Journey.Value, isInReviewMode: Boolean = false): Action[AnyContent] =
+  def submit(
+    organisationType: String,
+    service: Service,
+    journey: Journey.Value,
+    isInReviewMode: Boolean = false
+  ): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
       utrForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(view(organisationType, formWithErrors, journey))),
+        formWithErrors => Future.successful(BadRequest(view(organisationType, formWithErrors, service, journey))),
         formData =>
-          destinationsByAnswer(formData, organisationType, journey, isInReviewMode, InternalId(loggedInUser.internalId))
+          destinationsByAnswer(
+            formData,
+            organisationType,
+            service,
+            journey,
+            isInReviewMode,
+            InternalId(loggedInUser.internalId)
+          )
       )
     }
 
   private def destinationsByAnswer(
     formData: UtrMatchModel,
     organisationType: String,
+    service: Service,
     journey: Journey.Value,
     isInReviewMode: Boolean,
     internalId: InternalId
   )(implicit request: Request[AnyContent]): Future[Result] =
     formData.haveUtr match {
       case Some(true) =>
-        matchBusinessOrIndividual(formData, journey, organisationType, internalId)
+        matchBusinessOrIndividual(formData, service, journey, organisationType, internalId)
       case Some(false) =>
         subscriptionDetailsService.updateSubscriptionDetails
-        noUtrDestination(organisationType, journey, isInReviewMode)
+        noUtrDestination(organisationType, service, journey, isInReviewMode)
       case _ =>
         throw new IllegalArgumentException("Have UTR should be Some(true) or Some(false) but was None")
     }
 
   private def noUtrDestination(
     organisationType: String,
+    service: Service,
     journey: Journey.Value,
     isInReviewMode: Boolean
   ): Future[Result] =
@@ -94,9 +113,9 @@ class DoYouHaveAUtrNumberController @Inject() (
       case CdsOrganisationType.CharityPublicBodyNotForProfitId =>
         Future.successful(Redirect(VatRegisteredUkController.form()))
       case CdsOrganisationType.ThirdCountryOrganisationId =>
-        noUtrThirdCountryOrganisationRedirect(isInReviewMode, organisationType, journey)
+        noUtrThirdCountryOrganisationRedirect(isInReviewMode, organisationType, service, journey)
       case CdsOrganisationType.ThirdCountrySoleTraderId | CdsOrganisationType.ThirdCountryIndividualId =>
-        noUtrThirdCountryIndividualsRedirect(journey)
+        noUtrThirdCountryIndividualsRedirect(service, journey)
       case _ =>
         Future.successful(Redirect(YouNeedADifferentServiceController.form(journey)))
     }
@@ -104,20 +123,21 @@ class DoYouHaveAUtrNumberController @Inject() (
   private def noUtrThirdCountryOrganisationRedirect(
     isInReviewMode: Boolean,
     organisationType: String,
+    service: Service,
     journey: Journey.Value
   ): Future[Result] =
     if (isInReviewMode)
-      Future.successful(Redirect(DetermineReviewPageController.determineRoute(journey)))
+      Future.successful(Redirect(DetermineReviewPageController.determineRoute(service, journey)))
     else
       Future.successful(
         Redirect(
           SixLineAddressController
-            .showForm(isInReviewMode = false, organisationType, journey)
+            .showForm(isInReviewMode = false, organisationType, service, journey)
         )
       )
 
-  private def noUtrThirdCountryIndividualsRedirect(journey: Journey.Value): Future[Result] =
-    Future.successful(Redirect(DoYouHaveNinoController.displayForm(journey)))
+  private def noUtrThirdCountryIndividualsRedirect(service: Service, journey: Journey.Value): Future[Result] =
+    Future.successful(Redirect(DoYouHaveNinoController.displayForm(service, journey)))
 
   private def matchBusiness(
     id: CustomsId,
@@ -139,13 +159,14 @@ class DoYouHaveAUtrNumberController @Inject() (
       case None => Future.successful(false)
     }
 
-  private def view(organisationType: String, form: Form[UtrMatchModel], journey: Journey.Value)(implicit
-    request: Request[AnyContent]
+  private def view(organisationType: String, form: Form[UtrMatchModel], service: Service, journey: Journey.Value)(
+    implicit request: Request[AnyContent]
   ): HtmlFormat.Appendable =
-    matchOrganisationUtrView(form, organisationType, OrganisationModeDM, journey)
+    matchOrganisationUtrView(form, organisationType, OrganisationModeDM, service, journey)
 
   private def matchBusinessOrIndividual(
     formData: UtrMatchModel,
+    service: Service,
     journey: Journey.Value,
     organisationType: String,
     internalId: InternalId
@@ -166,13 +187,16 @@ class DoYouHaveAUtrNumberController @Inject() (
           case None => Future.successful(false)
         }
     }).map {
-      case true  => Redirect(ConfirmContactDetailsController.form(journey))
-      case false => matchNotFoundBadRequest(organisationType, formData, journey)
+      case true  => Redirect(ConfirmContactDetailsController.form(service, journey))
+      case false => matchNotFoundBadRequest(organisationType, formData, service, journey)
     }
 
-  private def matchNotFoundBadRequest(organisationType: String, formData: UtrMatchModel, journey: Journey.Value)(
-    implicit request: Request[AnyContent]
-  ): Result = {
+  private def matchNotFoundBadRequest(
+    organisationType: String,
+    formData: UtrMatchModel,
+    service: Service,
+    journey: Journey.Value
+  )(implicit request: Request[AnyContent]): Result = {
     val errorMsg = organisationType match {
       case CdsOrganisationType.SoleTraderId | CdsOrganisationType.IndividualId |
           CdsOrganisationType.ThirdCountrySoleTraderId | CdsOrganisationType.ThirdCountryIndividualId =>
@@ -180,7 +204,7 @@ class DoYouHaveAUtrNumberController @Inject() (
       case _ => Messages("cds.matching-error-organisation.not-found")
     }
     val errorForm = utrForm.withGlobalError(errorMsg).fill(formData)
-    BadRequest(view(organisationType, errorForm, journey))
+    BadRequest(view(organisationType, errorForm, service, journey))
   }
 
 }

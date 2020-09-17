@@ -28,7 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EmailController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.InternalId
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
@@ -139,7 +139,7 @@ class EmailControllerSpec extends ControllerSpec with AddressPageFactoring with 
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller
-        .form(Journey.Subscribe)
+        .form(Service.ATaR, Journey.Subscribe)
         .apply(SessionBuilder.buildRequestWithSession(userId))
     )
   }

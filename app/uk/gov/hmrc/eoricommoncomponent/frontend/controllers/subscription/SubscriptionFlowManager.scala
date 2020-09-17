@@ -24,7 +24,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubscriptionFlow, SubscriptionPage, _}
 import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger.logger
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.Constants.ONE
 import uk.gov.hmrc.http.HeaderCarrier
@@ -70,30 +70,33 @@ class SubscriptionFlowManager @Inject() (
     SubscriptionFlows(currentSubscriptionFlow)
       .stepInformation(currentPage)
 
-  def startSubscriptionFlow(
-    journey: Journey.Value
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[(SubscriptionPage, Session)] =
-    startSubscriptionFlow(None, requestSessionData.userSelectedOrganisationType, journey)
+  def startSubscriptionFlow(service: Service, journey: Journey.Value)(implicit
+    hc: HeaderCarrier,
+    request: Request[AnyContent]
+  ): Future[(SubscriptionPage, Session)] =
+    startSubscriptionFlow(None, requestSessionData.userSelectedOrganisationType, service, journey)
 
   def startSubscriptionFlow(
     previousPage: Option[SubscriptionPage] = None,
     cdsOrganisationType: CdsOrganisationType,
+    service: Service,
     journey: Journey.Value
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[(SubscriptionPage, Session)] =
-    startSubscriptionFlow(previousPage, Some(cdsOrganisationType), journey)
+    startSubscriptionFlow(previousPage, Some(cdsOrganisationType), service, journey)
 
-  def startSubscriptionFlow(previousPage: Option[SubscriptionPage], journey: Journey.Value)(implicit
+  def startSubscriptionFlow(previousPage: Option[SubscriptionPage], service: Service, journey: Journey.Value)(implicit
     hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[(SubscriptionPage, Session)] =
-    startSubscriptionFlow(previousPage, requestSessionData.userSelectedOrganisationType, journey)
+    startSubscriptionFlow(previousPage, requestSessionData.userSelectedOrganisationType, service, journey)
 
   private def startSubscriptionFlow(
     previousPage: Option[SubscriptionPage],
     orgType: => Option[CdsOrganisationType],
+    service: Service,
     journey: Journey.Value
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[(SubscriptionPage, Session)] = {
-    val maybePreviousPageUrl = previousPage.map(page => page.url)
+    val maybePreviousPageUrl = previousPage.map(page => page.url(service))
     cdsFrontendDataCache.registrationDetails map { registrationDetails =>
       val flow = selectFlow(registrationDetails, orgType, journey)
 
@@ -102,7 +105,7 @@ class SubscriptionFlowManager @Inject() (
         SubscriptionFlows(flow).pagesInOrder.head,
         requestSessionData.storeUserSubscriptionFlow(
           flow,
-          SubscriptionFlows(flow).determinePageBeforeSubscriptionFlow(maybePreviousPageUrl).url
+          SubscriptionFlows(flow).determinePageBeforeSubscriptionFlow(maybePreviousPageUrl).url(service)
         )
       )
     }

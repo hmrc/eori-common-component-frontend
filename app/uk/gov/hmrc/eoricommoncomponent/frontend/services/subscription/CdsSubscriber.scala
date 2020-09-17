@@ -22,7 +22,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{RecipientDetails, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -37,10 +37,11 @@ class CdsSubscriber @Inject() (
   requestSessionData: RequestSessionData
 )(implicit ec: ExecutionContext) {
 
-  def subscribeWithCachedDetails(cdsOrganisationType: Option[CdsOrganisationType], journey: Journey.Value)(implicit
-    hc: HeaderCarrier,
-    request: Request[AnyContent]
-  ): Future[SubscriptionResult] = {
+  def subscribeWithCachedDetails(
+    cdsOrganisationType: Option[CdsOrganisationType],
+    service: Service,
+    journey: Journey.Value
+  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[SubscriptionResult] = {
     def migrationEoriUK: Future[SubscriptionResult] =
       for {
         subscriptionDetailsHolder <- sessionCache.subscriptionDetails
@@ -54,7 +55,8 @@ class CdsSubscriber @Inject() (
           subscriptionResult,
           registrationDetails,
           subscriptionDetailsHolder,
-          email
+          email,
+          service
         )
       } yield subscriptionResult
 
@@ -66,7 +68,7 @@ class CdsSubscriber @Inject() (
           cdsOrganisationType,
           journey
         )
-        _ <- onSubscriptionResult(subscriptionResult, registrationDetails, maybeSubscriptionDetails)
+        _ <- onSubscriptionResult(subscriptionResult, registrationDetails, maybeSubscriptionDetails, service)
       } yield subscriptionResult
 
     def migrationEoriROW: Future[SubscriptionResult] =
@@ -79,7 +81,13 @@ class CdsSubscriber @Inject() (
           subscriptionDetails,
           journey
         )
-        _ <- onSubscriptionResultForRowSubscribe(subscriptionResult, registrationDetails, subscriptionDetails, email)
+        _ <- onSubscriptionResultForRowSubscribe(
+          subscriptionResult,
+          registrationDetails,
+          subscriptionDetails,
+          email,
+          service
+        )
       } yield subscriptionResult
 
     val isRowF           = Future.successful(UserLocation.isRow(requestSessionData))
@@ -120,7 +128,8 @@ class CdsSubscriber @Inject() (
   private def onSubscriptionResult(
     subscriptionResult: SubscriptionResult,
     registrationDetails: RegistrationDetails,
-    subscriptionDetails: Option[SubscriptionDetails]
+    subscriptionDetails: Option[SubscriptionDetails],
+    service: Service
   )(implicit hc: HeaderCarrier): Future[Unit] = {
 
     val sapNumber = registrationDetails.sapNumber
@@ -133,6 +142,7 @@ class CdsSubscriber @Inject() (
           throw new IllegalStateException(s"No contact details available to save for formBundleId $formBundleId")
         )
       RecipientDetails(
+        service,
         Journey.Register,
         contactDetails.emailAddress,
         contactDetails.fullName,
@@ -178,7 +188,8 @@ class CdsSubscriber @Inject() (
     subscriptionResult: SubscriptionResult,
     regDetails: RegistrationDetails,
     subDetails: SubscriptionDetails,
-    email: String
+    email: String,
+    service: Service
   )(implicit hc: HeaderCarrier): Future[Unit] = {
 
     val completionDate = subscriptionResult match {
@@ -195,6 +206,7 @@ class CdsSubscriber @Inject() (
     callHandle(
       subscriptionResult,
       RecipientDetails(
+        service,
         Journey.Subscribe,
         email,
         subDetails.contactDetails.map(_.fullName).getOrElse(""),
@@ -211,7 +223,8 @@ class CdsSubscriber @Inject() (
     subscriptionResult: SubscriptionResult,
     regDetails: RegisterWithEoriAndIdResponse,
     subDetails: SubscriptionDetails,
-    email: String
+    email: String,
+    service: Service
   )(implicit hc: HeaderCarrier): Future[Unit] = {
 
     val taxPayerId  = regDetails.responseDetail.flatMap(_.responseData.map(r => TaxPayerId(r.SAFEID)))
@@ -233,7 +246,7 @@ class CdsSubscriber @Inject() (
         val orgName = Some(subDetails.name)
         callHandle(
           subscriptionResult,
-          RecipientDetails(Journey.Subscribe, email, name.getOrElse(""), orgName, completionDate),
+          RecipientDetails(service, Journey.Subscribe, email, name.getOrElse(""), orgName, completionDate),
           id,
           subDetails.eoriNumber.map(Eori),
           SafeId(id.id)

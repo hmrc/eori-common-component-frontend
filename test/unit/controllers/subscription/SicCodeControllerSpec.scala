@@ -36,7 +36,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SicCodeSubscriptionFlowPage
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.sic_code
@@ -47,8 +47,8 @@ import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.SessionBuilder
 import util.builders.SubscriptionAmendCompanyDetailsFormBuilder._
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class SicCodeControllerSpec
     extends SubscriptionFlowTestSupport with BusinessDatesOrganisationTypeTables with BeforeAndAfterEach
@@ -58,12 +58,12 @@ class SicCodeControllerSpec
 
   protected override def submitInCreateModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.SicCodeController
-      .submit(isInReviewMode = false, Journey.Register)
+      .submit(isInReviewMode = false, Service.ATaR, Journey.Register)
       .url
 
   protected override def submitInReviewModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.SicCodeController
-      .submit(isInReviewMode = true, Journey.Register)
+      .submit(isInReviewMode = true, Service.ATaR, Journey.Register)
       .url
 
   private val mockOrgTypeLookup      = mock[OrgTypeLookup]
@@ -100,7 +100,10 @@ class SicCodeControllerSpec
 
   "Subscription Sic Code form in create mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.Register))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+      mockAuthConnector,
+      controller.createForm(Service.ATaR, Journey.Register)
+    )
 
     "display title as 'What is the Standard Industrial Classification (SIC) code for your organisation?' for non-partnership org type" in {
       showCreateForm(orgType = CorporateBody, userSelectedOrgType = Company) { result =>
@@ -292,7 +295,7 @@ class SicCodeControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = false, Journey.Register)
+      controller.submit(isInReviewMode = false, Service.ATaR, Journey.Register)
     )
 
     "wait until the saveSubscriptionDetailsHolder is completed before progressing" in {
@@ -464,7 +467,9 @@ class SicCodeControllerSpec
 
     test(
       controller
-        .submit(isInReviewMode = false, journey)(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
+        .submit(isInReviewMode = false, Service.ATaR, journey)(
+          SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
+        )
     )
   }
 
@@ -483,7 +488,9 @@ class SicCodeControllerSpec
 
     test(
       controller
-        .submit(isInReviewMode = true, journey)(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
+        .submit(isInReviewMode = true, Service.ATaR, journey)(
+          SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
+        )
     )
   }
 
@@ -511,7 +518,7 @@ class SicCodeControllerSpec
       .thenReturn(Some(userSelectedOrgType))
     when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(userLocation)
 
-    test(controller.createForm(journey).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.createForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def showReviewForm(
@@ -528,7 +535,7 @@ class SicCodeControllerSpec
       .thenReturn(Some(userSelectedOrgType))
     when(mockSubscriptionBusinessService.getCachedSicCode(any[HeaderCarrier])).thenReturn(dataToEdit)
 
-    test(controller.reviewForm(journey).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.reviewForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def verifyPrincipalEconomicActivityFieldExistsAndPopulatedCorrectly(page: CdsPage): Unit =

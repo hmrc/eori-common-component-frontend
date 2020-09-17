@@ -26,7 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Subscri
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.HowCanWeIdentifyYouSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.ninoOrUtrForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
   SubscriptionDetailsService
@@ -48,12 +48,12 @@ class HowCanWeIdentifyYouController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
-      Future.successful(Ok(howCanWeIdentifyYouView(ninoOrUtrForm, isInReviewMode = false, journey)))
+      Future.successful(Ok(howCanWeIdentifyYouView(ninoOrUtrForm, isInReviewMode = false, service, journey)))
   }
 
-  def reviewForm(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.getCachedCustomsId.map { customsId =>
         val ninoOrUtr = customsId match {
@@ -62,21 +62,22 @@ class HowCanWeIdentifyYouController @Inject() (
           case unexpected =>
             throw new IllegalStateException("Expected a Nino or UTR from the cached customs Id but got: " + unexpected)
         }
-        Ok(howCanWeIdentifyYouView(ninoOrUtrForm.fill(ninoOrUtr), isInReviewMode = true, journey))
+        Ok(howCanWeIdentifyYouView(ninoOrUtrForm.fill(ninoOrUtr), isInReviewMode = true, service, journey))
       }
   }
 
-  def submit(isInReviewMode: Boolean, journey: Journey.Value): Action[AnyContent] =
+  def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       ninoOrUtrForm
         .bindFromRequest()
         .fold(
-          invalidForm => Future.successful(BadRequest(howCanWeIdentifyYouView(invalidForm, isInReviewMode, journey))),
-          form => storeId(form, isInReviewMode, journey)
+          invalidForm =>
+            Future.successful(BadRequest(howCanWeIdentifyYouView(invalidForm, isInReviewMode, service, journey))),
+          form => storeId(form, isInReviewMode, service, journey)
         )
     }
 
-  private def storeId(formData: NinoOrUtr, inReviewMode: Boolean, journey: Journey.Value)(implicit
+  private def storeId(formData: NinoOrUtr, inReviewMode: Boolean, service: Service, journey: Journey.Value)(implicit
     hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] =
@@ -85,9 +86,11 @@ class HowCanWeIdentifyYouController @Inject() (
       .map(
         _ =>
           if (inReviewMode)
-            Redirect(DetermineReviewPageController.determineRoute(journey))
+            Redirect(DetermineReviewPageController.determineRoute(service, journey))
           else
-            Redirect(subscriptionFlowManager.stepInformation(HowCanWeIdentifyYouSubscriptionFlowPage).nextPage.url)
+            Redirect(
+              subscriptionFlowManager.stepInformation(HowCanWeIdentifyYouSubscriptionFlowPage).nextPage.url(service)
+            )
       )
 
   private def customsId(ninoOrUtr: NinoOrUtr): CustomsId = ninoOrUtr match {

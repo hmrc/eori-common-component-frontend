@@ -22,6 +22,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.business_details_recovery
 import util.ViewSpec
 
@@ -70,12 +71,12 @@ class BusinessDetailsRecoveryViewSpec extends ViewSpec {
   }
 
   private lazy val CorporateBodyDoc: Document = {
-    val result = view(name, address, false)
+    val result = view(name, address, false, Service.ATaR)
     Jsoup.parse(contentAsString(result))
   }
 
   private lazy val SoleTraderOrIndividualDoc: Document = {
-    val result = view(name, address, true)
+    val result = view(name, address, true, Service.ATaR)
     Jsoup.parse(contentAsString(result))
   }
 

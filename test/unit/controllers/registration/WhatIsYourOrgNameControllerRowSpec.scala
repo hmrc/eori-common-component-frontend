@@ -26,7 +26,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.WhatIsYourOrgNameController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.what_is_your_org_name
@@ -66,7 +66,7 @@ class WhatIsYourOrgNameControllerRowSpec extends ControllerSpec with BeforeAndAf
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = false, "third-country-organisation", Journey.Register),
+      controller.submit(isInReviewMode = false, "third-country-organisation", Service.ATaR, Journey.Register),
       "and isInReviewMode is false"
     )
     "redirect to the 'Do you have a UTR? page when isInReviewMode is false" in {
@@ -79,7 +79,7 @@ class WhatIsYourOrgNameControllerRowSpec extends ControllerSpec with BeforeAndAf
       submitForm(isInReviewMode = false, form = ValidNameRequest) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers("Location") should endWith(
-          "/customs-enrolment-services/register/matching/utr/third-country-organisation"
+          "/customs-enrolment-services/atar/register/matching/utr/third-country-organisation"
         )
         verify(mockSubscriptionDetailsService).cacheNameDetails(any())(any())
       }
@@ -88,7 +88,7 @@ class WhatIsYourOrgNameControllerRowSpec extends ControllerSpec with BeforeAndAf
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = true, "third-country-organisation", Journey.Register),
+      controller.submit(isInReviewMode = true, "third-country-organisation", Service.ATaR, Journey.Register),
       "and isInReviewMode is true"
     )
     "redirect to the Determine Review page when isInReviewMode is true" in {
@@ -101,7 +101,7 @@ class WhatIsYourOrgNameControllerRowSpec extends ControllerSpec with BeforeAndAf
       submitForm(isInReviewMode = true, form = ValidNameRequest) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers("Location") should endWith(
-          "/customs-enrolment-services/register/matching/review-determine"
+          "/customs-enrolment-services/atar/register/matching/review-determine"
         )
         verify(mockSubscriptionDetailsService).cacheNameDetails(any())(any())
       }
@@ -113,7 +113,7 @@ class WhatIsYourOrgNameControllerRowSpec extends ControllerSpec with BeforeAndAf
   ) {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
-      .submit(isInReviewMode, "third-country-organisation", Journey.Register)
+      .submit(isInReviewMode, "third-country-organisation", Service.ATaR, Journey.Register)
       .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }

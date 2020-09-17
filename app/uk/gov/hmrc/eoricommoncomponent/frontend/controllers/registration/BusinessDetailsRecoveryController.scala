@@ -26,7 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.BusinessDetailsRecoveryPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.business_details_recovery
@@ -47,21 +47,21 @@ class BusinessDetailsRecoveryController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def form(journey: Journey.Value): Action[AnyContent] =
+  def form(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         regDetails <- sessionCache.registrationDetails
       } yield regDetails match {
         case individual: RegistrationDetailsIndividual =>
-          Ok(businessDetailsRecoveryView(individual.name, concatenateAddress(individual), true))
+          Ok(businessDetailsRecoveryView(individual.name, concatenateAddress(individual), true, service))
         case org: RegistrationDetailsOrganisation =>
-          Ok(businessDetailsRecoveryView(org.name, concatenateAddress(org), false))
+          Ok(businessDetailsRecoveryView(org.name, concatenateAddress(org), false, service))
         case _ =>
           throw new IllegalArgumentException("Required RegistrationDetailsIndividual | RegistrationDetailsOrganisation")
       }
     }
 
-  def continue(journey: Journey.Value): Action[AnyContent] =
+  def continue(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => userId: LoggedInUserWithEnrolments =>
       {
         for {
@@ -72,9 +72,9 @@ class BusinessDetailsRecoveryController @Inject() (
             requestSessionData.selectedUserLocation.getOrElse(throw new IllegalStateException("Location not set"))
           regDetails match {
             case _: RegistrationDetailsIndividual =>
-              continueBasedOnJourney(journey, location, orgType)
+              continueBasedOnJourney(service, journey, location, orgType)
             case _: RegistrationDetailsOrganisation =>
-              continueBasedOnJourney(journey, location, orgType)
+              continueBasedOnJourney(service, journey, location, orgType)
             case _ =>
               throw new IllegalArgumentException(
                 "Required RegistrationDetailsIndividual | RegistrationDetailsOrganisation"
@@ -86,6 +86,7 @@ class BusinessDetailsRecoveryController @Inject() (
     }
 
   private def continueBasedOnJourney(
+    service: Service,
     journey: Journey.Value,
     location: String,
     orgType: Option[CdsOrganisationType]
@@ -96,6 +97,7 @@ class BusinessDetailsRecoveryController @Inject() (
         subscriptionFlowManager.startSubscriptionFlow(
           Some(BusinessDetailsRecoveryPage),
           organisationType,
+          service,
           journey
         ) map {
           case (page, newSession) =>
@@ -106,7 +108,7 @@ class BusinessDetailsRecoveryController @Inject() (
                 sessionWithOrganisationType,
                 sessionInfoBasedOnJourney(journey, Some(location))
               )
-            Redirect(page.url).withSession(session)
+            Redirect(page.url(service)).withSession(session)
         }
       }
 

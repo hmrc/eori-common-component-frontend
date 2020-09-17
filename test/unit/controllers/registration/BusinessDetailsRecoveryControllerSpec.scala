@@ -37,7 +37,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   ContactDetailsSubscriptionFlowPageGetEori,
   DateOfEstablishmentSubscriptionFlowPage
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
@@ -136,6 +136,7 @@ class BusinessDetailsRecoveryControllerSpec extends ControllerSpec with BeforeAn
         mockSubscriptionFlowManager.startSubscriptionFlow(
           meq(Some(BusinessDetailsRecoveryPage)),
           meq(CdsOrganisationType.ThirdCountryIndividual),
+          meq(Service.ATaR),
           meq(Journey.Register)
         )(any[HeaderCarrier], any[Request[AnyContent]])
       ).thenReturn(Future.successful(mockFlowStart))
@@ -146,7 +147,9 @@ class BusinessDetailsRecoveryControllerSpec extends ControllerSpec with BeforeAn
 
       invokeContinue() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith(ContactDetailsController.createForm(Journey.Register).url)
+        result.header.headers(LOCATION) should endWith(
+          ContactDetailsController.createForm(Service.ATaR, Journey.Register).url
+        )
       }
     }
 
@@ -165,6 +168,7 @@ class BusinessDetailsRecoveryControllerSpec extends ControllerSpec with BeforeAn
         mockSubscriptionFlowManager.startSubscriptionFlow(
           meq(Some(BusinessDetailsRecoveryPage)),
           meq(CdsOrganisationType.ThirdCountryOrganisation),
+          meq(Service.ATaR),
           meq(Journey.Register)
         )(any[HeaderCarrier], any[Request[AnyContent]])
       ).thenReturn(Future.successful(mockFlowStart))
@@ -177,7 +181,9 @@ class BusinessDetailsRecoveryControllerSpec extends ControllerSpec with BeforeAn
 
       invokeContinue() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith(DateOfEstablishmentController.createForm(Journey.Register).url)
+        result.header.headers(LOCATION) should endWith(
+          DateOfEstablishmentController.createForm(Service.ATaR, Journey.Register).url
+        )
       }
     }
 
@@ -189,7 +195,7 @@ class BusinessDetailsRecoveryControllerSpec extends ControllerSpec with BeforeAn
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller
-        .form(Journey.Register)
+        .form(Service.ATaR, Journey.Register)
         .apply(SessionBuilder.buildRequestWithSession(userId))
     )
   }
@@ -198,7 +204,7 @@ class BusinessDetailsRecoveryControllerSpec extends ControllerSpec with BeforeAn
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller
-        .continue(Journey.Register)
+        .continue(Service.ATaR, Journey.Register)
         .apply(SessionBuilder.buildRequestWithSession(userId))
     )
   }

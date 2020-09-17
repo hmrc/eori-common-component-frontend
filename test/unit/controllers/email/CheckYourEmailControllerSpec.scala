@@ -27,7 +27,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.InternalId
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
@@ -92,7 +92,10 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
 
   "Displaying the Check Your Email Page" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(Journey.Subscribe))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
+      mockAuthConnector,
+      controller.createForm(Service.ATaR, Journey.Subscribe)
+    )
 
     "display title as 'Check your email address'" in {
       showForm(journey = Journey.Subscribe) { result =>
@@ -107,11 +110,12 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     "redirect to Verify Your Email Address page for unverified email address" in {
       when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(true)))
-      submitForm(ValidRequest + (yesNoInputName -> answerYes), journey = Journey.Subscribe) { result =>
-        status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith(
-          "/customs-enrolment-services/subscribe/matching/verify-your-email"
-        )
+      submitForm(ValidRequest + (yesNoInputName -> answerYes), service = Service.ATaR, journey = Journey.Subscribe) {
+        result =>
+          status(result) shouldBe SEE_OTHER
+          result.header.headers("Location") should endWith(
+            "/customs-enrolment-services/atar/subscribe/matching/verify-your-email"
+          )
       }
     }
 
@@ -128,9 +132,12 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(false)))
 
-      submitForm(ValidRequest + (yesNoInputName -> answerYes), journey = Journey.Subscribe) { result =>
-        status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs-enrolment-services/subscribe/are-you-based-in-uk")
+      submitForm(ValidRequest + (yesNoInputName -> answerYes), service = Service.ATaR, journey = Journey.Subscribe) {
+        result =>
+          status(result) shouldBe SEE_OTHER
+          result.header.headers("Location") should endWith(
+            "/customs-enrolment-services/atar/subscribe/are-you-based-in-uk"
+          )
       }
     }
 
@@ -139,23 +146,25 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
         .thenReturn(Future.successful(None))
 
       the[IllegalStateException] thrownBy {
-        submitForm(ValidRequest + (yesNoInputName -> answerYes), journey = Journey.Subscribe) { result =>
-          status(result) shouldBe SEE_OTHER
+        submitForm(ValidRequest + (yesNoInputName -> answerYes), service = Service.ATaR, journey = Journey.Subscribe) {
+          result =>
+            status(result) shouldBe SEE_OTHER
         }
       } should have message "CreateEmailVerificationRequest Failed"
     }
 
     "redirect to What is Your Email Address Page on selecting No radio button" in {
-      submitForm(ValidRequest + (yesNoInputName -> answerNo), journey = Journey.Subscribe) { result =>
-        status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith(
-          "/customs-enrolment-services/subscribe/matching/what-is-your-email"
-        )
+      submitForm(ValidRequest + (yesNoInputName -> answerNo), service = Service.ATaR, journey = Journey.Subscribe) {
+        result =>
+          status(result) shouldBe SEE_OTHER
+          result.header.headers("Location") should endWith(
+            "/customs-enrolment-services/atar/subscribe/matching/what-is-your-email"
+          )
       }
     }
 
     "display an error message when no option is selected" in {
-      submitForm(ValidRequest - yesNoInputName, journey = Journey.Subscribe) { result =>
+      submitForm(ValidRequest - yesNoInputName, service = Service.ATaR, journey = Journey.Subscribe) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
         page.getElementsText(CheckYourEmailPage.pageLevelErrorSummaryListXPath) shouldBe problemWithSelectionError
@@ -173,11 +182,14 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     }
   }
 
-  private def submitForm(form: Map[String, String], userId: String = defaultUserId, journey: Journey.Value)(
-    test: Future[Result] => Any
-  ) {
+  private def submitForm(
+    form: Map[String, String],
+    userId: String = defaultUserId,
+    service: Service,
+    journey: Journey.Value
+  )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
-    val result = controller.submit(isInReviewMode = false, journey)(
+    val result = controller.submit(isInReviewMode = false, service, journey)(
       SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
     )
     test(result)
@@ -186,7 +198,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   private def showForm(userId: String = defaultUserId, journey: Journey.Value)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
-      .createForm(journey)
+      .createForm(Service.ATaR, journey)
       .apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
@@ -194,7 +206,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   private def verifyEmailViewForm(userId: String = defaultUserId, journey: Journey.Value)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
-      .verifyEmailView(journey)
+      .verifyEmailView(Service.ATaR, journey)
       .apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }

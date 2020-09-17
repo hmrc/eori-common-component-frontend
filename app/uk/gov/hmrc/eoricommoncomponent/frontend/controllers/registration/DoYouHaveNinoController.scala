@@ -29,7 +29,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.rowIndividualsNinoForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.MatchingService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
@@ -50,41 +50,44 @@ class DoYouHaveNinoController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def displayForm(journey: Journey.Value): Action[AnyContent] =
+  def displayForm(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      Future.successful(Ok(matchNinoRowIndividualView(rowIndividualsNinoForm, journey)))
+      Future.successful(Ok(matchNinoRowIndividualView(rowIndividualsNinoForm, service, journey)))
     }
 
-  def submit(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def submit(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => loggedInUser: LoggedInUserWithEnrolments =>
       rowIndividualsNinoForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(matchNinoRowIndividualView(formWithErrors, journey))),
+        formWithErrors => Future.successful(BadRequest(matchNinoRowIndividualView(formWithErrors, service, journey))),
         formData =>
           formData.haveNino match {
             case Some(true) =>
-              matchIndividual(Nino(formData.nino.get), journey, formData, InternalId(loggedInUser.internalId))
+              matchIndividual(Nino(formData.nino.get), service, journey, formData, InternalId(loggedInUser.internalId))
             case Some(false) =>
               subscriptionDetailsService.updateSubscriptionDetails
-              noNinoRedirect(journey)
+              noNinoRedirect(service, journey)
             case _ => throw new IllegalArgumentException("Have NINO should be Some(true) or Some(false) but was None")
           }
       )
   }
 
-  private def noNinoRedirect(
-    journey: Journey.Value
-  )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] =
-    requestSessionData.userSelectedOrganisationType match {
-      case Some(cdsOrgType) =>
-        Future.successful(Redirect(SixLineAddressController.showForm(false, cdsOrgType.id, journey)))
-      case _ => throw new IllegalStateException("No userSelectedOrganisationType details in session.")
-    }
-
-  private def matchIndividual(id: CustomsId, journey: Journey.Value, formData: NinoMatchModel, internalId: InternalId)(
-    implicit
+  private def noNinoRedirect(service: Service, journey: Journey.Value)(implicit
     request: Request[AnyContent],
     hc: HeaderCarrier
   ): Future[Result] =
+    requestSessionData.userSelectedOrganisationType match {
+      case Some(cdsOrgType) =>
+        Future.successful(Redirect(SixLineAddressController.showForm(false, cdsOrgType.id, service, journey)))
+      case _ => throw new IllegalStateException("No userSelectedOrganisationType details in session.")
+    }
+
+  private def matchIndividual(
+    id: CustomsId,
+    service: Service,
+    journey: Journey.Value,
+    formData: NinoMatchModel,
+    internalId: InternalId
+  )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] =
     subscriptionDetailsService.cachedNameDobDetails flatMap {
       case Some(details) =>
         matchingService
@@ -94,18 +97,18 @@ class DoYouHaveNinoController @Inject() (
             internalId
           )
           .map {
-            case true  => Redirect(ConfirmContactDetailsController.form(journey))
-            case false => matchNotFoundBadRequest(formData, journey)
+            case true  => Redirect(ConfirmContactDetailsController.form(service, journey))
+            case false => matchNotFoundBadRequest(formData, service, journey)
           }
-      case None => Future.successful(matchNotFoundBadRequest(formData, journey))
+      case None => Future.successful(matchNotFoundBadRequest(formData, service, journey))
     }
 
-  private def matchNotFoundBadRequest(formData: NinoMatchModel, journey: Journey.Value)(implicit
+  private def matchNotFoundBadRequest(formData: NinoMatchModel, service: Service, journey: Journey.Value)(implicit
     request: Request[AnyContent]
   ): Result = {
     val errorMsg  = Messages("cds.matching-error.individual-not-found")
     val errorForm = rowIndividualsNinoForm.withGlobalError(errorMsg).fill(formData)
-    BadRequest(matchNinoRowIndividualView(errorForm, journey))
+    BadRequest(matchNinoRowIndividualView(errorForm, service, journey))
   }
 
 }

@@ -18,10 +18,13 @@ package common.pages.subscription
 
 import common.pages.WebPage
 import common.support.Env
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 trait SubscriptionCreateEUVatDetailsPage extends WebPage {
 
-  val url: String = Env.frontendHost + "/customs-enrolment-services/register/vat-registered-eu"
+  def url(service: Service): String =
+    Env.frontendHost + s"/customs-enrolment-services/${service.name}/register/vat-registered-eu"
+
 }
 
 object SubscriptionCreateEUVatDetailsPage extends SubscriptionCreateEUVatDetailsPage {

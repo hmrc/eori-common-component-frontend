@@ -23,7 +23,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, UtrMatchModel}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.utrForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_utr_subscription
 import util.ViewSpec
 
@@ -115,18 +115,24 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
   }
 
   lazy val companyDoc: Document =
-    Jsoup.parse(contentAsString(view(standardForm, CdsOrganisationType.CompanyId, Journey.Subscribe)))
+    Jsoup.parse(contentAsString(view(standardForm, CdsOrganisationType.CompanyId, Service.ATaR, Journey.Subscribe)))
 
   lazy val notSelectedCompanyDoc: Document =
-    Jsoup.parse(contentAsString(view(noOptionSelectedForm, CdsOrganisationType.CompanyId, Journey.Subscribe)))
+    Jsoup.parse(
+      contentAsString(view(noOptionSelectedForm, CdsOrganisationType.CompanyId, Service.ATaR, Journey.Subscribe))
+    )
 
   lazy val individualDoc: Document =
-    Jsoup.parse(contentAsString(view(standardForm, CdsOrganisationType.SoleTraderId, Journey.Subscribe)))
+    Jsoup.parse(contentAsString(view(standardForm, CdsOrganisationType.SoleTraderId, Service.ATaR, Journey.Subscribe)))
 
   lazy val notSelectedIndividualDoc: Document =
-    Jsoup.parse(contentAsString(view(noOptionSelectedForm, CdsOrganisationType.SoleTraderId, Journey.Subscribe)))
+    Jsoup.parse(
+      contentAsString(view(noOptionSelectedForm, CdsOrganisationType.SoleTraderId, Service.ATaR, Journey.Subscribe))
+    )
 
   lazy val incorrectUtrDoc: Document =
-    Jsoup.parse(contentAsString(view(incorrectUtrForm, CdsOrganisationType.SoleTraderId, Journey.Subscribe)))
+    Jsoup.parse(
+      contentAsString(view(incorrectUtrForm, CdsOrganisationType.SoleTraderId, Service.ATaR, Journey.Subscribe))
+    )
 
 }

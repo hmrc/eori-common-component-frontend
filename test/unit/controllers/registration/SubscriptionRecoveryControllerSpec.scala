@@ -32,7 +32,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.Subscri
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{RecipientDetails, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RandomUUIDGenerator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
@@ -114,7 +114,10 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
 
   "Viewing the Organisation Name Matching form" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.complete(Journey.Register))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+      mockAuthConnector,
+      controller.complete(Service.ATaR, Journey.Register)
+    )
     def setupMockCommon() = {
       when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(mockSubscriptionDetailsHolder))
@@ -355,7 +358,7 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
   def callEnrolmentComplete(userId: String = defaultUserId, journey: Journey.Value)(test: Future[Result] => Any) {
 
     withAuthorisedUser(userId, mockAuthConnector)
-    test(controller.complete(journey).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.complete(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
 }

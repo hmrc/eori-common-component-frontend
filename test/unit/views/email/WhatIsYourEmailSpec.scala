@@ -22,7 +22,7 @@ import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.{EmailForm, EmailViewModel}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.what_is_your_email
 import util.ViewSpec
 
@@ -70,17 +70,17 @@ class WhatIsYourEmailSpec extends ViewSpec {
   }
 
   lazy val MigrateDoc: Document = {
-    val result = view(form, Journey.Subscribe)
+    val result = view(form, Service.ATaR, Journey.Subscribe)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val GYEDoc: Document = {
-    val result = view(form, Journey.Register)
+    val result = view(form, Service.ATaR, Journey.Register)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val docWithErrors: Document = {
-    val result = view(formWithError, Journey.Subscribe)
+    val result = view(formWithError, Service.ATaR, Journey.Subscribe)
     Jsoup.parse(contentAsString(result))
   }
 

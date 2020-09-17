@@ -25,6 +25,7 @@
 @import views.html.helper._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.frontend._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 @this(layout_di: layout)
 @(cdsOrgType: Option[CdsOrganisationType],
@@ -32,6 +33,7 @@ isPartnership: Boolean,
 registration: RegistrationDetails,
 subscription: SubscriptionDetails,
 personalDataDisclosureConsent: Boolean,
+service: Service,
 journey: Journey.Value,
 isUserIdentifiedByRegService: Boolean,
 rowHaveUtrEnabled: Boolean
@@ -189,7 +191,7 @@ rowHaveUtrEnabled: Boolean
                 </td>
                 @if(!isUserIdentifiedByRegService) {
                 <td>
-                    <a id="review-tbl__full-name_change" href="@RowIndividualNameDateOfBirthController.reviewForm(orgType, journey)">
+                    <a id="review-tbl__full-name_change" href="@RowIndividualNameDateOfBirthController.reviewForm(orgType, service, journey)">
                         @messages("cds.form.change") <span class="visually-hidden"> @messages("subscription.check-your-details.full-name.label")</span>
                     </a>
                 </td>
@@ -205,7 +207,7 @@ rowHaveUtrEnabled: Boolean
                     </td>
                     @if(!isUserIdentifiedByRegService) {
                     <td>
-                        <a id="review-tbl__date-of-birth_change" href="@RowIndividualNameDateOfBirthController.reviewForm(orgType, journey)">
+                        <a id="review-tbl__date-of-birth_change" href="@RowIndividualNameDateOfBirthController.reviewForm(orgType, service, journey)">
                             @messages("cds.form.change") <span class="visually-hidden"> @messages("subscription.check-your-details.date-of-birth.label")</span>
                         </a>
                     </td>
@@ -222,7 +224,7 @@ rowHaveUtrEnabled: Boolean
                     </td>
                     @if(!isUserIdentifiedByRegService) {
                         <td>
-                            <a id="review-tbl__business-name_change" href="@WhatIsYourOrgNameController.showForm(isInReviewMode = true, organisationType = orgType, journey)">
+                            <a id="review-tbl__business-name_change" href="@WhatIsYourOrgNameController.showForm(isInReviewMode = true, organisationType = orgType, service, journey)">
                                 @messages("cds.form.change") <span class="visually-hidden"> @orgNameLabel</span>
                             </a>
                         </td>
@@ -239,7 +241,7 @@ rowHaveUtrEnabled: Boolean
                 </td>
                 @if(!isUserIdentifiedByRegService) {
                 <td>
-                    <a id="review-tbl__have-utr_change" href="@DoYouHaveAUtrNumberController.form(organisationType = orgType, journey, isInReviewMode = true)">
+                    <a id="review-tbl__have-utr_change" href="@DoYouHaveAUtrNumberController.form(organisationType = orgType, service, journey, isInReviewMode = true)">
                         @messages("cds.form.change") <span class="govuk-visually-hidden"> @messages("cds.matching.organisation-utr.label")</span>
                     </a>
                 </td>
@@ -294,7 +296,7 @@ rowHaveUtrEnabled: Boolean
                         @transformCountryCodeToOptionalLabel(Some(registration.address.countryCode))
                     </td>
                     <td>
-                        <a id="review-tbl__six_line_address_change" href="@SixLineAddressController.showForm(isInReviewMode = true, organisationType = orgType, journey)">
+                        <a id="review-tbl__six_line_address_change" href="@SixLineAddressController.showForm(isInReviewMode = true, organisationType = orgType, service, journey)">
                             @messages("cds.form.change") <span class="visually-hidden"> @businessDetailsLabel</span>
                         </a>
                     </td>
@@ -308,7 +310,7 @@ rowHaveUtrEnabled: Boolean
                     </th>
                     <td>@formatDate(de)</td>
                     <td>
-                        <a href="@DateOfEstablishmentController.reviewForm(journey)">
+                        <a href="@DateOfEstablishmentController.reviewForm(service, journey)">
                             @messages("cds.form.change") <span class="visually-hidden"> @getDateOfEstablishmentLabel</span>
                         </a>
                     </td>
@@ -329,7 +331,7 @@ rowHaveUtrEnabled: Boolean
                         @transformCountryCodeToOptionalLabel(address.countryCode).map(_.appendBr)
                     </td>
                     <td>
-                        <a id="review-tbl__contact_change" href="@ContactDetailsController.reviewForm(journey)">
+                        <a id="review-tbl__contact_change" href="@ContactDetailsController.reviewForm(service, journey)">
                             @messages("cds.form.change") <span class="visually-hidden"> @messages("cds.form.customs-contact")</span>
                         </a>
                     </td>
@@ -343,7 +345,7 @@ rowHaveUtrEnabled: Boolean
                     @n.shortName.getOrElse(messages("cds.not-entered.label"))
                     </td>
                     <td>
-                        <a id="review-tbl__short-name_change" href="@BusinessShortNameController.reviewForm(journey)">
+                        <a id="review-tbl__short-name_change" href="@BusinessShortNameController.reviewForm(service, journey)">
                             @messages("cds.form.change") <span class="visually-hidden"> @messages("cds.form.shortened-name")</span>
                         </a>
                     </td>
@@ -364,7 +366,7 @@ rowHaveUtrEnabled: Boolean
                     }
                     </td>
                     <td>
-                        <a id="review-tbl__gb-vat_change" href="@VATNumberPage.reviewForm(journey)">
+                        <a id="review-tbl__gb-vat_change" href="@VATNumberPage.reviewForm(service, journey)">
                             @messages("cds.form.change") <span class="visually-hidden"> @messages("cds.form.gb-vat-number")</span>
                         </a>
                     </td>
@@ -419,11 +421,11 @@ rowHaveUtrEnabled: Boolean
 
                     <td>
                         @if(subscription.vatEUDetails.nonEmpty) {
-                        <a id="review-tbl__eu-vat_change" href="@VatDetailsEuConfirmController.reviewForm(journey)">
+                        <a id="review-tbl__eu-vat_change" href="@VatDetailsEuConfirmController.reviewForm(service, journey)">
                             @messages("cds.form.change") <span class="visually-hidden"> @messages("cds.form.eu-vat-numbers")</span>
                         </a>
                         } else {
-                        <a id="review-tbl__eu-vat_change" href="@VatRegisteredEuController.reviewForm(journey)">
+                        <a id="review-tbl__eu-vat_change" href="@VatRegisteredEuController.reviewForm(service, journey)">
                             @messages("cds.form.change") <span class="visually-hidden"> @messages("cds.form.eu-vat-numbers")</span>
                         </a>
                         }
@@ -438,7 +440,7 @@ rowHaveUtrEnabled: Boolean
                         <th id="review-tbl__activity_heading" class="bold">@messages("cds.form.sic-code")</th>
                         <td id="review-tbl__activity">@sic</td>
                         <td>
-                            <a id="review-tbl__activity_change" href="@SicCodeController.submit(isInReviewMode = true, journey)">
+                            <a id="review-tbl__activity_change" href="@SicCodeController.submit(isInReviewMode = true, service, journey)">
                                 @messages("cds.form.change") <span class="visually-hidden"> @messages("cds.form.sic-code")</span>
                             </a>
                         </td>
@@ -457,7 +459,7 @@ rowHaveUtrEnabled: Boolean
                 }
                 </td>
                 <td>
-                <a id="review-tbl__disclosure_change" href="@DisclosePersonalDetailsConsentController.reviewForm(journey)">
+                <a id="review-tbl__disclosure_change" href="@DisclosePersonalDetailsConsentController.reviewForm(service, journey)">
                     @messages("cds.form.change") <span class="visually-hidden"> @disclosureLabel</span>
                 </a>
                 </td>
@@ -467,7 +469,7 @@ rowHaveUtrEnabled: Boolean
         <p id="disclaimer-content">@messages("cds.form.disclaimer")</p>
 
         <div class="form-group">
-            @helper.form(CheckYourDetailsRegisterController.submitDetails(journey)) {
+            @helper.form(CheckYourDetailsRegisterController.submitDetails(service, journey)) {
                 @CSRF.formField
 
                 <p><input class="button" type="submit" value=@messages("cds.form.send")></p>

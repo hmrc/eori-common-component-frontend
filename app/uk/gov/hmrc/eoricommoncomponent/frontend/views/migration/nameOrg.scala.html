@@ -17,12 +17,14 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegistrationDetails
 @import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NameOrganisationMatch
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 
 @this(layout_di: layout)
 @(nameOrganisationForm: Form[NameOrganisationMatchModel],
     registrationDetails: RegistrationDetails,       
     isInReviewMode: Boolean,
+    service: Service,
     journey: Journey.Value)(implicit request: Request[_], messages: Messages)
 
 @import views.html.helper._
@@ -38,7 +40,7 @@
     @helpers.errorSummary(nameOrganisationForm)
 
     <div class="form-group">
-        @helper.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameOrgController.submit(isInReviewMode, journey), 'id -> "nameUtrOrganisationForm") {
+        @helper.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameOrgController.submit(isInReviewMode, service, journey), 'id -> "nameUtrOrganisationForm") {
 
         @CSRF.formField
 

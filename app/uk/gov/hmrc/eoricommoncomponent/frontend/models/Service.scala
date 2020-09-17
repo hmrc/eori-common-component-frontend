@@ -32,6 +32,14 @@ object Service {
     override val enrolmentKey: String = "HMRC-ATAR-ORG"
   }
 
+  /**
+    * Used to provide a 'service' parameter for controllers that are not currently in scope
+    */
+  case object NullService extends Service {
+    override val name: String         = "null-service"
+    override val enrolmentKey: String = ""
+  }
+
   private val supportedServices = Set[Service](ATaR)
 
   def withName(str: String): Option[Service] =

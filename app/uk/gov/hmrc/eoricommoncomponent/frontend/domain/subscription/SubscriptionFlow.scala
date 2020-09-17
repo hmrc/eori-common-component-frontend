@@ -18,7 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription
 
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 
 object SubscriptionFlows {
 
@@ -262,211 +262,272 @@ object SubscriptionFlow {
 
 }
 
-sealed abstract class SubscriptionPage(val url: String)
+sealed abstract class SubscriptionPage() {
+  def url(service: Service): String
+}
 
-case object ContactDetailsSubscriptionFlowPageGetEori
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactDetailsController
-        .createForm(journey = Journey.Register)
-        .url
-    )
+case object ContactDetailsSubscriptionFlowPageGetEori extends SubscriptionPage {
 
-case object ContactDetailsSubscriptionFlowPageMigrate
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactDetailsController
-        .createForm(journey = Journey.Subscribe)
-        .url
-    )
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactDetailsController
+      .createForm(service, Journey.Register)
+      .url
 
-case object UtrSubscriptionFlowPage
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.HaveUtrSubscriptionController
-        .createForm(journey = Journey.Subscribe)
-        .url
-    )
+}
 
-case object NinoSubscriptionFlowPage
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.HaveNinoSubscriptionController
-        .createForm(journey = Journey.Subscribe)
-        .url
-    )
+case object ContactDetailsSubscriptionFlowPageMigrate extends SubscriptionPage {
 
-case object AddressDetailsSubscriptionFlowPage
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.createForm(journey =
-        Journey.Subscribe
-      ).url
-    )
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactDetailsController
+      .createForm(service, Journey.Subscribe)
+      .url
 
-case object NameUtrDetailsSubscriptionFlowPage
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController
-        .createForm(journey = Journey.Subscribe)
-        .url
-    )
+}
 
-case object NameDetailsSubscriptionFlowPage
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameOrgController
-        .createForm(journey = Journey.Subscribe)
-        .url
-    )
+case object UtrSubscriptionFlowPage extends SubscriptionPage {
 
-case object NameDobDetailsSubscriptionFlowPage
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController
-        .createForm(journey = Journey.Subscribe)
-        .url
-    )
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.HaveUtrSubscriptionController
+      .createForm(service, Journey.Subscribe)
+      .url
 
-case object HowCanWeIdentifyYouSubscriptionFlowPage
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController
-        .createForm(journey = Journey.Subscribe)
-        .url
-    )
+}
 
-case object RowDateOfEstablishmentSubscriptionFlowPage
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController
-        .createForm(journey = Journey.Subscribe)
-        .url
-    )
+case object NinoSubscriptionFlowPage extends SubscriptionPage {
 
-case object DateOfEstablishmentSubscriptionFlowPage
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController
-        .createForm(journey = Journey.Register)
-        .url
-    )
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.HaveNinoSubscriptionController
+      .createForm(service, Journey.Subscribe)
+      .url
 
-case object DateOfEstablishmentSubscriptionFlowPageMigrate
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController
-        .createForm(journey = Journey.Subscribe)
-        .url
-    )
+}
 
-case object VatRegisteredUkSubscriptionFlowPage
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatRegisteredUkController
-        .createForm(journey = Journey.Register)
-        .url
-    )
+case object AddressDetailsSubscriptionFlowPage extends SubscriptionPage {
 
-//case object VatGroupFlowPage extends SubscriptionPage(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatGroupController.createForm(journey = Journey.Register).url)
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.createForm(
+      service,
+      Journey.Subscribe
+    ).url
 
-case object BusinessShortNameSubscriptionFlowPage
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.BusinessShortNameController
-        .createForm(journey = Journey.Register)
-        .url
-    )
+}
 
-case object VatDetailsSubscriptionFlowPage
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatDetailsController
-        .createForm(journey = Journey.Register)
-        .url
-    )
+case object NameUtrDetailsSubscriptionFlowPage extends SubscriptionPage {
 
-case object VatRegisteredEuSubscriptionFlowPage
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatRegisteredEuController
-        .createForm(journey = Journey.Register)
-        .url
-    )
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController
+      .createForm(service, Journey.Subscribe)
+      .url
 
-case object VatEUIdsSubscriptionFlowPage
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatDetailsEuController
-        .createForm(journey = Journey.Register)
-        .url
-    )
+}
 
-case object VatEUConfirmSubscriptionFlowPage
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatDetailsEuConfirmController
-        .createForm(journey = Journey.Register)
-        .url
-    )
+case object NameDetailsSubscriptionFlowPage extends SubscriptionPage {
 
-case object EoriConsentSubscriptionFlowPage
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DisclosePersonalDetailsConsentController
-        .createForm(journey = Journey.Register)
-        .url
-    )
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameOrgController
+      .createForm(service, Journey.Subscribe)
+      .url
 
-case object SicCodeSubscriptionFlowPage
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.SicCodeController
-        .createForm(journey = Journey.Register)
-        .url
-    )
+}
 
-case object EoriNumberSubscriptionFlowPage
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController
-        .createForm(journey = Journey.Subscribe)
-        .url
-    )
+case object NameDobDetailsSubscriptionFlowPage extends SubscriptionPage {
 
-case object EmailSubscriptionFlowPage
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.WhatIsYourEmailController
-        .createForm(journey = Journey.Subscribe)
-        .url
-    )
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController
+      .createForm(service, Journey.Subscribe)
+      .url
 
-case object CheckYourEmailSubscriptionFlowPage
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.CheckYourEmailController
-        .createForm(journey = Journey.Subscribe)
-        .url
-    )
+}
 
-case object ReviewDetailsPageGetYourEORI
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
-        .determineRoute(journey = Journey.Register)
-        .url
-    )
+case object HowCanWeIdentifyYouSubscriptionFlowPage extends SubscriptionPage {
 
-case object ReviewDetailsPageSubscription
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
-        .determineRoute(journey = Journey.Subscribe)
-        .url
-    )
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController
+      .createForm(service, Journey.Subscribe)
+      .url
 
-case object RegistrationConfirmPage
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.ConfirmContactDetailsController
-        .form(journey = Journey.Register)
-        .url
-    )
+}
 
-case object ConfirmIndividualTypePage
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ConfirmIndividualTypeController
-        .form(journey = Journey.Register)
-        .url
-    )
+case object RowDateOfEstablishmentSubscriptionFlowPage extends SubscriptionPage {
 
-case object UserLocationPage
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.UserLocationController
-        .form(journey = Journey.Subscribe)
-        .url
-    )
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController
+      .createForm(service, Journey.Subscribe)
+      .url
 
-case object BusinessDetailsRecoveryPage
-    extends SubscriptionPage(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.BusinessDetailsRecoveryController
-        .form(journey = Journey.Register)
-        .url
-    )
+}
 
-case class PreviousPage(override val url: String) extends SubscriptionPage(url)
+case object DateOfEstablishmentSubscriptionFlowPage extends SubscriptionPage {
+
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController
+      .createForm(service, Journey.Register)
+      .url
+
+}
+
+case object DateOfEstablishmentSubscriptionFlowPageMigrate extends SubscriptionPage {
+
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController
+      .createForm(service, Journey.Subscribe)
+      .url
+
+}
+
+case object VatRegisteredUkSubscriptionFlowPage extends SubscriptionPage {
+
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatRegisteredUkController
+      .createForm(service, Journey.Register)
+      .url
+
+}
+
+case object BusinessShortNameSubscriptionFlowPage extends SubscriptionPage {
+
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.BusinessShortNameController
+      .createForm(service, Journey.Register)
+      .url
+
+}
+
+case object VatDetailsSubscriptionFlowPage extends SubscriptionPage {
+
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatDetailsController
+      .createForm(service, Journey.Register)
+      .url
+
+}
+
+case object VatRegisteredEuSubscriptionFlowPage extends SubscriptionPage {
+
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatRegisteredEuController
+      .createForm(service, Journey.Register)
+      .url
+
+}
+
+case object VatEUIdsSubscriptionFlowPage extends SubscriptionPage {
+
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatDetailsEuController
+      .createForm(service, Journey.Register)
+      .url
+
+}
+
+case object VatEUConfirmSubscriptionFlowPage extends SubscriptionPage {
+
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatDetailsEuConfirmController
+      .createForm(service, Journey.Register)
+      .url
+
+}
+
+case object EoriConsentSubscriptionFlowPage extends SubscriptionPage {
+
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DisclosePersonalDetailsConsentController
+      .createForm(service, Journey.Register)
+      .url
+
+}
+
+case object SicCodeSubscriptionFlowPage extends SubscriptionPage {
+
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.SicCodeController
+      .createForm(service, Journey.Register)
+      .url
+
+}
+
+case object EoriNumberSubscriptionFlowPage extends SubscriptionPage {
+
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController
+      .createForm(service, Journey.Subscribe)
+      .url
+
+}
+
+case object EmailSubscriptionFlowPage extends SubscriptionPage {
+
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.WhatIsYourEmailController
+      .createForm(service, Journey.Subscribe)
+      .url
+
+}
+
+case object CheckYourEmailSubscriptionFlowPage extends SubscriptionPage {
+
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.CheckYourEmailController
+      .createForm(service, Journey.Subscribe)
+      .url
+
+}
+
+case object ReviewDetailsPageGetYourEORI extends SubscriptionPage {
+
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
+      .determineRoute(service, Journey.Register)
+      .url
+
+}
+
+case object ReviewDetailsPageSubscription extends SubscriptionPage {
+
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
+      .determineRoute(service, Journey.Subscribe)
+      .url
+
+}
+
+case object RegistrationConfirmPage extends SubscriptionPage {
+
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.ConfirmContactDetailsController
+      .form(service, Journey.Register)
+      .url
+
+}
+
+case object ConfirmIndividualTypePage extends SubscriptionPage {
+
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ConfirmIndividualTypeController
+      .form(service, Journey.Register)
+      .url
+
+}
+
+case object UserLocationPage extends SubscriptionPage {
+
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.UserLocationController
+      .form(service, Journey.Subscribe)
+      .url
+
+}
+
+case object BusinessDetailsRecoveryPage extends SubscriptionPage {
+
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.BusinessDetailsRecoveryController
+      .form(service, Journey.Register)
+      .url
+
+}
+
+case class PreviousPage(someUrl: String) extends SubscriptionPage() {
+  override def url(service: Service): String = someUrl
+}

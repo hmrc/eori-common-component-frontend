@@ -34,7 +34,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   SubscriptionFlowInfo,
   SubscriptionPage
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
@@ -148,7 +148,9 @@ class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with Befo
 
       submitForm(validRequestNo, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith("customs-enrolment-services/register/matching/review-determine")
+        result.header.headers(LOCATION) should endWith(
+          "customs-enrolment-services/atar/register/matching/review-determine"
+        )
       }
     }
   }
@@ -156,14 +158,14 @@ class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with Befo
   private def createForm(journey: Journey.Value = Journey.Register)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     mockIsIndividual()
-    test(controller.createForm(journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+    test(controller.createForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }
 
   private def reviewForm(journey: Journey.Value = Journey.Register)(test: Future[Result] => Any) {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     mockIsIndividual()
     when(mockSubscriptionBusinessService.getCachedVatRegisteredUk(any[HeaderCarrier])).thenReturn(true)
-    test(controller.reviewForm(journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+    test(controller.reviewForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }
 
   private def submitForm(form: Map[String, String], isInReviewMode: Boolean = false)(
@@ -173,7 +175,7 @@ class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with Befo
     mockIsIndividual()
     test(
       controller
-        .submit(isInReviewMode: Boolean, Journey.Register)
+        .submit(isInReviewMode: Boolean, Service.ATaR, Journey.Register)
         .apply(SessionBuilder.buildRequestWithFormValues(form))
     )
   }
@@ -189,7 +191,7 @@ class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with Befo
     when(mockSubscriptionFlowManager.stepInformation(any())(any[HeaderCarrier], any[Request[AnyContent]]))
       .thenReturn(mockSubscriptionFlowInfo)
     when(mockSubscriptionFlowInfo.nextPage).thenReturn(mockSubscriptionPage)
-    when(mockSubscriptionPage.url).thenReturn(url)
+    when(mockSubscriptionPage.url(any())).thenReturn(url)
   }
 
 }

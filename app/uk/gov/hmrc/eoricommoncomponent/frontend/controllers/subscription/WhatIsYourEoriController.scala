@@ -27,7 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriNumberViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm.eoriNumberForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
@@ -51,48 +51,58 @@ class WhatIsYourEoriController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.cachedEoriNumber.map(
-        eori => populateView(eori, isInReviewMode = false, journey = journey)
+        eori => populateView(eori, isInReviewMode = false, service, journey)
       )
   }
 
-  def reviewForm(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.getCachedEoriNumber.map(
-        eori => populateView(Some(eori), isInReviewMode = true, journey = journey)
+        eori => populateView(Some(eori), isInReviewMode = true, service, journey)
       )
   }
 
-  def submit(isInReviewMode: Boolean, journey: Journey.Value): Action[AnyContent] =
+  def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       eoriNumberForm.bindFromRequest.fold(
         formWithErrors =>
           Future.successful(
             BadRequest(
-              whatIsYourEoriView(formWithErrors, isInReviewMode, UserLocation.isRow(requestSessionData), journey)
+              whatIsYourEoriView(
+                formWithErrors,
+                isInReviewMode,
+                UserLocation.isRow(requestSessionData),
+                service,
+                journey
+              )
             )
           ),
-        formData => submitNewDetails(formData, isInReviewMode, journey)
+        formData => submitNewDetails(formData, isInReviewMode, service, journey)
       )
     }
 
-  private def populateView(eoriNumber: Option[String], isInReviewMode: Boolean, journey: Journey.Value)(implicit
-    hc: HeaderCarrier,
-    request: Request[AnyContent]
-  ) = {
+  private def populateView(
+    eoriNumber: Option[String],
+    isInReviewMode: Boolean,
+    service: Service,
+    journey: Journey.Value
+  )(implicit hc: HeaderCarrier, request: Request[AnyContent]) = {
     val form = eoriNumber.map(EoriNumberViewModel).fold(eoriNumberForm)(eoriNumberForm.fill)
-    Ok(whatIsYourEoriView(form, isInReviewMode, UserLocation.isRow(requestSessionData), journey))
+    Ok(whatIsYourEoriView(form, isInReviewMode, UserLocation.isRow(requestSessionData), service, journey))
   }
 
-  private def submitNewDetails(formData: EoriNumberViewModel, isInReviewMode: Boolean, journey: Journey.Value)(implicit
-    hc: HeaderCarrier,
-    request: Request[AnyContent]
-  ) =
+  private def submitNewDetails(
+    formData: EoriNumberViewModel,
+    isInReviewMode: Boolean,
+    service: Service,
+    journey: Journey.Value
+  )(implicit hc: HeaderCarrier, request: Request[AnyContent]) =
     subscriptionDetailsHolderService.cacheEoriNumber(formData.eoriNumber).map { _ =>
-      if (isInReviewMode) Redirect(DetermineReviewPageController.determineRoute(journey))
-      else Redirect(subscriptionFlowManager.stepInformation(EoriNumberSubscriptionFlowPage).nextPage.url)
+      if (isInReviewMode) Redirect(DetermineReviewPageController.determineRoute(service, journey))
+      else Redirect(subscriptionFlowManager.stepInformation(EoriNumberSubscriptionFlowPage).nextPage.url(service))
     }
 
 }

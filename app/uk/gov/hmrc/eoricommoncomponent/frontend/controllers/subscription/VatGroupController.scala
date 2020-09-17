@@ -23,7 +23,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.EmailController
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_group
 
 import scala.concurrent.ExecutionContext
@@ -48,7 +48,7 @@ class VatGroupController @Inject() (
         formWithErrors => BadRequest(vatGroupView(formWithErrors, journey)),
         yesNoAnswer =>
           if (yesNoAnswer.isNo)
-            Redirect(EmailController.form(Journey.Register))
+            Redirect(EmailController.form(Service.NullService, Journey.Register))
           else
             Redirect(routes.VatGroupsCannotRegisterUsingThisServiceController.form(journey))
       )

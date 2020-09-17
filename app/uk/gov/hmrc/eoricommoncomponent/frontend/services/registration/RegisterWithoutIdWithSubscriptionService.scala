@@ -24,7 +24,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.ResponseCommon
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.ResponseCommon._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
 import uk.gov.hmrc.http.HeaderCarrier
@@ -40,10 +40,11 @@ class RegisterWithoutIdWithSubscriptionService @Inject() (
   sub02Controller: Sub02Controller
 )(implicit ec: ExecutionContext) {
 
-  def rowRegisterWithoutIdWithSubscription(loggedInUser: LoggedInUserWithEnrolments, journey: Journey.Value)(implicit
-    hc: HeaderCarrier,
-    request: Request[AnyContent]
-  ): Future[Result] = {
+  def rowRegisterWithoutIdWithSubscription(
+    loggedInUser: LoggedInUserWithEnrolments,
+    service: Service,
+    journey: Journey.Value
+  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
 
     def isRow = UserLocation.isRow(requestSessionData)
 
@@ -52,18 +53,21 @@ class RegisterWithoutIdWithSubscriptionService @Inject() (
 
     sessionCache.registrationDetails flatMap {
       case rd if applicableForRegistration(rd) =>
-        rowServiceCall(loggedInUser, journey)
-      case _ => createSubscription(journey)(request)
+        rowServiceCall(loggedInUser, service, journey)
+      case _ => createSubscription(service, journey)(request)
     }
   }
 
-  def createSubscription(journey: Journey.Value)(implicit request: Request[AnyContent]): Future[Result] =
-    sub02Controller.subscribe(journey)(request)
-
-  private def rowServiceCall(loggedInUser: LoggedInUserWithEnrolments, journey: Journey.Value)(implicit
-    hc: HeaderCarrier,
+  def createSubscription(service: Service, journey: Journey.Value)(implicit
     request: Request[AnyContent]
-  ) = {
+  ): Future[Result] =
+    sub02Controller.subscribe(service, journey)(request)
+
+  private def rowServiceCall(
+    loggedInUser: LoggedInUserWithEnrolments,
+    service: Service,
+    journey: Journey.Value
+  )(implicit hc: HeaderCarrier, request: Request[AnyContent]) = {
 
     def registerWithoutIdWithSubscription(
       orgType: Option[EtmpOrganisationType],
@@ -74,6 +78,7 @@ class RegisterWithoutIdWithSubscriptionService @Inject() (
         case Some(NA) =>
           rowIndividualRegisterWithSubscription(
             loggedInUser,
+            service,
             journey,
             regDetails,
             subDetails,
@@ -82,6 +87,7 @@ class RegisterWithoutIdWithSubscriptionService @Inject() (
         case _ =>
           rowOrganisationRegisterWithSubscription(
             loggedInUser,
+            service,
             journey,
             regDetails,
             subDetails,
@@ -99,6 +105,7 @@ class RegisterWithoutIdWithSubscriptionService @Inject() (
 
   private def rowIndividualRegisterWithSubscription(
     loggedInUser: LoggedInUserWithEnrolments,
+    service: Service,
     journey: Journey.Value,
     registrationDetails: RegistrationDetails,
     subscriptionDetails: SubscriptionDetails,
@@ -116,7 +123,7 @@ class RegisterWithoutIdWithSubscriptionService @Inject() (
           )
           .flatMap {
             case RegisterWithoutIDResponse(ResponseCommon(status, _, _, _), _) if status == StatusOK =>
-              sub02Controller.subscribe(journey)(request)
+              sub02Controller.subscribe(service, journey)(request)
             case _ =>
               throw new RuntimeException("Registration of individual FAILED")
           }
@@ -128,6 +135,7 @@ class RegisterWithoutIdWithSubscriptionService @Inject() (
 
   private def rowOrganisationRegisterWithSubscription(
     loggedInUser: LoggedInUserWithEnrolments,
+    service: Service,
     journey: Journey.Value,
     registrationDetails: RegistrationDetails,
     subscriptionDetails: SubscriptionDetails,
@@ -143,7 +151,7 @@ class RegisterWithoutIdWithSubscriptionService @Inject() (
       )
       .flatMap {
         case RegisterWithoutIDResponse(ResponseCommon(status, _, _, _), _) if status == StatusOK =>
-          sub02Controller.subscribe(journey)(request)
+          sub02Controller.subscribe(service, journey)(request)
         case _ =>
           throw new RuntimeException("Registration of organisation FAILED")
       }

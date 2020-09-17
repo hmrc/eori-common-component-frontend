@@ -28,7 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, InternalId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.{Save4LaterService, UserGroupIdSubscriptionStatusCheckService}
@@ -53,43 +53,45 @@ class EmailController @Inject() (
   )(implicit request: Request[AnyContent], user: LoggedInUserWithEnrolments): Future[Result] =
     Future.successful(Redirect(EnrolmentExistsAgainstGroupIdController.show(journey)))
 
-  private def userIsInProcess(
-    journey: Journey.Value
-  )(implicit request: Request[AnyContent], user: LoggedInUserWithEnrolments): Future[Result] =
-    continue(journey)
+  private def userIsInProcess(service: Service, journey: Journey.Value)(implicit
+    request: Request[AnyContent],
+    user: LoggedInUserWithEnrolments
+  ): Future[Result] =
+    continue(service, journey)
 
   private def otherUserWithinGroupIsInProcess(
     journey: Journey.Value
   )(implicit request: Request[AnyContent], user: LoggedInUserWithEnrolments): Future[Result] =
     Future.successful(Redirect(EnrolmentPendingAgainstGroupIdController.show(journey)))
 
-  private def continue(
-    journey: Journey.Value
-  )(implicit request: Request[AnyContent], user: LoggedInUserWithEnrolments): Future[Result] =
+  private def continue(service: Service, journey: Journey.Value)(implicit
+    request: Request[AnyContent],
+    user: LoggedInUserWithEnrolments
+  ): Future[Result] =
     save4LaterService.fetchEmail(InternalId(user.internalId)) flatMap {
       _.fold {
         Logger.warn(s"[EmailController][form] -  emailStatus cache none ${user.internalId}")
-        Future.successful(Redirect(createForm(journey)))
+        Future.successful(Redirect(createForm(service, journey)))
       } { cachedEmailStatus =>
         if (cachedEmailStatus.isVerified)
           cdsFrontendDataCache.saveEmail(cachedEmailStatus.email) map { _ =>
-            Redirect(CheckYourEmailController.emailConfirmed(journey))
+            Redirect(CheckYourEmailController.emailConfirmed(service, journey))
           }
-        else checkWithEmailService(cachedEmailStatus, journey)
+        else checkWithEmailService(cachedEmailStatus, service, journey)
       }
     }
 
-  def form(journey: Journey.Value): Action[AnyContent] =
+  def form(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
       userGroupIdSubscriptionStatusCheckService.checksToProceed(GroupId(user.groupId), InternalId(user.internalId)) {
-        continue(journey)
+        continue(service, journey)
       }(groupIsEnrolled(journey)) {
-        userIsInProcess(journey)
+        userIsInProcess(service, journey)
       }(otherUserWithinGroupIsInProcess(journey))
 
     }
 
-  private def checkWithEmailService(emailStatus: EmailStatus, journey: Journey.Value)(implicit
+  private def checkWithEmailService(emailStatus: EmailStatus, service: Service, journey: Journey.Value)(implicit
     request: Request[AnyContent],
     hc: HeaderCarrier,
     userWithEnrolments: LoggedInUserWithEnrolments
@@ -105,13 +107,13 @@ class EmailController @Inject() (
             Logger.warn("saved verified email address true to cache")
             cdsFrontendDataCache.saveEmail(emailStatus.email)
           }
-        } yield Redirect(CheckYourEmailController.emailConfirmed(journey))
+        } yield Redirect(CheckYourEmailController.emailConfirmed(service, journey))
       case Some(false) =>
         Logger.warn("verified email address false")
-        Future.successful(Redirect(CheckYourEmailController.verifyEmailView(journey)))
+        Future.successful(Redirect(CheckYourEmailController.verifyEmailView(service, journey)))
       case _ =>
         Logger.error("Couldn't verify email address")
-        Future.successful(Redirect(CheckYourEmailController.verifyEmailView(journey)))
+        Future.successful(Redirect(CheckYourEmailController.verifyEmailView(service, journey)))
     }
 
 }

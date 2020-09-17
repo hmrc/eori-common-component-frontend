@@ -31,7 +31,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.{
   nameUtrOrganisationForm,
   nameUtrPartnershipForm
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
@@ -61,7 +61,7 @@ class NameIDOrgController @Inject() (
     else if (requestSessionData.isCompany) nameUtrCompanyForm
     else nameUtrOrganisationForm
 
-  def createForm(journey: Journey.Value): Action[AnyContent] =
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.cachedNameIdOrganisationViewModel flatMap { cachedNameUtrViewModel =>
         val selectedOrganisationType =
@@ -71,12 +71,13 @@ class NameIDOrgController @Inject() (
           selectedOrganisationType.getOrElse(""),
           OrganisationTypeConfigurations(selectedOrganisationType.getOrElse("")),
           isInReviewMode = false,
+          service,
           journey
         )
       }
     }
 
-  def reviewForm(journey: Journey.Value): Action[AnyContent] =
+  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.getCachedNameIdViewModel flatMap { cdm =>
         val selectedOrganisationType =
@@ -86,12 +87,13 @@ class NameIDOrgController @Inject() (
           selectedOrganisationType.getOrElse(""),
           OrganisationTypeConfigurations(selectedOrganisationType.getOrElse("")),
           isInReviewMode = true,
+          service,
           journey
         )
       }
     }
 
-  def submit(isInReviewMode: Boolean, journey: Journey.Value): Action[AnyContent] =
+  def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       form.bindFromRequest
         .fold(
@@ -105,11 +107,12 @@ class NameIDOrgController @Inject() (
                   registrationDetails,
                   isInReviewMode,
                   OrganisationTypeConfigurations(selectedOrganisationType.getOrElse("")).displayMode,
+                  service,
                   journey
                 )
               )
             },
-          formData => storeNameUtrDetails(formData, isInReviewMode, journey)
+          formData => storeNameUtrDetails(formData, isInReviewMode, service, journey)
         )
     }
 
@@ -118,6 +121,7 @@ class NameIDOrgController @Inject() (
     organisationType: String,
     conf: Configuration,
     isInReviewMode: Boolean,
+    service: Service,
     journey: Journey.Value
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
 
@@ -126,13 +130,14 @@ class NameIDOrgController @Inject() (
     require(OrganisationTypeConfigurations.contains(organisationType), invalidOrganisationType(organisationType))
 
     cdsFrontendDataCache.registrationDetails map { registrationDetails =>
-      Ok(nameIdView(nameUtrForm, registrationDetails, isInReviewMode, conf.displayMode, journey))
+      Ok(nameIdView(nameUtrForm, registrationDetails, isInReviewMode, conf.displayMode, service, journey))
     }
   }
 
   private def storeNameUtrDetails(
     formData: NameIdOrganisationMatchModel,
     inReviewMode: Boolean,
+    service: Service,
     journey: Journey.Value
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
     subscriptionDetailsHolderService
@@ -142,14 +147,14 @@ class NameIDOrgController @Inject() (
           if (inReviewMode)
             Redirect(
               uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
-                .determineRoute(journey)
+                .determineRoute(service, journey)
             )
           else
             Redirect(
               subscriptionFlowManager
                 .stepInformation(NameUtrDetailsSubscriptionFlowPage)
                 .nextPage
-                .url
+                .url(service)
             )
       )
 

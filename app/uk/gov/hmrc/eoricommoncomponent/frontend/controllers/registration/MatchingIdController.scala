@@ -24,7 +24,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.EnrolmentExtrac
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, FeatureFlags}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.MatchingService
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -39,18 +39,18 @@ class MatchingIdController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) with EnrolmentExtractor with FeatureFlags {
 
-  def matchWithIdOnly(): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def matchWithIdOnly(service: Service): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => loggedInUser: LoggedInUserWithEnrolments =>
       matchLoggedInUserAndRedirect(loggedInUser) {
-        Redirect(UserLocationController.form(Journey.Register))
+        Redirect(UserLocationController.form(service, Journey.Register))
       } {
-        Redirect(ConfirmContactDetailsController.form(Journey.Register))
+        Redirect(ConfirmContactDetailsController.form(service, Journey.Register))
       }
   }
 
-  def matchWithIdOnlyForExistingReg(): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def matchWithIdOnlyForExistingReg(service: Service): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
-      Future.successful(Redirect(UserLocationController.form(Journey.Subscribe)))
+      Future.successful(Redirect(UserLocationController.form(service, Journey.Subscribe)))
   }
 
   private def matchLoggedInUserAndRedirect(loggedInUser: LoggedInUserWithEnrolments)(

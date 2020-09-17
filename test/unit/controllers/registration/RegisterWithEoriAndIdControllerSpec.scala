@@ -35,7 +35,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.Su
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, ResponseCommon}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{MatchingService, Reg06Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
@@ -179,16 +179,17 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
-      controller.registerWithEoriAndId(Journey.Subscribe)
+      controller.registerWithEoriAndId(Service.ATaR, Journey.Subscribe)
     )
     val processingDateResponse: String = "19 April 2018"
     val emailVerificationTimestamp     = TestData.emailVerificationTimestamp
     "create a subscription for organisation" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(any[Option[CdsOrganisationType]], any[Journey.Value])(
-          any[HeaderCarrier],
-          any[Request[AnyContent]]
-        )
+        mockCdsSubscriber.subscribeWithCachedDetails(
+          any[Option[CdsOrganisationType]],
+          any[Service],
+          any[Journey.Value]
+        )(any[HeaderCarrier], any[Request[AnyContent]])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -242,10 +243,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(()))
 
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(meq(Some(CdsOrganisationType.SoleTrader)), any[Journey.Value])(
-          any[HeaderCarrier],
-          any[Request[AnyContent]]
-        )
+        mockCdsSubscriber.subscribeWithCachedDetails(
+          meq(Some(CdsOrganisationType.SoleTrader)),
+          any[Service],
+          any[Journey.Value]
+        )(any[HeaderCarrier], any[Request[AnyContent]])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -284,10 +286,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(()))
 
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(meq(Some(CdsOrganisationType.SoleTrader)), any[Journey.Value])(
-          any[HeaderCarrier],
-          any[Request[AnyContent]]
-        )
+        mockCdsSubscriber.subscribeWithCachedDetails(
+          meq(Some(CdsOrganisationType.SoleTrader)),
+          any[Service],
+          any[Journey.Value]
+        )(any[HeaderCarrier], any[Request[AnyContent]])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -332,10 +335,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(()))
 
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(meq(Some(CdsOrganisationType.Individual)), any[Journey.Value])(
-          any[HeaderCarrier],
-          any[Request[AnyContent]]
-        )
+        mockCdsSubscriber.subscribeWithCachedDetails(
+          meq(Some(CdsOrganisationType.Individual)),
+          any[Service],
+          any[Journey.Value]
+        )(any[HeaderCarrier], any[Request[AnyContent]])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -357,10 +361,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     "create a subscription for organisation ROW when cachedCustomsId is present" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(any[Option[CdsOrganisationType]], any[Journey.Value])(
-          any[HeaderCarrier],
-          any[Request[AnyContent]]
-        )
+        mockCdsSubscriber.subscribeWithCachedDetails(
+          any[Option[CdsOrganisationType]],
+          any[Service],
+          any[Journey.Value]
+        )(any[HeaderCarrier], any[Request[AnyContent]])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -416,10 +421,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(()))
 
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(meq(Some(CdsOrganisationType.SoleTrader)), any[Journey.Value])(
-          any[HeaderCarrier],
-          any[Request[AnyContent]]
-        )
+        mockCdsSubscriber.subscribeWithCachedDetails(
+          meq(Some(CdsOrganisationType.SoleTrader)),
+          any[Service],
+          any[Journey.Value]
+        )(any[HeaderCarrier], any[Request[AnyContent]])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -443,10 +449,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     "redirect to pending when subscription for organisation returns status as WORKLIST within SubscriptionPending" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(any[Option[CdsOrganisationType]], any[Journey.Value])(
-          any[HeaderCarrier],
-          any[Request[AnyContent]]
-        )
+        mockCdsSubscriber.subscribeWithCachedDetails(
+          any[Option[CdsOrganisationType]],
+          any[Service],
+          any[Journey.Value]
+        )(any[HeaderCarrier], any[Request[AnyContent]])
       ).thenReturn(
         Future.successful(
           SubscriptionPending(formBundleIdResponse, processingDateResponse, Some(emailVerificationTimestamp))
@@ -508,10 +515,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponseDeferred))
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(any[Option[CdsOrganisationType]], any[Journey.Value])(
-          any[HeaderCarrier],
-          any[Request[AnyContent]]
-        )
+        mockCdsSubscriber.subscribeWithCachedDetails(
+          any[Option[CdsOrganisationType]],
+          any[Service],
+          any[Journey.Value]
+        )(any[HeaderCarrier], any[Request[AnyContent]])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -567,10 +575,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     "redirect to processing when Subscription Status (SUB01) response is SubscriptionProcessing" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(any[Option[CdsOrganisationType]], any[Journey.Value])(
-          any[HeaderCarrier],
-          any[Request[AnyContent]]
-        )
+        mockCdsSubscriber.subscribeWithCachedDetails(
+          any[Option[CdsOrganisationType]],
+          any[Service],
+          any[Journey.Value]
+        )(any[HeaderCarrier], any[Request[AnyContent]])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -606,10 +615,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     "redirect to SignInWithDifferentDetails when Subscription Status (SUB01) response is SubscriptionExists and enrolment service returns true" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(any[Option[CdsOrganisationType]], any[Journey.Value])(
-          any[HeaderCarrier],
-          any[Request[AnyContent]]
-        )
+        mockCdsSubscriber.subscribeWithCachedDetails(
+          any[Option[CdsOrganisationType]],
+          any[Service],
+          any[Journey.Value]
+        )(any[HeaderCarrier], any[Request[AnyContent]])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -649,10 +659,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     "redirect to CompleteEnrolment when Subscription Status (SUB01) response is SubscriptionExists and enrolment service returns false" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(any[Option[CdsOrganisationType]], any[Journey.Value])(
-          any[HeaderCarrier],
-          any[Request[AnyContent]]
-        )
+        mockCdsSubscriber.subscribeWithCachedDetails(
+          any[Option[CdsOrganisationType]],
+          any[Service],
+          any[Journey.Value]
+        )(any[HeaderCarrier], any[Request[AnyContent]])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -682,7 +693,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe SubscriptionRecoveryController
-          .complete(Journey.Subscribe)
+          .complete(Service.ATaR, Journey.Subscribe)
           .url
         verify(mockReg06Service).sendOrganisationRequest(any(), any(), any())
         verify(mockSubscriptionStatusService)
@@ -692,10 +703,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     "redirect to Application unsuccessful page when Subscription (SUB02) is failed" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(any[Option[CdsOrganisationType]], any[Journey.Value])(
-          any[HeaderCarrier],
-          any[Request[AnyContent]]
-        )
+        mockCdsSubscriber.subscribeWithCachedDetails(
+          any[Option[CdsOrganisationType]],
+          any[Service],
+          any[Journey.Value]
+        )(any[HeaderCarrier], any[Request[AnyContent]])
       ).thenReturn(
         Future.successful(
           SubscriptionFailed(
@@ -730,10 +742,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     "return success with error code as 'EORI already linked to a different ID'" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(any[Option[CdsOrganisationType]], any[Journey.Value])(
-          any[HeaderCarrier],
-          any[Request[AnyContent]]
-        )
+        mockCdsSubscriber.subscribeWithCachedDetails(
+          any[Option[CdsOrganisationType]],
+          any[Service],
+          any[Journey.Value]
+        )(any[HeaderCarrier], any[Request[AnyContent]])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -762,10 +775,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     "return success with error code as 'Rejected previously'" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(any[Option[CdsOrganisationType]], any[Journey.Value])(
-          any[HeaderCarrier],
-          any[Request[AnyContent]]
-        )
+        mockCdsSubscriber.subscribeWithCachedDetails(
+          any[Option[CdsOrganisationType]],
+          any[Service],
+          any[Journey.Value]
+        )(any[HeaderCarrier], any[Request[AnyContent]])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -797,10 +811,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     "return unexpected status text" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(any[Option[CdsOrganisationType]], any[Journey.Value])(
-          any[HeaderCarrier],
-          any[Request[AnyContent]]
-        )
+        mockCdsSubscriber.subscribeWithCachedDetails(
+          any[Option[CdsOrganisationType]],
+          any[Service],
+          any[Journey.Value]
+        )(any[HeaderCarrier], any[Request[AnyContent]])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -990,7 +1005,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
   }
 
   private def regExistingEori(test: Future[Result] => Any) {
-    test(controller.registerWithEoriAndId(Journey.Subscribe)(SessionBuilder.buildRequestWithSession(defaultUserId)))
+    test(
+      controller.registerWithEoriAndId(Service.ATaR, Journey.Subscribe)(
+        SessionBuilder.buildRequestWithSession(defaultUserId)
+      )
+    )
   }
 
   private def invokeProcessing(test: Future[Result] => Any) {

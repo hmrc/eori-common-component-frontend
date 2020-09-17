@@ -20,10 +20,11 @@
 @import views.html.helper._
 @import views._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 
 @this(layout_di: layout)
-@(contactForm: Form[ContactDetailsViewModel], countries: List[Country], contactAddress: AddressViewModel, email:Option[String]=None, isInReviewMode: Boolean, journey: Journey.Value)(implicit request: Request[_], messages: Messages)
+@(contactForm: Form[ContactDetailsViewModel], countries: List[Country], contactAddress: AddressViewModel, email:Option[String]=None, isInReviewMode: Boolean, service: Service, journey: Journey.Value)(implicit request: Request[_], messages: Messages)
 
 
 @labelForEUCountry(countryCode: String) = @{
@@ -75,7 +76,7 @@
 
     @helpers.errorSummary(contactForm)
 
-    @helper.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactDetailsController.submit(isInReviewMode, journey), 'id -> "contactDetailsForm") {
+    @helper.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactDetailsController.submit(isInReviewMode, service, journey), 'id -> "contactDetailsForm") {
 
         @CSRF.formField
 

@@ -26,7 +26,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.EoriNumberSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, RegistrationDetailsIndividual}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.what_is_your_eori
 import uk.gov.hmrc.http.HeaderCarrier
@@ -45,12 +45,12 @@ class WhatIsYourEoriControllerSpec
 
   protected override def submitInCreateModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController
-      .submit(isInReviewMode = false, Journey.Subscribe)
+      .submit(isInReviewMode = false, Service.ATaR, Journey.Subscribe)
       .url
 
   protected override def submitInReviewModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController
-      .submit(isInReviewMode = true, Journey.Subscribe)
+      .submit(isInReviewMode = true, Service.ATaR, Journey.Subscribe)
       .url
 
   private val mockRequestSessionData = mock[RequestSessionData]
@@ -83,7 +83,10 @@ class WhatIsYourEoriControllerSpec
 
   "Subscription What Is Your Eori Number form in create mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(Journey.Subscribe))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
+      mockAuthConnector,
+      controller.createForm(Service.ATaR, Journey.Subscribe)
+    )
 
     "display title as 'What is your GB EORI number?'" in {
       showCreateForm(journey = Journey.Subscribe) { result =>
@@ -133,7 +136,10 @@ class WhatIsYourEoriControllerSpec
 
   "Subscription Eori Number form in review mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.reviewForm(Journey.Subscribe))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
+      mockAuthConnector,
+      controller.reviewForm(Service.ATaR, Journey.Subscribe)
+    )
 
     "display title as 'What is your GB EORI number'" in {
       showReviewForm() { result =>
@@ -172,7 +178,7 @@ class WhatIsYourEoriControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
-      controller.submit(isInReviewMode = false, Journey.Subscribe)
+      controller.submit(isInReviewMode = false, Service.ATaR, Journey.Subscribe)
     )
 
     "wait until the saveSubscriptionDetailsHolder is completed before progressing" in {
@@ -317,7 +323,7 @@ class WhatIsYourEoriControllerSpec
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(userSelectedOrgType)
 
     test(
-      controller.submit(isInReviewMode = false, Journey.Subscribe)(
+      controller.submit(isInReviewMode = false, Service.ATaR, Journey.Subscribe)(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )
@@ -333,7 +339,7 @@ class WhatIsYourEoriControllerSpec
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(userSelectedOrgType)
 
     test(
-      controller.submit(isInReviewMode = true, Journey.Subscribe)(
+      controller.submit(isInReviewMode = true, Service.ATaR, Journey.Subscribe)(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )
@@ -359,7 +365,7 @@ class WhatIsYourEoriControllerSpec
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]]))
       .thenReturn(userSelectedOrganisationType)
 
-    test(controller.createForm(journey).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.createForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def showReviewForm(
@@ -373,7 +379,7 @@ class WhatIsYourEoriControllerSpec
       .thenReturn(userSelectedOrganisationType)
     when(mockSubscriptionBusinessService.getCachedEoriNumber(any[HeaderCarrier])).thenReturn(dataToEdit)
 
-    test(controller.reviewForm(Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.reviewForm(Service.ATaR, Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def verifyEoriNumberFieldExistsAndPopulatedCorrectly(page: CdsPage): Unit =

@@ -36,7 +36,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   DateOfEstablishmentSubscriptionFlowPage,
   SubscriptionDetails
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.date_of_establishment
@@ -56,12 +56,12 @@ class DateOfEstablishmentControllerSpec
 
   protected override val submitInCreateModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController
-      .submit(isInReviewMode = false, Journey.Register)
+      .submit(isInReviewMode = false, Service.ATaR, Journey.Register)
       .url
 
   protected override val submitInReviewModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController
-      .submit(isInReviewMode = true, Journey.Register)
+      .submit(isInReviewMode = true, Service.ATaR, Journey.Register)
       .url
 
   private val mockOrgTypeLookup      = mock[OrgTypeLookup]
@@ -112,7 +112,10 @@ class DateOfEstablishmentControllerSpec
 
   "Loading the page in create mode for subscription rest of the world" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.Subscribe))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+      mockAuthConnector,
+      controller.createForm(Service.ATaR, Journey.Subscribe)
+    )
 
     "display the form" in {
       showCreateForm() { result =>
@@ -128,7 +131,10 @@ class DateOfEstablishmentControllerSpec
 
   "Loading the page in create mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(Journey.Register))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+      mockAuthConnector,
+      controller.createForm(Service.ATaR, Journey.Register)
+    )
 
     "display the form" in {
       showCreateForm() { result =>
@@ -223,7 +229,10 @@ class DateOfEstablishmentControllerSpec
 
   "Loading the page in review mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.reviewForm(Journey.Register))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+      mockAuthConnector,
+      controller.reviewForm(Service.ATaR, Journey.Register)
+    )
 
     "display the form" in {
       showReviewForm() { result =>
@@ -342,7 +351,7 @@ class DateOfEstablishmentControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = false, Journey.Register)
+      controller.submit(isInReviewMode = false, Service.ATaR, Journey.Register)
     )
 
     "redirect to next page in subscription flow" in {
@@ -373,7 +382,7 @@ class DateOfEstablishmentControllerSpec
     when(mockSubscriptionBusinessService.maybeCachedDateEstablished(any[HeaderCarrier]))
       .thenReturn(Future.successful(cachedDate))
 
-    val result = controller.createForm(journey).apply(SessionBuilder.buildRequestWithSession(userId))
+    val result = controller.createForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
 
@@ -384,7 +393,7 @@ class DateOfEstablishmentControllerSpec
 
     when(mockSubscriptionBusinessService.getCachedDateEstablished(any[HeaderCarrier])).thenReturn(DateOfEstablishment)
 
-    val result = controller.reviewForm(journey).apply(SessionBuilder.buildRequestWithSession(userId))
+    val result = controller.reviewForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
 
@@ -405,7 +414,7 @@ class DateOfEstablishmentControllerSpec
     when(mockSubscriptionDetailsHolderService.cacheDateEstablished(any[LocalDate])(any[HeaderCarrier]))
       .thenReturn(Future.successful(()))
     val result = controller
-      .submit(isInReviewMode, journey)
+      .submit(isInReviewMode, Service.ATaR, journey)
       .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }

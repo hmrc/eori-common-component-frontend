@@ -32,7 +32,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.NameIdOrganisationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.Utr
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.Organisation
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.MatchingService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.match_name_id_organisation
 import uk.gov.hmrc.http.HeaderCarrier
@@ -104,7 +104,7 @@ class NameUtrOrganisationControllerSpec extends ControllerSpec with MockitoSugar
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.form(defaultOrganisationType, Journey.Register)
+      controller.form(defaultOrganisationType, Service.ATaR, Journey.Register)
     )
 
     "display the form" in {
@@ -175,7 +175,7 @@ class NameUtrOrganisationControllerSpec extends ControllerSpec with MockitoSugar
         )
         page.getElementAttributeHref(
           registerWithNameAndAddressLinkAnchor
-        ) shouldBe "/customs-enrolment-services/register/matching/address/charity-public-body-not-for-profit"
+        ) shouldBe "/customs-enrolment-services/atar/register/matching/address/charity-public-body-not-for-profit"
       }
     }
 
@@ -191,7 +191,7 @@ class NameUtrOrganisationControllerSpec extends ControllerSpec with MockitoSugar
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(defaultOrganisationType, Journey.Register)
+      controller.submit(defaultOrganisationType, Service.ATaR, Journey.Register)
     )
 
     "ensure a valid Organisation Type has been passed" in {
@@ -384,7 +384,7 @@ class NameUtrOrganisationControllerSpec extends ControllerSpec with MockitoSugar
       ).thenReturn(Future.successful(true))
       submitForm(ValidNameUtrRequest) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("/customs-enrolment-services/register/matching/confirm")
+        result.header.headers("Location") should endWith("/customs-enrolment-services/atar/register/matching/confirm")
       }
     }
   }
@@ -394,7 +394,11 @@ class NameUtrOrganisationControllerSpec extends ControllerSpec with MockitoSugar
   ) {
     withAuthorisedUser(userId, mockAuthConnector)
 
-    test(controller.form(organisationType, Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(
+      controller.form(organisationType, Service.ATaR, Journey.Register).apply(
+        SessionBuilder.buildRequestWithSession(userId)
+      )
+    )
   }
 
   def submitForm(
@@ -406,7 +410,7 @@ class NameUtrOrganisationControllerSpec extends ControllerSpec with MockitoSugar
 
     test(
       controller
-        .submit(organisationType, Journey.Register)
+        .submit(organisationType, Service.ATaR, Journey.Register)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }
