@@ -27,7 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionDisplayResponse
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.RecipientDetails
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RandomUUIDGenerator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
@@ -56,7 +56,7 @@ class SubscriptionRecoveryController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def complete(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def complete(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       val isRowF           = Future.successful(UserLocation.isRow(requestSessionData))
       val journeyF         = Future.successful(journey)
@@ -66,15 +66,17 @@ class SubscriptionRecoveryController @Inject() (
         journey  <- journeyF
         customId <- if (isRow) cachedCustomsIdF else Future.successful(None)
       } yield (journey, isRow, customId) match {
-        case (Journey.Subscribe, true, Some(_)) => subscribeForCDS    // UK journey
-        case (Journey.Subscribe, true, None)    => subscribeForCDSROW //subscribeForCDSROW //ROW
-        case (Journey.Subscribe, false, _)      => subscribeForCDS    //UK Journey
-        case _                                  => subscribeGetAnEori //Journey Get An EORI
+        case (Journey.Subscribe, true, Some(_)) => subscribeForCDS(service)    // UK journey
+        case (Journey.Subscribe, true, None)    => subscribeForCDSROW(service) //subscribeForCDSROW //ROW
+        case (Journey.Subscribe, false, _)      => subscribeForCDS(service)    //UK Journey
+        case _                                  => subscribeGetAnEori(service) //Journey Get An EORI
       }
       result.flatMap(identity)
   }
 
-  private def subscribeGetAnEori(implicit ec: ExecutionContext, request: Request[AnyContent]): Future[Result] = {
+  private def subscribeGetAnEori(
+    service: Service
+  )(implicit ec: ExecutionContext, request: Request[AnyContent]): Future[Result] = {
     val result = for {
       registrationDetails <- sessionCache.registrationDetails
       safeId          = registrationDetails.safeId.id
@@ -94,6 +96,7 @@ class SubscriptionRecoveryController @Inject() (
           safeId,
           Eori(eori),
           subscriptionDisplayResponse,
+          service,
           Journey.Register
         )(Redirect(Sub02Controller.end()))
       case Left(_) =>
@@ -102,11 +105,9 @@ class SubscriptionRecoveryController @Inject() (
     result.flatMap(identity)
   }
 
-  private def subscribeForCDS(implicit
-    ec: ExecutionContext,
-    request: Request[AnyContent],
-    hc: HeaderCarrier
-  ): Future[Result] = {
+  private def subscribeForCDS(
+    service: Service
+  )(implicit ec: ExecutionContext, request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     val result = for {
       subscriptionDetails <- sessionCache.subscriptionDetails
       eori = subscriptionDetails.eoriNumber.getOrElse(throw new IllegalStateException("no eori found in the cache"))
@@ -126,6 +127,7 @@ class SubscriptionRecoveryController @Inject() (
           safeId,
           Eori(eori),
           subscriptionDisplayResponse,
+          service,
           Journey.Subscribe
         )(Redirect(Sub02Controller.migrationEnd()))
       case Left(_) =>
@@ -134,7 +136,9 @@ class SubscriptionRecoveryController @Inject() (
     result.flatMap(identity)
   }
 
-  private def subscribeForCDSROW(implicit ec: ExecutionContext, request: Request[AnyContent]): Future[Result] = {
+  private def subscribeForCDSROW(
+    service: Service
+  )(implicit ec: ExecutionContext, request: Request[AnyContent]): Future[Result] = {
     val result = for {
       subscriptionDetails <- sessionCache.subscriptionDetails
       registrationDetails <- sessionCache.registrationDetails
@@ -152,6 +156,7 @@ class SubscriptionRecoveryController @Inject() (
           safeId,
           Eori(eori),
           subscriptionDisplayResponse,
+          service,
           Journey.Subscribe
         )(Redirect(Sub02Controller.migrationEnd()))
       case Left(_) =>
@@ -169,6 +174,7 @@ class SubscriptionRecoveryController @Inject() (
     safeId: String,
     eori: Eori,
     subscriptionDisplayResponse: SubscriptionDisplayResponse,
+    service: Service,
     journey: Journey.Value
   )(redirect: => Result)(implicit headerCarrier: HeaderCarrier): Future[Result] = {
     val formBundleId =
@@ -190,7 +196,7 @@ class SubscriptionRecoveryController @Inject() (
           handleSubscriptionService
             .handleSubscription(
               formBundleId,
-              RecipientDetails(journey, email, recipientFullName, Some(name), Some(processedDate)),
+              RecipientDetails(service, journey, email, recipientFullName, Some(name), Some(processedDate)),
               TaxPayerId(safeId),
               Some(eori),
               emailVerificationTimestamp,

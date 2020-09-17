@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription
 
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 
 case class RecipientDetails(
   journey: Journey.Value,
@@ -32,18 +32,19 @@ object RecipientDetails {
   implicit val jsonFormat: OFormat[RecipientDetails] = Json.format[RecipientDetails]
 
   def apply(
+    service: Service,
     journey: Journey.Value,
     recipientEmailAddress: String,
     recipientFullName: String,
     orgName: Option[String],
     completionDate: Option[String]
   ): RecipientDetails =
-    new RecipientDetails(journey, "ATaR", recipientEmailAddress, recipientFullName, orgName, completionDate)
+    new RecipientDetails(journey, service.name, recipientEmailAddress, recipientFullName, orgName, completionDate)
 
-  def apply(journey: Journey.Value, contactDetails: ContactDetails): RecipientDetails =
+  def apply(service: Service, journey: Journey.Value, contactDetails: ContactDetails): RecipientDetails =
     RecipientDetails(
       journey,
-      "ATaR",
+      service.name,
       contactDetails.emailAddress,
       contactDetails.fullName,
       orgName = None,

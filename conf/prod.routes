@@ -167,11 +167,11 @@ POST        /customs-enrolment-services/:service/:journey/matching/row-name-date
 GET         /customs-enrolment-services/:service/:journey/matching/row/nino                           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.DoYouHaveNinoController.displayForm(service: Service, journey: Journey.Value)
 POST        /customs-enrolment-services/:service/:journey/matching/row/nino                           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.DoYouHaveNinoController.submit(service: Service, journey: Journey.Value)
 
-GET         /customs-enrolment-services/:journey/complete-enrolment                                   @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.SubscriptionRecoveryController.complete(journey: Journey.Value)
+GET         /customs-enrolment-services/:service/:journey/complete-enrolment                          @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.SubscriptionRecoveryController.complete(service: Service, journey: Journey.Value)
 
 GET         /customs-enrolment-services/:service/register/match                                       @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.MatchingIdController.matchWithIdOnly(service: Service)
 
-GET         /customs-enrolment-services/:journey/subscribe-existing                                   @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController.registerWithEoriAndId(journey: Journey.Value)
+GET         /customs-enrolment-services/:service/:journey/subscribe-existing                          @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController.registerWithEoriAndId(service: Service, journey: Journey.Value)
 
 GET         /customs-enrolment-services/:service/:journey/confirm-individual-type                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ConfirmIndividualTypeController.form(service: Service, journey: Journey.Value)
 POST        /customs-enrolment-services/:service/:journey/confirm-individual-type                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ConfirmIndividualTypeController.submit(service: Service, journey: Journey.Value)

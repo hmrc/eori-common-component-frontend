@@ -449,7 +449,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
           status(result) shouldBe SEE_OTHER
           result.header.headers(LOCATION) should endWith(
             SubscriptionRecoveryController
-              .complete(Journey.Register)
+              .complete(Service.ATaR, Journey.Register)
               .url
           )
         }

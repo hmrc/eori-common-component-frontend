@@ -142,9 +142,10 @@ class UserLocationController @Inject() (
       }
     } yield (preSubscriptionStatus, mayBeSafeId)
 
-  private def handleExistingSubscription(
-    internalId: InternalId
-  )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] =
+  private def handleExistingSubscription(internalId: InternalId, service: Service)(implicit
+    request: Request[AnyContent],
+    hc: HeaderCarrier
+  ): Future[Result] =
     save4LaterService
       .fetchSafeId(internalId)
       .flatMap(
@@ -161,7 +162,7 @@ class UserLocationController @Inject() (
                 case false =>
                   Redirect(
                     SubscriptionRecoveryController
-                      .complete(Journey.Register)
+                      .complete(service, Journey.Register)
                   )
               }
             }
@@ -177,7 +178,7 @@ class UserLocationController @Inject() (
     preSubStatus match {
       case SubscriptionProcessing =>
         Future.successful(Redirect(UserLocationController.processing()))
-      case SubscriptionExists => handleExistingSubscription(internalId)
+      case SubscriptionExists => handleExistingSubscription(internalId, service)
       case NewSubscription | SubscriptionRejected =>
         Future.successful(
           Redirect(OrganisationTypeController.form(service, journey))

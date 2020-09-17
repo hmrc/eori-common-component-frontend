@@ -213,7 +213,7 @@ class ConfirmContactDetailsController @Inject() (
           case SubscriptionProcessing =>
             Future.successful(Redirect(ConfirmContactDetailsController.processing()))
           case SubscriptionExists =>
-            handleExistingSubscription(journey: Journey.Value)
+            handleExistingSubscription(service, journey: Journey.Value)
           case status =>
             throw new IllegalStateException(s"Invalid subscription status : $status")
         }
@@ -261,9 +261,10 @@ class ConfirmContactDetailsController @Inject() (
     }
   }
 
-  private def handleExistingSubscription(
-    journey: Journey.Value
-  )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] =
+  private def handleExistingSubscription(service: Service, journey: Journey.Value)(implicit
+    request: Request[AnyContent],
+    hc: HeaderCarrier
+  ): Future[Result] =
     cdsFrontendDataCache.registrationDetails.flatMap(
       rd =>
         taxEnrolmentsService.doesEnrolmentExist(rd.safeId).map {
@@ -272,7 +273,7 @@ class ConfirmContactDetailsController @Inject() (
           case false =>
             Redirect(
               SubscriptionRecoveryController
-                .complete(journey)
+                .complete(service, journey)
             )
         }
     )

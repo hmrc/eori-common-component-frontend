@@ -72,7 +72,7 @@ class CheckYourDetailsRegisterController @Inject() (
     ggAuthorisedUserWithEnrolmentsAction {
       implicit request => loggedInUser: LoggedInUserWithEnrolments =>
         registerWithoutIdWithSubscription
-          .rowRegisterWithoutIdWithSubscription(loggedInUser, journey)
+          .rowRegisterWithoutIdWithSubscription(loggedInUser, service, journey)
     }
 
 }
