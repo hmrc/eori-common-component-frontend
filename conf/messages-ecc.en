@@ -14,7 +14,9 @@ cds.enrolment.already.exists.heading=There is a problem
 cds.enrolment.already.exists.para1=Our records show that this Government Gateway user ID has already been used to register for {0}.
 cds.enrolment.already.exists.continue=Goto {0}.
 
-cds.service.friendly.name.default=the service
+cds.proposition.name.service=Get access to {0}
+
+cds.service.friendly.name.default=Customs
 cds.service.friendly.name.atar=Advance Tariff Rulings
 
 eds.existing-eori.enrolment.confirmation.title=Application complete

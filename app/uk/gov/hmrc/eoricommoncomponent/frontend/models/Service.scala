@@ -40,7 +40,7 @@ object Service {
     override val enrolmentKey: String = ""
   }
 
-  private val supportedServices = Set[Service](ATaR)
+  val supportedServices = Set[Service](ATaR)
 
   def withName(str: String): Option[Service] =
     supportedServices.find(_.name == str)

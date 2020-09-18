@@ -49,7 +49,7 @@ class EoriEnrolSuccessSpec extends ViewSpec {
     }
 
     "display correct service name" in {
-      doc.body.getElementById("para1").text() must include(serviceName(service))
+      doc.body.getElementById("para1").text() must startWith("You are now enrolled to the Customs service")
     }
 
   }
