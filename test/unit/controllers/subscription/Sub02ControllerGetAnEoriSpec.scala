@@ -471,7 +471,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
 
   private def invokeMigrationEnd(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    test(subscriptionController.migrationEnd.apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+    test(subscriptionController.migrationEnd(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }
 
   private def invokeEoriAlreadyExists(test: Future[Result] => Any) = {

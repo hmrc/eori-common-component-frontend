@@ -28,9 +28,9 @@
 
         <h1 id="page-heading" class="heading-large">@messages("cds.enrolment.already.exists.heading")</h1>
 
-        <p id="para1">@messages("cds.enrolment.already.exists.para1", serviceName(service))</p>
+        <p id="para1">@messages("cds.enrolment.already.exists.para1", serviceName)</p>
 
-        <a href="@appConfig.serviceReturnUrl(service)" id="continue">@messages("cds.enrolment.already.exists.continue", serviceName(service)) </a>
+        <a href="@appConfig.serviceReturnUrl(service)" id="continue">@messages("cds.enrolment.already.exists.continue", serviceName) </a>
 
         @helpers.helpAndSupport()
 

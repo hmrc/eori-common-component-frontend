@@ -49,7 +49,9 @@ class HasExistingEoriSpec extends ViewSpec {
     }
 
     "display correct service name" in {
-      doc.body.getElementById("para2").text() must include(serviceName(service))
+      doc.body.getElementById("para2").text() must startWith(
+        "Your registration for Customs will be linked to this EORI"
+      )
     }
 
   }

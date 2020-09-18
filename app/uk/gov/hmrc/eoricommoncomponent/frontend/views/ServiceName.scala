@@ -17,16 +17,23 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.views
 
 import play.api.i18n.Messages
+import play.api.mvc.Request
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 object ServiceName {
 
   private val default = "cds.service.friendly.name.default"
 
-  def serviceName(service: Service)(implicit messages: Messages) = {
+  def serviceName(service: Service)(implicit messages: Messages): String = {
     val key = s"cds.service.friendly.name.${service.name}"
     if (messages.isDefinedAt(key)) messages(key) else messages(default)
+  }
 
+  def serviceName(implicit messages: Messages, request: Request[_]): String = {
+    val path = request.path
+    Service.supportedServices.find(service => path.contains(s"/${service.name}/")).map(
+      service => serviceName(service)
+    ).getOrElse(messages(default))
   }
 
 }

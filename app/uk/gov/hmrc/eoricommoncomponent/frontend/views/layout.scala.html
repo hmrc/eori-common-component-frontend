@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.ApplicationController._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.partials.{footer, header, styles}
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName
 @import uk.gov.hmrc.play.views.html.helpers.ReportAProblemLink
 
 @this(footer_di: footer, header_di: header, styles_di: styles, appConfig: AppConfig, reportAProblemLink: ReportAProblemLink)
@@ -36,7 +37,7 @@ form: Option[Form[_]] = None
 
 @journeyName = @{
     if(journey == Journey.Register) messages("cds.proposition.name")
-    else messages("cds.proposition.name.cds")
+    else messages("cds.proposition.name.service", ServiceName.serviceName)
 }
 
 @titleWithEnding = @{

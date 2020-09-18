@@ -129,7 +129,7 @@ class SubscriptionRecoveryController @Inject() (
           subscriptionDisplayResponse,
           service,
           Journey.Subscribe
-        )(Redirect(Sub02Controller.migrationEnd()))
+        )(Redirect(Sub02Controller.migrationEnd(service)))
       case Left(_) =>
         Future.successful(ServiceUnavailable(errorTemplateView()))
     }
@@ -158,7 +158,7 @@ class SubscriptionRecoveryController @Inject() (
           subscriptionDisplayResponse,
           service,
           Journey.Subscribe
-        )(Redirect(Sub02Controller.migrationEnd()))
+        )(Redirect(Sub02Controller.migrationEnd(service)))
       case Left(_) =>
         Future.successful(ServiceUnavailable(errorTemplateView()))
     }

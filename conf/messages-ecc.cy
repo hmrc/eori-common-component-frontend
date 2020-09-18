@@ -14,6 +14,8 @@ cds.enrolment.already.exists.heading=TRANSLATE There is a problem
 cds.enrolment.already.exists.para1=TRANSLATE Our records show that this Government Gateway user ID has already been used to register for {0}.
 cds.enrolment.already.exists.continue=TRANSLATE Goto {0}.
 
+cds.proposition.name.service=TRANSLATE Get access to {0}
+
 cds.service.friendly.name.default=TRANSLATE the service
 cds.service.friendly.name.atar=TRANSLATE Advance Tariff Rulings
 
