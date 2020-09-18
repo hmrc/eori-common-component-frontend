@@ -29,11 +29,12 @@ object ServiceName {
     if (messages.isDefinedAt(key)) messages(key) else messages(default)
   }
 
-  def serviceName(implicit messages: Messages, request: Request[_]): String = {
+  def serviceName(implicit messages: Messages, request: Request[_]): String =
+    serviceName(service)
+
+  def service(implicit messages: Messages, request: Request[_]): Service = {
     val path = request.path
-    Service.supportedServices.find(service => path.contains(s"/${service.name}/")).map(
-      service => serviceName(service)
-    ).getOrElse(messages(default))
+    Service.supportedServices.find(service => path.contains(s"/${service.name}/")).getOrElse(Service.NullService)
   }
 
 }

@@ -69,13 +69,13 @@ class HeaderSpec extends ControllerSpec {
   }
 
   "Feedback URL" should {
-    "be present with service param equal to CDS" in {
+    "be present with service param equal to 'eori-common-component-subscribe''" in {
       val result = controller
         .start()
         .apply(
           SessionBuilder.buildRequestWithSessionAndPathNoUser(
             method = "GET",
-            path = "/customs-enrolment-services/register/"
+            path = "/customs-enrolment-services/atar/subscribe/"
           )
         )
 
@@ -84,7 +84,7 @@ class HeaderSpec extends ControllerSpec {
       page.getElementAttribute(
         "//a[@id='feedback-link']",
         "href"
-      ) shouldBe "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=CDS"
+      ) shouldBe "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=eori-common-component-subscribe-atar"
     }
   }
 }

@@ -53,6 +53,7 @@ class AppConfig @Inject() (
 
   lazy val feedbackLink          = config.get[String]("external-url.feedback-survey")
   lazy val feedbackLinkSubscribe = config.get[String]("external-url.feedback-survey-subscribe")
+  lazy val betaFeedbackLink      = config.get[String]("external-url.beta-feedback")
 
   lazy val externalGetEORILink = config.get[String]("external-url.get-cds-eori")
 
