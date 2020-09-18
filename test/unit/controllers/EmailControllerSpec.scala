@@ -88,7 +88,7 @@ class EmailControllerSpec extends ControllerSpec with AddressPageFactoring with 
       .thenReturn(Future.successful(None))
     when(
       mockEnrolmentStoreProxyService
-        .isEnrolmentAssociatedToGroup(any())(any(), any())
+        .isEnrolmentAssociatedToGroup(any(), any())(any(), any())
     ).thenReturn(Future.successful(false))
 
   }

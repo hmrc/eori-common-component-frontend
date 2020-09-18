@@ -70,7 +70,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
     reset(mockEnrolmentStoreProxyService, mockSave4LaterConnector, mockSubscriptionStatusService)
     when(
       mockEnrolmentStoreProxyService
-        .isEnrolmentAssociatedToGroup(any[GroupId])(any[HeaderCarrier], any[ExecutionContext])
+        .isEnrolmentAssociatedToGroup(any[GroupId], any())(any[HeaderCarrier], any[ExecutionContext])
     ).thenReturn(Future.successful(true))
   }
 
@@ -88,7 +88,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
     "block the user for the groupID is cache and subscription status is SubscriptionProcessing" in {
       when(
         mockEnrolmentStoreProxyService
-          .isEnrolmentAssociatedToGroup(any[GroupId])(any[HeaderCarrier], any[ExecutionContext])
+          .isEnrolmentAssociatedToGroup(any[GroupId], any())(any[HeaderCarrier], any[ExecutionContext])
       ).thenReturn(Future.successful(false))
       when(
         mockSave4LaterConnector
@@ -109,7 +109,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
     "block the user for the groupID is cache and subscription status is SubscriptionProcessing for some other user within the group" in {
       when(
         mockEnrolmentStoreProxyService
-          .isEnrolmentAssociatedToGroup(any[GroupId])(any[HeaderCarrier], any[ExecutionContext])
+          .isEnrolmentAssociatedToGroup(any[GroupId], any())(any[HeaderCarrier], any[ExecutionContext])
       ).thenReturn(Future.successful(false))
       when(
         mockSave4LaterConnector
@@ -130,7 +130,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
     "Allow the user for the groupID is cached and subscription status is SubscriptionRejected" in {
       when(
         mockEnrolmentStoreProxyService
-          .isEnrolmentAssociatedToGroup(any[GroupId])(any[HeaderCarrier], any[ExecutionContext])
+          .isEnrolmentAssociatedToGroup(any[GroupId], any())(any[HeaderCarrier], any[ExecutionContext])
       ).thenReturn(Future.successful(false))
       when(
         mockSave4LaterConnector
@@ -152,7 +152,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
     "Allow the user for the groupID is cached and subscription status is NewSubscription" in {
       when(
         mockEnrolmentStoreProxyService
-          .isEnrolmentAssociatedToGroup(any[GroupId])(any[HeaderCarrier], any[ExecutionContext])
+          .isEnrolmentAssociatedToGroup(any[GroupId], any())(any[HeaderCarrier], any[ExecutionContext])
       ).thenReturn(Future.successful(false))
       when(
         mockSave4LaterConnector
@@ -174,7 +174,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
     "Allow the user if groupID is not cached" in {
       when(
         mockEnrolmentStoreProxyService
-          .isEnrolmentAssociatedToGroup(any[GroupId])(any[HeaderCarrier], any[ExecutionContext])
+          .isEnrolmentAssociatedToGroup(any[GroupId], any())(any[HeaderCarrier], any[ExecutionContext])
       ).thenReturn(Future.successful(false))
       when(
         mockSave4LaterConnector

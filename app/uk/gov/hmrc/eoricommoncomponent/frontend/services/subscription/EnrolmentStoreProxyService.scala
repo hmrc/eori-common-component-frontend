@@ -19,6 +19,8 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.EnrolmentStoreProxyConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.GroupId
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.CDS
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -26,17 +28,16 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class EnrolmentStoreProxyService @Inject() (enrolmentStoreProxyConnector: EnrolmentStoreProxyConnector) {
 
-  private val state   = "Activated"
-  private val service = "HMRC-CUS-ORG"
+  private val activatedState   = "Activated"
 
   def isEnrolmentAssociatedToGroup(
-    groupId: GroupId
+    groupId: GroupId,
+    service: Service = CDS
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
     enrolmentStoreProxyConnector
       .getEnrolmentByGroupId(groupId.id)
       .map(_.enrolments)
       .map { enrolment =>
-        enrolment.exists(x => x.state == state && x.service == service)
+        enrolment.exists(x => x.state == activatedState && x.service == service.enrolmentKey)
       }
-
 }
