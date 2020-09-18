@@ -177,7 +177,7 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
 
       callEnrolmentComplete(journey = Journey.Subscribe) { result =>
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result) shouldBe Some("/customs-enrolment-services/subscribe/complete")
+        header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/subscribe/complete")
       }
       verify(mockTaxEnrolmentsService).issuerCall(anyString, any[Eori], any[Option[LocalDate]])(
         any[HeaderCarrier],
@@ -203,7 +203,7 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
 
       callEnrolmentComplete(journey = Journey.Subscribe) { result =>
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result) shouldBe Some("/customs-enrolment-services/subscribe/complete")
+        header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/subscribe/complete")
       }
       verify(mockTaxEnrolmentsService).issuerCall(anyString, any[Eori], any[Option[LocalDate]])(
         any[HeaderCarrier],
@@ -228,7 +228,7 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
 
       callEnrolmentComplete(journey = Journey.Subscribe) { result =>
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result) shouldBe Some("/customs-enrolment-services/subscribe/complete")
+        header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/subscribe/complete")
       }
       verify(mockTaxEnrolmentsService).issuerCall(anyString, any[Eori], any[Option[LocalDate]])(
         any[HeaderCarrier],

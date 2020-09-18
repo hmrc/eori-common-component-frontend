@@ -69,7 +69,7 @@ class RegisterWithEoriAndIdController @Inject() (
         case false =>
           CdsLogger.error("Reg01 BadRequest ROW")
           val formattedDate = dateTimeFormat.print(DateTime.now())
-          Future.successful(Redirect(RegisterWithEoriAndIdController.fail(formattedDate)))
+          Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service, formattedDate)))
       }
     }
 
@@ -132,21 +132,21 @@ class RegisterWithEoriAndIdController @Inject() (
         case Some("DEFERRED") =>
           val formattedDate =
             dateTimeFormat.print(resp.responseCommon.processingDate)
-          Future.successful(Redirect(RegisterWithEoriAndIdController.pending(formattedDate)))
+          Future.successful(Redirect(RegisterWithEoriAndIdController.pending(service, formattedDate)))
         case Some("FAIL") =>
           val formattedDate =
             dateTimeFormat.print(resp.responseCommon.processingDate)
-          Future.successful(Redirect(RegisterWithEoriAndIdController.fail(formattedDate)))
+          Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service, formattedDate)))
         case None =>
           val statusText = resp.responseCommon.statusText
-          handleErrorCodes(statusText)
+          handleErrorCodes(service, statusText)
         case _ =>
           CdsLogger.error("Unknown RegistrationDetailsOutCome ")
           throw new IllegalStateException("Unknown RegistrationDetailsOutCome")
       }
     }
 
-  def processing: Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def processing(service: Service): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
         name          <- cachedName
@@ -154,7 +154,7 @@ class RegisterWithEoriAndIdController @Inject() (
       } yield Ok(sub01OutcomeProcessingView(Some(name), processedDate))
   }
 
-  def rejected: Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def rejected(service: Service): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
         name          <- cachedName
@@ -162,7 +162,7 @@ class RegisterWithEoriAndIdController @Inject() (
       } yield Ok(sub01OutcomeRejectedView(Some(name), processedDate))
   }
 
-  def pending(date: String): Action[AnyContent] =
+  def pending(service: Service, date: String): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         eori <- cache.subscriptionDetails.map(
@@ -173,7 +173,7 @@ class RegisterWithEoriAndIdController @Inject() (
       } yield Ok(subscriptionOutcomePendingView(eori, date, name))
     }
 
-  def fail(date: String): Action[AnyContent] =
+  def fail(service: Service, date: String): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         name <- cache.subscriptionDetails.map(_.name)
@@ -181,7 +181,7 @@ class RegisterWithEoriAndIdController @Inject() (
       } yield Ok(subscriptionOutcomeFailView(date, name))
     }
 
-  def eoriAlreadyLinked(): Action[AnyContent] =
+  def eoriAlreadyLinked(service: Service): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         name <- cache.subscriptionDetails.map(_.name)
@@ -190,7 +190,7 @@ class RegisterWithEoriAndIdController @Inject() (
       } yield Ok(reg06EoriAlreadyLinked(name, date))
     }
 
-  def rejectedPreviously(): Action[AnyContent] =
+  def rejectedPreviously(service: Service): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         name <- cache.subscriptionDetails.map(_.name)
@@ -199,16 +199,18 @@ class RegisterWithEoriAndIdController @Inject() (
       } yield Ok(sub01OutcomeRejectedView(Some(name), date))
     }
 
-  private def handleErrorCodes(statusText: Option[String])(implicit request: Request[AnyContent]): Future[Result] =
+  private def handleErrorCodes(service: Service, statusText: Option[String])(implicit
+    request: Request[AnyContent]
+  ): Future[Result] =
     statusText match {
       case _ if statusText.contains(EoriAlreadyLinked) =>
         CdsLogger.warn("Reg06 EoriAlreadyLinked")
-        Future.successful(Redirect(RegisterWithEoriAndIdController.eoriAlreadyLinked()))
+        Future.successful(Redirect(RegisterWithEoriAndIdController.eoriAlreadyLinked(service)))
       case _ if statusText.contains(IDLinkedWithEori) =>
         CdsLogger.warn("Reg06 IDLinkedWithEori")
-        Future.successful(Redirect(RegisterWithEoriAndIdController.eoriAlreadyLinked()))
+        Future.successful(Redirect(RegisterWithEoriAndIdController.eoriAlreadyLinked(service)))
       case _ if statusText.contains(RejectedPreviouslyAndRetry) =>
-        Future.successful(Redirect(RegisterWithEoriAndIdController.rejectedPreviously()))
+        Future.successful(Redirect(RegisterWithEoriAndIdController.rejectedPreviously(service)))
       case _ => Future.successful(ServiceUnavailable(errorTemplateView()))
     }
 
@@ -225,15 +227,15 @@ class RegisterWithEoriAndIdController @Inject() (
         case _: SubscriptionSuccessful =>
           subscriptionDetailsService
             .saveKeyIdentifiers(groupId, internalId)
-            .map(_ => Redirect(Sub02Controller.migrationEnd()))
+            .map(_ => Redirect(Sub02Controller.migrationEnd(service)))
         case sp: SubscriptionPending =>
           subscriptionDetailsService
             .saveKeyIdentifiers(groupId, internalId)
-            .map(_ => Redirect(RegisterWithEoriAndIdController.pending(sp.processingDate)))
+            .map(_ => Redirect(RegisterWithEoriAndIdController.pending(service, sp.processingDate)))
         case sf: SubscriptionFailed =>
           subscriptionDetailsService
             .saveKeyIdentifiers(groupId, internalId)
-            .map(_ => Redirect(RegisterWithEoriAndIdController.fail(sf.processingDate)))
+            .map(_ => Redirect(RegisterWithEoriAndIdController.fail(service, sf.processingDate)))
       }
   }
 
@@ -248,7 +250,7 @@ class RegisterWithEoriAndIdController @Inject() (
       case NewSubscription | SubscriptionRejected =>
         onSuccessfulSubscriptionStatusSubscribe(service, journey)
       case SubscriptionProcessing =>
-        Future.successful(Redirect(RegisterWithEoriAndIdController.processing()))
+        Future.successful(Redirect(RegisterWithEoriAndIdController.processing(service)))
       case SubscriptionExists => handleExistingSubscription(safeId, service, journey)
     }
 

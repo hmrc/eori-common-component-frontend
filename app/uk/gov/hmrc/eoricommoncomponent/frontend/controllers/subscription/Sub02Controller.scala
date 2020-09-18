@@ -109,7 +109,7 @@ class Sub02Controller @Inject() (
       )
   }
 
-  def migrationEnd: Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def migrationEnd(service: Service): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       if (UserLocation.isRow(requestSessionData))
         subscriptionDetailsService.cachedCustomsId flatMap {
