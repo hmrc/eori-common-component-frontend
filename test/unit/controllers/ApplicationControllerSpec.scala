@@ -73,7 +73,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach {
     }
 
     "direct authenticated users to start subscription" in {
-      when(enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(any(), any())(any(), any()))
+      when(enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(any(), any())(any()))
         .thenReturn(Future.successful(false))
 
       invokeStartFormSubscriptionWithAuthenticatedUser() { result =>
@@ -83,9 +83,9 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach {
     }
 
     "direct authenticated users with CDS enrolment to start short-cut subscription" in {
-      when(enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(any(), ArgumentMatchers.eq(ATaR))(any(), any()))
+      when(enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(any(), ArgumentMatchers.eq(ATaR))(any()))
         .thenReturn(Future.successful(false))
-      when(enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(any(), ArgumentMatchers.eq(CDS))(any(), any()))
+      when(enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(any(), ArgumentMatchers.eq(CDS))(any()))
         .thenReturn(Future.successful(true))
 
       val cdsEnrolment = Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", "GB134123")

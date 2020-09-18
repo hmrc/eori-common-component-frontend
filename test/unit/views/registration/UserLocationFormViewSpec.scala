@@ -91,7 +91,7 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach {
       .thenReturn(Future.successful(None))
     when(
       mockEnrolmentStoreProxyService
-        .isEnrolmentAssociatedToGroup(any(), any())(any(), any())
+        .isEnrolmentAssociatedToGroup(any(), any())(any())
     ).thenReturn(Future.successful(false))
   }
 
