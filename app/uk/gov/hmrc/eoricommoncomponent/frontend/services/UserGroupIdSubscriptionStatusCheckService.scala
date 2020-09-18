@@ -20,6 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{AnyContent, Request, Result}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CacheIds, GroupId, InternalId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.CDS
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.CachedData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -39,7 +40,7 @@ class UserGroupIdSubscriptionStatusCheckService @Inject() (
   )(groupIsEnrolled: => Future[Result])(userIsInProcess: => Future[Result])(
     otherUserWithinGroupIsInProcess: => Future[Result]
   )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] =
-    enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(groupId).flatMap {
+    enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(groupId, CDS).flatMap {
       case true => groupIsEnrolled //Block the user
       case false =>
         save4LaterConnector

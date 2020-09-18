@@ -20,19 +20,18 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.EnrolmentStoreProxyConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.GroupId
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.CDS
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EnrolmentStoreProxyService @Inject() (enrolmentStoreProxyConnector: EnrolmentStoreProxyConnector)(implicit ec: ExecutionContext) {
+class EnrolmentStoreProxyService @Inject() (enrolmentStoreProxyConnector: EnrolmentStoreProxyConnector)(implicit
+  ec: ExecutionContext
+) {
 
   private val activatedState = "Activated"
 
-  def isEnrolmentAssociatedToGroup(groupId: GroupId, service: Service = CDS)(
-    implicit hc: HeaderCarrier
-  ): Future[Boolean] =
+  def isEnrolmentAssociatedToGroup(groupId: GroupId, service: Service)(implicit hc: HeaderCarrier): Future[Boolean] =
     enrolmentStoreProxyConnector
       .getEnrolmentByGroupId(groupId.id)
       .map(_.enrolments)
