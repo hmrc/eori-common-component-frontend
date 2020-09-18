@@ -162,7 +162,7 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach {
         val page = CdsPage(bodyOf(result))
         page.getElementsText(UserLocationPageOrganisation.countriesInTheEuTitleElement) should be("Countries in the EU")
         page.getElementsText(UserLocationPageOrganisation.countriesInTheEuContentsElement) should be(
-          "Austria, Belgium, Bulgaria, Croatia, Republic of Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Poland, Portugal, Romania, Slovakia, Slovenia, Spain, Sweden and the UK."
+          "Austria, Belgium, Bulgaria, Croatia, Republic of Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Poland, Portugal, Romania, Slovakia, Slovenia, Spain and Sweden."
         )
       }
     }

@@ -25,3 +25,7 @@ eds.existing-eori.enrolment.confirmation.para1=TRANSLATE You are now enrolled to
 
 cds.subscription.outcomes.feedback=TRANSLATE What did you think of this service?
 cds.subscription.outcomes.feedback.hint=TRANSLATE (takes 30 seconds) 
+
+countries-in-the-eu.list=TRANSLATE Austria, Belgium, Bulgaria, Croatia, Republic of Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Poland, Portugal, Romania, Slovakia, Slovenia, Spain and Sweden.
+
+cds.registration.user-location.location.eu.label=TRANSLATE A country in the EU
