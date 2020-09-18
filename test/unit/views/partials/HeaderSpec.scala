@@ -81,10 +81,9 @@ class HeaderSpec extends ControllerSpec {
 
       val page = CdsPage(bodyOf(result))
 
-      page.getElementAttribute(
-        "//a[@id='feedback-link']",
-        "href"
-      ) shouldBe "https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=eori-common-component-subscribe-atar"
+      page.getElementAttribute("//a[@id='feedback-link']", "href") should endWith(
+        "/contact/beta-feedback-unauthenticated?service=eori-common-component-subscribe-atar"
+      )
     }
   }
 }

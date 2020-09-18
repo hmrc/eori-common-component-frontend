@@ -93,19 +93,19 @@ class AppConfigSpec extends ControllerSpec {
     }
 
     "have reportAProblemPartialUrl defined for register" in {
-      appConfig.reportAProblemPartialUrlGetAnEori shouldBe "http://localhost:9250/contact/problem_reports_ajax?service=CDS"
+      appConfig.reportAProblemPartialUrlRegister shouldBe "http://localhost:9250/contact/problem_reports_ajax?service=eori-common-component-register"
     }
 
     "have reportAProblemNonJSUrl defined for register" in {
-      appConfig.reportAProblemNonJSUrlGetAnEori shouldBe "http://localhost:9250/contact/problem_reports_nonjs?service=CDS"
+      appConfig.reportAProblemNonJSUrlRegister shouldBe "http://localhost:9250/contact/problem_reports_nonjs?service=eori-common-component-register"
     }
 
     "have reportAProblemPartialUrl defined for subscribe" in {
-      appConfig.reportAProblemPartialUrlGetAccess shouldBe "http://localhost:9250/contact/problem_reports_ajax?service=get-access-cds"
+      appConfig.reportAProblemPartialUrlSubscribe shouldBe "http://localhost:9250/contact/problem_reports_ajax?service=eori-common-component-subscribe"
     }
 
     "have reportAProblemNonJSUrl defined for subscribe" in {
-      appConfig.reportAProblemNonJSUrlGetAccess shouldBe "http://localhost:9250/contact/problem_reports_nonjs?service=get-access-cds"
+      appConfig.reportAProblemNonJSUrlSubscribe shouldBe "http://localhost:9250/contact/problem_reports_nonjs?service=eori-common-component-subscribe"
     }
 
     "have service url for ATaR defined" in {

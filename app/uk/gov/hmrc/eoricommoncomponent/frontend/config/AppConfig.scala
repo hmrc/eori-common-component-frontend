@@ -43,35 +43,42 @@ class AppConfig @Inject() (
 
   private lazy val contactBaseUrl = servicesConfig.baseUrl("contact-frontend")
 
-  private lazy val serviceIdentifierGetAnEori =
-    config.get[String]("microservice.services.contact-frontend.serviceIdentifierGetEori")
+  private lazy val serviceIdentifierRegister =
+    config.get[String]("microservice.services.contact-frontend.serviceIdentifierRegister")
 
-  private lazy val serviceIdentifierGetAccess =
-    config.get[String]("microservice.services.contact-frontend.serviceIdentifierGetAccess")
+  private lazy val serviceIdentifierSubscribe =
+    config.get[String]("microservice.services.contact-frontend.serviceIdentifierSubscribe")
 
   def serviceReturnUrl(service: Service) = config.get[String](s"external-url.service-return.${service.name}")
 
   lazy val feedbackLink          = config.get[String]("external-url.feedback-survey")
   lazy val feedbackLinkSubscribe = config.get[String]("external-url.feedback-survey-subscribe")
-  lazy val betaFeedbackLink      = config.get[String]("external-url.beta-feedback")
 
   lazy val externalGetEORILink = config.get[String]("external-url.get-cds-eori")
 
   lazy val blockedRoutesRegex: Seq[Regex] = config.get[String]("routes-to-block").split(',').map(_.r).toSeq
 
   //get help link feedback for Get an EORI
-  val reportAProblemPartialUrlGetAnEori: String =
-    s"$contactBaseUrl/contact/problem_reports_ajax?service=$serviceIdentifierGetAnEori"
+  val reportAProblemPartialUrlRegister: String =
+    s"$contactBaseUrl/contact/problem_reports_ajax?service=$serviceIdentifierRegister"
 
-  val reportAProblemNonJSUrlGetAnEori: String =
-    s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifierGetAnEori"
+  val reportAProblemNonJSUrlRegister: String =
+    s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifierRegister"
 
   //get help link feedback for Get access to CDS
-  val reportAProblemPartialUrlGetAccess: String =
-    s"$contactBaseUrl/contact/problem_reports_ajax?service=$serviceIdentifierGetAccess"
+  val reportAProblemPartialUrlSubscribe: String =
+    s"$contactBaseUrl/contact/problem_reports_ajax?service=$serviceIdentifierSubscribe"
 
-  val reportAProblemNonJSUrlGetAccess: String =
-    s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifierGetAccess"
+  val reportAProblemNonJSUrlSubscribe: String =
+    s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifierSubscribe"
+
+  private lazy val betafeedbackBaseUrl = s"${contactBaseUrl}/contact/beta-feedback-unauthenticated"
+
+  def betaFeedBackRegister(service: Service) =
+    s"${betafeedbackBaseUrl}?service=${serviceIdentifierRegister}-${service.name}"
+
+  def betaFeedBackSubscribe(service: Service) =
+    s"${betafeedbackBaseUrl}?service=${serviceIdentifierSubscribe}-${service.name}"
 
   //email verification service
   lazy val emailVerificationBaseUrl: String = servicesConfig.baseUrl("email-verification")

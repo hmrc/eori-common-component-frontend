@@ -44,8 +44,8 @@
 }
 
 @betaFeedbackHeaderUrl = @{
-    if(journey == Journey.Register) s"${appConfig.betaFeedbackLink}?service=eori-common-component-register-${service.name}"
-    else s"${appConfig.betaFeedbackLink}?service=eori-common-component-subscribe-${service.name}"
+    if(journey == Journey.Register) appConfig.betaFeedBackRegister(service)
+    else appConfig.betaFeedBackSubscribe(service)
 }
 
 <header role="banner" id="global-header" class="with-proposition">
