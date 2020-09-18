@@ -34,7 +34,7 @@ object Service {
 
   // This is for CDS enrolment checks, we're not supporting CDS enrolment now
   case object CDS extends Service {
-    override val name: String = "cds"
+    override val name: String         = "cds"
     override val enrolmentKey: String = "HMRC-CUS-ORG"
   }
 

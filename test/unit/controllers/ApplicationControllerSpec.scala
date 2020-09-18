@@ -16,15 +16,18 @@
 
 package unit.controllers
 
+import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.{ATaR, CDS}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.migration_start
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, start}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import util.ControllerSpec
@@ -34,25 +37,31 @@ import util.builders.SessionBuilder
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ApplicationControllerSpec extends ControllerSpec {
+class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
   private val mockAuthConnector = mock[AuthConnector]
   private val mockSessionCache  = mock[SessionCache]
 
   private val startView                  = app.injector.instanceOf[start]
-  private val migrationStartView         = app.injector.instanceOf[migration_start]
   private val accessibilityStatementView = app.injector.instanceOf[accessibility_statement]
+  private val enrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
 
   val controller = new ApplicationController(
     app,
     mockAuthConnector,
     mcc,
     startView,
-    migrationStartView,
     accessibilityStatementView,
     mockSessionCache,
+    enrolmentStoreProxyService,
     appConfig
   )
+
+  override protected def afterEach(): Unit = {
+    reset(enrolmentStoreProxyService)
+
+    super.afterEach()
+  }
 
   "Navigating to start" should {
 
@@ -64,6 +73,9 @@ class ApplicationControllerSpec extends ControllerSpec {
     }
 
     "direct authenticated users to start subscription" in {
+      when(enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(any(), any())(any(), any()))
+        .thenReturn(Future.successful(false))
+
       invokeStartFormSubscriptionWithAuthenticatedUser() { result =>
         status(result) shouldBe SEE_OTHER
         await(result).header.headers("Location") should endWith("are-you-based-in-uk")
@@ -71,6 +83,11 @@ class ApplicationControllerSpec extends ControllerSpec {
     }
 
     "direct authenticated users with CDS enrolment to start short-cut subscription" in {
+      when(enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(any(), ArgumentMatchers.eq(ATaR))(any(), any()))
+        .thenReturn(Future.successful(false))
+      when(enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(any(), ArgumentMatchers.eq(CDS))(any(), any()))
+        .thenReturn(Future.successful(true))
+
       val cdsEnrolment = Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", "GB134123")
       invokeStartFormSubscriptionWithAuthenticatedUser(enrolment = Some(cdsEnrolment)) { result =>
         status(result) shouldBe SEE_OTHER

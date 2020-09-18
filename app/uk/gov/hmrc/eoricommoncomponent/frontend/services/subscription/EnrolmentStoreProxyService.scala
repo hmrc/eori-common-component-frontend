@@ -28,16 +28,17 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class EnrolmentStoreProxyService @Inject() (enrolmentStoreProxyConnector: EnrolmentStoreProxyConnector) {
 
-  private val activatedState   = "Activated"
+  private val activatedState = "Activated"
 
-  def isEnrolmentAssociatedToGroup(
-    groupId: GroupId,
-    service: Service = CDS
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
+  def isEnrolmentAssociatedToGroup(groupId: GroupId, service: Service = CDS)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[Boolean] =
     enrolmentStoreProxyConnector
       .getEnrolmentByGroupId(groupId.id)
       .map(_.enrolments)
       .map { enrolment =>
         enrolment.exists(x => x.state == activatedState && x.service == service.enrolmentKey)
       }
+
 }
