@@ -83,12 +83,10 @@ class EmailController @Inject() (
 
   def form(service: Service, journey: Journey.Value): Action[AnyContent] =
     ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
-      userGroupIdSubscriptionStatusCheckService.checksToProceed(GroupId(user.groupId), InternalId(user.internalId)) {
-        continue(service, journey)
-      }(groupIsEnrolled(journey)) {
-        userIsInProcess(service, journey)
-      }(otherUserWithinGroupIsInProcess(journey))
-
+      userGroupIdSubscriptionStatusCheckService
+        .checksToProceed(GroupId(user.groupId), InternalId(user.internalId))(continue(service, journey))(
+          userIsInProcess(service, journey)
+        )(otherUserWithinGroupIsInProcess(journey))
     }
 
   private def checkWithEmailService(emailStatus: EmailStatus, service: Service, journey: Journey.Value)(implicit

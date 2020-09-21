@@ -20,7 +20,6 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{AnyContent, Request, Result}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CacheIds, GroupId, InternalId}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.CDS
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.CachedData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -30,39 +29,34 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class UserGroupIdSubscriptionStatusCheckService @Inject() (
   subscriptionStatusService: SubscriptionStatusService,
-  enrolmentStoreProxyService: EnrolmentStoreProxyService,
   save4LaterConnector: Save4LaterConnector
 )(implicit ec: ExecutionContext) {
   private val idType = "SAFE"
 
   def checksToProceed(groupId: GroupId, internalId: InternalId)(
     continue: => Future[Result]
-  )(groupIsEnrolled: => Future[Result])(userIsInProcess: => Future[Result])(
+  )(userIsInProcess: => Future[Result])(
     otherUserWithinGroupIsInProcess: => Future[Result]
   )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] =
-    enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(groupId, CDS).flatMap { // TODO Check this part
-      case true => groupIsEnrolled //Block the user
-      case false =>
-        save4LaterConnector
-          .get[CacheIds](groupId.id, CachedData.groupIdKey)
-          .flatMap {
-            case Some(cacheIds) =>
-              subscriptionStatusService
-                .getStatus(idType, cacheIds.safeId.id)
-                .flatMap {
-                  case NewSubscription | SubscriptionRejected =>
-                    save4LaterConnector
-                      .delete(groupId.id)
-                      .flatMap(_ => continue) // Delete and then proceed normal
-                  case _ =>
-                    if (cacheIds.internalId == internalId)
-                      userIsInProcess
-                    else
-                      otherUserWithinGroupIsInProcess
-                }
-            case _ =>
-              continue
-          }
-    }
+    save4LaterConnector
+      .get[CacheIds](groupId.id, CachedData.groupIdKey)
+      .flatMap {
+        case Some(cacheIds) =>
+          subscriptionStatusService
+            .getStatus(idType, cacheIds.safeId.id)
+            .flatMap {
+              case NewSubscription | SubscriptionRejected =>
+                save4LaterConnector
+                  .delete(groupId.id)
+                  .flatMap(_ => continue)
+              case _ =>
+                if (cacheIds.internalId == internalId)
+                  userIsInProcess
+                else
+                  otherUserWithinGroupIsInProcess
+            }
+        case _ =>
+          continue
+      }
 
 }
