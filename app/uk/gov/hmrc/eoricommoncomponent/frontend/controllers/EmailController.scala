@@ -22,10 +22,7 @@ import play.api.{Application, Logger}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.CheckYourEmailController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.WhatIsYourEmailController.createForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.{
-  EnrolmentExistsAgainstGroupIdController,
-  EnrolmentPendingAgainstGroupIdController
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.{EnrolmentPendingAgainstGroupIdController}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, InternalId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
@@ -47,11 +44,6 @@ class EmailController @Inject() (
   userGroupIdSubscriptionStatusCheckService: UserGroupIdSubscriptionStatusCheckService
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
-
-  private def groupIsEnrolled(
-    journey: Journey.Value
-  )(implicit request: Request[AnyContent], user: LoggedInUserWithEnrolments): Future[Result] =
-    Future.successful(Redirect(EnrolmentExistsAgainstGroupIdController.show(journey)))
 
   private def userIsInProcess(service: Service, journey: Journey.Value)(implicit
     request: Request[AnyContent],
