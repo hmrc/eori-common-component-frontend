@@ -85,8 +85,6 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach {
     "direct authenticated users with CDS enrolment to start short-cut subscription" in {
       when(enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(any(), ArgumentMatchers.eq(ATaR))(any()))
         .thenReturn(Future.successful(false))
-      when(enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(any(), ArgumentMatchers.eq(CDS))(any()))
-        .thenReturn(Future.successful(true))
 
       val cdsEnrolment = Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", "GB134123")
       invokeStartFormSubscriptionWithAuthenticatedUser(enrolment = Some(cdsEnrolment)) { result =>
@@ -95,12 +93,37 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach {
       }
     }
 
+    "direct authenticated users where group id has CDS enrolment to start short-cut subscription" in {
+      when(enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(any(), ArgumentMatchers.eq(ATaR))(any()))
+        .thenReturn(Future.successful(false))
+      when(enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(any(), ArgumentMatchers.eq(CDS))(any()))
+        .thenReturn(Future.successful(true))
+
+      val result =
+        controller.startSubscription(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+
+      status(result) shouldBe SEE_OTHER
+      await(result).header.headers("Location") should endWith("check-existing-eori")
+    }
+
     "inform authenticated users with ATAR enrolment that subscription exists" in {
       val atarEnrolment = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", "GB134123")
       invokeStartFormSubscriptionWithAuthenticatedUser(enrolment = Some(atarEnrolment)) { result =>
         status(result) shouldBe SEE_OTHER
         await(result).header.headers("Location") should endWith("enrolment-already-exists")
       }
+    }
+
+    "inform authenticated users where group Id has an enrolment that subscription exists" in {
+
+      when(enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(any(), ArgumentMatchers.eq(ATaR))(any()))
+        .thenReturn(Future.successful(true))
+
+      val result =
+        controller.startSubscription(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+
+      status(result) shouldBe SEE_OTHER
+      await(result).header.headers("Location") should endWith("enrolment-already-exists")
     }
   }
 
@@ -139,7 +162,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach {
     test(controller.logout(journey).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
-  def invokeStartFormWithUnauthenticatedUser(userId: String = defaultUserId)(test: Future[Result] => Any) {
+  def invokeStartFormWithUnauthenticatedUser()(test: Future[Result] => Any) {
     test(controller.start.apply(SessionBuilder.buildRequestWithSessionNoUser))
   }
 

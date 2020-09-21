@@ -220,8 +220,6 @@ trait ControllerSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
   val helpAndSupportText: String =
     "Help and support Telephone: 0300 322 7067 Open 8am to 6pm, Monday to Friday (closed bank holidays)."
 
-  private val cdsEnrolmentId: Option[String] = Some("GB1234567890ABCDE")
-
   def strim(s: String): String = s.stripMargin.trim.lines mkString " "
 
   def oversizedString(maxLength: Int): String = Random.alphanumeric.take(maxLength + 1).mkString
