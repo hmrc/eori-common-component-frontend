@@ -62,7 +62,7 @@ class ApplicationController @Inject() (
 
               cdsEnrolmentCheck(loggedInUser, groupId, service)
             }
-          case None if enrolledCds(loggedInUser).isDefined =>
+          case None if isUserEnrolledFor(loggedInUser, CDS) =>
             Future.successful(Redirect(routes.HasExistingEoriController.displayPage(service))) // AutoEnrolment
           case None =>
             Future.successful(Redirect(routes.EmailController.form(service, Journey.Subscribe))) // Whole journey

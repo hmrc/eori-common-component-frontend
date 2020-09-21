@@ -40,7 +40,7 @@ class UserGroupIdSubscriptionStatusCheckService @Inject() (
   )(groupIsEnrolled: => Future[Result])(userIsInProcess: => Future[Result])(
     otherUserWithinGroupIsInProcess: => Future[Result]
   )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] =
-    enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(groupId, CDS).flatMap {
+    enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(groupId, CDS).flatMap { // TODO Check this part
       case true => groupIsEnrolled //Block the user
       case false =>
         save4LaterConnector
