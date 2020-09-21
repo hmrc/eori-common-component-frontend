@@ -18,8 +18,11 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth
 
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Eori, LoggedInUserWithEnrolments, Nino, Utr}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.{ATaR, CDS}
 
 trait EnrolmentExtractor {
+
+  private val EoriIdentifier: String = "EORINumber"
 
   private def identifierFor(
     enrolmentKey: String,
@@ -36,16 +39,10 @@ trait EnrolmentExtractor {
       )
 
   def enrolledForService(loggedInUser: LoggedInUserWithEnrolments, service: Service): Option[Eori] = service match {
-    case Service.ATaR => enrolledATar(loggedInUser)
-    case Service.CDS  => enrolledCds(loggedInUser)
+    case Service.ATaR => identifierFor(ATaR.enrolmentKey, EoriIdentifier, loggedInUser).map(Eori)
+    case Service.CDS  => identifierFor(CDS.enrolmentKey, EoriIdentifier, loggedInUser).map(Eori)
     case _            => None
   }
-
-  def enrolledCds(loggedInUser: LoggedInUserWithEnrolments): Option[Eori] =
-    identifierFor("HMRC-CUS-ORG", "EORINumber", loggedInUser).map(Eori)
-
-  def enrolledATar(loggedInUser: LoggedInUserWithEnrolments): Option[Eori] =
-    identifierFor("HMRC-ATAR-ORG", "EORINumber", loggedInUser).map(Eori)
 
   def enrolledCtUtr(loggedInUser: LoggedInUserWithEnrolments): Option[Utr] =
     identifierFor("IR-CT", "UTR", loggedInUser).map(Utr)

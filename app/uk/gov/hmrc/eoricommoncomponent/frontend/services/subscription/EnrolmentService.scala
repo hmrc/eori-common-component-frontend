@@ -21,6 +21,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{EnrolmentStoreProxyCo
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.EnrolmentExtractor
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.CDS
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.{
   GovernmentGatewayEnrolmentRequest,
   Identifier,
@@ -42,7 +43,7 @@ class EnrolmentService @Inject() (
     hc: HeaderCarrier
   ): Future[Int] = {
 
-    val eori = enrolledCds(loggedInUser).map(_.id).getOrElse(throw MissingEnrolmentException())
+    val eori = enrolledForService(loggedInUser, CDS).map(_.id).getOrElse(throw MissingEnrolmentException())
 
     enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(KnownFactsQuery(eori)).flatMap {
       case Some(knownFacts) =>
