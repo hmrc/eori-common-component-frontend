@@ -30,7 +30,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.what_is_your_email
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.cache.client.CacheMap
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -52,11 +51,6 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   val email       = "test@example.com"
   val emailStatus = EmailStatus(email)
-
-  val internalId = "InternalID"
-  val jsonValue  = Json.toJson(emailStatus)
-  val data       = Map(internalId -> jsonValue)
-  val cacheMap   = CacheMap(internalId, data)
 
   val EmailFieldsMap            = Map("email" -> email)
   val unpopulatedEmailFieldsMap = Map("email" -> "")
