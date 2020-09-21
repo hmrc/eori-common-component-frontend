@@ -62,8 +62,8 @@ form: Option[Form[_]] = None
 }
 
 @getHelpForm = @{
-if(journey == Journey.Register) (reportAProblemLink(appConfig.reportAProblemPartialUrlGetAnEori, appConfig.reportAProblemNonJSUrlGetAnEori))
-else (reportAProblemLink(appConfig.reportAProblemPartialUrlGetAccess, appConfig.reportAProblemNonJSUrlGetAccess))
+if(journey == Journey.Register) (reportAProblemLink(appConfig.reportAProblemPartialUrlRegister, appConfig.reportAProblemNonJSUrlRegister))
+else (reportAProblemLink(appConfig.reportAProblemPartialUrlSubscribe, appConfig.reportAProblemNonJSUrlSubscribe))
 }
 
 <!DOCTYPE html>
