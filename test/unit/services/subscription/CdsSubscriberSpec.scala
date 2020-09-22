@@ -26,7 +26,9 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.time.{Millis, Seconds, Span}
-import play.api.i18n.Messages
+import play.api.i18n.Lang.defaultLang
+import play.api.i18n.{Messages, MessagesApi, MessagesImpl}
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -45,8 +47,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
 
-//  override implicit def patienceConfig: PatienceConfig =
-//    super.patienceConfig.copy(timeout = Span(defaultTimeout.toMillis, Millis))
   implicit override val patienceConfig =
     PatienceConfig(timeout = scaled(Span(10, Seconds)), interval = scaled(Span(15, Millis)))
 
@@ -62,7 +62,10 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
 
   implicit private val hc: HeaderCarrier                = mock[HeaderCarrier]
   implicit private val mockRequest: Request[AnyContent] = mock[Request[AnyContent]]
-  implicit private val mockMessages: Messages = mock[Messages]
+
+  private val injector                  = GuiceApplicationBuilder().injector()
+  implicit val messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
+  implicit val messages: Messages       = MessagesImpl(defaultLang, messagesApi)
 
   private val eori                       = "EORI-Number"
   private val formBundleId               = "Form-Bundle-Id"

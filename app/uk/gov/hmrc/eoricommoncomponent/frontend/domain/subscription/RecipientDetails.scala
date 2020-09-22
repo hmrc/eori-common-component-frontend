@@ -43,7 +43,7 @@ object RecipientDetails {
     orgName: Option[String],
     completionDate: Option[String]
   )(implicit messages: Messages): RecipientDetails =
-    new RecipientDetails(
+    RecipientDetails(
       journey,
       service.name,
       ServiceName.serviceName(service),

@@ -27,7 +27,7 @@ import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.PdfGeneratorConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{Sub02Controller, routes}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{routes, Sub02Controller}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionCreateResponse._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
@@ -166,7 +166,8 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
         await(result)
         verify(mockCdsSubscriber).subscribeWithCachedDetails(meq(None), meq(Service.ATaR), meq(Journey.Register))(
           any[HeaderCarrier],
-          any[Request[AnyContent]], any[Messages]
+          any[Request[AnyContent]],
+          any[Messages]
         )
       }
     }

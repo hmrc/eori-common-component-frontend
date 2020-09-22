@@ -248,14 +248,7 @@ class CdsSubscriber @Inject() (
         val orgName = Some(subDetails.name)
         callHandle(
           subscriptionResult,
-          RecipientDetails(
-            service,
-            Journey.Subscribe,
-            email,
-            name.getOrElse(""),
-            orgName,
-            completionDate
-          ),
+          RecipientDetails(service, Journey.Subscribe, email, name.getOrElse(""), orgName, completionDate),
           id,
           subDetails.eoriNumber.map(Eori),
           SafeId(id.id)
