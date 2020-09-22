@@ -20,7 +20,6 @@ import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
-import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController
@@ -58,7 +57,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach {
   )
 
   override protected def afterEach(): Unit = {
-    reset(enrolmentStoreProxyService)
+    reset(mockAuthConnector, enrolmentStoreProxyService)
 
     super.afterEach()
   }
@@ -66,20 +65,23 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach {
   "Navigating to start" should {
 
     "allow unauthenticated users to access the start page" in {
-      invokeStartFormWithUnauthenticatedUser() { result =>
-        status(result) shouldBe OK
-        CdsPage(bodyOf(result)).title should startWith("Get an EORI number")
-      }
+
+      val result = controller.start.apply(SessionBuilder.buildRequestWithSessionNoUser)
+
+      status(result) shouldBe OK
+      CdsPage(bodyOf(result)).title should startWith("Get an EORI number")
     }
 
     "direct authenticated users to start subscription" in {
       when(enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(any(), any())(any()))
         .thenReturn(Future.successful(false))
 
-      invokeStartFormSubscriptionWithAuthenticatedUser() { result =>
-        status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("are-you-based-in-uk")
-      }
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
+      val result =
+        controller.startSubscription(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+
+      status(result) shouldBe SEE_OTHER
+      await(result).header.headers("Location") should endWith("are-you-based-in-uk")
     }
 
     "direct authenticated users with CDS enrolment to start short-cut subscription" in {
@@ -87,10 +89,13 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach {
         .thenReturn(Future.successful(false))
 
       val cdsEnrolment = Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", "GB134123")
-      invokeStartFormSubscriptionWithAuthenticatedUser(enrolment = Some(cdsEnrolment)) { result =>
-        status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("check-existing-eori")
-      }
+      withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set(cdsEnrolment))
+
+      val result =
+        controller.startSubscription(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+
+      status(result) shouldBe SEE_OTHER
+      await(result).header.headers("Location") should endWith("check-existing-eori")
     }
 
     "direct authenticated users where group id has CDS enrolment to start short-cut subscription" in {
@@ -98,6 +103,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach {
         .thenReturn(Future.successful(false))
       when(enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(any(), ArgumentMatchers.eq(CDS))(any()))
         .thenReturn(Future.successful(true))
+      withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set.empty)
 
       val result =
         controller.startSubscription(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
@@ -108,16 +114,22 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
     "inform authenticated users with ATAR enrolment that subscription exists" in {
       val atarEnrolment = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", "GB134123")
-      invokeStartFormSubscriptionWithAuthenticatedUser(enrolment = Some(atarEnrolment)) { result =>
-        status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("enrolment-already-exists")
-      }
+
+      withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set(atarEnrolment))
+
+      val result =
+        controller.startSubscription(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+
+      status(result) shouldBe SEE_OTHER
+      await(result).header.headers("Location") should endWith("enrolment-already-exists")
     }
 
     "inform authenticated users where group Id has an enrolment that subscription exists" in {
 
       when(enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(any(), ArgumentMatchers.eq(ATaR))(any()))
         .thenReturn(Future.successful(true))
+
+      withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set.empty)
 
       val result =
         controller.startSubscription(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
@@ -129,53 +141,33 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach {
 
   "Navigating to logout" should {
     "logout an authenticated user for register" in {
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
 
-      invokeLogoutWithAuthenticatedUser(journey = Journey.Register) { result =>
-        session(result).get(SessionKeys.userId) shouldBe None
-        await(result).header.headers("Location") should endWith("feedback/CDS")
-      }
+      val result = controller.logout(Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+
+      session(result).get(SessionKeys.userId) shouldBe None
+      await(result).header.headers("Location") should endWith("feedback/CDS")
     }
 
     "logout an authenticated user for subscribe" in {
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
 
-      invokeLogoutWithAuthenticatedUser(journey = Journey.Subscribe) { result =>
-        session(result).get(SessionKeys.userId) shouldBe None
-        await(result).header.headers("Location") should endWith("feedback/get-access-cds")
-      }
+      val result = controller.logout(Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+
+      session(result).get(SessionKeys.userId) shouldBe None
+      await(result).header.headers("Location") should endWith("feedback/get-access-cds")
     }
   }
 
   "Navigating to keepAlive" should {
+
     "return a status of OK" in {
-      invokeKeepAliveWithUnauthenticatedUser() { result =>
-        status(result) shouldBe OK
-      }
+
+      val result = controller.keepAlive(Journey.Register).apply(SessionBuilder.buildRequestWithSessionNoUser)
+
+      status(result) shouldBe OK
     }
   }
-
-  def invokeLogoutWithAuthenticatedUser(userId: String = defaultUserId, journey: Journey.Value)(
-    test: Future[Result] => Any
-  ) {
-    withAuthorisedUser(userId, mockAuthConnector)
-    test(controller.logout(journey).apply(SessionBuilder.buildRequestWithSession(userId)))
-  }
-
-  def invokeStartFormWithUnauthenticatedUser()(test: Future[Result] => Any) {
-    test(controller.start.apply(SessionBuilder.buildRequestWithSessionNoUser))
-  }
-
-  def invokeStartFormSubscriptionWithAuthenticatedUser(
-    userId: String = defaultUserId,
-    enrolment: Option[Enrolment] = None
-  )(test: Future[Result] => Any) {
-    withAuthorisedUser(userId, mockAuthConnector, otherEnrolments = enrolment.map(e => Set(e)).getOrElse(Set.empty))
-    test(controller.startSubscription(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(userId)))
-  }
-
-  def invokeKeepAliveWithUnauthenticatedUser(userId: String = defaultUserId)(test: Future[Result] => Any) {
-    test(controller.keepAlive(Journey.Register).apply(SessionBuilder.buildRequestWithSessionNoUser))
-  }
-
 }

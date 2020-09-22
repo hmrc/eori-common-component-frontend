@@ -50,31 +50,36 @@ class ApplicationController @Inject() (
     Ok(viewStart(Journey.Register))
   }
 
+  // Below method cannot be formatted by scalafmt, so scalafmt will be disabled for it
+  // format: off
   def startSubscription(service: Service): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
-      try {
-        if (isUserEnrolledFor(loggedInUser, service)) throw SpecificEnrolmentExists(service)
+      {
+        Future.successful(isUserEnrolledFor(loggedInUser, service)).flatMap { isUserEnrolled =>
+          if (isUserEnrolled) throw SpecificEnrolmentExists(service)
 
-        loggedInUser.groupId match {
-          case Some(groupId) =>
-            hasGroupIdEnrolmentTo(groupId, service).flatMap { groupIdEnrolmentExists =>
-              if (groupIdEnrolmentExists) throw SpecificGroupIdEnrolmentExists(service)
+          loggedInUser.groupId match {
+            case Some(groupId) =>
+              hasGroupIdEnrolmentTo(groupId, service).flatMap { groupIdEnrolmentExists =>
+                if (groupIdEnrolmentExists) throw SpecificGroupIdEnrolmentExists(service)
 
-              cdsEnrolmentCheck(loggedInUser, groupId, service)
-            }
-          case None if isUserEnrolledFor(loggedInUser, CDS) =>
-            Future.successful(Redirect(routes.HasExistingEoriController.displayPage(service))) // AutoEnrolment
-          case None =>
-            Future.successful(Redirect(routes.EmailController.form(service, Journey.Subscribe))) // Whole journey
+                cdsEnrolmentCheck(loggedInUser, groupId, service)
+              }
+            case None if isUserEnrolledFor(loggedInUser, CDS) =>
+              Future.successful(Redirect(routes.HasExistingEoriController.displayPage(service))) // AutoEnrolment
+            case None =>
+              Future.successful(Redirect(routes.EmailController.form(service, Journey.Subscribe))) // Whole journey
+          }
         }
-      } catch {
+      }.recover {
         case SpecificEnrolmentExists(service) =>
-          Future.successful(Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service)))
+          Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service))
         case SpecificGroupIdEnrolmentExists(service) =>
           // Below redirect should be to page that doesn't exists yet
-          Future.successful(Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service)))
+          Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service))
       }
   }
+  // format: on
 
   private def isUserEnrolledFor(loggedInUser: LoggedInUserWithEnrolments, service: Service): Boolean =
     enrolledForService(loggedInUser, service).isDefined
