@@ -26,6 +26,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.time.{Millis, Seconds, Span}
+import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -61,6 +62,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
 
   implicit private val hc: HeaderCarrier                = mock[HeaderCarrier]
   implicit private val mockRequest: Request[AnyContent] = mock[Request[AnyContent]]
+  implicit private val mockMessages: Messages = mock[Messages]
 
   private val eori                       = "EORI-Number"
   private val formBundleId               = "Form-Bundle-Id"

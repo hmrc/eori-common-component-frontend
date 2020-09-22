@@ -23,6 +23,7 @@ import org.joda.time.{DateTime, LocalDate}
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.{Assertion, BeforeAndAfterEach}
+import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -189,7 +190,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           any[Option[CdsOrganisationType]],
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -247,7 +248,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           meq(Some(CdsOrganisationType.SoleTrader)),
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -290,7 +291,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           meq(Some(CdsOrganisationType.SoleTrader)),
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -339,7 +340,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           meq(Some(CdsOrganisationType.Individual)),
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -365,7 +366,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           any[Option[CdsOrganisationType]],
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -425,7 +426,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           meq(Some(CdsOrganisationType.SoleTrader)),
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -453,7 +454,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           any[Option[CdsOrganisationType]],
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(
         Future.successful(
           SubscriptionPending(formBundleIdResponse, processingDateResponse, Some(emailVerificationTimestamp))
@@ -519,7 +520,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           any[Option[CdsOrganisationType]],
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -579,7 +580,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           any[Option[CdsOrganisationType]],
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -619,7 +620,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           any[Option[CdsOrganisationType]],
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -663,7 +664,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           any[Option[CdsOrganisationType]],
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -707,7 +708,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           any[Option[CdsOrganisationType]],
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(
         Future.successful(
           SubscriptionFailed(
@@ -746,7 +747,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           any[Option[CdsOrganisationType]],
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -779,7 +780,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           any[Option[CdsOrganisationType]],
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -815,7 +816,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           any[Option[CdsOrganisationType]],
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
