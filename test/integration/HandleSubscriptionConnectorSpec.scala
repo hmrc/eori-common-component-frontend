@@ -68,6 +68,7 @@ class HandleSubscriptionConnectorSpec extends IntegrationTestsSpec with ScalaFut
         |        "recipientDetails": {
         |            "journey" : "Register",
         |            "service" : "ATaR",
+        |            "serviceName" : "Advance Tariff Rulings",
         |            "recipientFullName": "John Doe",
         |            "recipientEmailAddress": "john.doe@example.com",
         |            "orgName": "orgName",

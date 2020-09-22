@@ -16,7 +16,7 @@
 
 package unit.services.subscription
 
-import base.UnitSpec
+import base.{Injector, UnitSpec}
 import common.support.testdata.TestData
 import common.support.testdata.subscription.SubscriptionContactDetailsBuilder
 import org.joda.time.DateTime
@@ -26,6 +26,8 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.time.{Millis, Seconds, Span}
+import play.api.i18n.Lang.defaultLang
+import play.api.i18n.{Messages, MessagesApi, MessagesImpl}
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -42,10 +44,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
+class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures with BeforeAndAfterEach with Injector {
 
-//  override implicit def patienceConfig: PatienceConfig =
-//    super.patienceConfig.copy(timeout = Span(defaultTimeout.toMillis, Millis))
   implicit override val patienceConfig =
     PatienceConfig(timeout = scaled(Span(10, Seconds)), interval = scaled(Span(15, Millis)))
 
@@ -61,6 +61,8 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
 
   implicit private val hc: HeaderCarrier                = mock[HeaderCarrier]
   implicit private val mockRequest: Request[AnyContent] = mock[Request[AnyContent]]
+
+  implicit val messages: Messages = MessagesImpl(defaultLang, instanceOf[MessagesApi])
 
   private val eori                       = "EORI-Number"
   private val formBundleId               = "Form-Bundle-Id"

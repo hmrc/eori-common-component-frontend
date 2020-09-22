@@ -22,6 +22,7 @@ import org.joda.time.DateTime
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -123,7 +124,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
           any[Option[CdsOrganisationType]],
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -140,7 +141,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
           meq(Some(mockCdsOrganisationType)),
           meq(Service.ATaR),
           meq(Journey.Register)
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       }
     }
 
@@ -150,7 +151,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
           any[Option[CdsOrganisationType]],
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -165,7 +166,8 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
         await(result)
         verify(mockCdsSubscriber).subscribeWithCachedDetails(meq(None), meq(Service.ATaR), meq(Journey.Register))(
           any[HeaderCarrier],
-          any[Request[AnyContent]]
+          any[Request[AnyContent]],
+          any[Messages]
         )
       }
     }
@@ -176,7 +178,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
           any[Option[CdsOrganisationType]],
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -200,7 +202,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
           any[Option[CdsOrganisationType]],
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(
         Future.successful(SubscriptionPending(formBundleIdResponse, processingDate, Some(emailVerificationTimestamp)))
       )
@@ -217,7 +219,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
           any[Option[CdsOrganisationType]],
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(Future.successful(SubscriptionFailed("Subscription application has been rejected", processingDate)))
 
       subscribeForGetYourEORI() { result =>
@@ -232,7 +234,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
           any[Option[CdsOrganisationType]],
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(Future.successful(SubscriptionFailed(EoriAlreadyExists, processingDate)))
 
       subscribeForGetYourEORI() { result =>
@@ -247,7 +249,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
           any[Option[CdsOrganisationType]],
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(Future.successful(SubscriptionFailed(EoriAlreadyAssociated, processingDate)))
 
       subscribeForGetYourEORI() { result =>
@@ -262,7 +264,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
           any[Option[CdsOrganisationType]],
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(Future.successful(SubscriptionFailed(SubscriptionInProgress, processingDate)))
 
       subscribeForGetYourEORI() { result =>
@@ -277,7 +279,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
           any[Option[CdsOrganisationType]],
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(Future.successful(SubscriptionFailed(RequestNotProcessed, processingDate)))
 
       subscribeForGetYourEORI() { result =>
@@ -296,7 +298,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
           any[Option[CdsOrganisationType]],
           any[Service],
           any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]])
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       ).thenReturn(Future.failed(emulatedFailure))
 
       val caught = intercept[Exception] {

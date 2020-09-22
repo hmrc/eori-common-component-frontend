@@ -16,16 +16,20 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription
 
+import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName
 
 case class RecipientDetails(
   journey: Journey.Value,
   service: String,
+  serviceName: String,
   recipientEmailAddress: String,
   recipientFullName: String,
   orgName: Option[String],
-  completionDate: Option[String] = None
+  completionDate: Option[String] = None,
+  languageCode: Option[String] = None
 )
 
 object RecipientDetails {
@@ -38,17 +42,30 @@ object RecipientDetails {
     recipientFullName: String,
     orgName: Option[String],
     completionDate: Option[String]
-  ): RecipientDetails =
-    new RecipientDetails(journey, service.name, recipientEmailAddress, recipientFullName, orgName, completionDate)
-
-  def apply(service: Service, journey: Journey.Value, contactDetails: ContactDetails): RecipientDetails =
+  )(implicit messages: Messages): RecipientDetails =
     RecipientDetails(
       journey,
       service.name,
+      ServiceName.serviceName(service),
+      recipientEmailAddress,
+      recipientFullName,
+      orgName,
+      completionDate,
+      Some(messages.lang.code)
+    )
+
+  def apply(service: Service, journey: Journey.Value, contactDetails: ContactDetails)(implicit
+    messages: Messages
+  ): RecipientDetails =
+    RecipientDetails(
+      journey,
+      service.name,
+      ServiceName.serviceName(service),
       contactDetails.emailAddress,
       contactDetails.fullName,
       orgName = None,
-      completionDate = None
+      completionDate = None,
+      Some(messages.lang.code)
     )
 
 }

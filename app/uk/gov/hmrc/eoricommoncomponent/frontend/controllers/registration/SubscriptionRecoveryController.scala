@@ -18,6 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
 import play.api.Application
+import play.api.i18n.Messages
 import play.api.mvc.{Action, _}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SUB09SubscriptionDisplayConnector
@@ -67,9 +68,9 @@ class SubscriptionRecoveryController @Inject() (
         customId <- if (isRow) cachedCustomsIdF else Future.successful(None)
       } yield (journey, isRow, customId) match {
         case (Journey.Subscribe, true, Some(_)) => subscribeForCDS(service)    // UK journey
-        case (Journey.Subscribe, true, None)    => subscribeForCDSROW(service) //subscribeForCDSROW //ROW
-        case (Journey.Subscribe, false, _)      => subscribeForCDS(service)    //UK Journey
-        case _                                  => subscribeGetAnEori(service) //Journey Get An EORI
+        case (Journey.Subscribe, true, None)    => subscribeForCDSROW(service) // subscribeForCDSROW //ROW
+        case (Journey.Subscribe, false, _)      => subscribeForCDS(service)    // UK Journey
+        case _                                  => subscribeGetAnEori(service) // Journey Get An EORI
       }
       result.flatMap(identity)
   }
@@ -176,7 +177,7 @@ class SubscriptionRecoveryController @Inject() (
     subscriptionDisplayResponse: SubscriptionDisplayResponse,
     service: Service,
     journey: Journey.Value
-  )(redirect: => Result)(implicit headerCarrier: HeaderCarrier): Future[Result] = {
+  )(redirect: => Result)(implicit headerCarrier: HeaderCarrier, messages: Messages): Future[Result] = {
     val formBundleId =
       subscriptionDisplayResponse.responseCommon.returnParameters
         .flatMap(_.find(_.paramName.equals("ETMPFORMBUNDLENUMBER")).map(_.paramValue))

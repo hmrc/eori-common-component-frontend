@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
 import javax.inject.{Inject, Singleton}
+import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
@@ -24,6 +25,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{RecipientDe
 import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,7 +43,7 @@ class CdsSubscriber @Inject() (
     cdsOrganisationType: Option[CdsOrganisationType],
     service: Service,
     journey: Journey.Value
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[SubscriptionResult] = {
+  )(implicit hc: HeaderCarrier, request: Request[AnyContent], messages: Messages): Future[SubscriptionResult] = {
     def migrationEoriUK: Future[SubscriptionResult] =
       for {
         subscriptionDetailsHolder <- sessionCache.subscriptionDetails
@@ -130,7 +132,7 @@ class CdsSubscriber @Inject() (
     registrationDetails: RegistrationDetails,
     subscriptionDetails: Option[SubscriptionDetails],
     service: Service
-  )(implicit hc: HeaderCarrier): Future[Unit] = {
+  )(implicit hc: HeaderCarrier, messages: Messages): Future[Unit] = {
 
     val sapNumber = registrationDetails.sapNumber
     val safeId    = registrationDetails.safeId
@@ -190,7 +192,7 @@ class CdsSubscriber @Inject() (
     subDetails: SubscriptionDetails,
     email: String,
     service: Service
-  )(implicit hc: HeaderCarrier): Future[Unit] = {
+  )(implicit hc: HeaderCarrier, messages: Messages): Future[Unit] = {
 
     val completionDate = subscriptionResult match {
       case success: SubscriptionSuccessful => Some(success.processingDate)
@@ -225,7 +227,7 @@ class CdsSubscriber @Inject() (
     subDetails: SubscriptionDetails,
     email: String,
     service: Service
-  )(implicit hc: HeaderCarrier): Future[Unit] = {
+  )(implicit hc: HeaderCarrier, messages: Messages): Future[Unit] = {
 
     val taxPayerId  = regDetails.responseDetail.flatMap(_.responseData.map(r => TaxPayerId(r.SAFEID)))
     val contactName = regDetails.responseDetail.flatMap(_.responseData.flatMap(_.contactDetail.map(_.contactName)))

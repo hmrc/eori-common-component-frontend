@@ -45,8 +45,11 @@ class HandleSubscriptionServiceSpec extends UnitSpec with MockitoSugar with Befo
     reset(mockHandleSubscriptionConnector)
   }
 
-  val formBundleId: String                         = "formBundleId"
-  val recipientDetails: RecipientDetails           = RecipientDetails(Service.ATaR, Journey.Register, "", "", None, None)
+  val formBundleId: String = "formBundleId"
+
+  val recipientDetails: RecipientDetails =
+    RecipientDetails(Journey.Register, Service.ATaR.name, "Advance Tariff Rulings", "", "", None, None)
+
   val sapNumber: TaxPayerId                        = TaxPayerId("id")
   val eori: Option[Eori]                           = Some(Eori("eori"))
   val emailVerificationTimestamp: Option[DateTime] = Some(TestData.emailVerificationTimestamp)
