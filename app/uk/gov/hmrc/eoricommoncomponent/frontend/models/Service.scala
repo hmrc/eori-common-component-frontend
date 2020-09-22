@@ -32,6 +32,12 @@ object Service {
     override val enrolmentKey: String = "HMRC-ATAR-ORG"
   }
 
+  // This is for CDS enrolment checks, we're not supporting CDS enrolment now
+  case object CDS extends Service {
+    override val name: String         = "cds"
+    override val enrolmentKey: String = "HMRC-CUS-ORG"
+  }
+
   /**
     * Used to provide a 'service' parameter for controllers that are not currently in scope
     */

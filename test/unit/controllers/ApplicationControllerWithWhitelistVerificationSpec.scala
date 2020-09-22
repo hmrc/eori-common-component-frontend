@@ -23,8 +23,8 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.migration_start
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, start}
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
@@ -45,17 +45,17 @@ class ApplicationControllerWithAllowlistVerificationSpec extends ControllerSpec 
   private val mockAuthConnector          = mock[AuthConnector]
   private val mockSessionCache           = mock[SessionCache]
   private val startView                  = app.injector.instanceOf[start]
-  private val migrationStartView         = app.injector.instanceOf[migration_start]
   private val accessibilityStatementView = app.injector.instanceOf[accessibility_statement]
+  private val enrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
 
   val controller = new ApplicationController(
     app,
     mockAuthConnector,
     mcc,
     startView,
-    migrationStartView,
     accessibilityStatementView,
     mockSessionCache,
+    enrolmentStoreProxyService,
     appConfig
   )
 

@@ -104,7 +104,6 @@ scalastyleConfig := baseDirectory.value / "project" / "scalastyle-config.xml"
 val compileDependencies = Seq(
   "uk.gov.hmrc" %% "bootstrap-play-26" % "1.14.0",
   "uk.gov.hmrc" %% "auth-client" % "3.0.0-play-26",
-  "uk.gov.hmrc" %% "http-caching-client" % "9.1.0-play-26",
   "uk.gov.hmrc" %% "play-conditional-form-mapping" % "1.3.0-play-26",
   "uk.gov.hmrc" %% "domain" % "5.9.0-play-26",
   "uk.gov.hmrc" %% "mongo-caching" % "6.15.0-play-26",

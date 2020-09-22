@@ -21,6 +21,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 trait EnrolmentExtractor {
 
+  private val EoriIdentifier: String = "EORINumber"
+
   private def identifierFor(
     enrolmentKey: String,
     identifierName: String,
@@ -35,16 +37,8 @@ trait EnrolmentExtractor {
             .map(identifier => identifier.value)
       )
 
-  def enrolledForService(loggedInUser: LoggedInUserWithEnrolments, service: Service): Option[Eori] = service match {
-    case Service.ATaR => enrolledATar(loggedInUser)
-    case _            => None
-  }
-
-  def enrolledCds(loggedInUser: LoggedInUserWithEnrolments): Option[Eori] =
-    identifierFor("HMRC-CUS-ORG", "EORINumber", loggedInUser).map(Eori)
-
-  def enrolledATar(loggedInUser: LoggedInUserWithEnrolments): Option[Eori] =
-    identifierFor("HMRC-ATAR-ORG", "EORINumber", loggedInUser).map(Eori)
+  def enrolledForService(loggedInUser: LoggedInUserWithEnrolments, service: Service): Option[Eori] =
+    identifierFor(service.enrolmentKey, EoriIdentifier, loggedInUser).map(Eori)
 
   def enrolledCtUtr(loggedInUser: LoggedInUserWithEnrolments): Option[Utr] =
     identifierFor("IR-CT", "UTR", loggedInUser).map(Utr)

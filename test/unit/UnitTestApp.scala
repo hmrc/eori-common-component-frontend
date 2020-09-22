@@ -21,6 +21,7 @@ import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.modules.reactivemongo.ReactiveMongoHmrcModule
 
+@deprecated("Unit tests shouldn't use App, instead use mocks", "2020-09-21")
 trait UnitTestApp {
   self: GuiceOneAppPerSuite =>
 

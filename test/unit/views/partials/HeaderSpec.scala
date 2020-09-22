@@ -19,7 +19,7 @@ package unit.views.partials
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.migration_start
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, start}
 import unit.controllers.CdsPage
 import util.ControllerSpec
@@ -33,17 +33,17 @@ class HeaderSpec extends ControllerSpec {
   private val mockCdsFrontendCache = mock[SessionCache]
 
   private val viewStart                  = app.injector.instanceOf[start]
-  private val migrationStart             = app.injector.instanceOf[migration_start]
   private val accessibilityStatementView = app.injector.instanceOf[accessibility_statement]
+  private val enrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
 
   private val controller = new ApplicationController(
     app,
     mockAuthConnector,
     mcc,
     viewStart,
-    migrationStart,
     accessibilityStatementView,
     mockCdsFrontendCache,
+    enrolmentStoreProxyService,
     appConfig
   )
 

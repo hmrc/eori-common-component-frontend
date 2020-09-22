@@ -23,11 +23,13 @@ import play.api.mvc._
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthProviders}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, LoggedInUserWithEnrolments}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.CDS
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.migration_start
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, start}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,9 +39,9 @@ class ApplicationController @Inject() (
   override val authConnector: AuthConnector,
   mcc: MessagesControllerComponents,
   viewStart: start,
-  migrationStart: migration_start,
   accessibilityStatementView: accessibility_statement,
   cdsFrontendDataCache: SessionCache,
+  enrolmentStoreProxyService: EnrolmentStoreProxyService,
   appConfig: AppConfig
 )(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
     extends CdsController(mcc) {
@@ -48,18 +50,56 @@ class ApplicationController @Inject() (
     Ok(viewStart(Journey.Register))
   }
 
+  // Below method cannot be formatted by scalafmt, so scalafmt will be disabled for it
+  // format: off
   def startSubscription(service: Service): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
     implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
-      enrolledForService(loggedInUser, service) match {
-        case Some(_) =>
-          Future.successful(Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service)))
-        case None =>
-          enrolledCds(loggedInUser) match {
-            case Some(_) => Future.successful(Redirect(routes.HasExistingEoriController.displayPage(service)))
-            case None    => Future.successful(Redirect(routes.EmailController.form(service, Journey.Subscribe)))
+      {
+        Future.successful(isUserEnrolledFor(loggedInUser, service)).flatMap { isUserEnrolled =>
+          if (isUserEnrolled) throw SpecificEnrolmentExists(service)
+
+          loggedInUser.groupId match {
+            case Some(groupId) =>
+              hasGroupIdEnrolmentTo(groupId, service).flatMap { groupIdEnrolmentExists =>
+                if (groupIdEnrolmentExists) throw SpecificGroupIdEnrolmentExists(service)
+
+                cdsEnrolmentCheck(loggedInUser, groupId, service)
+              }
+            case None if isUserEnrolledFor(loggedInUser, CDS) =>
+              Future.successful(Redirect(routes.HasExistingEoriController.displayPage(service))) // AutoEnrolment
+            case None =>
+              Future.successful(Redirect(routes.EmailController.form(service, Journey.Subscribe))) // Whole journey
           }
+        }
+      }.recover {
+        case SpecificEnrolmentExists(service) =>
+          Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service))
+        case SpecificGroupIdEnrolmentExists(service) =>
+          // Below redirect should be to page that doesn't exists yet
+          Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service))
       }
   }
+  // format: on
+
+  private def isUserEnrolledFor(loggedInUser: LoggedInUserWithEnrolments, service: Service): Boolean =
+    enrolledForService(loggedInUser, service).isDefined
+
+  private def hasGroupIdEnrolmentTo(groupId: String, service: Service)(implicit hc: HeaderCarrier): Future[Boolean] =
+    enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(GroupId(groupId), service)
+
+  private def cdsEnrolmentCheck(loggedInUser: LoggedInUserWithEnrolments, groupId: String, serviceToEnrol: Service)(
+    implicit hc: HeaderCarrier
+  ): Future[Result] =
+    if (isUserEnrolledFor(loggedInUser, CDS))
+      Future.successful(Redirect(routes.HasExistingEoriController.displayPage(serviceToEnrol)))
+    else
+      hasGroupIdEnrolmentTo(groupId, CDS).map { groupIdEnrolledForCds =>
+        if (groupIdEnrolledForCds)
+          Redirect(
+            routes.HasExistingEoriController.displayPage(serviceToEnrol)
+          )                                                                           // Now autoenrolment, in future journey to ask about using EORI connected to account
+        else Redirect(routes.EmailController.form(serviceToEnrol, Journey.Subscribe)) // Whole journey
+      }
 
   def accessibilityStatement(): Action[AnyContent] = Action { implicit request =>
     Ok(accessibilityStatementView())
@@ -85,3 +125,9 @@ class ApplicationController @Inject() (
   }
 
 }
+
+case class SpecificEnrolmentExists(service: Service)
+    extends Exception(s"User has already enrolment for ${service.name}")
+
+case class SpecificGroupIdEnrolmentExists(service: Service)
+    extends Exception(s"Group Id has enrolment to ${service.name}")

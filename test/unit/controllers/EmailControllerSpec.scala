@@ -46,20 +46,15 @@ import scala.concurrent.Future
 
 class EmailControllerSpec extends ControllerSpec with AddressPageFactoring with MockitoSugar with BeforeAndAfterEach {
 
-  private val mockAuthConnector              = mock[AuthConnector]
-  private val mockEmailVerificationService   = mock[EmailVerificationService]
-  private val mockSave4LaterService          = mock[Save4LaterService]
-  private val mockSessionCache               = mock[SessionCache]
-  private val mockSave4LaterConnector        = mock[Save4LaterConnector]
-  private val mockEnrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
-  private val mockSubscriptionStatusService  = mock[SubscriptionStatusService]
+  private val mockAuthConnector             = mock[AuthConnector]
+  private val mockEmailVerificationService  = mock[EmailVerificationService]
+  private val mockSave4LaterService         = mock[Save4LaterService]
+  private val mockSessionCache              = mock[SessionCache]
+  private val mockSave4LaterConnector       = mock[Save4LaterConnector]
+  private val mockSubscriptionStatusService = mock[SubscriptionStatusService]
 
   private val mockUserGroupIdSubscriptionStatusCheckService =
-    new UserGroupIdSubscriptionStatusCheckService(
-      mockSubscriptionStatusService,
-      mockEnrolmentStoreProxyService,
-      mockSave4LaterConnector
-    )
+    new UserGroupIdSubscriptionStatusCheckService(mockSubscriptionStatusService, mockSave4LaterConnector)
 
   private val controller = new EmailController(
     app,
@@ -86,11 +81,6 @@ class EmailControllerSpec extends ControllerSpec with AddressPageFactoring with 
       .thenReturn(Future.successful(true))
     when(mockSave4LaterConnector.get(any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(None))
-    when(
-      mockEnrolmentStoreProxyService
-        .isEnrolmentAssociatedToGroup(any())(any(), any())
-    ).thenReturn(Future.successful(false))
-
   }
 
   "Viewing the form on Migration" should {

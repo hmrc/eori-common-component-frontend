@@ -22,6 +22,7 @@ import play.api.mvc._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.CDS
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{eori_enrol_success, has_existing_eori}
 
@@ -57,7 +58,7 @@ class HasExistingEoriController @Inject() (
   }
 
   private def existingEori(implicit loggedInUser: LoggedInUserWithEnrolments) =
-    enrolledCds(loggedInUser).getOrElse(throw new IllegalStateException("No EORI found in enrolments"))
+    enrolledForService(loggedInUser, CDS).getOrElse(throw new IllegalStateException("No EORI found in enrolments"))
 
 }
 
