@@ -34,12 +34,16 @@ class EoriLanguageControllerSpec extends ControllerSpec {
     "return the page in English language" in {
 
       val language = "english"
-      EoriLanguageController.routeToSwitchLanguage(language) shouldBe routes.EoriLanguageController.switchToLanguage(language)
+      EoriLanguageController.routeToSwitchLanguage(language) shouldBe routes.EoriLanguageController.switchToLanguage(
+        language
+      )
     }
 
     "return the page in Welsh language" in {
       val language = "welsh"
-      EoriLanguageController.routeToSwitchLanguage(language) shouldBe routes.EoriLanguageController.switchToLanguage(language)
+      EoriLanguageController.routeToSwitchLanguage(language) shouldBe routes.EoriLanguageController.switchToLanguage(
+        language
+      )
     }
 
     "have mapped english and welsh for language map" in {
