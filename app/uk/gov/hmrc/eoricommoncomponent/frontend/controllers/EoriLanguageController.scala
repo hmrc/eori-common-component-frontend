@@ -27,11 +27,7 @@ class EoriLanguageController @Inject() (config: Configuration, languageUtils: La
     extends LanguageController(config, languageUtils, cc) {
 
   override protected def fallbackURL: String =
-    "/customs-enrolment-services/register" //This will be always register for cds we might need to add a route for fallback cannot be dynamic
-
-  // TODO this is used just in tests and lang argument is not used in this method
-  def langToCall(lang: String): String => Call =
-    EoriLanguageController.routeToSwitchLanguage
+    "/customs-enrolment-services/subscribe" //This will be always register for cds we might need to add a route for fallback cannot be dynamic
 
   override def languageMap: Map[String, Lang] =
     EoriLanguageController.languageMap
