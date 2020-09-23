@@ -17,10 +17,9 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -36,8 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class HaveUtrSubscriptionController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   requestSessionData: RequestSessionData,
   subscriptionFlowManager: SubscriptionFlowManager,
   mcc: MessagesControllerComponents,
@@ -46,7 +44,7 @@ class HaveUtrSubscriptionController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       requestSessionData.userSelectedOrganisationType match {
         case Some(orgType) => Future.successful(Ok(matchUtrSubscriptionView(utrForm, orgType.id, service, journey)))
@@ -54,7 +52,7 @@ class HaveUtrSubscriptionController @Inject() (
       }
   }
 
-  def submit(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def submit(service: Service, journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       requestSessionData.userSelectedOrganisationType match {
         case Some(orgType) =>

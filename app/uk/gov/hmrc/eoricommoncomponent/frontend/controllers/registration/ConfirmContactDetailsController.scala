@@ -18,9 +18,9 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
 import play.api.mvc._
-import play.api.{Application, Logger}
-import uk.gov.hmrc.auth.core.AuthConnector
+import play.api.Logger
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
@@ -33,18 +33,14 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLoo
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationConfirmService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.confirm_contact_details
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{
-  sub01_outcome_processing,
-  sub01_outcome_rejected
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{sub01_outcome_processing, sub01_outcome_rejected}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ConfirmContactDetailsController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   registrationConfirmService: RegistrationConfirmService,
   requestSessionData: RequestSessionData,
   cdsFrontendDataCache: SessionCache,
@@ -59,7 +55,7 @@ class ConfirmContactDetailsController @Inject() (
     extends CdsController(mcc) {
 
   def form(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       cdsFrontendDataCache.registrationDetails flatMap {
         case individual: RegistrationDetailsIndividual =>
           Future.successful(
@@ -103,7 +99,7 @@ class ConfirmContactDetailsController @Inject() (
     }
 
   def submit(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser =>
       YesNoWrongAddress
         .createForm()
         .bindFromRequest()
@@ -183,7 +179,7 @@ class ConfirmContactDetailsController @Inject() (
         )
     }
 
-  def processing: Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def processing: Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
         name          <- cdsFrontendDataCache.registrationDetails.map(_.name)
@@ -191,7 +187,7 @@ class ConfirmContactDetailsController @Inject() (
       } yield Ok(sub01OutcomeProcessingView(Some(name), processedDate))
   }
 
-  def rejected: Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def rejected: Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
         name          <- cdsFrontendDataCache.registrationDetails.map(_.name)
@@ -262,7 +258,6 @@ class ConfirmContactDetailsController @Inject() (
   }
 
   private def handleExistingSubscription(service: Service, journey: Journey.Value)(implicit
-    request: Request[AnyContent],
     hc: HeaderCarrier
   ): Future[Result] =
     cdsFrontendDataCache.registrationDetails.flatMap(

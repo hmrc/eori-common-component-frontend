@@ -17,10 +17,9 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
@@ -29,10 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriNu
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm.eoriNumberForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  SubscriptionBusinessService,
-  SubscriptionDetailsService
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration._
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -40,8 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class WhatIsYourEoriController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   subscriptionBusinessService: SubscriptionBusinessService,
   subscriptionFlowManager: SubscriptionFlowManager,
   subscriptionDetailsHolderService: SubscriptionDetailsService,
@@ -51,14 +46,14 @@ class WhatIsYourEoriController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.cachedEoriNumber.map(
         eori => populateView(eori, isInReviewMode = false, service, journey)
       )
   }
 
-  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.getCachedEoriNumber.map(
         eori => populateView(Some(eori), isInReviewMode = true, service, journey)
@@ -66,7 +61,7 @@ class WhatIsYourEoriController @Inject() (
   }
 
   def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       eoriNumberForm.bindFromRequest.fold(
         formWithErrors =>
           Future.successful(
@@ -89,7 +84,7 @@ class WhatIsYourEoriController @Inject() (
     isInReviewMode: Boolean,
     service: Service,
     journey: Journey.Value
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]) = {
+  )(implicit request: Request[AnyContent]) = {
     val form = eoriNumber.map(EoriNumberViewModel).fold(eoriNumberForm)(eoriNumberForm.fill)
     Ok(whatIsYourEoriView(form, isInReviewMode, UserLocation.isRow(requestSessionData), service, journey))
   }

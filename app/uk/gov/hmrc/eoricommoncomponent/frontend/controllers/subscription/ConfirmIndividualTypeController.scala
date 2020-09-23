@@ -17,10 +17,9 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ConfirmIndividualTypePage
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm.confirmIndividualTypeForm
@@ -32,8 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ConfirmIndividualTypeController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   requestSessionData: RequestSessionData,
   subscriptionFlowManager: SubscriptionFlowManager,
   confirmIndividualTypeView: confirm_individual_type,
@@ -42,7 +40,7 @@ class ConfirmIndividualTypeController @Inject() (
     extends CdsController(mcc) {
 
   def form(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       Future.successful(
         Ok(confirmIndividualTypeView(confirmIndividualTypeForm, service, journey))
           .withSession(requestSessionData.sessionWithoutOrganisationType)
@@ -50,7 +48,7 @@ class ConfirmIndividualTypeController @Inject() (
     }
 
   def submit(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       confirmIndividualTypeForm.bindFromRequest.fold(
         invalidForm => Future.successful(BadRequest(confirmIndividualTypeView(invalidForm, service, journey))),
         selectedIndividualType =>
@@ -63,5 +61,4 @@ class ConfirmIndividualTypeController @Inject() (
           }
       )
     }
-
 }

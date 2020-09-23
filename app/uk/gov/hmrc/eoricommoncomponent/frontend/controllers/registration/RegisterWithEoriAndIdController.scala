@@ -18,10 +18,9 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
 import org.joda.time.DateTime
-import play.api.Application
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.{Sub02Controller, _}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegisterWithEoriAndIdResponse._
@@ -41,8 +40,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RegisterWithEoriAndIdController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   requestSessionData: RequestSessionData,
   cache: SessionCache,
   reg06Service: Reg06Service,
@@ -62,7 +60,7 @@ class RegisterWithEoriAndIdController @Inject() (
     extends CdsController(mcc) {
 
   def registerWithEoriAndId(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser =>
       sendRequest().flatMap {
         case true if isRow => handleRowResponse(service, journey)
         case true          => handleREG06Response(service, journey)
@@ -146,7 +144,7 @@ class RegisterWithEoriAndIdController @Inject() (
       }
     }
 
-  def processing(service: Service): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def processing(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
         name          <- cachedName
@@ -154,7 +152,7 @@ class RegisterWithEoriAndIdController @Inject() (
       } yield Ok(sub01OutcomeProcessingView(Some(name), processedDate))
   }
 
-  def rejected(service: Service): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def rejected(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
         name          <- cachedName
@@ -163,7 +161,7 @@ class RegisterWithEoriAndIdController @Inject() (
   }
 
   def pending(service: Service, date: String): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         eori <- cache.subscriptionDetails.map(
           _.eoriNumber.getOrElse(throw new IllegalStateException("No EORI found in cache"))
@@ -174,7 +172,7 @@ class RegisterWithEoriAndIdController @Inject() (
     }
 
   def fail(service: Service, date: String): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         name <- cache.subscriptionDetails.map(_.name)
         _    <- cache.remove
@@ -182,7 +180,7 @@ class RegisterWithEoriAndIdController @Inject() (
     }
 
   def eoriAlreadyLinked(service: Service): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         name <- cache.subscriptionDetails.map(_.name)
         date <- cache.registerWithEoriAndIdResponse.map(_.responseCommon.processingDate)
@@ -191,7 +189,7 @@ class RegisterWithEoriAndIdController @Inject() (
     }
 
   def rejectedPreviously(service: Service): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         name <- cache.subscriptionDetails.map(_.name)
         date <- cache.registerWithEoriAndIdResponse.map(r => dateTimeFormat.print(r.responseCommon.processingDate))
@@ -255,7 +253,6 @@ class RegisterWithEoriAndIdController @Inject() (
     }
 
   private def handleExistingSubscription(safeId: SafeId, service: Service, journey: Journey.Value)(implicit
-    request: Request[AnyContent],
     hc: HeaderCarrier
   ): Future[Result] =
     taxEnrolmentsService.doesEnrolmentExist(safeId).map {

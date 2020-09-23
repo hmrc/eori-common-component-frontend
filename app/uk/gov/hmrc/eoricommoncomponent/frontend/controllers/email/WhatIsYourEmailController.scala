@@ -17,10 +17,9 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, FeatureFlags}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{InternalId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.emailForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.{EmailStatus, EmailViewModel}
@@ -33,16 +32,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class WhatIsYourEmailController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   mcc: MessagesControllerComponents,
   whatIsYourEmailView: what_is_your_email,
   save4LaterService: Save4LaterService
 )(implicit ec: ExecutionContext)
-    extends CdsController(mcc) with FeatureFlags {
+    extends CdsController(mcc) {
 
   private def populateView(email: Option[String], service: Service, journey: Journey.Value)(implicit
-    hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] = {
     lazy val form = email.map(EmailViewModel).fold(emailForm) {
@@ -52,12 +49,12 @@ class WhatIsYourEmailController @Inject() (
   }
 
   def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       populateView(None, service, journey)
     }
 
   def submit(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
       emailForm.bindFromRequest.fold(
         formWithErrors =>
           Future.successful(BadRequest(whatIsYourEmailView(emailForm = formWithErrors, service, journey))),
@@ -70,7 +67,7 @@ class WhatIsYourEmailController @Inject() (
     formData: EmailViewModel,
     service: Service,
     journey: Journey.Value
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
+  )(implicit hc: HeaderCarrier): Future[Result] =
     save4LaterService
       .saveEmail(internalId, EmailStatus(formData.email))
       .flatMap(_ => Future.successful(Redirect(routes.CheckYourEmailController.createForm(service, journey))))

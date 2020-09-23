@@ -17,28 +17,21 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
-  ContactDetailsSubscriptionFlowPageGetEori,
-  ContactDetailsSubscriptionFlowPageMigrate
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{ContactDetailsSubscriptionFlowPageGetEori, ContactDetailsSubscriptionFlowPageMigrate}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{LoggedInUserWithEnrolments, NA}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactDetailsViewModel}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.ContactDetailsForm.contactDetailsCreateForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDetailsService
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  SubscriptionBusinessService,
-  SubscriptionDetailsService
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.contact_details
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -46,10 +39,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ContactDetailsController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   subscriptionBusinessService: SubscriptionBusinessService,
-  requestSessionData: RequestSessionData,
   cdsFrontendDataCache: SessionCache,
   subscriptionFlowManager: SubscriptionFlowManager,
   subscriptionDetailsService: SubscriptionDetailsService,
@@ -63,7 +54,7 @@ class ContactDetailsController @Inject() (
     extends CdsController(mcc) {
 
   def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       journey match {
         case Journey.Subscribe =>
           val f = for {
@@ -96,7 +87,7 @@ class ContactDetailsController @Inject() (
     }
 
   def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       journey match {
         case Journey.Subscribe => populateFormGYE(service, journey)(true)
         case _                 => populateFormGYE(service, journey)(true)
@@ -119,7 +110,7 @@ class ContactDetailsController @Inject() (
   }.flatMap(identity)
 
   def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       cdsFrontendDataCache.email flatMap { email =>
         contactDetailsCreateForm().bindFromRequest.fold(
           formWithErrors =>
@@ -186,7 +177,7 @@ class ContactDetailsController @Inject() (
     isInReviewMode: Boolean,
     service: Service,
     journey: Journey.Value
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
+  )(implicit request: Request[AnyContent]): Future[Result] = {
     val form = contactDetailsModel
       .map(clearFieldsIfNecessary(_, isInReviewMode))
       .fold(contactDetailsCreateForm())(f => contactDetailsCreateForm().fill(f))
@@ -246,5 +237,4 @@ class ContactDetailsController @Inject() (
               )
           }
       )
-
 }

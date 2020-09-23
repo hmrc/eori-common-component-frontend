@@ -17,10 +17,9 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc.{Action, _}
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.enterNameDobForm
@@ -33,8 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class NameDobController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   mcc: MessagesControllerComponents,
   matchNameDobView: match_namedob,
   cdsFrontendDataCache: SessionCache
@@ -42,12 +40,12 @@ class NameDobController @Inject() (
     extends CdsController(mcc) {
 
   def form(organisationType: String, service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       Future.successful(Ok(matchNameDobView(enterNameDobForm, organisationType, service, journey)))
     }
 
   def submit(organisationType: String, service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       enterNameDobForm.bindFromRequest.fold(
         formWithErrors =>
           Future.successful(BadRequest(matchNameDobView(formWithErrors, organisationType, service, journey))),
@@ -60,7 +58,7 @@ class NameDobController @Inject() (
     organisationType: String,
     service: Service,
     journey: Journey.Value
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
+  )(implicit hc: HeaderCarrier): Future[Result] =
     cdsFrontendDataCache.saveSubscriptionDetails(SubscriptionDetails(nameDobDetails = Some(formData))).map { _ =>
       Redirect(
         uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.GYEHowCanWeIdentifyYouController

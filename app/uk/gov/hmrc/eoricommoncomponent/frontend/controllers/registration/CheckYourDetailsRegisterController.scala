@@ -17,9 +17,8 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, FeatureFlags}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
@@ -31,18 +30,18 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class CheckYourDetailsRegisterController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
+  featureFlags: FeatureFlags,
   sessionCache: SessionCache,
   requestSessionData: RequestSessionData,
   mcc: MessagesControllerComponents,
   checkYourDetailsRegisterView: check_your_details_register,
   registerWithoutIdWithSubscription: RegisterWithoutIdWithSubscriptionService
 )(implicit ec: ExecutionContext)
-    extends CdsController(mcc) with FeatureFlags {
+    extends CdsController(mcc) {
 
   def reviewDetails(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction {
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
         for {
           registration <- sessionCache.registrationDetails
@@ -62,14 +61,14 @@ class CheckYourDetailsRegisterController @Inject() (
               service,
               journey,
               isUserIdentifiedByRegService,
-              rowHaveUtrEnabled
+              featureFlags.rowHaveUtrEnabled
             )
           )
         }
     }
 
   def submitDetails(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction {
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => loggedInUser: LoggedInUserWithEnrolments =>
         registerWithoutIdWithSubscription
           .rowRegisterWithoutIdWithSubscription(loggedInUser, service, journey)

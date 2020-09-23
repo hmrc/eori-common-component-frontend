@@ -17,10 +17,9 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.PdfGeneratorConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{LoggedInUserWithEnrolments, Sub02Outcome}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
@@ -30,8 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class EoriDownloadController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   cdsFrontendDataCache: SessionCache,
   mcc: MessagesControllerComponents,
   errorTemplateView: error_template,
@@ -40,7 +38,7 @@ class EoriDownloadController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def download(): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def download(): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       cdsFrontendDataCache.sub02Outcome.map {
         case Sub02Outcome(processedDate, fullName, Some(eori)) =>
@@ -56,5 +54,4 @@ class EoriDownloadController @Inject() (
         case Left(errorTemplate) => Future.successful(errorTemplate)
       }
   }
-
 }

@@ -17,25 +17,19 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.EmailController
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_group
 
-import scala.concurrent.ExecutionContext
 
 @Singleton
 class VatGroupController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
   mcc: MessagesControllerComponents,
   vatGroupView: vat_group
-)(implicit ec: ExecutionContext)
-    extends CdsController(mcc) {
+) extends CdsController(mcc) {
 
   def createForm(journey: Journey.Value): Action[AnyContent] = Action { implicit request =>
     Ok(vatGroupView(vatGroupYesNoAnswerForm(), journey))
@@ -53,5 +47,4 @@ class VatGroupController @Inject() (
             Redirect(routes.VatGroupsCannotRegisterUsingThisServiceController.form(journey))
       )
   }
-
 }

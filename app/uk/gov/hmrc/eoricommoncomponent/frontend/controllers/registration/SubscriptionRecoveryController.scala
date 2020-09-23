@@ -17,12 +17,11 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.{Action, _}
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SUB09SubscriptionDisplayConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionDisplayResponse
@@ -31,11 +30,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.RecipientDet
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RandomUUIDGenerator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  HandleSubscriptionService,
-  SubscriptionDetailsService,
-  TaxEnrolmentsService
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{HandleSubscriptionService, SubscriptionDetailsService, TaxEnrolmentsService}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -43,8 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SubscriptionRecoveryController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   handleSubscriptionService: HandleSubscriptionService,
   taxEnrolmentService: TaxEnrolmentsService,
   sessionCache: SessionCache,
@@ -57,7 +51,7 @@ class SubscriptionRecoveryController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def complete(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def complete(service: Service, journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       val isRowF           = Future.successful(UserLocation.isRow(requestSessionData))
       val journeyF         = Future.successful(journey)

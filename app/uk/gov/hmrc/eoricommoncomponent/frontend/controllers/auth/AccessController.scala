@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth
 
-import play.api.i18n.I18nSupport
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Request, Result}
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Organisation}
@@ -26,7 +25,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 
 import scala.concurrent.Future
 
-trait AccessController extends JourneyTypeFromUrl with AllowlistVerification with I18nSupport {
+trait AccessController extends JourneyTypeFromUrl with AllowlistVerification {
 
   def permitUserOrRedirect(
     affinityGroup: Option[AffinityGroup],

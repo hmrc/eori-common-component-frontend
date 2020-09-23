@@ -17,10 +17,9 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
@@ -36,8 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BusinessDetailsRecoveryController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   requestSessionData: RequestSessionData,
   sessionCache: SessionCache,
   mcc: MessagesControllerComponents,
@@ -48,7 +46,7 @@ class BusinessDetailsRecoveryController @Inject() (
     extends CdsController(mcc) {
 
   def form(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         regDetails <- sessionCache.registrationDetails
       } yield regDetails match {
@@ -62,7 +60,7 @@ class BusinessDetailsRecoveryController @Inject() (
     }
 
   def continue(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => userId: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => userId: LoggedInUserWithEnrolments =>
       {
         for {
           regDetails <- sessionCache.registrationDetails

@@ -17,10 +17,9 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.data.Form
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -31,10 +30,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.AddressDetail
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries._
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  SubscriptionBusinessService,
-  SubscriptionDetailsService
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.confirm_contact_details
 import uk.gov.hmrc.http.HeaderCarrier
@@ -43,8 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AddressController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authorise: AuthAction,
   subscriptionBusinessService: SubscriptionBusinessService,
   cdsFrontendDataCache: SessionCache,
   subscriptionFlowManager: SubscriptionFlowManager,
@@ -55,25 +50,24 @@ class AddressController @Inject() (
   subscriptionDetailsService: SubscriptionDetailsService,
   confirmContactDetails: confirm_contact_details,
   addressView: address
-)(implicit ec: ExecutionContext)
-    extends CdsController(mcc) {
+)(implicit ec: ExecutionContext) extends CdsController(mcc) {
 
   def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authorise.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.address.flatMap {
         populateOkView(_, isInReviewMode = false, service, journey)
       }
     }
 
   def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authorise.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.addressOrException flatMap { cdm =>
         populateOkView(Some(cdm), isInReviewMode = true, service, journey)
       }
     }
 
   def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authorise.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       addressDetailsCreateForm().bindFromRequest
         .fold(
           formWithErrors => populateCountriesToInclude(isInReviewMode, service, journey, formWithErrors, BadRequest),

@@ -16,17 +16,12 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
-import play.api.Application
+import javax.inject.Inject
+import play.api.Configuration
 
-trait FeatureFlags {
+class FeatureFlags @Inject()(config: Configuration) {
 
-  // TODO Get rid of application here
-  // Injecting the whole application to have access to injector or in different places to config is a bad practice
-  // https://github.com/google/guice/wiki/InjectOnlyDirectDependencies#inject-only-direct-dependencies
-  def currentApp: Application
-
-  def loadConfig(path: String): Boolean =
-    currentApp.configuration.get[Boolean](path)
+  def loadConfig(path: String): Boolean = config.get[Boolean](path)
 
   val matchingEnabled: Boolean = loadConfig(path = "features.matchingEnabled")
 

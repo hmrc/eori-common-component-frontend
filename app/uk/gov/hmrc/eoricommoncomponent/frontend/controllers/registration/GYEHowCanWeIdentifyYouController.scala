@@ -17,11 +17,10 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.{Action, _}
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
@@ -36,8 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class GYEHowCanWeIdentifyYouController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   matchingService: MatchingService,
   mcc: MessagesControllerComponents,
   howCanWeIdentifyYouView: how_can_we_identify_you,
@@ -46,14 +44,14 @@ class GYEHowCanWeIdentifyYouController @Inject() (
     extends CdsController(mcc) {
 
   def form(organisationType: String, service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       Future.successful(
         Ok(howCanWeIdentifyYouView(ninoOrUtrForm, isInReviewMode = false, service, journey, Some(organisationType)))
       )
     }
 
   def submit(organisationType: String, service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
       ninoOrUtrForm.bindFromRequest.fold(
         formWithErrors =>
           Future.successful(

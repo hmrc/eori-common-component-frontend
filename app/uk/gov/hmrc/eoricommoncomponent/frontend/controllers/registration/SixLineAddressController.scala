@@ -17,10 +17,9 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc.{Action, _}
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{LoggedInUser, SixLineAddressMatchModel}
@@ -37,8 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SixLineAddressController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   regDetailsCreator: RegistrationDetailsCreator,
   subscriptionFlowManager: SubscriptionFlowManager,
   sessionCache: SessionCache,
@@ -56,7 +54,7 @@ class SixLineAddressController @Inject() (
     organisationType: String,
     service: Service,
     journey: Journey.Value
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
+  )(implicit request: Request[AnyContent]): Future[Result] = {
     val formByOrgType = formsByOrganisationTypes(request)(organisationType)
     lazy val form     = address.map(ad => createSixLineAddress(ad)).fold(formByOrgType)(formByOrgType.fill)
     val (countriesToInclude, countriesInCountryPicker) =
@@ -82,7 +80,7 @@ class SixLineAddressController @Inject() (
     service: Service,
     journey: Journey.Value
   ): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser: LoggedInUser =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser: LoggedInUser =>
       assertOrganisationTypeIsValid(organisationType)
       sessionCache.registrationDetails.flatMap(
         rd => populateView(Some(rd.address), isInReviewMode, organisationType, service, journey)
@@ -95,7 +93,7 @@ class SixLineAddressController @Inject() (
     service: Service,
     journey: Journey.Value
   ): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser: LoggedInUser =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser: LoggedInUser =>
       val (countriesToInclude, countriesInCountryPicker) =
         countries.getCountryParameters(requestSessionData.selectedUserLocationWithIslands)
       assertOrganisationTypeIsValid(organisationType)(request)

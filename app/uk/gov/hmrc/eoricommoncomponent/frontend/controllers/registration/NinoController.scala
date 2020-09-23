@@ -17,11 +17,10 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{InternalId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
@@ -33,8 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class NinoController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   mcc: MessagesControllerComponents,
   matchNinoView: match_nino,
   matchingService: MatchingService
@@ -42,12 +40,12 @@ class NinoController @Inject() (
     extends CdsController(mcc) {
 
   def form(organisationType: String, service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       Future.successful(Ok(matchNinoView(ninoForm, organisationType, service, journey)))
     }
 
   def submit(organisationType: String, service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
       ninoForm.bindFromRequest.fold(
         invalidForm => Future.successful(BadRequest(matchNinoView(invalidForm, organisationType, service, journey))),
         form =>
@@ -69,5 +67,4 @@ class NinoController @Inject() (
           }
       )
     }
-
 }

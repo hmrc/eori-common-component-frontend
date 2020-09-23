@@ -25,7 +25,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{RecipientDe
 import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -114,8 +113,7 @@ class CdsSubscriber @Inject() (
     mayBeCdsOrganisationType: Option[CdsOrganisationType],
     journey: Journey.Value
   )(implicit
-    hc: HeaderCarrier,
-    request: Request[AnyContent]
+    hc: HeaderCarrier
   ): Future[(SubscriptionResult, Option[SubscriptionDetails])] =
     for {
       subscriptionDetailsHolder <- sessionCache.subscriptionDetails

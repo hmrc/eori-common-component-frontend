@@ -17,9 +17,8 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import javax.inject.Inject
-import play.api.Application
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
@@ -28,15 +27,14 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.enrolment_pending_aga
 import scala.concurrent.ExecutionContext
 
 class EnrolmentPendingAgainstGroupIdController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   mcc: MessagesControllerComponents,
   sessionCache: SessionCache,
   enrolmentPendingAgainstGroupId: enrolment_pending_against_group_id
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def show(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def show(journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       sessionCache.remove.map(_ => Ok(enrolmentPendingAgainstGroupId(journey)))
   }

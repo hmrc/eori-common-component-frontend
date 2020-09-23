@@ -17,38 +17,25 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.{
-  VatDetailsEuConfirmController,
-  VatDetailsEuController
-}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
-  SubscriptionPage,
-  VatEUConfirmSubscriptionFlowPage,
-  VatRegisteredEuSubscriptionFlowPage
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.{VatDetailsEuConfirmController, VatDetailsEuController}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubscriptionPage, VatEUConfirmSubscriptionFlowPage, VatRegisteredEuSubscriptionFlowPage}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{LoggedInUserWithEnrolments, YesNo}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.VatEUDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  SubscriptionBusinessService,
-  SubscriptionDetailsService,
-  SubscriptionVatEUDetailsService
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService, SubscriptionVatEUDetailsService}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_registered_eu
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class VatRegisteredEuController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   subscriptionBusinessService: SubscriptionBusinessService,
   subscriptionDetailsService: SubscriptionDetailsService,
   subscriptionVatEUDetailsService: SubscriptionVatEUDetailsService,
@@ -59,7 +46,7 @@ class VatRegisteredEuController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       Future.successful(
         Ok(
@@ -75,7 +62,7 @@ class VatRegisteredEuController @Inject() (
       )
   }
 
-  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.getCachedVatRegisteredEu map { isVatRegisteredEu =>
         Ok(
@@ -92,7 +79,7 @@ class VatRegisteredEuController @Inject() (
   }
 
   def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       vatRegisteredEuYesNoAnswerForm(requestSessionData.isPartnership)
         .bindFromRequest()
         .fold(

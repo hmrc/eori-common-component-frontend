@@ -17,15 +17,11 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.{
-  ConfirmContactDetailsController,
-  SixLineAddressController
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.{ConfirmContactDetailsController, SixLineAddressController}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.rowIndividualsNinoForm
@@ -40,8 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DoYouHaveNinoController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   matchingService: MatchingService,
   requestSessionData: RequestSessionData,
   mcc: MessagesControllerComponents,
@@ -51,11 +46,11 @@ class DoYouHaveNinoController @Inject() (
     extends CdsController(mcc) {
 
   def displayForm(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       Future.successful(Ok(matchNinoRowIndividualView(rowIndividualsNinoForm, service, journey)))
     }
 
-  def submit(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def submit(service: Service, journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => loggedInUser: LoggedInUserWithEnrolments =>
       rowIndividualsNinoForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(matchNinoRowIndividualView(formWithErrors, service, journey))),
@@ -72,8 +67,7 @@ class DoYouHaveNinoController @Inject() (
   }
 
   private def noNinoRedirect(service: Service, journey: Journey.Value)(implicit
-    request: Request[AnyContent],
-    hc: HeaderCarrier
+    request: Request[AnyContent]
   ): Future[Result] =
     requestSessionData.userSelectedOrganisationType match {
       case Some(cdsOrgType) =>

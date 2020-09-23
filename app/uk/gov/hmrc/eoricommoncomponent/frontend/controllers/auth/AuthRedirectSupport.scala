@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth
 
+import play.api.{Configuration, Environment}
 import play.api.mvc.{AnyContent, Request, Result}
-import play.api.{Application, Configuration, Environment}
 import uk.gov.hmrc.auth.core.NoActiveSession
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.JourneyTypeFromUrl
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey.{Register, Subscribe}
@@ -25,13 +25,8 @@ import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 
 trait AuthRedirectSupport extends AuthRedirects with JourneyTypeFromUrl {
 
-  // TODO Get rid of the whole application here, this can be a class with injected config and env
-  // Injecting the whole application to have access to injector or in different places to config is a bad practice
-  // https://github.com/google/guice/wiki/InjectOnlyDirectDependencies#inject-only-direct-dependencies
-  def currentApp: Application
-
-  override lazy val config: Configuration = currentApp.configuration
-  override lazy val env: Environment      = Environment(currentApp.path, currentApp.classloader, currentApp.mode)
+  override val config: Configuration
+  override val env: Environment
 
   private def continueUrlKey(implicit request: Request[AnyContent]) = {
     val visitedUkPage: Boolean = request.session.get("visited-uk-page").getOrElse("false").toBoolean

@@ -17,10 +17,9 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NinoSubscriptionFlowPage
@@ -34,8 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class HaveNinoSubscriptionController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   subscriptionFlowManager: SubscriptionFlowManager,
   mcc: MessagesControllerComponents,
   matchNinoSubscriptionView: match_nino_subscription,
@@ -43,12 +41,12 @@ class HaveNinoSubscriptionController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       Future.successful(Ok(matchNinoSubscriptionView(rowIndividualsNinoForm, service, journey)))
   }
 
-  def submit(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def submit(service: Service, journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       rowIndividualsNinoForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(matchNinoSubscriptionView(formWithErrors, service, journey))),
@@ -69,7 +67,7 @@ class HaveNinoSubscriptionController @Inject() (
       case _           => throw new IllegalStateException("No Data from the form")
     }
 
-  private def redirectToNextPage(service: Service)(implicit hc: HeaderCarrier, request: Request[AnyContent]): Result =
+  private def redirectToNextPage(service: Service)(implicit request: Request[AnyContent]): Result =
     Redirect(subscriptionFlowManager.stepInformation(NinoSubscriptionFlowPage).nextPage.url(service))
 
   private lazy val noNinoException = throw new IllegalStateException("User selected 'Yes' for Nino but no Nino found")

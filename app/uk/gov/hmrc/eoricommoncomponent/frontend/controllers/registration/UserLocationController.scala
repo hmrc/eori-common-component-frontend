@@ -17,12 +17,12 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector}
+import uk.gov.hmrc.auth.core.AffinityGroup
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, FeatureFlags}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.registration.RegistrationDisplayResponse
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
@@ -34,18 +34,14 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.Registrati
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{NewSubscription, _}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration._
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{
-  sub01_outcome_processing,
-  sub01_outcome_rejected
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{sub01_outcome_processing, sub01_outcome_rejected}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class UserLocationController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   requestSessionData: RequestSessionData,
   save4LaterService: Save4LaterService,
   subscriptionStatusService: SubscriptionStatusService,
@@ -58,7 +54,7 @@ class UserLocationController @Inject() (
   sub01OutcomeRejected: sub01_outcome_rejected,
   errorTemplate: error_template
 )(implicit ec: ExecutionContext)
-    extends CdsController(mcc) with FeatureFlags {
+    extends CdsController(mcc) {
 
   private def isAffinityOrganisation(affinityGroup: Option[AffinityGroup]): Boolean =
     affinityGroup.contains(AffinityGroup.Organisation)
@@ -72,7 +68,7 @@ class UserLocationController @Inject() (
     )
 
   def form(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
       continue(service, journey)
     }
 
@@ -90,7 +86,7 @@ class UserLocationController @Inject() (
     }.flatMap(identity)
 
   def submit(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
       userLocationForm.bindFromRequest.fold(
         formWithErrors =>
           Future.successful(
@@ -143,7 +139,6 @@ class UserLocationController @Inject() (
     } yield (preSubscriptionStatus, mayBeSafeId)
 
   private def handleExistingSubscription(internalId: InternalId, service: Service)(implicit
-    request: Request[AnyContent],
     hc: HeaderCarrier
   ): Future[Result] =
     save4LaterService
@@ -202,14 +197,14 @@ class UserLocationController @Inject() (
     case _ => Future.successful(ServiceUnavailable(errorTemplate()))
   }
 
-  def processing: Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def processing: Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       sessionCache.sub01Outcome
         .map(_.processedDate)
         .map(processedDate => Ok(sub01OutcomeProcessing(None, processedDate)))
   }
 
-  def rejected: Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def rejected: Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       sessionCache.sub01Outcome
         .map(_.processedDate)

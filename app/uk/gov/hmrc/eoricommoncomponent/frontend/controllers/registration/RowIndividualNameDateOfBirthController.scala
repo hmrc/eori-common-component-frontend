@@ -17,9 +17,8 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc.{Action, _}
-import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.{DetermineReviewPageController, _}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, FeatureFlags}
@@ -34,16 +33,16 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RowIndividualNameDateOfBirthController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
+  featureFlags: FeatureFlags,
   subscriptionDetailsService: SubscriptionDetailsService,
   mcc: MessagesControllerComponents,
   rowIndividualNameDob: row_individual_name_dob
 )(implicit ec: ExecutionContext)
-    extends CdsController(mcc) with FeatureFlags {
+    extends CdsController(mcc) {
 
   def form(organisationType: String, service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUser =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUser =>
       assertOrganisationTypeIsValid(organisationType)
       Future.successful(
         Ok(rowIndividualNameDob(thirdCountryIndividualNameDateOfBirthForm, organisationType, service, journey, false))
@@ -51,7 +50,7 @@ class RowIndividualNameDateOfBirthController @Inject() (
     }
 
   def reviewForm(organisationType: String, service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUser =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUser =>
       assertOrganisationTypeIsValid(organisationType)
       subscriptionDetailsService.cachedNameDobDetails flatMap {
         case Some(NameDobMatchModel(firstName, middleName, lastName, dateOfBirth)) =>
@@ -69,7 +68,7 @@ class RowIndividualNameDateOfBirthController @Inject() (
     service: Service,
     journey: Journey.Value
   ): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser: LoggedInUser =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser: LoggedInUser =>
       assertOrganisationTypeIsValid(organisationType)
       thirdCountryIndividualNameDateOfBirthForm.bindFromRequest.fold(
         formWithErrors =>
@@ -95,12 +94,12 @@ class RowIndividualNameDateOfBirthController @Inject() (
     organisationType: String,
     service: Service,
     journey: Journey.Value
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
+  )(implicit hc: HeaderCarrier): Future[Result] = {
     val nameDobMatchModel =
       NameDobMatchModel(formData.firstName, formData.middleName, formData.lastName, formData.dateOfBirth)
 
     subscriptionDetailsService.cacheNameDobDetails(nameDobMatchModel) map { _ =>
-      (isInReviewMode, rowHaveUtrEnabled) match {
+      (isInReviewMode, featureFlags.rowHaveUtrEnabled) match {
         case (true, _)      => Redirect(DetermineReviewPageController.determineRoute(service, journey))
         case (false, true)  => Redirect(DoYouHaveAUtrNumberController.form(organisationType, service, journey, false))
         case (false, false) => Redirect(SixLineAddressController.showForm(false, organisationType, service, journey))

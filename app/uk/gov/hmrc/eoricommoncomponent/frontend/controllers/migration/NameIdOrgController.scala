@@ -17,26 +17,18 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.data.Form
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameIdOrganisationDisplayMode._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NameUtrDetailsSubscriptionFlowPage
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.{
-  nameUtrCompanyForm,
-  nameUtrOrganisationForm,
-  nameUtrPartnershipForm
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.{nameUtrCompanyForm, nameUtrOrganisationForm, nameUtrPartnershipForm}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  SubscriptionBusinessService,
-  SubscriptionDetailsService
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.nameId
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -44,8 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class NameIDOrgController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   subscriptionBusinessService: SubscriptionBusinessService,
   requestSessionData: RequestSessionData,
   cdsFrontendDataCache: SessionCache,
@@ -62,7 +53,7 @@ class NameIDOrgController @Inject() (
     else nameUtrOrganisationForm
 
   def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.cachedNameIdOrganisationViewModel flatMap { cachedNameUtrViewModel =>
         val selectedOrganisationType =
           requestSessionData.userSelectedOrganisationType.map(_.id)
@@ -78,7 +69,7 @@ class NameIDOrgController @Inject() (
     }
 
   def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.getCachedNameIdViewModel flatMap { cdm =>
         val selectedOrganisationType =
           requestSessionData.userSelectedOrganisationType.map(_.id)
@@ -94,7 +85,7 @@ class NameIDOrgController @Inject() (
     }
 
   def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       form.bindFromRequest
         .fold(
           formWithErrors =>
