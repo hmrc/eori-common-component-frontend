@@ -53,7 +53,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
 
   private val mockAuthConnector              = mock[AuthConnector]
   private val mockAuthAction                 = authAction(mockAuthConnector)
-  private val mockFeatureFlags               = mock[FeatureFlags]
+  private val featureFlags                   = app.injector.instanceOf[FeatureFlags]
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
   private val mockNameOrganisationMatchModel = mock[NameOrganisationMatchModel]
@@ -61,7 +61,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
 
   private val controller = new WhatIsYourOrgNameController(
     mockAuthAction,
-    mockFeatureFlags,
+    featureFlags,
     mockRequestSessionData,
     mcc,
     whatIsYourOrgNameView,

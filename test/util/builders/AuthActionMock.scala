@@ -16,6 +16,7 @@
 
 package util.builders
 
+import base.Injector
 import org.scalatest.WordSpec
 import org.scalatest.mockito.MockitoSugar
 import play.api.{Configuration, Environment}
@@ -24,10 +25,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 
 import scala.concurrent.ExecutionContext.global
 
-trait AuthActionMock extends WordSpec with MockitoSugar {
+trait AuthActionMock extends WordSpec with MockitoSugar with Injector {
 
-  val configuration = mock[Configuration]
-  val environment   = mock[Environment]
+  val configuration = instanceOf[Configuration]
+  val environment   = Environment.simple()
 
   def authAction(authConnector: AuthConnector) = new AuthAction(configuration, environment, authConnector)(global)
 }

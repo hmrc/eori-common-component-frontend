@@ -43,15 +43,15 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach {
+class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector              = mock[AuthConnector]
-  private val mockAuthAction                 = mock[AuthAction]
+  private val mockAuthAction                 = authAction(mockAuthConnector)
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSessionCache               = mock[SessionCache]
   private val mockSave4LaterService          = mock[Save4LaterService]
@@ -87,7 +87,7 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach {
   )
 
   override def beforeEach(): Unit = {
-    reset(mockAuthAction)
+    reset(mockAuthConnector)
     when(mockSave4LaterConnector.get(any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(None))
     when(

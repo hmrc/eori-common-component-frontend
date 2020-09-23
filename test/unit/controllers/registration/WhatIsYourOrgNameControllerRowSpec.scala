@@ -48,14 +48,14 @@ class WhatIsYourOrgNameControllerRowSpec extends ControllerSpec with BeforeAndAf
 
   private val mockAuthConnector              = mock[AuthConnector]
   private val mockAuthAction                 = authAction(mockAuthConnector)
-  private val mockFeatureFlags               = mock[FeatureFlags]
+  private val featureFlags                   = instanceOf[FeatureFlags]
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
   private val whatIsYourOrgNameView          = app.injector.instanceOf[what_is_your_org_name]
 
   private val controller = new WhatIsYourOrgNameController(
     mockAuthAction,
-    mockFeatureFlags,
+    featureFlags,
     mockRequestSessionData,
     mcc,
     whatIsYourOrgNameView,

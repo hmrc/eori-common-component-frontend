@@ -62,11 +62,11 @@ class RowIndividualNameDateOfBirthControllerWithFeatureFalseSpec
 
     private val rowIndividualNameDob = app.injector.instanceOf[row_individual_name_dob]
     private val mockAuthAction       = authAction(mockAuthConnector)
-    private val mockFeatureFlags     = mock[FeatureFlags]
+    private val featureFlags         = app.injector.instanceOf[FeatureFlags]
 
     override val controller = new RowIndividualNameDateOfBirthController(
       mockAuthAction,
-      mockFeatureFlags,
+      featureFlags,
       mockSubscriptionDetailsService,
       mcc,
       rowIndividualNameDob

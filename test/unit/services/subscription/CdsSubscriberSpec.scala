@@ -42,7 +42,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.global
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures with BeforeAndAfterEach with Injector {
 
@@ -55,7 +55,6 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
   private val mockSubscriptionFlowManager                  = mock[SubscriptionFlowManager]
   private val mockHandleSubscriptionService                = mock[HandleSubscriptionService]
   private val mockRegistrationDetails: RegistrationDetails = mock[RegistrationDetails]
-  private val mockSubscribeOutcome: Sub02Outcome           = mock[Sub02Outcome]
   private val mockRequestSessionData                       = mock[RequestSessionData]
   private val mockSubscriptionDetailsService               = mock[SubscriptionDetailsService]
 

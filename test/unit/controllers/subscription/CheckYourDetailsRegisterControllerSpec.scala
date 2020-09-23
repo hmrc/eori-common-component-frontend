@@ -69,7 +69,7 @@ class CheckYourDetailsRegisterControllerSpec
 
   private val mockAuthConnector                     = mock[AuthConnector]
   private val mockAuthAction                        = authAction(mockAuthConnector)
-  private val mockFeatureFlags                      = mock[FeatureFlags]
+  private val featureFlags                          = app.injector.instanceOf[FeatureFlags]
   private val mockSessionCache                      = mock[SessionCache]
   private val mockSubscriptionDetailsHolder         = mock[SubscriptionDetails]
   private val mockRegisterWithoutIdWithSubscription = mock[RegisterWithoutIdWithSubscriptionService]
@@ -79,7 +79,7 @@ class CheckYourDetailsRegisterControllerSpec
 
   val controller = new CheckYourDetailsRegisterController(
     mockAuthAction,
-    mockFeatureFlags,
+    featureFlags,
     mockSessionCache,
     mockRequestSession,
     mcc,
@@ -115,7 +115,6 @@ class CheckYourDetailsRegisterControllerSpec
     when(mockSubscriptionDetailsHolder.contactDetails).thenReturn(Some(contactUkDetailsModelWithMandatoryValuesOnly))
     when(mockSessionCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(mockSubscriptionDetailsHolder)
     when(mockRequestSession.isPartnership(any[Request[AnyContent]])).thenReturn(false)
-
   }
 
   "Reviewing the details" should {
@@ -943,7 +942,7 @@ class CheckYourDetailsRegisterControllerSpec
 
     val controller = new CheckYourDetailsRegisterController(
       mockAuthAction,
-      mockFeatureFlags,
+      app.injector.instanceOf[FeatureFlags],
       mockSessionCache,
       mockRequestSession,
       mcc,

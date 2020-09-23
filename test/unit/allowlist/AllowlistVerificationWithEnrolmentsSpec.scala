@@ -16,10 +16,15 @@
 
 package unit.allowlist
 
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
+import com.typesafe.config.{Config, ConfigFactory}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import org.scalatest.BeforeAndAfterEach
+import play.api.{Configuration, Environment}
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.YouNeedADifferentServiceController
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.you_need_different_service
@@ -28,25 +33,29 @@ import util.builders.{AuthActionMock, AuthBuilder, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class AllowlistVerificationWithEnrolmentsSpec extends ControllerSpec with AuthActionMock {
+class AllowlistVerificationWithEnrolmentsSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
-  implicit override lazy val app: Application = new GuiceApplicationBuilder()
-    .disable[com.kenshoo.play.metrics.PlayModule]
-    .configure("metrics.enabled" -> false)
-    .configure(Map("allowlistEnabled" -> true, "allowlist" -> "mister_allow@example.com,bob@example.com"))
-    .build()
+  val customConfiguration: Config = ConfigFactory.parseString("""
+      |allowlistEnabled=true
+      |allowlist="mister_allow@example.com, bob@example.com"
+      """.stripMargin)
 
-  private val auth           = mock[AuthConnector]
-  private val mockAuthAction = authAction(auth)
+  private val mockAuthConnector = mock[AuthConnector]
 
-  private val youNeedDifferentServiceView = app.injector.instanceOf[you_need_different_service]
+  private val mockAuthAction =
+    new AuthAction(Configuration(customConfiguration), Environment.simple(), mockAuthConnector)(global)
+
+  private val youNeedDifferentServiceView = mock[you_need_different_service]
 
   private val controller = new YouNeedADifferentServiceController(mockAuthAction, youNeedDifferentServiceView, mcc)
+
+  override def beforeEach(): Unit =
+    when(youNeedDifferentServiceView.apply()(any(), any())).thenReturn(HtmlFormat.empty)
 
   "Allowlist verification" should {
 
     "return Unauthorized (401) when a non-allowlisted user attempts to access a route" in {
-      AuthBuilder.withAuthorisedUser(defaultUserId, auth, userEmail = Some("not@example.com"))
+      AuthBuilder.withAuthorisedUser(defaultUserId, mockAuthConnector, userEmail = Some("not@example.com"))
 
       val result = controller
         .form(Journey.Subscribe)
@@ -57,7 +66,7 @@ class AllowlistVerificationWithEnrolmentsSpec extends ControllerSpec with AuthAc
     }
 
     "return Unauthorized (401) when a user attempts to access a route and they do not have an email address" in {
-      AuthBuilder.withAuthorisedUser(defaultUserId, auth, userEmail = None)
+      AuthBuilder.withAuthorisedUser(defaultUserId, mockAuthConnector, userEmail = None)
 
       val result = controller
         .form(Journey.Subscribe)
@@ -68,7 +77,7 @@ class AllowlistVerificationWithEnrolmentsSpec extends ControllerSpec with AuthAc
     }
 
     "return OK (200) when a allowlisted user attempts to access a route" in {
-      AuthBuilder.withAuthorisedUser(defaultUserId, auth, userEmail = Some("mister_allow@example.com"))
+      AuthBuilder.withAuthorisedUser(defaultUserId, mockAuthConnector, userEmail = Some("mister_allow@example.com"))
 
       val result = controller
         .form(Journey.Subscribe)
@@ -78,7 +87,7 @@ class AllowlistVerificationWithEnrolmentsSpec extends ControllerSpec with AuthAc
     }
 
     "not apply to Get Your EORI journey" in {
-      AuthBuilder.withAuthorisedUser(defaultUserId, auth, userEmail = Some("not@example.com"))
+      AuthBuilder.withAuthorisedUser(defaultUserId, mockAuthConnector, userEmail = Some("not@example.com"))
 
       val result = controller
         .form(Journey.Register)

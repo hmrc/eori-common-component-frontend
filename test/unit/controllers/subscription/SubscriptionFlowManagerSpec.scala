@@ -16,7 +16,7 @@
 
 package unit.controllers.subscription
 
-import base.UnitSpec
+import base.{Injector, UnitSpec}
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
@@ -37,7 +37,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 
@@ -45,18 +44,19 @@ import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
 class SubscriptionFlowManagerSpec
-    extends UnitSpec with MockitoSugar with BeforeAndAfterAll with BeforeAndAfterEach with ControllerSpec {
+    extends UnitSpec with MockitoSugar with BeforeAndAfterAll with BeforeAndAfterEach with ControllerSpec
+    with Injector {
 
   implicit override lazy val app: Application = new GuiceApplicationBuilder()
     .configure(Map("features.rowHaveUtrEnabled" -> false))
     .build()
 
-  private val mockFeatureFlags         = mock[FeatureFlags]
+  private val featureFlags             = app.injector.instanceOf[FeatureFlags]
   private val mockRequestSessionData   = mock[RequestSessionData]
   private val mockCdsFrontendDataCache = mock[SessionCache]
 
   val controller =
-    new SubscriptionFlowManager(mockFeatureFlags, mockRequestSessionData, mockCdsFrontendDataCache)(global)
+    new SubscriptionFlowManager(featureFlags, mockRequestSessionData, mockCdsFrontendDataCache)(global)
 
   private val mockOrgRegistrationDetails        = mock[RegistrationDetailsOrganisation]
   private val mockIndividualRegistrationDetails = mock[RegistrationDetailsIndividual]
@@ -413,18 +413,19 @@ class SubscriptionFlowManagerSpec
 }
 
 class SubscriptionFlowManagerNinoUtrEnabledSpec
-    extends UnitSpec with MockitoSugar with BeforeAndAfterAll with BeforeAndAfterEach with ControllerSpec {
+    extends UnitSpec with MockitoSugar with BeforeAndAfterAll with BeforeAndAfterEach with ControllerSpec
+    with Injector {
 
   implicit override lazy val app: Application = new GuiceApplicationBuilder()
     .configure(Map("features.rowHaveUtrEnabled" -> true))
     .build()
 
-  private val mockFeatureFlags         = mock[FeatureFlags]
+  private val featureFlags             = app.injector.instanceOf[FeatureFlags]
   private val mockRequestSessionData   = mock[RequestSessionData]
   private val mockCdsFrontendDataCache = mock[SessionCache]
 
   val controller =
-    new SubscriptionFlowManager(mockFeatureFlags, mockRequestSessionData, mockCdsFrontendDataCache)(global)
+    new SubscriptionFlowManager(featureFlags, mockRequestSessionData, mockCdsFrontendDataCache)(global)
 
   private val mockSession = mock[Session]
 
