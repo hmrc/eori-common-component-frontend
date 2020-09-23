@@ -9,7 +9,7 @@ cds.has-existing-eori.para1=Yn ôl ein cofnodion, mae’r Dynodydd Defnyddiwr (I
 cds.has-existing-eori.para2=TRANSLATE Your registration for {0} will be linked to this EORI.
 cds.has-existing-eori.para3=Os defnyddiwch EORI gwahanol gan amlaf, dylech allgofnodi a mewngofnodi eto gan ddefnyddio’r Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth sy’n gysylltiedig â’r EORI yr hoffech gofrestru ag ef.
 
-    cds.enrolment.already.exists.title=TRANSLATE There is a problem
+cds.enrolment.already.exists.title=TRANSLATE There is a problem
 cds.enrolment.already.exists.heading=TRANSLATE There is a problem
 cds.enrolment.already.exists.para1=TRANSLATE Our records show that this Government Gateway user ID has already been used to register for {0}.
 cds.enrolment.already.exists.continue=TRANSLATE Goto {0}.
