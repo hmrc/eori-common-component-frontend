@@ -70,8 +70,6 @@ class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach w
         .download()
         .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe/", defaultUserId))
 
-      println(contentAsString(result))
-
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/customs-enrolment-services/subscribe/unauthorised")
     }
