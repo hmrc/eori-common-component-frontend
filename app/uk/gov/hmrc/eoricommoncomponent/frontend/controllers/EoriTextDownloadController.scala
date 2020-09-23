@@ -45,4 +45,5 @@ class EoriTextDownloadController @Inject() (
         .as("plain/text")
         .withHeaders(CONTENT_DISPOSITION -> "attachment; filename=EORI-number.txt")
   }
+
 }

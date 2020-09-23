@@ -21,14 +21,25 @@ import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.{VatDetailsEuConfirmController, VatDetailsEuController}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubscriptionPage, VatEUConfirmSubscriptionFlowPage, VatRegisteredEuSubscriptionFlowPage}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.{
+  VatDetailsEuConfirmController,
+  VatDetailsEuController
+}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  SubscriptionPage,
+  VatEUConfirmSubscriptionFlowPage,
+  VatRegisteredEuSubscriptionFlowPage
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{LoggedInUserWithEnrolments, YesNo}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.VatEUDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService, SubscriptionVatEUDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionBusinessService,
+  SubscriptionDetailsService,
+  SubscriptionVatEUDetailsService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_registered_eu
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,37 +57,39 @@ class VatRegisteredEuController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      Future.successful(
-        Ok(
-          vatRegisteredEuView(
-            isInReviewMode = false,
-            vatRegisteredEuYesNoAnswerForm(requestSessionData.isPartnership),
-            isIndividualFlow,
-            requestSessionData.isPartnership,
-            service,
-            journey
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        Future.successful(
+          Ok(
+            vatRegisteredEuView(
+              isInReviewMode = false,
+              vatRegisteredEuYesNoAnswerForm(requestSessionData.isPartnership),
+              isIndividualFlow,
+              requestSessionData.isPartnership,
+              service,
+              journey
+            )
           )
         )
-      )
-  }
+    }
 
-  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      subscriptionBusinessService.getCachedVatRegisteredEu map { isVatRegisteredEu =>
-        Ok(
-          vatRegisteredEuView(
-            isInReviewMode = true,
-            vatRegisteredEuYesNoAnswerForm(requestSessionData.isPartnership).fill(YesNo(isVatRegisteredEu)),
-            isIndividualFlow,
-            requestSessionData.isPartnership,
-            service,
-            journey
+  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        subscriptionBusinessService.getCachedVatRegisteredEu map { isVatRegisteredEu =>
+          Ok(
+            vatRegisteredEuView(
+              isInReviewMode = true,
+              vatRegisteredEuYesNoAnswerForm(requestSessionData.isPartnership).fill(YesNo(isVatRegisteredEu)),
+              isIndividualFlow,
+              requestSessionData.isPartnership,
+              service,
+              journey
+            )
           )
-        )
-      }
-  }
+        }
+    }
 
   def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>

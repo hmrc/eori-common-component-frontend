@@ -21,7 +21,10 @@ import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.{VatDetailsEuController, VatRegisteredEuController}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.{
+  VatDetailsEuController,
+  VatRegisteredEuController
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails.EuVatDetailsLimit
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.VatEUConfirmSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{LoggedInUserWithEnrolments, YesNo}
@@ -181,4 +184,5 @@ class VatDetailsEuConfirmController @Inject() (
               )
             )
       )
+
 }

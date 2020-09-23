@@ -26,6 +26,7 @@ import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, Request, Session}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.FeatureFlags
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{IndividualSubscriptionFlow, _}
@@ -50,11 +51,12 @@ class SubscriptionFlowManagerSpec
     .configure(Map("features.rowHaveUtrEnabled" -> false))
     .build()
 
+  private val mockFeatureFlags         = mock[FeatureFlags]
   private val mockRequestSessionData   = mock[RequestSessionData]
   private val mockCdsFrontendDataCache = mock[SessionCache]
 
   val controller =
-    new SubscriptionFlowManager(app, mockRequestSessionData, mockCdsFrontendDataCache)(global)
+    new SubscriptionFlowManager(mockFeatureFlags, mockRequestSessionData, mockCdsFrontendDataCache)(global)
 
   private val mockOrgRegistrationDetails        = mock[RegistrationDetailsOrganisation]
   private val mockIndividualRegistrationDetails = mock[RegistrationDetailsIndividual]
@@ -303,7 +305,7 @@ class SubscriptionFlowManagerSpec
       ) =>
         when(mockRequestSessionData.userSubscriptionFlow(mockRequest)).thenReturn(flow)
         when(mockRequestSessionData.uriBeforeSubscriptionFlow(mockRequest)).thenReturn(None)
-        val actual = controller.stepInformation(currentPage)(mockHC, mockRequest)
+        val actual = controller.stepInformation(currentPage)(mockRequest)
 
         s"${flow.name} flow: current step is $expectedStepNumber when currentPage is $currentPage" in {
           actual.stepNumber shouldBe expectedStepNumber
@@ -417,11 +419,12 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
     .configure(Map("features.rowHaveUtrEnabled" -> true))
     .build()
 
+  private val mockFeatureFlags         = mock[FeatureFlags]
   private val mockRequestSessionData   = mock[RequestSessionData]
   private val mockCdsFrontendDataCache = mock[SessionCache]
 
   val controller =
-    new SubscriptionFlowManager(app, mockRequestSessionData, mockCdsFrontendDataCache)(global)
+    new SubscriptionFlowManager(mockFeatureFlags, mockRequestSessionData, mockCdsFrontendDataCache)(global)
 
   private val mockSession = mock[Session]
 

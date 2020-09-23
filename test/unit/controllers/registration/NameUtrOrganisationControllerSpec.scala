@@ -39,21 +39,23 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 import util.builders.matching.NameIdOrganisationFormBuilder._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class NameUtrOrganisationControllerSpec extends ControllerSpec with MockitoSugar with BeforeAndAfterEach {
+class NameUtrOrganisationControllerSpec
+    extends ControllerSpec with MockitoSugar with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector   = mock[AuthConnector]
+  private val mockAuthAction      = authAction(mockAuthConnector)
   private val mockMatchingService = mock[MatchingService]
 
   private val matchNameIdOrganisationView = app.injector.instanceOf[match_name_id_organisation]
 
   private val controller =
-    new NameIdOrganisationController(app, mockAuthConnector, mcc, matchNameIdOrganisationView, mockMatchingService)
+    new NameIdOrganisationController(mockAuthAction, mcc, matchNameIdOrganisationView, mockMatchingService)
 
   private val utrDescriptionPartnership    = "Partnership Self Assessment Unique Taxpayer Reference (UTR) number"
   private val utrDescriptionCorporationTax = "Corporation Tax Unique Taxpayer Reference (UTR) number"

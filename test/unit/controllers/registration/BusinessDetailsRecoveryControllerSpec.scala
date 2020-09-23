@@ -46,14 +46,15 @@ import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.RegistrationDetailsBuilder.{organisationRegistrationDetails, soleTraderRegistrationDetails}
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class BusinessDetailsRecoveryControllerSpec extends ControllerSpec with BeforeAndAfter {
+class BusinessDetailsRecoveryControllerSpec extends ControllerSpec with BeforeAndAfter with AuthActionMock {
 
   private val mockAuthConnector           = mock[AuthConnector]
+  private val mockAuthAction              = authAction(mockAuthConnector)
   private val mockRequestSessionData      = mock[RequestSessionData]
   private val mockSessionCache            = mock[SessionCache]
   private val mockOrgTypeLookup           = mock[OrgTypeLookup]
@@ -83,8 +84,7 @@ class BusinessDetailsRecoveryControllerSpec extends ControllerSpec with BeforeAn
   )
 
   private val controller = new BusinessDetailsRecoveryController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockRequestSessionData,
     mockSessionCache,
     mcc,

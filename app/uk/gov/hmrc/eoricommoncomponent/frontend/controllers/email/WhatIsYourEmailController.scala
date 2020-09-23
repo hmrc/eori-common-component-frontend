@@ -54,12 +54,13 @@ class WhatIsYourEmailController @Inject() (
     }
 
   def submit(service: Service, journey: Journey.Value): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
-      emailForm.bindFromRequest.fold(
-        formWithErrors =>
-          Future.successful(BadRequest(whatIsYourEmailView(emailForm = formWithErrors, service, journey))),
-        formData => submitNewDetails(InternalId(userWithEnrolments.internalId), formData, service, journey)
-      )
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
+        emailForm.bindFromRequest.fold(
+          formWithErrors =>
+            Future.successful(BadRequest(whatIsYourEmailView(emailForm = formWithErrors, service, journey))),
+          formData => submitNewDetails(InternalId(userWithEnrolments.internalId), formData, service, journey)
+        )
     }
 
   private def submitNewDetails(

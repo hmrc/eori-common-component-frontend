@@ -27,6 +27,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.FeatureFlags
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.WhatIsYourOrgNameController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NameOrganisationMatchModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
@@ -38,27 +39,29 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 import util.builders.matching.OrganisationNameFormBuilder._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfterEach {
+class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
   implicit override lazy val app: Application = new GuiceApplicationBuilder()
     .configure("features.rowHaveUtrEnabled" -> false)
     .build()
 
   private val mockAuthConnector              = mock[AuthConnector]
+  private val mockAuthAction                 = authAction(mockAuthConnector)
+  private val mockFeatureFlags               = mock[FeatureFlags]
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
   private val mockNameOrganisationMatchModel = mock[NameOrganisationMatchModel]
   private val whatIsYourOrgNameView          = app.injector.instanceOf[what_is_your_org_name]
 
   private val controller = new WhatIsYourOrgNameController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
+    mockFeatureFlags,
     mockRequestSessionData,
     mcc,
     whatIsYourOrgNameView,

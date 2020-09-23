@@ -71,8 +71,7 @@ class SicCodeControllerSpec
   private val sicCodeView            = app.injector.instanceOf[sic_code]
 
   private val controller = new SicCodeController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockSubscriptionBusinessService,
     mockSubscriptionFlowManager,
     mockSubscriptionDetailsHolderService,

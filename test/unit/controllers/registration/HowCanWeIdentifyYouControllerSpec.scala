@@ -44,14 +44,15 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAfter {
+class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAfter with AuthActionMock {
 
   private val mockAuthConnector                    = mock[AuthConnector]
+  private val mockAuthAction                       = authAction(mockAuthConnector)
   private val mockSubscriptionBusinessService      = mock[SubscriptionBusinessService]
   private val mockSubscriptionFlowManager          = mock[SubscriptionFlowManager]
   private val mockSubscriptionDetailsHolderService = mock[SubscriptionDetailsService]
@@ -60,8 +61,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
   private val howCanWeIdentifyYouView = app.injector.instanceOf[how_can_we_identify_you]
 
   private val controller = new HowCanWeIdentifyYouController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockSubscriptionBusinessService,
     mockSubscriptionFlowManager,
     mcc,
@@ -184,7 +184,6 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
         .thenReturn(Future.successful(()))
       when(
         mockSubscriptionFlowManager.stepInformation(ArgumentMatchers.eq(HowCanWeIdentifyYouSubscriptionFlowPage))(
-          any[HeaderCarrier],
           any[Request[AnyContent]]
         )
       ).thenReturn(SubscriptionFlowInfo(3, 5, AddressDetailsSubscriptionFlowPage))
@@ -199,7 +198,6 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
         .thenReturn(Future.successful(()))
       when(
         mockSubscriptionFlowManager.stepInformation(ArgumentMatchers.eq(HowCanWeIdentifyYouSubscriptionFlowPage))(
-          any[HeaderCarrier],
           any[Request[AnyContent]]
         )
       ).thenReturn(SubscriptionFlowInfo(3, 5, AddressDetailsSubscriptionFlowPage))

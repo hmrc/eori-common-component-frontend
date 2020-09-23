@@ -70,8 +70,7 @@ class DateOfEstablishmentControllerSpec
   private val dateOfEstablishmentView = app.injector.instanceOf[date_of_establishment]
 
   private val controller = new DateOfEstablishmentController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockSubscriptionFlowManager,
     mockSubscriptionBusinessService,
     mockSubscriptionDetailsHolderService,

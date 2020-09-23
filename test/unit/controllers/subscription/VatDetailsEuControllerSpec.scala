@@ -38,25 +38,23 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder._
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with BeforeAndAfterEach {
+class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with BeforeAndAfterEach with AuthActionMock {
 
   private val mockCountries                       = mock[Countries]
   private val mockAuthConnector                   = mock[AuthConnector]
-  private val mockSubscriptionFlowManager         = mock[SubscriptionFlowManager]
+  private val mockAuthAction                      = authAction(mockAuthConnector)
   private val mockSubscriptionVatEUDetailsService = mock[SubscriptionVatEUDetailsService]
 
   private val vatDetailsEuView = app.injector.instanceOf[vat_details_eu]
 
   private val controller = new VatDetailsEuController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockSubscriptionVatEUDetailsService,
-    mockSubscriptionFlowManager,
     mcc,
     vatDetailsEuView,
     mockCountries
@@ -64,8 +62,7 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
 
   val countries = new Countries(app)
 
-  private val ProblemWithVATEUNumberError = "Enter the VAT number"
-  private val duplicateVatNumber          = "You have already entered this VAT number. Enter a different VAT number"
+  private val duplicateVatNumber = "You have already entered this VAT number. Enter a different VAT number"
 
   private val validVatIdMap = Map("vatCountry" -> "FR", "vatNumber" -> "XX123456789")
 
@@ -329,17 +326,6 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
         controller.updateForm(index, Service.ATaR, Journey.Register).apply(
           SessionBuilder.buildRequestWithSession(defaultUserId)
         )
-      )
-    )
-  }
-
-  private def reviewUpdateForm(index: Int)(test: Future[Result] => Any) = {
-    withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(
-      test(
-        controller
-          .reviewUpdateForm(index, Service.ATaR, Journey.Register)
-          .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
       )
     )
   }

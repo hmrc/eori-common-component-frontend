@@ -33,6 +33,7 @@ import play.api.data.Form
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
 import play.api.test.Helpers._
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.FeatureFlags
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RowIndividualNameDateOfBirthController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{IndividualNameAndDateOfBirth, NameDobMatchModel}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms
@@ -42,13 +43,15 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.row_indi
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
+import util.builders.AuthActionMock
 import util.scalacheck.TestDataGenerators
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.global
 
 class RowIndividualNameDateOfBirthControllerWithFeatureFalseSpec
-    extends ControllerSpec with Checkers with TestDataGenerators with BeforeAndAfterEach with ScalaFutures {
+    extends ControllerSpec with Checkers with TestDataGenerators with BeforeAndAfterEach with ScalaFutures
+    with AuthActionMock {
 
   implicit override lazy val app: Application =
     new GuiceApplicationBuilder().configure("features.rowHaveUtrEnabled" -> false).build()
@@ -58,10 +61,12 @@ class RowIndividualNameDateOfBirthControllerWithFeatureFalseSpec
     val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
 
     private val rowIndividualNameDob = app.injector.instanceOf[row_individual_name_dob]
+    private val mockAuthAction       = authAction(mockAuthConnector)
+    private val mockFeatureFlags     = mock[FeatureFlags]
 
     override val controller = new RowIndividualNameDateOfBirthController(
-      app,
-      mockAuthConnector,
+      mockAuthAction,
+      mockFeatureFlags,
       mockSubscriptionDetailsService,
       mcc,
       rowIndividualNameDob

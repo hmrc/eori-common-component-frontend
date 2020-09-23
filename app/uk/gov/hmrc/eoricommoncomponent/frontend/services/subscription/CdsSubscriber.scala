@@ -112,9 +112,7 @@ class CdsSubscriber @Inject() (
     registrationDetails: RegistrationDetails,
     mayBeCdsOrganisationType: Option[CdsOrganisationType],
     journey: Journey.Value
-  )(implicit
-    hc: HeaderCarrier
-  ): Future[(SubscriptionResult, Option[SubscriptionDetails])] =
+  )(implicit hc: HeaderCarrier): Future[(SubscriptionResult, Option[SubscriptionDetails])] =
     for {
       subscriptionDetailsHolder <- sessionCache.subscriptionDetails
       subscriptionResult <- subscriptionService.subscribe(

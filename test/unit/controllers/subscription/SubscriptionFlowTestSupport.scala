@@ -30,8 +30,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.Constants
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
+import util.builders.AuthActionMock
 
-trait SubscriptionFlowTestSupport extends ControllerSpec {
+trait SubscriptionFlowTestSupport extends ControllerSpec with AuthActionMock {
 
   protected def formId: String
 
@@ -41,12 +42,13 @@ trait SubscriptionFlowTestSupport extends ControllerSpec {
 
   protected val mockSubscriptionFlowManager          = mock[SubscriptionFlowManager]
   protected val mockAuthConnector                    = mock[AuthConnector]
+  protected val mockAuthAction                       = authAction(mockAuthConnector)
   protected val mockSubscriptionBusinessService      = mock[SubscriptionBusinessService]
   protected val mockSubscriptionDetailsHolderService = mock[SubscriptionDetailsService]
 
   def setupMockSubscriptionFlowManager(currentPage: SubscriptionPage): Unit = {
     when(nextPage.url(any[Service])).thenReturn(nextPageUrl)
-    when(mockSubscriptionFlowManager.stepInformation(meq(currentPage))(any[HeaderCarrier], any[Request[AnyContent]]))
+    when(mockSubscriptionFlowManager.stepInformation(meq(currentPage))(any[Request[AnyContent]]))
       .thenReturn(subscriptionFlowStepInfo)
   }
 

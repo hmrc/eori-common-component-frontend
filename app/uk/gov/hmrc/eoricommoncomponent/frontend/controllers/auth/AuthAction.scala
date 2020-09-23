@@ -29,7 +29,12 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthAction @Inject()(override val config: Configuration, override val env: Environment, override val authConnector: AuthConnector)(implicit ec: ExecutionContext) extends AuthRedirectSupport with AuthorisedFunctions with AccessController {
+class AuthAction @Inject() (
+  override val config: Configuration,
+  override val env: Environment,
+  override val authConnector: AuthConnector
+)(implicit ec: ExecutionContext)
+    extends AuthRedirectSupport with AuthorisedFunctions with AccessController {
 
   private type RequestProcessorSimple =
     Request[AnyContent] => LoggedInUserWithEnrolments => Future[Result]
@@ -40,9 +45,8 @@ class AuthAction @Inject()(override val config: Configuration, override val env:
   private val baseRetrievals     = ggEmail and credentialRole and affinityGroup
   private val extendedRetrievals = baseRetrievals and internalId and allEnrolments and groupIdentifier
 
-  def ggAuthorisedUserWithEnrolmentsAction(requestProcessor: RequestProcessorSimple) = {
+  def ggAuthorisedUserWithEnrolmentsAction(requestProcessor: RequestProcessorSimple) =
     Action.async { implicit request =>
-
       implicit val hc: HeaderCarrier =
         HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
@@ -60,7 +64,6 @@ class AuthAction @Inject()(override val config: Configuration, override val env:
             )
         } recover withAuthRecovery(request)
     }
-  }
 
   private def transformRequest(
     requestProcessor: Either[RequestProcessorExtended, RequestProcessorSimple],
@@ -78,4 +81,5 @@ class AuthAction @Inject()(override val config: Configuration, override val env:
       requestProcessor fold (_(request)(userInternalId)(loggedInUser), _(request)(loggedInUser))
     }
   }
+
 }

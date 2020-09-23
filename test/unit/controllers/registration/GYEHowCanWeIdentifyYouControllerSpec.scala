@@ -37,22 +37,22 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAfter {
+class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAfter with AuthActionMock {
 
   private val mockAuthConnector     = mock[AuthConnector]
+  private val mockAuthAction        = authAction(mockAuthConnector)
   private val mockMatchingService   = mock[MatchingService]
   private val mockFrontendDataCache = mock[SessionCache]
 
   private val howCanWeIdentifyYouView = app.injector.instanceOf[how_can_we_identify_you]
 
   private val controller = new GYEHowCanWeIdentifyYouController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockMatchingService,
     mcc,
     howCanWeIdentifyYouView,

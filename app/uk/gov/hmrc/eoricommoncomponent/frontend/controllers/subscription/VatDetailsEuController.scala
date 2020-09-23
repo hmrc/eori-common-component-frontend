@@ -54,14 +54,15 @@ class VatDetailsEuController @Inject() (
       }
     }
 
-  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      isEuVatDetailsSeqOnLimit map {
-        case true => Redirect(VatDetailsEuConfirmController.reviewForm(service, journey))
-        case _ =>
-          Ok(vatDetailsEuView(euVatForm, countries.eu, isInReviewMode = true, service = service, journey = journey))
-      }
-  }
+  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        isEuVatDetailsSeqOnLimit map {
+          case true => Redirect(VatDetailsEuConfirmController.reviewForm(service, journey))
+          case _ =>
+            Ok(vatDetailsEuView(euVatForm, countries.eu, isInReviewMode = true, service = service, journey = journey))
+        }
+    }
 
   def submit(service: Service, journey: Journey.Value, isInReviewMode: Boolean): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>

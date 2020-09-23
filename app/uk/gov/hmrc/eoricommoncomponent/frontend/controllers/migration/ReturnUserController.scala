@@ -23,10 +23,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.return_user
 
 @Singleton
-class ReturnUserController @Inject() (
-  view: return_user,
-  mcc: MessagesControllerComponents
-) extends CdsController(mcc) {
+class ReturnUserController @Inject() (view: return_user, mcc: MessagesControllerComponents) extends CdsController(mcc) {
 
   def show(): Action[AnyContent] = Action { implicit request =>
     Ok(view(Journey.Subscribe))

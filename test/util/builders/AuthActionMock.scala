@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
+package util.builders
 
-import javax.inject.Inject
-import play.api.Configuration
+import org.scalatest.WordSpec
+import org.scalatest.mockito.MockitoSugar
+import play.api.{Configuration, Environment}
+import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 
-class FeatureFlags @Inject() (config: Configuration) {
+import scala.concurrent.ExecutionContext.global
 
-  def loadConfig(path: String): Boolean = config.get[Boolean](path)
+trait AuthActionMock extends WordSpec with MockitoSugar {
 
-  val matchingEnabled: Boolean = loadConfig(path = "features.matchingEnabled")
+  val configuration = mock[Configuration]
+  val environment   = mock[Environment]
 
-  val rowHaveUtrEnabled: Boolean = loadConfig("features.rowHaveUtrEnabled")
+  def authAction(authConnector: AuthConnector) = new AuthAction(configuration, environment, authConnector)(global)
 }

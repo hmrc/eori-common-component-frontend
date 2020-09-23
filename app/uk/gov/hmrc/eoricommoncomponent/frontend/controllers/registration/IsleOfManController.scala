@@ -27,10 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.isle_of_man
 
 @Singleton
-class IsleOfManController @Inject() (
-  view: isle_of_man,
-  mcc: MessagesControllerComponents
-) extends CdsController(mcc) {
+class IsleOfManController @Inject() (view: isle_of_man, mcc: MessagesControllerComponents) extends CdsController(mcc) {
 
   def form(): Action[AnyContent] = Action { implicit request =>
     Ok(view(isleOfManYesNoAnswerForm()))

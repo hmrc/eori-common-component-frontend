@@ -67,15 +67,16 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 import util.builders.UserLocationFormBuilder._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with BeforeAndAfterEach {
+class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector = mock[AuthConnector]
+  private val mockAuthAction    = authAction(mockAuthConnector)
 
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSessionCache               = mock[SessionCache]
@@ -97,8 +98,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
   private val errorTemplate = app.injector.instanceOf[error_template]
 
   private val controller = new UserLocationController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockRequestSessionData,
     mockSave4LaterService,
     mockSubscriptionStatusService,
@@ -238,8 +238,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
 
   "cacheAndRedirect when registrationDisplay is Enabled" should {
     val controller = new UserLocationController(
-      app,
-      mockAuthConnector,
+      mockAuthAction,
       mockRequestSessionData,
       mockSave4LaterService,
       mockSubscriptionStatusService,
@@ -481,8 +480,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         ).thenReturn(Future.successful(mockFlowStart))
 
         val controller = new UserLocationController(
-          app,
-          mockAuthConnector,
+          mockAuthAction,
           mockRequestSessionData,
           mockSave4LaterService,
           mockSubscriptionStatusService,
@@ -538,8 +536,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         ).thenReturn(Future.successful(mockFlowStart))
 
         val controller = new UserLocationController(
-          app,
-          mockAuthConnector,
+          mockAuthAction,
           mockRequestSessionData,
           mockSave4LaterService,
           mockSubscriptionStatusService,

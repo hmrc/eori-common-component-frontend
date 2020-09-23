@@ -18,23 +18,19 @@ package unit.controllers.migration
 
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.ReturnUserController
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.return_user
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.SessionBuilder
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ReturnUserControllerSpec extends ControllerSpec {
-  private val mockAuthConnector = mock[AuthConnector]
-
   private val returnUserView = app.injector.instanceOf[return_user]
 
   private val controller =
-    new ReturnUserController(app, mockAuthConnector, returnUserView, mcc)
+    new ReturnUserController(returnUserView, mcc)
 
   "ReturnUser Controller" should {
     "return Ok 200 when page method is requested" in {

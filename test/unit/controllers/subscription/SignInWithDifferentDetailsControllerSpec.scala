@@ -47,8 +47,7 @@ class SignInWithDifferentDetailsControllerSpec
   when(mockRegistrationDetails.name).thenReturn("Test Org Name")
 
   private val controller = new SignInWithDifferentDetailsController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockCdsFrontendDataCache,
     signInWithDifferentDetailsView,
     mcc

@@ -22,12 +22,18 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatDetailsController
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{VatDetailsSubscriptionFlowPage, VatRegisteredUkSubscriptionFlowPage}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  VatDetailsSubscriptionFlowPage,
+  VatRegisteredUkSubscriptionFlowPage
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{LoggedInUserWithEnrolments, YesNo}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionBusinessService,
+  SubscriptionDetailsService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_registered_uk
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,38 +50,40 @@ class VatRegisteredUkController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      Future.successful(
-        Ok(
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        Future.successful(
+          Ok(
+            vatRegisteredUkView(
+              isInReviewMode = false,
+              vatRegisteredUkYesNoAnswerForm(requestSessionData.isPartnership),
+              isIndividualFlow,
+              requestSessionData.isPartnership,
+              service,
+              journey
+            )
+          )
+        )
+    }
+
+  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        for {
+          isVatRegisteredUk <- subscriptionBusinessService.getCachedVatRegisteredUk
+          yesNo: YesNo = YesNo(isVatRegisteredUk)
+        } yield Ok(
           vatRegisteredUkView(
-            isInReviewMode = false,
-            vatRegisteredUkYesNoAnswerForm(requestSessionData.isPartnership),
+            isInReviewMode = true,
+            vatRegisteredUkYesNoAnswerForm(requestSessionData.isPartnership).fill(yesNo),
             isIndividualFlow,
             requestSessionData.isPartnership,
             service,
             journey
           )
         )
-      )
-  }
-
-  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      for {
-        isVatRegisteredUk <- subscriptionBusinessService.getCachedVatRegisteredUk
-        yesNo: YesNo = YesNo(isVatRegisteredUk)
-      } yield Ok(
-        vatRegisteredUkView(
-          isInReviewMode = true,
-          vatRegisteredUkYesNoAnswerForm(requestSessionData.isPartnership).fill(yesNo),
-          isIndividualFlow,
-          requestSessionData.isPartnership,
-          service,
-          journey
-        )
-      )
-  }
+    }
 
   def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>

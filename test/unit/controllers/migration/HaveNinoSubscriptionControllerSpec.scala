@@ -34,14 +34,15 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAfterEach {
+class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector              = mock[AuthConnector]
+  private val mockAuthAction                 = authAction(mockAuthConnector)
   private val mockSubscriptionFlowManager    = mock[SubscriptionFlowManager]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
   private val mockSubscriptionFlowInfo       = mock[SubscriptionFlowInfo]
@@ -57,8 +58,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
   override protected def beforeEach: Unit = reset(mockSubscriptionDetailsService)
 
   val controller = new HaveNinoSubscriptionController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockSubscriptionFlowManager,
     mcc,
     matchNinoSubscriptionView,
@@ -129,7 +129,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
   }
 
   private def mockSubscriptionFlow(url: String) = {
-    when(mockSubscriptionFlowManager.stepInformation(any())(any[HeaderCarrier], any[Request[AnyContent]]))
+    when(mockSubscriptionFlowManager.stepInformation(any())(any[Request[AnyContent]]))
       .thenReturn(mockSubscriptionFlowInfo)
     when(mockSubscriptionFlowInfo.nextPage).thenReturn(mockSubscriptionPage)
     when(mockSubscriptionPage.url(any())).thenReturn(url)

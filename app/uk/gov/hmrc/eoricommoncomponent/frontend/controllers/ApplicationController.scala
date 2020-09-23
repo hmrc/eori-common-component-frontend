@@ -34,7 +34,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-
 // TODO Get rid of config, env and authConnector
 // TODO Get rid of AuthorisedFunctions and AuthRedirectSupport trait
 // If necessary move logic to AuthAction

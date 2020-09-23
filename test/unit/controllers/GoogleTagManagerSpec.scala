@@ -30,22 +30,22 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class GoogleTagManagerSpec extends ControllerSpec with GuiceOneAppPerSuite with MockitoSugar {
+class GoogleTagManagerSpec extends ControllerSpec with GuiceOneAppPerSuite with MockitoSugar with AuthActionMock {
 
   private val mockAuthConnector                    = mock[AuthConnector]
+  private val mockAuthAction                       = authAction(mockAuthConnector)
   private val mockSubscriptionBusinessService      = mock[SubscriptionBusinessService]
   private val mockSubscriptionFlowManager          = mock[SubscriptionFlowManager]
   private val mockSubscriptionDetailsHolderService = mock[SubscriptionDetailsService]
   private val howCanWeIdentifyYouView              = app.injector.instanceOf[how_can_we_identify_you]
 
   private val controller = new HowCanWeIdentifyYouController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockSubscriptionBusinessService,
     mockSubscriptionFlowManager,
     mcc,

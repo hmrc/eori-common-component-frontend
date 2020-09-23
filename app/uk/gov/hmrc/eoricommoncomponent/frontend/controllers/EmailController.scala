@@ -50,9 +50,7 @@ class EmailController @Inject() (
   ): Future[Result] =
     continue(service, journey)
 
-  private def otherUserWithinGroupIsInProcess(
-    journey: Journey.Value
-  ): Future[Result] =
+  private def otherUserWithinGroupIsInProcess(journey: Journey.Value): Future[Result] =
     Future.successful(Redirect(EnrolmentPendingAgainstGroupIdController.show(journey)))
 
   private def continue(service: Service, journey: Journey.Value)(implicit

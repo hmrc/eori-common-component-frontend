@@ -65,8 +65,7 @@ class DisclosePersonalDetailsConsentControllerSpec
   private val yesNoInputName            = "yes-no-answer"
 
   private val controller = new DisclosePersonalDetailsConsentController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockSubscriptionDetailsHolderService,
     mockSubscriptionBusinessService,
     mockRequestSession,

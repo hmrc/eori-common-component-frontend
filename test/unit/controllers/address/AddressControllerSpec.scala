@@ -80,8 +80,7 @@ class AddressControllerSpec
   private val viewAddress               = app.injector.instanceOf[address]
 
   private val controller = new AddressController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockSubscriptionBusinessService,
     mockCdsFrontendDataCache,
     mockSubscriptionFlowManager,

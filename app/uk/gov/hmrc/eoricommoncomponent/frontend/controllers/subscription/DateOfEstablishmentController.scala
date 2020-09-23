@@ -30,7 +30,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionF
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionBusinessService,
+  SubscriptionDetailsService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.date_of_establishment
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -136,4 +139,5 @@ class DateOfEstablishmentController @Inject() (
         DateOfEstablishmentSubscriptionFlowPageMigrate
       case _ => DateOfEstablishmentSubscriptionFlowPage
     }
+
 }

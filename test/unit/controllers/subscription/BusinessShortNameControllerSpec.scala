@@ -66,8 +66,7 @@ class BusinessShortNameControllerSpec
   val allShortNameFieldsAsShortName = BusinessShortName(allShortNameFields.shortName)
 
   private val controller = new BusinessShortNameController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockSubscriptionBusinessService,
     mockSubscriptionDetailsHolderService,
     mockSubscriptionFlowManager,

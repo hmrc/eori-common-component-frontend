@@ -23,6 +23,7 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
 import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.UserLocationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
@@ -50,6 +51,7 @@ import scala.concurrent.Future
 class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach {
 
   private val mockAuthConnector              = mock[AuthConnector]
+  private val mockAuthAction                 = mock[AuthAction]
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSessionCache               = mock[SessionCache]
   private val mockSave4LaterService          = mock[Save4LaterService]
@@ -70,8 +72,7 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach {
     app.injector.instanceOf[sub01_outcome_rejected]
 
   private val controller = new UserLocationController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockRequestSessionData,
     mockSave4LaterService,
     mockSubscriptionStatusService,
@@ -86,7 +87,7 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach {
   )
 
   override def beforeEach(): Unit = {
-    reset(mockAuthConnector)
+    reset(mockAuthAction)
     when(mockSave4LaterConnector.get(any(), any())(any(), any(), any()))
       .thenReturn(Future.successful(None))
     when(

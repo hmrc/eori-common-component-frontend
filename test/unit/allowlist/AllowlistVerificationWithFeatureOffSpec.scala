@@ -67,8 +67,7 @@ class AllowlistVerificationWithFeatureOffSpec
   private val enterYourDetails         = app.injector.instanceOf[enter_your_details]
 
   private val controller = new NameDobSoleTraderController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockSubscriptionBusinessService,
     mockRequestSessionData,
     mockCdsFrontendDataCache,

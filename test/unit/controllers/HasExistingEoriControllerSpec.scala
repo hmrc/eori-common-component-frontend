@@ -29,27 +29,21 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentS
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{eori_enrol_success, has_existing_eori}
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEach {
+class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
   private val mockAuthConnector    = mock[AuthConnector]
+  private val mockAuthAction       = authAction(mockAuthConnector)
   private val mockEnrolmentService = mock[EnrolmentService]
 
   private val hasExistingEoriView  = app.injector.instanceOf[has_existing_eori]
   private val eoriEnrolSuccessView = app.injector.instanceOf[eori_enrol_success]
 
   private val controller =
-    new HasExistingEoriController(
-      app,
-      mockAuthConnector,
-      hasExistingEoriView,
-      eoriEnrolSuccessView,
-      mcc,
-      mockEnrolmentService
-    )
+    new HasExistingEoriController(mockAuthAction, hasExistingEoriView, eoriEnrolSuccessView, mcc, mockEnrolmentService)
 
   override def beforeEach: Unit =
     reset(mockAuthConnector, mockEnrolmentService)

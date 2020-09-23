@@ -27,7 +27,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionF
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionBusinessService,
+  SubscriptionDetailsService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.sic_code
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -66,17 +69,19 @@ class SicCodeController @Inject() (
     }
   }
 
-  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      subscriptionBusinessService.cachedSicCode.flatMap(populateView(_, isInReviewMode = false, service, journey))
-  }
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        subscriptionBusinessService.cachedSicCode.flatMap(populateView(_, isInReviewMode = false, service, journey))
+    }
 
-  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      subscriptionBusinessService.getCachedSicCode.flatMap(
-        sic => populateView(Some(sic), isInReviewMode = true, service, journey)
-      )
-  }
+  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        subscriptionBusinessService.getCachedSicCode.flatMap(
+          sic => populateView(Some(sic), isInReviewMode = true, service, journey)
+        )
+    }
 
   def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
@@ -122,4 +127,5 @@ class SicCodeController @Inject() (
           else
             Redirect(stepInformation().nextPage.url(service))
       )
+
 }

@@ -46,14 +46,15 @@ class MatchingIdController @Inject() (
       }
   }
 
-  def matchWithIdOnlyForExistingReg(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      Future.successful(Redirect(UserLocationController.form(service, Journey.Subscribe)))
-  }
+  def matchWithIdOnlyForExistingReg(service: Service): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        Future.successful(Redirect(UserLocationController.form(service, Journey.Subscribe)))
+    }
 
-  private def matchLoggedInUserAndRedirect(loggedInUser: LoggedInUserWithEnrolments)(
-    redirectOrganisationTypePage: => Result
-  )(redirectToConfirmationPage: => Result)(implicit hc: HeaderCarrier) =
+  private def matchLoggedInUserAndRedirect(
+    loggedInUser: LoggedInUserWithEnrolments
+  )(redirectOrganisationTypePage: => Result)(redirectToConfirmationPage: => Result)(implicit hc: HeaderCarrier) =
     if (featureFlags.matchingEnabled) {
       lazy val ctUtr = enrolledCtUtr(loggedInUser)
       lazy val saUtr = enrolledSaUtr(loggedInUser)

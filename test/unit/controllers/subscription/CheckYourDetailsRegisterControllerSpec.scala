@@ -30,6 +30,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.FeatureFlags
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.CheckYourDetailsRegisterController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType.{Partnership, _}
@@ -55,7 +56,7 @@ import util.builders.RegistrationDetailsBuilder.{
   organisationRegistrationDetails,
   partnershipRegistrationDetails
 }
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 import util.builders.SubscriptionFormBuilder._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -64,9 +65,11 @@ import scala.concurrent.Future
 //TODO: We need to simplify the reduce no of tests in the class. Review page should be simple, if value is available in holder then display otherwise not.
 class CheckYourDetailsRegisterControllerSpec
     extends ControllerSpec with BusinessDatesOrganisationTypeTables with ReviewPageOrganisationTypeTables
-    with BeforeAndAfterEach {
+    with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector                     = mock[AuthConnector]
+  private val mockAuthAction                        = authAction(mockAuthConnector)
+  private val mockFeatureFlags                      = mock[FeatureFlags]
   private val mockSessionCache                      = mock[SessionCache]
   private val mockSubscriptionDetailsHolder         = mock[SubscriptionDetails]
   private val mockRegisterWithoutIdWithSubscription = mock[RegisterWithoutIdWithSubscriptionService]
@@ -75,8 +78,8 @@ class CheckYourDetailsRegisterControllerSpec
   private val checkYourDetailsRegisterView          = app.injector.instanceOf[check_your_details_register]
 
   val controller = new CheckYourDetailsRegisterController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
+    mockFeatureFlags,
     mockSessionCache,
     mockRequestSession,
     mcc,
@@ -939,8 +942,8 @@ class CheckYourDetailsRegisterControllerSpec
       .build()
 
     val controller = new CheckYourDetailsRegisterController(
-      app,
-      mockAuthConnector,
+      mockAuthAction,
+      mockFeatureFlags,
       mockSessionCache,
       mockRequestSession,
       mcc,

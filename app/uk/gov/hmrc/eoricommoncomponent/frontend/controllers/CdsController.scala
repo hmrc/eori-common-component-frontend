@@ -20,5 +20,4 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-class CdsController(mcc: MessagesControllerComponents)
-  extends FrontendController(mcc) with I18nSupport
+class CdsController(mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport

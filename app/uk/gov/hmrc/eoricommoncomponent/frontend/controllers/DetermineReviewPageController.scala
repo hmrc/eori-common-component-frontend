@@ -27,10 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import scala.concurrent.Future
 
 @Singleton
-class DetermineReviewPageController @Inject() (
-  authAction: AuthAction,
-  mcc: MessagesControllerComponents
-)
+class DetermineReviewPageController @Inject() (authAction: AuthAction, mcc: MessagesControllerComponents)
     extends CdsController(mcc) {
 
   def determineRoute(service: Service, journey: Journey.Value): Action[AnyContent] =

@@ -67,4 +67,5 @@ class NinoController @Inject() (
           }
       )
     }
+
 }

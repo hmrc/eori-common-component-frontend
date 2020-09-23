@@ -24,12 +24,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_group
 
-
 @Singleton
-class VatGroupController @Inject() (
-  mcc: MessagesControllerComponents,
-  vatGroupView: vat_group
-) extends CdsController(mcc) {
+class VatGroupController @Inject() (mcc: MessagesControllerComponents, vatGroupView: vat_group)
+    extends CdsController(mcc) {
 
   def createForm(journey: Journey.Value): Action[AnyContent] = Action { implicit request =>
     Ok(vatGroupView(vatGroupYesNoAnswerForm(), journey))
@@ -47,4 +44,5 @@ class VatGroupController @Inject() (
             Redirect(routes.VatGroupsCannotRegisterUsingThisServiceController.form(journey))
       )
   }
+
 }

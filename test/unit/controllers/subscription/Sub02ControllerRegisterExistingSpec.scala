@@ -38,14 +38,15 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder._
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
-class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndAfterEach {
+class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector              = mock[AuthConnector]
+  private val mockAuthAction                 = authAction(mockAuthConnector)
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSessionCache               = mock[SessionCache]
   private val mockCdsSubscriber              = mock[CdsSubscriber]
@@ -62,8 +63,7 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
   private val subscriptionOutcomeView         = app.injector.instanceOf[subscription_outcome]
 
   private val subscriptionController = new Sub02Controller(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockRequestSessionData,
     mockSessionCache,
     mockSubscriptionDetailsService,

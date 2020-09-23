@@ -26,17 +26,18 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.global
 
-class DetermineReviewPageControllerSpec extends ControllerSpec with BeforeAndAfter {
+class DetermineReviewPageControllerSpec extends ControllerSpec with BeforeAndAfter with AuthActionMock {
 
   private val mockAuthConnector      = mock[AuthConnector]
+  private val mockAuthAction         = authAction(mockAuthConnector)
   private val mockRequestSessionData = mock[RequestSessionData]
 
-  private val controller = new DetermineReviewPageController(app, mockAuthConnector, mcc)(global)
+  private val controller = new DetermineReviewPageController(mockAuthAction, mcc)
 
   before {
     reset(mockRequestSessionData)

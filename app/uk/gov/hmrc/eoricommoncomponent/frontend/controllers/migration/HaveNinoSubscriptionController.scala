@@ -41,18 +41,20 @@ class HaveNinoSubscriptionController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      Future.successful(Ok(matchNinoSubscriptionView(rowIndividualsNinoForm, service, journey)))
-  }
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        Future.successful(Ok(matchNinoSubscriptionView(rowIndividualsNinoForm, service, journey)))
+    }
 
-  def submit(service: Service, journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      rowIndividualsNinoForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(matchNinoSubscriptionView(formWithErrors, service, journey))),
-        formData => destinationsByAnswer(formData, service, journey)
-      )
-  }
+  def submit(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        rowIndividualsNinoForm.bindFromRequest.fold(
+          formWithErrors => Future.successful(BadRequest(matchNinoSubscriptionView(formWithErrors, service, journey))),
+          formData => destinationsByAnswer(formData, service, journey)
+        )
+    }
 
   private def destinationsByAnswer(form: NinoMatchModel, service: Service, journey: Journey.Value)(implicit
     hc: HeaderCarrier,

@@ -43,14 +43,15 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach {
+class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector               = mock[AuthConnector]
+  private val mockAuthAction                  = authAction(mockAuthConnector)
   private val mockSubscriptionBusinessService = mock[SubscriptionBusinessService]
   private val mockSessionCache                = mock[SessionCache]
   private val mockSubscriptionFlowManager     = mock[SubscriptionFlowManager]
@@ -67,8 +68,7 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach {
   private val correcctForm                 = Map("name" -> "testName")
 
   val nameOrgController = new NameOrgController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockSubscriptionBusinessService,
     mockSessionCache,
     mockSubscriptionFlowManager,
@@ -167,7 +167,7 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach {
     )
 
   private def mockSubscriptionFlowNextPage() = {
-    when(mockSubscriptionFlowManager.stepInformation(any())(any[HeaderCarrier], any[Request[AnyContent]]))
+    when(mockSubscriptionFlowManager.stepInformation(any())(any[Request[AnyContent]]))
       .thenReturn(mockSubscriptionFlowInfo)
     when(mockSubscriptionFlowInfo.nextPage).thenReturn(mockSubscriptionPage)
     when(mockSubscriptionPage.url(Service.ATaR)).thenReturn(EnterYourBusinessAddress.url)

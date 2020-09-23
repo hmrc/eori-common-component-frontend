@@ -49,4 +49,5 @@ class SignInWithDifferentDetailsController @Inject() (
         Ok(signInWithDifferentDetailsView(optionalName))
       }
   }
+
 }

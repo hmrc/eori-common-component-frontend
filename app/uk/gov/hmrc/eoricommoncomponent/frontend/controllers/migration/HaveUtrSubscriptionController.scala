@@ -44,26 +44,28 @@ class HaveUtrSubscriptionController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      requestSessionData.userSelectedOrganisationType match {
-        case Some(orgType) => Future.successful(Ok(matchUtrSubscriptionView(utrForm, orgType.id, service, journey)))
-        case None          => noOrgTypeSelected
-      }
-  }
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        requestSessionData.userSelectedOrganisationType match {
+          case Some(orgType) => Future.successful(Ok(matchUtrSubscriptionView(utrForm, orgType.id, service, journey)))
+          case None          => noOrgTypeSelected
+        }
+    }
 
-  def submit(service: Service, journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      requestSessionData.userSelectedOrganisationType match {
-        case Some(orgType) =>
-          utrForm.bindFromRequest.fold(
-            formWithErrors =>
-              Future.successful(BadRequest(matchUtrSubscriptionView(formWithErrors, orgType.id, service, journey))),
-            formData => destinationsByAnswer(formData, service, journey, orgType)
-          )
-        case None => noOrgTypeSelected
-      }
-  }
+  def submit(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        requestSessionData.userSelectedOrganisationType match {
+          case Some(orgType) =>
+            utrForm.bindFromRequest.fold(
+              formWithErrors =>
+                Future.successful(BadRequest(matchUtrSubscriptionView(formWithErrors, orgType.id, service, journey))),
+              formData => destinationsByAnswer(formData, service, journey, orgType)
+            )
+          case None => noOrgTypeSelected
+        }
+    }
 
   private def destinationsByAnswer(
     form: UtrMatchModel,

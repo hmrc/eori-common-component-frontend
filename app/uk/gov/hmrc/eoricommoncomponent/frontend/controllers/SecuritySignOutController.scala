@@ -55,4 +55,5 @@ class SecuritySignOutController @Inject() (
       }
     } recover withAuthRecovery(request)
   }
+
 }

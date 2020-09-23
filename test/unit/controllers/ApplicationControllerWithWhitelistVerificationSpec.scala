@@ -29,12 +29,12 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statem
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ApplicationControllerWithAllowlistVerificationSpec extends ControllerSpec {
+class ApplicationControllerWithAllowlistVerificationSpec extends ControllerSpec with AuthActionMock {
 
   implicit override lazy val app: Application = new GuiceApplicationBuilder()
     .disable[com.kenshoo.play.metrics.PlayModule]
@@ -43,14 +43,17 @@ class ApplicationControllerWithAllowlistVerificationSpec extends ControllerSpec 
     .build()
 
   private val mockAuthConnector          = mock[AuthConnector]
+  private val mockAuthAction             = authAction(mockAuthConnector)
   private val mockSessionCache           = mock[SessionCache]
   private val startView                  = app.injector.instanceOf[start]
   private val accessibilityStatementView = app.injector.instanceOf[accessibility_statement]
   private val enrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
 
   val controller = new ApplicationController(
-    app,
+    configuration,
+    environment,
     mockAuthConnector,
+    mockAuthAction,
     mcc,
     startView,
     accessibilityStatementView,

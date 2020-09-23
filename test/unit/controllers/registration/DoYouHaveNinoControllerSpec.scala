@@ -36,15 +36,16 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 import util.builders.matching.DoYouHaveNinoBuilder._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach {
+class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector              = mock[AuthConnector]
+  private val mockAuthAction                 = authAction(mockAuthConnector)
   private val mockMatchingService            = mock[MatchingService]
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
@@ -52,8 +53,7 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
   private val matchNinoRowIndividualView = app.injector.instanceOf[match_nino_row_individual]
 
   private val doYouHaveNinoController = new DoYouHaveNinoController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockMatchingService,
     mockRequestSessionData,
     mcc,

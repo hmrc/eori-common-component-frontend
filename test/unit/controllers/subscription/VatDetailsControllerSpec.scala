@@ -67,8 +67,7 @@ class VatDetailsControllerSpec
   private val weCannotConfirmYourIdentity = app.injector.instanceOf[we_cannot_confirm_your_identity]
 
   private val controller = new VatDetailsController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockSubscriptionFlowManager,
     mockVatControlListConnector,
     mockSubscriptionBusinessService,

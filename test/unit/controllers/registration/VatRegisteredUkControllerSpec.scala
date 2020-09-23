@@ -21,30 +21,26 @@ import java.util.UUID
 import common.pages.registration.VatRegisteredUkPage
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.VatRegisteredUkController
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.vat_registered_uk
 import unit.controllers.CdsPage
 import util.ControllerSpec
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 import util.builders.YesNoFormBuilder._
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 
-class VatRegisteredUkControllerSpec extends ControllerSpec {
+class VatRegisteredUkControllerSpec extends ControllerSpec with AuthActionMock {
 
   private val yesNoInputName         = "yes-no-answer"
   private val answerYes              = true.toString
   private val answerNo               = false.toString
-  private val InvalidOptionValue     = "Please select one of the options"
   private val expectedYesRedirectUrl = s"https://www.tax.service.gov.uk/shortforms/form/EORIVAT?details=&vat=yes"
   private val expectedNoRedirectUrl  = s"https://www.tax.service.gov.uk/shortforms/form/EORINonVATImport?details=&vat=no"
 
-  private val mockAuthConnector   = mock[AuthConnector]
   private val vatRegisteredUkView = app.injector.instanceOf[vat_registered_uk]
 
-  val controller = new VatRegisteredUkController(app, mockAuthConnector, vatRegisteredUkView, mcc)
+  val controller = new VatRegisteredUkController(vatRegisteredUkView, mcc)
 
   "Accessing the page" should {
 

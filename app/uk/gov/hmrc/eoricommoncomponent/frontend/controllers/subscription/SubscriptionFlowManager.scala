@@ -62,9 +62,7 @@ class SubscriptionFlowManager @Inject() (
   def currentSubscriptionFlow(implicit request: Request[AnyContent]): SubscriptionFlow =
     requestSessionData.userSubscriptionFlow
 
-  def stepInformation(
-    currentPage: SubscriptionPage
-  )(implicit request: Request[AnyContent]): SubscriptionFlowInfo =
+  def stepInformation(currentPage: SubscriptionPage)(implicit request: Request[AnyContent]): SubscriptionFlowInfo =
     SubscriptionFlows(currentSubscriptionFlow)
       .stepInformation(currentPage)
 
@@ -136,7 +134,13 @@ class SubscriptionFlowManager @Inject() (
     }
 
     val selectedFlow: SubscriptionFlow =
-      (registrationDetails, maybeOrgType, featureFlags.rowHaveUtrEnabled, registrationDetails.customsId, journey) match {
+      (
+        registrationDetails,
+        maybeOrgType,
+        featureFlags.rowHaveUtrEnabled,
+        registrationDetails.customsId,
+        journey
+      ) match {
         case (_: RegistrationDetailsOrganisation, Some(CdsOrganisationType.Partnership), _, _, _) =>
           SubscriptionFlow(subscribePrefix + PartnershipSubscriptionFlow.name)
         case (_: RegistrationDetailsOrganisation, _, true, None, Journey.Subscribe) =>
@@ -154,4 +158,5 @@ class SubscriptionFlowManager @Inject() (
       orgType => SubscriptionFlows.flows.keys.find(_.name == (subscribePrefix + orgType.id)).getOrElse(selectedFlow)
     )
   }
+
 }

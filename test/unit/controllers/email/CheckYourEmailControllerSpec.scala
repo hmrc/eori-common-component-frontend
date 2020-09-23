@@ -36,13 +36,13 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 import util.builders.YesNoFormBuilder.ValidRequest
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEach {
+class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
   private val yesNoInputName = "yes-no-answer"
   private val answerYes      = true.toString
@@ -52,6 +52,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     "Tell us if this is the correct email address"
 
   private val mockAuthConnector = mock[AuthConnector]
+  private val mockAuthAction    = authAction(mockAuthConnector)
 
   private val mockEmailVerificationService = mock[EmailVerificationService]
 
@@ -63,8 +64,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   private val verifyYourEmail    = app.injector.instanceOf[verify_your_email]
 
   private val controller = new CheckYourEmailController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockSave4LaterService,
     mockSessionCache,
     mcc,

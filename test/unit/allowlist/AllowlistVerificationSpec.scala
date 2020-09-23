@@ -29,12 +29,12 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.eori_number_text_download
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
-import util.builders.{AuthBuilder, SessionBuilder}
+import util.builders.{AuthActionMock, AuthBuilder, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach {
+class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
   implicit override lazy val app: Application = new GuiceApplicationBuilder()
     .disable[com.kenshoo.play.metrics.PlayModule]
@@ -43,12 +43,13 @@ class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach {
     .build()
 
   private val mockAuthConnector = mock[AuthConnector]
+  private val mockAuthAction    = authAction(mockAuthConnector)
   private val mockCache         = mock[SessionCache]
 
   private val eoriNumberTextDownloadView = app.injector.instanceOf[eori_number_text_download]
 
   private val controller =
-    new EoriTextDownloadController(app, mockAuthConnector, mockCache, eoriNumberTextDownloadView, mcc)
+    new EoriTextDownloadController(mockAuthAction, mockCache, eoriNumberTextDownloadView, mcc)
 
   override def beforeEach(): Unit =
     when(mockCache.sub02Outcome(any[HeaderCarrier]))

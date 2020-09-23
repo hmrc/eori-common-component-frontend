@@ -54,4 +54,5 @@ class EoriDownloadController @Inject() (
         case Left(errorTemplate) => Future.successful(errorTemplate)
       }
   }
+
 }

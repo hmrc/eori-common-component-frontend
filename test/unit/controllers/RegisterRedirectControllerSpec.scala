@@ -20,7 +20,6 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.RegisterRedirectController
 import util.ControllerSpec
@@ -30,14 +29,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class RegisterRedirectControllerSpec extends ControllerSpec with BeforeAndAfterEach {
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockAppConfig     = mock[AppConfig]
+  private val mockAppConfig = mock[AppConfig]
 
   private val controller =
-    new RegisterRedirectController(app, mockAuthConnector, mcc, mockAppConfig)
+    new RegisterRedirectController(mcc, mockAppConfig)
 
   override def beforeEach: Unit = {
-    reset(mockAppConfig, mockAuthConnector)
+    reset(mockAppConfig)
     when(mockAppConfig.externalGetEORILink).thenReturn("/some-get-eori")
   }
 

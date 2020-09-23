@@ -20,7 +20,10 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.{VatDetailsEuConfirmController, VatRegisteredEuController}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.{
+  VatDetailsEuConfirmController,
+  VatRegisteredEuController
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.removeVatYesNoAnswer
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
