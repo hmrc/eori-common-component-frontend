@@ -17,10 +17,9 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.EoriConsentSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{LoggedInUserWithEnrolments, YesNo}
@@ -37,8 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DisclosePersonalDetailsConsentController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   subscriptionDetailsService: SubscriptionDetailsService,
   subscriptionBusinessService: SubscriptionBusinessService,
   requestSessionData: RequestSessionData,
@@ -48,41 +46,43 @@ class DisclosePersonalDetailsConsentController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      Future.successful(
-        Ok(
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        Future.successful(
+          Ok(
+            disclosePersonalDetailsConsentView(
+              isInReviewMode = false,
+              disclosePersonalDetailsYesNoAnswerForm,
+              isIndividualFlow,
+              requestSessionData.isPartnership,
+              service,
+              journey
+            )
+          )
+        )
+    }
+
+  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        for {
+          isConsentDisclosed <- subscriptionBusinessService.getCachedPersonalDataDisclosureConsent
+          yesNo: YesNo = YesNo(isConsentDisclosed)
+        } yield Ok(
           disclosePersonalDetailsConsentView(
-            isInReviewMode = false,
-            disclosePersonalDetailsYesNoAnswerForm,
+            isInReviewMode = true,
+            disclosePersonalDetailsYesNoAnswerForm.fill(yesNo),
             isIndividualFlow,
             requestSessionData.isPartnership,
             service,
             journey
           )
         )
-      )
-  }
-
-  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      for {
-        isConsentDisclosed <- subscriptionBusinessService.getCachedPersonalDataDisclosureConsent
-        yesNo: YesNo = YesNo(isConsentDisclosed)
-      } yield Ok(
-        disclosePersonalDetailsConsentView(
-          isInReviewMode = true,
-          disclosePersonalDetailsYesNoAnswerForm.fill(yesNo),
-          isIndividualFlow,
-          requestSessionData.isPartnership,
-          service,
-          journey
-        )
-      )
-  }
+    }
 
   def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       disclosePersonalDetailsYesNoAnswerForm
         .bindFromRequest()
         .fold(

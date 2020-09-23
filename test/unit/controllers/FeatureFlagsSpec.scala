@@ -16,24 +16,25 @@
 
 package unit.controllers
 
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
+import com.typesafe.config.{Config, ConfigFactory}
+import play.api.Configuration
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.FeatureFlags
 import util.ControllerSpec
 
 class FeatureFlagsSpec extends ControllerSpec {
 
+  private val configuration: Config = ConfigFactory.parseString("""
+      |features.matchingEnabled=true
+      |features.rowHaveUtrEnabled=true
+      """.stripMargin)
+
+  private val featureFlags = new FeatureFlags(Configuration(configuration))
+
   "FeatureFlags" should {
     "retrieve values for feature flags from application conf" in {
-      val testFeatureFlags = new FeatureFlags {
-        override def currentApp: Application =
-          new GuiceApplicationBuilder()
-            .configure(configMap ++ Map("features.matchingEnabled" -> true, "features.rowHaveUtrEnabled" -> true))
-            .build()
-      }
 
-      testFeatureFlags.matchingEnabled shouldBe true
-      testFeatureFlags.rowHaveUtrEnabled shouldBe true
+      featureFlags.matchingEnabled shouldBe true
+      featureFlags.rowHaveUtrEnabled shouldBe true
     }
   }
 }

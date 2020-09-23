@@ -16,7 +16,6 @@
 
 package unit.controllers
 
-import org.junit.Ignore
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import play.api.mvc.{AnyContent, Request, Result, Session}
@@ -30,20 +29,21 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionDa
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class CacheControllerSpec extends ControllerSpec {
+class CacheControllerSpec extends ControllerSpec with AuthActionMock {
 
   private val mockAuthConnector    = mock[AuthConnector]
+  private val mockAuthAction       = authAction(mockAuthConnector)
   private val mockSessionCache     = mock[SessionCache]
   private val requestSessionData   = new RequestSessionData()
   private val userId: String       = "someUserId"
   private implicit val mockRequest = mock[Request[AnyContent]]
 
-  val controller = new CacheController(app, mockAuthConnector, mockSessionCache, mcc, requestSessionData)
+  val controller = new CacheController(mockAuthAction, mockSessionCache, mcc, requestSessionData)
 
   "Cache controller" should {
 

@@ -46,14 +46,15 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder._
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
-class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndAfterEach {
+class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector              = mock[AuthConnector]
+  private val mockAuthAction                 = authAction(mockAuthConnector)
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockCache                      = mock[SessionCache]
   private val mockReg06Service               = mock[Reg06Service]
@@ -83,8 +84,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
     app.injector.instanceOf[reg06_eori_already_linked]
 
   private val controller = new RegisterWithEoriAndIdController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockRequestSessionData,
     mockCache,
     mockReg06Service,

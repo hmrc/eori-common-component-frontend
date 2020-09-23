@@ -17,10 +17,11 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
+import play.api.{Configuration, Environment}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
-import uk.gov.hmrc.auth.core.{AuthConnector, AuthProviders}
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthProviders, AuthorisedFunctions}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthRedirectSupport
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.SecuritySignOutController
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
@@ -28,15 +29,20 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.display_sign_out
 
 import scala.concurrent.ExecutionContext
 
+// TODO Get rid of config, env and authConnector
+// TODO Get rid of AuthorisedFunctions and AuthRedirectSupport trait
+// If necessary move logic to AuthAction
+// This is required now for signout method
 @Singleton
 class SecuritySignOutController @Inject() (
-  override val currentApp: Application,
+  override val config: Configuration,
+  override val env: Environment,
   override val authConnector: AuthConnector,
   cdsFrontendDataCache: SessionCache,
   displaySignOutView: display_sign_out,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
-    extends CdsController(mcc) {
+    extends CdsController(mcc) with AuthorisedFunctions with AuthRedirectSupport {
 
   def displayPage(journey: Journey.Value): Action[AnyContent] = Action { implicit request =>
     Ok(displaySignOutView(journey))

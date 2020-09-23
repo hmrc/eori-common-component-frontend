@@ -33,21 +33,22 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEach {
+class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector = mock[AuthConnector]
+  private val mockAuthAction    = authAction(mockAuthConnector)
 
   private val mockSave4LaterService = mock[Save4LaterService]
 
   private val whatIsYourEmailView = app.injector.instanceOf[what_is_your_email]
 
   private val controller =
-    new WhatIsYourEmailController(app, mockAuthConnector, mcc, whatIsYourEmailView, mockSave4LaterService)
+    new WhatIsYourEmailController(mockAuthAction, mcc, whatIsYourEmailView, mockSave4LaterService)
 
   val email       = "test@example.com"
   val emailStatus = EmailStatus(email)

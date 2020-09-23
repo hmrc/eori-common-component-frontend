@@ -17,23 +17,13 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.return_user
 
-import scala.concurrent.ExecutionContext
-
 @Singleton
-class ReturnUserController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
-  view: return_user,
-  mcc: MessagesControllerComponents
-)(implicit ec: ExecutionContext)
-    extends CdsController(mcc) {
+class ReturnUserController @Inject() (view: return_user, mcc: MessagesControllerComponents) extends CdsController(mcc) {
 
   def show(): Action[AnyContent] = Action { implicit request =>
     Ok(view(Journey.Subscribe))

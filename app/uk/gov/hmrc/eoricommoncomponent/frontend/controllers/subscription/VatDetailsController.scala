@@ -18,9 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
 import javax.inject.{Inject, Singleton}
 import org.joda.time.LocalDate
-import play.api.Application
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{
   InvalidResponse,
   NotFoundResponse,
@@ -28,6 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{
   VatControlListConnector
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.VatDetailsSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
@@ -47,8 +46,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class VatDetailsController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   subscriptionFlowManager: SubscriptionFlowManager,
   vatControlListConnector: VatControlListConnector,
   subscriptionBusinessService: SubscriptionBusinessService,
@@ -60,22 +58,24 @@ class VatDetailsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      Future.successful(Ok(vatDetailsView(vatDetailsForm, isInReviewMode = false, service, journey)))
-  }
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        Future.successful(Ok(vatDetailsView(vatDetailsForm, isInReviewMode = false, service, journey)))
+    }
 
-  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      subscriptionBusinessService.getCachedUkVatDetails.map {
-        case Some(vatDetails) =>
-          Ok(vatDetailsView(vatDetailsForm.fill(vatDetails), isInReviewMode = true, service, journey))
-        case None => Ok(vatDetailsView(vatDetailsForm, isInReviewMode = true, service, journey))
-      }
-  }
+  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        subscriptionBusinessService.getCachedUkVatDetails.map {
+          case Some(vatDetails) =>
+            Ok(vatDetailsView(vatDetailsForm.fill(vatDetails), isInReviewMode = true, service, journey))
+          case None => Ok(vatDetailsView(vatDetailsForm, isInReviewMode = true, service, journey))
+        }
+    }
 
   def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       vatDetailsForm.bindFromRequest.fold(
         formWithErrors =>
           Future.successful(BadRequest(vatDetailsView(formWithErrors, isInReviewMode, service, journey))),
@@ -131,7 +131,7 @@ class VatDetailsController @Inject() (
   }
 
   def vatDetailsNotMatched(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       Future.successful(Ok(weCannotConfirmYourIdentity(isInReviewMode, service)))
     }
 

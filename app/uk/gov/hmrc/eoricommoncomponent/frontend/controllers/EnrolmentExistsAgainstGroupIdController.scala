@@ -17,9 +17,8 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
@@ -29,15 +28,14 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class EnrolmentExistsAgainstGroupIdController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   sessionCache: SessionCache,
   mcc: MessagesControllerComponents,
   enrolmentExistsAgainstGroupId: enrolment_exists_against_group_id
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def show(journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def show(journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       sessionCache.remove.map(_ => Ok(enrolmentExistsAgainstGroupId(journey)))
   }

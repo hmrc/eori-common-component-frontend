@@ -39,14 +39,16 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.{Save4LaterService, Use
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class EmailControllerSpec extends ControllerSpec with AddressPageFactoring with MockitoSugar with BeforeAndAfterEach {
+class EmailControllerSpec
+    extends ControllerSpec with AddressPageFactoring with MockitoSugar with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector             = mock[AuthConnector]
+  private val mockAuthAction                = authAction(mockAuthConnector)
   private val mockEmailVerificationService  = mock[EmailVerificationService]
   private val mockSave4LaterService         = mock[Save4LaterService]
   private val mockSessionCache              = mock[SessionCache]
@@ -57,8 +59,7 @@ class EmailControllerSpec extends ControllerSpec with AddressPageFactoring with 
     new UserGroupIdSubscriptionStatusCheckService(mockSubscriptionStatusService, mockSave4LaterConnector)
 
   private val controller = new EmailController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockEmailVerificationService,
     mockSessionCache,
     mcc,

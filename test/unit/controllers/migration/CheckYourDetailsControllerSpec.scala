@@ -36,7 +36,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.RegistrationDetailsBuilder.{existingOrganisationRegistrationDetails, individualRegistrationDetails}
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 import util.builders.SubscriptionContactDetailsFormBuilder.Email
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -45,23 +45,18 @@ import scala.concurrent.Future
 //TODO: We need to simplify the reduce no of tests in the class. Review page should be simple, if value is available in holder then display otherwise not.
 class CheckYourDetailsControllerSpec
     extends ControllerSpec with BusinessDatesOrganisationTypeTables with ReviewPageOrganisationTypeTables
-    with BeforeAndAfterEach {
+    with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector      = mock[AuthConnector]
+  private val mockAuthAction         = authAction(mockAuthConnector)
   private val mockCdsDataCache       = mock[SessionCache]
   private val mockRequestSessionData = mock[RequestSessionData]
   private val mockSubscriptionFlow   = mock[SubscriptionFlow]
 
   private val checkYourDetailsView = app.injector.instanceOf[check_your_details]
 
-  val controller = new CheckYourDetailsController(
-    app,
-    mockAuthConnector,
-    mockCdsDataCache,
-    mcc,
-    checkYourDetailsView,
-    mockRequestSessionData
-  )
+  val controller =
+    new CheckYourDetailsController(mockAuthAction, mockCdsDataCache, mcc, checkYourDetailsView, mockRequestSessionData)
 
   override def beforeEach: Unit = {
     reset(mockCdsDataCache, mockSubscriptionFlow)

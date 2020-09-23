@@ -17,10 +17,9 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType.{Company, Partnership, _}
@@ -35,8 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class OrganisationTypeController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   subscriptionFlowManager: SubscriptionFlowManager,
   requestSessionData: RequestSessionData,
   mcc: MessagesControllerComponents,
@@ -73,51 +71,58 @@ class OrganisationTypeController @Inject() (
       ThirdCountryIndividual        -> thirdCountryIndividualMatching(ThirdCountryIndividualId, service, journey)
     )
 
-  def form(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      Future.successful(requestSessionData.selectedUserLocation match {
-        case Some(_) =>
-          Ok(
-            organisationTypeView(organisationTypeDetailsForm, requestSessionData.selectedUserLocation, service, journey)
-          )
-        case None => Ok(organisationTypeView(organisationTypeDetailsForm, Some("uk"), service, journey))
-      })
-  }
+  def form(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        Future.successful(requestSessionData.selectedUserLocation match {
+          case Some(_) =>
+            Ok(
+              organisationTypeView(
+                organisationTypeDetailsForm,
+                requestSessionData.selectedUserLocation,
+                service,
+                journey
+              )
+            )
+          case None => Ok(organisationTypeView(organisationTypeDetailsForm, Some("uk"), service, journey))
+        })
+    }
 
-  def submit(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
-    implicit request =>
-      def startSubscription: CdsOrganisationType => Future[Result] = { organisationType =>
-        subscriptionFlowManager.startSubscriptionFlow(service, journey) map {
-          case (page, newSession) =>
-            val session = requestSessionData.sessionWithOrganisationTypeAdded(newSession, organisationType)
-            Redirect(page.url(service)).withSession(session)
+  def submit(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request =>
+        def startSubscription: CdsOrganisationType => Future[Result] = { organisationType =>
+          subscriptionFlowManager.startSubscriptionFlow(service, journey) map {
+            case (page, newSession) =>
+              val session = requestSessionData.sessionWithOrganisationTypeAdded(newSession, organisationType)
+              Redirect(page.url(service)).withSession(session)
+          }
         }
-      }
 
-      _: LoggedInUserWithEnrolments =>
-        organisationTypeDetailsForm.bindFromRequest.fold(
-          formWithErrors => {
-            val userLocation = requestSessionData.selectedUserLocation
-            Future.successful(BadRequest(organisationTypeView(formWithErrors, userLocation, service, journey)))
-          },
-          organisationType =>
-            journey match {
-              case Journey.Subscribe =>
-                registrationDetailsService.initialiseCacheWithRegistrationDetails(organisationType) flatMap { ok =>
-                  if (ok) startSubscription(organisationType)
-                  else throw new IllegalStateException(s"Unable to save $organisationType registration in cache")
-                }
-              case Journey.Register =>
-                registrationDetailsService.initialiseCacheWithRegistrationDetails(organisationType) flatMap { ok =>
-                  if (ok)
-                    Future.successful(
-                      Redirect(matchingDestinations(service, journey)(organisationType))
-                        .withSession(requestSessionData.sessionWithOrganisationTypeAdded(organisationType))
-                    )
-                  else throw new IllegalStateException(s"Unable to save $organisationType registration in cache")
-                }
-            }
-        )
-  }
+        _: LoggedInUserWithEnrolments =>
+          organisationTypeDetailsForm.bindFromRequest.fold(
+            formWithErrors => {
+              val userLocation = requestSessionData.selectedUserLocation
+              Future.successful(BadRequest(organisationTypeView(formWithErrors, userLocation, service, journey)))
+            },
+            organisationType =>
+              journey match {
+                case Journey.Subscribe =>
+                  registrationDetailsService.initialiseCacheWithRegistrationDetails(organisationType) flatMap { ok =>
+                    if (ok) startSubscription(organisationType)
+                    else throw new IllegalStateException(s"Unable to save $organisationType registration in cache")
+                  }
+                case Journey.Register =>
+                  registrationDetailsService.initialiseCacheWithRegistrationDetails(organisationType) flatMap { ok =>
+                    if (ok)
+                      Future.successful(
+                        Redirect(matchingDestinations(service, journey)(organisationType))
+                          .withSession(requestSessionData.sessionWithOrganisationTypeAdded(organisationType))
+                      )
+                    else throw new IllegalStateException(s"Unable to save $organisationType registration in cache")
+                  }
+              }
+          )
+    }
 
 }

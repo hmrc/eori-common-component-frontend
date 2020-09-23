@@ -24,11 +24,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.YouNeed
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.you_need_different_service
 import util.ControllerSpec
-import util.builders.{AuthBuilder, SessionBuilder}
+import util.builders.{AuthActionMock, AuthBuilder, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class AllowlistVerificationWithEnrolmentsWithFeatureOffSpec extends ControllerSpec {
+class AllowlistVerificationWithEnrolmentsWithFeatureOffSpec extends ControllerSpec with AuthActionMock {
 
   implicit override lazy val app: Application = new GuiceApplicationBuilder()
     .disable[com.kenshoo.play.metrics.PlayModule]
@@ -36,11 +36,12 @@ class AllowlistVerificationWithEnrolmentsWithFeatureOffSpec extends ControllerSp
     .configure(Map("allowlistEnabled" -> false, "allowlist" -> "  mister_allow@example.com, bob@example.com"))
     .build()
 
-  private val auth = mock[AuthConnector]
+  private val auth           = mock[AuthConnector]
+  private val mockAuthAction = authAction(auth)
 
   private val youNeedDifferentServiceView = app.injector.instanceOf[you_need_different_service]
 
-  private val controller = new YouNeedADifferentServiceController(app, auth, youNeedDifferentServiceView, mcc)
+  private val controller = new YouNeedADifferentServiceController(mockAuthAction, youNeedDifferentServiceView, mcc)
 
   "Allowlist verification" should {
 

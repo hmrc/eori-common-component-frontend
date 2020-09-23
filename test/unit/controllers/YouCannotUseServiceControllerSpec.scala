@@ -24,19 +24,26 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{unauthorized, you_cant_use_service}
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class YouCannotUseServiceControllerSpec extends ControllerSpec {
+class YouCannotUseServiceControllerSpec extends ControllerSpec with AuthActionMock {
   private val mockAuthConnector = mock[AuthConnector]
 
   private val youCantUseServiceView = app.injector.instanceOf[you_cant_use_service]
   private val unauthorisedView      = app.injector.instanceOf[unauthorized]
 
   private val controller =
-    new YouCannotUseServiceController(app, mockAuthConnector, youCantUseServiceView, unauthorisedView, mcc)
+    new YouCannotUseServiceController(
+      configuration,
+      environment,
+      mockAuthConnector,
+      youCantUseServiceView,
+      unauthorisedView,
+      mcc
+    )
 
   "YouCannotUseService Controller" should {
     "return Unauthorised 401 when page method is requested" in {

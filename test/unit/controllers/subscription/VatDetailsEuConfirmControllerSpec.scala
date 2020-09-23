@@ -36,15 +36,16 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 import util.builders.YesNoFormBuilder._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAfterEach {
+class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector                   = mock[AuthConnector]
+  private val mockAuthAction                      = authAction(mockAuthConnector)
   private val mockSubscriptionFlowManager         = mock[SubscriptionFlowManager]
   private val mockSubscriptionFlowInfo            = mock[SubscriptionFlowInfo]
   private val mockSubscriptionPage                = mock[SubscriptionPage]
@@ -52,8 +53,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
   private val vatDetailsEuConfirmView             = app.injector.instanceOf[vat_details_eu_confirm]
 
   private val controller = new VatDetailsEuConfirmController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockSubscriptionVatEUDetailsService,
     mcc,
     vatDetailsEuConfirmView,
@@ -134,7 +134,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
       val url = "/customs-enrolment-services/register/disclose-personal-details-consent"
       when(mockSubscriptionVatEUDetailsService.cachedEUVatDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(VatEuDetailUnderLimit))
-      when(mockSubscriptionFlowManager.stepInformation(any())(any[HeaderCarrier], any[Request[AnyContent]]))
+      when(mockSubscriptionFlowManager.stepInformation(any())(any[Request[AnyContent]]))
         .thenReturn(mockSubscriptionFlowInfo)
       when(mockSubscriptionFlowInfo.nextPage).thenReturn(mockSubscriptionPage)
       when(mockSubscriptionPage.url(Service.ATaR)).thenReturn(url)
@@ -142,7 +142,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) should endWith(url)
         verify(mockSubscriptionFlowManager, times(1))
-          .stepInformation(any())(any[HeaderCarrier], any[Request[AnyContent]])
+          .stepInformation(any())(any[Request[AnyContent]])
       }
     }
   }
@@ -188,7 +188,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
       val url = "/customs-enrolment-services/register/disclose-personal-details-consent"
       when(mockSubscriptionVatEUDetailsService.cachedEUVatDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(VatEuDetailsOnLimit))
-      when(mockSubscriptionFlowManager.stepInformation(any())(any[HeaderCarrier], any[Request[AnyContent]]))
+      when(mockSubscriptionFlowManager.stepInformation(any())(any[Request[AnyContent]]))
         .thenReturn(mockSubscriptionFlowInfo)
       when(mockSubscriptionFlowInfo.nextPage).thenReturn(mockSubscriptionPage)
       when(mockSubscriptionPage.url(Service.ATaR)).thenReturn(url)
@@ -196,7 +196,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) should endWith(url)
         verify(mockSubscriptionFlowManager, times(1))
-          .stepInformation(any())(any[HeaderCarrier], any[Request[AnyContent]])
+          .stepInformation(any())(any[Request[AnyContent]])
       }
     }
   }

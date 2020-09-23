@@ -22,22 +22,24 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
 import play.mvc.Http.Status.SEE_OTHER
 import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.FeatureFlags
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.MatchingIdController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.MatchingService
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder._
-import util.builders.{AuthBuilder, SessionBuilder}
+import util.builders.{AuthActionMock, AuthBuilder, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
-class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach {
+class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector   = mock[AuthConnector]
+  private val mockAuthAction      = authAction(mockAuthConnector)
+  private val featureFlags        = instanceOf[FeatureFlags]
   private val mockMatchingService = mock[MatchingService]
 
   private val userId: String     = "someUserId"
@@ -46,7 +48,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach {
   private val payeNinoId: String = "AB123456C"
 
   private val controller =
-    new MatchingIdController(app, mockAuthConnector, mockMatchingService, mcc)(global)
+    new MatchingIdController(mockAuthAction, featureFlags, mockMatchingService, mcc)(global)
 
   override def beforeEach: Unit =
     reset(mockMatchingService)
@@ -59,7 +61,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach {
       withAuthorisedUser(userId, mockAuthConnector)
 
       val controller =
-        new MatchingIdController(app, mockAuthConnector, mockMatchingService, mcc)(global)
+        new MatchingIdController(mockAuthAction, featureFlags, mockMatchingService, mcc)(global)
       val result: Result =
         await(controller.matchWithIdOnly(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(userId)))
 
@@ -91,7 +93,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach {
         .thenReturn(Future.successful(false))
 
       val controller =
-        new MatchingIdController(app, mockAuthConnector, mockMatchingService, mcc)(global)
+        new MatchingIdController(mockAuthAction, featureFlags, mockMatchingService, mcc)(global)
       val result = await(controller.matchWithIdOnly(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(userId)))
 
       status(result) shouldBe SEE_OTHER
@@ -191,7 +193,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach {
         .thenReturn(Future.successful(false))
 
       val controller =
-        new MatchingIdController(app, mockAuthConnector, mockMatchingService, mcc)(global)
+        new MatchingIdController(mockAuthAction, featureFlags, mockMatchingService, mcc)(global)
       val result =
         await(
           controller.matchWithIdOnlyForExistingReg(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(userId))

@@ -17,9 +17,8 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc.{Action, _}
-import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, FeatureFlags}
@@ -36,14 +35,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class WhatIsYourOrgNameController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
+  featureFlags: FeatureFlags,
   requestSessionData: RequestSessionData,
   mcc: MessagesControllerComponents,
   whatIsYourOrgNameView: what_is_your_org_name,
   subscriptionDetailsService: SubscriptionDetailsService
 )(implicit ec: ExecutionContext)
-    extends CdsController(mcc) with FeatureFlags {
+    extends CdsController(mcc) {
 
   private def populateView(
     name: Option[String],
@@ -51,7 +50,7 @@ class WhatIsYourOrgNameController @Inject() (
     organisationType: String,
     service: Service,
     journey: Journey.Value
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
+  )(implicit request: Request[AnyContent]): Future[Result] = {
     val form = name.map(n => NameMatchModel(n)).fold(organisationNameForm)(organisationNameForm.fill)
     Future.successful(Ok(whatIsYourOrgNameView(isInReviewMode, form, organisationType, service, journey)))
   }
@@ -62,7 +61,7 @@ class WhatIsYourOrgNameController @Inject() (
     service: Service,
     journey: Journey.Value
   ): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionDetailsService.cachedNameDetails.flatMap(
         details => populateView(details.map(_.name), isInReviewMode, organisationType, service, journey)
       )
@@ -74,7 +73,7 @@ class WhatIsYourOrgNameController @Inject() (
     service: Service,
     journey: Journey.Value
   ): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       organisationNameForm.bindFromRequest.fold(
         formWithErrors =>
           Future.successful(
@@ -95,7 +94,7 @@ class WhatIsYourOrgNameController @Inject() (
       if (isInReviewMode)
         Redirect(DetermineReviewPageController.determineRoute(service, journey))
       else if (UserLocation.isRow(requestSessionData))
-        if (rowHaveUtrEnabled)
+        if (featureFlags.rowHaveUtrEnabled)
           Redirect(DoYouHaveAUtrNumberController.form(organisationType, service, journey, false))
         else
           Redirect(SixLineAddressController.showForm(false, organisationType, service, journey))

@@ -44,15 +44,17 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 import util.builders.SubscriptionInfoBuilder._
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSugar with BeforeAndAfterEach {
+class SubscriptionRecoveryControllerSpec
+    extends ControllerSpec with MockitoSugar with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector                      = mock[AuthConnector]
+  private val mockAuthAction                         = authAction(mockAuthConnector)
   private val mockCdsFrontendDataCache: SessionCache = mock[SessionCache]
   private val mockSUB09SubscriptionDisplayConnector  = mock[SUB09SubscriptionDisplayConnector]
   private val mockSub01Outcome                       = mock[Sub01Outcome]
@@ -69,8 +71,7 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
   private val errorTemplateView = app.injector.instanceOf[error_template]
 
   private val controller = new SubscriptionRecoveryController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockHandleSubscriptionService,
     mockTaxEnrolmentsService,
     mockCdsFrontendDataCache,
@@ -141,7 +142,7 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
           any[Option[Eori]],
           any[Option[DateTime]],
           any[SafeId]
-        )(any[HeaderCarrier], any[ExecutionContext])
+        )(any[HeaderCarrier])
       ).thenReturn(Future.successful(result = ()))
     }
 
@@ -255,7 +256,7 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
           any[Option[Eori]],
           any[Option[DateTime]],
           any[SafeId]
-        )(any[HeaderCarrier], any[ExecutionContext])
+        )(any[HeaderCarrier])
       ).thenReturn(Future.successful(result = ()))
 
       callEnrolmentComplete(journey = Journey.Register) { result =>
@@ -346,7 +347,7 @@ class SubscriptionRecoveryControllerSpec extends ControllerSpec with MockitoSuga
         any[Option[Eori]],
         any[Option[DateTime]],
         any[SafeId]
-      )(any[HeaderCarrier], any[ExecutionContext])
+      )(any[HeaderCarrier])
     ).thenReturn(Future.successful(result = ()))
 
     callEnrolmentComplete(journey = Journey.Register) { result =>

@@ -28,20 +28,20 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.enrolment_exists_agai
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
-class EnrolmentExistsAgainstGroupIdControllerSpec extends ControllerSpec {
+class EnrolmentExistsAgainstGroupIdControllerSpec extends ControllerSpec with AuthActionMock {
 
   private val mockAuthConnector                 = mock[AuthConnector]
+  private val mockAuthAction                    = authAction(mockAuthConnector)
   private val mockSessionCache                  = mock[SessionCache]
   private val enrolmentExistsAgainstGroupIdView = app.injector.instanceOf[enrolment_exists_against_group_id]
 
   private val controller = new EnrolmentExistsAgainstGroupIdController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockSessionCache,
     mcc,
     enrolmentExistsAgainstGroupIdView

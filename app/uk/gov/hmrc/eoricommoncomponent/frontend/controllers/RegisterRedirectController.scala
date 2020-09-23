@@ -17,21 +17,15 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class RegisterRedirectController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
-  mcc: MessagesControllerComponents,
-  appConfig: AppConfig
-)(implicit ec: ExecutionContext)
-    extends CdsController(mcc) {
+class RegisterRedirectController @Inject() (mcc: MessagesControllerComponents, appConfig: AppConfig)(implicit
+  ec: ExecutionContext
+) extends CdsController(mcc) {
 
   def getEori(): Action[AnyContent] = Action { implicit request =>
     Redirect(appConfig.externalGetEORILink)

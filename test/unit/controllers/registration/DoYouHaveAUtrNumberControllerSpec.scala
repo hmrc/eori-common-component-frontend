@@ -42,15 +42,17 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 import util.builders.matching.OrganisationUtrFormBuilder._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar with BeforeAndAfterEach {
+class DoYouHaveAUtrNumberControllerSpec
+    extends ControllerSpec with MockitoSugar with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector              = mock[AuthConnector]
+  private val mockAuthAction                 = authAction(mockAuthConnector)
   private val mockMatchingService            = mock[MatchingService]
   private val mockMatchingConnector          = mock[MatchingServiceConnector]
   private val mockMatchingRequestHolder      = mock[MatchingRequestHolder]
@@ -59,8 +61,7 @@ class DoYouHaveAUtrNumberControllerSpec extends ControllerSpec with MockitoSugar
   private val matchOrganisationUtrView       = app.injector.instanceOf[match_organisation_utr]
 
   private val controller = new DoYouHaveAUtrNumberController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockMatchingService,
     mcc,
     matchOrganisationUtrView,

@@ -17,9 +17,8 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, EnrolmentExtractor}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.CDS
@@ -30,29 +29,28 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class HasExistingEoriController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   hasExistingEoriView: has_existing_eori,
   enrolSuccessView: eori_enrol_success,
   mcc: MessagesControllerComponents,
   enrolmentService: EnrolmentService
 )(implicit ec: ExecutionContext)
-    extends CdsController(mcc) {
+    extends CdsController(mcc) with EnrolmentExtractor {
 
-  def displayPage(service: Service): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def displayPage(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
       Future.successful(Ok(hasExistingEoriView(service, existingEori.id)))
   }
 
   def enrol(service: Service): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => user: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => user: LoggedInUserWithEnrolments =>
       enrolmentService.enrolWithExistingCDSEnrolment(user, service).map {
         case NO_CONTENT => Redirect(routes.HasExistingEoriController.enrolSuccess(service))
         case status     => throw FailedEnrolmentException(status)
       }
     }
 
-  def enrolSuccess(service: Service): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def enrolSuccess(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
       Future.successful(Ok(enrolSuccessView(existingEori.id, service)))
   }

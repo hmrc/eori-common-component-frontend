@@ -17,9 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.VatRegisteredUkController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatGroupController
@@ -28,16 +26,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.isleOfManYes
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.isle_of_man
 
-import scala.concurrent.ExecutionContext
-
 @Singleton
-class IsleOfManController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
-  view: isle_of_man,
-  mcc: MessagesControllerComponents
-)(implicit ec: ExecutionContext)
-    extends CdsController(mcc) {
+class IsleOfManController @Inject() (view: isle_of_man, mcc: MessagesControllerComponents) extends CdsController(mcc) {
 
   def form(): Action[AnyContent] = Action { implicit request =>
     Ok(view(isleOfManYesNoAnswerForm()))
@@ -52,7 +42,7 @@ class IsleOfManController @Inject() (
       )
   }
 
-  def destinationsByAnswer(yesNoAnswer: YesNo)(implicit request: Request[AnyContent]): Result = yesNoAnswer match {
+  def destinationsByAnswer(yesNoAnswer: YesNo): Result = yesNoAnswer match {
     case theAnswer if theAnswer.isYes => Redirect(VatRegisteredUkController.form())
     case _                            => Redirect(VatGroupController.createForm(Journey.Register))
   }

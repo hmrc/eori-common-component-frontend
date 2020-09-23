@@ -17,23 +17,16 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc.{Action, _}
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_groups_cannot_register_using_this_service
 
-import scala.concurrent.ExecutionContext
-
 @Singleton
 class VatGroupsCannotRegisterUsingThisServiceController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
   view: vat_groups_cannot_register_using_this_service,
   mcc: MessagesControllerComponents
-)(implicit ec: ExecutionContext)
-    extends CdsController(mcc) {
+) extends CdsController(mcc) {
 
   def form(journey: Journey.Value): Action[AnyContent] = Action { implicit request =>
     Ok(view())

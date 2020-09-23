@@ -29,13 +29,14 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.eori_num
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class EoriTextDownloadControllerSpec extends ControllerSpec with BeforeAndAfterEach {
+class EoriTextDownloadControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
   val mockAuthConnector = mock[AuthConnector]
+  val mockAuthAction    = authAction(mockAuthConnector)
   val mockCache         = mock[SessionCache]
 
   private val eoriNumberTextDownloadView = app.injector.instanceOf[eori_number_text_download]
@@ -48,7 +49,7 @@ class EoriTextDownloadControllerSpec extends ControllerSpec with BeforeAndAfterE
     when(mockSubscribeOutcome.fullName).thenReturn("Test Company")
   }
 
-  val controller = new EoriTextDownloadController(app, mockAuthConnector, mockCache, eoriNumberTextDownloadView, mcc)
+  val controller = new EoriTextDownloadController(mockAuthAction, mockCache, eoriNumberTextDownloadView, mcc)
 
   "download" should {
 

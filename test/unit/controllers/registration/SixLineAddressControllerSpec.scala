@@ -49,15 +49,17 @@ import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.RegistrationDetailsBuilder.defaultAddress
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 import util.builders.matching._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class SixLineAddressControllerSpec extends ControllerSpec with BeforeAndAfter with BeforeAndAfterEach {
+class SixLineAddressControllerSpec
+    extends ControllerSpec with BeforeAndAfter with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector                   = mock[AuthConnector]
+  private val mockAuthAction                      = authAction(mockAuthConnector)
   private val mockRegistrationDetailsCreator      = mock[RegistrationDetailsCreator]
   private val mockSubscriptionFlowManager         = mock[SubscriptionFlowManager]
   private val mockSessionCache                    = mock[SessionCache]
@@ -71,8 +73,7 @@ class SixLineAddressControllerSpec extends ControllerSpec with BeforeAndAfter wi
   private val sixLineAddressView                  = app.injector.instanceOf[six_line_address]
 
   private val controller = new SixLineAddressController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockRegistrationDetailsCreator,
     mockSubscriptionFlowManager,
     mockSessionCache,

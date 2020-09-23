@@ -32,13 +32,14 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.eori_num
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder._
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class EoriDownloadControllerSpec extends ControllerSpec {
+class EoriDownloadControllerSpec extends ControllerSpec with AuthActionMock {
   private val mockAuthConnector                      = mock[AuthConnector]
+  private val mockAuthAction                         = authAction(mockAuthConnector)
   private val mockPdfGenerator                       = mock[PdfGeneratorConnector]
   private val mockCdsFrontendDataCache: SessionCache = mock[SessionCache]
 
@@ -46,8 +47,7 @@ class EoriDownloadControllerSpec extends ControllerSpec {
   private val eoriNumberDownloadView = app.injector.instanceOf[eori_number_download]
 
   private val controller = new EoriDownloadController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockCdsFrontendDataCache,
     mcc,
     errorTemplateView,

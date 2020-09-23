@@ -42,7 +42,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.global
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures with BeforeAndAfterEach with Injector {
 
@@ -55,7 +55,6 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
   private val mockSubscriptionFlowManager                  = mock[SubscriptionFlowManager]
   private val mockHandleSubscriptionService                = mock[HandleSubscriptionService]
   private val mockRegistrationDetails: RegistrationDetails = mock[RegistrationDetails]
-  private val mockSubscribeOutcome: Sub02Outcome           = mock[Sub02Outcome]
   private val mockRequestSessionData                       = mock[RequestSessionData]
   private val mockSubscriptionDetailsService               = mock[SubscriptionDetailsService]
 
@@ -108,7 +107,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
   "CdsSubscriber" should {
 
     "call SubscriptionService when there is a cache hit" in {
-      mockSuccessfulSubscribeGYEJourney(mockRegistrationDetails, subscriptionDetails, mockSubscribeOutcome)
+      mockSuccessfulSubscribeGYEJourney(mockRegistrationDetails, subscriptionDetails)
       val inOrder =
         org.mockito.Mockito.inOrder(mockCdsFrontendDataCache, mockSubscriptionService, mockRegistrationConfirmService)
 
@@ -149,7 +148,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
           any[Option[Eori]],
           any[Option[DateTime]],
           any[SafeId]
-        )(any[HeaderCarrier], any[ExecutionContext])
+        )(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
       val inOrder =
         org.mockito.Mockito.inOrder(mockCdsFrontendDataCache, mockSubscriptionService, mockHandleSubscriptionService)
@@ -184,7 +183,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
               meq(Some(Eori(eori))),
               meq(Some(emailVerificationTimestamp)),
               any[SafeId]
-            )(any[HeaderCarrier], any[ExecutionContext])
+            )(any[HeaderCarrier])
       }
     }
 
@@ -214,7 +213,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
           any[Option[Eori]],
           any[Option[DateTime]],
           any[SafeId]
-        )(any[HeaderCarrier], any[ExecutionContext])
+        )(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
 
       whenReady(cdsSubscriber.subscribeWithCachedDetails(mockCdsOrganisationType, Service.ATaR, Journey.Subscribe)) {
@@ -243,7 +242,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
               meq(Some(Eori(eori))),
               meq(Some(emailVerificationTimestamp)),
               any[SafeId]
-            )(any[HeaderCarrier], any[ExecutionContext])
+            )(any[HeaderCarrier])
       }
     }
 
@@ -284,7 +283,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
               meq(Some(Eori(eori))),
               meq(Some(emailVerificationTimestamp)),
               any[SafeId]
-            )(any[HeaderCarrier], any[ExecutionContext])
+            )(any[HeaderCarrier])
       }
     }
 
@@ -364,12 +363,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
         Some("19 April 2018")
       )
 
-      mockSuccessfulSubscribeGYEJourney(
-        mockRegistrationDetails,
-        subscriptionDetails,
-        mockSubscribeOutcome,
-        expectedOrgName
-      )
+      mockSuccessfulSubscribeGYEJourney(mockRegistrationDetails, subscriptionDetails, expectedOrgName)
       whenReady(cdsSubscriber.subscribeWithCachedDetails(mockCdsOrganisationType, Service.ATaR, Journey.Register)) {
         result =>
           result shouldBe SubscriptionSuccessful(
@@ -391,7 +385,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
               meq(Some(Eori(eori))),
               meq(Some(emailVerificationTimestamp)),
               any[SafeId]
-            )(any[HeaderCarrier], any[ExecutionContext])
+            )(any[HeaderCarrier])
       }
     }
 
@@ -414,7 +408,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
           any[Option[Eori]],
           any[Option[DateTime]],
           any[SafeId]
-        )(any[HeaderCarrier], any[ExecutionContext])
+        )(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
 
       whenReady(cdsSubscriber.subscribeWithCachedDetails(mockCdsOrganisationType, Service.ATaR, Journey.Register)) {
@@ -433,7 +427,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
               meq(None),
               meq(Some(emailVerificationTimestamp)),
               any[SafeId]
-            )(any[HeaderCarrier], any[ExecutionContext])
+            )(any[HeaderCarrier])
       }
     }
 
@@ -449,7 +443,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
     }
 
     "fail when subscription succeeds but handle-subscription call fails" in {
-      mockSuccessfulSubscribeGYEJourney(mockRegistrationDetails, subscriptionDetails, mockSubscribeOutcome)
+      mockSuccessfulSubscribeGYEJourney(mockRegistrationDetails, subscriptionDetails)
       when(
         mockHandleSubscriptionService.handleSubscription(
           anyString,
@@ -458,7 +452,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
           any[Option[Eori]],
           any[Option[DateTime]],
           any[SafeId]
-        )(any[HeaderCarrier], any[ExecutionContext])
+        )(any[HeaderCarrier])
       ).thenReturn(Future.failed(emulatedFailure))
 
       val caught = the[UnsupportedOperationException] thrownBy {
@@ -498,7 +492,6 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
   private def mockSuccessfulSubscribeGYEJourney(
     mockRegistrationDetails: RegistrationDetails,
     cachedSubscriptionDetailsHolder: SubscriptionDetails,
-    mockSubscribeOutcome: Sub02Outcome,
     registeredName: String = "orgName"
   ) = {
     when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier]))
@@ -524,7 +517,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
         any[Option[Eori]],
         any[Option[DateTime]],
         any[SafeId]
-      )(any[HeaderCarrier], any[ExecutionContext])
+      )(any[HeaderCarrier])
     ).thenReturn(Future.successful(()))
     when(mockCdsFrontendDataCache.saveSub02Outcome(any[Sub02Outcome])(any[HeaderCarrier]))
       .thenReturn(Future.successful(true))
@@ -557,7 +550,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
         any[Option[Eori]],
         any[Option[DateTime]],
         any[SafeId]
-      )(any[HeaderCarrier], any[ExecutionContext])
+      )(any[HeaderCarrier])
     ).thenReturn(Future.successful(()))
     when(mockCdsFrontendDataCache.saveSub02Outcome(any[Sub02Outcome])(any[HeaderCarrier]))
       .thenReturn(Future.successful(true))
@@ -587,7 +580,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
         any[Option[Eori]],
         any[Option[DateTime]],
         any[SafeId]
-      )(any[HeaderCarrier], any[ExecutionContext])
+      )(any[HeaderCarrier])
     ).thenReturn(Future.successful(()))
     when(mockRegistrationDetails.name).thenReturn(registeredName)
   }

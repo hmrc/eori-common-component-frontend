@@ -23,13 +23,14 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentS
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, start}
 import unit.controllers.CdsPage
 import util.ControllerSpec
-import util.builders.{AuthBuilder, SessionBuilder}
+import util.builders.{AuthActionMock, AuthBuilder, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class HeaderSpec extends ControllerSpec {
+class HeaderSpec extends ControllerSpec with AuthActionMock {
 
   private val mockAuthConnector    = mock[AuthConnector]
+  private val mockAuthAction       = authAction(mockAuthConnector)
   private val mockCdsFrontendCache = mock[SessionCache]
 
   private val viewStart                  = app.injector.instanceOf[start]
@@ -37,8 +38,10 @@ class HeaderSpec extends ControllerSpec {
   private val enrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
 
   private val controller = new ApplicationController(
-    app,
+    configuration,
+    environment,
     mockAuthConnector,
+    mockAuthAction,
     mcc,
     viewStart,
     accessibilityStatementView,

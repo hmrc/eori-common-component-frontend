@@ -17,10 +17,8 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.EnrolmentExtractor
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, EnrolmentExtractor}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, FeatureFlags}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -32,14 +30,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class MatchingIdController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
+  featureFlags: FeatureFlags,
   matchingService: MatchingService,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
-    extends CdsController(mcc) with EnrolmentExtractor with FeatureFlags {
+    extends CdsController(mcc) with EnrolmentExtractor {
 
-  def matchWithIdOnly(service: Service): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def matchWithIdOnly(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => loggedInUser: LoggedInUserWithEnrolments =>
       matchLoggedInUserAndRedirect(loggedInUser) {
         Redirect(UserLocationController.form(service, Journey.Register))
@@ -48,15 +46,16 @@ class MatchingIdController @Inject() (
       }
   }
 
-  def matchWithIdOnlyForExistingReg(service: Service): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      Future.successful(Redirect(UserLocationController.form(service, Journey.Subscribe)))
-  }
+  def matchWithIdOnlyForExistingReg(service: Service): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        Future.successful(Redirect(UserLocationController.form(service, Journey.Subscribe)))
+    }
 
-  private def matchLoggedInUserAndRedirect(loggedInUser: LoggedInUserWithEnrolments)(
-    redirectOrganisationTypePage: => Result
-  )(redirectToConfirmationPage: => Result)(implicit hc: HeaderCarrier, request: Request[AnyContent]) =
-    if (matchingEnabled) {
+  private def matchLoggedInUserAndRedirect(
+    loggedInUser: LoggedInUserWithEnrolments
+  )(redirectOrganisationTypePage: => Result)(redirectToConfirmationPage: => Result)(implicit hc: HeaderCarrier) =
+    if (featureFlags.matchingEnabled) {
       lazy val ctUtr = enrolledCtUtr(loggedInUser)
       lazy val saUtr = enrolledSaUtr(loggedInUser)
       lazy val nino  = enrolledNino(loggedInUser)

@@ -45,15 +45,16 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 import util.builders.YesNoFormBuilder._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with BeforeAndAfterEach {
+class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector               = mock[AuthConnector]
+  private val mockAuthAction                  = authAction(mockAuthConnector)
   private val mockSubscriptionFlowManager     = mock[SubscriptionFlowManager]
   private val mockSubscriptionBusinessService = mock[SubscriptionBusinessService]
   private val mockSubscriptionDetailsService  = mock[SubscriptionDetailsService]
@@ -75,8 +76,7 @@ class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with Befo
   }
 
   private val controller = new VatRegisteredUkController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockSubscriptionBusinessService,
     mockSubscriptionFlowManager,
     mockSubscriptionDetailsService,
@@ -188,7 +188,7 @@ class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with Befo
   private def subscriptionFlowUrl(url: String) = {
     val mockSubscriptionPage     = mock[SubscriptionPage]
     val mockSubscriptionFlowInfo = mock[SubscriptionFlowInfo]
-    when(mockSubscriptionFlowManager.stepInformation(any())(any[HeaderCarrier], any[Request[AnyContent]]))
+    when(mockSubscriptionFlowManager.stepInformation(any())(any[Request[AnyContent]]))
       .thenReturn(mockSubscriptionFlowInfo)
     when(mockSubscriptionFlowInfo.nextPage).thenReturn(mockSubscriptionPage)
     when(mockSubscriptionPage.url(any())).thenReturn(url)

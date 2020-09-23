@@ -17,10 +17,9 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionCreateResponse._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
@@ -37,8 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class Sub02Controller @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   requestSessionData: RequestSessionData,
   sessionCache: SessionCache,
   subscriptionDetailsService: SubscriptionDetailsService,
@@ -56,7 +54,7 @@ class Sub02Controller @Inject() (
     extends CdsController(mcc) {
 
   def subscribe(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
       val selectedOrganisationType: Option[CdsOrganisationType] =
         requestSessionData.userSelectedOrganisationType
       val internalId = InternalId(loggedInUser.internalId)
@@ -93,7 +91,7 @@ class Sub02Controller @Inject() (
       }
     }
 
-  def end: Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def end: Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
         sub02Outcome <- sessionCache.sub02Outcome
@@ -109,7 +107,7 @@ class Sub02Controller @Inject() (
       )
   }
 
-  def migrationEnd(service: Service): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def migrationEnd(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       if (UserLocation.isRow(requestSessionData))
         subscriptionDetailsService.cachedCustomsId flatMap {
@@ -119,7 +117,7 @@ class Sub02Controller @Inject() (
       else renderPageWithName
   }
 
-  def rejected: Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def rejected: Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
         sub02Outcome <- sessionCache.sub02Outcome
@@ -128,7 +126,7 @@ class Sub02Controller @Inject() (
   }
 
   def eoriAlreadyExists: Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         sub02Outcome <- sessionCache.sub02Outcome
         _            <- sessionCache.remove
@@ -136,7 +134,7 @@ class Sub02Controller @Inject() (
     }
 
   def eoriAlreadyAssociated: Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         sub02Outcome <- sessionCache.sub02Outcome
         _            <- sessionCache.remove
@@ -144,7 +142,7 @@ class Sub02Controller @Inject() (
     }
 
   def subscriptionInProgress: Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         sub02Outcome <- sessionCache.sub02Outcome
         _            <- sessionCache.remove
@@ -152,13 +150,13 @@ class Sub02Controller @Inject() (
     }
 
   def requestNotProcessed: Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         _ <- sessionCache.remove
       } yield Ok(sub02RequestNotProcessed())
     }
 
-  def pending: Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def pending: Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
         sub02Outcome <- sessionCache.sub02Outcome

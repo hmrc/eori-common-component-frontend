@@ -28,20 +28,20 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.enrolment_pending_aga
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
-class EnrolmentPendingAgainstGroupIdControllerSpec extends ControllerSpec {
+class EnrolmentPendingAgainstGroupIdControllerSpec extends ControllerSpec with AuthActionMock {
 
   private val mockAuthConnector                  = mock[AuthConnector]
+  private val mockAuthAction                     = authAction(mockAuthConnector)
   private val mockSessionCache                   = mock[SessionCache]
   private val enrolmentPendingAgainstGroupIdView = app.injector.instanceOf[enrolment_pending_against_group_id]
 
   private val controller = new EnrolmentPendingAgainstGroupIdController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mcc,
     mockSessionCache,
     enrolmentPendingAgainstGroupIdView

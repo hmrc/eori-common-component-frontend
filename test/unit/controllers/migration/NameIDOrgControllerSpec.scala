@@ -67,11 +67,8 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
   private val nameIdView = app.injector.instanceOf[nameId]
 
-  private val MessageKeyPrefix = "cds.subscription.name-id-details.page-error"
-
   private val controller = new NameIDOrgController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockSubscriptionBusinessService,
     mockRequestSessionData,
     mockCdsFrontendDataCache,

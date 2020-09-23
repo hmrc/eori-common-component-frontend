@@ -17,10 +17,9 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.SicCodeViewModel
@@ -39,8 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SicCodeController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   subscriptionBusinessService: SubscriptionBusinessService,
   subscriptionFlowManager: SubscriptionFlowManager,
   subscriptionDetailsHolderService: SubscriptionDetailsService,
@@ -71,20 +69,22 @@ class SicCodeController @Inject() (
     }
   }
 
-  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      subscriptionBusinessService.cachedSicCode.flatMap(populateView(_, isInReviewMode = false, service, journey))
-  }
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        subscriptionBusinessService.cachedSicCode.flatMap(populateView(_, isInReviewMode = false, service, journey))
+    }
 
-  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      subscriptionBusinessService.getCachedSicCode.flatMap(
-        sic => populateView(Some(sic), isInReviewMode = true, service, journey)
-      )
-  }
+  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        subscriptionBusinessService.getCachedSicCode.flatMap(
+          sic => populateView(Some(sic), isInReviewMode = true, service, journey)
+        )
+    }
 
   def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       sicCodeform.bindFromRequest.fold(
         formWithErrors =>
           // TODO Check if this etmpOrgType call is necessary
@@ -104,7 +104,7 @@ class SicCodeController @Inject() (
       )
     }
 
-  private def stepInformation()(implicit hc: HeaderCarrier, request: Request[AnyContent]): SubscriptionFlowInfo =
+  private def stepInformation()(implicit request: Request[AnyContent]): SubscriptionFlowInfo =
     subscriptionFlowManager.stepInformation(SicCodeSubscriptionFlowPage)
 
   private def submitNewDetails(

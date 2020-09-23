@@ -38,7 +38,7 @@ class HandleSubscriptionService @Inject() (handleSubscriptionConnector: HandleSu
     eori: Option[Eori],
     emailVerificationTimestamp: Option[DateTime],
     safeId: SafeId
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
+  )(implicit hc: HeaderCarrier): Future[Unit] = {
     val timestampValue =
       emailVerificationTimestamp.getOrElse(new DateTime(Clock.systemUTC().instant.toEpochMilli, DateTimeZone.UTC))
     handleSubscriptionConnector.call(

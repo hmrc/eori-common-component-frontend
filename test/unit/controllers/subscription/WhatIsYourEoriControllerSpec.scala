@@ -57,8 +57,7 @@ class WhatIsYourEoriControllerSpec
   private val whatIsYourEoriView     = app.injector.instanceOf[what_is_your_eori]
 
   private val controller = new WhatIsYourEoriController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockSubscriptionBusinessService,
     mockSubscriptionFlowManager,
     mockSubscriptionDetailsHolderService,
@@ -105,7 +104,7 @@ class WhatIsYourEoriControllerSpec
 
     "display the back link for subscribe user journey" in {
       showCreateForm(journey = Journey.Subscribe) { result =>
-        verifyBackLinkIn(result)("/customs-enrolment-services/subscribe/matching/organisation-type")
+        verifyBackLinkIn(result)
       }
     }
 
@@ -388,7 +387,7 @@ class WhatIsYourEoriControllerSpec
   private def verifyEoriNumberFieldExistsWithNoData(page: CdsPage): Unit =
     page.getElementValueForLabel(SubscriptionAmendCompanyDetailsPage.eoriNumberLabelXpath) shouldBe ""
 
-  private def verifyBackLinkIn(result: Result)(linkToVerify: String) = {
+  private def verifyBackLinkIn(result: Result) = {
     val page = CdsPage(bodyOf(result))
     page.getElementAttributeHref(SubscriptionContactDetailsPage.backLinkXPath) shouldBe previousPageUrl
   }

@@ -16,47 +16,54 @@
 
 package unit.allowlist
 
+import com.typesafe.config.{Config, ConfigFactory}
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.{Configuration, Environment}
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EoriTextDownloadController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.Sub02Outcome
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.eori_number_text_download
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
-import util.builders.{AuthBuilder, SessionBuilder}
+import util.builders.{AuthActionMock, AuthBuilder, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach {
+class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
-  implicit override lazy val app: Application = new GuiceApplicationBuilder()
-    .disable[com.kenshoo.play.metrics.PlayModule]
-    .configure("metrics.enabled" -> false)
-    .configure(Map("allowlistEnabled" -> true, "allowlist" -> "mister_allow@example.com,  bob@example.com"))
-    .build()
+  val customConfiguration: Config = ConfigFactory.parseString("""
+      |allowlistEnabled=true
+      |allowlist="mister_allow@example.com, bob@example.com"
+      """.stripMargin)
 
   private val mockAuthConnector = mock[AuthConnector]
-  private val mockCache         = mock[SessionCache]
 
-  private val eoriNumberTextDownloadView = app.injector.instanceOf[eori_number_text_download]
+  private val mockAuthAction =
+    new AuthAction(Configuration(customConfiguration), Environment.simple(), mockAuthConnector)(global)
+
+  private val mockCache = mock[SessionCache]
+
+  private val eoriNumberTextDownloadView = mock[eori_number_text_download]
 
   private val controller =
-    new EoriTextDownloadController(app, mockAuthConnector, mockCache, eoriNumberTextDownloadView, mcc)
+    new EoriTextDownloadController(mockAuthAction, mockCache, eoriNumberTextDownloadView, mcc)
 
-  override def beforeEach(): Unit =
+  override def beforeEach(): Unit = {
+    when(eoriNumberTextDownloadView.apply(any(), any(), any())(any())).thenReturn(HtmlFormat.empty)
     when(mockCache.sub02Outcome(any[HeaderCarrier]))
       .thenReturn(Future.successful(Sub02Outcome("20/01/2019", "John Doe", Some("GB123456789012"))))
+  }
 
   "Allowlist verification" should {
 
-    "return Unauthorized (401) when a non-allowlisted user attempts to access a route" in {
+    "redirect to unauthorised page when a non-allowlisted user attempts to access a route" in {
       AuthBuilder.withAuthorisedUser("user-1236213", mockAuthConnector, userEmail = Some("not@example.com"))
 
       val result = controller
@@ -67,7 +74,7 @@ class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach {
       redirectLocation(result) shouldBe Some("/customs-enrolment-services/subscribe/unauthorised")
     }
 
-    "return Unauthorized (401) when a user with no email address attempts to access a route" in {
+    "redirect to unauthorised page when a user with no email address attempts to access a route" in {
       AuthBuilder.withAuthorisedUser("user-1236213", mockAuthConnector, userEmail = None)
 
       val result = controller

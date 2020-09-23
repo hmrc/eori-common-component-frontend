@@ -17,11 +17,12 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
+import play.api.{Configuration, Environment}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.affinityGroup
-import uk.gov.hmrc.auth.core.{AuthConnector, AuthProviders}
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthProviders, AuthorisedFunctions}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthRedirectSupport
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 
@@ -29,13 +30,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class YouCannotUseServiceController @Inject() (
-  override val currentApp: Application,
+  override val config: Configuration,
+  override val env: Environment,
   override val authConnector: AuthConnector,
   youCantUseService: you_cant_use_service,
   unauthorisedView: unauthorized,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
-    extends CdsController(mcc) {
+    extends CdsController(mcc) with AuthorisedFunctions with AuthRedirectSupport {
 
   def page(journey: Journey.Value): Action[AnyContent] = Action.async { implicit request =>
     authorised(AuthProviders(GovernmentGateway))

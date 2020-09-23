@@ -28,19 +28,26 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.display_sign_out
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SecuritySignOutControllerSpec extends ControllerSpec {
+class SecuritySignOutControllerSpec extends ControllerSpec with AuthActionMock {
   private val mockAuthConnector = mock[AuthConnector]
   private val mockSessionCache  = mock[SessionCache]
 
   private val displaySignOutView = app.injector.instanceOf[display_sign_out]
 
   private val controller =
-    new SecuritySignOutController(app, mockAuthConnector, mockSessionCache, displaySignOutView, mcc)
+    new SecuritySignOutController(
+      configuration,
+      environment,
+      mockAuthConnector,
+      mockSessionCache,
+      displaySignOutView,
+      mcc
+    )
 
   "Security Sign Out Controller" should {
     "return Ok 200 when displayPage method is requested" in {

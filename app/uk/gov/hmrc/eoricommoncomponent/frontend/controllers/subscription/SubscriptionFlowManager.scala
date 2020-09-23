@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc.{AnyContent, Request, Session}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.FeatureFlags
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -55,18 +54,15 @@ case class SubscriptionFlowConfig(
 
 @Singleton
 class SubscriptionFlowManager @Inject() (
-  override val currentApp: Application,
+  featureFlags: FeatureFlags,
   requestSessionData: RequestSessionData,
   cdsFrontendDataCache: SessionCache
-)(implicit ec: ExecutionContext)
-    extends FeatureFlags {
+)(implicit ec: ExecutionContext) {
 
   def currentSubscriptionFlow(implicit request: Request[AnyContent]): SubscriptionFlow =
     requestSessionData.userSubscriptionFlow
 
-  def stepInformation(
-    currentPage: SubscriptionPage
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): SubscriptionFlowInfo =
+  def stepInformation(currentPage: SubscriptionPage)(implicit request: Request[AnyContent]): SubscriptionFlowInfo =
     SubscriptionFlows(currentSubscriptionFlow)
       .stepInformation(currentPage)
 
@@ -115,10 +111,10 @@ class SubscriptionFlowManager @Inject() (
     registrationDetails: RegistrationDetails,
     maybeOrgType: => Option[CdsOrganisationType],
     journey: Journey.Value
-  )(implicit request: Request[AnyContent], headerCarrier: HeaderCarrier): SubscriptionFlow = {
+  )(implicit request: Request[AnyContent]): SubscriptionFlow = {
     val userLocation = requestSessionData.selectedUserLocation
 
-    val subscribePrefix = (userLocation, journey, registrationDetails.customsId, rowHaveUtrEnabled) match {
+    val subscribePrefix = (userLocation, journey, registrationDetails.customsId, featureFlags.rowHaveUtrEnabled) match {
       case (
             Some(UserLocation.Eu) | Some(UserLocation.Islands) | Some(UserLocation.ThirdCountry),
             Journey.Subscribe,
@@ -138,7 +134,13 @@ class SubscriptionFlowManager @Inject() (
     }
 
     val selectedFlow: SubscriptionFlow =
-      (registrationDetails, maybeOrgType, rowHaveUtrEnabled, registrationDetails.customsId, journey) match {
+      (
+        registrationDetails,
+        maybeOrgType,
+        featureFlags.rowHaveUtrEnabled,
+        registrationDetails.customsId,
+        journey
+      ) match {
         case (_: RegistrationDetailsOrganisation, Some(CdsOrganisationType.Partnership), _, _, _) =>
           SubscriptionFlow(subscribePrefix + PartnershipSubscriptionFlow.name)
         case (_: RegistrationDetailsOrganisation, _, true, None, Journey.Subscribe) =>

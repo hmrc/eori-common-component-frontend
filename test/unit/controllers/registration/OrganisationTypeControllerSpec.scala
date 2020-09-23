@@ -40,14 +40,15 @@ import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder._
 import util.builders.OrganisationTypeBuilder.mandatoryMap
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterEach {
+class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector              = mock[AuthConnector]
+  private val mockAuthAction                 = authAction(mockAuthConnector)
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSubscriptionFlowManager    = mock[SubscriptionFlowManager]
   private val mockRegistrationDetailsService = mock[RegistrationDetailsService]
@@ -55,8 +56,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
   private val organisationTypeView = app.injector.instanceOf[organisation_type]
 
   private val organisationTypeController = new OrganisationTypeController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockSubscriptionFlowManager,
     mockRequestSessionData,
     mcc,

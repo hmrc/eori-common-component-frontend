@@ -17,23 +17,16 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.you_need_different_service_iom
 
-import scala.concurrent.ExecutionContext
-
 @Singleton
 class YouNeedADifferentServiceIomController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
   youNeedADifferentService: you_need_different_service_iom,
   mcc: MessagesControllerComponents
-)(implicit ec: ExecutionContext)
-    extends CdsController(mcc) {
+) extends CdsController(mcc) {
 
   def form(journey: Journey.Value): Action[AnyContent] = Action { implicit request =>
     Ok(youNeedADifferentService())

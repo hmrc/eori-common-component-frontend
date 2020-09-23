@@ -18,11 +18,11 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.mvc._
-import play.api.{Application, Logger}
-import uk.gov.hmrc.auth.core.AuthConnector
+import play.api.Logger
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.CheckYourEmailController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.WhatIsYourEmailController.createForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.{EnrolmentPendingAgainstGroupIdController}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.EnrolmentPendingAgainstGroupIdController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, InternalId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
@@ -35,8 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class EmailController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   emailVerificationService: EmailVerificationService,
   cdsFrontendDataCache: SessionCache,
   mcc: MessagesControllerComponents,
@@ -51,9 +50,7 @@ class EmailController @Inject() (
   ): Future[Result] =
     continue(service, journey)
 
-  private def otherUserWithinGroupIsInProcess(
-    journey: Journey.Value
-  )(implicit request: Request[AnyContent], user: LoggedInUserWithEnrolments): Future[Result] =
+  private def otherUserWithinGroupIsInProcess(journey: Journey.Value): Future[Result] =
     Future.successful(Redirect(EnrolmentPendingAgainstGroupIdController.show(journey)))
 
   private def continue(service: Service, journey: Journey.Value)(implicit
@@ -74,7 +71,7 @@ class EmailController @Inject() (
     }
 
   def form(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
       userGroupIdSubscriptionStatusCheckService
         .checksToProceed(GroupId(user.groupId), InternalId(user.internalId))(continue(service, journey))(
           userIsInProcess(service, journey)
@@ -82,7 +79,6 @@ class EmailController @Inject() (
     }
 
   private def checkWithEmailService(emailStatus: EmailStatus, service: Service, journey: Journey.Value)(implicit
-    request: Request[AnyContent],
     hc: HeaderCarrier,
     userWithEnrolments: LoggedInUserWithEnrolments
   ): Future[Result] =

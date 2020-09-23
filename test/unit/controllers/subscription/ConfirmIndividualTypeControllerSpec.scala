@@ -36,21 +36,21 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndAfter {
+class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndAfter with AuthActionMock {
 
   private val mockAuthConnector           = mock[AuthConnector]
+  private val mockAuthAction              = authAction(mockAuthConnector)
   private val mockRequestSessionData      = mock[RequestSessionData]
   private val mockSubscriptionFlowManager = mock[SubscriptionFlowManager]
   private val confirmIndividualTypeView   = app.injector.instanceOf[confirm_individual_type]
 
   private val controller = new ConfirmIndividualTypeController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockRequestSessionData,
     mockSubscriptionFlowManager,
     confirmIndividualTypeView,

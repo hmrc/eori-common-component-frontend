@@ -18,11 +18,10 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
 import javax.inject.{Inject, Singleton}
 import org.joda.time.LocalDate
-import play.api.Application
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.OrgTypeNotFoundException
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
@@ -42,8 +41,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DateOfEstablishmentController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   subscriptionFlowManager: SubscriptionFlowManager,
   subscriptionBusinessService: SubscriptionBusinessService,
   subscriptionDetailsHolderService: SubscriptionDetailsService,
@@ -55,7 +53,7 @@ class DateOfEstablishmentController @Inject() (
     extends CdsController(mcc) {
 
   def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         maybeCachedDateModel <- subscriptionBusinessService.maybeCachedDateEstablished
         orgType              <- orgTypeLookup.etmpOrgType
@@ -74,13 +72,13 @@ class DateOfEstablishmentController @Inject() (
     orgType: EtmpOrganisationType,
     service: Service,
     journey: Journey.Value
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Result = {
+  )(implicit request: Request[AnyContent]): Result = {
     val form = cachedDate.fold(subscriptionDateOfEstablishmentForm)(subscriptionDateOfEstablishmentForm.fill)
     Ok(dateOfEstablishmentView(form, isInReviewMode, orgType, UserLocation.isRow(requestSessionData), service, journey))
   }
 
   def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         cachedDateModel <- fetchDate
         orgType         <- orgTypeLookup.etmpOrgType
@@ -97,7 +95,7 @@ class DateOfEstablishmentController @Inject() (
     subscriptionBusinessService.getCachedDateEstablished
 
   def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionDateOfEstablishmentForm.bindFromRequest.fold(
         formWithErrors =>
           orgTypeLookup.etmpOrgType map {

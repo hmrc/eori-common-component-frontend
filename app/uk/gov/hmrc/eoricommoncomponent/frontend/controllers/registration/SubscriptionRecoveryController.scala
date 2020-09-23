@@ -17,12 +17,11 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.i18n.Messages
 import play.api.mvc.{Action, _}
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SUB09SubscriptionDisplayConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionDisplayResponse
@@ -43,8 +42,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SubscriptionRecoveryController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   handleSubscriptionService: HandleSubscriptionService,
   taxEnrolmentService: TaxEnrolmentsService,
   sessionCache: SessionCache,
@@ -57,23 +55,24 @@ class SubscriptionRecoveryController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def complete(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      val isRowF           = Future.successful(UserLocation.isRow(requestSessionData))
-      val journeyF         = Future.successful(journey)
-      val cachedCustomsIdF = subscriptionDetailsService.cachedCustomsId
-      val result = for {
-        isRow    <- isRowF
-        journey  <- journeyF
-        customId <- if (isRow) cachedCustomsIdF else Future.successful(None)
-      } yield (journey, isRow, customId) match {
-        case (Journey.Subscribe, true, Some(_)) => subscribeForCDS(service)    // UK journey
-        case (Journey.Subscribe, true, None)    => subscribeForCDSROW(service) // subscribeForCDSROW //ROW
-        case (Journey.Subscribe, false, _)      => subscribeForCDS(service)    // UK Journey
-        case _                                  => subscribeGetAnEori(service) // Journey Get An EORI
-      }
-      result.flatMap(identity)
-  }
+  def complete(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        val isRowF           = Future.successful(UserLocation.isRow(requestSessionData))
+        val journeyF         = Future.successful(journey)
+        val cachedCustomsIdF = subscriptionDetailsService.cachedCustomsId
+        val result = for {
+          isRow    <- isRowF
+          journey  <- journeyF
+          customId <- if (isRow) cachedCustomsIdF else Future.successful(None)
+        } yield (journey, isRow, customId) match {
+          case (Journey.Subscribe, true, Some(_)) => subscribeForCDS(service)    // UK journey
+          case (Journey.Subscribe, true, None)    => subscribeForCDSROW(service) // subscribeForCDSROW //ROW
+          case (Journey.Subscribe, false, _)      => subscribeForCDS(service)    // UK Journey
+          case _                                  => subscribeGetAnEori(service) // Journey Get An EORI
+        }
+        result.flatMap(identity)
+    }
 
   private def subscribeGetAnEori(
     service: Service

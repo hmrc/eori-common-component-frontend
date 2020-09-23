@@ -16,15 +16,15 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth
 
-import play.api.Application
+import play.api.Configuration
 import play.api.mvc.Request
 
 trait AllowlistVerification {
-  // TODO Get rid of this application - only configuration is used, this def can be a val config: Configuration
-  def currentApp: Application
 
-  private lazy val allowlistEnabled: Boolean = currentApp.configuration.get[Boolean]("allowlistEnabled")
-  private lazy val allowlist: Array[String]  = currentApp.configuration.get[String]("allowlist").split(',').map(_.trim)
+  def config: Configuration
+
+  private lazy val allowlistEnabled: Boolean = config.get[Boolean]("allowlistEnabled")
+  private lazy val allowlist: Array[String]  = config.get[String]("allowlist").split(',').map(_.trim)
 
   def isAllowlisted(email: Option[String])(implicit request: Request[_]): Boolean =
     if (allowlistEnabled) {

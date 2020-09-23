@@ -18,13 +18,12 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
 import org.joda.time.LocalDate
-import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.{Action, _}
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.Organisation
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.{
@@ -41,8 +40,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class NameIdOrganisationController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   mcc: MessagesControllerComponents,
   matchNameIdOrganisationView: match_name_id_organisation,
   matchingService: MatchingService
@@ -91,13 +89,13 @@ class NameIdOrganisationController @Inject() (
   )
 
   def form(organisationType: String, service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       require(OrganisationTypeConfigurations.contains(organisationType), invalidOrganisationType(organisationType))
       Future.successful(Ok(view(organisationType, OrganisationTypeConfigurations(organisationType), service, journey)))
     }
 
   def submit(organisationType: String, service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
       require(OrganisationTypeConfigurations.contains(organisationType), invalidOrganisationType(organisationType))
       val configuration = OrganisationTypeConfigurations(organisationType)
       bind(organisationType, configuration, service, journey, InternalId(loggedInUser.internalId))

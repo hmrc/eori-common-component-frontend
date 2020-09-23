@@ -81,13 +81,9 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   private val mockOrgTypeLookup        = mock[OrgTypeLookup]
   private val contactDetailsView       = app.injector.instanceOf[contact_details]
 
-  private val MessageKeyPrefix = "cds.subscription.contact-details.page-error"
-
   private val controller = new ContactDetailsController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockSubscriptionBusinessService,
-    mockRequestSessionData,
     mockCdsFrontendDataCache,
     mockSubscriptionFlowManager,
     mockSubscriptionDetailsHolderService,
@@ -311,7 +307,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
           status(result) shouldBe SEE_OTHER
           result.header.headers(LOCATION) should endWith("next-page-url")
           verify(mockSubscriptionFlowManager, times(1))
-            .stepInformation(any())(any[HeaderCarrier], any[Request[AnyContent]])
+            .stepInformation(any())(any[Request[AnyContent]])
         }
       }
 

@@ -18,13 +18,12 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
 import org.joda.time.LocalDate
-import play.api.Application
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.mvc.{Action, _}
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -41,8 +40,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DoYouHaveAUtrNumberController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   matchingService: MatchingService,
   mcc: MessagesControllerComponents,
   matchOrganisationUtrView: match_organisation_utr,
@@ -58,7 +56,7 @@ class DoYouHaveAUtrNumberController @Inject() (
     journey: Journey.Value,
     isInReviewMode: Boolean = false
   ): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       Future.successful(
         Ok(matchOrganisationUtrView(utrForm, organisationType, OrganisationModeDM, service, journey, isInReviewMode))
       )
@@ -70,7 +68,7 @@ class DoYouHaveAUtrNumberController @Inject() (
     journey: Journey.Value,
     isInReviewMode: Boolean = false
   ): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
       utrForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(organisationType, formWithErrors, service, journey))),
         formData =>

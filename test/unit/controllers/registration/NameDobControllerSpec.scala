@@ -47,16 +47,9 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
   private val matchNameDobView = app.injector.instanceOf[match_namedob]
 
   private def nameDobController =
-    new NameDobController(app, mockAuthConnector, mcc, matchNameDobView, mockCdsFrontendDataCache)
-
-  private val emulatedFailure = new UnsupportedOperationException("Emulation of service call failure")
+    new NameDobController(mockAuthAction, mcc, matchNameDobView, mockCdsFrontendDataCache)
 
   val defaultOrganisationType = "individual"
-
-  private val InvalidDateError = InvalidDate
-  private val FirstNameError   = thereIsAProblemWithThe("first name")
-  private val LastNameError    = thereIsAProblemWithThe("last name")
-  private val DateOfBirthError = "Tell us your date of birth"
 
   def maxLengthError(maxLength: Int, field: String): String =
     s"The $field name must be $maxLength characters or less"

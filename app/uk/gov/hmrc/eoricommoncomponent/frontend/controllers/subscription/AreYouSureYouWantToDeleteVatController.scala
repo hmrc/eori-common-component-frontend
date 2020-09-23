@@ -17,10 +17,9 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.{
   VatDetailsEuConfirmController,
   VatRegisteredEuController
@@ -35,8 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AreYouSureYouWantToDeleteVatController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   subscriptionVatEUDetailsService: SubscriptionVatEUDetailsService,
   mcc: MessagesControllerComponents,
   areYouSureRemoveVatView: are_you_sure_remove_vat
@@ -44,7 +42,7 @@ class AreYouSureYouWantToDeleteVatController @Inject() (
     extends CdsController(mcc) {
 
   def createForm(index: Int, service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionVatEUDetailsService.vatEuDetails(index) map {
         case Some(vatDetails) =>
           Ok(areYouSureRemoveVatView(removeVatYesNoAnswer, service, journey, vatDetails, isInReviewMode = false))
@@ -53,7 +51,7 @@ class AreYouSureYouWantToDeleteVatController @Inject() (
     }
 
   def reviewForm(index: Int, service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionVatEUDetailsService.vatEuDetails(index) map {
         case Some(vatDetails) =>
           Ok(areYouSureRemoveVatView(removeVatYesNoAnswer, service, journey, vatDetails, isInReviewMode = true))
@@ -62,7 +60,7 @@ class AreYouSureYouWantToDeleteVatController @Inject() (
     }
 
   def submit(index: Int, service: Service, journey: Journey.Value, isInReviewMode: Boolean): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionVatEUDetailsService.vatEuDetails(index) flatMap {
         case Some(vatDetails) =>
           removeVatYesNoAnswer

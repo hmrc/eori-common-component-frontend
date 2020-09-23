@@ -17,25 +17,16 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import javax.inject.Inject
-import play.api.Application
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc._
-import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.registration_exists
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-import scala.concurrent.ExecutionContext
-
 class EnrolmentAlreadyExistsController @Inject() (
-  val currentApp: Application,
-  override val authConnector: AuthConnector,
   registrationExistsView: registration_exists,
   mcc: MessagesControllerComponents
-)(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with AuthorisedFunctions with I18nSupport {
-
-  override def messagesApi: MessagesApi = currentApp.injector.instanceOf[MessagesApi]
+) extends FrontendController(mcc) with I18nSupport {
 
   def enrolmentAlreadyExists(service: Service): Action[AnyContent] = Action { implicit request =>
     Ok(registrationExistsView(service))

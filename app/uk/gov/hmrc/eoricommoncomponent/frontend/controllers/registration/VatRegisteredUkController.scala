@@ -17,23 +17,14 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.YesNo
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.vat_registered_uk
 
-import scala.concurrent.ExecutionContext
-
 @Singleton
-class VatRegisteredUkController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
-  vatRegisteredUkView: vat_registered_uk,
-  mcc: MessagesControllerComponents
-)(implicit ec: ExecutionContext)
+class VatRegisteredUkController @Inject() (vatRegisteredUkView: vat_registered_uk, mcc: MessagesControllerComponents)
     extends CdsController(mcc) {
 
   def form(): Action[AnyContent] = Action { implicit request =>
@@ -49,7 +40,7 @@ class VatRegisteredUkController @Inject() (
       )
   }
 
-  def destinationsByAnswer(yesNoAnswer: YesNo)(implicit request: Request[AnyContent]): String = yesNoAnswer match {
+  def destinationsByAnswer(yesNoAnswer: YesNo): String = yesNoAnswer match {
     case theAnswer if theAnswer.isYes => "https://www.tax.service.gov.uk/shortforms/form/EORIVAT?details=&vat=yes"
     case _                            => "https://www.tax.service.gov.uk/shortforms/form/EORINonVATImport?details=&vat=no"
   }

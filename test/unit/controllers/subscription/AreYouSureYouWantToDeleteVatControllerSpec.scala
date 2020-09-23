@@ -32,22 +32,22 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 import util.builders.YesNoFormBuilder._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.global
 
-class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec {
+class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec with AuthActionMock {
 
   private val mockAuthConnector                   = mock[AuthConnector]
+  private val mockAuthAction                      = authAction(mockAuthConnector)
   private val mockSubscriptionVatEUDetailsService = mock[SubscriptionVatEUDetailsService]
 
   private val areYouSureRemoveVatView = app.injector.instanceOf[are_you_sure_remove_vat]
 
   val controller = new AreYouSureYouWantToDeleteVatController(
-    app,
-    mockAuthConnector,
+    mockAuthAction,
     mockSubscriptionVatEUDetailsService,
     mcc,
     areYouSureRemoveVatView

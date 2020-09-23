@@ -17,10 +17,9 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatDetailsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
@@ -41,8 +40,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class VatRegisteredUkController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   subscriptionBusinessService: SubscriptionBusinessService,
   subscriptionFlowManager: SubscriptionFlowManager,
   subscriptionDetailsService: SubscriptionDetailsService,
@@ -52,41 +50,43 @@ class VatRegisteredUkController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      Future.successful(
-        Ok(
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        Future.successful(
+          Ok(
+            vatRegisteredUkView(
+              isInReviewMode = false,
+              vatRegisteredUkYesNoAnswerForm(requestSessionData.isPartnership),
+              isIndividualFlow,
+              requestSessionData.isPartnership,
+              service,
+              journey
+            )
+          )
+        )
+    }
+
+  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        for {
+          isVatRegisteredUk <- subscriptionBusinessService.getCachedVatRegisteredUk
+          yesNo: YesNo = YesNo(isVatRegisteredUk)
+        } yield Ok(
           vatRegisteredUkView(
-            isInReviewMode = false,
-            vatRegisteredUkYesNoAnswerForm(requestSessionData.isPartnership),
+            isInReviewMode = true,
+            vatRegisteredUkYesNoAnswerForm(requestSessionData.isPartnership).fill(yesNo),
             isIndividualFlow,
             requestSessionData.isPartnership,
             service,
             journey
           )
         )
-      )
-  }
-
-  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      for {
-        isVatRegisteredUk <- subscriptionBusinessService.getCachedVatRegisteredUk
-        yesNo: YesNo = YesNo(isVatRegisteredUk)
-      } yield Ok(
-        vatRegisteredUkView(
-          isInReviewMode = true,
-          vatRegisteredUkYesNoAnswerForm(requestSessionData.isPartnership).fill(yesNo),
-          isIndividualFlow,
-          requestSessionData.isPartnership,
-          service,
-          journey
-        )
-      )
-  }
+    }
 
   def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       vatRegisteredUkYesNoAnswerForm(requestSessionData.isPartnership)
         .bindFromRequest()
         .fold(

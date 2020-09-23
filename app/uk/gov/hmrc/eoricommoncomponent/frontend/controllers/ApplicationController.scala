@@ -17,12 +17,13 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
+import play.api.{Configuration, Environment}
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
-import uk.gov.hmrc.auth.core.{AuthConnector, AuthProviders}
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthProviders, AuthorisedFunctions}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, AuthRedirectSupport, EnrolmentExtractor}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.CDS
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
@@ -33,10 +34,16 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
+// TODO Get rid of config, env and authConnector
+// TODO Get rid of AuthorisedFunctions and AuthRedirectSupport trait
+// If necessary move logic to AuthAction
+// This is required now for logout method
 @Singleton
 class ApplicationController @Inject() (
-  override val currentApp: Application,
+  override val config: Configuration,
+  override val env: Environment,
   override val authConnector: AuthConnector,
+  authorise: AuthAction,
   mcc: MessagesControllerComponents,
   viewStart: start,
   accessibilityStatementView: accessibility_statement,
@@ -44,7 +51,7 @@ class ApplicationController @Inject() (
   enrolmentStoreProxyService: EnrolmentStoreProxyService,
   appConfig: AppConfig
 )(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-    extends CdsController(mcc) {
+    extends CdsController(mcc) with AuthorisedFunctions with EnrolmentExtractor with AuthRedirectSupport {
 
   def start: Action[AnyContent] = Action { implicit request =>
     Ok(viewStart(Journey.Register))
@@ -52,7 +59,7 @@ class ApplicationController @Inject() (
 
   // Below method cannot be formatted by scalafmt, so scalafmt will be disabled for it
   // format: off
-  def startSubscription(service: Service): Action[AnyContent] = ggAuthorisedUserWithEnrolmentsAction {
+  def startSubscription(service: Service): Action[AnyContent] = authorise.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
       {
         Future.successful(isUserEnrolledFor(loggedInUser, service)).flatMap { isUserEnrolled =>

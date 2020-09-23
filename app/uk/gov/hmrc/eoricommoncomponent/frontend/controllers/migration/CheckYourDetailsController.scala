@@ -17,10 +17,9 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration
 
 import javax.inject.{Inject, Singleton}
-import play.api.Application
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
@@ -31,8 +30,7 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class CheckYourDetailsController @Inject() (
-  override val currentApp: Application,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   cdsFrontendCache: SessionCache,
   mcc: MessagesControllerComponents,
   checkYourDetailsView: check_your_details,
@@ -41,7 +39,7 @@ class CheckYourDetailsController @Inject() (
     extends CdsController(mcc) {
 
   def reviewDetails(service: Service, journey: Journey.Value): Action[AnyContent] =
-    ggAuthorisedUserWithEnrolmentsAction {
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
         for {
           subscriptionDetailsHolder <- cdsFrontendCache.subscriptionDetails
