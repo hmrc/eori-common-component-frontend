@@ -63,7 +63,7 @@ class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach w
 
   "Allowlist verification" should {
 
-    "return Unauthorized (401) when a non-allowlisted user attempts to access a route" in {
+    "redirect to unauthorised page when a non-allowlisted user attempts to access a route" in {
       AuthBuilder.withAuthorisedUser("user-1236213", mockAuthConnector, userEmail = Some("not@example.com"))
 
       val result = controller
@@ -74,7 +74,7 @@ class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach w
       redirectLocation(result) shouldBe Some("/customs-enrolment-services/subscribe/unauthorised")
     }
 
-    "return Unauthorized (401) when a user with no email address attempts to access a route" in {
+    "redirect to unauthorised page when a user with no email address attempts to access a route" in {
       AuthBuilder.withAuthorisedUser("user-1236213", mockAuthConnector, userEmail = None)
 
       val result = controller
