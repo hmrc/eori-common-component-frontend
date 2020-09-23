@@ -93,19 +93,27 @@ class AppConfigSpec extends ControllerSpec {
     }
 
     "have reportAProblemPartialUrl defined for register" in {
-      appConfig.reportAProblemPartialUrlRegister shouldBe "http://localhost:9250/contact/problem_reports_ajax?service=eori-common-component-register"
+      appConfig.reportAProblemPartialUrlRegister(
+        Service.ATaR
+      ) shouldBe "http://localhost:9250/contact/problem_reports_ajax?service=eori-common-component-register-atar"
     }
 
     "have reportAProblemNonJSUrl defined for register" in {
-      appConfig.reportAProblemNonJSUrlRegister shouldBe "http://localhost:9250/contact/problem_reports_nonjs?service=eori-common-component-register"
+      appConfig.reportAProblemNonJSUrlRegister(
+        Service.ATaR
+      ) shouldBe "http://localhost:9250/contact/problem_reports_nonjs?service=eori-common-component-register-atar"
     }
 
     "have reportAProblemPartialUrl defined for subscribe" in {
-      appConfig.reportAProblemPartialUrlSubscribe shouldBe "http://localhost:9250/contact/problem_reports_ajax?service=eori-common-component-subscribe"
+      appConfig.reportAProblemPartialUrlSubscribe(
+        Service.ATaR
+      ) shouldBe "http://localhost:9250/contact/problem_reports_ajax?service=eori-common-component-subscribe-atar"
     }
 
     "have reportAProblemNonJSUrl defined for subscribe" in {
-      appConfig.reportAProblemNonJSUrlSubscribe shouldBe "http://localhost:9250/contact/problem_reports_nonjs?service=eori-common-component-subscribe"
+      appConfig.reportAProblemNonJSUrlSubscribe(
+        Service.ATaR
+      ) shouldBe "http://localhost:9250/contact/problem_reports_nonjs?service=eori-common-component-subscribe-atar"
     }
 
     "have service url for ATaR defined" in {

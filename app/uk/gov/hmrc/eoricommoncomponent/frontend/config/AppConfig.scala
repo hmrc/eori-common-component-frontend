@@ -58,19 +58,19 @@ class AppConfig @Inject() (
 
   lazy val blockedRoutesRegex: Seq[Regex] = config.get[String]("routes-to-block").split(',').map(_.r).toSeq
 
-  //get help link feedback for Get an EORI
-  val reportAProblemPartialUrlRegister: String =
-    s"$contactBaseUrl/contact/problem_reports_ajax?service=$serviceIdentifierRegister"
+  //get help link feedback for Register journey
+  def reportAProblemPartialUrlRegister(service: Service): String =
+    s"$contactBaseUrl/contact/problem_reports_ajax?service=$serviceIdentifierRegister-${service.name}"
 
-  val reportAProblemNonJSUrlRegister: String =
-    s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifierRegister"
+  def reportAProblemNonJSUrlRegister(service: Service): String =
+    s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifierRegister-${service.name}"
 
-  //get help link feedback for Get access to CDS
-  val reportAProblemPartialUrlSubscribe: String =
-    s"$contactBaseUrl/contact/problem_reports_ajax?service=$serviceIdentifierSubscribe"
+  //get help link feedback for Subscribe journey
+  def reportAProblemPartialUrlSubscribe(service: Service): String =
+    s"$contactBaseUrl/contact/problem_reports_ajax?service=$serviceIdentifierSubscribe-${service.name}"
 
-  val reportAProblemNonJSUrlSubscribe: String =
-    s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifierSubscribe"
+  def reportAProblemNonJSUrlSubscribe(service: Service): String =
+    s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifierSubscribe-${service.name}"
 
   private lazy val betafeedbackBaseUrl = s"${contactBaseUrl}/contact/beta-feedback-unauthenticated"
 
