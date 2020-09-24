@@ -19,17 +19,24 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.registration_exists
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
+import scala.concurrent.Future
+
 class EnrolmentAlreadyExistsController @Inject() (
+  authAction: AuthAction,
   registrationExistsView: registration_exists,
   mcc: MessagesControllerComponents
 ) extends FrontendController(mcc) with I18nSupport {
 
-  def enrolmentAlreadyExists(service: Service): Action[AnyContent] = Action { implicit request =>
-    Ok(registrationExistsView(service))
-  }
+  def enrolmentAlreadyExists(service: Service): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        Future.successful(Ok(registrationExistsView(service)))
+    }
 
 }
