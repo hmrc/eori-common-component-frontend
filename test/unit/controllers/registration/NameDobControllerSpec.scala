@@ -158,7 +158,8 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
     }
 
     "not be in the future" in {
-      val tomorrow = LocalDate.now().plusDays(1)
+      val tomorrow   = LocalDate.now().plusDays(1)
+      val FutureDate = "You must specify a date that is not in the future"
       submitForm(
         ValidRequest + ("date-of-birth.day" -> tomorrow.getDayOfMonth.toString,
         "date-of-birth.month"               -> tomorrow.getMonthOfYear.toString,

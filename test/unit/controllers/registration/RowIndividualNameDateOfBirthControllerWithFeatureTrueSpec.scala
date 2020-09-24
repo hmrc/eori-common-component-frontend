@@ -322,7 +322,8 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueSpec
 
       "not be in the future " in testControllerWithModel(validFormModelGens) {
         (controllerFixture, individualNameAndDateOfBirth) =>
-          val tomorrow = LocalDate.now().plusDays(1)
+          val tomorrow   = LocalDate.now().plusDays(1)
+          val FutureDate = "You must specify a date that is not in the future"
           import controllerFixture._
           assertInvalidField(
             formData(individualNameAndDateOfBirth) + (dateOfBirthDayField -> tomorrow.getDayOfMonth.toString,

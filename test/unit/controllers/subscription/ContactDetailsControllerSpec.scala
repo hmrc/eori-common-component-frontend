@@ -453,7 +453,9 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
     "display the contact details stored in the cache under as 'subscription details'" in {
       mockFunctionWithRegistrationDetails(mockRegistrationDetails)
-      when(mockSubscriptionBusinessService.cachedContactDetailsModel).thenReturn(Some(revisedContactDetailsModel))
+      when(mockSubscriptionBusinessService.cachedContactDetailsModel(any())).thenReturn(
+        Some(revisedContactDetailsModel)
+      )
       showReviewForm(contactDetailsModel = revisedContactDetailsModel) { result =>
         val page = CdsPage(bodyOf(result))
         page.getElementValue(fullNameFieldXPath) shouldBe FullName
@@ -471,7 +473,9 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     "display the contact details stored in the cache under as 'subscription details' for Subscribe" in {
       mockMigrate()
       mockFunctionWithRegistrationDetails(mockRegistrationDetails)
-      when(mockSubscriptionBusinessService.cachedContactDetailsModel).thenReturn(Some(revisedContactDetailsModel))
+      when(mockSubscriptionBusinessService.cachedContactDetailsModel(any())).thenReturn(
+        Some(revisedContactDetailsModel)
+      )
       showReviewForm(contactDetailsModel = revisedContactDetailsModel, journey = Journey.Subscribe) { result =>
         val page = CdsPage(bodyOf(result))
         page.getElementValue(fullNameFieldXPath) shouldBe FullName
@@ -731,13 +735,18 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
           9
         ))
       ) { result =>
-        assertCustomPageLevelError(result, pageLevelErrorSummaryListXPath, "The postcode must be 9 characters or less")
-        assertFieldLevelError(
-          result,
-          postcodeFieldLabel,
-          postcodeFieldLevelErrorXPath,
-          "The postcode must be 9 characters or less"
-        )
+        status(result) shouldBe BAD_REQUEST
+        val page = CdsPage(bodyOf(result))
+
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The postcode must be 9 characters or less"
+
+        withClue(
+          s"Not found in the page: field level error block for '$postcodeFieldLabel' with xpath $postcodeFieldLevelErrorXPath"
+        ) {
+          page.elementIsPresent(postcodeFieldLevelErrorXPath) shouldBe true
+        }
+
+        page.getElementsText(postcodeFieldLevelErrorXPath) shouldBe "The postcode must be 9 characters or less"
       }
     }
 

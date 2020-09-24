@@ -188,7 +188,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     )
 
     "display relevant data in form fields when subscription details exist in the cache" in {
-      when(mockSubscriptionBusinessService.getCachedNameIdViewModel).thenReturn(NameIdDetailsPage.filledValues)
+      when(mockSubscriptionBusinessService.getCachedNameIdViewModel(any())).thenReturn(NameIdDetailsPage.filledValues)
 
       showReviewForm() { result =>
         val page         = CdsPage(bodyOf(result))

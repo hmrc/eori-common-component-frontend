@@ -250,6 +250,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
       errorTemplate
     ) {}
     implicit val fakeRequest = FakeRequest()
+    implicit val hc          = mock[HeaderCarrier]
 
     "cache registration display response and redirect to BusinessDetailsRecoveryPage for individual response" in {
       val mockSession   = mock[Session]

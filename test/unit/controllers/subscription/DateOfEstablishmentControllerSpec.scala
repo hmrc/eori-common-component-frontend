@@ -116,6 +116,8 @@ class DateOfEstablishmentControllerSpec
     )
 
     "display the form" in {
+      val helpAndSupportLabelXpath: String = "//*[@id='helpAndSupport']"
+
       showCreateForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(bodyOf(result))

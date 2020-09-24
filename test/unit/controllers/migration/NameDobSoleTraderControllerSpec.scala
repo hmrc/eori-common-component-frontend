@@ -194,7 +194,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     )
 
     "display relevant data in form fields when subscription details exist in the cache" in {
-      when(mockSubscriptionBusinessService.getCachedSubscriptionNameDobViewModel)
+      when(mockSubscriptionBusinessService.getCachedSubscriptionNameDobViewModel(any()))
         .thenReturn(NameDobSoleTraderPage.filledValues)
 
       showReviewForm() { result =>

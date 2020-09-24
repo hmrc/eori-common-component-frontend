@@ -67,6 +67,7 @@ class WhatIsYourEoriControllerSpec
   )
 
   private val emulatedFailure = new UnsupportedOperationException("Emulation of service call failure")
+  val enterAGbEori            = "Enter an EORI number that starts with GB"
 
   override def beforeEach: Unit = {
     reset(
@@ -279,6 +280,7 @@ class WhatIsYourEoriControllerSpec
     }
 
     "be of the correct format" in {
+      val enterAValidEori = "Enter an EORI number in the right format"
       submitFormInCreateMode(Map("eori-number" -> "GBX45678901234")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))

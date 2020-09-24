@@ -88,7 +88,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureFalseSpec
 
   }
 
-  val InvalidDateError: String = InvalidDate
+  val InvalidDateError: String = "Please enter a valid date, for example '31 3 1980'"
   val emulatedFailure          = new UnsupportedOperationException("Emulation of service call failure")
 
   abstract class IndividualNameAndDateOfBirthBehaviour(

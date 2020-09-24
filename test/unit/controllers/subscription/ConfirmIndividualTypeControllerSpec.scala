@@ -194,4 +194,14 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
     test(result)
   }
 
+  private def assertRadioButtonIsPresent(
+    page: CdsPage,
+    labelXpath: String,
+    expectedText: String,
+    expectedValue: String
+  ): Unit = {
+    page.getElementText(labelXpath) should be(expectedText)
+    page.getElementValueForLabel(labelXpath) should be(expectedValue)
+  }
+
 }
