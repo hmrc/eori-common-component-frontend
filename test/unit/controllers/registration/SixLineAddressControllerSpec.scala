@@ -64,7 +64,6 @@ class SixLineAddressControllerSpec
   private val mockSubscriptionFlowManager         = mock[SubscriptionFlowManager]
   private val mockSessionCache                    = mock[SessionCache]
   private val mockRequestSessionData              = mock[RequestSessionData]
-  private val mockRegDetails                      = mock[RegistrationDetails]
   private val mockRegistrationDetailsOrganisation = mock[RegistrationDetailsOrganisation]
   private val mockRegistrationDetailsIndividual   = mock[RegistrationDetailsIndividual]
   private val mockCountries                       = mock[Countries]

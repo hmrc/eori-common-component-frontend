@@ -21,39 +21,33 @@ import play.api.{Configuration, Environment}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthProviders, AuthorisedFunctions}
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthRedirectSupport
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, AuthRedirectSupport}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.SecuritySignOutController
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.display_sign_out
 
 import scala.concurrent.ExecutionContext
 
-// TODO Get rid of config, env and authConnector
-// TODO Get rid of AuthorisedFunctions and AuthRedirectSupport trait
-// If necessary move logic to AuthAction
-// This is required now for signout method
 @Singleton
 class SecuritySignOutController @Inject() (
-  override val config: Configuration,
-  override val env: Environment,
-  override val authConnector: AuthConnector,
+  authAction: AuthAction,
   cdsFrontendDataCache: SessionCache,
   displaySignOutView: display_sign_out,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
-    extends CdsController(mcc) with AuthorisedFunctions with AuthRedirectSupport {
+    extends CdsController(mcc) {
 
   def displayPage(journey: Journey.Value): Action[AnyContent] = Action { implicit request =>
     Ok(displaySignOutView(journey))
   }
 
-  def signOut(journey: Journey.Value): Action[AnyContent] = Action.async { implicit request =>
-    authorised(AuthProviders(GovernmentGateway)) {
+  def signOut(journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
+    implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
       cdsFrontendDataCache.remove map { _ =>
         Redirect(SecuritySignOutController.displayPage(journey).url).withNewSession
       }
-    } recover withAuthRecovery(request)
   }
 
 }

@@ -20,7 +20,6 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.business_details_recovery
@@ -30,7 +29,6 @@ class BusinessDetailsRecoveryViewSpec extends ViewSpec {
 
   private val name             = "Org Name"
   private val address          = AddressViewModel("street", "city", Some("SE28 1AA"), "GB")
-  private val corporateBody    = Some(CorporateBody)
   private implicit val request = withFakeCSRF(FakeRequest())
 
   private val view = app.injector.instanceOf[business_details_recovery]

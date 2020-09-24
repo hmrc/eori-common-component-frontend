@@ -38,9 +38,6 @@ class HeaderSpec extends ControllerSpec with AuthActionMock {
   private val enrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
 
   private val controller = new ApplicationController(
-    configuration,
-    environment,
-    mockAuthConnector,
     mockAuthAction,
     mcc,
     viewStart,

@@ -47,9 +47,6 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
   private val enrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
 
   val controller = new ApplicationController(
-    configuration,
-    environment,
-    mockAuthConnector,
     mockAuthAction,
     mcc,
     startView,

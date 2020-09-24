@@ -17,13 +17,10 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.{Configuration, Environment}
 import play.api.i18n.MessagesApi
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
-import uk.gov.hmrc.auth.core.{AuthConnector, AuthProviders, AuthorisedFunctions}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, AuthRedirectSupport, EnrolmentExtractor}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, EnrolmentExtractor}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.CDS
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
@@ -34,15 +31,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-// TODO Get rid of config, env and authConnector
-// TODO Get rid of AuthorisedFunctions and AuthRedirectSupport trait
-// If necessary move logic to AuthAction
-// This is required now for logout method
 @Singleton
 class ApplicationController @Inject() (
-  override val config: Configuration,
-  override val env: Environment,
-  override val authConnector: AuthConnector,
   authorise: AuthAction,
   mcc: MessagesControllerComponents,
   viewStart: start,
@@ -51,7 +41,7 @@ class ApplicationController @Inject() (
   enrolmentStoreProxyService: EnrolmentStoreProxyService,
   appConfig: AppConfig
 )(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
-    extends CdsController(mcc) with AuthorisedFunctions with EnrolmentExtractor with AuthRedirectSupport {
+    extends CdsController(mcc) with EnrolmentExtractor {
 
   def start: Action[AnyContent] = Action { implicit request =>
     Ok(viewStart(Journey.Register))
@@ -102,9 +92,7 @@ class ApplicationController @Inject() (
     else
       hasGroupIdEnrolmentTo(groupId, CDS).map { groupIdEnrolledForCds =>
         if (groupIdEnrolledForCds)
-          Redirect(
-            routes.HasExistingEoriController.displayPage(serviceToEnrol)
-          )                                                                           // Now autoenrolment, in future journey to ask about using EORI connected to account
+          Redirect(routes.HasExistingEoriController.displayPage(serviceToEnrol))      // AutoEnrolment
         else Redirect(routes.EmailController.form(serviceToEnrol, Journey.Subscribe)) // Whole journey
       }
 
@@ -112,20 +100,20 @@ class ApplicationController @Inject() (
     Ok(accessibilityStatementView())
   }
 
-  def logout(service: Service, journey: Journey.Value): Action[AnyContent] = Action.async { implicit request =>
-    authorised(AuthProviders(GovernmentGateway)) {
-      journey match {
-        case Journey.Register =>
-          cdsFrontendDataCache.remove map { _ =>
-            Redirect(appConfig.feedbackLink).withNewSession
-          }
-        case Journey.Subscribe =>
-          cdsFrontendDataCache.remove map { _ =>
-            Redirect(appConfig.feedbackLinkSubscribe).withNewSession
-          }
-      }
-    } recover withAuthRecovery(request)
-  }
+  def logout(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authorise.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
+        journey match {
+          case Journey.Register =>
+            cdsFrontendDataCache.remove map { _ =>
+              Redirect(appConfig.feedbackLink).withNewSession
+            }
+          case Journey.Subscribe =>
+            cdsFrontendDataCache.remove map { _ =>
+              Redirect(appConfig.feedbackLinkSubscribe).withNewSession
+            }
+        }
+    }
 
   def keepAlive(journey: Journey.Value): Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok("Ok"))
