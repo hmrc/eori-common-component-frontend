@@ -23,7 +23,7 @@ import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.affinityGroup
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthProviders, AuthorisedFunctions}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthRedirectSupport
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,7 +39,7 @@ class YouCannotUseServiceController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) with AuthorisedFunctions with AuthRedirectSupport {
 
-  def page(journey: Journey.Value): Action[AnyContent] = Action.async { implicit request =>
+  def page(service: Service, journey: Journey.Value): Action[AnyContent] = Action.async { implicit request =>
     authorised(AuthProviders(GovernmentGateway))
       .retrieve(affinityGroup) { ag =>
         Future.successful(Unauthorized(youCantUseService(ag)))

@@ -22,19 +22,28 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 object ServiceName {
 
-  private val default = "cds.service.friendly.name.default"
+  private val defaultNameKey      = "cds.service.friendly.name.default"
+  private val defaultShortNameKey = "cds.service.short.name.default"
 
-  def serviceName(service: Service)(implicit messages: Messages): String = {
-    val key = s"cds.service.friendly.name.${service.name}"
-    if (messages.isDefinedAt(key)) messages(key) else messages(default)
+  def longName(service: Service)(implicit messages: Messages): String = {
+    val key = s"cds.service.friendly.name.${service.code}"
+    if (messages.isDefinedAt(key)) messages(key) else messages(defaultNameKey)
   }
 
-  def serviceName(implicit messages: Messages, request: Request[_]): String =
-    serviceName(service)
+  def longName(implicit messages: Messages, request: Request[_]): String =
+    longName(service)
 
-  def service(implicit messages: Messages, request: Request[_]): Service = {
+  def shortName(service: Service)(implicit messages: Messages): String = {
+    val key = s"cds.service.short.name.${service.code}"
+    if (messages.isDefinedAt(key)) messages(key) else messages(defaultShortNameKey)
+  }
+
+  def shortName(implicit messages: Messages, request: Request[_]): String =
+    shortName(service)
+
+  def service(implicit request: Request[_]): Service = {
     val path = request.path
-    Service.supportedServices.find(service => path.contains(s"/${service.name}/")).getOrElse(Service.NullService)
+    Service.supportedServices.find(service => path.contains(s"/${service.code}/")).getOrElse(Service.NullService)
   }
 
 }

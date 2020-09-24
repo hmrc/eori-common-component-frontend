@@ -22,7 +22,7 @@ import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, start}
@@ -67,7 +67,9 @@ class ApplicationControllerWithAllowlistVerificationSpec extends ControllerSpec 
       withAuthorisedUser(defaultUserId, mockAuthConnector, userEmail = Some("not@example.com"))
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
 
-      controller.logout(Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId)) map { _ =>
+      controller.logout(Service.ATaR, Journey.Register).apply(
+        SessionBuilder.buildRequestWithSession(defaultUserId)
+      ) map { _ =>
         verify(mockSessionCache).remove(any[HeaderCarrier])
       }
     }

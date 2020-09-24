@@ -56,7 +56,7 @@ class SignInWithDifferentDetailsSpec extends ViewSpec {
 
     "have a sign out button" in {
       docWithName.body.getElementById("sign-out").text mustBe "Sign out"
-      docWithName.body.getElementsByClass("button").attr("href") mustBe "/customs-enrolment-services/subscribe/logout"
+      docWithName.body.getElementsByClass("button").attr("href") must endWith("/subscribe/logout")
     }
   }
 
@@ -85,9 +85,7 @@ class SignInWithDifferentDetailsSpec extends ViewSpec {
 
     "have a sign out button" in {
       docWithoutName.body.getElementById("sign-out").text mustBe "Sign out"
-      docWithoutName.body.getElementsByClass("button").attr(
-        "href"
-      ) mustBe "/customs-enrolment-services/subscribe/logout"
+      docWithoutName.body.getElementsByClass("button").attr("href") must endWith("/subscribe/logout")
     }
   }
 

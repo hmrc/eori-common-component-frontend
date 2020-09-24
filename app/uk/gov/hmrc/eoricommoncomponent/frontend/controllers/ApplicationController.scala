@@ -112,7 +112,7 @@ class ApplicationController @Inject() (
     Ok(accessibilityStatementView())
   }
 
-  def logout(journey: Journey.Value): Action[AnyContent] = Action.async { implicit request =>
+  def logout(service: Service, journey: Journey.Value): Action[AnyContent] = Action.async { implicit request =>
     authorised(AuthProviders(GovernmentGateway)) {
       journey match {
         case Journey.Register =>
@@ -134,7 +134,7 @@ class ApplicationController @Inject() (
 }
 
 case class SpecificEnrolmentExists(service: Service)
-    extends Exception(s"User has already enrolment for ${service.name}")
+    extends Exception(s"User has already enrolment for ${service.code}")
 
 case class SpecificGroupIdEnrolmentExists(service: Service)
-    extends Exception(s"Group Id has enrolment to ${service.name}")
+    extends Exception(s"Group Id has enrolment to ${service.code}")
