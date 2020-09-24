@@ -17,17 +17,12 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import play.api.mvc.{AnyContent, Request}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.JourneyType
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 
 trait JourneyTypeFromUrl {
 
-  def journeyTypeFromUrl(implicit request: Request[AnyContent]): String =
-    "(?<=/customs-enrolment-services/)(.*?)(?=/)".r.findFirstIn(request.path).getOrElse("")
-
-  def journeyFromUrl(implicit request: Request[AnyContent]): Journey.Value = journeyTypeFromUrl match {
-    case JourneyType.GetAnEori => Journey.Register
-    case _                     => Journey.Subscribe
-  }
+  def journeyFromUrl(implicit request: Request[AnyContent]): Journey.Value =
+    if (request.path.contains("/subscribe/") || request.path.endsWith("/subscribe")) Journey.Subscribe
+    else Journey.Register
 
 }

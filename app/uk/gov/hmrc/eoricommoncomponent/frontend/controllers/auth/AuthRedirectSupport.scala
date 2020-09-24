@@ -16,11 +16,12 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth
 
+import play.api.mvc.{AnyContent, Request, Result, Results}
 import play.api.{Configuration, Environment}
-import play.api.mvc.{AnyContent, Request, Result}
 import uk.gov.hmrc.auth.core.NoActiveSession
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.JourneyTypeFromUrl
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey.{Register, Subscribe}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName.service
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 
 trait AuthRedirectSupport extends AuthRedirects with JourneyTypeFromUrl {
@@ -28,21 +29,22 @@ trait AuthRedirectSupport extends AuthRedirects with JourneyTypeFromUrl {
   override val config: Configuration
   override val env: Environment
 
-  private def continueUrlKey(implicit request: Request[AnyContent]) = {
-    val visitedUkPage: Boolean = request.session.get("visited-uk-page").getOrElse("false").toBoolean
+  private def loginUrl(implicit request: Request[AnyContent]) =
+    config.get[String]("external-url.company-auth-frontend.login")
+
+  private def continueUrl(implicit request: Request[AnyContent]) = {
+    val baseUrl = config.get[String]("external-url.company-auth-frontend.continue-url")
     journeyFromUrl match {
-      case Subscribe if visitedUkPage =>
-        "external-url.company-auth-frontend.continue-url-subscribe-from-are-you-based-in-uk"
-      case Subscribe => "external-url.company-auth-frontend.continue-url-subscribe"
-      case Register  => "external-url.company-auth-frontend.continue-url"
-      case _         => throw new IllegalArgumentException("No valid journey found in URL: " + request.path)
+      case Subscribe =>
+        s"${baseUrl}/${service.code}/subscribe"
+      case Register =>
+        s"${baseUrl}/${service.code}/register"
+      case _ => throw new IllegalArgumentException("No valid journey found in URL: " + request.path)
     }
   }
 
-  private def getContinueUrl(implicit request: Request[AnyContent]) = config.get[String](continueUrlKey)
-
   def withAuthRecovery(implicit request: Request[AnyContent]): PartialFunction[Throwable, Result] = {
-    case _: NoActiveSession => toGGLogin(continueUrl = getContinueUrl)
+    case _: NoActiveSession => Results.Redirect(loginUrl, Map("continue" -> Seq(continueUrl)))
   }
 
 }

@@ -75,12 +75,12 @@ trait ControllerSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
         val result = action.apply(
           SessionBuilder.buildRequestWithSessionAndPathNoUser(
             method = "GET",
-            path = s"/customs-enrolment-services/register/"
+            path = s"/customs-enrolment-services/atar/register/"
           )
         )
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result) shouldBe Some(
-          "/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fregister%2Fmatch&origin=eori-common-component-frontend"
+        header(LOCATION, result).get should endWith(
+          "/auth-login-stub/gg-sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fregister"
         )
       }
     }
@@ -96,12 +96,12 @@ trait ControllerSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
       val result: Future[Result] = action.apply(
         SessionBuilder.buildRequestWithSessionAndPathNoUser(
           method = "GET",
-          path = s"/customs-enrolment-services/register/"
+          path = s"/customs-enrolment-services/atar/register/"
         )
       )
       status(result) shouldBe SEE_OTHER
-      header(LOCATION, result) shouldBe Some(
-        "/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fregister%2Fmatch&origin=eori-common-component-frontend"
+      header(LOCATION, result).get should endWith(
+        "/auth-login-stub/gg-sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fregister"
       )
     }
 
@@ -115,12 +115,12 @@ trait ControllerSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
       val result = action.apply(
         SessionBuilder.buildRequestWithSessionAndPathNoUser(
           method = "GET",
-          path = s"/customs-enrolment-services/subscribe/"
+          path = s"/customs-enrolment-services/atar/subscribe/"
         )
       )
       status(result) shouldBe SEE_OTHER
-      header(LOCATION, result) shouldBe Some(
-        s"/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fsubscribe%2Fsubscribe&origin=eori-common-component-frontend"
+      header(LOCATION, result).get should endWith(
+        "/auth-login-stub/gg-sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fsubscribe"
       )
     }
 
