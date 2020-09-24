@@ -22,13 +22,10 @@ import org.mockito.Mockito._
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.prop.Checkers
-import play.api.mvc.{MessagesControllerComponents, Result}
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{
-  SubscriptionFlowManager,
-  VatDetailsEuController
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.VatDetailsEuController
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.VatEUDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries

@@ -26,8 +26,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.you_need
 import util.ControllerSpec
 import util.builders.{AuthActionMock, AuthBuilder, SessionBuilder}
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 class AllowlistVerificationWithEnrolmentsWithFeatureOffSpec extends ControllerSpec with AuthActionMock {
 
   implicit override lazy val app: Application = new GuiceApplicationBuilder()

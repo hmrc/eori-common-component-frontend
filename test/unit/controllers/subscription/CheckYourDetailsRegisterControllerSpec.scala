@@ -963,7 +963,7 @@ class CheckYourDetailsRegisterControllerSpec
 
     test(
       controller.reviewDetails(Service.ATaR, Journey.Register).apply(
-        SessionBuilder.buildRequestWithSession(userId)(app)
+        SessionBuilder.buildRequestWithSession(userId)
       )
     )
   }

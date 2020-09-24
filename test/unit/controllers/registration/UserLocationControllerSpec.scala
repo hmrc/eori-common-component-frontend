@@ -360,12 +360,6 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
     )
   }
 
-  private def rejected(userId: String = defaultUserId)(test: Future[Result] => Any) {
-    withAuthorisedUser(userId, mockAuthConnector)
-
-    test(controller.rejected.apply(SessionBuilder.buildRequestWithSession(userId)))
-  }
-
   private def subscriptionStatus(
     journey: Journey.Value = Journey.Register,
     location: Option[String] = Some(UserLocation.Iom)

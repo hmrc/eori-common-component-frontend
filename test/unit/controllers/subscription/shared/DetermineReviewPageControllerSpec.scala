@@ -29,7 +29,6 @@ import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.global
 
 class DetermineReviewPageControllerSpec extends ControllerSpec with BeforeAndAfter with AuthActionMock {
 

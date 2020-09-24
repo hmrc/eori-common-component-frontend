@@ -29,7 +29,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.YesNo
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
-  SubscriptionDetails,
   SubscriptionFlow,
   SubscriptionFlowInfo,
   SubscriptionPage
@@ -114,7 +113,6 @@ class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with Befo
     }
     "redirect to add vat group page for yes answer" in {
       val url = "register/vat-group"
-      val sd  = SubscriptionDetails(vatRegisteredUk = Some(true))
       subscriptionFlowUrl(url)
 
       submitForm(ValidRequest) { result =>
@@ -125,7 +123,6 @@ class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with Befo
 
     "redirect to eu vat page for no answer" in {
       val url = "register/vat-registered-eu"
-      val sd  = SubscriptionDetails(vatRegisteredUk = Some(false))
 
       subscriptionFlowUrl(url)
 
@@ -135,8 +132,6 @@ class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with Befo
       }
     }
     "redirect to vat groups review page for yes answer and is in review mode" in {
-      val sd = SubscriptionDetails(vatRegisteredUk = Some(true))
-
       submitForm(ValidRequest, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) should endWith("register/what-are-your-uk-vat-details/review")
@@ -144,8 +139,6 @@ class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with Befo
     }
 
     "redirect to check answers page for no answer and is in review mode" in {
-      val sd = SubscriptionDetails(vatRegisteredUk = Some(false))
-
       submitForm(validRequestNo, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) should endWith(

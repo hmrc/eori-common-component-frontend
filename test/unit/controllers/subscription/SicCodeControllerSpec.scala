@@ -82,7 +82,6 @@ class SicCodeControllerSpec
   )
 
   private val emulatedFailure = new UnsupportedOperationException("Emulation of service call failure")
-  private val sicCodeError    = thereIsAProblemWithThe("SIC code")
 
   override def beforeEach: Unit = {
     reset(

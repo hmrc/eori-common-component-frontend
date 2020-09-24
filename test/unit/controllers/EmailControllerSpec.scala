@@ -31,10 +31,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  EnrolmentStoreProxyService,
-  SubscriptionStatusService
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionStatusService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.{Save4LaterService, UserGroupIdSubscriptionStatusCheckService}
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec

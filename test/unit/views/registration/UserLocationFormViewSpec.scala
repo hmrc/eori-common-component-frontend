@@ -23,7 +23,6 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
 import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.UserLocationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService

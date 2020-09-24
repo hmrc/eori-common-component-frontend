@@ -44,7 +44,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.Registrati
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.contact_details
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
-import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.RegistrationDetailsBuilder.{
   defaultAddress,
@@ -828,17 +827,6 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         .submit(isInReviewMode = false, Service.ATaR, journey)(
           SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
         )
-    )
-  }
-
-  private def submitFormInReviewMode(form: Map[String, String], userId: String = defaultUserId)(
-    test: Future[Result] => Any
-  ) {
-    withAuthorisedUser(userId, mockAuthConnector)
-    test(
-      controller.submit(isInReviewMode = true, Service.ATaR, Journey.Register)(
-        SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
-      )
     )
   }
 

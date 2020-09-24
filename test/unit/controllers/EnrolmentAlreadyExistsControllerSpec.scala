@@ -28,7 +28,7 @@ import util.builders.{AuthActionMock, SessionBuilder}
 
 class EnrolmentAlreadyExistsControllerSpec extends ControllerSpec with AuthActionMock {
 
-  private val registrationExistsView = app.injector.instanceOf[registration_exists]
+  private val registrationExistsView = instanceOf[registration_exists]
   private val mockAuthConnector      = mock[AuthConnector]
   private val mockAuthAction         = authAction(mockAuthConnector)
 

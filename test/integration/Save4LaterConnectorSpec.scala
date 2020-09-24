@@ -27,7 +27,7 @@ import util.externalservices.Save4LaterService._
 
 class Save4LaterConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
 
-  override implicit lazy val app: Application = new GuiceApplicationBuilder()
+  override lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
       Map(
         "microservice.services.handle-subscription.host" -> Host,
@@ -40,8 +40,6 @@ class Save4LaterConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
     .build()
 
   private lazy val save4LaterConnector = app.injector.instanceOf[Save4LaterConnector]
-  private val expectedGetUrl           = s"/save4later/$id/$key"
-  private val expectedPutUrl           = s"/save4later/$id/$key"
   implicit val hc: HeaderCarrier       = HeaderCarrier()
 
   before {

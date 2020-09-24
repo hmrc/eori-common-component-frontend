@@ -23,29 +23,40 @@ import base.UnitSpec
 import common.pages.WebPage
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.{Configuration, Environment, Mode, Play}
+import play.api.{Application, Configuration, Environment, Mode}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesImpl}
 import play.api.mvc._
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import unit.UnitTestApp
 import unit.controllers.CdsPage
-import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthBuilder, SessionBuilder}
 import play.api.i18n.Lang._
+import play.api.test.NoMaterializer
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.modules.reactivemongo.ReactiveMongoHmrcModule
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
 import scala.concurrent.Future
 import scala.util.Random
 
-trait ControllerSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar with I18nSupport with UnitTestApp {
+trait ControllerSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar with I18nSupport {
+
+  // TODO Get rid of this application, Unit tests doesn't need it
+  override lazy val app: Application =
+    new GuiceApplicationBuilder()
+      .disable[com.kenshoo.play.metrics.PlayModule]
+      .configure(configMap)
+      .disable[ReactiveMongoHmrcModule]
+      .build()
+
+  val configMap: Map[String, Boolean] = Map("metrics.enabled" -> false)
 
   implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
-  implicit def materializer: Materializer = Play.materializer
+  implicit def materializer: Materializer = NoMaterializer
 
   implicit val messages: Messages = MessagesImpl(defaultLang, messagesApi)
 

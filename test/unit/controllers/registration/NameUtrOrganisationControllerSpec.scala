@@ -93,12 +93,6 @@ class NameUtrOrganisationControllerSpec
   private def invalidOrganisationTypeMessage(organisationType: String): String =
     s"Invalid organisation type '$organisationType'."
 
-  private def nameError(nameDescription: String): String =
-    s"Enter the $nameDescription name"
-
-  private def utrError(utrDescription: String): String =
-    s"Enter the $utrDescription"
-
   override def beforeEach: Unit =
     reset(mockMatchingService)
 
