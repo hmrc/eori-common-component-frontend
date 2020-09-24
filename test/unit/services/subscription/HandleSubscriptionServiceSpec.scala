@@ -48,7 +48,7 @@ class HandleSubscriptionServiceSpec extends UnitSpec with MockitoSugar with Befo
   val formBundleId: String = "formBundleId"
 
   val recipientDetails: RecipientDetails =
-    RecipientDetails(Journey.Register, Service.ATaR.name, "Advance Tariff Rulings", "", "", None, None)
+    RecipientDetails(Journey.Register, Service.ATaR.code, "Advance Tariff Rulings", "", "", None, None)
 
   val sapNumber: TaxPayerId                        = TaxPayerId("id")
   val eori: Option[Eori]                           = Some(Eori("eori"))

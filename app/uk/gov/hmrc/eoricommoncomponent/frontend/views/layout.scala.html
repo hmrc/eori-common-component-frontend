@@ -37,7 +37,7 @@ form: Option[Form[_]] = None
 
 @journeyName = @{
     if(journey == Journey.Register) messages("cds.proposition.name")
-    else messages("cds.proposition.name.service", serviceName)
+    else messages("cds.proposition.name.service", shortName)
 }
 
 @titleWithEnding = @{

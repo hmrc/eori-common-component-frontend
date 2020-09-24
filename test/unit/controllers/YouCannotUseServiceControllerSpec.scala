@@ -20,7 +20,7 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.YouCannotUseServiceController
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{unauthorized, you_cant_use_service}
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -66,7 +66,7 @@ class YouCannotUseServiceControllerSpec extends ControllerSpec with AuthActionMo
 
   private def page(journey: Journey.Value)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.page(journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    await(test(controller.page(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
   private def unauthorisedPage()(test: Future[Result] => Any) =

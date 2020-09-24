@@ -147,7 +147,8 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       withAuthorisedUser(defaultUserId, mockAuthConnector)
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
 
-      val result = controller.logout(Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+      val result =
+        controller.logout(Service.ATaR, Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       session(result).get(SessionKeys.userId) shouldBe None
       await(result).header.headers("Location") should endWith("feedback/CDS")
@@ -157,7 +158,8 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       withAuthorisedUser(defaultUserId, mockAuthConnector)
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
 
-      val result = controller.logout(Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+      val result =
+        controller.logout(Service.ATaR, Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       session(result).get(SessionKeys.userId) shouldBe None
       await(result).header.headers("Location") should endWith("feedback/get-access-cds")

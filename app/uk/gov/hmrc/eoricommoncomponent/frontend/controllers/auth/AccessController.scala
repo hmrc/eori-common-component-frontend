@@ -22,6 +22,7 @@ import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Organisation}
 import uk.gov.hmrc.auth.core.{AffinityGroup, CredentialRole, User}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{routes, JourneyTypeFromUrl}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName.service
 
 import scala.concurrent.Future
 
@@ -35,7 +36,8 @@ trait AccessController extends JourneyTypeFromUrl with AllowlistVerification {
     (isPermittedUserType(affinityGroup, credentialRole), isPermitted(email)) match {
       case (true, true)  => action
       case (true, false) => Future.successful(Redirect(routes.YouCannotUseServiceController.unauthorisedPage()))
-      case (false, _)    => Future.successful(Redirect(routes.YouCannotUseServiceController.page(journeyFromUrl)))
+      case (false, _) =>
+        Future.successful(Redirect(routes.YouCannotUseServiceController.page(service, journeyFromUrl)))
     }
 
   def isPermitted(email: Option[String])(implicit request: Request[AnyContent]): Boolean =

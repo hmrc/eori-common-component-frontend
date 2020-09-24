@@ -16,6 +16,7 @@
 
 @import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.ApplicationController._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName._
 
 
 @this(layout_di: layout)
@@ -28,7 +29,7 @@
         <header class="page-header">
             <h1 id="page-heading" class="heading-large">@messages("cds.you-cant-use-service.heading")</h1>
             <p id="para">@messages("cds.you-cant-use-service.paragraph")</p>
-            <a class="button" href='@logout(journey)' role="button">@messages("cds.sign.out")</a>
+            <a class="button" href='@logout(service, journey)' role="button">@messages("cds.sign.out")</a>
         </header>
     </div>
 }

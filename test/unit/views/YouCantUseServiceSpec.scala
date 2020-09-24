@@ -41,20 +41,20 @@ class YouCantUseServiceSpec extends ViewSpec {
       standardOrgDoc.body.getElementsByTag("h1").text mustBe "You cannot use this service"
     }
 
-    "display hint-1" in {
+    "display para-1" in {
       standardOrgDoc.body
-        .getElementById("hint-1")
-        .text mustBe "You signed in to Government Gateway as a standard user. To apply for an EORI number you must be an administrator user."
+        .getElementById("para-1")
+        .text mustBe "You signed in to Government Gateway as a standard user. To apply for access to Customs you must be an administrator user."
     }
 
-    "display hint-2" in {
-      standardOrgDoc.body.getElementById("hint-2").text mustBe "Contact the person who set up your Government Gateway."
+    "display para-2" in {
+      standardOrgDoc.body.getElementById(
+        "para-2"
+      ).text mustBe "Please log in as an administrator or contact the person who set up your Government Gateway."
     }
 
     "have a Sign out button with the correct href" in {
-      standardOrgDoc.body().getElementsByClass("button").attr(
-        "href"
-      ) mustBe "/customs-enrolment-services/subscribe/logout"
+      standardOrgDoc.body().getElementsByClass("button").attr("href") must endWith("/subscribe/logout")
     }
   }
 
@@ -68,20 +68,20 @@ class YouCantUseServiceSpec extends ViewSpec {
       agentDoc.body.getElementsByTag("h1").text mustBe "You cannot use this service"
     }
 
-    "display hint-1" in {
+    "display para-1" in {
       agentDoc.body
-        .getElementById("hint-1")
+        .getElementById("para-1")
         .text mustBe "You signed in to Government Gateway with an agent services account."
     }
 
-    "display hint-2" in {
+    "display para-2" in {
       agentDoc.body
-        .getElementById("hint-2")
-        .text mustBe "You need to sign in with the Government Gateway for the organisation or individual that is applying for an EORI number."
+        .getElementById("para-2")
+        .text mustBe "You need to sign in with the Government Gateway for the organisation or individual that is applying for access to Customs."
     }
 
     "have a Sign out button with the correct href" in {
-      agentDoc.body().getElementsByClass("button").attr("href") mustBe "/customs-enrolment-services/subscribe/logout"
+      agentDoc.body().getElementsByClass("button").attr("href") must endWith("/subscribe/logout")
     }
   }
 

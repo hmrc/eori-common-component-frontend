@@ -16,7 +16,7 @@
 
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-@import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName.serviceName
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName.longName
 @import views.html.helper._
 
 
@@ -30,7 +30,7 @@
 
     <p id="para1">@messages("cds.has-existing-eori.para1")</p>
     <p id="eoriNum">@eoriNumber</p>
-    <p id="para2">@messages("cds.has-existing-eori.para2", serviceName)</p>
+    <p id="para2">@messages("cds.has-existing-eori.para2", longName)</p>
     <p id="para3">@messages("cds.has-existing-eori.para3")</p>
 
     @helper.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.HasExistingEoriController.enrol(service)) {

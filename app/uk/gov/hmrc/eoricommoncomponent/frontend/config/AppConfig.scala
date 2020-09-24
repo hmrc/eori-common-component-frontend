@@ -49,7 +49,7 @@ class AppConfig @Inject() (
   private lazy val serviceIdentifierSubscribe =
     config.get[String]("microservice.services.contact-frontend.serviceIdentifierSubscribe")
 
-  def serviceReturnUrl(service: Service) = config.get[String](s"external-url.service-return.${service.name}")
+  def serviceReturnUrl(service: Service) = config.get[String](s"external-url.service-return.${service.code}")
 
   lazy val feedbackLink          = config.get[String]("external-url.feedback-survey")
   lazy val feedbackLinkSubscribe = config.get[String]("external-url.feedback-survey-subscribe")
@@ -60,25 +60,25 @@ class AppConfig @Inject() (
 
   //get help link feedback for Register journey
   def reportAProblemPartialUrlRegister(service: Service): String =
-    s"$contactBaseUrl/contact/problem_reports_ajax?service=$serviceIdentifierRegister-${service.name}"
+    s"$contactBaseUrl/contact/problem_reports_ajax?service=$serviceIdentifierRegister-${service.code}"
 
   def reportAProblemNonJSUrlRegister(service: Service): String =
-    s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifierRegister-${service.name}"
+    s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifierRegister-${service.code}"
 
   //get help link feedback for Subscribe journey
   def reportAProblemPartialUrlSubscribe(service: Service): String =
-    s"$contactBaseUrl/contact/problem_reports_ajax?service=$serviceIdentifierSubscribe-${service.name}"
+    s"$contactBaseUrl/contact/problem_reports_ajax?service=$serviceIdentifierSubscribe-${service.code}"
 
   def reportAProblemNonJSUrlSubscribe(service: Service): String =
-    s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifierSubscribe-${service.name}"
+    s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifierSubscribe-${service.code}"
 
   private lazy val betafeedbackBaseUrl = s"${contactBaseUrl}/contact/beta-feedback-unauthenticated"
 
   def betaFeedBackRegister(service: Service) =
-    s"${betafeedbackBaseUrl}?service=${serviceIdentifierRegister}-${service.name}"
+    s"${betafeedbackBaseUrl}?service=${serviceIdentifierRegister}-${service.code}"
 
   def betaFeedBackSubscribe(service: Service) =
-    s"${betafeedbackBaseUrl}?service=${serviceIdentifierSubscribe}-${service.name}"
+    s"${betafeedbackBaseUrl}?service=${serviceIdentifierSubscribe}-${service.code}"
 
   //email verification service
   lazy val emailVerificationBaseUrl: String = servicesConfig.baseUrl("email-verification")

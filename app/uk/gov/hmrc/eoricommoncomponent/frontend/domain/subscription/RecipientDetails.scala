@@ -45,8 +45,8 @@ object RecipientDetails {
   )(implicit messages: Messages): RecipientDetails =
     RecipientDetails(
       journey,
-      service.name,
-      ServiceName.serviceName(service),
+      service.code,
+      ServiceName.longName(service),
       recipientEmailAddress,
       recipientFullName,
       orgName,
@@ -59,8 +59,8 @@ object RecipientDetails {
   ): RecipientDetails =
     RecipientDetails(
       journey,
-      service.name,
-      ServiceName.serviceName(service),
+      service.code,
+      ServiceName.longName(service),
       contactDetails.emailAddress,
       contactDetails.fullName,
       orgName = None,

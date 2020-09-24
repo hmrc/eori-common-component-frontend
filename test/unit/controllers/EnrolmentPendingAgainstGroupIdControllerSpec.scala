@@ -22,7 +22,7 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EnrolmentPendingAgainstGroupIdController
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.enrolment_pending_against_group_id
 import uk.gov.hmrc.http.HeaderCarrier
@@ -60,7 +60,7 @@ class EnrolmentPendingAgainstGroupIdControllerSpec extends ControllerSpec with A
 
   private def displayPage(journey: Journey.Value)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.show(journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    await(test(controller.show(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
 }
