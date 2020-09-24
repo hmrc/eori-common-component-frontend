@@ -82,11 +82,13 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig, 
   // Service name need to be enrolment Key - e.g. HMRC-CUS-ORG, HMRC-ATAR-ORG
   def enrolAndActivate(enrolmentKey: String, request: GovernmentGatewayEnrolmentRequest)(implicit
     hc: HeaderCarrier
-  ): Future[HttpResponse] =
-    http.PUT[GovernmentGatewayEnrolmentRequest, HttpResponse](
-      url = s"$baseUrl/$serviceContext/service/$enrolmentKey/enrolment",
-      body = request
-    )
+  ): Future[HttpResponse] = {
+    val url = s"$baseUrl/$serviceContext/service/$enrolmentKey/enrolment"
+    http.PUT[GovernmentGatewayEnrolmentRequest, HttpResponse](url = url, body = request).map { response =>
+      auditCall(url, request, response)
+      response
+    }
+  }
 
   private def auditCall(url: String, request: TaxEnrolmentsRequest, response: HttpResponse)(implicit
     hc: HeaderCarrier
@@ -96,6 +98,16 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig, 
       path = url,
       details = Json.toJson(RequestResponse(Json.toJson(request), Json.toJson(response.status))),
       eventType = "IssuerCall"
+    )
+
+  private def auditCall(url: String, request: GovernmentGatewayEnrolmentRequest, response: HttpResponse)(implicit
+    hc: HeaderCarrier
+  ): Unit =
+    audit.sendExtendedDataEvent(
+      transactionName = "Synchronous-Enrolment",
+      path = url,
+      details = Json.toJson(RequestResponse(Json.toJson(request), Json.toJson(response.status))),
+      eventType = "SynchronousEnrolment"
     )
 
 }
