@@ -18,24 +18,27 @@ package unit.controllers
 
 import common.pages.RegistrationCompletePage
 import play.api.test.Helpers._
+import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EnrolmentAlreadyExistsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.registration_exists
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.SessionBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
-class EnrolmentAlreadyExistsControllerSpec extends ControllerSpec {
-
-  private val cdsEnrolmentId: Option[String] = Some("GB1234567890ABCDE")
+class EnrolmentAlreadyExistsControllerSpec extends ControllerSpec with AuthActionMock {
 
   private val registrationExistsView = app.injector.instanceOf[registration_exists]
+  private val mockAuthConnector      = mock[AuthConnector]
+  private val mockAuthAction         = authAction(mockAuthConnector)
 
-  val controller = new EnrolmentAlreadyExistsController(registrationExistsView, mcc)
+  val controller = new EnrolmentAlreadyExistsController(mockAuthAction, registrationExistsView, mcc)
 
   "Enrolment already exists controller" should {
 
     "redirect to the enrolment already exists page" in {
+
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
 
       val result =
         await(
