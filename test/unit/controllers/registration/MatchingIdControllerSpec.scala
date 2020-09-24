@@ -159,13 +159,13 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
         .apply(
           SessionBuilder.buildRequestWithSessionAndPathNoUserAndBasedInUkNotSelected(
             method = "GET",
-            path = "/customs-enrolment-services/subscribe/subscribe"
+            path = "/customs-enrolment-services/atar/subscribe"
           )
         )
       status(result) shouldBe SEE_OTHER
-      result.header.headers(
-        "Location"
-      ) shouldBe "/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fsubscribe%2Fare-you-based-in-uk&origin=eori-common-component-frontend"
+      result.header.headers("Location") should endWith(
+        "/auth-login-stub/gg-sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fsubscribe"
+      )
     }
 
     "redirect to GG login when request is not authenticated with redirect to Subscribe when the user selects yes on based in uk" in {
@@ -175,15 +175,12 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
         .matchWithIdOnlyForExistingReg(Service.ATaR)
         .apply(
           SessionBuilder
-            .buildRequestWithSessionAndPathNoUser(
-              method = "GET",
-              path = "/customs-enrolment-services/subscribe/subscribe"
-            )
+            .buildRequestWithSessionAndPathNoUser(method = "GET", path = "/customs-enrolment-services/atar/subscribe")
         )
       status(result) shouldBe SEE_OTHER
-      result.header.headers(
-        "Location"
-      ) shouldBe "/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fsubscribe%2Fsubscribe&origin=eori-common-component-frontend"
+      result.header.headers("Location") should endWith(
+        "/auth-login-stub/gg-sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fsubscribe"
+      )
     }
 
     "redirect to Select Location Type page for selected journey type Subscribe " in {

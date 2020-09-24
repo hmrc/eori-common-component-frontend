@@ -97,7 +97,7 @@ class DisclosePersonalDetailsConsentControllerSpec
   )
 
   override def beforeEach() {
-    reset(mockSubscriptionDetailsHolderService, mockSubscriptionFlowManager)
+    reset(mockSubscriptionDetailsHolderService, mockSubscriptionFlowManager, mockAuthConnector)
     when(mockSubscriptionDetailsHolderService.cacheConsentToDisclosePersonalDetails(any[YesNo])(any[HeaderCarrier]))
       .thenReturn(Future.successful {})
     setupMockSubscriptionFlowManager(EoriConsentSubscriptionFlowPage)
