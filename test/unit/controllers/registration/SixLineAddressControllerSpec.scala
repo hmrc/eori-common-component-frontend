@@ -69,7 +69,7 @@ class SixLineAddressControllerSpec
   private val mockCountries                       = mock[Countries]
   private val mockRegistrationDetailsService      = mock[RegistrationDetailsService]
   private val mockSubscriptionDetailsService      = mock[SubscriptionDetailsService]
-  private val sixLineAddressView                  = app.injector.instanceOf[six_line_address]
+  private val sixLineAddressView                  = instanceOf[six_line_address]
 
   private val controller = new SixLineAddressController(
     mockAuthAction,

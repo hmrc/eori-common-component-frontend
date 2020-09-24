@@ -48,7 +48,7 @@ class OrganisationTypeViewSpec
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSubscriptionFlowManager    = mock[SubscriptionFlowManager]
   private val mockRegistrationDetailsService = mock[RegistrationDetailsService]
-  private val organisationTypeView           = app.injector.instanceOf[organisation_type]
+  private val organisationTypeView           = instanceOf[organisation_type]
 
   private val organisationTypeController = new OrganisationTypeController(
     mockAuthAction,

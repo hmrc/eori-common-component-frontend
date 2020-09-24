@@ -53,7 +53,7 @@ class CheckYourDetailsControllerSpec
   private val mockRequestSessionData = mock[RequestSessionData]
   private val mockSubscriptionFlow   = mock[SubscriptionFlow]
 
-  private val checkYourDetailsView = app.injector.instanceOf[check_your_details]
+  private val checkYourDetailsView = instanceOf[check_your_details]
 
   val controller =
     new CheckYourDetailsController(mockAuthAction, mockCdsDataCache, mcc, checkYourDetailsView, mockRequestSessionData)

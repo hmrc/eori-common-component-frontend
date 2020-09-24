@@ -36,12 +36,13 @@ object SessionBuilder {
   def buildRequestWithSession(authtoken: String) =
     addToken(FakeRequest().withSession(sessionMap(authtoken): _*))
 
-  def buildRequestWithSessionAndFormValues(userId: String, form: Map[String, String]): FakeRequest[AnyContentAsFormUrlEncoded] =
-    buildRequestWithSession(userId).withFormUrlEncodedBody(form.toList: _*)
-
-  def buildRequestWithFormValues(
+  def buildRequestWithSessionAndFormValues(
+    userId: String,
     form: Map[String, String]
   ): FakeRequest[AnyContentAsFormUrlEncoded] =
+    buildRequestWithSession(userId).withFormUrlEncodedBody(form.toList: _*)
+
+  def buildRequestWithFormValues(form: Map[String, String]): FakeRequest[AnyContentAsFormUrlEncoded] =
     buildRequestWithSessionNoUserAndToken.withFormUrlEncodedBody(form.toList: _*)
 
   def buildRequestWithSessionNoUser = {

@@ -61,7 +61,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
   private val mockRequestSessionData   = mock[RequestSessionData]
   private val mockRegistrationDetails  = mock[RegistrationDetails](RETURNS_DEEP_STUBS)
   private val mockCdsFrontendDataCache = mock[SessionCache]
-  private val enterYourDetails         = app.injector.instanceOf[enter_your_details]
+  private val enterYourDetails         = instanceOf[enter_your_details]
 
   private val controller = new NameDobSoleTraderController(
     mockAuthAction,

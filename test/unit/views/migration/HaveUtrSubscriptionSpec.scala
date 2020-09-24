@@ -36,7 +36,7 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
   private val noOptionSelectedForm              = utrForm.bind(Map.empty[String, String])
   private val incorrectUtrForm                  = utrForm.bind(Map("have-utr" -> "true", "utr" -> invalidUtr))
 
-  private val view = app.injector.instanceOf[match_utr_subscription]
+  private val view = instanceOf[match_utr_subscription]
 
   "Fresh Subscription Have Utr Page for Company" should {
     "display correct heading" in {

@@ -42,7 +42,7 @@ class GoogleTagManagerSpec extends ControllerSpec with GuiceOneAppPerSuite with 
   private val mockSubscriptionBusinessService      = mock[SubscriptionBusinessService]
   private val mockSubscriptionFlowManager          = mock[SubscriptionFlowManager]
   private val mockSubscriptionDetailsHolderService = mock[SubscriptionDetailsService]
-  private val howCanWeIdentifyYouView              = app.injector.instanceOf[how_can_we_identify_you]
+  private val howCanWeIdentifyYouView              = instanceOf[how_can_we_identify_you]
 
   private val controller = new HowCanWeIdentifyYouController(
     mockAuthAction,

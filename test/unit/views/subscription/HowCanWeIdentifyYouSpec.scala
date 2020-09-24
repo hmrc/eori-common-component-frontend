@@ -37,7 +37,7 @@ class HowCanWeIdentifyYouSpec extends ViewSpec {
   val previousPageUrl  = "/"
   implicit val request = withFakeCSRF(FakeRequest())
 
-  private val view = app.injector.instanceOf[how_can_we_identify_you]
+  private val view = instanceOf[how_can_we_identify_you]
 
   "Subscription Enter Your Nino Page" should {
 

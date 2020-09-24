@@ -33,8 +33,8 @@ class HeaderSpec extends ControllerSpec with AuthActionMock {
   private val mockAuthAction       = authAction(mockAuthConnector)
   private val mockCdsFrontendCache = mock[SessionCache]
 
-  private val viewStart                  = app.injector.instanceOf[start]
-  private val accessibilityStatementView = app.injector.instanceOf[accessibility_statement]
+  private val viewStart                  = instanceOf[start]
+  private val accessibilityStatementView = instanceOf[accessibility_statement]
   private val enrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
 
   private val controller = new ApplicationController(

@@ -24,8 +24,8 @@ import util.ControllerSpec
 
 class EoriLanguageControllerSpec extends ControllerSpec {
 
-  private val languageUtils = app.injector.instanceOf[LanguageUtils]
-  private val cc            = app.injector.instanceOf[ControllerComponents]
+  private val languageUtils = instanceOf[LanguageUtils]
+  private val cc            = instanceOf[ControllerComponents]
 
   val controller = new EoriLanguageController(config, languageUtils, cc)
 

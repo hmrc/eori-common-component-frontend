@@ -59,9 +59,9 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   private val mockSave4LaterService = mock[Save4LaterService]
   private val mockSessionCache      = mock[SessionCache]
 
-  private val checkYourEmailView = app.injector.instanceOf[check_your_email]
-  private val emailConfirmedView = app.injector.instanceOf[email_confirmed]
-  private val verifyYourEmail    = app.injector.instanceOf[verify_your_email]
+  private val checkYourEmailView = instanceOf[check_your_email]
+  private val emailConfirmedView = instanceOf[email_confirmed]
+  private val verifyYourEmail    = instanceOf[verify_your_email]
 
   private val controller = new CheckYourEmailController(
     mockAuthAction,

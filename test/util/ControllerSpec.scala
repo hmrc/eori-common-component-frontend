@@ -19,11 +19,11 @@ package util
 import java.util.UUID
 
 import akka.stream.Materializer
-import base.UnitSpec
+import base.{Injector, UnitSpec}
 import common.pages.WebPage
 import org.scalatest.mockito.MockitoSugar
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.{Application, Configuration, Environment, Mode}
+import play.api.http.{DefaultFileMimeTypes, FileMimeTypesConfiguration}
+import play.api.{Configuration, Environment, Mode}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesImpl}
 import play.api.mvc._
 import play.api.test.Helpers._
@@ -34,33 +34,32 @@ import unit.controllers.CdsPage
 import util.builders.{AuthBuilder, SessionBuilder}
 import play.api.i18n.Lang._
 import play.api.test.NoMaterializer
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.modules.reactivemongo.ReactiveMongoHmrcModule
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
+import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 import scala.util.Random
 
-trait ControllerSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar with I18nSupport {
-
-  // TODO Get rid of this application, Unit tests doesn't need it
-  override lazy val app: Application =
-    new GuiceApplicationBuilder()
-      .disable[com.kenshoo.play.metrics.PlayModule]
-      .configure(configMap)
-      .disable[ReactiveMongoHmrcModule]
-      .build()
+trait ControllerSpec extends UnitSpec with MockitoSugar with I18nSupport with Injector {
 
   val configMap: Map[String, Boolean] = Map("metrics.enabled" -> false)
 
-  implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  implicit val messagesApi: MessagesApi = instanceOf[MessagesApi]
 
   implicit def materializer: Materializer = NoMaterializer
 
   implicit val messages: Messages = MessagesImpl(defaultLang, messagesApi)
 
-  implicit val mcc: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
+  implicit val mcc: MessagesControllerComponents = DefaultMessagesControllerComponents(
+    new DefaultMessagesActionBuilderImpl(stubBodyParser(AnyContentAsEmpty), messagesApi)(global),
+    DefaultActionBuilder(stubBodyParser(AnyContentAsEmpty))(global),
+    stubPlayBodyParsers(NoMaterializer),
+    messagesApi, // Need to be a real messages api, because our tests checks the content, not keys
+    stubLangs(),
+    new DefaultFileMimeTypes(FileMimeTypesConfiguration()),
+    global
+  )
 
   protected val previousPageUrl = "javascript:history.back()"
 

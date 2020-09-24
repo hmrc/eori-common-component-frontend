@@ -46,7 +46,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter with AuthAct
   private val mockAuthAction      = authAction(mockAuthConnector)
   private val mockMatchingService = mock[MatchingService]
 
-  private val matchNinoView = app.injector.instanceOf[match_nino]
+  private val matchNinoView = instanceOf[match_nino]
 
   val controller = new NinoController(mockAuthAction, mcc, matchNinoView, mockMatchingService)
 

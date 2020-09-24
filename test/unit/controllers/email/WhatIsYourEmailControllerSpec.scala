@@ -44,7 +44,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   private val mockSave4LaterService = mock[Save4LaterService]
 
-  private val whatIsYourEmailView = app.injector.instanceOf[what_is_your_email]
+  private val whatIsYourEmailView = instanceOf[what_is_your_email]
 
   private val controller =
     new WhatIsYourEmailController(mockAuthAction, mcc, whatIsYourEmailView, mockSave4LaterService)

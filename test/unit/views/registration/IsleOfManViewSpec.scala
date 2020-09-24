@@ -30,7 +30,7 @@ class IsleOfManViewSpec extends ViewSpec {
   val form: Form[YesNo]          = isleOfManYesNoAnswerForm()
   val formWithError: Form[YesNo] = isleOfManYesNoAnswerForm().bind(Map("yes-no-answer" -> ""))
 
-  private val view     = app.injector.instanceOf[isle_of_man]
+  private val view     = instanceOf[isle_of_man]
   implicit val request = withFakeCSRF(FakeRequest())
 
   lazy val doc: Document           = Jsoup.parse(contentAsString(view(form)))

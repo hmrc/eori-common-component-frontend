@@ -47,7 +47,7 @@ class SubscriptionFlowManagerSpec
     extends UnitSpec with MockitoSugar with BeforeAndAfterAll with BeforeAndAfterEach with ControllerSpec
     with Injector {
 
-  implicit override lazy val app: Application = new GuiceApplicationBuilder()
+  val app: Application = new GuiceApplicationBuilder()
     .configure(Map("features.rowHaveUtrEnabled" -> false))
     .build()
 
@@ -416,7 +416,7 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
     extends UnitSpec with MockitoSugar with BeforeAndAfterAll with BeforeAndAfterEach with ControllerSpec
     with Injector {
 
-  implicit override lazy val app: Application = new GuiceApplicationBuilder()
+  val app: Application = new GuiceApplicationBuilder()
     .configure(Map("features.rowHaveUtrEnabled" -> true))
     .build()
 

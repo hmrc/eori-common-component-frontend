@@ -29,7 +29,7 @@ class VerifyYourEmailSpec extends ViewSpec {
   val previousPageUrl  = "/"
   implicit val request = withFakeCSRF(FakeRequest())
 
-  val view = app.injector.instanceOf[verify_your_email]
+  val view = instanceOf[verify_your_email]
 
   "What Is Your Email Address page" should {
     "display correct title" in {

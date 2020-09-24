@@ -50,7 +50,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
   private val mockSubscriptionFlowInfo            = mock[SubscriptionFlowInfo]
   private val mockSubscriptionPage                = mock[SubscriptionPage]
   private val mockSubscriptionVatEUDetailsService = mock[SubscriptionVatEUDetailsService]
-  private val vatDetailsEuConfirmView             = app.injector.instanceOf[vat_details_eu_confirm]
+  private val vatDetailsEuConfirmView             = instanceOf[vat_details_eu_confirm]
 
   private val controller = new VatDetailsEuConfirmController(
     mockAuthAction,

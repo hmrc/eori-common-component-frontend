@@ -31,7 +31,7 @@ class BusinessDetailsRecoveryViewSpec extends ViewSpec {
   private val address          = AddressViewModel("street", "city", Some("SE28 1AA"), "GB")
   private implicit val request = withFakeCSRF(FakeRequest())
 
-  private val view = app.injector.instanceOf[business_details_recovery]
+  private val view = instanceOf[business_details_recovery]
 
   "Confirm Contact Details" should {
     "display correct title" in {

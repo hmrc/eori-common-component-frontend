@@ -43,8 +43,8 @@ class EoriDownloadControllerSpec extends ControllerSpec with AuthActionMock {
   private val mockPdfGenerator                       = mock[PdfGeneratorConnector]
   private val mockCdsFrontendDataCache: SessionCache = mock[SessionCache]
 
-  private val errorTemplateView      = app.injector.instanceOf[error_template]
-  private val eoriNumberDownloadView = app.injector.instanceOf[eori_number_download]
+  private val errorTemplateView      = instanceOf[error_template]
+  private val eoriNumberDownloadView = instanceOf[eori_number_download]
 
   private val controller = new EoriDownloadController(
     mockAuthAction,

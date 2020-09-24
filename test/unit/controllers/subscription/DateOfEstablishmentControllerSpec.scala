@@ -67,7 +67,7 @@ class DateOfEstablishmentControllerSpec
   private val mockOrgTypeLookup      = mock[OrgTypeLookup]
   private val mockRequestSessionData = mock[RequestSessionData]
 
-  private val dateOfEstablishmentView = app.injector.instanceOf[date_of_establishment]
+  private val dateOfEstablishmentView = instanceOf[date_of_establishment]
 
   private val controller = new DateOfEstablishmentController(
     mockAuthAction,

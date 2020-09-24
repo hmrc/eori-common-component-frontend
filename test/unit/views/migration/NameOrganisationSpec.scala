@@ -35,7 +35,7 @@ class NameOrganisationSpec extends ViewSpec {
   val organisationType                                = "charity-public-body-not-for-profit"
   implicit val request                                = withFakeCSRF(FakeRequest())
 
-  private val view = app.injector.instanceOf[nameOrg]
+  private val view = instanceOf[nameOrg]
 
   "Match Organisation Name page" should {
     "display correct title" in {

@@ -35,7 +35,7 @@ class HaveNinoSubscriptionSpec extends ViewSpec {
   private val noOptionSelectedForm               = rowIndividualsNinoForm.bind(Map.empty[String, String])
   private val incorrectNinoForm                  = rowIndividualsNinoForm.bind(Map("have-nino" -> "true", "nino" -> "012345789!@#$"))
 
-  private val view = app.injector.instanceOf[match_nino_subscription]
+  private val view = instanceOf[match_nino_subscription]
 
   "Fresh Subscription Have Nino Page" should {
     "display correct heading" in {

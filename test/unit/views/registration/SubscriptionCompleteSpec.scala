@@ -31,7 +31,7 @@ class SubscriptionCompleteSpec extends ViewSpec {
   val orgName    = "Test Organisation Name"
   val issuedDate = "01 Jan 2019"
 
-  private val view = app.injector.instanceOf[subscription_outcome]
+  private val view = instanceOf[subscription_outcome]
 
   "'Subscription Rejected' Page with name" should {
 

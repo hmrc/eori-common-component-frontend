@@ -31,7 +31,7 @@ class EoriEnrolSuccessSpec extends ViewSpec {
   private val service = Service.ATaR
   private val eori    = "GB234532132435"
 
-  private val view = app.injector.instanceOf[eori_enrol_success]
+  private val view = instanceOf[eori_enrol_success]
 
   "EORI Enrol Success Page" should {
 

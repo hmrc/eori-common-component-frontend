@@ -38,7 +38,7 @@ class EnrolmentExistsAgainstGroupIdControllerSpec extends ControllerSpec with Au
   private val mockAuthConnector                 = mock[AuthConnector]
   private val mockAuthAction                    = authAction(mockAuthConnector)
   private val mockSessionCache                  = mock[SessionCache]
-  private val enrolmentExistsAgainstGroupIdView = app.injector.instanceOf[enrolment_exists_against_group_id]
+  private val enrolmentExistsAgainstGroupIdView = instanceOf[enrolment_exists_against_group_id]
 
   private val controller = new EnrolmentExistsAgainstGroupIdController(
     mockAuthAction,

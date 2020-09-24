@@ -68,7 +68,7 @@ class SubscriptionRecoveryControllerSpec
   private val mockSubscriptionDetailsService         = mock[SubscriptionDetailsService]
   private val mockRequestSessionData                 = mock[RequestSessionData]
 
-  private val errorTemplateView = app.injector.instanceOf[error_template]
+  private val errorTemplateView = instanceOf[error_template]
 
   private val controller = new SubscriptionRecoveryController(
     mockAuthAction,

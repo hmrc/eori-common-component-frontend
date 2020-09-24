@@ -44,7 +44,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
   protected override val formId: String      = NameDateOfBirthPage.formId
   val mockCdsFrontendDataCache: SessionCache = mock[SessionCache]
 
-  private val matchNameDobView = app.injector.instanceOf[match_namedob]
+  private val matchNameDobView = instanceOf[match_namedob]
 
   private def nameDobController =
     new NameDobController(mockAuthAction, mcc, matchNameDobView, mockCdsFrontendDataCache)

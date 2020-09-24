@@ -28,7 +28,7 @@ class SecuritySignOutSpec extends ViewSpec {
 
   implicit val request = withFakeCSRF(FakeRequest())
 
-  private val view = app.injector.instanceOf[display_sign_out]
+  private val view = instanceOf[display_sign_out]
 
   "Security Sign Out Page" should {
 

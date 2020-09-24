@@ -17,6 +17,7 @@
 package util
 
 import akka.util.Timeout
+import base.Injector
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
@@ -28,31 +29,23 @@ import play.api.test.CSRFTokenHelper
 
 import scala.concurrent.duration._
 
-trait ViewSpec extends PlaySpec with CSRFTest with GuiceOneAppPerSuite {
+trait ViewSpec extends PlaySpec with CSRFTest with Injector {
 
-  private val messageApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  private val messageApi: MessagesApi = instanceOf[MessagesApi]
 
   implicit val messages: Messages = MessagesImpl(defaultLang, messageApi)
 
   implicit val timeout: Timeout = 30.seconds
   val userId: String            = "someUserId"
-
-  override def fakeApplication(): Application =
-    GuiceApplicationBuilder()
-      .disable[com.kenshoo.play.metrics.PlayModule]
-      .configure("metrics.enabled" -> false)
-      .build()
-
 }
 
-import play.api.Application
 import play.api.test.FakeRequest
 
 import scala.language.postfixOps
 
 trait CSRFTest {
 
-  def withFakeCSRF[T](fakeRequest: FakeRequest[T])(implicit app: Application): Request[T] =
+  def withFakeCSRF[T](fakeRequest: FakeRequest[T]): Request[T] =
     CSRFTokenHelper.addCSRFToken(fakeRequest)
 
 }

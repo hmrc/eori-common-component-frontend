@@ -68,7 +68,7 @@ class SicCodeControllerSpec
 
   private val mockOrgTypeLookup      = mock[OrgTypeLookup]
   private val mockRequestSessionData = mock[RequestSessionData]
-  private val sicCodeView            = app.injector.instanceOf[sic_code]
+  private val sicCodeView            = instanceOf[sic_code]
 
   private val controller = new SicCodeController(
     mockAuthAction,

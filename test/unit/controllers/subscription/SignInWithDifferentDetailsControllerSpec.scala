@@ -43,7 +43,7 @@ class SignInWithDifferentDetailsControllerSpec
 
   private val mockCdsFrontendDataCache       = mock[SessionCache]
   private val mockRegistrationDetails        = mock[RegistrationDetails](RETURNS_DEEP_STUBS)
-  private val signInWithDifferentDetailsView = app.injector.instanceOf[sign_in_with_different_details]
+  private val signInWithDifferentDetailsView = instanceOf[sign_in_with_different_details]
   when(mockRegistrationDetails.name).thenReturn("Test Org Name")
 
   private val controller = new SignInWithDifferentDetailsController(

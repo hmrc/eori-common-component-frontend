@@ -28,8 +28,8 @@ import util.ViewSpec
 class YouCantUseServiceSpec extends ViewSpec {
 
   private implicit val request      = withFakeCSRF(FakeRequest())
-  private val youCantUseServiceView = app.injector.instanceOf[you_cant_use_service]
-  private val sub02View             = app.injector.instanceOf[sub02_request_not_processed]
+  private val youCantUseServiceView = instanceOf[you_cant_use_service]
+  private val sub02View             = instanceOf[sub02_request_not_processed]
 
   "You cannot use this service page for users of type standard org" should {
 

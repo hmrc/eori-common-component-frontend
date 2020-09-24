@@ -44,7 +44,7 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec with Aut
   private val mockAuthAction                      = authAction(mockAuthConnector)
   private val mockSubscriptionVatEUDetailsService = mock[SubscriptionVatEUDetailsService]
 
-  private val areYouSureRemoveVatView = app.injector.instanceOf[are_you_sure_remove_vat]
+  private val areYouSureRemoveVatView = instanceOf[are_you_sure_remove_vat]
 
   val controller = new AreYouSureYouWantToDeleteVatController(
     mockAuthAction,

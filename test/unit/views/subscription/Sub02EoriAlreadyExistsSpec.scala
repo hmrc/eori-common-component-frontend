@@ -31,7 +31,7 @@ class Sub02EoriAlreadyExistsSpec extends ViewSpec {
   private val pageHeadingExpectedText = s"Our records show that $name already has an EORI number."
   private val processDateExpectedText = s"Application received by HMRC on $processedDate"
 
-  private val view = app.injector.instanceOf[sub02_eori_already_exists]
+  private val view = instanceOf[sub02_eori_already_exists]
 
   "GYE EORI Already Exists outcome page" should {
 

@@ -59,7 +59,7 @@ class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with Befo
   private val mockSubscriptionDetailsService  = mock[SubscriptionDetailsService]
   private val mockSubscriptionFlow            = mock[SubscriptionFlow]
   private val mockRequestSession              = mock[RequestSessionData]
-  private val vatRegisteredUkView             = app.injector.instanceOf[vat_registered_uk]
+  private val vatRegisteredUkView             = instanceOf[vat_registered_uk]
 
   override def beforeEach: Unit = {
     reset(

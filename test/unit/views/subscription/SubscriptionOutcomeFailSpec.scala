@@ -27,7 +27,7 @@ class SubscriptionOutcomeFailSpec extends ViewSpec {
 
   implicit val request = withFakeCSRF(FakeRequest())
 
-  private val view = app.injector.instanceOf[subscription_outcome_fail]
+  private val view = instanceOf[subscription_outcome_fail]
 
   val orgName       = "Test Organisation Name"
   val processedDate = "01 Jan 2019"

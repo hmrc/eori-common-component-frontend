@@ -54,7 +54,7 @@ class WhatIsYourEoriControllerSpec
       .url
 
   private val mockRequestSessionData = mock[RequestSessionData]
-  private val whatIsYourEoriView     = app.injector.instanceOf[what_is_your_eori]
+  private val whatIsYourEoriView     = instanceOf[what_is_your_eori]
 
   private val controller = new WhatIsYourEoriController(
     mockAuthAction,

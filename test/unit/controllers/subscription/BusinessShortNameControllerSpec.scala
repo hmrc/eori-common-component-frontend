@@ -59,7 +59,7 @@ class BusinessShortNameControllerSpec
 
   private val mockOrgTypeLookup  = mock[OrgTypeLookup]
   private val mockRequestSession = mock[RequestSessionData]
-  private val businessShortName  = app.injector.instanceOf[business_short_name]
+  private val businessShortName  = instanceOf[business_short_name]
 
   val allFieldsMap = Map("use-short-name" -> withShortName, "short-name" -> ShortName)
 

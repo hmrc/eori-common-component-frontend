@@ -58,7 +58,7 @@ class DoYouHaveAUtrNumberControllerSpec
   private val mockMatchingRequestHolder      = mock[MatchingRequestHolder]
   private val mockMatchingResponse           = mock[MatchingResponse]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
-  private val matchOrganisationUtrView       = app.injector.instanceOf[match_organisation_utr]
+  private val matchOrganisationUtrView       = instanceOf[match_organisation_utr]
 
   private val controller = new DoYouHaveAUtrNumberController(
     mockAuthAction,

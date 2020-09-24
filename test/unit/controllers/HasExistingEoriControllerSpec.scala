@@ -39,8 +39,8 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
   private val mockAuthAction       = authAction(mockAuthConnector)
   private val mockEnrolmentService = mock[EnrolmentService]
 
-  private val hasExistingEoriView  = app.injector.instanceOf[has_existing_eori]
-  private val eoriEnrolSuccessView = app.injector.instanceOf[eori_enrol_success]
+  private val hasExistingEoriView  = instanceOf[has_existing_eori]
+  private val eoriEnrolSuccessView = instanceOf[eori_enrol_success]
 
   private val controller =
     new HasExistingEoriController(mockAuthAction, hasExistingEoriView, eoriEnrolSuccessView, mcc, mockEnrolmentService)

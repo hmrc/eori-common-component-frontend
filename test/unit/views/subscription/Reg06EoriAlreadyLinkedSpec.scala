@@ -34,7 +34,7 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
   private val pageHeadingExpectedText1 = s"$name has been unsuccessful"
   private val processDateExpectedText  = s"Application received by HMRC on ${dateTimeFormat.print(processedDate)}"
 
-  private val view = app.injector.instanceOf[reg06_eori_already_linked]
+  private val view = instanceOf[reg06_eori_already_linked]
 
   "GYE EORI Already Linked outcome page" should {
     "have the correct page title" in {

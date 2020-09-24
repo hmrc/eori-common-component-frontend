@@ -64,7 +64,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
   private val mockRegistrationDetails  = mock[RegistrationDetails](RETURNS_DEEP_STUBS)
   private val mockCdsFrontendDataCache = mock[SessionCache]
 
-  private val nameIdView = app.injector.instanceOf[nameId]
+  private val nameIdView = instanceOf[nameId]
 
   private val controller = new NameIDOrgController(
     mockAuthAction,

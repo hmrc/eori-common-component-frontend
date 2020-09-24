@@ -52,7 +52,7 @@ class NameUtrOrganisationControllerSpec
   private val mockAuthAction      = authAction(mockAuthConnector)
   private val mockMatchingService = mock[MatchingService]
 
-  private val matchNameIdOrganisationView = app.injector.instanceOf[match_name_id_organisation]
+  private val matchNameIdOrganisationView = instanceOf[match_name_id_organisation]
 
   private val controller =
     new NameIdOrganisationController(mockAuthAction, mcc, matchNameIdOrganisationView, mockMatchingService)

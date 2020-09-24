@@ -31,7 +31,7 @@ import util.ViewSpec
 
 class CheckYourDetailsSpec extends ViewSpec {
 
-  val view = app.injector.instanceOf[check_your_details]
+  val view = instanceOf[check_your_details]
 
   private val domIds = Table(
     ("name", "headingId", "changeLinkId"),

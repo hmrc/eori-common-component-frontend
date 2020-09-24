@@ -24,6 +24,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 
 import scala.io.Source
 
+// TODO Injecto configuration, not whole application
 @Singleton
 class Countries @Inject() (app: Application) {
 

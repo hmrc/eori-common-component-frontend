@@ -53,7 +53,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureFalseSpec
     extends ControllerSpec with Checkers with TestDataGenerators with BeforeAndAfterEach with ScalaFutures
     with AuthActionMock {
 
-  implicit override lazy val app: Application =
+  val app: Application =
     new GuiceApplicationBuilder().configure("features.rowHaveUtrEnabled" -> false).build()
 
   class ControllerFixture(organisationType: String, form: Form[IndividualNameAndDateOfBirth])

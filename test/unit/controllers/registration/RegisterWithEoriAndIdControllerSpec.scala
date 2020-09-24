@@ -65,22 +65,17 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
   private val mockSubscriptionDetails        = mock[SubscriptionDetails]
   private val mockSub01Outcome               = mock[Sub01Outcome]
 
-  private val sub01OutcomeProcessingView =
-    app.injector.instanceOf[sub01_outcome_processing]
+  private val sub01OutcomeProcessingView = instanceOf[sub01_outcome_processing]
 
-  private val sub01OutcomeRejectedView =
-    app.injector.instanceOf[sub01_outcome_rejected]
+  private val sub01OutcomeRejectedView = instanceOf[sub01_outcome_rejected]
 
-  private val errorTemplateView = app.injector.instanceOf[error_template]
+  private val errorTemplateView = instanceOf[error_template]
 
-  private val subscriptionOutcomePendingView =
-    app.injector.instanceOf[subscription_outcome_pending]
+  private val subscriptionOutcomePendingView = instanceOf[subscription_outcome_pending]
 
-  private val subscriptionOutcomeFailView =
-    app.injector.instanceOf[subscription_outcome_fail]
+  private val subscriptionOutcomeFailView = instanceOf[subscription_outcome_fail]
 
-  private val reg06EoriAlreadyLinked =
-    app.injector.instanceOf[reg06_eori_already_linked]
+  private val reg06EoriAlreadyLinked = instanceOf[reg06_eori_already_linked]
 
   private val controller = new RegisterWithEoriAndIdController(
     mockAuthAction,

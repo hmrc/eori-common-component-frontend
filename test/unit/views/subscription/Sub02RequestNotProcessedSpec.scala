@@ -27,7 +27,7 @@ class Sub02RequestNotProcessedSpec extends ViewSpec {
 
   private val pageHeadingExpectedText = "You cannot use this service"
 
-  private val view = app.injector.instanceOf[sub02_request_not_processed]
+  private val view = instanceOf[sub02_request_not_processed]
 
   "GYE Request not processed outcome page" should {
 

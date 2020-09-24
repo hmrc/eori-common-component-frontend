@@ -70,14 +70,11 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
   private val mockTaxEnrolmentsService      = mock[TaxEnrolmentsService]
   private val mockHandleSubscriptionService = mock[HandleSubscriptionService]
 
-  private val confirmContactDetailsView =
-    app.injector.instanceOf[confirm_contact_details]
+  private val confirmContactDetailsView = instanceOf[confirm_contact_details]
 
-  private val sub01OutcomeProcessingView =
-    app.injector.instanceOf[sub01_outcome_processing]
+  private val sub01OutcomeProcessingView = instanceOf[sub01_outcome_processing]
 
-  private val sub01OutcomeRejected =
-    app.injector.instanceOf[sub01_outcome_rejected]
+  private val sub01OutcomeRejected = instanceOf[sub01_outcome_rejected]
 
   private val controller = new ConfirmContactDetailsController(
     mockAuthAction,

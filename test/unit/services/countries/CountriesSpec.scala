@@ -24,7 +24,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.{Countries, C
 
 class CountriesSpec extends WordSpec with Matchers with GuiceOneAppPerSuite {
 
-  implicit override lazy val app: Application = new GuiceApplicationBuilder()
+  override lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
       Map(
         "countriesFilename"              -> "test-countries.json",

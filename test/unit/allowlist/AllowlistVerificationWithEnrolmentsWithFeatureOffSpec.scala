@@ -28,7 +28,7 @@ import util.builders.{AuthActionMock, AuthBuilder, SessionBuilder}
 
 class AllowlistVerificationWithEnrolmentsWithFeatureOffSpec extends ControllerSpec with AuthActionMock {
 
-  implicit override lazy val app: Application = new GuiceApplicationBuilder()
+  val app: Application = new GuiceApplicationBuilder()
     .disable[com.kenshoo.play.metrics.PlayModule]
     .configure("metrics.enabled" -> false)
     .configure(Map("allowlistEnabled" -> false, "allowlist" -> "  mister_allow@example.com, bob@example.com"))
@@ -37,7 +37,7 @@ class AllowlistVerificationWithEnrolmentsWithFeatureOffSpec extends ControllerSp
   private val auth           = mock[AuthConnector]
   private val mockAuthAction = authAction(auth)
 
-  private val youNeedDifferentServiceView = app.injector.instanceOf[you_need_different_service]
+  private val youNeedDifferentServiceView = instanceOf[you_need_different_service]
 
   private val controller = new YouNeedADifferentServiceController(mockAuthAction, youNeedDifferentServiceView, mcc)
 
