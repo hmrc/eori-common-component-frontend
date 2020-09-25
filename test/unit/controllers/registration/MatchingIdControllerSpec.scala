@@ -163,8 +163,8 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
           )
         )
       status(result) shouldBe SEE_OTHER
-      result.header.headers("Location") should endWith(
-        "/auth-login-stub/gg-sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fsubscribe"
+      result.header.headers("Location") should include(
+        "?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fsubscribe"
       )
     }
 
@@ -178,8 +178,8 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
             .buildRequestWithSessionAndPathNoUser(method = "GET", path = "/customs-enrolment-services/atar/subscribe")
         )
       status(result) shouldBe SEE_OTHER
-      result.header.headers("Location") should endWith(
-        "/auth-login-stub/gg-sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fsubscribe"
+      result.header.headers("Location") should include(
+        "?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fsubscribe"
       )
     }
 

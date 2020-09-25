@@ -29,9 +29,6 @@ trait AuthRedirectSupport extends AuthRedirects with JourneyTypeFromUrl {
   override val config: Configuration
   override val env: Environment
 
-  private def loginUrl(implicit request: Request[AnyContent]) =
-    config.get[String]("external-url.company-auth-frontend.login")
-
   private def continueUrl(implicit request: Request[AnyContent]) = {
     val baseUrl = config.get[String]("external-url.company-auth-frontend.continue-url")
     journeyFromUrl match {
@@ -44,7 +41,7 @@ trait AuthRedirectSupport extends AuthRedirects with JourneyTypeFromUrl {
   }
 
   def withAuthRecovery(implicit request: Request[AnyContent]): PartialFunction[Throwable, Result] = {
-    case _: NoActiveSession => Results.Redirect(loginUrl, Map("continue" -> Seq(continueUrl)))
+    case _: NoActiveSession => toGGLogin(continueUrl = continueUrl)
   }
 
 }
