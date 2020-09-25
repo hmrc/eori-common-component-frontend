@@ -91,7 +91,7 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
 
       createForm() { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should include(OrganisationNamePage.title)
       }
     }
@@ -102,7 +102,7 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
 
       reviewForm() { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should include(OrganisationNamePage.title)
       }
     }
@@ -112,7 +112,7 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
 
       submit(false, incorrectForm) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should include(OrganisationNamePage.title)
       }
     }

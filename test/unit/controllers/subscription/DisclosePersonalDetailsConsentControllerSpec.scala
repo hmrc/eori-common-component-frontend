@@ -117,7 +117,7 @@ class DisclosePersonalDetailsConsentControllerSpec
           s"display the form for subscription flow $subscriptionFlow" in {
             showFormFunction(subscriptionFlow) { result =>
               status(result) shouldBe OK
-              val html: String = bodyOf(result)
+              val html: String = contentAsString(result)
               html should include("id=\"yes-no-answer-true\"")
               html should include("id=\"yes-no-answer-false\"")
               if (subscriptionFlow.isIndividualFlow)
@@ -130,7 +130,7 @@ class DisclosePersonalDetailsConsentControllerSpec
           s"display proper labels for subscription flow $subscriptionFlow" in {
             showFormFunction(subscriptionFlow) { result =>
               status(result) shouldBe OK
-              val page = CdsPage(bodyOf(result))
+              val page = CdsPage(contentAsString(result))
               page.getElementsText(DisclosePersonalDetailsConsentPage.consentInfoXpath) shouldBe consentInfo
               page.getElementsText(DisclosePersonalDetailsConsentPage.yesToDiscloseXpath) shouldBe yesLabel
               page.getElementsText(DisclosePersonalDetailsConsentPage.noToDiscloseXpath) shouldBe noLabel
@@ -173,7 +173,7 @@ class DisclosePersonalDetailsConsentControllerSpec
 
     "display yes when the user's previous answer of yes is in the cache" in {
       showReviewForm(previouslyAnswered = true) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.radioButtonIsChecked(DisclosePersonalDetailsConsentPage.noToDiscloseInputXpath) shouldBe false
         page.radioButtonIsChecked(DisclosePersonalDetailsConsentPage.yesToDiscloseInputXpath) shouldBe true
       }
@@ -181,7 +181,7 @@ class DisclosePersonalDetailsConsentControllerSpec
 
     "display no when the user's previous answer of no is in the cache" in {
       showReviewForm(previouslyAnswered = false) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.radioButtonIsChecked(DisclosePersonalDetailsConsentPage.noToDiscloseInputXpath) shouldBe true
         page.radioButtonIsChecked(DisclosePersonalDetailsConsentPage.yesToDiscloseInputXpath) shouldBe false
       }
@@ -189,7 +189,7 @@ class DisclosePersonalDetailsConsentControllerSpec
 
     "display the correct text for the continue button" in {
       showReviewForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(
           DisclosePersonalDetailsConsentPage.continueButtonXpath
         ) shouldBe ContinueButtonTextInReviewMode
@@ -201,7 +201,7 @@ class DisclosePersonalDetailsConsentControllerSpec
     "display a relevant error if no option is chosen" in {
       submitForm(ValidRequest - yesNoInputName) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           DisclosePersonalDetailsConsentPage.pageLevelErrorSummaryListXPath
         ) shouldBe problemWithSelectionError
@@ -215,7 +215,7 @@ class DisclosePersonalDetailsConsentControllerSpec
       val invalidOption = UUID.randomUUID.toString
       submitForm(ValidRequest + (yesNoInputName -> invalidOption)) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           DisclosePersonalDetailsConsentPage.pageLevelErrorSummaryListXPath
         ) shouldBe problemWithSelectionError

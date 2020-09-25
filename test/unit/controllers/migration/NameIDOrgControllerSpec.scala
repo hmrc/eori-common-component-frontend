@@ -116,7 +116,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
         case (subscriptionFlow, expectedLabel) =>
           s"display appropriate label in subscription flow $subscriptionFlow" in {
             showFormFunction(subscriptionFlow) { result =>
-              val page = CdsPage(bodyOf(result))
+              val page = CdsPage(contentAsString(result))
               page.getElementsText(pageTitleXPath) shouldBe expectedLabel
             }
           }
@@ -127,7 +127,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
           .thenReturn(Future.successful(Some(NameIdDetailsPage.filledValues)))
 
         showFormFunction(MigrationEoriOrganisationSubscriptionFlow) { result =>
-          val page         = CdsPage(bodyOf(result))
+          val page         = CdsPage(contentAsString(result))
           val expectedName = s"${NameIdDetailsPage.filledValues.name}"
           val expectedUtr  = s"${NameIdDetailsPage.filledValues.id}"
 
@@ -152,7 +152,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
     "display the correct text for the continue button" in {
       showCreateForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(continueButtonXpath) shouldBe ContinueButtonTextInCreateMode
       }
     }
@@ -161,7 +161,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       when(mockSubscriptionBusinessService.cachedNameIdOrganisationViewModel(any[HeaderCarrier]))
         .thenReturn(Some(NameIdDetailsPage.filledValues))
       showCreateForm() { result =>
-        val page         = CdsPage(bodyOf(result))
+        val page         = CdsPage(contentAsString(result))
         val expectedName = s"${NameIdDetailsPage.filledValues.name}"
         val expectedUtr  = s"${NameIdDetailsPage.filledValues.id}"
 
@@ -172,7 +172,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
     "leave fields empty if details weren't found in cache" in {
       showCreateForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(nameFieldXPath) shouldBe 'empty
         page.getElementValue(utrFieldXPath) shouldBe 'empty
       }
@@ -191,7 +191,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       when(mockSubscriptionBusinessService.getCachedNameIdViewModel(any())).thenReturn(NameIdDetailsPage.filledValues)
 
       showReviewForm() { result =>
-        val page         = CdsPage(bodyOf(result))
+        val page         = CdsPage(contentAsString(result))
         val expectedName = s"${NameIdDetailsPage.filledValues.name}"
         val expectedUtr  = s"${NameIdDetailsPage.filledValues.id}"
 
@@ -206,7 +206,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
     "display the correct text for the continue button" in {
       showReviewForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(continueButtonXpath) shouldBe ContinueButtonTextInReviewMode
       }
     }
@@ -231,7 +231,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     "validation error when full name is not submitted" in {
       submitFormInCreateMode(createFormAllFieldsUtrMap + (nameFieldName -> "")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your registered organisation name"
         page.getElementsText(nameFieldLevelErrorXPath) shouldBe "Enter your registered organisation name"
         page.getElementsText("title") should startWith("Error: ")
@@ -242,7 +242,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     "validation error when full name more than 105 characters" in {
       submitFormInCreateMode(createFormAllFieldsUtrMap + (nameFieldName -> List.fill(106)("D").mkString)) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           pageLevelErrorSummaryListXPath
         ) shouldBe "The organisation name must be 105 characters or less"
@@ -255,7 +255,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     "validation error when ID UTR is not submitted" in {
       submitFormInCreateMode(createFormAllFieldsUtrMap + (utrFieldName -> "")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your UTR number"
         page.getElementsText(utrFieldLevelErrorXPath) shouldBe "Enter your UTR number"
         page.getElementsText("title") should startWith("Error: ")
@@ -266,7 +266,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     "display page level errors when nothing is entered" in {
       submitFormInCreateMode(createEmptyFormUtrMap) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           pageLevelErrorSummaryListXPath
         ) shouldBe "Enter your registered organisation name Enter your UTR number"

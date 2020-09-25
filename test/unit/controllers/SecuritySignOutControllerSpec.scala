@@ -48,7 +48,7 @@ class SecuritySignOutControllerSpec extends ControllerSpec with AuthActionMock {
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
       displayPage(Journey.Register) { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should startWith("For your security, we signed you out")
       }
     }

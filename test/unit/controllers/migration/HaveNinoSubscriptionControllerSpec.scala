@@ -69,7 +69,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
     "return OK and display correct page" in {
       createForm(Journey.Subscribe) { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should include(SubscriptionNinoPage.title)
       }
     }

@@ -143,7 +143,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
           s"display appropriate label for address question in subscription flow $flow for mode $formMode" in {
             when(mockRegistrationDetails.address).thenReturn(defaultAddress)
             showFormFunction(flow, orgType) { result =>
-              val page = CdsPage(bodyOf(result))
+              val page = CdsPage(contentAsString(result))
               page.getElementsText(registeredAddressQuestionXPath) shouldBe expectedLabel
             }
           }
@@ -152,7 +152,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       s"display address correctly when all fields are populated for mode $formMode" in {
         when(mockRegistrationDetails.address).thenReturn(defaultAddress)
         showFormFunction(OrganisationSubscriptionFlow, CorporateBody) { result =>
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           val expectedAddress =
             s"${defaultAddress.addressLine1} ${defaultAddress.addressLine2.get}<br>${defaultAddress.addressLine3.get}<br>${defaultAddress.postalCode.get}<br>$defaultCountryName"
           page.getElementsHtml(registeredAddressParaXPath) shouldBe expectedAddress
@@ -162,7 +162,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       s"display address correctly when only mandatory fields are populated for mode $formMode" in {
         when(mockRegistrationDetails.address).thenReturn(defaultAddressWithMandatoryValuesOnly)
         showFormFunction(OrganisationSubscriptionFlow, CorporateBody) { result =>
-          val page            = CdsPage(bodyOf(result))
+          val page            = CdsPage(contentAsString(result))
           val expectedAddress = s"${defaultAddressWithMandatoryValuesOnly.addressLine1}<br>$defaultCountryName"
           page.getElementsHtml(registeredAddressParaXPath) shouldBe expectedAddress
         }
@@ -173,7 +173,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         val euAddress        = Address(addressFirstLine, None, None, None, None, "PL")
         when(mockRegistrationDetails.address).thenReturn(euAddress)
         showFormFunction(OrganisationSubscriptionFlow, CorporateBody) { result =>
-          val page            = CdsPage(bodyOf(result))
+          val page            = CdsPage(contentAsString(result))
           val expectedAddress = s"$addressFirstLine<br>Poland"
           page.getElementsHtml(registeredAddressParaXPath) shouldBe expectedAddress
         }
@@ -184,7 +184,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         val nonEuAddress     = Address(addressFirstLine, None, None, None, None, "CA")
         when(mockRegistrationDetails.address).thenReturn(nonEuAddress)
         showFormFunction(OrganisationSubscriptionFlow, CorporateBody) { result =>
-          val page            = CdsPage(bodyOf(result))
+          val page            = CdsPage(contentAsString(result))
           val expectedAddress = s"$addressFirstLine<br>Canada"
           page.getElementsHtml(registeredAddressParaXPath) shouldBe expectedAddress
         }
@@ -201,7 +201,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
             when(mockRegistrationDetails.address).thenReturn(defaultAddress)
             mockMigrate()
             showFormFunction(flow, orgType) { result =>
-              val page = CdsPage(bodyOf(result))
+              val page = CdsPage(contentAsString(result))
               page.getElementsText(registeredAddressQuestionXPath) shouldBe expectedLabel
             }
           }
@@ -210,7 +210,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       s"display address correctly when all fields are populated for mode $formMode" in {
         mockMigrate()
         showFormFunction(OrganisationSubscriptionFlow, CorporateBody) { result =>
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           val expectedAddress =
             s"${defaultAddress.addressLine1} ${defaultAddress.addressLine2.get}<br>${defaultAddress.addressLine3.get}<br>${defaultAddress.postalCode.get}<br>$defaultCountryName"
           page.getElementsHtml(registeredAddressParaXPath) shouldBe expectedAddress
@@ -224,7 +224,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         when(mockSubscriptionDetailsHolderService.cachedAddressDetails(any[HeaderCarrier]))
           .thenReturn(Future.successful(cachedAddressDetails))
         showFormFunction(OrganisationSubscriptionFlow, CorporateBody) { result =>
-          val page            = CdsPage(bodyOf(result))
+          val page            = CdsPage(contentAsString(result))
           val expectedAddress = s"${defaultAddressWithMandatoryValuesOnly.addressLine1}<br>$defaultCountryName"
           page.getElementsHtml(registeredAddressParaXPath) shouldBe expectedAddress
         }
@@ -237,7 +237,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         when(mockSubscriptionDetailsHolderService.cachedAddressDetails(any[HeaderCarrier]))
           .thenReturn(Future.successful(cachedAddressDetails))
         showFormFunction(OrganisationSubscriptionFlow, CorporateBody) { result =>
-          val page            = CdsPage(bodyOf(result))
+          val page            = CdsPage(contentAsString(result))
           val expectedAddress = s"euAddressFirstLine<br>Poland"
           page.getElementsHtml(registeredAddressParaXPath) shouldBe expectedAddress
         }
@@ -250,7 +250,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         when(mockSubscriptionDetailsHolderService.cachedAddressDetails(any[HeaderCarrier]))
           .thenReturn(Future.successful(cachedAddressDetails))
         showFormFunction(OrganisationSubscriptionFlow, CorporateBody) { result =>
-          val page            = CdsPage(bodyOf(result))
+          val page            = CdsPage(contentAsString(result))
           val expectedAddress = s"nonEuAddressFirstLine<br>Canada"
           page.getElementsHtml(registeredAddressParaXPath) shouldBe expectedAddress
         }
@@ -308,7 +308,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         when(mockSubscriptionBusinessService.cachedContactDetailsModel(any[HeaderCarrier]))
           .thenReturn(Some(contactDetailsModel))
         showCreateForm(flow, journey = Journey.Subscribe, orgType = orgType) { result =>
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementText(emailLabelXPath) shouldBe emailAddressFieldLabel
           page.getElementText(emailFieldXPath) shouldBe Email
           page.getElementValue(fullNameFieldXPath) shouldBe FullName
@@ -337,7 +337,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
     "display the correct text in the heading and intro" in {
       showCreateForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(headingXPath) shouldBe "Who can we contact?"
         page.getElementsText(
           introXPath
@@ -347,14 +347,14 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
     "display the correct text for the continue button" in {
       showCreateForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(continueButtonXpath) shouldBe ContinueButtonTextInCreateMode
       }
     }
 
     "display the correct hint text for telephone and fax number field" in {
       showCreateForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(hintTextTelephonXpath) shouldBe hintTextTelAndFax
         page.getElementsText(hintTextFaxXpath) shouldBe hintTextTelAndFax
       }
@@ -364,7 +364,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       when(mockSubscriptionBusinessService.cachedContactDetailsModel(any[HeaderCarrier]))
         .thenReturn(Some(contactDetailsModel))
       showCreateForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(fullNameFieldXPath) shouldBe FullName
         page.getElementText(emailFieldXPath) shouldBe Email
         page.getElementValue(telephoneFieldXPath) shouldBe Telephone
@@ -382,7 +382,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       when(mockSubscriptionBusinessService.cachedContactDetailsModel(any[HeaderCarrier]))
         .thenReturn(Some(contactDetailsModelWithRegisteredAddress))
       showCreateForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(fullNameFieldXPath) shouldBe FullName
         page.getElementText(emailFieldXPath) shouldBe Email
         page.getElementValue(telephoneFieldXPath) shouldBe Telephone
@@ -398,7 +398,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
     "leave fields empty if contact details weren't found in cache" in {
       showCreateForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(fullNameFieldXPath) shouldBe empty
         page.getElementValue(emailFieldXPath) shouldBe empty
         page.getElementValue(telephoneFieldXPath) shouldBe empty
@@ -421,7 +421,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     "display relevant data in form fields when subscription details exist in the cache" in {
 
       showReviewForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(fullNameFieldXPath) shouldBe FullName
         page.getElementText(emailFieldXPath) shouldBe Email
         page.getElementValue(telephoneFieldXPath) shouldBe Telephone
@@ -439,7 +439,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
     "display the correct text for the continue button" in {
       showReviewForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(continueButtonXpath) shouldBe ContinueButtonTextInReviewMode
       }
     }
@@ -450,7 +450,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         Some(revisedContactDetailsModel)
       )
       showReviewForm(contactDetailsModel = revisedContactDetailsModel) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(fullNameFieldXPath) shouldBe FullName
         page.getElementText(emailLabelXPath) shouldBe emailAddressFieldLabel
         page.getElementText(emailFieldXPath) shouldBe Email
@@ -470,7 +470,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         Some(revisedContactDetailsModel)
       )
       showReviewForm(contactDetailsModel = revisedContactDetailsModel, journey = Journey.Subscribe) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(fullNameFieldXPath) shouldBe FullName
         page.getElementText(emailLabelXPath) shouldBe emailAddressFieldLabel
         page.getElementText(emailFieldXPath) shouldBe Email
@@ -546,7 +546,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     "produce validation error when full name is not submitted" in {
       submitFormInCreateMode(createFormMandatoryFieldsMap + (fullNameFieldName -> "")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your contact name"
         page.getElementsText(fullNameFieldLevelErrorXPath) shouldBe "Enter your contact name"
         page.getElementsText("title") should startWith("Error: ")
@@ -556,7 +556,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     "produce validation error when full name more than 70 characters" in {
       submitFormInCreateMode(createFormMandatoryFieldsMap + (fullNameFieldName -> oversizedString(70))) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The full name can be a maximum of 70 characters"
         page.getElementsText(fullNameFieldLevelErrorXPath) shouldBe "The full name can be a maximum of 70 characters"
         page.getElementsText("title") should startWith("Error: ")
@@ -566,7 +566,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     "produce validation error when Telephone is not submitted" in {
       submitFormInCreateMode(createFormMandatoryFieldsMap + (telephoneFieldName -> "")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your contact telephone number"
         page.getElementsText(telephoneFieldLevelErrorXPath) shouldBe "Enter your contact telephone number"
         page.getElementsText("title") should startWith("Error: ")
@@ -576,7 +576,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     "produce validation error when Telephone more than 24 characters" in {
       submitFormInCreateMode(createFormMandatoryFieldsMap + (telephoneFieldName -> oversizedString(24))) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The telephone number must be 24 digits or less"
         page.getElementsText(telephoneFieldLevelErrorXPath) shouldBe "The telephone number must be 24 digits or less"
         page.getElementsText("title") should startWith("Error: ")
@@ -586,7 +586,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     "produce validation error when Telephone contains invalid characters" in {
       submitFormInCreateMode(createFormMandatoryFieldsMap + (telephoneFieldName -> "$£")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Please enter a valid telephone number"
         page.getElementsText(telephoneFieldLevelErrorXPath) shouldBe "Please enter a valid telephone number"
         page.getElementsText("title") should startWith("Error: ")
@@ -602,7 +602,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     "produce validation error when Fax more than 24 characters" in {
       submitFormInCreateMode(createFormMandatoryFieldsMap + (faxFieldName -> oversizedString(24))) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The fax number must be 24 digits or less"
         page.getElementsText(faxFieldLevelErrorXPath) shouldBe "The fax number must be 24 digits or less"
         page.getElementsText("title") should startWith("Error: ")
@@ -612,7 +612,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     "produce validation error when fax contains invalid characters" in {
       submitFormInCreateMode(createFormMandatoryFieldsMap + (faxFieldName -> "$£")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Please enter a valid fax number"
         page.getElementsText(faxFieldLevelErrorXPath) shouldBe "Please enter a valid fax number"
         page.getElementsText("title") should startWith("Error: ")
@@ -628,7 +628,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     "produce validation error when Use registered address is not selected" in {
       submitFormInCreateMode(createFormMandatoryFieldsMap - useRegisteredAddressFlagFieldName) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Tell us if the contact address is right"
         page.getElementsText("title") should startWith("Error: ")
       }
@@ -636,7 +636,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
     "Select Yes when validation fails and use registered address flag Yes was submitted" in {
       submitFormInCreateMode(createFormMandatoryFieldsMap - fullNameFieldName) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementAttribute(useRegisteredAddressYesRadioButtonXPath, "checked") shouldBe "checked"
         page.getElementAttribute(useRegisteredAddressNoRadioButtonXPath, "checked") shouldBe ""
       }
@@ -644,7 +644,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
     "Select No when validation fails and use registered address flag No was submitted" in {
       submitFormInCreateMode(createFormMandatoryFieldsWhenNotUsingRegAddressMap - fullNameFieldName) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementAttribute(useRegisteredAddressNoRadioButtonXPath, "checked") shouldBe "checked"
         page.getElementAttribute(useRegisteredAddressYesRadioButtonXPath, "checked") shouldBe ""
       }
@@ -653,7 +653,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     "require Street when user does not want to use registered address as contact address" in {
       submitFormInCreateMode(createFormMandatoryFieldsWhenNotUsingRegAddressMap + (streetFieldName -> "")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter the first line of your address"
         page.getElementsText(streetFieldLevelErrorXPath) shouldBe "Enter the first line of your address"
         page.getElementsText("title") should startWith("Error: ")
@@ -665,7 +665,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         createFormMandatoryFieldsWhenNotUsingRegAddressMap + (streetFieldName -> oversizedString(70))
       ) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The street must be 70 characters or less"
         page.getElementsText(streetFieldLevelErrorXPath) shouldBe "The street must be 70 characters or less"
         page.getElementsText("title") should startWith("Error: ")
@@ -675,7 +675,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     "require City when user does not want to use registered address as contact address" in {
       submitFormInCreateMode(createFormMandatoryFieldsWhenNotUsingRegAddressMap + (cityFieldName -> "")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your town or city"
         page.getElementsText(cityFieldLevelErrorXPath) shouldBe "Enter your town or city"
         page.getElementsText("title") should startWith("Error: ")
@@ -687,7 +687,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         createFormMandatoryFieldsWhenNotUsingRegAddressMap + (cityFieldName -> oversizedString(35))
       ) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The town or city must be 35 characters or less"
         page.getElementsText(cityFieldLevelErrorXPath) shouldBe "The town or city must be 35 characters or less"
         page.getElementsText("title") should startWith("Error: ")
@@ -698,7 +698,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       submitFormInCreateMode(createFormMandatoryFieldsWhenNotUsingRegAddressMap + (countryCodeFieldName -> "")) {
         result =>
           status(result) shouldBe BAD_REQUEST
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a valid country name"
           page.getElementsText(countryFieldLevelErrorXPath) shouldBe "Enter a valid country name"
           page.getElementsText("title") should startWith("Error: ")
@@ -709,7 +709,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       submitFormInCreateMode(createFormMandatoryFieldsWhenNotUsingRegAddressMap + (countryCodeFieldName -> "GB")) {
         result =>
           status(result) shouldBe BAD_REQUEST
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a valid postcode"
           page.getElementsText(postcodeFieldLevelErrorXPath) shouldBe "Enter a valid postcode"
           page.getElementsText("title") should startWith("Error: ")
@@ -729,7 +729,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         ))
       ) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
 
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The postcode must be 9 characters or less"
 
@@ -745,7 +745,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
     "display page level errors when nothing is entered" in {
       submitFormInCreateMode(createFormAllFieldsEmptyMap) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe
           "Enter your contact name " +
             "Enter your contact telephone number " +

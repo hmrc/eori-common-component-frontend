@@ -27,6 +27,7 @@ import org.scalatest.prop.TableDrivenPropertyChecks._
 import org.scalatest.prop.TableFor2
 import org.scalatest.prop.Tables.Table
 import play.api.mvc.{AnyContent, Request, Result}
+import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameDobSoleTraderController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -116,7 +117,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
         case (subscriptionFlow, expectedLabel) =>
           s"display appropriate label in subscription flow $subscriptionFlow" in {
             showFormFunction(subscriptionFlow) { result =>
-              val page = CdsPage(bodyOf(result))
+              val page = CdsPage(contentAsString(result))
               page.getElementsText(pageTitleXPath) shouldBe expectedLabel
             }
           }
@@ -127,7 +128,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
           .thenReturn(Future.successful(Some(NameDobSoleTraderPage.filledValues)))
 
         showFormFunction(MigrationEoriSoleTraderSubscriptionFlow) { result =>
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
 
           val expectedFirstName = s"${NameDobSoleTraderPage.filledValues.firstName}"
           val expectedLastName  = s"${NameDobSoleTraderPage.filledValues.lastName}"
@@ -154,7 +155,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
     "display the correct text for the continue button" in {
       showCreateForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(continueButtonXpath) shouldBe ContinueButtonTextInCreateMode
       }
     }
@@ -163,7 +164,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
       when(mockSubscriptionBusinessService.cachedSubscriptionNameDobViewModel(any[HeaderCarrier]))
         .thenReturn(Some(NameDobSoleTraderPage.filledValues))
       showCreateForm() { result =>
-        val page              = CdsPage(bodyOf(result))
+        val page              = CdsPage(contentAsString(result))
         val expectedFirstName = s"${NameDobSoleTraderPage.filledValues.firstName}"
         val expectedLastName  = s"${NameDobSoleTraderPage.filledValues.lastName}"
         val expectedDob       = s"${NameDobSoleTraderPage.filledValues.dateOfBirth}"
@@ -176,7 +177,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
     "leave fields empty if details weren't found in cache" in {
       showCreateForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(firstNameFieldXPath) shouldBe 'empty
         page.getElementValue(lastNameFieldXPath) shouldBe 'empty
         page.getElementValue(dateOfBirthYearFieldXPath) shouldBe 'empty
@@ -198,7 +199,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
         .thenReturn(NameDobSoleTraderPage.filledValues)
 
       showReviewForm() { result =>
-        val page              = CdsPage(bodyOf(result))
+        val page              = CdsPage(contentAsString(result))
         val expectedFirstName = s"${NameDobSoleTraderPage.filledValues.firstName}"
         val expectedLastName  = s"${NameDobSoleTraderPage.filledValues.lastName}"
         val expectedDob       = s"${NameDobSoleTraderPage.filledValues.dateOfBirth}"
@@ -215,7 +216,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
     "display the correct text for the continue button" in {
       showReviewForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(continueButtonXpath) shouldBe ContinueButtonTextInReviewMode
       }
     }
@@ -239,7 +240,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
     "validation error when first name is not submitted" in {
       submitFormInCreateMode(createFormAllFieldsNameDobMap + (firstNameFieldId -> "")) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your first name"
         page.getElementsText(firstNameFieldLevelErrorXPath) shouldBe "Enter your first name"
         page.getElementsText("title") should startWith("Error: ")
@@ -250,7 +251,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     "validation error when first name more than 35 characters" in {
       submitFormInCreateMode(createFormAllFieldsNameDobMap + (firstNameFieldName -> stringContaining36Characters)) {
         result =>
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The first name must be 35 characters or less"
           page.getElementsText(firstNameFieldLevelErrorXPath) shouldBe "The first name must be 35 characters or less"
           page.getElementsText("title") should startWith("Error: ")
@@ -263,7 +264,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
         createFormAllFieldsNameDobMap + (firstNameFieldName -> stringContainingInvalidCharacters)
       ) {
         result =>
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a first name without invalid characters"
           page.getElementsText(firstNameFieldLevelErrorXPath) shouldBe "Enter a first name without invalid characters"
           page.getElementsText("title") should startWith("Error: ")
@@ -273,7 +274,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
     "validation error when last name is not submitted" in {
       submitFormInCreateMode(createFormAllFieldsNameDobMap + (lastNameFieldName -> "")) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your last name"
         page.getElementsText(lastNameFieldLevelErrorXPath) shouldBe "Enter your last name"
         page.getElementsText("title") should startWith("Error: ")
@@ -284,7 +285,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     "validation error when last name more than 35 characters" in {
       submitFormInCreateMode(createFormAllFieldsNameDobMap + (lastNameFieldName -> stringContaining36Characters)) {
         result =>
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The last name must be 35 characters or less"
           page.getElementsText(lastNameFieldLevelErrorXPath) shouldBe "The last name must be 35 characters or less"
           page.getElementsText("title") should startWith("Error: ")
@@ -295,7 +296,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     "validation error when last name has invalid characters" in {
       submitFormInCreateMode(createFormAllFieldsNameDobMap + (lastNameFieldName -> stringContainingInvalidCharacters)) {
         result =>
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a last name without invalid characters"
           page.getElementsText(lastNameFieldLevelErrorXPath) shouldBe "Enter a last name without invalid characters"
           page.getElementsText("title") should startWith("Error: ")
@@ -305,7 +306,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
     "validation error when DAY of birth is not submitted" in {
       submitFormInCreateMode(createFormAllFieldsNameDobMap - dobDayFieldName) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a date of birth in the right format"
         page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Enter a date of birth in the right format"
         page.getElementsText("title") should startWith("Error: ")
@@ -315,7 +316,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
     "validation error when MONTH of birth is not submitted" in {
       submitFormInCreateMode(createFormAllFieldsNameDobMap - dobMonthFieldName) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a date of birth in the right format"
         page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Enter a date of birth in the right format"
         page.getElementsText("title") should startWith("Error: ")
@@ -325,7 +326,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
     "validation error when YEAR of birth is not submitted" in {
       submitFormInCreateMode(createFormAllFieldsNameDobMap - dobYearFieldName) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a date of birth in the right format"
         page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Enter a date of birth in the right format"
         page.getElementsText("title") should startWith("Error: ")
@@ -335,7 +336,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
     "validation error when YEAR of birth is in the future" in {
       submitFormInCreateMode(createFormAllFieldsNameDobInFutureMap) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           pageLevelErrorSummaryListXPath
         ) shouldBe "You must specify a date that is not in the future"
@@ -347,7 +348,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
     "display page level errors when nothing is entered" in {
       submitFormInCreateMode(createEmptyFormNameDobMap) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           pageLevelErrorSummaryListXPath
         ) shouldBe "Enter your first name Enter your last name Enter your date of birth"

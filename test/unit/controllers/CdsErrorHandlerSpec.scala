@@ -20,7 +20,7 @@ import org.scalatest.concurrent.ScalaFutures
 import play.api.Configuration
 import play.api.test.FakeRequest
 import play.api.test.Helpers.LOCATION
-import play.mvc.Http.Status._
+import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.CdsErrorHandler
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionTimeOutException
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{client_error_template, error_template, notFound}
@@ -41,7 +41,7 @@ class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {
   "Cds error handler" should {
     "redirect to correct page after receive 500 error" in {
       whenReady(cdsErrorHandler.onServerError(mockRequest, new Exception())) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
 
         status(result) shouldBe INTERNAL_SERVER_ERROR
         page.title should startWith("Sorry, there is a problem with the service")
@@ -68,7 +68,7 @@ class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {
 
     "Redirect to the notfound page on 404 error" in {
       whenReady(cdsErrorHandler.onClientError(mockRequest, statusCode = NOT_FOUND)) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
 
         result.header.status shouldBe NOT_FOUND
         page.title should startWith("Page not found")

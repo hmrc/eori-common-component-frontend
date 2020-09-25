@@ -153,7 +153,7 @@ class SixLineAddressControllerSpec
       s"show the form without errors when user hasn't been registered yet and organisationType is [$organisationType], and reviewMode is [$reviewMode]" in {
         showForm(organisationType)(Map.empty) { result =>
           status(result) shouldBe OK
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementsText(PageLevelErrorSummaryListXPath) shouldBe empty
         }
       }
@@ -282,7 +282,7 @@ class SixLineAddressControllerSpec
 
       s"redirect to the next page when organisationType is [$organisationType], and reviewMode is [$reviewMode]" in {
         submitForm(organisationType, reviewMode)(formValues) { result =>
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementsText(PageLevelErrorSummaryListXPath) shouldBe empty
 
           status(result) shouldBe SEE_OTHER
@@ -354,7 +354,7 @@ class SixLineAddressControllerSpec
         )
       ) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           AddressPage.pageLevelErrorSummaryListXPath
         ) shouldBe "The entered country is not acceptable"
@@ -394,7 +394,7 @@ class SixLineAddressControllerSpec
   def assertValidFormSubmit(cdsOrgType: String)(formValues: Map[String, String]): Unit =
     submitForm(cdsOrgType)(formValues) { result =>
       status(result) shouldBe SEE_OTHER
-      val page = CdsPage(bodyOf(result))
+      val page = CdsPage(contentAsString(result))
       page.getElementsText(PageLevelErrorSummaryListXPath) shouldBe empty
     }
 
@@ -403,7 +403,7 @@ class SixLineAddressControllerSpec
   )(formValues: Map[String, String])(problemField: String, fieldLevelErrorXPath: String, errorMessage: String): Result =
     submitForm(cdsOrgType)(formValues) { result =>
       status(result) shouldBe BAD_REQUEST
-      val page = CdsPage(bodyOf(result))
+      val page = CdsPage(contentAsString(result))
       page.getElementsText(PageLevelErrorSummaryListXPath) shouldBe errorMessage
       page.getElementsText(fieldLevelErrorXPath) shouldBe errorMessage
       page.getElementsText("title") should startWith("Error: ")

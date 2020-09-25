@@ -108,7 +108,7 @@ class VatDetailsControllerSpec
     "show error when no postcode is supplied" in {
       submitFormInCreateMode(validRequest + ("postcode" -> "")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           pageLevelErrorSummaryListXPath
         ) shouldBe "Enter a valid postcode of your VAT registration address"
@@ -136,7 +136,7 @@ class VatDetailsControllerSpec
     "show error when no VAT number is supplied" in {
       submitFormInCreateMode(validRequest + ("vat-number" -> "")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your VAT number"
         page.getElementsText(vatNumberFieldLevelError) shouldBe "Enter your VAT number"
         page.getElementsText("title") should startWith("Error: ")
@@ -146,7 +146,7 @@ class VatDetailsControllerSpec
     "show error when VAT number is supplied in wrong format - 10 digits" in {
       submitFormInCreateMode(validRequest + ("vat-number" -> "1234567890")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The VAT number must be 9 digits"
         page.getElementsText(vatNumberFieldLevelError) shouldBe "The VAT number must be 9 digits"
         page.getElementsText("title") should startWith("Error: ")
@@ -156,7 +156,7 @@ class VatDetailsControllerSpec
     "show error when VAT number is supplied in wrong format - 8 digits" in {
       submitFormInCreateMode(validRequest + ("vat-number" -> "12345678")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The VAT number must be 9 digits"
         page.getElementsText(vatNumberFieldLevelError) shouldBe "The VAT number must be 9 digits"
         page.getElementsText("title") should startWith("Error: ")
@@ -166,7 +166,7 @@ class VatDetailsControllerSpec
     "show error when VAT number is supplied in wrong format - 8 digits and 1 char" in {
       submitFormInCreateMode(validRequest + ("vat-number" -> "12345678a")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The VAT number must be 9 digits"
         page.getElementsText(vatNumberFieldLevelError) shouldBe "The VAT number must be 9 digits"
         page.getElementsText("title") should startWith("Error: ")
@@ -176,7 +176,7 @@ class VatDetailsControllerSpec
     "show error when VAT number is supplied in wrong format - 8 digits and 1 symbol" in {
       submitFormInCreateMode(validRequest + ("vat-number" -> "12345678%")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The VAT number must be 9 digits"
         page.getElementsText(vatNumberFieldLevelError) shouldBe "The VAT number must be 9 digits"
         page.getElementsText("title") should startWith("Error: ")
@@ -191,7 +191,7 @@ class VatDetailsControllerSpec
           "vat-effective-date.year"  -> "")
       ) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           pageLevelErrorSummaryListXPath
         ) shouldBe "Enter your effective VAT date, for example '31 3 1980'"
@@ -210,7 +210,7 @@ class VatDetailsControllerSpec
           "vat-effective-date.year"  -> "2002")
       ) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           pageLevelErrorSummaryListXPath
         ) shouldBe "Please enter a valid date, for example '31 3 1980'"
@@ -230,7 +230,7 @@ class VatDetailsControllerSpec
           "vat-effective-date.year"  -> tomorrow.getYear.toString)
       ) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           pageLevelErrorSummaryListXPath
         ) shouldBe "You must specify a date that is not in the future"

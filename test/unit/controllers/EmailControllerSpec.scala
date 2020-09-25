@@ -86,7 +86,7 @@ class EmailControllerSpec
     "display the form with no errors" in {
       showFormSubscription() { result =>
         status(result) shouldBe SEE_OTHER
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(PageLevelErrorSummaryListXPath) shouldBe empty
       }
     }

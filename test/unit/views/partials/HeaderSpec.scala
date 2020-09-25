@@ -16,6 +16,7 @@
 
 package unit.views.partials
 
+import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
@@ -54,7 +55,7 @@ class HeaderSpec extends ControllerSpec with AuthActionMock {
 
       val result = controller.start().apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
-      val page = CdsPage(bodyOf(result))
+      val page = CdsPage(contentAsString(result))
       page.elementIsPresent("//a[@id='sign-out']") shouldBe true
     }
 
@@ -63,7 +64,7 @@ class HeaderSpec extends ControllerSpec with AuthActionMock {
 
       val result = controller.start().apply(SessionBuilder.buildRequestWithSessionNoUser)
 
-      val page = CdsPage(bodyOf(result))
+      val page = CdsPage(contentAsString(result))
       page.elementIsPresent("//a[@id='sign-out']") shouldBe false
     }
   }
@@ -79,7 +80,7 @@ class HeaderSpec extends ControllerSpec with AuthActionMock {
           )
         )
 
-      val page = CdsPage(bodyOf(result))
+      val page = CdsPage(contentAsString(result))
 
       page.getElementAttribute("//a[@id='feedback-link']", "href") should endWith(
         "/contact/beta-feedback-unauthenticated?service=eori-common-component-subscribe-atar"

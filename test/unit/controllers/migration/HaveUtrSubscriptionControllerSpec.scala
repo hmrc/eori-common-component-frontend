@@ -72,7 +72,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
       createForm(Journey.Subscribe) { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should include(SubscriptionRowCompanyUtr.title)
         page.getElementText(utrLabelXPath) shouldBe "Corporation Tax UTR number"
       }
@@ -83,7 +83,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(SoleTrader))
       createForm(Journey.Subscribe) { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should include(SubscriptionRowIndividualsUtr.title)
         page.getElementText(utrLabelXPath) shouldBe "Self Assessment UTR number"
 
@@ -95,7 +95,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Individual))
       createForm(Journey.Subscribe) { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should include(SubscriptionRowIndividualsUtr.title)
       }
     }

@@ -109,7 +109,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueReviewModeSpec
 
           controllerFixture.showForm { result =>
             status(result) shouldBe OK
-            val page = CdsPage(bodyOf(result).futureValue)
+            val page = CdsPage(contentAsString(result))
             page.getElementsText(webPage.pageLevelErrorSummaryListXPath) shouldBe empty
 
             val assertPresentOnPage = controllerFixture.assertPresentOnPage(page) _

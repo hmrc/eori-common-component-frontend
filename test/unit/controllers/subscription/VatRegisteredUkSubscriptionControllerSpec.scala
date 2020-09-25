@@ -92,14 +92,14 @@ class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with Befo
     }
     "land on a correct location" in {
       createForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should include(VatRegisterUKPage.title)
       }
     }
     "return ok when accessed from review method" in {
       reviewForm() { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should include(VatRegisterUKPage.title)
       }
     }

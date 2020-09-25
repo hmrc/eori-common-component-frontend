@@ -84,7 +84,7 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
 
     "show the page without errors" in showForm { result =>
       status(result) shouldBe OK
-      val page = CdsPage(bodyOf(result))
+      val page = CdsPage(contentAsString(result))
       page.elementIsPresent(pageLevelErrorSummaryListXPath) shouldBe false
       assertRadioButtonIsPresent(page, soleTraderLabelXpath, "Sole trader", "sole-trader")
       assertRadioButtonIsPresent(page, individualLabelXpath, "Individual", "individual")
@@ -112,7 +112,7 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
 
     "be mandatory" in submitForm(validRequestData - "individual-type") { result =>
       status(result) shouldBe BAD_REQUEST
-      val page = CdsPage(bodyOf(result))
+      val page = CdsPage(contentAsString(result))
       page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe ErrorSelectSoleTraderOrIndividual
       page.getElementsText(fieldLevelErrorIndividualTypeXPath) shouldBe ErrorSelectSoleTraderOrIndividual
       page.getElementsText("title") should startWith("Error: ")
@@ -120,7 +120,7 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
 
     "reject wrong options" in submitForm(validRequestData + ("individual-type" -> "invalid")) { result =>
       status(result) shouldBe BAD_REQUEST
-      val page = CdsPage(bodyOf(result))
+      val page = CdsPage(contentAsString(result))
       page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe ErrorSelectSoleTraderOrIndividual
       page.getElementsText(fieldLevelErrorIndividualTypeXPath) shouldBe ErrorSelectSoleTraderOrIndividual
       page.getElementsText("title") should startWith("Error: ")

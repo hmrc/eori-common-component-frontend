@@ -97,7 +97,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
           val includeUk           = userLocation == UserLocation.Uk
           val includeEu           = userLocation == UserLocation.Eu
           val includeThirdCountry = userLocation == UserLocation.ThirdCountry
-          val page                = CdsPage(bodyOf(result))
+          val page                = CdsPage(contentAsString(result))
           page.elementIsPresent(companyXpath) shouldBe includeUk
           page.elementIsPresent(soleTraderXpath) shouldBe includeUk
           page.elementIsPresent(individualXpath) shouldBe includeUk
@@ -128,7 +128,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
     "ensure an organisation type has been selected" in {
       submitForm(Map.empty, journey = Journey.Register) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(EuOrgOrIndividualPage.pageLevelErrorSummaryListXPath) shouldBe ProblemWithSelectionError
         page.getElementsText(EuOrgOrIndividualPage.fieldLevelErrorOrganisationType) shouldBe ProblemWithSelectionError
       }

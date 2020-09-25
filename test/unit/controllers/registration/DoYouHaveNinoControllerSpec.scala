@@ -80,7 +80,7 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
     "display the form" in {
       displayForm() { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe empty
         page.getElementsText(fieldLevelErrorNino) shouldBe empty
       }
@@ -89,7 +89,7 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
     "ensure the labels are correct" in {
       displayForm() { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(yesLabel) shouldBe "Yes"
         page.elementIsPresent(yesRadioButton) shouldBe true
 
@@ -103,7 +103,7 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
     "display nino field when user select yes" in {
       displayForm() { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.elementIsPresent(yesRadioButton) shouldBe true
 
         page.getElementsText(ninoLabelBold) should include("National Insurance number")
@@ -156,7 +156,7 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
 
       submitForm(yesNinoSubmitData) { result =>
         await(result)
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         status(result) shouldBe BAD_REQUEST
         val expectedIndividual = Individual.withLocalDate("First name", None, "Last name", new LocalDate(2015, 10, 15))
         verify(mockMatchingService).matchIndividualWithId(meq(validNino), meq(expectedIndividual), any())(
@@ -174,7 +174,7 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
 
       submitForm(yesNinoSubmitData) { result =>
         await(result)
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         status(result) shouldBe BAD_REQUEST
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe notMatchedError
       }
@@ -184,7 +184,7 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
       "be mandatory" in {
         submitForm(yesNinoNotProvidedSubmitData) { result =>
           status(result) shouldBe BAD_REQUEST
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your National Insurance number"
           page.getElementsText(fieldLevelErrorNino) shouldBe "Enter your National Insurance number"
         }
@@ -193,7 +193,7 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
       "be valid" in {
         submitForm(yesNinoWrongFormatSubmitData) { result =>
           status(result) shouldBe BAD_REQUEST
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementsText(
             pageLevelErrorSummaryListXPath
           ) shouldBe "The National Insurance number must be 9 characters"

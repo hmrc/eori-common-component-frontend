@@ -65,7 +65,7 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec with Aut
         .thenReturn(Future.successful(Some(someVatEuDetailsModel)))
       createForm() { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should include(RemoveVatDetails.title)
       }
     }

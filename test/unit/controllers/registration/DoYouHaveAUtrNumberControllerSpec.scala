@@ -92,7 +92,7 @@ class DoYouHaveAUtrNumberControllerSpec
     "display the form" in {
       showForm(CdsOrganisationType.CharityPublicBodyNotForProfitId) { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe empty
         page.getElementsText(fieldLevelErrorUtr) shouldBe empty
 
@@ -103,7 +103,7 @@ class DoYouHaveAUtrNumberControllerSpec
       submitForm(form = ValidUtrRequest + ("utr" -> ""), CdsOrganisationType.CharityPublicBodyNotForProfitId) {
         result =>
           status(result) shouldBe BAD_REQUEST
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
 
           val labelForUtr  = "Corporation Tax UTR number"
           val errorMessage = "Enter your UTR number"
@@ -124,7 +124,7 @@ class DoYouHaveAUtrNumberControllerSpec
       submitForm(form = ValidUtrRequest + ("utr" -> ""), CdsOrganisationType.CharityPublicBodyNotForProfitId) {
         result =>
           status(result) shouldBe BAD_REQUEST
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your UTR number"
           page.getElementsText(fieldLevelErrorUtr) shouldBe "Enter your UTR number"
           page.getElementsText("title") should startWith("Error: ")
@@ -136,7 +136,7 @@ class DoYouHaveAUtrNumberControllerSpec
       submitForm(form = ValidUtrRequest + ("utr" -> invalidUtr), CdsOrganisationType.CharityPublicBodyNotForProfitId) {
         result =>
           status(result) shouldBe BAD_REQUEST
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe UtrInvalidError
           page.getElementsText(fieldLevelErrorUtr) shouldBe UtrInvalidError
           page.getElementsText("title") should startWith("Error: ")
@@ -176,7 +176,7 @@ class DoYouHaveAUtrNumberControllerSpec
       ).thenReturn(Future.successful(false))
       submitForm(ValidUtrRequest, CdsOrganisationType.CharityPublicBodyNotForProfitId) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe BusinessNotMatchedError
         page.getElementsText("title") should startWith("Error: ")
       }
@@ -216,7 +216,7 @@ class DoYouHaveAUtrNumberControllerSpec
 
     "when ThirdCountryOrganisationId is passed" in {
       showForm(CdsOrganisationType.ThirdCountryOrganisationId) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should startWith(
           "Does your organisation have a Unique Taxpayer Reference (UTR) number issued in the UK?"
         )
@@ -271,7 +271,7 @@ class DoYouHaveAUtrNumberControllerSpec
   "display the form for ROW" should {
     "contain a proper content for sole traders" in {
       showForm(CdsOrganisationType.ThirdCountrySoleTraderId, defaultUserId) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should startWith(
           "Do you have a Self Assessment Unique Taxpayer Reference (UTR) number issued in the UK?"
         )
@@ -283,7 +283,7 @@ class DoYouHaveAUtrNumberControllerSpec
     }
     "contain a proper content for individuals" in {
       showForm(CdsOrganisationType.ThirdCountryIndividualId, defaultUserId) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should startWith(
           "Do you have a Self Assessment Unique Taxpayer Reference (UTR) number issued in the UK?"
         )
@@ -323,7 +323,7 @@ class DoYouHaveAUtrNumberControllerSpec
         .thenReturn(Future.successful(false))
       submitForm(ValidUtrRequest, CdsOrganisationType.ThirdCountrySoleTraderId) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe IndividualNotMatchedError
         page.getElementsText("title") should startWith("Error: ")
       }
@@ -341,7 +341,7 @@ class DoYouHaveAUtrNumberControllerSpec
       ).thenReturn(Future.successful(false))
       submitForm(ValidUtrRequest, CdsOrganisationType.CharityPublicBodyNotForProfitId) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe BusinessNotMatchedError
         page.getElementsText("title") should startWith("Error: ")
       }

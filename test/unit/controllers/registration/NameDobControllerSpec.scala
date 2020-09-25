@@ -68,7 +68,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
     "display the form" in {
       showForm("sole-trader") { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsHtml(pageLevelErrorSummaryListXPath) shouldBe empty
         page.getElementsText(firstName) shouldBe empty
         page.getElementsText(lastName) shouldBe empty
@@ -80,7 +80,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
     "be mandatory" in {
       submitForm(form = ValidRequest + ("first-name" -> ""), "individual") { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your first name"
         page.getElementsText(fieldLevelErrorFirstName) shouldBe "Enter your first name"
         page.getElementsText("title") should startWith("Error: ")
@@ -91,7 +91,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
       val firstNameMaxLength = 35
       submitForm(ValidRequest + ("first-name" -> oversizedString(firstNameMaxLength)), "individual") { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe maxLengthError(firstNameMaxLength, "first")
         page.getElementsText(fieldLevelErrorFirstName) shouldBe maxLengthError(firstNameMaxLength, "first")
         page.getElementsText("title") should startWith("Error: ")
@@ -102,7 +102,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
   "middle name" should {
     "not be shown" in {
       showForm("sole-trader") { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.elementIsPresent(middleName) shouldBe false
       }
     }
@@ -113,7 +113,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
     "be mandatory" in {
       submitForm(ValidRequest + ("last-name" -> ""), "individual") { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your last name"
         page.getElementsText(fieldLevelErrorLastName) shouldBe "Enter your last name"
         page.getElementsText("title") should startWith("Error: ")
@@ -124,7 +124,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
       val lastNameMaxLength = 35
       submitForm(ValidRequest + ("last-name" -> oversizedString(lastNameMaxLength)), "sole-trader") { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe maxLengthError(lastNameMaxLength, "last")
         page.getElementsText(fieldLevelErrorLastName) shouldBe maxLengthError(lastNameMaxLength, "last")
         page.getElementsText("title") should startWith("Error: ")
@@ -140,7 +140,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
         "individual"
       ) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your date of birth"
         page.getElementsText(fieldLevelErrorDateOfBirth) shouldBe "Enter your date of birth"
         page.getElementsText("title") should startWith("Error: ")
@@ -150,7 +150,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
     "be a valid date" in {
       submitForm(ValidRequest + ("date-of-birth.day" -> "32"), "individual") { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a date of birth in the right format"
         page.getElementsText(fieldLevelErrorDateOfBirth) shouldBe "Enter a date of birth in the right format"
         page.getElementsText("title") should startWith("Error: ")
@@ -167,7 +167,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
         "sole-trader"
       ) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe FutureDate
         page.getElementsText(fieldLevelErrorDateOfBirth) shouldBe FutureDate
         page.getElementsText("title") should startWith("Error: ")
@@ -180,7 +180,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
         "individual"
       ) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a date of birth in the right format"
         page.getElementsText(fieldLevelErrorDateOfBirth) shouldBe "Enter a date of birth in the right format"
         page.getElementsText("title") should startWith("Error: ")

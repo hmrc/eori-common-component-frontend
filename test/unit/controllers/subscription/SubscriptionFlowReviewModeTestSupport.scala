@@ -31,18 +31,18 @@ trait SubscriptionFlowReviewModeTestSupport extends SubscriptionFlowTestSupport 
   protected val ContinueButtonTextInReviewMode = "Save and review"
 
   def verifyFormSubmitsInReviewMode: Future[Result] => Any = { result =>
-    val page = CdsPage(bodyOf(result))
+    val page = CdsPage(contentAsString(result))
     page.formAction(formId) shouldBe submitInReviewModeUrl
   }
 
   def verifyNoStepsAndBackLinkInReviewMode: Future[Result] => Any = { result =>
-    val page = CdsPage(bodyOf(result))
+    val page = CdsPage(contentAsString(result))
     page.elementIsPresent(SubscriptionContactDetailsPage.stepsXpath) shouldBe false
     page.getElementAttributeHref(SubscriptionContactDetailsPage.backLinkXPath) shouldBe previousPageUrl
   }
 
   def verifyBackLinkInReviewMode: Future[Result] => Any = { result =>
-    val page = CdsPage(bodyOf(result))
+    val page = CdsPage(contentAsString(result))
     page.getElementAttributeHref(SubscriptionContactDetailsPage.backLinkXPath) shouldBe previousPageUrl
   }
 

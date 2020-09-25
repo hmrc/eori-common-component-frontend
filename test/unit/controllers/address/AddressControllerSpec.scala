@@ -131,7 +131,7 @@ class AddressControllerSpec
 
     "display title as 'Enter your business address'" in {
       showCreateForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title() should startWith("Enter your organisation address")
       }
     }
@@ -146,7 +146,7 @@ class AddressControllerSpec
 
     "have Address input field without data if not cached previously" in {
       showCreateForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         verifyAddressFieldExistsWithNoData(page)
       }
     }
@@ -155,14 +155,14 @@ class AddressControllerSpec
       when(mockSubscriptionBusinessService.address(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(AddressPage.filledValues)))
       showCreateForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         verifyAddressFieldExistsAndPopulatedCorrectly(page)
       }
     }
 
     "display the correct text for the continue button" in {
       showCreateForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(AddressPage.continueButtonXpath) shouldBe ContinueButtonTextInCreateMode
       }
     }
@@ -173,7 +173,7 @@ class AddressControllerSpec
 
     "display title as 'Enter your address'" in {
       showCreateForm(userSelectedOrganisationType = Some(CdsOrganisationType.Individual)) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title() should startWith("Enter your address")
         page.h1() shouldBe "Enter your address"
       }
@@ -189,7 +189,7 @@ class AddressControllerSpec
 
     "display title as 'Enter your address'" in {
       showReviewForm(userSelectedOrganisationType = Some(CdsOrganisationType.Individual)) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title() should startWith("Enter your address")
         page.h1() shouldBe "Enter your address"
       }
@@ -200,7 +200,7 @@ class AddressControllerSpec
 
     "display title as 'Enter your business address'" in {
       showCreateForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title() should startWith("Enter your organisation address")
       }
     }
@@ -211,21 +211,21 @@ class AddressControllerSpec
 
     "retrieve the cached data" in {
       showReviewForm() { result =>
-        CdsPage(bodyOf(result))
+        CdsPage(contentAsString(result))
         verify(mockSubscriptionBusinessService).addressOrException(any[HeaderCarrier])
       }
     }
 
     "have all the required input fields without data" in {
       showReviewForm(AddressViewModel("", "", None, "")) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         verifyAddressFieldExistsWithNoData(page)
       }
     }
 
     "display the correct text for the continue button" in {
       showReviewForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(AddressPage.continueButtonXpath) shouldBe ContinueButtonTextInReviewMode
       }
     }
@@ -252,7 +252,7 @@ class AddressControllerSpec
 
     "redirect to next screen" in {
       submitFormInCreateModeForOrganisation(mandatoryFields) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should startWith(ConfirmPage.title)
       }
     }
@@ -262,7 +262,7 @@ class AddressControllerSpec
 
     "redirect to next screen" in {
       submitFormInCreateModeForIndividual(mandatoryFields) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should startWith("These are the details we have about you")
       }
     }
@@ -316,7 +316,7 @@ class AddressControllerSpec
     "be mandatory" in {
       submitFormInCreateModeForOrganisation(mandatoryFieldsEmpty) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(AddressPage.pageLevelErrorSummaryListXPath) should include(
           "Enter the first line of your address"
         )
@@ -334,7 +334,7 @@ class AddressControllerSpec
         Map("street" -> "My street", "city" -> "My city", "postcode" -> "", "countryCode" -> "GB")
       ) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(AddressPage.pageLevelErrorSummaryListXPath) shouldBe "Enter a valid postcode"
 
         page.getElementsText(AddressPage.postcodeFieldLevelErrorXPath) shouldBe "Enter a valid postcode"
@@ -346,7 +346,7 @@ class AddressControllerSpec
         Map("street" -> "My street", "city" -> "My city", "postcode" -> "", "countryCode" -> "JE")
       ) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(AddressPage.pageLevelErrorSummaryListXPath) shouldBe "Enter a valid postcode"
         page.getElementsText(AddressPage.postcodeFieldLevelErrorXPath) shouldBe "Enter a valid postcode"
       }
@@ -360,7 +360,7 @@ class AddressControllerSpec
         )
       ) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(AddressPage.pageLevelErrorSummaryListXPath) should include(
           "Enter the first line of your address"
         )
@@ -375,7 +375,7 @@ class AddressControllerSpec
       val streetLine = stringOfLengthXGen(70)
       submitFormInCreateModeForOrganisation(mandatoryFields ++ Map("street" -> streetLine.sample.get)) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           AddressPage.streetFieldLevelErrorXPath
         ) shouldBe "The first line of the address must be 70 characters or less"
@@ -386,7 +386,7 @@ class AddressControllerSpec
       val city = stringOfLengthXGen(35)
       submitFormInCreateModeForOrganisation(mandatoryFields ++ Map("city" -> city.sample.get)) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           AddressPage.cityFieldLevelErrorXPath
         ) shouldBe "The town or city must be 35 characters or less"
@@ -399,7 +399,7 @@ class AddressControllerSpec
         Map("street" -> "My street", "city" -> "City", "postcode" -> "123456789", "countryCode" -> "JE")
       ) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(AddressPage.pageLevelErrorSummaryListXPath) shouldBe "Enter a valid postcode"
         page.getElementsText(AddressPage.postcodeFieldLevelErrorXPath) shouldBe "Enter a valid postcode"
       }
@@ -410,7 +410,7 @@ class AddressControllerSpec
         Map("street" -> "My street", "city" -> "City", "postcode" -> "1234567890", "countryCode" -> "FR")
       ) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           AddressPage.pageLevelErrorSummaryListXPath
         ) shouldBe "The postcode must be 9 characters or less"

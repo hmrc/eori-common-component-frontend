@@ -99,7 +99,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
 
     "display title as 'Check your email address'" in {
       showForm(journey = Journey.Subscribe) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title() should startWith("Check your email address")
       }
     }
@@ -166,7 +166,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     "display an error message when no option is selected" in {
       submitForm(ValidRequest - yesNoInputName, service = Service.ATaR, journey = Journey.Subscribe) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(CheckYourEmailPage.pageLevelErrorSummaryListXPath) shouldBe problemWithSelectionError
         page.getElementsText(CheckYourEmailPage.fieldLevelErrorYesNoAnswer) shouldBe problemWithSelectionError
       }
@@ -176,7 +176,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   "Redirecting to Verify Your Email Address Page" should {
     "display title as 'Verify your email address'" in {
       verifyEmailViewForm(journey = Journey.Subscribe) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title() should startWith("Verify your email address")
       }
     }

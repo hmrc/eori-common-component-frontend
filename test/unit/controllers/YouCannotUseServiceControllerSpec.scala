@@ -49,7 +49,7 @@ class YouCannotUseServiceControllerSpec extends ControllerSpec with AuthActionMo
     "return Unauthorised 401 when page method is requested" in {
       page(Journey.Register) { result =>
         status(result) shouldBe UNAUTHORIZED
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should startWith(messages("cds.you-cant-use-service.heading"))
       }
     }
@@ -57,7 +57,7 @@ class YouCannotUseServiceControllerSpec extends ControllerSpec with AuthActionMo
     "return Unauthorised 401 when unauthorisedPage method is requested" in {
       unauthorisedPage() { result =>
         status(result) shouldBe UNAUTHORIZED
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should startWith(messages("cds.server-errors.401.heading"))
       }
     }

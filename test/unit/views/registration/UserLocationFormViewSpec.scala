@@ -21,6 +21,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
+import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.UserLocationController
@@ -99,7 +100,7 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach wi
 
     s"display title as '$expectedTitleOrganisation for entity with type organisation" in {
       showForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title() should startWith(expectedTitleOrganisation)
       }
     }
@@ -108,14 +109,14 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach wi
 
     s"display title as '$expectedTitleIndividual for entity with type individual" in {
       showForm(affinityGroup = AffinityGroup.Individual) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title() should startWith(expectedTitleIndividual)
       }
     }
 
     "submit result when user chooses to continue" in {
       showForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page
           .formAction(
             "user-location-form"
@@ -127,7 +128,7 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach wi
 
     "display correct location on registration journey" in {
       showForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.elementIsPresent(UserLocationPageOrganisation.locationUkField) should be(true)
         page.getElementValue(UserLocationPageOrganisation.locationUkField) should be("uk")
         page.elementIsPresent(UserLocationPageOrganisation.locationIomField) should be(true)
@@ -143,7 +144,7 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach wi
 
     "display correct location on migration journey" in {
       showMigrationForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.elementIsPresent(UserLocationPageOrganisation.locationUkField) should be(true)
         page.getElementValue(UserLocationPageOrganisation.locationUkField) should be("uk")
         page.elementIsPresent(UserLocationPageOrganisation.locationIslandsField) should be(true)
@@ -157,7 +158,7 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach wi
 
     "display a progressive disclosure element for countries in the EU" in {
       showForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(UserLocationPageOrganisation.countriesInTheEuTitleElement) should be("Countries in the EU")
         page.getElementsText(UserLocationPageOrganisation.countriesInTheEuContentsElement) should be(
           "Austria, Belgium, Bulgaria, Croatia, Republic of Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Poland, Portugal, Romania, Slovakia, Slovenia, Spain and Sweden."

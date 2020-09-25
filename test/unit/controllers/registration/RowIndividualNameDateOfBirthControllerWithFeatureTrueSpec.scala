@@ -117,7 +117,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueSpec
         controllerFixture =>
           controllerFixture.showForm { result =>
             status(result) shouldBe OK
-            val page = CdsPage(bodyOf(result).futureValue)
+            val page = CdsPage(contentAsString(result))
             page.getElementsText(webPage.pageLevelErrorSummaryListXPath) shouldBe empty
 
             val assertPresentOnPage = controllerFixture.assertPresentOnPage(page) _
@@ -363,7 +363,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueSpec
 
         submitForm(formData(individualNameAndDateOfBirth)) { result =>
           status(result) shouldBe SEE_OTHER
-          CdsPage(bodyOf(result).futureValue).getElementsHtml(webPage.pageLevelErrorSummaryListXPath) shouldBe empty
+          CdsPage(contentAsString(result)).getElementsHtml(webPage.pageLevelErrorSummaryListXPath) shouldBe empty
         }
       }
 
@@ -374,7 +374,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueSpec
 
           submitForm(formData(individualNameAndDateOfBirth)) { result =>
             status(result) shouldBe SEE_OTHER
-            CdsPage(bodyOf(result).futureValue).getElementsHtml(webPage.pageLevelErrorSummaryListXPath) shouldBe empty
+            CdsPage(contentAsString(result)).getElementsHtml(webPage.pageLevelErrorSummaryListXPath) shouldBe empty
           }
       }
     }

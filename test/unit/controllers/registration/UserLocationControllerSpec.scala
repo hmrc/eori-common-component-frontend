@@ -150,7 +150,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
     "display the form with no errors" in {
       showForm() { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe empty
       }
     }
@@ -166,7 +166,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
     "ensure a location option has been selected" in {
       submitForm(Map.empty) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe ProblemWithSelectionError
         page.getElementsText(fieldLevelErrorLocation) shouldBe ProblemWithSelectionError
         page.getElementsText("title") should startWith("Error: ")
@@ -177,7 +177,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
       val invalidOption = UUID.randomUUID.toString
       submitForm(Map(locationFieldName -> invalidOption)) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe ProblemWithSelectionError
         page.getElementsText(fieldLevelErrorLocation) shouldBe ProblemWithSelectionError
         page.getElementsText("title") should startWith("Error: ")
@@ -579,7 +579,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         .thenReturn(Future.successful(processedDate))
       processing() { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title() should startWith("The EORI application is being processed")
       }
     }
