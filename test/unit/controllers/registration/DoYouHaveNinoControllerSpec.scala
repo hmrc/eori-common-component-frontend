@@ -26,7 +26,8 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.DoYouHaveNinoController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, NameDobMatchModel, Nino}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, NameDobMatchModel, Nino, NinoMatchModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.rowIndividualsNinoForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.MatchingService
@@ -37,7 +38,7 @@ import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
-import util.builders.matching.DoYouHaveNinoBuilder._
+import util.builders.matching.NinoFormBuilder
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -66,6 +67,13 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
 
   override def beforeEach: Unit =
     reset(mockMatchingService)
+
+  val validNino                           = Nino(NinoFormBuilder.Nino)
+  val yesNinoSubmitData                   = Map("have-nino" -> "true", "nino" -> NinoFormBuilder.Nino)
+  val yesNinoNotProvidedSubmitData        = Map("have-nino" -> "true", "nino" -> "")
+  val yesNinoWrongFormatSubmitData        = Map("have-nino" -> "true", "nino" -> "ABZ")
+  val noNinoSubmitData                    = Map("have-nino" -> "false")
+  val mandatoryNinoFields: NinoMatchModel = rowIndividualsNinoForm.bind(yesNinoSubmitData).value.get
 
   "Viewing the NINO Individual/Sole trader Rest of World Matching form" should {
 

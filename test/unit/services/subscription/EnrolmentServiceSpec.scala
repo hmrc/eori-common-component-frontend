@@ -26,7 +26,6 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.{Enrolment, EnrolmentIdentifier, Enrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{EnrolmentStoreProxyConnector, TaxEnrolmentsConnector}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest._
@@ -45,9 +44,6 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
   private val enrolmentService = new EnrolmentService(enrolmentStoreProxyConnector, taxEnrolmentsConnector)(global)
 
   private val eori = "GB123456789012"
-
-  private val enrolments =
-    Enrolments(Set(Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", eori)), "")))
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

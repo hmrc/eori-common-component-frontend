@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth
 
-import play.api.mvc.{AnyContent, Request, Result, Results}
+import play.api.mvc.{AnyContent, Request, Result}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.NoActiveSession
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.JourneyTypeFromUrl

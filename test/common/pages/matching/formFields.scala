@@ -17,8 +17,6 @@
 package common.pages.matching
 
 trait IndividualNameDateFields {
-  val FirstName      = "First name"
-  val firstNameField = "first-name"
 
   val GivenName      = "Given name"
   val givenNameField = "given-name"
@@ -26,14 +24,10 @@ trait IndividualNameDateFields {
   val MiddleName      = "Middle name"
   val middleNameField = "middle-name"
 
-  val LastName      = "Last name"
-  val lastNameField = "last-name"
-
   val FamilyName      = "Family name"
   val familyNameField = "family-name"
 
   val DateOfBirth           = "Date of birth"
-  val dateOfBirthField      = "date-of-birth"
   val dateOfBirthDayField   = "date-of-birth.day"
   val dateOfBirthMonthField = "date-of-birth.month"
   val dateOfBirthYearField  = "date-of-birth.year"

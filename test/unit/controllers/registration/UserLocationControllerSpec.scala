@@ -68,7 +68,6 @@ import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
-import util.builders.UserLocationFormBuilder._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -165,7 +164,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
     )
 
     "ensure a location option has been selected" in {
-      submitForm(ValidRequest - locationFieldName) { result =>
+      submitForm(Map.empty) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe ProblemWithSelectionError
@@ -176,7 +175,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
 
     "ensure a valid answer option has been selected" in {
       val invalidOption = UUID.randomUUID.toString
-      submitForm(ValidRequest + (locationFieldName -> invalidOption)) { result =>
+      submitForm(Map(locationFieldName -> invalidOption)) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe ProblemWithSelectionError
@@ -188,7 +187,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
     "redirect to uk vat registered page  when 'iom' is selected" in {
       when(mockSave4LaterService.fetchSafeId(any[InternalId])(any[HeaderCarrier])).thenReturn(Future.successful(None))
 
-      submitForm(ValidRequest + (locationFieldName -> UserLocation.Iom)) { result =>
+      submitForm(Map(locationFieldName -> UserLocation.Iom)) { result =>
         status(result) shouldBe SEE_OTHER
         val expectedUrl =
           YouNeedADifferentServiceIomController.form(Journey.Register).url
@@ -383,7 +382,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
 
       when(mockSave4LaterService.fetchSafeId(any[InternalId])(any[HeaderCarrier])).thenReturn(Future.successful(None))
 
-      submitForm(ValidRequest + (locationFieldName -> selectedOptionValue)) { result =>
+      submitForm(Map(locationFieldName -> selectedOptionValue)) { result =>
         status(result)
         verify(mockRequestSessionData).sessionWithUserLocationAdded(ArgumentMatchers.eq(selectedOptionToJourney))(
           any[Request[AnyContent]]
@@ -401,7 +400,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
             .getStatus(any[String], any[String])(any[HeaderCarrier])
         ).thenReturn(Future.successful(SubscriptionProcessing))
 
-        submitForm(ValidRequest + (locationFieldName -> selectedOptionValue)) { result =>
+        submitForm(Map(locationFieldName -> selectedOptionValue)) { result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers(LOCATION) should endWith(UserLocationController.processing().url)
         }
@@ -419,7 +418,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         when(mockSessionCache.saveRegistrationDetails(any[RegistrationDetailsSafeId])(any[HeaderCarrier]))
           .thenReturn(Future.successful(true))
 
-        submitForm(ValidRequest + (locationFieldName -> selectedOptionValue)) { result =>
+        submitForm(Map(locationFieldName -> selectedOptionValue)) { result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers(LOCATION) should endWith(
             SignInWithDifferentDetailsController.form(Journey.Register).url
@@ -437,7 +436,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         when(mockTaxEnrolmentsService.doesEnrolmentExist(any[SafeId])(any[HeaderCarrier], any[ExecutionContext]))
           .thenReturn(Future.successful(false))
 
-        submitForm(ValidRequest + (locationFieldName -> selectedOptionValue)) { result =>
+        submitForm(Map(locationFieldName -> selectedOptionValue)) { result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers(LOCATION) should endWith(
             SubscriptionRecoveryController
@@ -492,7 +491,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
           .apply(
             SessionBuilder.buildRequestWithSessionAndFormValues(
               defaultUserId,
-              ValidRequest + (locationFieldName -> selectedOptionValue)
+              Map(locationFieldName -> selectedOptionValue)
             )
           )
 
@@ -548,7 +547,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
           .apply(
             SessionBuilder.buildRequestWithSessionAndFormValues(
               defaultUserId,
-              ValidRequest + (locationFieldName -> selectedOptionValue)
+              Map(locationFieldName -> selectedOptionValue)
             )
           )
 
@@ -562,7 +561,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
       s"redirect to organisation type page  when '$selectedOptionValue' is selected" in {
         when(mockSave4LaterService.fetchSafeId(any[InternalId])(any[HeaderCarrier])).thenReturn(Future.successful(None))
 
-        submitForm(ValidRequest + (locationFieldName -> selectedOptionValue)) { result =>
+        submitForm(Map(locationFieldName -> selectedOptionValue)) { result =>
           status(result) shouldBe SEE_OTHER
           val expectedUrl =
             OrganisationTypeController.form(Service.ATaR, Journey.Register).url

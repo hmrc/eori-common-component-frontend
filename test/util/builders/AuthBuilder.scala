@@ -16,11 +16,9 @@
 
 package util.builders
 
-import org.hamcrest.Description
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.mockito.{ArgumentMatcher, ArgumentMatchers}
-import org.scalatest.selenium.Safari
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve._
@@ -127,8 +125,6 @@ object AuthBuilder {
         case hc: HeaderCarrier if hc.authorization.isEmpty => true
         case _                                             => false
       }
-
-      def describeTo(description: Description): Unit = description.appendText("does not have a bearer token")
     }
 
     when(mockAuthConnector.authorise(any(), any[Retrieval[_]])(ArgumentMatchers.argThat(noBearerTokenMatcher), any()))

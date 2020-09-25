@@ -39,16 +39,14 @@ import scala.concurrent.Future
 class UserGroupIdSubscriptionStatusCheckServiceSpec
     extends UnitSpec with MockitoSugar with BeforeAndAfterEach with ScalaFutures {
 
-  private val mockSubscriptionStatusService     = mock[SubscriptionStatusService]
-  private val mockSave4LaterConnector           = mock[Save4LaterConnector]
-  private implicit val hc: HeaderCarrier        = mock[HeaderCarrier]
-  private implicit val rq: Request[AnyContent]  = mock[Request[AnyContent]]
-  private implicit val reads: Reads[CacheIds]   = mock[Reads[CacheIds]]
-  private implicit val writes: Writes[CacheIds] = mock[Writes[CacheIds]]
-  private val safeId                            = SafeId("safeId")
-  private val groupId                           = GroupId("groupId-123")
-  private val internalId                        = InternalId("internalId-123")
-  private val cacheIds                          = CacheIds(internalId, safeId)
+  private val mockSubscriptionStatusService    = mock[SubscriptionStatusService]
+  private val mockSave4LaterConnector          = mock[Save4LaterConnector]
+  private implicit val hc: HeaderCarrier       = mock[HeaderCarrier]
+  private implicit val rq: Request[AnyContent] = mock[Request[AnyContent]]
+  private val safeId                           = SafeId("safeId")
+  private val groupId                          = GroupId("groupId-123")
+  private val internalId                       = InternalId("internalId-123")
+  private val cacheIds                         = CacheIds(internalId, safeId)
 
   private val service =
     new UserGroupIdSubscriptionStatusCheckService(mockSubscriptionStatusService, mockSave4LaterConnector)

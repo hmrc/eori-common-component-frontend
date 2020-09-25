@@ -64,7 +64,6 @@ class TaxEnrolmentsRequestSpec extends UnitSpec {
     }
 
     "transform to valid format Json when DATEOFESTABLISHMENT isa not present" in {
-      val date                     = LocalDate.parse("2010-04-28")
       val identifiers              = List(KeyValue(key = "EORINUMBER", value = "GB9999999999"))
       val verifiers                = None
       val taxEnrolmentsRequest     = TaxEnrolmentsRequest(identifiers = identifiers, verifiers = verifiers)

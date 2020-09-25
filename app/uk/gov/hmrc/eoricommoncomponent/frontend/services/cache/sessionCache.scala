@@ -160,7 +160,7 @@ class SessionCache @Inject() (
   def saveGroupEnrolment(groupEnrolment: EnrolmentResponse)(implicit hc: HeaderCarrier): Future[Boolean] =
     createOrUpdate(sessionId, groupEnrolmentKey, Json.toJson(groupEnrolment)) map (_ => true)
 
-  private def getCached[T](sessionId: Id, t: (CachedData, Id) => T)(implicit hc: HeaderCarrier): Future[T] =
+  private def getCached[T](sessionId: Id, t: (CachedData, Id) => T): Future[T] =
     findById(sessionId.id).map {
       case Some(Cache(_, Some(data), _, _)) =>
         Json.fromJson[CachedData](data) match {

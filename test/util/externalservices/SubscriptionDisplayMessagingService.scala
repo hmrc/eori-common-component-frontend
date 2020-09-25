@@ -96,70 +96,6 @@ object SubscriptionDisplayMessagingService {
        |}
        | """.stripMargin
 
-  def validResponseWithDOE(typeOfLegalEntity: String, taxPayerID: String = TestData.TaxPayerID): String =
-    s"""{
-       |  "subscriptionDisplayResponse": {
-       |    "responseCommon": {
-       |      "status": "OK",
-       |      "processingDate": "2016-08-17T19:33:47Z",
-       |      "taxPayerID": "$taxPayerID",
-       |      "returnParameters": [
-       |        {
-       |          "paramName": "ETMPFORMBUNDLENUMBER",
-       |          "paramValue": "9876543210"
-       |        },
-       |        {
-       |          "paramName": "POSITION",
-       |          "paramValue": "LINK"
-       |        }
-       |      ]
-       |    },
-       |    "responseDetail": {
-       |      "EORINo": "EN123456789012345",
-       |      "SAFEID": "XY000$taxPayerID",
-       |      "CDSFullName": "John Doe",
-       |      "CDSEstablishmentAddress": {
-       |        "streetAndNumber": "house no Line 1",
-       |        "city": "city name",
-       |        "postalCode": "SE28 1AA",
-       |        "countryCode": "ZZ"
-       |      },
-       |      "establishmentInTheCustomsTerritoryOfTheUnion": "0",
-       |      "typeOfLegalEntity": "$typeOfLegalEntity",
-       |      "contactInformation": {
-       |        "personOfContact": "John Doe",
-       |        "streetAndNumber": "Line 1",
-       |        "city": "city name",
-       |        "postalCode": "SE28 1AA",
-       |        "countryCode": "ZZ",
-       |        "telephoneNumber": "01632961234",
-       |        "faxNumber": "01632961235",
-       |        "emailAddress": "john.doe@example.com"
-       |      },
-       |      "VATIDs": [
-       |        {
-       |          "countryCode": "GB",
-       |          "VATID": "999999"
-       |        },
-       |        {
-       |          "countryCode": "ES",
-       |          "VATID": "888888"
-       |        }
-       |      ],
-       |      "thirdCountryUniqueIdentificationNumber": [
-       |        "321",
-       |        "222"
-       |      ],
-       |      "consentToDisclosureOfPersonalData": "1",
-       |      "shortName": "Doe",
-       |      "dateOfEstablishment": "1963-04-01",
-       |      "typeOfPerson": "1",
-       |      "principalEconomicActivity": "2000"
-       |    }
-       |  }
-       |}
-       | """.stripMargin
-
   def returnSubscriptionDisplayWhenReceiveRequest(
     id: String,
     requestAcknowledgementReference: String,
@@ -172,34 +108,6 @@ object SubscriptionDisplayMessagingService {
           aResponse()
             .withStatus(returnedStatus)
             .withBody(validResponse(typeOfLegalEntity = "0001"))
-            .withHeader(CONTENT_TYPE, JSON)
-        )
-    )
-
-  def stubSubscriptionDisplayValidResponse(eoriNumber: String): Unit =
-    stubFor(
-      get(urlPathEqualTo("/subscription-display"))
-        .withQueryParam("EORI", equalTo(eoriNumber))
-        .withQueryParam("regime", equalTo("CDS"))
-        .withQueryParam("acknowledgementReference", matching("[\\w]{32}"))
-        .willReturn(
-          aResponse()
-            .withStatus(OK)
-            .withBody(validResponse(typeOfLegalEntity = "0001"))
-            .withHeader(CONTENT_TYPE, JSON)
-        )
-    )
-
-  def stubSubscriptionDisplayValidResponseWithDOE(eoriNumber: String): Unit =
-    stubFor(
-      get(urlPathEqualTo("/subscription-display"))
-        .withQueryParam("EORI", equalTo(eoriNumber))
-        .withQueryParam("regime", equalTo("CDS"))
-        .withQueryParam("acknowledgementReference", matching("[\\w]{32}"))
-        .willReturn(
-          aResponse()
-            .withStatus(OK)
-            .withBody(validResponseWithDOE(typeOfLegalEntity = "0001"))
             .withHeader(CONTENT_TYPE, JSON)
         )
     )

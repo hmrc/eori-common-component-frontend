@@ -57,19 +57,11 @@ object EnrolmentStoreProxyService {
         |}""".stripMargin
     }
 
-  private val responseWitNoContent: JsValue =
-    Json.parse {
-      """{}""".stripMargin
-    }
-
   private def endpoint(groupId: String) =
     s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments?type=principal&service=HMRC-CUS-ORG"
 
   def returnEnrolmentStoreProxyResponseOk(groupId: String): Unit =
     stubTheEnrolmentStoreProxyResponse(endpoint(groupId), responseWithOk.toString(), OK)
-
-  def returnEnrolmentStoreProxyResponseNoContent(groupId: String): Unit =
-    stubTheEnrolmentStoreProxyResponse(endpoint(groupId), responseWitNoContent.toString(), NO_CONTENT)
 
   def stubTheEnrolmentStoreProxyResponse(url: String, response: String, status: Int): Unit =
     stubFor(

@@ -22,9 +22,8 @@ import org.joda.time.DateTime
 //TODO THIS MUST DIE !!!
 
 object RegistrationInfoResponseHolderBuilder {
-  val ProcessingDate          = new DateTime().withDate(2016, 3, 17).withTime(9, 31, 5, 0)
-  val defaultTaxPayerId       = "0100086619"
-  val defaultTaxPayerIdPadded = "0100086619" + "0" * 32
+  val ProcessingDate    = new DateTime().withDate(2016, 3, 17).withTime(9, 31, 5, 0)
+  val defaultTaxPayerId = "0100086619"
 
   val address = RegistrationInfoAddress(
     addressLine1 = "Line 1",
@@ -60,47 +59,6 @@ object RegistrationInfoResponseHolderBuilder {
     )
   )
 
-  val IndividualRegistrationInfoResponseHolder   = registrationInfoResponseHolder(AnIndividual, None)
-  val OrganisationRegistrationInfoResponseHolder = registrationInfoResponseHolder(None, AnOrganisation)
-
-  val OrganisationRegistrationMandatoryOnlyInfoResponseHolder = registrationInfoResponseHolder(
-    optionalIndividual = None,
-    optionalOrganisation = Some(
-      RegistrationInfoOrganisation(
-        organisationName = "organisationName",
-        isAGroup = false,
-        organisationType = None,
-        code = None
-      )
-    ),
-    address = RegistrationInfoAddress(
-      addressLine1 = "addressLine1",
-      addressLine2 = None,
-      addressLine3 = None,
-      addressLine4 = None,
-      postalCode = None,
-      countryCode = "ZZ"
-    ),
-    contact =
-      RegistrationInfoContactDetails(phoneNumber = None, mobileNumber = None, faxNumber = None, emailAddress = None)
-  )
-
-  val IndividualRegistrationMandatoryOnlyInfoResponseHolder = registrationInfoResponseHolder(
-    optionalIndividual =
-      Some(RegistrationInfoIndividual(firstName = "John", middleName = None, lastName = "Doe", dateOfBirth = None)),
-    optionalOrganisation = None,
-    address = RegistrationInfoAddress(
-      addressLine1 = "addressLine1",
-      addressLine2 = None,
-      addressLine3 = None,
-      addressLine4 = None,
-      postalCode = None,
-      countryCode = "ZZ"
-    ),
-    contact =
-      RegistrationInfoContactDetails(phoneNumber = None, mobileNumber = None, faxNumber = None, emailAddress = None)
-  )
-
   def registrationInfoResponseHolder(
     optionalIndividual: Option[RegistrationInfoIndividual],
     optionalOrganisation: Option[RegistrationInfoOrganisation],
@@ -124,12 +82,5 @@ object RegistrationInfoResponseHolderBuilder {
       )
     )
   )
-
-  def registrationInfoResponseHolderForOrganisation(taxPayerId: String): RegistrationInfoResponseHolder =
-    registrationInfoResponseHolder(
-      optionalIndividual = None,
-      optionalOrganisation = AnOrganisation,
-      taxPayerId = taxPayerId
-    )
 
 }

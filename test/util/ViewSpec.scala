@@ -19,11 +19,8 @@ package util
 import akka.util.Timeout
 import base.Injector
 import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.Application
 import play.api.i18n.Lang.defaultLang
 import play.api.i18n._
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Request
 import play.api.test.CSRFTokenHelper
 
@@ -40,8 +37,6 @@ trait ViewSpec extends PlaySpec with CSRFTest with Injector {
 }
 
 import play.api.test.FakeRequest
-
-import scala.language.postfixOps
 
 trait CSRFTest {
 

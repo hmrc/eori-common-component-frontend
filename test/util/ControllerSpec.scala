@@ -42,8 +42,6 @@ import scala.util.Random
 
 trait ControllerSpec extends UnitSpec with MockitoSugar with I18nSupport with Injector {
 
-  val configMap: Map[String, Boolean] = Map("metrics.enabled" -> false)
-
   implicit val messagesApi: MessagesApi = instanceOf[MessagesApi]
 
   implicit def materializer: Materializer = NoMaterializer

@@ -17,7 +17,6 @@
 package integration
 
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -31,7 +30,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.EmailVerif
   EmailVerificationRequestSent
 }
 import uk.gov.hmrc.http._
-import util.WireMockRunner
 import util.externalservices.ExternalServicesConfig._
 import util.externalservices.EmailVerificationStubService
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.EmailVerificationStateHttpParser._

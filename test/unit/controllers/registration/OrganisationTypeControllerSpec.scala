@@ -39,7 +39,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder._
-import util.builders.OrganisationTypeBuilder.mandatoryMap
 import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.Future
@@ -127,7 +126,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
     )
 
     "ensure an organisation type has been selected" in {
-      submitForm(mandatoryMap.filterKeys(_ != "organisation-type"), journey = Journey.Register) { result =>
+      submitForm(Map.empty, journey = Journey.Register) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))
         page.getElementsText(EuOrgOrIndividualPage.pageLevelErrorSummaryListXPath) shouldBe ProblemWithSelectionError
@@ -186,7 +185,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
 
       s"store the correct organisation type when '$option' is selected" in {
         submitForm(
-          mandatoryMap + ("organisation-type" -> option),
+          Map("organisation-type" -> option),
           organisationType = Some(cdsOrganisationType),
           journey = Journey.Register
         ) { result =>
