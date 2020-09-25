@@ -18,11 +18,12 @@ package unit.controllers
 
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, KeyValue}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.{ATaR, CDS}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
@@ -56,11 +57,14 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
     appConfig
   )
 
-  override protected def afterEach(): Unit = {
-    reset(mockAuthConnector, enrolmentStoreProxyService)
-
-    super.afterEach()
+  override def beforeEach: Unit = {
+    super.beforeEach()
+    reset(mockAuthConnector, enrolmentStoreProxyService, mockSessionCache)
   }
+
+  private def groupEnrolment(service: Service) = Some(
+    EnrolmentResponse(service.enrolmentKey, "Activated", List(KeyValue("EORINumber", "GB123456463324")))
+  )
 
   "Navigating to start" should {
 
@@ -73,8 +77,8 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
     }
 
     "direct authenticated users to start subscription" in {
-      when(enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(any(), any())(any()))
-        .thenReturn(Future.successful(false))
+      when(enrolmentStoreProxyService.enrolmentForGroup(any(), any())(any()))
+        .thenReturn(Future.successful(None))
 
       withAuthorisedUser(defaultUserId, mockAuthConnector)
       val result =
@@ -85,8 +89,8 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
     }
 
     "direct authenticated users with CDS enrolment to start short-cut subscription" in {
-      when(enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(any(), ArgumentMatchers.eq(ATaR))(any()))
-        .thenReturn(Future.successful(false))
+      when(enrolmentStoreProxyService.enrolmentForGroup(any(), ArgumentMatchers.eq(ATaR))(any()))
+        .thenReturn(Future.successful(None))
 
       val cdsEnrolment = Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", "GB134123")
       withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set(cdsEnrolment))
@@ -96,13 +100,16 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
       status(result) shouldBe SEE_OTHER
       await(result).header.headers("Location") should endWith("check-existing-eori")
+      verifyZeroInteractions(mockSessionCache)
     }
 
     "direct authenticated users where group id has CDS enrolment to start short-cut subscription" in {
-      when(enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(any(), ArgumentMatchers.eq(ATaR))(any()))
-        .thenReturn(Future.successful(false))
-      when(enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(any(), ArgumentMatchers.eq(CDS))(any()))
-        .thenReturn(Future.successful(true))
+      when(enrolmentStoreProxyService.enrolmentForGroup(any(), ArgumentMatchers.eq(ATaR))(any()))
+        .thenReturn(Future.successful(None))
+      when(enrolmentStoreProxyService.enrolmentForGroup(any(), ArgumentMatchers.eq(CDS))(any()))
+        .thenReturn(Future.successful(groupEnrolment(CDS)))
+      when(mockSessionCache.saveGroupEnrolment(any[EnrolmentResponse])(any())).thenReturn(Future.successful(true))
+
       withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set.empty)
 
       val result =
@@ -110,6 +117,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
       status(result) shouldBe SEE_OTHER
       await(result).header.headers("Location") should endWith("check-existing-eori")
+      verify(mockSessionCache).saveGroupEnrolment(any[EnrolmentResponse])(any())
     }
 
     "inform authenticated users with ATAR enrolment that subscription exists" in {
@@ -126,8 +134,8 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
     "inform authenticated users where group Id has an enrolment that subscription exists" in {
 
-      when(enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(any(), ArgumentMatchers.eq(ATaR))(any()))
-        .thenReturn(Future.successful(true))
+      when(enrolmentStoreProxyService.enrolmentForGroup(any(), ArgumentMatchers.eq(ATaR))(any()))
+        .thenReturn(Future.successful(groupEnrolment(CDS)))
 
       withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set.empty)
 

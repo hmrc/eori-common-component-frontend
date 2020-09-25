@@ -24,7 +24,7 @@ object EnrolmentStoreProxyResponse {
   implicit val jsonFormat = Json.format[EnrolmentStoreProxyResponse]
 }
 
-case class EnrolmentResponse(service: String, state: String, identifiers: List[KeyValue]){
+case class EnrolmentResponse(service: String, state: String, identifiers: List[KeyValue]) {
   def eori: Option[String] = identifiers.find(_.key == "EORINumber").map(_.value)
 }
 
