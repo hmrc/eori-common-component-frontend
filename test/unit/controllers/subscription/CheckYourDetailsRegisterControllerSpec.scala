@@ -25,7 +25,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.prop.TableDrivenPropertyChecks._
-import play.api.Application
+import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
 import play.api.test.Helpers._
@@ -135,7 +135,7 @@ class CheckYourDetailsRegisterControllerSpec
       when(mockSubscriptionDetailsHolder.name).thenReturn("John Doe")
 
       showForm(userSelectedOrgType = SoleTrader) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(RegistrationReviewPage.FullNameXPath) shouldBe
           strim("""
                 |John
@@ -159,7 +159,7 @@ class CheckYourDetailsRegisterControllerSpec
         .thenReturn(individualRegistrationDetailsNotIdentifiedByReg01)
 
       showForm(userSelectedOrgType = SoleTrader) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(RegistrationReviewPage.FullNameXPath) shouldBe
           strim("""
                 |John
@@ -192,7 +192,7 @@ class CheckYourDetailsRegisterControllerSpec
 
     "display the business name and address from the cache" in {
       showForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(RegistrationReviewPage.AddressXPath) shouldBe
           strim("""
                 |street
@@ -209,7 +209,7 @@ class CheckYourDetailsRegisterControllerSpec
       when(mockSessionCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(organisationRegistrationDetailsWithEmptySafeId)
       showForm(CdsOrganisationType.ThirdCountryOrganisation) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(RegistrationReviewPage.BusinessNameXPath) shouldBe "orgName"
         page.getElementsText(RegistrationReviewPage.BusinessNameReviewLinkXPath) shouldBe RegistrationReviewPage
           .changeAnswerText("Organisation name")
@@ -235,7 +235,7 @@ class CheckYourDetailsRegisterControllerSpec
       when(mockSubscriptionDetailsHolder.addressDetails)
         .thenReturn(Some(AddressViewModel("street", "city", Some("322811"), "PL")))
       showForm(CdsOrganisationType.ThirdCountryOrganisation) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(RegistrationReviewPage.BusinessNameXPath) shouldBe "orgName"
         page.getElementsText(RegistrationReviewPage.BusinessNameReviewLinkXPath) shouldBe empty
         page.getElementsText(RegistrationReviewPage.AddressXPath) shouldBe
@@ -255,7 +255,7 @@ class CheckYourDetailsRegisterControllerSpec
         .thenReturn(Some(AddressViewModel("street", "city", None, "IN")))
 
       showForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(RegistrationReviewPage.AddressXPath) shouldBe
           strim("""
                 |street
@@ -267,7 +267,7 @@ class CheckYourDetailsRegisterControllerSpec
 
     "display all mandatory fields for an organisation" in {
       showForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(RegistrationReviewPage.UKVatIdentificationNumberXpath) shouldBe NotEntered
         page.getElementsText(RegistrationReviewPage.EUVatDetailsXpath) shouldBe NotEntered
         page.getElementsText(RegistrationReviewPage.ContactDetailsXPath) shouldBe
@@ -293,7 +293,7 @@ class CheckYourDetailsRegisterControllerSpec
       )
 
       showForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         testCommonReviewPageFields(page)
 
         page.getElementsText(RegistrationReviewPage.PrincipalEconomicActivityXPath) shouldBe "9999"
@@ -320,7 +320,7 @@ class CheckYourDetailsRegisterControllerSpec
           .thenReturn(SubscriptionFlow("Organisation"))
 
         showForm(userSelectedOrgType = organisationType) { result =>
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementsText(RegistrationReviewPage.BusinessNameLabelXPath) shouldBe labelText
         }
       }
@@ -337,7 +337,7 @@ class CheckYourDetailsRegisterControllerSpec
         mockRegistrationDetailsBasedOnOrganisationType(organisationType)
 
         showForm(userSelectedOrgType = organisationType) { result =>
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementsText(RegistrationReviewPage.UtrLabelXPath) shouldBe UtrLabelText
         }
       }
@@ -353,7 +353,7 @@ class CheckYourDetailsRegisterControllerSpec
         mockRegistrationDetailsBasedOnOrganisationType(organisationType)
 
         showForm(userSelectedOrgType = organisationType) { result =>
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
 
           page.getElementsText(RegistrationReviewPage.AddressHeadingXPath) shouldBe "Address"
         }
@@ -367,7 +367,7 @@ class CheckYourDetailsRegisterControllerSpec
         mockRegistrationDetailsBasedOnOrganisationType(organisationType)
 
         showForm(userSelectedOrgType = organisationType) { result =>
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.elementIsPresent(RegistrationReviewPage.ShortNameXPath) shouldBe false
         }
       }
@@ -381,7 +381,7 @@ class CheckYourDetailsRegisterControllerSpec
         mockRegistrationDetailsBasedOnOrganisationType(organisationType)
 
         showForm(userSelectedOrgType = organisationType) { result =>
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.elementIsPresent(RegistrationReviewPage.ShortNameXPath) shouldBe true
           page.getElementsText(RegistrationReviewPage.ShortNameXPath) shouldBe shortName
         }
@@ -396,7 +396,7 @@ class CheckYourDetailsRegisterControllerSpec
         mockRegistrationDetailsBasedOnOrganisationType(organisationType)
 
         showForm(userSelectedOrgType = organisationType) { result =>
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.elementIsPresent(RegistrationReviewPage.ShortNameXPath) shouldBe true
           page.getElementsText(RegistrationReviewPage.ShortNameXPath) shouldBe "Not entered"
         }
@@ -416,7 +416,7 @@ class CheckYourDetailsRegisterControllerSpec
       when(mockSessionCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(holder)
 
       showForm(isIndividualSubscriptionFlow = true) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(RegistrationReviewPage.ContactDetailsXPath) shouldBe
           strim(s"""
                  |${contactDetailsModelWithAllValues.fullName}
@@ -448,7 +448,7 @@ class CheckYourDetailsRegisterControllerSpec
     when(mockSessionCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(holder)
 
     showForm(userSelectedOrgType = Company) { result =>
-      val page: CdsPage = CdsPage(bodyOf(result))
+      val page: CdsPage = CdsPage(contentAsString(result))
       page.title should startWith("Check your answers")
 
       page.getElementsText(SubscriptionExistingDetailsReviewPage.startAgainLinkXPath) shouldBe "Start again"
@@ -595,7 +595,7 @@ class CheckYourDetailsRegisterControllerSpec
     when(mockSessionCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(holder)
 
     showForm(userSelectedOrgType = LimitedLiabilityPartnership) { result =>
-      val page: CdsPage = CdsPage(bodyOf(result))
+      val page: CdsPage = CdsPage(contentAsString(result))
       page.title should startWith("Check your answers")
 
       page.getElementsText(SubscriptionExistingDetailsReviewPage.startAgainLinkXPath) shouldBe "Start again"
@@ -749,7 +749,7 @@ class CheckYourDetailsRegisterControllerSpec
     when(mockSessionCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(holder)
 
     showForm(userSelectedOrgType = Individual, isIndividualSubscriptionFlow = true) { result =>
-      val page: CdsPage = CdsPage(bodyOf(result))
+      val page: CdsPage = CdsPage(contentAsString(result))
 
       page.getElementsText(SubscriptionExistingDetailsReviewPage.UtrNoLabelXPath) shouldBe "National Insurance number"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.UtrNoLabelValueXPath) shouldBe expectedNino
@@ -759,7 +759,7 @@ class CheckYourDetailsRegisterControllerSpec
 
   "display the review page check-your-details with no option to change address for UK entities" in {
     showForm() { result =>
-      val page: CdsPage = CdsPage(bodyOf(result))
+      val page: CdsPage = CdsPage(contentAsString(result))
 
       page.elementIsPresent("//*[@id='review-tbl__address_change']") shouldBe false
     }
@@ -770,7 +770,7 @@ class CheckYourDetailsRegisterControllerSpec
       .thenReturn(organisationRegistrationDetailsWithEmptySafeId)
 
     showForm(userSelectedOrgType = CdsOrganisationType.ThirdCountryOrganisation) { result =>
-      val page: CdsPage = CdsPage(bodyOf(result))
+      val page: CdsPage = CdsPage(contentAsString(result))
 
       page.elementIsPresent("//*[@id='have_utr']") shouldBe true
       page.getElementsText("//*[@id='review-tbl__have-utr']") shouldBe NotEntered
@@ -782,7 +782,7 @@ class CheckYourDetailsRegisterControllerSpec
       .thenReturn(organisationRegistrationDetailsWithEmptySafeId)
 
     showForm(userSelectedOrgType = CdsOrganisationType.ThirdCountryOrganisation, rowHaveUtrEnabled = false) { result =>
-      val page: CdsPage = CdsPage(bodyOf(result))
+      val page: CdsPage = CdsPage(contentAsString(result))
 
       page.elementIsPresent("//*[@id='have_utr']") shouldBe false
     }
@@ -803,7 +803,7 @@ class CheckYourDetailsRegisterControllerSpec
     when(mockSessionCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(holder)
 
     showForm(userSelectedOrgType = Individual, isIndividualSubscriptionFlow = true) { result =>
-      val page: CdsPage = CdsPage(bodyOf(result))
+      val page: CdsPage = CdsPage(contentAsString(result))
 
       page.getElementsText(SubscriptionExistingDetailsReviewPage.UtrNoLabelXPath) shouldBe "UTR number"
     }
@@ -815,7 +815,7 @@ class CheckYourDetailsRegisterControllerSpec
       mockRegistrationDetailsBasedOnOrganisationType(Individual)
 
       showForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         assertUkVatDetailsShowValues(page)
         page.getElementsText(RegistrationReviewPage.EUVatDetailsXpath) shouldBe NotEntered
       }
@@ -826,7 +826,7 @@ class CheckYourDetailsRegisterControllerSpec
       mockRegistrationDetailsBasedOnOrganisationType(Individual)
 
       showForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(RegistrationReviewPage.UKVatIdentificationNumberXpath) shouldBe NotEntered
         assertEuVatDetailsShowValues(page)
       }
@@ -841,7 +841,7 @@ class CheckYourDetailsRegisterControllerSpec
       mockRegistrationDetailsBasedOnOrganisationType(Individual)
 
       showForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(RegistrationReviewPage.EUVatDetailsXpath) shouldBe "VAT-2 - France VAT-3 - Poland"
         assertEuVatDetailsShowValues(page)
       }
@@ -875,7 +875,7 @@ class CheckYourDetailsRegisterControllerSpec
         mockRegisterWithoutIdWithSubscription
           .rowRegisterWithoutIdWithSubscription(any(), any(), any())(any[HeaderCarrier], any())
       ).thenReturn(Future.successful(Results.Ok))
-      submitForm(Map.empty, journey = Journey.Register)(verifyRedirectToNextPageIn(_)("next-page-url"))
+      submitForm(Map.empty, journey = Journey.Register)(verifyRedirectToNextPageIn(_))
       verify(mockRegisterWithoutIdWithSubscription, times(1))
         .rowRegisterWithoutIdWithSubscription(any(), any(), any())(any[HeaderCarrier], any())
     }
@@ -936,13 +936,12 @@ class CheckYourDetailsRegisterControllerSpec
     isIndividualSubscriptionFlow: Boolean = false,
     rowHaveUtrEnabled: Boolean = true
   )(test: Future[Result] => Any) {
-    implicit val app: Application = new GuiceApplicationBuilder()
-      .configure(configMap ++ Map("features.rowHaveUtrEnabled" -> rowHaveUtrEnabled))
-      .build()
+    val injector: Injector =
+      new GuiceApplicationBuilder().configure("features.rowHaveUtrEnabled" -> rowHaveUtrEnabled).injector()
 
     val controller = new CheckYourDetailsRegisterController(
       mockAuthAction,
-      app.injector.instanceOf[FeatureFlags],
+      injector.instanceOf[FeatureFlags],
       mockSessionCache,
       mockRequestSession,
       mcc,
@@ -979,7 +978,7 @@ class CheckYourDetailsRegisterControllerSpec
     )
   }
 
-  private def verifyRedirectToNextPageIn(result: Result)(linkToVerify: String) =
+  private def verifyRedirectToNextPageIn(result: Result) =
     status(result) shouldBe OK
 
   private def mockRegistrationDetailsBasedOnOrganisationType(orgType: CdsOrganisationType) =

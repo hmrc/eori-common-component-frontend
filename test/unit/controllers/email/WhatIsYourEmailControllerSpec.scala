@@ -74,7 +74,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
     "display title as 'What is your email address'" in {
       showCreateForm(journey = Journey.Subscribe) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title() should startWith("What is your email address?")
       }
     }

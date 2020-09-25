@@ -40,8 +40,7 @@ class VatDetailsEuController @Inject() (
   authAction: AuthAction,
   vatEUDetailsService: SubscriptionVatEUDetailsService,
   mcc: MessagesControllerComponents,
-  vatDetailsEuView: vat_details_eu,
-  countries: Countries
+  vatDetailsEuView: vat_details_eu
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
@@ -50,7 +49,7 @@ class VatDetailsEuController @Inject() (
       isEuVatDetailsSeqOnLimit map {
         case true => Redirect(VatDetailsEuConfirmController.createForm(service, journey))
         case _ =>
-          Ok(vatDetailsEuView(euVatForm, countries.eu, isInReviewMode = false, service = service, journey = journey))
+          Ok(vatDetailsEuView(euVatForm, Countries.eu, isInReviewMode = false, service = service, journey = journey))
       }
     }
 
@@ -60,7 +59,7 @@ class VatDetailsEuController @Inject() (
         isEuVatDetailsSeqOnLimit map {
           case true => Redirect(VatDetailsEuConfirmController.reviewForm(service, journey))
           case _ =>
-            Ok(vatDetailsEuView(euVatForm, countries.eu, isInReviewMode = true, service = service, journey = journey))
+            Ok(vatDetailsEuView(euVatForm, Countries.eu, isInReviewMode = true, service = service, journey = journey))
         }
     }
 
@@ -73,7 +72,7 @@ class VatDetailsEuController @Inject() (
               BadRequest(
                 vatDetailsEuView(
                   formWithErrors,
-                  countries.eu,
+                  Countries.eu,
                   isInReviewMode = isInReviewMode,
                   service = service,
                   journey = journey
@@ -107,7 +106,7 @@ class VatDetailsEuController @Inject() (
                   BadRequest(
                     vatDetailsEuView(
                       formWithErrors,
-                      countries.eu,
+                      Countries.eu,
                       service = service,
                       journey = journey,
                       isInReviewMode = isInReviewMode,
@@ -144,7 +143,7 @@ class VatDetailsEuController @Inject() (
               Ok(
                 vatDetailsEuView(
                   euVatForm.fill(vatDetails),
-                  countries.eu,
+                  Countries.eu,
                   updateDetails = true,
                   service,
                   journey,
@@ -166,7 +165,7 @@ class VatDetailsEuController @Inject() (
               Ok(
                 vatDetailsEuView(
                   euVatForm.fill(vatDetails),
-                  countries.eu,
+                  Countries.eu,
                   updateDetails = true,
                   service,
                   journey,
@@ -223,7 +222,7 @@ class VatDetailsEuController @Inject() (
       BadRequest(
         vatDetailsEuView(
           form.withError("vatNumber", error),
-          countries.eu,
+          Countries.eu,
           updateDetails,
           service,
           journey,

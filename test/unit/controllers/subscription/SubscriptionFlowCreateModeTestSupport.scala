@@ -30,17 +30,17 @@ trait SubscriptionFlowCreateModeTestSupport extends SubscriptionFlowTestSupport 
   protected val ContinueButtonTextInCreateMode = "Continue"
 
   def verifyFormActionInCreateMode: Future[Result] => Any = { result =>
-    val page = CdsPage(bodyOf(result))
+    val page = CdsPage(contentAsString(result))
     page.formAction(formId) shouldBe submitInCreateModeUrl
   }
 
   def verifyBackLinkInCreateModeRegister: Future[Result] => Any = { result =>
-    val page = CdsPage(bodyOf(result))
+    val page = CdsPage(contentAsString(result))
     page.getElementAttributeHref(SubscriptionContactDetailsPage.backLinkXPath) shouldBe previousPageUrl
   }
 
   def verifyBackLinkInCreateModeSubscribe: Future[Result] => Any = { result =>
-    val page = CdsPage(bodyOf(result))
+    val page = CdsPage(contentAsString(result))
     page.getElementAttributeHref(SubscriptionContactDetailsPage.backLinkXPath) shouldBe previousPageUrl
   }
 

@@ -79,7 +79,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
         .thenReturn(Future.successful(VatEuDetailUnderLimit))
       displayForm() { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe empty
         verify(mockSubscriptionVatEUDetailsService, times(1)).cachedEUVatDetails(any[HeaderCarrier])
       }
@@ -90,7 +90,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
         .thenReturn(Future.successful(VatEuDetailsOnLimit))
       displayForm() { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe empty
         verify(mockSubscriptionVatEUDetailsService, times(1)).cachedEUVatDetails(any[HeaderCarrier])
       }

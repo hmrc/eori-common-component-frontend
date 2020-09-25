@@ -19,6 +19,7 @@ package unit.controllers
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.mvc.Result
+import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.HowCanWeIdentifyYouController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
@@ -56,14 +57,14 @@ class GoogleTagManagerSpec extends ControllerSpec with GuiceOneAppPerSuite with 
   "Google Tag Manager" should {
     "include the javascript file in the header" in {
       showForm(Map.empty) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementAttribute("//head/script[1]", "src") should endWith("google-tag-manager.js")
       }
     }
 
     "include a noscript snippet in the body" in {
       showForm(Map.empty) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementAttribute(
           "//body/noscript/iframe",
           "src"

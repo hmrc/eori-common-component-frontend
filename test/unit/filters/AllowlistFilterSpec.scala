@@ -16,110 +16,124 @@
 
 package unit.filters
 
-import akka.actor.ActorSystem
-import akka.stream.{ActorMaterializer, Materializer}
 import base.UnitSpec
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
 import play.api.mvc.{RequestHeader, Result, Results}
-import play.api.test.FakeRequest
+import play.api.test.{FakeRequest, NoMaterializer}
 import play.mvc.Http.HeaderNames
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.filters.AllowlistFilter
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
 class AllowlistFilterSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
 
-  private implicit val system: ActorSystem = ActorSystem()
-  private implicit val mat: Materializer   = ActorMaterializer()
-  private val config                       = mock[AppConfig]
-  private val next                         = mock[RequestHeader => Future[Result]]
+  private val config = mock[AppConfig]
+  private val next   = mock[RequestHeader => Future[Result]]
 
-  private def filter: AllowlistFilter = new AllowlistFilter(config)
+  private def filter: AllowlistFilter = new AllowlistFilter(config)(NoMaterializer, global)
 
   override protected def afterEach(): Unit = {
     reset(next, config)
+
     super.afterEach()
   }
 
   "AllowlistFilter on restricted route" should {
+
     "Do nothing" in {
+
       when(next.apply(any[RequestHeader])).thenReturn(Future.successful(Results.Ok))
       when(config.allowlistReferrers).thenReturn(Seq("123"))
-      implicit val request =
+
+      val request =
         FakeRequest("GET", "/customs-enrolment-services/register").withHeaders(HeaderNames.REFERER -> "123")
+
       val result = await(filter.apply(next)(request))
 
-      result.session.get("allowlisted") shouldBe None
+      result.session(request).get("allowlisted") shouldBe None
     }
   }
 
   "AllowlistFilter on permitted route" should {
+
     val requestOnPermittedRoute = FakeRequest("GET", "/customs-enrolment-services/subscribe")
 
     "Do nothing for blank referer allowlist" in {
+
       when(next.apply(any[RequestHeader])).thenReturn(Future.successful(Results.Ok))
       when(config.allowlistReferrers).thenReturn(Seq.empty)
-      implicit val request = requestOnPermittedRoute
+
+      val request = requestOnPermittedRoute
 
       val result = await(filter.apply(next)(request))
 
-      result.session.get("allowlisted") shouldBe None
+      result.session(request).get("allowlisted") shouldBe None
     }
 
     "Do nothing for blank referer header" in {
+
       when(next.apply(any[RequestHeader])).thenReturn(Future.successful(Results.Ok))
       when(config.allowlistReferrers).thenReturn(Seq.empty)
-      implicit val request = requestOnPermittedRoute.withHeaders(HeaderNames.REFERER -> "")
+
+      val request = requestOnPermittedRoute.withHeaders(HeaderNames.REFERER -> "")
 
       val result = await(filter.apply(next)(request))
 
-      result.session.get("allowlisted") shouldBe None
+      result.session(request).get("allowlisted") shouldBe None
     }
 
     "Do nothing for unmatched referer" in {
+
       when(next.apply(any[RequestHeader])).thenReturn(Future.successful(Results.Ok))
       when(config.allowlistReferrers).thenReturn(Seq("123"))
-      implicit val request = requestOnPermittedRoute.withHeaders(HeaderNames.REFERER -> "abc")
+
+      val request = requestOnPermittedRoute.withHeaders(HeaderNames.REFERER -> "abc")
 
       val result = await(filter.apply(next)(request))
 
-      result.session.get("allowlisted") shouldBe None
+      result.session(request).get("allowlisted") shouldBe None
     }
 
     "Append Session Param for exact matched referer" in {
+
       when(next.apply(any[RequestHeader])).thenReturn(Future.successful(Results.Ok))
       when(config.allowlistReferrers).thenReturn(Seq("123"))
-      implicit val request = requestOnPermittedRoute.withHeaders(HeaderNames.REFERER -> "123")
+
+      val request = requestOnPermittedRoute.withHeaders(HeaderNames.REFERER -> "123")
 
       val result = await(filter.apply(next)(request))
 
-      result.session.get("allowlisted") shouldBe Some("true")
+      result.session(request).get("allowlisted") shouldBe Some("true")
     }
 
     "Append Session Param for contains matched referer" in {
+
       when(next.apply(any[RequestHeader])).thenReturn(Future.successful(Results.Ok))
       when(config.allowlistReferrers).thenReturn(Seq("123"))
-      implicit val request = requestOnPermittedRoute.withHeaders(HeaderNames.REFERER -> "01234")
+
+      val request = requestOnPermittedRoute.withHeaders(HeaderNames.REFERER -> "01234")
 
       val result = await(filter.apply(next)(request))
 
-      result.session.get("allowlisted") shouldBe Some("true")
+      result.session(request).get("allowlisted") shouldBe Some("true")
     }
 
     "Append Session Param on permitted child route with matched referrer" in {
+
       when(next.apply(any[RequestHeader])).thenReturn(Future.successful(Results.Ok))
       when(config.allowlistReferrers).thenReturn(Seq("test"))
-      implicit val request =
+
+      val request =
         FakeRequest("GET", "/customs-enrolment-services/subscribe/some-path").withHeaders(HeaderNames.REFERER -> "test")
 
       val result = await(filter.apply(next)(request))
 
-      result.session.get("allowlisted") shouldBe Some("true")
+      result.session(request).get("allowlisted") shouldBe Some("true")
     }
   }
 }

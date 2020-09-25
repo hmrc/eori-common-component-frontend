@@ -23,8 +23,6 @@ object StringThings {
     def spaces: String = of(" ")
 
     def of: String => String = what => List.fill(howMany)(what).mkString
-
-    def of(f: () => String): String = of(f.apply())
   }
 
 }

@@ -22,8 +22,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms
 import util.scalacheck.TestDataGenerators.Implicits._
 
-import scala.language.implicitConversions
-
 trait TestDataGenerators {
 
   val emptyString: Gen[String] = Gen.const("")
@@ -68,8 +66,6 @@ trait TestDataGenerators {
 
   val GBUpperCase = "GB"
 
-  val countryGB = Gen.const(GBUpperCase)
-
   val countryGenerator = for {
     capitalisedCaseCountry <- Gen.oneOf(GBUpperCase, "US", "ES", "NL")
     convertToLowerCase     <- Arbitrary.arbitrary[Boolean]
@@ -110,124 +106,6 @@ trait TestDataGenerators {
 
     }
 
-  def orgRegistrationDetailsGen(
-    organisationNameGenerator: Gen[String] = nameGenerator,
-    addressLineOneGenerator: Gen[String] = addressLineGenerator,
-    addressLineTwoGenerator: Gen[Option[String]] = Gen.option(addressLineGenerator),
-    addressLineThreeGenerator: Gen[Option[String]] = Gen.option(addressLineGenerator),
-    addressLineFourGenerator: Gen[Option[String]] = Gen.option(addressLineGenerator),
-    postcodeGen: Either[Gen[String], Gen[Option[String]]] = Left(postcodeGenerator),
-    countryGenerator: Gen[String] = countryWithoutGBGenerator,
-    emailGen: Gen[Option[String]] = Gen.option(Gen.const("john.doe@example.com")),
-    phoneNumberGen: Gen[Option[String]] = Gen.option(Gen.posNum[Int] map (_.toString))
-  ): Gen[OrgRegistrationInfo] =
-    for {
-      organisationName <- organisationNameGenerator
-      addressLineOne   <- addressLineOneGenerator
-      addressLineTwo   <- addressLineTwoGenerator
-      addressLineThree <- addressLineThreeGenerator
-      addressLineFour  <- addressLineFourGenerator
-      country          <- countryGenerator
-      email            <- emailGen
-      phoneNumber      <- phoneNumberGen
-      postcode <- postcodeGen match {
-        case Right(optionalPostcodeGen)                        => optionalPostcodeGen
-        case Left(stringPostcodeGen) if country == GBUpperCase => stringPostcodeGen.asMandatoryOption
-        case Left(stringPostcodeGen)                           => stringPostcodeGen.asOption
-      }
-    } yield OrgRegistrationInfo(
-      organisationName,
-      None,
-      false,
-      TaxPayerId("taxPayerId"),
-      addressLineOne,
-      addressLineTwo,
-      addressLineThree,
-      addressLineFour,
-      postcode,
-      country,
-      email,
-      phoneNumber,
-      None,
-      false
-    )
-
-  //TODO: Can we get rid of this????
-  def individualRegistrationDetailsGen(
-    firstNameGenerator: Gen[String] = nameGenerator,
-    middleNameGenerator: Gen[Option[String]] = Gen.option(nameGenerator),
-    lastNameGenerator: Gen[String] = nameGenerator,
-    optionalDateGen: Gen[Option[LocalDate]] = dateOfBirthGenerator.asOption,
-    addressLineOneGenerator: Gen[String] = addressLineGenerator,
-    addressLineTwoGenerator: Gen[Option[String]] = Gen.option(addressLineGenerator),
-    addressLineThreeGenerator: Gen[Option[String]] = Gen.option(addressLineGenerator),
-    addressLineFourGenerator: Gen[Option[String]] = Gen.option(addressLineGenerator),
-    postcodeGen: Either[Gen[String], Gen[Option[String]]] = Left(postcodeGenerator),
-    countryGenerator: Gen[String] = countryWithoutGBGenerator,
-    emailGen: Gen[Option[String]] = Gen.option(Gen.const("john.doe@example.com")),
-    phoneNumberGen: Gen[Option[String]] = Gen.option(Gen.posNum[Int] map (_.toString))
-  ): Gen[IndividualRegistrationInfo] =
-    for {
-      firstName        <- firstNameGenerator
-      middleName       <- middleNameGenerator
-      lastName         <- lastNameGenerator
-      dob              <- optionalDateGen
-      addressLineOne   <- addressLineOneGenerator
-      addressLineTwo   <- addressLineTwoGenerator
-      addressLineThree <- addressLineThreeGenerator
-      addressLineFour  <- addressLineFourGenerator
-      country          <- countryGenerator
-      email            <- emailGen
-      phoneNumber      <- phoneNumberGen
-      postcode <- postcodeGen match {
-        case Right(optionalPostcodeGen)                        => optionalPostcodeGen
-        case Left(stringPostcodeGen) if country == GBUpperCase => stringPostcodeGen.asMandatoryOption
-        case Left(stringPostcodeGen)                           => stringPostcodeGen.asOption
-      }
-    } yield IndividualRegistrationInfo(
-      firstName,
-      middleName,
-      lastName,
-      dob,
-      TaxPayerId("taxPayerId"),
-      addressLineOne,
-      addressLineTwo,
-      addressLineThree,
-      addressLineFour,
-      postcode,
-      country,
-      email,
-      phoneNumber,
-      None,
-      false
-    )
-
-  val eoriPrefixLength = 2
-
-  val maximumEoriMemberStateIdentifierLength = 15
-
-  val minimumEoriMemberStateIdentifierLength = 10
-
-  val eoriStringGenerator = for {
-    prefix <- Gen.listOfN(eoriPrefixLength, Gen.alphaChar) map (_.mkString)
-    memberStateIdentifierLength <- Gen.chooseNum(
-      minimumEoriMemberStateIdentifierLength,
-      maximumEoriMemberStateIdentifierLength
-    )
-    memberStateIdentifier <- Gen.listOfN(memberStateIdentifierLength, Gen.numChar) map (_.mkString)
-  } yield prefix ++ memberStateIdentifier
-
-  val eoriGenerator = eoriStringGenerator map Eori
-
-  val invalidEoriStringGeneratorOne = for {
-    prefix                <- Gen.alphaChar map (_.toString)
-    memberStateIdentifier <- Gen.listOf(Gen.numChar) map (_.mkString)
-  } yield prefix ++ memberStateIdentifier
-
-  val invalidEoriStringGeneratorTwo =
-    eoriStringGenerator.oversized(eoriPrefixLength + maximumEoriMemberStateIdentifierLength)(Gen.alphaNumChar)
-
-  val invalidEoriGenerator = Gen.oneOf(invalidEoriStringGeneratorOne, invalidEoriStringGeneratorTwo) map Eori
 }
 
 object TestDataGenerators {

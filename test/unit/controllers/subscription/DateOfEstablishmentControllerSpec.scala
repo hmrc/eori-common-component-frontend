@@ -120,7 +120,7 @@ class DateOfEstablishmentControllerSpec
 
       showCreateForm() { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.elementIsPresent(SubscriptionDateOfEstablishmentPage.dayOfDateFieldXpath) shouldBe true
         page.elementIsPresent(SubscriptionDateOfEstablishmentPage.monthOfDateFieldXpath) shouldBe true
         page.elementIsPresent(SubscriptionDateOfEstablishmentPage.yearOfDateFieldXpath) shouldBe true
@@ -139,7 +139,7 @@ class DateOfEstablishmentControllerSpec
     "display the form" in {
       showCreateForm() { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.elementIsPresent(SubscriptionDateOfEstablishmentPage.dayOfDateFieldXpath) shouldBe true
         page.elementIsPresent(SubscriptionDateOfEstablishmentPage.monthOfDateFieldXpath) shouldBe true
         page.elementIsPresent(SubscriptionDateOfEstablishmentPage.yearOfDateFieldXpath) shouldBe true
@@ -156,7 +156,7 @@ class DateOfEstablishmentControllerSpec
 
     "have all the required input fields without data if not cached previously" in {
       showCreateForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(SubscriptionDateOfEstablishmentPage.dayOfDateFieldXpath) shouldBe 'empty
         page.getElementValue(SubscriptionDateOfEstablishmentPage.monthOfDateFieldXpath) shouldBe 'empty
         page.getElementValue(SubscriptionDateOfEstablishmentPage.yearOfDateFieldXpath) shouldBe 'empty
@@ -165,7 +165,7 @@ class DateOfEstablishmentControllerSpec
 
     "have all the required input fields with data if cached previously" in {
       showCreateForm(cachedDate = Some(DateOfEstablishment)) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(
           SubscriptionDateOfEstablishmentPage.dayOfDateFieldXpath
         ) shouldBe DateOfEstablishment.dayOfMonth.getAsString
@@ -181,7 +181,7 @@ class DateOfEstablishmentControllerSpec
     "use partnership in title and heading for Partnership Org Type" in {
       when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(Partnership))
       showCreateForm(cachedDate = Some(DateOfEstablishment)) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should startWith("When was the partnership established?")
         page.getElementsText(
           SubscriptionPartnershipDateOfEstablishmentPage.dateOfEstablishmentHeadingXPath
@@ -192,7 +192,7 @@ class DateOfEstablishmentControllerSpec
     "use partnership in title and heading for Limited Liability Partnership Org Type" in {
       when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(LLP))
       showCreateForm(cachedDate = Some(DateOfEstablishment)) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should startWith("When was the partnership established?")
         page.getElementsText(
           SubscriptionDateOfEstablishmentPage.dateOfEstablishmentHeadingXPath
@@ -204,7 +204,7 @@ class DateOfEstablishmentControllerSpec
       when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier]))
         .thenReturn(Some(UnincorporatedBody))
       showCreateForm(cachedDate = Some(DateOfEstablishment)) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should startWith("When was the organisation established?")
         page.getElementsText(
           SubscriptionDateOfEstablishmentPage.dateOfEstablishmentHeadingXPath
@@ -215,7 +215,7 @@ class DateOfEstablishmentControllerSpec
     "use business in Date of Establishment text and organisation in title and heading for Company Org Type" in {
       when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(CorporateBody))
       showCreateForm(cachedDate = Some(DateOfEstablishment)) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementText(SubscriptionDateOfEstablishmentPage.dateOfEstablishmentLabelXPath) should startWith(
           "Enter the date shown on the organisation's certificate of incorporation. You can find the date your organisation was established on the Companies House register (opens in a new window or tab)"
         )
@@ -237,7 +237,7 @@ class DateOfEstablishmentControllerSpec
     "display the form" in {
       showReviewForm() { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.elementIsPresent(SubscriptionDateOfEstablishmentPage.dayOfDateFieldXpath) shouldBe true
         page.elementIsPresent(SubscriptionDateOfEstablishmentPage.monthOfDateFieldXpath) shouldBe true
         page.elementIsPresent(SubscriptionDateOfEstablishmentPage.yearOfDateFieldXpath) shouldBe true
@@ -254,7 +254,7 @@ class DateOfEstablishmentControllerSpec
 
     "display relevant data in form fields when subscription details exist in the cache" in {
       showReviewForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(
           SubscriptionDateOfEstablishmentPage.dayOfDateFieldXpath
         ) shouldBe DateOfEstablishment.dayOfMonth.getAsString
@@ -269,7 +269,7 @@ class DateOfEstablishmentControllerSpec
 
     "display the correct text for the continue button" in {
       showReviewForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(continueButtonXpath) shouldBe ContinueButtonTextInReviewMode
       }
     }
@@ -285,7 +285,7 @@ class DateOfEstablishmentControllerSpec
           "date-of-establishment.year"                -> "")
         ) { result =>
           status(result) shouldBe BAD_REQUEST
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementsText(
             SubscriptionDateOfEstablishmentPage.pageLevelErrorSummaryListXPath
           ) shouldBe DateOfEstablishmentMissingPageLevelError
@@ -298,7 +298,7 @@ class DateOfEstablishmentControllerSpec
       "be a valid date" in {
         submitFormFunction(ValidRequest + ("date-of-establishment.day" -> "32")) { result =>
           status(result) shouldBe BAD_REQUEST
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementsText(
             SubscriptionDateOfEstablishmentPage.pageLevelErrorSummaryListXPath
           ) shouldBe DateOfEstablishmentInvalidError
@@ -316,7 +316,7 @@ class DateOfEstablishmentControllerSpec
           "date-of-establishment.year"                -> tomorrow.getYear.toString)
         ) { result =>
           status(result) shouldBe BAD_REQUEST
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementsText(
             SubscriptionDateOfEstablishmentPage.pageLevelErrorSummaryListXPath
           ) shouldBe DateOfEstablishmentInFutureError

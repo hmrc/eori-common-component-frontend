@@ -141,7 +141,7 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
 
         result =>
           status(result) shouldBe OK
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           verify(mockSessionCache).remove(any[HeaderCarrier])
           page.title should startWith("Application received")
           page.getElementsText(RegistrationCompletePage.pageHeadingXpath) shouldBe "Application received for Name"

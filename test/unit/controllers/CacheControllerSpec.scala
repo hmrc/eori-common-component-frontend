@@ -36,12 +36,12 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class CacheControllerSpec extends ControllerSpec with AuthActionMock {
 
-  private val mockAuthConnector    = mock[AuthConnector]
-  private val mockAuthAction       = authAction(mockAuthConnector)
-  private val mockSessionCache     = mock[SessionCache]
-  private val requestSessionData   = new RequestSessionData()
-  private val userId: String       = "someUserId"
-  private implicit val mockRequest = mock[Request[AnyContent]]
+  private val mockAuthConnector  = mock[AuthConnector]
+  private val mockAuthAction     = authAction(mockAuthConnector)
+  private val mockSessionCache   = mock[SessionCache]
+  private val requestSessionData = new RequestSessionData()
+  private val userId: String     = "someUserId"
+  private val mockRequest        = mock[Request[AnyContent]]
 
   val controller = new CacheController(mockAuthAction, mockSessionCache, mcc, requestSessionData)
 
@@ -58,7 +58,7 @@ class CacheControllerSpec extends ControllerSpec with AuthActionMock {
 
       status(result) shouldBe SEE_OTHER
       result.header.headers("Location") should be(ApplicationController.startSubscription(Service.ATaR).url)
-      assertSessionDoesNotContainKeys(result.session)
+      assertSessionDoesNotContainKeys(result.session(mockRequest))
     }
 
     // TODO - remove test or add service support to get EORI (register)
@@ -70,7 +70,7 @@ class CacheControllerSpec extends ControllerSpec with AuthActionMock {
         await(controller.clearCache(Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId)))
       status(result) shouldBe SEE_OTHER
       result.header.headers("Location") should be(ApplicationController.start().url)
-      assertSessionDoesNotContainKeys(result.session)
+      assertSessionDoesNotContainKeys(result.session(mockRequest))
     }
   }
 

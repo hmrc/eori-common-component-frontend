@@ -148,7 +148,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(Some(LLP)))
 
       invokeConfirm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText("//*[@id='content']/div/div/dl/div[2]/dt") shouldBe "Registered partnership name"
       }
     }
@@ -161,7 +161,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(Some(Partnership)))
 
       invokeConfirm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText("//*[@id='content']/div/div/dl/div[2]/dt") shouldBe "Registered partnership name"
       }
     }
@@ -207,7 +207,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(Some(Partnership)))
 
       invokeConfirm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           "//*[@id='content']/div/div/dl/div[1]/dt"
         ) shouldBe "Partnership Self Assessment UTR number"
@@ -226,7 +226,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(Some(Partnership)))
 
       invokeConfirm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText("//*[@id='content']/div/div/dl/div[1]/dt") shouldBe "Self Assessment UTR number"
 
         page.getElementsText(ConfirmPage.fullDetailsXpath) shouldBe strim(
@@ -243,7 +243,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(Some(Partnership)))
 
       invokeConfirm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText("//*[@id='content']/div/div/dl/div[1]/dt") shouldBe "National Insurance number"
         page.getElementsText(ConfirmPage.fullDetailsXpath) shouldBe strim(
           """QQ123456C John Doe Sole Trader Line 1 line 2 line 3 SE28 1AA United Kingdom"""
@@ -262,7 +262,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(Some(Partnership)))
 
       invokeConfirm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(ConfirmPage.BusinessAddressXPath) shouldBe
           strim("""
               |123UTRNO orgName
@@ -284,7 +284,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(Some(Partnership)))
 
       invokeConfirm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementAttributeHref(ConfirmPage.backLinkXPath) shouldBe previousPageUrl
       }
     }
@@ -468,7 +468,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
     "allow authenticated users to access the rejected page" in {
       invokeRejectedPageWithAuthenticatedUser() { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should startWith(RegistrationRejectedPage.title)
         page.getElementsText(RegistrationRejectedPage.pageHeadingXpath) shouldBe RegistrationRejectedPage.heading
         page.getElementsText(
@@ -480,7 +480,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
     "allow authenticated users to access the processing page" in {
       invokeProcessingPageWithAuthenticatedUser() { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should startWith(RegistrationProcessingPage.title)
         page.getElementsText(RegistrationProcessingPage.pageHeadingXpath) shouldBe RegistrationProcessingPage.heading
         page.getElementsText(
@@ -576,7 +576,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
       invokeConfirmContactDetailsWithoutOptionSelected() { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           ConfirmPage.pageLevelErrorSummaryListXPath
         ) shouldBe "Tell us if these are the details you want to use"
@@ -595,7 +595,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
       invokeConfirmContactDetailsWithoutOptionSelected() { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           ConfirmPage.pageLevelErrorSummaryListXPath
         ) shouldBe "Tell us if these are the details you want to use"
@@ -615,7 +615,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
       invokeConfirmContactDetailsWithSelectedOption(selectedOption = invalidOption) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           ConfirmPage.pageLevelErrorSummaryListXPath
         ) shouldBe "Tell us if these are the details you want to use"

@@ -42,8 +42,6 @@ import scala.util.Random
 
 trait ControllerSpec extends UnitSpec with MockitoSugar with I18nSupport with Injector {
 
-  val configMap: Map[String, Boolean] = Map("metrics.enabled" -> false)
-
   implicit val messagesApi: MessagesApi = instanceOf[MessagesApi]
 
   implicit def materializer: Materializer = NoMaterializer
@@ -163,7 +161,7 @@ trait ControllerSpec extends UnitSpec with MockitoSugar with I18nSupport with In
     )(problemField: String, fieldLevelErrorXPath: String, errorMessage: String): Result =
       submitForm(formValues) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(webPage.pageLevelErrorSummaryListXPath) shouldBe errorMessage
         withClue(
           s"Not found in the page: field level error block for '$problemField' with xpath $fieldLevelErrorXPath"

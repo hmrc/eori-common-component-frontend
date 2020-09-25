@@ -21,19 +21,12 @@ import play.api.libs.json.{JsValue, Json}
 import play.mvc.Http.HeaderNames.CONTENT_TYPE
 import play.mvc.Http.MimeTypes.JSON
 import play.mvc.Http.Status._
-import uk.gov.hmrc.http.HeaderCarrier
 
 object EmailVerificationStubService {
-
-  def expectedGetUrl(email: String) = s"/email-verification/verified-email-addresses/$email"
 
   private val expectedVerifiedEmailPostUrl = "/email-verification/verified-email-check"
 
   private val expectedPostUrl = "/email-verification/verification-requests"
-
-  implicit val hc: HeaderCarrier = HeaderCarrier()
-
-  val emailVerifiedCheckRequestJson: JsValue = Json.parse("""{"email": "john.doe@example.com"}""")
 
   val emailVerifiedResponseJson: JsValue = Json.parse("""{"email": "john.doe@example.com"}""")
 

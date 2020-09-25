@@ -41,7 +41,6 @@ class SixLineAddressController @Inject() (
   subscriptionFlowManager: SubscriptionFlowManager,
   sessionCache: SessionCache,
   requestSessionData: RequestSessionData,
-  countries: Countries,
   mcc: MessagesControllerComponents,
   sixLineAddressView: six_line_address,
   registrationDetailsService: RegistrationDetailsService
@@ -58,7 +57,7 @@ class SixLineAddressController @Inject() (
     val formByOrgType = formsByOrganisationTypes(request)(organisationType)
     lazy val form     = address.map(ad => createSixLineAddress(ad)).fold(formByOrgType)(formByOrgType.fill)
     val (countriesToInclude, countriesInCountryPicker) =
-      countries.getCountryParameters(requestSessionData.selectedUserLocationWithIslands)
+      Countries.getCountryParameters(requestSessionData.selectedUserLocationWithIslands)
     Future.successful(
       Ok(
         sixLineAddressView(
@@ -95,7 +94,7 @@ class SixLineAddressController @Inject() (
   ): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser: LoggedInUser =>
       val (countriesToInclude, countriesInCountryPicker) =
-        countries.getCountryParameters(requestSessionData.selectedUserLocationWithIslands)
+        Countries.getCountryParameters(requestSessionData.selectedUserLocationWithIslands)
       assertOrganisationTypeIsValid(organisationType)(request)
       formsByOrganisationTypes(request)(organisationType).bindFromRequest.fold(
         invalidForm =>

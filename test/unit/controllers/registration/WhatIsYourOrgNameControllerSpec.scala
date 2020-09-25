@@ -22,7 +22,7 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import org.scalatest.prop.Tables.Table
-import play.api.Application
+import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
@@ -47,17 +47,16 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
-  val app: Application = new GuiceApplicationBuilder()
-    .configure("features.rowHaveUtrEnabled" -> false)
-    .build()
+  val injector: Injector =
+    new GuiceApplicationBuilder().configure("features.rowHaveUtrEnabled" -> false).injector()
 
   private val mockAuthConnector              = mock[AuthConnector]
   private val mockAuthAction                 = authAction(mockAuthConnector)
-  private val featureFlags                   = app.injector.instanceOf[FeatureFlags]
+  private val featureFlags                   = injector.instanceOf[FeatureFlags]
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
   private val mockNameOrganisationMatchModel = mock[NameOrganisationMatchModel]
-  private val whatIsYourOrgNameView          = app.injector.instanceOf[what_is_your_org_name]
+  private val whatIsYourOrgNameView          = injector.instanceOf[what_is_your_org_name]
 
   private val controller = new WhatIsYourOrgNameController(
     mockAuthAction,
@@ -135,7 +134,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
         when(mockNameOrganisationMatchModel.name).thenReturn(expectedName)
         showForm(reviewMode) { result =>
           status(result) shouldBe OK
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe empty
           page.getElementsText(fieldLevelErrorName) shouldBe empty
           page.getElementValueForLabel(labelForName) shouldBe expectedName
@@ -145,7 +144,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
       s"ensure the labels are correct for $organisationType and reviewMode is $reviewMode" in {
         showForm(reviewMode) { result =>
           status(result) shouldBe OK
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementsText(labelForNameOuter) shouldBe "What is your registered organisation name?"
         }
       }
@@ -165,7 +164,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
         s"ensure name cannot be empty when organisation type is $organisationType and reviewMode is $reviewMode" in {
           submitForm(reviewMode, form = Map("name" -> ""), organisationType) { result =>
             status(result) shouldBe BAD_REQUEST
-            val page = CdsPage(bodyOf(result))
+            val page = CdsPage(contentAsString(result))
             page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe nameError(nameDescription)
             page.getElementsText(fieldLevelErrorName) shouldBe "Enter your registered organisation name"
             page.getElementsText("title") should startWith("Error: ")
@@ -175,7 +174,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
         s"ensure name does not exceed maximum length when organisation type is $organisationType and reviewMode is $reviewMode" in {
           submitForm(reviewMode, form = Map("name" -> oversizedString(NameMaxLength)), organisationType) { result =>
             status(result) shouldBe BAD_REQUEST
-            val page = CdsPage(bodyOf(result))
+            val page = CdsPage(contentAsString(result))
             page.getElementsText(
               pageLevelErrorSummaryListXPath
             ) shouldBe "The organisation name must be 105 characters or less"

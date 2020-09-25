@@ -105,7 +105,7 @@ class SicCodeControllerSpec
 
     "display title as 'What is the Standard Industrial Classification (SIC) code for your organisation?' for non-partnership org type" in {
       showCreateForm(orgType = CorporateBody, userSelectedOrgType = Company) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should startWith("What is the Standard Industrial Classification (SIC) code for your organisation?")
       }
     }
@@ -117,7 +117,7 @@ class SicCodeControllerSpec
         journey = Journey.Register,
         userLocation = Some("UK")
       ) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementText(
           sicDescriptionLabelXpath
         ) shouldBe "A SIC code is a 5 digit number that helps HMRC identify what your organisation does. You can search the register on Companies House for your SIC code (opens in a new window or tab)."
@@ -126,7 +126,7 @@ class SicCodeControllerSpec
 
     "display heading as 'What is the Standard Industrial Classification (SIC) code for your organisation?' for non-partnership org type" in {
       showCreateForm(orgType = CorporateBody, userSelectedOrgType = Company) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementText(
           SicCodePage.headingXpath
         ) shouldBe "What is the Standard Industrial Classification (SIC) code for your organisation?"
@@ -135,14 +135,14 @@ class SicCodeControllerSpec
 
     "display title as 'What is the Standard Industrial Classification (SIC) code for your partnership?' for Partnership org type" in {
       showCreateForm(orgType = Partnership, userSelectedOrgType = CdsPartnership) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should startWith("What is the Standard Industrial Classification (SIC) code for your partnership?")
       }
     }
 
     "display heading as 'What is the Standard Industrial Classification (SIC) code for your partnership?' for Partnership org type" in {
       showCreateForm(orgType = Partnership, userSelectedOrgType = CdsPartnership) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementText(
           SicCodePage.headingXpath
         ) shouldBe "What is the Standard Industrial Classification (SIC) code for your partnership?"
@@ -151,14 +151,14 @@ class SicCodeControllerSpec
 
     "display title as 'What is the Standard Industrial Classification (SIC) code for your partnership?' for LLP org type" in {
       showCreateForm(orgType = LLP, userSelectedOrgType = CdsPartnership) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should startWith("What is the Standard Industrial Classification (SIC) code for your partnership?")
       }
     }
 
     "display heading as 'What is the Standard Industrial Classification (SIC) code for your partnership?' for LLP org type" in {
       showCreateForm(orgType = LLP, userSelectedOrgType = CdsPartnership) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementText(
           SicCodePage.headingXpath
         ) shouldBe "What is the Standard Industrial Classification (SIC) code for your partnership?"
@@ -167,21 +167,21 @@ class SicCodeControllerSpec
 
     "display correct description for non-partnership org type" in {
       showCreateForm(orgType = CorporateBody, userSelectedOrgType = Company) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementText(SicCodePage.sicLabelXpath) should startWith("SIC code")
       }
     }
 
     "display correct description for Partnership org type" in {
       showCreateForm(orgType = Partnership, userSelectedOrgType = CdsPartnership) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementText(SicCodePage.sicLabelXpath) should startWith("SIC code")
       }
     }
 
     "display correct description for LLP org type" in {
       showCreateForm(orgType = LLP, userSelectedOrgType = CdsPartnership) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementText(SicCodePage.sicLabelXpath) should startWith("SIC code")
       }
     }
@@ -191,7 +191,7 @@ class SicCodeControllerSpec
     forAll(formModes) { (userSelectedOrgType, orgType) =>
       s"display title as 'Enter a Standard Industrial Classification (SIC) code that describes what your business does' for $orgType (NA) org type" in {
         showCreateForm(orgType = NA, userSelectedOrgType = userSelectedOrgType) { result =>
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.title should startWith(
             "Enter a Standard Industrial Classification (SIC) code that describes what your business does"
           )
@@ -200,7 +200,7 @@ class SicCodeControllerSpec
 
       s"display heading as 'Enter a Standard Industrial Classification (SIC) code that describes what your business does' for $orgType (NA) org type" in {
         showCreateForm(orgType = NA, userSelectedOrgType = userSelectedOrgType) { result =>
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementText(
             SicCodePage.headingXpath
           ) shouldBe "Enter a Standard Industrial Classification (SIC) code that describes what your business does"
@@ -216,7 +216,7 @@ class SicCodeControllerSpec
               "A SIC code is a 5 digit number that helps HMRC identify what your organisation does. If you do not have one, you can search for a relevant SIC code on Companies House (opens in a new window or tab)."
           }
           result =>
-            val page = CdsPage(bodyOf(result))
+            val page = CdsPage(contentAsString(result))
             page.getElementText(SicCodePage.sicDescriptionLabelXpath) should startWith(hintText)
             page.getElementsHref("//*[@id='description']/a") shouldBe "https://resources.companieshouse.gov.uk/sic/"
         }
@@ -224,7 +224,7 @@ class SicCodeControllerSpec
 
       s"display correct label description for $orgType (NA) org type" in {
         showCreateForm(orgType = NA, userSelectedOrgType = userSelectedOrgType) { result =>
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementText(SicCodePage.sicLabelXpath) should startWith("SIC code")
         }
       }
@@ -240,7 +240,7 @@ class SicCodeControllerSpec
 
     "have SIC code input field without data if not cached previously" in {
       showCreateForm(userSelectedOrgType = Company) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         verifyPrincipalEconomicActivityFieldExistsWithNoData(page)
       }
     }
@@ -248,14 +248,14 @@ class SicCodeControllerSpec
     "have SIC code input field prepopulated if cached previously" in {
       when(mockSubscriptionBusinessService.cachedSicCode(any[HeaderCarrier])).thenReturn(Future.successful(Some(sic)))
       showCreateForm(userSelectedOrgType = Company) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         verifyPrincipalEconomicActivityFieldExistsAndPopulatedCorrectly(page)
       }
     }
 
     "display the correct text for the continue button" in {
       showCreateForm(userSelectedOrgType = Company) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(SicCodePage.continueButtonXpath) shouldBe ContinueButtonTextInCreateMode
       }
     }
@@ -269,21 +269,21 @@ class SicCodeControllerSpec
 
     "retrieve the cached data" in {
       showReviewForm(userSelectedOrgType = Company) { result =>
-        CdsPage(bodyOf(result))
+        CdsPage(contentAsString(result))
         verify(mockSubscriptionBusinessService).getCachedSicCode(any[HeaderCarrier])
       }
     }
 
     "have all the required input fields without data" in {
       showReviewForm(sic, userSelectedOrgType = Company) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         verifyPrincipalEconomicActivityFieldExistsAndPopulatedCorrectly(page)
       }
     }
 
     "display the correct text for the continue button" in {
       showReviewForm(userSelectedOrgType = Company) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(SicCodePage.continueButtonXpath) shouldBe ContinueButtonTextInReviewMode
       }
     }
@@ -353,7 +353,7 @@ class SicCodeControllerSpec
     "be mandatory" in {
       submitFormInCreateMode(Map("sic" -> ""), userSelectedOrgType = Company) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
         ) shouldEqual "Enter a SIC code"
@@ -364,7 +364,7 @@ class SicCodeControllerSpec
     "not allow spaces instead of numbers" in {
       submitFormInCreateMode(Map("sic" -> 5.spaces), userSelectedOrgType = Company) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
         ) shouldEqual "Enter a SIC code"
@@ -375,7 +375,7 @@ class SicCodeControllerSpec
     "be numeric" in {
       submitFormInCreateMode(Map("sic" -> "G1A3"), userSelectedOrgType = Company) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
         ) shouldBe "Enter a SIC code in the right format"
@@ -388,7 +388,7 @@ class SicCodeControllerSpec
     "be at least 4 digits" in {
       submitFormInCreateMode(Map("sic" -> "123"), userSelectedOrgType = Company) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
         ) shouldBe "The SIC code must be more than 3 digits"
@@ -401,7 +401,7 @@ class SicCodeControllerSpec
     "be maximum of 5 digits" in {
       submitFormInCreateMode(Map("sic" -> "123456"), userSelectedOrgType = Company) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
         ) shouldBe "The SIC code must be 5 digits or less"
@@ -427,7 +427,7 @@ class SicCodeControllerSpec
   forAll(formModelsROW) { (userSelectedOrgType, orgType, userLocation) =>
     s"display correct description for $orgType (NA) org type and when user-location is NON-UK: $userLocation" in {
       showCreateForm(userSelectedOrgType = userSelectedOrgType, userLocation = Some(userLocation)) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         userSelectedOrgType match {
           case SoleTrader =>
             page.getElementsText(

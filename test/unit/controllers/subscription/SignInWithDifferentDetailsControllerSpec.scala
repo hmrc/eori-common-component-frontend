@@ -21,6 +21,7 @@ import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
+import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SignInWithDifferentDetailsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
@@ -63,7 +64,7 @@ class SignInWithDifferentDetailsControllerSpec
 
     "display para1 as 'Test Org Name has already registered for CDS with a different Government Gateway.'" in {
       showCreateForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           "//*[@id='para1']"
         ) shouldBe "Test Org Name has already registered for CDS with a different Government Gateway."

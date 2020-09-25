@@ -29,6 +29,8 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.prop.Checkers
 import play.api.data.Form
+import play.api.inject.Injector
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.FeatureFlags
@@ -52,13 +54,16 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueSpec
     extends ControllerSpec with Checkers with TestDataGenerators with BeforeAndAfterEach with ScalaFutures
     with AuthActionMock {
 
+  val injector: Injector =
+    new GuiceApplicationBuilder().configure("features.rowHaveUtrEnabled" -> true).injector()
+
   class ControllerFixture(organisationType: String, form: Form[IndividualNameAndDateOfBirth])
       extends AbstractControllerFixture[RowIndividualNameDateOfBirthController] {
     val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
 
-    private val rowIndividualNameDob = instanceOf[row_individual_name_dob]
+    private val rowIndividualNameDob = injector.instanceOf[row_individual_name_dob]
     private val mockAuthAction       = authAction(mockAuthConnector)
-    private val featureFlags         = instanceOf[FeatureFlags]
+    private val featureFlags         = injector.instanceOf[FeatureFlags]
 
     override val controller = new RowIndividualNameDateOfBirthController(
       mockAuthAction,
@@ -112,7 +117,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueSpec
         controllerFixture =>
           controllerFixture.showForm { result =>
             status(result) shouldBe OK
-            val page = CdsPage(bodyOf(result.futureValue))
+            val page = CdsPage(contentAsString(result))
             page.getElementsText(webPage.pageLevelErrorSummaryListXPath) shouldBe empty
 
             val assertPresentOnPage = controllerFixture.assertPresentOnPage(page) _
@@ -358,7 +363,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueSpec
 
         submitForm(formData(individualNameAndDateOfBirth)) { result =>
           status(result) shouldBe SEE_OTHER
-          CdsPage(bodyOf(result.futureValue)).getElementsHtml(webPage.pageLevelErrorSummaryListXPath) shouldBe empty
+          CdsPage(contentAsString(result)).getElementsHtml(webPage.pageLevelErrorSummaryListXPath) shouldBe empty
         }
       }
 
@@ -369,7 +374,7 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueSpec
 
           submitForm(formData(individualNameAndDateOfBirth)) { result =>
             status(result) shouldBe SEE_OTHER
-            CdsPage(bodyOf(result.futureValue)).getElementsHtml(webPage.pageLevelErrorSummaryListXPath) shouldBe empty
+            CdsPage(contentAsString(result)).getElementsHtml(webPage.pageLevelErrorSummaryListXPath) shouldBe empty
           }
       }
     }

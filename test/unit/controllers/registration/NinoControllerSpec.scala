@@ -73,7 +73,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter with AuthAct
     "show the form without errors" in {
       showForm(Map()) { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(NinoMatchPage.pageLevelErrorSummaryListXPath) shouldBe empty
       }
     }
@@ -84,7 +84,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter with AuthAct
     "be mandatory" in {
       submitForm(NinoFormBuilder.asForm + ("first-name" -> "")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(NinoMatchPage.pageLevelErrorSummaryListXPath) shouldBe FirstName
         page.getElementsText(NinoMatchPage.fieldLevelErrorFirstName) shouldBe FirstName
       }
@@ -93,7 +93,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter with AuthAct
     "be restricted to 35 characters" in {
       submitForm(NinoFormBuilder.asForm + ("first-name" -> oversizedString(35))) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           NinoMatchPage.pageLevelErrorSummaryListXPath
         ) shouldBe "The first name must be 35 characters or less"
@@ -109,7 +109,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter with AuthAct
     "be mandatory" in {
       submitForm(NinoFormBuilder.asForm + ("last-name" -> "")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(NinoMatchPage.pageLevelErrorSummaryListXPath) shouldBe LastName
         page.getElementsText(NinoMatchPage.fieldLevelErrorLastName) shouldBe LastName
       }
@@ -118,7 +118,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter with AuthAct
     "be restricted to 35 characters" in {
       submitForm(NinoFormBuilder.asForm + ("last-name" -> oversizedString(35))) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           NinoMatchPage.pageLevelErrorSummaryListXPath
         ) shouldBe "The last name must be 35 characters or less"
@@ -137,7 +137,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter with AuthAct
         "date-of-birth.year"                          -> "")
       ) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(NinoMatchPage.pageLevelErrorSummaryListXPath) shouldBe "Enter your date of birth"
         page.getElementsText(NinoMatchPage.fieldLevelErrorDateOfBirth) shouldBe "Enter your date of birth"
       }
@@ -146,7 +146,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter with AuthAct
     "be a valid date" in {
       submitForm(NinoFormBuilder.asForm + ("date-of-birth.day" -> "32")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           NinoMatchPage.pageLevelErrorSummaryListXPath
         ) shouldBe "Enter a date of birth in the right format"
@@ -164,7 +164,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter with AuthAct
         "date-of-birth.year"                          -> tomorrow.getYear.toString)
       ) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           pageLevelErrorSummaryListXPath
         ) shouldBe "You must specify a date that is not in the future"
@@ -178,7 +178,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter with AuthAct
     "be mandatory" in {
       submitForm(NinoFormBuilder.asForm + ("nino" -> "")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(NinoMatchPage.pageLevelErrorSummaryListXPath) shouldBe Nino
         page.getElementsText(NinoMatchPage.fieldLevelErrorNino) shouldBe Nino
       }
@@ -187,7 +187,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter with AuthAct
     "be valid" in {
       submitForm(NinoFormBuilder.asForm + ("nino" -> "AB123456E")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(NinoMatchPage.pageLevelErrorSummaryListXPath) shouldBe InvalidNino
         page.getElementsText(NinoMatchPage.fieldLevelErrorNino) shouldBe InvalidNino
       }
@@ -211,7 +211,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter with AuthAct
       ).thenReturn(Future.successful(true))
 
       submitForm(form = NinoFormBuilder.asForm) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(NinoMatchPage.pageLevelErrorSummaryListXPath) shouldBe empty
 
         status(result) shouldBe SEE_OTHER
@@ -232,7 +232,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter with AuthAct
 
       submitForm(form = NinoFormBuilder.asForm) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           NinoMatchPage.pageLevelErrorSummaryListXPath
         ) shouldBe "Your details have not been found. Check that your details are correct and then try again."

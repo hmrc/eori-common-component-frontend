@@ -47,7 +47,7 @@ class VatRegisteredUkControllerSpec extends ControllerSpec with AuthActionMock {
     "allow unauthenticated users to access the yes no answer form" in {
       showForm() { result =>
         status(result) shouldBe OK
-        CdsPage(bodyOf(result)).title should startWith("Is your organisation VAT registered in the UK?")
+        CdsPage(contentAsString(result)).title should startWith("Is your organisation VAT registered in the UK?")
       }
     }
   }
@@ -57,7 +57,7 @@ class VatRegisteredUkControllerSpec extends ControllerSpec with AuthActionMock {
     "ensure an option has been selected" in {
       submitForm(invalidRequest) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           VatRegisteredUkPage.pageLevelErrorSummaryListXPath
         ) shouldBe VatRegisteredUkPage.problemWithSelectionError
@@ -71,7 +71,7 @@ class VatRegisteredUkControllerSpec extends ControllerSpec with AuthActionMock {
       val invalidOption = UUID.randomUUID.toString
       submitForm(ValidRequest + (yesNoInputName -> invalidOption)) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           VatRegisteredUkPage.pageLevelErrorSummaryListXPath
         ) shouldBe VatRegisteredUkPage.problemWithSelectionError

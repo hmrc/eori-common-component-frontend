@@ -17,50 +17,11 @@
 package util.externalservices
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import com.github.tomakehurst.wiremock.matching.UrlPattern
-import org.scalacheck.Gen
 import play.mvc.Http.HeaderNames.CONTENT_TYPE
 import play.mvc.Http.MimeTypes.JSON
 import play.mvc.Http.Status.OK
 
 object SubscriptionStatusMessagingService {
-  val StatusOk: String                             = "00"
-  val UserSubscribeAlready: String                 = "11"
-  val rejectedSub01Status: String                  = Gen.oneOf("05", "99").sample.get
-  val processingSub01Status: String                = Gen.oneOf("01", "11", "14").sample.get
-  val subscriptionAlreadyExistsSub01Status: String = "04"
-
-  private val SubscriptionStatusPath: UrlPattern = urlMatching("subscription-status")
-
-  private def responseWithStatus(status: String = StatusOk) =
-    s"""
-       |{
-       |  "subscriptionStatusResponse": {
-       |    "responseCommon": {
-       |      "status": "OK",
-       |      "processingDate": "2016-03-17T09:30:47Z"
-       |    },
-       |    "responseDetail": {
-       |      "subscriptionStatus": "$status",
-       |      "idType": "EORI",
-       |      "idValue": "1234567890"
-       |    }
-       |  }
-       |}
-      """.stripMargin
-
-  def returnSubscriptionStatusForSapNumber(status: String, idType: String, id: String): Unit = {
-    val urlPattern = s"/subscription-status\\?receiptDate\\=.*Z&regime=CDS&${idType}=$id"
-    stubFor(
-      get(urlMatching(urlPattern))
-        .willReturn(
-          aResponse()
-            .withStatus(OK)
-            .withBody(responseWithStatus(status))
-            .withHeader(CONTENT_TYPE, JSON)
-        )
-    )
-  }
 
   def returnTheSubscriptionResponseWhenReceiveRequest(url: String, response: String): Unit =
     stubTheSubscriptionResponse(url, response, OK)
@@ -75,8 +36,5 @@ object SubscriptionStatusMessagingService {
             .withHeader(CONTENT_TYPE, JSON)
         )
     )
-
-  def verifySubscriptionStatusIsNotCalled(): Unit =
-    verify(0, getRequestedFor(SubscriptionStatusPath))
 
 }

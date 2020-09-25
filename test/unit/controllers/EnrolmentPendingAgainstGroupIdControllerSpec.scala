@@ -52,7 +52,7 @@ class EnrolmentPendingAgainstGroupIdControllerSpec extends ControllerSpec with A
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
       displayPage(Journey.Subscribe) { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should startWith("You cannot use this service")
       }
     }

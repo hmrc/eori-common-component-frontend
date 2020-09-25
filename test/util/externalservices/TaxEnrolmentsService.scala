@@ -24,27 +24,6 @@ import play.mvc.Http.Status.OK
 
 object TaxEnrolmentsService {
 
-  private val issuerEndpoint = s"/tax-enrolments/subscriptions/9876543210/issuer"
-
-  private val responseWithEnrolmentsOk: JsValue =
-    Json.parse("""[{
-        |    "created": 1482329348256,
-        |    "lastModified": 1482329348256,
-        |    "credId": "d8474a25-71b6-45ed-859e-77dd5f087be6",
-        |    "serviceName": "516b9976-00fd-4da6-b59c-4d09054912bb",
-        |    "identifiers": [{
-        |        "key": "HMRC-CUS-ORG",
-        |        "value": "GB837438748347"
-        |    }, {
-        |        "key": "d3e222b8-b9ff-4571-8f83-1a0fbc221195",
-        |        "value": "547d7434-8c33-431d-bffa-35a7d1103c30"
-        |    }],
-        |    "callback": "url passed in by the subscriber service",
-        |    "state": "PENDING",
-        |    "etmpId": "da4053bf-2ea3-4cb8-bb9c-65b70252b656",
-        |    "groupIdentifier": "c808798d-0d81-4a34-82c2-bbf13b3ac2fa"
-        |}]""".stripMargin)
-
   private val responseWithOk: JsValue =
     Json.parse("""[{
         |    "created": 1482329348256,
@@ -80,41 +59,6 @@ object TaxEnrolmentsService {
         )
     )
 
-  def stubTheTaxEnrolmentsResponseIssuer(url: String, response: String, status: Int): Unit =
-    stubFor(
-      put(urlEqualTo(url))
-        .willReturn(
-          aResponse()
-            .withStatus(status)
-            .withBody(response)
-            .withHeader(CONTENT_TYPE, JSON)
-        )
-    )
-
-  def returnOkForIssuerCall() = stubTheTaxEnrolmentsResponseIssuer(issuerEndpoint, "", 204)
-
-  def returnTheTaxEnrolmentsWithEnrolmentResponseOK(): Unit =
-    stubFor(
-      get(urlMatching("/tax-enrolments/businesspartners/safe-id/subscriptions"))
-        .willReturn(
-          aResponse()
-            .withStatus(OK)
-            .withBody(responseWithEnrolmentsOk.toString())
-            .withHeader(CONTENT_TYPE, JSON)
-        )
-    )
-
-  def returnTheTaxEnrolmentsWithNoEnrolmentResponseOK(): Unit =
-    stubFor(
-      get(urlMatching(s"/tax-enrolments/businesspartners/safe/subscriptions"))
-        .willReturn(
-          aResponse()
-            .withStatus(OK)
-            .withBody(responseWithOk.toString())
-            .withHeader(CONTENT_TYPE, JSON)
-        )
-    )
-
   def returnEnrolmentResponseWhenReceiveRequest(url: String, request: String, status: Int): Unit =
     stubFor(
       put(urlEqualTo(url))
@@ -125,8 +69,5 @@ object TaxEnrolmentsService {
             .withHeader(CONTENT_TYPE, JSON)
         )
     )
-
-  def verifyIssuerIsCalled(times: Int): Unit =
-    verify(times, putRequestedFor(urlMatching(issuerEndpoint)))
 
 }

@@ -128,7 +128,7 @@ class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAnd
       submitForm(Map("nino" -> nino, "ninoOrUtrRadio" -> "nino"), CdsOrganisationType.IndividualId, Journey.Register) {
         result =>
           status(result) shouldBe BAD_REQUEST
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementsText(
             RegisterHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
           ) shouldBe "Your details have not been found. Check that your details are correct and then try again."
@@ -150,7 +150,7 @@ class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAnd
       submitForm(Map("utr" -> utr, "ninoOrUtrRadio" -> "utr"), CdsOrganisationType.IndividualId, Journey.Register) {
         result =>
           status(result) shouldBe BAD_REQUEST
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementsText(
             RegisterHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
           ) shouldBe "Your details have not been found. Check that your details are correct and then try again."

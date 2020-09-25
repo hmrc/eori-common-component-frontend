@@ -318,7 +318,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
 
         result =>
           status(result) shouldBe OK
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           verify(mockSessionCache).remove(any[HeaderCarrier])
           page.title should startWith("Application complete")
           page.getElementsText(
@@ -349,7 +349,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
 
         result =>
           status(result) shouldBe OK
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.title should startWith(RegistrationRejectedPage.title)
           page.getElementsText(RegistrationRejectedPage.pageHeadingXpath) shouldBe RegistrationRejectedPage.heading
           page.getElementsText(

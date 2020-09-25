@@ -16,36 +16,14 @@
 
 package base
 
-import java.nio.charset.Charset
-
-import akka.stream.Materializer
-import akka.util.ByteString
 import org.scalatest.{Matchers, WordSpec}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 
-import scala.concurrent.ExecutionContext.global
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration.{Duration, DurationInt, FiniteDuration}
 
 trait UnitSpec extends WordSpec with Matchers {
-
-  // From github.com.hmrc/hmrctest to have a possibility to remove deprecated hmrctest library
-  // TODO Add deprecated, use play.test.Helpers method contentAsString
-  def bodyOf(result: Result)(implicit mat: Materializer): String = {
-    val bodyBytes: ByteString = await(result.body.consumeData)
-    // We use the default charset to preserve the behaviour of a previous
-    // version of this code, which used new String(Array[Byte]).
-    // If the fact that the previous version used the default charset was an
-    // accident then it may be better to decode in UTF-8 or the charset
-    // specified by the result's headers.
-    bodyBytes.decodeString(Charset.defaultCharset().name)
-  }
-
-  // From github.com.hmrc/hmrctest to have a possibility to remove deprecated hmrctest library
-  // TODO Add deprecated, use play.test.Helpers method contentAsString
-  def bodyOf(resultF: Future[Result])(implicit mat: Materializer): Future[String] =
-    resultF.map(bodyOf)(global)
 
   // Convenience to avoid having to wrap andThen() parameters in Future.successful
   // From github.com.hmrc/hmrctest to have a possibility to remove deprecated hmrctest library
@@ -65,10 +43,6 @@ trait UnitSpec extends WordSpec with Matchers {
   def await[A](future: Future[A])(implicit timeout: Duration): A = Await.result(future, timeout)
 
   // From github.com.hmrc/hmrctest to have a possibility to remove deprecated hmrctest library
-  // TODO Use status from play.api.test.Helpers on the Future
-  def status(of: Result): Int = of.header.status
-
-  // From github.com.hmrc/hmrctest to have a possibility to remove deprecated hmrctest library
-  // TODO Use status from play.api.test.Helpers
-  def status(of: Future[Result])(implicit timeout: Duration): Int = play.api.test.Helpers.status(of)
+  // TODO Inline this method if possible
+  def status(of: Future[Result]): Int = play.api.test.Helpers.status(of)
 }

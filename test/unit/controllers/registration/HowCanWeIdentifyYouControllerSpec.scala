@@ -79,7 +79,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
     "show the form without errors" in {
       showForm(Map.empty) { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath) shouldBe empty
       }
     }
@@ -95,7 +95,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
     "give a page level error when neither utr or nino are provided" in {
       submitForm(Map.empty) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
         ) shouldBe "Tell us how we can identify you"
@@ -105,7 +105,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
     "only validate nino field when nino radio button is selected" in {
       submitForm(Map("nino" -> "TOOSHORT", "utr" -> "12345678901", "ninoOrUtrRadio" -> "nino")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
         ) shouldBe "The National Insurance number must be 9 characters"
@@ -119,7 +119,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
     "only validate utr field when utr radio button is selected" in {
       submitForm(Map("nino" -> "TOOSHORT", "utr" -> "12345678901", "ninoOrUtrRadio" -> "utr")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
         ) shouldBe "The UTR number must be 10 numbers"
@@ -133,7 +133,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
     "give a page level error when neither radio button is selected and the nino and utr are provided" in {
       submitForm(Map("nino" -> "TOOSHORT", "utr" -> "12345678901", "ninoOrUtrRadio" -> "")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
         ) shouldBe "Tell us how we can identify you"
@@ -145,7 +145,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
     "give a page and field level error when a nino of the wrong length is provided" in {
       submitForm(Map("nino" -> "TOOSHORT", "ninoOrUtrRadio" -> "nino")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
         ) shouldBe "The National Insurance number must be 9 characters"
@@ -158,7 +158,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
     "give a page and field level error when an invalid nino is provided" in {
       submitForm(Map("nino" -> "123456789", "ninoOrUtrRadio" -> "nino")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
         ) shouldBe "Enter a National Insurance number in the right format"
@@ -171,7 +171,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
     "give a page and field level error when an invalid utr is provided" in {
       submitForm(Map("utr" -> "ABCDE12345", "ninoOrUtrRadio" -> "utr")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
         ) shouldBe "Enter a valid UTR number"

@@ -47,7 +47,7 @@ class EnrolmentAlreadyExistsControllerSpec extends ControllerSpec with AuthActio
 
       status(result) shouldBe OK
 
-      val page = CdsPage(bodyOf(result))
+      val page = CdsPage(contentAsString(result))
 
       page.title should startWith("There is a problem")
       page.getElementsText(RegistrationCompletePage.pageHeadingXpath) shouldBe "There is a problem"

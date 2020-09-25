@@ -102,42 +102,42 @@ class BusinessShortNameControllerSpec
 
     "display title as 'Does your organisation use a shortened name?' for non partnership org type" in {
       showCreateForm(orgType = CorporateBody) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title() should startWith("Does your organisation use a shortened name?")
       }
     }
 
     "display heading as 'Does your organisation use a shortened name?' for non partnership org type" in {
       showCreateForm(orgType = CorporateBody) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementText(ShortNamePage.headingXpath) shouldBe "Does your organisation use a shortened name?"
       }
     }
 
     "display title as 'Does your partnership use a shortened name?' for org type of Partnership" in {
       showCreateForm(orgType = Partnership) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title() should startWith("Does your partnership use a shortened name?")
       }
     }
 
     "display heading as 'Does your partnership use a shortened name?' for org type of Partnership" in {
       showCreateForm(orgType = Partnership) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementText(ShortNamePage.headingXpath) shouldBe "Does your partnership use a shortened name?"
       }
     }
 
     "display title as 'Does your partnership use a shortened name?' for org type of Limited Liability Partnership" in {
       showCreateForm(orgType = LLP) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title() should startWith("Does your partnership use a shortened name?")
       }
     }
 
     "display heading as 'Does your partnership use a shortened name?' for org type of Limited Liability Partnership" in {
       showCreateForm(orgType = LLP) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementText(ShortNamePage.headingXpath) shouldBe "Does your partnership use a shortened name?"
       }
     }
@@ -152,7 +152,7 @@ class BusinessShortNameControllerSpec
 
     "have all the required input fields without data if not cached previously" in {
       showCreateForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         verifyShortNameFieldExistWithNoData(page)
       }
     }
@@ -161,14 +161,14 @@ class BusinessShortNameControllerSpec
       when(mockSubscriptionBusinessService.companyShortName(any[HeaderCarrier]))
         .thenReturn(Some(allShortNameFieldsAsShortName))
       showCreateForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         verifyShortNameFieldExistAndPopulatedCorrectly(page, allShortNameFieldsAsShortName)
       }
     }
 
     "display the correct text for the continue button" in {
       showCreateForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(ShortNamePage.continueButtonXpath) shouldBe ContinueButtonTextInCreateMode
       }
     }
@@ -184,7 +184,7 @@ class BusinessShortNameControllerSpec
 
     "display title as 'Does your organisation use a shortened name?'" in {
       showReviewForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title() should startWith("Does your organisation use a shortened name?")
       }
     }
@@ -199,14 +199,14 @@ class BusinessShortNameControllerSpec
 
     "have all the required input fields with data" in {
       showReviewForm(allShortNameFieldsAsShortName) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         verifyShortNameFieldExistAndPopulatedCorrectly(page, allShortNameFieldsAsShortName)
       }
     }
 
     "display the correct text for the continue button" in {
       showReviewForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(ShortNamePage.continueButtonXpath) shouldBe ContinueButtonTextInReviewMode
       }
     }
@@ -287,7 +287,7 @@ class BusinessShortNameControllerSpec
 
     "display errors in the same order as the fields appear on the page when 'use short name' is not answered" in {
       submitFormInCreateMode(emptyShortNameFieldsMap) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
         ) shouldBe useShortNameError
@@ -296,7 +296,7 @@ class BusinessShortNameControllerSpec
 
     "display errors in the same order as the fields appear on the page when 'use short name' is answered yes" in {
       submitFormInCreateMode(emptyShortNameFieldsMap + ("use-short-name" -> withShortName)) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath) shouldBe shortNameError
       }
     }
@@ -304,7 +304,7 @@ class BusinessShortNameControllerSpec
     "display partnership specific errors when 'use short name' is not answered" in {
       when(mockRequestSession.isPartnership(any())).thenReturn(true)
       submitFormInCreateMode(emptyShortNameFieldsMap) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
         ) shouldBe partnershipUseShortNameError
@@ -314,7 +314,7 @@ class BusinessShortNameControllerSpec
     "display partnership specific errors when 'use short name' is answered yes" in {
       when(mockRequestSession.isPartnership(any())).thenReturn(true)
       submitFormInCreateMode(emptyShortNameFieldsMap + ("use-short-name" -> withShortName)) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
         ) shouldBe partnershipShortNameError
@@ -329,7 +329,7 @@ class BusinessShortNameControllerSpec
 
       submitFormInCreateMode(emptyShortNameFieldsMap) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
         ) shouldBe useShortNameError
@@ -361,7 +361,7 @@ class BusinessShortNameControllerSpec
       submitFormInCreateMode(allShortNameFieldsMap + ("use-short-name" -> withoutShortName, "short-name" -> "")) {
         result =>
           status(result) shouldBe SEE_OTHER
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementsText(SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath) shouldEqual ""
           page.getElementsText(SubscriptionAmendCompanyDetailsPage.shortNameFieldLevelErrorXpath) shouldEqual ""
       }
@@ -373,7 +373,7 @@ class BusinessShortNameControllerSpec
       submitFormInCreateMode(allShortNameFieldsMap + ("use-short-name" -> withShortName, "short-name" -> "")) {
         result =>
           status(result) shouldBe BAD_REQUEST
-          val page = CdsPage(bodyOf(result))
+          val page = CdsPage(contentAsString(result))
           page.getElementsText(
             SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
           ) shouldBe shortNameError
@@ -386,7 +386,7 @@ class BusinessShortNameControllerSpec
     "be restricted to 70 characters" in {
       submitFormInCreateMode(allShortNameFieldsMap + ("short-name" -> oversizedString(70))) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
         ) shouldBe "The shortened name must be 70 characters or less"

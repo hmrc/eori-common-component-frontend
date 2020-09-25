@@ -36,7 +36,7 @@ class ReturnUserControllerSpec extends ControllerSpec {
     "return Ok 200 when page method is requested" in {
       show() { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should startWith(messages("cds.checking-status-page.title-and-heading"))
       }
     }

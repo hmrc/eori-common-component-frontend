@@ -16,8 +16,6 @@
 
 package unit.services
 
-import java.util.UUID
-
 import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RandomUUIDGenerator
 

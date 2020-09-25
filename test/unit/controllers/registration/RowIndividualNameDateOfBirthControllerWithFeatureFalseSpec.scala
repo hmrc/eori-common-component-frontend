@@ -28,8 +28,8 @@ import org.scalacheck.Prop
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.prop.Checkers
-import play.api.Application
 import play.api.data.Form
+import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
 import play.api.test.Helpers._
@@ -53,16 +53,16 @@ class RowIndividualNameDateOfBirthControllerWithFeatureFalseSpec
     extends ControllerSpec with Checkers with TestDataGenerators with BeforeAndAfterEach with ScalaFutures
     with AuthActionMock {
 
-  val app: Application =
-    new GuiceApplicationBuilder().configure("features.rowHaveUtrEnabled" -> false).build()
+  val injector: Injector =
+    new GuiceApplicationBuilder().configure("features.rowHaveUtrEnabled" -> false).injector()
 
   class ControllerFixture(organisationType: String, form: Form[IndividualNameAndDateOfBirth])
       extends AbstractControllerFixture[RowIndividualNameDateOfBirthController] {
     val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
 
-    private val rowIndividualNameDob = app.injector.instanceOf[row_individual_name_dob]
+    private val rowIndividualNameDob = injector.instanceOf[row_individual_name_dob]
     private val mockAuthAction       = authAction(mockAuthConnector)
-    private val featureFlags         = app.injector.instanceOf[FeatureFlags]
+    private val featureFlags         = injector.instanceOf[FeatureFlags]
 
     override val controller = new RowIndividualNameDateOfBirthController(
       mockAuthAction,

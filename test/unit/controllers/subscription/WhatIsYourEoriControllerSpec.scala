@@ -90,7 +90,7 @@ class WhatIsYourEoriControllerSpec
 
     "display title as 'What is your GB EORI number?'" in {
       showCreateForm(journey = Journey.Subscribe) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title() should startWith("What is your GB EORI number?")
       }
     }
@@ -111,7 +111,7 @@ class WhatIsYourEoriControllerSpec
 
     "have Eori Number input field without data if not cached previously" in {
       showCreateForm(journey = Journey.Subscribe) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         verifyEoriNumberFieldExistsWithNoData(page)
       }
     }
@@ -120,14 +120,14 @@ class WhatIsYourEoriControllerSpec
       when(mockSubscriptionBusinessService.cachedEoriNumber(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(EoriNumber)))
       showCreateForm(journey = Journey.Subscribe) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         verifyEoriNumberFieldExistsAndPopulatedCorrectly(page)
       }
     }
 
     "display the correct text for the continue button" in {
       showCreateForm(journey = Journey.Subscribe) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(EoriNumberPage.continueButtonXpath) shouldBe ContinueButtonTextInCreateMode
       }
     }
@@ -143,7 +143,7 @@ class WhatIsYourEoriControllerSpec
 
     "display title as 'What is your GB EORI number'" in {
       showReviewForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title() should startWith("What is your GB EORI number?")
       }
     }
@@ -154,21 +154,21 @@ class WhatIsYourEoriControllerSpec
 
     "retrieve the cached data" in {
       showReviewForm() { result =>
-        CdsPage(bodyOf(result))
+        CdsPage(contentAsString(result))
         verify(mockSubscriptionBusinessService).getCachedEoriNumber(any[HeaderCarrier])
       }
     }
 
     "have all the required input fields without data" in {
       showReviewForm(EoriNumber) { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         verifyEoriNumberFieldExistsAndPopulatedCorrectly(page)
       }
     }
 
     "display the correct text for the continue button" in {
       showReviewForm() { result =>
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementValue(EoriNumberPage.continueButtonXpath) shouldBe ContinueButtonTextInReviewMode
       }
     }
@@ -256,7 +256,7 @@ class WhatIsYourEoriControllerSpec
     "be mandatory" in {
       submitFormInCreateMode(unpopulatedEoriNumberFieldsMap) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
         ) shouldBe "Enter your EORI number"
@@ -269,7 +269,7 @@ class WhatIsYourEoriControllerSpec
     "have a maximum of 17 characters" in {
       submitFormInCreateMode(Map("eori-number" -> "GB3456789012345678")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
         ) shouldBe "The EORI number must be 17 characters or less"
@@ -283,7 +283,7 @@ class WhatIsYourEoriControllerSpec
       val enterAValidEori = "Enter an EORI number in the right format"
       submitFormInCreateMode(Map("eori-number" -> "GBX45678901234")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
         ) shouldBe enterAValidEori
@@ -297,7 +297,7 @@ class WhatIsYourEoriControllerSpec
     "reject none GB EORI number" in {
       submitFormInCreateMode(Map("eori-number" -> "FR145678901234")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath) shouldBe enterAGbEori
         page.getElementsText(SubscriptionAmendCompanyDetailsPage.eoriNumberFieldLevelErrorXpath) shouldBe enterAGbEori
 
@@ -306,7 +306,7 @@ class WhatIsYourEoriControllerSpec
     "should reject lowercase gb in EORI number" in {
       submitFormInCreateMode(Map("eori-number" -> "gb145678901234")) { result =>
         status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.getElementsText(SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath) shouldBe enterAGbEori
         page.getElementsText(SubscriptionAmendCompanyDetailsPage.eoriNumberFieldLevelErrorXpath) shouldBe enterAGbEori
 
@@ -390,7 +390,7 @@ class WhatIsYourEoriControllerSpec
     page.getElementValueForLabel(SubscriptionAmendCompanyDetailsPage.eoriNumberLabelXpath) shouldBe ""
 
   private def verifyBackLinkIn(result: Result) = {
-    val page = CdsPage(bodyOf(result))
+    val page = CdsPage(contentAsString(result))
     page.getElementAttributeHref(SubscriptionContactDetailsPage.backLinkXPath) shouldBe previousPageUrl
   }
 

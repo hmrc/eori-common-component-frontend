@@ -864,7 +864,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
       invokeProcessing { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title() should startWith(RegistrationProcessingPage.title)
         page.getElementsText(
           RegistrationProcessingPage.pageHeadingXpath
@@ -886,7 +886,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
       invokeProcessing { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title() should startWith(RegistrationProcessingPage.title)
         page.getElementsText(
           RegistrationProcessingPage.pageHeadingXpath
@@ -907,7 +907,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
       invokeRejected { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title() should startWith(RegistrationRejectedPage.title)
         page.getElementsText(
           RegistrationRejectedPage.pageHeadingXpath
@@ -929,7 +929,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
       invokePending() { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title() should startWith(ApplicationPendingPage.title)
       }
     }
@@ -960,7 +960,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
       invokeEoriAlreadyLinked() { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title() should startWith("The application for")
       }
     }
@@ -979,7 +979,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
       invokeRejectedPreviously() { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title() should startWith("The EORI application has been unsuccessful")
       }
     }
@@ -993,7 +993,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
       invokeFail() { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title() should startWith(ApplicationUnsuccessfulPage.title)
       }
     }

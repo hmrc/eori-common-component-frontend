@@ -24,8 +24,7 @@ import play.mvc.Http.Status.{NOT_FOUND, OK}
 
 object VatControlListMessagingService {
 
-  private val vatEndPoint        = s"/vat-known-facts-control-list?vrn=123456789"
-  private val vatUpdatedEndPoint = s"/vat-known-facts-control-list?vrn=123456788"
+  private val vatEndPoint = s"/vat-known-facts-control-list?vrn=123456789"
 
   private val responseWithOk: JsValue =
     Json.parse("""
@@ -42,9 +41,6 @@ object VatControlListMessagingService {
   def returnTheVatControlListResponseOK(): Unit =
     stubTheVatControlListResponse(vatEndPoint, responseWithOk.toString(), OK)
 
-  def returnTheVatControlUpdatedListResponseOK(): Unit =
-    stubTheVatControlListResponse(vatUpdatedEndPoint, responseWithOk.toString(), OK)
-
   def stubTheVatControlListResponse(url: String, response: String, status: Int): Unit =
     stubFor(
       get(urlEqualTo(url))
@@ -58,16 +54,5 @@ object VatControlListMessagingService {
 
   def returnNotFoundVatControlListResponse(url: String, response: String): Unit =
     stubTheVatControlListResponse(url, response, NOT_FOUND)
-
-  def stubNotFoundVatControlListResponse(url: String, response: String, status: Int): Unit =
-    stubFor(
-      get(urlEqualTo(url))
-        .willReturn(
-          aResponse()
-            .withStatus(status)
-            .withBody(response)
-            .withHeader(CONTENT_TYPE, JSON)
-        )
-    )
 
 }

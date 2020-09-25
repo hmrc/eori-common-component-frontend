@@ -79,7 +79,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     "display page with user eori" in {
       displayPage(Service.ATaR, Some(userEORI)) { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should startWith("Your Government Gateway user ID is linked to an EORI")
 
         page.getElementText(eoriElement) shouldBe userEORI
@@ -89,7 +89,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     "display page with group eori" in {
       displayPage(Service.ATaR, None) { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should startWith("Your Government Gateway user ID is linked to an EORI")
 
         page.getElementText(eoriElement) shouldBe groupEORI
@@ -126,7 +126,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     "return Ok 200 when enrol confirmation page is requested" in {
       enrolSuccess(Service.ATaR, Some("GB123456463324")) { result =>
         status(result) shouldBe OK
-        val page = CdsPage(bodyOf(result))
+        val page = CdsPage(contentAsString(result))
         page.title should startWith("Application complete")
       }
     }

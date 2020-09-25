@@ -48,17 +48,6 @@ object RegisterWithoutIdMessagingService {
       |}
     """.stripMargin
 
-  def returnOkWhenRegisterWithoutIdRequestReceived(): Unit =
-    stubFor(
-      post(RegistrationPath)
-        .willReturn(
-          aResponse()
-            .withStatus(OK)
-            .withBody(AValidResponse)
-            .withHeader(CONTENT_TYPE, JSON)
-        )
-    )
-
   def returnTheResponseWhenReceiveRequest(url: String, request: String, response: String): Unit =
     returnTheResponseWhenReceiveRequest(url, request, response, OK)
 
@@ -73,11 +62,5 @@ object RegisterWithoutIdMessagingService {
             .withHeader(CONTENT_TYPE, JSON)
         )
     )
-
-  def verifyRegisterWithoutIdNotCalled(): Unit =
-    verify(0, postRequestedFor(RegistrationPath))
-
-  def verifyRegisterWithoutIdIsCalled(): Unit =
-    verify(postRequestedFor(RegistrationPath))
 
 }

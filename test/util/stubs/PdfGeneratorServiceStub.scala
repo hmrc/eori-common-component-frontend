@@ -28,9 +28,6 @@ trait PdfGeneratorServiceStub extends WireMockRunner {
   def returnResponseForGenerateRequestWithBody(html: String, responseBody: Array[Byte]): Unit =
     stubForRequest(request().withRequestBody(matching(s"""\\{\\"html\\":\\"$html\\"\\}""")), responseBody)
 
-  def returnResponseForGenerateRequest(responseBody: Array[Byte]): Unit =
-    stubForRequest(request, responseBody)
-
   private def stubForRequest(request: MappingBuilder, responseBody: Array[Byte]): Any =
     stubFor(
       request
