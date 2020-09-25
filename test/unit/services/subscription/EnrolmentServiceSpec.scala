@@ -28,7 +28,6 @@ import org.scalatest.mockito.MockitoSugar
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{Enrolment, EnrolmentIdentifier, Enrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{EnrolmentStoreProxyConnector, TaxEnrolmentsConnector}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{EnrolmentService, MissingEnrolmentException}
@@ -50,14 +49,12 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
   private val enrolments =
     Enrolments(Set(Enrolment("HMRC-CUS-ORG", Seq(EnrolmentIdentifier("EORINumber", eori)), "")))
 
-  override protected def beforeEach(): Unit =
-    when(taxEnrolmentsConnector.enrolAndActivate(any(), any())(any()))
-      .thenReturn(Future.successful(HttpResponse(NO_CONTENT, "")))
-
-  override protected def afterEach(): Unit = {
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
     reset(enrolmentStoreProxyConnector, taxEnrolmentsConnector)
 
-    super.afterEach()
+    when(taxEnrolmentsConnector.enrolAndActivate(any(), any())(any()))
+      .thenReturn(Future.successful(HttpResponse(NO_CONTENT, "")))
   }
 
   "Enrolment service on enrolWithExistingCDSEnrolment" should {
@@ -74,8 +71,6 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
         when(enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(any())(any()))
           .thenReturn(Future.successful(Some(knownFacts)))
 
-        val loggedInUser = LoggedInUserWithEnrolments(None, None, enrolments, None, None)
-
         val enrolmentKeyCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
         val requestCaptor: ArgumentCaptor[GovernmentGatewayEnrolmentRequest] =
           ArgumentCaptor.forClass(classOf[GovernmentGatewayEnrolmentRequest])
@@ -85,7 +80,7 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
           verifiers = List(Verifier("DATEOFESTABLISHMENT", date))
         )
 
-        val result = enrolmentService.enrolWithExistingCDSEnrolment(loggedInUser, Service.ATaR)(headerCarrier)
+        val result = enrolmentService.enrolWithExistingCDSEnrolment(eori, Service.ATaR)(headerCarrier)
 
         result.futureValue shouldBe NO_CONTENT
 
@@ -98,24 +93,13 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
 
     "throw MissingEnrolmentException" when {
 
-      "user doesn't have CDS Enrolment" in {
-
-        val loggedInUser = LoggedInUserWithEnrolments(None, None, Enrolments(Set.empty), None, None)
-
-        intercept[MissingEnrolmentException] {
-          await(enrolmentService.enrolWithExistingCDSEnrolment(loggedInUser, Service.ATaR)(headerCarrier))
-        }
-      }
-
       "query Known facts return None" in {
 
         when(enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(any())(any()))
           .thenReturn(Future.successful(None))
 
-        val loggedInUser = LoggedInUserWithEnrolments(None, None, enrolments, None, None)
-
         intercept[MissingEnrolmentException] {
-          await(enrolmentService.enrolWithExistingCDSEnrolment(loggedInUser, Service.ATaR)(headerCarrier))
+          await(enrolmentService.enrolWithExistingCDSEnrolment("GB64344234", Service.ATaR)(headerCarrier))
         }
       }
 
@@ -125,10 +109,8 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
         when(enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(any())(any()))
           .thenReturn(Future.successful(Some(knownFacts)))
 
-        val loggedInUser = LoggedInUserWithEnrolments(None, None, enrolments, None, None)
-
         intercept[MissingEnrolmentException] {
-          await(enrolmentService.enrolWithExistingCDSEnrolment(loggedInUser, Service.ATaR)(headerCarrier))
+          await(enrolmentService.enrolWithExistingCDSEnrolment("GB234232342", Service.ATaR)(headerCarrier))
         }
       }
     }

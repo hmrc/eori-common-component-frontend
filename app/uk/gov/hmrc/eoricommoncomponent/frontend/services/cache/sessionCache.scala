@@ -40,7 +40,8 @@ sealed case class CachedData(
   sub02Outcome: Option[Sub02Outcome] = None,
   sub01Outcome: Option[Sub01Outcome] = None,
   registerWithEoriAndIdResponse: Option[RegisterWithEoriAndIdResponse] = None,
-  email: Option[String] = None
+  email: Option[String] = None,
+  groupEnrolment: Option[EnrolmentResponse] = None
 ) {
 
   def registrationDetails(sessionId: Id): RegistrationDetails =
@@ -57,6 +58,9 @@ sealed case class CachedData(
 
   def registrationInfo(sessionId: Id): RegistrationInfo =
     regInfo.getOrElse(throwException(regInfoKey, sessionId))
+
+  def groupEnrolment(sessionId: Id): EnrolmentResponse =
+    groupEnrolment.getOrElse(throwException(groupEnrolmentKey, sessionId))
 
   // TODO Refactor this method, sessionId is not used
   def subscriptionDetails(sessionId: Id): SubscriptionDetails =
@@ -90,6 +94,7 @@ object CachedData {
   val emailKey                         = "email"
   val safeIdKey                        = "safeId"
   val groupIdKey                       = "cachedGroupId"
+  val groupEnrolmentKey                = "groupEnrolment"
   implicit val format                  = Json.format[CachedData]
 }
 
@@ -152,6 +157,9 @@ class SessionCache @Inject() (
   def saveEmail(email: String)(implicit hc: HeaderCarrier): Future[Boolean] =
     createOrUpdate(sessionId, emailKey, Json.toJson(email)) map (_ => true)
 
+  def saveGroupEnrolment(groupEnrolment: EnrolmentResponse)(implicit hc: HeaderCarrier): Future[Boolean] =
+    createOrUpdate(sessionId, groupEnrolmentKey, Json.toJson(groupEnrolment)) map (_ => true)
+
   private def getCached[T](sessionId: Id, t: (CachedData, Id) => T)(implicit hc: HeaderCarrier): Future[T] =
     findById(sessionId.id).map {
       case Some(Cache(_, Some(data), _, _)) =>
@@ -192,6 +200,9 @@ class SessionCache @Inject() (
 
   def registrationInfo(implicit hc: HeaderCarrier): Future[RegistrationInfo] =
     getCached[RegistrationInfo](sessionId, (cachedData, id) => cachedData.registrationInfo(id))
+
+  def groupEnrolment(implicit hc: HeaderCarrier): Future[EnrolmentResponse] =
+    getCached[EnrolmentResponse](sessionId, (cachedData, id) => cachedData.groupEnrolment(id))
 
   def remove(implicit hc: HeaderCarrier): Future[Boolean] =
     removeById(sessionId.id) map (x => x.writeErrors.isEmpty && x.writeConcernError.isEmpty)

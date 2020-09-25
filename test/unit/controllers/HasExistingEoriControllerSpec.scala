@@ -23,10 +23,12 @@ import play.api.mvc.Result
 import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, _}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{FailedEnrolmentException, HasExistingEoriController}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, KeyValue}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{eori_enrol_success, has_existing_eori}
+import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
@@ -38,29 +40,59 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
   private val mockAuthConnector    = mock[AuthConnector]
   private val mockAuthAction       = authAction(mockAuthConnector)
   private val mockEnrolmentService = mock[EnrolmentService]
+  private val mockSessionCache     = mock[SessionCache]
 
   private val hasExistingEoriView  = instanceOf[has_existing_eori]
   private val eoriEnrolSuccessView = instanceOf[eori_enrol_success]
 
-  private val controller =
-    new HasExistingEoriController(mockAuthAction, hasExistingEoriView, eoriEnrolSuccessView, mcc, mockEnrolmentService)
+  private val eoriElement = "//*[@id='eoriNum']"
 
-  override def beforeEach: Unit =
-    reset(mockAuthConnector, mockEnrolmentService)
+  private val userEORI  = "GB123456463324"
+  private val groupEORI = "GB435474553564"
+
+  private val controller =
+    new HasExistingEoriController(
+      mockAuthAction,
+      hasExistingEoriView,
+      eoriEnrolSuccessView,
+      mcc,
+      mockEnrolmentService,
+      mockSessionCache
+    )
+
+  override def beforeEach: Unit = {
+    super.beforeEach()
+    reset(mockAuthConnector, mockEnrolmentService, mockSessionCache)
+    userHasGroupEnrolment
+  }
 
   "Has Existing EORI Controller display page" should {
 
     "throw exception when user does not have existing CDS enrolment" in {
+      userDoesNotHaveGroupEnrolment
+
       intercept[IllegalStateException](displayPage(Service.ATaR)(result => status(result))).getMessage should startWith(
-        "No EORI found in enrolments"
+        "No EORI found"
       )
     }
 
-    "return Ok 200 when displayPage method is requested" in {
-      displayPage(Service.ATaR, Some("GB123456463324")) { result =>
+    "display page with user eori" in {
+      displayPage(Service.ATaR, Some(userEORI)) { result =>
         status(result) shouldBe OK
         val page = CdsPage(bodyOf(result))
         page.title should startWith("Your Government Gateway user ID is linked to an EORI")
+
+        page.getElementText(eoriElement) shouldBe userEORI
+      }
+    }
+
+    "display page with group eori" in {
+      displayPage(Service.ATaR, None) { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(bodyOf(result))
+        page.title should startWith("Your Government Gateway user ID is linked to an EORI")
+
+        page.getElementText(eoriElement) shouldBe groupEORI
       }
     }
   }
@@ -84,9 +116,11 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
   "Has Existing EORI Controller enrol confirmation page" should {
 
     "throw exception when user does not have existing CDS enrolment" in {
+      userDoesNotHaveGroupEnrolment
+
       intercept[IllegalStateException](
         enrolSuccess(Service.ATaR)(result => status(result))
-      ).getMessage should startWith("No EORI found in enrolments")
+      ).getMessage should startWith("No EORI found")
     }
 
     "return Ok 200 when enrol confirmation page is requested" in {
@@ -105,9 +139,9 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   private def enrol(service: Service, responseStatus: Int)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    when(
-      mockEnrolmentService.enrolWithExistingCDSEnrolment(any[LoggedInUserWithEnrolments], any[Service])(any())
-    ).thenReturn(Future(responseStatus))
+    when(mockEnrolmentService.enrolWithExistingCDSEnrolment(any[String], any[Service])(any())).thenReturn(
+      Future(responseStatus)
+    )
     await(test(controller.enrol(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
@@ -115,5 +149,15 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     withAuthorisedUser(defaultUserId, mockAuthConnector, cdsEnrolmentId = cdsEnrolmentId)
     await(test(controller.enrolSuccess(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
+
+  private def userDoesNotHaveGroupEnrolment = when(mockSessionCache.groupEnrolment(any[HeaderCarrier]))
+    .thenReturn(Future.successful(EnrolmentResponse(Service.CDS.enrolmentKey, "Activated", List.empty)))
+
+  private def userHasGroupEnrolment = when(mockSessionCache.groupEnrolment(any[HeaderCarrier]))
+    .thenReturn(
+      Future.successful(
+        EnrolmentResponse(Service.CDS.enrolmentKey, "Activated", List(KeyValue("EORINumber", groupEORI)))
+      )
+    )
 
 }

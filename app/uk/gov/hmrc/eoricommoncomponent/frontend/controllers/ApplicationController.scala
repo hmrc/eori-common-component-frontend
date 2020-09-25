@@ -21,7 +21,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, EnrolmentExtractor}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, LoggedInUserWithEnrolments}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, GroupId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.CDS
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
@@ -37,7 +37,7 @@ class ApplicationController @Inject() (
   mcc: MessagesControllerComponents,
   viewStart: start,
   accessibilityStatementView: accessibility_statement,
-  cdsFrontendDataCache: SessionCache,
+  cache: SessionCache,
   enrolmentStoreProxyService: EnrolmentStoreProxyService,
   appConfig: AppConfig
 )(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
@@ -82,7 +82,12 @@ class ApplicationController @Inject() (
     enrolledForService(loggedInUser, service).isDefined
 
   private def hasGroupIdEnrolmentTo(groupId: String, service: Service)(implicit hc: HeaderCarrier): Future[Boolean] =
-    enrolmentStoreProxyService.isEnrolmentAssociatedToGroup(GroupId(groupId), service)
+    groupIdEnrolmentTo(groupId, service).map(_.isDefined)
+
+  private def groupIdEnrolmentTo(groupId: String, service: Service)(implicit
+    hc: HeaderCarrier
+  ): Future[Option[EnrolmentResponse]] =
+    enrolmentStoreProxyService.enrolmentForGroup(GroupId(groupId), service)
 
   private def cdsEnrolmentCheck(loggedInUser: LoggedInUserWithEnrolments, groupId: String, serviceToEnrol: Service)(
     implicit hc: HeaderCarrier
@@ -90,10 +95,13 @@ class ApplicationController @Inject() (
     if (isUserEnrolledFor(loggedInUser, CDS))
       Future.successful(Redirect(routes.HasExistingEoriController.displayPage(serviceToEnrol)))
     else
-      hasGroupIdEnrolmentTo(groupId, CDS).map { groupIdEnrolledForCds =>
-        if (groupIdEnrolledForCds)
-          Redirect(routes.HasExistingEoriController.displayPage(serviceToEnrol))      // AutoEnrolment
-        else Redirect(routes.EmailController.form(serviceToEnrol, Journey.Subscribe)) // Whole journey
+      groupIdEnrolmentTo(groupId, CDS).flatMap {
+        case Some(groupEnrolment) if groupEnrolment.eori.isDefined =>
+          cache.saveGroupEnrolment(groupEnrolment).map { _ =>
+            Redirect(routes.HasExistingEoriController.displayPage(serviceToEnrol)) // AutoEnrolment
+          }
+        case _ =>
+          Future.successful(Redirect(routes.EmailController.form(serviceToEnrol, Journey.Subscribe))) // Whole journey
       }
 
   def accessibilityStatement(): Action[AnyContent] = Action { implicit request =>
@@ -105,11 +113,11 @@ class ApplicationController @Inject() (
       implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
         journey match {
           case Journey.Register =>
-            cdsFrontendDataCache.remove map { _ =>
+            cache.remove map { _ =>
               Redirect(appConfig.feedbackLink).withNewSession
             }
           case Journey.Subscribe =>
-            cdsFrontendDataCache.remove map { _ =>
+            cache.remove map { _ =>
               Redirect(appConfig.feedbackLinkSubscribe).withNewSession
             }
         }

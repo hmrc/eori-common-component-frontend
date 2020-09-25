@@ -137,8 +137,8 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
     when(mockSave4LaterService.fetchSafeId(any[InternalId]())(any[HeaderCarrier]())).thenReturn(Future.successful(None))
     when(
       mockEnrolmentStoreProxyService
-        .isEnrolmentAssociatedToGroup(any(), any())(any())
-    ).thenReturn(Future.successful(false))
+        .enrolmentForGroup(any(), any())(any())
+    ).thenReturn(Future.successful(None))
 
   }
 
