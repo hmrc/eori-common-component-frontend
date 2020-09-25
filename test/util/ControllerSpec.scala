@@ -88,8 +88,8 @@ trait ControllerSpec extends UnitSpec with MockitoSugar with I18nSupport with In
           )
         )
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result).get should endWith(
-          "/auth-login-stub/gg-sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fregister"
+        header(LOCATION, result).get should include(
+          "?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fregister"
         )
       }
     }
@@ -109,8 +109,8 @@ trait ControllerSpec extends UnitSpec with MockitoSugar with I18nSupport with In
         )
       )
       status(result) shouldBe SEE_OTHER
-      header(LOCATION, result).get should endWith(
-        "/auth-login-stub/gg-sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fregister"
+      header(LOCATION, result).get should include(
+        "?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fregister"
       )
     }
 
@@ -128,8 +128,8 @@ trait ControllerSpec extends UnitSpec with MockitoSugar with I18nSupport with In
         )
       )
       status(result) shouldBe SEE_OTHER
-      header(LOCATION, result).get should endWith(
-        "/auth-login-stub/gg-sign-in?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fsubscribe"
+      header(LOCATION, result).get should include(
+        "?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fsubscribe"
       )
     }
 
