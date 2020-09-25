@@ -31,15 +31,6 @@ class EnrolmentStoreProxyService @Inject() (enrolmentStoreProxyConnector: Enrolm
 
   private val activatedState = "Activated"
 
-  // TODO - delete - only used by tests
-  def isEnrolmentAssociatedToGroup(groupId: GroupId, service: Service)(implicit hc: HeaderCarrier): Future[Boolean] =
-    enrolmentStoreProxyConnector
-      .getEnrolmentByGroupId(groupId.id)
-      .map(_.enrolments)
-      .map { enrolment =>
-        enrolment.exists(x => x.state == activatedState && x.service == service.enrolmentKey)
-      }
-
   def enrolmentForGroup(groupId: GroupId, service: Service)(implicit
     hc: HeaderCarrier
   ): Future[Option[EnrolmentResponse]] =

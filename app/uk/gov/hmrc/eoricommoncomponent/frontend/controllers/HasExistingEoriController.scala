@@ -68,7 +68,7 @@ class HasExistingEoriController @Inject() (
     enrolledForService(loggedInUser, CDS) match {
       case Some(eori) => Future.successful(eori.id)
       case _ =>
-        cache.groupEnrolment.map(_.eori.getOrElse(throw new IllegalStateException("No EORI found in group enrolment")))
+        cache.groupEnrolment.map(_.eori.getOrElse(throw new IllegalStateException("No EORI found")))
     }
 
 }

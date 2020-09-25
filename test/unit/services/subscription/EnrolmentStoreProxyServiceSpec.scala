@@ -71,7 +71,7 @@ class EnrolmentStoreProxyServiceSpec extends UnitSpec with MockitoSugar with Bef
           .getEnrolmentByGroupId(any[String])(meq(headerCarrier), any())
       ).thenReturn(Future.successful(enrolmentStoreProxyResponse))
 
-      await(service.isEnrolmentAssociatedToGroup(groupId, CDS)) shouldBe true
+      await(service.enrolmentForGroup(groupId, CDS)) shouldBe Some(enrolmentResponse)
 
       verify(mockEnrolmentStoreProxyConnector).getEnrolmentByGroupId(any[String])(meq(headerCarrier), any())
     }
@@ -82,7 +82,7 @@ class EnrolmentStoreProxyServiceSpec extends UnitSpec with MockitoSugar with Bef
           .getEnrolmentByGroupId(any[String])(meq(headerCarrier), any())
       ).thenReturn(Future.successful(enrolmentStoreProxyResponsNoHmrcCusOrg))
 
-      await(service.isEnrolmentAssociatedToGroup(groupId, CDS)) shouldBe false
+      await(service.enrolmentForGroup(groupId, CDS)) shouldBe None
 
       verify(mockEnrolmentStoreProxyConnector).getEnrolmentByGroupId(any[String])(meq(headerCarrier), any())
     }
