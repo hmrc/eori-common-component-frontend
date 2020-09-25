@@ -51,7 +51,7 @@ class WhatIsYourEoriSpec extends ViewSpec {
   val previousPageUrl      = "/"
   implicit val request     = withFakeCSRF(FakeRequest())
 
-  private val view = app.injector.instanceOf[what_is_your_eori]
+  private val view = instanceOf[what_is_your_eori]
 
   "What Is Your EORI page" should {
     "display correct title" in {

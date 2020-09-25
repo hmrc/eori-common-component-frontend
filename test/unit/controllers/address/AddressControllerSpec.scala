@@ -76,8 +76,8 @@ class AddressControllerSpec
   private val emulatedFailure                = new UnsupportedOperationException("Emulation of service call failure")
   private val mockOrganisationType           = mock[CdsOrganisationType]
 
-  private val viewConfirmContectDetails = app.injector.instanceOf[confirm_contact_details]
-  private val viewAddress               = app.injector.instanceOf[address]
+  private val viewConfirmContectDetails = instanceOf[confirm_contact_details]
+  private val viewAddress               = instanceOf[address]
 
   private val controller = new AddressController(
     mockAuthAction,

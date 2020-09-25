@@ -32,7 +32,7 @@ class WhatIsYourEmailSpec extends ViewSpec {
   val previousPageUrl                     = "/"
   implicit val request                    = withFakeCSRF(FakeRequest())
 
-  val view = app.injector.instanceOf[what_is_your_email]
+  val view = instanceOf[what_is_your_email]
 
   "What Is Your Email Address page for CDS access" should {
     "display correct title" in {

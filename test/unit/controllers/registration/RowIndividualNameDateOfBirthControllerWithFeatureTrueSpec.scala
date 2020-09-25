@@ -28,9 +28,7 @@ import org.scalacheck.Prop
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.prop.Checkers
-import play.api.Application
 import play.api.data.Form
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.FeatureFlags
@@ -54,14 +52,11 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueSpec
     extends ControllerSpec with Checkers with TestDataGenerators with BeforeAndAfterEach with ScalaFutures
     with AuthActionMock {
 
-  implicit override lazy val app: Application =
-    new GuiceApplicationBuilder().configure("features.rowHaveUtrEnabled" -> true).build()
-
   class ControllerFixture(organisationType: String, form: Form[IndividualNameAndDateOfBirth])
       extends AbstractControllerFixture[RowIndividualNameDateOfBirthController] {
     val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
 
-    private val rowIndividualNameDob = app.injector.instanceOf[row_individual_name_dob]
+    private val rowIndividualNameDob = instanceOf[row_individual_name_dob]
     private val mockAuthAction       = authAction(mockAuthConnector)
     private val featureFlags         = instanceOf[FeatureFlags]
 
@@ -327,7 +322,8 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueSpec
 
       "not be in the future " in testControllerWithModel(validFormModelGens) {
         (controllerFixture, individualNameAndDateOfBirth) =>
-          val tomorrow = LocalDate.now().plusDays(1)
+          val tomorrow   = LocalDate.now().plusDays(1)
+          val FutureDate = "You must specify a date that is not in the future"
           import controllerFixture._
           assertInvalidField(
             formData(individualNameAndDateOfBirth) + (dateOfBirthDayField -> tomorrow.getDayOfMonth.toString,

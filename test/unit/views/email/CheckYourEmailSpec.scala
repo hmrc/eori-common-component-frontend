@@ -32,7 +32,7 @@ class CheckYourEmailSpec extends ViewSpec {
   val previousPageUrl   = "/"
   val form: Form[YesNo] = EmailForm.confirmEmailYesNoAnswerForm()
 
-  val view = app.injector.instanceOf[check_your_email]
+  val view = instanceOf[check_your_email]
 
   implicit val request = withFakeCSRF(FakeRequest())
 

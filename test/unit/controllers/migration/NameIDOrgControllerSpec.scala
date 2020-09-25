@@ -39,7 +39,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.nameId
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import unit.controllers.subscription.SubscriptionFlowSpec
-import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.SessionBuilder
 
@@ -65,7 +64,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
   private val mockRegistrationDetails  = mock[RegistrationDetails](RETURNS_DEEP_STUBS)
   private val mockCdsFrontendDataCache = mock[SessionCache]
 
-  private val nameIdView = app.injector.instanceOf[nameId]
+  private val nameIdView = instanceOf[nameId]
 
   private val controller = new NameIDOrgController(
     mockAuthAction,
@@ -189,7 +188,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     )
 
     "display relevant data in form fields when subscription details exist in the cache" in {
-      when(mockSubscriptionBusinessService.getCachedNameIdViewModel).thenReturn(NameIdDetailsPage.filledValues)
+      when(mockSubscriptionBusinessService.getCachedNameIdViewModel(any())).thenReturn(NameIdDetailsPage.filledValues)
 
       showReviewForm() { result =>
         val page         = CdsPage(bodyOf(result))

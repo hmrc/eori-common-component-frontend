@@ -19,7 +19,6 @@ package unit.controllers.email
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -45,7 +44,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   private val mockSave4LaterService = mock[Save4LaterService]
 
-  private val whatIsYourEmailView = app.injector.instanceOf[what_is_your_email]
+  private val whatIsYourEmailView = instanceOf[what_is_your_email]
 
   private val controller =
     new WhatIsYourEmailController(mockAuthAction, mcc, whatIsYourEmailView, mockSave4LaterService)

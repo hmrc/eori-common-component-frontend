@@ -54,7 +54,7 @@ class WhatIsYourEoriControllerSpec
       .url
 
   private val mockRequestSessionData = mock[RequestSessionData]
-  private val whatIsYourEoriView     = app.injector.instanceOf[what_is_your_eori]
+  private val whatIsYourEoriView     = instanceOf[what_is_your_eori]
 
   private val controller = new WhatIsYourEoriController(
     mockAuthAction,
@@ -67,6 +67,7 @@ class WhatIsYourEoriControllerSpec
   )
 
   private val emulatedFailure = new UnsupportedOperationException("Emulation of service call failure")
+  val enterAGbEori            = "Enter an EORI number that starts with GB"
 
   override def beforeEach: Unit = {
     reset(
@@ -279,6 +280,7 @@ class WhatIsYourEoriControllerSpec
     }
 
     "be of the correct format" in {
+      val enterAValidEori = "Enter an EORI number in the right format"
       submitFormInCreateMode(Map("eori-number" -> "GBX45678901234")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(bodyOf(result))

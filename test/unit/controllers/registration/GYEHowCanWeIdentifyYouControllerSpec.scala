@@ -49,7 +49,7 @@ class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAnd
   private val mockMatchingService   = mock[MatchingService]
   private val mockFrontendDataCache = mock[SessionCache]
 
-  private val howCanWeIdentifyYouView = app.injector.instanceOf[how_can_we_identify_you]
+  private val howCanWeIdentifyYouView = instanceOf[how_can_we_identify_you]
 
   private val controller = new GYEHowCanWeIdentifyYouController(
     mockAuthAction,

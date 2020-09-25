@@ -27,7 +27,7 @@ import util.builders.SessionBuilder
 import scala.concurrent.Future
 
 class ReturnUserControllerSpec extends ControllerSpec {
-  private val returnUserView = app.injector.instanceOf[return_user]
+  private val returnUserView = instanceOf[return_user]
 
   private val controller =
     new ReturnUserController(returnUserView, mcc)

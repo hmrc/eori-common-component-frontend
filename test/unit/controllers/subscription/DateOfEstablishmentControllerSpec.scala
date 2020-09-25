@@ -67,7 +67,7 @@ class DateOfEstablishmentControllerSpec
   private val mockOrgTypeLookup      = mock[OrgTypeLookup]
   private val mockRequestSessionData = mock[RequestSessionData]
 
-  private val dateOfEstablishmentView = app.injector.instanceOf[date_of_establishment]
+  private val dateOfEstablishmentView = instanceOf[date_of_establishment]
 
   private val controller = new DateOfEstablishmentController(
     mockAuthAction,
@@ -92,7 +92,6 @@ class DateOfEstablishmentControllerSpec
   val existingSubscriptionDetailsHolder = SubscriptionDetails()
 
   private val DateOfEstablishmentMissingPageLevelError = "Enter your date of establishment"
-  private val DateOfEstablishmentInvalidPageLevelError = DateOfEstablishmentMissingPageLevelError
   private val DateOfEstablishmentMissingError          = "Enter your date of establishment"
   private val DateOfEstablishmentInvalidError          = "Please enter a valid date of establishment"
   private val DateOfEstablishmentInFutureError         = "You cannot enter a date of establishment in the future"
@@ -117,6 +116,8 @@ class DateOfEstablishmentControllerSpec
     )
 
     "display the form" in {
+      val helpAndSupportLabelXpath: String = "//*[@id='helpAndSupport']"
+
       showCreateForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(bodyOf(result))

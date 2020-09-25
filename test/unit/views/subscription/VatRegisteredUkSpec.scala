@@ -35,7 +35,7 @@ class VatRegisteredUkSpec extends ViewSpec {
   val formPartnershipWithError: Form[YesNo] = vatRegisteredUkYesNoAnswerForm(true).bind(Map("yes-no-answer" -> ""))
   val isIndividualFlow                      = false
 
-  private val view     = app.injector.instanceOf[vat_registered_uk]
+  private val view     = instanceOf[vat_registered_uk]
   implicit val request = withFakeCSRF(FakeRequest())
 
   lazy val doc: Document =

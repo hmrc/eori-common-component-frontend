@@ -33,7 +33,7 @@ class EnterYourDetailsSpec extends ViewSpec {
   val previousPageUrl               = "/"
   implicit val request              = withFakeCSRF(FakeRequest())
 
-  private val view = app.injector.instanceOf[enter_your_details]
+  private val view = instanceOf[enter_your_details]
 
   "Subscription Enter Your Details Page" should {
     "display correct title" in {

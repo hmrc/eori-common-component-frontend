@@ -38,7 +38,7 @@ class VatRegisteredUkControllerSpec extends ControllerSpec with AuthActionMock {
   private val expectedYesRedirectUrl = s"https://www.tax.service.gov.uk/shortforms/form/EORIVAT?details=&vat=yes"
   private val expectedNoRedirectUrl  = s"https://www.tax.service.gov.uk/shortforms/form/EORINonVATImport?details=&vat=no"
 
-  private val vatRegisteredUkView = app.injector.instanceOf[vat_registered_uk]
+  private val vatRegisteredUkView = instanceOf[vat_registered_uk]
 
   val controller = new VatRegisteredUkController(vatRegisteredUkView, mcc)
 

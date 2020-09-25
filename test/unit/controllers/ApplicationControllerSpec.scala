@@ -42,14 +42,11 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
   private val mockAuthAction    = authAction(mockAuthConnector)
   private val mockSessionCache  = mock[SessionCache]
 
-  private val startView                  = app.injector.instanceOf[start]
-  private val accessibilityStatementView = app.injector.instanceOf[accessibility_statement]
+  private val startView                  = instanceOf[start]
+  private val accessibilityStatementView = instanceOf[accessibility_statement]
   private val enrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
 
   val controller = new ApplicationController(
-    configuration,
-    environment,
-    mockAuthConnector,
     mockAuthAction,
     mcc,
     startView,

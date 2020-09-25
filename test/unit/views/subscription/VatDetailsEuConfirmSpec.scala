@@ -35,7 +35,7 @@ class VatDetailsEuConfirmSpec extends ViewSpec {
 
   implicit val request = withFakeCSRF(FakeRequest())
 
-  private val view = app.injector.instanceOf[vat_details_eu_confirm]
+  private val view = instanceOf[vat_details_eu_confirm]
 
   private val emptyFormUnderLimit: Form[YesNo] = vatRegisteredEuYesNoAnswerForm().bind(invalidRequest)
   private val formUnderLimit: Form[YesNo]      = vatRegisteredEuYesNoAnswerForm().bind(ValidRequest)

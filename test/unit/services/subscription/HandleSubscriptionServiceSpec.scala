@@ -31,15 +31,14 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.HandleSubscriptionService
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class HandleSubscriptionServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter {
 
   private val mockHandleSubscriptionConnector = mock[HandleSubscriptionConnector]
 
-  private val service                       = new HandleSubscriptionService(mockHandleSubscriptionConnector)
-  private implicit val hc: HeaderCarrier    = HeaderCarrier()
-  private implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
+  private val service                    = new HandleSubscriptionService(mockHandleSubscriptionConnector)
+  private implicit val hc: HeaderCarrier = HeaderCarrier()
 
   before {
     reset(mockHandleSubscriptionConnector)

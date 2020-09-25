@@ -35,7 +35,7 @@ class AreYouSureRemoveVatSpec extends ViewSpec {
   private val vatDetails: VatEUDetailsModel = VatEUDetailsModel("FR", "12345")
   implicit val request                      = withFakeCSRF(FakeRequest())
 
-  private val view = app.injector.instanceOf[are_you_sure_remove_vat]
+  private val view = instanceOf[are_you_sure_remove_vat]
 
   "Are you Vat Registered in EU Page" should {
 

@@ -18,8 +18,6 @@ package unit.controllers
 
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
@@ -36,23 +34,14 @@ import scala.concurrent.Future
 
 class ApplicationControllerWithAllowlistVerificationSpec extends ControllerSpec with AuthActionMock {
 
-  implicit override lazy val app: Application = new GuiceApplicationBuilder()
-    .disable[com.kenshoo.play.metrics.PlayModule]
-    .configure("metrics.enabled" -> false)
-    .configure(Map("allowlistEnabled" -> true, "allowlist" -> "mister_allow@example.com,  bob@example.com"))
-    .build()
-
   private val mockAuthConnector          = mock[AuthConnector]
   private val mockAuthAction             = authAction(mockAuthConnector)
   private val mockSessionCache           = mock[SessionCache]
-  private val startView                  = app.injector.instanceOf[start]
-  private val accessibilityStatementView = app.injector.instanceOf[accessibility_statement]
+  private val startView                  = instanceOf[start]
+  private val accessibilityStatementView = instanceOf[accessibility_statement]
   private val enrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
 
   val controller = new ApplicationController(
-    configuration,
-    environment,
-    mockAuthConnector,
     mockAuthAction,
     mcc,
     startView,
@@ -62,6 +51,7 @@ class ApplicationControllerWithAllowlistVerificationSpec extends ControllerSpec 
     appConfig
   )
 
+  // TODO This test doesn't test what described, please check if logout method is not coevered in ApplicationControllerSpec
   "Navigating to logout" should {
     "logout a non-allowlisted user" in {
       withAuthorisedUser(defaultUserId, mockAuthConnector, userEmail = Some("not@example.com"))

@@ -32,7 +32,7 @@ class VatGroupSpec extends ViewSpec {
   val formWithError: Form[YesNo] = vatGroupYesNoAnswerForm().bind(Map("yes-no-answer" -> ""))
   implicit val request           = withFakeCSRF(FakeRequest())
 
-  private val view = app.injector.instanceOf[vat_group]
+  private val view = instanceOf[vat_group]
 
   "The 'Is the organisation you are registering part of a VAT group?' Page" should {
 

@@ -50,7 +50,7 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
 
-  private val matchNinoRowIndividualView = app.injector.instanceOf[match_nino_row_individual]
+  private val matchNinoRowIndividualView = instanceOf[match_nino_row_individual]
 
   private val doYouHaveNinoController = new DoYouHaveNinoController(
     mockAuthAction,

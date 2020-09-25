@@ -18,7 +18,7 @@ package unit.controllers.registration
 
 import common.pages.NinoMatchPage
 import common.pages.matching.NameDateOfBirthPage.{fieldLevelErrorDateOfBirth, pageLevelErrorSummaryListXPath}
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.{HowCanWeIdentifyYouController, NinoController}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.NinoController
 import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -46,7 +46,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter with AuthAct
   private val mockAuthAction      = authAction(mockAuthConnector)
   private val mockMatchingService = mock[MatchingService]
 
-  private val matchNinoView = app.injector.instanceOf[match_nino]
+  private val matchNinoView = instanceOf[match_nino]
 
   val controller = new NinoController(mockAuthAction, mcc, matchNinoView, mockMatchingService)
 

@@ -32,8 +32,8 @@ import scala.concurrent.Future
 class YouCannotUseServiceControllerSpec extends ControllerSpec with AuthActionMock {
   private val mockAuthConnector = mock[AuthConnector]
 
-  private val youCantUseServiceView = app.injector.instanceOf[you_cant_use_service]
-  private val unauthorisedView      = app.injector.instanceOf[unauthorized]
+  private val youCantUseServiceView = instanceOf[you_cant_use_service]
+  private val unauthorisedView      = instanceOf[unauthorized]
 
   private val controller =
     new YouCannotUseServiceController(

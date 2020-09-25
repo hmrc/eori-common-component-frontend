@@ -37,7 +37,7 @@ class UserTypeFilterSpec extends ControllerSpec with BeforeAndAfterEach with Aut
   private val mockAuthConnector          = mock[AuthConnector]
   private val mockAuthAction             = authAction(mockAuthConnector)
   private val mockCache                  = mock[SessionCache]
-  private val eoriNumberTextDownloadView = app.injector.instanceOf[eori_number_text_download]
+  private val eoriNumberTextDownloadView = instanceOf[eori_number_text_download]
 
   private val controller =
     new EoriTextDownloadController(mockAuthAction, mockCache, eoriNumberTextDownloadView, mcc)

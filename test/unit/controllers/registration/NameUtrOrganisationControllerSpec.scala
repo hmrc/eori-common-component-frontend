@@ -52,7 +52,7 @@ class NameUtrOrganisationControllerSpec
   private val mockAuthAction      = authAction(mockAuthConnector)
   private val mockMatchingService = mock[MatchingService]
 
-  private val matchNameIdOrganisationView = app.injector.instanceOf[match_name_id_organisation]
+  private val matchNameIdOrganisationView = instanceOf[match_name_id_organisation]
 
   private val controller =
     new NameIdOrganisationController(mockAuthAction, mcc, matchNameIdOrganisationView, mockMatchingService)
@@ -92,12 +92,6 @@ class NameUtrOrganisationControllerSpec
 
   private def invalidOrganisationTypeMessage(organisationType: String): String =
     s"Invalid organisation type '$organisationType'."
-
-  private def nameError(nameDescription: String): String =
-    s"Enter the $nameDescription name"
-
-  private def utrError(utrDescription: String): String =
-    s"Enter the $utrDescription"
 
   override def beforeEach: Unit =
     reset(mockMatchingService)

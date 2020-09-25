@@ -62,9 +62,9 @@ class VatDetailsControllerSpec
 
   private val mockVatControlListConnector = mock[VatControlListConnector]
 
-  private val vatDetailsView              = app.injector.instanceOf[vat_details]
-  private val errorTemplate               = app.injector.instanceOf[error_template]
-  private val weCannotConfirmYourIdentity = app.injector.instanceOf[we_cannot_confirm_your_identity]
+  private val vatDetailsView              = instanceOf[vat_details]
+  private val errorTemplate               = instanceOf[error_template]
+  private val weCannotConfirmYourIdentity = instanceOf[we_cannot_confirm_your_identity]
 
   private val controller = new VatDetailsController(
     mockAuthAction,

@@ -59,7 +59,7 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
   private val mockSubscriptionFlowInfo        = mock[SubscriptionFlowInfo]
   private val mockSubscriptionPage            = mock[SubscriptionPage]
 
-  private val nameOrgView = app.injector.instanceOf[nameOrg]
+  private val nameOrgView = instanceOf[nameOrg]
 
   private val registrationDetails          = RegistrationDetailsOrganisation()
   private val nameOrgMatchModel            = NameOrganisationMatchModel("testName")

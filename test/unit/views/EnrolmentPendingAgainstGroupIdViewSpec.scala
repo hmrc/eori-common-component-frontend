@@ -26,7 +26,7 @@ import util.ViewSpec
 
 class EnrolmentPendingAgainstGroupIdViewSpec extends ViewSpec {
 
-  private val view     = app.injector.instanceOf[enrolment_pending_against_group_id]
+  private val view     = instanceOf[enrolment_pending_against_group_id]
   implicit val request = withFakeCSRF(FakeRequest())
 
   "Enrolment Pending against group id page" should {

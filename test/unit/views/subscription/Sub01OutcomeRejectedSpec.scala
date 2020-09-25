@@ -30,7 +30,7 @@ class Sub01OutcomeRejectedSpec extends ViewSpec {
   val orgName       = "Test Organisation Name"
   val processedDate = "01 Jan 2019"
 
-  private val view = app.injector.instanceOf[sub01_outcome_rejected]
+  private val view = instanceOf[sub01_outcome_rejected]
 
   "'Sub01 Outcome Rejected' Page with name" should {
 

@@ -38,7 +38,7 @@ class EnrolmentPendingAgainstGroupIdControllerSpec extends ControllerSpec with A
   private val mockAuthConnector                  = mock[AuthConnector]
   private val mockAuthAction                     = authAction(mockAuthConnector)
   private val mockSessionCache                   = mock[SessionCache]
-  private val enrolmentPendingAgainstGroupIdView = app.injector.instanceOf[enrolment_pending_against_group_id]
+  private val enrolmentPendingAgainstGroupIdView = instanceOf[enrolment_pending_against_group_id]
 
   private val controller = new EnrolmentPendingAgainstGroupIdController(
     mockAuthAction,

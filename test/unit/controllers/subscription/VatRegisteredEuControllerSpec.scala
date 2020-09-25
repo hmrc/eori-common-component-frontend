@@ -65,10 +65,13 @@ class VatRegisteredEuControllerSpec extends ControllerSpec with AuthActionMock {
   private val mockSessionCache                    = mock[SessionCache]
   private val mockSubscriptionPage                = mock[SubscriptionPage]
   private val mockRequestSession                  = mock[RequestSessionData]
-  private val vatRegisteredEuView                 = app.injector.instanceOf[vat_registered_eu]
+  private val vatRegisteredEuView                 = instanceOf[vat_registered_eu]
 
   private val emptyVatEuDetails: Seq[VatEUDetailsModel] = Seq.empty
   private val someVatEuDetails: Seq[VatEUDetailsModel]  = Seq(VatEUDetailsModel("1234", "FR"))
+
+  // TODO Investigate this, mocks works incorrectly without it
+  implicit val hc = mock[HeaderCarrier]
 
   private val controller = new VatRegisteredEuController(
     mockAuthAction,

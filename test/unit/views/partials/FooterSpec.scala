@@ -26,7 +26,7 @@ import util.ViewSpec
 class FooterSpec extends ViewSpec {
   implicit val request = withFakeCSRF(FakeRequest.apply("GET", "/register"))
 
-  private val view = app.injector.instanceOf[footer]
+  private val view = instanceOf[footer]
 
   "Footer" should {
     "have correct licence logo link" in {

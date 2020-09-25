@@ -20,6 +20,7 @@ import common.pages.VatDetailsEuPage
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.Form
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.VatEUDetailsModel
@@ -31,11 +32,16 @@ import util.ViewSpec
 
 class VatDetailsEuSpec extends ViewSpec {
 
+  val app = GuiceApplicationBuilder()
+    .disable[com.kenshoo.play.metrics.PlayModule]
+    .configure("metrics.enabled" -> false)
+    .build()
+
   val countries = new Countries(app)
 
   implicit val request = withFakeCSRF(FakeRequest())
 
-  private val view = app.injector.instanceOf[vat_details_eu]
+  private val view = instanceOf[vat_details_eu]
 
   val form: Form[VatEUDetailsModel]          = euVatForm
   val updateValues                           = Map("vatNumber" -> "2DSFA311", "vatCountry" -> "DK")

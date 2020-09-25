@@ -33,7 +33,7 @@ class DateOfEstablishmentSpec extends ViewSpec {
   val isInReviewMode             = false
   implicit val request           = withFakeCSRF(FakeRequest())
 
-  private val view = app.injector.instanceOf[date_of_establishment]
+  private val view = instanceOf[date_of_establishment]
 
   "On a UK journey the 'When was the organisation established?' page" should {
     "display correct title" in {

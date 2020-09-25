@@ -22,8 +22,6 @@ import common.pages.matching.ConfirmPage
 import common.pages.{RegistrationProcessingPage, RegistrationRejectedPage}
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
-import org.scalatest.prop.TableDrivenPropertyChecks._
-import org.scalatest.prop.Tables.Table
 import org.scalatest.{BeforeAndAfterEach, mock => _}
 import play.api.mvc._
 import play.api.test.Helpers._
@@ -72,14 +70,11 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
   private val mockTaxEnrolmentsService      = mock[TaxEnrolmentsService]
   private val mockHandleSubscriptionService = mock[HandleSubscriptionService]
 
-  private val confirmContactDetailsView =
-    app.injector.instanceOf[confirm_contact_details]
+  private val confirmContactDetailsView = instanceOf[confirm_contact_details]
 
-  private val sub01OutcomeProcessingView =
-    app.injector.instanceOf[sub01_outcome_processing]
+  private val sub01OutcomeProcessingView = instanceOf[sub01_outcome_processing]
 
-  private val sub01OutcomeRejected =
-    app.injector.instanceOf[sub01_outcome_rejected]
+  private val sub01OutcomeRejected = instanceOf[sub01_outcome_rejected]
 
   private val controller = new ConfirmContactDetailsController(
     mockAuthAction,
@@ -110,10 +105,6 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
   private val testSubscriptionStartPageUrl = "some_page_url"
 
-  private val emptyError =
-    "Tell us if this is the business you want to register"
-
-  private val yesNoMissingValueError    = "This field is required"
   private val subscriptionDetailsHolder = SubscriptionDetails()
 
   override def beforeEach {
@@ -638,13 +629,6 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
   private def mockCacheWithRegistrationDetails(details: RegistrationDetails): Unit =
     when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier]))
       .thenReturn(details)
-
-  private def mockSubscriptionDetailsReviewControllerCall() {
-    val mockAction = mock[Action[AnyContent]]
-    when(mockAction.apply(any[Request[AnyContent]]))
-      .thenReturn(Future.successful(Results.Ok))
-    when(mockSubscriptionDetailsReviewController.submitDetails(any[Service], any[Journey.Value])).thenReturn(mockAction)
-  }
 
   private def mockNewSubscriptionFromSubscriptionStatus() =
     when(

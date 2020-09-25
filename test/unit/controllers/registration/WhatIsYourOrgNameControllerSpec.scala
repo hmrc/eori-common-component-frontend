@@ -47,7 +47,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
-  implicit override lazy val app: Application = new GuiceApplicationBuilder()
+  val app: Application = new GuiceApplicationBuilder()
     .configure("features.rowHaveUtrEnabled" -> false)
     .build()
 

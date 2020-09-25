@@ -31,7 +31,7 @@ class Sub02SubscriptionInProgressSpec extends ViewSpec {
   private val pageHeadingExpectedText = s"The EORI application for $name is being processed"
   private val processDateExpectedText = s"Application received by HMRC on $processedDate"
 
-  private val view = app.injector.instanceOf[sub02_subscription_in_progress]
+  private val view = instanceOf[sub02_subscription_in_progress]
 
   "GYE Subscription in progress outcome page" should {
 

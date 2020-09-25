@@ -22,8 +22,6 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameDobSoleTraderController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
@@ -42,12 +40,6 @@ import scala.concurrent.Future
 class AllowlistVerificationWithFeatureOffSpec
     extends SubscriptionFlowSpec with GuiceOneAppPerSuite with MockitoSugar with BeforeAndAfterEach {
 
-  implicit override lazy val app: Application = new GuiceApplicationBuilder()
-    .disable[com.kenshoo.play.metrics.PlayModule]
-    .configure("metrics.enabled" -> false)
-    .configure(Map("allowlistEnabled" -> false, "allowlist" -> "mister_allow@example.com, bob@example.com"))
-    .build()
-
   protected override val mockSubscriptionFlowManager: SubscriptionFlowManager = mock[SubscriptionFlowManager]
   protected override val formId: String                                       = NameDobSoleTraderPage.formId
 
@@ -64,7 +56,7 @@ class AllowlistVerificationWithFeatureOffSpec
   private val mockRequestSessionData   = mock[RequestSessionData]
   private val mockRegistrationDetails  = mock[RegistrationDetails](RETURNS_DEEP_STUBS)
   private val mockCdsFrontendDataCache = mock[SessionCache]
-  private val enterYourDetails         = app.injector.instanceOf[enter_your_details]
+  private val enterYourDetails         = instanceOf[enter_your_details]
 
   private val controller = new NameDobSoleTraderController(
     mockAuthAction,

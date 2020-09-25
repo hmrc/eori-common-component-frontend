@@ -69,13 +69,13 @@ class CheckYourDetailsRegisterControllerSpec
 
   private val mockAuthConnector                     = mock[AuthConnector]
   private val mockAuthAction                        = authAction(mockAuthConnector)
-  private val featureFlags                          = app.injector.instanceOf[FeatureFlags]
+  private val featureFlags                          = instanceOf[FeatureFlags]
   private val mockSessionCache                      = mock[SessionCache]
   private val mockSubscriptionDetailsHolder         = mock[SubscriptionDetails]
   private val mockRegisterWithoutIdWithSubscription = mock[RegisterWithoutIdWithSubscriptionService]
   private val mockSubscriptionFlow                  = mock[SubscriptionFlow]
   private val mockRequestSession                    = mock[RequestSessionData]
-  private val checkYourDetailsRegisterView          = app.injector.instanceOf[check_your_details_register]
+  private val checkYourDetailsRegisterView          = instanceOf[check_your_details_register]
 
   val controller = new CheckYourDetailsRegisterController(
     mockAuthAction,
@@ -961,11 +961,7 @@ class CheckYourDetailsRegisterControllerSpec
 
     when(mockSubscriptionFlow.isIndividualFlow).thenReturn(isIndividualSubscriptionFlow)
 
-    test(
-      controller.reviewDetails(Service.ATaR, Journey.Register).apply(
-        SessionBuilder.buildRequestWithSession(userId)(app)
-      )
-    )
+    test(controller.reviewDetails(Service.ATaR, Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def submitForm(

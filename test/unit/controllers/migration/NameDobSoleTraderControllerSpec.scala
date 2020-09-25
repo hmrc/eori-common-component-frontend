@@ -37,7 +37,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.enter_your_
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import unit.controllers.subscription.SubscriptionFlowSpec
-import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.SessionBuilder
 
@@ -62,7 +61,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
   private val mockRequestSessionData   = mock[RequestSessionData]
   private val mockRegistrationDetails  = mock[RegistrationDetails](RETURNS_DEEP_STUBS)
   private val mockCdsFrontendDataCache = mock[SessionCache]
-  private val enterYourDetails         = app.injector.instanceOf[enter_your_details]
+  private val enterYourDetails         = instanceOf[enter_your_details]
 
   private val controller = new NameDobSoleTraderController(
     mockAuthAction,
@@ -195,7 +194,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     )
 
     "display relevant data in form fields when subscription details exist in the cache" in {
-      when(mockSubscriptionBusinessService.getCachedSubscriptionNameDobViewModel)
+      when(mockSubscriptionBusinessService.getCachedSubscriptionNameDobViewModel(any()))
         .thenReturn(NameDobSoleTraderPage.filledValues)
 
       showReviewForm() { result =>

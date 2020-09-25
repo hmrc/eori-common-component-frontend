@@ -87,15 +87,13 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
   private val mockSubscriptionFlowManager    = mock[SubscriptionFlowManager]
   private val mockEnrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
 
-  private val userLocationView = app.injector.instanceOf[user_location]
+  private val userLocationView = instanceOf[user_location]
 
-  private val sub01OutcomeProcessing =
-    app.injector.instanceOf[sub01_outcome_processing]
+  private val sub01OutcomeProcessing = instanceOf[sub01_outcome_processing]
 
-  private val sub01OutcomeRejected =
-    app.injector.instanceOf[sub01_outcome_rejected]
+  private val sub01OutcomeRejected = instanceOf[sub01_outcome_rejected]
 
-  private val errorTemplate = app.injector.instanceOf[error_template]
+  private val errorTemplate = instanceOf[error_template]
 
   private val controller = new UserLocationController(
     mockAuthAction,
@@ -252,6 +250,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
       errorTemplate
     ) {}
     implicit val fakeRequest = FakeRequest()
+    implicit val hc          = mock[HeaderCarrier]
 
     "cache registration display response and redirect to BusinessDetailsRecoveryPage for individual response" in {
       val mockSession   = mock[Session]
@@ -358,12 +357,6 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
       controller.processing
         .apply(SessionBuilder.buildRequestWithSession(userId))
     )
-  }
-
-  private def rejected(userId: String = defaultUserId)(test: Future[Result] => Any) {
-    withAuthorisedUser(userId, mockAuthConnector)
-
-    test(controller.rejected.apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def subscriptionStatus(

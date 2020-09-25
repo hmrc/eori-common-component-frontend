@@ -27,8 +27,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
 }
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.util.Constants
-import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthActionMock
 

@@ -51,7 +51,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
   private val mockSubscriptionFlowInfo       = mock[SubscriptionFlowInfo]
   private val mockSubscriptionPage           = mock[SubscriptionPage]
 
-  private val matchUtrSubscriptionView = app.injector.instanceOf[match_utr_subscription]
+  private val matchUtrSubscriptionView = instanceOf[match_utr_subscription]
 
   private val nextPageFlowUrl = "/customs-enrolment-services/subscribe/row-nino"
 

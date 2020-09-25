@@ -48,7 +48,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
   private val mockSubscriptionFlowInfo       = mock[SubscriptionFlowInfo]
   private val mockSubscriptionPage           = mock[SubscriptionPage]
 
-  private val matchNinoSubscriptionView = app.injector.instanceOf[match_nino_subscription]
+  private val matchNinoSubscriptionView = instanceOf[match_nino_subscription]
 
   private val ValidNinoRequest   = Map("have-nino" -> "true", "nino" -> "AB123456C")
   private val ValidNinoNoRequest = Map("have-nino" -> "false", "nino" -> "")

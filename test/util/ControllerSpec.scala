@@ -19,49 +19,58 @@ package util
 import java.util.UUID
 
 import akka.stream.Materializer
-import base.UnitSpec
+import base.{Injector, UnitSpec}
 import common.pages.WebPage
 import org.scalatest.mockito.MockitoSugar
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.{Configuration, Environment, Mode, Play}
+import play.api.http.{DefaultFileMimeTypes, FileMimeTypesConfiguration}
+import play.api.{Configuration, Environment, Mode}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesImpl}
 import play.api.mvc._
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import unit.UnitTestApp
 import unit.controllers.CdsPage
-import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthBuilder, SessionBuilder}
 import play.api.i18n.Lang._
+import play.api.test.NoMaterializer
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
+import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 import scala.util.Random
 
-trait ControllerSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar with I18nSupport with UnitTestApp {
+trait ControllerSpec extends UnitSpec with MockitoSugar with I18nSupport with Injector {
 
-  implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  val configMap: Map[String, Boolean] = Map("metrics.enabled" -> false)
 
-  implicit def materializer: Materializer = Play.materializer
+  implicit val messagesApi: MessagesApi = instanceOf[MessagesApi]
+
+  implicit def materializer: Materializer = NoMaterializer
 
   implicit val messages: Messages = MessagesImpl(defaultLang, messagesApi)
 
-  implicit val mcc: MessagesControllerComponents = app.injector.instanceOf[MessagesControllerComponents]
+  implicit val mcc: MessagesControllerComponents = DefaultMessagesControllerComponents(
+    new DefaultMessagesActionBuilderImpl(stubBodyParser(AnyContentAsEmpty), messagesApi)(global),
+    DefaultActionBuilder(stubBodyParser(AnyContentAsEmpty))(global),
+    stubPlayBodyParsers(NoMaterializer),
+    messagesApi, // Need to be a real messages api, because our tests checks the content, not keys
+    stubLangs(),
+    new DefaultFileMimeTypes(FileMimeTypesConfiguration()),
+    global
+  )
 
   protected val previousPageUrl = "javascript:history.back()"
 
   val env: Environment = Environment.simple()
 
-  implicit val config: Configuration = Configuration.load(env)
+  val config: Configuration = Configuration.load(env)
 
   private val runMode = new RunMode(config, Mode.Dev)
 
   private val serviceConfig = new ServicesConfig(config, runMode)
 
-  implicit val appConfig: AppConfig = new AppConfig(config, serviceConfig, runMode, "eori-common-component-frontend")
+  val appConfig: AppConfig = new AppConfig(config, serviceConfig, runMode, "eori-common-component-frontend")
 
   protected def assertNotLoggedInUserShouldBeRedirectedToLoginPage(
     mockAuthConnector: AuthConnector,
@@ -124,42 +133,7 @@ trait ControllerSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
       )
     }
 
-  def assertCustomPageLevelError(
-    result: Future[Result],
-    pageLevelErrorSummaryXPath: String,
-    errorMessage: String
-  ): Unit = {
-    status(result) shouldBe BAD_REQUEST
-    val page = CdsPage(bodyOf(result))
-    page.getElementsText(pageLevelErrorSummaryXPath) shouldBe errorMessage
-  }
-
-  def assertFieldLevelError(
-    result: Future[Result],
-    field: String,
-    fieldLevelErrorXPath: String,
-    errorMessage: String
-  ): Unit = {
-    status(result) shouldBe BAD_REQUEST
-    val page = CdsPage(bodyOf(result))
-
-    withClue(s"Not found in the page: field level error block for '$field' with xpath $fieldLevelErrorXPath") {
-      page.elementIsPresent(fieldLevelErrorXPath) shouldBe true
-    }
-
-    page.getElementsText(fieldLevelErrorXPath) shouldBe errorMessage
-  }
-
-  def assertRadioButtonIsPresent(
-    page: CdsPage,
-    labelXpath: String,
-    expectedText: String,
-    expectedValue: String
-  ): Unit = {
-    page.getElementText(labelXpath) should be(expectedText)
-    page.getElementValueForLabel(labelXpath) should be(expectedValue)
-  }
-
+  // TODO This trait is used in only one controller, extract the necessary logic and use in the test, rest to remove
   trait AbstractControllerFixture[C <: FrontendController] {
     val mockAuthConnector = mock[AuthConnector]
     val userId            = defaultUserId
@@ -205,30 +179,12 @@ trait ControllerSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar
 
   }
 
-  implicit val hc = mock[HeaderCarrier]
-
-  val Required              = "This field is required"
-  var NoSelection           = "Please select one of the options"
-  val InvalidDate           = "Please enter a valid date, for example '31 3 1980'"
-  val FutureDate            = "You must specify a date that is not in the future"
-  val enterAValidEori       = "Enter an EORI number in the right format"
-  val enterAGbEori          = "Enter an EORI number that starts with GB"
   val defaultUserId: String = s"user-${UUID.randomUUID}"
 
-  val helpAndSupportLabelXpath: String = "//*[@id='helpAndSupport']"
-
-  val helpAndSupportText: String =
-    "Help and support Telephone: 0300 322 7067 Open 8am to 6pm, Monday to Friday (closed bank holidays)."
-
+  // TODO Extract below methods to some Utils class
   def strim(s: String): String = s.stripMargin.trim.lines mkString " "
 
   def oversizedString(maxLength: Int): String = Random.alphanumeric.take(maxLength + 1).mkString
 
   def undersizedString(minLength: Int): String = Random.alphanumeric.take(minLength - 1).mkString
-
-  def maxLength(maxLength: Int): String = s"Maximum length is $maxLength"
-
-  def thereIsAProblemWithThe(field: String): String = s"Enter the $field"
-
-  def customPageSummaryError(field: String, prefix: String): String = messagesApi(s"$prefix.$field")(defaultLang)
 }

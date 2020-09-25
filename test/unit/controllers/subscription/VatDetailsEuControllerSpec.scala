@@ -22,13 +22,13 @@ import org.mockito.Mockito._
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.prop.Checkers
-import play.api.mvc.{MessagesControllerComponents, Result}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Application
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{
-  SubscriptionFlowManager,
-  VatDetailsEuController
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.VatDetailsEuController
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.VatEUDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
@@ -43,14 +43,15 @@ import util.builders.{AuthActionMock, SessionBuilder}
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with BeforeAndAfterEach with AuthActionMock {
+class VatDetailsEuControllerSpec
+    extends ControllerSpec with Checkers with BeforeAndAfterEach with AuthActionMock with GuiceOneAppPerSuite {
 
   private val mockCountries                       = mock[Countries]
   private val mockAuthConnector                   = mock[AuthConnector]
   private val mockAuthAction                      = authAction(mockAuthConnector)
   private val mockSubscriptionVatEUDetailsService = mock[SubscriptionVatEUDetailsService]
 
-  private val vatDetailsEuView = app.injector.instanceOf[vat_details_eu]
+  private val vatDetailsEuView = instanceOf[vat_details_eu]
 
   private val controller = new VatDetailsEuController(
     mockAuthAction,
@@ -59,6 +60,18 @@ class VatDetailsEuControllerSpec extends ControllerSpec with Checkers with Befor
     vatDetailsEuView,
     mockCountries
   )
+
+  override lazy val app: Application = new GuiceApplicationBuilder()
+    .configure(
+      Map(
+        "countriesFilename"              -> "test-countries.json",
+        "mdgCountryCodesFilename"        -> "test-mdg-country-codes.csv",
+        "mdgNotIomCountryCodesFilename"  -> "test-mdg-not-iom-country-codes.csv",
+        "mdgEuCountryCodesFilename"      -> "test-mdg-eu-country-codes.csv",
+        "mdgIslandsCountryCodesFilename" -> "test-mdg-islands-country-codes.csv"
+      )
+    )
+    .build()
 
   val countries = new Countries(app)
 

@@ -39,7 +39,7 @@ class ConfirmContactDetailsViewSpec extends ViewSpec {
   private val form: Form[YesNoWrongAddress] = YesNoWrongAddress.createForm()
   private implicit val request              = withFakeCSRF(FakeRequest())
 
-  private val view = app.injector.instanceOf[confirm_contact_details]
+  private val view = instanceOf[confirm_contact_details]
 
   "Confirm Contact Details" should {
     "display correct title" in {

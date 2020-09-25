@@ -58,7 +58,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
   private val mockSubscriptionDetailsHolderService = mock[SubscriptionDetailsService]
   private val mockRequestSessionData               = mock[RequestSessionData]
 
-  private val howCanWeIdentifyYouView = app.injector.instanceOf[how_can_we_identify_you]
+  private val howCanWeIdentifyYouView = instanceOf[how_can_we_identify_you]
 
   private val controller = new HowCanWeIdentifyYouController(
     mockAuthAction,

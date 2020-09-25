@@ -42,7 +42,7 @@ class SixLineAddressSpec extends ViewSpec {
     Country("Japan", "country:JP")
   )
 
-  private val view = app.injector.instanceOf[six_line_address]
+  private val view = instanceOf[six_line_address]
 
   "Rest of World (ROW) Enter your organisation address Page" should {
     "display correct title" in {

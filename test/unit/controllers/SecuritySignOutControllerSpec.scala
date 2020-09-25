@@ -35,19 +35,13 @@ import scala.concurrent.Future
 
 class SecuritySignOutControllerSpec extends ControllerSpec with AuthActionMock {
   private val mockAuthConnector = mock[AuthConnector]
+  private val mockAuthAction    = authAction(mockAuthConnector)
   private val mockSessionCache  = mock[SessionCache]
 
-  private val displaySignOutView = app.injector.instanceOf[display_sign_out]
+  private val displaySignOutView = instanceOf[display_sign_out]
 
   private val controller =
-    new SecuritySignOutController(
-      configuration,
-      environment,
-      mockAuthConnector,
-      mockSessionCache,
-      displaySignOutView,
-      mcc
-    )
+    new SecuritySignOutController(mockAuthAction, mockSessionCache, displaySignOutView, mcc)
 
   "Security Sign Out Controller" should {
     "return Ok 200 when displayPage method is requested" in {

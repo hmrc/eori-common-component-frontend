@@ -23,7 +23,6 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
 import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.UserLocationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
@@ -61,15 +60,13 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach wi
   private val mockSave4LaterConnector        = mock[Save4LaterConnector]
   private val mockEnrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
 
-  private val userLocationView = app.injector.instanceOf[user_location]
+  private val userLocationView = instanceOf[user_location]
 
-  private val sub01OutcomeProcessing =
-    app.injector.instanceOf[sub01_outcome_processing]
+  private val sub01OutcomeProcessing = instanceOf[sub01_outcome_processing]
 
-  private val errorTemplate = app.injector.instanceOf[error_template]
+  private val errorTemplate = instanceOf[error_template]
 
-  private val sub01OutcomeRejected =
-    app.injector.instanceOf[sub01_outcome_rejected]
+  private val sub01OutcomeRejected = instanceOf[sub01_outcome_rejected]
 
   private val controller = new UserLocationController(
     mockAuthAction,

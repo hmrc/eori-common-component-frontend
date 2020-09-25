@@ -21,7 +21,6 @@ import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.eori_enrol_success
 import util.ViewSpec
 
@@ -32,7 +31,7 @@ class EoriEnrolSuccessSpec extends ViewSpec {
   private val service = Service.ATaR
   private val eori    = "GB234532132435"
 
-  private val view = app.injector.instanceOf[eori_enrol_success]
+  private val view = instanceOf[eori_enrol_success]
 
   "EORI Enrol Success Page" should {
 
