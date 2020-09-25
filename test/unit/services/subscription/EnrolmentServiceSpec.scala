@@ -74,8 +74,6 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
         when(enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(any())(any()))
           .thenReturn(Future.successful(Some(knownFacts)))
 
-        val loggedInUser = LoggedInUserWithEnrolments(None, None, enrolments, None, None)
-
         val enrolmentKeyCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
         val requestCaptor: ArgumentCaptor[GovernmentGatewayEnrolmentRequest] =
           ArgumentCaptor.forClass(classOf[GovernmentGatewayEnrolmentRequest])
@@ -85,7 +83,7 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
           verifiers = List(Verifier("DATEOFESTABLISHMENT", date))
         )
 
-        val result = enrolmentService.enrolWithExistingCDSEnrolment(loggedInUser, Service.ATaR)(headerCarrier)
+        val result = enrolmentService.enrolWithExistingCDSEnrolment(eori, Service.ATaR)(headerCarrier)
 
         result.futureValue shouldBe NO_CONTENT
 
@@ -100,10 +98,8 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
 
       "user doesn't have CDS Enrolment" in {
 
-        val loggedInUser = LoggedInUserWithEnrolments(None, None, Enrolments(Set.empty), None, None)
-
         intercept[MissingEnrolmentException] {
-          await(enrolmentService.enrolWithExistingCDSEnrolment(loggedInUser, Service.ATaR)(headerCarrier))
+          await(enrolmentService.enrolWithExistingCDSEnrolment("GB1132413132", Service.ATaR)(headerCarrier))
         }
       }
 
@@ -112,10 +108,8 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
         when(enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(any())(any()))
           .thenReturn(Future.successful(None))
 
-        val loggedInUser = LoggedInUserWithEnrolments(None, None, enrolments, None, None)
-
         intercept[MissingEnrolmentException] {
-          await(enrolmentService.enrolWithExistingCDSEnrolment(loggedInUser, Service.ATaR)(headerCarrier))
+          await(enrolmentService.enrolWithExistingCDSEnrolment("GB64344234", Service.ATaR)(headerCarrier))
         }
       }
 
@@ -125,10 +119,8 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
         when(enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(any())(any()))
           .thenReturn(Future.successful(Some(knownFacts)))
 
-        val loggedInUser = LoggedInUserWithEnrolments(None, None, enrolments, None, None)
-
         intercept[MissingEnrolmentException] {
-          await(enrolmentService.enrolWithExistingCDSEnrolment(loggedInUser, Service.ATaR)(headerCarrier))
+          await(enrolmentService.enrolWithExistingCDSEnrolment("GB234232342", Service.ATaR)(headerCarrier))
         }
       }
     }

@@ -23,8 +23,8 @@ import play.api.mvc.Result
 import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, _}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{FailedEnrolmentException, HasExistingEoriController}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{eori_enrol_success, has_existing_eori}
 import util.ControllerSpec
@@ -38,12 +38,20 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
   private val mockAuthConnector    = mock[AuthConnector]
   private val mockAuthAction       = authAction(mockAuthConnector)
   private val mockEnrolmentService = mock[EnrolmentService]
+  private val mockSessionCache     = mock[SessionCache]
 
   private val hasExistingEoriView  = instanceOf[has_existing_eori]
   private val eoriEnrolSuccessView = instanceOf[eori_enrol_success]
 
   private val controller =
-    new HasExistingEoriController(mockAuthAction, hasExistingEoriView, eoriEnrolSuccessView, mcc, mockEnrolmentService)
+    new HasExistingEoriController(
+      mockAuthAction,
+      hasExistingEoriView,
+      eoriEnrolSuccessView,
+      mcc,
+      mockEnrolmentService,
+      mockSessionCache
+    )
 
   override def beforeEach: Unit =
     reset(mockAuthConnector, mockEnrolmentService)
@@ -105,9 +113,9 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   private def enrol(service: Service, responseStatus: Int)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    when(
-      mockEnrolmentService.enrolWithExistingCDSEnrolment(any[LoggedInUserWithEnrolments], any[Service])(any())
-    ).thenReturn(Future(responseStatus))
+    when(mockEnrolmentService.enrolWithExistingCDSEnrolment(any[String], any[Service])(any())).thenReturn(
+      Future(responseStatus)
+    )
     await(test(controller.enrol(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
