@@ -33,11 +33,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, Reg
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.{
-  AllCountriesExceptIomInCountryPicker,
-  Countries,
-  Country
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Country
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.address
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.confirm_contact_details
@@ -72,7 +68,6 @@ class AddressControllerSpec
   private val mockCdsFrontendDataCache       = mock[SessionCache]
   private val mockRegistrationDetails        = mock[RegistrationDetails]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
-  private val mockCountries                  = mock[Countries]
   private val emulatedFailure                = new UnsupportedOperationException("Emulation of service call failure")
   private val mockOrganisationType           = mock[CdsOrganisationType]
 
@@ -86,7 +81,6 @@ class AddressControllerSpec
     mockSubscriptionFlowManager,
     mockRequestSessionData,
     mockSubscriptionDetailsHolderService,
-    mockCountries,
     mcc,
     mockSubscriptionDetailsService,
     viewConfirmContectDetails,
@@ -124,8 +118,6 @@ class AddressControllerSpec
     when(mockRequestSessionData.mayBeUnMatchedUser(any[Request[AnyContent]])).thenReturn(None)
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]]))
       .thenReturn(Some(mockOrganisationType))
-    when(mockCountries.all).thenReturn(aFewCountries)
-    when(mockCountries.getCountryParameters(any())).thenReturn(aFewCountries -> AllCountriesExceptIomInCountryPicker)
     registerSaveDetailsMockSuccess()
     setupMockSubscriptionFlowManager(AddressDetailsSubscriptionFlowPage)
   }

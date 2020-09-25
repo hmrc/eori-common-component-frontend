@@ -16,39 +16,16 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.countries
 
-import com.google.inject.Inject
-import javax.inject.Singleton
-import play.api._
 import play.api.libs.json._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 
 import scala.io.Source
 
-// TODO Injecto configuration, not whole application
-@Singleton
-class Countries @Inject() (app: Application) {
-
-  private val countriesFilename: String =
-    app.configuration.get[String]("countriesFilename")
-
-  private val mdgCountryCodesFilename: String =
-    app.configuration.get[String]("mdgCountryCodesFilename")
-
-  private val mdgNotIomCountryCodesFilename: String =
-    app.configuration.get[String]("mdgNotIomCountryCodesFilename")
-
-  private val mdgEuCountryCodesFilename: String =
-    app.configuration.get[String]("mdgEuCountryCodesFilename")
-
-  private val mdgThirdCountryCodesFilename: String =
-    app.configuration.get[String]("mdgThirdCountryCodesFilename")
-
-  private val mdgIslandsCountryCodesFilename: String =
-    app.configuration.get[String]("mdgIslandsCountryCodesFilename")
+object Countries {
 
   private def mdgCountryCodes(fileName: String): List[String] =
     Source
-      .fromInputStream(app.classloader.getResourceAsStream(fileName))
+      .fromInputStream(getClass.getResourceAsStream(fileName))
       .getLines()
       .mkString
       .split(',')
@@ -57,14 +34,16 @@ class Countries @Inject() (app: Application) {
 
   private val countries: List[Country] = {
     def fromJsonFile: List[Country] =
-      Json.parse(app.classloader.getResourceAsStream(countriesFilename)) match {
+      Json.parse(getClass.getResourceAsStream("/location-autocomplete-canonical-list.json")) match {
         case JsArray(cs) =>
           cs.toList.collect {
             case JsArray(Seq(c: JsString, cc: JsString)) =>
               Country(c.value, countryCode(cc.value))
           }
         case _ =>
-          throw new IllegalArgumentException("Could not read JSON array of countries from : " + countriesFilename)
+          throw new IllegalArgumentException(
+            "Could not read JSON array of countries from : location-autocomplete-canonical-list.json"
+          )
       }
 
     fromJsonFile.sortBy(_.countryName)
@@ -72,18 +51,18 @@ class Countries @Inject() (app: Application) {
 
   private def countryCode: String => String = cc => cc.split(":")(1).trim
 
-  val all: List[Country] = countries filter (c => mdgCountryCodes(mdgCountryCodesFilename) contains c.countryCode)
+  val all: List[Country] = countries filter (c => mdgCountryCodes("/mdg-country-codes.csv") contains c.countryCode)
 
   val allExceptIom: List[Country] =
-    countries filter (c => mdgCountryCodes(mdgNotIomCountryCodesFilename) contains c.countryCode)
+    countries filter (c => mdgCountryCodes("/mdg-country-codes-not-iom.csv") contains c.countryCode)
 
-  val eu: List[Country] = countries filter (c => mdgCountryCodes(mdgEuCountryCodesFilename) contains c.countryCode)
+  val eu: List[Country] = countries filter (c => mdgCountryCodes("/mdg-country-codes-eu.csv") contains c.countryCode)
 
   val third: List[Country] =
-    countries filter (c => mdgCountryCodes(mdgThirdCountryCodesFilename) contains c.countryCode)
+    countries filter (c => mdgCountryCodes("/mdg-country-codes-third-countries.csv") contains c.countryCode)
 
   val islands: List[Country] =
-    countries filter (c => mdgCountryCodes(mdgIslandsCountryCodesFilename) contains c.countryCode)
+    countries filter (c => mdgCountryCodes("/mdg-country-codes-islands.csv") contains c.countryCode)
 
   def getCountryParameters(location: Option[String]): (List[Country], CountriesInCountryPicker) = location match {
     case Some(UserLocation.Eu) => (eu, EUCountriesInCountryPicker)

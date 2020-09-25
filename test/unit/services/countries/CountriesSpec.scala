@@ -18,40 +18,24 @@ package unit.services.countries
 
 import org.scalatest.{Matchers, WordSpec}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.{Countries, Country}
 
 class CountriesSpec extends WordSpec with Matchers with GuiceOneAppPerSuite {
 
-  override lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(
-      Map(
-        "countriesFilename"              -> "test-countries.json",
-        "mdgCountryCodesFilename"        -> "test-mdg-country-codes.csv",
-        "mdgNotIomCountryCodesFilename"  -> "test-mdg-not-iom-country-codes.csv",
-        "mdgEuCountryCodesFilename"      -> "test-mdg-eu-country-codes.csv",
-        "mdgIslandsCountryCodesFilename" -> "test-mdg-islands-country-codes.csv"
-      )
-    )
-    .build()
-
-  val countries = new Countries(app)
-
   "Countries" should {
 
     "give all countries with codes in alphabetical order of country name with filtering according to permitted MDG values" in {
-      countries.all shouldBe List(
-        Country("Afghanistan", "AF"),
-        Country("Curaçao", "CW"),
-        Country("Réunion", "RE"),
-        Country("Zimbabwe", "ZW"),
-        Country("Åland Islands", "AX")
-      )
+
+      Countries.all should contain(Country("Afghanistan", "AF"))
+      Countries.all should contain(Country("Curaçao", "CW"))
+      Countries.all should contain(Country("Réunion", "RE"))
+      Countries.all should contain(Country("Zimbabwe", "ZW"))
+      Countries.all should contain(Country("Åland Islands", "AX"))
     }
 
     "give all eu countries with codes in alphabetical order of country name with filtering according to permitted MDG EU values" in {
-      countries.eu shouldBe List(Country("France", "FR"), Country("Germany", "DE"))
+      Countries.eu should contain(Country("France", "FR"))
+      Countries.eu should contain(Country("Germany", "DE"))
     }
   }
 }

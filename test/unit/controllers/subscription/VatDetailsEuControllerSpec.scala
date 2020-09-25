@@ -23,15 +23,12 @@ import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.prop.Checkers
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.VatDetailsEuController
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.VatEUDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionVatEUDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_details_eu
 import uk.gov.hmrc.http.HeaderCarrier
@@ -46,34 +43,14 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class VatDetailsEuControllerSpec
     extends ControllerSpec with Checkers with BeforeAndAfterEach with AuthActionMock with GuiceOneAppPerSuite {
 
-  private val mockCountries                       = mock[Countries]
   private val mockAuthConnector                   = mock[AuthConnector]
   private val mockAuthAction                      = authAction(mockAuthConnector)
   private val mockSubscriptionVatEUDetailsService = mock[SubscriptionVatEUDetailsService]
 
   private val vatDetailsEuView = instanceOf[vat_details_eu]
 
-  private val controller = new VatDetailsEuController(
-    mockAuthAction,
-    mockSubscriptionVatEUDetailsService,
-    mcc,
-    vatDetailsEuView,
-    mockCountries
-  )
-
-  override lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(
-      Map(
-        "countriesFilename"              -> "test-countries.json",
-        "mdgCountryCodesFilename"        -> "test-mdg-country-codes.csv",
-        "mdgNotIomCountryCodesFilename"  -> "test-mdg-not-iom-country-codes.csv",
-        "mdgEuCountryCodesFilename"      -> "test-mdg-eu-country-codes.csv",
-        "mdgIslandsCountryCodesFilename" -> "test-mdg-islands-country-codes.csv"
-      )
-    )
-    .build()
-
-  val countries = new Countries(app)
+  private val controller =
+    new VatDetailsEuController(mockAuthAction, mockSubscriptionVatEUDetailsService, mcc, vatDetailsEuView)
 
   private val duplicateVatNumber = "You have already entered this VAT number. Enter a different VAT number"
 
@@ -89,10 +66,8 @@ class VatDetailsEuControllerSpec
 
   private val vatEuDetails: Seq[VatEUDetailsModel] = List(VatEUDetailsModel("FR", "12345"))
 
-  override def beforeEach: Unit = {
+  override def beforeEach: Unit =
     reset(mockSubscriptionVatEUDetailsService)
-    when(mockCountries.eu).thenReturn(countries.eu)
-  }
 
   "VatDetailEuController show createForm" should {
     "return ok and display correct form when accessing with vatDetails under limit in the cache" in {

@@ -50,7 +50,6 @@ class ContactDetailsController @Inject() (
   cdsFrontendDataCache: SessionCache,
   subscriptionFlowManager: SubscriptionFlowManager,
   subscriptionDetailsService: SubscriptionDetailsService,
-  countries: Countries,
   orgTypeLookup: OrgTypeLookup,
   registrationDetailsService: RegistrationDetailsService,
   mcc: MessagesControllerComponents,
@@ -124,7 +123,7 @@ class ContactDetailsController @Inject() (
               BadRequest(
                 contactDetailsView(
                   formWithErrors,
-                  countries.all,
+                  Countries.all,
                   contactDetails,
                   Some(email),
                   isInReviewMode,
@@ -190,7 +189,7 @@ class ContactDetailsController @Inject() (
 
     createContactDetails(journey) map (
       contactDetails =>
-        Ok(contactDetailsView(form, countries.all, contactDetails, email, isInReviewMode, service, journey))
+        Ok(contactDetailsView(form, Countries.all, contactDetails, email, isInReviewMode, service, journey))
     )
   }
 

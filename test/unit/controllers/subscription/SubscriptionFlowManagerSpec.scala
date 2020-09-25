@@ -16,7 +16,7 @@
 
 package unit.controllers.subscription
 
-import base.{Injector, UnitSpec}
+import base.UnitSpec
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
@@ -24,6 +24,7 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.prop.Tables.Table
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import play.api.Application
+import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, Request, Session}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.FeatureFlags
@@ -44,14 +45,12 @@ import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
 class SubscriptionFlowManagerSpec
-    extends UnitSpec with MockitoSugar with BeforeAndAfterAll with BeforeAndAfterEach with ControllerSpec
-    with Injector {
+    extends UnitSpec with MockitoSugar with BeforeAndAfterAll with BeforeAndAfterEach with ControllerSpec {
 
-  val app: Application = new GuiceApplicationBuilder()
-    .configure(Map("features.rowHaveUtrEnabled" -> false))
-    .build()
+  val injector: Injector =
+    new GuiceApplicationBuilder().configure("features.rowHaveUtrEnabled" -> false).injector()
 
-  private val featureFlags             = app.injector.instanceOf[FeatureFlags]
+  private val featureFlags             = injector.instanceOf[FeatureFlags]
   private val mockRequestSessionData   = mock[RequestSessionData]
   private val mockCdsFrontendDataCache = mock[SessionCache]
 
@@ -413,14 +412,12 @@ class SubscriptionFlowManagerSpec
 }
 
 class SubscriptionFlowManagerNinoUtrEnabledSpec
-    extends UnitSpec with MockitoSugar with BeforeAndAfterAll with BeforeAndAfterEach with ControllerSpec
-    with Injector {
+    extends UnitSpec with MockitoSugar with BeforeAndAfterAll with BeforeAndAfterEach with ControllerSpec {
 
-  val app: Application = new GuiceApplicationBuilder()
-    .configure(Map("features.rowHaveUtrEnabled" -> true))
-    .build()
+  val injector: Injector =
+    new GuiceApplicationBuilder().configure("features.rowHaveUtrEnabled" -> true).injector()
 
-  private val featureFlags             = app.injector.instanceOf[FeatureFlags]
+  private val featureFlags             = injector.instanceOf[FeatureFlags]
   private val mockRequestSessionData   = mock[RequestSessionData]
   private val mockCdsFrontendDataCache = mock[SessionCache]
 

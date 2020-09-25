@@ -37,7 +37,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactDetailsModel}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.{Countries, Country}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDetailsService
@@ -76,7 +75,6 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   private val hintTextTelAndFax = "Only enter numbers, for example 01632 960 001"
 
   private val mockCdsFrontendDataCache = mock[SessionCache]
-  private val mockCountries            = mock[Countries]
   private val mockOrgTypeLookup        = mock[OrgTypeLookup]
   private val contactDetailsView       = instanceOf[contact_details]
 
@@ -86,16 +84,12 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     mockCdsFrontendDataCache,
     mockSubscriptionFlowManager,
     mockSubscriptionDetailsHolderService,
-    mockCountries,
     mockOrgTypeLookup,
     mockRegistrationDetailsService,
     mcc,
     contactDetailsView,
     mockRegistrationDetailsCreator
   )
-
-  private val aFewCountries =
-    List(Country("France", "FR"), Country("Germany", "DE"), Country("Italy", "IT"), Country("Albania", "AL"))
 
   override def beforeEach: Unit = {
     reset(
@@ -109,7 +103,6 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     registerSaveContactDetailsMockSuccess()
     mockFunctionWithRegistrationDetails(mockRegistrationDetails)
     setupMockSubscriptionFlowManager(ContactDetailsSubscriptionFlowPageGetEori)
-    when(mockCountries.all).thenReturn(aFewCountries)
     when(mockCdsFrontendDataCache.email(any[HeaderCarrier])).thenReturn(Future.successful(Email))
   }
 

@@ -25,7 +25,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.prop.TableDrivenPropertyChecks._
-import play.api.Application
+import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
 import play.api.test.Helpers._
@@ -875,7 +875,7 @@ class CheckYourDetailsRegisterControllerSpec
         mockRegisterWithoutIdWithSubscription
           .rowRegisterWithoutIdWithSubscription(any(), any(), any())(any[HeaderCarrier], any())
       ).thenReturn(Future.successful(Results.Ok))
-      submitForm(Map.empty, journey = Journey.Register)(verifyRedirectToNextPageIn(_)("next-page-url"))
+      submitForm(Map.empty, journey = Journey.Register)(verifyRedirectToNextPageIn(_))
       verify(mockRegisterWithoutIdWithSubscription, times(1))
         .rowRegisterWithoutIdWithSubscription(any(), any(), any())(any[HeaderCarrier], any())
     }
@@ -936,13 +936,12 @@ class CheckYourDetailsRegisterControllerSpec
     isIndividualSubscriptionFlow: Boolean = false,
     rowHaveUtrEnabled: Boolean = true
   )(test: Future[Result] => Any) {
-    implicit val app: Application = new GuiceApplicationBuilder()
-      .configure(configMap ++ Map("features.rowHaveUtrEnabled" -> rowHaveUtrEnabled))
-      .build()
+    val injector: Injector =
+      new GuiceApplicationBuilder().configure("features.rowHaveUtrEnabled" -> rowHaveUtrEnabled).injector()
 
     val controller = new CheckYourDetailsRegisterController(
       mockAuthAction,
-      app.injector.instanceOf[FeatureFlags],
+      injector.instanceOf[FeatureFlags],
       mockSessionCache,
       mockRequestSession,
       mcc,
@@ -979,7 +978,7 @@ class CheckYourDetailsRegisterControllerSpec
     )
   }
 
-  private def verifyRedirectToNextPageIn(result: Result)(linkToVerify: String) =
+  private def verifyRedirectToNextPageIn(result: Result) =
     status(result) shouldBe OK
 
   private def mockRegistrationDetailsBasedOnOrganisationType(orgType: CdsOrganisationType) =

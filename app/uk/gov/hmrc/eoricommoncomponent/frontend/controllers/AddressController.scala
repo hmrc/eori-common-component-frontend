@@ -48,7 +48,6 @@ class AddressController @Inject() (
   subscriptionFlowManager: SubscriptionFlowManager,
   requestSessionData: RequestSessionData,
   subscriptionDetailsHolderService: SubscriptionDetailsService,
-  countries: Countries,
   mcc: MessagesControllerComponents,
   subscriptionDetailsService: SubscriptionDetailsService,
   confirmContactDetails: confirm_contact_details,
@@ -112,11 +111,11 @@ class AddressController @Inject() (
         val (countriesToInclude, countriesInCountryPicker) =
           (rd.customsId, cid, journey) match {
             case (_, _, Journey.Subscribe) =>
-              countries.getCountryParametersForAllCountries()
+              Countries.getCountryParametersForAllCountries()
             case (Some(_: Utr | _: Nino), _, _) | (_, Some(_: Utr | _: Nino), _) =>
-              countries.getCountryParameters(None)
+              Countries.getCountryParameters(None)
             case _ =>
-              countries.getCountryParameters(requestSessionData.selectedUserLocationWithIslands)
+              Countries.getCountryParameters(requestSessionData.selectedUserLocationWithIslands)
           }
         val isRow = requestSessionData.selectedUserLocationWithIslands == Some("third-country")
         Future.successful(

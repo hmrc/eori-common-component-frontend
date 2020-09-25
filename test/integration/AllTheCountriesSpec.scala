@@ -22,11 +22,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
 
 class AllTheCountriesSpec extends WordSpec with Matchers with GuiceOneAppPerSuite {
 
-  val countries = new Countries(app)
-
   "Countries" should {
     "be filtered according to the enum values that MDG accepts " in {
-      countries.all.map(_.countryCode).forall(mdgCountryCodes.contains) shouldBe true
+      Countries.all.map(_.countryCode).forall(mdgCountryCodes.contains) shouldBe true
     }
   }
 

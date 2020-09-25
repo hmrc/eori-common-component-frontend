@@ -35,11 +35,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.{
-  AllCountriesExceptIomInCountryPicker,
-  Countries,
-  Country
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Country
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
@@ -66,7 +62,6 @@ class SixLineAddressControllerSpec
   private val mockRequestSessionData              = mock[RequestSessionData]
   private val mockRegistrationDetailsOrganisation = mock[RegistrationDetailsOrganisation]
   private val mockRegistrationDetailsIndividual   = mock[RegistrationDetailsIndividual]
-  private val mockCountries                       = mock[Countries]
   private val mockRegistrationDetailsService      = mock[RegistrationDetailsService]
   private val mockSubscriptionDetailsService      = mock[SubscriptionDetailsService]
   private val sixLineAddressView                  = instanceOf[six_line_address]
@@ -77,7 +72,6 @@ class SixLineAddressControllerSpec
     mockSubscriptionFlowManager,
     mockSessionCache,
     mockRequestSessionData,
-    mockCountries,
     mcc,
     sixLineAddressView,
     mockRegistrationDetailsService
@@ -122,7 +116,6 @@ class SixLineAddressControllerSpec
   override def beforeEach(): Unit = {
     when(mockSubscriptionPage.url(Service.ATaR)).thenReturn(testSubscriptionStartPageUrl)
     when(mockSubscriptionStartSession.data).thenReturn(testSessionData)
-    when(mockCountries.all).thenReturn(aFewCountries)
     when(
       mockSubscriptionFlowManager
         .startSubscriptionFlow(any[Service], any[Journey.Value])(any[HeaderCarrier], any[Request[AnyContent]])
@@ -131,7 +124,6 @@ class SixLineAddressControllerSpec
     when(mockSessionCache.saveRegistrationDetails(any[RegistrationDetails]())(any[HeaderCarrier]()))
       .thenReturn(Future.successful(true))
     when(mockRegistrationDetailsService.cacheAddress(any())(any[HeaderCarrier]())).thenReturn(Future.successful(true))
-    when(mockCountries.getCountryParameters(any())).thenReturn(aFewCountries -> AllCountriesExceptIomInCountryPicker)
   }
 
   forAll(organisationTypesData) { (organisationType, formBuilder, form, reviewMode, expectedRedirectURL) =>
