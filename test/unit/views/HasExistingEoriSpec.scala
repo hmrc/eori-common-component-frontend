@@ -47,12 +47,6 @@ class HasExistingEoriSpec extends ViewSpec {
       doc.body.getElementById("eoriNum").text mustBe eori
     }
 
-    "display correct service name" in {
-      doc.body.getElementById("para2").text() must startWith(
-        "Your registration for Customs will be linked to this EORI"
-      )
-    }
-
   }
 
   private lazy val doc: Document = Jsoup.parse(contentAsString(view(service, eori)))

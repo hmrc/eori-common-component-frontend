@@ -6,13 +6,12 @@ cds.subscription.enter-eori-number.no-eori.link=Register for an EORI
 cds.has-existing-eori.title=Your Government Gateway user ID is linked to an EORI
 cds.has-existing-eori.heading=Your Government Gateway user ID is linked to an EORI
 cds.has-existing-eori.para1=Our records show that the Government Gateway user ID you signed in with is connected to the EORI:
-cds.has-existing-eori.para2=Your registration for {0} will be linked to this EORI.
+cds.has-existing-eori.para2=Your registration will be linked to this EORI.
 cds.has-existing-eori.para3=If you use a different EORI most of the time then you should sign out and sign back in using the Government Gateway user ID linked to the EORI you would like to register with.
 
 cds.enrolment.already.exists.title=There is a problem
 cds.enrolment.already.exists.heading=There is a problem
 cds.enrolment.already.exists.para1=Our records show that this Government Gateway user ID has already been used to register for {0}.
-cds.enrolment.already.exists.continue=Goto {0}.
 
 cds.proposition.name.service=Get access to {0}
 
@@ -20,6 +19,12 @@ cds.service.short.name.default=Customs
 cds.service.friendly.name.default=Customs
 cds.service.short.name.atar=ATaR
 cds.service.friendly.name.atar=Advance Tariff Rulings
+cds.service.short.name.gbss=GBS&S
+cds.service.friendly.name.gbss=GB Safety & Security
+cds.service.short.name.gvms=GVMS
+cds.service.friendly.name.gvms=Goods Vehicle Movement System
+cds.service.short.name.ncts=NCTS
+cds.service.friendly.name.ncts=New Computerised Transit System
 
 eds.existing-eori.enrolment.confirmation.title=Application complete
 eds.existing-eori.enrolment.confirmation.heading=Application complete
