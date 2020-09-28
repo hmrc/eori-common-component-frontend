@@ -87,4 +87,17 @@ class HeaderSpec extends ControllerSpec with AuthActionMock {
       )
     }
   }
+
+  "Language switch" should {
+
+    "be always presented" in {
+
+      AuthBuilder.withAuthorisedUser("user-1236213", mockAuthConnector)
+
+      val result = controller.start().apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+
+      val page = CdsPage(contentAsString(result))
+      page.elementIsPresent("//p[@class='language-toggle']") shouldBe true
+    }
+  }
 }
