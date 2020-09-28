@@ -27,12 +27,11 @@ import util.ViewSpec
 
 class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
 
-  private val name                     = "John Doe"
-  private val processedDate            = DateTime.now()
-  private val expectedPageTitle        = "The application for"
-  private val pageHeadingExpectedText  = "The application for"
-  private val pageHeadingExpectedText1 = s"$name has been unsuccessful"
-  private val processDateExpectedText  = s"Application received by HMRC on ${dateTimeFormat.print(processedDate)}"
+  private val name                    = "John Doe"
+  private val processedDate           = DateTime.now()
+  private val expectedPageTitle       = "The Customs application for"
+  private val pageHeadingExpectedText = s"The Customs application for $name has been unsuccessful"
+  private val processDateExpectedText = s"Application received by HMRC on ${dateTimeFormat.print(processedDate)}"
 
   private val view = instanceOf[reg06_eori_already_linked]
 
@@ -45,19 +44,15 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
       doc.getElementById("page-heading").text() mustBe pageHeadingExpectedText
     }
 
-    "have the right second heading" in {
-      doc.getElementById("page-heading2").text() mustBe pageHeadingExpectedText1
-    }
-
     "have the right processed date" in {
       doc.getElementById("processed-date").text() mustBe processDateExpectedText
     }
 
     "have the right vat registered text" in {
-      doc.getElementById("use-cds-heading").text() mustBe "To use CDS"
+      doc.getElementById("use-cds-heading").text() mustBe "To use Customs"
       doc
         .getElementById("use-cds-para")
-        .text() mustBe s"You need to sign in with the Government Gateway $name used to get access to CDS."
+        .text() mustBe s"You need to sign in with the Government Gateway $name used to get access to Customs."
     }
 
     "have the feedback link" in {

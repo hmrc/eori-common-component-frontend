@@ -35,18 +35,18 @@ class Sub01OutcomeRejectedSpec extends ViewSpec {
   "'Sub01 Outcome Rejected' Page with name" should {
 
     "display correct title" in {
-      docWithName.title() must startWith("The EORI application has been unsuccessful")
+      docWithName.title() must startWith("The Customs application has been unsuccessful")
     }
     "display correct heading" in {
       docWithName.body.getElementsByTag("h1").text() must startWith(
-        s"The EORI application for $orgName has been unsuccessful"
+        s"The Customs application for $orgName has been unsuccessful"
       )
     }
     "have the correct class on the h1" in {
       docWithName.body.getElementsByTag("h1").hasClass("heading-xlarge") mustBe true
     }
-    "have the correct class on the h2" in {
-      docWithName.body.getElementsByTag("h2").hasClass("heading-medium") mustBe true
+    "have the correct class on the message" in {
+      docWithName.body.getElementById("processed-date").hasClass("heading-medium") mustBe true
     }
     "have the correct processing date and text" in {
       docWithName.body.getElementById("processed-date").text mustBe s"Application received by HMRC on $processedDate"
@@ -57,13 +57,13 @@ class Sub01OutcomeRejectedSpec extends ViewSpec {
   "'Sub01 Outcome Rejected' Page without name" should {
 
     "display correct heading" in {
-      docWithoutName.body.getElementsByTag("h1").text() must startWith("The EORI application has been unsuccessful")
+      docWithoutName.body.getElementsByTag("h1").text() must startWith("The Customs application has been unsuccessful")
     }
     "have the correct class on the h1" in {
       docWithoutName.body.getElementsByTag("h1").hasClass("heading-xlarge") mustBe true
     }
-    "have the correct class on the h2" in {
-      docWithoutName.body.getElementsByTag("h2").hasClass("heading-medium") mustBe true
+    "have the correct class on the message" in {
+      docWithoutName.body.getElementById("processed-date").hasClass("heading-medium") mustBe true
     }
     "have the correct processing date and text" in {
       docWithoutName.body.getElementById("processed-date").text mustBe s"Application received by HMRC on $processedDate"
