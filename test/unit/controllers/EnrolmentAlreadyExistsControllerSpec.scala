@@ -22,17 +22,22 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EnrolmentAlreadyExistsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.registration_exists
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.registration_exists_group
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
 
 class EnrolmentAlreadyExistsControllerSpec extends ControllerSpec with AuthActionMock {
 
-  private val registrationExistsView = instanceOf[registration_exists]
-  private val mockAuthConnector      = mock[AuthConnector]
-  private val mockAuthAction         = authAction(mockAuthConnector)
+  private val registrationExistsView      = instanceOf[registration_exists]
+  private val registrationExistsGroupView = instanceOf[registration_exists_group]
+  private val mockAuthConnector           = mock[AuthConnector]
+  private val mockAuthAction              = authAction(mockAuthConnector)
 
-  val controller = new EnrolmentAlreadyExistsController(mockAuthAction, registrationExistsView, mcc)
+  val controller =
+    new EnrolmentAlreadyExistsController(mockAuthAction, registrationExistsView, registrationExistsGroupView, mcc)
+
+  val paragraphXpath = "//*[@id='para1']"
 
   "Enrolment already exists controller" should {
 
@@ -51,6 +56,30 @@ class EnrolmentAlreadyExistsControllerSpec extends ControllerSpec with AuthActio
 
       page.title should startWith("There is a problem")
       page.getElementsText(RegistrationCompletePage.pageHeadingXpath) shouldBe "There is a problem"
+      page.getElementsText(paragraphXpath) should include(
+        "Our records show that this Government Gateway user ID has already been used to register for Customs"
+      )
+
+    }
+
+    "redirect to the enrolment already exists for group page" in {
+
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
+
+      val result =
+        await(
+          controller.enrolmentAlreadyExistsForGroup(Service.ATaR).apply(
+            SessionBuilder.buildRequestWithSession(defaultUserId)
+          )
+        )
+
+      status(result) shouldBe OK
+
+      val page = CdsPage(contentAsString(result))
+
+      page.title should startWith("There is a problem")
+      page.getElementsText(RegistrationCompletePage.pageHeadingXpath) shouldBe "There is a problem"
+      page.getElementsText(paragraphXpath) should include("Your organisation is already enrolled to Customs")
 
     }
   }

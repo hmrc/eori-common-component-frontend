@@ -53,7 +53,7 @@ class EnrolmentPendingAgainstGroupIdControllerSpec extends ControllerSpec with A
       displayPage(Journey.Subscribe) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should startWith("You cannot use this service")
+        page.title should startWith("There is a problem")
       }
     }
   }

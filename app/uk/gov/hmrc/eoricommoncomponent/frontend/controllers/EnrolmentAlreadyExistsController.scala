@@ -23,6 +23,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.registration_exists
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.registration_exists_group
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.Future
@@ -30,6 +31,7 @@ import scala.concurrent.Future
 class EnrolmentAlreadyExistsController @Inject() (
   authAction: AuthAction,
   registrationExistsView: registration_exists,
+  registrationExistsForGroupView: registration_exists_group,
   mcc: MessagesControllerComponents
 ) extends FrontendController(mcc) with I18nSupport {
 
@@ -37,6 +39,12 @@ class EnrolmentAlreadyExistsController @Inject() (
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
         Future.successful(Ok(registrationExistsView(service)))
+    }
+
+  def enrolmentAlreadyExistsForGroup(service: Service): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        Future.successful(Ok(registrationExistsForGroupView(service)))
     }
 
 }
