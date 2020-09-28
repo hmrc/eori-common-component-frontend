@@ -41,8 +41,9 @@ class SubscriptionOutcomePendingSpec extends ViewSpec {
     "have the correct class on the h1" in {
       doc.body.getElementsByTag("h1").hasClass("heading-xlarge") mustBe true
     }
-    "have the correct class on the h2" in {
-      doc.body.getElementsByTag("h2").hasClass("heading-medium") mustBe true
+    "have the correct class on the message" in {
+      doc.body.getElementById("active-from").hasClass("heading-medium") mustBe true
+      doc.body.getElementById("eori-number").hasClass("heading-medium") mustBe true
     }
     "have the correct processing date and text" in {
       doc.body.getElementById("active-from").text mustBe s"Application received by HMRC on $processedDate"
@@ -53,7 +54,7 @@ class SubscriptionOutcomePendingSpec extends ViewSpec {
     "have the correct 'what happens next' text" in {
       doc.body
         .getElementById("what-happens-next")
-        .text mustBe "What happens next We are processing your registration to CDS. This can take up to 5 working days. You will need to sign back in to see the result of your registration."
+        .text mustBe "What happens next We are processing your registration to Customs. This can take up to 5 working days. You will need to sign back in to see the result of your registration."
     }
   }
 

@@ -15,22 +15,25 @@
  *@
 
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName._
 
 
 @this(layout_di: layout)
 @(name: Option[String], processedDate: String)(implicit messages: Messages, request: Request[_])
 
 @heading = {@name match {
-    case Some(n) => {@messages("cds.sub01.outcome.rejected.heading", n)}
-    case None => {@messages("cds.sub01.outcome.rejected.heading-noname")}
+    case Some(user) => {@messages("cds.sub01.outcome.rejected.heading", shortName, user)}
+    case None => {@messages("cds.sub01.outcome.rejected.heading-noname", shortName)}
   }
 }
 
-@layout_di(messages("cds.sub01.outcome.rejected.title")) {
+@layout_di(messages("cds.sub01.outcome.rejected.title", shortName)) {
     <div class="column-two-thirds">
         <div class="govuk-box-highlight">
             <h1 id="page-heading" class="heading-xlarge">@heading</h1>
-            <h2 class="heading-medium" id="processed-date">@messages("cds.subscription.outcomes.in-processing.received", processedDate)</h2>
+            <div class="heading-medium" id="processed-date">
+                @messages("cds.subscription.outcomes.in-processing.received", processedDate)
+            </div>
         </div>
         
         @helpers.feedback()
