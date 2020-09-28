@@ -16,7 +16,7 @@
 
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-@import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName.longName
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 
 
@@ -30,7 +30,7 @@
 
         <p id="para1">@messages("cds.enrolment.already.exists.para1", longName)</p>
 
-        <a href="@appConfig.serviceReturnUrl(service)" class="button" id="continue">@messages("cds.navigation.continue.to", service.code)</a>
+        <a href="@appConfig.serviceReturnUrl(service)" class="button" id="continue">@messages("cds.navigation.continue.to", shortName)</a>
 
         @helpers.helpAndSupport()
 
