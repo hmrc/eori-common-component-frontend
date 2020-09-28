@@ -36,14 +36,14 @@ class Sub01OutcomeProcessingSpec extends ViewSpec {
 
     "display correct heading" in {
       docWithName.body.getElementsByTag("h1").text() must startWith(
-        s"The EORI application for $orgName is being processed"
+        s"The Customs application for $orgName is being processed"
       )
     }
     "have the correct class on the h1" in {
       docWithName.body.getElementsByTag("h1").hasClass("heading-xlarge") mustBe true
     }
-    "have the correct class on the h2" in {
-      docWithName.body.getElementsByTag("h2").hasClass("heading-medium") mustBe true
+    "have the correct class on the message" in {
+      docWithName.body.getElementById("processed-date").hasClass("heading-medium") mustBe true
     }
     "have the correct processing date and text" in {
       docWithName.body.getElementById("processed-date").text mustBe s"Application received by HMRC on $processedDate"
@@ -51,7 +51,7 @@ class Sub01OutcomeProcessingSpec extends ViewSpec {
     "have the correct 'what happens next' text" in {
       docWithName.body
         .getElementById("what-happens-next")
-        .text mustBe "What happens next We are processing your EORI application. This can take up to 5 working days. You will need to sign back in to see the result of your registration."
+        .text mustBe "What happens next We are processing your Customs application. This can take up to 5 working days. You will need to sign back in to see the result of your registration."
     }
 
   }
@@ -59,13 +59,13 @@ class Sub01OutcomeProcessingSpec extends ViewSpec {
   "Sub01 outcome pending Page without name" should {
 
     "display correct heading" in {
-      docWithoutName.body.getElementsByTag("h1").text() must startWith("The EORI application is being processed")
+      docWithoutName.body.getElementsByTag("h1").text() must startWith("The Customs application is being processed")
     }
     "have the correct class on the h1" in {
       docWithoutName.body.getElementsByTag("h1").hasClass("heading-xlarge") mustBe true
     }
-    "have the correct class on the h2" in {
-      docWithoutName.body.getElementsByTag("h2").hasClass("heading-medium") mustBe true
+    "have the correct class on the message" in {
+      docWithoutName.body.getElementById("processed-date").hasClass("heading-medium") mustBe true
     }
     "have the correct processing date and text" in {
       docWithoutName.body.getElementById("processed-date").text mustBe s"Application received by HMRC on $processedDate"
@@ -73,7 +73,7 @@ class Sub01OutcomeProcessingSpec extends ViewSpec {
     "have the correct 'what happens next' text" in {
       docWithoutName.body
         .getElementById("what-happens-next")
-        .text mustBe "What happens next We are processing your EORI application. This can take up to 5 working days. You will need to sign back in to see the result of your registration."
+        .text mustBe "What happens next We are processing your Customs application. This can take up to 5 working days. You will need to sign back in to see the result of your registration."
     }
   }
 

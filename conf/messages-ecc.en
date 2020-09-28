@@ -58,3 +58,8 @@ cds.enrolment.already.exists.for-group.para1=Your organisation is already enroll
 
 cds.enrolment.already.exists.group.title=There is a problem
 cds.enrolment.already.exists.group.paragraph=Our records show that someone in the organisation has already applied for this service.
+
+cds.sub01.outcome.processing.heading=The {0} application for {1} is being processed
+cds.sub01.outcome.processing.heading-noname=The {0} application is being processed
+cds.sub01.outcome.processing.title=The {0} application is being processed
+cds.sub01.outcome.processing.we-are-processing=We are processing your {0} application. This can take up to 5 working days. You will need to sign back in to see the result of your registration.

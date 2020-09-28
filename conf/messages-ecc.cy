@@ -58,3 +58,8 @@ cds.enrolment.already.exists.for-group.para1=TRANSLATE Your organisation is alre
 
 cds.enrolment.already.exists.group.title=TRANSLATE There is a problem
 cds.enrolment.already.exists.group.paragraph=TRANSLATE Our records show that someone in the organisation has already applied for this service.
+
+cds.sub01.outcome.processing.heading=TRANSLATE The {0} application for {1} is being processed
+cds.sub01.outcome.processing.heading-noname=TRANSLATE The {0} application is being processed
+cds.sub01.outcome.processing.title=TRANSLATE The {0} application is being processed
+cds.sub01.outcome.processing.we-are-processing=TRANSLATE We are processing your {0} application. This can take up to 5 working days. You will need to sign back in to see the result of your registration.
