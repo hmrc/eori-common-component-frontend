@@ -10,6 +10,7 @@ GET         /customs-enrolment-services/get-eori                                
 
 # enrolment-already-exists
 GET         /customs-enrolment-services/:service/subscribe/enrolment-already-exists                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service: Service)
+GET         /customs-enrolment-services/:service/subscribe/enrolment-already-exists-for-group            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service: Service)
 
 # check-existing-eori
 GET         /customs-enrolment-services/:service/subscribe/check-existing-eori                           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.HasExistingEoriController.displayPage(service: Service)

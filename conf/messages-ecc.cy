@@ -44,12 +44,22 @@ cds.you-cant-use-service-agent.para2=TRANSLATE You need to sign in with the Gove
 cds.you-cant-use-service-standard-organisation.para1=TRANSLATE You signed in to Government Gateway as a standard user. To apply for access to {0} you must be an administrator user.
 cds.you-cant-use-service-standard-organisation.para2=TRANSLATE Please log in as an administrator or contact the person who set up your Government Gateway.
 
-cds.sub01.outcome.rejected.heading=The {0} application for {1} has been unsuccessful
-cds.sub01.outcome.rejected.heading-noname=The {0} application has been unsuccessful
-cds.sub01.outcome.rejected.title=The {0} application has been unsuccessful
+cds.sub01.outcome.rejected.heading=TRANSLATE The {0} application for {1} has been unsuccessful
+cds.sub01.outcome.rejected.heading-noname=TRANSLATE The {0} application has been unsuccessful
+cds.sub01.outcome.rejected.title=TRANSLATE The {0} application has been unsuccessful
 
-cds.reg06.outcome.eori-already-linked.title-and-heading=The {0} application for {1} has been unsuccessful
-cds.subscription.outcomes.eori-already-linked.use-cds-heading=To use {0}
-cds.subscription.outcomes.eori-already-linked.use-cds-para=You need to sign in with the Government Gateway {0} used to get access to {1}.
+cds.reg06.outcome.eori-already-linked.title-and-heading=TRANSLATE The {0} application for {1} has been unsuccessful
+cds.subscription.outcomes.eori-already-linked.use-cds-heading=TRANSLATE To use {0}
+cds.subscription.outcomes.eori-already-linked.use-cds-para=TRANSLATE You need to sign in with the Government Gateway {0} used to get access to {1}.
 
-cds.subscription.outcomes.inprocessing.we-are-processing=We are processing your registration to {0}. This can take up to 5 working days. You will need to sign back in to see the result of your registration.
+cds.subscription.outcomes.inprocessing.we-are-processing=TRANSLATE We are processing your registration to {0}. This can take up to 5 working days. You will need to sign back in to see the result of your registration.
+
+cds.enrolment.already.exists.for-group.para1=TRANSLATE Your organisation is already enrolled to {0}. Ask a team member for access.
+
+cds.enrolment.already.exists.group.title=TRANSLATE There is a problem
+cds.enrolment.already.exists.group.paragraph=TRANSLATE Our records show that someone in the organisation has already applied for this service.
+
+cds.sub01.outcome.processing.heading=TRANSLATE The {0} application for {1} is being processed
+cds.sub01.outcome.processing.heading-noname=TRANSLATE The {0} application is being processed
+cds.sub01.outcome.processing.title=TRANSLATE The {0} application is being processed
+cds.sub01.outcome.processing.we-are-processing=TRANSLATE We are processing your {0} application. This can take up to 5 working days. You will need to sign back in to see the result of your registration.

@@ -143,7 +143,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
         controller.startSubscription(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       status(result) shouldBe SEE_OTHER
-      await(result).header.headers("Location") should endWith("enrolment-already-exists")
+      await(result).header.headers("Location") should endWith("enrolment-already-exists-for-group")
     }
   }
 

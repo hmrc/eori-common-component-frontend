@@ -31,11 +31,11 @@ class EnrolmentPendingAgainstGroupIdViewSpec extends ViewSpec {
 
   "Enrolment Pending against group id page" should {
     "display correct title" in {
-      gyeDoc.title() must startWith("You cannot use this service")
+      gyeDoc.title() must startWith("There is a problem")
     }
 
     "display correct heading" in {
-      gyeDoc.body().getElementsByTag("h1").text() mustBe "You cannot use this service"
+      gyeDoc.body().getElementsByTag("h1").text() mustBe "There is a problem"
     }
 
     "have the correct class on the h1" in {
@@ -53,7 +53,7 @@ class EnrolmentPendingAgainstGroupIdViewSpec extends ViewSpec {
       migrateDoc
         .body()
         .getElementById("info")
-        .text mustBe "The Government Gateway ID you used to sign in is part of a team that has already applied Get access to CDS. This application is being processed."
+        .text mustBe "Our records show that someone in the organisation has already applied for this service."
     }
   }
 
