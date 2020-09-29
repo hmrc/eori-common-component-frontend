@@ -250,6 +250,8 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
 
   def showForm(form: Map[String, String], userId: String = defaultUserId)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
+    when(mockSubscriptionBusinessService.getCachedCustomsId(any[HeaderCarrier]))
+      .thenReturn(Future.successful(Utr("id")))
     test(
       controller.createForm(Service.ATaR, Journey.Subscribe).apply(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
