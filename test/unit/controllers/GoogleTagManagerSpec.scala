@@ -80,7 +80,7 @@ class GoogleTagManagerSpec extends ControllerSpec with GuiceOneAppPerSuite with 
   def showForm(form: Map[String, String], userId: String = defaultUserId)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     when(mockSubscriptionBusinessService.getCachedCustomsId(any[HeaderCarrier]))
-      .thenReturn(Future.successful(Utr("id")))
+      .thenReturn(Future.successful(Some(Utr("id"))))
     test(
       controller.createForm(Service.ATaR, Journey.Subscribe).apply(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)

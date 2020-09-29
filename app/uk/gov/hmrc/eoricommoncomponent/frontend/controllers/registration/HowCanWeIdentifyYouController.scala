@@ -62,14 +62,17 @@ class HowCanWeIdentifyYouController @Inject() (
     hc: HeaderCarrier,
     request: Request[_]
   ) =
-    subscriptionBusinessService.getCachedCustomsId.map { customsId =>
-      val ninoOrUtr = customsId match {
-        case Nino(id) => NinoOrUtr(Some(id), None, Some("nino"))
-        case Utr(id)  => NinoOrUtr(None, Some(id), Some("utr"))
-        case unexpected =>
-          throw new IllegalStateException("Expected a Nino or UTR from the cached customs Id but got: " + unexpected)
-      }
-      Ok(howCanWeIdentifyYouView(ninoOrUtrForm.fill(ninoOrUtr), isInReviewMode, service, journey))
+    subscriptionBusinessService.getCachedCustomsId.map {
+      case Some(customsId) =>
+        val ninoOrUtr = customsId match {
+          case Nino(id) => NinoOrUtr(Some(id), None, Some("nino"))
+          case Utr(id)  => NinoOrUtr(None, Some(id), Some("utr"))
+          case unexpected =>
+            throw new IllegalStateException("Expected a Nino or UTR from the cached customs Id but got: " + unexpected)
+        }
+        Ok(howCanWeIdentifyYouView(ninoOrUtrForm.fill(ninoOrUtr), isInReviewMode, service, journey))
+
+      case _ => Ok(howCanWeIdentifyYouView(ninoOrUtrForm, isInReviewMode, service, journey))
     }
 
   def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
