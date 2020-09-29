@@ -26,7 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.CDS
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, start}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, error_template, start}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,6 +39,7 @@ class ApplicationController @Inject() (
   accessibilityStatementView: accessibility_statement,
   cache: SessionCache,
   enrolmentStoreProxyService: EnrolmentStoreProxyService,
+  errorPage: error_template,
   appConfig: AppConfig
 )(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
     extends CdsController(mcc) with EnrolmentExtractor {
@@ -62,10 +63,8 @@ class ApplicationController @Inject() (
 
                 cdsEnrolmentCheck(loggedInUser, groupId, service)
               }
-            case None if isUserEnrolledFor(loggedInUser, CDS) =>
-              Future.successful(Redirect(routes.HasExistingEoriController.displayPage(service))) // AutoEnrolment
-            case None =>
-              Future.successful(Redirect(routes.EmailController.form(service, Journey.Subscribe))) // Whole journey
+            case _ =>
+              throw MissingGroupId()
           }
         }
       }.recover {
@@ -74,6 +73,7 @@ class ApplicationController @Inject() (
         case SpecificGroupIdEnrolmentExists(service) =>
           // Below redirect should be to page that doesn't exists yet
           Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service))
+        case MissingGroupId() => BadRequest(errorPage())
       }
   }
   // format: on
@@ -134,3 +134,5 @@ case class SpecificEnrolmentExists(service: Service)
 
 case class SpecificGroupIdEnrolmentExists(service: Service)
     extends Exception(s"Group Id has enrolment to ${service.code}")
+
+case class MissingGroupId() extends Exception(s"User doesn't have groupId")
