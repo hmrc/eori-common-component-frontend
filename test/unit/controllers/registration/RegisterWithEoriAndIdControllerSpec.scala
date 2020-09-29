@@ -961,7 +961,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       invokeEoriAlreadyLinked() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title() should startWith("The Customs application for")
+        page.title() should startWith("The Customs application has been unsuccessful")
       }
     }
 
