@@ -29,7 +29,7 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
 
   private val name                    = "John Doe"
   private val processedDate           = DateTime.now()
-  private val expectedPageTitle       = "The Customs application for"
+  private val expectedPageTitle       = "The Customs application has been unsuccessful"
   private val pageHeadingExpectedText = s"The Customs application for $name has been unsuccessful"
   private val processDateExpectedText = s"Application received by HMRC on ${dateTimeFormat.print(processedDate)}"
 

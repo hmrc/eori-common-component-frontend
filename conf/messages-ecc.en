@@ -48,7 +48,8 @@ cds.sub01.outcome.rejected.heading=The {0} application for {1} has been unsucces
 cds.sub01.outcome.rejected.heading-noname=The {0} application has been unsuccessful
 cds.sub01.outcome.rejected.title=The {0} application has been unsuccessful
 
-cds.reg06.outcome.eori-already-linked.title-and-heading=The {0} application for {1} has been unsuccessful
+cds.reg06.outcome.eori-already-linked.title=The {0} application has been unsuccessful
+cds.reg06.outcome.eori-already-linked.heading=The {0} application for {1} has been unsuccessful
 cds.subscription.outcomes.eori-already-linked.use-cds-heading=To use {0}
 cds.subscription.outcomes.eori-already-linked.use-cds-para=You need to sign in with the Government Gateway {0} used to get access to {1}.
 

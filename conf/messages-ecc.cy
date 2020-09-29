@@ -48,7 +48,8 @@ cds.sub01.outcome.rejected.heading=TRANSLATE The {0} application for {1} has bee
 cds.sub01.outcome.rejected.heading-noname=TRANSLATE The {0} application has been unsuccessful
 cds.sub01.outcome.rejected.title=TRANSLATE The {0} application has been unsuccessful
 
-cds.reg06.outcome.eori-already-linked.title-and-heading=TRANSLATE The {0} application for {1} has been unsuccessful
+cds.reg06.outcome.eori-already-linked.title=TRANSLATE The {0} application has been unsuccessful
+cds.reg06.outcome.eori-already-linked.heading=TRANSLATE The {0} application for {1} has been unsuccessful
 cds.subscription.outcomes.eori-already-linked.use-cds-heading=TRANSLATE To use {0}
 cds.subscription.outcomes.eori-already-linked.use-cds-para=TRANSLATE You need to sign in with the Government Gateway {0} used to get access to {1}.
 

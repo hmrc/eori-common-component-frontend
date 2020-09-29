@@ -22,10 +22,10 @@
 
 @this(layout_di: layout)
 @(orgName: String, processedDate: DateTime)(implicit messages: Messages, request: Request[_])
-@layout_di(messages("cds.reg06.outcome.eori-already-linked.title-and-heading", shortName, orgName)) {
+@layout_di(messages("cds.reg06.outcome.eori-already-linked.title", shortName)) {
     <div class="column-two-thirds">
         <div class="govuk-box-highlight">
-            <h1 id="page-heading" class="heading-xlarge" >@messages("cds.reg06.outcome.eori-already-linked.title-and-heading", shortName, orgName)</h1>
+            <h1 id="page-heading" class="heading-xlarge" >@messages("cds.reg06.outcome.eori-already-linked.heading", shortName, orgName)</h1>
             <div class="heading-medium" id="processed-date">@messages("cds.reg06.outcome.eori-already-linked.received", dateTimeFormat.print(processedDate))</div>
         </div>
 
