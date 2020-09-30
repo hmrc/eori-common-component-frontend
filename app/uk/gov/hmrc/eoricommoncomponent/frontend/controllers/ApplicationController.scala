@@ -104,6 +104,9 @@ class ApplicationController @Inject() (
           Future.successful(Redirect(routes.EmailController.form(serviceToEnrol, Journey.Subscribe))) // Whole journey
       }
 
+  // For register journey we need to pass service here and to the view
+  // Message accessibility-statement.reporting-problems.paragraph contains inlined link to the feedback
+  // This link need to be dynamic based on the user journey
   def accessibilityStatement(): Action[AnyContent] = Action { implicit request =>
     Ok(accessibilityStatementView())
   }

@@ -83,7 +83,7 @@ class HeaderSpec extends ControllerSpec with AuthActionMock {
       val page = CdsPage(contentAsString(result))
 
       page.getElementAttribute("//a[@id='feedback-link']", "href") should endWith(
-        "/contact/beta-feedback-unauthenticated?service=eori-common-component-subscribe-atar"
+        "/contact/beta-feedback?service=eori-common-component-subscribe-atar"
       )
     }
   }

@@ -72,7 +72,7 @@ class AppConfig @Inject() (
   def reportAProblemNonJSUrlSubscribe(service: Service): String =
     s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifierSubscribe-${service.code}"
 
-  private lazy val betafeedbackBaseUrl = s"${contactBaseUrl}/contact/beta-feedback-unauthenticated"
+  private lazy val betafeedbackBaseUrl = s"${contactBaseUrl}/contact/beta-feedback"
 
   def betaFeedBackRegister(service: Service) =
     s"${betafeedbackBaseUrl}?service=${serviceIdentifierRegister}-${service.code}"
