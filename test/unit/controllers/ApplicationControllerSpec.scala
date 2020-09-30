@@ -153,10 +153,9 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
       withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set.empty, groupId = None)
 
-      val result =
-        controller.startSubscription(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
-
-      status(result) shouldBe BAD_REQUEST
+      intercept[MissingGroupId] {
+        await(controller.startSubscription(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+      }
     }
   }
 
