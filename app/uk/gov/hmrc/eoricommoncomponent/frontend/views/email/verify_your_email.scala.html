@@ -39,8 +39,6 @@ journey: Journey.Value)(implicit request: Request[_], messages: Messages)
 
         <p id="p1">  @email.map(e => messages("cds.subscription.verify-email.para1", e)) </p>
 
-        <p id="p2"> @Html(messages("cds.subscription.verify-email.para2", WhatIsYourEmailController.createForm(service, journey).url)) </p>
-
         <div class="form-group">
             <details>
                 <summary class="summary" role="button" aria-expanded="true">@messages("cds.subscription.verify-email.progressive-disclosure.heading")</summary>

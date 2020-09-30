@@ -64,3 +64,5 @@ cds.sub01.outcome.processing.heading=The {0} application for {1} is being proces
 cds.sub01.outcome.processing.heading-noname=The {0} application is being processed
 cds.sub01.outcome.processing.title=The {0} application is being processed
 cds.sub01.outcome.processing.we-are-processing=We are processing your {0} application. This can take up to 5 working days. You will need to sign back in to see the result of your registration.
+
+cds.subscription.verify-email.title=Confirm your email address

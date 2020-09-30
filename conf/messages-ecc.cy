@@ -64,3 +64,5 @@ cds.sub01.outcome.processing.heading=TRANSLATE The {0} application for {1} is be
 cds.sub01.outcome.processing.heading-noname=TRANSLATE The {0} application is being processed
 cds.sub01.outcome.processing.title=TRANSLATE The {0} application is being processed
 cds.sub01.outcome.processing.we-are-processing=TRANSLATE We are processing your {0} application. This can take up to 5 working days. You will need to sign back in to see the result of your registration.
+
+cds.subscription.verify-email.title=TRANSLATE Confirm your email address
