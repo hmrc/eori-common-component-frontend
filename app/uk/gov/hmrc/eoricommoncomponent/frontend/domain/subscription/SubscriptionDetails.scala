@@ -48,7 +48,9 @@ case class SubscriptionDetails(
   nameDobDetails: Option[NameDobMatchModel] = None,
   nameDetails: Option[NameMatchModel] = None,
   idDetails: Option[IdMatchModel] = None,
-  customsId: Option[CustomsId] = None
+  customsId: Option[CustomsId] = None,
+  utrMatch: Option[UtrMatchModel] = None,
+  ninoMatch: Option[NinoMatchModel] = None
 ) {
 
   def name: String =

@@ -62,6 +62,8 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
 
   private val nameId       = NameIdOrganisationMatchModel(name = "orgname", id = "ID")
   private val customsIdUTR = Utr("utrxxxxx")
+  private val utrMatch     = UtrMatchModel(Some(true), Some("utrxxxxx"))
+  private val ninoMatch    = NinoMatchModel(Some(true), Some("ninoxxxxx"))
 
   private val subscriptionDetailsHolderService =
     new SubscriptionDetailsService(mockSessionCache, mockContactDetailsAdaptor, mockSave4LaterConnector)(global)
@@ -188,16 +190,54 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
     }
   }
 
-  "Calling cacheNameIdAndCustomsId" should {
+  "Calling cacheNameIdCustomsIdAndUtrMatch" should {
     "save NameId Details and CustomsId in frontend cache" in {
 
-      await(subscriptionDetailsHolderService.cacheNameIdAndCustomsId(nameId.name, nameId.id))
+      await(subscriptionDetailsHolderService.cacheNameIdCustomsIdAndUtrMatch(nameId.name, nameId.id, None))
       val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
 
       verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
       val holder: SubscriptionDetails = requestCaptor.getValue
       holder.nameIdOrganisationDetails shouldBe Some(nameId)
       holder.customsId shouldBe Some(Utr(nameId.id))
+    }
+  }
+
+  "Calling cacheCustomsIdAndUtrMatch" should {
+    "save CustomsId an UtrMatchModel in frontend cache" in {
+
+      await(subscriptionDetailsHolderService.cacheCustomsIdAndUtrMatch(customsIdUTR, Some(utrMatch)))
+      val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
+
+      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
+      val holder: SubscriptionDetails = requestCaptor.getValue
+      holder.customsId shouldBe Some(customsIdUTR)
+      holder.utrMatch shouldBe Some(utrMatch)
+    }
+  }
+
+  "Calling cacheCustomsIdAndNinoMatch" should {
+    "save CustomsId an NinoMatchModel in frontend cache" in {
+
+      await(subscriptionDetailsHolderService.cacheCustomsIdAndNinoMatch(Some(customsIdUTR), Some(ninoMatch)))
+      val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
+
+      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
+      val holder: SubscriptionDetails = requestCaptor.getValue
+      holder.customsId shouldBe Some(customsIdUTR)
+      holder.ninoMatch shouldBe Some(ninoMatch)
+    }
+  }
+
+  "Calling cacheUtrMatchForNoAnswer" should {
+    "save utrMatch in frontend cache" in {
+
+      await(subscriptionDetailsHolderService.cacheUtrMatchForNoAnswer(Some(utrMatch)))
+      val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
+
+      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
+      val holder: SubscriptionDetails = requestCaptor.getValue
+      holder.utrMatch shouldBe Some(utrMatch)
     }
   }
 
@@ -332,6 +372,32 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
     "return None for customsId when no value found for subscription Details" in {
       when(mockSessionCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(SubscriptionDetails())
       await(subscriptionDetailsHolderService.cachedCustomsId(hc)) shouldBe None
+    }
+  }
+
+  "Calling cachedUtrMatch" should {
+    "return Some utrMatch when found in subscription Details" in {
+      when(mockSessionCache.subscriptionDetails(any[HeaderCarrier]))
+        .thenReturn(SubscriptionDetails(utrMatch = Option(utrMatch)))
+      await(subscriptionDetailsHolderService.cachedUtrMatch(hc)) shouldBe Some(utrMatch)
+    }
+
+    "return None for utrMatch when no value found for subscription Details" in {
+      when(mockSessionCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(SubscriptionDetails())
+      await(subscriptionDetailsHolderService.cachedUtrMatch(hc)) shouldBe None
+    }
+  }
+
+  "Calling cachedNinoMatch" should {
+    "return Some ninoMatch when found in subscription Details" in {
+      when(mockSessionCache.subscriptionDetails(any[HeaderCarrier]))
+        .thenReturn(SubscriptionDetails(ninoMatch = Option(ninoMatch)))
+      await(subscriptionDetailsHolderService.cachedNinoMatch(hc)) shouldBe Some(ninoMatch)
+    }
+
+    "return None for ninoMatch when no value found for subscription Details" in {
+      when(mockSessionCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(SubscriptionDetails())
+      await(subscriptionDetailsHolderService.cachedNinoMatch(hc)) shouldBe None
     }
   }
 

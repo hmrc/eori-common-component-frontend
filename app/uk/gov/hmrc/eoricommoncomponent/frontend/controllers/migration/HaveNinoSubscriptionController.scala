@@ -20,6 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NinoSubscriptionFlowPage
@@ -44,7 +45,18 @@ class HaveNinoSubscriptionController @Inject() (
   def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
-        Future.successful(Ok(matchNinoSubscriptionView(rowIndividualsNinoForm, service, journey)))
+        populateView(service, journey)
+    }
+
+  private def populateView(service: Service, journey: Journey.Value)(implicit
+    hc: HeaderCarrier,
+    request: Request[AnyContent]
+  ) =
+    subscriptionDetailsHolderService.cachedNinoMatch.map {
+      case Some(formData) =>
+        Ok(matchNinoSubscriptionView(rowIndividualsNinoForm.fill(formData), service, journey))
+
+      case _ => Ok(matchNinoSubscriptionView(rowIndividualsNinoForm, service, journey))
     }
 
   def submit(service: Service, journey: Journey.Value): Action[AnyContent] =
@@ -63,10 +75,13 @@ class HaveNinoSubscriptionController @Inject() (
     form.haveNino match {
       case Some(true) =>
         subscriptionDetailsHolderService
-          .cacheCustomsId(Nino(form.nino.getOrElse(noNinoException)))
+          .cacheCustomsIdAndNinoMatch(Some(Nino(form.nino.getOrElse(noNinoException))), Some(form))
           .map(_ => redirectToNextPage(service))
-      case Some(false) => subscriptionDetailsHolderService.clearCachedCustomsId map (_ => redirectToNextPage(service))
-      case _           => throw new IllegalStateException("No Data from the form")
+      case Some(false) =>
+        subscriptionDetailsHolderService.cacheCustomsIdAndNinoMatch(None, Some(form)) map (
+          _ => redirectToNextPage(service)
+        )
+      case _ => throw new IllegalStateException("No Data from the form")
     }
 
   private def redirectToNextPage(service: Service)(implicit request: Request[AnyContent]): Result =
