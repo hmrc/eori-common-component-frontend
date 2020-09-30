@@ -17,8 +17,8 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth
 
 import javax.inject.Inject
-import play.api.{Configuration, Environment}
 import play.api.mvc._
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, allEnrolments, internalId, email => ggEmail, _}
@@ -47,23 +47,35 @@ class AuthAction @Inject() (
 
   def ggAuthorisedUserWithEnrolmentsAction(requestProcessor: RequestProcessorSimple) =
     Action.async { implicit request =>
-      implicit val hc: HeaderCarrier =
-        HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
-
-      authorised(AuthProviders(GovernmentGateway))
-        .retrieve(extendedRetrievals) {
-          case currentUserEmail ~ userCredentialRole ~ userAffinityGroup ~ userInternalId ~ userAllEnrolments ~ groupId =>
-            transformRequest(
-              Right(requestProcessor),
-              userAffinityGroup,
-              userInternalId,
-              userAllEnrolments,
-              currentUserEmail,
-              userCredentialRole,
-              groupId
-            )
-        } recover withAuthRecovery(request)
+      authorise(requestProcessor)
     }
+
+  def ggAuthorisedUser(requestProcessor: RequestProcessorSimple) =
+    Action.async { implicit request =>
+      authorise(requestProcessor, checkPermittedAccess = false)
+    }
+
+  private def authorise(requestProcessor: RequestProcessorSimple, checkPermittedAccess: Boolean = true)(implicit
+    request: Request[AnyContent]
+  ) = {
+    implicit val hc: HeaderCarrier =
+      HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+
+    authorised(AuthProviders(GovernmentGateway))
+      .retrieve(extendedRetrievals) {
+        case currentUserEmail ~ userCredentialRole ~ userAffinityGroup ~ userInternalId ~ userAllEnrolments ~ groupId =>
+          transformRequest(
+            Right(requestProcessor),
+            userAffinityGroup,
+            userInternalId,
+            userAllEnrolments,
+            currentUserEmail,
+            userCredentialRole,
+            groupId,
+            checkPermittedAccess
+          )
+      } recover withAuthRecovery(request)
+  }
 
   private def transformRequest(
     requestProcessor: Either[RequestProcessorExtended, RequestProcessorSimple],
@@ -72,14 +84,18 @@ class AuthAction @Inject() (
     userAllEnrolments: Enrolments,
     currentUserEmail: Option[String],
     userCredentialRole: Option[CredentialRole],
-    groupId: Option[String]
+    groupId: Option[String],
+    checkPermittedAccess: Boolean
   )(implicit request: Request[AnyContent]) = {
     val loggedInUser =
       LoggedInUserWithEnrolments(userAffinityGroup, userInternalId, userAllEnrolments, currentUserEmail, groupId)
 
-    permitUserOrRedirect(userAffinityGroup, userCredentialRole, currentUserEmail) {
+    if (checkPermittedAccess)
+      permitUserOrRedirect(userAffinityGroup, userCredentialRole, currentUserEmail) {
+        requestProcessor fold (_(request)(userInternalId)(loggedInUser), _(request)(loggedInUser))
+      }
+    else
       requestProcessor fold (_(request)(userInternalId)(loggedInUser), _(request)(loggedInUser))
-    }
   }
 
 }

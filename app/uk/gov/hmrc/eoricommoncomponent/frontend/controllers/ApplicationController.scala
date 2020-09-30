@@ -110,7 +110,7 @@ class ApplicationController @Inject() (
   }
 
   def logout(service: Service, journey: Journey.Value): Action[AnyContent] =
-    authorise.ggAuthorisedUserWithEnrolmentsAction {
+    authorise.ggAuthorisedUser {
       implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
         journey match {
           case Journey.Register =>
