@@ -26,7 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.CDS
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, error_template, start}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, start}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,7 +39,6 @@ class ApplicationController @Inject() (
   accessibilityStatementView: accessibility_statement,
   cache: SessionCache,
   enrolmentStoreProxyService: EnrolmentStoreProxyService,
-  errorPage: error_template,
   appConfig: AppConfig
 )(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
     extends CdsController(mcc) with EnrolmentExtractor {

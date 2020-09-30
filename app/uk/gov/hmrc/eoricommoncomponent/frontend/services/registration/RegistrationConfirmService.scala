@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.registration
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUser
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
   ClearCacheAndRegistrationIdentificationService,
@@ -37,12 +36,10 @@ class RegistrationConfirmService @Inject() (
   val clearDataService: ClearCacheAndRegistrationIdentificationService
 )(implicit ec: ExecutionContext) {
 
-  def currentSubscriptionStatus(implicit
-    hc: HeaderCarrier,
-    request: Request[AnyContent]
-  ): Future[PreSubscriptionStatus] = cdsFrontendCache.registrationDetails flatMap { registrationDetails =>
-    subscriptionStatusService.getStatus("taxPayerID", registrationDetails.sapNumber.mdgTaxPayerId)
-  }
+  def currentSubscriptionStatus(implicit hc: HeaderCarrier): Future[PreSubscriptionStatus] =
+    cdsFrontendCache.registrationDetails flatMap { registrationDetails =>
+      subscriptionStatusService.getStatus("taxPayerID", registrationDetails.sapNumber.mdgTaxPayerId)
+    }
 
   def clearRegistrationData(loggedInUser: LoggedInUser)(implicit hc: HeaderCarrier): Future[Unit] =
     clearDataService.clear(loggedInUser)

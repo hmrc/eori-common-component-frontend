@@ -47,8 +47,8 @@ import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
 import util.builders.SubscriptionInfoBuilder._
 
-import scala.concurrent.{ExecutionContext, Future}
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.global
 
 class SubscriptionRecoveryControllerSpec
     extends ControllerSpec with MockitoSugar with BeforeAndAfterEach with AuthActionMock {
@@ -81,7 +81,7 @@ class SubscriptionRecoveryControllerSpec
     mockRandomUUIDGenerator,
     mockRequestSessionData,
     mockSubscriptionDetailsService
-  )
+  )(global)
 
   def registerWithEoriAndIdResponseDetail: Option[RegisterWithEoriAndIdResponseDetail] = {
     val trader               = Trader(fullName = "New trading", shortName = "nt")
@@ -158,7 +158,7 @@ class SubscriptionRecoveryControllerSpec
         header(LOCATION, result) shouldBe Some("/customs-enrolment-services/register/complete")
       }
       verify(mockTaxEnrolmentsService, times(0))
-        .issuerCall(anyString, any[Eori], any[Option[LocalDate]])(any[HeaderCarrier], any[ExecutionContext])
+        .issuerCall(anyString, any[Eori], any[Option[LocalDate]])(any[HeaderCarrier])
 
     }
 
@@ -173,17 +173,14 @@ class SubscriptionRecoveryControllerSpec
 
       when(
         mockTaxEnrolmentsService
-          .issuerCall(anyString, any[Eori], any[Option[LocalDate]])(any[HeaderCarrier], any[ExecutionContext])
+          .issuerCall(anyString, any[Eori], any[Option[LocalDate]])(any[HeaderCarrier])
       ).thenReturn(Future.successful(NO_CONTENT))
 
       callEnrolmentComplete(journey = Journey.Subscribe) { result =>
         status(result) shouldBe SEE_OTHER
         header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/subscribe/complete")
       }
-      verify(mockTaxEnrolmentsService).issuerCall(anyString, any[Eori], any[Option[LocalDate]])(
-        any[HeaderCarrier],
-        any[ExecutionContext]
-      )
+      verify(mockTaxEnrolmentsService).issuerCall(anyString, any[Eori], any[Option[LocalDate]])(any[HeaderCarrier])
     }
 
     "call Enrolment Complete with successful SUB09 call for Subscription ROW journey" in {
@@ -199,17 +196,14 @@ class SubscriptionRecoveryControllerSpec
 
       when(
         mockTaxEnrolmentsService
-          .issuerCall(anyString, any[Eori], any[Option[LocalDate]])(any[HeaderCarrier], any[ExecutionContext])
+          .issuerCall(anyString, any[Eori], any[Option[LocalDate]])(any[HeaderCarrier])
       ).thenReturn(Future.successful(NO_CONTENT))
 
       callEnrolmentComplete(journey = Journey.Subscribe) { result =>
         status(result) shouldBe SEE_OTHER
         header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/subscribe/complete")
       }
-      verify(mockTaxEnrolmentsService).issuerCall(anyString, any[Eori], any[Option[LocalDate]])(
-        any[HeaderCarrier],
-        any[ExecutionContext]
-      )
+      verify(mockTaxEnrolmentsService).issuerCall(anyString, any[Eori], any[Option[LocalDate]])(any[HeaderCarrier])
     }
     "call Enrolment Complete with successful SUB09 call for Subscription ROW journey without Identifier" in {
       setupMockCommon()
@@ -224,17 +218,14 @@ class SubscriptionRecoveryControllerSpec
 
       when(
         mockTaxEnrolmentsService
-          .issuerCall(anyString, any[Eori], any[Option[LocalDate]])(any[HeaderCarrier], any[ExecutionContext])
+          .issuerCall(anyString, any[Eori], any[Option[LocalDate]])(any[HeaderCarrier])
       ).thenReturn(Future.successful(NO_CONTENT))
 
       callEnrolmentComplete(journey = Journey.Subscribe) { result =>
         status(result) shouldBe SEE_OTHER
         header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/subscribe/complete")
       }
-      verify(mockTaxEnrolmentsService).issuerCall(anyString, any[Eori], any[Option[LocalDate]])(
-        any[HeaderCarrier],
-        any[ExecutionContext]
-      )
+      verify(mockTaxEnrolmentsService).issuerCall(anyString, any[Eori], any[Option[LocalDate]])(any[HeaderCarrier])
     }
 
     "call Enrolment Complete with unsuccessful SUB09 call" in {

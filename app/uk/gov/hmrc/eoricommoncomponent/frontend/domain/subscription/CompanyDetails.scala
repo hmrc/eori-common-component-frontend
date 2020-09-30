@@ -20,7 +20,6 @@ import org.joda.time.LocalDate
 import play.api.libs.json.Json
 import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{InternalId, SafeId}
 
 trait CompanyDetailsViewModel {
   def useShortName: Boolean

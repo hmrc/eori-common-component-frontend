@@ -66,7 +66,7 @@ class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAft
           ArgumentMatchers.eq(internalId.id),
           ArgumentMatchers.eq(safeIdKey),
           ArgumentMatchers.eq(safeId)
-        )(any[HeaderCarrier], any[Reads[SafeId]], any[Writes[SafeId]])
+        )(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
 
       val result: Unit = service
@@ -81,7 +81,7 @@ class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAft
           ArgumentMatchers.eq(internalId.id),
           ArgumentMatchers.eq(orgTypeKey),
           ArgumentMatchers.eq(Some(organisationType))
-        )(any[HeaderCarrier], any[Reads[CdsOrganisationType]], any[Writes[CdsOrganisationType]])
+        )(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
 
       val result: Unit = service
@@ -96,7 +96,7 @@ class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAft
           ArgumentMatchers.eq(internalId.id),
           ArgumentMatchers.eq(emailKey),
           ArgumentMatchers.eq(emailStatus)
-        )(any[HeaderCarrier], any[Reads[EmailStatus]], any[Writes[EmailStatus]])
+        )(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
 
       val result: Unit = service
@@ -109,8 +109,7 @@ class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAft
       when(
         mockSave4LaterConnector.get[SafeId](ArgumentMatchers.eq(internalId.id), ArgumentMatchers.eq(safeIdKey))(
           any[HeaderCarrier],
-          any[Reads[SafeId]],
-          any[Writes[SafeId]]
+          any[Reads[SafeId]]
         )
       ).thenReturn(Future.successful(Some(safeId)))
 
@@ -125,7 +124,7 @@ class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAft
         mockSave4LaterConnector.get[CdsOrganisationType](
           ArgumentMatchers.eq(internalId.id),
           ArgumentMatchers.eq(orgTypeKey)
-        )(any[HeaderCarrier], any[Reads[CdsOrganisationType]], any[Writes[CdsOrganisationType]])
+        )(any[HeaderCarrier], any[Reads[CdsOrganisationType]])
       ).thenReturn(Future.successful(Some(organisationType)))
 
       val result = service
@@ -138,8 +137,7 @@ class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAft
       when(
         mockSave4LaterConnector.get[EmailStatus](ArgumentMatchers.eq(internalId.id), ArgumentMatchers.eq(emailKey))(
           any[HeaderCarrier],
-          any[Reads[EmailStatus]],
-          any[Writes[EmailStatus]]
+          any[Reads[EmailStatus]]
         )
       ).thenReturn(Future.successful(Some(emailStatus)))
 

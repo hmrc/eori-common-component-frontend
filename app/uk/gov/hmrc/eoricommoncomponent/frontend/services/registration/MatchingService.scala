@@ -76,7 +76,6 @@ class MatchingService @Inject() (
     } yield result
 
   def sendIndividualRequestForMatchingService(implicit
-    request: Request[AnyContent],
     loggedInUser: LoggedInUser,
     headerCarrier: HeaderCarrier
   ): Future[Boolean] =

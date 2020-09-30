@@ -29,7 +29,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.{ATaR, CDS}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, error_template, start}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, start}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -47,7 +47,6 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
   private val startView                  = instanceOf[start]
   private val accessibilityStatementView = instanceOf[accessibility_statement]
   private val enrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
-  private val errorPage                  = instanceOf[error_template]
 
   val controller = new ApplicationController(
     mockAuthAction,
@@ -56,7 +55,6 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
     accessibilityStatementView,
     mockSessionCache,
     enrolmentStoreProxyService,
-    errorPage,
     appConfig
   )
 

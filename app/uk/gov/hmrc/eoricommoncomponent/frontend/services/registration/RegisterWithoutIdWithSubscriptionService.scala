@@ -109,7 +109,7 @@ class RegisterWithoutIdWithSubscriptionService @Inject() (
     journey: Journey.Value,
     registrationDetails: RegistrationDetails,
     subscriptionDetails: SubscriptionDetails,
-    orgType: Option[CdsOrganisationType] = None
+    orgType: Option[CdsOrganisationType]
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]) =
     subscriptionDetails.nameDobDetails.map(
       details =>
@@ -139,7 +139,7 @@ class RegisterWithoutIdWithSubscriptionService @Inject() (
     journey: Journey.Value,
     registrationDetails: RegistrationDetails,
     subscriptionDetails: SubscriptionDetails,
-    orgType: Option[CdsOrganisationType] = None
+    orgType: Option[CdsOrganisationType]
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]) =
     registerWithoutIdService
       .registerOrganisation(

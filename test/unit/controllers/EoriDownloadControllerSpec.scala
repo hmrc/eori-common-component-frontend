@@ -69,12 +69,9 @@ class EoriDownloadControllerSpec extends ControllerSpec with AuthActionMock {
 
       val pdf  = ByteString("this is a pdf")
       val html = eoriNumberDownloadView("EN123456789012345", "John Doe", "01 May 2016").toString()
-      when(
-        mockPdfGenerator.generatePdf(ArgumentMatchers.eq(html))(
-          ArgumentMatchers.any[HeaderCarrier],
-          ArgumentMatchers.any[ExecutionContext]
-        )
-      ).thenReturn(Future(pdf))
+      when(mockPdfGenerator.generatePdf(ArgumentMatchers.eq(html))(ArgumentMatchers.any[ExecutionContext])).thenReturn(
+        Future(pdf)
+      )
       withAuthorisedUser(defaultUserId, mockAuthConnector)
 
       val result = await(controller.download().apply(SessionBuilder.buildRequestWithSession(defaultUserId)))

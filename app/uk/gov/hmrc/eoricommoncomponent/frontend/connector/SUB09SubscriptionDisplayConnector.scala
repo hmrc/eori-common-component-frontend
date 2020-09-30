@@ -24,6 +24,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}

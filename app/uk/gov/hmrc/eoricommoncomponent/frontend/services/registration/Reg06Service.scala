@@ -151,8 +151,7 @@ class Reg06Service @Inject() (
     }
 
     def save(details: RegisterWithEoriAndIdResponse, subscriptionDetails: SubscriptionDetails)(implicit
-      hc: HeaderCarrier,
-      loggedInUserId: LoggedInUser
+      hc: HeaderCarrier
     ): Future[Boolean] =
       if (details.isResponseData)
         (details.isDoE, details.isPersonType) match {

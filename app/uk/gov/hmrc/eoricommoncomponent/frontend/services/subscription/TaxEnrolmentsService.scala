@@ -37,8 +37,7 @@ class TaxEnrolmentsService @Inject() (taxEnrolmentsConnector: TaxEnrolmentsConne
     }
 
   def issuerCall(formBundleId: String, eori: Eori, dateOfEstablishment: Option[LocalDate])(implicit
-    hc: HeaderCarrier,
-    ec: ExecutionContext
+    hc: HeaderCarrier
   ): Future[Int] = {
     val identifiers = List(KeyValue(key = "EORINUMBER", value = eori.id))
     val verifiers =

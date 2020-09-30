@@ -66,7 +66,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
 
       when(
         mockSave4LaterConnector
-          .get[CacheIds](any[String], any[String])(any[HeaderCarrier], any[Reads[CacheIds]], any[Writes[CacheIds]])
+          .get[CacheIds](any[String], any[String])(any[HeaderCarrier], any[Reads[CacheIds]])
       ).thenReturn(Future.successful(Some(cacheIds)))
       when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(SubscriptionProcessing))
@@ -81,7 +81,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
 
       when(
         mockSave4LaterConnector
-          .get[CacheIds](any[String], any[String])(any[HeaderCarrier], any[Reads[CacheIds]], any[Writes[CacheIds]])
+          .get[CacheIds](any[String], any[String])(any[HeaderCarrier], any[Reads[CacheIds]])
       ).thenReturn(Future.successful(Some(cacheIds.copy(internalId = InternalId("otherUserInternalId")))))
       when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(SubscriptionProcessing))
@@ -96,7 +96,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
 
       when(
         mockSave4LaterConnector
-          .get[CacheIds](any[String], any[String])(any[HeaderCarrier], any[Reads[CacheIds]], any[Writes[CacheIds]])
+          .get[CacheIds](any[String], any[String])(any[HeaderCarrier], any[Reads[CacheIds]])
       ).thenReturn(Future.successful(Some(cacheIds)))
       when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(SubscriptionRejected))
@@ -112,7 +112,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
 
       when(
         mockSave4LaterConnector
-          .get[CacheIds](any[String], any[String])(any[HeaderCarrier], any[Reads[CacheIds]], any[Writes[CacheIds]])
+          .get[CacheIds](any[String], any[String])(any[HeaderCarrier], any[Reads[CacheIds]])
       ).thenReturn(Future.successful(Some(cacheIds)))
       when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(NewSubscription))
@@ -128,7 +128,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
 
       when(
         mockSave4LaterConnector
-          .get[CacheIds](any[String], any[String])(any[HeaderCarrier], any[Reads[CacheIds]], any[Writes[CacheIds]])
+          .get[CacheIds](any[String], any[String])(any[HeaderCarrier], any[Reads[CacheIds]])
       ).thenReturn(Future.successful(None))
 
       val result: Result = service
