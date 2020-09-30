@@ -34,6 +34,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.EoriNumberSu
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, RequestSessionDataKeys}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDetailsService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.organisation_type
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
@@ -51,6 +52,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSubscriptionFlowManager    = mock[SubscriptionFlowManager]
   private val mockRegistrationDetailsService = mock[RegistrationDetailsService]
+  private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
 
   private val organisationTypeView = instanceOf[organisation_type]
 
@@ -60,7 +62,8 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
     mockRequestSessionData,
     mcc,
     organisationTypeView,
-    mockRegistrationDetailsService
+    mockRegistrationDetailsService,
+    mockSubscriptionDetailsService
   )
 
   private val ProblemWithSelectionError     = "Tell us what you want to apply as"
@@ -72,12 +75,13 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
   private val individualXpath               = "//*[@id='organisation-type-individual']"
 
   override protected def beforeEach(): Unit = {
-    reset(mockRequestSessionData)
+    reset(mockRequestSessionData, mockRegistrationDetailsService, mockSubscriptionDetailsService)
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
     when(
       mockRegistrationDetailsService
         .initialiseCacheWithRegistrationDetails(any[CdsOrganisationType]())(any[HeaderCarrier]())
     ).thenReturn(Future.successful(true))
+    when(mockSubscriptionDetailsService.cachedOrganisationType(any())).thenReturn(Future.successful(None))
   }
 
   "Displaying the form" should {

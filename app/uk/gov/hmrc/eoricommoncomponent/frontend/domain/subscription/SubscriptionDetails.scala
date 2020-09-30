@@ -49,8 +49,7 @@ case class SubscriptionDetails(
   nameDetails: Option[NameMatchModel] = None,
   idDetails: Option[IdMatchModel] = None,
   customsId: Option[CustomsId] = None,
-  utrMatch: Option[UtrMatchModel] = None,
-  ninoMatch: Option[NinoMatchModel] = None
+  formData: FormData = FormData()
 ) {
 
   def name: String =
@@ -68,4 +67,14 @@ object SubscriptionDetails {
   val EuVatDetailsLimit = 5
 
   implicit val format: Format[SubscriptionDetails] = Json.format[SubscriptionDetails]
+}
+
+case class FormData(
+  utrMatch: Option[UtrMatchModel] = None,
+  ninoMatch: Option[NinoMatchModel] = None,
+  organisationType: Option[CdsOrganisationType] = None
+)
+
+object FormData {
+  implicit val format: Format[FormData] = Json.format[FormData]
 }

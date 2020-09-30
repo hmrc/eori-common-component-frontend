@@ -25,7 +25,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
 import play.api.libs.json.Writes
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{BusinessShortName, SubscriptionDetails}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{BusinessShortName, FormData, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{NameOrganisationMatchModel, _}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactDetailsModel}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
@@ -212,7 +212,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
       verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
       val holder: SubscriptionDetails = requestCaptor.getValue
       holder.customsId shouldBe Some(customsIdUTR)
-      holder.utrMatch shouldBe Some(utrMatch)
+      holder.formData.utrMatch shouldBe Some(utrMatch)
     }
   }
 
@@ -225,7 +225,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
       verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
       val holder: SubscriptionDetails = requestCaptor.getValue
       holder.customsId shouldBe Some(customsIdUTR)
-      holder.ninoMatch shouldBe Some(ninoMatch)
+      holder.formData.ninoMatch shouldBe Some(ninoMatch)
     }
   }
 
@@ -237,7 +237,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
 
       verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
       val holder: SubscriptionDetails = requestCaptor.getValue
-      holder.utrMatch shouldBe Some(utrMatch)
+      holder.formData.utrMatch shouldBe Some(utrMatch)
     }
   }
 
@@ -378,7 +378,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
   "Calling cachedUtrMatch" should {
     "return Some utrMatch when found in subscription Details" in {
       when(mockSessionCache.subscriptionDetails(any[HeaderCarrier]))
-        .thenReturn(SubscriptionDetails(utrMatch = Option(utrMatch)))
+        .thenReturn(SubscriptionDetails(formData = FormData(utrMatch = Option(utrMatch))))
       await(subscriptionDetailsHolderService.cachedUtrMatch(hc)) shouldBe Some(utrMatch)
     }
 
@@ -391,13 +391,26 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
   "Calling cachedNinoMatch" should {
     "return Some ninoMatch when found in subscription Details" in {
       when(mockSessionCache.subscriptionDetails(any[HeaderCarrier]))
-        .thenReturn(SubscriptionDetails(ninoMatch = Option(ninoMatch)))
+        .thenReturn(SubscriptionDetails(formData = FormData(ninoMatch = Option(ninoMatch))))
       await(subscriptionDetailsHolderService.cachedNinoMatch(hc)) shouldBe Some(ninoMatch)
     }
 
     "return None for ninoMatch when no value found for subscription Details" in {
       when(mockSessionCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(SubscriptionDetails())
       await(subscriptionDetailsHolderService.cachedNinoMatch(hc)) shouldBe None
+    }
+  }
+
+  "Calling cachedOrganisationType" should {
+    "return Some company when found in subscription Details" in {
+      when(mockSessionCache.subscriptionDetails(any[HeaderCarrier]))
+        .thenReturn(SubscriptionDetails(formData = FormData(organisationType = Option(CdsOrganisationType.Company))))
+      await(subscriptionDetailsHolderService.cachedOrganisationType(hc)) shouldBe Some(CdsOrganisationType.Company)
+    }
+
+    "return None for utrMatch when no value found for subscription Details" in {
+      when(mockSessionCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(SubscriptionDetails())
+      await(subscriptionDetailsHolderService.cachedOrganisationType(hc)) shouldBe None
     }
   }
 

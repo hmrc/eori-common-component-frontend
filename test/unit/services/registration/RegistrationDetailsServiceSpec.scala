@@ -28,6 +28,7 @@ import org.scalatest.prop.Tables.Table
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDetailsService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -110,6 +111,7 @@ class RegistrationDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
     reset(mockSessionCache)
     when(mockSessionCache.saveRegistrationDetails(any[RegistrationDetails])(any[HeaderCarrier]))
       .thenReturn(Future.successful(true))
+    when(mockSessionCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(Future.successful(SubscriptionDetails()))
   }
 
   "Calling cacheOrgName" should {
