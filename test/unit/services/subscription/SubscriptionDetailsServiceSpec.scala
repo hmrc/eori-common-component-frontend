@@ -118,7 +118,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
           ArgumentMatchers.eq(groupId.id),
           ArgumentMatchers.eq(key),
           ArgumentMatchers.eq(cacheIds)
-        )(any(), any(), any())
+        )(any())
       ).thenReturn(Future.successful(()))
       val expected = await(subscriptionDetailsHolderService.saveKeyIdentifiers(groupId, internalId))
       expected shouldBe ()

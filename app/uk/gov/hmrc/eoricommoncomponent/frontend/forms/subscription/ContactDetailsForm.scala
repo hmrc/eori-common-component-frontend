@@ -19,7 +19,6 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation._
-import play.api.i18n.Messages
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactDetailsViewModel
@@ -29,11 +28,10 @@ import uk.gov.voa.play.form.ConditionalMappings.isEqual
 import uk.gov.voa.play.form.MandatoryOptionalMapping
 
 object ContactDetailsForm {
-  private val Length2     = 2
-  private val yesAnswered = "true"
-  private val noAnswered  = "false"
+  private val Length2    = 2
+  private val noAnswered = "false"
 
-  def contactDetailsCreateForm()(implicit messages: Messages): Form[ContactDetailsViewModel] =
+  def contactDetailsCreateForm(): Form[ContactDetailsViewModel] =
     Form(
       mapping(
         "full-name" -> text.verifying(validFullName),

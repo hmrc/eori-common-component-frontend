@@ -21,9 +21,7 @@ import org.joda.time.format.DateTimeFormat
 import play.api.data.Forms.{optional, text}
 import play.api.data.Mapping
 import play.api.data.validation._
-import uk.gov.hmrc.eoricommoncomponent.frontend.playext.form.ConditionalMapping
 import uk.gov.hmrc.eoricommoncomponent.frontend.playext.mappers.DateTuple._
-import uk.gov.voa.play.form.{Condition, MandatoryOptionalMapping}
 
 object FormUtils {
 

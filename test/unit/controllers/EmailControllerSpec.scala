@@ -77,7 +77,7 @@ class EmailControllerSpec
       .thenReturn(Future.successful(()))
     when(mockSessionCache.saveEmail(any())(any[HeaderCarrier]))
       .thenReturn(Future.successful(true))
-    when(mockSave4LaterConnector.get(any(), any())(any(), any(), any()))
+    when(mockSave4LaterConnector.get(any(), any())(any(), any()))
       .thenReturn(Future.successful(None))
   }
 

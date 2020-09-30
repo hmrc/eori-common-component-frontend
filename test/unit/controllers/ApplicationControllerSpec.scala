@@ -23,6 +23,7 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.MissingGroupId
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, KeyValue}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.{ATaR, CDS}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
@@ -144,6 +145,15 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
       status(result) shouldBe SEE_OTHER
       await(result).header.headers("Location") should endWith("enrolment-already-exists-for-group")
+    }
+
+    "throw missing group id exception when user doesn't have group id" in {
+
+      withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set.empty, groupId = None)
+
+      intercept[MissingGroupId] {
+        await(controller.startSubscription(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+      }
     }
   }
 

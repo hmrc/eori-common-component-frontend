@@ -21,7 +21,7 @@ import play.api.Configuration
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
-import scala.concurrent.duration.{Duration, MINUTES}
+import scala.concurrent.duration.Duration
 import scala.util.matching.Regex
 
 @Singleton

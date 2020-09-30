@@ -78,9 +78,7 @@ class RequestSessionData {
   def sessionWithUserLocationAdded(userLocation: String)(implicit request: Request[AnyContent]): Session =
     request.session + (RequestSessionDataKeys.selectedUserLocation -> userLocation)
 
-  def existingSessionWithUserLocationAdded(existingSession: Session, userLocation: String)(implicit
-    request: Request[AnyContent]
-  ): Session =
+  def existingSessionWithUserLocationAdded(existingSession: Session, userLocation: String): Session =
     existingSession + (RequestSessionDataKeys.selectedUserLocation -> userLocation)
 
   def sessionWithUnMatchedUser(unmatched: Boolean = false)(implicit request: Request[AnyContent]): Session =

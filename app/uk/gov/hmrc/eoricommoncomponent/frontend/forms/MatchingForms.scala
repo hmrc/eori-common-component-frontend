@@ -119,12 +119,6 @@ object MatchingForms {
 
   private val validYesNoAnswerOptions = Set("true", "false")
 
-  private def minLengthOrEmpty(length: Int, minErrorMsgKey: String = "error.minLength"): Constraint[String] =
-    Constraint { s =>
-      require(length >= 0, "string minLength must not be negative")
-      if (s.trim.isEmpty || s.trim.length >= length) Valid else Invalid(ValidationError(minErrorMsgKey, length))
-    }
-
   def yesNoAnswerForm(implicit messages: Messages): Form[YesNo] = createYesNoAnswerForm()
 
   def disclosePersonalDetailsYesNoAnswerForm()(implicit messages: Messages): Form[YesNo] =

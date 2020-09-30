@@ -35,11 +35,7 @@ class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, aud
 
   val LoggerComponentId = "Save4LaterConnector"
 
-  def get[T](id: String, key: String)(implicit
-    hc: HeaderCarrier,
-    reads: Reads[T],
-    writes: Writes[T]
-  ): Future[Option[T]] = {
+  def get[T](id: String, key: String)(implicit hc: HeaderCarrier, reads: Reads[T]): Future[Option[T]] = {
     val url = s"${appConfig.handleSubscriptionBaseUrl}/save4later/$id/$key"
     CdsLogger.info(s"[$LoggerComponentId][call] GET: $url")
     http.GET[HttpResponse](url) map { response =>
@@ -64,11 +60,7 @@ class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, aud
     }
   }
 
-  def put[T](id: String, key: String, payload: JsValue)(implicit
-    hc: HeaderCarrier,
-    reads: Reads[T],
-    writes: Writes[T]
-  ): Future[Unit] = {
+  def put[T](id: String, key: String, payload: JsValue)(implicit hc: HeaderCarrier): Future[Unit] = {
     val url = s"${appConfig.handleSubscriptionBaseUrl}/save4later/$id/$key"
     CdsLogger.info(s"[$LoggerComponentId][call] PUT: $url")
     auditCallRequest(url, payload)
@@ -110,10 +102,7 @@ class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, aud
     }
   }
 
-  private def auditCallRequest[T](url: String, request: JsValue)(implicit
-    hc: HeaderCarrier,
-    reads: HttpReads[T]
-  ): Future[Unit] =
+  private def auditCallRequest[T](url: String, request: JsValue)(implicit hc: HeaderCarrier): Future[Unit] =
     Future {
       audit.sendExtendedDataEvent(
         transactionName = "Save4laterRequest",

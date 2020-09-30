@@ -94,7 +94,7 @@ class RegisterWithoutIdService @Inject() (
   private def save(
     registrationDetails: RegistrationDetails,
     loggedInUser: LoggedInUser,
-    orgType: Option[CdsOrganisationType] = None
+    orgType: Option[CdsOrganisationType]
   )(implicit hc: HeaderCarrier) =
     if (registrationDetails.safeId.id.nonEmpty)
       sessionCache.saveRegistrationDetailsWithoutId(

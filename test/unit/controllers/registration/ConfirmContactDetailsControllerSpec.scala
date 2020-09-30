@@ -381,7 +381,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
       when(
         mockRegistrationConfirmService
-          .currentSubscriptionStatus(any[HeaderCarrier], any[Request[AnyContent]])
+          .currentSubscriptionStatus(any[HeaderCarrier])
       ).thenReturn(Future.successful(SubscriptionRejected))
 
       invokeConfirmContactDetailsWithSelectedOption() { result =>
@@ -402,7 +402,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
     s"redirect to $redirectUrl when subscription status is $subscriptionStatus" in {
       when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(subscriptionDetailsHolder))
-      when(mockRegistrationConfirmService.currentSubscriptionStatus(any[HeaderCarrier], any[Request[AnyContent]]))
+      when(mockRegistrationConfirmService.currentSubscriptionStatus(any[HeaderCarrier]))
         .thenReturn(Future.successful(subscriptionStatus))
       when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
@@ -420,7 +420,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
     "redirect to SignInWithDifferentDetailsController when subscription status is SubscriptionExists and Existing Enrolment Exist" in {
       when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(subscriptionDetailsHolder))
-      when(mockRegistrationConfirmService.currentSubscriptionStatus(any[HeaderCarrier], any[Request[AnyContent]]))
+      when(mockRegistrationConfirmService.currentSubscriptionStatus(any[HeaderCarrier]))
         .thenReturn(Future.successful(SubscriptionExists))
       when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
@@ -444,7 +444,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
     "redirect to SignInWithDifferentDetailsController when subscription status is SubscriptionExists and Existing Enrolment DOES NOT Exist" in {
       when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(subscriptionDetailsHolder))
-      when(mockRegistrationConfirmService.currentSubscriptionStatus(any[HeaderCarrier], any[Request[AnyContent]]))
+      when(mockRegistrationConfirmService.currentSubscriptionStatus(any[HeaderCarrier]))
         .thenReturn(Future.successful(SubscriptionExists))
       when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
@@ -633,7 +633,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
   private def mockNewSubscriptionFromSubscriptionStatus() =
     when(
       mockRegistrationConfirmService
-        .currentSubscriptionStatus(any[HeaderCarrier], any[Request[AnyContent]])
+        .currentSubscriptionStatus(any[HeaderCarrier])
     ).thenReturn(Future.successful(NewSubscription))
 
   private def mockSubscriptionFlowStart() {

@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration
 
 import play.api.data.Forms.{mapping, text}
-import play.api.i18n.Messages
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.oneOf
 import play.api.data.{Form}
 import play.api.data.Forms._
@@ -30,7 +29,7 @@ object YesNoWrongAddress {
 
   private val validYesNoWrongAddress = Set(yesAnswered, noAnswered, wrongAddress)
 
-  def createForm()(implicit messages: Messages): Form[YesNoWrongAddress] =
+  def createForm(): Form[YesNoWrongAddress] =
     Form(
       mapping(
         "yes-no-wrong-address" ->

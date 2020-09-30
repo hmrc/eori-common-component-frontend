@@ -316,7 +316,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Future.successful(individualRegistrationDetails))
       when(
         mockMatchingService
-          .sendIndividualRequestForMatchingService(any[Request[AnyContent]], any[LoggedInUser], any[HeaderCarrier])
+          .sendIndividualRequestForMatchingService(any[LoggedInUser], any[HeaderCarrier])
       ).thenReturn(Future.successful(true))
       when(
         mockSubscriptionStatusService

@@ -86,7 +86,7 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach wi
 
   override def beforeEach(): Unit = {
     reset(mockAuthConnector)
-    when(mockSave4LaterConnector.get(any(), any())(any(), any(), any()))
+    when(mockSave4LaterConnector.get(any(), any())(any(), any()))
       .thenReturn(Future.successful(None))
     when(
       mockEnrolmentStoreProxyService

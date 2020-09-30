@@ -62,10 +62,8 @@ class ApplicationController @Inject() (
 
                 cdsEnrolmentCheck(loggedInUser, groupId, service)
               }
-            case None if isUserEnrolledFor(loggedInUser, CDS) =>
-              Future.successful(Redirect(routes.HasExistingEoriController.displayPage(service))) // AutoEnrolment
-            case None =>
-              Future.successful(Redirect(routes.EmailController.form(service, Journey.Subscribe))) // Whole journey
+            case _ =>
+              throw MissingGroupId()
           }
         }
       }.recover {
@@ -137,3 +135,5 @@ case class SpecificEnrolmentExists(service: Service)
 
 case class SpecificGroupIdEnrolmentExists(service: Service)
     extends Exception(s"Group Id has enrolment to ${service.code}")
+
+case class MissingGroupId() extends Exception(s"User doesn't have groupId")

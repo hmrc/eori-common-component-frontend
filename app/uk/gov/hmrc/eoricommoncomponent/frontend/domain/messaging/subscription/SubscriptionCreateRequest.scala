@@ -45,8 +45,6 @@ case class SubscriptionCreateRequest(requestCommon: RequestCommon, requestDetail
 }
 
 object SubscriptionCreateRequest {
-  import play.api.libs.json.JodaWrites._
-  import play.api.libs.json.JodaReads._
 
   implicit val jsonFormat = Json.format[SubscriptionCreateRequest]
 

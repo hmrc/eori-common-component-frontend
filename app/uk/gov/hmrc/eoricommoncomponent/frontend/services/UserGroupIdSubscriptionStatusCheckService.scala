@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.services
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{AnyContent, Request, Result}
+import play.api.mvc.Result
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CacheIds, GroupId, InternalId}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.CachedData
@@ -33,11 +33,9 @@ class UserGroupIdSubscriptionStatusCheckService @Inject() (
 )(implicit ec: ExecutionContext) {
   private val idType = "SAFE"
 
-  def checksToProceed(groupId: GroupId, internalId: InternalId)(
-    continue: => Future[Result]
-  )(userIsInProcess: => Future[Result])(
-    otherUserWithinGroupIsInProcess: => Future[Result]
-  )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] =
+  def checksToProceed(groupId: GroupId, internalId: InternalId)(continue: => Future[Result])(
+    userIsInProcess: => Future[Result]
+  )(otherUserWithinGroupIsInProcess: => Future[Result])(implicit hc: HeaderCarrier): Future[Result] =
     save4LaterConnector
       .get[CacheIds](groupId.id, CachedData.groupIdKey)
       .flatMap {

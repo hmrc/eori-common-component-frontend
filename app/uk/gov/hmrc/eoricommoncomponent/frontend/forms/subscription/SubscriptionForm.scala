@@ -228,15 +228,6 @@ object SubscriptionForm {
     )
   )
 
-  private def validateVatNumberIfFieldIsNotBlank(field: String) =
-    mandatoryIf(isNotEqual(field, ""), text.verifying(validEUVATNumber))
-
-  private def validateVatCountryIfFieldIsNotBlank(field: String) =
-    mandatoryIf(
-      isNotEqual(field, ""),
-      text.verifying("cds.subscription.contact-details.form-error.country", _.length == Length2)
-    )
-
   private def validateEuVatNumber =
     text.verifying(validEUVATNumber)
 
