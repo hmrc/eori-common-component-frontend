@@ -32,6 +32,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDetailsService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.organisation_type
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -48,6 +49,7 @@ class OrganisationTypeViewSpec
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSubscriptionFlowManager    = mock[SubscriptionFlowManager]
   private val mockRegistrationDetailsService = mock[RegistrationDetailsService]
+  private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
   private val organisationTypeView           = instanceOf[organisation_type]
 
   private val organisationTypeController = new OrganisationTypeController(
@@ -56,12 +58,14 @@ class OrganisationTypeViewSpec
     mockRequestSessionData,
     mcc,
     organisationTypeView,
-    mockRegistrationDetailsService
+    mockRegistrationDetailsService,
+    mockSubscriptionDetailsService
   )
 
   override def beforeEach(): Unit = {
     reset(mockAuthConnector, mockRequestSessionData)
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
+    when(mockSubscriptionDetailsService.cachedOrganisationType(any())).thenReturn(Future.successful(None))
   }
 
   "Organisation Type Form" should {

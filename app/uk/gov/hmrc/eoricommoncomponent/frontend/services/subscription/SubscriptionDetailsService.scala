@@ -80,9 +80,16 @@ class SubscriptionDetailsService @Inject() (
   )(implicit hc: HeaderCarrier): Future[Unit] =
     saveSubscriptionDetails(sd => sd.copy(nameIdOrganisationDetails = Some(nameIdOrganisationMatchModel)))
 
-  def cacheNameIdAndCustomsId(name: String, id: String)(implicit hc: HeaderCarrier): Future[Unit] =
+  def cacheNameIdCustomsIdAndUtrMatch(name: String, id: String, utrMatch: Option[UtrMatchModel])(implicit
+    hc: HeaderCarrier
+  ): Future[Unit] =
     saveSubscriptionDetails(
-      sd => sd.copy(nameIdOrganisationDetails = Some(NameIdOrganisationMatchModel(name, id)), customsId = Some(Utr(id)))
+      sd =>
+        sd.copy(
+          nameIdOrganisationDetails = Some(NameIdOrganisationMatchModel(name, id)),
+          customsId = Some(Utr(id)),
+          formData = sd.formData.copy(utrMatch = utrMatch)
+        )
     )
 
   def cachedNameIdDetails(implicit hc: HeaderCarrier): Future[Option[NameIdOrganisationMatchModel]] =
@@ -95,6 +102,15 @@ class SubscriptionDetailsService @Inject() (
 
   def cachedNameDetails(implicit hc: HeaderCarrier): Future[Option[NameOrganisationMatchModel]] =
     sessionCache.subscriptionDetails map (_.nameOrganisationDetails)
+
+  def cachedUtrMatch(implicit hc: HeaderCarrier): Future[Option[UtrMatchModel]] =
+    sessionCache.subscriptionDetails map (_.formData.utrMatch)
+
+  def cachedNinoMatch(implicit hc: HeaderCarrier): Future[Option[NinoMatchModel]] =
+    sessionCache.subscriptionDetails map (_.formData.ninoMatch)
+
+  def cachedOrganisationType(implicit hc: HeaderCarrier): Future[Option[CdsOrganisationType]] =
+    sessionCache.subscriptionDetails map (_.formData.organisationType)
 
   def cacheDateOfBirth(date: LocalDate)(implicit hc: HeaderCarrier): Future[Unit] =
     saveSubscriptionDetails(sd => sd.copy(dateOfBirth = Some(date)))
@@ -122,6 +138,26 @@ class SubscriptionDetailsService @Inject() (
 
   def cacheCustomsId(subscriptionCustomsId: CustomsId)(implicit hc: HeaderCarrier): Future[Unit] =
     saveSubscriptionDetails(sd => sd.copy(customsId = Some(subscriptionCustomsId)))
+
+  def cacheCustomsIdAndUtrMatch(subscriptionCustomsId: CustomsId, utrMatch: Option[UtrMatchModel])(implicit
+    hc: HeaderCarrier
+  ): Future[Unit] =
+    saveSubscriptionDetails(
+      sd => sd.copy(customsId = Some(subscriptionCustomsId), formData = sd.formData.copy(utrMatch = utrMatch))
+    )
+
+  def cacheCustomsIdAndNinoMatch(subscriptionCustomsId: Option[CustomsId], ninoMatch: Option[NinoMatchModel])(implicit
+    hc: HeaderCarrier
+  ): Future[Unit] =
+    saveSubscriptionDetails(
+      sd => sd.copy(customsId = subscriptionCustomsId, formData = sd.formData.copy(ninoMatch = ninoMatch))
+    )
+
+  def cacheUtrMatchForNoAnswer(utrMatch: Option[UtrMatchModel])(implicit hc: HeaderCarrier): Future[Unit] =
+    saveSubscriptionDetails(
+      sd =>
+        sd.copy(formData = sd.formData.copy(utrMatch = utrMatch), customsId = None, nameIdOrganisationDetails = None)
+    )
 
   def clearCachedCustomsId(implicit hc: HeaderCarrier): Future[Unit] =
     saveSubscriptionDetails(sd => sd.copy(customsId = None))

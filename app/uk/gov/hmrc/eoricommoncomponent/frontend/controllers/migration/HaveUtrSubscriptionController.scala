@@ -47,10 +47,22 @@ class HaveUtrSubscriptionController @Inject() (
   def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
-        requestSessionData.userSelectedOrganisationType match {
-          case Some(orgType) => Future.successful(Ok(matchUtrSubscriptionView(utrForm, orgType.id, service, journey)))
-          case None          => noOrgTypeSelected
+        populateView(service, journey)
+    }
+
+  private def populateView(service: Service, journey: Journey.Value)(implicit
+    hc: HeaderCarrier,
+    request: Request[AnyContent]
+  ) =
+    requestSessionData.userSelectedOrganisationType match {
+      case Some(orgType) =>
+        subscriptionDetailsService.cachedUtrMatch.map {
+          case Some(formData) =>
+            Ok(matchUtrSubscriptionView(utrForm.fill(formData), orgType.id, service, journey))
+
+          case _ => Ok(matchUtrSubscriptionView(utrForm, orgType.id, service, journey))
         }
+      case None => noOrgTypeSelected
     }
 
   def submit(service: Service, journey: Journey.Value): Action[AnyContent] =
@@ -76,37 +88,27 @@ class HaveUtrSubscriptionController @Inject() (
     form.haveUtr match {
       case Some(true) if orgType == CdsOrganisationType.Company => cacheNameIdDetails(form, service, journey)
       case Some(true) =>
-        subscriptionDetailsService.cacheCustomsId(Utr(form.id.getOrElse(noUtrException))).map { _ =>
-          Redirect(AddressController.createForm(service, journey))
+        subscriptionDetailsService.cacheCustomsIdAndUtrMatch(Utr(form.id.getOrElse(noUtrException)), Some(form)).map {
+          _ =>
+            Redirect(AddressController.createForm(service, journey))
         }
       case Some(false) =>
-        Future.successful(
-          Redirect(subscriptionFlowManager.stepInformation(UtrSubscriptionFlowPage).nextPage.url(service))
-        )
+        subscriptionDetailsService.cacheUtrMatchForNoAnswer(Some(form)).map {
+          _ =>
+            Redirect(subscriptionFlowManager.stepInformation(UtrSubscriptionFlowPage).nextPage.url(service))
+        }
       case _ => throw new IllegalStateException("No Data from the form")
     }
 
-  // TODO Proposal for the method below. Right now we're redirecting to the new page without waiting for the cacheName method to be done
-  // This change break the tests, so need to be investigated what is happening there
-  /*
-    subscriptionDetailsService.cachedNameDetails.flatMap { optionalName =>
-      ((optionalName, form.id) match {
-        case (Some(name), Some(id)) => subscriptionDetailsService.cacheNameIdAndCustomsId(name.name, id)
-        case _                      => noBusinessNameOrId
-      }).map( _ => Redirect(AddressController.createForm(journey)))
-    }
-   */
   private def cacheNameIdDetails(form: UtrMatchModel, service: Service, journey: Journey.Value)(implicit
     hc: HeaderCarrier
   ): Future[Result] =
-    for {
-      optionalName <- subscriptionDetailsService.cachedNameDetails
-    } yield {
-      (optionalName, form.id) match {
-        case (Some(name), Some(id)) => subscriptionDetailsService.cacheNameIdAndCustomsId(name.name, id)
-        case _                      => noBusinessNameOrId
-      }
-      Redirect(AddressController.createForm(service, journey))
+    subscriptionDetailsService.cachedNameDetails.flatMap { optionalName =>
+      ((optionalName, form.id) match {
+        case (Some(name), Some(id)) =>
+          subscriptionDetailsService.cacheNameIdCustomsIdAndUtrMatch(name.name, id, Some(form))
+        case _ => noBusinessNameOrId
+      }).map(_ => Redirect(AddressController.createForm(service, journey)))
     }
 
   private lazy val noUtrException     = throw new IllegalStateException("User selected 'Yes' for Utr but no Utr found")

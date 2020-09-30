@@ -28,6 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.organisation
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDetailsService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.organisation_type
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,7 +40,8 @@ class OrganisationTypeController @Inject() (
   requestSessionData: RequestSessionData,
   mcc: MessagesControllerComponents,
   organisationTypeView: organisation_type,
-  registrationDetailsService: RegistrationDetailsService
+  registrationDetailsService: RegistrationDetailsService,
+  subscriptionDetailsService: SubscriptionDetailsService
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
@@ -74,18 +76,14 @@ class OrganisationTypeController @Inject() (
   def form(service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
-        Future.successful(requestSessionData.selectedUserLocation match {
-          case Some(_) =>
-            Ok(
-              organisationTypeView(
-                organisationTypeDetailsForm,
-                requestSessionData.selectedUserLocation,
-                service,
-                journey
-              )
-            )
-          case None => Ok(organisationTypeView(organisationTypeDetailsForm, Some("uk"), service, journey))
-        })
+        subscriptionDetailsService.cachedOrganisationType map { orgType =>
+          def filledForm = orgType.map(organisationTypeDetailsForm.fill(_)).getOrElse(organisationTypeDetailsForm)
+          requestSessionData.selectedUserLocation match {
+            case Some(_) =>
+              Ok(organisationTypeView(filledForm, requestSessionData.selectedUserLocation, service, journey))
+            case None => Ok(organisationTypeView(filledForm, Some("uk"), service, journey))
+          }
+        }
     }
 
   def submit(service: Service, journey: Journey.Value): Action[AnyContent] =

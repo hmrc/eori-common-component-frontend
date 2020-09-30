@@ -54,10 +54,16 @@ class RegistrationDetailsService @Inject() (sessionCache: SessionCache)(implicit
   def initialiseCacheWithRegistrationDetails(
     organisationType: CdsOrganisationType
   )(implicit hq: HeaderCarrier): Future[Boolean] =
-    organisationType match {
-      case SoleTrader | Individual | ThirdCountryIndividual | ThirdCountrySoleTrader =>
-        sessionCache.saveRegistrationDetails(RegistrationDetailsIndividual())
-      case _ => sessionCache.saveRegistrationDetails(RegistrationDetailsOrganisation())
+    sessionCache.subscriptionDetails flatMap { subDetails =>
+      sessionCache.saveSubscriptionDetails(
+        subDetails.copy(formData = subDetails.formData.copy(organisationType = Some(organisationType)))
+      )
+
+      organisationType match {
+        case SoleTrader | Individual | ThirdCountryIndividual | ThirdCountrySoleTrader =>
+          sessionCache.saveRegistrationDetails(RegistrationDetailsIndividual())
+        case _ => sessionCache.saveRegistrationDetails(RegistrationDetailsOrganisation())
+      }
     }
 
 }
