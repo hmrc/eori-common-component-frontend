@@ -66,12 +66,8 @@ class AuthAction @Inject() (
         case currentUserEmail ~ userCredentialRole ~ userAffinityGroup ~ userInternalId ~ userAllEnrolments ~ groupId =>
           transformRequest(
             Right(requestProcessor),
-            userAffinityGroup,
-            userInternalId,
-            userAllEnrolments,
-            currentUserEmail,
+            LoggedInUserWithEnrolments(userAffinityGroup, userInternalId, userAllEnrolments, currentUserEmail, groupId),
             userCredentialRole,
-            groupId,
             checkPermittedAccess
           )
       } recover withAuthRecovery(request)
@@ -79,23 +75,15 @@ class AuthAction @Inject() (
 
   private def transformRequest(
     requestProcessor: Either[RequestProcessorExtended, RequestProcessorSimple],
-    userAffinityGroup: Option[AffinityGroup],
-    userInternalId: Option[String],
-    userAllEnrolments: Enrolments,
-    currentUserEmail: Option[String],
+    loggedInUser: LoggedInUserWithEnrolments,
     userCredentialRole: Option[CredentialRole],
-    groupId: Option[String],
     checkPermittedAccess: Boolean
-  )(implicit request: Request[AnyContent]) = {
-    val loggedInUser =
-      LoggedInUserWithEnrolments(userAffinityGroup, userInternalId, userAllEnrolments, currentUserEmail, groupId)
-
+  )(implicit request: Request[AnyContent]) =
     if (checkPermittedAccess)
-      permitUserOrRedirect(userAffinityGroup, userCredentialRole, currentUserEmail) {
-        requestProcessor fold (_(request)(userInternalId)(loggedInUser), _(request)(loggedInUser))
+      permitUserOrRedirect(loggedInUser.affinityGroup, userCredentialRole, loggedInUser.email) {
+        requestProcessor fold (_(request)(loggedInUser.internalId)(loggedInUser), _(request)(loggedInUser))
       }
     else
-      requestProcessor fold (_(request)(userInternalId)(loggedInUser), _(request)(loggedInUser))
-  }
+      requestProcessor fold (_(request)(loggedInUser.internalId)(loggedInUser), _(request)(loggedInUser))
 
 }
