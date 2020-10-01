@@ -33,7 +33,8 @@ case class RequestDetail(
   shortName: Option[String],
   dateOfEstablishment: Option[LocalDate],
   typeOfPerson: Option[String],
-  principalEconomicActivity: Option[String]
+  principalEconomicActivity: Option[String],
+  serviceName: Option[String]
 ) extends CaseClassAuditHelper {
   require(dateOfEstablishment.isDefined)
   val ignoredFields = List("CDSEstablishmentAddress", "contactInformation", "vatIDs")
