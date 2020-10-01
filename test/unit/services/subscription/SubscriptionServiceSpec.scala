@@ -52,7 +52,7 @@ import scala.concurrent.Future
 class SubscriptionServiceSpec
     extends UnitSpec with MockitoSugar with BeforeAndAfterAll with Checkers with SubscriptionServiceTestData {
   private val mockHeaderCarrier = mock[HeaderCarrier]
-  private val mockConfig = mock[Sub02Config]
+  private val mockConfig        = mock[Sub02Config]
 
   override def beforeAll() = {
     super.beforeAll()
@@ -504,7 +504,10 @@ class SubscriptionServiceSpec
         subscriptionGenerateResponse
       )
 
-      assertSameJson(Json.toJson(result.actualConnectorRequest), organisationAutomaticSubscriptionRequestWithoutServiceNameJson)
+      assertSameJson(
+        Json.toJson(result.actualConnectorRequest),
+        organisationAutomaticSubscriptionRequestWithoutServiceNameJson
+      )
       result.actualServiceCallResult shouldEqual subscriptionSuccessResultIgnoreTimestamp(
         subscriptionSuccessResult,
         result.actualConnectorRequest
