@@ -33,22 +33,15 @@ class VerifyYourEmailSpec extends ViewSpec {
 
   "What Is Your Email Address page" should {
     "display correct title" in {
-      doc.title must startWith("Verify your email address")
+      doc.title must startWith("Confirm your email address")
     }
     "have the correct h1 text" in {
-      doc.body.getElementsByTag("h1").text() mustBe "Verify your email address"
+      doc.body.getElementsByTag("h1").text() mustBe "Confirm your email address"
     }
     "have the correct class on the h1" in {
       doc.body.getElementsByTag("h1").hasClass("heading-large") mustBe true
     }
 
-    "have an change your email address 'text' and change email link" in {
-      doc.body.getElementById("p2").text() mustBe "You can change your email address if it is not correct."
-      doc.body
-        .getElementById("p2")
-        .select("a[href]")
-        .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-email"
-    }
     "have an link send it again" in {
       doc.body
         .getElementById("p3")

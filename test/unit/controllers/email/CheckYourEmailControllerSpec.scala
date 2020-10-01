@@ -36,8 +36,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.{AuthActionMock, SessionBuilder}
 import util.builders.YesNoFormBuilder.ValidRequest
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -174,10 +174,10 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   }
 
   "Redirecting to Verify Your Email Address Page" should {
-    "display title as 'Verify your email address'" in {
+    "display title as 'Confirm your email address'" in {
       verifyEmailViewForm(journey = Journey.Subscribe) { result =>
         val page = CdsPage(contentAsString(result))
-        page.title() should startWith("Verify your email address")
+        page.title() should startWith("Confirm your email address")
       }
     }
   }
