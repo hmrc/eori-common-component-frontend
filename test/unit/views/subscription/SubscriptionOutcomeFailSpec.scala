@@ -34,8 +34,14 @@ class SubscriptionOutcomeFailSpec extends ViewSpec {
 
   "'Subscription Fail' Page" should {
 
+    "have the correct title " in {
+      doc.title() must startWith(s"The Customs application has been unsuccessful")
+    }
+
     "display correct heading" in {
-      doc.body.getElementsByTag("h1").text() must startWith(s"The application for $orgName has been unsuccessful")
+      doc.body.getElementsByTag("h1").text() must startWith(
+        s"The Customs application for $orgName has been unsuccessful"
+      )
     }
     "have the correct class on the h1" in {
       doc.body.getElementsByTag("h1").hasClass("heading-xlarge") mustBe true

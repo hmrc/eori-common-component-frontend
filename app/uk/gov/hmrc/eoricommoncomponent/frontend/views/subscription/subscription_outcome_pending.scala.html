@@ -21,10 +21,10 @@
 @this(layout_di: layout)
 @(eori: String, processedDate: String, name: String)(implicit messages: Messages, request: Request[_])
 
-@layout_di(messages("cds.subscription.outcomes.in-processing.title-and-heading", name)) {
+@layout_di(messages("cds.subscription.outcomes.in-processing.title", shortName)) {
     <div class="column-two-thirds">
         <div class="govuk-box-highlight">
-            <h1 id="page-heading" class="heading-xlarge">@messages("cds.subscription.outcomes.in-processing.title-and-heading", name)</h1>
+            <h1 id="page-heading" class="heading-xlarge">@messages("cds.subscription.outcomes.in-processing.heading", name)</h1>
             <div class="heading-medium" id="active-from">@messages("cds.subscription.outcomes.in-processing.received", processedDate)</div>
             <div class="heading-medium" id="eori-number">@messages("cds.subscription.outcomes.inprocessing.eori", eori)</div>
         </div>
