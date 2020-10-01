@@ -31,9 +31,9 @@
 @isLoggedIn = @{!request.session.isEmpty && request.session.get("authToken").isDefined}
 
 @journeyHeading = @{
-    if(request.path.contains("/register/")) {
+    if(request.path.contains("/register/") || request.path.endsWith("/register")) {
         messages("cds.proposition.name")
-    }else if(request.path.contains("/subscribe/")) {
+    }else if(request.path.contains("/subscribe/") || request.path.endsWith("/subscribe")) {
         messages("cds.proposition.name.service", shortName)
     }else {
         ""
