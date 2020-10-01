@@ -53,7 +53,7 @@ object SubscriptionCreateRequest {
     registration: RegistrationDetails,
     subscription: SubscriptionDetails,
     email: Option[String],
-    service: Service
+    service: Option[Service]
   ): SubscriptionCreateRequest =
     registration match {
       case RegistrationDetailsIndividual(Some(Eori(eori)), _, safeId, name, _, dob) =>
@@ -86,7 +86,7 @@ object SubscriptionCreateRequest {
         throw new IllegalArgumentException("Invalid Registration Details. Unable to create SubscriptionCreateRequest.")
     }
 
-  def apply(data: ResponseData, eori: Eori, email: String, service: Service): SubscriptionCreateRequest = {
+  def apply(data: ResponseData, eori: Eori, email: String, service: Option[Service]): SubscriptionCreateRequest = {
     val ea = new EstablishmentAddress(
       data.establishmentAddress.streetAndNumber,
       data.establishmentAddress.city,
@@ -114,7 +114,7 @@ object SubscriptionCreateRequest {
         dateOfEstablishment = handleEmptyDate(data.dateOfEstablishmentBirth),
         typeOfPerson = data.personType.map(_.toString),
         principalEconomicActivity = data.principalEconomicActivity,
-        serviceName = Some(service.enrolmentKey)
+        serviceName = service.map(_.enrolmentKey)
       )
     )
   }
@@ -124,7 +124,7 @@ object SubscriptionCreateRequest {
     sub: SubscriptionDetails,
     cdsOrgType: Option[CdsOrganisationType],
     dateEstablished: LocalDate,
-    service: Service
+    service: Option[Service]
   ): SubscriptionRequest = {
     val org                                = CdsToEtmpOrganisationType(cdsOrgType) orElse CdsToEtmpOrganisationType(reg)
     val ukVatId: Option[VatIdentification] = sub.ukVatDetails.map(vd => VatIdentification(Some("GB"), Some(vd.number)))
@@ -147,7 +147,7 @@ object SubscriptionCreateRequest {
           dateOfEstablishment = Some(dateEstablished),
           typeOfPerson = org.map(_.typeOfPerson),
           principalEconomicActivity = sub.sicCode.map(_.take(principalEconomicActivityLength)),
-          serviceName = Some(service.enrolmentKey)
+          serviceName = service.map(_.enrolmentKey)
         )
       )
     )
@@ -162,7 +162,7 @@ object SubscriptionCreateRequest {
     dateOfEstablishment: LocalDate,
     etmpTypeOfPerson: Option[OrganisationTypeConfiguration],
     sub: SubscriptionDetails,
-    service: Service
+    service: Option[Service]
   ) =
     SubscriptionCreateRequest(
       generateWithOriginatingSystem(),
@@ -180,7 +180,7 @@ object SubscriptionCreateRequest {
         dateOfEstablishment = Some(dateOfEstablishment),
         typeOfPerson = etmpTypeOfPerson.map(_.typeOfPerson),
         principalEconomicActivity = None,
-        serviceName = Some(service.enrolmentKey)
+        serviceName = service.map(_.enrolmentKey)
       )
     )
 

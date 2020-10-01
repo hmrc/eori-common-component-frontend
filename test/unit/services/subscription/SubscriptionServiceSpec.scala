@@ -27,6 +27,7 @@ import org.scalatest.prop.Checkers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.mvc.Http.Status._
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.Sub02Config
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SubscriptionServiceConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionCreateResponse._
@@ -51,6 +52,12 @@ import scala.concurrent.Future
 class SubscriptionServiceSpec
     extends UnitSpec with MockitoSugar with BeforeAndAfterAll with Checkers with SubscriptionServiceTestData {
   private val mockHeaderCarrier = mock[HeaderCarrier]
+  private val mockConfig = mock[Sub02Config]
+
+  override def beforeAll() = {
+    super.beforeAll()
+    when(mockConfig.useServiceName).thenReturn(true)
+  }
 
   private def subscriptionSuccessResultIgnoreTimestamp(
     expected: SubscriptionSuccessful,
@@ -478,6 +485,33 @@ class SubscriptionServiceSpec
     }
   }
 
+  "Calling Subscribe with service name feature disabled" should {
+
+    "call connector with without service name" in {
+
+      when(mockConfig.useServiceName).thenReturn(false)
+
+      val result = makeSubscribeWhenAutoAllowed(
+        RegistrationDetailsOrganisation(
+          Some(eori),
+          TaxPayerId(sapNumber),
+          safeId = SafeId("safe-id"),
+          businessName,
+          address,
+          Some(dateOfEstablishment),
+          Some(CorporateBody)
+        ),
+        subscriptionGenerateResponse
+      )
+
+      assertSameJson(Json.toJson(result.actualConnectorRequest), organisationAutomaticSubscriptionRequestWithoutServiceNameJson)
+      result.actualServiceCallResult shouldEqual subscriptionSuccessResultIgnoreTimestamp(
+        subscriptionSuccessResult,
+        result.actualConnectorRequest
+      )
+    }
+  }
+
   "Create request" should {
 
     "truncate sic code to 4 numbers by removing the rightmost number" in {
@@ -728,7 +762,7 @@ class SubscriptionServiceSpec
   private def constructService(setupServiceConnector: SubscriptionServiceConnector => Unit) = {
     val mockSubscriptionServiceConnector = mock[SubscriptionServiceConnector]
     setupServiceConnector(mockSubscriptionServiceConnector)
-    new SubscriptionService(mockSubscriptionServiceConnector)
+    new SubscriptionService(mockSubscriptionServiceConnector, mockConfig)
   }
 
   private def assertSameJson(json: JsValue, expectedJson: JsValue) = {
