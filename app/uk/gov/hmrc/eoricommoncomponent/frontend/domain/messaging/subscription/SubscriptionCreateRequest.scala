@@ -28,6 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, Reque
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{ContactDetails, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
   CdsToEtmpOrganisationType,
   OrganisationTypeConfiguration
@@ -51,7 +52,8 @@ object SubscriptionCreateRequest {
   def apply(
     registration: RegistrationDetails,
     subscription: SubscriptionDetails,
-    email: Option[String]
+    email: Option[String],
+    service: Option[Service]
   ): SubscriptionCreateRequest =
     registration match {
       case RegistrationDetailsIndividual(Some(Eori(eori)), _, safeId, name, _, dob) =>
@@ -63,7 +65,8 @@ object SubscriptionCreateRequest {
           email,
           dob,
           CdsToEtmpOrganisationType(registration),
-          subscription
+          subscription,
+          service
         )
 
       case RegistrationDetailsOrganisation(Some(Eori(eori)), _, safeId, name, _, Some(dateOfEstablishment), _) =>
@@ -75,14 +78,15 @@ object SubscriptionCreateRequest {
           email,
           dateOfEstablishment,
           CdsToEtmpOrganisationType(registration),
-          subscription
+          subscription,
+          service
         )
 
       case _ =>
         throw new IllegalArgumentException("Invalid Registration Details. Unable to create SubscriptionCreateRequest.")
     }
 
-  def apply(data: ResponseData, eori: Eori, email: String): SubscriptionCreateRequest = {
+  def apply(data: ResponseData, eori: Eori, email: String, service: Option[Service]): SubscriptionCreateRequest = {
     val ea = new EstablishmentAddress(
       data.establishmentAddress.streetAndNumber,
       data.establishmentAddress.city,
@@ -109,7 +113,8 @@ object SubscriptionCreateRequest {
         shortName = Some(data.trader.shortName),
         dateOfEstablishment = handleEmptyDate(data.dateOfEstablishmentBirth),
         typeOfPerson = data.personType.map(_.toString),
-        principalEconomicActivity = data.principalEconomicActivity
+        principalEconomicActivity = data.principalEconomicActivity,
+        serviceName = service.map(_.enrolmentKey)
       )
     )
   }
@@ -118,7 +123,8 @@ object SubscriptionCreateRequest {
     reg: RegistrationDetails,
     sub: SubscriptionDetails,
     cdsOrgType: Option[CdsOrganisationType],
-    dateEstablished: LocalDate
+    dateEstablished: LocalDate,
+    service: Option[Service]
   ): SubscriptionRequest = {
     val org                                = CdsToEtmpOrganisationType(cdsOrgType) orElse CdsToEtmpOrganisationType(reg)
     val ukVatId: Option[VatIdentification] = sub.ukVatDetails.map(vd => VatIdentification(Some("GB"), Some(vd.number)))
@@ -140,7 +146,8 @@ object SubscriptionCreateRequest {
           shortName = sub.businessShortName flatMap (_.shortName),
           dateOfEstablishment = Some(dateEstablished),
           typeOfPerson = org.map(_.typeOfPerson),
-          principalEconomicActivity = sub.sicCode.map(_.take(principalEconomicActivityLength))
+          principalEconomicActivity = sub.sicCode.map(_.take(principalEconomicActivityLength)),
+          serviceName = service.map(_.enrolmentKey)
         )
       )
     )
@@ -154,7 +161,8 @@ object SubscriptionCreateRequest {
     contactEmail: Option[String],
     dateOfEstablishment: LocalDate,
     etmpTypeOfPerson: Option[OrganisationTypeConfiguration],
-    sub: SubscriptionDetails
+    sub: SubscriptionDetails,
+    service: Option[Service]
   ) =
     SubscriptionCreateRequest(
       generateWithOriginatingSystem(),
@@ -171,7 +179,8 @@ object SubscriptionCreateRequest {
         shortName = None,
         dateOfEstablishment = Some(dateOfEstablishment),
         typeOfPerson = etmpTypeOfPerson.map(_.typeOfPerson),
-        principalEconomicActivity = None
+        principalEconomicActivity = None,
+        serviceName = service.map(_.enrolmentKey)
       )
     )
 

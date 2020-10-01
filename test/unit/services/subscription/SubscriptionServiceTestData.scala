@@ -26,6 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.Su
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, MessagingServiceParam, ResponseCommon}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{ContactDetailsModel, VatDetails}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
   EtmpLegalStatus,
   EtmpTypeOfPerson,
@@ -330,7 +331,8 @@ trait SubscriptionServiceTestData {
          |            "emailVerificationTimestamp": "$emailVerificationTimestamp"
          |         },
          |         "dateOfEstablishment":"$dateOfBirthString",
-         |         "typeOfPerson": "1"
+         |         "typeOfPerson": "1",
+         |         "serviceName": "${Service.ATaR.enrolmentKey}"
          |      }
          |   }
          |}
@@ -370,7 +372,8 @@ trait SubscriptionServiceTestData {
          |            "emailVerificationTimestamp": "$emailVerificationTimestamp"
          |         },
          |         "dateOfEstablishment":"$dateOfBirthString",
-         |         "typeOfPerson": "1"
+         |         "typeOfPerson": "1",
+         |         "serviceName": "${Service.ATaR.enrolmentKey}"
          |      }
          |   }
          |}
@@ -378,7 +381,7 @@ trait SubscriptionServiceTestData {
 
   def organisationAutomaticExistingRegistrationRequestJson(contactEmail: String): JsValue =
     Json.parse(
-      s"""{"subscriptionCreateRequest":{"requestCommon":{"regime":"CDS","receiptDate":"2016-08-18T14:00:05Z","acknowledgementReference":"4482baa81c844d23a8db3fc180325e7a","originatingSystem":"MDTP"},"requestDetail":{"SAFE":"SafeID123","EORINo":"ZZZ1ZZZZ23ZZZZZZZ","CDSFullName":"Name","CDSEstablishmentAddress":{"streetAndNumber":"Street","city":"city","postalCode":"NE1 1BG","countryCode":"GB"},"contactInformation":{"city":"-","emailAddress":"$contactEmail", "emailVerificationTimestamp": "$emailVerificationTimestamp"},"shortName":"nt","dateOfEstablishment":"1963-05-01"}}}""".stripMargin
+      s"""{"subscriptionCreateRequest":{"requestCommon":{"regime":"CDS","receiptDate":"2016-08-18T14:00:05Z","acknowledgementReference":"4482baa81c844d23a8db3fc180325e7a","originatingSystem":"MDTP"},"requestDetail":{"SAFE":"SafeID123","EORINo":"ZZZ1ZZZZ23ZZZZZZZ","CDSFullName":"Name","CDSEstablishmentAddress":{"streetAndNumber":"Street","city":"city","postalCode":"NE1 1BG","countryCode":"GB"},"contactInformation":{"city":"-","emailAddress":"$contactEmail", "emailVerificationTimestamp": "$emailVerificationTimestamp"},"shortName":"nt","dateOfEstablishment":"1963-05-01","serviceName":"${Service.ATaR.enrolmentKey}"}}}""".stripMargin
     )
 
   def existingRegistrationSubcriptionRequestJson(contactEmail: String): JsValue =
@@ -412,7 +415,8 @@ trait SubscriptionServiceTestData {
          |      "shortName": "nt",
          |      "dateOfEstablishment": "1963-05-01",
          |      "typeOfPerson": "1",
-         |      "principalEconomicActivity": "p001"
+         |      "principalEconomicActivity": "p001",
+         |      "serviceName": "${Service.ATaR.enrolmentKey}"
          |    }
          |  }
          |}
@@ -452,10 +456,51 @@ trait SubscriptionServiceTestData {
          |            "emailVerificationTimestamp": "$emailVerificationTimestamp"
          |         },
          |         "dateOfEstablishment":"$dateEstablishedString",
-         |         "typeOfPerson": "2"
+         |         "typeOfPerson": "2",
+         |         "serviceName": "${Service.ATaR.enrolmentKey}"
          |      }
          |   }
          |}
+      """.stripMargin)
+
+  def organisationAutomaticSubscriptionRequestWithoutServiceNameJson: JsValue =
+    Json.parse(s"""
+                  |{
+                  |   "subscriptionCreateRequest":{
+                  |      "requestCommon":{
+                  |         "regime":"CDS",
+                  |         "receiptDate":"2016-08-18T14:00:05Z",
+                  |         "acknowledgementReference":"4482baa81c844d23a8db3fc180325e7a",
+                  |         "originatingSystem":"MDTP"
+                  |      },
+                  |      "requestDetail":{
+                  |         "SAFE":"safe-id",
+                  |         "EORINo":"$responseEoriNumber",
+                  |         "CDSFullName":"$businessName",
+                  |         "CDSEstablishmentAddress":{
+                  |            "streetAndNumber":"Line 1 line 2",
+                  |            "city":"city name",
+                  |            "postalCode":"SE28 1AA",
+                  |            "countryCode":"GB"
+                  |         },
+                  |         "typeOfLegalEntity":"Corporate Body",
+                  |         "contactInformation":{
+                  |            "personOfContact":"John Doe",
+                  |            "sepCorrAddrIndicator":true,
+                  |            "streetAndNumber":"Line 1",
+                  |            "city":"city name",
+                  |            "postalCode":"SE28 1AA",
+                  |            "countryCode":"GB",
+                  |            "telephoneNumber":"01632961234",
+                  |            "faxNumber":"01632961235",
+                  |            "emailAddress":"$contactEmail",
+                  |            "emailVerificationTimestamp": "$emailVerificationTimestamp"
+                  |         },
+                  |         "dateOfEstablishment":"$dateEstablishedString",
+                  |         "typeOfPerson": "2"
+                  |      }
+                  |   }
+                  |}
       """.stripMargin)
 
   def requestJsonIndividual(
@@ -504,7 +549,8 @@ trait SubscriptionServiceTestData {
          | ${vatIdsJson(vatIds)}
          | "consentToDisclosureOfPersonalData": "0",
          | $typeOfPersonJson
-         | "dateOfEstablishment": "$expectedDateOfBirthString"
+         | "dateOfEstablishment": "$expectedDateOfBirthString",
+         | "serviceName": "${Service.ATaR.enrolmentKey}"
          |
          |}
          |}
@@ -560,7 +606,8 @@ trait SubscriptionServiceTestData {
          | "shortName": "$shortName",
          | "dateOfEstablishment": "$expectedDateEstablishedString",
          | $typeOfPersonJson
-         | "principalEconomicActivity": "$principalEconomicActivity"
+         | "principalEconomicActivity": "$principalEconomicActivity",
+         | "serviceName": "${Service.ATaR.enrolmentKey}"
          |}
          |}
          |

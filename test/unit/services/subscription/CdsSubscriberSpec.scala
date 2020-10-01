@@ -126,7 +126,8 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
               meq(mockRegistrationDetails),
               meq(subscriptionDetails),
               meq(mockCdsOrganisationType),
-              any[Journey.Value]
+              any[Journey.Value],
+              any[Service]
             )(any[HeaderCarrier])
       }
     }
@@ -164,7 +165,9 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
           inOrder.verify(mockCdsFrontendDataCache).registerWithEoriAndIdResponse(any[HeaderCarrier])
           inOrder
             .verify(mockSubscriptionService)
-            .existingReg(meq(stubRegisterWithEoriAndIdResponse), any[Eori], meq(expectedEmail))(any[HeaderCarrier])
+            .existingReg(meq(stubRegisterWithEoriAndIdResponse), any[Eori], meq(expectedEmail), meq(Service.ATaR))(
+              any[HeaderCarrier]
+            )
           inOrder
             .verify(mockHandleSubscriptionService)
             .handleSubscription(
@@ -230,9 +233,12 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
           inOrder.verify(mockCdsFrontendDataCache).registerWithEoriAndIdResponse(any[HeaderCarrier])
           inOrder
             .verify(mockSubscriptionService)
-            .existingReg(meq(stubRegisterWithEoriAndIdResponseWithContactDetails), any[Eori], meq(expectedEmail))(
-              any[HeaderCarrier]
-            )
+            .existingReg(
+              meq(stubRegisterWithEoriAndIdResponseWithContactDetails),
+              any[Eori],
+              meq(expectedEmail),
+              meq(Service.ATaR)
+            )(any[HeaderCarrier])
           inOrder
             .verify(mockHandleSubscriptionService)
             .handleSubscription(
@@ -323,7 +329,8 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
               meq(mockRegistrationDetails),
               meq(subscriptionDetails),
               any[Option[CdsOrganisationType]],
-              any[Journey.Value]
+              any[Journey.Value],
+              any[Service]
             )(any[HeaderCarrier])
           verify(mockCdsFrontendDataCache, never).remove(any[HeaderCarrier])
       }
@@ -503,7 +510,8 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
         any[RegistrationDetails],
         any[SubscriptionDetails],
         any[Option[CdsOrganisationType]],
-        any[Journey.Value]
+        any[Journey.Value],
+        any[Service]
       )(any[HeaderCarrier])
     ).thenReturn(
       Future
@@ -537,7 +545,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
 
     when(
       mockSubscriptionService
-        .existingReg(any[RegisterWithEoriAndIdResponse], any[Eori], any[String])(any[HeaderCarrier])
+        .existingReg(any[RegisterWithEoriAndIdResponse], any[Eori], any[String], any[Service])(any[HeaderCarrier])
     ).thenReturn(
       Future
         .successful(SubscriptionSuccessful(Eori(eori), formBundleId, processingDate, Some(emailVerificationTimestamp)))
@@ -569,7 +577,8 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
           any[RegistrationDetails],
           meq(subscriptionDetails),
           any[Option[CdsOrganisationType]],
-          any[Journey.Value]
+          any[Journey.Value],
+          any[Service]
         )(any[HeaderCarrier])
     ).thenReturn(Future.successful(SubscriptionPending(formBundleId, processingDate, Some(emailVerificationTimestamp))))
     when(
@@ -599,7 +608,8 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
           any[RegistrationDetails],
           any[SubscriptionDetails],
           any[Option[CdsOrganisationType]],
-          any[Journey.Value]
+          any[Journey.Value],
+          any[Service]
         )(any[HeaderCarrier])
     ).thenReturn(Future.successful(SubscriptionFailed("EORI already exists", processingDate)))
     when(mockRegistrationDetails.name).thenReturn(registeredName)

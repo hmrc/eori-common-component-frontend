@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
 import javax.inject.{Inject, Singleton}
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.Sub02Config
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SubscriptionServiceConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.MessagingServiceParam
@@ -24,39 +25,48 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.Su
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SubscriptionService @Inject() (connector: SubscriptionServiceConnector)(implicit ec: ExecutionContext) {
+class SubscriptionService @Inject() (connector: SubscriptionServiceConnector, config: Sub02Config)(implicit
+  ec: ExecutionContext
+) {
+
+  private def maybe(service: Service): Option[Service] = if (config.useServiceName) Some(service) else None
 
   def subscribe(
     registration: RegistrationDetails,
     subscription: SubscriptionDetails,
     cdsOrganisationType: Option[CdsOrganisationType],
-    journey: Journey.Value
+    journey: Journey.Value,
+    service: Service
   )(implicit hc: HeaderCarrier): Future[SubscriptionResult] =
-    subscribeWithConnector(createRequest(registration, subscription, cdsOrganisationType))
+    subscribeWithConnector(createRequest(registration, subscription, cdsOrganisationType, service))
 
   def subscribeWithMandatoryOnly(
     registration: RegistrationDetails,
     subscription: SubscriptionDetails,
-    journey: Journey.Value
+    journey: Journey.Value,
+    service: Service
   )(implicit hc: HeaderCarrier): Future[SubscriptionResult] = {
     val email =
       if (journey == Journey.Register) subscription.contactDetails.map(_.emailAddress) else subscription.email
-    val request = SubscriptionRequest(SubscriptionCreateRequest(registration, subscription, email))
+    val request = SubscriptionRequest(SubscriptionCreateRequest(registration, subscription, email, maybe(service)))
     subscribeWithConnector(request)
   }
 
-  def existingReg(registerWithEoriAndIdResponse: RegisterWithEoriAndIdResponse, eori: Eori, capturedEmail: String)(
-    implicit hc: HeaderCarrier
-  ): Future[SubscriptionResult] =
+  def existingReg(
+    registerWithEoriAndIdResponse: RegisterWithEoriAndIdResponse,
+    eori: Eori,
+    capturedEmail: String,
+    service: Service
+  )(implicit hc: HeaderCarrier): Future[SubscriptionResult] =
     registerWithEoriAndIdResponse.responseDetail.flatMap(_.responseData) match {
       case Some(data) =>
-        val request = SubscriptionRequest(SubscriptionCreateRequest(data, eori, capturedEmail))
+        val request = SubscriptionRequest(SubscriptionCreateRequest(data, eori, capturedEmail, maybe(service)))
         subscribeWithConnector(request)
       case _ =>
         val err = "REGO6 ResponseData is non existent. This is required to populate subscription request"
@@ -67,12 +77,13 @@ class SubscriptionService @Inject() (connector: SubscriptionServiceConnector)(im
   def createRequest(
     reg: RegistrationDetails,
     subscription: SubscriptionDetails,
-    cdsOrgType: Option[CdsOrganisationType]
+    cdsOrgType: Option[CdsOrganisationType],
+    service: Service
   ): SubscriptionRequest =
     reg match {
       case individual: RegistrationDetailsIndividual =>
         val dob = subscription.dateOfBirth getOrElse individual.dateOfBirth
-        SubscriptionCreateRequest(individual, subscription, cdsOrgType, dob)
+        SubscriptionCreateRequest(individual, subscription, cdsOrgType, dob, maybe(service))
 
       case org: RegistrationDetailsOrganisation =>
         val doe = subscription.dateEstablished
@@ -82,7 +93,8 @@ class SubscriptionService @Inject() (connector: SubscriptionServiceConnector)(im
           cdsOrgType,
           doe.getOrElse(
             throw new IllegalStateException("Date Established must be present for an organisation subscription")
-          )
+          ),
+          maybe(service)
         ) ensuring (subscription.sicCode.isDefined, "SicCode/Principal Economic Activity must be present for an organisation subscription")
       case _ => throw new IllegalStateException("Incomplete cache cannot complete journey")
     }

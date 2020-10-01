@@ -27,6 +27,7 @@ import org.scalatest.prop.Checkers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.mvc.Http.Status._
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.Sub02Config
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SubscriptionServiceConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionCreateResponse._
@@ -40,7 +41,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
   ContactDetailsModel,
   VatDetails
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.EtmpTypeOfPerson
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.http.{HeaderCarrier, Upstream5xxResponse}
@@ -51,6 +52,12 @@ import scala.concurrent.Future
 class SubscriptionServiceSpec
     extends UnitSpec with MockitoSugar with BeforeAndAfterAll with Checkers with SubscriptionServiceTestData {
   private val mockHeaderCarrier = mock[HeaderCarrier]
+  private val mockConfig        = mock[Sub02Config]
+
+  override def beforeAll() = {
+    super.beforeAll()
+    when(mockConfig.useServiceName).thenReturn(true)
+  }
 
   private def subscriptionSuccessResultIgnoreTimestamp(
     expected: SubscriptionSuccessful,
@@ -268,9 +275,13 @@ class SubscriptionServiceSpec
       val caught = intercept[Upstream5xxResponse] {
         await(
           service
-            .subscribe(organisationRegistrationDetails, fullyPopulatedSubscriptionDetails, None, Journey.Register)(
-              mockHeaderCarrier
-            )
+            .subscribe(
+              organisationRegistrationDetails,
+              fullyPopulatedSubscriptionDetails,
+              None,
+              Journey.Register,
+              Service.ATaR
+            )(mockHeaderCarrier)
         )
       }
       caught.getMessage shouldEqual "failure"
@@ -285,9 +296,13 @@ class SubscriptionServiceSpec
       val caught = intercept[IllegalStateException] {
         await(
           service
-            .subscribe(organisationRegistrationDetails, fullyPopulatedSubscriptionDetails, None, Journey.Register)(
-              mockHeaderCarrier
-            )
+            .subscribe(
+              organisationRegistrationDetails,
+              fullyPopulatedSubscriptionDetails,
+              None,
+              Journey.Register,
+              Service.ATaR
+            )(mockHeaderCarrier)
         )
       }
       caught.getMessage shouldEqual "POSITION parameter is missing in subscription create response"
@@ -305,9 +320,13 @@ class SubscriptionServiceSpec
         val caught = intercept[IllegalStateException] {
           await(
             service
-              .subscribe(organisationRegistrationDetails, fullyPopulatedSubscriptionDetails, None, Journey.Register)(
-                mockHeaderCarrier
-              )
+              .subscribe(
+                organisationRegistrationDetails,
+                fullyPopulatedSubscriptionDetails,
+                None,
+                Journey.Register,
+                Service.ATaR
+              )(mockHeaderCarrier)
           )
         }
         caught.getMessage shouldBe "ETMPFORMBUNDLENUMBER parameter is missing in subscription create response"
@@ -326,9 +345,13 @@ class SubscriptionServiceSpec
 
       val res = await(
         service
-          .subscribe(organisationRegistrationDetails, fullyPopulatedSubscriptionDetails, None, Journey.Register)(
-            mockHeaderCarrier
-          )
+          .subscribe(
+            organisationRegistrationDetails,
+            fullyPopulatedSubscriptionDetails,
+            None,
+            Journey.Register,
+            Service.ATaR
+          )(mockHeaderCarrier)
       )
 
       res shouldBe expectedFailure
@@ -345,9 +368,13 @@ class SubscriptionServiceSpec
 
       val res = await(
         service
-          .subscribe(organisationRegistrationDetails, fullyPopulatedSubscriptionDetails, None, Journey.Register)(
-            mockHeaderCarrier
-          )
+          .subscribe(
+            organisationRegistrationDetails,
+            fullyPopulatedSubscriptionDetails,
+            None,
+            Journey.Register,
+            Service.ATaR
+          )(mockHeaderCarrier)
       )
 
       res shouldBe failResponse
@@ -364,9 +391,13 @@ class SubscriptionServiceSpec
 
       val res = await(
         service
-          .subscribe(organisationRegistrationDetails, fullyPopulatedSubscriptionDetails, None, Journey.Register)(
-            mockHeaderCarrier
-          )
+          .subscribe(
+            organisationRegistrationDetails,
+            fullyPopulatedSubscriptionDetails,
+            None,
+            Journey.Register,
+            Service.ATaR
+          )(mockHeaderCarrier)
       )
 
       res shouldBe failResponse
@@ -385,9 +416,13 @@ class SubscriptionServiceSpec
 
       val res = await(
         service
-          .subscribe(organisationRegistrationDetails, fullyPopulatedSubscriptionDetails, None, Journey.Register)(
-            mockHeaderCarrier
-          )
+          .subscribe(
+            organisationRegistrationDetails,
+            fullyPopulatedSubscriptionDetails,
+            None,
+            Journey.Register,
+            Service.ATaR
+          )(mockHeaderCarrier)
       )
 
       res shouldBe failResponse
@@ -406,9 +441,13 @@ class SubscriptionServiceSpec
 
       val res = await(
         service
-          .subscribe(organisationRegistrationDetails, fullyPopulatedSubscriptionDetails, None, Journey.Register)(
-            mockHeaderCarrier
-          )
+          .subscribe(
+            organisationRegistrationDetails,
+            fullyPopulatedSubscriptionDetails,
+            None,
+            Journey.Register,
+            Service.ATaR
+          )(mockHeaderCarrier)
       )
 
       res shouldBe failResponse
@@ -419,7 +458,9 @@ class SubscriptionServiceSpec
 
       the[IllegalStateException] thrownBy {
         val holder = fullyPopulatedSubscriptionDetails.copy(dateEstablished = None)
-        service.subscribe(organisationRegistrationDetails, holder, None, Journey.Register)(mockHeaderCarrier)
+        service.subscribe(organisationRegistrationDetails, holder, None, Journey.Register, Service.ATaR)(
+          mockHeaderCarrier
+        )
       } should have message "Date Established must be present for an organisation subscription"
 
     }
@@ -427,7 +468,9 @@ class SubscriptionServiceSpec
     "throw an exception when doe/ dob is missing when subscribing" in {
       val service = constructService(_ => None)
       the[IllegalArgumentException] thrownBy {
-        service.existingReg(stubRegisterWithPartialResponseWithNoDoe(), Eori("GB123456"), "")(mockHeaderCarrier)
+        service.existingReg(stubRegisterWithPartialResponseWithNoDoe(), Eori("GB123456"), "", Service.ATaR)(
+          mockHeaderCarrier
+        )
       } should have message "requirement failed"
     }
 
@@ -435,8 +478,40 @@ class SubscriptionServiceSpec
       val service = constructService(_ => None)
       the[AssertionError] thrownBy {
         val holder = fullyPopulatedSubscriptionDetails.copy(sicCode = None)
-        service.subscribe(organisationRegistrationDetails, holder, None, Journey.Register)(mockHeaderCarrier)
+        service.subscribe(organisationRegistrationDetails, holder, None, Journey.Register, Service.ATaR)(
+          mockHeaderCarrier
+        )
       } should have message "assertion failed: SicCode/Principal Economic Activity must be present for an organisation subscription"
+    }
+  }
+
+  "Calling Subscribe with service name feature disabled" should {
+
+    "call connector with without service name" in {
+
+      when(mockConfig.useServiceName).thenReturn(false)
+
+      val result = makeSubscribeWhenAutoAllowed(
+        RegistrationDetailsOrganisation(
+          Some(eori),
+          TaxPayerId(sapNumber),
+          safeId = SafeId("safe-id"),
+          businessName,
+          address,
+          Some(dateOfEstablishment),
+          Some(CorporateBody)
+        ),
+        subscriptionGenerateResponse
+      )
+
+      assertSameJson(
+        Json.toJson(result.actualConnectorRequest),
+        organisationAutomaticSubscriptionRequestWithoutServiceNameJson
+      )
+      result.actualServiceCallResult shouldEqual subscriptionSuccessResultIgnoreTimestamp(
+        subscriptionSuccessResult,
+        result.actualConnectorRequest
+      )
     }
   }
 
@@ -445,7 +520,7 @@ class SubscriptionServiceSpec
     "truncate sic code to 4 numbers by removing the rightmost number" in {
       val service = constructService(_ => None)
       val holder  = fullyPopulatedSubscriptionDetails.copy(sicCode = Some("12750"))
-      val req     = service.createRequest(organisationRegistrationDetails, holder, None)
+      val req     = service.createRequest(organisationRegistrationDetails, holder, None, Service.ATaR)
 
       req.subscriptionCreateRequest.requestDetail.principalEconomicActivity shouldBe Some("1275")
     }
@@ -455,7 +530,7 @@ class SubscriptionServiceSpec
       val holder = fullyPopulatedSubscriptionDetails.copy(addressDetails =
         Some(AddressViewModel("some street", "", Some("AB99 3DW"), "GB"))
       )
-      val req = service.createRequest(organisationRegistrationDetails, holder, None)
+      val req = service.createRequest(organisationRegistrationDetails, holder, None, Service.ATaR)
 
       req.subscriptionCreateRequest.requestDetail.CDSEstablishmentAddress.city shouldBe "-"
     }
@@ -465,7 +540,7 @@ class SubscriptionServiceSpec
       val holder = fullyPopulatedSubscriptionDetails.copy(addressDetails =
         Some(AddressViewModel("some street", "", Some(""), "GB"))
       )
-      val req = service.createRequest(organisationRegistrationDetails, holder, None)
+      val req = service.createRequest(organisationRegistrationDetails, holder, None, Service.ATaR)
 
       req.subscriptionCreateRequest.requestDetail.CDSEstablishmentAddress.postalCode shouldBe None
     }
@@ -473,7 +548,7 @@ class SubscriptionServiceSpec
     "have correct person type for Individual Subscription" in {
       val service = constructService(_ => None)
       val holder  = fullyPopulatedSubscriptionDetails.copy(sicCode = Some("12750"))
-      val req     = service.createRequest(individualRegistrationDetails, holder, None)
+      val req     = service.createRequest(individualRegistrationDetails, holder, None, Service.ATaR)
 
       req.subscriptionCreateRequest.requestDetail.typeOfPerson shouldBe Some(EtmpTypeOfPerson.NaturalPerson)
     }
@@ -482,7 +557,7 @@ class SubscriptionServiceSpec
       val service = constructService(_ => None)
       val holder  = fullyPopulatedSubscriptionDetails.copy(sicCode = Some("12750"))
       val thrown = intercept[IllegalStateException] {
-        service.createRequest(RegistrationDetails.rdSafeId(SafeId("safeid")), holder, None)
+        service.createRequest(RegistrationDetails.rdSafeId(SafeId("safeid")), holder, None, Service.ATaR)
       }
       thrown.getMessage shouldBe "Incomplete cache cannot complete journey"
     }
@@ -494,7 +569,8 @@ class SubscriptionServiceSpec
         service.createRequest(
           organisationRegistrationDetails,
           holder,
-          Some(CdsOrganisationType("third-country-organisation"))
+          Some(CdsOrganisationType("third-country-organisation")),
+          Service.ATaR
         )
       }
       thrown.getMessage shouldBe "Date Established must be present for an organisation subscription"
@@ -503,7 +579,12 @@ class SubscriptionServiceSpec
     "populate the SubscriptionCreate Request when there is a plus (+) sign in the request on telephone number" in {
       val service = constructService(_ => None)
       val holder  = fullyPopulatedSubscriptionDetailsWithPlusSignInTelephone
-      val req     = service.createRequest(organisationRegistrationDetails, holder, Some(CdsOrganisationType("company")))
+      val req = service.createRequest(
+        organisationRegistrationDetails,
+        holder,
+        Some(CdsOrganisationType("company")),
+        Service.ATaR
+      )
       req.subscriptionCreateRequest.requestDetail.contactInformation.flatMap(_.telephoneNumber) shouldBe Some(
         "+01632961234"
       )
@@ -513,14 +594,24 @@ class SubscriptionServiceSpec
     "populate the SubscriptionCreate Request when there is a plus (+) sign in the request on fax number" in {
       val service = constructService(_ => None)
       val holder  = fullyPopulatedSubscriptionDetailsWithPlusSignInFaxNumber
-      val req     = service.createRequest(organisationRegistrationDetails, holder, Some(CdsOrganisationType("company")))
+      val req = service.createRequest(
+        organisationRegistrationDetails,
+        holder,
+        Some(CdsOrganisationType("company")),
+        Service.ATaR
+      )
       req.subscriptionCreateRequest.requestDetail.contactInformation.flatMap(_.faxNumber) shouldBe Some("+01632961234")
     }
 
     "populate the SubscriptionCreate Request when there is a plus (+) sign in the request on telephone and fax number" in {
       val service = constructService(_ => None)
       val holder  = fullyPopulatedSubscriptionDetailsWithPlusSignInTelAndFaxNumber
-      val req     = service.createRequest(organisationRegistrationDetails, holder, Some(CdsOrganisationType("company")))
+      val req = service.createRequest(
+        organisationRegistrationDetails,
+        holder,
+        Some(CdsOrganisationType("company")),
+        Service.ATaR
+      )
       req.subscriptionCreateRequest.requestDetail.contactInformation.flatMap(_.faxNumber) shouldBe Some("+01632961235")
       req.subscriptionCreateRequest.requestDetail.contactInformation.flatMap(_.telephoneNumber) shouldBe Some(
         "+01632961234"
@@ -621,7 +712,9 @@ class SubscriptionServiceSpec
     )
 
     val actualServiceCallResult = await(
-      service.subscribe(registrationDetails, subscriptionDetailsHolder, organisationType, journey)(mockHeaderCarrier)
+      service.subscribe(registrationDetails, subscriptionDetailsHolder, organisationType, journey, Service.ATaR)(
+        mockHeaderCarrier
+      )
     )
     val actualConnectorRequest = subscribeDataCaptor.getValue
     SubscriptionCallResult(actualServiceCallResult, actualConnectorRequest)
@@ -641,7 +734,9 @@ class SubscriptionServiceSpec
 
     val actualServiceCallResult = await(
       service
-        .subscribeWithMandatoryOnly(registrationDetails, fullyPopulatedSubscriptionDetails, journey)(mockHeaderCarrier)
+        .subscribeWithMandatoryOnly(registrationDetails, fullyPopulatedSubscriptionDetails, journey, Service.ATaR)(
+          mockHeaderCarrier
+        )
     )
     val actualConnectorRequest = subscribeDataCaptor.getValue
     SubscriptionCallResult(actualServiceCallResult, actualConnectorRequest)
@@ -661,7 +756,7 @@ class SubscriptionServiceSpec
     )
 
     val actualServiceCallResult = await(
-      service.existingReg(registerWithEoriAndIdResponse, eori, email)(mockHeaderCarrier)
+      service.existingReg(registerWithEoriAndIdResponse, eori, email, Service.ATaR)(mockHeaderCarrier)
     )
     val actualConnectorRequest = subscribeDataCaptor.getValue
     SubscriptionCallResult(actualServiceCallResult, actualConnectorRequest)
@@ -670,7 +765,7 @@ class SubscriptionServiceSpec
   private def constructService(setupServiceConnector: SubscriptionServiceConnector => Unit) = {
     val mockSubscriptionServiceConnector = mock[SubscriptionServiceConnector]
     setupServiceConnector(mockSubscriptionServiceConnector)
-    new SubscriptionService(mockSubscriptionServiceConnector)
+    new SubscriptionService(mockSubscriptionServiceConnector, mockConfig)
   }
 
   private def assertSameJson(json: JsValue, expectedJson: JsValue) = {

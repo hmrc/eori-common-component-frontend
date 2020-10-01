@@ -51,7 +51,7 @@ class CdsSubscriber @Inject() (
         )
         email               <- sessionCache.email
         registrationDetails <- sessionCache.registerWithEoriAndIdResponse(hc)
-        subscriptionResult  <- subscriptionService.existingReg(registrationDetails, Eori(eori), email)
+        subscriptionResult  <- subscriptionService.existingReg(registrationDetails, Eori(eori), email, service)
         _ <- onSubscriptionResultForUKSubscribe(
           subscriptionResult,
           registrationDetails,
@@ -67,7 +67,8 @@ class CdsSubscriber @Inject() (
         (subscriptionResult, maybeSubscriptionDetails) <- fetchOtherDetailsFromCacheAndSubscribe(
           registrationDetails,
           cdsOrganisationType,
-          journey
+          journey,
+          service
         )
         _ <- onSubscriptionResult(subscriptionResult, registrationDetails, maybeSubscriptionDetails, service)
       } yield subscriptionResult
@@ -80,7 +81,8 @@ class CdsSubscriber @Inject() (
         subscriptionResult <- subscriptionService.subscribeWithMandatoryOnly(
           registrationDetails,
           subscriptionDetails,
-          journey
+          journey,
+          service
         )
         _ <- onSubscriptionResultForRowSubscribe(
           subscriptionResult,
@@ -111,7 +113,8 @@ class CdsSubscriber @Inject() (
   private def fetchOtherDetailsFromCacheAndSubscribe(
     registrationDetails: RegistrationDetails,
     mayBeCdsOrganisationType: Option[CdsOrganisationType],
-    journey: Journey.Value
+    journey: Journey.Value,
+    service: Service
   )(implicit hc: HeaderCarrier): Future[(SubscriptionResult, Option[SubscriptionDetails])] =
     for {
       subscriptionDetailsHolder <- sessionCache.subscriptionDetails
@@ -119,7 +122,8 @@ class CdsSubscriber @Inject() (
         registrationDetails,
         subscriptionDetailsHolder,
         mayBeCdsOrganisationType,
-        journey
+        journey,
+        service
       )
     } yield (subscriptionResult, Some(subscriptionDetailsHolder))
 
