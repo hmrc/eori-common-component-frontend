@@ -18,7 +18,7 @@ package unit.config
 
 import java.util.concurrent.TimeUnit
 
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import util.ControllerSpec
 
 import scala.concurrent.duration.Duration
@@ -85,11 +85,17 @@ class AppConfigSpec extends ControllerSpec {
     }
 
     "have feedbackLink defined for register" in {
-      appConfig.feedbackLink shouldBe "http://localhost:9514/feedback/CDS"
+      appConfig.feedbackUrl(
+        Service.ATaR,
+        Journey.Register
+      ) shouldBe "http://localhost:9514/feedback/eori-common-component-register-atar"
     }
 
     "have feedbackLink defined for subscribe" in {
-      appConfig.feedbackLinkSubscribe shouldBe "http://localhost:9514/feedback/get-access-cds"
+      appConfig.feedbackUrl(
+        Service.ATaR,
+        Journey.Subscribe
+      ) shouldBe "http://localhost:9514/feedback/eori-common-component-subscribe-atar"
     }
 
     "have reportAProblemPartialUrl defined for register" in {

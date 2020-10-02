@@ -29,8 +29,8 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
 
   private val name                    = "John Doe"
   private val processedDate           = DateTime.now()
-  private val expectedPageTitle       = "The Customs application has been unsuccessful"
-  private val pageHeadingExpectedText = s"The Customs application for $name has been unsuccessful"
+  private val expectedPageTitle       = "The ATaR application has been unsuccessful"
+  private val pageHeadingExpectedText = s"The ATaR application for $name has been unsuccessful"
   private val processDateExpectedText = s"Application received by HMRC on ${dateTimeFormat.print(processedDate)}"
 
   private val view = instanceOf[reg06_eori_already_linked]
@@ -49,21 +49,23 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
     }
 
     "have the right vat registered text" in {
-      doc.getElementById("use-cds-heading").text() mustBe "To use Customs"
+      doc.getElementById("use-cds-heading").text() mustBe "To use ATaR"
       doc
         .getElementById("use-cds-para")
-        .text() mustBe s"You need to sign in with the Government Gateway $name used to get access to Customs."
+        .text() mustBe s"You need to sign in with the Government Gateway $name used to get access to ATaR."
     }
 
     "have the feedback link" in {
       doc
         .getElementById("what-you-think")
         .text() must include("What did you think of this service?")
-      doc.getElementById("feedback_link").attributes().get("href").mustBe("/feedback/CDS")
+      doc.getElementById("feedback_link").attributes().get("href") must endWith(
+        "/feedback/eori-common-component-subscribe-atar"
+      )
     }
   }
 
-  implicit val request = withFakeCSRF(FakeRequest())
+  implicit val request = withFakeCSRF(FakeRequest.apply("GET", "/atar/subscribe"))
 
   lazy val doc: Document = Jsoup.parse(contentAsString(view(name, processedDate)))
 }

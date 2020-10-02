@@ -61,11 +61,13 @@ class Sub02SubscriptionInProgressSpec extends ViewSpec {
       doc
         .getElementById("what-you-think")
         .text() must include("What did you think of this service?")
-      doc.getElementById("feedback_link").attributes().get("href").mustBe("/feedback/CDS")
+      doc.getElementById("feedback_link").attributes().get("href") must endWith(
+        "/feedback/eori-common-component-subscribe-atar"
+      )
     }
   }
 
-  implicit val request = withFakeCSRF(FakeRequest())
+  implicit val request = withFakeCSRF(FakeRequest.apply("GET", "/atar/subscribe"))
 
   lazy val doc: Document = Jsoup.parse(contentAsString(view(name, processedDate)))
 }

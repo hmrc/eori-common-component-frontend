@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-@import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName.service
-@import uk.gov.hmrc.eoricommoncomponent.frontend.views.JourneyExtractor.journey
+package uk.gov.hmrc.eoricommoncomponent.frontend.views
 
-@this(appConfig: AppConfig)
+import play.api.mvc.Request
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 
-@()(implicit messages: Messages, request: Request[_])
+object JourneyExtractor {
 
-<div id="what-you-think">
-    <p>
-     <a id="feedback_link" href="@{appConfig.feedbackUrl(service, journey)}" rel="noopener noreferrer">@messages("cds.subscription.outcomes.feedback")</a>
-     @messages("cds.subscription.outcomes.feedback.hint")
-    </p>
-</div>
+  def journey(implicit request: Request[_]): Journey.Value = {
+    val path = request.path
+    if (path.contains("/subscribe/") || path.endsWith("/subscribe"))
+      Journey.Subscribe
+    else
+      Journey.Register
+
+  }
+
+}
