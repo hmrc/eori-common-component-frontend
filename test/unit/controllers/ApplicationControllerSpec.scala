@@ -166,7 +166,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
         controller.logout(Service.ATaR, Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       session(result).get(SessionKeys.userId) shouldBe None
-      await(result).header.headers("Location") should endWith("feedback/CDS")
+      await(result).header.headers("Location") should endWith("feedback/eori-common-component-register-atar")
     }
 
     "logout an authenticated user for subscribe" in {
@@ -177,7 +177,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
         controller.logout(Service.ATaR, Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       session(result).get(SessionKeys.userId) shouldBe None
-      await(result).header.headers("Location") should endWith("feedback/get-access-cds")
+      await(result).header.headers("Location") should endWith("feedback/eori-common-component-subscribe-atar")
     }
   }
 
