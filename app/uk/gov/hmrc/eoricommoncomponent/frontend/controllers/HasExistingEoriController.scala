@@ -41,10 +41,15 @@ class HasExistingEoriController @Inject() (
     extends CdsController(mcc) with EnrolmentExtractor {
 
   def displayPage(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
-      existingEoriToUse.map { eori =>
-        Ok(hasExistingEoriView(service, eori))
-      }
+    implicit request =>
+      implicit loggedInUser: LoggedInUserWithEnrolments =>
+        // Guard against user already being enrolled to service (e.g. by using back-button)
+        if (enrolledForService(loggedInUser, service).isDefined)
+          Future.successful(Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service)))
+        else
+          existingEoriToUse.map { eori =>
+            Ok(hasExistingEoriView(service, eori))
+        }
   }
 
   def enrol(service: Service): Action[AnyContent] =

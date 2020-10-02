@@ -21,7 +21,7 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
 import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, _}
-import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{FailedEnrolmentException, HasExistingEoriController}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, KeyValue}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
@@ -50,6 +50,8 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
   private val userEORI  = "GB123456463324"
   private val groupEORI = "GB435474553564"
 
+  private val atarEnrolment = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", "GB134123")
+
   private val controller =
     new HasExistingEoriController(
       mockAuthAction,
@@ -74,6 +76,13 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
       intercept[IllegalStateException](displayPage(Service.ATaR)(result => status(result))).getMessage should startWith(
         "No EORI found"
       )
+    }
+
+    "redirect if user already has the requested service" in {
+      displayPage(Service.ATaR, cdsEnrolmentId = None, otherEnrolments = Set(atarEnrolment)) { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("/enrolment-already-exists")
+      }
     }
 
     "display page with user eori" in {
@@ -132,8 +141,17 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
   }
 
-  private def displayPage(service: Service, cdsEnrolmentId: Option[String] = None)(test: Future[Result] => Any) = {
-    withAuthorisedUser(defaultUserId, mockAuthConnector, cdsEnrolmentId = cdsEnrolmentId)
+  private def displayPage(
+    service: Service,
+    cdsEnrolmentId: Option[String] = None,
+    otherEnrolments: Set[Enrolment] = Set.empty
+  )(test: Future[Result] => Any) = {
+    withAuthorisedUser(
+      defaultUserId,
+      mockAuthConnector,
+      cdsEnrolmentId = cdsEnrolmentId,
+      otherEnrolments = otherEnrolments
+    )
     await(test(controller.displayPage(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 

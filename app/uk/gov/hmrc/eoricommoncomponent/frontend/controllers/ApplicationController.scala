@@ -70,7 +70,6 @@ class ApplicationController @Inject() (
         case SpecificEnrolmentExists(service) =>
           Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service))
         case SpecificGroupIdEnrolmentExists(service) =>
-          // Below redirect should be to page that doesn't exists yet
           Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service))
       }
   }
