@@ -117,7 +117,7 @@ class AppConfigSpec extends ControllerSpec {
     }
 
     "have service url for ATaR defined" in {
-      appConfig.serviceReturnUrl(Service.ATaR) shouldBe "https://www.gov.uk"
+      appConfig.serviceReturnUrl(Service.ATaR) shouldBe "http://localhost:9582/advance-tariff-application"
     }
   }
 
