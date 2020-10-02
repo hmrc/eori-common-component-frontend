@@ -152,7 +152,13 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
       cdsEnrolmentId = cdsEnrolmentId,
       otherEnrolments = otherEnrolments
     )
-    await(test(controller.displayPage(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    await(
+      test(
+        controller.displayPage(service).apply(
+          SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe/", defaultUserId)
+        )
+      )
+    )
   }
 
   private def enrol(service: Service, responseStatus: Int)(test: Future[Result] => Any) = {

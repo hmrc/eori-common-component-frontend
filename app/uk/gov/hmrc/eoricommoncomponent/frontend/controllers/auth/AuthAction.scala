@@ -24,6 +24,7 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, allEnrolments, internalId, email => ggEmail, _}
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
@@ -50,14 +51,21 @@ class AuthAction @Inject() (
       authorise(requestProcessor)
     }
 
-  def ggAuthorisedUser(requestProcessor: RequestProcessorSimple) =
+  def ggAuthorisedUserWithServiceAction(requestProcessor: RequestProcessorSimple) =
+    Action.async { implicit request =>
+      authorise(requestProcessor, checkPermittedAccess = false, checkServiceEnrolment = false)
+    }
+
+  def ggAuthorisedUserAction(requestProcessor: RequestProcessorSimple) =
     Action.async { implicit request =>
       authorise(requestProcessor, checkPermittedAccess = false)
     }
 
-  private def authorise(requestProcessor: RequestProcessorSimple, checkPermittedAccess: Boolean = true)(implicit
-    request: Request[AnyContent]
-  ) = {
+  private def authorise(
+    requestProcessor: RequestProcessorSimple,
+    checkPermittedAccess: Boolean = true,
+    checkServiceEnrolment: Boolean = true
+  )(implicit request: Request[AnyContent]) = {
     implicit val hc: HeaderCarrier =
       HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
@@ -68,7 +76,8 @@ class AuthAction @Inject() (
             Right(requestProcessor),
             LoggedInUserWithEnrolments(userAffinityGroup, userInternalId, userAllEnrolments, currentUserEmail, groupId),
             userCredentialRole,
-            checkPermittedAccess
+            checkPermittedAccess,
+            checkServiceEnrolment
           )
       } recover withAuthRecovery(request)
   }
@@ -77,13 +86,19 @@ class AuthAction @Inject() (
     requestProcessor: Either[RequestProcessorExtended, RequestProcessorSimple],
     loggedInUser: LoggedInUserWithEnrolments,
     userCredentialRole: Option[CredentialRole],
-    checkPermittedAccess: Boolean
-  )(implicit request: Request[AnyContent]) =
-    if (checkPermittedAccess)
-      permitUserOrRedirect(loggedInUser.affinityGroup, userCredentialRole, loggedInUser.email) {
-        requestProcessor fold (_(request)(loggedInUser.internalId)(loggedInUser), _(request)(loggedInUser))
-      }
-    else
+    checkPermittedAccess: Boolean,
+    checkServiceEnrolment: Boolean
+  )(implicit request: Request[AnyContent]) = {
+
+    def enrolments: Set[Enrolment] = if (checkServiceEnrolment) loggedInUser.enrolments.enrolments else Set.empty
+
+    def action: Future[Result] =
       requestProcessor fold (_(request)(loggedInUser.internalId)(loggedInUser), _(request)(loggedInUser))
+
+    if (checkPermittedAccess)
+      permitUserOrRedirect(loggedInUser.affinityGroup, userCredentialRole, enrolments)(action)
+    else
+      action
+  }
 
 }

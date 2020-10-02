@@ -35,14 +35,16 @@ class EnrolmentAlreadyExistsController @Inject() (
   mcc: MessagesControllerComponents
 ) extends FrontendController(mcc) with I18nSupport {
 
+  // Note: permitted for user with service enrolment
   def enrolmentAlreadyExists(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction {
+    authAction.ggAuthorisedUserWithServiceAction {
       implicit request => _: LoggedInUserWithEnrolments =>
         Future.successful(Ok(registrationExistsView(service)))
     }
 
+  // Note: permitted for user with service enrolment
   def enrolmentAlreadyExistsForGroup(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction {
+    authAction.ggAuthorisedUserWithServiceAction {
       implicit request => _: LoggedInUserWithEnrolments =>
         Future.successful(Ok(registrationExistsForGroupView(service)))
     }

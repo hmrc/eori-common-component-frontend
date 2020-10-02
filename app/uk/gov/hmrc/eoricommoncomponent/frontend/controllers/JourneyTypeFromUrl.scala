@@ -22,7 +22,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 trait JourneyTypeFromUrl {
 
   def journeyFromUrl(implicit request: Request[AnyContent]): Journey.Value =
-    if (request.path.contains("/subscribe/") || request.path.endsWith("/subscribe")) Journey.Subscribe
-    else Journey.Register
+    Journey.journeyFromRequest
 
 }

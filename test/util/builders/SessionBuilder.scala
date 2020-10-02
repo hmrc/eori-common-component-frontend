@@ -66,7 +66,7 @@ object SessionBuilder {
   }
 
   def buildRequestWithSessionAndPath(path: String, authToken: String, method: String = "GET") =
-    FakeRequest(method, path).withSession(sessionMap(authToken): _*)
+    addToken(FakeRequest(method, path)).withSession(sessionMap(authToken): _*)
 
   def buildRequestWithSessionAndPathAndFormValues(
     method: String,

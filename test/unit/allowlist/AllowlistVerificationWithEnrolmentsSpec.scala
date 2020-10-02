@@ -54,28 +54,6 @@ class AllowlistVerificationWithEnrolmentsSpec extends ControllerSpec with Before
 
   "Allowlist verification" should {
 
-    "return Unauthorized (401) when a non-allowlisted user attempts to access a route" in {
-      AuthBuilder.withAuthorisedUser(defaultUserId, mockAuthConnector, userEmail = Some("not@example.com"))
-
-      val result = controller
-        .form(Journey.Subscribe)
-        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe/", defaultUserId))
-
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/customs-enrolment-services/subscribe/unauthorised")
-    }
-
-    "return Unauthorized (401) when a user attempts to access a route and they do not have an email address" in {
-      AuthBuilder.withAuthorisedUser(defaultUserId, mockAuthConnector, userEmail = None)
-
-      val result = controller
-        .form(Journey.Subscribe)
-        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe/", defaultUserId))
-
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some("/customs-enrolment-services/subscribe/unauthorised")
-    }
-
     "return OK (200) when a allowlisted user attempts to access a route" in {
       AuthBuilder.withAuthorisedUser(defaultUserId, mockAuthConnector, userEmail = Some("mister_allow@example.com"))
 
