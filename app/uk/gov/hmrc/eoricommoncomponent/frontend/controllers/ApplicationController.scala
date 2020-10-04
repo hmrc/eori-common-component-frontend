@@ -64,8 +64,6 @@ class ApplicationController @Inject() (
           }
        
       }.recover {
-        case SpecificEnrolmentExists(service) =>
-          Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service))
         case SpecificGroupIdEnrolmentExists(service) =>
           Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service))
       }
@@ -118,9 +116,6 @@ class ApplicationController @Inject() (
   }
 
 }
-
-case class SpecificEnrolmentExists(service: Service)
-    extends Exception(s"User has already enrolment for ${service.code}")
 
 case class SpecificGroupIdEnrolmentExists(service: Service)
     extends Exception(s"Group Id has enrolment to ${service.code}")
