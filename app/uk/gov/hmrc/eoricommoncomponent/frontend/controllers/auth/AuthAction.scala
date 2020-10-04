@@ -46,16 +46,25 @@ class AuthAction @Inject() (
   private val baseRetrievals     = ggEmail and credentialRole and affinityGroup
   private val extendedRetrievals = baseRetrievals and internalId and allEnrolments and groupIdentifier
 
+  /**
+    * Returns a GG user with correct user type, affinity group and no enrolment to service
+    */
   def ggAuthorisedUserWithEnrolmentsAction(requestProcessor: RequestProcessorSimple) =
     Action.async { implicit request =>
       authorise(requestProcessor)
     }
 
+  /**
+    * Returns a GG user with correct user type and affinity group but no check for enrolment to service
+    */
   def ggAuthorisedUserWithServiceAction(requestProcessor: RequestProcessorSimple) =
     Action.async { implicit request =>
-      authorise(requestProcessor, checkPermittedAccess = false, checkServiceEnrolment = false)
+      authorise(requestProcessor, checkServiceEnrolment = false)
     }
 
+  /**
+    * Returns a GG user without checks for user type, affinity group or enrolment to service
+    */
   def ggAuthorisedUserAction(requestProcessor: RequestProcessorSimple) =
     Action.async { implicit request =>
       authorise(requestProcessor, checkPermittedAccess = false)
