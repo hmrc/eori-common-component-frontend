@@ -17,8 +17,8 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
 import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.eoricommoncomponent.frontend.config.Sub02Config
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SubscriptionServiceConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.FeatureFlags
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.MessagingServiceParam
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionCreateResponse._
@@ -31,11 +31,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SubscriptionService @Inject() (connector: SubscriptionServiceConnector, config: Sub02Config)(implicit
+class SubscriptionService @Inject() (connector: SubscriptionServiceConnector, config: FeatureFlags)(implicit
   ec: ExecutionContext
 ) {
 
-  private def maybe(service: Service): Option[Service] = if (config.useServiceName) Some(service) else None
+  private def maybe(service: Service): Option[Service] = if (config.sub02UseServiceName) Some(service) else None
 
   def subscribe(
     registration: RegistrationDetails,

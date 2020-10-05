@@ -26,4 +26,6 @@ class FeatureFlags @Inject() (config: Configuration) {
   val matchingEnabled: Boolean = loadConfig(path = "features.matchingEnabled")
 
   val rowHaveUtrEnabled: Boolean = loadConfig("features.rowHaveUtrEnabled")
+
+  val sub02UseServiceName: Boolean = loadConfig("features.sub02UseServiceName")
 }
