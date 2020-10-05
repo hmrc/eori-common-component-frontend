@@ -46,8 +46,9 @@ class YouCannotUseServiceController @Inject() (
       } recover withAuthRecovery(request)
   }
 
-  def unauthorisedPage(): Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Unauthorized(unauthorisedView()))
+  def unauthorisedPage(service: Service, journey: Journey.Value): Action[AnyContent] = Action.async {
+    implicit request =>
+      Future.successful(Unauthorized(unauthorisedView()))
   }
 
 }
