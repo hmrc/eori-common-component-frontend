@@ -31,7 +31,6 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class CheckYourDetailsRegisterController @Inject() (
   authAction: AuthAction,
-  featureFlags: FeatureFlags,
   sessionCache: SessionCache,
   requestSessionData: RequestSessionData,
   mcc: MessagesControllerComponents,
@@ -60,8 +59,7 @@ class CheckYourDetailsRegisterController @Inject() (
               consent,
               service,
               journey,
-              isUserIdentifiedByRegService,
-              featureFlags.rowHaveUtrEnabled
+              isUserIdentifiedByRegService
             )
           )
         }

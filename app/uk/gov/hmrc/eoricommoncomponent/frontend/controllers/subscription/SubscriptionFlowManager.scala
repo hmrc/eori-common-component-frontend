@@ -53,11 +53,9 @@ case class SubscriptionFlowConfig(
 }
 
 @Singleton
-class SubscriptionFlowManager @Inject() (
-  featureFlags: FeatureFlags,
-  requestSessionData: RequestSessionData,
-  cdsFrontendDataCache: SessionCache
-)(implicit ec: ExecutionContext) {
+class SubscriptionFlowManager @Inject() (requestSessionData: RequestSessionData, cdsFrontendDataCache: SessionCache)(
+  implicit ec: ExecutionContext
+) {
 
   def currentSubscriptionFlow(implicit request: Request[AnyContent]): SubscriptionFlow =
     requestSessionData.userSubscriptionFlow
@@ -114,42 +112,34 @@ class SubscriptionFlowManager @Inject() (
   )(implicit request: Request[AnyContent]): SubscriptionFlow = {
     val userLocation = requestSessionData.selectedUserLocation
 
-    val subscribePrefix = (userLocation, journey, registrationDetails.customsId, featureFlags.rowHaveUtrEnabled) match {
+    val subscribePrefix = (userLocation, journey, registrationDetails.customsId) match {
       case (
             Some(UserLocation.Eu) | Some(UserLocation.Islands) | Some(UserLocation.ThirdCountry),
             Journey.Subscribe,
-            None,
-            true
+            None
           ) =>
         "migration-eori-row-utrNino-enabled-"
       case (
             Some(UserLocation.Eu) | Some(UserLocation.Islands) | Some(UserLocation.ThirdCountry),
             Journey.Subscribe,
-            _,
             _
           ) =>
         "migration-eori-row-"
-      case (_, Journey.Subscribe, _, _) => "migration-eori-" // This means UK
-      case _                            => ""
+      case (_, Journey.Subscribe, _) => "migration-eori-" // This means UK
+      case _                         => ""
     }
 
     val selectedFlow: SubscriptionFlow =
-      (
-        registrationDetails,
-        maybeOrgType,
-        featureFlags.rowHaveUtrEnabled,
-        registrationDetails.customsId,
-        journey
-      ) match {
-        case (_: RegistrationDetailsOrganisation, Some(CdsOrganisationType.Partnership), _, _, _) =>
+      (registrationDetails, maybeOrgType, registrationDetails.customsId, journey) match {
+        case (_: RegistrationDetailsOrganisation, Some(CdsOrganisationType.Partnership), _, _) =>
           SubscriptionFlow(subscribePrefix + PartnershipSubscriptionFlow.name)
-        case (_: RegistrationDetailsOrganisation, _, true, None, Journey.Subscribe) =>
+        case (_: RegistrationDetailsOrganisation, _, None, Journey.Subscribe) =>
           SubscriptionFlow(subscribePrefix + OrganisationSubscriptionFlow.name)
-        case (_: RegistrationDetailsIndividual, _, true, None, Journey.Subscribe) =>
+        case (_: RegistrationDetailsIndividual, _, None, Journey.Subscribe) =>
           SubscriptionFlow(subscribePrefix + IndividualSubscriptionFlow.name)
-        case (_: RegistrationDetailsOrganisation, _, _, _, _) =>
+        case (_: RegistrationDetailsOrganisation, _, _, _) =>
           SubscriptionFlow(subscribePrefix + OrganisationSubscriptionFlow.name)
-        case (_: RegistrationDetailsIndividual, _, _, _, _) =>
+        case (_: RegistrationDetailsIndividual, _, _, _) =>
           SubscriptionFlow(subscribePrefix + IndividualSubscriptionFlow.name)
         case _ => throw new IllegalStateException("Incomplete cache cannot complete journey")
       }

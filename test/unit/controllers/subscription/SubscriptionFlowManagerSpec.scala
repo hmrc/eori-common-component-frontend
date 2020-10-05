@@ -46,15 +46,11 @@ import scala.concurrent.Future
 class SubscriptionFlowManagerSpec
     extends UnitSpec with MockitoSugar with BeforeAndAfterAll with BeforeAndAfterEach with ControllerSpec {
 
-  val injector: Injector =
-    new GuiceApplicationBuilder().configure("features.rowHaveUtrEnabled" -> false).injector()
-
-  private val featureFlags             = injector.instanceOf[FeatureFlags]
   private val mockRequestSessionData   = mock[RequestSessionData]
   private val mockCdsFrontendDataCache = mock[SessionCache]
 
   val controller =
-    new SubscriptionFlowManager(featureFlags, mockRequestSessionData, mockCdsFrontendDataCache)(global)
+    new SubscriptionFlowManager(mockRequestSessionData, mockCdsFrontendDataCache)(global)
 
   private val mockOrgRegistrationDetails        = mock[RegistrationDetailsOrganisation]
   private val mockIndividualRegistrationDetails = mock[RegistrationDetailsIndividual]
@@ -413,15 +409,11 @@ class SubscriptionFlowManagerSpec
 class SubscriptionFlowManagerNinoUtrEnabledSpec
     extends UnitSpec with MockitoSugar with BeforeAndAfterAll with BeforeAndAfterEach with ControllerSpec {
 
-  val injector: Injector =
-    new GuiceApplicationBuilder().configure("features.rowHaveUtrEnabled" -> true).injector()
-
-  private val featureFlags             = injector.instanceOf[FeatureFlags]
   private val mockRequestSessionData   = mock[RequestSessionData]
   private val mockCdsFrontendDataCache = mock[SessionCache]
 
   val controller =
-    new SubscriptionFlowManager(featureFlags, mockRequestSessionData, mockCdsFrontendDataCache)(global)
+    new SubscriptionFlowManager(mockRequestSessionData, mockCdsFrontendDataCache)(global)
 
   private val mockSession = mock[Session]
 

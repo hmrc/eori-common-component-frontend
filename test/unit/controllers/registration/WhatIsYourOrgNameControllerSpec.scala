@@ -47,20 +47,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
-  val injector: Injector =
-    new GuiceApplicationBuilder().configure("features.rowHaveUtrEnabled" -> false).injector()
-
   private val mockAuthConnector              = mock[AuthConnector]
   private val mockAuthAction                 = authAction(mockAuthConnector)
-  private val featureFlags                   = injector.instanceOf[FeatureFlags]
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
   private val mockNameOrganisationMatchModel = mock[NameOrganisationMatchModel]
-  private val whatIsYourOrgNameView          = injector.instanceOf[what_is_your_org_name]
+  private val whatIsYourOrgNameView          = instanceOf[what_is_your_org_name]
 
   private val controller = new WhatIsYourOrgNameController(
     mockAuthAction,
-    featureFlags,
     mockRequestSessionData,
     mcc,
     whatIsYourOrgNameView,
@@ -91,7 +86,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
         "third-country-organisation",
         ThirdCountryOrg,
         "organisation",
-        "/customs-enrolment-services/atar/register/matching/address/third-country-organisation",
+        "/customs-enrolment-services/atar/register/matching/utr/third-country-organisation",
         UserLocation.ThirdCountry,
         false,
         ""
@@ -151,7 +146,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
     }
   }
 
-  "Submitting the form with rowHaveUtrEnabled as false" should {
+  "Submitting the form" should {
 
     forAll(organisationTypeOrganisations) {
       (organisationType, _, nameDescription, submitLocation, userLocation, reviewMode, _) =>
