@@ -123,7 +123,7 @@ class AppConfigSpec extends ControllerSpec {
     }
 
     "have service url for ATaR defined" in {
-      appConfig.serviceReturnUrl(Service.ATaR) shouldBe "https://www.gov.uk"
+      appConfig.serviceReturnUrl(Service.ATaR) should endWith("/advance-tariff-application")
     }
   }
 
