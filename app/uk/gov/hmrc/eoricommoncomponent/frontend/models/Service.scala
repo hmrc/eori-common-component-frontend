@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.models
 
-import play.api.mvc.PathBindable
+import play.api.mvc.{PathBindable, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.Constants
 
 sealed trait Service {
@@ -46,7 +46,7 @@ object Service {
     override val enrolmentKey: String = ""
   }
 
-  val supportedServices = Set[Service](ATaR)
+  private val supportedServices = Set[Service](ATaR)
 
   def withName(str: String): Option[Service] =
     supportedServices.find(_.code == str)
@@ -60,6 +60,11 @@ object Service {
       } yield service
 
     override def unbind(key: String, value: Service): String = stringBinder.unbind(key, value.code)
+  }
+
+  def serviceFromRequest(implicit request: Request[_]): Option[Service] = {
+    val path = request.path
+    supportedServices.find(service => path.contains(s"/${service.code}/"))
   }
 
 }

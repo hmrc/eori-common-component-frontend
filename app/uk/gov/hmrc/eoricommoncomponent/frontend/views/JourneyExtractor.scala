@@ -21,13 +21,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 
 object JourneyExtractor {
 
-  def journey(implicit request: Request[_]): Journey.Value = {
-    val path = request.path
-    if (path.contains("/subscribe/") || path.endsWith("/subscribe"))
-      Journey.Subscribe
-    else
-      Journey.Register
-
-  }
+  def journey(implicit request: Request[_]): Journey.Value = Journey.journeyFromRequest
 
 }

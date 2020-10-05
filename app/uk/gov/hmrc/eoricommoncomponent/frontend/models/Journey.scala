@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.models
 
 import play.api.libs.json.{Reads, Writes}
-import play.api.mvc.{PathBindable, QueryStringBindable}
+import play.api.mvc.{PathBindable, QueryStringBindable, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.Constants
 
 object Journey extends Enumeration {
@@ -57,5 +57,14 @@ object Journey extends Enumeration {
 
       override def unbind(key: String, value: Journey.Value): String = pathBindable.unbind(key, value)
     }
+
+  def journeyFromRequest(implicit request: Request[_]): Journey.Value = {
+    val path = request.path
+    if (path.contains("/subscribe/") || path.endsWith("/subscribe"))
+      Journey.Subscribe
+    else
+      Journey.Register
+
+  }
 
 }
