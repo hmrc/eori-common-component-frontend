@@ -169,14 +169,20 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
           page.getElementsText(RegistrationCompletePage.LeaveFeedbackLinkXpath) should include(
             "What did you think of this service?"
           )
-          page.getElementsHref(RegistrationCompletePage.LeaveFeedbackLinkXpath) shouldBe "/feedback/CDS"
+          page.getElementsHref(RegistrationCompletePage.LeaveFeedbackLinkXpath) should endWith(
+            "/feedback/eori-common-component-subscribe-atar"
+          )
       }
     }
   }
 
   def invokeRegExistingEndPageWithAuthenticatedUser(userId: String = defaultUserId)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
-    test(subscriptionController.migrationEnd(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(
+      subscriptionController.migrationEnd(Service.ATaR).apply(
+        SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe", userId)
+      )
+    )
   }
 
 }

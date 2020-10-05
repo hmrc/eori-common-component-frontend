@@ -14,11 +14,17 @@
  * limitations under the License.
  *@
 
-@()(implicit messages: Messages)
+@import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName.service
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.JourneyExtractor.journey
+
+@this(appConfig: AppConfig)
+
+@()(implicit messages: Messages, request: Request[_])
 
 <div id="what-you-think">
     <p>
-     <a id="feedback_link" href="/feedback/CDS" rel="noopener noreferrer">@messages("cds.subscription.outcomes.feedback")</a>
+     <a id="feedback_link" href="@{appConfig.feedbackUrl(service, journey)}" rel="noopener noreferrer">@messages("cds.subscription.outcomes.feedback")</a>
      @messages("cds.subscription.outcomes.feedback.hint")
     </p>
 </div>

@@ -18,7 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.config
 
 import javax.inject.{Inject, Named, Singleton}
 import play.api.Configuration
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
 import scala.concurrent.duration.Duration
@@ -51,8 +51,13 @@ class AppConfig @Inject() (
 
   def serviceReturnUrl(service: Service) = config.get[String](s"external-url.service-return.${service.code}")
 
-  lazy val feedbackLink          = config.get[String]("external-url.feedback-survey")
-  lazy val feedbackLinkSubscribe = config.get[String]("external-url.feedback-survey-subscribe")
+  private lazy val feedbackLink          = config.get[String]("external-url.feedback-survey")
+  private lazy val feedbackLinkSubscribe = config.get[String]("external-url.feedback-survey-subscribe")
+
+  def feedbackUrl(service: Service, journey: Journey.Value) = journey match {
+    case Journey.Register  => s"$feedbackLink-${service.code}"
+    case Journey.Subscribe => s"$feedbackLinkSubscribe-${service.code}"
+  }
 
   lazy val externalGetEORILink = config.get[String]("external-url.get-cds-eori")
 

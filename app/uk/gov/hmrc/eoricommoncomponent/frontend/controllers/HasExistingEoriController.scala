@@ -57,7 +57,8 @@ class HasExistingEoriController @Inject() (
       }
     }
 
-  def enrolSuccess(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
+  // Note: permitted for user with service enrolment
+  def enrolSuccess(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithServiceAction {
     implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
       existingEoriToUse.map { eori =>
         Ok(enrolSuccessView(eori, service))

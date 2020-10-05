@@ -19,9 +19,9 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Request, Result}
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Organisation}
-import uk.gov.hmrc.auth.core.{AffinityGroup, CredentialRole, User}
+import uk.gov.hmrc.auth.core.{AffinityGroup, CredentialRole, Enrolment, User}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{routes, JourneyTypeFromUrl}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName.service
 
 import scala.concurrent.Future
@@ -31,23 +31,26 @@ trait AccessController extends JourneyTypeFromUrl with AllowlistVerification {
   def permitUserOrRedirect(
     affinityGroup: Option[AffinityGroup],
     credentialRole: Option[CredentialRole],
-    email: Option[String]
-  )(action: Future[Result])(implicit request: Request[AnyContent]): Future[Result] =
-    (isPermittedUserType(affinityGroup, credentialRole), isPermitted(email)) match {
-      case (true, true)  => action
-      case (true, false) => Future.successful(Redirect(routes.YouCannotUseServiceController.unauthorisedPage()))
+    enrolments: Set[Enrolment]
+  )(action: Future[Result])(implicit request: Request[AnyContent]): Future[Result] = {
+
+    def hasEnrolment(implicit request: Request[AnyContent]): Boolean =
+      Service.serviceFromRequest.exists(service => enrolments.exists(_.key.equalsIgnoreCase(service.enrolmentKey)))
+
+    def isPermittedUserType: Boolean =
+      affinityGroup match {
+        case Some(Agent)        => false
+        case Some(Organisation) => credentialRole.fold(false)(cr => cr == User)
+        case _                  => true
+      }
+
+    (isPermittedUserType, hasEnrolment) match {
+      case (true, false) => action
+      case (true, true) =>
+        Future.successful(Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service)))
       case (false, _) =>
         Future.successful(Redirect(routes.YouCannotUseServiceController.page(service, journeyFromUrl)))
     }
-
-  def isPermitted(email: Option[String])(implicit request: Request[AnyContent]): Boolean =
-    journeyFromUrl == Journey.Register || isAllowlisted(email)
-
-  def isPermittedUserType(affinityGroup: Option[AffinityGroup], credentialRole: Option[CredentialRole]): Boolean =
-    affinityGroup match {
-      case Some(Agent)        => false
-      case Some(Organisation) => credentialRole.fold(false)(cr => cr == User)
-      case _                  => true
-    }
+  }
 
 }

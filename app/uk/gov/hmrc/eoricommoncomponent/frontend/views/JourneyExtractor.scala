@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
+package uk.gov.hmrc.eoricommoncomponent.frontend.views
 
-import play.api.mvc.{AnyContent, Request}
+import play.api.mvc.Request
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 
-trait JourneyTypeFromUrl {
+object JourneyExtractor {
 
-  def journeyFromUrl(implicit request: Request[AnyContent]): Journey.Value =
-    Journey.journeyFromRequest
+  def journey(implicit request: Request[_]): Journey.Value = Journey.journeyFromRequest
 
 }

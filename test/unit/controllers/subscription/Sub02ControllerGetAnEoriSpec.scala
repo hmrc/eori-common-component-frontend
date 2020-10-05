@@ -339,7 +339,9 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
           page.getElementsText(RegistrationCompletePage.LeaveFeedbackLinkXpath) should include(
             "What did you think of this service?"
           )
-          page.getElementsHref(RegistrationCompletePage.LeaveFeedbackLinkXpath) shouldBe "/feedback/CDS"
+          page.getElementsHref(RegistrationCompletePage.LeaveFeedbackLinkXpath) should endWith(
+            "/feedback/eori-common-component-subscribe-atar"
+          )
       }
     }
 
@@ -445,7 +447,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
   def invokeEndPageWithAuthenticatedUser(userId: String = defaultUserId)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     mockSessionCacheForOutcomePage
-    test(subscriptionController.end().apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(subscriptionController.end().apply(SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe", userId)))
   }
 
   def invokeRejectedPageWithAuthenticatedUser(userId: String = defaultUserId)(test: Future[Result] => Any) {

@@ -52,9 +52,6 @@ class ApplicationController @Inject() (
   def startSubscription(service: Service): Action[AnyContent] = authorise.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
       {
-        Future.successful(isUserEnrolledFor(loggedInUser, service)).flatMap { isUserEnrolled =>
-          if (isUserEnrolled) throw SpecificEnrolmentExists(service)
-
           loggedInUser.groupId match {
             case Some(groupId) =>
               hasGroupIdEnrolmentTo(groupId, service).flatMap { groupIdEnrolmentExists =>
@@ -65,12 +62,9 @@ class ApplicationController @Inject() (
             case _ =>
               throw MissingGroupId()
           }
-        }
+       
       }.recover {
-        case SpecificEnrolmentExists(service) =>
-          Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service))
         case SpecificGroupIdEnrolmentExists(service) =>
-          // Below redirect should be to page that doesn't exists yet
           Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service))
       }
   }
@@ -110,17 +104,10 @@ class ApplicationController @Inject() (
   }
 
   def logout(service: Service, journey: Journey.Value): Action[AnyContent] =
-    authorise.ggAuthorisedUser {
+    authorise.ggAuthorisedUserAction {
       implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
-        journey match {
-          case Journey.Register =>
-            cache.remove map { _ =>
-              Redirect(appConfig.feedbackLink).withNewSession
-            }
-          case Journey.Subscribe =>
-            cache.remove map { _ =>
-              Redirect(appConfig.feedbackLinkSubscribe).withNewSession
-            }
+        cache.remove map { _ =>
+          Redirect(appConfig.feedbackUrl(service, journey)).withNewSession
         }
     }
 
@@ -129,9 +116,6 @@ class ApplicationController @Inject() (
   }
 
 }
-
-case class SpecificEnrolmentExists(service: Service)
-    extends Exception(s"User has already enrolment for ${service.code}")
 
 case class SpecificGroupIdEnrolmentExists(service: Service)
     extends Exception(s"Group Id has enrolment to ${service.code}")

@@ -41,9 +41,7 @@ object ServiceName {
   def shortName(implicit messages: Messages, request: Request[_]): String =
     shortName(service)
 
-  def service(implicit request: Request[_]): Service = {
-    val path = request.path
-    Service.supportedServices.find(service => path.contains(s"/${service.code}/")).getOrElse(Service.NullService)
-  }
+  def service(implicit request: Request[_]): Service =
+    Service.serviceFromRequest.getOrElse(Service.NullService)
 
 }

@@ -61,6 +61,9 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
   override def beforeEach: Unit = {
     super.beforeEach()
     reset(mockAuthConnector, enrolmentStoreProxyService, mockSessionCache)
+
+    when(enrolmentStoreProxyService.enrolmentForGroup(any(), any())(any()))
+      .thenReturn(Future.successful(None))
   }
 
   private def groupEnrolment(service: Service) = Some(
@@ -78,9 +81,6 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
     }
 
     "direct authenticated users to start subscription" in {
-      when(enrolmentStoreProxyService.enrolmentForGroup(any(), any())(any()))
-        .thenReturn(Future.successful(None))
-
       withAuthorisedUser(defaultUserId, mockAuthConnector)
       val result =
         controller.startSubscription(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
@@ -127,7 +127,9 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set(atarEnrolment))
 
       val result =
-        controller.startSubscription(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+        controller.startSubscription(Service.ATaR).apply(
+          SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe", defaultUserId)
+        )
 
       status(result) shouldBe SEE_OTHER
       await(result).header.headers("Location") should endWith("enrolment-already-exists")
@@ -166,7 +168,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
         controller.logout(Service.ATaR, Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       session(result).get(SessionKeys.userId) shouldBe None
-      await(result).header.headers("Location") should endWith("feedback/CDS")
+      await(result).header.headers("Location") should endWith("feedback/eori-common-component-register-atar")
     }
 
     "logout an authenticated user for subscribe" in {
@@ -177,7 +179,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
         controller.logout(Service.ATaR, Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       session(result).get(SessionKeys.userId) shouldBe None
-      await(result).header.headers("Location") should endWith("feedback/get-access-cds")
+      await(result).header.headers("Location") should endWith("feedback/eori-common-component-subscribe-atar")
     }
   }
 
