@@ -21,7 +21,7 @@ import play.api.mvc.{AnyContent, Request, Result}
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Organisation}
 import uk.gov.hmrc.auth.core.{AffinityGroup, CredentialRole, Enrolment, User}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{routes, JourneyTypeFromUrl}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName.service
 
 import scala.concurrent.Future
@@ -31,11 +31,15 @@ trait AccessController extends JourneyTypeFromUrl with AllowlistVerification {
   def permitUserOrRedirect(
     affinityGroup: Option[AffinityGroup],
     credentialRole: Option[CredentialRole],
-    enrolments: Set[Enrolment]
+    enrolments: Set[Enrolment],
+    email: Option[String]
   )(action: Future[Result])(implicit request: Request[AnyContent]): Future[Result] = {
 
     def hasEnrolment(implicit request: Request[AnyContent]): Boolean =
       Service.serviceFromRequest.exists(service => enrolments.exists(_.key.equalsIgnoreCase(service.enrolmentKey)))
+
+    def isPermittedEmail(email: Option[String])(implicit request: Request[AnyContent]): Boolean =
+      journeyFromUrl == Journey.Register || isAllowlisted(email)
 
     def isPermittedUserType: Boolean =
       affinityGroup match {
@@ -44,13 +48,14 @@ trait AccessController extends JourneyTypeFromUrl with AllowlistVerification {
         case _                  => true
       }
 
-    (isPermittedUserType, hasEnrolment) match {
-      case (true, false) => action
-      case (true, true) =>
-        Future.successful(Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service)))
-      case (false, _) =>
-        Future.successful(Redirect(routes.YouCannotUseServiceController.page(service, journeyFromUrl)))
-    }
+    if (!isPermittedEmail(email))
+      Future.successful(Redirect(routes.YouCannotUseServiceController.unauthorisedPage(service, journeyFromUrl)))
+    else if (!isPermittedUserType)
+      Future.successful(Redirect(routes.YouCannotUseServiceController.page(service, journeyFromUrl)))
+    else if (hasEnrolment)
+      Future.successful(Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service)))
+    else
+      action
   }
 
 }

@@ -20,8 +20,8 @@ import com.typesafe.config.{Config, ConfigFactory}
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import play.api.{Configuration, Environment}
 import play.api.test.Helpers._
+import play.api.{Configuration, Environment}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EoriTextDownloadController
@@ -62,6 +62,32 @@ class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach w
   }
 
   "Allowlist verification" should {
+
+    "redirect to unauthorised page when a non-allowlisted user attempts to access a route" in {
+      AuthBuilder.withAuthorisedUser("user-1236213", mockAuthConnector, userEmail = Some("not@example.com"))
+
+      val result = controller
+        .download()
+        .apply(
+          SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/atar/subscribe/", defaultUserId)
+        )
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/customs-enrolment-services/atar/subscribe/unauthorised")
+    }
+
+    "redirect to unauthorised page when a user with no email address attempts to access a route" in {
+      AuthBuilder.withAuthorisedUser("user-1236213", mockAuthConnector, userEmail = None)
+
+      val result = controller
+        .download()
+        .apply(
+          SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/atar/subscribe/", defaultUserId)
+        )
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/customs-enrolment-services/atar/subscribe/unauthorised")
+    }
 
     "return OK (200) when a allowlisted user attempts to access a route" in {
       AuthBuilder.withAuthorisedUser("user-2300121", mockAuthConnector, userEmail = Some("mister_allow@example.com"))

@@ -69,7 +69,6 @@ class CheckYourDetailsRegisterControllerSpec
 
   private val mockAuthConnector                     = mock[AuthConnector]
   private val mockAuthAction                        = authAction(mockAuthConnector)
-  private val featureFlags                          = instanceOf[FeatureFlags]
   private val mockSessionCache                      = mock[SessionCache]
   private val mockSubscriptionDetailsHolder         = mock[SubscriptionDetails]
   private val mockRegisterWithoutIdWithSubscription = mock[RegisterWithoutIdWithSubscriptionService]
@@ -79,7 +78,6 @@ class CheckYourDetailsRegisterControllerSpec
 
   val controller = new CheckYourDetailsRegisterController(
     mockAuthAction,
-    featureFlags,
     mockSessionCache,
     mockRequestSession,
     mcc,
@@ -765,7 +763,7 @@ class CheckYourDetailsRegisterControllerSpec
     }
   }
 
-  "display the form with 'UTR Not entered' with rowHaveUtrEnabled as true" in {
+  "display the form with 'UTR Not entered'" in {
     when(mockSessionCache.registrationDetails(any[HeaderCarrier]))
       .thenReturn(organisationRegistrationDetailsWithEmptySafeId)
 
@@ -774,17 +772,6 @@ class CheckYourDetailsRegisterControllerSpec
 
       page.elementIsPresent("//*[@id='have_utr']") shouldBe true
       page.getElementsText("//*[@id='review-tbl__have-utr']") shouldBe NotEntered
-    }
-  }
-
-  "display the form with 'UTR Not entered' with rowHaveUtrEnabled as false" in {
-    when(mockSessionCache.registrationDetails(any[HeaderCarrier]))
-      .thenReturn(organisationRegistrationDetailsWithEmptySafeId)
-
-    showForm(userSelectedOrgType = CdsOrganisationType.ThirdCountryOrganisation, rowHaveUtrEnabled = false) { result =>
-      val page: CdsPage = CdsPage(contentAsString(result))
-
-      page.elementIsPresent("//*[@id='have_utr']") shouldBe false
     }
   }
 
@@ -933,15 +920,10 @@ class CheckYourDetailsRegisterControllerSpec
   def showForm(
     userSelectedOrgType: CdsOrganisationType = CdsOrganisationType.Company,
     userId: String = defaultUserId,
-    isIndividualSubscriptionFlow: Boolean = false,
-    rowHaveUtrEnabled: Boolean = true
+    isIndividualSubscriptionFlow: Boolean = false
   )(test: Future[Result] => Any) {
-    val injector: Injector =
-      new GuiceApplicationBuilder().configure("features.rowHaveUtrEnabled" -> rowHaveUtrEnabled).injector()
-
     val controller = new CheckYourDetailsRegisterController(
       mockAuthAction,
-      injector.instanceOf[FeatureFlags],
       mockSessionCache,
       mockRequestSession,
       mcc,

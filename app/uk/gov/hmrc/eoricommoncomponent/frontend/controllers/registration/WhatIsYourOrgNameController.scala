@@ -36,7 +36,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class WhatIsYourOrgNameController @Inject() (
   authAction: AuthAction,
-  featureFlags: FeatureFlags,
   requestSessionData: RequestSessionData,
   mcc: MessagesControllerComponents,
   whatIsYourOrgNameView: what_is_your_org_name,
@@ -94,10 +93,7 @@ class WhatIsYourOrgNameController @Inject() (
       if (isInReviewMode)
         Redirect(DetermineReviewPageController.determineRoute(service, journey))
       else if (UserLocation.isRow(requestSessionData))
-        if (featureFlags.rowHaveUtrEnabled)
-          Redirect(DoYouHaveAUtrNumberController.form(organisationType, service, journey, false))
-        else
-          Redirect(SixLineAddressController.showForm(false, organisationType, service, journey))
+        Redirect(DoYouHaveAUtrNumberController.form(organisationType, service, journey, false))
       else
         Redirect(DoYouHaveAUtrNumberController.form(organisationType, service, journey, false))
     }

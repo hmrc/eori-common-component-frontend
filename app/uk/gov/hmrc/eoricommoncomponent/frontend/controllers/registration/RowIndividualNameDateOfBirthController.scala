@@ -34,7 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class RowIndividualNameDateOfBirthController @Inject() (
   authAction: AuthAction,
-  featureFlags: FeatureFlags,
   subscriptionDetailsService: SubscriptionDetailsService,
   mcc: MessagesControllerComponents,
   rowIndividualNameDob: row_individual_name_dob
@@ -99,11 +98,10 @@ class RowIndividualNameDateOfBirthController @Inject() (
       NameDobMatchModel(formData.firstName, formData.middleName, formData.lastName, formData.dateOfBirth)
 
     subscriptionDetailsService.cacheNameDobDetails(nameDobMatchModel) map { _ =>
-      (isInReviewMode, featureFlags.rowHaveUtrEnabled) match {
-        case (true, _)      => Redirect(DetermineReviewPageController.determineRoute(service, journey))
-        case (false, true)  => Redirect(DoYouHaveAUtrNumberController.form(organisationType, service, journey, false))
-        case (false, false) => Redirect(SixLineAddressController.showForm(false, organisationType, service, journey))
-      }
+      if (isInReviewMode)
+        Redirect(DetermineReviewPageController.determineRoute(service, journey))
+      else
+        Redirect(DoYouHaveAUtrNumberController.form(organisationType, service, journey, false))
     }
   }
 

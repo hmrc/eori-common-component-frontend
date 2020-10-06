@@ -27,8 +27,8 @@ import org.scalatest.prop.Checkers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.mvc.Http.Status._
-import uk.gov.hmrc.eoricommoncomponent.frontend.config.Sub02Config
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SubscriptionServiceConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.FeatureFlags
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionCreateResponse._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
@@ -52,11 +52,11 @@ import scala.concurrent.Future
 class SubscriptionServiceSpec
     extends UnitSpec with MockitoSugar with BeforeAndAfterAll with Checkers with SubscriptionServiceTestData {
   private val mockHeaderCarrier = mock[HeaderCarrier]
-  private val mockConfig        = mock[Sub02Config]
+  private val mockConfig        = mock[FeatureFlags]
 
   override def beforeAll() = {
     super.beforeAll()
-    when(mockConfig.useServiceName).thenReturn(true)
+    when(mockConfig.sub02UseServiceName).thenReturn(true)
   }
 
   private def subscriptionSuccessResultIgnoreTimestamp(
@@ -489,7 +489,7 @@ class SubscriptionServiceSpec
 
     "call connector with without service name" in {
 
-      when(mockConfig.useServiceName).thenReturn(false)
+      when(mockConfig.sub02UseServiceName).thenReturn(false)
 
       val result = makeSubscribeWhenAutoAllowed(
         RegistrationDetailsOrganisation(

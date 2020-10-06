@@ -48,7 +48,7 @@ import util.scalacheck.TestDataGenerators
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.global
 
-class RowIndividualNameDateOfBirthControllerWithFeatureTrueReviewModeSpec
+class RowIndividualNameDateOfBirthControllerReviewModeSpec
     extends ControllerSpec with Checkers with TestDataGenerators with BeforeAndAfterEach with ScalaFutures
     with AuthActionMock {
 
@@ -59,11 +59,9 @@ class RowIndividualNameDateOfBirthControllerWithFeatureTrueReviewModeSpec
 
     private val rowIndividualNameDob = instanceOf[row_individual_name_dob]
     private val mockAuthAction       = authAction(mockAuthConnector)
-    private val featureFlags         = instanceOf[FeatureFlags]
 
     override val controller = new RowIndividualNameDateOfBirthController(
       mockAuthAction,
-      featureFlags,
       mockSubscriptionDetailsService,
       mcc,
       rowIndividualNameDob

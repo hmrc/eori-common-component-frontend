@@ -42,14 +42,12 @@ class WhatIsYourOrgNameControllerRowSpec extends ControllerSpec with BeforeAndAf
 
   private val mockAuthConnector              = mock[AuthConnector]
   private val mockAuthAction                 = authAction(mockAuthConnector)
-  private val featureFlags                   = instanceOf[FeatureFlags]
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
   private val whatIsYourOrgNameView          = instanceOf[what_is_your_org_name]
 
   private val controller = new WhatIsYourOrgNameController(
     mockAuthAction,
-    featureFlags,
     mockRequestSessionData,
     mcc,
     whatIsYourOrgNameView,
@@ -59,7 +57,7 @@ class WhatIsYourOrgNameControllerRowSpec extends ControllerSpec with BeforeAndAf
   override def beforeEach: Unit =
     reset(mockRequestSessionData, mockSubscriptionDetailsService)
 
-  "Submitting the form with rowHaveUtrEnabled as true" should {
+  "Submitting the form" should {
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
