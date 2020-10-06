@@ -31,11 +31,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SubscriptionService @Inject() (connector: SubscriptionServiceConnector, config: FeatureFlags)(implicit
+class SubscriptionService @Inject() (connector: SubscriptionServiceConnector, featureFlags: FeatureFlags)(implicit
   ec: ExecutionContext
 ) {
 
-  private def maybe(service: Service): Option[Service] = if (config.sub02UseServiceName) Some(service) else None
+  private def maybe(service: Service): Option[Service] = if (featureFlags.sub02UseServiceName) Some(service) else None
 
   def subscribe(
     registration: RegistrationDetails,
