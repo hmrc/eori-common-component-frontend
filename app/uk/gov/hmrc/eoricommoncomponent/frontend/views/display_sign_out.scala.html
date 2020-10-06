@@ -21,12 +21,12 @@
 
 
 @this(layout_di: layout)
-@(journey: Journey.Value)(implicit messages: Messages, request: Request[_])
+@(service: Service, journey: Journey.Value)(implicit messages: Messages, request: Request[_])
 
 @redirectUrl = @{journey match {
     case Journey.Register => ApplicationController.start.url
         // TODO - pass in service
-    case Journey.Subscribe => ApplicationController.startSubscription(Service.ATaR).url
+    case Journey.Subscribe => ApplicationController.startSubscription(service).url
 }}
 
 @layout_di(messages("cds.security-sign-out.heading")) {

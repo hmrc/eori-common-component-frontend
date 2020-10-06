@@ -111,7 +111,7 @@ class ApplicationController @Inject() (
         }
     }
 
-  def keepAlive(journey: Journey.Value): Action[AnyContent] = Action.async { implicit request =>
+  def keepAlive(service: Service, journey: Journey.Value): Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok("Ok"))
   }
 
