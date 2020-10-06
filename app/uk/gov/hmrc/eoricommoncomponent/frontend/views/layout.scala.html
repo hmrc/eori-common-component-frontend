@@ -112,8 +112,8 @@ else (reportAProblemLink(appConfig.reportAProblemPartialUrlSubscribe(service), a
         @if(isLoggedIn){
         <script type="text/javascript">
           window.GOVUK.timeoutDialog({
-             timeout: 90,
-             countdown: 30,
+             timeout: 900,
+             countdown: 300,
              message: '@messages("cds.timeout.message")',
              keepAliveUrl: '@keepAliveUrl',
              signOutUrl: '@signOutUrl',
