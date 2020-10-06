@@ -35,8 +35,7 @@ subscription: SubscriptionDetails,
 personalDataDisclosureConsent: Boolean,
 service: Service,
 journey: Journey.Value,
-isUserIdentifiedByRegService: Boolean,
-rowHaveUtrEnabled: Boolean
+isUserIdentifiedByRegService: Boolean
 )(implicit request: Request[_], messages: Messages)
 
 @orgNameLabel = @{
@@ -233,7 +232,7 @@ rowHaveUtrEnabled: Boolean
 
             }
 
-            @if(rowHaveUtrEnabled && isRowOrganisation && !isUserIdentifiedByRegService) {
+            @if(isRowOrganisation && !isUserIdentifiedByRegService) {
             <tr id="have_utr">
                 <th id="review-tbl__have-utr_heading" class="bold">@messages("cds.matching.organisation-utr.label")</th>
                 <td id="review-tbl__have-utr">

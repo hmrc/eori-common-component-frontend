@@ -50,24 +50,19 @@ import util.scalacheck.TestDataGenerators.Implicits._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class RowIndividualNameDateOfBirthControllerWithFeatureTrueSpec
+class RowIndividualNameDateOfBirthControllerSpec
     extends ControllerSpec with Checkers with TestDataGenerators with BeforeAndAfterEach with ScalaFutures
     with AuthActionMock {
-
-  val injector: Injector =
-    new GuiceApplicationBuilder().configure("features.rowHaveUtrEnabled" -> true).injector()
 
   class ControllerFixture(organisationType: String, form: Form[IndividualNameAndDateOfBirth])
       extends AbstractControllerFixture[RowIndividualNameDateOfBirthController] {
     val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
 
-    private val rowIndividualNameDob = injector.instanceOf[row_individual_name_dob]
+    private val rowIndividualNameDob = instanceOf[row_individual_name_dob]
     private val mockAuthAction       = authAction(mockAuthConnector)
-    private val featureFlags         = injector.instanceOf[FeatureFlags]
 
     override val controller = new RowIndividualNameDateOfBirthController(
       mockAuthAction,
-      featureFlags,
       mockSubscriptionDetailsService,
       mcc,
       rowIndividualNameDob

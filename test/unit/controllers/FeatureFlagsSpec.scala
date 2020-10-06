@@ -25,7 +25,7 @@ class FeatureFlagsSpec extends ControllerSpec {
 
   private val configuration: Config = ConfigFactory.parseString("""
       |features.matchingEnabled=true
-      |features.rowHaveUtrEnabled=true
+      |features.sub02UseServiceName=true
       """.stripMargin)
 
   private val featureFlags = new FeatureFlags(Configuration(configuration))
@@ -34,7 +34,7 @@ class FeatureFlagsSpec extends ControllerSpec {
     "retrieve values for feature flags from application conf" in {
 
       featureFlags.matchingEnabled shouldBe true
-      featureFlags.rowHaveUtrEnabled shouldBe true
+      featureFlags.sub02UseServiceName shouldBe true
     }
   }
 }
