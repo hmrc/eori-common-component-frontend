@@ -23,7 +23,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName
 
 case class RecipientDetails(
   journey: Journey.Value,
-  service: String,
+  enrolmentKey: String,
   serviceName: String,
   recipientEmailAddress: String,
   recipientFullName: String,
@@ -45,7 +45,7 @@ object RecipientDetails {
   )(implicit messages: Messages): RecipientDetails =
     RecipientDetails(
       journey,
-      service.code,
+      service.enrolmentKey,
       ServiceName.longName(service),
       recipientEmailAddress,
       recipientFullName,
@@ -59,7 +59,7 @@ object RecipientDetails {
   ): RecipientDetails =
     RecipientDetails(
       journey,
-      service.code,
+      service.enrolmentKey,
       ServiceName.longName(service),
       contactDetails.emailAddress,
       contactDetails.fullName,

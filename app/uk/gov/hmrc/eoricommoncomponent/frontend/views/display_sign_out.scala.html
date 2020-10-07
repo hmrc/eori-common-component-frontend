@@ -25,7 +25,6 @@
 
 @redirectUrl = @{journey match {
     case Journey.Register => ApplicationController.start.url
-        // TODO - pass in service
     case Journey.Subscribe => ApplicationController.startSubscription(service).url
 }}
 
