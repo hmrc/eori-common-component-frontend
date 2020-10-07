@@ -57,7 +57,7 @@ class RowIndividualNameDateOfBirthController @Inject() (
             IndividualNameAndDateOfBirth(firstName, middleName, lastName, dateOfBirth)
           )
           Future.successful(Ok(rowIndividualNameDob(form, organisationType, service, journey, true)))
-        case _ => Future.successful(Redirect(SecuritySignOutController.signOut(journey)))
+        case _ => Future.successful(Redirect(SecuritySignOutController.signOut(service, journey)))
       }
     }
 

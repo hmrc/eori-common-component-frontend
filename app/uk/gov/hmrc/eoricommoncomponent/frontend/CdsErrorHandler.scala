@@ -19,17 +19,18 @@ package uk.gov.hmrc.eoricommoncomponent.frontend
 import javax.inject.Inject
 import play.api.Configuration
 import play.api.i18n.MessagesApi
+import play.api.mvc.Results._
 import play.api.mvc._
 import play.mvc.Http.Status._
 import play.twirl.api.Html
-import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionTimeOutException
-import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
-import play.api.mvc.Results._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey._
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionTimeOutException
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.Constants
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{client_error_template, error_template, notFound}
+import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
 
 import scala.concurrent.Future
 
@@ -64,9 +65,7 @@ class CdsErrorHandler @Inject() (
     exception match {
       case sessionTimeOut: SessionTimeOutException =>
         CdsLogger.error("Session time out: " + sessionTimeOut.errorMessage, exception)
-        val journey: Journey.Value =
-          if (request.path.contains("register")) Journey.Register else Journey.Subscribe
-        Future.successful(Redirect(SecuritySignOutController.displayPage(journey)).withNewSession)
+        Future.successful(Redirect(SecuritySignOutController.displayPage(service, journeyFromRequest)).withNewSession)
       case _ =>
         CdsLogger.error("Internal server error: " + exception.getMessage, exception)
         Future.successful(Results.InternalServerError(errorTemplateView()))
