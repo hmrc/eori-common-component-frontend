@@ -132,7 +132,7 @@ class CheckYourEmailController @Inject() (
         save4LaterService.fetchEmail(InternalId(userWithEnrolments.internalId)) flatMap { emailStatus =>
           emailStatus.fold {
             Logger.warn("[CheckYourEmailController][emailConfirmed] -  emailStatus cache none")
-            Future.successful(Redirect(SecuritySignOutController.signOut(journey)))
+            Future.successful(Redirect(SecuritySignOutController.signOut(service, journey)))
           } { email =>
             if (email.isConfirmed.getOrElse(false))
               Future.successful(toResult(service, journey))

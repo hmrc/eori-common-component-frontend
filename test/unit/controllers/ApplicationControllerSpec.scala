@@ -187,7 +187,8 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
     "return a status of OK" in {
 
-      val result = controller.keepAlive(Journey.Register).apply(SessionBuilder.buildRequestWithSessionNoUser)
+      val result =
+        controller.keepAlive(Service.ATaR, Journey.Register).apply(SessionBuilder.buildRequestWithSessionNoUser)
 
       status(result) shouldBe OK
     }

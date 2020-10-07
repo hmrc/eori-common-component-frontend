@@ -30,7 +30,7 @@ countriesInCountryPicker: CountriesInCountryPicker = NoCountriesInCountryPicker,
 form: Option[Form[_]] = None
 )(content: Html)(implicit messages: Messages, request: Request[_])
 
-@isLoggedIn = @{!request.session.isEmpty && request.session.get("userId").isDefined}
+@isLoggedIn = @{!request.session.isEmpty && request.session.get("authToken").isDefined}
 
 @journeyName = @{
     if(journey == Journey.Register) messages("cds.proposition.name")
@@ -49,11 +49,11 @@ form: Option[Form[_]] = None
 }
 
 @signOutUrl = @{
-    s"/customs-enrolment-services/${journey}/sign-out"
+    s"/customs-enrolment-services/${service.code}/${journey.toString.toLowerCase}/sign-out"
 }
 
 @keepAliveUrl=  @{
-    s"/customs-enrolment-services/${journey}/keep-alive"
+    s"/customs-enrolment-services/${service.code}/${journey.toString.toLowerCase}/keep-alive"
 }
 
 @getHelpForm = @{

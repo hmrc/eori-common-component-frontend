@@ -18,10 +18,10 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.SecuritySignOutController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.display_sign_out
 
@@ -36,15 +36,16 @@ class SecuritySignOutController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def displayPage(journey: Journey.Value): Action[AnyContent] = Action { implicit request =>
-    Ok(displaySignOutView(journey))
+  def displayPage(service: Service, journey: Journey.Value): Action[AnyContent] = Action { implicit request =>
+    Ok(displaySignOutView(service, journey))
   }
 
-  def signOut(journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
-      cdsFrontendDataCache.remove map { _ =>
-        Redirect(SecuritySignOutController.displayPage(journey).url).withNewSession
-      }
-  }
+  def signOut(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
+        cdsFrontendDataCache.remove map { _ =>
+          Redirect(SecuritySignOutController.displayPage(service, journey).url).withNewSession
+        }
+    }
 
 }
