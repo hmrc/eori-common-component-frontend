@@ -67,7 +67,7 @@ class HandleSubscriptionConnectorSpec extends IntegrationTestsSpec with ScalaFut
         |        "formBundleId": "$formBundleId",
         |        "recipientDetails": {
         |            "journey" : "Register",
-        |            "service" : "ATaR",
+        |            "enrolmentKey" : "HMRC-ATAR-ORG",
         |            "serviceName" : "Advance Tariff Rulings",
         |            "recipientFullName": "John Doe",
         |            "recipientEmailAddress": "john.doe@example.com",

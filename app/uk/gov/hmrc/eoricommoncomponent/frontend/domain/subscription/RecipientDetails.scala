@@ -23,7 +23,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName
 
 case class RecipientDetails(
   journey: Journey.Value,
-  service: String,
+  enrolmentKey: String,
   serviceName: String,
   recipientEmailAddress: String,
   recipientFullName: String,
