@@ -44,6 +44,8 @@ class EmailController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
+  private val logger = Logger(this.getClass)
+
   private def userIsInProcess(service: Service, journey: Journey.Value)(implicit
     request: Request[AnyContent],
     user: LoggedInUserWithEnrolments
@@ -59,7 +61,7 @@ class EmailController @Inject() (
   ): Future[Result] =
     save4LaterService.fetchEmail(InternalId(user.internalId)) flatMap {
       _.fold {
-        Logger.warn(s"[EmailController][form] -  emailStatus cache none ${user.internalId}")
+        logger.warn(s"[EmailController][form] -  emailStatus cache none ${user.internalId}")
         Future.successful(Redirect(createForm(service, journey)))
       } { cachedEmailStatus =>
         if (cachedEmailStatus.isVerified)
@@ -86,19 +88,19 @@ class EmailController @Inject() (
       case Some(true) =>
         for {
           _ <- {
-            Logger.warn("updated verified email status true to save4later")
+            logger.warn("updated verified email status true to save4later")
             save4LaterService.saveEmail(InternalId(userWithEnrolments.internalId), emailStatus.copy(isVerified = true))
           }
           _ <- {
-            Logger.warn("saved verified email address true to cache")
+            logger.warn("saved verified email address true to cache")
             cdsFrontendDataCache.saveEmail(emailStatus.email)
           }
         } yield Redirect(CheckYourEmailController.emailConfirmed(service, journey))
       case Some(false) =>
-        Logger.warn("verified email address false")
+        logger.warn("verified email address false")
         Future.successful(Redirect(CheckYourEmailController.verifyEmailView(service, journey)))
       case _ =>
-        Logger.error("Couldn't verify email address")
+        logger.error("Couldn't verify email address")
         Future.successful(Redirect(CheckYourEmailController.verifyEmailView(service, journey)))
     }
 

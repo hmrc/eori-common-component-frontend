@@ -17,12 +17,12 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.{Inject, Singleton}
+import play.api.Logger
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
   SubscriptionDisplayResponse,
   SubscriptionDisplayResponseHolder
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -35,18 +35,18 @@ class SUB09SubscriptionDisplayConnector @Inject() (http: HttpClient, appConfig: 
   ec: ExecutionContext
 ) {
 
-  private val url               = appConfig.getServiceUrl("subscription-display")
-  private val loggerComponentId = "SubscriptionDisplayConnector"
+  private val logger = Logger(this.getClass)
+  private val url    = appConfig.getServiceUrl("subscription-display")
 
   def subscriptionDisplay(
     sub09Request: Seq[(String, String)]
   )(implicit hc: HeaderCarrier): Future[Either[EoriHttpResponse, SubscriptionDisplayResponse]] =
     http.GET[SubscriptionDisplayResponseHolder](url, sub09Request) map { resp =>
-      CdsLogger.info(s"[$loggerComponentId] subscription-display SUB09 successful. url: $url")
+      logger.info(s"subscription-display SUB09 successful. url: $url")
       Right(resp.subscriptionDisplayResponse)
     } recover {
       case NonFatal(e) =>
-        CdsLogger.error(s"[$loggerComponentId][status] subscription-display SUB09 failed. url: $url, error: $e")
+        logger.error(s"[status] subscription-display SUB09 failed. url: $url, error: $e")
         Left(ServiceUnavailableResponse)
     }
 

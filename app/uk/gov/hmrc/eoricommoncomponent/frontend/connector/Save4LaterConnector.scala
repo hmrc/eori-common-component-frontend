@@ -17,11 +17,11 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.{Inject, Singleton}
+import play.api.Logger
 import play.api.libs.json._
 import play.mvc.Http.Status._
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import uk.gov.hmrc.http.{BadRequestException, _}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -33,13 +33,13 @@ class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, aud
   ec: ExecutionContext
 ) {
 
-  val LoggerComponentId = "Save4LaterConnector"
+  private val logger = Logger(this.getClass)
 
   def get[T](id: String, key: String)(implicit hc: HeaderCarrier, reads: Reads[T]): Future[Option[T]] = {
     val url = s"${appConfig.handleSubscriptionBaseUrl}/save4later/$id/$key"
-    CdsLogger.info(s"[$LoggerComponentId][call] GET: $url")
+    logger.info(s"[call] GET: $url")
     http.GET[HttpResponse](url) map { response =>
-      CdsLogger.info(s"[$LoggerComponentId][call] complete for call to $url and headers ${hc.headers}")
+      logger.info(s"[call] complete for call to $url and headers ${hc.headers}")
 
       response.status match {
         case OK =>
@@ -52,20 +52,17 @@ class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, aud
       }
     } recoverWith {
       case NonFatal(e) =>
-        CdsLogger.error(
-          s"[$LoggerComponentId][call] request failed for call to $url and headers ${hc.headers}: ${e.getMessage}",
-          e
-        )
+        logger.error(s"[call] request failed for call to $url and headers ${hc.headers}: ${e.getMessage}", e)
         Future.failed(e)
     }
   }
 
   def put[T](id: String, key: String, payload: JsValue)(implicit hc: HeaderCarrier): Future[Unit] = {
     val url = s"${appConfig.handleSubscriptionBaseUrl}/save4later/$id/$key"
-    CdsLogger.info(s"[$LoggerComponentId][call] PUT: $url")
+    logger.info(s"[call] PUT: $url")
     auditCallRequest(url, payload)
     http.PUT[JsValue, HttpResponse](url, payload) map { response =>
-      CdsLogger.info(s"[$LoggerComponentId][call] complete for call to $url and headers ${hc.headers}")
+      logger.info(s"[call] complete for call to $url and headers ${hc.headers}")
       auditCallResponse(url, response.status)
       response.status match {
         case NO_CONTENT | CREATED | OK => ()
@@ -73,20 +70,17 @@ class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, aud
       }
     } recoverWith {
       case NonFatal(e) =>
-        CdsLogger.error(
-          s"[$LoggerComponentId][call] request failed for call to $url and headers ${hc.headers}: ${e.getMessage}",
-          e
-        )
+        logger.error(s"[call] request failed for call to $url and headers ${hc.headers}: ${e.getMessage}", e)
         Future.failed(e)
     }
   }
 
   def delete[T](id: String)(implicit hc: HeaderCarrier): Future[Unit] = {
     val url = s"${appConfig.handleSubscriptionBaseUrl}/save4later/$id"
-    CdsLogger.info(s"[$LoggerComponentId][call] DELETE: $url")
+    logger.info(s"[call] DELETE: $url")
     auditCallRequest(url, JsNull)
     http.DELETE[HttpResponse](url) map { response =>
-      CdsLogger.info(s"[$LoggerComponentId][call] complete for call to $url and headers ${hc.headers}")
+      logger.info(s"[call] complete for call to $url and headers ${hc.headers}")
       auditCallResponse(url, response.status)
       response.status match {
         case NO_CONTENT => ()
@@ -94,10 +88,7 @@ class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, aud
       }
     } recoverWith {
       case NonFatal(e) =>
-        CdsLogger.error(
-          s"[$LoggerComponentId][call] request failed for call to $url and headers ${hc.headers}: ${e.getMessage}",
-          e
-        )
+        logger.error(s"[call] request failed for call to $url and headers ${hc.headers}: ${e.getMessage}", e)
         Future.failed(e)
     }
   }

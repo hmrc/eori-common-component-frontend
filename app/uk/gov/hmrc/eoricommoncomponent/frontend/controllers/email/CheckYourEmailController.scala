@@ -48,6 +48,8 @@ class CheckYourEmailController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
+  private val logger = Logger(this.getClass)
+
   private def populateView(email: Option[String], isInReviewMode: Boolean, service: Service, journey: Journey.Value)(
     implicit request: Request[AnyContent]
   ): Future[Result] =
@@ -63,7 +65,7 @@ class CheckYourEmailController @Inject() (
       implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
         save4LaterService.fetchEmail(InternalId(userWithEnrolments.internalId)) flatMap {
           _.fold {
-            Logger.warn("[CheckYourEmailController][createForm] -   emailStatus cache none")
+            logger.warn("[CheckYourEmailController][createForm] -   emailStatus cache none")
             populateView(None, isInReviewMode = false, service, journey)
           } { emailStatus =>
             populateView(Some(emailStatus.email), isInReviewMode = false, service, journey)
@@ -82,7 +84,7 @@ class CheckYourEmailController @Inject() (
                 .fetchEmail(InternalId(userWithEnrolments.internalId))
                 .flatMap {
                   _.fold {
-                    Logger.warn("[CheckYourEmailController][submit] -   emailStatus cache none")
+                    logger.warn("[CheckYourEmailController][submit] -   emailStatus cache none")
                     Future(
                       BadRequest(
                         checkYourEmailView(
@@ -118,7 +120,7 @@ class CheckYourEmailController @Inject() (
       implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
         save4LaterService.fetchEmail(InternalId(userWithEnrolments.internalId)) flatMap { emailStatus =>
           emailStatus.fold {
-            Logger.warn("[CheckYourEmailController][verifyEmailView] -  emailStatus cache none")
+            logger.warn("[CheckYourEmailController][verifyEmailView] -  emailStatus cache none")
             populateEmailVerificationView(None, service, journey)
           } { email =>
             populateEmailVerificationView(Some(email.email), service, journey)
@@ -131,7 +133,7 @@ class CheckYourEmailController @Inject() (
       implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
         save4LaterService.fetchEmail(InternalId(userWithEnrolments.internalId)) flatMap { emailStatus =>
           emailStatus.fold {
-            Logger.warn("[CheckYourEmailController][emailConfirmed] -  emailStatus cache none")
+            logger.warn("[CheckYourEmailController][emailConfirmed] -  emailStatus cache none")
             Future.successful(Redirect(SecuritySignOutController.signOut(service, journey)))
           } { email =>
             if (email.isConfirmed.getOrElse(false))
@@ -169,7 +171,7 @@ class CheckYourEmailController @Inject() (
   )(implicit hc: HeaderCarrier): Future[Result] =
     save4LaterService.fetchEmail(internalId) flatMap {
       _.fold {
-        Logger.warn("[CheckYourEmailController][submitNewDetails] -  emailStatus cache none")
+        logger.warn("[CheckYourEmailController][submitNewDetails] -  emailStatus cache none")
         throw new IllegalStateException("[CheckYourEmailController][submitNewDetails] - emailStatus cache none")
       } { emailStatus =>
         emailVerificationService.createEmailVerificationRequest(
@@ -179,7 +181,7 @@ class CheckYourEmailController @Inject() (
           case Some(true) =>
             Future.successful(Redirect(CheckYourEmailController.verifyEmailView(service, journey)))
           case Some(false) =>
-            Logger.warn(
+            logger.warn(
               "[CheckYourEmailController][sendVerification] - " +
                 "Unable to send email verification request. Service responded with 'already verified'"
             )

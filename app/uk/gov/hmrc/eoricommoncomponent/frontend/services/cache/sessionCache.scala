@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.cache
 
 import javax.inject.{Inject, Singleton}
+import play.api.Logger
 import play.api.libs.json.{JsSuccess, Json}
 import play.modules.reactivemongo.ReactiveMongoComponent
 import uk.gov.hmrc.cache._
@@ -25,7 +26,6 @@ import uk.gov.hmrc.cache.repository.CacheMongoRepository
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
-import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.CachedData._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -106,6 +106,8 @@ class SessionCache @Inject() (
 )(implicit ec: ExecutionContext)
     extends CacheMongoRepository("session-cache", appConfig.ttl.toSeconds)(mongo.mongoConnector.db, ec) {
 
+  private val eccLogger: Logger = Logger(this.getClass)
+
   private def sessionId(implicit hc: HeaderCarrier): Id =
     hc.sessionId match {
       case None =>
@@ -166,11 +168,11 @@ class SessionCache @Inject() (
         Json.fromJson[CachedData](data) match {
           case d: JsSuccess[CachedData] => t(d.value, sessionId)
           case _ =>
-            CdsLogger.error(s"No Session data is cached for the sessionId : ${sessionId.id}")
+            eccLogger.error(s"No Session data is cached for the sessionId : ${sessionId.id}")
             throw SessionTimeOutException(s"No Session data is cached for the sessionId : ${sessionId.id}")
         }
       case _ =>
-        CdsLogger.error(s"No match session id for signed in user with session: ${sessionId.id}")
+        eccLogger.error(s"No match session id for signed in user with session: ${sessionId.id}")
         throw SessionTimeOutException(s"No match session id for signed in user with session : ${sessionId.id}")
     }
 

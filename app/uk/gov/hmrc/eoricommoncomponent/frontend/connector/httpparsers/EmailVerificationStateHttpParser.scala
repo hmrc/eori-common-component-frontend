@@ -22,6 +22,8 @@ import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object EmailVerificationStateHttpParser {
 
+  private val logger = Logger(this.getClass)
+
   type EmailVerificationStateResponse = Either[EmailVerificationStateErrorResponse, EmailVerificationState]
 
   implicit object GetEmailVerificationStateHttpReads extends HttpReads[EmailVerificationStateResponse] {
@@ -30,12 +32,12 @@ object EmailVerificationStateHttpParser {
       response.status match {
         case OK => Right(EmailVerified)
         case NOT_FOUND =>
-          Logger.warn(
+          logger.warn(
             "[GetEmailVerificationStateHttpParser][GetEmailVerificationStateHttpReads][read] - Email not verified"
           )
           Right(EmailNotVerified)
         case status =>
-          Logger.warn(
+          logger.warn(
             s"[GetEmailVerificationStateHttpParser][GetEmailVerificationStateHttpReads][read] - " +
               s"Unexpected Response, Status $status returned, with response: ${response.body}"
           )

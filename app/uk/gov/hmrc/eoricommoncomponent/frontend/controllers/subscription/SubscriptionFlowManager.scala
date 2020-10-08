@@ -17,12 +17,11 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
 import javax.inject.{Inject, Singleton}
+import play.api.Logger
 import play.api.mvc.{AnyContent, Request, Session}
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.FeatureFlags
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubscriptionFlow, SubscriptionPage, _}
-import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger.logger
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.Constants.ONE
@@ -56,6 +55,8 @@ case class SubscriptionFlowConfig(
 class SubscriptionFlowManager @Inject() (requestSessionData: RequestSessionData, cdsFrontendDataCache: SessionCache)(
   implicit ec: ExecutionContext
 ) {
+
+  private val logger = Logger(this.getClass)
 
   def currentSubscriptionFlow(implicit request: Request[AnyContent]): SubscriptionFlow =
     requestSessionData.userSubscriptionFlow

@@ -18,6 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
 import org.joda.time.DateTime
+import play.api.Logger
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
@@ -27,7 +28,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegisterWithEoriAndIdResp
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.dateTimeFormat
-import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{MatchingService, Reg06Service}
@@ -59,13 +59,15 @@ class RegisterWithEoriAndIdController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
+  private val logger = Logger(this.getClass)
+
   def registerWithEoriAndId(service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser =>
       sendRequest().flatMap {
         case true if isRow => handleRowResponse(service, journey)
         case true          => handleREG06Response(service, journey)
         case false =>
-          CdsLogger.error("Reg01 BadRequest ROW")
+          logger.error("Reg01 BadRequest ROW")
           val formattedDate = dateTimeFormat.print(DateTime.now())
           Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service, formattedDate)))
       }
@@ -139,7 +141,7 @@ class RegisterWithEoriAndIdController @Inject() (
           val statusText = resp.responseCommon.statusText
           handleErrorCodes(service, statusText)
         case _ =>
-          CdsLogger.error("Unknown RegistrationDetailsOutCome ")
+          logger.error("Unknown RegistrationDetailsOutCome")
           throw new IllegalStateException("Unknown RegistrationDetailsOutCome")
       }
     }
@@ -202,10 +204,10 @@ class RegisterWithEoriAndIdController @Inject() (
   ): Future[Result] =
     statusText match {
       case _ if statusText.contains(EoriAlreadyLinked) =>
-        CdsLogger.warn("Reg06 EoriAlreadyLinked")
+        logger.warn("Reg06 EoriAlreadyLinked")
         Future.successful(Redirect(RegisterWithEoriAndIdController.eoriAlreadyLinked(service)))
       case _ if statusText.contains(IDLinkedWithEori) =>
-        CdsLogger.warn("Reg06 IDLinkedWithEori")
+        logger.warn("Reg06 IDLinkedWithEori")
         Future.successful(Redirect(RegisterWithEoriAndIdController.eoriAlreadyLinked(service)))
       case _ if statusText.contains(RejectedPreviouslyAndRetry) =>
         Future.successful(Redirect(RegisterWithEoriAndIdController.rejectedPreviously(service)))

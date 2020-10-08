@@ -17,9 +17,9 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.{Inject, Singleton}
+import play.api.Logger
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -28,14 +28,14 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class VatControlListConnector @Inject() (http: HttpClient, appConfig: AppConfig)(implicit ec: ExecutionContext) {
 
-  private val url               = appConfig.getServiceUrl("vat-known-facts-control-list")
-  private val loggerComponentId = "VatControlListConnector"
+  private val logger = Logger(this.getClass)
+  private val url    = appConfig.getServiceUrl("vat-known-facts-control-list")
 
   def vatControlList(
     request: VatControlListRequest
   )(implicit hc: HeaderCarrier): Future[Either[EoriHttpResponse, VatControlListResponse]] =
     http.GET[VatControlListResponse](url, request.queryParams) map { resp =>
-      CdsLogger.info(s"[$loggerComponentId] vat-known-facts-control-list successful. url: $url")
+      logger.info(s"vat-known-facts-control-list successful. url: $url")
       Right(resp)
     } recover {
       case _: NotFoundException =>
@@ -44,7 +44,7 @@ class VatControlListConnector @Inject() (http: HttpClient, appConfig: AppConfig)
       case _: BadRequestException         => Left(InvalidResponse)
       case _: ServiceUnavailableException => Left(ServiceUnavailableResponse)
       case e: Throwable =>
-        CdsLogger.error(s"[$loggerComponentId][status] vat-known-facts-control-list failed. url: $url, error: $e", e)
+        logger.error(s"[status] vat-known-facts-control-list failed. url: $url, error: $e", e)
         throw e
     }
 

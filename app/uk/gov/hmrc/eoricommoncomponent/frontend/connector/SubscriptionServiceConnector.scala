@@ -17,13 +17,13 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.{Inject, Singleton}
+import play.api.Logger
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
   SubscriptionRequest,
   SubscriptionResponse
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -35,26 +35,26 @@ class SubscriptionServiceConnector @Inject() (http: HttpClient, appConfig: AppCo
   ec: ExecutionContext
 ) {
 
-  private val url               = appConfig.getServiceUrl("subscribe")
-  private val loggerComponentId = "SubscriptionServiceConnector"
+  private val logger = Logger(this.getClass)
+  private val url    = appConfig.getServiceUrl("subscribe")
 
   def subscribe(request: SubscriptionRequest)(implicit hc: HeaderCarrier): Future[SubscriptionResponse] = {
-    val loggerId = s"[$loggerComponentId][subscribe] SUB02"
+    val loggerId = s"[subscribe] SUB02"
     auditCallRequest(request, url)
     http.POST[SubscriptionRequest, SubscriptionResponse](url, request) map { response =>
-      CdsLogger.info(
+      logger.info(
         s"$loggerId complete for acknowledgementReference : ${request.subscriptionCreateRequest.requestCommon.acknowledgementReference}"
       )
       auditCallResponse(response, url)
       response
     } recoverWith {
       case e: BadRequestException =>
-        CdsLogger.error(
+        logger.error(
           s"$loggerId request failed for acknowledgementReference : ${request.subscriptionCreateRequest.requestCommon.acknowledgementReference}. Reason: $e"
         )
         Future.failed(e)
       case NonFatal(e) =>
-        CdsLogger.error(
+        logger.error(
           s"$loggerId request failed for acknowledgementReference : ${request.subscriptionCreateRequest.requestCommon.acknowledgementReference}. Reason: $e"
         )
         Future.failed(e)

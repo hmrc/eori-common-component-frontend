@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
 import javax.inject.{Inject, Singleton}
+import play.api.Logger
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SubscriptionServiceConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.FeatureFlags
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -24,7 +25,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.MessagingServic
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionCreateResponse._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
-import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -34,6 +34,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class SubscriptionService @Inject() (connector: SubscriptionServiceConnector, featureFlags: FeatureFlags)(implicit
   ec: ExecutionContext
 ) {
+
+  private val logger = Logger(this.getClass)
 
   private def maybe(service: Service): Option[Service] = if (featureFlags.sub02UseServiceName) Some(service) else None
 
@@ -70,7 +72,7 @@ class SubscriptionService @Inject() (connector: SubscriptionServiceConnector, fe
         subscribeWithConnector(request)
       case _ =>
         val err = "REGO6 ResponseData is non existent. This is required to populate subscription request"
-        CdsLogger.warn(err)
+        logger.warn(err)
         Future.successful(throw new IllegalStateException(err))
     }
 
@@ -131,7 +133,7 @@ class SubscriptionService @Inject() (connector: SubscriptionServiceConnector, fe
             s"Response status of FAIL returned for a SUB02: Create Subscription.${responseCommon.statusText.map(
               text => s" $text"
             ).getOrElse("")}"
-          CdsLogger.error(message)
+          logger.error(message)
           SubscriptionFailed(message, processingDate)
       }
     }

@@ -17,12 +17,12 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.{Inject, Singleton}
+import play.api.Logger
 import play.api.http.HeaderNames._
 import play.mvc.Http.MimeTypes
 import play.mvc.Http.Status.{NO_CONTENT, OK}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.HandleSubscriptionRequest
-import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -32,17 +32,19 @@ import scala.util.control.NonFatal
 @Singleton
 class HandleSubscriptionConnector @Inject() (http: HttpClient, appConfig: AppConfig)(implicit ec: ExecutionContext) {
 
+  private val logger = Logger(this.getClass)
+
   val LoggerComponentId = "HandleSubscriptionConnector"
 
   def call(request: HandleSubscriptionRequest)(implicit hc: HeaderCarrier): Future[Unit] = {
     val url = s"${appConfig.handleSubscriptionBaseUrl}/${appConfig.handleSubscriptionServiceContext}"
-    CdsLogger.info(s"[$LoggerComponentId][call] postUrl: $url")
+    logger.info(s"[$LoggerComponentId][call] postUrl: $url")
 
     val headers = Seq(ACCEPT -> "application/vnd.hmrc.1.0+json", CONTENT_TYPE -> MimeTypes.JSON)
     http.POST[HandleSubscriptionRequest, HttpResponse](url, request, headers) map { response =>
       response.status match {
         case OK | NO_CONTENT =>
-          CdsLogger.info(
+          logger.info(
             s"[$LoggerComponentId][call] complete for call to $url and headers ${hc.headers}. Status:${response.status}"
           )
           ()
@@ -50,13 +52,13 @@ class HandleSubscriptionConnector @Inject() (http: HttpClient, appConfig: AppCon
       }
     } recoverWith {
       case e: BadRequestException =>
-        CdsLogger.error(
+        logger.error(
           s"[$LoggerComponentId][call] request failed with BAD_REQUEST status for call to $url and headers ${hc.headers}: ${e.getMessage}",
           e
         )
         Future.failed(e)
       case NonFatal(e) =>
-        CdsLogger.error(
+        logger.error(
           s"[$LoggerComponentId][call] request failed for call to $url and headers ${hc.headers}: ${e.getMessage}",
           e
         )

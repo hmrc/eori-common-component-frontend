@@ -17,14 +17,13 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend
 
 import javax.inject.Inject
-import play.api.Configuration
+import play.api.{Configuration, Logger}
 import play.api.i18n.MessagesApi
 import play.api.mvc.Results._
 import play.api.mvc._
 import play.mvc.Http.Status._
 import play.twirl.api.Html
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
-import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionTimeOutException
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.Constants
@@ -42,13 +41,15 @@ class CdsErrorHandler @Inject() (
   notFoundView: notFound
 ) extends FrontendErrorHandler {
 
+  private val logger = Logger(this.getClass)
+
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit
     request: Request[_]
   ): Html = throw new IllegalStateException("This method should not be used any more.")
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
 
-    CdsLogger.error(s"Error with status code: $statusCode and message: $message")
+    logger.error(s"Error with status code: $statusCode and message: $message")
     implicit val req: Request[_] = Request(request, "")
 
     statusCode match {
@@ -64,10 +65,10 @@ class CdsErrorHandler @Inject() (
 
     exception match {
       case sessionTimeOut: SessionTimeOutException =>
-        CdsLogger.error("Session time out: " + sessionTimeOut.errorMessage, exception)
+        logger.error("Session time out: " + sessionTimeOut.errorMessage, exception)
         Future.successful(Redirect(SecuritySignOutController.displayPage(service, journeyFromRequest)).withNewSession)
       case _ =>
-        CdsLogger.error("Internal server error: " + exception.getMessage, exception)
+        logger.error("Internal server error: " + exception.getMessage, exception)
         Future.successful(Results.InternalServerError(errorTemplateView()))
     }
   }

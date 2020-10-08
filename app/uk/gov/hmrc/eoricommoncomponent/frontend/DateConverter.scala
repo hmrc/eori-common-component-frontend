@@ -16,17 +16,20 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend
 
-import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import org.joda.time.LocalDate
+import play.api.Logger
+
 import scala.util.control.NonFatal
 import scala.util.{Failure, Try}
 
 object DateConverter {
 
+  private val logger = Logger(this.getClass)
+
   def toLocalDate(dateStr: String): Option[LocalDate] =
     Try(LocalDate.parse(dateStr)).recoverWith {
       case NonFatal(e) =>
-        CdsLogger.warn(s"Could not parse the LocalDate '$dateStr': ${e.getMessage}", e)
+        logger.warn(s"Could not parse the LocalDate '$dateStr': ${e.getMessage}", e)
         Failure(e)
     }.toOption
 

@@ -18,12 +18,12 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import akka.util.ByteString
 import javax.inject.{Inject, Singleton}
+import play.api.Logger
 import play.api.http.HeaderNames.CONTENT_TYPE
 import play.api.http.MimeTypes
 import play.api.libs.json.Json
 import play.api.libs.ws.WSClient
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
@@ -31,13 +31,15 @@ import scala.util.control.NonFatal
 @Singleton
 class PdfGeneratorConnector @Inject() (http: WSClient, appConfig: AppConfig) {
 
-  private val loggerComponentId = "PdfGeneratorConnector"
-  private val baseUrl: String   = appConfig.pdfGeneratorBaseUrl
+  private val logger = Logger(this.getClass)
+
+  private val baseUrl: String = appConfig.pdfGeneratorBaseUrl
 
   private lazy val url = s"$baseUrl/pdf-generator-service/generate"
 
   def generatePdf(html: String)(implicit ec: ExecutionContext): Future[ByteString] = {
-    CdsLogger.debug(s"[$loggerComponentId][generatePdf] postUrl: $url")
+    logger.debug(s"[generatePdf] postUrl: $url")
+
     http
       .url(url)
       .withHttpHeaders(CONTENT_TYPE -> MimeTypes.JSON)
@@ -45,7 +47,7 @@ class PdfGeneratorConnector @Inject() (http: WSClient, appConfig: AppConfig) {
       .map(_.bodyAsBytes)
       .recoverWith {
         case NonFatal(e) =>
-          CdsLogger.error(s"[$loggerComponentId][generatePdf] postUrl: $url FAILED.", e)
+          logger.error(s"[generatePdf] postUrl: $url FAILED.", e)
           Future.failed(e)
       }
   }
