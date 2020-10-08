@@ -25,7 +25,7 @@ object KnownFactsQuery {
 
   def apply(eoriNumber: String): KnownFactsQuery =
     new KnownFactsQuery(
-      service = "HMRC-CUS-ORG",
+      service = "HMRC-CUS-ORG",  // TODO check - should this be [SERVICE]
       knownFacts = List(KeyValuePair(key = "EORINumber", value = eoriNumber))
     )
 

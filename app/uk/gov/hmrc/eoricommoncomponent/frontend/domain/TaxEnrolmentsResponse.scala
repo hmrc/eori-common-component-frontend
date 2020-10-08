@@ -34,7 +34,7 @@ object TaxEnrolmentsResponse {
 case class KeyValue(key: String, value: String)
 
 case class TaxEnrolmentsRequest(
-  serviceName: String = "HMRC-CUS-ORG",
+  serviceName: String,
   identifiers: List[KeyValue],
   verifiers: Option[List[KeyValue]] = None,
   subscriptionState: String = "SUCCEEDED"
