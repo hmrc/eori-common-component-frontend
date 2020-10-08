@@ -334,13 +334,18 @@ class SubscriptionServiceSpec
     }
 
     "return a valid fail response when subscription fails for business reason" in {
+      val errorFromEIS = "999 - Some error occurred"
+
       val expectedFailure =
-        SubscriptionFailed("Response status of FAIL returned for a SUB02: Create Subscription.", "18 Aug 2016")
+        SubscriptionFailed(
+          "Response status of FAIL returned for a SUB02: Create Subscription. " + errorFromEIS,
+          "18 Aug 2016"
+        )
 
       val service = constructService(
         connectorMock =>
           when(connectorMock.subscribe(ArgumentMatchers.any())(ArgumentMatchers.any()))
-            .thenReturn(Future.successful(subscriptionFailedResponseJson()).as[SubscriptionResponse])
+            .thenReturn(Future.successful(subscriptionFailedResponseJson(errorFromEIS)).as[SubscriptionResponse])
       )
 
       val res = await(

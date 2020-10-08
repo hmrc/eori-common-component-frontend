@@ -127,7 +127,12 @@ class SubscriptionService @Inject() (connector: SubscriptionServiceConnector, fe
         case MessagingServiceParam.Fail if responseCommon.statusText.contains(SubscriptionInProgress) =>
           SubscriptionFailed(SubscriptionInProgress, processingDate)
         case MessagingServiceParam.Fail =>
-          SubscriptionFailed("Response status of FAIL returned for a SUB02: Create Subscription.", processingDate)
+          val message =
+            s"Response status of FAIL returned for a SUB02: Create Subscription.${responseCommon.statusText.map(
+              text => s" $text"
+            ).getOrElse("")}"
+          CdsLogger.error(message)
+          SubscriptionFailed(message, processingDate)
       }
     }
 
