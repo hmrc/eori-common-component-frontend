@@ -37,7 +37,7 @@ class TaxEnrolmentsService @Inject() (taxEnrolmentsConnector: TaxEnrolmentsConne
       enrolments.exists(_.serviceName == serviceName)
     }
 
-  def issuerCall(formBundleId: String, eori: Eori, dateOfEstablishment: Option[LocalDate], service:Service)(implicit
+  def issuerCall(formBundleId: String, eori: Eori, dateOfEstablishment: Option[LocalDate], service: Service)(implicit
     hc: HeaderCarrier
   ): Future[Int] = {
     val identifiers = List(KeyValue(key = "EORINUMBER", value = eori.id))

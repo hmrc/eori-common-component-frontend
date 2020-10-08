@@ -58,7 +58,7 @@ object EnrolmentStoreProxyService {
     }
 
   private def endpoint(groupId: String) =
-    s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments?type=principal&service=HMRC-CUS-ORG"
+    s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments?type=principal"
 
   def returnEnrolmentStoreProxyResponseOk(groupId: String): Unit =
     stubTheEnrolmentStoreProxyResponse(endpoint(groupId), responseWithOk.toString(), OK)

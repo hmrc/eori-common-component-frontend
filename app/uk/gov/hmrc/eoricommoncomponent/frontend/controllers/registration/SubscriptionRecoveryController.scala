@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
-import play.api.Logger
 import play.api.i18n.Messages
 import play.api.mvc.{Action, _}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SUB09SubscriptionDisplayConnector
@@ -31,7 +30,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.RecipientDet
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RandomUUIDGenerator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{HandleSubscriptionService, SubscriptionDetailsService, TaxEnrolmentsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  HandleSubscriptionService,
+  SubscriptionDetailsService,
+  TaxEnrolmentsService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -208,9 +211,12 @@ class SubscriptionRecoveryController @Inject() (
       )
   }
 
-  private def issuerCall(eori: Eori, formBundleId: String, subscriptionDisplayResponse: SubscriptionDisplayResponse, service: Service)(
-    redirect: => Result
-  )(implicit headerCarrier: HeaderCarrier): Future[Result] = {
+  private def issuerCall(
+    eori: Eori,
+    formBundleId: String,
+    subscriptionDisplayResponse: SubscriptionDisplayResponse,
+    service: Service
+  )(redirect: => Result)(implicit headerCarrier: HeaderCarrier): Future[Result] = {
     val dateOfEstablishment = subscriptionDisplayResponse.responseDetail.dateOfEstablishment
     taxEnrolmentService.issuerCall(formBundleId, eori, dateOfEstablishment, service).map {
       case NO_CONTENT => redirect
