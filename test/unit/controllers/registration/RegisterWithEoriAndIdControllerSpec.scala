@@ -27,9 +27,11 @@ import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegisterWithEoriAndIdResponse._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, ResponseCommon}
@@ -64,6 +66,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
   private val mockSubscriptionDetails        = mock[SubscriptionDetails]
   private val mockSub01Outcome               = mock[Sub01Outcome]
+  private val groupEnrolmentExtractor        = mock[GroupEnrolmentExtractor]
 
   private val sub01OutcomeProcessingView = instanceOf[sub01_outcome_processing]
 
@@ -93,7 +96,8 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
     subscriptionOutcomePendingView,
     subscriptionOutcomeFailView,
     reg06EoriAlreadyLinked,
-    mockTaxEnrolmentsService
+    mockTaxEnrolmentsService,
+    groupEnrolmentExtractor
   )(global)
 
   private val formBundleIdResponse: String = "Form-Bundle-Id"
@@ -168,6 +172,8 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
       .thenReturn(Future.successful(Some(Utr(""))))
+    when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any(), any()))
+      .thenReturn(Future.successful(false))
   }
 
   "Register with existing eori" should {
@@ -178,6 +184,20 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
     )
     val processingDateResponse: String = "19 April 2018"
     val emailVerificationTimestamp     = TestData.emailVerificationTimestamp
+
+    "redirect to enrolment exists if user has group enrolment to service" in {
+      when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any(), any())).thenReturn(
+        Future.successful(true)
+      )
+
+      regExistingEori { result =>
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe EnrolmentAlreadyExistsController
+          .enrolmentAlreadyExistsForGroup(Service.ATaR)
+          .url
+      }
+    }
+
     "create a subscription for organisation" in {
       when(
         mockCdsSubscriber.subscribeWithCachedDetails(

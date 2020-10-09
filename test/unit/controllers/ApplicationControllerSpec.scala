@@ -24,6 +24,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.MissingGroupId
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, KeyValue}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.{ATaR, CDS}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
@@ -46,7 +47,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
   private val startView                  = instanceOf[start]
   private val accessibilityStatementView = instanceOf[accessibility_statement]
-  private val enrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
+  private val groupEnrolmentExtractor    = mock[GroupEnrolmentExtractor]
 
   val controller = new ApplicationController(
     mockAuthAction,
@@ -54,16 +55,18 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
     startView,
     accessibilityStatementView,
     mockSessionCache,
-    enrolmentStoreProxyService,
+    groupEnrolmentExtractor,
     appConfig
   )
 
   override def beforeEach: Unit = {
     super.beforeEach()
-    reset(mockAuthConnector, enrolmentStoreProxyService, mockSessionCache)
+    reset(mockAuthConnector, groupEnrolmentExtractor, mockSessionCache)
 
-    when(enrolmentStoreProxyService.enrolmentForGroup(any(), any())(any()))
+    when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), any())(any()))
       .thenReturn(Future.successful(None))
+    when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any(), any()))
+      .thenReturn(Future.successful(false))
   }
 
   private def groupEnrolment(service: Service) = Some(
@@ -90,7 +93,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
     }
 
     "direct authenticated users with CDS enrolment to start short-cut subscription" in {
-      when(enrolmentStoreProxyService.enrolmentForGroup(any(), ArgumentMatchers.eq(ATaR))(any()))
+      when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(ATaR))(any()))
         .thenReturn(Future.successful(None))
 
       val cdsEnrolment = Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", "GB134123")
@@ -105,9 +108,9 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
     }
 
     "direct authenticated users where group id has CDS enrolment to start short-cut subscription" in {
-      when(enrolmentStoreProxyService.enrolmentForGroup(any(), ArgumentMatchers.eq(ATaR))(any()))
+      when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(ATaR))(any()))
         .thenReturn(Future.successful(None))
-      when(enrolmentStoreProxyService.enrolmentForGroup(any(), ArgumentMatchers.eq(CDS))(any()))
+      when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(CDS))(any()))
         .thenReturn(Future.successful(groupEnrolment(CDS)))
       when(mockSessionCache.saveGroupEnrolment(any[EnrolmentResponse])(any())).thenReturn(Future.successful(true))
 
@@ -137,8 +140,8 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
     "inform authenticated users where group Id has an enrolment that subscription exists" in {
 
-      when(enrolmentStoreProxyService.enrolmentForGroup(any(), ArgumentMatchers.eq(ATaR))(any()))
-        .thenReturn(Future.successful(groupEnrolment(CDS)))
+      when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), ArgumentMatchers.eq(ATaR))(any(), any()))
+        .thenReturn(Future.successful(true))
 
       withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set.empty)
 

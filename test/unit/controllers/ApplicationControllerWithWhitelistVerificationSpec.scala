@@ -20,6 +20,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
@@ -39,7 +40,7 @@ class ApplicationControllerWithAllowlistVerificationSpec extends ControllerSpec 
   private val mockSessionCache           = mock[SessionCache]
   private val startView                  = instanceOf[start]
   private val accessibilityStatementView = instanceOf[accessibility_statement]
-  private val enrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
+  private val groupEnrolmentExtractor    = mock[GroupEnrolmentExtractor]
 
   val controller = new ApplicationController(
     mockAuthAction,
@@ -47,7 +48,7 @@ class ApplicationControllerWithAllowlistVerificationSpec extends ControllerSpec 
     startView,
     accessibilityStatementView,
     mockSessionCache,
-    enrolmentStoreProxyService,
+    groupEnrolmentExtractor,
     appConfig
   )
 

@@ -22,6 +22,7 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
 import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, _}
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{FailedEnrolmentException, HasExistingEoriController}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, KeyValue}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
@@ -37,10 +38,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
-  private val mockAuthConnector    = mock[AuthConnector]
-  private val mockAuthAction       = authAction(mockAuthConnector)
-  private val mockEnrolmentService = mock[EnrolmentService]
-  private val mockSessionCache     = mock[SessionCache]
+  private val mockAuthConnector       = mock[AuthConnector]
+  private val mockAuthAction          = authAction(mockAuthConnector)
+  private val mockEnrolmentService    = mock[EnrolmentService]
+  private val mockSessionCache        = mock[SessionCache]
+  private val groupEnrolmentExtractor = mock[GroupEnrolmentExtractor]
 
   private val hasExistingEoriView  = instanceOf[has_existing_eori]
   private val eoriEnrolSuccessView = instanceOf[eori_enrol_success]
@@ -59,19 +61,21 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
       eoriEnrolSuccessView,
       mcc,
       mockEnrolmentService,
+      groupEnrolmentExtractor,
       mockSessionCache
     )
 
   override def beforeEach: Unit = {
     super.beforeEach()
-    reset(mockAuthConnector, mockEnrolmentService, mockSessionCache)
-    userHasGroupEnrolment
+    reset(mockAuthConnector, mockEnrolmentService, mockSessionCache, groupEnrolmentExtractor)
+    userHasGroupEnrolmentToCds
+    userDoesNotHaveGroupEnrolmentToService
   }
 
   "Has Existing EORI Controller display page" should {
 
     "throw exception when user does not have existing CDS enrolment" in {
-      userDoesNotHaveGroupEnrolment
+      userDoesNotHaveGroupEnrolmentToCds
 
       intercept[IllegalStateException](displayPage(Service.ATaR)(result => status(result))).getMessage should startWith(
         "No EORI found"
@@ -115,6 +119,15 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
       }
     }
 
+    "redirect to enrolment exists if user has group enrolment to service" in {
+      userHasGroupEnrolmentToService
+
+      enrol(Service.ATaR, NO_CONTENT) { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("/enrolment-already-exists-for-group")
+      }
+    }
+
     "throw exception on failure" in {
       intercept[FailedEnrolmentException](
         enrol(Service.ATaR, INTERNAL_SERVER_ERROR)(result => status(result))
@@ -125,7 +138,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
   "Has Existing EORI Controller enrol confirmation page" should {
 
     "throw exception when user does not have existing CDS enrolment" in {
-      userDoesNotHaveGroupEnrolment
+      userDoesNotHaveGroupEnrolmentToCds
 
       intercept[IllegalStateException](
         enrolSuccess(Service.ATaR)(result => status(result))
@@ -174,14 +187,21 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     await(test(controller.enrolSuccess(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
-  private def userDoesNotHaveGroupEnrolment = when(mockSessionCache.groupEnrolment(any[HeaderCarrier]))
+  private def userDoesNotHaveGroupEnrolmentToCds = when(mockSessionCache.groupEnrolment(any[HeaderCarrier]))
     .thenReturn(Future.successful(EnrolmentResponse(Service.CDS.enrolmentKey, "Activated", List.empty)))
 
-  private def userHasGroupEnrolment = when(mockSessionCache.groupEnrolment(any[HeaderCarrier]))
-    .thenReturn(
-      Future.successful(
-        EnrolmentResponse(Service.CDS.enrolmentKey, "Activated", List(KeyValue("EORINumber", groupEORI)))
+  private def userHasGroupEnrolmentToCds =
+    when(mockSessionCache.groupEnrolment(any[HeaderCarrier]))
+      .thenReturn(
+        Future.successful(
+          EnrolmentResponse(Service.CDS.enrolmentKey, "Activated", List(KeyValue("EORINumber", groupEORI)))
+        )
       )
-    )
+
+  private def userHasGroupEnrolmentToService =
+    when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any(), any())).thenReturn(Future.successful(true))
+
+  private def userDoesNotHaveGroupEnrolmentToService =
+    when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any(), any())).thenReturn(Future.successful(false))
 
 }

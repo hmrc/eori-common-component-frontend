@@ -18,7 +18,11 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.mvc._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, EnrolmentExtractor}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
+  AuthAction,
+  EnrolmentExtractor,
+  GroupEnrolmentExtractor
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.CDS
@@ -36,6 +40,7 @@ class HasExistingEoriController @Inject() (
   enrolSuccessView: eori_enrol_success,
   mcc: MessagesControllerComponents,
   enrolmentService: EnrolmentService,
+  groupEnrolment: GroupEnrolmentExtractor,
   cache: SessionCache
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) with EnrolmentExtractor {
@@ -49,12 +54,21 @@ class HasExistingEoriController @Inject() (
 
   def enrol(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
-      existingEoriToUse.flatMap { eori =>
-        enrolmentService.enrolWithExistingCDSEnrolment(eori, service).map {
-          case NO_CONTENT => Redirect(routes.HasExistingEoriController.enrolSuccess(service))
-          case status     => throw FailedEnrolmentException(status)
-        }
+      groupEnrolment.hasGroupIdEnrolmentTo(user.groupId.getOrElse(throw MissingGroupId()), service).flatMap {
+        groupIdEnrolmentExists =>
+          if (groupIdEnrolmentExists) throw SpecificGroupIdEnrolmentExists(service)
+
+          existingEoriToUse.flatMap { eori =>
+            enrolmentService.enrolWithExistingCDSEnrolment(eori, service).map {
+              case NO_CONTENT => Redirect(routes.HasExistingEoriController.enrolSuccess(service))
+              case status     => throw FailedEnrolmentException(status)
+            }
+          }
+      }.recover {
+        case SpecificGroupIdEnrolmentExists(service) =>
+          Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service))
       }
+
     }
 
   // Note: permitted for user with service enrolment

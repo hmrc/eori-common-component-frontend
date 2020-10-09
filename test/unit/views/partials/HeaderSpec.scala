@@ -19,6 +19,7 @@ package unit.views.partials
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, start}
@@ -36,7 +37,7 @@ class HeaderSpec extends ControllerSpec with AuthActionMock {
 
   private val viewStart                  = instanceOf[start]
   private val accessibilityStatementView = instanceOf[accessibility_statement]
-  private val enrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
+  private val groupEnrolmentExtractor    = mock[GroupEnrolmentExtractor]
 
   private val controller = new ApplicationController(
     mockAuthAction,
@@ -44,7 +45,7 @@ class HeaderSpec extends ControllerSpec with AuthActionMock {
     viewStart,
     accessibilityStatementView,
     mockCdsFrontendCache,
-    enrolmentStoreProxyService,
+    groupEnrolmentExtractor,
     appConfig
   )
 

@@ -20,12 +20,15 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, EnrolmentExtractor}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, GroupId, LoggedInUserWithEnrolments}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
+  AuthAction,
+  EnrolmentExtractor,
+  GroupEnrolmentExtractor
+}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.CDS
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, start}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -38,7 +41,7 @@ class ApplicationController @Inject() (
   viewStart: start,
   accessibilityStatementView: accessibility_statement,
   cache: SessionCache,
-  enrolmentStoreProxyService: EnrolmentStoreProxyService,
+  groupEnrolment: GroupEnrolmentExtractor,
   appConfig: AppConfig
 )(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
     extends CdsController(mcc) with EnrolmentExtractor {
@@ -54,7 +57,7 @@ class ApplicationController @Inject() (
       {
           loggedInUser.groupId match {
             case Some(groupId) =>
-              hasGroupIdEnrolmentTo(groupId, service).flatMap { groupIdEnrolmentExists =>
+              groupEnrolment.hasGroupIdEnrolmentTo(groupId, service).flatMap { groupIdEnrolmentExists =>
                 if (groupIdEnrolmentExists) throw SpecificGroupIdEnrolmentExists(service)
 
                 cdsEnrolmentCheck(loggedInUser, groupId, service)
@@ -73,21 +76,13 @@ class ApplicationController @Inject() (
   private def isUserEnrolledFor(loggedInUser: LoggedInUserWithEnrolments, service: Service): Boolean =
     enrolledForService(loggedInUser, service).isDefined
 
-  private def hasGroupIdEnrolmentTo(groupId: String, service: Service)(implicit hc: HeaderCarrier): Future[Boolean] =
-    groupIdEnrolmentTo(groupId, service).map(_.isDefined)
-
-  private def groupIdEnrolmentTo(groupId: String, service: Service)(implicit
-    hc: HeaderCarrier
-  ): Future[Option[EnrolmentResponse]] =
-    enrolmentStoreProxyService.enrolmentForGroup(GroupId(groupId), service)
-
   private def cdsEnrolmentCheck(loggedInUser: LoggedInUserWithEnrolments, groupId: String, serviceToEnrol: Service)(
     implicit hc: HeaderCarrier
   ): Future[Result] =
     if (isUserEnrolledFor(loggedInUser, CDS))
       Future.successful(Redirect(routes.HasExistingEoriController.displayPage(serviceToEnrol)))
     else
-      groupIdEnrolmentTo(groupId, CDS).flatMap {
+      groupEnrolment.groupIdEnrolmentTo(groupId, CDS).flatMap {
         case Some(groupEnrolment) if groupEnrolment.eori.isDefined =>
           cache.saveGroupEnrolment(groupEnrolment).map { _ =>
             Redirect(routes.HasExistingEoriController.displayPage(serviceToEnrol)) // AutoEnrolment

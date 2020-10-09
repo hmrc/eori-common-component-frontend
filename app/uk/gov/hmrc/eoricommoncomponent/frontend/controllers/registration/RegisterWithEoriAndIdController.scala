@@ -20,10 +20,15 @@ import javax.inject.{Inject, Singleton}
 import org.joda.time.DateTime
 import play.api.Logger
 import play.api.mvc._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, GroupEnrolmentExtractor}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.EnrolmentAlreadyExistsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.{Sub02Controller, _}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{
+  CdsController,
+  MissingGroupId,
+  SpecificGroupIdEnrolmentExists
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegisterWithEoriAndIdResponse._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
@@ -55,7 +60,8 @@ class RegisterWithEoriAndIdController @Inject() (
   subscriptionOutcomePendingView: subscription_outcome_pending,
   subscriptionOutcomeFailView: subscription_outcome_fail,
   reg06EoriAlreadyLinked: reg06_eori_already_linked,
-  taxEnrolmentsService: TaxEnrolmentsService
+  taxEnrolmentsService: TaxEnrolmentsService,
+  groupEnrolment: GroupEnrolmentExtractor
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
@@ -63,13 +69,21 @@ class RegisterWithEoriAndIdController @Inject() (
 
   def registerWithEoriAndId(service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser =>
-      sendRequest().flatMap {
-        case true if isRow => handleRowResponse(service, journey)
-        case true          => handleREG06Response(service, journey)
-        case false =>
-          logger.error("Reg01 BadRequest ROW")
-          val formattedDate = dateTimeFormat.print(DateTime.now())
-          Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service, formattedDate)))
+      groupEnrolment.hasGroupIdEnrolmentTo(loggedInUser.groupId.getOrElse(throw MissingGroupId()), service).flatMap {
+        groupIdEnrolmentExists =>
+          if (groupIdEnrolmentExists) throw SpecificGroupIdEnrolmentExists(service)
+
+          sendRequest().flatMap {
+            case true if isRow => handleRowResponse(service, journey)
+            case true          => handleREG06Response(service, journey)
+            case false =>
+              logger.error("Reg01 BadRequest ROW")
+              val formattedDate = dateTimeFormat.print(DateTime.now())
+              Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service, formattedDate)))
+          }
+      }.recover {
+        case SpecificGroupIdEnrolmentExists(service) =>
+          Redirect(EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service))
       }
     }
 
