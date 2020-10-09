@@ -22,11 +22,12 @@ import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfter
 import org.scalatest.mockito.MockitoSugar
+import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.TaxEnrolmentsConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Eori, SafeId, TaxEnrolmentsRequest, TaxEnrolmentsResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.TaxEnrolmentsService
 import uk.gov.hmrc.http.HeaderCarrier
-import play.api.test.Helpers._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -42,12 +43,12 @@ class TaxEnrolmentsServiceSpec extends UnitSpec with MockitoSugar with BeforeAnd
     reset(mockTaxEnrolmentsConnector)
   }
 
-  val serviceName          = "HMRC-CUS-ORG"
+  val testService          = Service.CDS
   val safeId               = SafeId("safeid")
   val eori                 = Eori("GB99999999")
   val formBundleId         = "formBundleId"
   val date                 = LocalDate.parse("2010-04-28")
-  val taxEnrolmentResponse = TaxEnrolmentsResponse(serviceName = serviceName)
+  val taxEnrolmentResponse = TaxEnrolmentsResponse(serviceName = testService.enrolmentKey)
   "TaxEnrolmentsService" should {
 
     "determine enrolmentExists" in {
@@ -59,13 +60,13 @@ class TaxEnrolmentsServiceSpec extends UnitSpec with MockitoSugar with BeforeAnd
       verify(mockTaxEnrolmentsConnector).getEnrolments(any[String])(meq(headerCarrier))
     }
 
-    "make  issuer call" in {
+    "make issuer call" in {
       when(
         mockTaxEnrolmentsConnector
           .enrol(any[TaxEnrolmentsRequest], any[String])(any[HeaderCarrier])
       ).thenReturn(Future.successful(NO_CONTENT))
 
-      await(service.issuerCall(formBundleId, eori, Some(date))) shouldBe NO_CONTENT
+      await(service.issuerCall(formBundleId, eori, Some(date), testService)) shouldBe NO_CONTENT
 
       verify(mockTaxEnrolmentsConnector)
         .enrol(any[TaxEnrolmentsRequest], any[String])(any[HeaderCarrier])

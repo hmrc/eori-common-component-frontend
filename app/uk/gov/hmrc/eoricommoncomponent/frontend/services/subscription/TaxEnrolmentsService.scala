@@ -21,6 +21,7 @@ import org.joda.time.LocalDate
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.TaxEnrolmentsConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.TaxEnrolmentsRequest._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Eori, KeyValue, SafeId, TaxEnrolmentsRequest}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,14 +37,14 @@ class TaxEnrolmentsService @Inject() (taxEnrolmentsConnector: TaxEnrolmentsConne
       enrolments.exists(_.serviceName == serviceName)
     }
 
-  def issuerCall(formBundleId: String, eori: Eori, dateOfEstablishment: Option[LocalDate])(implicit
+  def issuerCall(formBundleId: String, eori: Eori, dateOfEstablishment: Option[LocalDate], service: Service)(implicit
     hc: HeaderCarrier
   ): Future[Int] = {
     val identifiers = List(KeyValue(key = "EORINUMBER", value = eori.id))
     val verifiers =
       dateOfEstablishment.map(doe => List(KeyValue(key = "DATEOFESTABLISHMENT", value = doe.toString(pattern))))
     val taxEnrolmentsRequest =
-      TaxEnrolmentsRequest(identifiers = identifiers, verifiers = verifiers)
+      TaxEnrolmentsRequest(serviceName = service.enrolmentKey, identifiers = identifiers, verifiers = verifiers)
     taxEnrolmentsConnector.enrol(taxEnrolmentsRequest, formBundleId)
   }
 

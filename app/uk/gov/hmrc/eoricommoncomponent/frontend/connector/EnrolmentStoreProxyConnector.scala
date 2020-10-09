@@ -42,7 +42,7 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
     groupId: String
   )(implicit hc: HeaderCarrier, reads: Reads[EnrolmentStoreProxyResponse]): Future[EnrolmentStoreProxyResponse] = {
     val url =
-      s"$baseUrl/$serviceContext/enrolment-store/groups/$groupId/enrolments?type=principal&service=HMRC-CUS-ORG"
+      s"$baseUrl/$serviceContext/enrolment-store/groups/$groupId/enrolments?type=principal"
     http.GET[HttpResponse](url) map { resp =>
       auditCall(url, resp)
       CdsLogger.info(s"[$loggerComponentId] enrolment-store-proxy. url: $url")

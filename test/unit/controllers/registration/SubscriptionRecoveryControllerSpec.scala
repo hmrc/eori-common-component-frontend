@@ -17,7 +17,7 @@
 package unit.controllers.registration
 
 import org.joda.time.{DateTime, LocalDate}
-import org.mockito.ArgumentMatchers.{any, anyString}
+import org.mockito.ArgumentMatchers.{any, anyString, eq => meq}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
@@ -44,11 +44,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.{AuthActionMock, SessionBuilder}
 import util.builders.SubscriptionInfoBuilder._
+import util.builders.{AuthActionMock, SessionBuilder}
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.global
+import scala.concurrent.Future
 
 class SubscriptionRecoveryControllerSpec
     extends ControllerSpec with MockitoSugar with BeforeAndAfterEach with AuthActionMock {
@@ -158,7 +158,7 @@ class SubscriptionRecoveryControllerSpec
         header(LOCATION, result) shouldBe Some("/customs-enrolment-services/register/complete")
       }
       verify(mockTaxEnrolmentsService, times(0))
-        .issuerCall(anyString, any[Eori], any[Option[LocalDate]])(any[HeaderCarrier])
+        .issuerCall(anyString, any[Eori], any[Option[LocalDate]], any[Service])(any[HeaderCarrier])
 
     }
 
@@ -173,14 +173,19 @@ class SubscriptionRecoveryControllerSpec
 
       when(
         mockTaxEnrolmentsService
-          .issuerCall(anyString, any[Eori], any[Option[LocalDate]])(any[HeaderCarrier])
+          .issuerCall(anyString, any[Eori], any[Option[LocalDate]], any[Service])(any[HeaderCarrier])
       ).thenReturn(Future.successful(NO_CONTENT))
 
       callEnrolmentComplete(journey = Journey.Subscribe) { result =>
         status(result) shouldBe SEE_OTHER
         header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/subscribe/complete")
       }
-      verify(mockTaxEnrolmentsService).issuerCall(anyString, any[Eori], any[Option[LocalDate]])(any[HeaderCarrier])
+      verify(mockTaxEnrolmentsService).issuerCall(
+        anyString,
+        meq(Eori("testEORInumber")),
+        any[Option[LocalDate]],
+        meq(Service.ATaR)
+      )(any[HeaderCarrier])
     }
 
     "call Enrolment Complete with successful SUB09 call for Subscription ROW journey" in {
@@ -189,21 +194,26 @@ class SubscriptionRecoveryControllerSpec
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some("eu"))
       when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(Utr("someUtr"))))
-      when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(Some("testEORInumber"))
+      when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(Some("testEORInumber2"))
       when(mockCdsFrontendDataCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
         .thenReturn(Future.successful(mockRegisterWithEoriAndIdResponse))
       when(mockRegisterWithEoriAndIdResponse.responseDetail).thenReturn(registerWithEoriAndIdResponseDetail)
 
       when(
         mockTaxEnrolmentsService
-          .issuerCall(anyString, any[Eori], any[Option[LocalDate]])(any[HeaderCarrier])
+          .issuerCall(anyString, any[Eori], any[Option[LocalDate]], any[Service])(any[HeaderCarrier])
       ).thenReturn(Future.successful(NO_CONTENT))
 
       callEnrolmentComplete(journey = Journey.Subscribe) { result =>
         status(result) shouldBe SEE_OTHER
         header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/subscribe/complete")
       }
-      verify(mockTaxEnrolmentsService).issuerCall(anyString, any[Eori], any[Option[LocalDate]])(any[HeaderCarrier])
+      verify(mockTaxEnrolmentsService).issuerCall(
+        anyString,
+        meq(Eori("testEORInumber2")),
+        any[Option[LocalDate]],
+        meq(Service.ATaR)
+      )(any[HeaderCarrier])
     }
     "call Enrolment Complete with successful SUB09 call for Subscription ROW journey without Identifier" in {
       setupMockCommon()
@@ -211,21 +221,26 @@ class SubscriptionRecoveryControllerSpec
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some("eu"))
       when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
         .thenReturn(Future.successful(None))
-      when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(Some("testEORInumber"))
+      when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(Some("testEORInumber3"))
       when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(mockOrgRegistrationDetails))
       when(mockOrgRegistrationDetails.safeId).thenReturn(SafeId("testsafeId"))
 
       when(
         mockTaxEnrolmentsService
-          .issuerCall(anyString, any[Eori], any[Option[LocalDate]])(any[HeaderCarrier])
+          .issuerCall(anyString, any[Eori], any[Option[LocalDate]], any[Service])(any[HeaderCarrier])
       ).thenReturn(Future.successful(NO_CONTENT))
 
       callEnrolmentComplete(journey = Journey.Subscribe) { result =>
         status(result) shouldBe SEE_OTHER
         header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/subscribe/complete")
       }
-      verify(mockTaxEnrolmentsService).issuerCall(anyString, any[Eori], any[Option[LocalDate]])(any[HeaderCarrier])
+      verify(mockTaxEnrolmentsService).issuerCall(
+        anyString,
+        meq(Eori("testEORInumber3")),
+        any[Option[LocalDate]],
+        meq(Service.ATaR)
+      )(any[HeaderCarrier])
     }
 
     "call Enrolment Complete with unsuccessful SUB09 call" in {

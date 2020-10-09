@@ -204,18 +204,21 @@ class SubscriptionRecoveryController @Inject() (
             )
             .flatMap { _ =>
               if (journey == Journey.Subscribe)
-                issuerCall(eori, formBundleId, subscriptionDisplayResponse)(redirect)
+                issuerCall(eori, formBundleId, subscriptionDisplayResponse, service)(redirect)
               else
                 Future.successful(redirect)
             }
       )
   }
 
-  private def issuerCall(eori: Eori, formBundleId: String, subscriptionDisplayResponse: SubscriptionDisplayResponse)(
-    redirect: => Result
-  )(implicit headerCarrier: HeaderCarrier): Future[Result] = {
+  private def issuerCall(
+    eori: Eori,
+    formBundleId: String,
+    subscriptionDisplayResponse: SubscriptionDisplayResponse,
+    service: Service
+  )(redirect: => Result)(implicit headerCarrier: HeaderCarrier): Future[Result] = {
     val dateOfEstablishment = subscriptionDisplayResponse.responseDetail.dateOfEstablishment
-    taxEnrolmentService.issuerCall(formBundleId, eori, dateOfEstablishment).map {
+    taxEnrolmentService.issuerCall(formBundleId, eori, dateOfEstablishment, service).map {
       case NO_CONTENT => redirect
       case _          => throw new IllegalArgumentException("Tax enrolment call failed")
     }
