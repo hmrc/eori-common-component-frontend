@@ -61,7 +61,7 @@ class EmailController @Inject() (
   ): Future[Result] =
     save4LaterService.fetchEmail(InternalId(user.internalId)) flatMap {
       _.fold {
-        logger.warn(s"[EmailController][form] -  emailStatus cache none ${user.internalId}")
+        logger.warn(s"emailStatus cache none ${user.internalId}")
         Future.successful(Redirect(createForm(service, journey)))
       } { cachedEmailStatus =>
         if (cachedEmailStatus.isVerified)

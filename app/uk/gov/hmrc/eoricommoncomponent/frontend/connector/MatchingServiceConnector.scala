@@ -44,19 +44,19 @@ class MatchingServiceConnector @Inject() (http: HttpClient, appConfig: AppConfig
 
   def lookup(req: MatchingRequestHolder)(implicit hc: HeaderCarrier): Future[Option[MatchingResponse]] = {
     logger.info(
-      s"[lookup] REG01 postUrl: $url,  acknowledgement ref: ${req.registerWithIDRequest.requestCommon.acknowledgementReference}"
+      s"REG01 postUrl: $url,  acknowledgement ref: ${req.registerWithIDRequest.requestCommon.acknowledgementReference}"
     )
     auditCallRequest(url, req)
     http.POST[MatchingRequestHolder, MatchingResponse](url, req) map { resp =>
       logger.info(
-        s"[lookup] REG01 business match found for acknowledgement ref: ${req.registerWithIDRequest.requestCommon.acknowledgementReference}"
+        s"REG01 business match found for acknowledgement ref: ${req.registerWithIDRequest.requestCommon.acknowledgementReference}"
       )
       auditCallResponse(url, resp)
       handleResponse(resp)
     } recover {
       case e: Throwable =>
         logger.info(
-          s"[lookup] REG01 Match request failed for acknowledgement ref: ${req.registerWithIDRequest.requestCommon.acknowledgementReference}. Reason: $e"
+          s"REG01 Match request failed for acknowledgement ref: ${req.registerWithIDRequest.requestCommon.acknowledgementReference}. Reason: $e"
         )
         throw e
     }

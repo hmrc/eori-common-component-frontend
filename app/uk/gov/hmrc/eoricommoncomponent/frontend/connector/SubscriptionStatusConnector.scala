@@ -39,13 +39,13 @@ class SubscriptionStatusConnector @Inject() (http: HttpClient, appConfig: AppCon
   def status(request: SubscriptionStatusQueryParams)(implicit hc: HeaderCarrier): Future[SubscriptionStatusResponse] =
     http.GET[SubscriptionStatusResponseHolder](url, request.queryParams) map { resp =>
       logger.info(
-        s"[status] SUB01 successful. url: $url, response status: ${resp.subscriptionStatusResponse.responseCommon.status}"
+        s"SUB01 successful. url: $url, response status: ${resp.subscriptionStatusResponse.responseCommon.status}"
       )
       auditCall(url, request, resp)
       resp.subscriptionStatusResponse
     } recover {
       case e: Throwable =>
-        logger.error(s"[status] SUB01 failed. url: $url, error: $e", e)
+        logger.error(s"SUB01 failed. url: $url, error: $e", e)
         throw e
     }
 

@@ -34,34 +34,27 @@ class HandleSubscriptionConnector @Inject() (http: HttpClient, appConfig: AppCon
 
   private val logger = Logger(this.getClass)
 
-  val LoggerComponentId = "HandleSubscriptionConnector"
-
   def call(request: HandleSubscriptionRequest)(implicit hc: HeaderCarrier): Future[Unit] = {
     val url = s"${appConfig.handleSubscriptionBaseUrl}/${appConfig.handleSubscriptionServiceContext}"
-    logger.info(s"[$LoggerComponentId][call] postUrl: $url")
+    logger.info(s"postUrl: $url")
 
     val headers = Seq(ACCEPT -> "application/vnd.hmrc.1.0+json", CONTENT_TYPE -> MimeTypes.JSON)
     http.POST[HandleSubscriptionRequest, HttpResponse](url, request, headers) map { response =>
       response.status match {
         case OK | NO_CONTENT =>
-          logger.info(
-            s"[$LoggerComponentId][call] complete for call to $url and headers ${hc.headers}. Status:${response.status}"
-          )
+          logger.info(s"complete for call to $url and headers ${hc.headers}. Status:${response.status}")
           ()
         case _ => throw new BadRequestException(s"Status:${response.status}")
       }
     } recoverWith {
       case e: BadRequestException =>
         logger.error(
-          s"[$LoggerComponentId][call] request failed with BAD_REQUEST status for call to $url and headers ${hc.headers}: ${e.getMessage}",
+          s"request failed with BAD_REQUEST status for call to $url and headers ${hc.headers}: ${e.getMessage}",
           e
         )
         Future.failed(e)
       case NonFatal(e) =>
-        logger.error(
-          s"[$LoggerComponentId][call] request failed for call to $url and headers ${hc.headers}: ${e.getMessage}",
-          e
-        )
+        logger.error(s"request failed for call to $url and headers ${hc.headers}: ${e.getMessage}", e)
         Future.failed(e)
     }
   }

@@ -32,15 +32,10 @@ object EmailVerificationStateHttpParser {
       response.status match {
         case OK => Right(EmailVerified)
         case NOT_FOUND =>
-          logger.warn(
-            "[GetEmailVerificationStateHttpParser][GetEmailVerificationStateHttpReads][read] - Email not verified"
-          )
+          logger.warn("Email not verified")
           Right(EmailNotVerified)
         case status =>
-          logger.warn(
-            s"[GetEmailVerificationStateHttpParser][GetEmailVerificationStateHttpReads][read] - " +
-              s"Unexpected Response, Status $status returned, with response: ${response.body}"
-          )
+          logger.warn(s"Unexpected Response, Status $status returned, with response: ${response.body}")
           Left(EmailVerificationStateErrorResponse(status, response.body))
       }
 

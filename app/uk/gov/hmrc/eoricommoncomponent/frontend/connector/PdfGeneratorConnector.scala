@@ -38,7 +38,7 @@ class PdfGeneratorConnector @Inject() (http: WSClient, appConfig: AppConfig) {
   private lazy val url = s"$baseUrl/pdf-generator-service/generate"
 
   def generatePdf(html: String)(implicit ec: ExecutionContext): Future[ByteString] = {
-    logger.debug(s"[generatePdf] postUrl: $url")
+    logger.debug(s"postUrl: $url")
 
     http
       .url(url)
@@ -47,7 +47,7 @@ class PdfGeneratorConnector @Inject() (http: WSClient, appConfig: AppConfig) {
       .map(_.bodyAsBytes)
       .recoverWith {
         case NonFatal(e) =>
-          logger.error(s"[generatePdf] postUrl: $url FAILED.", e)
+          logger.error(s"postUrl: $url FAILED.", e)
           Future.failed(e)
       }
   }

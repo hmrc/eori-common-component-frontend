@@ -86,14 +86,15 @@ lazy val scoverageSettings = {
 
   Seq(
     // Semicolon-separated list of regexs matching classes to exclude
-    ScoverageKeys.coverageExcludedPackages := List("<empty>"
-      , "Reverse.*"
-      , "uk\\.gov\\.hmrc\\.customs\\.rosmfrontend\\.models\\.data\\..*"
-      , "uk\\.gov\\.hmrc\\.customs\\.rosmfrontend\\.view.*"
-      , "uk\\.gov\\.hmrc\\.customs\\.rosmfrontend\\.models.*"
-      , "uk\\.gov\\.hmrc\\.customs\\.rosmfrontend\\.config.*"
-      , ".*(AuthService|BuildInfo|Routes|TestOnly).*").mkString(";"),
-    ScoverageKeys.coverageMinimum := 87,
+    ScoverageKeys.coverageExcludedPackages := List("<empty>",
+      "Reverse.*",
+      "uk\\.gov\\.hmrc\\.customs\\.rosmfrontend\\.models\\.data\\..*",
+      "uk\\.gov\\.hmrc\\.customs\\.rosmfrontend\\.view.*",
+      "uk\\.gov\\.hmrc\\.customs\\.rosmfrontend\\.models.*",
+      "uk\\.gov\\.hmrc\\.customs\\.rosmfrontend\\.config.*",
+      "logger.*\\(.*\\)",
+      ".*(AuthService|BuildInfo|Routes|TestOnly).*").mkString(";"),
+    ScoverageKeys.coverageMinimum := 86,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
     parallelExecution in Test := false

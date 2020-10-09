@@ -44,7 +44,7 @@ class VatControlListConnector @Inject() (http: HttpClient, appConfig: AppConfig)
       case _: BadRequestException         => Left(InvalidResponse)
       case _: ServiceUnavailableException => Left(ServiceUnavailableResponse)
       case e: Throwable =>
-        logger.error(s"[status] vat-known-facts-control-list failed. url: $url, error: $e", e)
+        logger.error(s"vat-known-facts-control-list failed. url: $url, error: $e", e)
         throw e
     }
 

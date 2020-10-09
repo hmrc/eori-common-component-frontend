@@ -38,8 +38,6 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
   private val baseUrl        = appConfig.enrolmentStoreProxyBaseUrl
   private val serviceContext = appConfig.enrolmentStoreProxyServiceContext
 
-  private val loggerComponentId = "EnrolmentStoreProxyConnector"
-
   def getEnrolmentByGroupId(
     groupId: String
   )(implicit hc: HeaderCarrier, reads: Reads[EnrolmentStoreProxyResponse]): Future[EnrolmentStoreProxyResponse] = {
@@ -47,7 +45,7 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
       s"$baseUrl/$serviceContext/enrolment-store/groups/$groupId/enrolments?type=principal&service=HMRC-CUS-ORG"
     http.GET[HttpResponse](url) map { resp =>
       auditCall(url, resp)
-      logger.info(s"[$loggerComponentId] enrolment-store-proxy. url: $url")
+      logger.info(s"enrolment-store-proxy. url: $url")
       resp.status match {
         case OK => resp.json.as[EnrolmentStoreProxyResponse]
         case NO_CONTENT =>
@@ -57,7 +55,7 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
       }
     } recover {
       case e: Throwable =>
-        logger.error(s"[$loggerComponentId][status] enrolment-store-proxy failed. url: $url, error: $e", e)
+        logger.error(s"enrolment-store-proxy failed. url: $url, error: $e", e)
         throw e
     }
   }

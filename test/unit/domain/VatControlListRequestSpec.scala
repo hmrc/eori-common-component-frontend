@@ -14,6 +14,21 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eoricommoncomponent.frontend
+package unit.domain
 
-class OrgTypeNotFoundException(msg: String = "Unable to retrieve Org Type from the cache") extends RuntimeException(msg)
+import base.UnitSpec
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.VatControlListRequest
+
+class VatControlListRequestSpec extends UnitSpec {
+
+  "VAT Control List Request" should {
+
+    "have a correct keyValueMap" in {
+      VatControlListRequest("123456").keyValueMap() shouldBe Map("vrn" -> "123456")
+    }
+
+    "have a correct query params" in {
+      VatControlListRequest("123456").queryParams shouldBe Seq("vrn" -> "123456")
+    }
+  }
+}

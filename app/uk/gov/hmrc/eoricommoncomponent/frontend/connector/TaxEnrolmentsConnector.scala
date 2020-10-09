@@ -45,7 +45,7 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig, 
       resp
     } recover {
       case e: Throwable =>
-        logger.error(s"[status] tax-enrolments failed. url: $url, error: $e", e)
+        logger.error(s"tax-enrolments failed. url: $url, error: $e", e)
         throw e
     }
   }

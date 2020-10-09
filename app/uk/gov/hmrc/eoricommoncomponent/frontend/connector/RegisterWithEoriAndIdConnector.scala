@@ -48,14 +48,14 @@ class RegisterWithEoriAndIdConnector @Inject() (http: HttpClient, appConfig: App
       RegisterWithEoriAndIdRequestHolder(request)
     ) map { resp =>
       logger.info(
-        s"[register] REG06 successful. postUrl $url, acknowledgement ref: ${request.requestCommon.acknowledgementReference}, response status: ${resp.registerWithEORIAndIDResponse.responseCommon.statusText}"
+        s"REG06 successful. postUrl $url, acknowledgement ref: ${request.requestCommon.acknowledgementReference}, response status: ${resp.registerWithEORIAndIDResponse.responseCommon.statusText}"
       )
       auditCallResponse(url, resp)
       resp.registerWithEORIAndIDResponse
     } recover {
       case e: Throwable =>
         logger.debug(
-          s"[register] REG06 failed. postUrl: $url, acknowledgement ref: ${request.requestCommon.acknowledgementReference}, error: $e"
+          s"REG06 failed. postUrl: $url, acknowledgement ref: ${request.requestCommon.acknowledgementReference}, error: $e"
         )
         throw e
     }
