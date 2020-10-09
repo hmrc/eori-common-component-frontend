@@ -13,6 +13,8 @@ To run using default port number:
 To run all tests:
 `./precheck.sh`
 
+# Maintenance
+[How to add support](HOWTOADDSERVICE.md) for getting access to a new HMRC service.
 
 # License
 
