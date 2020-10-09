@@ -21,13 +21,13 @@ import java.util.UUID
 
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, DateTimeZone, LocalDate}
+import play.api.Logger
 import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionRequest.principalEconomicActivityLength
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, RequestCommon, RequestParameter}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{ContactDetails, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
   CdsToEtmpOrganisationType,
@@ -48,6 +48,7 @@ case class SubscriptionCreateRequest(requestCommon: RequestCommon, requestDetail
 object SubscriptionCreateRequest {
 
   implicit val jsonFormat = Json.format[SubscriptionCreateRequest]
+  private val logger      = Logger(this.getClass)
 
   def apply(
     registration: RegistrationDetails,
@@ -226,7 +227,7 @@ object SubscriptionCreateRequest {
   private def handleEmptyDate(date: Option[String]): Option[LocalDate] = date match {
     case Some(d) => Some(LocalDate.parse(d, DateTimeFormat.forPattern("yyyy-MM-dd")))
     case None =>
-      CdsLogger.warn("No establishment date returned from REG06")
+      logger.warn("No establishment date returned from REG06")
       None
   }
 

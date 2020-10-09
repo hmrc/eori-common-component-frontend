@@ -16,6 +16,4 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend
 
-class OrgTypeNotFoundException(msg: String) extends RuntimeException(msg) {
-  def this() = this("Unable to retrieve Org Type from the cache")
-}
+class OrgTypeNotFoundException(msg: String = "Unable to retrieve Org Type from the cache") extends RuntimeException(msg)

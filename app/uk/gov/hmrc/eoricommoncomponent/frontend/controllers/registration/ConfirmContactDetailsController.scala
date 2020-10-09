@@ -57,6 +57,8 @@ class ConfirmContactDetailsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
+  private val logger = Logger(this.getClass)
+
   def form(service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       cdsFrontendDataCache.registrationDetails flatMap {
@@ -90,12 +92,12 @@ class ConfirmContactDetailsController @Inject() (
                 )
               )
             case None =>
-              Logger.warn("[ConfirmContactDetailsController.form] organisation type None")
+              logger.warn("[ConfirmContactDetailsController.form] organisation type None")
               cdsFrontendDataCache.remove
               Redirect(OrganisationTypeController.form(service, journey))
           }
         case _ =>
-          Logger.warn("[ConfirmContactDetailsController.form] registrationDetails not found")
+          logger.warn("[ConfirmContactDetailsController.form] registrationDetails not found")
           cdsFrontendDataCache.remove
           Future.successful(Redirect(OrganisationTypeController.form(service, journey)))
       }
@@ -138,12 +140,12 @@ class ConfirmContactDetailsController @Inject() (
                       )
                     )
                   case None =>
-                    Logger.warn("[ConfirmContactDetailsController.submit] organisation type None")
+                    logger.warn("[ConfirmContactDetailsController.submit] organisation type None")
                     cdsFrontendDataCache.remove
                     Redirect(OrganisationTypeController.form(service, journey))
                 }
               case _ =>
-                Logger.warn("[ConfirmContactDetailsController.submit] registrationDetails not found")
+                logger.warn("[ConfirmContactDetailsController.submit] registrationDetails not found")
                 cdsFrontendDataCache.remove
                 Future.successful(Redirect(OrganisationTypeController.form(service, journey)))
             },

@@ -17,10 +17,10 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.Inject
+import play.api.Logger
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.registration._
-import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -30,7 +30,7 @@ import scala.util.control.NonFatal
 
 class RegistrationDisplayConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable) {
 
-  private val loggerComponentId = "RegistrationDisplayConnector"
+  private val logger = Logger(this.getClass)
 
   protected val url = appConfig.getServiceUrl("registration-display")
 
@@ -39,12 +39,12 @@ class RegistrationDisplayConnector @Inject() (http: HttpClient, appConfig: AppCo
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[EoriHttpResponse, RegistrationDisplayResponse]] = {
     auditCallRequest(url, request)
     http.POST[RegistrationDisplayRequestHolder, RegistrationDisplayResponseHolder](url, request) map { resp =>
-      CdsLogger.info(s"[$loggerComponentId] registration-display successful. url: $url")
+      logger.info(s"registration-display successful. url: $url")
       auditCallResponse(url, resp)
       Right(resp.registrationDisplayResponse)
     } recover {
       case NonFatal(e) =>
-        CdsLogger.error(s"[$loggerComponentId] registration-display failed. url: $url, error: $e")
+        logger.error(s"registration-display failed. url: $url, error: $e")
         Left(ServiceUnavailableResponse)
     }
   }

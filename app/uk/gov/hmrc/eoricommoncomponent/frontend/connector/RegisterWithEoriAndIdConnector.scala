@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.{Inject, Singleton}
+import play.api.Logger
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
@@ -25,7 +26,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   RegisterWithEoriAndIdResponse,
   RegisterWithEoriAndIdResponseHolder
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -36,8 +36,8 @@ class RegisterWithEoriAndIdConnector @Inject() (http: HttpClient, appConfig: App
   ec: ExecutionContext
 ) {
 
-  private val url               = appConfig.getServiceUrl("register-with-eori-and-id")
-  private val loggerComponentId = "RegisterWithEoriAndIdConnector"
+  private val logger = Logger(this.getClass)
+  private val url    = appConfig.getServiceUrl("register-with-eori-and-id")
 
   def register(
     request: RegisterWithEoriAndIdRequest
@@ -47,15 +47,15 @@ class RegisterWithEoriAndIdConnector @Inject() (http: HttpClient, appConfig: App
       url,
       RegisterWithEoriAndIdRequestHolder(request)
     ) map { resp =>
-      CdsLogger.info(
-        s"[$loggerComponentId][register] REG06 successful. postUrl $url, acknowledgement ref: ${request.requestCommon.acknowledgementReference}, response status: ${resp.registerWithEORIAndIDResponse.responseCommon.statusText}"
+      logger.info(
+        s"REG06 successful. postUrl $url, acknowledgement ref: ${request.requestCommon.acknowledgementReference}, response status: ${resp.registerWithEORIAndIDResponse.responseCommon.statusText}"
       )
       auditCallResponse(url, resp)
       resp.registerWithEORIAndIDResponse
     } recover {
       case e: Throwable =>
-        CdsLogger.debug(
-          s"[$loggerComponentId][register] REG06 failed. postUrl: $url, acknowledgement ref: ${request.requestCommon.acknowledgementReference}, error: $e"
+        logger.debug(
+          s"REG06 failed. postUrl: $url, acknowledgement ref: ${request.requestCommon.acknowledgementReference}, error: $e"
         )
         throw e
     }

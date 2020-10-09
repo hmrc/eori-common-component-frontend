@@ -17,10 +17,10 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.{Inject, Singleton}
+import play.api.Logger
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching._
-import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -31,9 +31,10 @@ class MatchingServiceConnector @Inject() (http: HttpClient, appConfig: AppConfig
   ec: ExecutionContext
 ) {
 
-  private val url               = appConfig.getServiceUrl("register-with-id")
-  private val loggerComponentId = "MatchingServiceConnector"
-  val NoMatchFound              = "002 - No Match Found"
+  private val logger = Logger(this.getClass)
+
+  private val url  = appConfig.getServiceUrl("register-with-id")
+  val NoMatchFound = "002 - No Match Found"
 
   def handleResponse(response: MatchingResponse): Option[MatchingResponse] = {
     val statusTxt = response.registerWithIDResponse.responseCommon.statusText
@@ -42,20 +43,20 @@ class MatchingServiceConnector @Inject() (http: HttpClient, appConfig: AppConfig
   }
 
   def lookup(req: MatchingRequestHolder)(implicit hc: HeaderCarrier): Future[Option[MatchingResponse]] = {
-    CdsLogger.info(
-      s"[$loggerComponentId][lookup] REG01 postUrl: $url,  acknowledgement ref: ${req.registerWithIDRequest.requestCommon.acknowledgementReference}"
+    logger.info(
+      s"REG01 postUrl: $url,  acknowledgement ref: ${req.registerWithIDRequest.requestCommon.acknowledgementReference}"
     )
     auditCallRequest(url, req)
     http.POST[MatchingRequestHolder, MatchingResponse](url, req) map { resp =>
-      CdsLogger.info(
-        s"[MatchingServiceConnector][lookup] REG01 business match found for acknowledgement ref: ${req.registerWithIDRequest.requestCommon.acknowledgementReference}"
+      logger.info(
+        s"REG01 business match found for acknowledgement ref: ${req.registerWithIDRequest.requestCommon.acknowledgementReference}"
       )
       auditCallResponse(url, resp)
       handleResponse(resp)
     } recover {
       case e: Throwable =>
-        CdsLogger.info(
-          s"[$loggerComponentId][lookup] REG01 Match request failed for acknowledgement ref: ${req.registerWithIDRequest.requestCommon.acknowledgementReference}. Reason: $e"
+        logger.info(
+          s"REG01 Match request failed for acknowledgement ref: ${req.registerWithIDRequest.requestCommon.acknowledgementReference}. Reason: $e"
         )
         throw e
     }

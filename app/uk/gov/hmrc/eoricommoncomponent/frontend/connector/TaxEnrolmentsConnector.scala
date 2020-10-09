@@ -17,12 +17,12 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.{Inject, Singleton}
+import play.api.Logger
 import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.GovernmentGatewayEnrolmentRequest
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -34,19 +34,18 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig, 
   ec: ExecutionContext
 ) extends CaseClassAuditHelper {
 
+  private val logger         = Logger(this.getClass)
   private val baseUrl        = appConfig.taxEnrolmentsBaseUrl
   val serviceContext: String = appConfig.taxEnrolmentsServiceContext
-
-  private val loggerComponentId = "TaxEnrolmentsConnector"
 
   def getEnrolments(safeId: String)(implicit hc: HeaderCarrier): Future[List[TaxEnrolmentsResponse]] = {
     val url = s"$baseUrl/$serviceContext/businesspartners/$safeId/subscriptions"
     http.GET[List[TaxEnrolmentsResponse]](url) map { resp =>
-      CdsLogger.info(s"[$loggerComponentId] tax-enrolments. url: $url")
+      logger.info(s"tax-enrolments. url: $url")
       resp
     } recover {
       case e: Throwable =>
-        CdsLogger.error(s"[$loggerComponentId][status] tax-enrolments failed. url: $url, error: $e", e)
+        logger.error(s"tax-enrolments failed. url: $url, error: $e", e)
         throw e
     }
   }
@@ -62,18 +61,17 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig, 
     *  when subscription status((SUB02 Api CALL)) is 04 (SubscriptionExists)
     */
   def enrol(request: TaxEnrolmentsRequest, formBundleId: String)(implicit hc: HeaderCarrier): Future[Int] = {
-    val loggerId = s"[$loggerComponentId]"
-    val url      = s"$baseUrl/$serviceContext/subscriptions/$formBundleId/issuer"
+    val url = s"$baseUrl/$serviceContext/subscriptions/$formBundleId/issuer"
 
-    CdsLogger.info(s"$loggerId putUrl: $url")
+    logger.info(s"putUrl: $url")
     http.doPut[TaxEnrolmentsRequest](url, request) map { response: HttpResponse =>
       auditCall(url, request, response)
       response.status match {
         case s @ BAD_REQUEST =>
-          CdsLogger.error(s"$loggerId tax enrolment request failed with BAD_REQUEST status")
+          logger.error(s"tax enrolment request failed with BAD_REQUEST status")
           s
         case s =>
-          CdsLogger.info(s"$loggerId tax enrolment complete. Status:$s")
+          logger.info(s"tax enrolment complete. Status:$s")
           s
       }
     }

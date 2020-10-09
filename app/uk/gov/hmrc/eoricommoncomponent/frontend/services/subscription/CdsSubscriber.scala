@@ -17,12 +17,12 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
 import javax.inject.{Inject, Singleton}
+import play.api.Logger
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{RecipientDetails, SubscriptionDetails}
-import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -37,6 +37,8 @@ class CdsSubscriber @Inject() (
   subscriptionDetailsService: SubscriptionDetailsService,
   requestSessionData: RequestSessionData
 )(implicit ec: ExecutionContext) {
+
+  private val logger = Logger(this.getClass)
 
   def subscribeWithCachedDetails(
     cdsOrganisationType: Option[CdsOrganisationType],
@@ -244,7 +246,7 @@ class CdsSubscriber @Inject() (
 
     (contactName, taxPayerId) match {
       case (name, Some(id)) =>
-        if (name.isEmpty) CdsLogger.warn("ContactName missing")
+        if (name.isEmpty) logger.warn("ContactName missing")
         val orgName = Some(subDetails.name)
         callHandle(
           subscriptionResult,
@@ -254,7 +256,7 @@ class CdsSubscriber @Inject() (
           SafeId(id.id)
         )
       case _ =>
-        CdsLogger.error("No contact details available to save")
+        logger.error("No contact details available to save")
         Future.failed(throw new IllegalStateException("No contact details available to save)"))
     }
   }

@@ -17,12 +17,12 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.Inject
+import play.api.Logger
 import play.api.libs.json.{JsValue, Json, Reads, Writes}
 import play.mvc.Http.Status.{NO_CONTENT, OK}
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, EnrolmentStoreProxyResponse}
-import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.{KnownFacts, KnownFactsQuery}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -33,10 +33,10 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
   ec: ExecutionContext
 ) {
 
+  private val logger = Logger(this.getClass)
+
   private val baseUrl        = appConfig.enrolmentStoreProxyBaseUrl
   private val serviceContext = appConfig.enrolmentStoreProxyServiceContext
-
-  private val loggerComponentId = "EnrolmentStoreProxyConnector"
 
   def getEnrolmentByGroupId(
     groupId: String
@@ -45,7 +45,7 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
       s"$baseUrl/$serviceContext/enrolment-store/groups/$groupId/enrolments?type=principal"
     http.GET[HttpResponse](url) map { resp =>
       auditCall(url, resp)
-      CdsLogger.info(s"[$loggerComponentId] enrolment-store-proxy. url: $url")
+      logger.info(s"enrolment-store-proxy. url: $url")
       resp.status match {
         case OK => resp.json.as[EnrolmentStoreProxyResponse]
         case NO_CONTENT =>
@@ -55,7 +55,7 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
       }
     } recover {
       case e: Throwable =>
-        CdsLogger.error(s"[$loggerComponentId][status] enrolment-store-proxy failed. url: $url, error: $e", e)
+        logger.error(s"enrolment-store-proxy failed. url: $url, error: $e", e)
         throw e
     }
   }

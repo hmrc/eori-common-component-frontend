@@ -17,11 +17,11 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.{Inject, Singleton}
+import play.api.Logger
 import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -33,19 +33,19 @@ class SubscriptionStatusConnector @Inject() (http: HttpClient, appConfig: AppCon
   ec: ExecutionContext
 ) extends CaseClassAuditHelper {
 
-  private val url               = appConfig.getServiceUrl("subscription-status")
-  private val loggerComponentId = "SubscriptionStatusConnector"
+  private val logger = Logger(this.getClass)
+  private val url    = appConfig.getServiceUrl("subscription-status")
 
   def status(request: SubscriptionStatusQueryParams)(implicit hc: HeaderCarrier): Future[SubscriptionStatusResponse] =
     http.GET[SubscriptionStatusResponseHolder](url, request.queryParams) map { resp =>
-      CdsLogger.info(
-        s"[$loggerComponentId][status] SUB01 successful. url: $url, response status: ${resp.subscriptionStatusResponse.responseCommon.status}"
+      logger.info(
+        s"SUB01 successful. url: $url, response status: ${resp.subscriptionStatusResponse.responseCommon.status}"
       )
       auditCall(url, request, resp)
       resp.subscriptionStatusResponse
     } recover {
       case e: Throwable =>
-        CdsLogger.error(s"[$loggerComponentId][status] SUB01 failed. url: $url, error: $e", e)
+        logger.error(s"SUB01 failed. url: $url, error: $e", e)
         throw e
     }
 

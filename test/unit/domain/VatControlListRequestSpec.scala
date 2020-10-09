@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eoricommoncomponent.frontend.logging
+package unit.domain
 
-object CdsLogger {
-  lazy val logger = play.api.Logger("eori-common-component-frontend")
+import base.UnitSpec
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.VatControlListRequest
 
-  def debug(s: String): Unit               = logger.debug(s)
-  def info(s: String): Unit                = logger.info(s)
-  def warn(s: String): Unit                = logger.warn(s)
-  def warn(s: String, e: Throwable): Unit  = logger.warn(s, e)
-  def error(s: String): Unit               = logger.error(s)
-  def error(s: String, e: Throwable): Unit = logger.error(s, e)
+class VatControlListRequestSpec extends UnitSpec {
+
+  "VAT Control List Request" should {
+
+    "have a correct keyValueMap" in {
+      VatControlListRequest("123456").keyValueMap() shouldBe Map("vrn" -> "123456")
+    }
+
+    "have a correct query params" in {
+      VatControlListRequest("123456").queryParams shouldBe Seq("vrn" -> "123456")
+    }
+  }
 }

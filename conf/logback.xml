@@ -49,8 +49,6 @@
 
     <logger name="application" level="WARN"/>
 
-    <logger name="eori-common-component-frontend" level="${logger.eori-common-component-frontend:-${logger.application:-WARN}}"/>
-
     <logger name="connector" level="WARN"/>
 
     <logger name="com.ning.http.client" level="WARN"/>

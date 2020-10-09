@@ -17,10 +17,10 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.{Inject, Singleton}
+import play.api.Logger
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{RegisterWithoutIdRequestHolder, _}
-import uk.gov.hmrc.eoricommoncomponent.frontend.logging.CdsLogger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -31,8 +31,8 @@ class RegisterWithoutIdConnector @Inject() (http: HttpClient, appConfig: AppConf
   ec: ExecutionContext
 ) {
 
-  private val url               = appConfig.getServiceUrl("register-without-id")
-  private val loggerComponentId = "RegisterWithoutIdConnector"
+  private val logger = Logger(this.getClass)
+  private val url    = appConfig.getServiceUrl("register-without-id")
 
   def register(request: RegisterWithoutIDRequest)(implicit hc: HeaderCarrier): Future[RegisterWithoutIDResponse] = {
     auditCallRequest(url, request)
@@ -40,15 +40,15 @@ class RegisterWithoutIdConnector @Inject() (http: HttpClient, appConfig: AppConf
       url,
       RegisterWithoutIdRequestHolder(request)
     ) map { resp =>
-      CdsLogger.info(
-        s"[$loggerComponentId] Successful. postUrl $url, acknowledgement ref: ${request.requestCommon.acknowledgementReference}, response status: ${resp.registerWithoutIDResponse.responseCommon.statusText}"
+      logger.info(
+        s"Successful. postUrl $url, acknowledgement ref: ${request.requestCommon.acknowledgementReference}, response status: ${resp.registerWithoutIDResponse.responseCommon.statusText}"
       )
       auditCallResponse(url, resp)
       resp.registerWithoutIDResponse
     } recover {
       case e: Throwable =>
-        CdsLogger.debug(
-          s"[$loggerComponentId] Failure. postUrl: $url, acknowledgement ref: ${request.requestCommon.acknowledgementReference}, error: $e"
+        logger.debug(
+          s"Failure. postUrl: $url, acknowledgement ref: ${request.requestCommon.acknowledgementReference}, error: $e"
         )
         throw e
     }
