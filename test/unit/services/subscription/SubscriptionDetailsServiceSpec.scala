@@ -23,7 +23,6 @@ import org.mockito.Mockito._
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
-import play.api.libs.json.Writes
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{BusinessShortName, FormData, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{NameOrganisationMatchModel, _}
@@ -31,7 +30,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{Addre
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{ContactDetailsAdaptor, RegistrationDetailsCreator}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
-import uk.gov.hmrc.http.{HeaderCarrier, HttpReads}
+import uk.gov.hmrc.http.HeaderCarrier
 import util.builders.RegistrationDetailsBuilder._
 import util.builders.SubscriptionInfoBuilder._
 import util.builders.{RegistrationDetailsBuilder, SubscriptionContactDetailsFormBuilder}

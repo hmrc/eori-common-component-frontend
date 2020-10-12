@@ -157,10 +157,9 @@ object MatchingForms {
     )(YesNo.apply)(YesNo.unapply)
   )
 
-  private def createOptionalVatYesNoAnswerForm(
-    invalidErrorMsgKey: String = messageKeyOptionInvalid,
-    vatLimitReached: String = "true"
-  )(implicit messages: Messages): Form[YesNo] = Form(
+  private def createOptionalVatYesNoAnswerForm(invalidErrorMsgKey: String, vatLimitReached: String)(implicit
+    messages: Messages
+  ): Form[YesNo] = Form(
     mapping(
       "yes-no-answer" -> optional(text)
         .verifying(messages(invalidErrorMsgKey), x => x.fold(vatLimitReached.toBoolean)(oneOf(validYesNoAnswerOptions)))

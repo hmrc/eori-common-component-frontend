@@ -699,12 +699,9 @@ class SubscriptionServiceSpec
   )
 
   private def makeSubscriptionRequest(
-    registrationDetails: RegistrationDetails = organisationRegistrationDetails,
-    subscriptionDetailsHolder: SubscriptionDetails = SubscriptionDetails(
-      personalDataDisclosureConsent = Some(false),
-      contactDetails = Some(subscriptionContactDetailsModel)
-    ),
-    organisationType: Option[CdsOrganisationType] = None,
+    registrationDetails: RegistrationDetails,
+    subscriptionDetailsHolder: SubscriptionDetails,
+    organisationType: Option[CdsOrganisationType],
     subscriptionResponse: SubscriptionResponse,
     journey: Journey.Value = Journey.Register
   ): SubscriptionCallResult = {

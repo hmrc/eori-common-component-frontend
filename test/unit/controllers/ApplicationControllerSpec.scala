@@ -29,7 +29,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, KeyVa
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.{ATaR, CDS}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, start}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import util.ControllerSpec

@@ -166,11 +166,6 @@ class RegisterWithoutIdServiceSpec
       registrationResponse.registerWithoutIDResponse
     )
 
-  private def mockRegistrationSuccessWithoutResponseDetail() =
-    when(mockConnector.register(any[RegisterWithoutIDRequest])(any[HeaderCarrier])) thenReturn Future.successful(
-      registrationResponseWithoutResponseDetail.registerWithoutIDResponse
-    )
-
   private def mockOrganisationRegistrationSuccess() = {
     mockRegistrationSuccess()
     when(mockDetailsOrganisation.safeId).thenReturn(SafeId(""))

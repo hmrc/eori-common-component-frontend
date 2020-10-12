@@ -597,7 +597,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
   private def mockFailedSubscribe(
     registrationDetails: RegistrationDetails,
     subscriptionDetails: SubscriptionDetails,
-    registeredName: String = "orgName"
+    registeredName: String
   ) = {
 
     when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(registrationDetails)

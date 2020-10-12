@@ -29,7 +29,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionDisplayResponseHolder
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.http._
-import util.WireMockRunner
 import util.externalservices.ExternalServicesConfig._
 import util.externalservices.SubscriptionDisplayMessagingService
 

@@ -17,7 +17,6 @@
 package common.pages.subscription
 
 import common.pages.WebPage
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetails
 
 trait SubscriptionContactDetailsPage extends WebPage {
 

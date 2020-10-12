@@ -23,6 +23,7 @@ import play.api.test.Helpers.LOCATION
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.CdsErrorHandler
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionTimeOutException
+import uk.gov.hmrc.eoricommoncomponent.frontend.util.Constants
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{client_error_template, error_template, notFound}
 import util.ControllerSpec
 
@@ -72,6 +73,26 @@ class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {
 
         result.header.status shouldBe NOT_FOUND
         page.title should startWith("Page not found")
+      }
+    }
+
+    "Redirect to the notfound page on 404 error with InvalidPathParameter" in {
+      whenReady(
+        cdsErrorHandler.onClientError(mockRequest, statusCode = BAD_REQUEST, message = Constants.INVALID_PATH_PARAM)
+      ) { result =>
+        val page = CdsPage(contentAsString(result))
+
+        result.header.status shouldBe NOT_FOUND
+        page.title should startWith("Page not found")
+      }
+    }
+
+    "Redirect to the InternalErrorPage page on 500 error" in {
+      whenReady(cdsErrorHandler.onClientError(mockRequest, statusCode = INTERNAL_SERVER_ERROR)) { result =>
+        val page = CdsPage(contentAsString(result))
+
+        result.header.status shouldBe INTERNAL_SERVER_ERROR
+        page.title should startWith("Something went wrong. Please try again later.")
       }
     }
   }

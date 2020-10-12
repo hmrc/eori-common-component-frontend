@@ -80,51 +80,7 @@ class RegistrationDetailsCreatorWithoutIdSpec extends RegistrationDetailsCreator
       )
   }
 
-  private val organisationWithoutIdForNameAndAddressTestCases
-    : Gen[((String, SixLineAddressMatchModel), RegistrationDetails)] = {
-    val organisationAddressGen = for {
-      addressLine1 <- Gen.alphaStr
-      addressLine2 <- Gen.alphaStr.asOption
-      addressLine3 <- Gen.alphaStr
-      addressLine4 <- Gen.alphaStr.asOption
-      postcode     <- Gen.alphaStr.asOption
-      country      <- Gen.alphaStr
-    } yield SixLineAddressMatchModel(
-      lineOne = addressLine1,
-      lineTwo = addressLine2,
-      lineThree = addressLine3,
-      lineFour = addressLine4,
-      postcode = postcode,
-      country = country
-    )
-
-    val organisationNameGen = for {
-      name <- Gen.alphaStr
-    } yield name
-
-    for {
-      organisationName    <- organisationNameGen
-      organisationAddress <- organisationAddressGen
-    } yield (organisationName, organisationAddress) ->
-      RegistrationDetailsOrganisation(
-        customsId = None,
-        sapNumber = TaxPayerId(""),
-        safeId = SafeId(""),
-        name = organisationName,
-        address = Address(
-          addressLine1 = organisationAddress.lineOne,
-          addressLine2 = organisationAddress.lineTwo,
-          addressLine3 = Some(organisationAddress.lineThree),
-          addressLine4 = organisationAddress.lineFour,
-          postalCode = organisationAddress.postcode,
-          countryCode = organisationAddress.country
-        ),
-        dateOfEstablishment = None,
-        etmpOrganisationType = None
-      )
-  }
-
-  private val addressFromOrganisationAddressTestCases: Gen[((SixLineAddressMatchModel), Address)] = {
+  private val addressFromOrganisationAddressTestCases: Gen[(SixLineAddressMatchModel, Address)] = {
     val organisationAddressGen = for {
       addressLine1 <- Gen.alphaStr
       addressLine2 <- Gen.alphaStr.asOption
@@ -154,12 +110,11 @@ class RegistrationDetailsCreatorWithoutIdSpec extends RegistrationDetailsCreator
       )
   }
 
-  private val addressFromAddressViewModelTestCases: Gen[((AddressViewModel), Address)] = {
+  private val addressFromAddressViewModelTestCases: Gen[(AddressViewModel, Address)] = {
     val addressViewModelGen = for {
       addressLine1 <- Gen.alphaStr
       addressLine2 <- Gen.alphaStr.asOption
       addressLine3 <- Gen.alphaStr
-      addressLine4 <- Gen.alphaStr.asOption
       postcode     <- Gen.alphaStr.asOption
       country      <- Gen.alphaStr
     } yield AddressViewModel(
@@ -186,16 +141,10 @@ class RegistrationDetailsCreatorWithoutIdSpec extends RegistrationDetailsCreator
     ((RegisterWithoutIDResponse, IndividualNameAndDateOfBirth, SixLineAddressMatchModel), RegistrationDetailsIndividual)
   ] = {
     val individualNameAndDateOfBirthGen = for {
-      firstName    <- Gen.alphaStr
-      middleName   <- Gen.alphaStr.asOption
-      lastName     <- Gen.alphaStr
-      addressLine1 <- Gen.alphaStr
-      addressLine2 <- Gen.alphaStr
-      addressLine3 <- Gen.alphaStr.asOption
-      addressLine4 <- Gen.alphaStr.asOption
-      postcode     <- Gen.alphaStr.asOption
-      country      <- Gen.alphaStr
-      dateOfBirth  <- dateOfBirthGenerator
+      firstName   <- Gen.alphaStr
+      middleName  <- Gen.alphaStr.asOption
+      lastName    <- Gen.alphaStr
+      dateOfBirth <- dateOfBirthGenerator
     } yield IndividualNameAndDateOfBirth(
       firstName = firstName,
       middleName = middleName,

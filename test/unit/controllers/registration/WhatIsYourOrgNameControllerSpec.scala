@@ -22,12 +22,9 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import org.scalatest.prop.Tables.Table
-import play.api.inject.Injector
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.FeatureFlags
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.WhatIsYourOrgNameController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NameOrganisationMatchModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation

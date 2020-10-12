@@ -18,7 +18,6 @@ package integration
 
 import org.joda.time.DateTime
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
@@ -27,7 +26,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.connector.RegisterWithEoriAndIdC
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Individual, RequestCommon, ResponseCommon}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EstablishmentAddress, _}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream4xxResponse, Upstream5xxResponse}
-import util.WireMockRunner
 import util.externalservices.ExternalServicesConfig._
 import util.externalservices.{AuditService, RegisterWithEoriAndIdMessagingService}
 
