@@ -61,7 +61,13 @@ class AppConfig @Inject() (
 
   lazy val externalGetEORILink = config.get[String]("external-url.get-cds-eori")
 
-  lazy val blockedRoutesRegex: Seq[Regex] = config.get[String]("routes-to-block").split(',').map(_.r).toSeq
+  lazy val blockedRoutesRegex: Seq[Regex] = {
+    val maybeRoutes = config.getOptional[String]("routes-to-block")
+    maybeRoutes match {
+      case Some(routes) if routes.nonEmpty => routes.split(',').map(_.r).toSeq
+      case _                               => Seq.empty
+    }
+  }
 
   //get help link feedback for Register journey
   def reportAProblemPartialUrlRegister(service: Service): String =

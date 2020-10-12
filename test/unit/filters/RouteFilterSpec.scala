@@ -23,11 +23,13 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
+import play.api.Configuration
 import play.api.mvc.{RequestHeader, Result, Results}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.eoricommoncomponent.frontend.CdsErrorHandler
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.filters.RouteFilter
+import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
 import scala.concurrent.Future
 
@@ -36,9 +38,11 @@ class RouteFilterSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach
   implicit val system            = ActorSystem()
   implicit val mat: Materializer = ActorMaterializer()
   val errorHandler               = mock[CdsErrorHandler]
-  val config                     = mock[AppConfig]
+  val config                     = mock[Configuration]
+  val servicesConfig             = mock[ServicesConfig]
+  val runMode                    = mock[RunMode]
 
-  private def filter = new RouteFilter(config, errorHandler)
+  private def filter = new RouteFilter(new AppConfig(config, servicesConfig, runMode, "test"), errorHandler)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -52,9 +56,21 @@ class RouteFilterSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach
 
   "RouteFilter" should {
 
+    "ignore the filter when blocked routes not defined" in {
+
+      when(config.getOptional[String]("routes-to-block")).thenReturn(None)
+      val request = FakeRequest("GET", "/some-url")
+
+      val headerToResultFunction: RequestHeader => Future[Result] = _ => Future.successful(Results.Ok)
+
+      val result: Result = await(filter.apply(headerToResultFunction)(request))
+
+      status(result) shouldBe 200
+    }
+
     "ignore the filter when there are no blocked routes" in {
 
-      when(config.blockedRoutesRegex).thenReturn(List())
+      when(config.getOptional[String]("routes-to-block")).thenReturn(Some(""))
       val request = FakeRequest("GET", "/some-url")
 
       val headerToResultFunction: RequestHeader => Future[Result] = _ => Future.successful(Results.Ok)
@@ -65,7 +81,7 @@ class RouteFilterSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach
     }
 
     "return 404 when blocked routes contains a URL that matches" in {
-      when(config.blockedRoutesRegex).thenReturn(List("/some-url".r))
+      when(config.getOptional[String]("routes-to-block")).thenReturn(Some("/some-url"))
       val request = FakeRequest("GET", "/some-url")
 
       val result: Result = await(filter.apply(okAction)(request))
@@ -74,7 +90,7 @@ class RouteFilterSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach
     }
 
     "return 200 when blocked routes contains a URL that doesn't match" in {
-      when(config.blockedRoutesRegex).thenReturn(List("/some-url".r))
+      when(config.getOptional[String]("routes-to-block")).thenReturn(Some("/some-url"))
       val request = FakeRequest("GET", "/some-other-url")
 
       val result: Result = await(filter.apply(okAction)(request))
