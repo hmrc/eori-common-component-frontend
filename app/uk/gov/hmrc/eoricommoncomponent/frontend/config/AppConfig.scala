@@ -62,8 +62,7 @@ class AppConfig @Inject() (
   lazy val externalGetEORILink = config.get[String]("external-url.get-cds-eori")
 
   lazy val blockedRoutesRegex: Seq[Regex] = {
-    val maybeRoutes = config.getOptional[String]("routes-to-block")
-    maybeRoutes match {
+    config.getOptional[String]("routes-to-block") match {
       case Some(routes) if routes.nonEmpty => routes.split(',').map(_.r).toSeq
       case _                               => Seq.empty
     }
