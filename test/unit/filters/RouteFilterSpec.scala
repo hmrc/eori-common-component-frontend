@@ -58,7 +58,7 @@ class RouteFilterSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach
 
     "ignore the filter when blocked routes not defined" in {
 
-      when(config.getOptional[String]("routes-to-block")).thenReturn(None)
+      whenRoutesToBlock(None)
       val request = FakeRequest("GET", "/some-url")
 
       val headerToResultFunction: RequestHeader => Future[Result] = _ => Future.successful(Results.Ok)
@@ -70,7 +70,7 @@ class RouteFilterSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach
 
     "ignore the filter when there are no blocked routes" in {
 
-      when(config.getOptional[String]("routes-to-block")).thenReturn(Some(""))
+      whenRoutesToBlock(Some(""))
       val request = FakeRequest("GET", "/some-url")
 
       val headerToResultFunction: RequestHeader => Future[Result] = _ => Future.successful(Results.Ok)
@@ -81,16 +81,13 @@ class RouteFilterSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach
     }
 
     "return 404 when blocked routes contains a URL that matches" in {
-      when(config.getOptional[String]("routes-to-block")).thenReturn(Some("/some-url"))
-      val request = FakeRequest("GET", "/some-url")
+      whenRoutesToBlock(Some("/some-url"))
 
-      val result: Result = await(filter.apply(okAction)(request))
-
-      status(result) shouldBe 404
+      thenRouteIsBlocked("/some-url/get-access")
     }
 
     "return 200 when blocked routes contains a URL that doesn't match" in {
-      when(config.getOptional[String]("routes-to-block")).thenReturn(Some("/some-url"))
+      whenRoutesToBlock(Some("/some-url"))
       val request = FakeRequest("GET", "/some-other-url")
 
       val result: Result = await(filter.apply(okAction)(request))
@@ -98,7 +95,24 @@ class RouteFilterSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach
       status(result) shouldBe 200
     }
 
+    "block access to multiple routes" in {
+      whenRoutesToBlock(Some("cds/subscribe,register"))
+
+      thenRouteIsBlocked("/customs-enrolment-services/cds/subscribe/matching/user-location")
+
+      thenRouteIsBlocked("/customs-enrolment-services/register/vat-group")
+    }
+
   }
+
+  private def thenRouteIsBlocked(url: String) = {
+    val request        = FakeRequest("GET", url)
+    val result: Result = await(filter.apply(okAction)(request))
+    status(result) shouldBe 404
+  }
+
+  private def whenRoutesToBlock(routes: Option[String]) =
+    when(config.getOptional[String]("routes-to-block")).thenReturn(routes)
 
   private val okAction = (rh: RequestHeader) => Future.successful(Results.Ok)
 }
