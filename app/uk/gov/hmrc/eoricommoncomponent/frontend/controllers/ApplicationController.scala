@@ -50,28 +50,16 @@ class ApplicationController @Inject() (
     Ok(viewStart(Journey.Register))
   }
 
-  // Below method cannot be formatted by scalafmt, so scalafmt will be disabled for it
-  // format: off
   def startSubscription(service: Service): Action[AnyContent] = authorise.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
-      {
-          loggedInUser.groupId match {
-            case Some(groupId) =>
-              groupEnrolment.hasGroupIdEnrolmentTo(groupId, service).flatMap { groupIdEnrolmentExists =>
-                if (groupIdEnrolmentExists) throw SpecificGroupIdEnrolmentExists(service)
-
-                cdsEnrolmentCheck(loggedInUser, groupId, service)
-              }
-            case _ =>
-              throw MissingGroupId()
-          }
-       
-      }.recover {
-        case SpecificGroupIdEnrolmentExists(service) =>
-          Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service))
+      val groupId = loggedInUser.groupId.getOrElse(throw MissingGroupId())
+      groupEnrolment.hasGroupIdEnrolmentTo(groupId, service).flatMap { groupIdEnrolmentExists =>
+        if (groupIdEnrolmentExists)
+          Future.successful(Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service)))
+        else
+          cdsEnrolmentCheck(loggedInUser, groupId, service)
       }
   }
-  // format: on
 
   private def isUserEnrolledFor(loggedInUser: LoggedInUserWithEnrolments, service: Service): Boolean =
     enrolledForService(loggedInUser, service).isDefined
@@ -111,8 +99,5 @@ class ApplicationController @Inject() (
   }
 
 }
-
-case class SpecificGroupIdEnrolmentExists(service: Service)
-    extends Exception(s"Group Id has enrolment to ${service.code}")
 
 case class MissingGroupId() extends Exception(s"User doesn't have groupId")

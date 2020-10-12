@@ -24,11 +24,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, Gr
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.EnrolmentAlreadyExistsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.{Sub02Controller, _}
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{
-  CdsController,
-  MissingGroupId,
-  SpecificGroupIdEnrolmentExists
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, MissingGroupId}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegisterWithEoriAndIdResponse._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
@@ -71,19 +67,17 @@ class RegisterWithEoriAndIdController @Inject() (
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser =>
       groupEnrolment.hasGroupIdEnrolmentTo(loggedInUser.groupId.getOrElse(throw MissingGroupId()), service).flatMap {
         groupIdEnrolmentExists =>
-          if (groupIdEnrolmentExists) throw SpecificGroupIdEnrolmentExists(service)
-
-          sendRequest().flatMap {
-            case true if isRow => handleRowResponse(service, journey)
-            case true          => handleREG06Response(service, journey)
-            case false =>
-              logger.error("Reg01 BadRequest ROW")
-              val formattedDate = dateTimeFormat.print(DateTime.now())
-              Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service, formattedDate)))
-          }
-      }.recover {
-        case SpecificGroupIdEnrolmentExists(service) =>
-          Redirect(EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service))
+          if (groupIdEnrolmentExists)
+            Future.successful(Redirect(EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service)))
+          else
+            sendRequest().flatMap {
+              case true if isRow => handleRowResponse(service, journey)
+              case true          => handleREG06Response(service, journey)
+              case false =>
+                logger.error("Reg01 BadRequest ROW")
+                val formattedDate = dateTimeFormat.print(DateTime.now())
+                Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service, formattedDate)))
+            }
       }
     }
 

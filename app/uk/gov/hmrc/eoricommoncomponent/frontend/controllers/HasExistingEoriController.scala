@@ -56,19 +56,16 @@ class HasExistingEoriController @Inject() (
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
       groupEnrolment.hasGroupIdEnrolmentTo(user.groupId.getOrElse(throw MissingGroupId()), service).flatMap {
         groupIdEnrolmentExists =>
-          if (groupIdEnrolmentExists) throw SpecificGroupIdEnrolmentExists(service)
-
-          existingEoriToUse.flatMap { eori =>
-            enrolmentService.enrolWithExistingCDSEnrolment(eori, service).map {
-              case NO_CONTENT => Redirect(routes.HasExistingEoriController.enrolSuccess(service))
-              case status     => throw FailedEnrolmentException(status)
+          if (groupIdEnrolmentExists)
+            Future.successful(Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service)))
+          else
+            existingEoriToUse.flatMap { eori =>
+              enrolmentService.enrolWithExistingCDSEnrolment(eori, service).map {
+                case NO_CONTENT => Redirect(routes.HasExistingEoriController.enrolSuccess(service))
+                case status     => throw FailedEnrolmentException(status)
+              }
             }
-          }
-      }.recover {
-        case SpecificGroupIdEnrolmentExists(service) =>
-          Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service))
       }
-
     }
 
   // Note: permitted for user with service enrolment
