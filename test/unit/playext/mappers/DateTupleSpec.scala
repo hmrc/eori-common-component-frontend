@@ -181,10 +181,9 @@ class DateTupleSpec extends UnitSpec {
     dateMapping.bind(request) shouldBe Right(expectedResult)
   }
 
-  private def assertErrorTriggered(
-    request: Map[String, String],
-    errorMessage: String = "cds.error.invalid.date.format"
-  )(implicit dateMapping: Mapping[Option[LocalDate]]) {
+  private def assertErrorTriggered(request: Map[String, String], errorMessage: String)(implicit
+    dateMapping: Mapping[Option[LocalDate]]
+  ) {
     dateMapping.bind(request) shouldBe Left(Seq(FormError("", errorMessage)))
   }
 

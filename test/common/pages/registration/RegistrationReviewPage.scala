@@ -38,8 +38,6 @@ class RegistrationReviewPage extends WebPage {
 
   val EUVatIdentificationNumbersReviewLinkXpath = "//a[@id='review-tbl__eu-vat_change']"
 
-  private val EUVatDetailsChangeLinkId = "review-tbl__eu-vat_change"
-
   val UkVatDetailsChangeLinkId = "review-tbl__gb-vat_change"
 
   val ContactDetailsXPath = "//td[@id='review-tbl__contact']"

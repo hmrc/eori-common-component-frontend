@@ -23,9 +23,9 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.time.{Millis, Span}
-import play.api.libs.json.{Reads, Writes}
+import play.api.libs.json.Reads
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{AnyContent, Request, Result}
+import play.api.mvc.Result
 import play.api.test.Helpers.LOCATION
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CacheIds, GroupId, InternalId, SafeId}
@@ -39,14 +39,13 @@ import scala.concurrent.Future
 class UserGroupIdSubscriptionStatusCheckServiceSpec
     extends UnitSpec with MockitoSugar with BeforeAndAfterEach with ScalaFutures {
 
-  private val mockSubscriptionStatusService    = mock[SubscriptionStatusService]
-  private val mockSave4LaterConnector          = mock[Save4LaterConnector]
-  private implicit val hc: HeaderCarrier       = mock[HeaderCarrier]
-  private implicit val rq: Request[AnyContent] = mock[Request[AnyContent]]
-  private val safeId                           = SafeId("safeId")
-  private val groupId                          = GroupId("groupId-123")
-  private val internalId                       = InternalId("internalId-123")
-  private val cacheIds                         = CacheIds(internalId, safeId)
+  private val mockSubscriptionStatusService = mock[SubscriptionStatusService]
+  private val mockSave4LaterConnector       = mock[Save4LaterConnector]
+  private implicit val hc: HeaderCarrier    = mock[HeaderCarrier]
+  private val safeId                        = SafeId("safeId")
+  private val groupId                       = GroupId("groupId-123")
+  private val internalId                    = InternalId("internalId-123")
+  private val cacheIds                      = CacheIds(internalId, safeId)
 
   private val service =
     new UserGroupIdSubscriptionStatusCheckService(mockSubscriptionStatusService, mockSave4LaterConnector)

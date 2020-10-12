@@ -25,7 +25,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.RegisterRedirectCont
 import util.ControllerSpec
 import util.builders.SessionBuilder
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class RegisterRedirectControllerSpec extends ControllerSpec with BeforeAndAfterEach {

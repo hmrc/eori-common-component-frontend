@@ -19,7 +19,6 @@ package integration
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, equalToJson, postRequestedFor, urlEqualTo}
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.http.HeaderNames
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -28,8 +27,7 @@ import play.api.test.Helpers._
 import play.mvc.Http.MimeTypes
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.HandleSubscriptionConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.HandleSubscriptionRequest
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, NotFoundException, Upstream5xxResponse}
-import util.WireMockRunner
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import util.externalservices.ExternalServicesConfig.{Host, Port}
 import util.externalservices.HandleSubscriptionService
 

@@ -36,8 +36,6 @@ import uk.gov.hmrc.http._
 import util.externalservices.ExternalServicesConfig._
 import util.externalservices.TaxEnrolmentsService
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 class TaxEnrolmentsConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()

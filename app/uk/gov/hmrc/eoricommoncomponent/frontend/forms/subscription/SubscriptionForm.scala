@@ -26,7 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.playext.form.ConditionalMapping
 import uk.gov.hmrc.emailaddress.EmailAddress
-import uk.gov.voa.play.form.ConditionalMappings.{isEqual, isNotEqual, mandatoryIf}
+import uk.gov.voa.play.form.ConditionalMappings.{isEqual, mandatoryIf}
 import uk.gov.voa.play.form.MandatoryOptionalMapping
 
 object SubscriptionForm {

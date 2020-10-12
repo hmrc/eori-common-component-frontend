@@ -17,7 +17,6 @@
 package integration
 
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
@@ -25,7 +24,6 @@ import play.mvc.Http.Status.{FORBIDDEN, INTERNAL_SERVER_ERROR}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{NotFoundResponse, VatControlListConnector}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{VatControlListRequest, VatControlListResponse}
 import uk.gov.hmrc.http._
-import util.WireMockRunner
 import util.externalservices.ExternalServicesConfig._
 import util.externalservices.VatControlListMessagingService
 
