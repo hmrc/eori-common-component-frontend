@@ -29,7 +29,7 @@ class AppConfigSpec extends ControllerSpec {
 
     "have blockedRoutesRegex defined" in {
       appConfig.blockedRoutesRegex.size shouldBe 1
-      appConfig.blockedRoutesRegex.head.pattern.pattern() shouldBe "register"
+      appConfig.blockedRoutesRegex.head.pattern.pattern() shouldBe "cds/subscribe"
     }
 
     "have ttl defined" in {
