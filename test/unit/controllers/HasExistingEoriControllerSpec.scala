@@ -199,9 +199,9 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
       )
 
   private def userHasGroupEnrolmentToService =
-    when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any(), any())).thenReturn(Future.successful(true))
+    when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any())).thenReturn(Future.successful(true))
 
   private def userDoesNotHaveGroupEnrolmentToService =
-    when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any(), any())).thenReturn(Future.successful(false))
+    when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any())).thenReturn(Future.successful(false))
 
 }

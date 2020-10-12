@@ -25,12 +25,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class GroupEnrolmentExtractor @Inject() (enrolmentStoreProxyService: EnrolmentStoreProxyService) {
+class GroupEnrolmentExtractor @Inject() (enrolmentStoreProxyService: EnrolmentStoreProxyService)(implicit
+  ec: ExecutionContext
+) {
 
-  def hasGroupIdEnrolmentTo(groupId: String, service: Service)(implicit
-    hc: HeaderCarrier,
-    ec: ExecutionContext
-  ): Future[Boolean] =
+  def hasGroupIdEnrolmentTo(groupId: String, service: Service)(implicit hc: HeaderCarrier): Future[Boolean] =
     groupIdEnrolmentTo(groupId, service).map(_.isDefined)
 
   def groupIdEnrolmentTo(groupId: String, service: Service)(implicit

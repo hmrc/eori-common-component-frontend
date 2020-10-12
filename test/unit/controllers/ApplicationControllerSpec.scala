@@ -65,7 +65,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
     when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), any())(any()))
       .thenReturn(Future.successful(None))
-    when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any(), any()))
+    when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any()))
       .thenReturn(Future.successful(false))
   }
 
@@ -140,7 +140,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
     "inform authenticated users where group Id has an enrolment that subscription exists" in {
 
-      when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), ArgumentMatchers.eq(ATaR))(any(), any()))
+      when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), ArgumentMatchers.eq(ATaR))(any()))
         .thenReturn(Future.successful(true))
 
       withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set.empty)

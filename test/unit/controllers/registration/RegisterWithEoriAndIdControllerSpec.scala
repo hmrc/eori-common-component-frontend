@@ -172,7 +172,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
       .thenReturn(Future.successful(Some(Utr(""))))
-    when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any(), any()))
+    when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any()))
       .thenReturn(Future.successful(false))
   }
 
@@ -186,9 +186,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
     val emailVerificationTimestamp     = TestData.emailVerificationTimestamp
 
     "redirect to enrolment exists if user has group enrolment to service" in {
-      when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any(), any())).thenReturn(
-        Future.successful(true)
-      )
+      when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any())).thenReturn(Future.successful(true))
 
       regExistingEori { result =>
         status(result) shouldBe SEE_OTHER
