@@ -95,5 +95,12 @@ class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {
         page.title should startWith("Something went wrong. Please try again later.")
       }
     }
+
+    "throw exception for unused method" in {
+
+      intercept[IllegalStateException] {
+        cdsErrorHandler.standardErrorTemplate("", "", "")(FakeRequest())
+      }
+    }
   }
 }

@@ -43,12 +43,9 @@ class CdsErrorHandler @Inject() (
 
   private val logger = Logger(this.getClass)
 
-  // $COVERAGE-OFF$This method is unused but need to be defined, because it's not defined in FrontendErrorHandler
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit
     request: Request[_]
   ): Html = throw new IllegalStateException("This method should not be used any more.")
-
-  // $COVERAGE-ON$
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
 
