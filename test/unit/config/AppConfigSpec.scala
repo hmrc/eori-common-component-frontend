@@ -28,7 +28,6 @@ class AppConfigSpec extends ControllerSpec {
   "AppConfig" should {
 
     "have blockedRoutesRegex defined" in {
-      appConfig.blockedRoutesRegex.size shouldBe 2
       appConfig.blockedRoutesRegex.map(_.pattern.pattern()).mkString(":") shouldBe "cds/subscribe:register"
     }
 
