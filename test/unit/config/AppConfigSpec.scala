@@ -18,7 +18,7 @@ package unit.config
 
 import java.util.concurrent.TimeUnit
 
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import util.ControllerSpec
 
 import scala.concurrent.duration.Duration

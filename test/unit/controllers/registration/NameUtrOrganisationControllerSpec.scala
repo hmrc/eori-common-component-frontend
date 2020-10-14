@@ -32,7 +32,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.NameIdOrganisationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.Utr
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.Organisation
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.MatchingService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.match_name_id_organisation
 import uk.gov.hmrc.http.HeaderCarrier

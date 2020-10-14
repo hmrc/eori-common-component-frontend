@@ -26,7 +26,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.Su
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, MessagingServiceParam, ResponseCommon}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{ContactDetailsModel, VatDetails}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
   EtmpLegalStatus,
   EtmpTypeOfPerson,

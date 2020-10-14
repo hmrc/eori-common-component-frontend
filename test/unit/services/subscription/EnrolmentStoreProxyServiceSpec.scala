@@ -29,7 +29,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   KeyValue
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.cds
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
 import uk.gov.hmrc.http.HeaderCarrier
 

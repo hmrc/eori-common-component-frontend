@@ -27,7 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.connector.HandleSubscriptionConn
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.HandleSubscriptionRequest
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.RecipientDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Eori, SafeId, TaxPayerId}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.HandleSubscriptionService
 import uk.gov.hmrc.http.HeaderCarrier
 

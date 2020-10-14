@@ -32,7 +32,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   RegistrationDetailsIndividual,
   RegistrationDetailsOrganisation
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec

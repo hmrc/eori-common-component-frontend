@@ -20,7 +20,6 @@ import common.pages.RegistrationCompletePage
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EnrolmentAlreadyExistsController
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.registration_exists
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.registration_exists_group
 import util.ControllerSpec

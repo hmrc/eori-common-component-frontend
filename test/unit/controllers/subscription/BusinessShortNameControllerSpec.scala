@@ -32,7 +32,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   BusinessShortName,
   BusinessShortNameSubscriptionFlowPage
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.business_short_name

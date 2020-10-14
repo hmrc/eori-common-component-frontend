@@ -19,7 +19,7 @@ package unit.controllers.subscription
 import common.pages.subscription.SubscriptionContactDetailsPage
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import unit.controllers.CdsPage
 
 import scala.concurrent.Future

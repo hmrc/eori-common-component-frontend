@@ -41,7 +41,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
   ContactDetailsModel,
   VatDetails
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.EtmpTypeOfPerson
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.http.{HeaderCarrier, Upstream5xxResponse}

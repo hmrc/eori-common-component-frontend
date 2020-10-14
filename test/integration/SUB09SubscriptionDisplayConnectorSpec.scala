@@ -17,7 +17,6 @@
 package integration
 
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json

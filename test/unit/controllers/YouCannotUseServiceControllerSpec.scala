@@ -20,7 +20,7 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.YouCannotUseServiceController
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{unauthorized, you_cant_use_service}
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser

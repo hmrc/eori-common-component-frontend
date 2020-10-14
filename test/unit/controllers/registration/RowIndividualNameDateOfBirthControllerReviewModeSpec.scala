@@ -35,7 +35,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RowIndi
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.RowIndividualNameDateOfBirthController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.row_individual_name_dob
 import uk.gov.hmrc.http.HeaderCarrier

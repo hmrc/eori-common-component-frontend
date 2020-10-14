@@ -25,7 +25,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.UserLocationController
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDisplayService

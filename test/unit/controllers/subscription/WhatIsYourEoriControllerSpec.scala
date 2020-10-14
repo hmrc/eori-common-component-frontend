@@ -26,7 +26,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.EoriNumberSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, RegistrationDetailsIndividual}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.what_is_your_eori
 import uk.gov.hmrc.http.HeaderCarrier

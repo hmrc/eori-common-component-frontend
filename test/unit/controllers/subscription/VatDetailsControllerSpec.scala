@@ -33,7 +33,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.VatDeta
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.VatDetailsSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{VatControlListRequest, VatControlListResponse}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.VatDetails
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{vat_details, we_cannot_confirm_your_identity}
 import uk.gov.hmrc.http.HeaderCarrier

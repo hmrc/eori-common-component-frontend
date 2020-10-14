@@ -23,7 +23,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, UtrMatchModel}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.utrForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_utr_subscription
 import util.ViewSpec
 
