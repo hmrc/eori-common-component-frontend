@@ -70,13 +70,13 @@ class MatchOrganisationNameSpec extends ViewSpec {
   lazy val doc: Document = getDoc(form)
 
   private def getDoc(form: Form[NameMatchModel]) = {
-    val result = view(false, form, organisationType, Service.ATaR, Journey.Register)
+    val result = view(false, form, organisationType, atarService, Journey.Register)
     val doc    = Jsoup.parse(contentAsString(result))
     doc
   }
 
   lazy val docWithErrors: Document = {
-    val result = view(false, formWithError, organisationType, Service.ATaR, Journey.Register)
+    val result = view(false, formWithError, organisationType, atarService, Journey.Register)
     Jsoup.parse(contentAsString(result))
   }
 

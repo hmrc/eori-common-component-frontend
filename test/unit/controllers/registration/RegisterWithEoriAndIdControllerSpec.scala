@@ -180,7 +180,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
-      controller.registerWithEoriAndId(Service.ATaR, Journey.Subscribe)
+      controller.registerWithEoriAndId(atarService, Journey.Subscribe)
     )
     val processingDateResponse: String = "19 April 2018"
     val emailVerificationTimestamp     = TestData.emailVerificationTimestamp
@@ -191,7 +191,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe EnrolmentAlreadyExistsController
-          .enrolmentAlreadyExistsForGroup(Service.ATaR)
+          .enrolmentAlreadyExistsForGroup(atarService)
           .url
       }
     }
@@ -234,7 +234,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe Sub02Controller
-          .migrationEnd(Service.ATaR)
+          .migrationEnd(atarService)
           .url
       }
     }
@@ -277,7 +277,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe Sub02Controller
-          .migrationEnd(Service.ATaR)
+          .migrationEnd(atarService)
           .url
       }
     }
@@ -320,7 +320,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe Sub02Controller
-          .migrationEnd(Service.ATaR)
+          .migrationEnd(atarService)
           .url
       }
     }
@@ -367,7 +367,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe Sub02Controller
-          .migrationEnd(Service.ATaR)
+          .migrationEnd(atarService)
           .url
       }
     }
@@ -411,7 +411,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe Sub02Controller
-          .migrationEnd(Service.ATaR)
+          .migrationEnd(atarService)
           .url
       }
     }
@@ -455,7 +455,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe Sub02Controller
-          .migrationEnd(Service.ATaR)
+          .migrationEnd(atarService)
           .url
       }
     }
@@ -494,7 +494,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .pending(Service.ATaR, processingDateResponse)
+          .pending(atarService, processingDateResponse)
           .url
       }
     }
@@ -513,7 +513,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .fail(Service.ATaR, DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
+          .fail(atarService, DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
           .url
       }
     }
@@ -547,7 +547,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .pending(Service.ATaR, DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
+          .pending(atarService, DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
           .url
       }
     }
@@ -581,7 +581,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .fail(Service.ATaR, DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
+          .fail(atarService, DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
           .url
       }
     }
@@ -618,7 +618,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .processing(Service.ATaR)
+          .processing(atarService)
           .url
         verify(mockReg06Service).sendOrganisationRequest(any(), any(), any())
         verify(mockSubscriptionStatusService)
@@ -706,7 +706,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe SubscriptionRecoveryController
-          .complete(Service.ATaR, Journey.Subscribe)
+          .complete(atarService, Journey.Subscribe)
           .url
         verify(mockReg06Service).sendOrganisationRequest(any(), any(), any())
         verify(mockSubscriptionStatusService)
@@ -748,7 +748,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .fail(Service.ATaR, processingDateResponse)
+          .fail(atarService, processingDateResponse)
           .url
       }
     }
@@ -781,7 +781,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .eoriAlreadyLinked(Service.ATaR)
+          .eoriAlreadyLinked(atarService)
           .url
       }
     }
@@ -817,7 +817,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .rejectedPreviously(Service.ATaR)
+          .rejectedPreviously(atarService)
           .url
       }
     }
@@ -1019,7 +1019,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
   private def regExistingEori(test: Future[Result] => Any) {
     test(
-      controller.registerWithEoriAndId(Service.ATaR, Journey.Subscribe)(
+      controller.registerWithEoriAndId(atarService, Journey.Subscribe)(
         SessionBuilder.buildRequestWithSession(defaultUserId)
       )
     )
@@ -1027,14 +1027,14 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
   private def invokeProcessing(test: Future[Result] => Any) {
     test(
-      controller.processing(Service.ATaR)
+      controller.processing(atarService)
         .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     )
   }
 
   private def invokeRejected(test: Future[Result] => Any) {
     test(
-      controller.rejected(Service.ATaR)
+      controller.rejected(atarService)
         .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     )
   }
@@ -1042,7 +1042,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
   private def invokePending(date: String = "11 August 2015")(test: Future[Result] => Any) {
     test(
       controller
-        .pending(Service.ATaR, date)
+        .pending(atarService, date)
         .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     )
   }
@@ -1050,7 +1050,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
   private def invokeFail(date: String = "11 September 2015")(test: Future[Result] => Any) {
     test(
       controller
-        .fail(Service.ATaR, date)
+        .fail(atarService, date)
         .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     )
   }
@@ -1058,14 +1058,14 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
   private def invokeEoriAlreadyLinked()(test: Future[Result] => Assertion): Unit =
     test(
       controller
-        .eoriAlreadyLinked(Service.ATaR)
+        .eoriAlreadyLinked(atarService)
         .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     )
 
   private def invokeRejectedPreviously()(test: Future[Result] => Assertion): Unit =
     test(
       controller
-        .rejectedPreviously(Service.ATaR)
+        .rejectedPreviously(atarService)
         .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     )
 

@@ -70,11 +70,11 @@ class AreYouSureRemoveVatSpec extends ViewSpec {
   }
 
   private lazy val doc: Document =
-    Jsoup.parse(contentAsString(view(form, Service.ATaR, Journey.Subscribe, vatDetails, isInReviewMode = false)))
+    Jsoup.parse(contentAsString(view(form, atarService, Journey.Subscribe, vatDetails, isInReviewMode = false)))
 
   private lazy val docWithErrors: Document =
     Jsoup.parse(
-      contentAsString(view(formWithError, Service.ATaR, Journey.Subscribe, vatDetails, isInReviewMode = false))
+      contentAsString(view(formWithError, atarService, Journey.Subscribe, vatDetails, isInReviewMode = false))
     )
 
 }

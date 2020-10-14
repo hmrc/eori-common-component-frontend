@@ -28,7 +28,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   GroupId,
   KeyValue
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.CDS
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.cds
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -71,7 +72,7 @@ class EnrolmentStoreProxyServiceSpec extends UnitSpec with MockitoSugar with Bef
           .getEnrolmentByGroupId(any[String])(meq(headerCarrier), any())
       ).thenReturn(Future.successful(enrolmentStoreProxyResponse))
 
-      await(service.enrolmentForGroup(groupId, CDS)) shouldBe Some(enrolmentResponse)
+      await(service.enrolmentForGroup(groupId, Service.cds)) shouldBe Some(enrolmentResponse)
 
       verify(mockEnrolmentStoreProxyConnector).getEnrolmentByGroupId(any[String])(meq(headerCarrier), any())
     }
@@ -82,7 +83,7 @@ class EnrolmentStoreProxyServiceSpec extends UnitSpec with MockitoSugar with Bef
           .getEnrolmentByGroupId(any[String])(meq(headerCarrier), any())
       ).thenReturn(Future.successful(enrolmentStoreProxyResponsNoHmrcCusOrg))
 
-      await(service.enrolmentForGroup(groupId, CDS)) shouldBe None
+      await(service.enrolmentForGroup(groupId, Service.cds)) shouldBe None
 
       verify(mockEnrolmentStoreProxyConnector).getEnrolmentByGroupId(any[String])(meq(headerCarrier), any())
     }

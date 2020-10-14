@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
+package util
 
-import play.api.i18n.I18nSupport
-import play.api.mvc._
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
-class CdsController(mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport
+trait TestData {
+
+  val atarService: Service = Service("atar", "HMRC-ATAR-ORG", "", "", "")
+}

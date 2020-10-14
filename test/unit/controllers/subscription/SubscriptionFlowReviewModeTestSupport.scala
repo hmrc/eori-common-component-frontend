@@ -51,7 +51,7 @@ trait SubscriptionFlowReviewModeTestSupport extends SubscriptionFlowTestSupport 
     result.header.headers(
       LOCATION
     ) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
-      .determineRoute(Service.ATaR, journey)
+      .determineRoute(atarService, journey)
       .url
   }
 

@@ -73,7 +73,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
-      controller.createForm(Service.ATaR, Journey.Subscribe)
+      controller.createForm(atarService, Journey.Subscribe)
     )
 
     "show the form without errors" in {
@@ -89,7 +89,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
-      controller.submit(isInReviewMode = false, Service.ATaR, Journey.Subscribe)
+      controller.submit(isInReviewMode = false, atarService, Journey.Subscribe)
     )
 
     "give a page level error when neither utr or nino are provided" in {
@@ -253,7 +253,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
     when(mockSubscriptionBusinessService.getCachedCustomsId(any[HeaderCarrier]))
       .thenReturn(Future.successful(Some(Utr("id"))))
     test(
-      controller.createForm(Service.ATaR, Journey.Subscribe).apply(
+      controller.createForm(atarService, Journey.Subscribe).apply(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )
@@ -265,7 +265,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller
-        .submit(isInReviewMode, Service.ATaR, Journey.Subscribe)
+        .submit(isInReviewMode, atarService, Journey.Subscribe)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }
@@ -278,7 +278,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
       .thenReturn(Some(CdsOrganisationType(SoleTraderId)))
     test(
       controller
-        .submit(isInReviewMode, Service.ATaR, Journey.Subscribe)
+        .submit(isInReviewMode, atarService, Journey.Subscribe)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }
@@ -293,7 +293,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
       .thenReturn(Future.successful(Some(customsId)))
 
     test(
-      controller.reviewForm(Service.ATaR, Journey.Subscribe).apply(
+      controller.reviewForm(atarService, Journey.Subscribe).apply(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )

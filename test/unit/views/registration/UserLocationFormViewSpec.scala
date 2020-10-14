@@ -121,7 +121,7 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach wi
           .formAction(
             "user-location-form"
           ) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.UserLocationController
-          .submit(Service.ATaR, Journey.Register)
+          .submit(atarService, Journey.Register)
           .url
       }
     }
@@ -173,7 +173,7 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach wi
     withAuthorisedUser(userId, mockAuthConnector, userAffinityGroup = affinityGroup)
 
     val result = controller
-      .form(Service.ATaR, Journey.Register)
+      .form(atarService, Journey.Register)
       .apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
@@ -185,7 +185,7 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach wi
     withAuthorisedUser(userId, mockAuthConnector, userAffinityGroup = affinityGroup)
 
     val result = controller
-      .form(Service.ATaR, Journey.Subscribe)
+      .form(atarService, Journey.Subscribe)
       .apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }

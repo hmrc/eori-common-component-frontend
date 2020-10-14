@@ -115,7 +115,7 @@ class SixLineAddressSpec extends ViewSpec {
       aFewCountries,
       ThirdCountriesInCountryPicker,
       ThirdCountryOrganisationId,
-      Service.ATaR,
+      atarService,
       Journey.Subscribe
     )
     Jsoup.parse(contentAsString(result))
@@ -128,7 +128,7 @@ class SixLineAddressSpec extends ViewSpec {
       aFewCountries,
       ThirdCountriesInCountryPicker,
       ThirdCountryOrganisationId,
-      Service.ATaR,
+      atarService,
       Journey.Subscribe
     )
     Jsoup.parse(contentAsString(result))

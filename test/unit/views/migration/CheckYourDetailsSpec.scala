@@ -336,7 +336,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       dateTime,
       None,
       customsId,
-      Service.ATaR,
+      atarService,
       Journey.Subscribe
     )
     Jsoup.parse(contentAsString(result))

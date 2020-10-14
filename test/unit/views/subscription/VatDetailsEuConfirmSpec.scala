@@ -144,7 +144,7 @@ class VatDetailsEuConfirmSpec extends ViewSpec {
         emptyFormUnderLimit,
         isInReviewMode = false,
         VatEuDetailUnderLimit,
-        Service.ATaR,
+        atarService,
         Journey.Register,
         vatLimitNotReached = true
       )
@@ -157,7 +157,7 @@ class VatDetailsEuConfirmSpec extends ViewSpec {
         formUnderLimit,
         isInReviewMode = false,
         VatEuDetailUnderLimit,
-        Service.ATaR,
+        atarService,
         Journey.Register,
         vatLimitNotReached = true
       )
@@ -170,7 +170,7 @@ class VatDetailsEuConfirmSpec extends ViewSpec {
         formUnderLimit,
         isInReviewMode = false,
         VatEuDetailsOnLimit,
-        Service.ATaR,
+        atarService,
         Journey.Register,
         vatLimitNotReached = false
       )
@@ -183,7 +183,7 @@ class VatDetailsEuConfirmSpec extends ViewSpec {
         formUnderLimit,
         isInReviewMode = true,
         VatEuDetailsOnLimit,
-        Service.ATaR,
+        atarService,
         Journey.Register,
         vatLimitNotReached = false
       )

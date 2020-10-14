@@ -60,7 +60,7 @@ class EnrolmentPendingAgainstGroupIdControllerSpec extends ControllerSpec with A
 
   private def displayPage(journey: Journey.Value)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.show(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    await(test(controller.show(atarService, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
 }

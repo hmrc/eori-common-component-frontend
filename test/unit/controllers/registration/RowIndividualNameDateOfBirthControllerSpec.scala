@@ -76,10 +76,10 @@ class RowIndividualNameDateOfBirthControllerSpec
     }
 
     protected def show(с: RowIndividualNameDateOfBirthController): Action[AnyContent] =
-      с.form(organisationType, Service.ATaR, Journey.Register)
+      с.form(organisationType, atarService, Journey.Register)
 
     protected def submit(c: RowIndividualNameDateOfBirthController): Action[AnyContent] =
-      c.submit(false, organisationType, Service.ATaR, Journey.Register)
+      c.submit(false, organisationType, atarService, Journey.Register)
 
     def formData(thirdCountryIndividual: IndividualNameAndDateOfBirth): Map[String, String] =
       form.mapping.unbind(thirdCountryIndividual)
@@ -101,7 +101,7 @@ class RowIndividualNameDateOfBirthControllerSpec
       withControllerFixture { controllerFixture =>
         assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
           controllerFixture.mockAuthConnector,
-          controllerFixture.controller.form(organisationType, Service.ATaR, Journey.Register)
+          controllerFixture.controller.form(organisationType, atarService, Journey.Register)
         )
       }
 
@@ -121,7 +121,7 @@ class RowIndividualNameDateOfBirthControllerSpec
             page.getElementAttributeAction(
               webPage.formElement
             ) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.RowIndividualNameDateOfBirthController
-              .form(organisationType, Service.ATaR, Journey.Register)
+              .form(organisationType, atarService, Journey.Register)
               .url
           }
       }
@@ -132,7 +132,7 @@ class RowIndividualNameDateOfBirthControllerSpec
       withControllerFixture { controllerFixture =>
         assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
           controllerFixture.mockAuthConnector,
-          controllerFixture.controller.submit(false, organisationType, Service.ATaR, Journey.Register)
+          controllerFixture.controller.submit(false, organisationType, atarService, Journey.Register)
         )
       }
 

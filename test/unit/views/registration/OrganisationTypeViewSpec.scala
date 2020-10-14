@@ -129,7 +129,7 @@ class OrganisationTypeViewSpec
     val request = maybeOrgType.map { orgType =>
       SessionBuilder.buildRequestWithSessionAndOrgType(userId, orgType.id)
     }.getOrElse(SessionBuilder.buildRequestWithSession(userId))
-    test(organisationTypeController.form(Service.ATaR, Journey.Register).apply(request))
+    test(organisationTypeController.form(atarService, Journey.Register).apply(request))
   }
 
 }

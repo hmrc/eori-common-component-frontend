@@ -91,7 +91,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      organisationTypeController.form(Service.ATaR, Journey.Register)
+      organisationTypeController.form(atarService, Journey.Register)
     )
 
     forAll(userLocations) { userLocation =>
@@ -126,7 +126,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      organisationTypeController.submit(Service.ATaR, Journey.Register)
+      organisationTypeController.submit(atarService, Journey.Register)
     )
 
     "ensure an organisation type has been selected" in {
@@ -234,7 +234,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
     when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(userLocation)
 
     test(
-      organisationTypeController.form(Service.ATaR, Journey.Register).apply(
+      organisationTypeController.form(atarService, Journey.Register).apply(
         SessionBuilder.buildRequestWithSession(userId)
       )
     )
@@ -244,9 +244,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
     withNotLoggedInUser(mockAuthConnector)
 
     test(
-      organisationTypeController.form(Service.ATaR, Journey.Register).apply(
-        SessionBuilder.buildRequestWithSessionNoUser
-      )
+      organisationTypeController.form(atarService, Journey.Register).apply(SessionBuilder.buildRequestWithSessionNoUser)
     )
   }
 
@@ -267,7 +265,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
 
     test(
       organisationTypeController
-        .submit(Service.ATaR, journey)
+        .submit(atarService, journey)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }

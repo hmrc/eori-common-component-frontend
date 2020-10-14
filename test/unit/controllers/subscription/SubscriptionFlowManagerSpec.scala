@@ -321,7 +321,7 @@ class SubscriptionFlowManagerSpec
         .thenReturn(Future.successful(mockIndividualRegistrationDetails))
       val (subscriptionPage, session) =
         await(
-          controller.startSubscriptionFlow(Some(ConfirmIndividualTypePage), Service.ATaR, Journey.Register)(
+          controller.startSubscriptionFlow(Some(ConfirmIndividualTypePage), atarService, Journey.Register)(
             mockHC,
             mockRequest
           )
@@ -331,7 +331,7 @@ class SubscriptionFlowManagerSpec
       session shouldBe mockSession
 
       verify(mockRequestSessionData)
-        .storeUserSubscriptionFlow(IndividualSubscriptionFlow, ConfirmIndividualTypePage.url(Service.ATaR))(mockRequest)
+        .storeUserSubscriptionFlow(IndividualSubscriptionFlow, ConfirmIndividualTypePage.url(atarService))(mockRequest)
     }
 
     "start Corporate Subscription Flow when cached registration details are for an Organisation" in {
@@ -340,13 +340,13 @@ class SubscriptionFlowManagerSpec
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(mockOrgRegistrationDetails))
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(Service.ATaR, Journey.Register)(mockHC, mockRequest))
+        await(controller.startSubscriptionFlow(atarService, Journey.Register)(mockHC, mockRequest))
 
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
 
       verify(mockRequestSessionData)
-        .storeUserSubscriptionFlow(OrganisationSubscriptionFlow, RegistrationConfirmPage.url(Service.ATaR))(mockRequest)
+        .storeUserSubscriptionFlow(OrganisationSubscriptionFlow, RegistrationConfirmPage.url(atarService))(mockRequest)
     }
 
     "start Corporate Subscription Flow when selected organisation type is Sole Trader" in {
@@ -356,13 +356,13 @@ class SubscriptionFlowManagerSpec
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(mockIndividualRegistrationDetails))
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(Service.ATaR, Journey.Register)(mockHC, mockRequest))
+        await(controller.startSubscriptionFlow(atarService, Journey.Register)(mockHC, mockRequest))
 
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
       verify(mockRequestSessionData).storeUserSubscriptionFlow(
         SoleTraderSubscriptionFlow,
-        RegistrationConfirmPage.url(Service.ATaR)
+        RegistrationConfirmPage.url(atarService)
       )(mockRequest)
     }
 
@@ -371,16 +371,15 @@ class SubscriptionFlowManagerSpec
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(mockOrgRegistrationDetails))
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(Service.ATaR, Journey.Subscribe)(mockHC, mockRequest))
+        await(controller.startSubscriptionFlow(atarService, Journey.Subscribe)(mockHC, mockRequest))
 
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
 
       verify(mockRequestSessionData)
-        .storeUserSubscriptionFlow(
-          MigrationEoriOrganisationSubscriptionFlow,
-          RegistrationConfirmPage.url(Service.ATaR)
-        )(mockRequest)
+        .storeUserSubscriptionFlow(MigrationEoriOrganisationSubscriptionFlow, RegistrationConfirmPage.url(atarService))(
+          mockRequest
+        )
     }
 
     "start Corporate Subscription Flow when cached registration details are for an Organisation Reg-existing (a.k.a migration) user location is set to channel islands" in {
@@ -390,14 +389,14 @@ class SubscriptionFlowManagerSpec
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(mockOrgRegistrationDetails))
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(Service.ATaR, Journey.Subscribe)(mockHC, mockRequest))
+        await(controller.startSubscriptionFlow(atarService, Journey.Subscribe)(mockHC, mockRequest))
 
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
 
       verify(mockRequestSessionData).storeUserSubscriptionFlow(
         MigrationEoriRowOrganisationSubscriptionFlow,
-        RegistrationConfirmPage.url(Service.ATaR)
+        RegistrationConfirmPage.url(atarService)
       )(mockRequest)
     }
   }
@@ -437,12 +436,12 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
         .thenReturn(Future.successful(RegistrationDetailsIndividual()))
 
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(Service.ATaR, Journey.Subscribe)(mockHC, mockRequest))
+        await(controller.startSubscriptionFlow(atarService, Journey.Subscribe)(mockHC, mockRequest))
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
       verify(mockRequestSessionData).storeUserSubscriptionFlow(
         MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow,
-        RegistrationConfirmPage.url(Service.ATaR)
+        RegistrationConfirmPage.url(atarService)
       )(mockRequest)
     }
 
@@ -454,12 +453,12 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
         .thenReturn(Future.successful(RegistrationDetailsIndividual()))
 
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(Service.ATaR, Journey.Subscribe)(mockHC, mockRequest))
+        await(controller.startSubscriptionFlow(atarService, Journey.Subscribe)(mockHC, mockRequest))
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
       verify(mockRequestSessionData).storeUserSubscriptionFlow(
         MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow,
-        RegistrationConfirmPage.url(Service.ATaR)
+        RegistrationConfirmPage.url(atarService)
       )(mockRequest)
     }
 
@@ -470,12 +469,12 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
         .thenReturn(Future.successful(RegistrationDetailsOrganisation()))
 
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(Service.ATaR, Journey.Subscribe)(mockHC, mockRequest))
+        await(controller.startSubscriptionFlow(atarService, Journey.Subscribe)(mockHC, mockRequest))
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
       verify(mockRequestSessionData).storeUserSubscriptionFlow(
         MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow,
-        RegistrationConfirmPage.url(Service.ATaR)
+        RegistrationConfirmPage.url(atarService)
       )(mockRequest)
     }
   }

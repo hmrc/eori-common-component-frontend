@@ -57,7 +57,7 @@ class CacheControllerSpec extends ControllerSpec with AuthActionMock {
         await(controller.clearCache(Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(userId)))
 
       status(result) shouldBe SEE_OTHER
-      result.header.headers("Location") should be(ApplicationController.startSubscription(Service.ATaR).url)
+      result.header.headers("Location") should be(ApplicationController.startSubscription(atarService).url)
       assertSessionDoesNotContainKeys(result.session(mockRequest))
     }
 

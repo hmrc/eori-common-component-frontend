@@ -67,10 +67,10 @@ class RowIndividualNameDateOfBirthControllerReviewModeSpec
     )(global)
 
     protected def show(с: RowIndividualNameDateOfBirthController): Action[AnyContent] =
-      с.reviewForm(organisationType, Service.ATaR, Journey.Register)
+      с.reviewForm(organisationType, atarService, Journey.Register)
 
     protected def submit(c: RowIndividualNameDateOfBirthController): Action[AnyContent] =
-      c.submit(true, organisationType, Service.ATaR, Journey.Register)
+      c.submit(true, organisationType, atarService, Journey.Register)
 
     def formData(thirdCountryIndividual: IndividualNameAndDateOfBirth): Map[String, String] =
       form.mapping.unbind(thirdCountryIndividual)
@@ -90,7 +90,7 @@ class RowIndividualNameDateOfBirthControllerReviewModeSpec
       withControllerFixture { controllerFixture =>
         assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
           controllerFixture.mockAuthConnector,
-          controllerFixture.controller.reviewForm(organisationType, Service.ATaR, Journey.Register)
+          controllerFixture.controller.reviewForm(organisationType, atarService, Journey.Register)
         )
       }
 
@@ -116,7 +116,7 @@ class RowIndividualNameDateOfBirthControllerReviewModeSpec
             assertPresentOnPage(webPage.familyNameElement)
             assertPresentOnPage(webPage.dateOfBirthElement)
             page.getElementAttributeAction(webPage.formElement) shouldBe RowIndividualNameDateOfBirthController
-              .reviewForm(organisationType, Service.ATaR, Journey.Register)
+              .reviewForm(organisationType, atarService, Journey.Register)
               .url
 
             page.getElementValue(webPage.givenNameElement) shouldBe "firstName"
@@ -145,7 +145,7 @@ class RowIndividualNameDateOfBirthControllerReviewModeSpec
       withControllerFixture { controllerFixture =>
         assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
           controllerFixture.mockAuthConnector,
-          controllerFixture.controller.submit(true, organisationType, Service.ATaR, Journey.Register)
+          controllerFixture.controller.submit(true, organisationType, atarService, Journey.Register)
         )
       }
 

@@ -52,12 +52,12 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
   protected override val submitInCreateModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController
-      .submit(isInReviewMode = false, Service.ATaR, Journey.Register)
+      .submit(isInReviewMode = false, atarService, Journey.Register)
       .url
 
   protected override val submitInReviewModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController
-      .submit(isInReviewMode = true, Service.ATaR, Journey.Register)
+      .submit(isInReviewMode = true, atarService, Journey.Register)
       .url
 
   private val mockRequestSessionData   = mock[RequestSessionData]
@@ -143,7 +143,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.createForm(Service.ATaR, Journey.Register)
+      controller.createForm(atarService, Journey.Register)
     )
 
     "display back link correctly" in {
@@ -184,7 +184,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.reviewForm(Service.ATaR, Journey.Register)
+      controller.reviewForm(atarService, Journey.Register)
     )
 
     "display relevant data in form fields when subscription details exist in the cache" in {
@@ -216,7 +216,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = false, Service.ATaR, Journey.Register)
+      controller.submit(isInReviewMode = false, atarService, Journey.Register)
     )
 
     "save the details" in {
@@ -299,7 +299,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = true, Service.ATaR, Journey.Register)
+      controller.submit(isInReviewMode = true, atarService, Journey.Register)
     )
 
     "allow resubmission in review mode when details are invalid" in {
@@ -352,7 +352,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
   ) {
     withAuthorisedUser(userId, mockAuthConnector)
 
-    val result = controller.submit(isInReviewMode = false, Service.ATaR, Journey.Register)(
+    val result = controller.submit(isInReviewMode = false, atarService, Journey.Register)(
       SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
     )
     test(result)
@@ -363,7 +363,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
   ) {
     withAuthorisedUser(userId, mockAuthConnector)
 
-    val result = controller.submit(isInReviewMode = true, Service.ATaR, Journey.Register)(
+    val result = controller.submit(isInReviewMode = true, atarService, Journey.Register)(
       SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
     )
     test(result)
@@ -377,7 +377,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
 
     val result =
-      controller.createForm(Service.ATaR, Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+      controller.createForm(atarService, Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     test(result)
   }
 
@@ -391,7 +391,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       .thenReturn(Future.successful(NameIdDetailsPage.filledValues))
 
     val result =
-      controller.reviewForm(Service.ATaR, Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+      controller.reviewForm(atarService, Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     test(result)
   }
 

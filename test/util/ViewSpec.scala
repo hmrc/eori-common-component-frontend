@@ -26,7 +26,7 @@ import play.api.test.CSRFTokenHelper
 
 import scala.concurrent.duration._
 
-trait ViewSpec extends PlaySpec with CSRFTest with Injector {
+trait ViewSpec extends PlaySpec with CSRFTest with Injector with TestData {
 
   private val messageApi: MessagesApi = instanceOf[MessagesApi]
 

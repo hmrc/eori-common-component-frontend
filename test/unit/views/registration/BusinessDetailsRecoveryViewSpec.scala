@@ -69,12 +69,12 @@ class BusinessDetailsRecoveryViewSpec extends ViewSpec {
   }
 
   private lazy val CorporateBodyDoc: Document = {
-    val result = view(name, address, false, Service.ATaR)
+    val result = view(name, address, false, atarService)
     Jsoup.parse(contentAsString(result))
   }
 
   private lazy val SoleTraderOrIndividualDoc: Document = {
-    val result = view(name, address, true, Service.ATaR)
+    val result = view(name, address, true, atarService)
     Jsoup.parse(contentAsString(result))
   }
 

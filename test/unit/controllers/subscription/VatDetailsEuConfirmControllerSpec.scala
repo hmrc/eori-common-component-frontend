@@ -137,7 +137,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
       when(mockSubscriptionFlowManager.stepInformation(any())(any[Request[AnyContent]]))
         .thenReturn(mockSubscriptionFlowInfo)
       when(mockSubscriptionFlowInfo.nextPage).thenReturn(mockSubscriptionPage)
-      when(mockSubscriptionPage.url(Service.ATaR)).thenReturn(url)
+      when(mockSubscriptionPage.url(atarService)).thenReturn(url)
       submitForm(validRequestNo) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) should endWith(url)
@@ -191,7 +191,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
       when(mockSubscriptionFlowManager.stepInformation(any())(any[Request[AnyContent]]))
         .thenReturn(mockSubscriptionFlowInfo)
       when(mockSubscriptionFlowInfo.nextPage).thenReturn(mockSubscriptionPage)
-      when(mockSubscriptionPage.url(Service.ATaR)).thenReturn(url)
+      when(mockSubscriptionPage.url(atarService)).thenReturn(url)
       submitForm(invalidRequest) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) should endWith(url)
@@ -205,7 +205,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     await(
       test(
-        controller.createForm(Service.ATaR, Journey.Register).apply(
+        controller.createForm(atarService, Journey.Register).apply(
           SessionBuilder.buildRequestWithSession(defaultUserId)
         )
       )
@@ -216,7 +216,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     await(
       test(
-        controller.reviewForm(Service.ATaR, Journey.Register).apply(
+        controller.reviewForm(atarService, Journey.Register).apply(
           SessionBuilder.buildRequestWithSession(defaultUserId)
         )
       )
@@ -228,7 +228,7 @@ class VatDetailsEuConfirmControllerSpec extends ControllerSpec with BeforeAndAft
     await(
       test(
         controller
-          .submit(isInReviewMode, Service.ATaR, Journey.Register)
+          .submit(isInReviewMode, atarService, Journey.Register)
           .apply(SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form))
       )
     )

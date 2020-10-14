@@ -151,14 +151,14 @@ class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with Befo
   private def createForm(journey: Journey.Value = Journey.Register)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     mockIsIndividual()
-    test(controller.createForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+    test(controller.createForm(atarService, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }
 
   private def reviewForm(journey: Journey.Value = Journey.Register)(test: Future[Result] => Any) {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     mockIsIndividual()
     when(mockSubscriptionBusinessService.getCachedVatRegisteredUk(any[HeaderCarrier])).thenReturn(true)
-    test(controller.reviewForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+    test(controller.reviewForm(atarService, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }
 
   private def submitForm(form: Map[String, String], isInReviewMode: Boolean = false)(
@@ -168,7 +168,7 @@ class VatRegisteredUkSubscriptionControllerSpec extends ControllerSpec with Befo
     mockIsIndividual()
     test(
       controller
-        .submit(isInReviewMode: Boolean, Service.ATaR, Journey.Register)
+        .submit(isInReviewMode: Boolean, atarService, Journey.Register)
         .apply(SessionBuilder.buildRequestWithFormValues(form))
     )
   }

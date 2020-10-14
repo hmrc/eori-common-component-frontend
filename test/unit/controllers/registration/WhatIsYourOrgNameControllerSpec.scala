@@ -118,7 +118,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
     forAll(organisationTypeOrganisations) { (organisationType, _, _, _, _, reviewMode, expectedName) =>
       assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
         mockAuthConnector,
-        controller.showForm(reviewMode, organisationType, Service.ATaR, Journey.Register),
+        controller.showForm(reviewMode, organisationType, atarService, Journey.Register),
         s", for reviewMode $reviewMode and organisationType $organisationType"
       )
 
@@ -149,7 +149,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
       (organisationType, _, nameDescription, submitLocation, userLocation, reviewMode, _) =>
         assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
           mockAuthConnector,
-          controller.submit(reviewMode, organisationType, Service.ATaR, Journey.Register),
+          controller.submit(reviewMode, organisationType, atarService, Journey.Register),
           s", for reviewMode $reviewMode and organisationType $organisationType"
         )
 
@@ -195,7 +195,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
     withAuthorisedUser(userId, mockAuthConnector)
 
     val result = controller
-      .showForm(isInReviewMode, organisationType, Service.ATaR, Journey.Register)
+      .showForm(isInReviewMode, organisationType, atarService, Journey.Register)
       .apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
@@ -208,7 +208,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
-      .submit(isInReviewMode, organisationType, Service.ATaR, Journey.Register)
+      .submit(isInReviewMode, organisationType, atarService, Journey.Register)
       .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }

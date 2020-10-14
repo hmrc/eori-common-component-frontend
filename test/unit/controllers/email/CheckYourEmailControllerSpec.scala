@@ -94,7 +94,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
-      controller.createForm(Service.ATaR, Journey.Subscribe)
+      controller.createForm(atarService, Journey.Subscribe)
     )
 
     "display title as 'Check your email address'" in {
@@ -110,7 +110,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     "redirect to Verify Your Email Address page for unverified email address" in {
       when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(true)))
-      submitForm(ValidRequest + (yesNoInputName -> answerYes), service = Service.ATaR, journey = Journey.Subscribe) {
+      submitForm(ValidRequest + (yesNoInputName -> answerYes), service = atarService, journey = Journey.Subscribe) {
         result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers("Location") should endWith(
@@ -132,7 +132,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(false)))
 
-      submitForm(ValidRequest + (yesNoInputName -> answerYes), service = Service.ATaR, journey = Journey.Subscribe) {
+      submitForm(ValidRequest + (yesNoInputName -> answerYes), service = atarService, journey = Journey.Subscribe) {
         result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers("Location") should endWith(
@@ -146,7 +146,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
         .thenReturn(Future.successful(None))
 
       the[IllegalStateException] thrownBy {
-        submitForm(ValidRequest + (yesNoInputName -> answerYes), service = Service.ATaR, journey = Journey.Subscribe) {
+        submitForm(ValidRequest + (yesNoInputName -> answerYes), service = atarService, journey = Journey.Subscribe) {
           result =>
             status(result) shouldBe SEE_OTHER
         }
@@ -154,7 +154,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     }
 
     "redirect to What is Your Email Address Page on selecting No radio button" in {
-      submitForm(ValidRequest + (yesNoInputName -> answerNo), service = Service.ATaR, journey = Journey.Subscribe) {
+      submitForm(ValidRequest + (yesNoInputName -> answerNo), service = atarService, journey = Journey.Subscribe) {
         result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers("Location") should endWith(
@@ -164,7 +164,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     }
 
     "display an error message when no option is selected" in {
-      submitForm(ValidRequest - yesNoInputName, service = Service.ATaR, journey = Journey.Subscribe) { result =>
+      submitForm(ValidRequest - yesNoInputName, service = atarService, journey = Journey.Subscribe) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(CheckYourEmailPage.pageLevelErrorSummaryListXPath) shouldBe problemWithSelectionError
@@ -198,7 +198,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   private def showForm(userId: String = defaultUserId, journey: Journey.Value)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
-      .createForm(Service.ATaR, journey)
+      .createForm(atarService, journey)
       .apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
@@ -206,7 +206,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   private def verifyEmailViewForm(userId: String = defaultUserId, journey: Journey.Value)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
-      .verifyEmailView(Service.ATaR, journey)
+      .verifyEmailView(atarService, journey)
       .apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }

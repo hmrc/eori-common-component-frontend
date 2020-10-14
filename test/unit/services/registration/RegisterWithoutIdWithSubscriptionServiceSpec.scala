@@ -166,7 +166,7 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
       mockRegisterWithoutIdOKResponse()
       mockSub02ControllerCall()
 
-      await(service.rowRegisterWithoutIdWithSubscription(mockLoggedInUser, Service.ATaR, Journey.Register)(hc, rq))
+      await(service.rowRegisterWithoutIdWithSubscription(mockLoggedInUser, atarService, Journey.Register)(hc, rq))
 
       verify(mockSub02Controller, times(1)).subscribe(any(), any())
       verify(mockRegisterWithoutIdService, never).registerOrganisation(anyString(), any(), any(), any(), any())(any())
@@ -179,7 +179,7 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
       mockRegisterWithoutIdOKResponse()
       mockSub02ControllerCall()
 
-      await(service.rowRegisterWithoutIdWithSubscription(mockLoggedInUser, Service.ATaR, Journey.Subscribe)(hc, rq))
+      await(service.rowRegisterWithoutIdWithSubscription(mockLoggedInUser, atarService, Journey.Subscribe)(hc, rq))
 
       verify(mockSub02Controller, times(1)).subscribe(any(), any())
       verify(mockRegisterWithoutIdService, never).registerOrganisation(anyString(), any(), any(), any(), any())(any())
@@ -193,7 +193,7 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
       mockRegisterWithoutIdOKResponse()
       mockSub02ControllerCall()
 
-      await(service.rowRegisterWithoutIdWithSubscription(mockLoggedInUser, Service.ATaR, Journey.Subscribe)(hc, rq))
+      await(service.rowRegisterWithoutIdWithSubscription(mockLoggedInUser, atarService, Journey.Subscribe)(hc, rq))
 
       verify(mockSub02Controller, times(1)).subscribe(any(), any())
       verify(mockRegisterWithoutIdService, never).registerOrganisation(anyString(), any(), any(), any(), any())(any())
@@ -208,7 +208,7 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
       mockRegisterWithoutIdOKResponse()
       mockSub02ControllerCall()
 
-      await(service.rowRegisterWithoutIdWithSubscription(mockLoggedInUser, Service.ATaR, Journey.Register)(hc, rq))
+      await(service.rowRegisterWithoutIdWithSubscription(mockLoggedInUser, atarService, Journey.Register)(hc, rq))
 
       verify(mockSub02Controller, times(1)).subscribe(any(), any())
       verify(mockRegisterWithoutIdService, never).registerOrganisation(anyString(), any(), any(), any(), any())(any())
@@ -224,7 +224,7 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
       mockSessionCacheRegistrationDetails()
       mockSessionCacheSubscriptionDetails()
 
-      await(service.rowRegisterWithoutIdWithSubscription(mockLoggedInUser, Service.ATaR, Journey.Register)(hc, rq))
+      await(service.rowRegisterWithoutIdWithSubscription(mockLoggedInUser, atarService, Journey.Register)(hc, rq))
 
       verify(mockRegisterWithoutIdService, times(1)).registerIndividual(any(), any(), any(), any(), any())(any())
       verify(mockSub02Controller, times(1)).subscribe(any(), any())
@@ -242,7 +242,7 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
       mockRegisterWithoutIdOKResponse()
       mockSub02ControllerCall()
 
-      await(service.rowRegisterWithoutIdWithSubscription(mockLoggedInUser, Service.ATaR, Journey.Register)(hc, rq))
+      await(service.rowRegisterWithoutIdWithSubscription(mockLoggedInUser, atarService, Journey.Register)(hc, rq))
 
       verify(mockSub02Controller, times(1)).subscribe(any[Service], any[Journey.Value])
       verify(mockRegisterWithoutIdService, times(1)).registerOrganisation(
@@ -267,7 +267,7 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
       mockRegisterWithoutIdFailure()
 
       val thrown = the[RuntimeException] thrownBy {
-        await(service.rowRegisterWithoutIdWithSubscription(mockLoggedInUser, Service.ATaR, Journey.Register)(hc, rq))
+        await(service.rowRegisterWithoutIdWithSubscription(mockLoggedInUser, atarService, Journey.Register)(hc, rq))
       }
       thrown shouldBe emulatedFailure
     }
@@ -282,7 +282,7 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
       mockRegisterWithoutIdNotOKResponse()
 
       the[RuntimeException] thrownBy {
-        await(service.rowRegisterWithoutIdWithSubscription(mockLoggedInUser, Service.ATaR, Journey.Register)(hc, rq))
+        await(service.rowRegisterWithoutIdWithSubscription(mockLoggedInUser, atarService, Journey.Register)(hc, rq))
       } should have message "Registration of organisation FAILED"
     }
   }

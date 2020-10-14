@@ -83,7 +83,7 @@ class EnterYourDetailsSpec extends ViewSpec {
   }
 
   lazy val doc: Document = {
-    val result = view(form, isInReviewMode, Service.ATaR, Journey.Subscribe, Some("uk"))
+    val result = view(form, isInReviewMode, atarService, Journey.Subscribe, Some("uk"))
     Jsoup.parse(contentAsString(result))
   }
 
@@ -91,7 +91,7 @@ class EnterYourDetailsSpec extends ViewSpec {
     val result = view(
       form,
       isInReviewMode,
-      Service.ATaR,
+      atarService,
       Journey.Subscribe,
       selectedUserLocationWithIslands = Some("third-country")
     )

@@ -100,7 +100,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
   "Subscribe" should {
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      subscriptionController.subscribe(Service.ATaR, Journey.Register)
+      subscriptionController.subscribe(atarService, Journey.Register)
     )
   }
 
@@ -139,7 +139,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
         await(result)
         verify(mockCdsSubscriber).subscribeWithCachedDetails(
           meq(Some(mockCdsOrganisationType)),
-          meq(Service.ATaR),
+          meq(atarService),
           meq(Journey.Register)
         )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
       }
@@ -164,7 +164,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       )
       subscribeForGetYourEORI(organisationTypeOption = None) { result =>
         await(result)
-        verify(mockCdsSubscriber).subscribeWithCachedDetails(meq(None), meq(Service.ATaR), meq(Journey.Register))(
+        verify(mockCdsSubscriber).subscribeWithCachedDetails(meq(None), meq(atarService), meq(Journey.Register))(
           any[HeaderCarrier],
           any[Request[AnyContent]],
           any[Messages]
@@ -469,13 +469,13 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]]))
       .thenReturn(organisationTypeOption)
     test(
-      subscriptionController.subscribe(Service.ATaR, Journey.Register)(SessionBuilder.buildRequestWithSession(userId))
+      subscriptionController.subscribe(atarService, Journey.Register)(SessionBuilder.buildRequestWithSession(userId))
     )
   }
 
   private def invokeMigrationEnd(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    test(subscriptionController.migrationEnd(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+    test(subscriptionController.migrationEnd(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }
 
   private def invokeEoriAlreadyExists(test: Future[Result] => Any) = {

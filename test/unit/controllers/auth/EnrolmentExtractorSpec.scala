@@ -20,7 +20,7 @@ import base.UnitSpec
 import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.EnrolmentExtractor
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Eori, LoggedInUserWithEnrolments, Nino, Utr}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.{ATaR, CDS}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 class EnrolmentExtractorSpec extends UnitSpec {
 
@@ -41,7 +41,7 @@ class EnrolmentExtractorSpec extends UnitSpec {
 
         val atarEnrolment = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", eori.id)
 
-        val result = enrolmentExtractor.enrolledForService(loggedInUser(Set(atarEnrolment)), ATaR)
+        val result = enrolmentExtractor.enrolledForService(loggedInUser(Set(atarEnrolment)), atarService)
 
         result shouldBe Some(eori)
       }
@@ -50,7 +50,7 @@ class EnrolmentExtractorSpec extends UnitSpec {
 
         val cdsEnrolment = Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", eori.id)
 
-        val result = enrolmentExtractor.enrolledForService(loggedInUser(Set(cdsEnrolment)), CDS)
+        val result = enrolmentExtractor.enrolledForService(loggedInUser(Set(cdsEnrolment)), Service.cds)
 
         result shouldBe Some(eori)
       }
@@ -60,12 +60,12 @@ class EnrolmentExtractorSpec extends UnitSpec {
 
       "user is not enrolled for ATaR" in {
 
-        enrolmentExtractor.enrolledForService(loggedInUser(Set.empty), ATaR) shouldBe None
+        enrolmentExtractor.enrolledForService(loggedInUser(Set.empty), atarService) shouldBe None
       }
 
       "user is not enrolled for CDS" in {
 
-        enrolmentExtractor.enrolledForService(loggedInUser(Set.empty), CDS) shouldBe None
+        enrolmentExtractor.enrolledForService(loggedInUser(Set.empty), Service.cds) shouldBe None
       }
     }
 

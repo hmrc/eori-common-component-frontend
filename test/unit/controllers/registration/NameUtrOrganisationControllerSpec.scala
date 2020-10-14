@@ -100,7 +100,7 @@ class NameUtrOrganisationControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.form(defaultOrganisationType, Service.ATaR, Journey.Register)
+      controller.form(defaultOrganisationType, atarService, Journey.Register)
     )
 
     "display the form" in {
@@ -187,7 +187,7 @@ class NameUtrOrganisationControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(defaultOrganisationType, Service.ATaR, Journey.Register)
+      controller.submit(defaultOrganisationType, atarService, Journey.Register)
     )
 
     "ensure a valid Organisation Type has been passed" in {
@@ -391,7 +391,7 @@ class NameUtrOrganisationControllerSpec
     withAuthorisedUser(userId, mockAuthConnector)
 
     test(
-      controller.form(organisationType, Service.ATaR, Journey.Register).apply(
+      controller.form(organisationType, atarService, Journey.Register).apply(
         SessionBuilder.buildRequestWithSession(userId)
       )
     )
@@ -406,7 +406,7 @@ class NameUtrOrganisationControllerSpec
 
     test(
       controller
-        .submit(organisationType, Service.ATaR, Journey.Register)
+        .submit(organisationType, atarService, Journey.Register)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }

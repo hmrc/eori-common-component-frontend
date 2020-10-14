@@ -33,8 +33,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
   OrganisationTypeConfiguration
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionSuccessful
+import util.TestData
 
-trait SubscriptionServiceTestData {
+trait SubscriptionServiceTestData extends TestData {
 
   val sapNumber                          = "0123456789"
   val expectedTaxPayerId                 = "012345678900000000000000000000000000000000"
@@ -332,7 +333,7 @@ trait SubscriptionServiceTestData {
          |         },
          |         "dateOfEstablishment":"$dateOfBirthString",
          |         "typeOfPerson": "1",
-         |         "serviceName": "${Service.ATaR.enrolmentKey}"
+         |         "serviceName": "${atarService.enrolmentKey}"
          |      }
          |   }
          |}
@@ -373,7 +374,7 @@ trait SubscriptionServiceTestData {
          |         },
          |         "dateOfEstablishment":"$dateOfBirthString",
          |         "typeOfPerson": "1",
-         |         "serviceName": "${Service.ATaR.enrolmentKey}"
+         |         "serviceName": "${atarService.enrolmentKey}"
          |      }
          |   }
          |}
@@ -381,7 +382,7 @@ trait SubscriptionServiceTestData {
 
   def organisationAutomaticExistingRegistrationRequestJson(contactEmail: String): JsValue =
     Json.parse(
-      s"""{"subscriptionCreateRequest":{"requestCommon":{"regime":"CDS","receiptDate":"2016-08-18T14:00:05Z","acknowledgementReference":"4482baa81c844d23a8db3fc180325e7a","originatingSystem":"MDTP"},"requestDetail":{"SAFE":"SafeID123","EORINo":"ZZZ1ZZZZ23ZZZZZZZ","CDSFullName":"Name","CDSEstablishmentAddress":{"streetAndNumber":"Street","city":"city","postalCode":"NE1 1BG","countryCode":"GB"},"contactInformation":{"city":"-","emailAddress":"$contactEmail", "emailVerificationTimestamp": "$emailVerificationTimestamp"},"shortName":"nt","dateOfEstablishment":"1963-05-01","serviceName":"${Service.ATaR.enrolmentKey}"}}}""".stripMargin
+      s"""{"subscriptionCreateRequest":{"requestCommon":{"regime":"CDS","receiptDate":"2016-08-18T14:00:05Z","acknowledgementReference":"4482baa81c844d23a8db3fc180325e7a","originatingSystem":"MDTP"},"requestDetail":{"SAFE":"SafeID123","EORINo":"ZZZ1ZZZZ23ZZZZZZZ","CDSFullName":"Name","CDSEstablishmentAddress":{"streetAndNumber":"Street","city":"city","postalCode":"NE1 1BG","countryCode":"GB"},"contactInformation":{"city":"-","emailAddress":"$contactEmail", "emailVerificationTimestamp": "$emailVerificationTimestamp"},"shortName":"nt","dateOfEstablishment":"1963-05-01","serviceName":"${atarService.enrolmentKey}"}}}""".stripMargin
     )
 
   def existingRegistrationSubcriptionRequestJson(contactEmail: String): JsValue =
@@ -416,7 +417,7 @@ trait SubscriptionServiceTestData {
          |      "dateOfEstablishment": "1963-05-01",
          |      "typeOfPerson": "1",
          |      "principalEconomicActivity": "p001",
-         |      "serviceName": "${Service.ATaR.enrolmentKey}"
+         |      "serviceName": "${atarService.enrolmentKey}"
          |    }
          |  }
          |}
@@ -457,7 +458,7 @@ trait SubscriptionServiceTestData {
          |         },
          |         "dateOfEstablishment":"$dateEstablishedString",
          |         "typeOfPerson": "2",
-         |         "serviceName": "${Service.ATaR.enrolmentKey}"
+         |         "serviceName": "${atarService.enrolmentKey}"
          |      }
          |   }
          |}
@@ -550,7 +551,7 @@ trait SubscriptionServiceTestData {
          | "consentToDisclosureOfPersonalData": "0",
          | $typeOfPersonJson
          | "dateOfEstablishment": "$expectedDateOfBirthString",
-         | "serviceName": "${Service.ATaR.enrolmentKey}"
+         | "serviceName": "${atarService.enrolmentKey}"
          |
          |}
          |}
@@ -607,7 +608,7 @@ trait SubscriptionServiceTestData {
          | "dateOfEstablishment": "$expectedDateEstablishedString",
          | $typeOfPersonJson
          | "principalEconomicActivity": "$principalEconomicActivity",
-         | "serviceName": "${Service.ATaR.enrolmentKey}"
+         | "serviceName": "${atarService.enrolmentKey}"
          |}
          |}
          |

@@ -107,7 +107,7 @@ class VatRegisteredEuSpec extends ViewSpec {
         form,
         isIndividualSubscriptionFlow = true,
         isPartnership = false,
-        Service.ATaR,
+        atarService,
         Journey.Subscribe
       )
     )
@@ -120,7 +120,7 @@ class VatRegisteredEuSpec extends ViewSpec {
         form,
         isIndividualSubscriptionFlow = false,
         isPartnership = false,
-        Service.ATaR,
+        atarService,
         Journey.Subscribe
       )
     )
@@ -133,7 +133,7 @@ class VatRegisteredEuSpec extends ViewSpec {
         formWithError,
         isIndividualSubscriptionFlow = true,
         isPartnership = false,
-        Service.ATaR,
+        atarService,
         Journey.Subscribe
       )
     )
@@ -146,7 +146,7 @@ class VatRegisteredEuSpec extends ViewSpec {
         partnershipForm,
         isIndividualSubscriptionFlow = false,
         isPartnership = true,
-        Service.ATaR,
+        atarService,
         Journey.Subscribe
       )
     )
@@ -159,7 +159,7 @@ class VatRegisteredEuSpec extends ViewSpec {
         partnershipFormWithError,
         isIndividualSubscriptionFlow = false,
         isPartnership = true,
-        Service.ATaR,
+        atarService,
         Journey.Subscribe
       )
     )

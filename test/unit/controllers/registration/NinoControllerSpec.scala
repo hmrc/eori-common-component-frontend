@@ -67,7 +67,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter with AuthAct
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.form(defaultOrganisationType, Service.ATaR, Journey.Register)
+      controller.form(defaultOrganisationType, atarService, Journey.Register)
     )
 
     "show the form without errors" in {
@@ -198,7 +198,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter with AuthAct
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(defaultOrganisationType, Service.ATaR, Journey.Register)
+      controller.submit(defaultOrganisationType, atarService, Journey.Register)
     )
 
     "redirect to the confirm page when there's a successful match" in {
@@ -250,7 +250,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter with AuthAct
     withAuthorisedUser(userId, mockAuthConnector)
 
     val result = controller
-      .form(organisationType, Service.ATaR, Journey.Register)
+      .form(organisationType, atarService, Journey.Register)
       .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }
@@ -263,7 +263,7 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter with AuthAct
     withAuthorisedUser(userId, mockAuthConnector)
 
     val result = controller
-      .submit(organisationType, Service.ATaR, Journey.Register)
+      .submit(organisationType, atarService, Journey.Register)
       .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }

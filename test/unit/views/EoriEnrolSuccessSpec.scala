@@ -28,7 +28,7 @@ class EoriEnrolSuccessSpec extends ViewSpec {
 
   implicit val request = withFakeCSRF(FakeRequest())
 
-  private val service = Service.ATaR
+  private val service = atarService
   private val eori    = "GB234532132435"
 
   private val view = instanceOf[eori_enrol_success]

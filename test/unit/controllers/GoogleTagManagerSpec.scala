@@ -82,7 +82,7 @@ class GoogleTagManagerSpec extends ControllerSpec with GuiceOneAppPerSuite with 
     when(mockSubscriptionBusinessService.getCachedCustomsId(any[HeaderCarrier]))
       .thenReturn(Future.successful(Some(Utr("id"))))
     test(
-      controller.createForm(Service.ATaR, Journey.Subscribe).apply(
+      controller.createForm(atarService, Journey.Subscribe).apply(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )

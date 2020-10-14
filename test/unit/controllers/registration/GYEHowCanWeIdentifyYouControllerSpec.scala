@@ -62,7 +62,7 @@ class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAnd
   "Viewing the form " should {
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.form(CdsOrganisationType.IndividualId, Service.ATaR, Journey.Register)
+      controller.form(CdsOrganisationType.IndividualId, atarService, Journey.Register)
     )
   }
 
@@ -70,7 +70,7 @@ class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAnd
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(CdsOrganisationType.IndividualId, Service.ATaR, Journey.Register)
+      controller.submit(CdsOrganisationType.IndividualId, atarService, Journey.Register)
     )
 
     "redirect to the Confirm page when a nino is matched" in {
@@ -163,7 +163,7 @@ class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAnd
   ) {
     withAuthorisedUser(userId, mockAuthConnector)
     test(
-      controller.submit(orgType, Service.ATaR, journey).apply(
+      controller.submit(orgType, atarService, journey).apply(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )

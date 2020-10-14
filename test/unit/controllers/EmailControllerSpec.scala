@@ -127,7 +127,7 @@ class EmailControllerSpec
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller
-        .form(Service.ATaR, Journey.Subscribe)
+        .form(atarService, Journey.Subscribe)
         .apply(SessionBuilder.buildRequestWithSession(userId))
     )
   }

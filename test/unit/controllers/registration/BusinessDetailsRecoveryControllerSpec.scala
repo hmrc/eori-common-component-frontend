@@ -135,7 +135,7 @@ class BusinessDetailsRecoveryControllerSpec extends ControllerSpec with BeforeAn
         mockSubscriptionFlowManager.startSubscriptionFlow(
           meq(Some(BusinessDetailsRecoveryPage)),
           meq(CdsOrganisationType.ThirdCountryIndividual),
-          meq(Service.ATaR),
+          meq(atarService),
           meq(Journey.Register)
         )(any[HeaderCarrier], any[Request[AnyContent]])
       ).thenReturn(Future.successful(mockFlowStart))
@@ -147,7 +147,7 @@ class BusinessDetailsRecoveryControllerSpec extends ControllerSpec with BeforeAn
       invokeContinue() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) should endWith(
-          ContactDetailsController.createForm(Service.ATaR, Journey.Register).url
+          ContactDetailsController.createForm(atarService, Journey.Register).url
         )
       }
     }
@@ -167,7 +167,7 @@ class BusinessDetailsRecoveryControllerSpec extends ControllerSpec with BeforeAn
         mockSubscriptionFlowManager.startSubscriptionFlow(
           meq(Some(BusinessDetailsRecoveryPage)),
           meq(CdsOrganisationType.ThirdCountryOrganisation),
-          meq(Service.ATaR),
+          meq(atarService),
           meq(Journey.Register)
         )(any[HeaderCarrier], any[Request[AnyContent]])
       ).thenReturn(Future.successful(mockFlowStart))
@@ -181,7 +181,7 @@ class BusinessDetailsRecoveryControllerSpec extends ControllerSpec with BeforeAn
       invokeContinue() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) should endWith(
-          DateOfEstablishmentController.createForm(Service.ATaR, Journey.Register).url
+          DateOfEstablishmentController.createForm(atarService, Journey.Register).url
         )
       }
     }
@@ -194,7 +194,7 @@ class BusinessDetailsRecoveryControllerSpec extends ControllerSpec with BeforeAn
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller
-        .form(Service.ATaR, Journey.Register)
+        .form(atarService, Journey.Register)
         .apply(SessionBuilder.buildRequestWithSession(userId))
     )
   }
@@ -203,7 +203,7 @@ class BusinessDetailsRecoveryControllerSpec extends ControllerSpec with BeforeAn
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller
-        .continue(Service.ATaR, Journey.Register)
+        .continue(atarService, Journey.Register)
         .apply(SessionBuilder.buildRequestWithSession(userId))
     )
   }

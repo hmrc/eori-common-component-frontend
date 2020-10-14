@@ -84,7 +84,7 @@ class CheckYourDetailsControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.reviewDetails(Service.ATaR, Journey.Subscribe)
+      controller.reviewDetails(atarService, Journey.Subscribe)
     )
 
     "return ok when data has been provided" in {
@@ -105,9 +105,7 @@ class CheckYourDetailsControllerSpec
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(userSelectedOrgType)
     when(mockSubscriptionFlow.isIndividualFlow).thenReturn(isIndividualSubscriptionFlow)
 
-    test(
-      controller.reviewDetails(Service.ATaR, Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(userId))
-    )
+    test(controller.reviewDetails(atarService, Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
 }

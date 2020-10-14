@@ -24,7 +24,8 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.EnrolmentResponse
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.CDS
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.cds
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -56,7 +57,7 @@ class GroupEnrolmentExtractorSpec extends UnitSpec with MockitoSugar with Before
         when(enrolmentStoreProxyService.enrolmentForGroup(any(), any())(any()))
           .thenReturn(Future.successful(None))
 
-        val result = groupEnrolmentExtractor.hasGroupIdEnrolmentTo("groupId", CDS)(hc)
+        val result = groupEnrolmentExtractor.hasGroupIdEnrolmentTo("groupId", Service.cds)(hc)
 
         result.futureValue shouldBe false
       }
@@ -69,7 +70,7 @@ class GroupEnrolmentExtractorSpec extends UnitSpec with MockitoSugar with Before
         when(enrolmentStoreProxyService.enrolmentForGroup(any(), any())(any()))
           .thenReturn(Future.successful(Some(enrolmentResponse)))
 
-        val result = groupEnrolmentExtractor.hasGroupIdEnrolmentTo("groupId", CDS)(hc)
+        val result = groupEnrolmentExtractor.hasGroupIdEnrolmentTo("groupId", Service.cds)(hc)
 
         result.futureValue shouldBe true
       }
@@ -82,7 +83,7 @@ class GroupEnrolmentExtractorSpec extends UnitSpec with MockitoSugar with Before
         when(enrolmentStoreProxyService.enrolmentForGroup(any(), any())(any()))
           .thenReturn(Future.successful(Some(enrolmentResponse)))
 
-        val result = groupEnrolmentExtractor.groupIdEnrolmentTo("groupId", CDS)(hc)
+        val result = groupEnrolmentExtractor.groupIdEnrolmentTo("groupId", Service.cds)(hc)
 
         result.futureValue shouldBe Some(enrolmentResponse)
       }
@@ -95,7 +96,7 @@ class GroupEnrolmentExtractorSpec extends UnitSpec with MockitoSugar with Before
         when(enrolmentStoreProxyService.enrolmentForGroup(any(), any())(any()))
           .thenReturn(Future.successful(None))
 
-        val result = groupEnrolmentExtractor.groupIdEnrolmentTo("groupId", CDS)(hc)
+        val result = groupEnrolmentExtractor.groupIdEnrolmentTo("groupId", Service.cds)(hc)
 
         result.futureValue shouldBe None
       }

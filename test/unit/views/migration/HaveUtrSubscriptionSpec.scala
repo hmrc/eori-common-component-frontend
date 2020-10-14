@@ -115,24 +115,24 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
   }
 
   lazy val companyDoc: Document =
-    Jsoup.parse(contentAsString(view(standardForm, CdsOrganisationType.CompanyId, Service.ATaR, Journey.Subscribe)))
+    Jsoup.parse(contentAsString(view(standardForm, CdsOrganisationType.CompanyId, atarService, Journey.Subscribe)))
 
   lazy val notSelectedCompanyDoc: Document =
     Jsoup.parse(
-      contentAsString(view(noOptionSelectedForm, CdsOrganisationType.CompanyId, Service.ATaR, Journey.Subscribe))
+      contentAsString(view(noOptionSelectedForm, CdsOrganisationType.CompanyId, atarService, Journey.Subscribe))
     )
 
   lazy val individualDoc: Document =
-    Jsoup.parse(contentAsString(view(standardForm, CdsOrganisationType.SoleTraderId, Service.ATaR, Journey.Subscribe)))
+    Jsoup.parse(contentAsString(view(standardForm, CdsOrganisationType.SoleTraderId, atarService, Journey.Subscribe)))
 
   lazy val notSelectedIndividualDoc: Document =
     Jsoup.parse(
-      contentAsString(view(noOptionSelectedForm, CdsOrganisationType.SoleTraderId, Service.ATaR, Journey.Subscribe))
+      contentAsString(view(noOptionSelectedForm, CdsOrganisationType.SoleTraderId, atarService, Journey.Subscribe))
     )
 
   lazy val incorrectUtrDoc: Document =
     Jsoup.parse(
-      contentAsString(view(incorrectUtrForm, CdsOrganisationType.SoleTraderId, Service.ATaR, Journey.Subscribe))
+      contentAsString(view(incorrectUtrForm, CdsOrganisationType.SoleTraderId, atarService, Journey.Subscribe))
     )
 
 }

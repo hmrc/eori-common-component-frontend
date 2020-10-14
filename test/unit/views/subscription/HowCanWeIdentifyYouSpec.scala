@@ -103,15 +103,15 @@ class HowCanWeIdentifyYouSpec extends ViewSpec {
     }
   }
 
-  lazy val doc: Document = Jsoup.parse(contentAsString(view(form, isInReviewMode, Service.ATaR, Journey.Subscribe)))
+  lazy val doc: Document = Jsoup.parse(contentAsString(view(form, isInReviewMode, atarService, Journey.Subscribe)))
 
   lazy val docWithRadioButtonsError: Document =
-    Jsoup.parse(contentAsString(view(formWithNothingSelected, isInReviewMode, Service.ATaR, Journey.Subscribe)))
+    Jsoup.parse(contentAsString(view(formWithNothingSelected, isInReviewMode, atarService, Journey.Subscribe)))
 
   lazy val docWithNoNinoError: Document =
-    Jsoup.parse(contentAsString(view(formWithNinoSelected, isInReviewMode, Service.ATaR, Journey.Subscribe)))
+    Jsoup.parse(contentAsString(view(formWithNinoSelected, isInReviewMode, atarService, Journey.Subscribe)))
 
   lazy val docWithNoUtrError: Document =
-    Jsoup.parse(contentAsString(view(formWithUtrSelected, isInReviewMode, Service.ATaR, Journey.Subscribe)))
+    Jsoup.parse(contentAsString(view(formWithUtrSelected, isInReviewMode, atarService, Journey.Subscribe)))
 
 }

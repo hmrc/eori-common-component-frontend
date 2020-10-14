@@ -62,7 +62,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      nameDobController.form(defaultOrganisationType, Service.ATaR, Journey.Register)
+      nameDobController.form(defaultOrganisationType, atarService, Journey.Register)
     )
 
     "display the form" in {
@@ -192,7 +192,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      nameDobController.submit(defaultOrganisationType, Service.ATaR, Journey.Register)
+      nameDobController.submit(defaultOrganisationType, atarService, Journey.Register)
     )
 
     "be successful when all mandatory fields filled" in {
@@ -215,7 +215,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
     withAuthorisedUser(userId, mockAuthConnector)
 
     val result =
-      nameDobController.form("individual", Service.ATaR, Journey.Register).apply(
+      nameDobController.form("individual", atarService, Journey.Register).apply(
         SessionBuilder.buildRequestWithSession(userId)
       )
     test(result)
@@ -227,7 +227,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
     withAuthorisedUser(userId, mockAuthConnector)
 
     val result = nameDobController
-      .submit(organisationType, Service.ATaR, Journey.Register)
+      .submit(organisationType, atarService, Journey.Register)
       .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
 
     test(result)

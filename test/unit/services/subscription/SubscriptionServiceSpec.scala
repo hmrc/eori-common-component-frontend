@@ -280,7 +280,7 @@ class SubscriptionServiceSpec
               fullyPopulatedSubscriptionDetails,
               None,
               Journey.Register,
-              Service.ATaR
+              atarService
             )(mockHeaderCarrier)
         )
       }
@@ -301,7 +301,7 @@ class SubscriptionServiceSpec
               fullyPopulatedSubscriptionDetails,
               None,
               Journey.Register,
-              Service.ATaR
+              atarService
             )(mockHeaderCarrier)
         )
       }
@@ -325,7 +325,7 @@ class SubscriptionServiceSpec
                 fullyPopulatedSubscriptionDetails,
                 None,
                 Journey.Register,
-                Service.ATaR
+                atarService
               )(mockHeaderCarrier)
           )
         }
@@ -355,7 +355,7 @@ class SubscriptionServiceSpec
             fullyPopulatedSubscriptionDetails,
             None,
             Journey.Register,
-            Service.ATaR
+            atarService
           )(mockHeaderCarrier)
       )
 
@@ -378,7 +378,7 @@ class SubscriptionServiceSpec
             fullyPopulatedSubscriptionDetails,
             None,
             Journey.Register,
-            Service.ATaR
+            atarService
           )(mockHeaderCarrier)
       )
 
@@ -401,7 +401,7 @@ class SubscriptionServiceSpec
             fullyPopulatedSubscriptionDetails,
             None,
             Journey.Register,
-            Service.ATaR
+            atarService
           )(mockHeaderCarrier)
       )
 
@@ -426,7 +426,7 @@ class SubscriptionServiceSpec
             fullyPopulatedSubscriptionDetails,
             None,
             Journey.Register,
-            Service.ATaR
+            atarService
           )(mockHeaderCarrier)
       )
 
@@ -451,7 +451,7 @@ class SubscriptionServiceSpec
             fullyPopulatedSubscriptionDetails,
             None,
             Journey.Register,
-            Service.ATaR
+            atarService
           )(mockHeaderCarrier)
       )
 
@@ -463,7 +463,7 @@ class SubscriptionServiceSpec
 
       the[IllegalStateException] thrownBy {
         val holder = fullyPopulatedSubscriptionDetails.copy(dateEstablished = None)
-        service.subscribe(organisationRegistrationDetails, holder, None, Journey.Register, Service.ATaR)(
+        service.subscribe(organisationRegistrationDetails, holder, None, Journey.Register, atarService)(
           mockHeaderCarrier
         )
       } should have message "Date Established must be present for an organisation subscription"
@@ -473,7 +473,7 @@ class SubscriptionServiceSpec
     "throw an exception when doe/ dob is missing when subscribing" in {
       val service = constructService(_ => None)
       the[IllegalArgumentException] thrownBy {
-        service.existingReg(stubRegisterWithPartialResponseWithNoDoe(), Eori("GB123456"), "", Service.ATaR)(
+        service.existingReg(stubRegisterWithPartialResponseWithNoDoe(), Eori("GB123456"), "", atarService)(
           mockHeaderCarrier
         )
       } should have message "requirement failed"
@@ -483,7 +483,7 @@ class SubscriptionServiceSpec
       val service = constructService(_ => None)
       the[AssertionError] thrownBy {
         val holder = fullyPopulatedSubscriptionDetails.copy(sicCode = None)
-        service.subscribe(organisationRegistrationDetails, holder, None, Journey.Register, Service.ATaR)(
+        service.subscribe(organisationRegistrationDetails, holder, None, Journey.Register, atarService)(
           mockHeaderCarrier
         )
       } should have message "assertion failed: SicCode/Principal Economic Activity must be present for an organisation subscription"
@@ -525,7 +525,7 @@ class SubscriptionServiceSpec
     "truncate sic code to 4 numbers by removing the rightmost number" in {
       val service = constructService(_ => None)
       val holder  = fullyPopulatedSubscriptionDetails.copy(sicCode = Some("12750"))
-      val req     = service.createRequest(organisationRegistrationDetails, holder, None, Service.ATaR)
+      val req     = service.createRequest(organisationRegistrationDetails, holder, None, atarService)
 
       req.subscriptionCreateRequest.requestDetail.principalEconomicActivity shouldBe Some("1275")
     }
@@ -535,7 +535,7 @@ class SubscriptionServiceSpec
       val holder = fullyPopulatedSubscriptionDetails.copy(addressDetails =
         Some(AddressViewModel("some street", "", Some("AB99 3DW"), "GB"))
       )
-      val req = service.createRequest(organisationRegistrationDetails, holder, None, Service.ATaR)
+      val req = service.createRequest(organisationRegistrationDetails, holder, None, atarService)
 
       req.subscriptionCreateRequest.requestDetail.CDSEstablishmentAddress.city shouldBe "-"
     }
@@ -545,7 +545,7 @@ class SubscriptionServiceSpec
       val holder = fullyPopulatedSubscriptionDetails.copy(addressDetails =
         Some(AddressViewModel("some street", "", Some(""), "GB"))
       )
-      val req = service.createRequest(organisationRegistrationDetails, holder, None, Service.ATaR)
+      val req = service.createRequest(organisationRegistrationDetails, holder, None, atarService)
 
       req.subscriptionCreateRequest.requestDetail.CDSEstablishmentAddress.postalCode shouldBe None
     }
@@ -553,7 +553,7 @@ class SubscriptionServiceSpec
     "have correct person type for Individual Subscription" in {
       val service = constructService(_ => None)
       val holder  = fullyPopulatedSubscriptionDetails.copy(sicCode = Some("12750"))
-      val req     = service.createRequest(individualRegistrationDetails, holder, None, Service.ATaR)
+      val req     = service.createRequest(individualRegistrationDetails, holder, None, atarService)
 
       req.subscriptionCreateRequest.requestDetail.typeOfPerson shouldBe Some(EtmpTypeOfPerson.NaturalPerson)
     }
@@ -562,7 +562,7 @@ class SubscriptionServiceSpec
       val service = constructService(_ => None)
       val holder  = fullyPopulatedSubscriptionDetails.copy(sicCode = Some("12750"))
       val thrown = intercept[IllegalStateException] {
-        service.createRequest(RegistrationDetails.rdSafeId(SafeId("safeid")), holder, None, Service.ATaR)
+        service.createRequest(RegistrationDetails.rdSafeId(SafeId("safeid")), holder, None, atarService)
       }
       thrown.getMessage shouldBe "Incomplete cache cannot complete journey"
     }
@@ -575,7 +575,7 @@ class SubscriptionServiceSpec
           organisationRegistrationDetails,
           holder,
           Some(CdsOrganisationType("third-country-organisation")),
-          Service.ATaR
+          atarService
         )
       }
       thrown.getMessage shouldBe "Date Established must be present for an organisation subscription"
@@ -588,7 +588,7 @@ class SubscriptionServiceSpec
         organisationRegistrationDetails,
         holder,
         Some(CdsOrganisationType("company")),
-        Service.ATaR
+        atarService
       )
       req.subscriptionCreateRequest.requestDetail.contactInformation.flatMap(_.telephoneNumber) shouldBe Some(
         "+01632961234"
@@ -603,7 +603,7 @@ class SubscriptionServiceSpec
         organisationRegistrationDetails,
         holder,
         Some(CdsOrganisationType("company")),
-        Service.ATaR
+        atarService
       )
       req.subscriptionCreateRequest.requestDetail.contactInformation.flatMap(_.faxNumber) shouldBe Some("+01632961234")
     }
@@ -615,7 +615,7 @@ class SubscriptionServiceSpec
         organisationRegistrationDetails,
         holder,
         Some(CdsOrganisationType("company")),
-        Service.ATaR
+        atarService
       )
       req.subscriptionCreateRequest.requestDetail.contactInformation.flatMap(_.faxNumber) shouldBe Some("+01632961235")
       req.subscriptionCreateRequest.requestDetail.contactInformation.flatMap(_.telephoneNumber) shouldBe Some(
@@ -714,7 +714,7 @@ class SubscriptionServiceSpec
     )
 
     val actualServiceCallResult = await(
-      service.subscribe(registrationDetails, subscriptionDetailsHolder, organisationType, journey, Service.ATaR)(
+      service.subscribe(registrationDetails, subscriptionDetailsHolder, organisationType, journey, atarService)(
         mockHeaderCarrier
       )
     )
@@ -736,7 +736,7 @@ class SubscriptionServiceSpec
 
     val actualServiceCallResult = await(
       service
-        .subscribeWithMandatoryOnly(registrationDetails, fullyPopulatedSubscriptionDetails, journey, Service.ATaR)(
+        .subscribeWithMandatoryOnly(registrationDetails, fullyPopulatedSubscriptionDetails, journey, atarService)(
           mockHeaderCarrier
         )
     )
@@ -758,7 +758,7 @@ class SubscriptionServiceSpec
     )
 
     val actualServiceCallResult = await(
-      service.existingReg(registerWithEoriAndIdResponse, eori, email, Service.ATaR)(mockHeaderCarrier)
+      service.existingReg(registerWithEoriAndIdResponse, eori, email, atarService)(mockHeaderCarrier)
     )
     val actualConnectorRequest = subscribeDataCaptor.getValue
     SubscriptionCallResult(actualServiceCallResult, actualConnectorRequest)

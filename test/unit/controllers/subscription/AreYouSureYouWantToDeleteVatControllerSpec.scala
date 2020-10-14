@@ -108,7 +108,7 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec with Aut
       when(mockSubscriptionVatEUDetailsService.cachedEUVatDetails(any[HeaderCarrier])).thenReturn(emptyVatEuDetails)
       submit(ValidRequest) { result =>
         status(result) shouldBe SEE_OTHER
-        SubscriptionCreateEUVatDetailsPage.url(Service.ATaR) should endWith(result.header.headers(LOCATION))
+        SubscriptionCreateEUVatDetailsPage.url(atarService) should endWith(result.header.headers(LOCATION))
       }
     }
 
@@ -120,7 +120,7 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec with Aut
       when(mockSubscriptionVatEUDetailsService.cachedEUVatDetails(any[HeaderCarrier])).thenReturn(someVatEuDetails)
       submit(ValidRequest) { result =>
         status(result) shouldBe SEE_OTHER
-        s"${VatDetailsEuConfirmPage.url(Service.ATaR)}" should endWith(result.header.headers(LOCATION))
+        s"${VatDetailsEuConfirmPage.url(atarService)}" should endWith(result.header.headers(LOCATION))
       }
     }
 
@@ -130,7 +130,7 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec with Aut
       when(mockSubscriptionVatEUDetailsService.cachedEUVatDetails(any[HeaderCarrier])).thenReturn(emptyVatEuDetails)
       submit(validRequestNo) { result =>
         status(result) shouldBe SEE_OTHER
-        SubscriptionCreateEUVatDetailsPage.url(Service.ATaR) should endWith(result.header.headers(LOCATION))
+        SubscriptionCreateEUVatDetailsPage.url(atarService) should endWith(result.header.headers(LOCATION))
       }
     }
 
@@ -140,7 +140,7 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec with Aut
       when(mockSubscriptionVatEUDetailsService.cachedEUVatDetails(any[HeaderCarrier])).thenReturn(someVatEuDetails)
       submit(validRequestNo) { result =>
         status(result) shouldBe SEE_OTHER
-        VatDetailsEuConfirmPage.url(Service.ATaR) should endWith(result.header.headers(LOCATION))
+        VatDetailsEuConfirmPage.url(atarService) should endWith(result.header.headers(LOCATION))
       }
     }
   }
@@ -176,7 +176,7 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec with Aut
       when(mockSubscriptionVatEUDetailsService.cachedEUVatDetails(any[HeaderCarrier])).thenReturn(someVatEuDetails)
       submit(ValidRequest, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
-        s"${VatDetailsEuConfirmPage.url(Service.ATaR)}/review" should endWith(result.header.headers(LOCATION))
+        s"${VatDetailsEuConfirmPage.url(atarService)}/review" should endWith(result.header.headers(LOCATION))
       }
     }
 
@@ -186,9 +186,7 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec with Aut
       when(mockSubscriptionVatEUDetailsService.cachedEUVatDetails(any[HeaderCarrier])).thenReturn(emptyVatEuDetails)
       submit(validRequestNo, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
-        s"${SubscriptionCreateEUVatDetailsPage.url(Service.ATaR)}/review" should endWith(
-          result.header.headers(LOCATION)
-        )
+        s"${SubscriptionCreateEUVatDetailsPage.url(atarService)}/review" should endWith(result.header.headers(LOCATION))
       }
     }
 
@@ -198,7 +196,7 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec with Aut
       when(mockSubscriptionVatEUDetailsService.cachedEUVatDetails(any[HeaderCarrier])).thenReturn(someVatEuDetails)
       submit(validRequestNo, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
-        s"${VatDetailsEuConfirmPage.url(Service.ATaR)}/review" should endWith(result.header.headers(LOCATION))
+        s"${VatDetailsEuConfirmPage.url(atarService)}/review" should endWith(result.header.headers(LOCATION))
       }
     }
   }
@@ -207,7 +205,7 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec with Aut
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     test(
       controller
-        .createForm(testIndex, Service.ATaR, Journey.Register)
+        .createForm(testIndex, atarService, Journey.Register)
         .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     )
   }
@@ -216,7 +214,7 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec with Aut
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     test(
       controller
-        .reviewForm(testIndex, Service.ATaR, Journey.Register)
+        .reviewForm(testIndex, atarService, Journey.Register)
         .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     )
   }
@@ -225,7 +223,7 @@ class AreYouSureYouWantToDeleteVatControllerSpec extends ControllerSpec with Aut
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     test(
       controller
-        .submit(testIndex, Service.ATaR, Journey.Register, isInReviewMode: Boolean)
+        .submit(testIndex, atarService, Journey.Register, isInReviewMode: Boolean)
         .apply(SessionBuilder.buildRequestWithFormValues(form))
     )
   }

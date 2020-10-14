@@ -21,25 +21,31 @@ import play.api.Configuration
 import play.api.mvc.{PathBindable, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.Constants
 
-case class Service(code: String, enrolmentKey: String, callBack: String, friendlyName: String, friendlyNameWelsh: String)
+case class Service(
+  code: String,
+  enrolmentKey: String,
+  callBack: String,
+  friendlyName: String,
+  friendlyNameWelsh: String
+)
 
 object Service {
 
-  val cds = Service("cds", "HMRC-CUS-ORG", "", "", "")
+  val cds   = Service("cds", "HMRC-CUS-ORG", "", "", "")
   val empty = Service("", "", "", "", "")
 
   val configuration = Configuration(ConfigFactory.load())
 
   val supportedServices: Set[Service] =
-      configuration.get[Seq[Configuration]]("services-config").map { conf =>
-        Service(
-          code = conf.get[String]("name"),
-          enrolmentKey = conf.get[String]("enrolment"),
-          callBack = conf.get[String]("callBack"),
-          friendlyName = conf.get[String]("friendlyName"),
-          friendlyNameWelsh = conf.get[String]("friendlyNameWelsh")
-        )
-      }.toSet
+    configuration.get[Seq[Configuration]]("services-config").map { conf =>
+      Service(
+        code = conf.get[String]("name"),
+        enrolmentKey = conf.get[String]("enrolment"),
+        callBack = conf.get[String]("callBack"),
+        friendlyName = conf.get[String]("friendlyName"),
+        friendlyNameWelsh = conf.get[String]("friendlyNameWelsh")
+      )
+    }.toSet
 
   def withName(str: String): Option[Service] =
     supportedServices.find(_.code == str)
