@@ -68,7 +68,9 @@ class RegisterWithEoriAndIdController @Inject() (
       groupEnrolment.hasGroupIdEnrolmentTo(loggedInUser.groupId.getOrElse(throw MissingGroupId()), service).flatMap {
         groupIdEnrolmentExists =>
           if (groupIdEnrolmentExists)
-            Future.successful(Redirect(EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service)))
+            Future.successful(
+              Redirect(EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service, journey))
+            )
           else
             sendRequest().flatMap {
               case true if isRow => handleRowResponse(service, journey)

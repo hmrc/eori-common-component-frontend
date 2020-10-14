@@ -26,6 +26,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EmailController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.InternalId
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
@@ -51,6 +52,7 @@ class EmailControllerSpec
   private val mockSessionCache              = mock[SessionCache]
   private val mockSave4LaterConnector       = mock[Save4LaterConnector]
   private val mockSubscriptionStatusService = mock[SubscriptionStatusService]
+  private val groupEnrolmentExtractor       = mock[GroupEnrolmentExtractor]
 
   private val mockUserGroupIdSubscriptionStatusCheckService =
     new UserGroupIdSubscriptionStatusCheckService(mockSubscriptionStatusService, mockSave4LaterConnector)
@@ -61,7 +63,8 @@ class EmailControllerSpec
     mockSessionCache,
     mcc,
     mockSave4LaterService,
-    mockUserGroupIdSubscriptionStatusCheckService
+    mockUserGroupIdSubscriptionStatusCheckService,
+    groupEnrolmentExtractor
   )
 
   private val emailStatus = EmailStatus("test@example.com")
@@ -79,6 +82,8 @@ class EmailControllerSpec
       .thenReturn(Future.successful(true))
     when(mockSave4LaterConnector.get(any(), any())(any(), any()))
       .thenReturn(Future.successful(None))
+    when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any()))
+      .thenReturn(Future.successful(false))
   }
 
   "Viewing the form on Migration" should {

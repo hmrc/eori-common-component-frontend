@@ -55,7 +55,9 @@ class ApplicationController @Inject() (
       val groupId = loggedInUser.groupId.getOrElse(throw MissingGroupId())
       groupEnrolment.hasGroupIdEnrolmentTo(groupId, service).flatMap { groupIdEnrolmentExists =>
         if (groupIdEnrolmentExists)
-          Future.successful(Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service)))
+          Future.successful(
+            Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service, Journey.Subscribe))
+          )
         else
           cdsEnrolmentCheck(loggedInUser, groupId, service)
       }

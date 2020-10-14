@@ -9,8 +9,8 @@ GET         /customs-enrolment-services/language/:lang                          
 GET         /customs-enrolment-services/get-eori                                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.RegisterRedirectController.getEori()
 
 # enrolment-already-exists
-GET         /customs-enrolment-services/:service/subscribe/enrolment-already-exists                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service: Service)
-GET         /customs-enrolment-services/:service/subscribe/enrolment-already-exists-for-group            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service: Service)
+GET         /customs-enrolment-services/:service/:journey/enrolment-already-exists                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service: Service, journey: Journey.Value)
+GET         /customs-enrolment-services/:service/:journey/enrolment-already-exists-for-group            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service: Service, journey: Journey.Value)
 
 # check-existing-eori
 GET         /customs-enrolment-services/:service/subscribe/check-existing-eori                           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.HasExistingEoriController.displayPage(service: Service)
