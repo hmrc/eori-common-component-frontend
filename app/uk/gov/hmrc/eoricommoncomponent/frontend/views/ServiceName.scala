@@ -42,6 +42,6 @@ object ServiceName {
     shortName(service)
 
   def service(implicit request: Request[_]): Service =
-    Service.serviceFromRequest.getOrElse(Service.NullService)
+    Service.serviceFromRequest.getOrElse(Service("", ""))
 
 }

@@ -16,37 +16,24 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.models
 
+import com.typesafe.config.ConfigFactory
+import play.api.Configuration
 import play.api.mvc.{PathBindable, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.Constants
 
-sealed trait Service {
-  val code: String
-  val enrolmentKey: String
-
-}
+case class Service(code: String, enrolmentKey: String)
 
 object Service {
 
-  case object ATaR extends Service {
-    override val code: String         = "atar"
-    override val enrolmentKey: String = "HMRC-ATAR-ORG"
-  }
+  val configuration = Configuration(ConfigFactory.load())
 
-  // This is for CDS enrolment checks, we're not supporting CDS enrolment now
-  case object CDS extends Service {
-    override val code: String         = "cds"
-    override val enrolmentKey: String = "HMRC-CUS-ORG"
-  }
-
-  /**
-    * Used to provide a 'service' parameter for controllers that are not currently in scope
-    */
-  case object NullService extends Service {
-    override val code: String         = "null-service"
-    override val enrolmentKey: String = ""
-  }
-
-  private val supportedServices = Set[Service](ATaR, CDS)
+  val supportedServices: Set[Service] =
+      configuration.get[Seq[Configuration]]("services-config").map { conf =>
+        Service(
+          code = conf.get[String]("name"),
+          enrolmentKey = conf.get[String]("enrolment")
+        )
+      }.toSet
 
   def withName(str: String): Option[Service] =
     supportedServices.find(_.code == str)

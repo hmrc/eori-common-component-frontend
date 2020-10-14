@@ -39,7 +39,7 @@ class VatGroupController @Inject() (mcc: MessagesControllerComponents, vatGroupV
         formWithErrors => BadRequest(vatGroupView(formWithErrors, journey)),
         yesNoAnswer =>
           if (yesNoAnswer.isNo)
-            Redirect(EmailController.form(Service.CDS, Journey.Register))
+            Redirect(EmailController.form(Service("cds", "HMRC-CUS-ORG"), Journey.Register))
           else
             Redirect(routes.VatGroupsCannotRegisterUsingThisServiceController.form(journey))
       )

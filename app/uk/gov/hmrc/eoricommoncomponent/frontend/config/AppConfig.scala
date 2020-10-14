@@ -126,5 +126,4 @@ class AppConfig @Inject() (
       config.get[String](s"microservice.services.eori-common-component-hods-proxy.$proxyServiceName.context")
     s"$baseUrl/$serviceContext"
   }
-
 }
