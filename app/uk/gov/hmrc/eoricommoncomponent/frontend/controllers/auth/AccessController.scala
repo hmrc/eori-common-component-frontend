@@ -53,7 +53,9 @@ trait AccessController extends JourneyTypeFromUrl with AllowlistVerification {
     else if (!isPermittedUserType)
       Future.successful(Redirect(routes.YouCannotUseServiceController.page(service, journeyFromUrl)))
     else if (hasEnrolment)
-      Future.successful(Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service)))
+      Future.successful(
+        Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service, journeyFromUrl))
+      )
     else
       action
   }
