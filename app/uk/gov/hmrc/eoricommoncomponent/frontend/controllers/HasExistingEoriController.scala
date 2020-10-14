@@ -76,7 +76,7 @@ class HasExistingEoriController @Inject() (
   }
 
   private def existingEoriToUse(implicit loggedInUser: LoggedInUserWithEnrolments, hc: HeaderCarrier): Future[String] =
-    enrolledForService(loggedInUser, Service("cds", "HMRC-CUS-ORG")) match {
+    enrolledForService(loggedInUser, Service.cds) match {
       case Some(eori) => Future.successful(eori.id)
       case _ =>
         cache.groupEnrolment.map(_.eori.getOrElse(throw new IllegalStateException("No EORI found")))

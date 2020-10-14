@@ -66,10 +66,10 @@ class ApplicationController @Inject() (
   private def cdsEnrolmentCheck(loggedInUser: LoggedInUserWithEnrolments, groupId: String, serviceToEnrol: Service)(
     implicit hc: HeaderCarrier
   ): Future[Result] =
-    if (isUserEnrolledFor(loggedInUser, Service("cds", "HMRC-CUS-ORG")))
+    if (isUserEnrolledFor(loggedInUser, Service.cds))
       Future.successful(Redirect(routes.HasExistingEoriController.displayPage(serviceToEnrol)))
     else
-      groupEnrolment.groupIdEnrolmentTo(groupId, Service("cds", "HMRC-CUS-ORG")).flatMap {
+      groupEnrolment.groupIdEnrolmentTo(groupId, Service.cds).flatMap {
         case Some(groupEnrolment) if groupEnrolment.eori.isDefined =>
           cache.saveGroupEnrolment(groupEnrolment).map { _ =>
             Redirect(routes.HasExistingEoriController.displayPage(serviceToEnrol)) // AutoEnrolment
