@@ -32,7 +32,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   NameOrganisationMatchModel,
   RegistrationDetailsOrganisation
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
@@ -147,14 +147,14 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
 
   private def createForm()(test: Future[Result] => Assertion) =
     test(
-      nameOrgController.createForm(Service.ATaR, Journey.Subscribe).apply(
+      nameOrgController.createForm(atarService, Journey.Subscribe).apply(
         SessionBuilder.buildRequestWithSession(defaultUserId)
       )
     )
 
   private def reviewForm()(test: Future[Result] => Assertion) =
     test(
-      nameOrgController.reviewForm(Service.ATaR, Journey.Subscribe).apply(
+      nameOrgController.reviewForm(atarService, Journey.Subscribe).apply(
         SessionBuilder.buildRequestWithSession(defaultUserId)
       )
     )
@@ -162,7 +162,7 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
   private def submit(isInReviewMode: Boolean, form: Map[String, String])(test: Future[Result] => Assertion) =
     test(
       nameOrgController
-        .submit(isInReviewMode, Service.ATaR, Journey.Subscribe)
+        .submit(isInReviewMode, atarService, Journey.Subscribe)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form))
     )
 
@@ -170,7 +170,7 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
     when(mockSubscriptionFlowManager.stepInformation(any())(any[Request[AnyContent]]))
       .thenReturn(mockSubscriptionFlowInfo)
     when(mockSubscriptionFlowInfo.nextPage).thenReturn(mockSubscriptionPage)
-    when(mockSubscriptionPage.url(Service.ATaR)).thenReturn(EnterYourBusinessAddress.url)
+    when(mockSubscriptionPage.url(atarService)).thenReturn(EnterYourBusinessAddress.url)
   }
 
 }

@@ -21,7 +21,7 @@ import org.mockito.Mockito._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, start}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -57,7 +57,7 @@ class ApplicationControllerWithAllowlistVerificationSpec extends ControllerSpec 
       withAuthorisedUser(defaultUserId, mockAuthConnector, userEmail = Some("not@example.com"))
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
 
-      controller.logout(Service.ATaR, Journey.Register).apply(
+      controller.logout(atarService, Journey.Register).apply(
         SessionBuilder.buildRequestWithSession(defaultUserId)
       ) map { _ =>
         verify(mockSessionCache).remove(any[HeaderCarrier])

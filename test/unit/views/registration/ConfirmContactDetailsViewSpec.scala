@@ -24,7 +24,7 @@ import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.YesNoWrongAddress
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.confirm_contact_details
 import util.ViewSpec
 
@@ -147,22 +147,22 @@ class ConfirmContactDetailsViewSpec extends ViewSpec {
   }
 
   private lazy val CorporateBodyDoc: Document = {
-    val result = view(name, address, customsIdUtr, corporateBody, form, Service.ATaR, Journey.Register)
+    val result = view(name, address, customsIdUtr, corporateBody, form, atarService, Journey.Register)
     Jsoup.parse(contentAsString(result))
   }
 
   private lazy val SoleTraderOrIndividualWithNinoDoc: Document = {
-    val result = view(name, address, customsIdNino, None, form, Service.ATaR, Journey.Register)
+    val result = view(name, address, customsIdNino, None, form, atarService, Journey.Register)
     Jsoup.parse(contentAsString(result))
   }
 
   private lazy val SoleTraderOrIndividualWithUtrDoc: Document = {
-    val result = view(name, address, customsIdUtr, None, form, Service.ATaR, Journey.Register)
+    val result = view(name, address, customsIdUtr, None, form, atarService, Journey.Register)
     Jsoup.parse(contentAsString(result))
   }
 
   private lazy val PartnershipBodyDoc: Document = {
-    val result = view(name, address, customsIdUtr, partnership, form, Service.ATaR, Journey.Register)
+    val result = view(name, address, customsIdUtr, partnership, form, atarService, Journey.Register)
     Jsoup.parse(contentAsString(result))
   }
 

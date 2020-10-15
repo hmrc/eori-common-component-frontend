@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package common.pages
+package util
 
-object RegistrationProcessingPage extends WebPage {
-  val processedDateXpath = "//*[@id='processed-date']"
-  override val title     = "The ATaR application is being processed"
-  val heading            = "The ATaR application for orgName is being processed"
-  val individualHeading  = "The ATaR application for Name is being processed"
-  val pageHeadingXpath   = "//*[@id='page-heading']"
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+
+trait TestData {
+
+  val atarService: Service = Service("atar", "HMRC-ATAR-ORG", "ATaR", "", "", "")
 }

@@ -25,7 +25,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.CDS
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{eori_enrol_success, has_existing_eori}
@@ -81,7 +80,7 @@ class HasExistingEoriController @Inject() (
   }
 
   private def existingEoriToUse(implicit loggedInUser: LoggedInUserWithEnrolments, hc: HeaderCarrier): Future[String] =
-    enrolledForService(loggedInUser, CDS) match {
+    enrolledForService(loggedInUser, Service.cds) match {
       case Some(eori) => Future.successful(eori.id)
       case _ =>
         cache.groupEnrolment.map(_.eori.getOrElse(throw new IllegalStateException("No EORI found")))

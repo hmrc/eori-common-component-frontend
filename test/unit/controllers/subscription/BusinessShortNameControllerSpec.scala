@@ -32,7 +32,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   BusinessShortName,
   BusinessShortNameSubscriptionFlowPage
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.business_short_name
@@ -52,10 +52,10 @@ class BusinessShortNameControllerSpec
   protected override val formId: String = ShortNamePage.formId
 
   protected override def submitInCreateModeUrl: String =
-    BusinessShortNameController.submit(isInReviewMode = false, Service.ATaR, Journey.Register).url
+    BusinessShortNameController.submit(isInReviewMode = false, atarService, Journey.Register).url
 
   protected override def submitInReviewModeUrl: String =
-    BusinessShortNameController.submit(isInReviewMode = true, Service.ATaR, Journey.Register).url
+    BusinessShortNameController.submit(isInReviewMode = true, atarService, Journey.Register).url
 
   private val mockOrgTypeLookup  = mock[OrgTypeLookup]
   private val mockRequestSession = mock[RequestSessionData]
@@ -97,7 +97,7 @@ class BusinessShortNameControllerSpec
   "Displaying the form in create mode" should {
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.createForm(Service.ATaR, Journey.Register)
+      controller.createForm(atarService, Journey.Register)
     )
 
     "display title as 'Does your organisation use a shortened name?' for non partnership org type" in {
@@ -179,7 +179,7 @@ class BusinessShortNameControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.reviewForm(Service.ATaR, Journey.Register)
+      controller.reviewForm(atarService, Journey.Register)
     )
 
     "display title as 'Does your organisation use a shortened name?'" in {
@@ -216,7 +216,7 @@ class BusinessShortNameControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = false, Service.ATaR, Journey.Register)
+      controller.submit(isInReviewMode = false, atarService, Journey.Register)
     )
 
     "wait until the saveSubscriptionDetailsHolder is completed before progressing" in {
@@ -250,7 +250,7 @@ class BusinessShortNameControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = true, Service.ATaR, Journey.Register)
+      controller.submit(isInReviewMode = true, atarService, Journey.Register)
     )
 
     "wait until the saveSubscriptionDetailsHolder is completed before progressing" in {
@@ -407,7 +407,7 @@ class BusinessShortNameControllerSpec
     when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(orgType))
 
     test(
-      controller.submit(isInReviewMode = false, Service.ATaR, Journey.Register)(
+      controller.submit(isInReviewMode = false, atarService, Journey.Register)(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )
@@ -423,7 +423,7 @@ class BusinessShortNameControllerSpec
     when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(orgType))
 
     test(
-      controller.submit(isInReviewMode = true, Service.ATaR, Journey.Register)(
+      controller.submit(isInReviewMode = true, atarService, Journey.Register)(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )
@@ -448,7 +448,7 @@ class BusinessShortNameControllerSpec
 
     when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(orgType))
 
-    test(controller.createForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.createForm(atarService, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def showReviewForm(
@@ -462,7 +462,7 @@ class BusinessShortNameControllerSpec
     when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(orgType))
     when(mockSubscriptionBusinessService.getCachedCompanyShortName(any[HeaderCarrier])).thenReturn(dataToEdit)
 
-    test(controller.reviewForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.reviewForm(atarService, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def verifyShortNameFieldExistAndPopulatedCorrectly(page: CdsPage, testData: BusinessShortName): Unit =

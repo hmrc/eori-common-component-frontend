@@ -33,6 +33,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.MatchingService
+import uk.gov.hmrc.eoricommoncomponent.frontend.util.Require._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.match_name_id_organisation
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -90,13 +91,19 @@ class NameIdOrganisationController @Inject() (
 
   def form(organisationType: String, service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      require(OrganisationTypeConfigurations.contains(organisationType), invalidOrganisationType(organisationType))
+      requireThatUrlValue(
+        OrganisationTypeConfigurations.contains(organisationType),
+        invalidOrganisationType(organisationType)
+      )
       Future.successful(Ok(view(organisationType, OrganisationTypeConfigurations(organisationType), service, journey)))
     }
 
   def submit(organisationType: String, service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
-      require(OrganisationTypeConfigurations.contains(organisationType), invalidOrganisationType(organisationType))
+      requireThatUrlValue(
+        OrganisationTypeConfigurations.contains(organisationType),
+        invalidOrganisationType(organisationType)
+      )
       val configuration = OrganisationTypeConfigurations(organisationType)
       bind(organisationType, configuration, service, journey, InternalId(loggedInUser.internalId))
     }

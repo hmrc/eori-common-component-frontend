@@ -15,17 +15,6 @@ cds.enrolment.already.exists.para1=Our records show that this Government Gateway
 
 cds.proposition.name.service=Get access to {0}
 
-cds.service.short.name.default=Customs
-cds.service.friendly.name.default=Customs
-cds.service.short.name.atar=ATaR
-cds.service.friendly.name.atar=Advance Tariff Rulings
-cds.service.short.name.gbss=GBS&S
-cds.service.friendly.name.gbss=GB Safety & Security
-cds.service.short.name.gvms=GVMS
-cds.service.friendly.name.gvms=Goods Vehicle Movement System
-cds.service.short.name.ncts=NCTS
-cds.service.friendly.name.ncts=New Computerised Transit System
-
 eds.existing-eori.enrolment.confirmation.title=Application complete
 eds.existing-eori.enrolment.confirmation.heading=Application complete
 eds.existing-eori.enrolment.confirmation.para1=You are now enrolled to the {0} service.

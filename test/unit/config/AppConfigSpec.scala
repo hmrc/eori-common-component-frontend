@@ -18,7 +18,7 @@ package unit.config
 
 import java.util.concurrent.TimeUnit
 
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import util.ControllerSpec
 
 import scala.concurrent.duration.Duration
@@ -28,7 +28,7 @@ class AppConfigSpec extends ControllerSpec {
   "AppConfig" should {
 
     "have blockedRoutesRegex defined" in {
-      appConfig.blockedRoutesRegex.map(_.pattern.pattern()).mkString(":") shouldBe "cds/subscribe:register"
+      appConfig.blockedRoutesRegex.map(_.pattern.pattern()).mkString(":") shouldBe "eori/subscribe"
     }
 
     "have ttl defined" in {
@@ -85,44 +85,36 @@ class AppConfigSpec extends ControllerSpec {
 
     "have feedbackLink defined for register" in {
       appConfig.feedbackUrl(
-        Service.ATaR,
+        atarService,
         Journey.Register
       ) shouldBe "http://localhost:9514/feedback/eori-common-component-register-atar"
     }
 
     "have feedbackLink defined for subscribe" in {
       appConfig.feedbackUrl(
-        Service.ATaR,
+        atarService,
         Journey.Subscribe
       ) shouldBe "http://localhost:9514/feedback/eori-common-component-subscribe-atar"
     }
 
     "have reportAProblemPartialUrl defined for register" in {
-      appConfig.reportAProblemPartialUrlRegister(
-        Service.ATaR
-      ) shouldBe "http://localhost:9250/contact/problem_reports_ajax?service=eori-common-component-register-atar"
+      appConfig.reportAProblemPartialUrlRegister() shouldBe "http://localhost:9250/contact/problem_reports_ajax?service=eori-common-component-register"
     }
 
     "have reportAProblemNonJSUrl defined for register" in {
-      appConfig.reportAProblemNonJSUrlRegister(
-        Service.ATaR
-      ) shouldBe "http://localhost:9250/contact/problem_reports_nonjs?service=eori-common-component-register-atar"
+      appConfig.reportAProblemNonJSUrlRegister() shouldBe "http://localhost:9250/contact/problem_reports_nonjs?service=eori-common-component-register"
     }
 
     "have reportAProblemPartialUrl defined for subscribe" in {
       appConfig.reportAProblemPartialUrlSubscribe(
-        Service.ATaR
+        atarService
       ) shouldBe "http://localhost:9250/contact/problem_reports_ajax?service=eori-common-component-subscribe-atar"
     }
 
     "have reportAProblemNonJSUrl defined for subscribe" in {
       appConfig.reportAProblemNonJSUrlSubscribe(
-        Service.ATaR
+        atarService
       ) shouldBe "http://localhost:9250/contact/problem_reports_nonjs?service=eori-common-component-subscribe-atar"
-    }
-
-    "have service url for ATaR defined" in {
-      appConfig.serviceReturnUrl(Service.ATaR) should endWith("/advance-tariff-application")
     }
   }
 

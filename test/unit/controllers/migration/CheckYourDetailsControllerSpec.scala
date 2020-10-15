@@ -29,7 +29,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.CheckYourD
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubscriptionDetails, SubscriptionFlow}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{IdMatchModel, NameDobMatchModel, _}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.check_your_details
 import uk.gov.hmrc.http.HeaderCarrier
@@ -84,7 +84,7 @@ class CheckYourDetailsControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.reviewDetails(Service.ATaR, Journey.Subscribe)
+      controller.reviewDetails(atarService, Journey.Subscribe)
     )
 
     "return ok when data has been provided" in {
@@ -105,9 +105,7 @@ class CheckYourDetailsControllerSpec
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(userSelectedOrgType)
     when(mockSubscriptionFlow.isIndividualFlow).thenReturn(isIndividualSubscriptionFlow)
 
-    test(
-      controller.reviewDetails(Service.ATaR, Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(userId))
-    )
+    test(controller.reviewDetails(atarService, Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
 }

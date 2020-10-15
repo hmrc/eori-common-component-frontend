@@ -26,7 +26,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.HowCanWeIdentifyYouController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.Utr
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
   SubscriptionDetailsService
@@ -82,7 +82,7 @@ class GoogleTagManagerSpec extends ControllerSpec with GuiceOneAppPerSuite with 
     when(mockSubscriptionBusinessService.getCachedCustomsId(any[HeaderCarrier]))
       .thenReturn(Future.successful(Some(Utr("id"))))
     test(
-      controller.createForm(Service.ATaR, Journey.Subscribe).apply(
+      controller.createForm(atarService, Journey.Subscribe).apply(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )

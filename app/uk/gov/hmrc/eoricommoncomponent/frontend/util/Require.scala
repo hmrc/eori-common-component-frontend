@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package common.pages
+package uk.gov.hmrc.eoricommoncomponent.frontend.util
 
-object RegistrationProcessingPage extends WebPage {
-  val processedDateXpath = "//*[@id='processed-date']"
-  override val title     = "The ATaR application is being processed"
-  val heading            = "The ATaR application for orgName is being processed"
-  val individualHeading  = "The ATaR application for Name is being processed"
-  val pageHeadingXpath   = "//*[@id='page-heading']"
+object Require {
+
+  @inline final def requireThatUrlValue(requirement: Boolean, message: => Any) {
+    if (!requirement)
+      throw InvalidUrlValueException("invalid value: " + message)
+  }
+
 }
+
+case class InvalidUrlValueException(message: String) extends Exception(message)

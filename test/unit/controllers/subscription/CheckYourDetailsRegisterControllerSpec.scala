@@ -38,7 +38,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   SubscriptionFlow
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, VatEUDetailsModel}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegisterWithoutIdWithSubscriptionService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.check_your_details_register
@@ -115,7 +115,7 @@ class CheckYourDetailsRegisterControllerSpec
   "Reviewing the details" should {
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.reviewDetails(Service.ATaR, Journey.Register)
+      controller.reviewDetails(atarService, Journey.Register)
     )
 
     "return ok when data has been provided" in {
@@ -851,7 +851,7 @@ class CheckYourDetailsRegisterControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
-      controller.submitDetails(Service.ATaR, Journey.Register)
+      controller.submitDetails(atarService, Journey.Register)
     )
 
     "redirect to next screen" in {
@@ -897,7 +897,7 @@ class CheckYourDetailsRegisterControllerSpec
     page.getElementsHref(
       RegistrationReviewPage.UKVatIdentificationNumbersReviewLinkXpath
     ) shouldBe VatRegisteredUkController
-      .reviewForm(Service.ATaR, Journey.Register)
+      .reviewForm(atarService, Journey.Register)
       .url
   }
 
@@ -939,7 +939,7 @@ class CheckYourDetailsRegisterControllerSpec
 
     when(mockSubscriptionFlow.isIndividualFlow).thenReturn(isIndividualSubscriptionFlow)
 
-    test(controller.reviewDetails(Service.ATaR, Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.reviewDetails(atarService, Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def submitForm(
@@ -953,7 +953,7 @@ class CheckYourDetailsRegisterControllerSpec
     when(mockRequestSession.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(userSelectedOrgType)
 
     test(
-      controller.submitDetails(Service.ATaR, journey)(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
+      controller.submitDetails(atarService, journey)(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }
 

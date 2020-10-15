@@ -79,7 +79,7 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.form(Service.ATaR, Journey.Register)
+      controller.form(atarService, Journey.Register)
     )
 
     "show the page without errors" in showForm { result =>
@@ -95,7 +95,7 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
       page.formAction(
         formId
       ) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ConfirmIndividualTypeController
-        .submit(Service.ATaR, Journey.Register)
+        .submit(atarService, Journey.Register)
         .url
     }
 
@@ -131,7 +131,7 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(Service.ATaR, Journey.Register)
+      controller.submit(atarService, Journey.Register)
     )
 
     "redirect to subscription flow first page with updated session" in {
@@ -141,7 +141,7 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
         verify(mockSubscriptionFlowManager).startSubscriptionFlow(
           ArgumentMatchers.any[Option[SubscriptionPage]],
           ArgumentMatchers.eq(selectedIndividualType),
-          ArgumentMatchers.eq(Service.ATaR),
+          ArgumentMatchers.eq(atarService),
           ArgumentMatchers.eq(Journey.Register)
         )(ArgumentMatchers.any[HeaderCarrier], ArgumentMatchers.any[Request[AnyContent]])
         verify(mockRequestSessionData).sessionWithOrganisationTypeAdded(
@@ -163,7 +163,7 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
     when(mockRequestSessionData.sessionWithoutOrganisationType(ArgumentMatchers.any[Request[AnyContent]]))
       .thenReturn(mockSession)
 
-    val result = controller.form(Service.ATaR, Journey.Register).apply(SessionBuilder.buildRequestWithSession(aUserId))
+    val result = controller.form(atarService, Journey.Register).apply(SessionBuilder.buildRequestWithSession(aUserId))
     test(result)
   }
 
@@ -171,7 +171,7 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
     val aUserId = defaultUserId
     withAuthorisedUser(aUserId, mockAuthConnector)
 
-    when(mockSubscriptionPage.url(Service.ATaR)).thenReturn(testSubscriptionStartPageUrl)
+    when(mockSubscriptionPage.url(atarService)).thenReturn(testSubscriptionStartPageUrl)
     when(mockSession.data).thenReturn(testSessionData)
     when(
       mockRequestSessionData
@@ -188,7 +188,7 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
     ).thenReturn(Future.successful(mockFlowStart))
 
     val result =
-      controller.submit(Service.ATaR, Journey.Register).apply(
+      controller.submit(atarService, Journey.Register).apply(
         SessionBuilder.buildRequestWithSessionAndFormValues(aUserId, form)
       )
     test(result)

@@ -31,7 +31,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressContro
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.AddressDetailsSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, RegistrationDetails, SafeId}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Country
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
@@ -59,10 +59,10 @@ class AddressControllerSpec
   protected override val formId: String = AddressPage.formId
 
   protected override def submitInCreateModeUrl: String =
-    submit(isInReviewMode = false, Service.ATaR, Journey.Register).url
+    submit(isInReviewMode = false, atarService, Journey.Register).url
 
   protected override def submitInReviewModeUrl: String =
-    submit(isInReviewMode = true, Service.ATaR, Journey.Register).url
+    submit(isInReviewMode = true, atarService, Journey.Register).url
 
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockCdsFrontendDataCache       = mock[SessionCache]
@@ -126,7 +126,7 @@ class AddressControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.createForm(Service.ATaR, Journey.Register)
+      controller.createForm(atarService, Journey.Register)
     )
 
     "display title as 'Enter your business address'" in {
@@ -184,7 +184,7 @@ class AddressControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
-      controller.reviewForm(Service.ATaR, Journey.Subscribe)
+      controller.reviewForm(atarService, Journey.Subscribe)
     )
 
     "display title as 'Enter your address'" in {
@@ -235,7 +235,7 @@ class AddressControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = false, Service.ATaR, Journey.Register)
+      controller.submit(isInReviewMode = false, atarService, Journey.Register)
     )
 
     "wait until the saveSubscriptionDetailsHolder is completed before progressing" in {
@@ -431,7 +431,7 @@ class AddressControllerSpec
     when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(organisationRegistrationDetails)
 
     test(
-      controller.submit(isInReviewMode = false, Service.ATaR, Journey.Register)(
+      controller.submit(isInReviewMode = false, atarService, Journey.Register)(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )
@@ -458,7 +458,7 @@ class AddressControllerSpec
     when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier])).thenReturn(None)
 
     test(
-      controller.submit(isInReviewMode = false, Service.ATaR, Journey.Subscribe)(
+      controller.submit(isInReviewMode = false, atarService, Journey.Subscribe)(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )
@@ -474,7 +474,7 @@ class AddressControllerSpec
     when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(individualRegistrationDetails)
 
     test(
-      controller.submit(isInReviewMode = false, Service.ATaR, Journey.Register)(
+      controller.submit(isInReviewMode = false, atarService, Journey.Register)(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )
@@ -491,7 +491,7 @@ class AddressControllerSpec
       .thenReturn(Some(CdsOrganisationType("company")))
 
     test(
-      controller.submit(isInReviewMode = true, Service.ATaR, Journey.Register)(
+      controller.submit(isInReviewMode = true, atarService, Journey.Register)(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )
@@ -517,7 +517,7 @@ class AddressControllerSpec
       .thenReturn(userSelectedOrganisationType)
     when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(organisationRegistrationDetails)
 
-    test(controller.createForm(Service.ATaR, Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.createForm(atarService, Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def showReviewForm(
@@ -532,7 +532,7 @@ class AddressControllerSpec
     when(mockSubscriptionBusinessService.addressOrException(any[HeaderCarrier])).thenReturn(dataToEdit)
     when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(individualRegistrationDetails)
 
-    test(controller.reviewForm(Service.ATaR, Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.reviewForm(atarService, Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def verifyAddressFieldExistsAndPopulatedCorrectly(page: CdsPage): Unit = {

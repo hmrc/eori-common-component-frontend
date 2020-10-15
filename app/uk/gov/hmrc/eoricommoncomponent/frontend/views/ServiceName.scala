@@ -19,29 +19,24 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.views
 import play.api.i18n.Messages
 import play.api.mvc.Request
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.util.InvalidUrlValueException
 
 object ServiceName {
 
-  private val defaultNameKey      = "cds.service.friendly.name.default"
-  private val defaultShortNameKey = "cds.service.short.name.default"
-
-  def longName(service: Service)(implicit messages: Messages): String = {
-    val key = s"cds.service.friendly.name.${service.code}"
-    if (messages.isDefinedAt(key)) messages(key) else messages(defaultNameKey)
-  }
+  def longName(service: Service)(implicit messages: Messages): String =
+    if (isWelsh) service.friendlyNameWelsh else service.friendlyName
 
   def longName(implicit messages: Messages, request: Request[_]): String =
     longName(service)
 
-  def shortName(service: Service)(implicit messages: Messages): String = {
-    val key = s"cds.service.short.name.${service.code}"
-    if (messages.isDefinedAt(key)) messages(key) else messages(defaultShortNameKey)
-  }
+  def shortName(service: Service)(implicit messages: Messages): String = service.shortName
+
+  private def isWelsh(implicit messages: Messages) = messages.lang.code == "cy"
 
   def shortName(implicit messages: Messages, request: Request[_]): String =
     shortName(service)
 
   def service(implicit request: Request[_]): Service =
-    Service.serviceFromRequest.getOrElse(Service.NullService)
+    Service.serviceFromRequest.getOrElse(Service.getEori)
 
 }

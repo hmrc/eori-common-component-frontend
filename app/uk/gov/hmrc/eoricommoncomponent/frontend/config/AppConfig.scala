@@ -49,8 +49,6 @@ class AppConfig @Inject() (
   private lazy val serviceIdentifierSubscribe =
     config.get[String]("microservice.services.contact-frontend.serviceIdentifierSubscribe")
 
-  def serviceReturnUrl(service: Service) = config.get[String](s"external-url.service-return.${service.code}")
-
   private lazy val feedbackLink          = config.get[String]("external-url.feedback-survey")
   private lazy val feedbackLinkSubscribe = config.get[String]("external-url.feedback-survey-subscribe")
 
@@ -69,11 +67,11 @@ class AppConfig @Inject() (
   }
 
   //get help link feedback for Register journey
-  def reportAProblemPartialUrlRegister(service: Service): String =
-    s"$contactBaseUrl/contact/problem_reports_ajax?service=$serviceIdentifierRegister-${service.code}"
+  def reportAProblemPartialUrlRegister(): String =
+    s"$contactBaseUrl/contact/problem_reports_ajax?service=$serviceIdentifierRegister"
 
-  def reportAProblemNonJSUrlRegister(service: Service): String =
-    s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifierRegister-${service.code}"
+  def reportAProblemNonJSUrlRegister(): String =
+    s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifierRegister"
 
   //get help link feedback for Subscribe journey
   def reportAProblemPartialUrlSubscribe(service: Service): String =
@@ -84,8 +82,8 @@ class AppConfig @Inject() (
 
   private lazy val betafeedbackBaseUrl = s"${contactBaseUrl}/contact/beta-feedback"
 
-  def betaFeedBackRegister(service: Service) =
-    s"${betafeedbackBaseUrl}?service=${serviceIdentifierRegister}-${service.code}"
+  def betaFeedBackRegister() =
+    s"${betafeedbackBaseUrl}?service=${serviceIdentifierRegister}"
 
   def betaFeedBackSubscribe(service: Service) =
     s"${betafeedbackBaseUrl}?service=${serviceIdentifierSubscribe}-${service.code}"

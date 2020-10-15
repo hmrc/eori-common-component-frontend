@@ -28,7 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Subscri
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubscriptionFlowInfo, SubscriptionPage}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CustomsId, NameOrganisationMatchModel, UtrMatchModel}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_utr_subscription
@@ -218,7 +218,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
   private def createForm(journey: Journey.Value)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     await(
-      test(controller.createForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+      test(controller.createForm(atarService, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
     )
   }
 
@@ -226,7 +226,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     await(
       test(
-        controller.submit(Service.ATaR, journey).apply(
+        controller.submit(atarService, journey).apply(
           SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form)
         )
       )
@@ -237,7 +237,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
     when(mockSubscriptionFlowManager.stepInformation(any())(any[Request[AnyContent]]))
       .thenReturn(mockSubscriptionFlowInfo)
     when(mockSubscriptionFlowInfo.nextPage).thenReturn(mockSubscriptionPage)
-    when(mockSubscriptionPage.url(Service.ATaR)).thenReturn(url)
+    when(mockSubscriptionPage.url(atarService)).thenReturn(url)
   }
 
 }

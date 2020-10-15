@@ -29,7 +29,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EmailController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.InternalId
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionStatusService
@@ -132,7 +132,7 @@ class EmailControllerSpec
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller
-        .form(Service.ATaR, Journey.Subscribe)
+        .form(atarService, Journey.Subscribe)
         .apply(SessionBuilder.buildRequestWithSession(userId))
     )
   }

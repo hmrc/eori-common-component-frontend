@@ -29,7 +29,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.Organis
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
@@ -129,7 +129,7 @@ class OrganisationTypeViewSpec
     val request = maybeOrgType.map { orgType =>
       SessionBuilder.buildRequestWithSessionAndOrgType(userId, orgType.id)
     }.getOrElse(SessionBuilder.buildRequestWithSession(userId))
-    test(organisationTypeController.form(Service.ATaR, Journey.Register).apply(request))
+    test(organisationTypeController.form(atarService, Journey.Register).apply(request))
   }
 
 }

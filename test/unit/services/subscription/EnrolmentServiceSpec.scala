@@ -27,7 +27,6 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{EnrolmentStoreProxyConnector, TaxEnrolmentsConnector}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{EnrolmentService, MissingEnrolmentException}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -76,7 +75,7 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
           verifiers = List(Verifier("DATEOFESTABLISHMENT", date))
         )
 
-        val result = enrolmentService.enrolWithExistingCDSEnrolment(eori, Service.ATaR)(headerCarrier)
+        val result = enrolmentService.enrolWithExistingCDSEnrolment(eori, atarService)(headerCarrier)
 
         result.futureValue shouldBe NO_CONTENT
 
@@ -95,7 +94,7 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
           .thenReturn(Future.successful(None))
 
         intercept[MissingEnrolmentException] {
-          await(enrolmentService.enrolWithExistingCDSEnrolment("GB64344234", Service.ATaR)(headerCarrier))
+          await(enrolmentService.enrolWithExistingCDSEnrolment("GB64344234", atarService)(headerCarrier))
         }
       }
 
@@ -106,7 +105,7 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
           .thenReturn(Future.successful(Some(knownFacts)))
 
         intercept[MissingEnrolmentException] {
-          await(enrolmentService.enrolWithExistingCDSEnrolment("GB234232342", Service.ATaR)(headerCarrier))
+          await(enrolmentService.enrolWithExistingCDSEnrolment("GB234232342", atarService)(headerCarrier))
         }
       }
     }

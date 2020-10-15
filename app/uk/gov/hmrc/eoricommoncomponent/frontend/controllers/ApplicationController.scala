@@ -26,7 +26,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
   GroupEnrolmentExtractor
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.CDS
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, start}
@@ -69,10 +68,10 @@ class ApplicationController @Inject() (
   private def cdsEnrolmentCheck(loggedInUser: LoggedInUserWithEnrolments, groupId: String, serviceToEnrol: Service)(
     implicit hc: HeaderCarrier
   ): Future[Result] =
-    if (isUserEnrolledFor(loggedInUser, CDS))
+    if (isUserEnrolledFor(loggedInUser, Service.cds))
       Future.successful(Redirect(routes.HasExistingEoriController.displayPage(serviceToEnrol)))
     else
-      groupEnrolment.groupIdEnrolmentTo(groupId, CDS).flatMap {
+      groupEnrolment.groupIdEnrolmentTo(groupId, Service.cds).flatMap {
         case Some(groupEnrolment) if groupEnrolment.eori.isDefined =>
           cache.saveGroupEnrolment(groupEnrolment).map { _ =>
             Redirect(routes.HasExistingEoriController.displayPage(serviceToEnrol)) // AutoEnrolment

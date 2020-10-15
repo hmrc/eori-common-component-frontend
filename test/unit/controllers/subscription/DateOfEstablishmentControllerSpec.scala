@@ -36,7 +36,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   DateOfEstablishmentSubscriptionFlowPage,
   SubscriptionDetails
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.date_of_establishment
@@ -56,12 +56,12 @@ class DateOfEstablishmentControllerSpec
 
   protected override val submitInCreateModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController
-      .submit(isInReviewMode = false, Service.ATaR, Journey.Register)
+      .submit(isInReviewMode = false, atarService, Journey.Register)
       .url
 
   protected override val submitInReviewModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController
-      .submit(isInReviewMode = true, Service.ATaR, Journey.Register)
+      .submit(isInReviewMode = true, atarService, Journey.Register)
       .url
 
   private val mockOrgTypeLookup      = mock[OrgTypeLookup]
@@ -112,7 +112,7 @@ class DateOfEstablishmentControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.createForm(Service.ATaR, Journey.Subscribe)
+      controller.createForm(atarService, Journey.Subscribe)
     )
 
     "display the form" in {
@@ -133,7 +133,7 @@ class DateOfEstablishmentControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.createForm(Service.ATaR, Journey.Register)
+      controller.createForm(atarService, Journey.Register)
     )
 
     "display the form" in {
@@ -231,7 +231,7 @@ class DateOfEstablishmentControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.reviewForm(Service.ATaR, Journey.Register)
+      controller.reviewForm(atarService, Journey.Register)
     )
 
     "display the form" in {
@@ -351,7 +351,7 @@ class DateOfEstablishmentControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = false, Service.ATaR, Journey.Register)
+      controller.submit(isInReviewMode = false, atarService, Journey.Register)
     )
 
     "redirect to next page in subscription flow" in {
@@ -382,7 +382,7 @@ class DateOfEstablishmentControllerSpec
     when(mockSubscriptionBusinessService.maybeCachedDateEstablished(any[HeaderCarrier]))
       .thenReturn(Future.successful(cachedDate))
 
-    val result = controller.createForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(userId))
+    val result = controller.createForm(atarService, journey).apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
 
@@ -393,7 +393,7 @@ class DateOfEstablishmentControllerSpec
 
     when(mockSubscriptionBusinessService.getCachedDateEstablished(any[HeaderCarrier])).thenReturn(DateOfEstablishment)
 
-    val result = controller.reviewForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(userId))
+    val result = controller.reviewForm(atarService, journey).apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
 
@@ -414,7 +414,7 @@ class DateOfEstablishmentControllerSpec
     when(mockSubscriptionDetailsHolderService.cacheDateEstablished(any[LocalDate])(any[HeaderCarrier]))
       .thenReturn(Future.successful(()))
     val result = controller
-      .submit(isInReviewMode, Service.ATaR, journey)
+      .submit(isInReviewMode, atarService, journey)
       .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }

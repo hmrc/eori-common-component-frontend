@@ -16,40 +16,59 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.models
 
+import com.typesafe.config.ConfigFactory
+import play.api.Configuration
 import play.api.mvc.{PathBindable, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.Constants
 
-sealed trait Service {
-  val code: String
-  val enrolmentKey: String
-
-}
+case class Service(
+  code: String,
+  enrolmentKey: String,
+  shortName: String,
+  callBack: String,
+  friendlyName: String,
+  friendlyNameWelsh: String
+)
 
 object Service {
 
-  case object ATaR extends Service {
-    override val code: String         = "atar"
-    override val enrolmentKey: String = "HMRC-ATAR-ORG"
+  val cds     = Service("cds", "HMRC-CUS-ORG", "", "", "", "")
+  val getEori = Service("eori", "", "", "", "", "")
+
+  private val configuration = Configuration(ConfigFactory.load())
+
+  private val supportedServices: Seq[Service] = {
+    val listOfTheServices = configuration.get[String]("services-config.list").split(",").map(_.trim).toList
+
+    listOfTheServices.map { service =>
+      val englishFriendlyName = configuration.get[String](s"services-config.$service.friendlyName").replace("_", " ")
+      val welshFriendlyName =
+        configuration.getOptional[String](s"services-config.$service.friendlyNameWelsh").map(
+          _.replace("_", " ")
+        ).getOrElse(englishFriendlyName)
+
+      Service(
+        code = configuration.get[String](s"services-config.$service.name"),
+        enrolmentKey = configuration.get[String](s"services-config.$service.enrolment"),
+        shortName = configuration.get[String](s"services-config.$service.shortName"),
+        callBack = configuration.get[String](s"services-config.$service.callBack"),
+        friendlyName = englishFriendlyName,
+        friendlyNameWelsh = welshFriendlyName
+      )
+    }
   }
 
-  // This is for CDS enrolment checks, we're not supporting CDS enrolment now
-  case object CDS extends Service {
-    override val code: String         = "cds"
-    override val enrolmentKey: String = "HMRC-CUS-ORG"
+  private val supportedServicesMap: Map[String, Service] = {
+    if (isServicesConfigCorrect(supportedServices))
+      supportedServices.map(service => service.code -> service).toMap
+    else throw new Exception("Services config contains duplicate service")
   }
 
-  /**
-    * Used to provide a 'service' parameter for controllers that are not currently in scope
-    */
-  case object NullService extends Service {
-    override val code: String         = "null-service"
-    override val enrolmentKey: String = ""
-  }
+  private def isServicesConfigCorrect(services: Seq[Service]): Boolean =
+    services.map(_.code).distinct.size == services.size
 
-  private val supportedServices = Set[Service](ATaR, CDS)
-
-  def withName(str: String): Option[Service] =
-    supportedServices.find(_.code == str)
+  private def withName(str: String): Option[Service] =
+    if (str == getEori.code) Some(getEori) else supportedServicesMap.get(str)
 
   implicit def binder(implicit stringBinder: PathBindable[String]): PathBindable[Service] = new PathBindable[Service] {
 
@@ -63,8 +82,10 @@ object Service {
   }
 
   def serviceFromRequest(implicit request: Request[_]): Option[Service] = {
-    val path = request.path
-    supportedServices.find(service => path.contains(s"/${service.code}/"))
+    val path       = request.path
+    val serviceKey = supportedServicesMap.keys.find(serviceKey => path.contains(s"/$serviceKey"))
+
+    serviceKey.map(supportedServicesMap(_))
   }
 
 }

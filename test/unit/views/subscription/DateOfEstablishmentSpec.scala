@@ -24,7 +24,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CorporateBody, LLP}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.date_of_establishment
 import util.ViewSpec
 
@@ -86,19 +86,19 @@ class DateOfEstablishmentSpec extends ViewSpec {
 
   lazy val doc: Document = {
     val result =
-      view(form, isInReviewMode, orgType = CorporateBody, isRestOfWorldJourney = false, Service.ATaR, Journey.Subscribe)
+      view(form, isInReviewMode, orgType = CorporateBody, isRestOfWorldJourney = false, atarService, Journey.Subscribe)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val docRestOfWorld: Document = {
     val result =
-      view(form, isInReviewMode, orgType = CorporateBody, isRestOfWorldJourney = true, Service.ATaR, Journey.Subscribe)
+      view(form, isInReviewMode, orgType = CorporateBody, isRestOfWorldJourney = true, atarService, Journey.Subscribe)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val docLlp: Document = {
     val result =
-      view(form, isInReviewMode, orgType = LLP, isRestOfWorldJourney = false, Service.ATaR, Journey.Subscribe)
+      view(form, isInReviewMode, orgType = LLP, isRestOfWorldJourney = false, atarService, Journey.Subscribe)
     Jsoup.parse(contentAsString(result))
   }
 

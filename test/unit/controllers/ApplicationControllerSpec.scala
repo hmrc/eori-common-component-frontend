@@ -26,7 +26,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationControlle
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.MissingGroupId
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, KeyValue}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.{ATaR, CDS}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, start}
@@ -85,21 +84,21 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
     "direct authenticated users to start subscription" in {
       withAuthorisedUser(defaultUserId, mockAuthConnector)
       val result =
-        controller.startSubscription(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+        controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       status(result) shouldBe SEE_OTHER
       await(result).header.headers("Location") should endWith("are-you-based-in-uk")
     }
 
     "direct authenticated users with CDS enrolment to start short-cut subscription" in {
-      when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(ATaR))(any()))
+      when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(atarService))(any()))
         .thenReturn(Future.successful(None))
 
       val cdsEnrolment = Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", "GB134123")
       withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set(cdsEnrolment))
 
       val result =
-        controller.startSubscription(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+        controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       status(result) shouldBe SEE_OTHER
       await(result).header.headers("Location") should endWith("check-existing-eori")
@@ -107,16 +106,16 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
     }
 
     "direct authenticated users where group id has CDS enrolment to start short-cut subscription" in {
-      when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(ATaR))(any()))
+      when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(atarService))(any()))
         .thenReturn(Future.successful(None))
-      when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(CDS))(any()))
-        .thenReturn(Future.successful(groupEnrolment(CDS)))
+      when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(Service.cds))(any()))
+        .thenReturn(Future.successful(groupEnrolment(Service.cds)))
       when(mockSessionCache.saveGroupEnrolment(any[EnrolmentResponse])(any())).thenReturn(Future.successful(true))
 
       withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set.empty)
 
       val result =
-        controller.startSubscription(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+        controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       status(result) shouldBe SEE_OTHER
       await(result).header.headers("Location") should endWith("check-existing-eori")
@@ -129,7 +128,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set(atarEnrolment))
 
       val result =
-        controller.startSubscription(Service.ATaR).apply(
+        controller.startSubscription(atarService).apply(
           SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe", defaultUserId)
         )
 
@@ -139,13 +138,13 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
     "inform authenticated users where group Id has an enrolment that subscription exists" in {
 
-      when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), ArgumentMatchers.eq(ATaR))(any()))
+      when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), ArgumentMatchers.eq(atarService))(any()))
         .thenReturn(Future.successful(true))
 
       withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set.empty)
 
       val result =
-        controller.startSubscription(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+        controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       status(result) shouldBe SEE_OTHER
       await(result).header.headers("Location") should endWith("enrolment-already-exists-for-group")
@@ -156,7 +155,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set.empty, groupId = None)
 
       intercept[MissingGroupId] {
-        await(controller.startSubscription(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+        await(controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
       }
     }
   }
@@ -167,7 +166,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
 
       val result =
-        controller.logout(Service.ATaR, Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+        controller.logout(atarService, Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       session(result).get(SessionKeys.userId) shouldBe None
       await(result).header.headers("Location") should endWith("feedback/eori-common-component-register-atar")
@@ -178,7 +177,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
 
       val result =
-        controller.logout(Service.ATaR, Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+        controller.logout(atarService, Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       session(result).get(SessionKeys.userId) shouldBe None
       await(result).header.headers("Location") should endWith("feedback/eori-common-component-subscribe-atar")
@@ -190,7 +189,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
     "return a status of OK" in {
 
       val result =
-        controller.keepAlive(Service.ATaR, Journey.Register).apply(SessionBuilder.buildRequestWithSessionNoUser)
+        controller.keepAlive(atarService, Journey.Register).apply(SessionBuilder.buildRequestWithSessionNoUser)
 
       status(result) shouldBe OK
     }

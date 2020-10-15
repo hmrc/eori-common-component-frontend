@@ -25,7 +25,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactDetailsModel}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.check_your_details
 import util.ViewSpec
 
@@ -336,7 +336,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       dateTime,
       None,
       customsId,
-      Service.ATaR,
+      atarService,
       Journey.Subscribe
     )
     Jsoup.parse(contentAsString(result))

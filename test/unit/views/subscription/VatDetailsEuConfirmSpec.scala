@@ -26,7 +26,7 @@ import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.YesNo
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.VatEUDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_details_eu_confirm
 import util.ViewSpec
 import util.builders.YesNoFormBuilder._
@@ -144,7 +144,7 @@ class VatDetailsEuConfirmSpec extends ViewSpec {
         emptyFormUnderLimit,
         isInReviewMode = false,
         VatEuDetailUnderLimit,
-        Service.ATaR,
+        atarService,
         Journey.Register,
         vatLimitNotReached = true
       )
@@ -157,7 +157,7 @@ class VatDetailsEuConfirmSpec extends ViewSpec {
         formUnderLimit,
         isInReviewMode = false,
         VatEuDetailUnderLimit,
-        Service.ATaR,
+        atarService,
         Journey.Register,
         vatLimitNotReached = true
       )
@@ -170,7 +170,7 @@ class VatDetailsEuConfirmSpec extends ViewSpec {
         formUnderLimit,
         isInReviewMode = false,
         VatEuDetailsOnLimit,
-        Service.ATaR,
+        atarService,
         Journey.Register,
         vatLimitNotReached = false
       )
@@ -183,7 +183,7 @@ class VatDetailsEuConfirmSpec extends ViewSpec {
         formUnderLimit,
         isInReviewMode = true,
         VatEuDetailsOnLimit,
-        Service.ATaR,
+        atarService,
         Journey.Register,
         vatLimitNotReached = false
       )

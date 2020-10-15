@@ -29,7 +29,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Co
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.ResponseCommon
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.migration_success
@@ -119,7 +118,7 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
     assertNotLoggedInUserShouldBeRedirectedToLoginPage(
       mockAuthConnector,
       "Accessing the regExistingEnd page",
-      subscriptionController.migrationEnd(Service.ATaR)
+      subscriptionController.migrationEnd(atarService)
     )
 
     "allow authenticated users to access the regExistingEnd page" in {
@@ -179,7 +178,7 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
   def invokeRegExistingEndPageWithAuthenticatedUser(userId: String = defaultUserId)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     test(
-      subscriptionController.migrationEnd(Service.ATaR).apply(
+      subscriptionController.migrationEnd(atarService).apply(
         SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe", userId)
       )
     )

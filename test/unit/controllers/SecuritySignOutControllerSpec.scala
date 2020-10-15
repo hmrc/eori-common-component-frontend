@@ -46,7 +46,7 @@ class SecuritySignOutControllerSpec extends ControllerSpec with AuthActionMock {
   "Security Sign Out Controller" should {
     "return Ok 200 when displayPage method is requested" in {
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
-      displayPage(Service.ATaR, Journey.Register) { result =>
+      displayPage(atarService, Journey.Register) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
         page.title should startWith("For your security, we signed you out")
@@ -55,7 +55,7 @@ class SecuritySignOutControllerSpec extends ControllerSpec with AuthActionMock {
 
     "return Ok 303 when signOut method is requested" in {
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
-      signOut(Service.ATaR, Journey.Register) { result =>
+      signOut(atarService, Journey.Register) { result =>
         status(result) shouldBe SEE_OTHER
       }
       verify(mockSessionCache).remove(any[HeaderCarrier])

@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration
+package unit.util
 
-import javax.inject.{Inject, Singleton}
-import play.api.mvc._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.return_user
+import org.scalatest.{MustMatchers, WordSpec}
+import uk.gov.hmrc.eoricommoncomponent.frontend.util.{InvalidUrlValueException, Require}
 
-@Singleton
-class ReturnUserController @Inject() (view: return_user, mcc: MessagesControllerComponents) extends CdsController(mcc) {
+class RequireSpec extends WordSpec with MustMatchers {
 
-  def show(): Action[AnyContent] = Action { implicit request =>
-    Ok(view(Journey.Subscribe))
+  "Require requireThatUrlValue" should {
+
+    "throw InvalidUrlValueException when requirement not met" in {
+
+      val caught = intercept[InvalidUrlValueException] {
+        Require.requireThatUrlValue(1 == 3, "Some Error")
+      }
+      caught.getMessage mustBe "invalid value: Some Error"
+
+    }
   }
-
 }
