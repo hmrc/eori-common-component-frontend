@@ -47,8 +47,8 @@ object Service {
         enrolmentKey = configuration.get[String](s"services-config.$service.enrolment"),
         shortName = configuration.get[String](s"services-config.$service.shortName"),
         callBack = configuration.get[String](s"services-config.$service.callBack"),
-        friendlyName = configuration.get[String](s"services-config.$service.friendlyName"),
-        friendlyNameWelsh = configuration.get[String](s"services-config.$service.friendlyNameWelsh")
+        friendlyName = configuration.get[String](s"services-config.$service.friendlyName").replace("_", " "),
+        friendlyNameWelsh = configuration.get[String](s"services-config.$service.friendlyNameWelsh").replace("_", " ")
       )
     }
   }
