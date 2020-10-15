@@ -50,7 +50,7 @@ object Service {
       )
     }
 
-  val supportedServicesMap: Map[String, Service] = {
+  private val supportedServicesMap: Map[String, Service] = {
     if (isServicesConfigCorrect(supportedServices))
       supportedServices.map(service => service.code -> service).toMap
     else throw new Exception("Services config contains duplicate service")
