@@ -21,12 +21,20 @@ Decide on a unique key for the new service. This unique key forms part of the ur
 ## Step 2
 Add to the list of services by appending a comma and the unique key to `services-config.list`, for example.
 ```
-services-config.list = "atar,example"
+services-config.list: "atar,example"
 ```
 
 ## Step 3
 Add the following entries to the configuration file replacing `example` with the unique key.
+```
+services-config.example.enrolment: "[ENROLMENT_KEY_HERE]"
+services-config.example.shortName: "[SHORT_NAME_HERE]"
+services-config.example.callBack: "[URL_HERE]"
+services-config.example.friendlyName: "[FRIENDLY_NAME_HERE]"
+services-config.example.friendlyNameWelsh: "[(OPTIONAL)WELSH_NAME_HERE]"
+```
 
+For example
 ```
 services-config.example.enrolment: "HMRC-NEW-ORG"
 services-config.example.shortName: "NEWS"
