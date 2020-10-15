@@ -42,13 +42,19 @@ object Service {
     val listOfTheServices = configuration.get[String]("services-config.list").split(",").map(_.trim).toList
 
     listOfTheServices.map { service =>
+      val englishFriendlyName = configuration.get[String](s"services-config.$service.friendlyName").replace("_", " ")
+      val welshFriendlyName =
+        configuration.getOptional[String](s"services-config.$service.friendlyNameWelsh").map(
+          _.replace("_", " ")
+        ).getOrElse(englishFriendlyName)
+
       Service(
         code = configuration.get[String](s"services-config.$service.name"),
         enrolmentKey = configuration.get[String](s"services-config.$service.enrolment"),
         shortName = configuration.get[String](s"services-config.$service.shortName"),
         callBack = configuration.get[String](s"services-config.$service.callBack"),
-        friendlyName = configuration.get[String](s"services-config.$service.friendlyName"),
-        friendlyNameWelsh = configuration.get[String](s"services-config.$service.friendlyNameWelsh")
+        friendlyName = englishFriendlyName,
+        friendlyNameWelsh = welshFriendlyName
       )
     }
   }
