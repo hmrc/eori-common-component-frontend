@@ -1,26 +1,28 @@
 # How to add a new service
-This article details the configuration needed to add support enroling to a new HMRC service to the EORI Comment Component (ECC).
+This article details the configuration needed to add support for enroling to a new HMRC service to the EORI Comment Component (ECC).
 
 # Configuration values required
-The following values are required to add the configuration for a new service
+The following values are required to add the configuration for a new service.
 
 | Key                     | Description             | 
 | -------------           | ----------------------- | 
 | `enrolment`             | The enrolment key for the new service.  Details for creating a new service enrolment key can be found [here](https://github.com/hmrc/service-enrolment-config). | 
 | `shortName`             | This is the abbreviation of the service. | 
-| `callBack`              | This is the url ECC will re-direct the user to once they have access to the new service. | 
+| `callBack`              | This is the url ECC will re-direct the user to once they have completed an enrolment request. | 
 | `friendlyName`          | This is the "long" name of the service that is used on confirmation pages and emails. | 
 | `friendlyNameWelsh`     | (Optional) Welsh translation of the long name.| 
 
 # Add configuration for each environment
-Add definitions for the new service to the `eori-common-component-frontend.yaml` configuration file for each environment.
+Add definitions for the new service to the `eori-common-component-frontend.yaml` configuration file for *each* environment.
 
 ## Step 1
 Decide on a unique key for the new service. This unique key forms part of the url to access the new service - usually an abbreviation of the service name in lower-case.  
 
 ## Step 2
-Add to the list of services by appending a comma and the unique key to this existing configuration value
-`services-config.list = "atar,example"`
+Add to the list of services by appending a comma and the unique key to `services-config.list`, for example.
+```
+services-config.list = "atar,example"
+```
 
 ## Step 3
 Add the following entries to the configuration file replacing `example` with the unique key.
