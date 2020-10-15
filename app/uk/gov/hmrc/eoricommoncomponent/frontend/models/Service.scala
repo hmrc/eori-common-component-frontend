@@ -49,7 +49,7 @@ object Service {
         ).getOrElse(englishFriendlyName)
 
       Service(
-        code = configuration.get[String](s"services-config.$service.name"),
+        code = service,
         enrolmentKey = configuration.get[String](s"services-config.$service.enrolment"),
         shortName = configuration.get[String](s"services-config.$service.shortName"),
         callBack = configuration.get[String](s"services-config.$service.callBack"),
