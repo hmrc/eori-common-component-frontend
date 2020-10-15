@@ -24,7 +24,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.CacheController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
@@ -57,7 +57,7 @@ class CacheControllerSpec extends ControllerSpec with AuthActionMock {
         await(controller.clearCache(Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(userId)))
 
       status(result) shouldBe SEE_OTHER
-      result.header.headers("Location") should be(ApplicationController.startSubscription(Service.ATaR).url)
+      result.header.headers("Location") should be(ApplicationController.startSubscription(atarService).url)
       assertSessionDoesNotContainKeys(result.session(mockRequest))
     }
 

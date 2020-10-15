@@ -40,7 +40,7 @@ import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 import scala.util.Random
 
-trait ControllerSpec extends UnitSpec with MockitoSugar with I18nSupport with Injector {
+trait ControllerSpec extends UnitSpec with MockitoSugar with I18nSupport with Injector with TestData {
 
   implicit val messagesApi: MessagesApi = instanceOf[MessagesApi]
 

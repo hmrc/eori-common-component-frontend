@@ -20,7 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.display_sign_out
 import util.ViewSpec
 
@@ -41,7 +41,7 @@ class SecuritySignOutSpec extends ViewSpec {
     }
 
     "have a Sign in button with the correct href when journey is subscribe" in {
-      val doc = Jsoup.parse(contentAsString(view(Service.ATaR, Journey.Subscribe)))
+      val doc = Jsoup.parse(contentAsString(view(atarService, Journey.Subscribe)))
       doc.body().getElementsByClass("button").attr("href") mustBe "/customs-enrolment-services/atar/subscribe"
     }
 
@@ -50,5 +50,5 @@ class SecuritySignOutSpec extends ViewSpec {
     }
   }
 
-  private lazy val doc: Document = Jsoup.parse(contentAsString(view(Service.ATaR, Journey.Register)))
+  private lazy val doc: Document = Jsoup.parse(contentAsString(view(atarService, Journey.Register)))
 }

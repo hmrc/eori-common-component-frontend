@@ -20,15 +20,14 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.eori_enrol_success
 import util.ViewSpec
 
 class EoriEnrolSuccessSpec extends ViewSpec {
 
-  implicit val request = withFakeCSRF(FakeRequest())
+  implicit val request = withFakeCSRF(fakeAtarSubscribeRequest)
 
-  private val service = Service.ATaR
+  private val service = atarService
   private val eori    = "GB234532132435"
 
   private val view = instanceOf[eori_enrol_success]
@@ -48,7 +47,9 @@ class EoriEnrolSuccessSpec extends ViewSpec {
     }
 
     "display correct service name" in {
-      doc.body.getElementById("para1").text() must startWith("You are now enrolled to the Customs service")
+      doc.body.getElementById("para1").text() must startWith(
+        "You are now enrolled to the Advance Tariff Rulings service"
+      )
     }
 
   }

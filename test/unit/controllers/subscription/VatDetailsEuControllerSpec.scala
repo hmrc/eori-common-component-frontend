@@ -28,7 +28,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.VatDetailsEuController
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.VatEUDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionVatEUDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_details_eu
 import uk.gov.hmrc.http.HeaderCarrier
@@ -265,7 +265,7 @@ class VatDetailsEuControllerSpec
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     await(
       test(
-        controller.createForm(Service.ATaR, Journey.Register).apply(
+        controller.createForm(atarService, Journey.Register).apply(
           SessionBuilder.buildRequestWithSession(defaultUserId)
         )
       )
@@ -276,7 +276,7 @@ class VatDetailsEuControllerSpec
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     await(
       test(
-        controller.reviewForm(Service.ATaR, Journey.Register).apply(
+        controller.reviewForm(atarService, Journey.Register).apply(
           SessionBuilder.buildRequestWithSession(defaultUserId)
         )
       )
@@ -288,7 +288,7 @@ class VatDetailsEuControllerSpec
     await(
       test(
         controller
-          .submit(Service.ATaR, Journey.Register, isInReviewMode: Boolean)
+          .submit(atarService, Journey.Register, isInReviewMode: Boolean)
           .apply(SessionBuilder.buildRequestWithFormValues(form))
       )
     )
@@ -301,7 +301,7 @@ class VatDetailsEuControllerSpec
     await(
       test(
         controller
-          .submitUpdate(index, Service.ATaR, Journey.Register, isInReviewMode: Boolean)
+          .submitUpdate(index, atarService, Journey.Register, isInReviewMode: Boolean)
           .apply(SessionBuilder.buildRequestWithFormValues(form))
       )
     )
@@ -311,7 +311,7 @@ class VatDetailsEuControllerSpec
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     await(
       test(
-        controller.updateForm(index, Service.ATaR, Journey.Register).apply(
+        controller.updateForm(index, atarService, Journey.Register).apply(
           SessionBuilder.buildRequestWithSession(defaultUserId)
         )
       )

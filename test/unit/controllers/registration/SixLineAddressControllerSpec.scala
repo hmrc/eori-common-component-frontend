@@ -114,7 +114,7 @@ class SixLineAddressControllerSpec
   )
 
   override def beforeEach(): Unit = {
-    when(mockSubscriptionPage.url(Service.ATaR)).thenReturn(testSubscriptionStartPageUrl)
+    when(mockSubscriptionPage.url(atarService)).thenReturn(testSubscriptionStartPageUrl)
     when(mockSubscriptionStartSession.data).thenReturn(testSessionData)
     when(
       mockSubscriptionFlowManager
@@ -146,7 +146,7 @@ class SixLineAddressControllerSpec
 
       assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
         mockAuthConnector,
-        controller.showForm(reviewMode, organisationType, Service.ATaR, Journey.Register),
+        controller.showForm(reviewMode, organisationType, atarService, Journey.Register),
         s", for reviewMode [$reviewMode] and organisationType $organisationType"
       )
 
@@ -276,7 +276,7 @@ class SixLineAddressControllerSpec
 
       assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
         mockAuthConnector,
-        controller.submit(reviewMode, organisationType, Service.ATaR, Journey.Register),
+        controller.submit(reviewMode, organisationType, atarService, Journey.Register),
         s", for reviewMode [$reviewMode] and organisationType $organisationType"
       )
 
@@ -385,7 +385,7 @@ class SixLineAddressControllerSpec
     when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier])).thenReturn(None)
 
     test(
-      controller.submit(false, CdsOrganisationType.ThirdCountryIndividualId, Service.ATaR, Journey.Register)(
+      controller.submit(false, CdsOrganisationType.ThirdCountryIndividualId, atarService, Journey.Register)(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )
@@ -418,7 +418,7 @@ class SixLineAddressControllerSpec
 
     test(
       controller
-        .showForm(reviewMode, cdsOrgType, Service.ATaR, Journey.Register)
+        .showForm(reviewMode, cdsOrgType, atarService, Journey.Register)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, formValues))
     )
   }
@@ -431,7 +431,7 @@ class SixLineAddressControllerSpec
 
     test(
       controller
-        .submit(reviewMode, cdsOrgType, Service.ATaR, Journey.Register)
+        .submit(reviewMode, cdsOrgType, atarService, Journey.Register)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, formValues))
     )
   }

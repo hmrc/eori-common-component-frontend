@@ -25,7 +25,7 @@ import util.ViewSpec
 
 class SubscriptionOutcomePendingSpec extends ViewSpec {
 
-  implicit val request = withFakeCSRF(FakeRequest())
+  implicit val request = withFakeCSRF(fakeAtarSubscribeRequest)
 
   private val view = instanceOf[subscription_outcome_pending]
 
@@ -54,7 +54,7 @@ class SubscriptionOutcomePendingSpec extends ViewSpec {
     "have the correct 'what happens next' text" in {
       doc.body
         .getElementById("what-happens-next")
-        .text mustBe "What happens next We are processing your registration to Customs. This can take up to 5 working days. You will need to sign back in to see the result of your registration."
+        .text mustBe "What happens next We are processing your registration to ATaR. This can take up to 5 working days. You will need to sign back in to see the result of your registration."
     }
   }
 

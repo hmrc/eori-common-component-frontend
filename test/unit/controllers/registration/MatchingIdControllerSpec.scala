@@ -55,7 +55,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
 
   "MatchingIdController for GetAnEori Journey" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.matchWithIdOnly(Service.ATaR))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.matchWithIdOnly(atarService))
 
     "for Journey GetAnEori redirect to Select user location page when Government Gateway Account has no enrollments" in {
       withAuthorisedUser(userId, mockAuthConnector)
@@ -63,10 +63,10 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
       val controller =
         new MatchingIdController(mockAuthAction, featureFlags, mockMatchingService, mcc)(global)
       val result: Result =
-        await(controller.matchWithIdOnly(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(userId)))
+        await(controller.matchWithIdOnly(atarService).apply(SessionBuilder.buildRequestWithSession(userId)))
 
       status(result) shouldBe SEE_OTHER
-      assertRedirectToUserLocationPage(result, Service.ATaR, Journey.Register)
+      assertRedirectToUserLocationPage(result, atarService, Journey.Register)
       verifyZeroInteractions(mockMatchingService)
     }
 
@@ -76,12 +76,12 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
       when(mockMatchingService.matchBusinessWithIdOnly(meq(Utr(ctUtrId)), any[LoggedInUser])(any[HeaderCarrier]))
         .thenReturn(Future.successful(true))
 
-      val result = controller.matchWithIdOnly(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(userId))
+      val result = controller.matchWithIdOnly(atarService).apply(SessionBuilder.buildRequestWithSession(userId))
 
       status(result) shouldBe SEE_OTHER
       result.header.headers("Location") should be(
         uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.ConfirmContactDetailsController
-          .form(Service.ATaR, Journey.Register)
+          .form(atarService, Journey.Register)
           .url
       )
     }
@@ -94,10 +94,10 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
 
       val controller =
         new MatchingIdController(mockAuthAction, featureFlags, mockMatchingService, mcc)(global)
-      val result = await(controller.matchWithIdOnly(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(userId)))
+      val result = await(controller.matchWithIdOnly(atarService).apply(SessionBuilder.buildRequestWithSession(userId)))
 
       status(result) shouldBe SEE_OTHER
-      assertRedirectToUserLocationPage(result, Service.ATaR, Journey.Register)
+      assertRedirectToUserLocationPage(result, atarService, Journey.Register)
     }
 
     "for Journey GetAnEori redirect to Confirm page when a match found with SA UTR only" in {
@@ -106,12 +106,12 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
       when(mockMatchingService.matchBusinessWithIdOnly(meq(Utr(saUtrId)), any[LoggedInUser])(any[HeaderCarrier]))
         .thenReturn(Future.successful(true))
 
-      val result = controller.matchWithIdOnly(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(userId))
+      val result = controller.matchWithIdOnly(atarService).apply(SessionBuilder.buildRequestWithSession(userId))
 
       status(result) shouldBe SEE_OTHER
       result.header.headers("Location") should be(
         uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.ConfirmContactDetailsController
-          .form(Service.ATaR, Journey.Register)
+          .form(atarService, Journey.Register)
           .url
       )
     }
@@ -122,12 +122,12 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
       when(mockMatchingService.matchBusinessWithIdOnly(meq(Nino(payeNinoId)), any[LoggedInUser])(any[HeaderCarrier]))
         .thenReturn(Future.successful(true))
 
-      val result = controller.matchWithIdOnly(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(userId))
+      val result = controller.matchWithIdOnly(atarService).apply(SessionBuilder.buildRequestWithSession(userId))
 
       status(result) shouldBe SEE_OTHER
       result.header.headers("Location") should be(
         uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.ConfirmContactDetailsController
-          .form(Service.ATaR, Journey.Register)
+          .form(atarService, Journey.Register)
           .url
       )
     }
@@ -138,12 +138,12 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
       when(mockMatchingService.matchBusinessWithIdOnly(meq(Utr(ctUtrId)), any[LoggedInUser])(any[HeaderCarrier]))
         .thenReturn(Future.successful(true))
 
-      val result = controller.matchWithIdOnly(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(userId))
+      val result = controller.matchWithIdOnly(atarService).apply(SessionBuilder.buildRequestWithSession(userId))
 
       status(result) shouldBe SEE_OTHER
       result.header.headers("Location") should be(
         uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.ConfirmContactDetailsController
-          .form(Service.ATaR, Journey.Register)
+          .form(atarService, Journey.Register)
           .url
       )
     }
@@ -155,7 +155,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
       AuthBuilder.withNotLoggedInUser(mockAuthConnector)
 
       val result = controller
-        .matchWithIdOnlyForExistingReg(Service.ATaR)
+        .matchWithIdOnlyForExistingReg(atarService)
         .apply(
           SessionBuilder.buildRequestWithSessionAndPathNoUserAndBasedInUkNotSelected(
             method = "GET",
@@ -172,7 +172,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
       AuthBuilder.withNotLoggedInUser(mockAuthConnector)
 
       val result = controller
-        .matchWithIdOnlyForExistingReg(Service.ATaR)
+        .matchWithIdOnlyForExistingReg(atarService)
         .apply(
           SessionBuilder
             .buildRequestWithSessionAndPathNoUser(method = "GET", path = "/customs-enrolment-services/atar/subscribe")
@@ -193,11 +193,11 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
         new MatchingIdController(mockAuthAction, featureFlags, mockMatchingService, mcc)(global)
       val result =
         await(
-          controller.matchWithIdOnlyForExistingReg(Service.ATaR).apply(SessionBuilder.buildRequestWithSession(userId))
+          controller.matchWithIdOnlyForExistingReg(atarService).apply(SessionBuilder.buildRequestWithSession(userId))
         )
 
       status(result) shouldBe SEE_OTHER
-      assertRedirectToUserLocationPage(result, Service.ATaR, Journey.Subscribe)
+      assertRedirectToUserLocationPage(result, atarService, Journey.Subscribe)
     }
   }
 

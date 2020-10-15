@@ -33,7 +33,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.VatDeta
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.VatDetailsSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{VatControlListRequest, VatControlListResponse}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.VatDetails
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{vat_details, we_cannot_confirm_your_identity}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -52,12 +52,12 @@ class VatDetailsControllerSpec
 
   protected override val submitInCreateModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatDetailsController
-      .submit(isInReviewMode = false, Service.ATaR, Journey.Register)
+      .submit(isInReviewMode = false, atarService, Journey.Register)
       .url
 
   protected override val submitInReviewModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatDetailsController
-      .submit(isInReviewMode = true, Service.ATaR, Journey.Register)
+      .submit(isInReviewMode = true, atarService, Journey.Register)
       .url
 
   private val mockVatControlListConnector = mock[VatControlListConnector]
@@ -95,7 +95,7 @@ class VatDetailsControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.createForm(Service.ATaR, Journey.Subscribe)
+      controller.createForm(atarService, Journey.Subscribe)
     )
 
     "display the form" in {
@@ -315,7 +315,7 @@ class VatDetailsControllerSpec
     when(mockSubscriptionBusinessService.maybeCachedDateEstablished(any[HeaderCarrier]))
       .thenReturn(Future.successful(cachedDate))
 
-    test(controller.createForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.createForm(atarService, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def submitFormInCreateMode(form: Map[String, String])(test: Future[Result] => Any): Unit =
@@ -332,7 +332,7 @@ class VatDetailsControllerSpec
       .thenReturn(Future.successful(()))
     test(
       controller
-        .submit(false, Service.ATaR, Journey.Register)
+        .submit(false, atarService, Journey.Register)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form))
     )
   }
@@ -352,7 +352,7 @@ class VatDetailsControllerSpec
       .thenReturn(Future.successful(()))
     test(
       controller
-        .submit(isInReviewMode, Service.ATaR, journey)
+        .submit(isInReviewMode, atarService, journey)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }

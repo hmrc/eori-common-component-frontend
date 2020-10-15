@@ -23,7 +23,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NinoMatchModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.rowIndividualsNinoForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_nino_subscription
 import util.ViewSpec
 
@@ -95,12 +95,12 @@ class HaveNinoSubscriptionSpec extends ViewSpec {
     }
   }
 
-  lazy val doc: Document = Jsoup.parse(contentAsString(view(standardForm, Service.ATaR, Journey.Subscribe)))
+  lazy val doc: Document = Jsoup.parse(contentAsString(view(standardForm, atarService, Journey.Subscribe)))
 
   lazy val docWithNoOptionSelected: Document =
-    Jsoup.parse(contentAsString(view(noOptionSelectedForm, Service.ATaR, Journey.Subscribe)))
+    Jsoup.parse(contentAsString(view(noOptionSelectedForm, atarService, Journey.Subscribe)))
 
   lazy val docWithIncorrectNino: Document =
-    Jsoup.parse(contentAsString(view(incorrectNinoForm, Service.ATaR, Journey.Subscribe)))
+    Jsoup.parse(contentAsString(view(incorrectNinoForm, atarService, Journey.Subscribe)))
 
 }

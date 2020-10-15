@@ -25,7 +25,7 @@ import util.ViewSpec
 
 class Sub01OutcomeProcessingSpec extends ViewSpec {
 
-  implicit val request = withFakeCSRF(FakeRequest())
+  implicit val request = withFakeCSRF(fakeAtarSubscribeRequest)
 
   private val view = instanceOf[sub01_outcome_processing]
 
@@ -36,7 +36,7 @@ class Sub01OutcomeProcessingSpec extends ViewSpec {
 
     "display correct heading" in {
       docWithName.body.getElementsByTag("h1").text() must startWith(
-        s"The Customs application for $orgName is being processed"
+        s"The ATaR application for $orgName is being processed"
       )
     }
     "have the correct class on the h1" in {
@@ -51,7 +51,7 @@ class Sub01OutcomeProcessingSpec extends ViewSpec {
     "have the correct 'what happens next' text" in {
       docWithName.body
         .getElementById("what-happens-next")
-        .text mustBe "What happens next We are processing your Customs application. This can take up to 5 working days. You will need to sign back in to see the result of your registration."
+        .text mustBe "What happens next We are processing your ATaR application. This can take up to 5 working days. You will need to sign back in to see the result of your registration."
     }
 
   }
@@ -59,7 +59,7 @@ class Sub01OutcomeProcessingSpec extends ViewSpec {
   "Sub01 outcome pending Page without name" should {
 
     "display correct heading" in {
-      docWithoutName.body.getElementsByTag("h1").text() must startWith("The Customs application is being processed")
+      docWithoutName.body.getElementsByTag("h1").text() must startWith("The ATaR application is being processed")
     }
     "have the correct class on the h1" in {
       docWithoutName.body.getElementsByTag("h1").hasClass("heading-xlarge") mustBe true
@@ -73,7 +73,7 @@ class Sub01OutcomeProcessingSpec extends ViewSpec {
     "have the correct 'what happens next' text" in {
       docWithoutName.body
         .getElementById("what-happens-next")
-        .text mustBe "What happens next We are processing your Customs application. This can take up to 5 working days. You will need to sign back in to see the result of your registration."
+        .text mustBe "What happens next We are processing your ATaR application. This can take up to 5 working days. You will need to sign back in to see the result of your registration."
     }
   }
 

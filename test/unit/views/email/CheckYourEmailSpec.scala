@@ -23,7 +23,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.YesNo
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.check_your_email
 import util.ViewSpec
 
@@ -54,7 +54,7 @@ class CheckYourEmailSpec extends ViewSpec {
 
   lazy val doc: Document = {
     val email  = "test@example.com"
-    val result = view(Some(email), form, isInReviewMode, Service.ATaR, Journey.Subscribe)
+    val result = view(Some(email), form, isInReviewMode, atarService, Journey.Subscribe)
     Jsoup.parse(contentAsString(result))
   }
 

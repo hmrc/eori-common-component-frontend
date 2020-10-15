@@ -25,7 +25,7 @@ import util.ViewSpec
 
 class SubscriptionOutcomeFailSpec extends ViewSpec {
 
-  implicit val request = withFakeCSRF(FakeRequest())
+  implicit val request = withFakeCSRF(fakeAtarSubscribeRequest)
 
   private val view = instanceOf[subscription_outcome_fail]
 
@@ -35,13 +35,11 @@ class SubscriptionOutcomeFailSpec extends ViewSpec {
   "'Subscription Fail' Page" should {
 
     "have the correct title " in {
-      doc.title() must startWith(s"The Customs application has been unsuccessful")
+      doc.title() must startWith(s"The ATaR application has been unsuccessful")
     }
 
     "display correct heading" in {
-      doc.body.getElementsByTag("h1").text() must startWith(
-        s"The Customs application for $orgName has been unsuccessful"
-      )
+      doc.body.getElementsByTag("h1").text() must startWith(s"The ATaR application for $orgName has been unsuccessful")
     }
     "have the correct class on the h1" in {
       doc.body.getElementsByTag("h1").hasClass("heading-xlarge") mustBe true

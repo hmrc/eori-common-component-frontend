@@ -77,20 +77,20 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     "throw exception when user does not have existing CDS enrolment" in {
       userDoesNotHaveGroupEnrolmentToCds
 
-      intercept[IllegalStateException](displayPage(Service.ATaR)(result => status(result))).getMessage should startWith(
+      intercept[IllegalStateException](displayPage(atarService)(result => status(result))).getMessage should startWith(
         "No EORI found"
       )
     }
 
     "redirect if user already has the requested service" in {
-      displayPage(Service.ATaR, cdsEnrolmentId = None, otherEnrolments = Set(atarEnrolment)) { result =>
+      displayPage(atarService, cdsEnrolmentId = None, otherEnrolments = Set(atarEnrolment)) { result =>
         status(result) shouldBe SEE_OTHER
         await(result).header.headers("Location") should endWith("/enrolment-already-exists")
       }
     }
 
     "display page with user eori" in {
-      displayPage(Service.ATaR, Some(userEORI)) { result =>
+      displayPage(atarService, Some(userEORI)) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
         page.title should startWith("Your Government Gateway user ID is linked to an EORI")
@@ -100,7 +100,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "display page with group eori" in {
-      displayPage(Service.ATaR, None) { result =>
+      displayPage(atarService, None) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
         page.title should startWith("Your Government Gateway user ID is linked to an EORI")
@@ -113,7 +113,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
   "Has Existing EORI Controller enrol" should {
 
     "redirect to confirmation page on success" in {
-      enrol(Service.ATaR, NO_CONTENT) { result =>
+      enrol(atarService, NO_CONTENT) { result =>
         status(result) shouldBe SEE_OTHER
         await(result).header.headers("Location") should endWith("/check-existing-eori/confirmation")
       }
@@ -122,7 +122,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     "redirect to enrolment exists if user has group enrolment to service" in {
       userHasGroupEnrolmentToService
 
-      enrol(Service.ATaR, NO_CONTENT) { result =>
+      enrol(atarService, NO_CONTENT) { result =>
         status(result) shouldBe SEE_OTHER
         await(result).header.headers("Location") should endWith("/enrolment-already-exists-for-group")
       }
@@ -130,7 +130,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
     "throw exception on failure" in {
       intercept[FailedEnrolmentException](
-        enrol(Service.ATaR, INTERNAL_SERVER_ERROR)(result => status(result))
+        enrol(atarService, INTERNAL_SERVER_ERROR)(result => status(result))
       ).getMessage should endWith(INTERNAL_SERVER_ERROR.toString)
     }
   }
@@ -140,13 +140,13 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     "throw exception when user does not have existing CDS enrolment" in {
       userDoesNotHaveGroupEnrolmentToCds
 
-      intercept[IllegalStateException](
-        enrolSuccess(Service.ATaR)(result => status(result))
-      ).getMessage should startWith("No EORI found")
+      intercept[IllegalStateException](enrolSuccess(atarService)(result => status(result))).getMessage should startWith(
+        "No EORI found"
+      )
     }
 
     "return Ok 200 when enrol confirmation page is requested" in {
-      enrolSuccess(Service.ATaR, Some("GB123456463324")) { result =>
+      enrolSuccess(atarService, Some("GB123456463324")) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
         page.title should startWith("Application complete")
@@ -188,13 +188,13 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
   }
 
   private def userDoesNotHaveGroupEnrolmentToCds = when(mockSessionCache.groupEnrolment(any[HeaderCarrier]))
-    .thenReturn(Future.successful(EnrolmentResponse(Service.CDS.enrolmentKey, "Activated", List.empty)))
+    .thenReturn(Future.successful(EnrolmentResponse(Service.cds.enrolmentKey, "Activated", List.empty)))
 
   private def userHasGroupEnrolmentToCds =
     when(mockSessionCache.groupEnrolment(any[HeaderCarrier]))
       .thenReturn(
         Future.successful(
-          EnrolmentResponse(Service.CDS.enrolmentKey, "Activated", List(KeyValue("EORINumber", groupEORI)))
+          EnrolmentResponse(Service.cds.enrolmentKey, "Activated", List(KeyValue("EORINumber", groupEORI)))
         )
       )
 

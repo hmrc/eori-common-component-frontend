@@ -14,19 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration
+package util
 
-import javax.inject.{Inject, Singleton}
-import play.api.mvc._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.return_user
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
-@Singleton
-class ReturnUserController @Inject() (view: return_user, mcc: MessagesControllerComponents) extends CdsController(mcc) {
+trait TestData {
 
-  def show(): Action[AnyContent] = Action { implicit request =>
-    Ok(view(Journey.Subscribe))
-  }
-
+  val atarService: Service = Service("atar", "HMRC-ATAR-ORG", "ATaR", "", "", "")
 }

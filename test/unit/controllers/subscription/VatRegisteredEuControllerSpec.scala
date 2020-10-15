@@ -107,7 +107,7 @@ class VatRegisteredEuControllerSpec extends ControllerSpec with AuthActionMock {
 
   "Submitting Vat registered Eu Controller in create mode" should {
     "return to the same location with bad request" in {
-      submitForm(invalidRequest, Service.ATaR) { result =>
+      submitForm(invalidRequest, atarService) { result =>
         status(result) shouldBe BAD_REQUEST
       }
     }
@@ -119,7 +119,7 @@ class VatRegisteredEuControllerSpec extends ControllerSpec with AuthActionMock {
         .thenReturn(mockSubscriptionFlowInfo)
       when(mockSubscriptionFlowInfo.nextPage).thenReturn(mockSubscriptionPage)
       when(mockSubscriptionPage.url(any())).thenReturn(GYEEUVATNumber.url)
-      submitForm(ValidRequest, Service.ATaR) { result =>
+      submitForm(ValidRequest, atarService) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) should endWith("register/vat-details-eu")
       }
@@ -129,7 +129,7 @@ class VatRegisteredEuControllerSpec extends ControllerSpec with AuthActionMock {
       when(mockSubscriptionDetailsService.cacheVatRegisteredEu(any[YesNo])(any[HeaderCarrier]))
         .thenReturn(Future.successful[Unit](()))
       when(mockSubscriptionVatEUDetailsService.cachedEUVatDetails(any[HeaderCarrier])).thenReturn(someVatEuDetails)
-      submitForm(ValidRequest, Service.ATaR) { result =>
+      submitForm(ValidRequest, atarService) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) should endWith("register/vat-details-eu-confirm")
       }
@@ -142,7 +142,7 @@ class VatRegisteredEuControllerSpec extends ControllerSpec with AuthActionMock {
       when(mockSubscriptionFlowManager.stepInformation(any())(any[Request[AnyContent]]).nextPage.url(any())).thenReturn(
         DisclosePersonalDetailsConsentPage.url
       )
-      submitForm(ValidRequest, Service.ATaR) { result =>
+      submitForm(ValidRequest, atarService) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) should endWith("/register/disclose-personal-details-consent")
       }
@@ -154,7 +154,7 @@ class VatRegisteredEuControllerSpec extends ControllerSpec with AuthActionMock {
       when(mockSubscriptionDetailsService.cacheVatRegisteredEu(any[YesNo])(any[HeaderCarrier]))
         .thenReturn(Future.successful[Unit](()))
       when(mockSubscriptionVatEUDetailsService.cachedEUVatDetails(any[HeaderCarrier])).thenReturn(emptyVatEuDetails)
-      submitForm(ValidRequest, Service.ATaR, isInReviewMode = true) { result =>
+      submitForm(ValidRequest, atarService, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) should endWith("register/vat-details-eu/review")
       }
@@ -164,7 +164,7 @@ class VatRegisteredEuControllerSpec extends ControllerSpec with AuthActionMock {
       when(mockSubscriptionDetailsService.cacheVatRegisteredEu(any[YesNo])(any[HeaderCarrier]))
         .thenReturn(Future.successful[Unit](()))
       when(mockSubscriptionVatEUDetailsService.cachedEUVatDetails(any[HeaderCarrier])).thenReturn(someVatEuDetails)
-      submitForm(ValidRequest, Service.ATaR, isInReviewMode = true) { result =>
+      submitForm(ValidRequest, atarService, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) should endWith("register/vat-details-eu-confirm/review")
       }
@@ -175,7 +175,7 @@ class VatRegisteredEuControllerSpec extends ControllerSpec with AuthActionMock {
         .thenReturn(Future.successful[Unit](()))
       when(mockSubscriptionVatEUDetailsService.saveOrUpdate(any[Seq[VatEUDetailsModel]])(any[HeaderCarrier]))
         .thenReturn(Future.successful[Unit](()))
-      submitForm(validRequestNo, Service.ATaR, isInReviewMode = true) { result =>
+      submitForm(validRequestNo, atarService, isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) should endWith("/register/matching/review-determine")
       }
@@ -185,7 +185,7 @@ class VatRegisteredEuControllerSpec extends ControllerSpec with AuthActionMock {
   private def createForm(journey: Journey.Value = Journey.Register)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     mockIsIndividual()
-    test(controller.createForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+    test(controller.createForm(atarService, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }
 
   private def reviewForm(journey: Journey.Value = Journey.Register)(test: Future[Result] => Any) {
@@ -193,7 +193,7 @@ class VatRegisteredEuControllerSpec extends ControllerSpec with AuthActionMock {
     mockIsIndividual()
     when(mockSessionCache.subscriptionDetails).thenReturn(any)
     when(mockSubscriptionBusinessService.getCachedVatRegisteredEu).thenReturn(true)
-    test(controller.reviewForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+    test(controller.reviewForm(atarService, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }
 
   private def submitForm(form: Map[String, String], service: Service, isInReviewMode: Boolean = false)(

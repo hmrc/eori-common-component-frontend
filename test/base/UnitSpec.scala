@@ -19,11 +19,12 @@ package base
 import org.scalatest.{Matchers, WordSpec}
 import play.api.mvc.Result
 import play.api.test.Helpers._
+import util.TestData
 
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration.{Duration, DurationInt, FiniteDuration}
 
-trait UnitSpec extends WordSpec with Matchers {
+trait UnitSpec extends WordSpec with Matchers with TestData {
 
   // Convenience to avoid having to wrap andThen() parameters in Future.successful
   // From github.com.hmrc/hmrctest to have a possibility to remove deprecated hmrctest library

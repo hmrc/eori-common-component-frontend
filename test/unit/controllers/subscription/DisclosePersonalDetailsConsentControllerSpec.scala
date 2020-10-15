@@ -30,7 +30,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.DisclosePersonalDetailsConsentController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.YesNo
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.disclose_personal_details_consent
 import uk.gov.hmrc.http.HeaderCarrier
@@ -50,12 +50,12 @@ class DisclosePersonalDetailsConsentControllerSpec
 
   protected override val submitInCreateModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DisclosePersonalDetailsConsentController
-      .submit(isInReviewMode = false, Service.ATaR, Journey.Register)
+      .submit(isInReviewMode = false, atarService, Journey.Register)
       .url
 
   protected override val submitInReviewModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DisclosePersonalDetailsConsentController
-      .submit(isInReviewMode = true, Service.ATaR, Journey.Register)
+      .submit(isInReviewMode = true, atarService, Journey.Register)
       .url
 
   private val mockRequestSession                 = mock[RequestSessionData]
@@ -144,7 +144,7 @@ class DisclosePersonalDetailsConsentControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.createForm(Service.ATaR, Journey.Register)
+      controller.createForm(atarService, Journey.Register)
     )
 
     "set form action url to submit in create mode" in {
@@ -160,7 +160,7 @@ class DisclosePersonalDetailsConsentControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.reviewForm(Service.ATaR, Journey.Register)
+      controller.reviewForm(atarService, Journey.Register)
     )
 
     "set form action url to submit in review mode" in {
@@ -230,7 +230,7 @@ class DisclosePersonalDetailsConsentControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(isInReviewMode = true, Service.ATaR, Journey.Register)
+      controller.submit(isInReviewMode = true, atarService, Journey.Register)
     )
 
     "allow resubmission in review mode when details are invalid" in {
@@ -262,7 +262,7 @@ class DisclosePersonalDetailsConsentControllerSpec
 
     when(mockSubscriptionFlowManager.currentSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
 
-    test(controller.createForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.createForm(atarService, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def showReviewForm(
@@ -278,7 +278,7 @@ class DisclosePersonalDetailsConsentControllerSpec
 
     when(mockSubscriptionFlowManager.currentSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
 
-    test(controller.reviewForm(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.reviewForm(atarService, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def submitFormInCreateMode(form: Map[String, String])(test: Future[Result] => Any): Unit =
@@ -298,7 +298,7 @@ class DisclosePersonalDetailsConsentControllerSpec
       .thenReturn(OrganisationSubscriptionFlow)
     test(
       controller
-        .submit(isInReviewMode, Service.ATaR, journey)
+        .submit(isInReviewMode, atarService, journey)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }

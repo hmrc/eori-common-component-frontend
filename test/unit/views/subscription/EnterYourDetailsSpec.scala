@@ -23,7 +23,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NameDobMatchModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.enter_your_details
 import util.ViewSpec
 
@@ -83,7 +83,7 @@ class EnterYourDetailsSpec extends ViewSpec {
   }
 
   lazy val doc: Document = {
-    val result = view(form, isInReviewMode, Service.ATaR, Journey.Subscribe, Some("uk"))
+    val result = view(form, isInReviewMode, atarService, Journey.Subscribe, Some("uk"))
     Jsoup.parse(contentAsString(result))
   }
 
@@ -91,7 +91,7 @@ class EnterYourDetailsSpec extends ViewSpec {
     val result = view(
       form,
       isInReviewMode,
-      Service.ATaR,
+      atarService,
       Journey.Subscribe,
       selectedUserLocationWithIslands = Some("third-country")
     )

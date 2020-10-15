@@ -20,12 +20,12 @@ import common.pages.WebPage
 
 trait ApplicationUnsuccessfulPage extends WebPage {
 
-  override val title = "The Customs application has been unsuccessful"
+  override val title = "The ATaR application has been unsuccessful"
 }
 
 object ApplicationPendingPage extends WebPage {
 
-  override val title = "The Customs application is being processed"
+  override val title = "The ATaR application is being processed"
 }
 
 object ApplicationUnsuccessfulPage extends ApplicationUnsuccessfulPage

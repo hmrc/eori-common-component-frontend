@@ -25,7 +25,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.WhatIsYourEmailController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.InternalId
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.what_is_your_email
 import uk.gov.hmrc.http.HeaderCarrier
@@ -69,7 +69,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
-      controller.createForm(Service.ATaR, Journey.Subscribe)
+      controller.createForm(atarService, Journey.Subscribe)
     )
 
     "display title as 'What is your email address'" in {
@@ -113,14 +113,14 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
   ) {
     withAuthorisedUser(userId, mockAuthConnector)
     val result =
-      controller.submit(Service.ATaR, journey)(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
+      controller.submit(atarService, journey)(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }
 
   private def showCreateForm(userId: String = defaultUserId, journey: Journey.Value)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
-      .createForm(Service.ATaR, journey)
+      .createForm(atarService, journey)
       .apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }

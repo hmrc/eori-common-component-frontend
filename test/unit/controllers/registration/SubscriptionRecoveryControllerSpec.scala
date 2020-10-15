@@ -117,7 +117,7 @@ class SubscriptionRecoveryControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.complete(Service.ATaR, Journey.Register)
+      controller.complete(atarService, Journey.Register)
     )
     def setupMockCommon() = {
       when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier]))
@@ -184,7 +184,7 @@ class SubscriptionRecoveryControllerSpec
         anyString,
         meq(Eori("testEORInumber")),
         any[Option[LocalDate]],
-        meq(Service.ATaR)
+        meq(atarService)
       )(any[HeaderCarrier])
     }
 
@@ -212,7 +212,7 @@ class SubscriptionRecoveryControllerSpec
         anyString,
         meq(Eori("testEORInumber2")),
         any[Option[LocalDate]],
-        meq(Service.ATaR)
+        meq(atarService)
       )(any[HeaderCarrier])
     }
     "call Enrolment Complete with successful SUB09 call for Subscription ROW journey without Identifier" in {
@@ -239,7 +239,7 @@ class SubscriptionRecoveryControllerSpec
         anyString,
         meq(Eori("testEORInumber3")),
         any[Option[LocalDate]],
-        meq(Service.ATaR)
+        meq(atarService)
       )(any[HeaderCarrier])
     }
 
@@ -365,7 +365,7 @@ class SubscriptionRecoveryControllerSpec
   def callEnrolmentComplete(userId: String = defaultUserId, journey: Journey.Value)(test: Future[Result] => Any) {
 
     withAuthorisedUser(userId, mockAuthConnector)
-    test(controller.complete(Service.ATaR, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.complete(atarService, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
 }

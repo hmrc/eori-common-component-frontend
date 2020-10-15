@@ -24,7 +24,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.VatEUDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm.euVatForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_details_eu
 import util.ViewSpec
@@ -112,25 +112,18 @@ class VatDetailsEuSpec extends ViewSpec {
 
   private lazy val doc: Document =
     Jsoup.parse(
-      contentAsString(view(form, Countries.eu, updateDetails = false, Service.ATaR, Journey.Register, isInReviewMode))
+      contentAsString(view(form, Countries.eu, updateDetails = false, atarService, Journey.Register, isInReviewMode))
     )
 
   private lazy val docForEdit: Document = Jsoup.parse(
     contentAsString(
-      view(formForUpdate, Countries.eu, updateDetails = true, Service.ATaR, Journey.Register, isInReviewMode = false)
+      view(formForUpdate, Countries.eu, updateDetails = true, atarService, Journey.Register, isInReviewMode = false)
     )
   )
 
   private lazy val docWithEmptyErrors: Document = Jsoup.parse(
     contentAsString(
-      view(
-        formWithNoSelectionError,
-        Countries.eu,
-        updateDetails = false,
-        Service.ATaR,
-        Journey.Register,
-        isInReviewMode
-      )
+      view(formWithNoSelectionError, Countries.eu, updateDetails = false, atarService, Journey.Register, isInReviewMode)
     )
   )
 
@@ -140,7 +133,7 @@ class VatDetailsEuSpec extends ViewSpec {
         formWithIncorrectVatNumber,
         Countries.eu,
         updateDetails = false,
-        Service.ATaR,
+        atarService,
         Journey.Register,
         isInReviewMode
       )
@@ -149,7 +142,7 @@ class VatDetailsEuSpec extends ViewSpec {
 
   private lazy val vatNumErrorLong: Document = Jsoup.parse(
     contentAsString(
-      view(formWithLongVatDetails, Countries.eu, updateDetails = false, Service.ATaR, Journey.Register, isInReviewMode)
+      view(formWithLongVatDetails, Countries.eu, updateDetails = false, atarService, Journey.Register, isInReviewMode)
     )
   )
 
