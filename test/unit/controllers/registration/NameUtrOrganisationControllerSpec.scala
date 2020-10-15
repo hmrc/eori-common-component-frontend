@@ -34,6 +34,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.Utr
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.Organisation
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.MatchingService
+import uk.gov.hmrc.eoricommoncomponent.frontend.util.InvalidUrlValueException
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.match_name_id_organisation
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
@@ -155,7 +156,7 @@ class NameUtrOrganisationControllerSpec
 
     "ensure a valid Organisation Type has been passed" in {
       val invalidOrganisationType = UUID.randomUUID.toString
-      val thrown = intercept[IllegalArgumentException] {
+      val thrown = intercept[InvalidUrlValueException] {
         showForm(invalidOrganisationType) { result =>
           await(result)
         }
@@ -192,7 +193,7 @@ class NameUtrOrganisationControllerSpec
 
     "ensure a valid Organisation Type has been passed" in {
       val invalidOrganisationType = UUID.randomUUID.toString
-      val thrown = intercept[IllegalArgumentException] {
+      val thrown = intercept[InvalidUrlValueException] {
         showForm(invalidOrganisationType) { result =>
           await(result)
         }

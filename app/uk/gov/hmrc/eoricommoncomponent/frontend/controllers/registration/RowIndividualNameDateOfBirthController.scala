@@ -26,6 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.thirdCountryIndividualNameDateOfBirthForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
+import uk.gov.hmrc.eoricommoncomponent.frontend.util.Require.requireThatUrlValue
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration._
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -79,7 +80,7 @@ class RowIndividualNameDateOfBirthController @Inject() (
     }
 
   private def assertOrganisationTypeIsValid(cdsOrganisationType: String): Unit =
-    require(
+    requireThatUrlValue(
       formsByOrganisationTypes contains cdsOrganisationType,
       message = s"Invalid organisation type '$cdsOrganisationType'."
     )
