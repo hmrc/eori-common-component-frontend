@@ -23,7 +23,7 @@ import play.api.test.Helpers.LOCATION
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.CdsErrorHandler
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionTimeOutException
-import uk.gov.hmrc.eoricommoncomponent.frontend.util.Constants
+import uk.gov.hmrc.eoricommoncomponent.frontend.util.{Constants, InvalidUrlValueException}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{client_error_template, error_template, notFound}
 import util.ControllerSpec
 
@@ -46,6 +46,15 @@ class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {
 
         status(result) shouldBe INTERNAL_SERVER_ERROR
         page.title should startWith("Sorry, there is a problem with the service")
+      }
+    }
+
+    "redirect to page not found (404) after InvalidUrlValueException" in {
+      whenReady(cdsErrorHandler.onServerError(mockRequest, InvalidUrlValueException("some param error"))) { result =>
+        val page = CdsPage(contentAsString(result))
+
+        result.header.status shouldBe NOT_FOUND
+        page.title should startWith("Page not found")
       }
     }
 

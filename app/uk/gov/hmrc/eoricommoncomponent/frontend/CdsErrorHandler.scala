@@ -26,7 +26,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionTimeOutException
-import uk.gov.hmrc.eoricommoncomponent.frontend.util.Constants
+import uk.gov.hmrc.eoricommoncomponent.frontend.util.{Constants, InvalidUrlValueException}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{client_error_template, error_template, notFound}
 import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
@@ -67,6 +67,9 @@ class CdsErrorHandler @Inject() (
       case sessionTimeOut: SessionTimeOutException =>
         logger.error("Session time out: " + sessionTimeOut.errorMessage, exception)
         Future.successful(Redirect(SecuritySignOutController.displayPage(service, journeyFromRequest)).withNewSession)
+      case invalidRequirement: InvalidUrlValueException =>
+        logger.warn(invalidRequirement.message)
+        Future.successful(Results.NotFound(notFoundView()))
       case _ =>
         logger.error("Internal server error: " + exception.getMessage, exception)
         Future.successful(Results.InternalServerError(errorTemplateView()))

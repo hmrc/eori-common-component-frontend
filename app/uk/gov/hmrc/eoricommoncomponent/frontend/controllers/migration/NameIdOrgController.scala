@@ -36,6 +36,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
   SubscriptionDetailsService
 }
+import uk.gov.hmrc.eoricommoncomponent.frontend.util.Require.requireThatUrlValue
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.nameId
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -125,7 +126,10 @@ class NameIDOrgController @Inject() (
 
     lazy val nameUtrForm = nameUtrViewModel.fold(form)(form.fill)
 
-    require(OrganisationTypeConfigurations.contains(organisationType), invalidOrganisationType(organisationType))
+    requireThatUrlValue(
+      OrganisationTypeConfigurations.contains(organisationType),
+      invalidOrganisationType(organisationType)
+    )
 
     cdsFrontendDataCache.registrationDetails map { registrationDetails =>
       Ok(nameIdView(nameUtrForm, registrationDetails, isInReviewMode, conf.displayMode, service, journey))
