@@ -1,56 +1,42 @@
 # How to add a new service
- 
-The following are the steps required to update the EORI Comment Component to add support for getting access to new service.
+The following steps are required to add support for getting access to new service using EORI Comment Component (ECC).
 
-# Before you start
-You will need the following information
-- a "code" for the new service.  This can be any short string.  It needs to be unique and it forms part of the url to access the new service.  An abbreviation of the service name in lower-case is usually a good starting point.
-- the enrolment key for the new service.  Details for creating a new service enrolment key can be found [here](https://github.com/hmrc/service-enrolment-config)
-- the call-back url.  This is the url EORI Common Component will re-direct the user to once they have access to the new service.
+# Configuration keys
+The following information is required to enable getting access to a new service using ECC
 
-# Add definition to the Service model
+| Key                     | Description             | 
+| -------------           | ----------------------- | 
+| `name`                  | A unique name which forms part of the url to access the new service.  An abbreviation of the service name in lower-case is usually good. | 
+| `enrolment`             | The enrolment key for the new service.  Details for creating a new service enrolment key can be found [here](https://github.com/hmrc/service-enrolment-config). | 
+| `callBack`              | This is the url ECC will re-direct the user to once they have access to the new service. | 
+| `friendlyName`          | This is the "long" name of the service that is used on confirmation pages and emails. | 
+| `friendlyNameWelsh`     | (Optional) Welsh translation of the long name.| 
+| `shortName`             | This is the abbreviation of the service. | 
 
-In the file `app/uk/gov/hmrc/eoricommoncomponent/frontend/models/Service.scala` add a definition for the new service. For example
+# Add new configuration for each environment
+Add definitions for the new service to the `eori-common-component-frontend.yaml` file for each environment.
 
+To add a new "Example" service:
 ```
-  case object DemoService extends Service {
-    override val code: String         = "demo"
-    override val enrolmentKey: String = "HMRC-DEMO-ORG"
-  }
-```
-
-Add the new service to the collection of supported services by updating the following
-```
-  private val supportedServices = Set[Service](ATaR, DemoService)
-```
-
-# Add call-back Url
-In the file `conf/application.conf` add an entry for the url ECC should use to return the user to the service once enrolment is complete. For example
-```
-  service-return {
-    atar="http://localhost:9582/advance-tariff-application"
-    demo="/demo-service/start"
-  }
+services-config.0.name: "example"
+services-config.0.enrolment: "HMRC-EXAMPLE-ORG"
+services-config.0.shortName: "EXAMPLE"
+services-config.0.callBack: "/example-service/start"
+services-config.0.friendlyName: "Example Service Name"
+services-config.0.friendlyNameWelsh: "Optional Welsh Service Name"
 ```
 
-If the call-back url is to a "local" server (e.g. `http://localhost:1234//demo-service/start`) then the configuration in `app-config-base` will need to have an entry specifying a relative url.
-See [app-config-base]("https://github.com/hmrc/app-config-base/blob/master/eori-common-component-frontend.conf") for an example.
+If already some service/services exists in the config please use index incremented by 1.
 
+In that case, another service will require `services-config.1.name: "AnotherExample"` etc.
 
-# Add "friendly" names to the messages files
-
-In the file `conf/messages-ecc.en` (and `conf/messages-ecc.cy` for Welsh translations) add two new entries like this 
-```
-cds.service.short.name.demo=Demo
-cds.service.friendly.name.demo=Demo Service
-```
-
-where `"demo"` is the code of the new service defined in the previous step.
+*Note*:  This definition needs to be added to each environment separately.  For reference - 
+- [Development](https://github.com/hmrc/app-config-development/blob/master/eori-common-component-frontend.yaml)
+- [QA](https://github.com/hmrc/app-config-qa/blob/master/eori-common-component-frontend.yaml)
+- [Staging](https://github.com/hmrc/app-config-staging/blob/master/eori-common-component-frontend.yaml)
+- [External Test](https://github.com/hmrc/app-config-externaltest/blob/master/eori-common-component-frontend.yaml)
+- [Production](https://github.com/hmrc/app-config-production/blob/master/eori-common-component-frontend.yaml)
 
 # Test
-
-[Run locally](README.md#running-locally) and navigate to the start url for the new service
-
-Subscribe - `http://localhost:6750/customs-enrolment-services/demo/subscribe`
-
-replacing `/demo/` in the above url with the code defined for the new service.
+The url for the new "Example" service would be
+`/customs-enrolment-services/example/subscribe`
