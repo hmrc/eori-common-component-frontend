@@ -16,19 +16,23 @@ The following information is required to enable getting access to a new service 
 # Add new configuration for each environment
 Add definitions for the new service to the `eori-common-component-frontend.yaml` file for each environment.
 
-To add a new "Example" service:
-```
-services-config.0.name: "example"
-services-config.0.enrolment: "HMRC-EXAMPLE-ORG"
-services-config.0.shortName: "EXAMPLE"
-services-config.0.callBack: "/example-service/start"
-services-config.0.friendlyName: "Example Service Name"
-services-config.0.friendlyNameWelsh: "Optional Welsh Service Name"
-```
+To add a new "Example" service you need to update list of the allowed services, so add your service name separated by comma in:
+`services-config.list = "yourServiceName"`
 
-If already some service/services exists in the config please use index incremented by 1.
+If there is already some service defined in this list, please add your service separated by comma, e.g.
+`services-config.list = "existingServiceName, yourServiceName"`
 
-In that case, another service will require `services-config.1.name: "AnotherExample"` etc.
+Additionally you need to define all required parameters for your service:
+
+```
+services-config.yourServiceName.name: "example"
+services-config.yourServiceName.enrolment: "HMRC-EXAMPLE-ORG"
+services-config.yourServiceName.shortName: "EXAMPLE"
+services-config.yourServiceName.callBack: "/example-service/start"
+services-config.yourServiceName.friendlyName: "Example Service Name"
+services-config.yourServiceName.friendlyNameWelsh: "Optional Welsh Service Name"
+```
+Please remember that service name need to be unique.
 
 *Note*:  This definition needs to be added to each environment separately.  For reference - 
 - [Development](https://github.com/hmrc/app-config-development/blob/master/eori-common-component-frontend.yaml)

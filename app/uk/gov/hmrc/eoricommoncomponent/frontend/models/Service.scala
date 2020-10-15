@@ -38,17 +38,20 @@ object Service {
 
   private val configuration = Configuration(ConfigFactory.load())
 
-  private val supportedServices: Seq[Service] =
-    configuration.get[Seq[Configuration]]("services-config").map { conf =>
+  private val supportedServices: Seq[Service] = {
+    val listOfTheServices = configuration.get[String]("services-config.list").split(",").map(_.trim).toList
+
+    listOfTheServices.map { service =>
       Service(
-        code = conf.get[String]("name"),
-        enrolmentKey = conf.get[String]("enrolment"),
-        shortName = conf.get[String]("shortName"),
-        callBack = conf.get[String]("callBack"),
-        friendlyName = conf.get[String]("friendlyName"),
-        friendlyNameWelsh = conf.get[String]("friendlyNameWelsh")
+        code = configuration.get[String](s"services-config.$service.name"),
+        enrolmentKey = configuration.get[String](s"services-config.$service.enrolment"),
+        shortName = configuration.get[String](s"services-config.$service.shortName"),
+        callBack = configuration.get[String](s"services-config.$service.callBack"),
+        friendlyName = configuration.get[String](s"services-config.$service.friendlyName"),
+        friendlyNameWelsh = configuration.get[String](s"services-config.$service.friendlyNameWelsh")
       )
     }
+  }
 
   private val supportedServicesMap: Map[String, Service] = {
     if (isServicesConfigCorrect(supportedServices))
