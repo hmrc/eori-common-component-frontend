@@ -25,7 +25,7 @@ import util.ViewSpec
 
 class EoriEnrolSuccessSpec extends ViewSpec {
 
-  implicit val request = withFakeCSRF(FakeRequest())
+  implicit val request = withFakeCSRF(fakeAtarSubscribeRequest)
 
   private val service = atarService
   private val eori    = "GB234532132435"
@@ -47,7 +47,9 @@ class EoriEnrolSuccessSpec extends ViewSpec {
     }
 
     "display correct service name" in {
-      doc.body.getElementById("para1").text() must startWith("You are now enrolled to the Customs service")
+      doc.body.getElementById("para1").text() must startWith(
+        "You are now enrolled to the Advance Tariff Rulings service"
+      )
     }
 
   }

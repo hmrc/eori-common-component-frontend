@@ -453,7 +453,9 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
   def invokeRejectedPageWithAuthenticatedUser(userId: String = defaultUserId)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     mockSessionCacheForOutcomePage
-    test(subscriptionController.rejected.apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(
+      subscriptionController.rejected.apply(SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe", userId))
+    )
   }
 
   def invokeEndPageWithUnAuthenticatedUser(test: Future[Result] => Any) {

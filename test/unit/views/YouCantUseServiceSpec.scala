@@ -27,7 +27,7 @@ import util.ViewSpec
 
 class YouCantUseServiceSpec extends ViewSpec {
 
-  private implicit val request      = withFakeCSRF(FakeRequest())
+  private implicit val request      = withFakeCSRF(fakeAtarSubscribeRequest)
   private val youCantUseServiceView = instanceOf[you_cant_use_service]
   private val sub02View             = instanceOf[sub02_request_not_processed]
 
@@ -44,7 +44,7 @@ class YouCantUseServiceSpec extends ViewSpec {
     "display para-1" in {
       standardOrgDoc.body
         .getElementById("para-1")
-        .text mustBe "You signed in to Government Gateway as a standard user. To apply for access to Customs you must be an administrator user."
+        .text mustBe "You signed in to Government Gateway as a standard user. To apply for access to Advance Tariff Rulings you must be an administrator user."
     }
 
     "display para-2" in {
@@ -77,7 +77,7 @@ class YouCantUseServiceSpec extends ViewSpec {
     "display para-2" in {
       agentDoc.body
         .getElementById("para-2")
-        .text mustBe "You need to sign in with the Government Gateway for the organisation or individual that is applying for access to Customs."
+        .text mustBe "You need to sign in with the Government Gateway for the organisation or individual that is applying for access to Advance Tariff Rulings."
     }
 
     "have a Sign out button with the correct href" in {

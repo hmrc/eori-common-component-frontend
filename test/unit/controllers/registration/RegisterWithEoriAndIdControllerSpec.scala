@@ -979,7 +979,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       invokeEoriAlreadyLinked() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title() should startWith("The Customs application has been unsuccessful")
+        page.title() should startWith("The ATaR application has been unsuccessful")
       }
     }
 
@@ -998,7 +998,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       invokeRejectedPreviously() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title() should startWith("The Customs application has been unsuccessful")
+        page.title() should startWith("The ATaR application has been unsuccessful")
       }
     }
 
@@ -1018,24 +1018,20 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
   }
 
   private def regExistingEori(test: Future[Result] => Any) {
-    test(
-      controller.registerWithEoriAndId(atarService, Journey.Subscribe)(
-        SessionBuilder.buildRequestWithSession(defaultUserId)
-      )
-    )
+    test(controller.registerWithEoriAndId(atarService, Journey.Subscribe)(requestWithPath))
   }
 
   private def invokeProcessing(test: Future[Result] => Any) {
     test(
       controller.processing(atarService)
-        .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+        .apply(requestWithPath)
     )
   }
 
   private def invokeRejected(test: Future[Result] => Any) {
     test(
       controller.rejected(atarService)
-        .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+        .apply(requestWithPath)
     )
   }
 
@@ -1043,7 +1039,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
     test(
       controller
         .pending(atarService, date)
-        .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+        .apply(requestWithPath)
     )
   }
 
@@ -1051,7 +1047,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
     test(
       controller
         .fail(atarService, date)
-        .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+        .apply(requestWithPath)
     )
   }
 
@@ -1059,14 +1055,15 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
     test(
       controller
         .eoriAlreadyLinked(atarService)
-        .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+        .apply(requestWithPath)
     )
 
   private def invokeRejectedPreviously()(test: Future[Result] => Assertion): Unit =
     test(
       controller
         .rejectedPreviously(atarService)
-        .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+        .apply(requestWithPath)
     )
 
+  private def requestWithPath = SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe", defaultUserId)
 }

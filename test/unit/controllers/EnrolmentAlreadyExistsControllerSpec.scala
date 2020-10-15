@@ -46,7 +46,9 @@ class EnrolmentAlreadyExistsControllerSpec extends ControllerSpec with AuthActio
 
       val result =
         await(
-          controller.enrolmentAlreadyExists(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+          controller.enrolmentAlreadyExists(atarService).apply(
+            SessionBuilder.buildRequestWithSessionAndPath("/atar/", defaultUserId)
+          )
         )
 
       status(result) shouldBe OK
@@ -56,7 +58,7 @@ class EnrolmentAlreadyExistsControllerSpec extends ControllerSpec with AuthActio
       page.title should startWith("There is a problem")
       page.getElementsText(RegistrationCompletePage.pageHeadingXpath) shouldBe "There is a problem"
       page.getElementsText(paragraphXpath) should include(
-        "Our records show that this Government Gateway user ID has already been used to register for Customs"
+        "Our records show that this Government Gateway user ID has already been used to register for Advance Tariff Rulings"
       )
 
     }
@@ -68,7 +70,7 @@ class EnrolmentAlreadyExistsControllerSpec extends ControllerSpec with AuthActio
       val result =
         await(
           controller.enrolmentAlreadyExistsForGroup(atarService).apply(
-            SessionBuilder.buildRequestWithSession(defaultUserId)
+            SessionBuilder.buildRequestWithSessionAndPath("/atar/", defaultUserId)
           )
         )
 
@@ -78,7 +80,7 @@ class EnrolmentAlreadyExistsControllerSpec extends ControllerSpec with AuthActio
 
       page.title should startWith("There is a problem")
       page.getElementsText(RegistrationCompletePage.pageHeadingXpath) shouldBe "There is a problem"
-      page.getElementsText(paragraphXpath) should include("Your organisation is already enrolled to Customs")
+      page.getElementsText(paragraphXpath) should include("Your organisation is already enrolled to ATaR")
 
     }
   }

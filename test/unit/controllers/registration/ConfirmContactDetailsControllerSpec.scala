@@ -691,7 +691,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
   def invokeRejectedPageWithAuthenticatedUser(userId: String = defaultUserId)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     setupMocksForRejectedAndProcessingPages
-    test(controller.rejected.apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.rejected.apply(SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe", userId)))
   }
 
   def invokeProcessingPageWithAuthenticatedUser(userId: String = defaultUserId)(test: Future[Result] => Any) {
@@ -699,7 +699,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
     setupMocksForRejectedAndProcessingPages
     test(
       controller.processing
-        .apply(SessionBuilder.buildRequestWithSession(userId))
+        .apply(SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe", userId))
     )
   }
 
