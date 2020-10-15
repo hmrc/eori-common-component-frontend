@@ -120,10 +120,6 @@ class AppConfigSpec extends ControllerSpec {
         atarService
       ) shouldBe "http://localhost:9250/contact/problem_reports_nonjs?service=eori-common-component-subscribe-atar"
     }
-
-    "have service url for ATaR defined" in {
-      appConfig.serviceReturnUrl(atarService) should endWith("/advance-tariff-application")
-    }
   }
 
   "using getServiceUrl" should {

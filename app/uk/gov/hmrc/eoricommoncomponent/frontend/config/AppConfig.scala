@@ -49,8 +49,6 @@ class AppConfig @Inject() (
   private lazy val serviceIdentifierSubscribe =
     config.get[String]("microservice.services.contact-frontend.serviceIdentifierSubscribe")
 
-  def serviceReturnUrl(service: Service) = config.get[String](s"external-url.service-return.${service.code}")
-
   private lazy val feedbackLink          = config.get[String]("external-url.feedback-survey")
   private lazy val feedbackLinkSubscribe = config.get[String]("external-url.feedback-survey-subscribe")
 

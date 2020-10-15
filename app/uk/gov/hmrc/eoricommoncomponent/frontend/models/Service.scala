@@ -24,6 +24,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.util.Constants
 case class Service(
   code: String,
   enrolmentKey: String,
+  shortName: String,
   callBack: String,
   friendlyName: String,
   friendlyNameWelsh: String
@@ -31,24 +32,34 @@ case class Service(
 
 object Service {
 
-  val cds   = Service("cds", "HMRC-CUS-ORG", "", "", "")
-  val empty = Service("", "", "", "", "")
+  val cds = Service("cds", "HMRC-CUS-ORG", "", "", "", "")
+  // TODO Get rid of empty Service, throw exception in places where it's used
+  val empty = Service("", "", "", "", "", "")
 
-  val configuration = Configuration(ConfigFactory.load())
+  private val configuration = Configuration(ConfigFactory.load())
 
-  val supportedServices: Set[Service] =
+  private val supportedServices: Seq[Service] =
     configuration.get[Seq[Configuration]]("services-config").map { conf =>
       Service(
         code = conf.get[String]("name"),
         enrolmentKey = conf.get[String]("enrolment"),
+        shortName = conf.get[String]("shortName"),
         callBack = conf.get[String]("callBack"),
         friendlyName = conf.get[String]("friendlyName"),
         friendlyNameWelsh = conf.get[String]("friendlyNameWelsh")
       )
-    }.toSet
+    }
 
-  def withName(str: String): Option[Service] =
-    supportedServices.find(_.code == str)
+  val supportedServicesMap: Map[String, Service] = {
+    if (isServicesConfigCorrect(supportedServices))
+      supportedServices.map(service => service.code -> service).toMap
+    else throw new Exception("Services config contains duplicate service")
+  }
+
+  private def isServicesConfigCorrect(services: Seq[Service]): Boolean =
+    services.map(_.code).distinct.size == services.size
+
+  def withName(str: String): Option[Service] = supportedServicesMap.get(str)
 
   implicit def binder(implicit stringBinder: PathBindable[String]): PathBindable[Service] = new PathBindable[Service] {
 
@@ -62,8 +73,10 @@ object Service {
   }
 
   def serviceFromRequest(implicit request: Request[_]): Option[Service] = {
-    val path = request.path
-    supportedServices.find(service => path.contains(s"/${service.code}/"))
+    val path       = request.path
+    val serviceKey = supportedServicesMap.keys.find(serviceKey => path.contains(s"/$serviceKey"))
+
+    serviceKey.map(supportedServicesMap(_))
   }
 
 }
