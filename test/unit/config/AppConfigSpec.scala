@@ -98,11 +98,15 @@ class AppConfigSpec extends ControllerSpec {
     }
 
     "have reportAProblemPartialUrl defined for register" in {
-      appConfig.reportAProblemPartialUrlRegister() shouldBe "http://localhost:9250/contact/problem_reports_ajax?service=eori-common-component-register"
+      appConfig.reportAProblemPartialUrlRegister(
+        atarService
+      ) shouldBe "http://localhost:9250/contact/problem_reports_ajax?service=eori-common-component-register-atar"
     }
 
     "have reportAProblemNonJSUrl defined for register" in {
-      appConfig.reportAProblemNonJSUrlRegister() shouldBe "http://localhost:9250/contact/problem_reports_nonjs?service=eori-common-component-register"
+      appConfig.reportAProblemNonJSUrlRegister(
+        atarService
+      ) shouldBe "http://localhost:9250/contact/problem_reports_nonjs?service=eori-common-component-register-atar"
     }
 
     "have reportAProblemPartialUrl defined for subscribe" in {

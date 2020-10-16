@@ -46,7 +46,7 @@ class SecuritySignOutSpec extends ViewSpec {
     }
 
     "have a Sign in button with the correct href when journey is register" in {
-      doc.body().getElementsByClass("button").attr("href") mustBe "/customs-enrolment-services/register"
+      doc.body().getElementsByClass("button").attr("href") mustBe "/customs-enrolment-services/atar/register"
     }
   }
 

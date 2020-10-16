@@ -75,7 +75,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
     "allow unauthenticated users to access the start page" in {
 
-      val result = controller.start.apply(SessionBuilder.buildRequestWithSessionNoUser)
+      val result = controller.start(atarService).apply(SessionBuilder.buildRequestWithSessionNoUser)
 
       status(result) shouldBe OK
       CdsPage(contentAsString(result)).title should startWith("Get an EORI number")

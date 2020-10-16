@@ -53,7 +53,7 @@ class HeaderSpec extends ControllerSpec with AuthActionMock {
     "be present when the user is logged in" in {
       AuthBuilder.withAuthorisedUser("user-1236213", mockAuthConnector)
 
-      val result = controller.start().apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+      val result = controller.start(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       val page = CdsPage(contentAsString(result))
       page.elementIsPresent("//a[@id='sign-out']") shouldBe true
@@ -62,7 +62,7 @@ class HeaderSpec extends ControllerSpec with AuthActionMock {
     "not be present when a user isn't logged in" in {
       AuthBuilder.withNotLoggedInUser(mockAuthConnector)
 
-      val result = controller.start().apply(SessionBuilder.buildRequestWithSessionNoUser)
+      val result = controller.start(atarService).apply(SessionBuilder.buildRequestWithSessionNoUser)
 
       val page = CdsPage(contentAsString(result))
       page.elementIsPresent("//a[@id='sign-out']") shouldBe false
@@ -72,7 +72,7 @@ class HeaderSpec extends ControllerSpec with AuthActionMock {
   "Feedback URL" should {
     "be present with service param equal to 'eori-common-component-subscribe''" in {
       val result = controller
-        .start()
+        .start(atarService)
         .apply(
           SessionBuilder.buildRequestWithSessionAndPathNoUser(
             method = "GET",
@@ -94,7 +94,7 @@ class HeaderSpec extends ControllerSpec with AuthActionMock {
 
       AuthBuilder.withAuthorisedUser("user-1236213", mockAuthConnector)
 
-      val result = controller.start().apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+      val result = controller.start(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       val page = CdsPage(contentAsString(result))
       page.elementIsPresent("//p[@class='language-toggle']") shouldBe true

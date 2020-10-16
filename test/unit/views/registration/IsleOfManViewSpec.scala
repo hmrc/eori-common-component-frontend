@@ -33,8 +33,8 @@ class IsleOfManViewSpec extends ViewSpec {
   private val view     = instanceOf[isle_of_man]
   implicit val request = withFakeCSRF(FakeRequest())
 
-  lazy val doc: Document           = Jsoup.parse(contentAsString(view(form)))
-  lazy val docWithErrors: Document = Jsoup.parse(contentAsString(view(formWithError)))
+  lazy val doc: Document           = Jsoup.parse(contentAsString(view(form, atarService)))
+  lazy val docWithErrors: Document = Jsoup.parse(contentAsString(view(formWithError, atarService)))
 
   "The 'Is your organisation based in the Isle of Man?' Page" should {
 
