@@ -1,40 +1,52 @@
 # How to add a new service
-The following steps are required to add support for getting access to new service using EORI Comment Component (ECC).
+This article details the configuration needed to add support for enroling to a new HMRC service to the EORI Comment Component (ECC).
 
-# Configuration keys
-The following information is required to enable getting access to a new service using ECC
+# Configuration values required
+The following values are required to add the configuration for a new service.
 
 | Key                     | Description             | 
 | -------------           | ----------------------- | 
-| `name`                  | A unique name which forms part of the url to access the new service.  An abbreviation of the service name in lower-case is usually good. | 
 | `enrolment`             | The enrolment key for the new service.  Details for creating a new service enrolment key can be found [here](https://github.com/hmrc/service-enrolment-config). | 
-| `callBack`              | This is the url ECC will re-direct the user to once they have access to the new service. | 
+| `shortName`             | This is the abbreviation of the service. | 
+| `callBack`              | This is the url ECC will re-direct the user to once they have completed an enrolment request. | 
 | `friendlyName`          | This is the "long" name of the service that is used on confirmation pages and emails. | 
 | `friendlyNameWelsh`     | (Optional) Welsh translation of the long name.| 
-| `shortName`             | This is the abbreviation of the service. | 
 
-# Add new configuration for each environment
-Add definitions for the new service to the `eori-common-component-frontend.yaml` file for each environment.
+# Add configuration for each environment
+Add definitions for the new service to the `eori-common-component-frontend.yaml` configuration file for *each* environment.
 
-To add a new "Example" service you need to update list of the allowed services, so add your service name separated by comma in:
-`services-config.list = "yourServiceName"`
+## Step 1
+Decide on a unique key for the new service. This unique key forms part of the url to access the new service - usually an abbreviation of the service name in lower-case.  
 
-If there is already some service defined in this list, please add your service separated by comma, e.g.
-`services-config.list = "existingServiceName, yourServiceName"`
-
-Additionally you need to define all required parameters for your service:
-
+## Step 2
+Add to the list of services by appending a comma and the unique key to `services-config.list`, for example.
 ```
-services-config.yourServiceName.name: "example"
-services-config.yourServiceName.enrolment: "HMRC-EXAMPLE-ORG"
-services-config.yourServiceName.shortName: "EXAMPLE"
-services-config.yourServiceName.callBack: "/example-service/start"
-services-config.yourServiceName.friendlyName: "Example Service Name"
-services-config.yourServiceName.friendlyNameWelsh: "Optional Welsh Service Name"
+services-config.list: "atar,example"
 ```
-Please remember that service name need to be unique.
 
-*Note*:  This definition needs to be added to each environment separately.  For reference - 
+## Step 3
+Add the following entries to the configuration file replacing `example` with the unique key.
+```
+services-config.example.enrolment: "[ENROLMENT_KEY_HERE]"
+services-config.example.shortName: "[SHORT_NAME_HERE]"
+services-config.example.callBack: "[URL_HERE]"
+services-config.example.friendlyName: "[FRIENDLY_NAME_HERE]"
+services-config.example.friendlyNameWelsh: "[(OPTIONAL)WELSH_NAME_HERE]"
+```
+
+For example
+```
+services-config.example.enrolment: "HMRC-NEW-ORG"
+services-config.example.shortName: "NEWS"
+services-config.example.callBack: "/new-service/start"
+services-config.example.friendlyName: "New_Service"
+services-config.example.friendlyNameWelsh: "Optional_Welsh_Service_Name"
+```
+
+## Notes
+1. The configuration file cannot have any spaces in the values - replace spaces with underscore in the friendly names (see examples above).  The underscores will be removed when the names are used by ECC.
+
+2. The configuration must be updated for each environment where the service is required.  For reference - 
 - [Development](https://github.com/hmrc/app-config-development/blob/master/eori-common-component-frontend.yaml)
 - [QA](https://github.com/hmrc/app-config-qa/blob/master/eori-common-component-frontend.yaml)
 - [Staging](https://github.com/hmrc/app-config-staging/blob/master/eori-common-component-frontend.yaml)
