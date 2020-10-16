@@ -19,7 +19,6 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.views
 import play.api.i18n.Messages
 import play.api.mvc.Request
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.util.InvalidUrlValueException
 
 object ServiceName {
 

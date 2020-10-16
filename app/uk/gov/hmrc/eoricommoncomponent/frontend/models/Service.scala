@@ -33,7 +33,9 @@ case class Service(
 object Service {
 
   val cds     = Service("cds", "HMRC-CUS-ORG", "", "", "", "")
-  val getEori = Service("eori", "", "", "", "", "")
+
+  //TODO - remove CDS enrolment from this service definition.  It is required for now to maintain the transition state of "Get EORI and subscribe to CDS"
+  val getEori = Service("eori", "HMRC-CUS-ORG", "", "", "", "")
 
   private val configuration = Configuration(ConfigFactory.load())
 
@@ -59,16 +61,20 @@ object Service {
   }
 
   private val supportedServicesMap: Map[String, Service] = {
-    if (isServicesConfigCorrect(supportedServices))
-      supportedServices.map(service => service.code -> service).toMap
-    else throw new Exception("Services config contains duplicate service")
+    validateServicesConfig(supportedServices)
+    supportedServices.map(service => service.code -> service).toMap + (getEori.code -> getEori)
   }
 
-  private def isServicesConfigCorrect(services: Seq[Service]): Boolean =
-    services.map(_.code).distinct.size == services.size
+  private def validateServicesConfig(services: Seq[Service]) = {
+    val configCodes = services.map(_.code)
+    if (configCodes.distinct.size != services.size)
+      throw new Exception(s"Services config contains duplicate service - $configCodes")
+    if (configCodes.contains(getEori.code))
+      throw new Exception(s"Services config contains reserved code ${getEori.code}")
+  }
 
   private def withName(str: String): Option[Service] =
-    if (str == getEori.code) Some(getEori) else supportedServicesMap.get(str)
+    supportedServicesMap.get(str)
 
   implicit def binder(implicit stringBinder: PathBindable[String]): PathBindable[Service] = new PathBindable[Service] {
 
