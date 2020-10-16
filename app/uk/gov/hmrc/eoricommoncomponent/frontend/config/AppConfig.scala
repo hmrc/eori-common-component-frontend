@@ -57,7 +57,7 @@ class AppConfig @Inject() (
     case Journey.Subscribe => s"$feedbackLinkSubscribe-${service.code}"
   }
 
-  lazy val externalGetEORILink = config.get[String]("external-url.get-cds-eori")
+  lazy val externalGetEORILink: Option[String] = config.getOptional[String]("external-url.get-cds-eori")
 
   lazy val blockedRoutesRegex: Seq[Regex] =
     config.getOptional[String]("routes-to-block") match {

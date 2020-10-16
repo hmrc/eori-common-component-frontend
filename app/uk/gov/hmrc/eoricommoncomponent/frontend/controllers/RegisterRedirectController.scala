@@ -19,13 +19,18 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 
 @Singleton
 class RegisterRedirectController @Inject() (mcc: MessagesControllerComponents, appConfig: AppConfig)
     extends CdsController(mcc) {
 
-  def getEori(): Action[AnyContent] = Action { implicit request =>
-    Redirect(appConfig.externalGetEORILink)
+  def getEori(service: Service, journey: Journey.Value): Action[AnyContent] = Action { implicit request =>
+    appConfig.externalGetEORILink match {
+      case Some(url) => Redirect(url)
+      case _         => Redirect(routes.ApplicationController.start(service))
+    }
+
   }
 
 }

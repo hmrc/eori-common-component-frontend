@@ -22,6 +22,7 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.RegisterRedirectController
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import util.ControllerSpec
 import util.builders.SessionBuilder
 
@@ -33,21 +34,34 @@ class RegisterRedirectControllerSpec extends ControllerSpec with BeforeAndAfterE
   private val controller =
     new RegisterRedirectController(mcc, mockAppConfig)
 
-  override def beforeEach: Unit = {
+  override def beforeEach: Unit =
     reset(mockAppConfig)
-    when(mockAppConfig.externalGetEORILink).thenReturn("/some-get-eori")
-  }
 
   "Register Redirect Controller" should {
-    "redirect to url in configuration" in {
-      getEori { result =>
-        status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("some-get-eori")
+
+    "redirect to Get EORI" when {
+
+      "url is configured" in {
+        when(mockAppConfig.externalGetEORILink).thenReturn(Some("/some-get-eori"))
+        getEori { result =>
+          status(result) shouldBe SEE_OTHER
+          await(result).header.headers("Location") should endWith("some-get-eori")
+        }
       }
+
+      "url not configured" in {
+        when(mockAppConfig.externalGetEORILink).thenReturn(None)
+        getEori { result =>
+          status(result) shouldBe SEE_OTHER
+          await(result).header.headers("Location") should endWith("/customs-enrolment-services/atar/register")
+        }
+      }
+
     }
+
   }
 
   private def getEori(test: Future[Result] => Any) =
-    await(test(controller.getEori().apply(SessionBuilder.buildRequestWithSessionNoUser)))
+    await(test(controller.getEori(atarService, Journey.Subscribe).apply(SessionBuilder.buildRequestWithSessionNoUser)))
 
 }

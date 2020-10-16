@@ -6,7 +6,7 @@ GET         /public/*file                                                       
 
 GET         /customs-enrolment-services/language/:lang                               @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EoriLanguageController.switchToLanguage(lang: String)
 
-GET         /customs-enrolment-services/get-eori                                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.RegisterRedirectController.getEori()
+GET         /customs-enrolment-services/:service/:journey/get-eori                                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.RegisterRedirectController.getEori(service: Service, journey: Journey.Value)
 
 # enrolment-already-exists
 GET         /customs-enrolment-services/:service/:journey/enrolment-already-exists                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service: Service, journey: Journey.Value)
