@@ -42,7 +42,7 @@
 }
 
 @betaFeedbackHeaderUrl = @{
-    if(journey == Journey.Register) appConfig.betaFeedBackRegister()
+    if(journey == Journey.Register) appConfig.betaFeedBackRegister(service)
     else appConfig.betaFeedBackSubscribe(service)
 }
 

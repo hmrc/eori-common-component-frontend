@@ -69,11 +69,11 @@ class AppConfig @Inject() (
   }
 
   //get help link feedback for Register journey
-  def reportAProblemPartialUrlRegister(): String =
-    s"$contactBaseUrl/contact/problem_reports_ajax?service=$serviceIdentifierRegister"
+  def reportAProblemPartialUrlRegister(service: Service): String =
+    s"$contactBaseUrl/contact/problem_reports_ajax?service=$serviceIdentifierRegister-${service.code}"
 
-  def reportAProblemNonJSUrlRegister(): String =
-    s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifierRegister"
+  def reportAProblemNonJSUrlRegister(service: Service): String =
+    s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifierRegister-${service.code}"
 
   //get help link feedback for Subscribe journey
   def reportAProblemPartialUrlSubscribe(service: Service): String =
@@ -84,8 +84,8 @@ class AppConfig @Inject() (
 
   private lazy val betafeedbackBaseUrl = s"${contactBaseUrl}/contact/beta-feedback"
 
-  def betaFeedBackRegister() =
-    s"${betafeedbackBaseUrl}?service=${serviceIdentifierRegister}"
+  def betaFeedBackRegister(service: Service) =
+    s"${betafeedbackBaseUrl}?service=${serviceIdentifierRegister}-${service.code}"
 
   def betaFeedBackSubscribe(service: Service) =
     s"${betafeedbackBaseUrl}?service=${serviceIdentifierSubscribe}-${service.code}"
