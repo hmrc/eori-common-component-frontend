@@ -32,7 +32,7 @@ case class Service(
 
 object Service {
 
-  val cds     = Service("cds", "HMRC-CUS-ORG", "", "", "", "")
+  val cds = Service("cds", "HMRC-CUS-ORG", "", "", "", "")
 
   //TODO - remove CDS enrolment from this service definition.  It is required for now to maintain the transition state of "Get EORI and subscribe to CDS"
   val getEori = Service("eori", "HMRC-CUS-ORG", "", "", "", "")
