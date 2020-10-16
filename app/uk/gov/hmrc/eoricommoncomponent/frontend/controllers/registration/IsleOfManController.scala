@@ -23,28 +23,28 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatGroupController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.YesNo
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.isleOfManYesNoAnswerForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.isle_of_man
 
 @Singleton
 class IsleOfManController @Inject() (view: isle_of_man, mcc: MessagesControllerComponents) extends CdsController(mcc) {
 
-  def form(): Action[AnyContent] = Action { implicit request =>
-    Ok(view(isleOfManYesNoAnswerForm()))
+  def form(service: Service): Action[AnyContent] = Action { implicit request =>
+    Ok(view(isleOfManYesNoAnswerForm(), service))
   }
 
-  def submit(): Action[AnyContent] = Action { implicit request =>
+  def submit(service: Service): Action[AnyContent] = Action { implicit request =>
     isleOfManYesNoAnswerForm()
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(view(formWithErrors)),
-        isleOfManYesNoAnswerForm => destinationsByAnswer(isleOfManYesNoAnswerForm)
+        formWithErrors => BadRequest(view(formWithErrors, service)),
+        isleOfManYesNoAnswerForm => destinationsByAnswer(isleOfManYesNoAnswerForm, service)
       )
   }
 
-  private def destinationsByAnswer(yesNoAnswer: YesNo): Result = yesNoAnswer match {
+  private def destinationsByAnswer(yesNoAnswer: YesNo, service: Service): Result = yesNoAnswer match {
     case theAnswer if theAnswer.isYes => Redirect(VatRegisteredUkController.form())
-    case _                            => Redirect(VatGroupController.createForm(Journey.Register))
+    case _                            => Redirect(VatGroupController.createForm(service, Journey.Register))
   }
 
 }
