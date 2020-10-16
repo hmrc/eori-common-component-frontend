@@ -16,7 +16,9 @@ The following values are required to add the configuration for a new service.
 Add definitions for the new service to the `eori-common-component-frontend.yaml` configuration file for *each* environment.
 
 ## Step 1
-Decide on a unique key for the new service. This unique key forms part of the url to access the new service - usually an abbreviation of the service name in lower-case.  
+Decide on a unique key for the new service. This unique key forms part of the url to access the new service - usually an abbreviation of the service name in lower-case.
+
+**Note:  The key `eori` is reserved and cannot be used.**  
 
 ## Step 2
 Add to the list of services by appending a comma and the unique key to `services-config.list`, for example.
