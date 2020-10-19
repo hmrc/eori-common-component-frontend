@@ -29,7 +29,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.connector.HandleSubscriptionConn
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.HandleSubscriptionRequest
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import util.externalservices.ExternalServicesConfig.{Host, Port}
-import util.externalservices.HandleSubscriptionService
+import util.externalservices.{AuditService, HandleSubscriptionService}
 
 class HandleSubscriptionConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
 
@@ -82,6 +82,7 @@ class HandleSubscriptionConnectorSpec extends IntegrationTestsSpec with ScalaFut
 
   before {
     resetMockServer()
+    AuditService.stubAuditService()
   }
 
   override def beforeAll: Unit =
