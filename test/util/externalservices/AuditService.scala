@@ -23,7 +23,7 @@ object AuditService {
 
   private val AuditWriteUrl: String = "/write/audit"
 
-  def stubAuditService(): Unit =
+  def stubAuditService(): Unit = {
     stubFor(
       post(urlEqualTo(AuditWriteUrl))
         .willReturn(
@@ -31,6 +31,14 @@ object AuditService {
             .withStatus(Status.OK)
         )
     )
+    stubFor(
+      post(urlEqualTo(AuditWriteUrl + "/merged"))
+        .willReturn(
+          aResponse()
+            .withStatus(Status.OK)
+        )
+    )
+  }
 
   def verifyXAuditWrite(times: Int): Unit = verify(times, postRequestedFor(urlEqualTo(AuditWriteUrl)))
 }

@@ -44,6 +44,7 @@ class Save4LaterConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
 
   before {
     resetMockServer()
+    AuditService.stubAuditService()
   }
 
   override def beforeAll: Unit =
@@ -97,7 +98,7 @@ class Save4LaterConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
     "return  BadRequestException with response status NOT FOUND status for unknown entry" in {
       stubSave4LaterNotFoundDELETE()
       intercept[BadRequestException] {
-        await(save4LaterConnector.delete[String]("id"))
+        await(save4LaterConnector.delete[String](id))
       }
     }
   }
