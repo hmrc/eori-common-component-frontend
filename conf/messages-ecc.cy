@@ -13,7 +13,7 @@ cds.enrolment.already.exists.title=Mae problem wedi codi
 cds.enrolment.already.exists.heading=Mae problem wedi codi
 cds.enrolment.already.exists.para1=Mae ein cofnodion yn dangos bod y Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth eisoes wedi’i ddefnyddio i gofrestru ar gyfer {0}.
 
-cds.proposition.name.service=TRABSLATE Register for a customs service
+cds.proposition.name.service=TRANSLATE Register for a customs service
 
 eds.existing-eori.enrolment.confirmation.title=Cais wedi’i gwblhau
 eds.existing-eori.enrolment.confirmation.heading=Cais wedi’i gwblhau
