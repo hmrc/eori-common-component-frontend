@@ -26,7 +26,7 @@ import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.IsleOfManController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.VatRegisteredUkController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatGroupController
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.isle_of_man
 import util.ControllerSpec
 import util.builders.AuthActionMock
@@ -40,7 +40,7 @@ class IsleOfManControllerSpec extends ControllerSpec with BeforeAndAfterEach wit
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
-    when(isleOfManView.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(isleOfManView.apply(any(), any[Service])(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -55,7 +55,7 @@ class IsleOfManControllerSpec extends ControllerSpec with BeforeAndAfterEach wit
 
       "form method is invoked" in {
 
-        val result = controller.form()(FakeRequest("GET", ""))
+        val result = controller.form(atarService)(FakeRequest("GET", ""))
 
         status(result) shouldBe OK
       }
@@ -67,7 +67,7 @@ class IsleOfManControllerSpec extends ControllerSpec with BeforeAndAfterEach wit
 
         val emptyForm = JsObject(Map("yes-no-answer" -> JsString("")))
 
-        val result = controller.submit()(FakeRequest().withJsonBody(emptyForm))
+        val result = controller.submit(atarService)(FakeRequest().withJsonBody(emptyForm))
 
         status(result) shouldBe BAD_REQUEST
       }
@@ -79,7 +79,7 @@ class IsleOfManControllerSpec extends ControllerSpec with BeforeAndAfterEach wit
 
         val form = JsObject(Map("yes-no-answer" -> JsString("true")))
 
-        val result = controller.submit()(FakeRequest().withJsonBody(form))
+        val result = controller.submit(atarService)(FakeRequest().withJsonBody(form))
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some(VatRegisteredUkController.form().url)
@@ -92,10 +92,10 @@ class IsleOfManControllerSpec extends ControllerSpec with BeforeAndAfterEach wit
 
         val form = JsObject(Map("yes-no-answer" -> JsString("false")))
 
-        val result = controller.submit()(FakeRequest().withJsonBody(form))
+        val result = controller.submit(atarService)(FakeRequest().withJsonBody(form))
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(VatGroupController.createForm(Journey.Register).url)
+        redirectLocation(result) shouldBe Some(VatGroupController.createForm(atarService, Journey.Register).url)
       }
     }
   }

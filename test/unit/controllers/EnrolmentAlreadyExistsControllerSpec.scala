@@ -20,6 +20,7 @@ import common.pages.RegistrationCompletePage
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EnrolmentAlreadyExistsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.registration_exists
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.registration_exists_group
 import util.ControllerSpec
@@ -46,7 +47,7 @@ class EnrolmentAlreadyExistsControllerSpec extends ControllerSpec with AuthActio
 
       val result =
         await(
-          controller.enrolmentAlreadyExists(atarService).apply(
+          controller.enrolmentAlreadyExists(atarService, Journey.Subscribe).apply(
             SessionBuilder.buildRequestWithSessionAndPath("/atar/", defaultUserId)
           )
         )
@@ -69,7 +70,7 @@ class EnrolmentAlreadyExistsControllerSpec extends ControllerSpec with AuthActio
 
       val result =
         await(
-          controller.enrolmentAlreadyExistsForGroup(atarService).apply(
+          controller.enrolmentAlreadyExistsForGroup(atarService, Journey.Subscribe).apply(
             SessionBuilder.buildRequestWithSessionAndPath("/atar/", defaultUserId)
           )
         )

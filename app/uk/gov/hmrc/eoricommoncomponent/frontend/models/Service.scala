@@ -33,8 +33,6 @@ case class Service(
 object Service {
 
   val cds = Service("cds", "HMRC-CUS-ORG", "", "", "", "")
-  // TODO Get rid of empty Service, throw exception in places where it's used
-  val empty = Service("", "", "", "", "", "")
 
   private val configuration = Configuration(ConfigFactory.load())
 
@@ -68,7 +66,8 @@ object Service {
   private def isServicesConfigCorrect(services: Seq[Service]): Boolean =
     services.map(_.code).distinct.size == services.size
 
-  def withName(str: String): Option[Service] = supportedServicesMap.get(str)
+  private def withName(str: String): Option[Service] =
+    supportedServicesMap.get(str)
 
   implicit def binder(implicit stringBinder: PathBindable[String]): PathBindable[Service] = new PathBindable[Service] {
 

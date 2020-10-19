@@ -45,8 +45,8 @@ class ApplicationController @Inject() (
 )(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
     extends CdsController(mcc) with EnrolmentExtractor {
 
-  def start: Action[AnyContent] = Action { implicit request =>
-    Ok(viewStart(Journey.Register))
+  def start(service: Service): Action[AnyContent] = Action { implicit request =>
+    Ok(viewStart(service, Journey.Register))
   }
 
   def startSubscription(service: Service): Action[AnyContent] = authorise.ggAuthorisedUserWithEnrolmentsAction {
@@ -54,7 +54,9 @@ class ApplicationController @Inject() (
       val groupId = loggedInUser.groupId.getOrElse(throw MissingGroupId())
       groupEnrolment.hasGroupIdEnrolmentTo(groupId, service).flatMap { groupIdEnrolmentExists =>
         if (groupIdEnrolmentExists)
-          Future.successful(Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service)))
+          Future.successful(
+            Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service, Journey.Subscribe))
+          )
         else
           cdsEnrolmentCheck(loggedInUser, groupId, service)
       }

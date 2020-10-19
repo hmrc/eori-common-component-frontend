@@ -28,7 +28,7 @@ class AppConfigSpec extends ControllerSpec {
   "AppConfig" should {
 
     "have blockedRoutesRegex defined" in {
-      appConfig.blockedRoutesRegex.map(_.pattern.pattern()).mkString(":") shouldBe "cds/subscribe:register"
+      appConfig.blockedRoutesRegex.map(_.pattern.pattern()).mkString(":") shouldBe ""
     }
 
     "have ttl defined" in {

@@ -54,7 +54,7 @@
 
     <p>
         @messages("cds.subscription.enter-eori-number.no-eori")
-        <a href=@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.RegisterRedirectController.getEori()>@messages("cds.subscription.enter-eori-number.no-eori.link")</a>
+        <a href=@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.RegisterRedirectController.getEori(service, journey)>@messages("cds.subscription.enter-eori-number.no-eori.link")</a>
     </p>
 
     @helpers.helpAndSupport()

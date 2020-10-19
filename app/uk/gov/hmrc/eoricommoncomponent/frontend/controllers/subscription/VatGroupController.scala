@@ -28,18 +28,19 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.vat_grou
 class VatGroupController @Inject() (mcc: MessagesControllerComponents, vatGroupView: vat_group)
     extends CdsController(mcc) {
 
-  def createForm(journey: Journey.Value): Action[AnyContent] = Action { implicit request =>
-    Ok(vatGroupView(vatGroupYesNoAnswerForm(), journey))
+  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] = Action { implicit request =>
+    Ok(vatGroupView(vatGroupYesNoAnswerForm(), service, journey))
   }
 
-  def submit(journey: Journey.Value): Action[AnyContent] = Action { implicit request =>
+  def submit(service: Service, journey: Journey.Value): Action[AnyContent] = Action { implicit request =>
     vatGroupYesNoAnswerForm()
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(vatGroupView(formWithErrors, journey)),
+        formWithErrors => BadRequest(vatGroupView(formWithErrors, service, journey)),
         yesNoAnswer =>
           if (yesNoAnswer.isNo)
-            Redirect(EmailController.form(Service.cds, Journey.Register))
+            // TODO - need service url param here
+            Redirect(EmailController.form(service, Journey.Register))
           else
             Redirect(routes.VatGroupsCannotRegisterUsingThisServiceController.form(journey))
       )

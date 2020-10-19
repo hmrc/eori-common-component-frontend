@@ -21,12 +21,12 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriNumberViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.what_is_your_eori
 import util.ViewSpec
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers._
 
 class WhatIsYourEoriSpec extends ViewSpec {
   val form: Form[EoriNumberViewModel] = SubscriptionForm.eoriNumberForm
@@ -71,7 +71,7 @@ class WhatIsYourEoriSpec extends ViewSpec {
     "have a link to 'Get EORI'" in {
       doc.body.getElementsByAttributeValue(
         "href",
-        routes.RegisterRedirectController.getEori().url
+        routes.RegisterRedirectController.getEori(atarService, Journey.Subscribe).url
       ).text() mustBe "Register for an EORI"
     }
 

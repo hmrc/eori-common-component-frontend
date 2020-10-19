@@ -19,7 +19,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import play.api.Logger
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, GroupEnrolmentExtractor}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.CheckYourEmailController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.WhatIsYourEmailController.createForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.EnrolmentPendingAgainstGroupIdController
@@ -40,7 +40,8 @@ class EmailController @Inject() (
   cdsFrontendDataCache: SessionCache,
   mcc: MessagesControllerComponents,
   save4LaterService: Save4LaterService,
-  userGroupIdSubscriptionStatusCheckService: UserGroupIdSubscriptionStatusCheckService
+  userGroupIdSubscriptionStatusCheckService: UserGroupIdSubscriptionStatusCheckService,
+  groupEnrolment: GroupEnrolmentExtractor
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
@@ -74,10 +75,16 @@ class EmailController @Inject() (
 
   def form(service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
-      userGroupIdSubscriptionStatusCheckService
-        .checksToProceed(GroupId(user.groupId), InternalId(user.internalId))(continue(service, journey))(
-          userIsInProcess(service, journey)
-        )(otherUserWithinGroupIsInProcess(service, journey))
+      groupEnrolment.hasGroupIdEnrolmentTo(user.groupId.getOrElse(throw MissingGroupId()), service).flatMap {
+        groupIdEnrolmentExists =>
+          if (groupIdEnrolmentExists)
+            Future.successful(Redirect(routes.EnrolmentExistsAgainstGroupIdController.show(service, journey)))
+          else
+            userGroupIdSubscriptionStatusCheckService
+              .checksToProceed(GroupId(user.groupId), InternalId(user.internalId))(continue(service, journey))(
+                userIsInProcess(service, journey)
+              )(otherUserWithinGroupIsInProcess(service, journey))
+      }
     }
 
   private def checkWithEmailService(emailStatus: EmailStatus, service: Service, journey: Journey.Value)(implicit

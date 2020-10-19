@@ -24,7 +24,7 @@
 @(service: Service, journey: Journey.Value)(implicit messages: Messages, request: Request[_])
 
 @redirectUrl = @{journey match {
-    case Journey.Register => ApplicationController.start.url
+    case Journey.Register => ApplicationController.start(service).url
     case Journey.Subscribe => ApplicationController.startSubscription(service).url
 }}
 

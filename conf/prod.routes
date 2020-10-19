@@ -6,11 +6,11 @@ GET         /public/*file                                                       
 
 GET         /customs-enrolment-services/language/:lang                               @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EoriLanguageController.switchToLanguage(lang: String)
 
-GET         /customs-enrolment-services/get-eori                                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.RegisterRedirectController.getEori()
+GET         /customs-enrolment-services/:service/:journey/get-eori                                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.RegisterRedirectController.getEori(service: Service, journey: Journey.Value)
 
 # enrolment-already-exists
-GET         /customs-enrolment-services/:service/subscribe/enrolment-already-exists                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service: Service)
-GET         /customs-enrolment-services/:service/subscribe/enrolment-already-exists-for-group            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service: Service)
+GET         /customs-enrolment-services/:service/:journey/enrolment-already-exists                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service: Service, journey: Journey.Value)
+GET         /customs-enrolment-services/:service/:journey/enrolment-already-exists-for-group            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service: Service, journey: Journey.Value)
 
 # check-existing-eori
 GET         /customs-enrolment-services/:service/subscribe/check-existing-eori                           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.HasExistingEoriController.displayPage(service: Service)
@@ -95,12 +95,12 @@ GET         /customs-enrolment-services/subscribe/download/pdf                  
 GET         /customs-enrolment-services/subscribe/download/text                               @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EoriTextDownloadController.download()
 
 # register Get An Eori
-GET         /customs-enrolment-services/register                                              @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.start
+GET         /customs-enrolment-services/:service/register                                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.start(service: Service)
 
 GET         /customs-enrolment-services/register/accessibility-statement                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.accessibilityStatement()
 
-GET         /customs-enrolment-services/register/isle-of-man                                  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.IsleOfManController.form()
-POST        /customs-enrolment-services/register/isle-of-man                                  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.IsleOfManController.submit()
+GET         /customs-enrolment-services/:service/register/isle-of-man                         @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.IsleOfManController.form(service: Service)
+POST        /customs-enrolment-services/:service/register/isle-of-man                         @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.IsleOfManController.submit(service: Service)
 
 GET         /customs-enrolment-services/register/are-you-vat-registered-in-uk                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.VatRegisteredUkController.form()
 POST        /customs-enrolment-services/register/are-you-vat-registered-in-uk                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.VatRegisteredUkController.submit()
@@ -233,8 +233,8 @@ POST        /customs-enrolment-services/:service/:journey/vat-registered-eu     
 GET         /customs-enrolment-services/:service/:journey/vat-registered-eu/review                    @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.VatRegisteredEuController.reviewForm(service: Service, journey: Journey.Value)
 POST        /customs-enrolment-services/:service/:journey/vat-registered-eu/review                    @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.VatRegisteredEuController.submit(isInReviewMode: Boolean = true, service: Service, journey: Journey.Value)
 
-GET         /customs-enrolment-services/:journey/vat-group                                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.VatGroupController.createForm(journey: Journey.Value)
-POST        /customs-enrolment-services/:journey/vat-group                                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.VatGroupController.submit(journey: Journey.Value)
+GET         /customs-enrolment-services/:service/:journey/vat-group                                   @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.VatGroupController.createForm(service: Service, journey: Journey.Value)
+POST        /customs-enrolment-services/:service/:journey/vat-group                                   @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.VatGroupController.submit(service: Service, journey: Journey.Value)
 
 GET         /customs-enrolment-services/:journey/you-cannot-register-using-this-service               @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.VatGroupsCannotRegisterUsingThisServiceController.form(journey: Journey.Value)
 

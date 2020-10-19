@@ -191,7 +191,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe EnrolmentAlreadyExistsController
-          .enrolmentAlreadyExistsForGroup(atarService)
+          .enrolmentAlreadyExistsForGroup(atarService, Journey.Subscribe)
           .url
       }
     }
