@@ -24,7 +24,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.partials.footer
 import util.ViewSpec
 
 class FooterSpec extends ViewSpec {
-  implicit val request = withFakeCSRF(FakeRequest.apply("GET", "/register"))
+  implicit val request = withFakeCSRF(FakeRequest.apply("GET", "/customs-enrolment-services/atar/subscribe"))
 
   private val view = instanceOf[footer]
 
@@ -53,7 +53,7 @@ class FooterSpec extends ViewSpec {
     "have correct Accessibility link" in {
       doc.getElementById("accessibility").attr(
         "href"
-      ) mustBe "/customs-enrolment-services/register/accessibility-statement"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/accessibility-statement"
     }
   }
 

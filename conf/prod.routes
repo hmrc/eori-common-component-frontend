@@ -97,7 +97,7 @@ GET         /customs-enrolment-services/subscribe/download/text                 
 # register Get An Eori
 GET         /customs-enrolment-services/:service/register                                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.start(service: Service)
 
-GET         /customs-enrolment-services/register/accessibility-statement                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.accessibilityStatement()
+GET         /customs-enrolment-services/:service/:journey/accessibility-statement             @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.accessibilityStatement(service: Service, journey: Journey.Value)
 
 GET         /customs-enrolment-services/:service/register/isle-of-man                         @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.IsleOfManController.form(service: Service)
 POST        /customs-enrolment-services/:service/register/isle-of-man                         @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.IsleOfManController.submit(service: Service)
