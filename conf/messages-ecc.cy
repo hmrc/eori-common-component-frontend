@@ -63,3 +63,4 @@ cds.subscription.outcomes.in-processing.title=TRANSLATE The {0} application is b
 cds.subscription.outcomes.in-processing.heading=TRANSLATE We are processing the registration for {0}
 
 enter-email-body-text=TRANSLATE We’ll use this to send you the result of your application.
+cds.subscription.verify-email.para2=TRANSLATE For your security the link in the email will expire after 72 hours.
