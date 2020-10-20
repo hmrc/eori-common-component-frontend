@@ -15,6 +15,7 @@
  *@
 
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName
 
 
 @this(layout_di: layout, feedback_di: helpers.feedback)
@@ -23,23 +24,19 @@
 @layout_di(messages("cds.mig.existing.outcomes.application-received.title")) {
     <div class="column-two-thirds">
         <div class="govuk-box-highlight">
-            <h1 id="page-heading" class="heading-xlarge no-bottom-margin">
+            <h1 id="page-heading" class="heading-xlarge">
                 @messages("cds.reg.existing.outcomes.success.heading.part1")<br />
                 @name
             </h1>
             <h2 class="heading-large" id="active-from">
                 @messages("subscription.subscription-results.active-from") @processedDate
             </h2>
-            <p id="eori-number" class="heading-medium">@messages("cds.reg.existing.outcomes.success.eori.number") @eori</p>
+            <p id="eori-number" class="heading-medium">@messages("cds.reg.existing.outcomes.success.eori.number")<br/>@eori</p>
         </div>
 
         <div id='additional-information'>
             <h3 class="heading-medium">@messages("cds.subscription.outcomes.steps.next")</h3>
-            <p>@messages("cds.subscription.outcomes.success.will-send-email")</p>
-            <p>
-                <a id="download-eori" href="/customs-enrolment-services/subscribe/download/pdf">@messages("cds.reg.existing.outcomes.success.download-eori.21kb")</a><br>
-                <a id="download-eori-text" href="/customs-enrolment-services/subscribe/download/text">@messages("cds.reg.existing.outcomes.success.download-eori-textfile")</a>
-            </p>
+            <p>@messages("cds.subscription.outcomes.success.will-send-email", ServiceName.longName)</p>
         </div>
 
         @helpers.helpAndSupport()

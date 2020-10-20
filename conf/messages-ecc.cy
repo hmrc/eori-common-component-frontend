@@ -69,3 +69,5 @@ cds.email-confirmed.title-and-heading=TRANSLATE Email confirmed
 cds.email-confirmed.para.get-access=TRANSLATE You can continue with your application.
 
 cds.subscription.address-details.street.label=TRANSLATE Building and street
+
+cds.subscription.outcomes.success.will-send-email=TRANSLATE We will send you an email to confirm when you have access to {0}. This can take up to two hours.

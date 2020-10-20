@@ -148,20 +148,7 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
           page.getElementsText(RegistrationCompletePage.eoriNumberXpath) shouldBe "EORI number: ZZZ1ZZZZ23ZZZZZZZ"
 
           page.getElementsText(RegistrationCompletePage.additionalInformationXpath) should include(
-            "What happens next We will send you an email to confirm when you have access to CDS. This can take up to two hours."
-          )
-
-          page.getElementsText(RegistrationCompletePage.DownloadEoriTextLinkXpath) should include(
-            "Download an accessible text file with your registration details (1 kb)"
-          )
-          page.getElementsText(RegistrationCompletePage.DownloadEoriLinkXpath) should include(
-            "Download a PDF with your registration details (21kb)"
-          )
-          page.getElementsHref(RegistrationCompletePage.DownloadEoriTextLinkXpath) should endWith(
-            "/customs-enrolment-services/subscribe/download/text"
-          )
-          page.getElementsHref(RegistrationCompletePage.DownloadEoriLinkXpath) should endWith(
-            "/customs-enrolment-services/subscribe/download/pdf"
+            "What happens next We will send you an email to confirm when you have access to Advance Tariff Rulings. This can take up to two hours."
           )
 
           page.elementIsPresent(RegistrationCompletePage.LeaveFeedbackLinkXpath) shouldBe true
