@@ -67,3 +67,5 @@ cds.subscription.verify-email.para2=For your security the link in the email will
 
 cds.email-confirmed.title-and-heading=Email confirmed
 cds.email-confirmed.para.get-access=You can continue with your application.
+
+cds.subscription.address-details.street.label=Building and street

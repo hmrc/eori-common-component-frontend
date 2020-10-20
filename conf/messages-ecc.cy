@@ -67,3 +67,5 @@ cds.subscription.verify-email.para2=TRANSLATE For your security the link in the 
 
 cds.email-confirmed.title-and-heading=TRANSLATE Email confirmed
 cds.email-confirmed.para.get-access=TRANSLATE You can continue with your application.
+
+cds.subscription.address-details.street.label=TRANSLATE Building and street
