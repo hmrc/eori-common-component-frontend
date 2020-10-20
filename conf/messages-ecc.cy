@@ -61,3 +61,5 @@ cds.subscription.outcomes.rejected.heading=TRANSLATE The {0} application for {1}
 
 cds.subscription.outcomes.in-processing.title=TRANSLATE The {0} application is being processed
 cds.subscription.outcomes.in-processing.heading=TRANSLATE We are processing the registration for {0}
+
+enter-email-body-text=TRANSLATE We’ll use this to send you the result of your application.

@@ -61,3 +61,5 @@ cds.subscription.outcomes.rejected.heading=The {0} application for {1} has been 
 
 cds.subscription.outcomes.in-processing.title=The {0} application is being processed
 cds.subscription.outcomes.in-processing.heading=We are processing the registration for {0}
+
+enter-email-body-text=We’ll use this to send you the result of your application.
