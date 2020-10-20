@@ -15,6 +15,10 @@
  *@
 
 @import uk.gov.hmrc.play.views.html.layouts
+@import uk.gov.hmrc.eoricommoncomponent.frontend.controllers
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName.service
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.JourneyExtractor.journey
+
 @import uk.gov.hmrc.play.config.AssetsConfig
 
 @this(assetsConfig_di: AssetsConfig)
@@ -32,7 +36,7 @@
                         <a id="conditions" href="https://www.tax.service.gov.uk/help/terms-and-conditions" target="_blank" data-sso="false" data-journey-click="footer:Click:Terms and conditions">@messages("footer.terms-conditions")</a>
                     </li>
                     <li>
-                        <a id="accessibility" href="/customs-enrolment-services/register/accessibility-statement" target="_blank" data-sso="false" data-journey-click="footer:Click:Accessibility">@messages("footer.accessibility")</a>
+                        <a id="accessibility" href="@controllers.routes.ApplicationController.accessibilityStatement(service, journey)" target="_blank" data-sso="false" data-journey-click="footer:Click:Accessibility">@messages("footer.accessibility")</a>
                     </li>
                 </ul>
 	            <div class="open-government-licence">
