@@ -64,3 +64,6 @@ cds.subscription.outcomes.in-processing.heading=TRANSLATE We are processing the 
 
 enter-email-body-text=TRANSLATE We’ll use this to send you the result of your application.
 cds.subscription.verify-email.para2=TRANSLATE For your security the link in the email will expire after 72 hours.
+
+cds.email-confirmed.title-and-heading=TRANSLATE Email confirmed
+cds.email-confirmed.para.get-access=TRANSLATE You can continue with your application.
