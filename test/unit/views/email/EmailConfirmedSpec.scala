@@ -42,7 +42,7 @@ class EmailConfirmedSpec extends ViewSpec {
     "have an correct text for Subscribe journey" in {
       migrateDoc.body
         .getElementById("info")
-        .text() mustBe "You can continue with your application to get access to CDS."
+        .text() mustBe "You can continue with your application."
     }
     "have an correct text for Get Eori journey" in {
       getEoriDoc.body

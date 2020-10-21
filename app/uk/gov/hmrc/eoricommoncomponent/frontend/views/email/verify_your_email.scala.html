@@ -38,6 +38,7 @@ journey: Journey.Value)(implicit request: Request[_], messages: Messages)
         <h1 class="heading-large">@Html(messages("cds.subscription.verify-email.title"))</h1>
 
         <p id="p1">  @email.map(e => messages("cds.subscription.verify-email.para1", e)) </p>
+        <p id="p2">  @messages("cds.subscription.verify-email.para2") </p>
 
         <div class="form-group">
             <details>
