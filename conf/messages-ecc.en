@@ -65,7 +65,6 @@ cds.subscription.outcomes.in-processing.heading=We are processing the registrati
 enter-email-body-text=We’ll use this to send you the result of your application.
 cds.subscription.verify-email.para2=For your security the link in the email will expire after 72 hours.
 
-cds.email-confirmed.title-and-heading=Email confirmed
 cds.email-confirmed.para.get-access=You can continue with your application.
 
 cds.subscription.address-details.street.label=Building and street

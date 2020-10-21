@@ -31,10 +31,10 @@ class EmailConfirmedSpec extends ViewSpec {
 
   "Email Address Confirmed page" should {
     "display correct title" in {
-      migrateDoc.title must startWith("Email confirmed")
+      migrateDoc.title must startWith("Email address confirmed")
     }
     "have the correct h1 text" in {
-      migrateDoc.body.getElementsByTag("h1").text() mustBe "Email confirmed"
+      migrateDoc.body.getElementsByTag("h1").text() mustBe "Email address confirmed"
     }
     "have the correct class on the h1" in {
       migrateDoc.body.getElementsByTag("h1").hasClass("heading-large") mustBe true
