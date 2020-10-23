@@ -19,6 +19,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.models
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 import play.api.mvc.{PathBindable, Request}
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.ServiceConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.Constants
 
 case class Service(
@@ -34,37 +35,9 @@ object Service {
 
   val cds = Service("cds", "HMRC-CUS-ORG", "", "", "", "")
 
-  private val configuration = Configuration(ConfigFactory.load())
-
-  private val supportedServices: Seq[Service] = {
-    val listOfTheServices = configuration.get[String]("services-config.list").split(",").map(_.trim).toList
-
-    listOfTheServices.map { service =>
-      val englishFriendlyName = configuration.get[String](s"services-config.$service.friendlyName").replace("_", " ")
-      val welshFriendlyName =
-        configuration.getOptional[String](s"services-config.$service.friendlyNameWelsh").map(
-          _.replace("_", " ")
-        ).getOrElse(englishFriendlyName)
-
-      Service(
-        code = service,
-        enrolmentKey = configuration.get[String](s"services-config.$service.enrolment"),
-        shortName = configuration.get[String](s"services-config.$service.shortName"),
-        callBack = configuration.get[String](s"services-config.$service.callBack"),
-        friendlyName = englishFriendlyName,
-        friendlyNameWelsh = welshFriendlyName
-      )
-    }
-  }
-
-  private val supportedServicesMap: Map[String, Service] = {
-    if (isServicesConfigCorrect(supportedServices))
-      supportedServices.map(service => service.code -> service).toMap
-    else throw new Exception("Services config contains duplicate service")
-  }
-
-  private def isServicesConfigCorrect(services: Seq[Service]): Boolean =
-    services.map(_.code).distinct.size == services.size
+  private val supportedServicesMap: Map[String, Service] = new ServiceConfig(
+    Configuration(ConfigFactory.load())
+  ).supportedServicesMap
 
   private def withName(str: String): Option[Service] =
     supportedServicesMap.get(str)
