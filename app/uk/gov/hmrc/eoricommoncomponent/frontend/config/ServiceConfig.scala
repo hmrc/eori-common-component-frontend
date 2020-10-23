@@ -41,5 +41,6 @@ class ServiceConfig(configuration: Configuration) {
       )
     }
 
-  private def serviceKeys = configuration.keys.filter(_.startsWith("services-config.")).map(_.split("\\.")(1))
+  private def serviceKeys = configuration.get[String]("services-config.list").split(",").map(_.trim).toSet
+
 }

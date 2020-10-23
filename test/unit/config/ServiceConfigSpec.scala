@@ -26,6 +26,7 @@ class ServiceConfigSpec extends ControllerSpec {
 
   private val configurationFull: Config =
     ConfigFactory.parseString("""
+      |services-config.list="atar,gvms"
       |services-config.atar.enrolment=HMRC-ATAR-ORG
       |services-config.atar.shortName=ATaR
       |services-config.atar.callBack=/advance-tariff-application
@@ -40,6 +41,7 @@ class ServiceConfigSpec extends ControllerSpec {
 
   private val configurationMissingWelsh: Config =
     ConfigFactory.parseString("""
+                                |services-config.list=atar
                                 |services-config.atar.enrolment=HMRC-ATAR-ORG
                                 |services-config.atar.shortName=ATaR
                                 |services-config.atar.callBack=/advance-tariff-application
@@ -48,6 +50,7 @@ class ServiceConfigSpec extends ControllerSpec {
 
   private val configurationEmptyWelsh: Config =
     ConfigFactory.parseString("""
+                                |services-config.list=atar
                                 |services-config.atar.enrolment=HMRC-ATAR-ORG
                                 |services-config.atar.shortName=ATaR
                                 |services-config.atar.callBack=/advance-tariff-application
@@ -55,10 +58,16 @@ class ServiceConfigSpec extends ControllerSpec {
                                 |services-config.atar.friendlyNameWelsh=""
       """.stripMargin)
 
-  private val configurationMissing: Config =
+  private val configurationMissingServiceParameter: Config =
     ConfigFactory.parseString("""
+                                |services-config.list=atar
                                 |services-config.atar.enrolment=HMRC-ATAR-ORG
                                 |services-config.atar.shortName=ATaR
+      """.stripMargin)
+
+  private val configurationMissingServiceDefinition: Config =
+    ConfigFactory.parseString("""
+                                |services-config.list=abcd
       """.stripMargin)
 
   "ServiceConfig" should {
@@ -92,12 +101,22 @@ class ServiceConfigSpec extends ControllerSpec {
     "error when config missing" in {
 
       val configException = intercept[ConfigException] {
-        new ServiceConfig(Configuration(configurationMissing))
+        new ServiceConfig(Configuration(configurationMissingServiceParameter))
       }
 
       configException.getMessage should include(
         "No configuration setting found for key 'services-config.atar.friendlyName'"
       )
+
+    }
+
+    "error when service definition missing" in {
+
+      val configException = intercept[ConfigException] {
+        new ServiceConfig(Configuration(configurationMissingServiceDefinition))
+      }
+
+      configException.getMessage should include("No configuration setting found for key 'services-config.abcd'")
 
     }
   }
