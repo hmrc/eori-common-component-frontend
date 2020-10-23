@@ -23,7 +23,8 @@ class FeatureFlags @Inject() (config: Configuration) {
 
   def loadConfig(path: String): Boolean = config.get[Boolean](path)
 
-  val matchingEnabled: Boolean = loadConfig(path = "features.matchingEnabled")
+  // hard-code flag incase the feature ever needs to be re-introduced
+  val matchingEnabled: Boolean = false //loadConfig(path = "features.matchingEnabled")
 
   val sub02UseServiceName: Boolean = loadConfig("features.sub02UseServiceName")
 }
