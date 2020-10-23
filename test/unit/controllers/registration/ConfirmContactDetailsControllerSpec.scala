@@ -396,7 +396,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
     val redirectUrl =
       uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.ConfirmContactDetailsController
-        .processing()
+        .processing(atarService)
         .url
     val subscriptionStatus = SubscriptionProcessing
     s"redirect to $redirectUrl when subscription status is $subscriptionStatus" in {
@@ -691,14 +691,16 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
   def invokeRejectedPageWithAuthenticatedUser(userId: String = defaultUserId)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     setupMocksForRejectedAndProcessingPages
-    test(controller.rejected.apply(SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe", userId)))
+    test(
+      controller.rejected(atarService).apply(SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe", userId))
+    )
   }
 
   def invokeProcessingPageWithAuthenticatedUser(userId: String = defaultUserId)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     setupMocksForRejectedAndProcessingPages
     test(
-      controller.processing
+      controller.processing(atarService)
         .apply(SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe", userId))
     )
   }

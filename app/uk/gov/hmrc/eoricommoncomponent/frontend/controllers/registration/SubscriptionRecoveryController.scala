@@ -98,7 +98,7 @@ class SubscriptionRecoveryController @Inject() (
           subscriptionDisplayResponse,
           service,
           Journey.Register
-        )(Redirect(Sub02Controller.end()))
+        )(Redirect(Sub02Controller.end(service)))
       case Left(_) =>
         Future.successful(ServiceUnavailable(errorTemplateView()))
     }

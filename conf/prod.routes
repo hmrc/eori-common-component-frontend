@@ -113,15 +113,15 @@ POST        /customs-enrolment-services/:service/:journey/subscribe             
 GET         /customs-enrolment-services/register/download/pdf                                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EoriDownloadController.download()
 GET         /customs-enrolment-services/register/download/text                                @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EoriTextDownloadController.download()
 
-GET         /customs-enrolment-services/register/processing                                   @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.ConfirmContactDetailsController.processing
-GET         /customs-enrolment-services/register/status-rejected                              @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.ConfirmContactDetailsController.rejected
-GET         /customs-enrolment-services/register/rejected                                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller.rejected
-GET         /customs-enrolment-services/register/user-already-has-eori                        @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller.eoriAlreadyExists
-GET         /customs-enrolment-services/register/user-already-has-eori-associated             @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller.eoriAlreadyAssociated
-GET         /customs-enrolment-services/register/subscription-in-progress                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller.subscriptionInProgress
-GET         /customs-enrolment-services/register/request-not-processed                        @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller.requestNotProcessed
-GET         /customs-enrolment-services/register/review                                       @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller.pending
-GET         /customs-enrolment-services/register/complete                                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller.end
+GET         /customs-enrolment-services/:service/register/processing                          @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.ConfirmContactDetailsController.processing(service: Service)
+GET         /customs-enrolment-services/:service/register/status-rejected                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.ConfirmContactDetailsController.rejected(service: Service)
+GET         /customs-enrolment-services/:service/register/rejected                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller.rejected(service: Service)
+GET         /customs-enrolment-services/:service/register/user-already-has-eori               @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller.eoriAlreadyExists(service: Service)
+GET         /customs-enrolment-services/:service/register/user-already-has-eori-associated    @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller.eoriAlreadyAssociated(service: Service)
+GET         /customs-enrolment-services/:service/register/subscription-in-progress            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller.subscriptionInProgress(service: Service)
+GET         /customs-enrolment-services/:service/register/request-not-processed               @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller.requestNotProcessed(service: Service)
+GET         /customs-enrolment-services/:service/register/review                              @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller.pending(service: Service)
+GET         /customs-enrolment-services/:service/register/complete                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller.end(service: Service)
 
 GET         /customs-enrolment-services/:service/:journey/business-details-recovery           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.BusinessDetailsRecoveryController.form(service: Service, journey: Journey.Value)
 GET         /customs-enrolment-services/:service/:journey/business-details-recovery/continue  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.BusinessDetailsRecoveryController.continue(service: Service, journey: Journey.Value)
