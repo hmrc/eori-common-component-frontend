@@ -68,21 +68,21 @@ class Sub02Controller @Inject() (
             case (_: SubscriptionSuccessful, Journey.Register) =>
               subscriptionDetailsService
                 .saveKeyIdentifiers(groupId, internalId)
-                .map(_ => Redirect(Sub02Controller.end()))
+                .map(_ => Redirect(Sub02Controller.end(service)))
             case (_: SubscriptionPending, _) =>
               subscriptionDetailsService
                 .saveKeyIdentifiers(groupId, internalId)
-                .map(_ => Redirect(Sub02Controller.pending()))
+                .map(_ => Redirect(Sub02Controller.pending(service)))
             case (SubscriptionFailed(EoriAlreadyExists, _), _) =>
-              Future.successful(Redirect(Sub02Controller.eoriAlreadyExists()))
+              Future.successful(Redirect(Sub02Controller.eoriAlreadyExists(service)))
             case (SubscriptionFailed(EoriAlreadyAssociated, _), _) =>
-              Future.successful(Redirect(Sub02Controller.eoriAlreadyAssociated()))
+              Future.successful(Redirect(Sub02Controller.eoriAlreadyAssociated(service)))
             case (SubscriptionFailed(SubscriptionInProgress, _), _) =>
-              Future.successful(Redirect(Sub02Controller.subscriptionInProgress()))
+              Future.successful(Redirect(Sub02Controller.subscriptionInProgress(service)))
             case (SubscriptionFailed(RequestNotProcessed, _), _) =>
-              Future.successful(Redirect(Sub02Controller.requestNotProcessed()))
+              Future.successful(Redirect(Sub02Controller.requestNotProcessed(service)))
             case (_: SubscriptionFailed, _) =>
-              Future.successful(Redirect(Sub02Controller.rejected()))
+              Future.successful(Redirect(Sub02Controller.rejected(service)))
             case _ =>
               throw new IllegalArgumentException(s"Cannot redirect for subscription with journey: $journey")
           }
@@ -93,7 +93,7 @@ class Sub02Controller @Inject() (
       }
     }
 
-  def end: Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
+  def end(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
         sub02Outcome <- sessionCache.sub02Outcome
@@ -119,7 +119,7 @@ class Sub02Controller @Inject() (
       else renderPageWithName
   }
 
-  def rejected: Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
+  def rejected(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
         sub02Outcome <- sessionCache.sub02Outcome
@@ -127,7 +127,7 @@ class Sub02Controller @Inject() (
       } yield Ok(sub01OutcomeRejected(Some(sub02Outcome.fullName), sub02Outcome.processedDate))
   }
 
-  def eoriAlreadyExists: Action[AnyContent] =
+  def eoriAlreadyExists(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         sub02Outcome <- sessionCache.sub02Outcome
@@ -135,7 +135,7 @@ class Sub02Controller @Inject() (
       } yield Ok(sub02EoriAlreadyExists(sub02Outcome.fullName, sub02Outcome.processedDate))
     }
 
-  def eoriAlreadyAssociated: Action[AnyContent] =
+  def eoriAlreadyAssociated(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         sub02Outcome <- sessionCache.sub02Outcome
@@ -143,7 +143,7 @@ class Sub02Controller @Inject() (
       } yield Ok(sub02EoriAlreadyAssociatedView(sub02Outcome.fullName, sub02Outcome.processedDate))
     }
 
-  def subscriptionInProgress: Action[AnyContent] =
+  def subscriptionInProgress(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         sub02Outcome <- sessionCache.sub02Outcome
@@ -151,14 +151,14 @@ class Sub02Controller @Inject() (
       } yield Ok(sub02SubscriptionInProgressView(sub02Outcome.fullName, sub02Outcome.processedDate))
     }
 
-  def requestNotProcessed: Action[AnyContent] =
+  def requestNotProcessed(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         _ <- sessionCache.remove
       } yield Ok(sub02RequestNotProcessed())
     }
 
-  def pending: Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
+  def pending(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
         sub02Outcome <- sessionCache.sub02Outcome

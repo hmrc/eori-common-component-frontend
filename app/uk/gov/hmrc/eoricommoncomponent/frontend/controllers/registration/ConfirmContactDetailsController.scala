@@ -184,7 +184,7 @@ class ConfirmContactDetailsController @Inject() (
         )
     }
 
-  def processing: Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
+  def processing(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
         name          <- cdsFrontendDataCache.registrationDetails.map(_.name)
@@ -192,7 +192,7 @@ class ConfirmContactDetailsController @Inject() (
       } yield Ok(sub01OutcomeProcessingView(Some(name), processedDate))
   }
 
-  def rejected: Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
+  def rejected(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
         name          <- cdsFrontendDataCache.registrationDetails.map(_.name)
@@ -212,7 +212,7 @@ class ConfirmContactDetailsController @Inject() (
           case NewSubscription | SubscriptionRejected =>
             onNewSubscription(service, journey)
           case SubscriptionProcessing =>
-            Future.successful(Redirect(ConfirmContactDetailsController.processing()))
+            Future.successful(Redirect(ConfirmContactDetailsController.processing(service)))
           case SubscriptionExists =>
             handleExistingSubscription(service, journey: Journey.Value)
           case status =>

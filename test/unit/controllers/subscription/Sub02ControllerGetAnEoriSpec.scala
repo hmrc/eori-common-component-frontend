@@ -108,12 +108,12 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
     assertNotLoggedInUserShouldBeRedirectedToLoginPage(
       mockAuthConnector,
       "Access the end page",
-      subscriptionController.end()
+      subscriptionController.end(atarService)
     )
   }
 
   "Rejected" should {
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, subscriptionController.rejected)
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, subscriptionController.rejected(atarService))
   }
 
   "clicking on the register button" should {
@@ -192,7 +192,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
 
       subscribeForGetYourEORI() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe routes.Sub02Controller.end().url
+        result.header.headers(LOCATION) shouldBe routes.Sub02Controller.end(atarService).url
       }
     }
 
@@ -209,7 +209,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
 
       subscribeForGetYourEORI() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe routes.Sub02Controller.pending().url
+        result.header.headers(LOCATION) shouldBe routes.Sub02Controller.pending(atarService).url
       }
     }
 
@@ -224,7 +224,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
 
       subscribeForGetYourEORI() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe routes.Sub02Controller.rejected().url
+        result.header.headers(LOCATION) shouldBe routes.Sub02Controller.rejected(atarService).url
       }
     }
 
@@ -239,7 +239,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
 
       subscribeForGetYourEORI() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe routes.Sub02Controller.eoriAlreadyExists().url
+        result.header.headers(LOCATION) shouldBe routes.Sub02Controller.eoriAlreadyExists(atarService).url
       }
     }
 
@@ -254,7 +254,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
 
       subscribeForGetYourEORI() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe routes.Sub02Controller.eoriAlreadyAssociated().url
+        result.header.headers(LOCATION) shouldBe routes.Sub02Controller.eoriAlreadyAssociated(atarService).url
       }
     }
 
@@ -269,7 +269,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
 
       subscribeForGetYourEORI() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe routes.Sub02Controller.subscriptionInProgress().url
+        result.header.headers(LOCATION) shouldBe routes.Sub02Controller.subscriptionInProgress(atarService).url
       }
     }
 
@@ -287,7 +287,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
         result.header.headers(
           LOCATION
         ) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.Sub02Controller
-          .requestNotProcessed()
+          .requestNotProcessed(atarService)
           .url
       }
     }
@@ -447,20 +447,26 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
   def invokeEndPageWithAuthenticatedUser(userId: String = defaultUserId)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     mockSessionCacheForOutcomePage
-    test(subscriptionController.end().apply(SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe", userId)))
+    test(
+      subscriptionController.end(atarService).apply(
+        SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe", userId)
+      )
+    )
   }
 
   def invokeRejectedPageWithAuthenticatedUser(userId: String = defaultUserId)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     mockSessionCacheForOutcomePage
     test(
-      subscriptionController.rejected.apply(SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe", userId))
+      subscriptionController.rejected(atarService).apply(
+        SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe", userId)
+      )
     )
   }
 
   def invokeEndPageWithUnAuthenticatedUser(test: Future[Result] => Any) {
     withNotLoggedInUser(mockAuthConnector)
-    test(subscriptionController.end().apply(SessionBuilder.buildRequestWithSessionNoUser))
+    test(subscriptionController.end(atarService).apply(SessionBuilder.buildRequestWithSessionNoUser))
   }
 
   private def subscribeForGetYourEORI(
@@ -482,17 +488,23 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
 
   private def invokeEoriAlreadyExists(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    test(subscriptionController.eoriAlreadyExists.apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+    test(
+      subscriptionController.eoriAlreadyExists(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+    )
   }
 
   private def invokeSubscriptionInProgress(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    test(subscriptionController.subscriptionInProgress.apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+    test(
+      subscriptionController.subscriptionInProgress(atarService).apply(
+        SessionBuilder.buildRequestWithSession(defaultUserId)
+      )
+    )
   }
 
   private def invokePending(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    test(subscriptionController.pending.apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+    test(subscriptionController.pending(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }
 
   private def mockNameAndSub02OutcomeRetrieval = {
