@@ -33,7 +33,7 @@ class FeatureFlagsSpec extends ControllerSpec {
   "FeatureFlags" should {
     "retrieve values for feature flags from application conf" in {
 
-      featureFlags.matchingEnabled shouldBe true
+      featureFlags.matchingEnabled shouldBe false // hard-coded
       featureFlags.sub02UseServiceName shouldBe true
     }
   }
