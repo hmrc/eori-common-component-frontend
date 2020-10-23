@@ -39,7 +39,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
 
   private val mockAuthConnector   = mock[AuthConnector]
   private val mockAuthAction      = authAction(mockAuthConnector)
-  private val featureFlags        = instanceOf[FeatureFlags]
+  private val mockFeatureFlags    = mock[FeatureFlags]
   private val mockMatchingService = mock[MatchingService]
 
   private val userId: String     = "someUserId"
@@ -48,10 +48,12 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
   private val payeNinoId: String = "AB123456C"
 
   private val controller =
-    new MatchingIdController(mockAuthAction, featureFlags, mockMatchingService, mcc)(global)
+    new MatchingIdController(mockAuthAction, mockFeatureFlags, mockMatchingService, mcc)(global)
 
-  override def beforeEach: Unit =
+  override def beforeEach: Unit = {
     reset(mockMatchingService)
+    when(mockFeatureFlags.matchingEnabled).thenReturn(true)
+  }
 
   "MatchingIdController for GetAnEori Journey" should {
 
@@ -61,7 +63,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
       withAuthorisedUser(userId, mockAuthConnector)
 
       val controller =
-        new MatchingIdController(mockAuthAction, featureFlags, mockMatchingService, mcc)(global)
+        new MatchingIdController(mockAuthAction, mockFeatureFlags, mockMatchingService, mcc)(global)
       val result: Result =
         await(controller.matchWithIdOnly(atarService).apply(SessionBuilder.buildRequestWithSession(userId)))
 
@@ -93,7 +95,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
         .thenReturn(Future.successful(false))
 
       val controller =
-        new MatchingIdController(mockAuthAction, featureFlags, mockMatchingService, mcc)(global)
+        new MatchingIdController(mockAuthAction, mockFeatureFlags, mockMatchingService, mcc)(global)
       val result = await(controller.matchWithIdOnly(atarService).apply(SessionBuilder.buildRequestWithSession(userId)))
 
       status(result) shouldBe SEE_OTHER
@@ -190,7 +192,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
         .thenReturn(Future.successful(false))
 
       val controller =
-        new MatchingIdController(mockAuthAction, featureFlags, mockMatchingService, mcc)(global)
+        new MatchingIdController(mockAuthAction, mockFeatureFlags, mockMatchingService, mcc)(global)
       val result =
         await(
           controller.matchWithIdOnlyForExistingReg(atarService).apply(SessionBuilder.buildRequestWithSession(userId))
