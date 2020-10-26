@@ -135,9 +135,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       submitForm(ValidRequest + (yesNoInputName -> answerYes), service = atarService, journey = Journey.Subscribe) {
         result =>
           status(result) shouldBe SEE_OTHER
-          result.header.headers("Location") should endWith(
-            "/customs-enrolment-services/atar/subscribe/are-you-based-in-uk"
-          )
+          result.header.headers("Location") should endWith("/customs-enrolment-services/atar/subscribe/check-email")
       }
     }
 
