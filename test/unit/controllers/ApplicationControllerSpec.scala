@@ -22,8 +22,7 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment}
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.MissingGroupId
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{ApplicationController, MissingGroupId}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, KeyValue}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
@@ -87,7 +86,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
         controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       status(result) shouldBe SEE_OTHER
-      await(result).header.headers("Location") should endWith("are-you-based-in-uk")
+      await(result).header.headers("Location") should endWith("/check-email")
     }
 
     "direct authenticated users with CDS enrolment to start short-cut subscription" in {
