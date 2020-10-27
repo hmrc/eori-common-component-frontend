@@ -28,7 +28,7 @@ class RegisterRedirectController @Inject() (mcc: MessagesControllerComponents, a
   def getEori(service: Service, journey: Journey.Value): Action[AnyContent] = Action { implicit request =>
     appConfig.externalGetEORILink match {
       case Some(url) => Redirect(url)
-      case _         => Redirect(routes.ApplicationController.start(service))
+      case _         => Redirect(routes.ApplicationController.startRegister(service))
     }
 
   }

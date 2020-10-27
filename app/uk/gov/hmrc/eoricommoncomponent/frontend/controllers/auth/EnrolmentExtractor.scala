@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth
 
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Eori, LoggedInUserWithEnrolments, Nino, Utr}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 trait EnrolmentExtractor {
@@ -48,5 +48,18 @@ trait EnrolmentExtractor {
 
   def enrolledNino(loggedInUser: LoggedInUserWithEnrolments): Option[Nino] =
     identifierFor("HMRC-NI", "NINO", loggedInUser).map(Nino)
+
+  def existingEoriForUserOrGroup(
+    loggedInUser: LoggedInUserWithEnrolments,
+    groupEnrolments: List[EnrolmentResponse]
+  ): Option[ExistingEori] = {
+    val userEnrolmentWithEori = loggedInUser.enrolments.enrolments.find(_.identifiers.exists(_.key == EoriIdentifier))
+    val existingEoriForUser = userEnrolmentWithEori.map(
+      enrolment => ExistingEori(enrolment.getIdentifier(EoriIdentifier).map(_.value), enrolment.key)
+    )
+    existingEoriForUser.orElse(
+      groupEnrolments.find(_.eori.exists(_.nonEmpty)).map(enrolment => ExistingEori(enrolment.eori, enrolment.service))
+    )
+  }
 
 }

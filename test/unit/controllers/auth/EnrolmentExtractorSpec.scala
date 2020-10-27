@@ -19,7 +19,7 @@ package unit.controllers.auth
 import base.UnitSpec
 import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.EnrolmentExtractor
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Eori, LoggedInUserWithEnrolments, Nino, Utr}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 class EnrolmentExtractorSpec extends UnitSpec {
@@ -126,6 +126,51 @@ class EnrolmentExtractorSpec extends UnitSpec {
       "user doesn't have correct enrolment" in {
 
         enrolmentExtractor.enrolledNino(loggedInUser(Set.empty)) shouldBe None
+      }
+    }
+
+    "return existing EORI for user and/or group" when {
+
+      "user has enrolment with an EORI" in {
+
+        val userEnrolments                           = Set(Enrolment("HMRC-TEST-ORG").withIdentifier("EORINumber", eori.id))
+        val groupEnrolments: List[EnrolmentResponse] = List.empty
+
+        val result = enrolmentExtractor.existingEoriForUserOrGroup(loggedInUser(userEnrolments), groupEnrolments)
+
+        result shouldBe Some(ExistingEori(eori.id, "HMRC-TEST-ORG"))
+      }
+
+      "user's group has enrolment with an EORI" in {
+
+        val userEnrolments = Set(Enrolment("HMRC-NI").withIdentifier("NINO", nino.id))
+        val groupEnrolments: List[EnrolmentResponse] =
+          List(EnrolmentResponse("HMRC-GROUP-ORG", "Active", List(KeyValue("EORINumber", eori.id))))
+
+        val result = enrolmentExtractor.existingEoriForUserOrGroup(loggedInUser(userEnrolments), groupEnrolments)
+
+        result shouldBe Some(ExistingEori(eori.id, "HMRC-GROUP-ORG"))
+      }
+
+      "user has no enrolment with EORI nor group enrolment with EORI" in {
+
+        val userEnrolments = Set(Enrolment("HMRC-NI").withIdentifier("NINO", nino.id))
+        val groupEnrolments =
+          List(EnrolmentResponse("HMRC-GROUP-ORG", "Active", List(KeyValue("OtherIdentifierKey", "SomeValue"))))
+
+        val result = enrolmentExtractor.existingEoriForUserOrGroup(loggedInUser(userEnrolments), groupEnrolments)
+
+        result shouldBe None
+      }
+
+      "user enrolments or group enrolments" in {
+
+        val userEnrolments: Set[Enrolment]           = Set.empty
+        val groupEnrolments: List[EnrolmentResponse] = List.empty
+
+        val result = enrolmentExtractor.existingEoriForUserOrGroup(loggedInUser(userEnrolments), groupEnrolments)
+
+        result shouldBe None
       }
     }
   }

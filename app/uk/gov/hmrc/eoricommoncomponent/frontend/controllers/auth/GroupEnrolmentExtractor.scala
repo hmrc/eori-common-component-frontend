@@ -37,4 +37,7 @@ class GroupEnrolmentExtractor @Inject() (enrolmentStoreProxyService: EnrolmentSt
   ): Future[Option[EnrolmentResponse]] =
     enrolmentStoreProxyService.enrolmentForGroup(GroupId(groupId), service)
 
+  def groupIdEnrolments(groupId: String)(implicit hc: HeaderCarrier): Future[List[EnrolmentResponse]] =
+    enrolmentStoreProxyService.enrolmentsForGroup(GroupId(groupId))
+
 }

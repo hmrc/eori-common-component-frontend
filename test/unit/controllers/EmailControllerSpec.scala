@@ -27,12 +27,15 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EmailController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.InternalId
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionStatusService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionProcessing,
+  SubscriptionStatusService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.{Save4LaterService, UserGroupIdSubscriptionStatusCheckService}
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
@@ -54,7 +57,7 @@ class EmailControllerSpec
   private val mockSubscriptionStatusService = mock[SubscriptionStatusService]
   private val groupEnrolmentExtractor       = mock[GroupEnrolmentExtractor]
 
-  private val mockUserGroupIdSubscriptionStatusCheckService =
+  private val userGroupIdSubscriptionStatusCheckService =
     new UserGroupIdSubscriptionStatusCheckService(mockSubscriptionStatusService, mockSave4LaterConnector)
 
   private val controller = new EmailController(
@@ -63,7 +66,7 @@ class EmailControllerSpec
     mockSessionCache,
     mcc,
     mockSave4LaterService,
-    mockUserGroupIdSubscriptionStatusCheckService,
+    userGroupIdSubscriptionStatusCheckService,
     groupEnrolmentExtractor
   )
 
@@ -84,9 +87,11 @@ class EmailControllerSpec
       .thenReturn(Future.successful(None))
     when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any()))
       .thenReturn(Future.successful(false))
+    when(groupEnrolmentExtractor.groupIdEnrolments(any())(any()))
+      .thenReturn(Future.successful(List.empty))
   }
 
-  "Viewing the form on Migration" should {
+  "Viewing the form on Subscribe" should {
 
     "display the form with no errors" in {
       showFormSubscription() { result =>
@@ -126,13 +131,111 @@ class EmailControllerSpec
         await(result).header.headers("Location") should endWith("email-confirmed")
       }
     }
+
+    "redirect when subscription is in progress" in {
+      when(mockSave4LaterConnector.get[CacheIds](any(), any())(any(), any()))
+        .thenReturn(Future.successful(Some(CacheIds(InternalId("int-id"), SafeId("safe-id")))))
+      when(mockSubscriptionStatusService.getStatus(any(), any())(any()))
+        .thenReturn(Future.successful(SubscriptionProcessing))
+
+      showFormSubscription() { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("enrolment-pending-against-groupId")
+      }
+    }
   }
 
-  private def showFormSubscription(userId: String = defaultUserId)(test: Future[Result] => Any) {
+  val atarGroupEnrolment: EnrolmentResponse =
+    EnrolmentResponse("HMRC-ATAR-ORG", "Active", List(KeyValue("EORINumber", "GB1234567890")))
+
+  val cdsGroupEnrolment: EnrolmentResponse =
+    EnrolmentResponse("HMRC-CUS-ORG", "Active", List(KeyValue("EORINumber", "GB1234567890")))
+
+  "Viewing the form on Register" should {
+
+    "display the form with no errors" in {
+      showFormRegister() { result =>
+        status(result) shouldBe SEE_OTHER
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(PageLevelErrorSummaryListXPath) shouldBe empty
+      }
+    }
+
+    "redirect when cache has no email status" in {
+      when(mockSave4LaterService.fetchEmail(any[InternalId])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(None))
+      showFormRegister() { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("what-is-your-email")
+      }
+    }
+
+    "redirect when email not verified" in {
+      when(mockSave4LaterService.fetchEmail(any[InternalId])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(emailStatus.copy(isVerified = false))))
+      when(
+        mockEmailVerificationService
+          .isEmailVerified(any[String])(any[HeaderCarrier])
+      ).thenReturn(Future.successful(Some(false)))
+      showFormRegister() { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("verify-your-email")
+      }
+    }
+
+    "redirect when email verified" in {
+      when(mockSave4LaterService.fetchEmail(any[InternalId])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(emailStatus.copy(isVerified = true))))
+      showFormRegister() { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("email-confirmed")
+      }
+    }
+
+    "redirect when subscription is in progress" in {
+      when(mockSave4LaterConnector.get[CacheIds](any(), any())(any(), any()))
+        .thenReturn(Future.successful(Some(CacheIds(InternalId("int-id"), SafeId("safe-id")))))
+      when(mockSubscriptionStatusService.getStatus(any(), any())(any()))
+        .thenReturn(Future.successful(SubscriptionProcessing))
+
+      showFormRegister() { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("enrolment-pending-against-groupId")
+      }
+    }
+
+    "redirect when group enrolled to service" in {
+      when(groupEnrolmentExtractor.groupIdEnrolments(any())(any()))
+        .thenReturn(Future.successful(List(atarGroupEnrolment)))
+
+      showFormRegister() { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("enrolment-already-exists-for-group")
+      }
+    }
+
+    "redirect when user has existing EORI" in {
+      when(groupEnrolmentExtractor.groupIdEnrolments(any())(any()))
+        .thenReturn(Future.successful(List(cdsGroupEnrolment)))
+
+      showFormRegister() { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("you-already-have-an-eori")
+      }
+    }
+  }
+
+  private def showFormSubscription(userId: String = defaultUserId)(test: Future[Result] => Any): Unit =
+    showForm(userId, Journey.Subscribe)(test)
+
+  private def showFormRegister(userId: String = defaultUserId)(test: Future[Result] => Any): Unit =
+    showForm(userId, Journey.Register)(test)
+
+  private def showForm(userId: String = defaultUserId, journey: Journey.Value)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller
-        .form(atarService, Journey.Subscribe)
+        .form(atarService, journey)
         .apply(SessionBuilder.buildRequestWithSession(userId))
     )
   }
