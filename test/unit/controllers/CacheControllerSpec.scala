@@ -69,7 +69,7 @@ class CacheControllerSpec extends ControllerSpec with AuthActionMock {
       val result: Result =
         await(controller.clearCache(Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId)))
       status(result) shouldBe SEE_OTHER
-      result.header.headers("Location") should be(ApplicationController.start(atarService).url)
+      result.header.headers("Location") should be(ApplicationController.startRegister(atarService).url)
       assertSessionDoesNotContainKeys(result.session(mockRequest))
     }
   }

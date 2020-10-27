@@ -45,7 +45,7 @@ class ApplicationController @Inject() (
 )(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
     extends CdsController(mcc) with EnrolmentExtractor {
 
-  def start(service: Service): Action[AnyContent] = Action { implicit request =>
+  def startRegister(service: Service): Action[AnyContent] = Action { implicit request =>
     Ok(viewStart(service, Journey.Register))
   }
 

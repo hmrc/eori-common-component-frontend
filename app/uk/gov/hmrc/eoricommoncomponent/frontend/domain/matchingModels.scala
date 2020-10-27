@@ -235,3 +235,13 @@ case class NinoMatchModel(haveNino: Option[Boolean], nino: Option[String])
 object NinoMatchModel {
   implicit val jsonFormat = Json.format[NinoMatchModel]
 }
+
+case class ExistingEori(id: String, enrolmentKey: String)
+
+object ExistingEori {
+  implicit val jsonFormat = Json.format[ExistingEori]
+
+  def apply(id: Option[String], enrolmentKey: String): ExistingEori =
+    new ExistingEori(id.getOrElse(throw new IllegalArgumentException("EORI is missing")), enrolmentKey)
+
+}

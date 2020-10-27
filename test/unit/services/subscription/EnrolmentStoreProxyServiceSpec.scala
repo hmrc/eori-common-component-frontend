@@ -55,13 +55,16 @@ class EnrolmentStoreProxyServiceSpec extends UnitSpec with MockitoSugar with Bef
   private val enrolmentResponse =
     EnrolmentResponse(serviceName, state, List(identifier))
 
+  private val enrolmentResponseNotActive =
+    EnrolmentResponse("SOME_SERVICE", "NotActive", List(identifier))
+
   private val enrolmentStoreProxyResponse = EnrolmentStoreProxyResponse(List(enrolmentResponse))
   private val serviceName1                = "HMRC-VAT-ORG"
 
   private val enrolmentResponseNoHmrcCusOrg =
     EnrolmentResponse(serviceName1, state, List(identifier))
 
-  private val enrolmentStoreProxyResponsNoHmrcCusOrg =
+  private val enrolmentStoreProxyResponseNoHmrcCusOrg =
     EnrolmentStoreProxyResponse(List(enrolmentResponseNoHmrcCusOrg))
 
   "EnrolmentStoreProxyService" should {
@@ -80,9 +83,33 @@ class EnrolmentStoreProxyServiceSpec extends UnitSpec with MockitoSugar with Bef
       when(
         mockEnrolmentStoreProxyConnector
           .getEnrolmentByGroupId(any[String])(meq(headerCarrier), any())
-      ).thenReturn(Future.successful(enrolmentStoreProxyResponsNoHmrcCusOrg))
+      ).thenReturn(Future.successful(enrolmentStoreProxyResponseNoHmrcCusOrg))
 
       await(service.enrolmentForGroup(groupId, Service.cds)) shouldBe None
+
+      verify(mockEnrolmentStoreProxyConnector).getEnrolmentByGroupId(any[String])(meq(headerCarrier), any())
+    }
+
+    "return all enrolments for the groupId" in {
+      when(
+        mockEnrolmentStoreProxyConnector
+          .getEnrolmentByGroupId(any[String])(meq(headerCarrier), any())
+      ).thenReturn(
+        Future.successful(EnrolmentStoreProxyResponse(List(enrolmentResponse, enrolmentResponseNoHmrcCusOrg)))
+      )
+
+      await(service.enrolmentsForGroup(groupId)) shouldBe List(enrolmentResponse, enrolmentResponseNoHmrcCusOrg)
+
+      verify(mockEnrolmentStoreProxyConnector).getEnrolmentByGroupId(any[String])(meq(headerCarrier), any())
+    }
+
+    "exclude non-active enrolments for the groupId" in {
+      when(
+        mockEnrolmentStoreProxyConnector
+          .getEnrolmentByGroupId(any[String])(meq(headerCarrier), any())
+      ).thenReturn(Future.successful(EnrolmentStoreProxyResponse(List(enrolmentResponse, enrolmentResponseNotActive))))
+
+      await(service.enrolmentsForGroup(groupId)) shouldBe List(enrolmentResponse)
 
       verify(mockEnrolmentStoreProxyConnector).getEnrolmentByGroupId(any[String])(meq(headerCarrier), any())
     }

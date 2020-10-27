@@ -17,12 +17,20 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc._
 import play.api.Logger
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, GroupEnrolmentExtractor}
+import play.api.mvc._
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
+  AuthAction,
+  EnrolmentExtractor,
+  GroupEnrolmentExtractor
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.CheckYourEmailController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.WhatIsYourEmailController.createForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.EnrolmentPendingAgainstGroupIdController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.{
+  EnrolmentAlreadyExistsController,
+  EnrolmentPendingAgainstGroupIdController,
+  YouAlreadyHaveEoriController
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, InternalId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
@@ -37,13 +45,13 @@ import scala.concurrent.{ExecutionContext, Future}
 class EmailController @Inject() (
   authAction: AuthAction,
   emailVerificationService: EmailVerificationService,
-  cdsFrontendDataCache: SessionCache,
+  sessionCache: SessionCache,
   mcc: MessagesControllerComponents,
   save4LaterService: Save4LaterService,
   userGroupIdSubscriptionStatusCheckService: UserGroupIdSubscriptionStatusCheckService,
   groupEnrolment: GroupEnrolmentExtractor
 )(implicit ec: ExecutionContext)
-    extends CdsController(mcc) {
+    extends CdsController(mcc) with EnrolmentExtractor {
 
   private val logger = Logger(this.getClass)
 
@@ -66,7 +74,7 @@ class EmailController @Inject() (
         Future.successful(Redirect(createForm(service, journey)))
       } { cachedEmailStatus =>
         if (cachedEmailStatus.isVerified)
-          cdsFrontendDataCache.saveEmail(cachedEmailStatus.email) map { _ =>
+          sessionCache.saveEmail(cachedEmailStatus.email) map { _ =>
             Redirect(CheckYourEmailController.emailConfirmed(service, journey))
           }
         else checkWithEmailService(cachedEmailStatus, service, journey)
@@ -75,16 +83,43 @@ class EmailController @Inject() (
 
   def form(service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
-      groupEnrolment.hasGroupIdEnrolmentTo(user.groupId.getOrElse(throw MissingGroupId()), service).flatMap {
-        groupIdEnrolmentExists =>
-          if (groupIdEnrolmentExists)
-            Future.successful(Redirect(routes.EnrolmentExistsAgainstGroupIdController.show(service, journey)))
-          else
-            userGroupIdSubscriptionStatusCheckService
-              .checksToProceed(GroupId(user.groupId), InternalId(user.internalId))(continue(service, journey))(
-                userIsInProcess(service, journey)
-              )(otherUserWithinGroupIsInProcess(service, journey))
+      journey match {
+        case Journey.Subscribe => startSubscribeJourney(service)
+        case Journey.Register  => startRegisterJourney(service)
       }
+    }
+
+  private def startSubscribeJourney(
+    service: Service
+  )(implicit hc: HeaderCarrier, request: Request[AnyContent], user: LoggedInUserWithEnrolments) =
+    userGroupIdSubscriptionStatusCheckService
+      .checksToProceed(GroupId(user.groupId), InternalId(user.internalId))(continue(service, Journey.Subscribe))(
+        userIsInProcess(service, Journey.Subscribe)
+      )(otherUserWithinGroupIsInProcess(service, Journey.Subscribe))
+
+  private def startRegisterJourney(
+    service: Service
+  )(implicit hc: HeaderCarrier, request: Request[AnyContent], user: LoggedInUserWithEnrolments) =
+    groupEnrolment.groupIdEnrolments(user.groupId.getOrElse(throw MissingGroupId())).flatMap {
+      groupEnrolments =>
+        if (groupEnrolments.exists(_.service == service.enrolmentKey))
+          // user has specified service
+          Future.successful(
+            Redirect(EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service, Journey.Register))
+          )
+        else
+          existingEoriForUserOrGroup(user, groupEnrolments) match {
+            case Some(_) =>
+              // user already has EORI
+              Future.successful(Redirect(YouAlreadyHaveEoriController.display(service)))
+            case None =>
+              userGroupIdSubscriptionStatusCheckService
+                .checksToProceed(GroupId(user.groupId), InternalId(user.internalId))(
+                  continue(service, Journey.Register)
+                )(userIsInProcess(service, Journey.Register))(
+                  otherUserWithinGroupIsInProcess(service, Journey.Register)
+                )
+          }
     }
 
   private def checkWithEmailService(emailStatus: EmailStatus, service: Service, journey: Journey.Value)(implicit
@@ -100,7 +135,7 @@ class EmailController @Inject() (
           }
           _ <- {
             logger.warn("saved verified email address true to cache")
-            cdsFrontendDataCache.saveEmail(emailStatus.email)
+            sessionCache.saveEmail(emailStatus.email)
           }
         } yield Redirect(CheckYourEmailController.emailConfirmed(service, journey))
       case Some(false) =>

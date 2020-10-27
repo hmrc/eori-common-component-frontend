@@ -12,6 +12,9 @@ GET         /customs-enrolment-services/:service/:journey/get-eori              
 GET         /customs-enrolment-services/:service/:journey/enrolment-already-exists                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service: Service, journey: Journey.Value)
 GET         /customs-enrolment-services/:service/:journey/enrolment-already-exists-for-group            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service: Service, journey: Journey.Value)
 
+# eori-already-exists
+GET         /customs-enrolment-services/:service/register/you-already-have-an-eori                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.YouAlreadyHaveEoriController.display(service: Service)
+
 # check-existing-eori
 GET         /customs-enrolment-services/:service/subscribe/check-existing-eori                           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.HasExistingEoriController.displayPage(service: Service)
 POST        /customs-enrolment-services/:service/subscribe/check-existing-eori                           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.HasExistingEoriController.enrol(service: Service)
@@ -95,7 +98,7 @@ GET         /customs-enrolment-services/subscribe/download/pdf                  
 GET         /customs-enrolment-services/subscribe/download/text                               @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EoriTextDownloadController.download()
 
 # register Get An Eori
-GET         /customs-enrolment-services/:service/register                                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.start(service: Service)
+GET         /customs-enrolment-services/:service/register                                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.startRegister(service: Service)
 
 GET         /customs-enrolment-services/:service/:journey/accessibility-statement             @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.accessibilityStatement(service: Service, journey: Journey.Value)
 
@@ -126,7 +129,6 @@ GET         /customs-enrolment-services/:service/register/complete              
 GET         /customs-enrolment-services/:service/:journey/business-details-recovery           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.BusinessDetailsRecoveryController.form(service: Service, journey: Journey.Value)
 GET         /customs-enrolment-services/:service/:journey/business-details-recovery/continue  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.BusinessDetailsRecoveryController.continue(service: Service, journey: Journey.Value)
 
-GET         /customs-enrolment-services/:service/:journey/enrolment-exists-against-groupId    @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EnrolmentExistsAgainstGroupIdController.show(service: Service, journey: Journey.Value)
 GET         /customs-enrolment-services/:service/:journey/enrolment-pending-against-groupId   @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EnrolmentPendingAgainstGroupIdController.show(service: Service, journey: Journey.Value)
 # Return
 GET         /customs-enrolment-services/register/return-processing                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.UserLocationController.processing

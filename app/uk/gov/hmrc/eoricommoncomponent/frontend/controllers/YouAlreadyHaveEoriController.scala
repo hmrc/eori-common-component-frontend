@@ -16,29 +16,31 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
-import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import javax.inject.Inject
+import play.api.i18n.I18nSupport
+import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.enrolment_exists_against_group_id
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.you_already_have_eori
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
-@Singleton
-class EnrolmentExistsAgainstGroupIdController @Inject() (
+class YouAlreadyHaveEoriController @Inject() (
   authAction: AuthAction,
-  sessionCache: SessionCache,
-  mcc: MessagesControllerComponents,
-  enrolmentExistsAgainstGroupId: enrolment_exists_against_group_id
+  eoriExistsView: you_already_have_eori,
+  cache: SessionCache,
+  mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
-    extends CdsController(mcc) {
+    extends FrontendController(mcc) with I18nSupport {
 
-  def show(service: Service, journey: Journey.Value): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction {
+  // Note: permitted for user with service enrolment
+  def display(service: Service): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithServiceAction {
       implicit request => _: LoggedInUserWithEnrolments =>
-        sessionCache.remove.map(_ => Ok(enrolmentExistsAgainstGroupId(journey)))
+        Future.successful(Ok(eoriExistsView(service)))
     }
 
 }
