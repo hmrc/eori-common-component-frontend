@@ -106,7 +106,7 @@ class EmailControllerSpec
         .thenReturn(Future.successful(None))
       showFormSubscription() { result =>
         status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("what-is-your-email")
+        await(result).header.headers("Location") should endWith("/atar/subscribe/matching/what-is-your-email")
       }
     }
 
@@ -119,7 +119,7 @@ class EmailControllerSpec
       ).thenReturn(Future.successful(Some(false)))
       showFormSubscription() { result =>
         status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("verify-your-email")
+        await(result).header.headers("Location") should endWith("/atar/subscribe/matching/verify-your-email")
       }
     }
 
@@ -128,7 +128,7 @@ class EmailControllerSpec
         .thenReturn(Future.successful(Some(emailStatus.copy(isVerified = true))))
       showFormSubscription() { result =>
         status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("email-confirmed")
+        await(result).header.headers("Location") should endWith("/atar/subscribe/email-confirmed")
       }
     }
 
@@ -140,7 +140,7 @@ class EmailControllerSpec
 
       showFormSubscription() { result =>
         status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("enrolment-pending-against-groupId")
+        await(result).header.headers("Location") should endWith("/atar/subscribe/enrolment-pending-against-groupId")
       }
     }
   }
@@ -166,7 +166,7 @@ class EmailControllerSpec
         .thenReturn(Future.successful(None))
       showFormRegister() { result =>
         status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("what-is-your-email")
+        await(result).header.headers("Location") should endWith("/atar/register/matching/what-is-your-email")
       }
     }
 
@@ -179,7 +179,7 @@ class EmailControllerSpec
       ).thenReturn(Future.successful(Some(false)))
       showFormRegister() { result =>
         status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("verify-your-email")
+        await(result).header.headers("Location") should endWith("/atar/register/matching/verify-your-email")
       }
     }
 
@@ -188,7 +188,7 @@ class EmailControllerSpec
         .thenReturn(Future.successful(Some(emailStatus.copy(isVerified = true))))
       showFormRegister() { result =>
         status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("email-confirmed")
+        await(result).header.headers("Location") should endWith("/atar/register/email-confirmed")
       }
     }
 
@@ -200,7 +200,7 @@ class EmailControllerSpec
 
       showFormRegister() { result =>
         status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("enrolment-pending-against-groupId")
+        await(result).header.headers("Location") should endWith("/atar/register/enrolment-pending-against-groupId")
       }
     }
 
@@ -210,7 +210,7 @@ class EmailControllerSpec
 
       showFormRegister() { result =>
         status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("enrolment-already-exists-for-group")
+        await(result).header.headers("Location") should endWith("/atar/register/enrolment-already-exists-for-group")
       }
     }
 
@@ -220,7 +220,7 @@ class EmailControllerSpec
 
       showFormRegister() { result =>
         status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("you-already-have-an-eori")
+        await(result).header.headers("Location") should endWith("/atar/register/you-already-have-an-eori")
       }
     }
   }

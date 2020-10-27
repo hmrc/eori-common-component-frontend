@@ -93,9 +93,9 @@ class EmailController @Inject() (
     service: Service
   )(implicit hc: HeaderCarrier, request: Request[AnyContent], user: LoggedInUserWithEnrolments) =
     userGroupIdSubscriptionStatusCheckService
-      .checksToProceed(GroupId(user.groupId), InternalId(user.internalId))(continue(service, Journey.Register))(
-        userIsInProcess(service, Journey.Register)
-      )(otherUserWithinGroupIsInProcess(service, Journey.Register))
+      .checksToProceed(GroupId(user.groupId), InternalId(user.internalId))(continue(service, Journey.Subscribe))(
+        userIsInProcess(service, Journey.Subscribe)
+      )(otherUserWithinGroupIsInProcess(service, Journey.Subscribe))
 
   private def startRegisterJourney(
     service: Service

@@ -70,3 +70,6 @@ cds.email-confirmed.para.get-access=TRANSLATE You can continue with your applica
 cds.subscription.address-details.street.label=TRANSLATE Building and street
 
 cds.subscription.outcomes.success.will-send-email=TRANSLATE We will send you an email to confirm when you have access to {0}. This can take up to two hours.
+
+cds.registration.you-already-have-eori.title=TRANSLATE You already have an EORI
+cds.registration.you-already-have-eori.para1=TRANSLATE We have detected you already have an EORI.  You can continue and subscribe to the the {0} service.
