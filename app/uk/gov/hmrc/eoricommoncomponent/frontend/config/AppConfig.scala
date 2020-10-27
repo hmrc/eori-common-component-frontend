@@ -58,7 +58,7 @@ class AppConfig @Inject() (
   }
 
   lazy val externalGetEORILink: Option[String] = config.getOptional[String]("external-url.get-cds-eori")
-  lazy val findLostUrl: String                 = config.get[String]("external-url.find-lost-utr")
+  lazy val findLostUtr: String                 = config.get[String]("external-url.find-lost-utr")
 
   lazy val blockedRoutesRegex: Seq[Regex] =
     config.getOptional[String]("routes-to-block") match {

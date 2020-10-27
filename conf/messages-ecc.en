@@ -71,6 +71,9 @@ cds.subscription.address-details.street.label=Building and street
 
 cds.subscription.outcomes.success.will-send-email=We will send you an email to confirm when you have access to {0}. This can take up to two hours.
 
+cds.registration.you-already-have-eori.title=You already have an EORI
+cds.registration.you-already-have-eori.para1=We have detected you already have an EORI.  You can continue and subscribe to the the {0} service.
+
 cds.subscription.information.title=You need to subscribe
 cds.subscription.information.heading=You need to subscribe to access {0}
 cds.subscription.information.subheading=How to get access to {0}
@@ -84,6 +87,3 @@ cds.subscription.information.bullet3=your Unique Taxpayer Reference (UTR). You c
 cds.subscription.information.bullet3.link=find a lost UTR number (opens in a new window or tab)
 
 cds.navigation.subscribe=Subscribe
-
-cds.registration.you-already-have-eori.title=You already have an EORI
-cds.registration.you-already-have-eori.para1=We have detected you already have an EORI.  You can continue and subscribe to the the {0} service.

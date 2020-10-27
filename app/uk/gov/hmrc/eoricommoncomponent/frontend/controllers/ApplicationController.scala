@@ -50,11 +50,11 @@ class ApplicationController @Inject() (
     Ok(viewStartRegister(service, Journey.Register))
   }
 
-  def startSubscriptionInformation(service: Service): Action[AnyContent] = Action { implicit request =>
+  def startSubscription(service: Service): Action[AnyContent] = Action { implicit request =>
     Ok(viewStartSubscribe(service))
   }
 
-  def startSubscription(service: Service): Action[AnyContent] = authorise.ggAuthorisedUserWithEnrolmentsAction {
+  def startSubscriptionJourney(service: Service): Action[AnyContent] = authorise.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
       val groupId = loggedInUser.groupId.getOrElse(throw MissingGroupId())
       groupEnrolment.hasGroupIdEnrolmentTo(groupId, service).flatMap { groupIdEnrolmentExists =>

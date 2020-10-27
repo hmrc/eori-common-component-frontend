@@ -73,3 +73,17 @@ cds.subscription.outcomes.success.will-send-email=TRANSLATE We will send you an 
 
 cds.registration.you-already-have-eori.title=TRANSLATE You already have an EORI
 cds.registration.you-already-have-eori.para1=TRANSLATE We have detected you already have an EORI.  You can continue and subscribe to the the {0} service.
+
+cds.subscription.information.title=TRANSLATE You need to subscribe
+cds.subscription.information.heading=TRANSLATE You need to subscribe to access {0}
+cds.subscription.information.subheading=TRANSLATE How to get access to {0}
+cds.subscription.information.para1=TRANSLATE Before you can access this service we may need extra information about you or your organisation.
+cds.subscription.information.para2=TRANSLATE You might need to tell us:
+cds.subscription.information.para3=TRANSLATE It takes around 5 to 10 minutes to apply to access the service. You will receive a confirmation email within two hours.
+cds.subscription.information.bullet1=TRANSLATE a GB EORI number. If you don’t already have one, you need to {0}.
+cds.subscription.information.bullet1.link=TRANSLATE apply for an EORI number (opens in a new window or tab)
+cds.subscription.information.bullet2=TRANSLATE National Insurance number (if you are an individual or sole trader).
+cds.subscription.information.bullet3=TRANSLATE your Unique Taxpayer Reference (UTR). You can {0}.
+cds.subscription.information.bullet3.link=TRANSLATE find a lost UTR number (opens in a new window or tab)
+
+cds.navigation.subscribe=TRANSLATE Subscribe

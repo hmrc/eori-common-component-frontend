@@ -42,12 +42,12 @@
         <ul class="bullets list">
             <li>@Html(messages("cds.subscription.information.bullet1", link(messages("cds.subscription.information.bullet1.link"), ApplicationController.startRegister(service).url)))</li>
             <li>@messages("cds.subscription.information.bullet2")</li>
-            <li>@Html(messages("cds.subscription.information.bullet3", link("cds.subscription.information.bullet3.link", appConfig.findLostUrl)))</li>
+            <li>@Html(messages("cds.subscription.information.bullet3", link("cds.subscription.information.bullet3.link", appConfig.findLostUtr)))</li>
         </ul>
 
         <p>@messages("cds.subscription.information.para3")</p>
 
-        <a href="@ApplicationController.startSubscription(service)" class="button" id="continue">@messages("cds.navigation.subscribe")</a>
+        <a href="@ApplicationController.startSubscriptionJourney(service)" class="button" id="continue">@messages("cds.navigation.subscribe")</a>
 
         @helpers.helpAndSupport()
     </div>
