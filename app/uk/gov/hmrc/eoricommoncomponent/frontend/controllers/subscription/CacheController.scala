@@ -17,12 +17,13 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, PathBindable}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 
 import scala.concurrent.ExecutionContext
@@ -36,15 +37,13 @@ class CacheController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def clearCache(journey: Journey.Value): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
-      sessionCache.saveSubscriptionDetails(SubscriptionDetails()).map { _ =>
-        // TODO - get current service name from somewhere
-        Redirect(
-          "/customs-enrolment-services/atar/" + implicitly[PathBindable[Journey.Value]].unbind("journey", journey)
-        )
-          .withSession(requestSessionData.sessionForStartAgain)
-      }
-  }
+  def clearCache(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        sessionCache.saveSubscriptionDetails(SubscriptionDetails()).map { _ =>
+          Redirect(EmailController.form(service, journey))
+            .withSession(requestSessionData.sessionForStartAgain)
+        }
+    }
 
 }

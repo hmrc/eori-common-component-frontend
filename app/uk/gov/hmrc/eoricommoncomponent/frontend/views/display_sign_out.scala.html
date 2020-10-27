@@ -25,7 +25,7 @@
 
 @redirectUrl = @{journey match {
     case Journey.Register => ApplicationController.startRegister(service).url
-    case Journey.Subscribe => ApplicationController.startSubscription(service).url
+    case Journey.Subscribe => ApplicationController.startSubscriptionInformation(service).url
 }}
 
 @layout_di(messages("cds.security-sign-out.heading")) {

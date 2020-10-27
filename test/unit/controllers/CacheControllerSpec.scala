@@ -31,8 +31,8 @@ import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class CacheControllerSpec extends ControllerSpec with AuthActionMock {
 
@@ -47,29 +47,35 @@ class CacheControllerSpec extends ControllerSpec with AuthActionMock {
 
   "Cache controller" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.clearCache(Journey.Subscribe))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
+      mockAuthConnector,
+      controller.clearCache(atarService, Journey.Subscribe)
+    )
 
     "clear cache for subscription holder for subscription journey" in {
       withAuthorisedUser(userId, mockAuthConnector)
       when(mockSessionCache.saveSubscriptionDetails(any[SubscriptionDetails])(any[HeaderCarrier]))
         .thenReturn(Future.successful(true))
       val result: Result =
-        await(controller.clearCache(Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(userId)))
+        await(
+          controller.clearCache(atarService, Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(userId))
+        )
 
       status(result) shouldBe SEE_OTHER
-      result.header.headers("Location") should be(ApplicationController.startSubscription(atarService).url)
+      result.header.headers("Location") should be(EmailController.form(atarService, Journey.Subscribe).url)
       assertSessionDoesNotContainKeys(result.session(mockRequest))
     }
 
-    // TODO - remove test or add service support to get EORI (register)
-    "clear cache for subscription holder for get an eori journey" ignore {
+    "clear cache for subscription holder for get an eori journey" in {
       withAuthorisedUser(userId, mockAuthConnector)
       when(mockSessionCache.saveSubscriptionDetails(any[SubscriptionDetails])(any[HeaderCarrier]))
         .thenReturn(Future.successful(true))
       val result: Result =
-        await(controller.clearCache(Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId)))
+        await(
+          controller.clearCache(atarService, Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId))
+        )
       status(result) shouldBe SEE_OTHER
-      result.header.headers("Location") should be(ApplicationController.startRegister(atarService).url)
+      result.header.headers("Location") should be(EmailController.form(atarService, Journey.Register).url)
       assertSessionDoesNotContainKeys(result.session(mockRequest))
     }
   }

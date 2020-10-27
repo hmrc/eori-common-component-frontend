@@ -28,7 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, start}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, start, start_subscribe}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,7 +37,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class ApplicationController @Inject() (
   authorise: AuthAction,
   mcc: MessagesControllerComponents,
-  viewStart: start,
+  viewStartSubscribe: start_subscribe,
+  viewStartRegister: start,
   accessibilityStatementView: accessibility_statement,
   cache: SessionCache,
   groupEnrolment: GroupEnrolmentExtractor,
@@ -46,7 +47,11 @@ class ApplicationController @Inject() (
     extends CdsController(mcc) with EnrolmentExtractor {
 
   def startRegister(service: Service): Action[AnyContent] = Action { implicit request =>
-    Ok(viewStart(service, Journey.Register))
+    Ok(viewStartRegister(service, Journey.Register))
+  }
+
+  def startSubscriptionInformation(service: Service): Action[AnyContent] = Action { implicit request =>
+    Ok(viewStartSubscribe(service))
   }
 
   def startSubscription(service: Service): Action[AnyContent] = authorise.ggAuthorisedUserWithEnrolmentsAction {

@@ -27,7 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentE
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, KeyValue}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, start}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, start, start_subscribe}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -42,14 +42,16 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
   private val mockAuthAction    = authAction(mockAuthConnector)
   private val mockSessionCache  = mock[SessionCache]
 
-  private val startView                  = instanceOf[start]
+  private val startRegisterView          = instanceOf[start]
+  private val startSubscribeView         = instanceOf[start_subscribe]
   private val accessibilityStatementView = instanceOf[accessibility_statement]
   private val groupEnrolmentExtractor    = mock[GroupEnrolmentExtractor]
 
   val controller = new ApplicationController(
     mockAuthAction,
     mcc,
-    startView,
+    startSubscribeView,
+    startRegisterView,
     accessibilityStatementView,
     mockSessionCache,
     groupEnrolmentExtractor,
@@ -78,6 +80,16 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
       status(result) shouldBe OK
       CdsPage(contentAsString(result)).title should startWith("Get an EORI number")
+    }
+
+    "allow unauthenticated users to access the subscription information page" in {
+
+      val result = controller.startSubscriptionInformation(atarService).apply(
+        SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe", defaultUserId)
+      )
+
+      status(result) shouldBe OK
+      CdsPage(contentAsString(result)).title should startWith("You need to subscribe")
     }
 
     "direct authenticated users to start subscription" in {

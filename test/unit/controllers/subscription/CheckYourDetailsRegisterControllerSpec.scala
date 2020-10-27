@@ -53,8 +53,8 @@ import util.builders.RegistrationDetailsBuilder.{
   organisationRegistrationDetails,
   partnershipRegistrationDetails
 }
-import util.builders.{AuthActionMock, SessionBuilder}
 import util.builders.SubscriptionFormBuilder._
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -449,7 +449,7 @@ class CheckYourDetailsRegisterControllerSpec
       page.getElementsText(SubscriptionExistingDetailsReviewPage.startAgainLinkXPath) shouldBe "Start again"
       page.getElementsHref(
         SubscriptionExistingDetailsReviewPage.startAgainLinkXPath
-      ) shouldBe "/customs-enrolment-services/register/start-again"
+      ) shouldBe "/customs-enrolment-services/atar/register/start-again"
 
       page.getElementsText(SubscriptionExistingDetailsReviewPage.BusinessNameLabelXpath) shouldBe "Organisation name"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.BusinessNameValueXpath) shouldBe "orgName"
@@ -596,7 +596,7 @@ class CheckYourDetailsRegisterControllerSpec
       page.getElementsText(SubscriptionExistingDetailsReviewPage.startAgainLinkXPath) shouldBe "Start again"
       page.getElementsHref(
         SubscriptionExistingDetailsReviewPage.startAgainLinkXPath
-      ) shouldBe "/customs-enrolment-services/register/start-again"
+      ) shouldBe "/customs-enrolment-services/atar/register/start-again"
 
       page.getElementsText(
         SubscriptionExistingDetailsReviewPage.BusinessNameLabelXpath
