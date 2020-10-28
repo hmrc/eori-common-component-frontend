@@ -4,7 +4,6 @@ cds.banner.subscription=Subscribe to {0}
 cds.subscription.enter-eori-number.page.title=What is your GB EORI number?
 cds.subscription.enter-eori-number.heading=What is your GB EORI number?
 cds.subscription.enter-eori-number.no-eori.summary=I do not have an EORI number
-TODO=check wording below
 cds.subscription.enter-eori-number.no-eori=You need to {0} before you can subscribe to {1}.
 cds.subscription.enter-eori-number.no-eori.link=Get an EORI number
 

@@ -4,7 +4,6 @@ cds.banner.subscription=TRANSLATE Subscribe to [SERVICE]
 cds.subscription.enter-eori-number.page.title=Beth yw’ch rhif EORI GB?
 cds.subscription.enter-eori-number.heading=Beth yw’ch rhif EORI GB?
 cds.subscription.enter-eori-number.no-eori.summary=TRANSLATE I do not have an EORI number
-TODO=check wording below
 cds.subscription.enter-eori-number.no-eori=TRANSLATE You need to [Get an EORI number] before you can subscribe to [SERVICE].
 cds.subscription.enter-eori-number.no-eori.link=TODO Get an EORI number
 
