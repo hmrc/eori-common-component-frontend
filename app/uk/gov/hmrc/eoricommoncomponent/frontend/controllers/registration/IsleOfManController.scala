@@ -43,7 +43,7 @@ class IsleOfManController @Inject() (view: isle_of_man, mcc: MessagesControllerC
   }
 
   private def destinationsByAnswer(yesNoAnswer: YesNo, service: Service): Result = yesNoAnswer match {
-    case theAnswer if theAnswer.isYes => Redirect(VatRegisteredUkController.form())
+    case theAnswer if theAnswer.isYes => Redirect(VatRegisteredUkController.form(service))
     case _                            => Redirect(VatGroupController.createForm(service, Journey.Register))
   }
 

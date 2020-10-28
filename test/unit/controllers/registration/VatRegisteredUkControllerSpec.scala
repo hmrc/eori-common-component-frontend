@@ -97,11 +97,11 @@ class VatRegisteredUkControllerSpec extends ControllerSpec with AuthActionMock {
   }
 
   def showForm()(test: Future[Result] => Any) {
-    test(controller.form().apply(request = SessionBuilder.buildRequestWithSessionNoUserAndToken))
+    test(controller.form(atarService).apply(request = SessionBuilder.buildRequestWithSessionNoUserAndToken))
   }
 
   def submitForm(form: Map[String, String])(test: Future[Result] => Any) {
-    test(controller.submit().apply(SessionBuilder.buildRequestWithFormValues(form)))
+    test(controller.submit(atarService).apply(SessionBuilder.buildRequestWithFormValues(form)))
   }
 
 }
