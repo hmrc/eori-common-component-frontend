@@ -33,6 +33,7 @@ GET         /customs-enrolment-services/:service/:journey/email-confirmed-contin
 
 # subscribe
 GET         /customs-enrolment-services/:service/subscribe                                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.startSubscription(service: Service)
+GET         /customs-enrolment-services/:service/subscribe/start                                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.startSubscriptionJourney(service: Service)
 
 GET         /customs-enrolment-services/:service/:journey/check-email                                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EmailController.form(service: Service, journey: Journey.Value)
 GET         /customs-enrolment-services/:service/subscribe/match-for-existing-registration            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.MatchingIdController.matchWithIdOnlyForExistingReg(service: Service)
@@ -76,7 +77,7 @@ POST        /customs-enrolment-services/:service/:journey/chooseid              
 GET         /customs-enrolment-services/:service/:journey/chooseid/review                             @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.HowCanWeIdentifyYouController.reviewForm(service: Service , journey: Journey.Value)
 POST        /customs-enrolment-services/:service/:journey/chooseid/review                             @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.HowCanWeIdentifyYouController.submit(isInReviewMode: Boolean = true, service: Service, journey: Journey.Value)
 
-GET         /customs-enrolment-services/:journey/start-again                                          @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.CacheController.clearCache(journey: Journey.Value)
+GET         /customs-enrolment-services/:service/:journey/start-again                                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.CacheController.clearCache(service: Service, journey: Journey.Value)
 
 GET         /customs-enrolment-services/:service/:journey/matching/what-is-your-email                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.WhatIsYourEmailController.createForm(service: Service, journey: Journey.Value)
 POST        /customs-enrolment-services/:service/:journey/matching/what-is-your-email                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.WhatIsYourEmailController.submit(service: Service, journey: Journey.Value)

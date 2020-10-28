@@ -125,7 +125,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       page.getElementById("review-tbl__start-again").text mustBe "Start again"
       page.body.getElementById("review-tbl__start-again").attr(
         "href"
-      ) mustBe "/customs-enrolment-services/subscribe/start-again"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/start-again"
     }
 
     "display the review page for 'Sole Trader' with 'UTR'" in {
@@ -162,7 +162,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       page.getElementById("review-tbl__start-again").text mustBe "Start again"
       page.body.getElementById("review-tbl__start-again").attr(
         "href"
-      ) mustBe "/customs-enrolment-services/subscribe/start-again"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/start-again"
     }
 
     "not display the address country code in the UK case" in {
@@ -212,7 +212,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       page.getElementById("review-tbl__start-again").text mustBe "Start again"
       page.body.getElementById("review-tbl__start-again").attr(
         "href"
-      ) mustBe "/customs-enrolment-services/subscribe/start-again"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/start-again"
     }
 
     "display the review page for 'Sole Trader' when 'No UTR' is entered" in {
@@ -258,7 +258,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       page.getElementById("review-tbl__start-again").text mustBe "Start again"
       page.body.getElementById("review-tbl__start-again").attr(
         "href"
-      ) mustBe "/customs-enrolment-services/subscribe/start-again"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/start-again"
     }
 
     "display address label for the following Company organisation types" in {
