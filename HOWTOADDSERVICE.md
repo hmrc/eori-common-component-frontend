@@ -47,7 +47,11 @@ services-config.example.friendlyNameWelsh: "Optional_Welsh_Service_Name"
 ## Notes
 1. The configuration file cannot have any spaces in the values - replace spaces with underscore in the friendly names (see examples above).  The underscores will be removed when the names are used by ECC.
 
-2. The configuration must be updated for each environment where the service is required.  For reference - 
+2. The configuration must be updated for each environment where the service is required.  
+
+3. After updating the configuration the service must be re-deployed to that environment.
+
+For reference - 
 - [Development](https://github.com/hmrc/app-config-development/blob/master/eori-common-component-frontend.yaml)
 - [QA](https://github.com/hmrc/app-config-qa/blob/master/eori-common-component-frontend.yaml)
 - [Staging](https://github.com/hmrc/app-config-staging/blob/master/eori-common-component-frontend.yaml)
