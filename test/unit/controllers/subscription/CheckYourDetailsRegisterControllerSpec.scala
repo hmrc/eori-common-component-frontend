@@ -350,7 +350,7 @@ class CheckYourDetailsRegisterControllerSpec
         showForm(userSelectedOrgType = organisationType) { result =>
           val page = CdsPage(contentAsString(result))
 
-          page.getElementsText(RegistrationReviewPage.AddressHeadingXPath) shouldBe "Address"
+          page.getElementsText(RegistrationReviewPage.AddressHeadingXPath) shouldBe "Your address"
         }
       }
     }

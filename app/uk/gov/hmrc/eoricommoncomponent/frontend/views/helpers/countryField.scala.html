@@ -29,10 +29,14 @@
     }
 }
 
+@isPlainLabel = @{
+    elements.args.getOrElse('_plainLabel, false).asInstanceOf[Boolean]
+}
+
 @selectedValue = @{ form(field).value match { case Some(x) => x case None => "" case x => x }}
 
 <div id="country-outer" class="form-group @if(allErrors.nonEmpty) {form-group-error}">
-    <label for="@field" class="form-label-bold">
+    <label for="@field" class="@if(isPlainLabel) {form-label} else {form-label-bold}">
         @messages(label)
 
         <span class="visually-hidden">. @messages("cds.country-picker.hint.screen-reader")</span>
