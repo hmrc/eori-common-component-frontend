@@ -33,9 +33,9 @@
 
 @journeyHeading = @{
     if(journey == Journey.Register) {
-        messages("cds.proposition.name")
+        messages("cds.banner.registration")
     }else if(journey == Journey.Subscribe) {
-        messages("cds.proposition.name.service")
+        messages("cds.banner.subscription", longName)
     }else {
         ""
     }

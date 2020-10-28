@@ -1,7 +1,11 @@
+cds.banner.registration=TRANSLATE Get an EORI
+cds.banner.subscription=TRANSLATE Subscribe to [SERVICE]
+
 cds.subscription.enter-eori-number.page.title=Beth yw’ch rhif EORI GB?
 cds.subscription.enter-eori-number.heading=Beth yw’ch rhif EORI GB?
-cds.subscription.enter-eori-number.no-eori=Dim EORI gennych? Cofrestrwch ar gyfer EORI
-cds.subscription.enter-eori-number.no-eori.link=Cofrestrwch ar gyfer EORI
+cds.subscription.enter-eori-number.no-eori.summary=TRANSLATE I do not have an EORI number
+cds.subscription.enter-eori-number.no-eori=TRANSLATE You need to [Get an EORI number] before you can subscribe to [SERVICE].
+cds.subscription.enter-eori-number.no-eori.link=TODO Get an EORI number
 
 cds.has-existing-eori.title=Mae’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth yn gysylltiedig ag EORI
 cds.has-existing-eori.heading=Mae’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth yn gysylltiedig ag EORI
@@ -25,8 +29,6 @@ cds.subscription.outcomes.feedback.hint=(mae’n cymryd 30 eiliad)
 countries-in-the-eu.list=Yr Almaen, Awstria, Bwlgaria, Croatia, Denmarc, yr Eidal, Estonia, y Ffindir, Ffrainc, Gweriniaeth Cyprus, Gwlad Belg, Gwlad Groeg, Gwlad Pwyl, Hwngari, yr Iseldiroedd, Iwerddon, Latfia, Lithiwania, Lwcsembwrg, Malta, Portiwgal, România, Slofacia, Slofenia, Sbaen, Sweden a’r Weriniaeth Tsiec.
 
 cds.registration.user-location.location.eu.label=Gwlad yn yr UE
-
-cds.navigation.continue.to=Yn eich blaen i {0}
 
 cds.you-cant-use-service-agent.para1=TRANSLATE You signed in to Government Gateway with an agent services account.
 cds.you-cant-use-service-agent.para2=TRANSLATE You need to sign in with the Government Gateway for the organisation or individual that is applying for access to [SERVICE].
@@ -87,3 +89,7 @@ cds.subscription.information.bullet3=TRANSLATE your Unique Taxpayer Reference (U
 cds.subscription.information.bullet3.link=TODO find a lost UTR number (opens in a new window or tab)
 
 cds.navigation.subscribe=TRANSLATE Subscribe
+
+subscription.check-your-email.no=TRANSLATE No, I need to change this email address
+
+cds.form.contact-details=TRANSLATE Your address

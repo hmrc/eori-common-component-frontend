@@ -110,7 +110,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       page.body
         .getElementById("review-tbl__eori-number_change")
         .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/review"
-      page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Address"
+      page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Your address"
       page.body.getElementById("review-tbl__name-and-address").text mustBe strim("""
           |Street
           |City
@@ -147,7 +147,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         .getElementById("review-tbl__eori-number_change")
         .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/review"
 
-      page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Address"
+      page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Your address"
       page.body.getElementById("review-tbl__name-and-address").text mustBe strim("""
           |Street
           |City
@@ -188,7 +188,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       page.body
         .getElementById("review-tbl__eori-number_change")
         .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/review"
-      page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Address"
+      page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Your address"
       page.body.getElementById("review-tbl__name-and-address").text mustBe strim("""
           |Street
           |City
@@ -234,7 +234,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         .getElementById("review-tbl__eori-number_change")
         .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/review"
 
-      page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Address"
+      page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Your address"
       page.body.getElementById("review-tbl__name-and-address").text mustBe strim("""
           |Street
           |City

@@ -72,7 +72,7 @@ class WhatIsYourEoriSpec extends ViewSpec {
       doc.body.getElementsByAttributeValue(
         "href",
         routes.RegisterRedirectController.getEori(atarService, Journey.Subscribe).url
-      ).text() mustBe "Register for an EORI"
+      ).text() mustBe "Get an EORI number"
     }
 
     "display a field level error message when the Eori is invalid" in {

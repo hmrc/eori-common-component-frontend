@@ -27,7 +27,8 @@
 
 @inputText(field: String, label: String, args: (Symbol, Any)*) = {
 @defining(Seq(
-    '_label -> Html(messages(label))) ++ args) { args =>
+    '_label -> Html(messages(label)),
+    '_plainLabel -> true) ++ args) { args =>
         @helpers.input(subscriptionNameDobForm(field), args: _*)
     }
 }

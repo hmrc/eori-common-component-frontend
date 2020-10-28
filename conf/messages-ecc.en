@@ -1,7 +1,11 @@
+cds.banner.registration=Get an EORI
+cds.banner.subscription=Subscribe to {0}
+
 cds.subscription.enter-eori-number.page.title=What is your GB EORI number?
 cds.subscription.enter-eori-number.heading=What is your GB EORI number?
-cds.subscription.enter-eori-number.no-eori=Don't have an EORI?
-cds.subscription.enter-eori-number.no-eori.link=Register for an EORI
+cds.subscription.enter-eori-number.no-eori.summary=I do not have an EORI number
+cds.subscription.enter-eori-number.no-eori=You need to {0} before you can subscribe to {1}.
+cds.subscription.enter-eori-number.no-eori.link=Get an EORI number
 
 cds.has-existing-eori.title=Your Government Gateway user ID is linked to an EORI
 cds.has-existing-eori.heading=Your Government Gateway user ID is linked to an EORI
@@ -25,8 +29,6 @@ cds.subscription.outcomes.feedback.hint=(takes 30 seconds)
 countries-in-the-eu.list=Austria, Belgium, Bulgaria, Croatia, Republic of Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Poland, Portugal, Romania, Slovakia, Slovenia, Spain and Sweden.
 
 cds.registration.user-location.location.eu.label=A country in the EU
-
-cds.navigation.continue.to=Continue to {0}
 
 cds.you-cant-use-service-agent.para1=You signed in to Government Gateway with an agent services account.
 cds.you-cant-use-service-agent.para2=You need to sign in with the Government Gateway for the organisation or individual that is applying for access to {0}.
@@ -87,3 +89,7 @@ cds.subscription.information.bullet3=your Unique Taxpayer Reference (UTR). You c
 cds.subscription.information.bullet3.link=find a lost UTR number (opens in a new window or tab)
 
 cds.navigation.subscribe=Subscribe
+
+subscription.check-your-email.no=No, I need to change this email address
+
+cds.form.contact-details=Your address

@@ -46,26 +46,26 @@ class EnterYourDetailsSpec extends ViewSpec {
       doc.body().getElementsByTag("h1").hasClass("heading-large") mustBe true
     }
     "have a correct label for First name for UK" in {
-      doc.body().getElementById("first-name-outer").getElementsByClass("form-label-bold").text() mustBe "First name"
+      doc.body().getElementById("first-name-outer").getElementsByClass("form-label").text() mustBe "First name"
     }
     "have a correct label for given name for Row" in {
       docRestOfWorld
         .body()
         .getElementById("first-name-outer")
-        .getElementsByClass("form-label-bold")
+        .getElementsByClass("form-label")
         .text() mustBe "Given name"
     }
     "have an input of type 'text' for given name" in {
       doc.body().getElementById("first-name").attr("type") mustBe "text"
     }
     "have a correct label for Last name for UK" in {
-      doc.body().getElementById("last-name-outer").getElementsByClass("form-label-bold").text() mustBe "Last name"
+      doc.body().getElementById("last-name-outer").getElementsByClass("form-label").text() mustBe "Last name"
     }
     "have a correct label for family name for Row" in {
       docRestOfWorld
         .body()
         .getElementById("last-name-outer")
-        .getElementsByClass("form-label-bold")
+        .getElementsByClass("form-label")
         .text() mustBe "Family name"
     }
     "have an input of type 'text' for family name" in {

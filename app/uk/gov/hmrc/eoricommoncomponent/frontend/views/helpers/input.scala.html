@@ -40,11 +40,15 @@
     elements.args.getOrElse('_isLabelH1, false).asInstanceOf[Boolean]
 }
 
+@isPlainLabel = @{
+    elements.args.getOrElse('_plainLabel, false).asInstanceOf[Boolean]
+}
+
 <div id="@elements.field.name-outer" class="form-group @if(!isLabelH1 && allErrors.nonEmpty) {form-group-error}">
     @if(isLabelH1) {
     <h1>
     }
-    <label for="@elements.field.name" @if(!isLabelH1) {class="form-label-bold"}>
+    <label for="@elements.field.name" @if(!isLabelH1 && !isPlainLabel) {class="form-label-bold"} @if(!isLabelH1 && isPlainLabel) {class="form-label"}>
         @if(isLabelH1) {
             <span class="heading-large">@elements.label</span>
         }
