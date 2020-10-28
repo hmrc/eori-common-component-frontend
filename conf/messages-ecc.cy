@@ -56,7 +56,7 @@ cds.sub01.outcome.processing.we-are-processing=TRANSLATE We are processing your 
 
 cds.subscription.verify-email.title=TRANSLATE Confirm your email address
 
-cds.subscription.outcomes.rejected.title=TRANSLATE The[SERVICE] application has been unsuccessful
+cds.subscription.outcomes.rejected.title=TRANSLATE The [SERVICE] application has been unsuccessful
 cds.subscription.outcomes.rejected.heading=TRANSLATE The [SERVICE] application for [USER] has been unsuccessful
 
 cds.subscription.outcomes.in-processing.title=TRANSLATE The [SERVICE] application is being processed
