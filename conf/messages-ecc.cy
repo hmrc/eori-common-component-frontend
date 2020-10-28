@@ -29,38 +29,38 @@ cds.registration.user-location.location.eu.label=Gwlad yn yr UE
 cds.navigation.continue.to=Yn eich blaen i {0}
 
 cds.you-cant-use-service-agent.para1=TRANSLATE You signed in to Government Gateway with an agent services account.
-cds.you-cant-use-service-agent.para2=TRANSLATE You need to sign in with the Government Gateway for the organisation or individual that is applying for access to {0}.
-cds.you-cant-use-service-standard-organisation.para1=TRANSLATE You signed in to Government Gateway as a standard user. To apply for access to {0} you must be an administrator user.
+cds.you-cant-use-service-agent.para2=TRANSLATE You need to sign in with the Government Gateway for the organisation or individual that is applying for access to [SERVICE].
+cds.you-cant-use-service-standard-organisation.para1=TRANSLATE You signed in to Government Gateway as a standard user. To apply for access to [SERVICE] you must be an administrator user.
 cds.you-cant-use-service-standard-organisation.para2=TRANSLATE Please log in as an administrator or contact the person who set up your Government Gateway.
 
-cds.sub01.outcome.rejected.heading=TRANSLATE The {0} application for {1} has been unsuccessful
-cds.sub01.outcome.rejected.heading-noname=TRANSLATE The {0} application has been unsuccessful
-cds.sub01.outcome.rejected.title=TRANSLATE The {0} application has been unsuccessful
+cds.sub01.outcome.rejected.heading=TRANSLATE The [SERVICE] application for [USER] has been unsuccessful
+cds.sub01.outcome.rejected.heading-noname=TRANSLATE The [SERVICE] application has been unsuccessful
+cds.sub01.outcome.rejected.title=TRANSLATE The [SERVICE] application has been unsuccessful
 
-cds.reg06.outcome.eori-already-linked.title=TRANSLATE The {0} application has been unsuccessful
-cds.reg06.outcome.eori-already-linked.heading=TRANSLATE The {0} application for {1} has been unsuccessful
-cds.subscription.outcomes.eori-already-linked.use-cds-heading=TRANSLATE To use {0}
-cds.subscription.outcomes.eori-already-linked.use-cds-para=TRANSLATE You need to sign in with the Government Gateway {0} used to get access to {1}.
+cds.reg06.outcome.eori-already-linked.title=TRANSLATE The [SERVICE] application has been unsuccessful
+cds.reg06.outcome.eori-already-linked.heading=TRANSLATE The [SERVICE] application for [USER] has been unsuccessful
+cds.subscription.outcomes.eori-already-linked.use-cds-heading=TRANSLATE To use [SERVICE]
+cds.subscription.outcomes.eori-already-linked.use-cds-para=TRANSLATE You need to sign in with the Government Gateway [USER] used to get access to [SERVICE].
 
-cds.subscription.outcomes.inprocessing.we-are-processing=TRANSLATE We are processing your registration to {0}. This can take up to 5 working days. You will need to sign back in to see the result of your registration.
+cds.subscription.outcomes.inprocessing.we-are-processing=TRANSLATE We are processing your registration to [SERVICE]. This can take up to 5 working days. You will need to sign back in to see the result of your registration.
 
-cds.enrolment.already.exists.for-group.para1=TRANSLATE Your organisation is already enrolled to {0}. Ask a team member for access.
+cds.enrolment.already.exists.for-group.para1=TRANSLATE Your organisation is already enrolled to [SERVICE]. Ask a team member for access.
 
 cds.enrolment.already.exists.group.title=TRANSLATE There is a problem
 cds.enrolment.already.exists.group.paragraph=TRANSLATE Our records show that someone in the organisation has already applied for this service.
 
-cds.sub01.outcome.processing.heading=TRANSLATE The {0} application for {1} is being processed
-cds.sub01.outcome.processing.heading-noname=TRANSLATE The {0} application is being processed
-cds.sub01.outcome.processing.title=TRANSLATE The {0} application is being processed
-cds.sub01.outcome.processing.we-are-processing=TRANSLATE We are processing your {0} application. This can take up to 5 working days. You will need to sign back in to see the result of your registration.
+cds.sub01.outcome.processing.heading=TRANSLATE The [SERVICE] application for [USER] is being processed
+cds.sub01.outcome.processing.heading-noname=TRANSLATE The [SERVICE] application is being processed
+cds.sub01.outcome.processing.title=TRANSLATE The [SERVICE] application is being processed
+cds.sub01.outcome.processing.we-are-processing=TRANSLATE We are processing your [SERVICE] application. This can take up to 5 working days. You will need to sign back in to see the result of your registration.
 
 cds.subscription.verify-email.title=TRANSLATE Confirm your email address
 
-cds.subscription.outcomes.rejected.title=TRANSLATE The {0} application has been unsuccessful
-cds.subscription.outcomes.rejected.heading=TRANSLATE The {0} application for {1} has been unsuccessful
+cds.subscription.outcomes.rejected.title=TRANSLATE The[SERVICE] application has been unsuccessful
+cds.subscription.outcomes.rejected.heading=TRANSLATE The [SERVICE] application for [USER] has been unsuccessful
 
-cds.subscription.outcomes.in-processing.title=TRANSLATE The {0} application is being processed
-cds.subscription.outcomes.in-processing.heading=TRANSLATE We are processing the registration for {0}
+cds.subscription.outcomes.in-processing.title=TRANSLATE The [SERVICE] application is being processed
+cds.subscription.outcomes.in-processing.heading=TRANSLATE We are processing the registration for [USER]
 
 enter-email-body-text=TRANSLATE We’ll use this to send you the result of your application.
 cds.subscription.verify-email.para2=TRANSLATE For your security the link in the email will expire after 72 hours.
@@ -69,21 +69,21 @@ cds.email-confirmed.para.get-access=TRANSLATE You can continue with your applica
 
 cds.subscription.address-details.street.label=TRANSLATE Building and street
 
-cds.subscription.outcomes.success.will-send-email=TRANSLATE We will send you an email to confirm when you have access to {0}. This can take up to two hours.
+cds.subscription.outcomes.success.will-send-email=TRANSLATE We will send you an email to confirm when you have access to [SERVICE]. This can take up to two hours.
 
 cds.registration.you-already-have-eori.title=TRANSLATE You already have an EORI
-cds.registration.you-already-have-eori.para1=TRANSLATE We have detected you already have an EORI.  You can continue and subscribe to the the {0} service.
+cds.registration.you-already-have-eori.para1=TRANSLATE We have detected you already have an EORI.  You can continue and subscribe to the [SERVICE] service.
 
 cds.subscription.information.title=TRANSLATE You need to subscribe
-cds.subscription.information.heading=TRANSLATE You need to subscribe to access {0}
-cds.subscription.information.subheading=TRANSLATE How to get access to {0}
+cds.subscription.information.heading=TRANSLATE You need to subscribe to access [SERVICE]
+cds.subscription.information.subheading=TRANSLATE How to get access to [SERVICE]
 cds.subscription.information.para1=TRANSLATE Before you can access this service we may need extra information about you or your organisation.
 cds.subscription.information.para2=TRANSLATE You might need to tell us:
 cds.subscription.information.para3=TRANSLATE It takes around 5 to 10 minutes to apply to access the service. You will receive a confirmation email within two hours.
-cds.subscription.information.bullet1=TRANSLATE a GB EORI number. If you don’t already have one, you need to {0}.
-cds.subscription.information.bullet1.link=TRANSLATE apply for an EORI number (opens in a new window or tab)
+cds.subscription.information.bullet1=TRANSLATE a GB EORI number. If you don’t already have one, you need to [apply for an EORI number (opens in a new window or tab)].
+cds.subscription.information.bullet1.link=TODO apply for an EORI number (opens in a new window or tab)
 cds.subscription.information.bullet2=TRANSLATE National Insurance number (if you are an individual or sole trader).
-cds.subscription.information.bullet3=TRANSLATE your Unique Taxpayer Reference (UTR). You can {0}.
-cds.subscription.information.bullet3.link=TRANSLATE find a lost UTR number (opens in a new window or tab)
+cds.subscription.information.bullet3=TRANSLATE your Unique Taxpayer Reference (UTR). You can [find a lost UTR number (opens in a new window or tab)].
+cds.subscription.information.bullet3.link=TODO find a lost UTR number (opens in a new window or tab)
 
 cds.navigation.subscribe=TRANSLATE Subscribe
