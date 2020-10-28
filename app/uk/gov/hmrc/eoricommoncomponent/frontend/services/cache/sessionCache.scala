@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.cache
 
 import javax.inject.{Inject, Singleton}
+import org.joda.time.LocalDateTime
 import play.api.Logger
 import play.api.libs.json.{JsSuccess, Json}
 import play.modules.reactivemongo.ReactiveMongoComponent
@@ -41,7 +42,8 @@ sealed case class CachedData(
   sub01Outcome: Option[Sub01Outcome] = None,
   registerWithEoriAndIdResponse: Option[RegisterWithEoriAndIdResponse] = None,
   email: Option[String] = None,
-  groupEnrolment: Option[EnrolmentResponse] = None
+  groupEnrolment: Option[EnrolmentResponse] = None,
+  keepAlive: Option[String] = None
 ) {
 
   def registrationDetails(sessionId: Id): RegistrationDetails =
@@ -92,6 +94,7 @@ object CachedData {
   val sub02OutcomeKey                  = "sub02Outcome"
   val registerWithEoriAndIdResponseKey = "registerWithEoriAndIdResponse"
   val emailKey                         = "email"
+  val keepAliveKey                     = "keepAlive"
   val safeIdKey                        = "safeId"
   val groupIdKey                       = "cachedGroupId"
   val groupEnrolmentKey                = "groupEnrolment"
@@ -158,6 +161,9 @@ class SessionCache @Inject() (
 
   def saveEmail(email: String)(implicit hc: HeaderCarrier): Future[Boolean] =
     createOrUpdate(sessionId, emailKey, Json.toJson(email)) map (_ => true)
+
+  def keepAlive(implicit hc: HeaderCarrier): Future[Boolean] =
+    createOrUpdate(sessionId, keepAliveKey, Json.toJson(LocalDateTime.now().toString)) map (_ => true)
 
   def saveGroupEnrolment(groupEnrolment: EnrolmentResponse)(implicit hc: HeaderCarrier): Future[Boolean] =
     createOrUpdate(sessionId, groupEnrolmentKey, Json.toJson(groupEnrolment)) map (_ => true)
