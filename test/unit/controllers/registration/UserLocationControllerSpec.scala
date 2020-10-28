@@ -188,7 +188,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
       submitForm(Map(locationFieldName -> UserLocation.Iom)) { result =>
         status(result) shouldBe SEE_OTHER
         val expectedUrl =
-          YouNeedADifferentServiceIomController.form(Journey.Register).url
+          YouNeedADifferentServiceIomController.form(atarService, Journey.Register).url
         result.header.headers(LOCATION) should endWith(expectedUrl)
       }
     }
@@ -351,7 +351,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
     withAuthorisedUser(userId, mockAuthConnector)
 
     test(
-      controller.processing
+      controller.processing(atarService)
         .apply(SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe", userId))
     )
   }
@@ -400,7 +400,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
 
         submitForm(Map(locationFieldName -> selectedOptionValue)) { result =>
           status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) should endWith(UserLocationController.processing().url)
+          result.header.headers(LOCATION) should endWith(UserLocationController.processing(atarService).url)
         }
       }
 
@@ -419,7 +419,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         submitForm(Map(locationFieldName -> selectedOptionValue)) { result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers(LOCATION) should endWith(
-            SignInWithDifferentDetailsController.form(Journey.Register).url
+            SignInWithDifferentDetailsController.form(atarService, Journey.Register).url
           )
         }
       }

@@ -662,7 +662,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe SignInWithDifferentDetailsController
-          .form(journey = Journey.Subscribe)
+          .form(service = atarService, journey = Journey.Subscribe)
           .url
         verify(mockReg06Service).sendOrganisationRequest(any(), any(), any())
         verify(mockSubscriptionStatusService)

@@ -269,7 +269,7 @@ class ConfirmContactDetailsController @Inject() (
       rd =>
         taxEnrolmentsService.doesEnrolmentExist(rd.safeId).map {
           case true =>
-            Redirect(SignInWithDifferentDetailsController.form(journey))
+            Redirect(SignInWithDifferentDetailsController.form(service, journey))
           case false =>
             Redirect(
               SubscriptionRecoveryController

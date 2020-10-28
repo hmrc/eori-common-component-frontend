@@ -100,7 +100,7 @@ class UserLocationController @Inject() (
         details =>
           (journey, details.location, loggedInUser.internalId) match {
             case (_, Some(UserLocation.Iom), Some(_)) =>
-              Future.successful(Redirect(YouNeedADifferentServiceIomController.form(journey)))
+              Future.successful(Redirect(YouNeedADifferentServiceIomController.form(service, journey)))
             case (Journey.Register, Some(location), Some(id)) if UserLocation.isRow(location) =>
               forRow(service, journey, InternalId(id), location)
             case _ =>
@@ -155,7 +155,7 @@ class UserLocationController @Inject() (
                 case true =>
                   Redirect(
                     SignInWithDifferentDetailsController
-                      .form(Journey.Register)
+                      .form(service, Journey.Register)
                   )
                 case false =>
                   Redirect(
@@ -175,7 +175,7 @@ class UserLocationController @Inject() (
   )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] =
     preSubStatus match {
       case SubscriptionProcessing =>
-        Future.successful(Redirect(UserLocationController.processing()))
+        Future.successful(Redirect(UserLocationController.processing(service)))
       case SubscriptionExists => handleExistingSubscription(internalId, service)
       case NewSubscription | SubscriptionRejected =>
         Future.successful(
@@ -200,14 +200,14 @@ class UserLocationController @Inject() (
     case _ => Future.successful(ServiceUnavailable(errorTemplate()))
   }
 
-  def processing: Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
+  def processing(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       sessionCache.sub01Outcome
         .map(_.processedDate)
         .map(processedDate => Ok(sub01OutcomeProcessing(None, processedDate)))
   }
 
-  def rejected: Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
+  def rejected(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       sessionCache.sub01Outcome
         .map(_.processedDate)
