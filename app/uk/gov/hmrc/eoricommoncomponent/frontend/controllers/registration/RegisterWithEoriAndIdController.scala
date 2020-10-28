@@ -268,7 +268,7 @@ class RegisterWithEoriAndIdController @Inject() (
     hc: HeaderCarrier
   ): Future[Result] =
     taxEnrolmentsService.doesEnrolmentExist(safeId).map {
-      case true => Redirect(SignInWithDifferentDetailsController.form(journey))
+      case true => Redirect(SignInWithDifferentDetailsController.form(service, journey))
       case false =>
         Redirect(SubscriptionRecoveryController.complete(service, journey))
     }

@@ -82,7 +82,7 @@ class IsleOfManControllerSpec extends ControllerSpec with BeforeAndAfterEach wit
         val result = controller.submit(atarService)(FakeRequest().withJsonBody(form))
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(VatRegisteredUkController.form().url)
+        redirectLocation(result) shouldBe Some(VatRegisteredUkController.form(atarService).url)
       }
     }
 

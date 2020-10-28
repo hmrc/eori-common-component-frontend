@@ -60,7 +60,10 @@ class SignInWithDifferentDetailsControllerSpec
   }
 
   "Displaying the form in create mode" should {
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.form(Journey.Register))
+    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+      mockAuthConnector,
+      controller.form(atarService, Journey.Register)
+    )
 
     "display para1 as 'Test Org Name has already registered for CDS with a different Government Gateway.'" in {
       showCreateForm() { result =>
@@ -76,7 +79,7 @@ class SignInWithDifferentDetailsControllerSpec
     test: Future[Result] => Any
   ) {
     withAuthorisedUser(userId, mockAuthConnector)
-    test(controller.form(journey).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.form(atarService, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def mockFunctionWithRegistrationDetails(registrationDetails: RegistrationDetails) {

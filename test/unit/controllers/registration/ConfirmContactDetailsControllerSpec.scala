@@ -436,7 +436,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
         result.header.headers(
           LOCATION
         ) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.SignInWithDifferentDetailsController
-          .form(Journey.Register)
+          .form(atarService, Journey.Register)
           .url
       }
     }

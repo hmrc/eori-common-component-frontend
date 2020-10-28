@@ -109,7 +109,7 @@ class DoYouHaveAUtrNumberController @Inject() (
   ): Future[Result] =
     organisationType match {
       case CdsOrganisationType.CharityPublicBodyNotForProfitId =>
-        Future.successful(Redirect(VatRegisteredUkController.form()))
+        Future.successful(Redirect(VatRegisteredUkController.form(service)))
       case CdsOrganisationType.ThirdCountryOrganisationId =>
         noUtrThirdCountryOrganisationRedirect(isInReviewMode, organisationType, service, journey)
       case CdsOrganisationType.ThirdCountrySoleTraderId | CdsOrganisationType.ThirdCountryIndividualId =>

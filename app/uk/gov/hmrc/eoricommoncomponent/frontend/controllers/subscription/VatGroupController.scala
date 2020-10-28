@@ -42,7 +42,7 @@ class VatGroupController @Inject() (mcc: MessagesControllerComponents, vatGroupV
             // TODO - need service url param here
             Redirect(EmailController.form(service, Journey.Register))
           else
-            Redirect(routes.VatGroupsCannotRegisterUsingThisServiceController.form(journey))
+            Redirect(routes.VatGroupsCannotRegisterUsingThisServiceController.form(service, journey))
       )
   }
 
