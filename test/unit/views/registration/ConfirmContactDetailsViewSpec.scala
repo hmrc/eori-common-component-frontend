@@ -121,7 +121,7 @@ class ConfirmContactDetailsViewSpec extends ViewSpec {
       SoleTraderOrIndividualWithNinoDoc
         .body()
         .getElementsByAttributeValue("for", "yes-no-wrong-address-wrong-address")
-        .text() mustBe "No, I need to change my organisation address"
+        .text() mustBe "No, I need to change my address"
       PartnershipBodyDoc
         .body()
         .getElementsByAttributeValue("for", "yes-no-wrong-address-wrong-address")
@@ -138,7 +138,7 @@ class ConfirmContactDetailsViewSpec extends ViewSpec {
       SoleTraderOrIndividualWithNinoDoc
         .body()
         .getElementsByAttributeValue("for", "yes-no-wrong-address-no")
-        .text() mustBe "No, I need to enter all my organisation details again"
+        .text() mustBe "No, I need to enter all my details again"
       PartnershipBodyDoc
         .body()
         .getElementsByAttributeValue("for", "yes-no-wrong-address-no")
