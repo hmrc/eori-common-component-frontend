@@ -113,11 +113,13 @@ journey: Journey.Value)(implicit request: Request[_], messages: Messages)
 
 @radioGroupWrongAddress = @{
     if(isPartnership) messages("confirm-business-details.partnership.yes-wrong-address")
+    else if(isIndividual) messages("confirm-business-details.individual.yes-wrong-address")
     else messages("confirm-business-details.yes-wrong-address")
 }
 
 @radioGroupNo = @{
     if(isPartnership) messages("confirm-business-details.partnership.no")
+    else if(isIndividual) messages("confirm-business-details.individual.no")
     else messages("confirm-business-details.no")
 }
 

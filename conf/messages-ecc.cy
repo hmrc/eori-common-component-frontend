@@ -93,3 +93,6 @@ cds.navigation.subscribe=TRANSLATE Subscribe
 subscription.check-your-email.no=TRANSLATE No, I need to change this email address
 
 cds.form.contact-details=TRANSLATE Your address
+
+confirm-business-details.individual.yes-wrong-address=TRANSLATE No, I need to change my address
+confirm-business-details.individual.no=TRANSLATE No, I need to enter all my details again
