@@ -201,10 +201,14 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
     "return a status of OK" in {
 
+      when(mockSessionCache.keepAlive(any())).thenReturn(Future.successful(true))
+
       val result =
         controller.keepAlive(atarService, Journey.Register).apply(SessionBuilder.buildRequestWithSessionNoUser)
 
       status(result) shouldBe OK
+
+      verify(mockSessionCache).keepAlive(any())
     }
   }
 }
