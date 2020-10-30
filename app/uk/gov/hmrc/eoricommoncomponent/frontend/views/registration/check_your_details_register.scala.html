@@ -235,16 +235,9 @@ isUserIdentifiedByRegService: Boolean
             @if(isRowOrganisation && !isUserIdentifiedByRegService) {
             <tr id="have_utr">
                 <th id="review-tbl__have-utr_heading" class="bold">@messages("cds.matching.organisation-utr.label")</th>
-                <td id="review-tbl__have-utr">
+                <td id="review-tbl__have-utr" colspan="2">
                     @messages("cds.not-entered.label")
                 </td>
-                @if(!isUserIdentifiedByRegService) {
-                <td>
-                    <a id="review-tbl__have-utr_change" href="@DoYouHaveAUtrNumberController.form(organisationType = orgType, service, journey, isInReviewMode = true)">
-                        @messages("cds.form.change") <span class="govuk-visually-hidden"> @messages("cds.matching.organisation-utr.label")</span>
-                    </a>
-                </td>
-                }
             </tr>
             }
 
