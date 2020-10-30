@@ -82,23 +82,13 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       CdsPage(contentAsString(result)).title should startWith("Get an EORI number")
     }
 
-    "allow unauthenticated users to access the subscription information page" in {
-
-      val result = controller.startSubscription(atarService).apply(
-        SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe", defaultUserId)
-      )
-
-      status(result) shouldBe OK
-      CdsPage(contentAsString(result)).title should startWith("You need to subscribe")
-    }
-
     "direct authenticated users to start subscription" in {
       withAuthorisedUser(defaultUserId, mockAuthConnector)
       val result =
-        controller.startSubscriptionJourney(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+        controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
-      status(result) shouldBe SEE_OTHER
-      await(result).header.headers("Location") should endWith("/check-email")
+      status(result) shouldBe OK
+      CdsPage(contentAsString(result)).title should startWith("You need to subscribe")
     }
 
     "direct authenticated users with CDS enrolment to start short-cut subscription" in {
@@ -109,7 +99,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set(cdsEnrolment))
 
       val result =
-        controller.startSubscriptionJourney(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+        controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       status(result) shouldBe SEE_OTHER
       await(result).header.headers("Location") should endWith("check-existing-eori")
@@ -126,7 +116,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set.empty)
 
       val result =
-        controller.startSubscriptionJourney(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+        controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       status(result) shouldBe SEE_OTHER
       await(result).header.headers("Location") should endWith("check-existing-eori")
@@ -139,7 +129,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set(atarEnrolment))
 
       val result =
-        controller.startSubscriptionJourney(atarService).apply(
+        controller.startSubscription(atarService).apply(
           SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe", defaultUserId)
         )
 
@@ -155,7 +145,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set.empty)
 
       val result =
-        controller.startSubscriptionJourney(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+        controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       status(result) shouldBe SEE_OTHER
       await(result).header.headers("Location") should endWith("enrolment-already-exists-for-group")
@@ -166,9 +156,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set.empty, groupId = None)
 
       intercept[MissingGroupId] {
-        await(
-          controller.startSubscriptionJourney(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
-        )
+        await(controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
       }
     }
   }

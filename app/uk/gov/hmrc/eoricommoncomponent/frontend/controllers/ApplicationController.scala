@@ -50,11 +50,7 @@ class ApplicationController @Inject() (
     Ok(viewStartRegister(service, Journey.Register))
   }
 
-  def startSubscription(service: Service): Action[AnyContent] = Action { implicit request =>
-    Ok(viewStartSubscribe(service))
-  }
-
-  def startSubscriptionJourney(service: Service): Action[AnyContent] = authorise.ggAuthorisedUserWithEnrolmentsAction {
+  def startSubscription(service: Service): Action[AnyContent] = authorise.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
       val groupId = loggedInUser.groupId.getOrElse(throw MissingGroupId())
       groupEnrolment.hasGroupIdEnrolmentTo(groupId, service).flatMap { groupIdEnrolmentExists =>
@@ -70,19 +66,20 @@ class ApplicationController @Inject() (
   private def isUserEnrolledFor(loggedInUser: LoggedInUserWithEnrolments, service: Service): Boolean =
     enrolledForService(loggedInUser, service).isDefined
 
-  private def cdsEnrolmentCheck(loggedInUser: LoggedInUserWithEnrolments, groupId: String, serviceToEnrol: Service)(
-    implicit hc: HeaderCarrier
+  private def cdsEnrolmentCheck(loggedInUser: LoggedInUserWithEnrolments, groupId: String, service: Service)(implicit
+    hc: HeaderCarrier,
+    request: Request[_]
   ): Future[Result] =
     if (isUserEnrolledFor(loggedInUser, Service.cds))
-      Future.successful(Redirect(routes.HasExistingEoriController.displayPage(serviceToEnrol)))
+      Future.successful(Redirect(routes.HasExistingEoriController.displayPage(service)))
     else
       groupEnrolment.groupIdEnrolmentTo(groupId, Service.cds).flatMap {
         case Some(groupEnrolment) if groupEnrolment.eori.isDefined =>
           cache.saveGroupEnrolment(groupEnrolment).map { _ =>
-            Redirect(routes.HasExistingEoriController.displayPage(serviceToEnrol)) // AutoEnrolment
+            Redirect(routes.HasExistingEoriController.displayPage(service)) // AutoEnrolment
           }
         case _ =>
-          Future.successful(Redirect(routes.EmailController.form(serviceToEnrol, Journey.Subscribe))) // Whole journey
+          Future.successful(Ok(viewStartSubscribe(service))) // Display information page
       }
 
   def accessibilityStatement(service: Service, journey: Journey.Value): Action[AnyContent] = Action {
