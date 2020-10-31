@@ -57,13 +57,11 @@ class Save4LaterConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
     "return successful response with OK status and response body" in {
       stubSave4LaterGET_OK()
       await(save4LaterConnector.get[User](id, emailKey)) must be(Some(responseJson.as[User]))
-      eventually(AuditService.verifyXAuditWrite(1))
     }
 
     "return successful response with NOT FOUND status" in {
       stubSave4LaterGET_NOTFOUND()
       await(save4LaterConnector.get[User](id, emailKey)) mustBe None
-      eventually(AuditService.verifyXAuditWrite(1))
     }
 
     "return a response with BAD REQUEST exception for Get" in {
@@ -78,7 +76,6 @@ class Save4LaterConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
     "return successful response with Created status and response body" in {
       stubSave4LaterPUT()
       await(save4LaterConnector.put[User](id, emailKey, responseJson)) must be(())
-      eventually(AuditService.verifyXAuditWrite(2))
     }
 
     "return a response with BAD REQUEST exception for Put" in {
