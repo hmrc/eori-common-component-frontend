@@ -35,24 +35,28 @@ class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, aud
 
   private val logger = Logger(this.getClass)
 
+  private def logSuccess(url: String)(implicit hc: HeaderCarrier) =
+    logger.info(s"complete for call to $url and headers ${hc.headers}")
+
+  private def logError(url: String, e: Throwable)(implicit hc: HeaderCarrier) =
+    logger.error(s"request failed for call to $url and headers ${hc.headers}: ${e.getMessage}", e)
+
   def get[T](id: String, key: String)(implicit hc: HeaderCarrier, reads: Reads[T]): Future[Option[T]] = {
     val url = s"${appConfig.handleSubscriptionBaseUrl}/save4later/$id/$key"
     logger.info(s"GET: $url")
     http.GET[HttpResponse](url) map { response =>
-      logger.info(s"complete for call to $url and headers ${hc.headers}")
+      logSuccess(url)
 
       response.status match {
         case OK =>
-          auditCallResponse(url, response.json)
           Some(response.json.as[T])
         case NOT_FOUND =>
-          auditCallResponse(url, response.status)
           None
         case _ => throw new BadRequestException(s"Status:${response.status}")
       }
     } recoverWith {
       case NonFatal(e) =>
-        logger.error(s"request failed for call to $url and headers ${hc.headers}: ${e.getMessage}", e)
+        logError(url, e)
         Future.failed(e)
     }
   }
@@ -60,17 +64,15 @@ class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, aud
   def put[T](id: String, key: String, payload: JsValue)(implicit hc: HeaderCarrier): Future[Unit] = {
     val url = s"${appConfig.handleSubscriptionBaseUrl}/save4later/$id/$key"
     logger.info(s"PUT: $url")
-    auditCallRequest(url, payload)
     http.PUT[JsValue, HttpResponse](url, payload) map { response =>
-      logger.info(s"complete for call to $url and headers ${hc.headers}")
-      auditCallResponse(url, response.status)
+      logSuccess(url)
       response.status match {
         case NO_CONTENT | CREATED | OK => ()
         case _                         => throw new BadRequestException(s"Status:${response.status}")
       }
     } recoverWith {
       case NonFatal(e) =>
-        logger.error(s"request failed for call to $url and headers ${hc.headers}: ${e.getMessage}", e)
+        logError(url, e)
         Future.failed(e)
     }
   }
@@ -78,42 +80,17 @@ class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, aud
   def delete[T](id: String)(implicit hc: HeaderCarrier): Future[Unit] = {
     val url = s"${appConfig.handleSubscriptionBaseUrl}/save4later/$id"
     logger.info(s"DELETE: $url")
-    auditCallRequest(url, JsNull)
     http.DELETE[HttpResponse](url) map { response =>
-      logger.info(s"complete for call to $url and headers ${hc.headers}")
-      auditCallResponse(url, response.status)
+      logSuccess(url)
       response.status match {
         case NO_CONTENT => ()
         case _          => throw new BadRequestException(s"Status:${response.status}")
       }
     } recoverWith {
       case NonFatal(e) =>
-        logger.error(s"request failed for call to $url and headers ${hc.headers}: ${e.getMessage}", e)
+        logError(url, e)
         Future.failed(e)
     }
   }
-
-  private def auditCallRequest[T](url: String, request: JsValue)(implicit hc: HeaderCarrier): Future[Unit] =
-    Future {
-      audit.sendExtendedDataEvent(
-        transactionName = "Save4laterRequest",
-        path = url,
-        details = request,
-        eventType = "Save4later"
-      )
-    }
-
-  private def auditCallResponse[T](url: String, response: T)(implicit
-    hc: HeaderCarrier,
-    writes: Writes[T]
-  ): Future[Unit] =
-    Future {
-      audit.sendExtendedDataEvent(
-        transactionName = "Save4laterResponse",
-        path = url,
-        details = Json.toJson(response),
-        eventType = "Save4later"
-      )
-    }
 
 }

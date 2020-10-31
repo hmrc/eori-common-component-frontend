@@ -58,7 +58,7 @@ class SubscriptionStatusConnector @Inject() (http: HttpClient, appConfig: AppCon
       transactionName = "customs-subscription-status",
       path = url,
       details = Json.toJson(RequestResponse(request.jsObject(), response.jsObject())),
-      eventType = "displayCustomsSubscriptionStatus"
+      eventType = "SubscriptionStatus"
     )
 
 }

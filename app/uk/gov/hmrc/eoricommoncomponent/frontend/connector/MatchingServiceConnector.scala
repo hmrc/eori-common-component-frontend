@@ -68,7 +68,7 @@ class MatchingServiceConnector @Inject() (http: HttpClient, appConfig: AppConfig
       transactionName = "customs-registration-with-id",
       path = url,
       detail = request.keyValueMap(),
-      eventType = "customsRegistrationWithIdSubmitted"
+      eventType = "RegistrationWithIdSubmitted"
     )
 
   private def auditCallResponse(url: String, response: MatchingResponse)(implicit hc: HeaderCarrier): Unit =
@@ -76,7 +76,7 @@ class MatchingServiceConnector @Inject() (http: HttpClient, appConfig: AppConfig
       transactionName = "customs-registration-with-id",
       path = url,
       details = response.jsObject(),
-      eventType = "customsRegistrationWithIdConfirmation"
+      eventType = "RegistrationWithIdConfirmation"
     )
 
 }
