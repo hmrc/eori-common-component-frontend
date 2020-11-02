@@ -58,8 +58,8 @@ class RegisterWithoutIdConnector @Inject() (http: HttpClient, appConfig: AppConf
     audit.sendDataEvent(
       transactionName = "customs-registration-without-id",
       path = url,
-      detail = Map("txName" -> "CustomsRegistrationWithoutIdSubmitted") ++ request.requestDetail.keyValueMap(),
-      eventType = "CustomsRegistrationWithoutIdSubmitted"
+      detail = request.requestDetail.keyValueMap(),
+      eventType = "RegistrationWithoutIdSubmitted"
     )
 
   private def auditCallResponse(url: String, response: RegisterWithoutIdResponseHolder)(implicit
@@ -68,9 +68,8 @@ class RegisterWithoutIdConnector @Inject() (http: HttpClient, appConfig: AppConf
     audit.sendDataEvent(
       transactionName = "customs-registration-without-id",
       path = url,
-      detail = Map("txName" -> "CustomsRegistrationWithoutIdResult") ++ response.registerWithoutIDResponse
-        .keyValueMap(),
-      eventType = "CustomsRegistrationWithoutIdResult"
+      detail = response.registerWithoutIDResponse.keyValueMap(),
+      eventType = "RegistrationWithoutIdResult"
     )
 
 }

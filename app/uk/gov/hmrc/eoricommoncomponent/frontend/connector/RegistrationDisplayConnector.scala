@@ -56,9 +56,9 @@ class RegistrationDisplayConnector @Inject() (http: HttpClient, appConfig: AppCo
       transactionName = "customs-registration-display",
       path = url,
       detail =
-        Map("txName" -> "CustomsRegistrationDisplaySubmitted") ++ request.registrationDisplayRequest.requestCommon
+        request.registrationDisplayRequest.requestCommon
           .keyValueMap(),
-      eventType = "CustomsRegistrationDisplaySubmitted"
+      eventType = "RegistrationDisplaySubmitted"
     )
 
   private def auditCallResponse(url: String, response: RegistrationDisplayResponseHolder)(implicit
@@ -67,9 +67,9 @@ class RegistrationDisplayConnector @Inject() (http: HttpClient, appConfig: AppCo
     audit.sendDataEvent(
       transactionName = "customs-registration-display",
       path = url,
-      detail = Map("txName" -> "CustomsRegistrationDisplayResult") ++ response.registrationDisplayResponse
+      detail = response.registrationDisplayResponse
         .keyValueMap(),
-      eventType = "CustomsRegistrationDisplayResult"
+      eventType = "RegistrationDisplayResult"
     )
 
 }

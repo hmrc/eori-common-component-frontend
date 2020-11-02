@@ -64,7 +64,7 @@ class SubscriptionServiceConnector @Inject() (http: HttpClient, appConfig: AppCo
     audit.sendDataEvent(
       transactionName = "customs-subscription",
       path = url,
-      detail = Map("txName" -> "SubscriptionSubmitted") ++ request.subscriptionCreateRequest.keyValueMap(),
+      detail = request.subscriptionCreateRequest.keyValueMap(),
       eventType = "SubscriptionSubmitted"
     )
 
@@ -72,7 +72,7 @@ class SubscriptionServiceConnector @Inject() (http: HttpClient, appConfig: AppCo
     audit.sendDataEvent(
       transactionName = "customs-subscription",
       path = url,
-      detail = Map("txName" -> "SubscriptionResult") ++ response.subscriptionCreateResponse.keyValueMap(),
+      detail = response.subscriptionCreateResponse.keyValueMap(),
       eventType = "SubscriptionResult"
     )
 

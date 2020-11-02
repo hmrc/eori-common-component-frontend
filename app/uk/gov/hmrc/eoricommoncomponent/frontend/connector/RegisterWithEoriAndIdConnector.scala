@@ -65,8 +65,8 @@ class RegisterWithEoriAndIdConnector @Inject() (http: HttpClient, appConfig: App
     audit.sendDataEvent(
       transactionName = "customs-registration",
       path = url,
-      detail = Map("txName" -> "CustomsRegistrationSubmitted") ++ request.keyValueMap(),
-      eventType = "CustomsRegistrationSubmitted"
+      detail = request.keyValueMap(),
+      eventType = "RegistrationSubmitted"
     )
 
   private def auditCallResponse(url: String, response: RegisterWithEoriAndIdResponseHolder)(implicit
@@ -75,8 +75,8 @@ class RegisterWithEoriAndIdConnector @Inject() (http: HttpClient, appConfig: App
     audit.sendDataEvent(
       transactionName = "customs-registration",
       path = url,
-      detail = Map("txName" -> "CustomsRegistrationResult") ++ response.registerWithEORIAndIDResponse.keyValueMap(),
-      eventType = "CustomsRegistrationResult"
+      detail = response.registerWithEORIAndIDResponse.keyValueMap(),
+      eventType = "RegistrationResult"
     )
 
 }
