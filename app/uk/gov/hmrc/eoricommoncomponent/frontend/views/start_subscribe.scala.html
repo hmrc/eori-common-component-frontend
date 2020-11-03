@@ -17,7 +17,6 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName
-@import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.ApplicationController
 @import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 @import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.EmailController
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
@@ -42,7 +41,7 @@
         <p>@messages("cds.subscription.information.para2")</p>
 
         <ul class="bullets list">
-            <li>@Html(messages("cds.subscription.information.bullet1", link(messages("cds.subscription.information.bullet1.link"), ApplicationController.startRegister(service).url)))</li>
+            <li>@Html(messages("cds.subscription.information.bullet1", link(messages("cds.subscription.information.bullet1.link"), appConfig.externalGetEORILink(service))))</li>
             <li>@messages("cds.subscription.information.bullet2")</li>
             <li>@Html(messages("cds.subscription.information.bullet3", link("cds.subscription.information.bullet3.link", appConfig.findLostUtr)))</li>
         </ul>
