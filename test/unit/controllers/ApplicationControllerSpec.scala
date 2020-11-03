@@ -28,7 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, KeyVa
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, start, start_subscribe}
-import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
+import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
@@ -169,7 +169,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       val result =
         controller.logout(atarService, Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
-      session(result).get(SessionKeys.userId) shouldBe None
+      session(result).isEmpty shouldBe true
       await(result).header.headers("Location") should endWith("feedback/eori-common-component-register-atar")
     }
 
@@ -180,7 +180,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       val result =
         controller.logout(atarService, Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
-      session(result).get(SessionKeys.userId) shouldBe None
+      session(result).isEmpty shouldBe true
       await(result).header.headers("Location") should endWith("feedback/eori-common-component-subscribe-atar")
     }
   }
