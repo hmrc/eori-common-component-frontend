@@ -72,9 +72,6 @@ else (reportAProblemLink(appConfig.reportAProblemPartialUrlSubscribe(service), a
         @styles_di()
         @partials.countrypickerscript(countriesInCountryPicker, journey)
 
-        @if(isLoggedIn){
-        <noscript><meta http-equiv="refresh" content="900;url=@signOutUrl" /></noscript>
-        }
     </head>
     <body class="js-no">
             <!-- Google Tag Manager (noscript) -->
