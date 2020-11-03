@@ -71,7 +71,7 @@ class WhatIsYourEoriSpec extends ViewSpec {
     "have a link to 'Get EORI'" in {
       doc.body.getElementsByAttributeValue(
         "href",
-        routes.RegisterRedirectController.getEori(atarService, Journey.Subscribe).url
+        routes.ApplicationController.startRegister(atarService).url
       ).text() mustBe "Get an EORI number"
     }
 

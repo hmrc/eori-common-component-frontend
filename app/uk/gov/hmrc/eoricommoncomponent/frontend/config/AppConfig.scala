@@ -18,6 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.config
 
 import javax.inject.{Inject, Named, Singleton}
 import play.api.Configuration
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.ApplicationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 
@@ -57,8 +58,16 @@ class AppConfig @Inject() (
     case Journey.Subscribe => s"$feedbackLinkSubscribe-${service.code}"
   }
 
-  lazy val externalGetEORILink: Option[String] = config.getOptional[String]("external-url.get-cds-eori")
-  lazy val findLostUtr: String                 = config.get[String]("external-url.find-lost-utr")
+  def externalGetEORILink(service: Service): String = {
+    def registerBlocked = blockedRoutesRegex.exists(_.findFirstIn("register").isDefined)
+
+    if (registerBlocked)
+      config.get[String]("external-url.get-cds-eori")
+    else
+      ApplicationController.startRegister(service).url
+  }
+
+  lazy val findLostUtr: String = config.get[String]("external-url.find-lost-utr")
 
   lazy val blockedRoutesRegex: Seq[Regex] =
     config.getOptional[String]("routes-to-block") match {

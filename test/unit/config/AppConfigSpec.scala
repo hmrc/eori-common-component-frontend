@@ -18,12 +18,28 @@ package unit.config
 
 import java.util.concurrent.TimeUnit
 
+import org.mockito.Mockito
+import org.mockito.Mockito.when
+import org.scalatest.BeforeAndAfterEach
+import play.api.Configuration
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.ApplicationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
 import util.ControllerSpec
 
 import scala.concurrent.duration.Duration
 
-class AppConfigSpec extends ControllerSpec {
+class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
+
+  private val mockConfig: Configuration = mock[Configuration]
+  private val mockServiceConfig         = mock[ServicesConfig]
+  private val runMode                   = mock[RunMode]
+
+  override def beforeEach() {
+    super.beforeEach()
+    Mockito.reset(mockConfig, mockServiceConfig, runMode)
+  }
 
   "AppConfig" should {
 
@@ -148,6 +164,27 @@ class AppConfigSpec extends ControllerSpec {
       appConfig.getServiceUrl(
         "vat-known-facts-control-list"
       ) shouldBe "http://localhost:6753/vat-known-facts-control-list"
+    }
+
+    "return url for 'get EORI" when {
+
+      "register is blocked" in {
+        when(mockConfig.getOptional[String]("routes-to-block")).thenReturn(Some("register"))
+        when(mockConfig.get[String]("external-url.get-cds-eori")).thenReturn("/config-url")
+
+        val testAppConfig = new AppConfig(mockConfig, mockServiceConfig, runMode, "appName")
+
+        testAppConfig.externalGetEORILink(atarService) shouldBe "/config-url"
+      }
+
+      "register is un-blocked" in {
+        when(mockConfig.getOptional[String]("routes-to-block")).thenReturn(None)
+
+        val testAppConfig = new AppConfig(mockConfig, mockServiceConfig, runMode, "appName")
+
+        testAppConfig.externalGetEORILink(atarService) shouldBe ApplicationController.startRegister(atarService).url
+      }
+
     }
 
   }
