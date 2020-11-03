@@ -20,6 +20,7 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EoriLanguageController._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 @import uk.gov.hmrc.play.views.html.layouts.BetaBanner
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.JourneyName._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.JourneyExtractor.journey
 @import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
@@ -31,15 +32,6 @@
 
 @isLoggedIn = @{!request.session.isEmpty && request.session.get("authToken").isDefined}
 
-@journeyHeading = @{
-    if(journey == Journey.Register) {
-        messages("cds.banner.registration")
-    }else if(journey == Journey.Subscribe) {
-        messages("cds.banner.subscription", longName)
-    }else {
-        ""
-    }
-}
 
 @betaFeedbackHeaderUrl = @{
     if(journey == Journey.Register) appConfig.betaFeedBackRegister(service)
@@ -59,7 +51,7 @@
             <div class="content">
                 <nav id="proposition-menu" class="header__menu" role="navigation">
                     <span class="header__menu__proposition-name">
-                        @journeyHeading
+                        @journeyName
                     </span>
                     <ul id="proposition-link" class="header__menu__proposition-links">
                         <li class="u--no-print">
