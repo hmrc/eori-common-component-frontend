@@ -548,7 +548,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your contact name"
-        page.getElementsText(fullNameFieldLevelErrorXPath) shouldBe "Enter your contact name"
+        page.getElementsText(fullNameFieldLevelErrorXPath) shouldBe "Error: Enter your contact name"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -558,7 +558,9 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The full name can be a maximum of 70 characters"
-        page.getElementsText(fullNameFieldLevelErrorXPath) shouldBe "The full name can be a maximum of 70 characters"
+        page.getElementsText(
+          fullNameFieldLevelErrorXPath
+        ) shouldBe "Error: The full name can be a maximum of 70 characters"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -568,7 +570,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your contact telephone number"
-        page.getElementsText(telephoneFieldLevelErrorXPath) shouldBe "Enter your contact telephone number"
+        page.getElementsText(telephoneFieldLevelErrorXPath) shouldBe "Error: Enter your contact telephone number"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -578,7 +580,9 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The telephone number must be 24 digits or less"
-        page.getElementsText(telephoneFieldLevelErrorXPath) shouldBe "The telephone number must be 24 digits or less"
+        page.getElementsText(
+          telephoneFieldLevelErrorXPath
+        ) shouldBe "Error: The telephone number must be 24 digits or less"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -588,7 +592,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Please enter a valid telephone number"
-        page.getElementsText(telephoneFieldLevelErrorXPath) shouldBe "Please enter a valid telephone number"
+        page.getElementsText(telephoneFieldLevelErrorXPath) shouldBe "Error: Please enter a valid telephone number"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -604,7 +608,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The fax number must be 24 digits or less"
-        page.getElementsText(faxFieldLevelErrorXPath) shouldBe "The fax number must be 24 digits or less"
+        page.getElementsText(faxFieldLevelErrorXPath) shouldBe "Error: The fax number must be 24 digits or less"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -614,7 +618,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Please enter a valid fax number"
-        page.getElementsText(faxFieldLevelErrorXPath) shouldBe "Please enter a valid fax number"
+        page.getElementsText(faxFieldLevelErrorXPath) shouldBe "Error: Please enter a valid fax number"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -655,7 +659,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter the first line of your address"
-        page.getElementsText(streetFieldLevelErrorXPath) shouldBe "Enter the first line of your address"
+        page.getElementsText(streetFieldLevelErrorXPath) shouldBe "Error: Enter the first line of your address"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -667,7 +671,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The street must be 70 characters or less"
-        page.getElementsText(streetFieldLevelErrorXPath) shouldBe "The street must be 70 characters or less"
+        page.getElementsText(streetFieldLevelErrorXPath) shouldBe "Error: The street must be 70 characters or less"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -677,7 +681,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your town or city"
-        page.getElementsText(cityFieldLevelErrorXPath) shouldBe "Enter your town or city"
+        page.getElementsText(cityFieldLevelErrorXPath) shouldBe "Error: Enter your town or city"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -689,7 +693,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The town or city must be 35 characters or less"
-        page.getElementsText(cityFieldLevelErrorXPath) shouldBe "The town or city must be 35 characters or less"
+        page.getElementsText(cityFieldLevelErrorXPath) shouldBe "Error: The town or city must be 35 characters or less"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -700,7 +704,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
           status(result) shouldBe BAD_REQUEST
           val page = CdsPage(contentAsString(result))
           page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a valid country name"
-          page.getElementsText(countryFieldLevelErrorXPath) shouldBe "Enter a valid country name"
+          page.getElementsText(countryFieldLevelErrorXPath) shouldBe "Error: Enter a valid country name"
           page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -711,7 +715,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
           status(result) shouldBe BAD_REQUEST
           val page = CdsPage(contentAsString(result))
           page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a valid postcode"
-          page.getElementsText(postcodeFieldLevelErrorXPath) shouldBe "Enter a valid postcode"
+          page.getElementsText(postcodeFieldLevelErrorXPath) shouldBe "Error: Enter a valid postcode"
           page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -739,7 +743,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
           page.elementIsPresent(postcodeFieldLevelErrorXPath) shouldBe true
         }
 
-        page.getElementsText(postcodeFieldLevelErrorXPath) shouldBe "The postcode must be 9 characters or less"
+        page.getElementsText(postcodeFieldLevelErrorXPath) shouldBe "Error: The postcode must be 9 characters or less"
       }
     }
 

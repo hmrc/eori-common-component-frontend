@@ -83,8 +83,10 @@ class NameUtrOrganisationControllerSpec
 
   private val NameMaxLength = 105
 
-  private val UtrInvalidError     = "Enter a valid UTR number"
-  private val UtrWrongLengthError = "The UTR number must be 10 numbers"
+  private val UtrInvalidErrorPage      = "Enter a valid UTR number"
+  private val UtrInvalidErrorField     = "Error: Enter a valid UTR number"
+  private val UtrWrongLengthErrorPage  = "The UTR number must be 10 numbers"
+  private val UtrWrongLengthErrorField = "Error: The UTR number must be 10 numbers"
 
   private val BusinessNotMatchedError =
     "Your business details have not been found. Check that your details are correct and try again."
@@ -130,13 +132,13 @@ class NameUtrOrganisationControllerSpec
               "Registered company name"
           }
           val errorForName = organisationType match {
-            case "partnership" => "Enter your registered partnership name"
+            case "partnership" => "Error: Enter your registered partnership name"
             case "limited-liability-partnership" =>
-              "Enter your registered partnership name"
+              "Error: Enter your registered partnership name"
             case "charity-public-body-not-for-profit" =>
-              "Enter your registered organisation name"
+              "Error: Enter your registered organisation name"
             case _ =>
-              "Enter your registered organisation name"
+              "Error: Enter your registered organisation name"
           }
           val labelForUtr = organisationType match {
             case "partnership" => "Partnership Self Assessment Unique Taxpayer Reference (UTR) number"
@@ -219,10 +221,10 @@ class NameUtrOrganisationControllerSpec
           val page = CdsPage(contentAsString(result))
           if (organisationType == "partnership" || organisationType == "limited-liability-partnership") {
             page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your registered partnership name"
-            page.getElementsText(fieldLevelErrorName) shouldBe "Enter your registered partnership name"
+            page.getElementsText(fieldLevelErrorName) shouldBe "Error: Enter your registered partnership name"
           } else {
             page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your registered organisation name"
-            page.getElementsText(fieldLevelErrorName) shouldBe "Enter your registered organisation name"
+            page.getElementsText(fieldLevelErrorName) shouldBe "Error: Enter your registered organisation name"
           }
           page.getElementsText("title") should startWith("Error: ")
         }
@@ -233,7 +235,7 @@ class NameUtrOrganisationControllerSpec
           status(result) shouldBe BAD_REQUEST
           val page = CdsPage(contentAsString(result))
           page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your UTR number"
-          page.getElementsText(fieldLevelErrorUtr) shouldBe "Enter your UTR number"
+          page.getElementsText(fieldLevelErrorUtr) shouldBe "Error: Enter your UTR number"
           page.getElementsText("title") should startWith("Error: ")
         }
       }
@@ -247,12 +249,16 @@ class NameUtrOrganisationControllerSpec
               page.getElementsText(
                 pageLevelErrorSummaryListXPath
               ) shouldBe "The partnership name must be 105 characters or less"
-              page.getElementsText(fieldLevelErrorName) shouldBe "The partnership name must be 105 characters or less"
+              page.getElementsText(
+                fieldLevelErrorName
+              ) shouldBe "Error: The partnership name must be 105 characters or less"
             } else {
               page.getElementsText(
                 pageLevelErrorSummaryListXPath
               ) shouldBe "The organisation name must be 105 characters or less"
-              page.getElementsText(fieldLevelErrorName) shouldBe "The organisation name must be 105 characters or less"
+              page.getElementsText(
+                fieldLevelErrorName
+              ) shouldBe "Error: The organisation name must be 105 characters or less"
             }
             page.getElementsText("title") should startWith("Error: ")
         }
@@ -262,8 +268,8 @@ class NameUtrOrganisationControllerSpec
         submitForm(form = ValidNameUtrRequest + ("utr" -> "123456789"), organisationType) { result =>
           status(result) shouldBe BAD_REQUEST
           val page = CdsPage(contentAsString(result))
-          page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe UtrWrongLengthError
-          page.getElementsText(fieldLevelErrorUtr) shouldBe UtrWrongLengthError
+          page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe UtrWrongLengthErrorPage
+          page.getElementsText(fieldLevelErrorUtr) shouldBe UtrWrongLengthErrorField
           page.getElementsText("title") should startWith("Error: ")
         }
       }
@@ -273,8 +279,8 @@ class NameUtrOrganisationControllerSpec
         submitForm(form = ValidNameUtrRequest + ("utr" -> invalidUtr), organisationType) { result =>
           status(result) shouldBe BAD_REQUEST
           val page = CdsPage(contentAsString(result))
-          page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe UtrInvalidError
-          page.getElementsText(fieldLevelErrorUtr) shouldBe UtrInvalidError
+          page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe UtrInvalidErrorPage
+          page.getElementsText(fieldLevelErrorUtr) shouldBe UtrInvalidErrorField
           page.getElementsText("title") should startWith("Error: ")
         }
       }
@@ -344,8 +350,8 @@ class NameUtrOrganisationControllerSpec
       submitForm(Map("name" -> "My company name", "utr" -> utr)) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe UtrInvalidError
-        page.getElementsText(fieldLevelErrorUtr) shouldBe UtrInvalidError
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe UtrInvalidErrorPage
+        page.getElementsText(fieldLevelErrorUtr) shouldBe UtrInvalidErrorField
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -362,8 +368,8 @@ class NameUtrOrganisationControllerSpec
       submitForm(Map("name" -> "My company name", "utr" -> utr)) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe UtrWrongLengthError
-        page.getElementsText(fieldLevelErrorUtr) shouldBe UtrWrongLengthError
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe UtrWrongLengthErrorPage
+        page.getElementsText(fieldLevelErrorUtr) shouldBe UtrWrongLengthErrorField
         page.getElementsText("title") should startWith("Error: ")
       }
     }

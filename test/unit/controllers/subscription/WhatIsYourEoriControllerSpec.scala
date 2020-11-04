@@ -67,7 +67,8 @@ class WhatIsYourEoriControllerSpec
   )
 
   private val emulatedFailure = new UnsupportedOperationException("Emulation of service call failure")
-  val enterAGbEori            = "Enter an EORI number that starts with GB"
+  val enterAGbEoriPage        = "Enter an EORI number that starts with GB"
+  val enterAGbEoriField       = "Error: Enter an EORI number that starts with GB"
 
   override def beforeEach: Unit = {
     reset(
@@ -262,7 +263,7 @@ class WhatIsYourEoriControllerSpec
         ) shouldBe "Enter your EORI number"
         page.getElementsText(
           SubscriptionAmendCompanyDetailsPage.eoriNumberFieldLevelErrorXpath
-        ) shouldBe "Enter your EORI number"
+        ) shouldBe "Error: Enter your EORI number"
       }
     }
 
@@ -275,7 +276,7 @@ class WhatIsYourEoriControllerSpec
         ) shouldBe "The EORI number must be 17 characters or less"
         page.getElementsText(
           SubscriptionAmendCompanyDetailsPage.eoriNumberFieldLevelErrorXpath
-        ) shouldBe "The EORI number must be 17 characters or less"
+        ) shouldBe "Error: The EORI number must be 17 characters or less"
       }
     }
 
@@ -289,7 +290,7 @@ class WhatIsYourEoriControllerSpec
         ) shouldBe enterAValidEori
         page.getElementsText(
           SubscriptionAmendCompanyDetailsPage.eoriNumberFieldLevelErrorXpath
-        ) shouldBe enterAValidEori
+        ) shouldBe s"Error: $enterAValidEori"
 
       }
     }
@@ -298,8 +299,12 @@ class WhatIsYourEoriControllerSpec
       submitFormInCreateMode(Map("eori-number" -> "FR145678901234")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath) shouldBe enterAGbEori
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.eoriNumberFieldLevelErrorXpath) shouldBe enterAGbEori
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
+        ) shouldBe enterAGbEoriPage
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.eoriNumberFieldLevelErrorXpath
+        ) shouldBe enterAGbEoriField
 
       }
     }
@@ -307,8 +312,12 @@ class WhatIsYourEoriControllerSpec
       submitFormInCreateMode(Map("eori-number" -> "gb145678901234")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath) shouldBe enterAGbEori
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.eoriNumberFieldLevelErrorXpath) shouldBe enterAGbEori
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
+        ) shouldBe enterAGbEoriPage
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.eoriNumberFieldLevelErrorXpath
+        ) shouldBe enterAGbEoriField
 
       }
     }

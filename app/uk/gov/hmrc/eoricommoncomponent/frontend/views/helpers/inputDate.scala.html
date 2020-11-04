@@ -54,7 +54,7 @@ elements.args.getOrElse('_isLegendH1, false).asInstanceOf[Boolean]
         }
 
         @if(elements.hasErrors) {
-            @elements.errors.map { error => <span class="error-message">@messages(error)</span>}
+            @elements.errors.map { error => <span class="error-message"><span class="visually-hidden">@messages("cds.error.field.hint")</span> @messages(error)</span>}
         }
         @if(isLegendH1 && elements.hasErrors) {
         </div>

@@ -79,7 +79,8 @@ class BusinessShortNameControllerSpec
   private val emulatedFailure              = new UnsupportedOperationException("Emulation of service call failure")
   private val useShortNameError            = "Tell us if your organisation uses a shortened name"
   private val partnershipUseShortNameError = "Tell us if your partnership uses a shortened name"
-  private val shortNameError               = "Enter your organisation's shortened name"
+  private val shortNameErrorPage           = "Enter your organisation's shortened name"
+  private val shortNameErrorField          = "Error: Enter your organisation's shortened name"
   private val partnershipShortNameError    = "Enter your partnership's shortened name"
 
   override def beforeEach: Unit = {
@@ -297,7 +298,9 @@ class BusinessShortNameControllerSpec
     "display errors in the same order as the fields appear on the page when 'use short name' is answered yes" in {
       submitFormInCreateMode(emptyShortNameFieldsMap + ("use-short-name" -> withShortName)) { result =>
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath) shouldBe shortNameError
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
+        ) shouldBe shortNameErrorPage
       }
     }
 
@@ -376,10 +379,10 @@ class BusinessShortNameControllerSpec
           val page = CdsPage(contentAsString(result))
           page.getElementsText(
             SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
-          ) shouldBe shortNameError
+          ) shouldBe shortNameErrorPage
           page.getElementsText(
             SubscriptionAmendCompanyDetailsPage.shortNameFieldLevelErrorXpath
-          ) shouldBe shortNameError
+          ) shouldBe shortNameErrorField
       }
     }
 
@@ -392,7 +395,7 @@ class BusinessShortNameControllerSpec
         ) shouldBe "The shortened name must be 70 characters or less"
         page.getElementsText(
           SubscriptionAmendCompanyDetailsPage.shortNameFieldLevelErrorXpath
-        ) shouldBe "The shortened name must be 70 characters or less"
+        ) shouldBe "Error: The shortened name must be 70 characters or less"
       }
     }
   }
