@@ -96,8 +96,8 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
 
   "Form with no option selected" should {
     "display proper message page level" in {
-      notSelectedIndividualDoc.body.getElementById("form-error-heading").text mustBe "There is a problem."
-      notSelectedCompanyDoc.body.getElementById("form-error-heading").text mustBe "There is a problem."
+      notSelectedIndividualDoc.body.getElementById("form-error-heading").text mustBe "There is a problem"
+      notSelectedCompanyDoc.body.getElementById("form-error-heading").text mustBe "There is a problem"
 
       notSelectedIndividualDoc.body
         .getElementsByAttributeValue("href", "#have-utr")

@@ -42,8 +42,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.{AuthActionMock, SessionBuilder}
 import util.builders.matching.OrganisationUtrFormBuilder._
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -108,7 +108,8 @@ class DoYouHaveAUtrNumberControllerSpec
           val labelForUtr  = "Corporation Tax UTR number"
           val errorMessage = "Enter your UTR number"
 
-          page.getElementsText(labelForUtrXpath) shouldBe labelForUtr + " " + errorMessage
+          page.getElementsText(labelForUtrXpath) shouldBe labelForUtr
+          page.getElementsText(fieldLevelErrorUtr) shouldBe errorMessage
       }
     }
   }

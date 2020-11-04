@@ -121,13 +121,22 @@ class NameUtrOrganisationControllerSpec
           status(result) shouldBe BAD_REQUEST
           val page = CdsPage(contentAsString(result))
           val labelForName = organisationType match {
-            case "partnership" => "Registered partnership name Enter your registered partnership name"
+            case "partnership" => "Registered partnership name"
             case "limited-liability-partnership" =>
-              "Registered partnership name This is on your certificate of incorporation from Companies House. Enter your registered partnership name"
+              "Registered partnership name"
             case "charity-public-body-not-for-profit" =>
-              "Organisation name This is on your certificate of incorporation from Companies House. Enter your registered organisation name"
+              "Organisation name"
             case _ =>
-              "Registered company name This is on your certificate of incorporation from Companies House. Enter your registered organisation name"
+              "Registered company name"
+          }
+          val errorForName = organisationType match {
+            case "partnership" => "Enter your registered partnership name"
+            case "limited-liability-partnership" =>
+              "Enter your registered partnership name"
+            case "charity-public-body-not-for-profit" =>
+              "Enter your registered organisation name"
+            case _ =>
+              "Enter your registered organisation name"
           }
           val labelForUtr = organisationType match {
             case "partnership" => "Partnership Self Assessment Unique Taxpayer Reference (UTR) number"
@@ -140,15 +149,17 @@ class NameUtrOrganisationControllerSpec
 
           val UtrHintText = organisationType match {
             case "partnership" | "limited-liability-partnership" =>
-              " This is 10 numbers, for example 1234567890. It will be on partnership tax returns and other letters about your partnership. It may be called 'reference', 'UTR' or 'official use'. You can find a lost UTR number (opens in a new window or tab)."
+              "This is 10 numbers, for example 1234567890. It will be on partnership tax returns and other letters about your partnership. It may be called 'reference', 'UTR' or 'official use'. You can find a lost UTR number (opens in a new window or tab)."
             case _ =>
-              " This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Corporation Tax. It may be called 'reference', 'UTR' or 'official use'. You can find a lost UTR number (opens in a new window or tab)."
+              "This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Corporation Tax. It may be called 'reference', 'UTR' or 'official use'. You can find a lost UTR number (opens in a new window or tab)."
           }
 
           val UtrHintTextLink = "https://www.gov.uk/find-lost-utr-number"
 
           page.getElementsText(labelForNameXpath) shouldBe labelForName
-          page.getElementsText(labelForUtrXpath) shouldBe labelForUtr + UtrHintText
+          page.getElementsText(fieldLevelErrorName) shouldBe errorForName
+          page.getElementsText(labelForUtrXpath) shouldBe labelForUtr
+          page.getElementsText(hintForUtrHintTextXpath) shouldBe UtrHintText
           page.getElementsHref(linkInUtrHintTextXpath) shouldBe UtrHintTextLink
         }
       }

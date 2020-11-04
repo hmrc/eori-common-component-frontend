@@ -110,7 +110,7 @@ class MatchOrganisationUtrSpec extends ViewSpec {
     "display the correct problem message at the top of the page" in {
       docWithNoSelectionError.body
         .getElementById("errors")
-        .text mustBe "There is a problem. Tell us if you have a UTR number"
+        .text mustBe "There is a problem Tell us if you have a UTR number"
     }
   }
 
@@ -129,7 +129,7 @@ class MatchOrganisationUtrSpec extends ViewSpec {
     "display the correct problem message at the top of the page" in {
       docWithNoSelectionErrorAsSoleTrader.body
         .getElementById("errors")
-        .text mustBe "There is a problem. Tell us if you have a UTR number"
+        .text mustBe "There is a problem Tell us if you have a UTR number"
     }
   }
 
