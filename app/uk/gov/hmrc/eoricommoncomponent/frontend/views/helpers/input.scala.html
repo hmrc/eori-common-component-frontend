@@ -44,7 +44,7 @@
     elements.args.getOrElse('_plainLabel, false).asInstanceOf[Boolean]
 }
 
-<div id="@elements.field.name-outer" class="form-group @if(!isLabelH1 && allErrors.nonEmpty) {form-group-error}">
+<div id="@elements.field.name-outer" class="form-group @if(allErrors.nonEmpty) {form-group-error}">
     @if(isLabelH1) {
     <h1>
     }
@@ -53,43 +53,33 @@
             <span class="heading-large">@elements.label</span>
         }
 
-        @if(isLabelH1 && allErrors.nonEmpty) {
-            <div class="form-group-error">
-        }
         @if(!isLabelH1) {
                 @elements.label
         }
-        @if(elements.args.get('_hintText)) {
-                <span class="form-hint" id="@(field.id)-hint">@elements.args.get('_hintText)</span>
-        }
-        @if(allErrors.nonEmpty) {
-                @allErrors.map { error => <span class="error-message">@messages(error)</span> }
-        }
-        @if(isLabelH1 && allErrors.nonEmpty) {
-            </div>
-        }
+
+
     </label>
     @if(isLabelH1) {
     </h1>
     }
-    @if(isLabelH1 && allErrors.nonEmpty) {
-    <div class="form-group-error">
+
+    @if(elements.args.get('_hintText)) {
+        <span class="form-hint" id="@(field.id)-hint">@elements.args.get('_hintText)</span>
+    }
+    @if(allErrors.nonEmpty) {
+        @allErrors.map { error => <span class="error-message">@messages(error)</span> }
     }
 
-    <div>
-        <input
-            @if(elements.args.contains('_type)) {
-                type="@elements.args.get('_type)"
-            } else {
-                type="text"
-            }
-            name="@elements.field.name"
-            id="@elements.field.name"
-            class="form-control @if(allErrors.nonEmpty) {form-control-error}"
-            value="@elements.field.value" />
-    </div>
+    <input
+        @if(elements.args.contains('_type)) {
+            type="@elements.args.get('_type)"
+        } else {
+            type="text"
+        }
+        name="@elements.field.name"
+        id="@elements.field.name"
+        class="form-control @if(allErrors.nonEmpty) {form-control-error}"
+        value="@elements.field.value" />
 
-    @if(isLabelH1 && allErrors.nonEmpty) {
-    </div>
-    }
+
 </div>
