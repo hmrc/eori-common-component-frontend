@@ -28,12 +28,13 @@ case class Service(
   shortName: String,
   callBack: String,
   friendlyName: String,
-  friendlyNameWelsh: String
+  friendlyNameWelsh: String,
+  feedbackUrl: Option[String]
 )
 
 object Service {
 
-  val cds = Service("cds", "HMRC-CUS-ORG", "", "", "", "")
+  val cds = Service("cds", "HMRC-CUS-ORG", "", "", "", "", None)
 
   private val supportedServicesMap: Map[String, Service] = new ServiceConfig(
     Configuration(ConfigFactory.load())

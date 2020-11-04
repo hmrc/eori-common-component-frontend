@@ -188,7 +188,7 @@ class RegisterWithEoriAndIdController @Inject() (
       for {
         name <- cache.subscriptionDetails.map(_.name)
         _    <- cache.remove
-      } yield Ok(subscriptionOutcomeFailView(date, name))
+      } yield Ok(subscriptionOutcomeFailView(date, name, service))
     }
 
   def eoriAlreadyLinked(service: Service): Action[AnyContent] =

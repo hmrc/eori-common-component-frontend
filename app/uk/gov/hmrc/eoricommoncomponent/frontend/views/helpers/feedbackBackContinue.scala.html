@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package util
+@import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+@import uk.gov.hmrc.eoricommoncomponent.frontend.models.JourneyStatus
 
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+@(service: Service, status: JourneyStatus.Value)(implicit request: Request[_], messages: Messages)
 
-trait TestData {
-
-  val atarService: Service =
-    Service("atar", "HMRC-ATAR-ORG", "ATaR", "/test-atar/callback", "", "", Some("/test-atar/feedback"))
-
+@service.feedbackUrl.map { url =>
+   <a id="feedback-continue" href="@{s"${url}?status=${status}"}" class="button" role="button">@messages("cds.navigation.continue")</a>
 }

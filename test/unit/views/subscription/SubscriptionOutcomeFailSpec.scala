@@ -20,6 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.subscription_outcome_fail
 import util.ViewSpec
 
@@ -35,22 +36,37 @@ class SubscriptionOutcomeFailSpec extends ViewSpec {
   "'Subscription Fail' Page" should {
 
     "have the correct title " in {
-      doc.title() must startWith(s"The ATaR application has been unsuccessful")
+      doc().title() must startWith(s"The ATaR application has been unsuccessful")
     }
 
     "display correct heading" in {
-      doc.body.getElementsByTag("h1").text() must startWith(s"The ATaR application for $orgName has been unsuccessful")
+      doc().body.getElementsByTag("h1").text() must startWith(
+        s"The ATaR application for $orgName has been unsuccessful"
+      )
     }
     "have the correct class on the h1" in {
-      doc.body.getElementsByTag("h1").hasClass("heading-xlarge") mustBe true
+      doc().body.getElementsByTag("h1").hasClass("heading-xlarge") mustBe true
     }
     "have the correct class on the message" in {
-      doc.body.getElementById("active-from").hasClass("heading-medium") mustBe true
+      doc().body.getElementById("active-from").hasClass("heading-medium") mustBe true
     }
     "have the correct processing date and text" in {
-      doc.body.getElementById("active-from").text mustBe s"Application received by HMRC on $processedDate"
+      doc().body.getElementById("active-from").text mustBe s"Application received by HMRC on $processedDate"
+    }
+
+    "have a feedback 'continue' button" in {
+      val link = doc().body.getElementById("feedback-continue")
+      link.text mustBe "Continue"
+      link.attr("href") mustBe "/test-atar/feedback?status=Failed"
+    }
+
+    "have a no feedback 'continue' button when config missing" in {
+      val link = doc(atarService.copy(feedbackUrl = None)).body.getElementById("feedback-continue")
+      link mustBe null
     }
   }
 
-  lazy val doc: Document = Jsoup.parse(contentAsString(view(processedDate, orgName)))
+  def doc(service: Service = atarService): Document =
+    Jsoup.parse(contentAsString(view(processedDate, orgName, service)))
+
 }

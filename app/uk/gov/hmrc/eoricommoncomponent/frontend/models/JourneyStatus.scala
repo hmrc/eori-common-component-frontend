@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-package util
+package uk.gov.hmrc.eoricommoncomponent.frontend.models
 
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+object JourneyStatus extends Enumeration {
 
-trait TestData {
-
-  val atarService: Service =
-    Service("atar", "HMRC-ATAR-ORG", "ATaR", "/test-atar/callback", "", "", Some("/test-atar/feedback"))
-
+  val Failed, Processing = Value
 }
