@@ -25,6 +25,7 @@ object NameIdOrganisationPage extends WebPage {
   val fieldLevelErrorUtr                   = "//*[@id='utr-outer']//span[@class='error-message']"
   val labelForNameXpath                    = "//*[@id='name-outer']//label"
   val labelForUtrXpath                     = "//*[@id='utr-outer']/label"
+  val hintForUtrHintTextXpath              = "//*[@id='utr-hint']"
   val linkInUtrHintTextXpath               = "//*[@id='utr-hint']/a"
 
   override val title = "What are your business details?"

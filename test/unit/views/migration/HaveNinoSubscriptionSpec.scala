@@ -74,7 +74,7 @@ class HaveNinoSubscriptionSpec extends ViewSpec {
 
   "No option selected Subscription Have Nino Page" should {
     "have page level error with correct message" in {
-      docWithNoOptionSelected.body.getElementById("form-error-heading").text mustBe "There is a problem."
+      docWithNoOptionSelected.body.getElementById("form-error-heading").text mustBe "There is a problem"
       docWithNoOptionSelected.body
         .getElementsByAttributeValue("href", "#have-nino")
         .text mustBe "Tell us if you have a National Insurance number"
@@ -83,7 +83,7 @@ class HaveNinoSubscriptionSpec extends ViewSpec {
 
   "Subscription Have Nino Page with incorrect Nino format" should {
     "have page level error with correct message" in {
-      docWithIncorrectNino.body.getElementById("form-error-heading").text mustBe "There is a problem."
+      docWithIncorrectNino.body.getElementById("form-error-heading").text mustBe "There is a problem"
       docWithIncorrectNino.body
         .getElementsByAttributeValue("href", "#nino")
         .text mustBe "The National Insurance number must be 9 characters"

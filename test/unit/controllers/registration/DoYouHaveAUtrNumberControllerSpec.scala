@@ -42,8 +42,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.{AuthActionMock, SessionBuilder}
 import util.builders.matching.OrganisationUtrFormBuilder._
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -71,7 +71,8 @@ class DoYouHaveAUtrNumberControllerSpec
     mockSubscriptionDetailsService
   )
 
-  private val UtrInvalidError = "Enter a valid UTR number"
+  private val UtrInvalidErrorPage  = "Enter a valid UTR number"
+  private val UtrInvalidErrorField = "Error: Enter a valid UTR number"
 
   private val BusinessNotMatchedError =
     "Your business details have not been found. Check that your details are correct and try again."
@@ -106,9 +107,10 @@ class DoYouHaveAUtrNumberControllerSpec
           val page = CdsPage(contentAsString(result))
 
           val labelForUtr  = "Corporation Tax UTR number"
-          val errorMessage = "Enter your UTR number"
+          val errorMessage = "Error: Enter your UTR number"
 
-          page.getElementsText(labelForUtrXpath) shouldBe labelForUtr + " " + errorMessage
+          page.getElementsText(labelForUtrXpath) shouldBe labelForUtr
+          page.getElementsText(fieldLevelErrorUtr) shouldBe errorMessage
       }
     }
   }
@@ -126,7 +128,7 @@ class DoYouHaveAUtrNumberControllerSpec
           status(result) shouldBe BAD_REQUEST
           val page = CdsPage(contentAsString(result))
           page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your UTR number"
-          page.getElementsText(fieldLevelErrorUtr) shouldBe "Enter your UTR number"
+          page.getElementsText(fieldLevelErrorUtr) shouldBe "Error: Enter your UTR number"
           page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -137,8 +139,8 @@ class DoYouHaveAUtrNumberControllerSpec
         result =>
           status(result) shouldBe BAD_REQUEST
           val page = CdsPage(contentAsString(result))
-          page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe UtrInvalidError
-          page.getElementsText(fieldLevelErrorUtr) shouldBe UtrInvalidError
+          page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe UtrInvalidErrorPage
+          page.getElementsText(fieldLevelErrorUtr) shouldBe UtrInvalidErrorField
           page.getElementsText("title") should startWith("Error: ")
       }
     }

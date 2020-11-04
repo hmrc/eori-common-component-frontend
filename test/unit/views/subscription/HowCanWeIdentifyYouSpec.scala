@@ -91,7 +91,9 @@ class HowCanWeIdentifyYouSpec extends ViewSpec {
     }
 
     "display an field level error if nino radio button is selected but no nino entered" in {
-      docWithNoNinoError.body().getElementsByClass("error-message").text() mustBe "Enter your National Insurance number"
+      docWithNoNinoError.body().getElementsByClass(
+        "error-message"
+      ).text() mustBe "Error: Enter your National Insurance number"
     }
 
     "display an page level error if utr radio button is selected but no nino entered" in {
@@ -99,7 +101,7 @@ class HowCanWeIdentifyYouSpec extends ViewSpec {
     }
 
     "display an field level error if utr radio button is selected but no utr entered" in {
-      docWithNoUtrError.body().getElementsByClass("error-message").text() mustBe "Enter your UTR number"
+      docWithNoUtrError.body().getElementsByClass("error-message").text() mustBe "Error: Enter your UTR number"
     }
   }
 

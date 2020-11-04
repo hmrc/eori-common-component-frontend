@@ -114,7 +114,7 @@ class VatDetailsControllerSpec
         ) shouldBe "Enter a valid postcode of your VAT registration address"
         page.getElementsText(
           vatPostcodeFieldLevelError
-        ) shouldBe "Enter a valid postcode of your VAT registration address"
+        ) shouldBe "Error: Enter a valid postcode of your VAT registration address"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -138,7 +138,7 @@ class VatDetailsControllerSpec
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your VAT number"
-        page.getElementsText(vatNumberFieldLevelError) shouldBe "Enter your VAT number"
+        page.getElementsText(vatNumberFieldLevelError) shouldBe "Error: Enter your VAT number"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -148,7 +148,7 @@ class VatDetailsControllerSpec
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The VAT number must be 9 digits"
-        page.getElementsText(vatNumberFieldLevelError) shouldBe "The VAT number must be 9 digits"
+        page.getElementsText(vatNumberFieldLevelError) shouldBe "Error: The VAT number must be 9 digits"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -158,7 +158,7 @@ class VatDetailsControllerSpec
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The VAT number must be 9 digits"
-        page.getElementsText(vatNumberFieldLevelError) shouldBe "The VAT number must be 9 digits"
+        page.getElementsText(vatNumberFieldLevelError) shouldBe "Error: The VAT number must be 9 digits"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -168,7 +168,7 @@ class VatDetailsControllerSpec
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The VAT number must be 9 digits"
-        page.getElementsText(vatNumberFieldLevelError) shouldBe "The VAT number must be 9 digits"
+        page.getElementsText(vatNumberFieldLevelError) shouldBe "Error: The VAT number must be 9 digits"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -178,7 +178,7 @@ class VatDetailsControllerSpec
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The VAT number must be 9 digits"
-        page.getElementsText(vatNumberFieldLevelError) shouldBe "The VAT number must be 9 digits"
+        page.getElementsText(vatNumberFieldLevelError) shouldBe "Error: The VAT number must be 9 digits"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -197,7 +197,7 @@ class VatDetailsControllerSpec
         ) shouldBe "Enter your effective VAT date, for example '31 3 1980'"
         page.getElementsText(
           vatEffectiveDateFieldLevelError
-        ) shouldBe "Enter your effective VAT date, for example '31 3 1980'"
+        ) shouldBe "Error: Enter your effective VAT date, for example '31 3 1980'"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -216,7 +216,7 @@ class VatDetailsControllerSpec
         ) shouldBe "Please enter a valid date, for example '31 3 1980'"
         page.getElementsText(
           vatEffectiveDateFieldLevelError
-        ) shouldBe "Please enter a valid date, for example '31 3 1980'"
+        ) shouldBe "Error: Please enter a valid date, for example '31 3 1980'"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -236,7 +236,7 @@ class VatDetailsControllerSpec
         ) shouldBe "You must specify a date that is not in the future"
         page.getElementsText(
           vatEffectiveDateFieldLevelError
-        ) shouldBe "You must specify a date that is not in the future"
+        ) shouldBe "Error: You must specify a date that is not in the future"
         page.getElementsText("title") should startWith("Error: ")
       }
     }

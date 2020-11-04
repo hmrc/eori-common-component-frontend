@@ -82,7 +82,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your first name"
-        page.getElementsText(fieldLevelErrorFirstName) shouldBe "Enter your first name"
+        page.getElementsText(fieldLevelErrorFirstName) shouldBe "Error: Enter your first name"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -93,7 +93,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe maxLengthError(firstNameMaxLength, "first")
-        page.getElementsText(fieldLevelErrorFirstName) shouldBe maxLengthError(firstNameMaxLength, "first")
+        page.getElementsText(fieldLevelErrorFirstName) shouldBe s"Error: ${maxLengthError(firstNameMaxLength, "first")}"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -115,7 +115,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your last name"
-        page.getElementsText(fieldLevelErrorLastName) shouldBe "Enter your last name"
+        page.getElementsText(fieldLevelErrorLastName) shouldBe "Error: Enter your last name"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -126,7 +126,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe maxLengthError(lastNameMaxLength, "last")
-        page.getElementsText(fieldLevelErrorLastName) shouldBe maxLengthError(lastNameMaxLength, "last")
+        page.getElementsText(fieldLevelErrorLastName) shouldBe s"Error: ${maxLengthError(lastNameMaxLength, "last")}"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -142,7 +142,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your date of birth"
-        page.getElementsText(fieldLevelErrorDateOfBirth) shouldBe "Enter your date of birth"
+        page.getElementsText(fieldLevelErrorDateOfBirth) shouldBe "Error: Enter your date of birth"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -152,7 +152,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a date of birth in the right format"
-        page.getElementsText(fieldLevelErrorDateOfBirth) shouldBe "Enter a date of birth in the right format"
+        page.getElementsText(fieldLevelErrorDateOfBirth) shouldBe "Error: Enter a date of birth in the right format"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -169,7 +169,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe FutureDate
-        page.getElementsText(fieldLevelErrorDateOfBirth) shouldBe FutureDate
+        page.getElementsText(fieldLevelErrorDateOfBirth) shouldBe s"Error: $FutureDate"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -182,7 +182,7 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a date of birth in the right format"
-        page.getElementsText(fieldLevelErrorDateOfBirth) shouldBe "Enter a date of birth in the right format"
+        page.getElementsText(fieldLevelErrorDateOfBirth) shouldBe "Error: Enter a date of birth in the right format"
         page.getElementsText("title") should startWith("Error: ")
       }
     }

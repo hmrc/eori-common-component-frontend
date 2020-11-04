@@ -110,7 +110,7 @@ class MatchOrganisationUtrSpec extends ViewSpec {
     "display the correct problem message at the top of the page" in {
       docWithNoSelectionError.body
         .getElementById("errors")
-        .text mustBe "There is a problem. Tell us if you have a UTR number"
+        .text mustBe "There is a problem Tell us if you have a UTR number"
     }
   }
 
@@ -129,7 +129,7 @@ class MatchOrganisationUtrSpec extends ViewSpec {
     "display the correct problem message at the top of the page" in {
       docWithNoSelectionErrorAsSoleTrader.body
         .getElementById("errors")
-        .text mustBe "There is a problem. Tell us if you have a UTR number"
+        .text mustBe "There is a problem Tell us if you have a UTR number"
     }
   }
 
@@ -138,7 +138,7 @@ class MatchOrganisationUtrSpec extends ViewSpec {
       docWithNoUtrEnteredError.body
         .getElementById("utr-outer")
         .getElementsByClass("error-message")
-        .text mustBe "Enter your UTR number"
+        .text mustBe "Error: Enter your UTR number"
     }
     "display a page level error message" in {
       docWithNoUtrEnteredError.body.getElementsByClass("error-summary-list").text mustBe "Enter your UTR number"
@@ -150,7 +150,7 @@ class MatchOrganisationUtrSpec extends ViewSpec {
       docWithNoUtrEnteredErrorAsSoleTrader.body
         .getElementById("utr-outer")
         .getElementsByClass("error-message")
-        .text mustBe "Enter your UTR number"
+        .text mustBe "Error: Enter your UTR number"
     }
     "display a page level error message" in {
       docWithNoUtrEnteredErrorAsSoleTrader.body

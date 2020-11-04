@@ -357,7 +357,9 @@ class SicCodeControllerSpec
         page.getElementsText(
           SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
         ) shouldEqual "Enter a SIC code"
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.sicFieldLevelErrorXpath) shouldEqual "Enter a SIC code"
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.sicFieldLevelErrorXpath
+        ) shouldEqual "Error: Enter a SIC code"
       }
     }
 
@@ -368,7 +370,9 @@ class SicCodeControllerSpec
         page.getElementsText(
           SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
         ) shouldEqual "Enter a SIC code"
-        page.getElementsText(SubscriptionAmendCompanyDetailsPage.sicFieldLevelErrorXpath) shouldEqual "Enter a SIC code"
+        page.getElementsText(
+          SubscriptionAmendCompanyDetailsPage.sicFieldLevelErrorXpath
+        ) shouldEqual "Error: Enter a SIC code"
       }
     }
 
@@ -381,7 +385,7 @@ class SicCodeControllerSpec
         ) shouldBe "Enter a SIC code in the right format"
         page.getElementsText(
           SubscriptionAmendCompanyDetailsPage.sicFieldLevelErrorXpath
-        ) shouldEqual "Enter a SIC code in the right format"
+        ) shouldEqual "Error: Enter a SIC code in the right format"
       }
     }
 
@@ -394,7 +398,7 @@ class SicCodeControllerSpec
         ) shouldBe "The SIC code must be more than 3 digits"
         page.getElementsText(
           SubscriptionAmendCompanyDetailsPage.sicFieldLevelErrorXpath
-        ) shouldEqual "The SIC code must be more than 3 digits"
+        ) shouldEqual "Error: The SIC code must be more than 3 digits"
       }
     }
 
@@ -407,7 +411,7 @@ class SicCodeControllerSpec
         ) shouldBe "The SIC code must be 5 digits or less"
         page.getElementsText(
           SubscriptionAmendCompanyDetailsPage.sicFieldLevelErrorXpath
-        ) shouldEqual "The SIC code must be 5 digits or less"
+        ) shouldEqual "Error: The SIC code must be 5 digits or less"
       }
     }
 

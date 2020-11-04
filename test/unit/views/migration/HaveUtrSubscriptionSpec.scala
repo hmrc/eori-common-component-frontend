@@ -96,8 +96,8 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
 
   "Form with no option selected" should {
     "display proper message page level" in {
-      notSelectedIndividualDoc.body.getElementById("form-error-heading").text mustBe "There is a problem."
-      notSelectedCompanyDoc.body.getElementById("form-error-heading").text mustBe "There is a problem."
+      notSelectedIndividualDoc.body.getElementById("form-error-heading").text mustBe "There is a problem"
+      notSelectedCompanyDoc.body.getElementById("form-error-heading").text mustBe "There is a problem"
 
       notSelectedIndividualDoc.body
         .getElementsByAttributeValue("href", "#have-utr")
@@ -110,7 +110,7 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
 
   "Form with incorrect UTR format" should {
     "display item level error message" in {
-      incorrectUtrDoc.body.getElementsByClass("error-message").text mustBe "Enter a valid UTR number"
+      incorrectUtrDoc.body.getElementsByClass("error-message").text mustBe "Error: Enter a valid UTR number"
     }
   }
 

@@ -323,9 +323,11 @@ class AddressControllerSpec
         page.getElementsText(AddressPage.pageLevelErrorSummaryListXPath) should include("Enter your town or city")
         page.getElementsText(AddressPage.pageLevelErrorSummaryListXPath) should include("Enter your country")
 
-        page.getElementsText(AddressPage.streetFieldLevelErrorXPath) shouldBe "Enter the first line of your address"
-        page.getElementsText(AddressPage.cityFieldLevelErrorXPath) shouldBe "Enter your town or city"
-        page.getElementsText(AddressPage.countryFieldLevelErrorXPath) shouldBe "Enter your country"
+        page.getElementsText(
+          AddressPage.streetFieldLevelErrorXPath
+        ) shouldBe "Error: Enter the first line of your address"
+        page.getElementsText(AddressPage.cityFieldLevelErrorXPath) shouldBe "Error: Enter your town or city"
+        page.getElementsText(AddressPage.countryFieldLevelErrorXPath) shouldBe "Error: Enter your country"
       }
     }
 
@@ -337,7 +339,7 @@ class AddressControllerSpec
         val page = CdsPage(contentAsString(result))
         page.getElementsText(AddressPage.pageLevelErrorSummaryListXPath) shouldBe "Enter a valid postcode"
 
-        page.getElementsText(AddressPage.postcodeFieldLevelErrorXPath) shouldBe "Enter a valid postcode"
+        page.getElementsText(AddressPage.postcodeFieldLevelErrorXPath) shouldBe "Error: Enter a valid postcode"
       }
     }
 
@@ -348,7 +350,7 @@ class AddressControllerSpec
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(AddressPage.pageLevelErrorSummaryListXPath) shouldBe "Enter a valid postcode"
-        page.getElementsText(AddressPage.postcodeFieldLevelErrorXPath) shouldBe "Enter a valid postcode"
+        page.getElementsText(AddressPage.postcodeFieldLevelErrorXPath) shouldBe "Error: Enter a valid postcode"
       }
     }
 
@@ -366,8 +368,10 @@ class AddressControllerSpec
         )
         page.getElementsText(AddressPage.pageLevelErrorSummaryListXPath) should include("Enter your town or city")
 
-        page.getElementsText(AddressPage.streetFieldLevelErrorXPath) shouldBe "Enter the first line of your address"
-        page.getElementsText(AddressPage.cityFieldLevelErrorXPath) shouldBe "Enter your town or city"
+        page.getElementsText(
+          AddressPage.streetFieldLevelErrorXPath
+        ) shouldBe "Error: Enter the first line of your address"
+        page.getElementsText(AddressPage.cityFieldLevelErrorXPath) shouldBe "Error: Enter your town or city"
       }
     }
 
@@ -378,7 +382,7 @@ class AddressControllerSpec
         val page = CdsPage(contentAsString(result))
         page.getElementsText(
           AddressPage.streetFieldLevelErrorXPath
-        ) shouldBe "The first line of the address must be 70 characters or less"
+        ) shouldBe "Error: The first line of the address must be 70 characters or less"
       }
     }
 
@@ -389,7 +393,7 @@ class AddressControllerSpec
         val page = CdsPage(contentAsString(result))
         page.getElementsText(
           AddressPage.cityFieldLevelErrorXPath
-        ) shouldBe "The town or city must be 35 characters or less"
+        ) shouldBe "Error: The town or city must be 35 characters or less"
 
       }
     }
@@ -401,7 +405,7 @@ class AddressControllerSpec
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(AddressPage.pageLevelErrorSummaryListXPath) shouldBe "Enter a valid postcode"
-        page.getElementsText(AddressPage.postcodeFieldLevelErrorXPath) shouldBe "Enter a valid postcode"
+        page.getElementsText(AddressPage.postcodeFieldLevelErrorXPath) shouldBe "Error: Enter a valid postcode"
       }
     }
 
@@ -416,7 +420,7 @@ class AddressControllerSpec
         ) shouldBe "The postcode must be 9 characters or less"
         page.getElementsText(
           AddressPage.postcodeFieldLevelErrorXPath
-        ) shouldBe "The postcode must be 9 characters or less"
+        ) shouldBe "Error: The postcode must be 9 characters or less"
       }
     }
   }

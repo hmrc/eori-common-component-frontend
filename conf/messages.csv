@@ -586,7 +586,7 @@ cds.reg.existing.outcomes.success.download-eori-textfile	Download an accessible 
 cds.enrolment.already.exists.outcomes.success.heading.a	Subscription for		No Welsh translation found
 cds.enrolment.already.exists.outcomes.success.heading.b	the Customs Declaration Service		No Welsh translation found
 cds.enrolment.already.exists.outcomes.success.heading.c	already exists		No Welsh translation found
-cds.field-error.heading	There is a problem.		No Welsh translation found
+cds.field-error.heading	There is a problem		No Welsh translation found
 cds.field-error.enter-your	Enter the		No Welsh translation found
 cds.server-errors.401.title	Service unavailable		No Welsh translation found
 cds.server-errors.401.heading	Service unavailable		No Welsh translation found

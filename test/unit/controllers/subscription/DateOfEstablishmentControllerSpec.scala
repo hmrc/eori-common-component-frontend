@@ -91,10 +91,12 @@ class DateOfEstablishmentControllerSpec
 
   val existingSubscriptionDetailsHolder = SubscriptionDetails()
 
-  private val DateOfEstablishmentMissingPageLevelError = "Enter your date of establishment"
-  private val DateOfEstablishmentMissingError          = "Enter your date of establishment"
-  private val DateOfEstablishmentInvalidError          = "Please enter a valid date of establishment"
-  private val DateOfEstablishmentInFutureError         = "You cannot enter a date of establishment in the future"
+  private val DateOfEstablishmentMissingErrorPage   = "Enter your date of establishment"
+  private val DateOfEstablishmentMissingErrorField  = "Error: Enter your date of establishment"
+  private val DateOfEstablishmentInvalidErrorPage   = "Please enter a valid date of establishment"
+  private val DateOfEstablishmentInvalidErrorField  = "Error: Please enter a valid date of establishment"
+  private val DateOfEstablishmentInFutureErrorPage  = "You cannot enter a date of establishment in the future"
+  private val DateOfEstablishmentInFutureErrorField = "Error: You cannot enter a date of establishment in the future"
 
   override protected def beforeEach(): Unit = {
     reset(mockSubscriptionFlowManager, mockSubscriptionBusinessService, mockSubscriptionDetailsHolderService)
@@ -288,10 +290,10 @@ class DateOfEstablishmentControllerSpec
           val page = CdsPage(contentAsString(result))
           page.getElementsText(
             SubscriptionDateOfEstablishmentPage.pageLevelErrorSummaryListXPath
-          ) shouldBe DateOfEstablishmentMissingPageLevelError
+          ) shouldBe DateOfEstablishmentMissingErrorPage
           page.getElementsText(
             SubscriptionDateOfEstablishmentPage.dateOfEstablishmentErrorXpath
-          ) shouldBe DateOfEstablishmentMissingError
+          ) shouldBe DateOfEstablishmentMissingErrorField
         }
       }
 
@@ -301,10 +303,10 @@ class DateOfEstablishmentControllerSpec
           val page = CdsPage(contentAsString(result))
           page.getElementsText(
             SubscriptionDateOfEstablishmentPage.pageLevelErrorSummaryListXPath
-          ) shouldBe DateOfEstablishmentInvalidError
+          ) shouldBe DateOfEstablishmentInvalidErrorPage
           page.getElementsText(
             SubscriptionDateOfEstablishmentPage.dateOfEstablishmentErrorXpath
-          ) shouldBe DateOfEstablishmentInvalidError
+          ) shouldBe DateOfEstablishmentInvalidErrorField
         }
       }
 
@@ -319,10 +321,10 @@ class DateOfEstablishmentControllerSpec
           val page = CdsPage(contentAsString(result))
           page.getElementsText(
             SubscriptionDateOfEstablishmentPage.pageLevelErrorSummaryListXPath
-          ) shouldBe DateOfEstablishmentInFutureError
+          ) shouldBe DateOfEstablishmentInFutureErrorPage
           page.getElementsText(
             SubscriptionDateOfEstablishmentPage.dateOfEstablishmentErrorXpath
-          ) shouldBe DateOfEstablishmentInFutureError
+          ) shouldBe DateOfEstablishmentInFutureErrorField
         }
       }
     }
