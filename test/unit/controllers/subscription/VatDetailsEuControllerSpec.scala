@@ -52,7 +52,8 @@ class VatDetailsEuControllerSpec
   private val controller =
     new VatDetailsEuController(mockAuthAction, mockSubscriptionVatEUDetailsService, mcc, vatDetailsEuView)
 
-  private val duplicateVatNumber = "You have already entered this VAT number. Enter a different VAT number"
+  private val duplicateVatNumberPage  = "You have already entered this VAT number. Enter a different VAT number"
+  private val duplicateVatNumberField = "Error: You have already entered this VAT number. Enter a different VAT number"
 
   private val validVatIdMap = Map("vatCountry" -> "FR", "vatNumber" -> "XX123456789")
 
@@ -107,8 +108,12 @@ class VatDetailsEuControllerSpec
       submit(validVatIdMap + ("vatNumber" -> "12345")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(SubscriptionEUVATDetailsPage.pageLevelErrorSummaryListXPath) shouldBe duplicateVatNumber
-        page.getElementsText(SubscriptionEUVATDetailsPage.fieldLevelErrorEUVATNumberInput) shouldBe duplicateVatNumber
+        page.getElementsText(
+          SubscriptionEUVATDetailsPage.pageLevelErrorSummaryListXPath
+        ) shouldBe duplicateVatNumberPage
+        page.getElementsText(
+          SubscriptionEUVATDetailsPage.fieldLevelErrorEUVATNumberInput
+        ) shouldBe duplicateVatNumberField
       }
     }
 
@@ -145,8 +150,12 @@ class VatDetailsEuControllerSpec
       submitUpdate(validVatIdMap + ("vatNumber" -> "12345"), index = 12345) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(SubscriptionEUVATDetailsPage.pageLevelErrorSummaryListXPath) shouldBe duplicateVatNumber
-        page.getElementsText(SubscriptionEUVATDetailsPage.fieldLevelErrorEUVATNumberInput) shouldBe duplicateVatNumber
+        page.getElementsText(
+          SubscriptionEUVATDetailsPage.pageLevelErrorSummaryListXPath
+        ) shouldBe duplicateVatNumberPage
+        page.getElementsText(
+          SubscriptionEUVATDetailsPage.fieldLevelErrorEUVATNumberInput
+        ) shouldBe duplicateVatNumberField
       }
     }
 

@@ -42,7 +42,7 @@
         <span class="visually-hidden">. @messages("cds.country-picker.hint.screen-reader")</span>
 
         @if(allErrors.nonEmpty) {
-            @allErrors.map { error => <span class="error-message">@messages(error)</span> }
+            @allErrors.map { error => <span class="error-message"><span class="visually-hidden">@messages("cds.error.field.hint")</span> @messages(error)</span> }
         }
     </label>
     <select id="@field" name="@field" class="form-control @if(allErrors.nonEmpty) {form-control-error}">

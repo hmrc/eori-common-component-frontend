@@ -134,7 +134,7 @@ class VatDetailsEuConfirmSpec extends ViewSpec {
         .text mustBe "Tell us if your organisation is VAT registered in other EU countries"
       emptyDocUnderLimit.body
         .getElementsByClass("error-message")
-        .text mustBe "Tell us if your organisation is VAT registered in other EU countries"
+        .text mustBe "Error: Tell us if your organisation is VAT registered in other EU countries"
     }
   }
 

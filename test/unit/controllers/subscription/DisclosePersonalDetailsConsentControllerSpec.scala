@@ -207,7 +207,7 @@ class DisclosePersonalDetailsConsentControllerSpec
         ) shouldBe problemWithSelectionError
         page.getElementsText(
           DisclosePersonalDetailsConsentPage.fieldLevelErrorYesNoAnswer
-        ) shouldBe problemWithSelectionError
+        ) shouldBe s"Error: $problemWithSelectionError"
       }
     }
 
@@ -221,7 +221,7 @@ class DisclosePersonalDetailsConsentControllerSpec
         ) shouldBe problemWithSelectionError
         page.getElementsText(
           DisclosePersonalDetailsConsentPage.fieldLevelErrorYesNoAnswer
-        ) shouldBe problemWithSelectionError
+        ) shouldBe s"Error: $problemWithSelectionError"
       }
     }
   }

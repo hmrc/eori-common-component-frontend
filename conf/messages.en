@@ -1077,7 +1077,7 @@ cds.enrolment.already.exists.outcomes.success.heading=You already have access to
 
 
 #input field errors
-cds.field-error.heading=There is a problem.
+cds.field-error.heading=There is a problem
 
 #server errors
 cds.server-errors.401.title=Service unavailable

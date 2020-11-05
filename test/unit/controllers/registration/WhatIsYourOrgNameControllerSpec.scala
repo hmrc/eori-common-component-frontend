@@ -158,7 +158,7 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
             status(result) shouldBe BAD_REQUEST
             val page = CdsPage(contentAsString(result))
             page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe nameError(nameDescription)
-            page.getElementsText(fieldLevelErrorName) shouldBe "Enter your registered organisation name"
+            page.getElementsText(fieldLevelErrorName) shouldBe "Error: Enter your registered organisation name"
             page.getElementsText("title") should startWith("Error: ")
           }
         }
@@ -170,7 +170,9 @@ class WhatIsYourOrgNameControllerSpec extends ControllerSpec with BeforeAndAfter
             page.getElementsText(
               pageLevelErrorSummaryListXPath
             ) shouldBe "The organisation name must be 105 characters or less"
-            page.getElementsText(fieldLevelErrorName) shouldBe "The organisation name must be 105 characters or less"
+            page.getElementsText(
+              fieldLevelErrorName
+            ) shouldBe "Error: The organisation name must be 105 characters or less"
             page.getElementsText("title") should startWith("Error: ")
           }
         }

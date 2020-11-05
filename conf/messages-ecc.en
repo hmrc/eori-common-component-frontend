@@ -95,3 +95,5 @@ cds.form.contact-details=Your address
 
 confirm-business-details.individual.yes-wrong-address=No, I need to change my address
 confirm-business-details.individual.no=No, I need to enter all my details again
+
+cds.error.field.hint=Error:

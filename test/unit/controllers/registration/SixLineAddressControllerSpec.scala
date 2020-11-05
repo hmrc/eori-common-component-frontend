@@ -359,7 +359,9 @@ class SixLineAddressControllerSpec
           AddressPage.pageLevelErrorSummaryListXPath
         ) shouldBe "The entered country is not acceptable"
 
-        page.getElementsText(AddressPage.countryFieldLevelErrorXPath) shouldBe "The entered country is not acceptable"
+        page.getElementsText(
+          AddressPage.countryFieldLevelErrorXPath
+        ) shouldBe "Error: The entered country is not acceptable"
       }
     }
   }
@@ -405,7 +407,7 @@ class SixLineAddressControllerSpec
       status(result) shouldBe BAD_REQUEST
       val page = CdsPage(contentAsString(result))
       page.getElementsText(PageLevelErrorSummaryListXPath) shouldBe errorMessage
-      page.getElementsText(fieldLevelErrorXPath) shouldBe errorMessage
+      page.getElementsText(fieldLevelErrorXPath) shouldBe s"Error: $errorMessage"
       page.getElementsText("title") should startWith("Error: ")
       result
     }

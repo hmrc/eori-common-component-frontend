@@ -63,7 +63,7 @@ class VatRegisteredUkControllerSpec extends ControllerSpec with AuthActionMock {
         ) shouldBe VatRegisteredUkPage.problemWithSelectionError
         page.getElementsText(
           VatRegisteredUkPage.fieldLevelErrorYesNoAnswer
-        ) shouldBe VatRegisteredUkPage.problemWithSelectionError
+        ) shouldBe s"Error: ${VatRegisteredUkPage.problemWithSelectionError}"
       }
     }
 
@@ -77,7 +77,7 @@ class VatRegisteredUkControllerSpec extends ControllerSpec with AuthActionMock {
         ) shouldBe VatRegisteredUkPage.problemWithSelectionError
         page.getElementsText(
           VatRegisteredUkPage.fieldLevelErrorYesNoAnswer
-        ) shouldBe VatRegisteredUkPage.problemWithSelectionError
+        ) shouldBe s"Error: ${VatRegisteredUkPage.problemWithSelectionError}"
       }
     }
 

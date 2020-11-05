@@ -111,7 +111,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
         ) shouldBe "The National Insurance number must be 9 characters"
         page.getElementsText(
           SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorNino
-        ) shouldBe "The National Insurance number must be 9 characters"
+        ) shouldBe "Error: The National Insurance number must be 9 characters"
         page.getElementsText(SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorUtr) shouldBe empty
       }
     }
@@ -125,7 +125,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
         ) shouldBe "The UTR number must be 10 numbers"
         page.getElementsText(
           SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorUtr
-        ) shouldBe "The UTR number must be 10 numbers"
+        ) shouldBe "Error: The UTR number must be 10 numbers"
         page.getElementsText(SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorNino) shouldBe empty
       }
     }
@@ -151,7 +151,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
         ) shouldBe "The National Insurance number must be 9 characters"
         page.getElementsText(
           SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorNino
-        ) shouldBe "The National Insurance number must be 9 characters"
+        ) shouldBe "Error: The National Insurance number must be 9 characters"
       }
     }
 
@@ -164,7 +164,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
         ) shouldBe "Enter a National Insurance number in the right format"
         page.getElementsText(
           SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorNino
-        ) shouldBe "Enter a National Insurance number in the right format"
+        ) shouldBe "Error: Enter a National Insurance number in the right format"
       }
     }
 
@@ -175,7 +175,9 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
         page.getElementsText(
           SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
         ) shouldBe "Enter a valid UTR number"
-        page.getElementsText(SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorUtr) shouldBe "Enter a valid UTR number"
+        page.getElementsText(
+          SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorUtr
+        ) shouldBe "Error: Enter a valid UTR number"
       }
     }
 

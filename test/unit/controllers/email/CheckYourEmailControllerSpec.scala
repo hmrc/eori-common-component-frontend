@@ -166,7 +166,9 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(CheckYourEmailPage.pageLevelErrorSummaryListXPath) shouldBe problemWithSelectionError
-        page.getElementsText(CheckYourEmailPage.fieldLevelErrorYesNoAnswer) shouldBe problemWithSelectionError
+        page.getElementsText(
+          CheckYourEmailPage.fieldLevelErrorYesNoAnswer
+        ) shouldBe s"Error: $problemWithSelectionError"
       }
     }
   }

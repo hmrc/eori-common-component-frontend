@@ -233,7 +233,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your registered organisation name"
-        page.getElementsText(nameFieldLevelErrorXPath) shouldBe "Enter your registered organisation name"
+        page.getElementsText(nameFieldLevelErrorXPath) shouldBe "Error: Enter your registered organisation name"
         page.getElementsText("title") should startWith("Error: ")
         verifyZeroInteractions(mockSubscriptionBusinessService)
       }
@@ -246,7 +246,9 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
         page.getElementsText(
           pageLevelErrorSummaryListXPath
         ) shouldBe "The organisation name must be 105 characters or less"
-        page.getElementsText(nameFieldLevelErrorXPath) shouldBe "The organisation name must be 105 characters or less"
+        page.getElementsText(
+          nameFieldLevelErrorXPath
+        ) shouldBe "Error: The organisation name must be 105 characters or less"
         page.getElementsText("title") should startWith("Error: ")
         verifyZeroInteractions(mockSubscriptionBusinessService)
       }
@@ -257,7 +259,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your UTR number"
-        page.getElementsText(utrFieldLevelErrorXPath) shouldBe "Enter your UTR number"
+        page.getElementsText(utrFieldLevelErrorXPath) shouldBe "Error: Enter your UTR number"
         page.getElementsText("title") should startWith("Error: ")
         verifyZeroInteractions(mockSubscriptionBusinessService)
       }
