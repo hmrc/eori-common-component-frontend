@@ -76,6 +76,12 @@
         } else {
             type="text"
         }
+        @if(elements.args.contains('_autocomplete)) {
+            autocomplete="@elements.args.get('_autocomplete)"
+        }
+        @if(elements.args.contains('_spellcheck)) {
+            spellcheck="@elements.args.get('_spellcheck)"
+        }
         name="@elements.field.name"
         id="@elements.field.name"
         class="form-control @if(allErrors.nonEmpty) {form-control-error}"

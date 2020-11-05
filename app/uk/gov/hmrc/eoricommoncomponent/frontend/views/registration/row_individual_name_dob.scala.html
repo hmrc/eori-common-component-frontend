@@ -25,7 +25,11 @@
 @(individualNameAndDateOfBirthForm: Form[IndividualNameAndDateOfBirth], organisationType: String, service: Service, journey: Journey.Value, isInReviewMode: Boolean)(implicit request: Request[_], messages: Messages)
 
 @inputText(field: String, label: String, args: (Symbol, Any)*) = {
-    @helpers.inputText(individualNameAndDateOfBirthForm)(field, label, args:_*)
+    @defining(Seq('_label -> Html(messages(label)),
+        '_plainLabel -> true,
+        '_spellcheck -> false) ++ args) { args =>
+        @helpers.input(individualNameAndDateOfBirthForm(field), args: _*)
+    }
 }
 
 @layout_di(messages("cds.matching.individual.title"), form = Some(individualNameAndDateOfBirthForm)) {
@@ -38,9 +42,9 @@
 
         @helper.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.RowIndividualNameDateOfBirthController.submit(isInReviewMode, organisationType, service, journey), 'id -> s"$organisationType-form") {
         @CSRF.formField
-            @inputText("given-name", messages("cds.matching.individual.given-name"))
-            @inputText("middle-name", messages("cds.matching.individual.middle-name.optional"))
-            @inputText("family-name", messages("cds.matching.individual.family-name"))
+            @inputText("given-name", messages("cds.matching.individual.given-name"), '_autocomplete ->  "given-name")
+            @inputText("middle-name", messages("cds.matching.individual.middle-name.optional"), '_autocomplete ->  "additional-name")
+            @inputText("family-name", messages("cds.matching.individual.family-name"), '_autocomplete ->  "family-name")
             @inputDate_di(individualNameAndDateOfBirthForm, "date-of-birth",
                 '_label -> Html(messages("cds.matching.individual.what-is-your-date-of-birth")),
                 '_hintText -> Html(messages("cds.date-of-birth.hint"))

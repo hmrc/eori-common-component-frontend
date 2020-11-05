@@ -28,7 +28,8 @@
 @inputText(field: String, label: String, args: (Symbol, Any)*) = {
 @defining(Seq(
     '_label -> Html(messages(label)),
-    '_plainLabel -> true) ++ args) { args =>
+    '_plainLabel -> true,
+    '_spellcheck -> false) ++ args) { args =>
         @helpers.input(subscriptionNameDobForm(field), args: _*)
     }
 }
@@ -55,8 +56,8 @@
         @helper.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.submit(isInReviewMode, service, journey), 'id -> "subscriptionNameDobForm") {
         @CSRF.formField
 
-            @inputText("first-name", firstNameLabel)
-            @inputText("last-name", lastNameLabel)
+            @inputText("first-name", firstNameLabel, '_autocomplete ->  "given-name")
+            @inputText("last-name", lastNameLabel, '_autocomplete ->  "family-name")
             @inputDate_di(subscriptionNameDobForm, "date-of-birth",
                 '_label -> Html(messages("cds.matching.individual.what-is-your-date-of-birth")),
                 '_hintText -> Html(messages("cds.date-of-birth.hint"))
