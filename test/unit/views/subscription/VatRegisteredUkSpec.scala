@@ -97,7 +97,7 @@ class VatRegisteredUkSpec extends ViewSpec {
     "have a field level error when no radio buttons are selected" in {
       docWithErrors.body
         .getElementsByClass("error-message")
-        .text mustBe "Tell us if your organisation is VAT registered in the UK"
+        .text mustBe "Error: Tell us if your organisation is VAT registered in the UK"
     }
   }
 
@@ -115,7 +115,7 @@ class VatRegisteredUkSpec extends ViewSpec {
     "have a field level error when no radio buttons are selected" in {
       docPartnershipWithErrors.body
         .getElementsByClass("error-message")
-        .text mustBe "Tell us if your partnership is VAT registered in the UK"
+        .text mustBe "Error: Tell us if your partnership is VAT registered in the UK"
     }
   }
 

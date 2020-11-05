@@ -100,7 +100,7 @@ class MatchOrganisationUtrSpec extends ViewSpec {
       docWithNoSelectionError.body
         .getElementById("have-utr-field")
         .getElementsByClass("error-message")
-        .text mustBe "Tell us if you have a UTR number"
+        .text mustBe "Error: Tell us if you have a UTR number"
     }
     "display a page level error message" in {
       docWithNoSelectionError.body
@@ -119,7 +119,7 @@ class MatchOrganisationUtrSpec extends ViewSpec {
       docWithNoSelectionErrorAsSoleTrader.body
         .getElementById("have-utr-field")
         .getElementsByClass("error-message")
-        .text mustBe "Tell us if you have a UTR number"
+        .text mustBe "Error: Tell us if you have a UTR number"
     }
     "display a page level error message" in {
       docWithNoSelectionErrorAsSoleTrader.body

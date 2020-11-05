@@ -33,28 +33,29 @@
     <fieldset id="@field.id-fieldset">
 
         <legend>
-            @if(isLegendH1){
+        @if(isLegendH1){
             <h1 class="heading-large">
-                @legend
+            @legend
             </h1>
-            }
-
-            @if(elements.hasErrors) {
-            <div class="form-group-error">
-            }
-            @if(!isLegendH1){
+        } else {
             <span class="heading-medium">
-                @legend
-            </span>}
-
-            @if(elements.args.get('_hintText).isDefined) {
-                <p class="form-hint">@elements.args.get('_hintText)</p>
-            }
-            @if(elements.hasErrors) {
-                @elements.errors.map { error => <span class="error-message">@messages(error)</span> }
-            </div>
-            }
+            @legend
+            </span>
+        }
         </legend>
+
+        @if(elements.hasErrors) {
+            <div class="form-group-error">
+        }
+
+        @if(elements.args.get('_hintText).isDefined) {
+            <p class="form-hint">@elements.args.get('_hintText)</p>
+        }
+        @if(elements.hasErrors) {
+            @elements.errors.map { error => <span class="error-message"><span class="visually-hidden">@messages("cds.error.field.hint")</span> @messages(error)</span> }
+            </div>
+        }
+
         @if(elements.hasErrors) {
         <div class="form-group-error">
         }

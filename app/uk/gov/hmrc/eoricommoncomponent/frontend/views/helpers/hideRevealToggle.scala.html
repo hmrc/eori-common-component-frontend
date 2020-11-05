@@ -36,7 +36,7 @@ otherHtmlInLegend: Html = Html(""))(hiddenHtml: Html)(implicit messages: Message
 @radioGroupName = @{field.name}
 
 @noRadio = {
-    <div class="multiple-choice" for="@noId" @if(!isRevealedByYes) {data-target="hidden-section" }>
+    <div class="multiple-choice" @if(!isRevealedByYes) {data-target="hidden-section" }>
         <input type="radio" value="false" name="@radioGroupName" id="@noId"
             @if(field.value.fold(default.contains(false))(_.equals("false"))) { checked="checked" }>
         <label for="@noId">@messages("cds.no")</label>
@@ -44,7 +44,7 @@ otherHtmlInLegend: Html = Html(""))(hiddenHtml: Html)(implicit messages: Message
 }
 
 @yesRadio = {
-    <div class="multiple-choice" for="@yesId" @if(isRevealedByYes) {data-target="hidden-section" }>
+    <div class="multiple-choice" @if(isRevealedByYes) {data-target="hidden-section" }>
         <input type="radio" value="true" name="@radioGroupName" id="@yesId"
             @if(field.value.fold(default.contains(true))(_.equals("true"))) { checked="checked" }>
         <label for="@yesId">@messages("cds.yes")</label>
@@ -64,31 +64,31 @@ otherHtmlInLegend: Html = Html(""))(hiddenHtml: Html)(implicit messages: Message
         <fieldset id="@field.id-fieldset">
             <legend>
                 @if(isLegendH1){
-                <h1 class="heading-large">
-                    @legend
-                </h1>
-                }
-                @if(elements.hasErrors) {
-                <div class="form-group-error">
-                }
-
-                @if(!isLegendH1){
-                    <span class="heading-medium">
+                    <h1 class="heading-large">
                         @legend
+                    </h1>
+                } else {
+                    <span class="heading-medium">
+                    @legend
                     </span>
                 }
-
-                @if(hintText != "") {
-                    <p class="form-hint">@hintText</p>
-                }
-
-                @otherHtmlInLegend
-
-                @if(elements.hasErrors) {
-                    @elements.errors.map { error => <span class="error-message">@messages(error)</span> }
-                </div>
-                }
             </legend>
+
+            @if(elements.hasErrors) {
+            <div class="form-group-error">
+            }
+
+            @if(hintText != "") {
+                <p class="form-hint">@hintText</p>
+            }
+
+            @otherHtmlInLegend
+
+            @if(elements.hasErrors) {
+                @elements.errors.map { error => <span class="error-message"><span class="visually-hidden">@messages("cds.error.field.hint")</span> @messages(error)</span> }
+            </div>
+            }
+
 
             @if(elements.hasErrors) {
             <div class="form-group-error">
