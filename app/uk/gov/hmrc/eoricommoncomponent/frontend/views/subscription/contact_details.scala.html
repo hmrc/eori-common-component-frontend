@@ -107,9 +107,9 @@
 
             <div id="contact">
                 <p>@messages("cds.subscription.contact-details.change-address.label")</p>
-                @inputText("street", "cds.subscription.contact-details.street.label")
-                @inputText("city", "cds.subscription.contact-details.city.label")
-                @inputText("postcode", "cds.subscription.contact-details.postcode.label")
+                @inputText("street", "cds.subscription.contact-details.street.label", '_autocomplete ->  "address-line1")
+                @inputText("city", "cds.subscription.contact-details.city.label", '_autocomplete ->  "address-level2")
+                @inputText("postcode", "cds.subscription.contact-details.postcode.label", '_autocomplete ->  "postal-code")
                 @helpers.countryField(contactForm, "countryCode", "cds.subscription.contact-details.countryCode-auto-complete.label", countries)
             </div>
 
