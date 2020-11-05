@@ -76,6 +76,9 @@
         } else {
             type="text"
         }
+        @if(elements.args.contains('_autocomplete)) {
+            autocomplete="@elements.args.get('_autocomplete)"
+        }
         name="@elements.field.name"
         id="@elements.field.name"
         class="form-control @if(allErrors.nonEmpty) {form-control-error}"
