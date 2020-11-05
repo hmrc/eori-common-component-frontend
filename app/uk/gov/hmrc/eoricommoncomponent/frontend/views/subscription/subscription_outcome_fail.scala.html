@@ -30,9 +30,8 @@
         <div class="heading-medium" id="active-from">@messages("cds.subscription.outcomes.rejected.received", processedDate)</div>
     </div>
 
-    @feedback_di()
-
     @helpers.feedbackBackContinue(service, JourneyStatus.Failed)
 
+    @feedback_di()
 </div>
 }
