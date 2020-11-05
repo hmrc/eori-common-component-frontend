@@ -65,6 +65,7 @@ elements.args.getOrElse('_isLegendH1, false).asInstanceOf[Boolean]
             '_label -> messages("date.fields.day"),
             '_labelClass -> "form-group form-group-day",
             '_inputClass -> inputClass,
+            '_pattern -> "[0-9]*",
             '_emptyValueText -> " "
         )
         @input_di(
@@ -72,6 +73,7 @@ elements.args.getOrElse('_isLegendH1, false).asInstanceOf[Boolean]
             '_label -> messages("date.fields.month"),
             '_labelClass -> "form-group form-group-month",
             '_inputClass -> inputClass,
+            '_pattern -> "[0-9]*",
             '_emptyValueText -> " "
         )
         @input_di(
@@ -79,6 +81,7 @@ elements.args.getOrElse('_isLegendH1, false).asInstanceOf[Boolean]
             '_label -> messages("date.fields.year"),
             '_labelClass -> "form-group form-group-year",
             '_inputClass -> inputClass,
+            '_pattern -> "[0-9]*",
             '_emptyValueText -> " "
         )
 
