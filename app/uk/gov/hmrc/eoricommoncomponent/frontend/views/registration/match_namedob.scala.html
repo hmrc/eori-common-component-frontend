@@ -26,7 +26,9 @@
 @(businessDetailsForm: Form[NameDobMatchModel], organisationType: String, service: Service, journey: Journey.Value)(implicit request: Request[_], messages: Messages)
 
 @inputText(field: String, label: String, args: (Symbol, Any)*) = {
-    @defining(Seq('_label -> Html(messages(label))) ++ args) { args =>
+    @defining(Seq('_label -> Html(messages(label)),
+        '_plainLabel -> true,
+        '_spellcheck -> false) ++ args) { args =>
         @helpers.input(businessDetailsForm(field), args: _*)
     }
 }
@@ -42,8 +44,9 @@
 
         @helper.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.NameDobController.submit(organisationType, service, journey), 'id -> "matchIndividualForm") {
         @CSRF.formField
-            @inputText("first-name", messages("cds.matching.individual.first-name"))
-            @inputText("last-name", messages("cds.matching.individual.last-name"))
+          wibble
+            @inputText("first-name", messages("cds.matching.individual.first-name"), '_autocomplete ->  "given-name")
+            @inputText("last-name", messages("cds.matching.individual.last-name"), '_autocomplete ->  "family-name")
             <div class="form-group">
             @inputDate_di(businessDetailsForm, "date-of-birth",
                 '_label -> Html(messages("cds.matching.individual.date-of-birth")),

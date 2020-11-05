@@ -58,6 +58,12 @@ class EnterYourDetailsSpec extends ViewSpec {
     "have an input of type 'text' for given name" in {
       doc.body().getElementById("first-name").attr("type") mustBe "text"
     }
+    "have an autocomplete for given name" in {
+      doc.body().getElementById("first-name").attr("autocomplete") mustBe "given-name"
+    }
+    "have no specheck for given name" in {
+      doc.body().getElementById("first-name").attr("spellcheck") mustBe "false"
+    }
     "have a correct label for Last name for UK" in {
       doc.body().getElementById("last-name-outer").getElementsByClass("form-label").text() mustBe "Last name"
     }
@@ -70,6 +76,12 @@ class EnterYourDetailsSpec extends ViewSpec {
     }
     "have an input of type 'text' for family name" in {
       doc.body().getElementById("last-name").attr("type") mustBe "text"
+    }
+    "have an autocomplete for family name" in {
+      doc.body().getElementById("last-name").attr("autocomplete") mustBe "family-name"
+    }
+    "have no specheck for family name" in {
+      doc.body().getElementById("last-name").attr("spellcheck") mustBe "false"
     }
     "have an input of type 'text' for day of birth" in {
       doc.body().getElementById("date-of-birth.day").attr("type") mustBe "text"
