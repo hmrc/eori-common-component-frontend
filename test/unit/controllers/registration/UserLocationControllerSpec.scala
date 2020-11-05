@@ -166,7 +166,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe ProblemWithSelectionError
-        page.getElementsText(fieldLevelErrorLocation) shouldBe ProblemWithSelectionError
+        page.getElementsText(fieldLevelErrorLocation) shouldBe s"Error: $ProblemWithSelectionError"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -177,7 +177,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe ProblemWithSelectionError
-        page.getElementsText(fieldLevelErrorLocation) shouldBe ProblemWithSelectionError
+        page.getElementsText(fieldLevelErrorLocation) shouldBe s"Error: $ProblemWithSelectionError"
         page.getElementsText("title") should startWith("Error: ")
       }
     }

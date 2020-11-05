@@ -114,7 +114,7 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
       status(result) shouldBe BAD_REQUEST
       val page = CdsPage(contentAsString(result))
       page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe ErrorSelectSoleTraderOrIndividual
-      page.getElementsText(fieldLevelErrorIndividualTypeXPath) shouldBe ErrorSelectSoleTraderOrIndividual
+      page.getElementsText(fieldLevelErrorIndividualTypeXPath) shouldBe s"Error: $ErrorSelectSoleTraderOrIndividual"
       page.getElementsText("title") should startWith("Error: ")
     }
 
@@ -122,7 +122,7 @@ class ConfirmIndividualTypeControllerSpec extends ControllerSpec with BeforeAndA
       status(result) shouldBe BAD_REQUEST
       val page = CdsPage(contentAsString(result))
       page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe ErrorSelectSoleTraderOrIndividual
-      page.getElementsText(fieldLevelErrorIndividualTypeXPath) shouldBe ErrorSelectSoleTraderOrIndividual
+      page.getElementsText(fieldLevelErrorIndividualTypeXPath) shouldBe s"Error: $ErrorSelectSoleTraderOrIndividual"
       page.getElementsText("title") should startWith("Error: ")
     }
   }

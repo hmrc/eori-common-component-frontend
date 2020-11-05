@@ -582,7 +582,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
         ) shouldBe "Tell us if these are the details you want to use"
         page.getElementsText(
           ConfirmPage.fieldLevelErrorYesNoWrongAddress
-        ) shouldBe "Tell us if these are the details you want to use"
+        ) shouldBe "Error: Tell us if these are the details you want to use"
       }
     }
 
@@ -601,7 +601,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
         ) shouldBe "Tell us if these are the details you want to use"
         page.getElementsText(
           ConfirmPage.fieldLevelErrorYesNoWrongAddress
-        ) shouldBe "Tell us if these are the details you want to use"
+        ) shouldBe "Error: Tell us if these are the details you want to use"
       }
     }
 
@@ -621,7 +621,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
         ) shouldBe "Tell us if these are the details you want to use"
         page.getElementsText(
           ConfirmPage.fieldLevelErrorYesNoWrongAddress
-        ) shouldBe "Tell us if these are the details you want to use"
+        ) shouldBe "Error: Tell us if these are the details you want to use"
       }
     }
   }

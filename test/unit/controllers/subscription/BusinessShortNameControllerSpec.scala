@@ -338,7 +338,7 @@ class BusinessShortNameControllerSpec
         ) shouldBe useShortNameError
         page.getElementsText(
           SubscriptionAmendCompanyDetailsPage.useShortNameFieldLevelErrorXpath
-        ) shouldBe useShortNameError
+        ) shouldBe s"Error: $useShortNameError"
       }
     }
 

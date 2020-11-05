@@ -134,7 +134,9 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(EuOrgOrIndividualPage.pageLevelErrorSummaryListXPath) shouldBe ProblemWithSelectionError
-        page.getElementsText(EuOrgOrIndividualPage.fieldLevelErrorOrganisationType) shouldBe ProblemWithSelectionError
+        page.getElementsText(
+          EuOrgOrIndividualPage.fieldLevelErrorOrganisationType
+        ) shouldBe s"Error: $ProblemWithSelectionError"
       }
     }
 

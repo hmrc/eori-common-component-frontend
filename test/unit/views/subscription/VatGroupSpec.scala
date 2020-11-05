@@ -74,7 +74,7 @@ class VatGroupSpec extends ViewSpec {
       docWithErrors
         .body()
         .getElementsByClass("error-message")
-        .text mustBe "Tell us if your organisation is part of a VAT group in the UK"
+        .text mustBe "Error: Tell us if your organisation is part of a VAT group in the UK"
     }
   }
 
