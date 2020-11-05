@@ -25,12 +25,11 @@
     <div class="column-two-thirds">
         <div class="govuk-box-highlight">
             <h1 id="page-heading" class="heading-xlarge">
-                @messages("cds.reg.existing.outcomes.success.heading.part1")<br />
-                @name
+                @messages("cds.reg.existing.outcomes.success.heading.part1") @name
             </h1>
-            <h2 class="heading-large" id="active-from">
+            <p class="heading-large" id="active-from">
                 @messages("subscription.subscription-results.active-from") @processedDate
-            </h2>
+            </p>
             <p id="eori-number" class="heading-medium">@messages("cds.reg.existing.outcomes.success.eori.number")<br/>@eori</p>
         </div>
 
