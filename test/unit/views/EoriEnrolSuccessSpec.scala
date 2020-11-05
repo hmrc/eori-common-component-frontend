@@ -18,7 +18,6 @@ package unit.views
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.eori_enrol_success
 import util.ViewSpec
@@ -43,7 +42,7 @@ class EoriEnrolSuccessSpec extends ViewSpec {
     }
 
     "display eori" in {
-      doc.body.getElementById("eori-number").text mustBe s"EORI number: $eori"
+      doc.body.getElementById("eori-number").text mustBe eori
     }
 
     "display correct service name" in {
