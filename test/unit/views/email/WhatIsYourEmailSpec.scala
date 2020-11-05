@@ -46,8 +46,11 @@ class WhatIsYourEmailSpec extends ViewSpec {
         "email-hint"
       ).text() mustBe "We’ll use this to send you the result of your application."
     }
-    "have an input of type 'text'" in {
-      MigrateDoc.body().getElementById("email").attr("type") mustBe "text"
+    "have an input of type 'email'" in {
+      MigrateDoc.body().getElementById("email").attr("type") mustBe "email"
+    }
+    "have an autocomplet of type 'email'" in {
+      MigrateDoc.body().getElementById("email").attr("autocomplete") mustBe "email"
     }
   }
   "What Is Your Email Address page with errors" should {
