@@ -78,8 +78,10 @@ class CheckYourDetailsSpec extends ViewSpec {
       }
 
       s"have the class 'hidden' for the change $name link" in {
-        val changeLink = doc().body.getElementById(changeLinkId).getElementsByTag("span").first
-        changeLink.hasClass("visually-hidden") mustBe true
+        val changeVisbleSpan = doc().body.getElementById(changeLinkId).getElementsByTag("span").get(0)
+        val changeHiddenSpan = doc().body.getElementById(changeLinkId).getElementsByTag("span").get(1)
+        changeVisbleSpan.attr("aria-hidden") mustBe "true"
+        changeHiddenSpan.hasClass("visually-hidden") mustBe true
       }
     }
   }
