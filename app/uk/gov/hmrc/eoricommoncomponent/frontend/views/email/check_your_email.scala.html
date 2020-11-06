@@ -34,30 +34,23 @@
     confirmEmailYesNoAnswerForm(field),
     options,
     Map.empty,
-    '_legend -> messages("subscription.check-your-email.confirm.question"))
+    Some(hintHtml),
+    '_legend -> messages("subscription.check-your-email.confirm.question"),
+    '_isLegendH1 -> true)
 }
 
-@layout_di(messages("cds.subscription.check-your-email.page.title"), form = Some(confirmEmailYesNoAnswerForm)) {
+@hintHtml = {
+    <p id="email" class="heading-small">@email</p>
+    <p class="mt-2">@messages("subscription.check-your-email.confirm.label")</p>
+}
+
+@layout_di(messages("subscription.check-your-email.confirm.question"), form = Some(confirmEmailYesNoAnswerForm)) {
 
 <div class="column-two-thirds">
     <a href="javascript:history.back()" id="back" class="link-back js-visible">@messages("cds.navigation.back")</a>
 
     @helpers.errorSummary(confirmEmailYesNoAnswerForm, focusOverrides = Map("yes-no-answer" -> "yes-no-answer-true"))
 
-    <h1 class="heading-large">@messages("subscription.check-your-email.heading")</h1>
-
-    <dl class="govuk-check-your-answers cya-questions-long">
-        <div>
-            <dt class="cya-question" id="emailAddressLabel">
-                @messages("subscription.check-your-email.label")
-            </dt>
-            <dd class="cya-answer" id="email">
-                @email
-            </dd>
-        </div>
-    </dl>
-
-    <p>@messages("subscription.check-your-email.confirm.label")</p>
 
     @helper.form(CheckYourEmailController.submit(service, journey), 'id -> "confirmEmailYesNoAnswerForm") {
     @CSRF.formField
