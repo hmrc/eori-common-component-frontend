@@ -64,15 +64,8 @@ class SubscriptionBusinessService @Inject() (cdsFrontendDataCache: SessionCache)
     _.eoriNumber.getOrElse(throw new IllegalStateException("No Eori Number Cached"))
   }
 
-  def getCachedEoriNumberInput(implicit hc: HeaderCarrier): Future[String] = cdsFrontendDataCache.subscriptionDetails map {
-    _.eoriNumberInput.getOrElse(throw new IllegalStateException("No Eori Number Cached"))
-  }
-
   def cachedEoriNumber(implicit hc: HeaderCarrier): Future[Option[String]] =
     cdsFrontendDataCache.subscriptionDetails map (_.eoriNumber)
-
-  def cachedEoriNumberInput(implicit hc: HeaderCarrier): Future[Option[String]] =
-    cdsFrontendDataCache.subscriptionDetails map (_.eoriNumberInput)
 
   def getCachedPersonalDataDisclosureConsent(implicit hc: HeaderCarrier): Future[Boolean] =
     cdsFrontendDataCache.subscriptionDetails map {
