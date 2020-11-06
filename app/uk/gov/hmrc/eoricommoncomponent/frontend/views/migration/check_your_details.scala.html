@@ -59,17 +59,16 @@
         messages.isDefinedAt(messageKeyForEUCountryCode(countryCode))
     }
 
-    @transformCountryCodeToOptionalLabel(code: Option[String]) = @{
+    @transformCountryCodeToLabel(code: String) = @{
         code match {
-            case Some("GB") => Some(messages("cds.country.GB"))
-            case Some(c) if isEUCountryCode(c) => Some(labelForEUCountry(c))
-            case Some(nonEuCode) => Some(nonEuCode)
-            case _ => None
+            case "GB" => messages("cds.country.GB")
+            case c if isEUCountryCode(c) => labelForEUCountry(c)
+            case _ => code
         }
     }
 
-    @optionalFaxNumberWithPrefix(fax: Option[String]) = @{
-        fax.map(x => s"${messages("cds.review-page.fax-prefix")} $x")
+    @faxNumberWithPrefix(fax: String) = @{
+        s"${messages("cds.review-page.fax-prefix")} $fax"
     }
 
     @formatDate(date: LocalDate) = @{
@@ -141,177 +140,161 @@
         }
     }
 
-    @changeLink(id: String, call: Call, changeMessage: String) = {
-        <a id="@{s"review-tbl__${id}_change"}" href="@call">
-            <span aria-hidden="true">@messages("cds.form.change")</span><span class="visually-hidden">@messages("cds.form.change") @changeMessage</span>
-        </a>
+    @summaryRow(id: String, label: String, answer: Html, call: Option[Call], changeMessage: String = "") = {
+        <div>
+            <dt id="@{s"review-tbl__${id}_heading"}" class="cya-question">
+                @label
+            </dt>
+            <dd id="@{s"review-tbl__${id}"}" class="cya-answer">
+                @answer
+            </dd>
+            <dd class="cya-change">
+                @call.map { url =>
+                    <a id="@{s"review-tbl__${id}_change"}" href="@url">
+                        <span aria-hidden="true">@messages("cds.form.change")</span><span class="visually-hidden">@messages("cds.form.change") @changeMessage</span>
+                    </a>
+                }
+            </dd>
+        </div>
+    }
+
+    @addressHtml(ad: AddressViewModel) = {
+      @helpers.noMarginParagraph(ad.street)
+      @helpers.noMarginParagraph(ad.city)
+      @ad.postcode.map(helpers.noMarginParagraph(_))
+      @helpers.noMarginParagraph(transformCountryCodeToLabel(ad.countryCode))
+    }
+
+    @contactDetailsHtml(cd: ContactDetailsModel) = {
+        @helpers.noMarginParagraph(cd.fullName)
+        @helpers.noMarginParagraph(cd.telephone)
+        @cd.fax.map(fax => helpers.noMarginParagraph(faxNumberWithPrefix(fax)))
+        @cd.street.map(helpers.noMarginParagraph(_))
+        @cd.city.map(helpers.noMarginParagraph(_))
+        @cd.postcode.map(helpers.noMarginParagraph(_))
+        @cd.countryCode.map(code => helpers.noMarginParagraph(transformCountryCodeToLabel(code)))
     }
 
     @layout_di(messages("cds.form.check-answers")) {
 
         <div class="column-two-thirds">
             <header>
-                <h1>@messages("cds.form.check-answers")</h1>
+                <h1 class="heading-large">@messages("cds.form.check-answers")</h1>
             </header>
 
-            <table id="review-tbl" class="form-group">
-                <tr>
-                    <td colspan="3">
-                        <a id="review-tbl__start-again" href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.CacheController.clearCache(service, journey)" class="float--right">@messages("cds.form.start-again")</a>
-                    </td>
-                </tr>
-                <tr>
-                    <th id="review-tbl__email_heading" class="bold">@messages("subscription.enter-email.label")</th>
-                    <td id="review-tbl__email" colspan="2">
-                        @email
-                    </td>
-                </tr>
-                <tr>
-                    <th id="review-tbl__eori-number_heading" class="bold">@messages("cds.subscription.enter-eori-number.eori-number.label")</th>
-                    <td id="review-tbl__eori-number">
-                    @eoriNumber
-                    </td>
-                    <td>
-                        @changeLink("eori-number", uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.reviewForm(service, journey), messages("cds.subscription.enter-eori-number.eori-number.label"))
-                    </td>
-                </tr>
+            <div>
+                <a id="review-tbl__start-again" href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.CacheController.clearCache(service, journey)" class="float--right">@messages("cds.form.start-again")</a>
+            </div>
+
+            <dl class="govuk-check-your-answers cya-questions-short">
+                @summaryRow(
+                    "email",
+                    messages("subscription.enter-email.label"),
+                    Html.apply(email.getOrElse("")),
+                    None
+                )
+                @summaryRow(
+                    "eori-number",
+                    messages("cds.subscription.enter-eori-number.eori-number.label"),
+                    Html.apply(eoriNumber.getOrElse("")),
+                    Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.reviewForm(service, journey)),
+                    messages("cds.subscription.enter-eori-number.eori-number.label")
+                )
                 @nameOrganisationDetails.map { d =>
                     @if(isThirdCountrySubscription) {
-                        <tr>
-                            <th id="review-tbl__org-name_heading" class="bold">@nameLabel</th>
-                            <td id="review-tbl__org-name">
-                            @d.name
-                            </td>
-                            <td>
-                                @changeLink("org_name", uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameOrgController.reviewForm(service, journey), nameLabel)
-                            </td>
-                        </tr>
+                        @summaryRow(
+                            "org_name",
+                            nameLabel,
+                            Html.apply(d.name),
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameOrgController.reviewForm(service, journey)),
+                            nameLabel
+                        )
                     }
                 }
                 @nameDobDetails.map { nd =>
-                    <tr>
-                        <th id="review-tbl__full-name_heading" class="bold">@messages("subscription.check-your-details.full-name.label")</th>
-                        <td id="review-tbl__full-name">
-                            @nd.firstName @nd.lastName
-                        </td>
-                        <td>
-                            @changeLink("full-name", uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.reviewForm(service, journey), messages("subscription.check-your-details.full-name.label"))
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <th id="review-tbl__date-of-birth_heading" class="bold">@messages("subscription.check-your-details.date-of-birth.label")</th>
-                        <td id="review-tbl__date-of-birth">
-                        @formatDate(nd.dateOfBirth)
-                        </td>
-                        <td>
-                            @changeLink("date-of-birth", uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.reviewForm(service, journey), messages("subscription.check-your-details.date-of-birth.label"))
-                        </td>
-                    </tr>
+                    @summaryRow(
+                        "full-name",
+                        messages("subscription.check-your-details.full-name.label"),
+                        Html.apply(s"${nd.firstName} ${nd.lastName}"),
+                        Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.reviewForm(service, journey)),
+                        messages("subscription.check-your-details.full-name.label")
+                    )
+                    @summaryRow(
+                        "date-of-birth",
+                        messages("subscription.check-your-details.date-of-birth.label"),
+                        Html.apply(formatDate(nd.dateOfBirth)),
+                        Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.reviewForm(service, journey)),
+                        messages("subscription.check-your-details.date-of-birth.label")
+                    )
                 }
-
                 @nino.map { n =>
-                    <tr>
-                        <th id="review-tbl__nino_heading" class="bold">@messages("cds.nino.label")</th>
-                        <td id="review-tbl__nino">
-                        @n.id
-                        </td>
-                        <td>
-                            @if(!isThirdCountrySubscription){
-                                @changeLink("nino", uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController.reviewForm(service, journey), messages("cds.nino.label"))
-                            }
-                        </td>
-                    </tr>
+                    @summaryRow(
+                        "nino",
+                        messages("cds.nino.label"),
+                        Html.apply(n.id),
+                        if(!isThirdCountrySubscription) Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController.reviewForm(service, journey)) else None,
+                        messages("cds.nino.label")
+                    )
                 }
-
                 @utr.map { u =>
-                    <tr>
-                        <th id="review-tbl__utr_heading" class="bold">@messages("cds.utr.label")</th>
-                        <td id="review-tbl__utr">
-                        @u.id
-                        </td>
-                        <td>
-                            @if(!isThirdCountrySubscription){
-                                @changeLink("utr", uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController.reviewForm(service, journey), messages("cds.utr.label"))
-                            }
-                        </td>
-                    </tr>
+                    @summaryRow(
+                        "utr",
+                        messages("cds.utr.label"),
+                        Html.apply(u.id),
+                        if(!isThirdCountrySubscription) Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController.reviewForm(service, journey)) else None,
+                        messages("cds.utr.label")
+                    )
                 }
-
                 @nameIdOrganisationDetails.map { n =>
-                @if(!isThirdCountrySubscription){
-                <tr>
-                        <th id="review-tbl__orgname_heading" class="bold">@nameLabel</th>
-                        <td id="review-tbl__orgname">
-                            @n.name
-                        </td>
-                        <td>
-                            @changeLink("orgname", uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController.reviewForm(service, journey), nameLabel)
-                        </td>
-                    </tr>
-                }
-                <tr>
-                        <th id="review-tbl__utr_heading" class="bold">@utrLabel</th>
-                        <td id="review-tbl__utr" @if(isThirdCountrySubscription){ colspan="2"}>
-                            @n.id
-                        </td>
                     @if(!isThirdCountrySubscription){
-                    <td>
-                        @changeLink("utr", uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController.reviewForm(service, journey), utrLabel)
-                    </td>
+                        @summaryRow(
+                            "orgname",
+                            nameLabel,
+                            Html.apply(n.name),
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController.reviewForm(service, journey)),
+                            nameLabel
+                        )
                     }
-                </tr>
+                    @summaryRow(
+                        "utr",
+                        utrLabel,
+                        Html.apply(n.id),
+                        if(!isThirdCountrySubscription) Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController.reviewForm(service, journey)) else None,
+                        utrLabel
+                    )
                 }
-
                 @addressDetails.map { ad =>
-                    <tr>
-                        <th id="review-tbl__name-and-address_heading" class="bold">@businessDetailsLabel</th>
-                        <td id="review-tbl__name-and-address">
-                            @ad.street.appendBr
-                            @ad.city.appendBr
-                            @ad.postcode.map(_.appendBr)
-                            @transformCountryCodeToOptionalLabel(Some(ad.countryCode))
-                        </td>
-                        <td>
-                            @changeLink("name-and-address", uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.reviewForm(service, journey), businessDetailsLabel)
-                        </td>
-                    </tr>
+                    @summaryRow(
+                        "name-and-address",
+                        businessDetailsLabel,
+                        addressHtml(ad),
+                        Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.reviewForm(service, journey)),
+                        businessDetailsLabel
+                    )
                 }
-
                 @contactDetails.map { cd =>
-                    <tr>
-                        <th id="review-tbl__contact-details_heading" class="bold">@messages("cds.form.customs-contact")</th>
-                        <td id="review-tbl__contact-details">
-                            @cd.fullName <br/>
-                            @cd.telephone.appendBr
-                            @optionalFaxNumberWithPrefix(cd.fax).map(_.appendBr)
-                            @cd.street.map(_.appendBr)
-                            @cd.city.map(_.appendBr)
-                            @cd.postcode.map(_.appendBr)
-                            @transformCountryCodeToOptionalLabel(cd.countryCode).map(_.appendBr)
-                        </td>
-                        <td>
-                            @changeLink("contact-details", uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactDetailsController.reviewForm(service, journey), messages("cds.form.customs-contact"))
-                        </td>
-                    </tr>
+                    @summaryRow(
+                        "contact-details",
+                        messages("cds.form.customs-contact"),
+                        contactDetailsHtml(cd),
+                        Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactDetailsController.reviewForm(service, journey)),
+                        messages("cds.form.customs-contact")
+                    )
                 }
-
                 @dateEstablished.map { de =>
-                    <tr id="review-tbl__doe">
-                        <th class="bold">
-                            @messages("cds.date-established.label")
-                        </th>
-                        <td>@formatDate(de)</td>
-                        <td>
-                            @changeLink("date-established", uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController.reviewForm(service, journey), messages("cds.date-established.label"))
-                        </td>
-                    </tr>
+                    @summaryRow(
+                        "date-established",
+                        messages("cds.date-established.label"),
+                        Html.apply(formatDate(de)),
+                        Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController.reviewForm(service, journey)),
+                        messages("cds.date-established.label")
+                    )
+
                 }
 
+            </dl>
 
-
-            </table>
-            <p>@messages("cds.form.disclaimer")</p>
+            <p class="govuk-body mt-2">@messages("cds.form.disclaimer")</p>
 
             <div class="form-group">
                 @helper.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.RegisterWithEoriAndIdController.registerWithEoriAndId(service, journey)) {
