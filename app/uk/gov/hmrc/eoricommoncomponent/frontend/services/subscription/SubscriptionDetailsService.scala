@@ -21,11 +21,8 @@ import org.joda.time.LocalDate
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{BusinessShortName, SubscriptionDetails}
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
-  AddressViewModel,
-  ContactDetailsModel,
-  VatDetails
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactDetailsModel, VatDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{CachedData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.ContactDetailsAdaptor
 import uk.gov.hmrc.http.HeaderCarrier
@@ -119,7 +116,7 @@ class SubscriptionDetailsService @Inject() (
     saveSubscriptionDetails(sd => sd.copy(sicCode = Some(sicCode)))
 
   def cacheEoriNumber(eoriNumber: String)(implicit hc: HeaderCarrier): Future[Unit] =
-    saveSubscriptionDetails(sd => sd.copy(eoriNumber = Some(eoriNumber)))
+    saveSubscriptionDetails(sd => sd.copy(eoriNumber = Some(FormUtils.fixUserInput(eoriNumber)), eoriNumberInput = Some(eoriNumber)))
 
   def cacheDateEstablished(date: LocalDate)(implicit hc: HeaderCarrier): Future[Unit] =
     saveSubscriptionDetails(sd => sd.copy(dateEstablished = Some(date)))

@@ -52,7 +52,7 @@ class WhatIsYourEoriController @Inject() (
   def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
-        subscriptionBusinessService.cachedEoriNumber.map(
+        subscriptionBusinessService.cachedEoriNumberInput.map(
           eori => populateView(eori, isInReviewMode = false, service, journey)
         )
     }
@@ -60,7 +60,7 @@ class WhatIsYourEoriController @Inject() (
   def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
-        subscriptionBusinessService.getCachedEoriNumber.map(
+        subscriptionBusinessService.getCachedEoriNumberInput.map(
           eori => populateView(Some(eori), isInReviewMode = true, service, journey)
         )
     }

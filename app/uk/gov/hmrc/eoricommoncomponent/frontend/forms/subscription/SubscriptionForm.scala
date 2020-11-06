@@ -20,12 +20,12 @@ import org.joda.time.LocalDate
 import play.api.data.Forms._
 import play.api.data.validation._
 import play.api.data.{Form, Forms, Mapping}
+import uk.gov.hmrc.emailaddress.EmailAddress
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.CompanyShortNameViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.playext.form.ConditionalMapping
-import uk.gov.hmrc.emailaddress.EmailAddress
 import uk.gov.voa.play.form.ConditionalMappings.{isEqual, mandatoryIf}
 import uk.gov.voa.play.form.MandatoryOptionalMapping
 
@@ -185,12 +185,15 @@ object SubscriptionForm {
 
   def validEori: Constraint[String] =
     Constraint({
-      case e if e.trim.isEmpty                 => Invalid(ValidationError("cds.matching-error.eori.isEmpty"))
-      case e if e.length < 14                  => Invalid(ValidationError("cds.matching-error.eori.wrong-length.too-short"))
-      case e if e.length > 17                  => Invalid(ValidationError("cds.matching-error.eori.wrong-length.too-long"))
-      case e if !e.startsWith("GB")            => Invalid(ValidationError("cds.matching-error.eori.not-gb"))
-      case e if !e.matches("^GB[0-9]{11,15}$") => Invalid(ValidationError("cds.matching-error.eori"))
-      case _                                   => Valid
+      case e if fixUserInput(e).isEmpty => Invalid(ValidationError("cds.matching-error.eori.isEmpty"))
+      case e if fixUserInput(e).length < 14 =>
+        Invalid(ValidationError("cds.matching-error.eori.wrong-length.too-short"))
+      case e if fixUserInput(e).length > 17 => Invalid(ValidationError("cds.matching-error.eori.wrong-length.too-long"))
+      case e if !fixUserInput(e).startsWith("GB") =>
+        Invalid(ValidationError("cds.matching-error.eori.not-gb"))
+      case e if !fixUserInput(e).matches("^GB[0-9]{11,15}$") =>
+        Invalid(ValidationError("cds.matching-error.eori"))
+      case _ => Valid
     })
 
   def validEmail: Constraint[String] =

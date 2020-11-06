@@ -40,6 +40,7 @@ case class SubscriptionDetails(
   contactDetails: Option[ContactDetailsModel] = None,
   dateOfBirth: Option[LocalDate] = None,
   sicCode: Option[String] = None,
+  eoriNumberInput: Option[String] = None,
   eoriNumber: Option[String] = None,
   email: Option[String] = None,
   addressDetails: Option[AddressViewModel] = None,
