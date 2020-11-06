@@ -51,7 +51,8 @@
         @if(elements.args.get('_hintText).isDefined) {
             <p class="form-hint">@elements.args.get('_hintText)</p>
         }
-        @hintHtml.map(html => html)
+
+        @hintHtml
 
         @if(elements.hasErrors) {
             @elements.errors.map { error => <span class="error-message"><span class="visually-hidden">@messages("cds.error.field.hint")</span> @messages(error)</span> }
