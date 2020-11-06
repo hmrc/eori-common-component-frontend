@@ -21,6 +21,7 @@ import play.api.libs.json._
 import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.IndividualName
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.fixUserInput
 
 sealed trait CustomsId {
   def id: String
@@ -178,6 +179,13 @@ object NameDobMatchModel {
 }
 
 case class NinoOrUtr(nino: Option[String], utr: Option[String], ninoOrUtrRadio: Option[String])
+
+object NinoOrUtr {
+
+  def apply(nino: Option[String], utr: Option[String], ninoOrUtrRadio: Option[String]): NinoOrUtr =
+    new NinoOrUtr(fixUserInput(nino), fixUserInput(utr), ninoOrUtrRadio)
+
+}
 
 case class SixLineAddressMatchModel(
   lineOne: String,

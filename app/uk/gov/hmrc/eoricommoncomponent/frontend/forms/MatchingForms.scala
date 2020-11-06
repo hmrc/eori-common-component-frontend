@@ -201,10 +201,10 @@ object MatchingForms {
     def validLength: String => Boolean = s => s.length == 10 || (s.endsWith("k") || s.endsWith("K") && s.length == 11)
 
     Constraint({
-      case s if s.isEmpty                => Invalid(ValidationError("cds.matching-error.business-details.utr.isEmpty"))
-      case s if !validLength(s)          => Invalid(ValidationError("cds.matching-error.utr.length"))
-      case s if !validUtrFormat(Some(s)) => Invalid(ValidationError("cds.matching-error.utr.invalid"))
-      case _                             => Valid
+      case s if fixUserInput(s).isEmpty                => Invalid(ValidationError("cds.matching-error.business-details.utr.isEmpty"))
+      case s if !validLength(fixUserInput(s))          => Invalid(ValidationError("cds.matching-error.utr.length"))
+      case s if !validUtrFormat(Some(fixUserInput(s))) => Invalid(ValidationError("cds.matching-error.utr.invalid"))
+      case _                                           => Valid
     })
   }
 
@@ -302,11 +302,11 @@ object MatchingForms {
 
   private def validNino: Constraint[String] =
     Constraint({
-      case s if s.isEmpty                    => Invalid(ValidationError("cds.subscription.nino.error.empty"))
-      case s if s.length != 9                => Invalid(ValidationError("cds.subscription.nino.error.wrong-length"))
-      case s if !s.matches("[a-zA-Z0-9]*")   => Invalid(ValidationError("cds.matching.nino.invalid"))
-      case s if !Nino.isValid(s.toUpperCase) => Invalid(ValidationError("cds.matching.nino.invalid"))
-      case _                                 => Valid
+      case s if fixUserInput(s).isEmpty                  => Invalid(ValidationError("cds.subscription.nino.error.empty"))
+      case s if fixUserInput(s).length != 9              => Invalid(ValidationError("cds.subscription.nino.error.wrong-length"))
+      case s if !fixUserInput(s).matches("[a-zA-Z0-9]*") => Invalid(ValidationError("cds.matching.nino.invalid"))
+      case s if !Nino.isValid(fixUserInput(s))           => Invalid(ValidationError("cds.matching.nino.invalid"))
+      case _                                             => Valid
     })
 
   val subscriptionNinoForm: Form[IdMatchModel] = Form(
