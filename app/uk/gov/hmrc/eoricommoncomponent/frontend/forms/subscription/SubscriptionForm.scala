@@ -185,13 +185,13 @@ object SubscriptionForm {
 
   def validEori: Constraint[String] =
     Constraint({
-      case e if fixUserInput(e).isEmpty => Invalid(ValidationError("cds.matching-error.eori.isEmpty"))
-      case e if fixUserInput(e).length < 14 =>
+      case e if formatInput(e).isEmpty => Invalid(ValidationError("cds.matching-error.eori.isEmpty"))
+      case e if formatInput(e).length < 14 =>
         Invalid(ValidationError("cds.matching-error.eori.wrong-length.too-short"))
-      case e if fixUserInput(e).length > 17 => Invalid(ValidationError("cds.matching-error.eori.wrong-length.too-long"))
-      case e if !fixUserInput(e).startsWith("GB") =>
+      case e if formatInput(e).length > 17 => Invalid(ValidationError("cds.matching-error.eori.wrong-length.too-long"))
+      case e if !formatInput(e).startsWith("GB") =>
         Invalid(ValidationError("cds.matching-error.eori.not-gb"))
-      case e if !fixUserInput(e).matches("^GB[0-9]{11,15}$") =>
+      case e if !formatInput(e).matches("^GB[0-9]{11,15}$") =>
         Invalid(ValidationError("cds.matching-error.eori"))
       case _ => Valid
     })

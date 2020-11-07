@@ -21,7 +21,7 @@ import play.api.libs.json._
 import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.IndividualName
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.fixUserInput
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.formatInput
 
 sealed trait CustomsId {
   def id: String
@@ -134,6 +134,10 @@ case class NameIdOrganisationMatchModel(name: String, id: String) extends NameId
 
 object NameIdOrganisationMatchModel {
   implicit val jsonFormat = Json.format[NameIdOrganisationMatchModel]
+
+  def apply(name: String, id: String): NameIdOrganisationMatchModel =
+    new NameIdOrganisationMatchModel(name, formatInput(id))
+
 }
 
 case class NameOrganisationMatchModel(name: String) extends NameOrganisationMatch
@@ -159,6 +163,13 @@ case class YesNo(isYes: Boolean) {
 
 case class NinoMatch(firstName: String, lastName: String, dateOfBirth: LocalDate, nino: String)
 
+object NinoMatch {
+
+  def apply(firstName: String, lastName: String, dateOfBirth: LocalDate, nino: String): NinoMatch =
+    new NinoMatch(firstName, lastName, dateOfBirth, formatInput(nino))
+
+}
+
 trait NameDobMatch {
   def firstName: String
 
@@ -183,7 +194,7 @@ case class NinoOrUtr(nino: Option[String], utr: Option[String], ninoOrUtrRadio: 
 object NinoOrUtr {
 
   def apply(nino: Option[String], utr: Option[String], ninoOrUtrRadio: Option[String]): NinoOrUtr =
-    new NinoOrUtr(fixUserInput(nino), fixUserInput(utr), ninoOrUtrRadio)
+    new NinoOrUtr(formatInput(nino), formatInput(utr), ninoOrUtrRadio)
 
 }
 
@@ -220,12 +231,16 @@ case class IdMatchModel(id: String) extends IdMatch
 
 object IdMatchModel {
   implicit val jsonFormat = Json.format[IdMatchModel]
+
+  def apply(id: String): IdMatchModel = new IdMatchModel(formatInput(id))
 }
 
 case class UtrMatchModel(haveUtr: Option[Boolean], id: Option[String])
 
 object UtrMatchModel {
   implicit val jsonFormat = Json.format[UtrMatchModel]
+
+  def apply(haveUtr: Option[Boolean], id: Option[String]): UtrMatchModel = new UtrMatchModel(haveUtr, formatInput(id))
 }
 
 trait NameMatch {
@@ -242,6 +257,10 @@ case class NinoMatchModel(haveNino: Option[Boolean], nino: Option[String])
 
 object NinoMatchModel {
   implicit val jsonFormat = Json.format[NinoMatchModel]
+
+  def apply(haveNino: Option[Boolean], nino: Option[String]): NinoMatchModel =
+    new NinoMatchModel(haveNino, formatInput(nino))
+
 }
 
 case class ExistingEori(id: String, enrolmentKey: String)

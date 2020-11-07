@@ -159,14 +159,14 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
           any[HeaderCarrier]
         )
       ).thenReturn(Future.successful(()))
-      submit(Journey.Subscribe, ValidUtrRequest) { result =>
+      submit(Journey.Subscribe, Map("have-utr" -> "true", "utr" -> "11 11 111111k")) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/address"
       }
       verify(mockSubscriptionDetailsService, times(1)).cacheNameIdCustomsIdAndUtrMatch(
         meq("orgName"),
-        meq(ValidUtrId),
-        meq(Some(UtrMatchModel(Some(true), Some(ValidUtrId))))
+        meq("1111111111K"),
+        meq(Some(UtrMatchModel(Some(true), Some("1111111111K"))))
       )(any[HeaderCarrier])
     }
 
