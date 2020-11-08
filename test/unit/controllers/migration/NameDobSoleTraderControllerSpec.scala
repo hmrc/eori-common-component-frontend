@@ -313,30 +313,40 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     }
 
     "validation error when DAY of birth is not submitted" in {
-      submitFormInCreateMode(createFormAllFieldsNameDobMap - dobDayFieldName) { result =>
+      submitFormInCreateMode(createFormAllFieldsNameDobMap + (dobDayFieldName -> "")) { result =>
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a date of birth in the right format"
-        page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Error: Enter a date of birth in the right format"
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a day between 1 and 31"
+        page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Error: Enter a day between 1 and 31"
         page.getElementsText("title") should startWith("Error: ")
         verifyZeroInteractions(mockSubscriptionBusinessService)
       }
     }
 
     "validation error when MONTH of birth is not submitted" in {
-      submitFormInCreateMode(createFormAllFieldsNameDobMap - dobMonthFieldName) { result =>
+      submitFormInCreateMode(createFormAllFieldsNameDobMap + (dobMonthFieldName -> "")) { result =>
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a date of birth in the right format"
-        page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Error: Enter a date of birth in the right format"
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a month between 1 and 12"
+        page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Error: Enter a month between 1 and 12"
         page.getElementsText("title") should startWith("Error: ")
         verifyZeroInteractions(mockSubscriptionBusinessService)
       }
     }
 
     "validation error when YEAR of birth is not submitted" in {
-      submitFormInCreateMode(createFormAllFieldsNameDobMap - dobYearFieldName) { result =>
+      submitFormInCreateMode(createFormAllFieldsNameDobMap + (dobYearFieldName -> "")) { result =>
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a date of birth in the right format"
-        page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Error: Enter a date of birth in the right format"
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a year"
+        page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Error: Enter a year"
+        page.getElementsText("title") should startWith("Error: ")
+        verifyZeroInteractions(mockSubscriptionBusinessService)
+      }
+    }
+
+    "validation error when date of birth is too early" in {
+      submitFormInCreateMode(createFormAllFieldsNameDobTooEarlyMap) { result =>
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Date of birth must be after 1 January 1900"
+        page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Error: Date of birth must be after 1 January 1900"
         page.getElementsText("title") should startWith("Error: ")
         verifyZeroInteractions(mockSubscriptionBusinessService)
       }
@@ -345,12 +355,8 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     "validation error when YEAR of birth is in the future" in {
       submitFormInCreateMode(createFormAllFieldsNameDobInFutureMap) { result =>
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(
-          pageLevelErrorSummaryListXPath
-        ) shouldBe "You must specify a date that is not in the future"
-        page.getElementsText(
-          dobFieldLevelErrorXPath
-        ) shouldBe "Error: You must specify a date that is not in the future"
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Date of birth must be in the past"
+        page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Error: Date of birth must be in the past"
         page.getElementsText("title") should startWith("Error: ")
         verifyZeroInteractions(mockSubscriptionBusinessService)
       }
@@ -410,6 +416,15 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     dobDayFieldName     -> "03",
     dobMonthFieldName   -> "09",
     dobYearFieldName    -> "1983"
+  )
+
+  val createFormAllFieldsNameDobTooEarlyMap: Map[String, String] = Map(
+    firstNameFieldName  -> "Test First Name",
+    lastNameFieldName   -> "Test Last Name",
+    middleNameFieldName -> "Test Middle Name",
+    dobDayFieldName     -> "03",
+    dobMonthFieldName   -> "09",
+    dobYearFieldName    -> "1800"
   )
 
   val createEmptyFormNameDobMap: Map[String, String] = Map(

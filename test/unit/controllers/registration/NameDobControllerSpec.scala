@@ -151,15 +151,15 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
       submitForm(ValidRequest + ("date-of-birth.day" -> "32"), "individual") { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a date of birth in the right format"
-        page.getElementsText(fieldLevelErrorDateOfBirth) shouldBe "Error: Enter a date of birth in the right format"
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a day between 1 and 31"
+        page.getElementsText(fieldLevelErrorDateOfBirth) shouldBe "Error: Enter a day between 1 and 31"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
 
     "not be in the future" in {
-      val tomorrow   = LocalDate.now().plusDays(1)
-      val FutureDate = "You must specify a date that is not in the future"
+      val tomorrow        = LocalDate.now().plusDays(1)
+      val futureDateError = "Date of birth must be in the past"
       submitForm(
         ValidRequest + ("date-of-birth.day" -> tomorrow.getDayOfMonth.toString,
         "date-of-birth.month"               -> tomorrow.getMonthOfYear.toString,
@@ -168,8 +168,8 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
       ) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe FutureDate
-        page.getElementsText(fieldLevelErrorDateOfBirth) shouldBe s"Error: $FutureDate"
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe futureDateError
+        page.getElementsText(fieldLevelErrorDateOfBirth) shouldBe s"Error: $futureDateError"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -181,8 +181,12 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
       ) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a date of birth in the right format"
-        page.getElementsText(fieldLevelErrorDateOfBirth) shouldBe "Error: Enter a date of birth in the right format"
+        page.getElementsText(
+          pageLevelErrorSummaryListXPath
+        ) shouldBe "Enter a day between 1 and 31 Enter a month between 1 and 12 Enter a year"
+        page.getElementsText(
+          fieldLevelErrorDateOfBirth
+        ) shouldBe "Error: Enter a day between 1 and 31 Error: Enter a month between 1 and 12 Error: Enter a year"
         page.getElementsText("title") should startWith("Error: ")
       }
     }

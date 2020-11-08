@@ -25,6 +25,7 @@ import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.VatIdentification
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils._
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation._
 
 case class VatDetails(postcode: String, number: String, effectiveDate: LocalDate) {
@@ -54,8 +55,13 @@ object VatDetailsForm {
     mapping(
       "postcode"   -> text.verifying(validPostcode),
       "vat-number" -> text.verifying(validVatNumber),
-      "vat-effective-date" -> mandatoryDateTodayOrBefore(onEmptyError =
-        "cds.subscription.vat-details.vat-effective-date.required.error"
+      "vat-effective-date" -> mandatoryDateTodayOrBefore(
+        "vat-effective-date",
+        onEmptyError = "vat.error.empty-date",
+        onInvalidDateError = "vat.error.invalid-date",
+        onDateInFutureError = "vat.error.future-date",
+        onDateTooEarlyError = "vat.error.early-date",
+        earliestDate = FormValidation.earliestEffectiveVatDate
       )
     )(VatDetails.apply)(VatDetails.unapply)
   )

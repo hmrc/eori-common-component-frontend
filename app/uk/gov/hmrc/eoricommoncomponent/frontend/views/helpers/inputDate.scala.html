@@ -16,9 +16,19 @@
 
 @import uk.gov.hmrc.play.views.html.helpers.{Input}
 @import views.html.helper._
+@import uk.gov.hmrc.play.mappers.DateFields._
 
 @this(input_di: Input)
 @(formItem:Form[_], fieldName: String, args: (Symbol,Any)*)(implicit messages: Messages)
+
+@dateField = @{formItem(fieldName)}
+@dayField = @{formItem(s"$fieldName.$day")}
+@monthField = @{formItem(s"$fieldName.$month")}
+@yearField = @{formItem(s"$fieldName.$year")}
+
+@formErrors = @{
+    (dateField.errors ++ dayField.errors ++ monthField.errors ++ yearField.errors)//.map(err => messages(err.message, err.args:_*)).mkString("<br>")
+}
 
 @elements = @{ FieldElements(formItem(fieldName).id, formItem(fieldName), null, args.toMap, messages) }
 
@@ -30,11 +40,11 @@ elements.args.getOrElse('_legend, "").asInstanceOf[String]
 elements.args.getOrElse('_isLegendH1, false).asInstanceOf[Boolean]
 }
 
-@inputClass = @{
-    if(elements.hasErrors) {"form-control form-control-error"}
+@inputClass(field: Field) = @{
+    if(dateField.hasErrors || field.hasErrors) {"form-control form-control-error"}
     else "form-control"
 }
-<div class="form-group @if(!isLegendH1 && elements.hasErrors){form-group-error}">
+<div class="form-group @if(!isLegendH1 && formErrors.nonEmpty){form-group-error}">
     <fieldset class="date-form-group form-date" id="@fieldName-fieldset">
     <legend id="@elements.field.name-field" class="form-label-bold">
         @if(isLegendH1){
@@ -43,7 +53,7 @@ elements.args.getOrElse('_isLegendH1, false).asInstanceOf[Boolean]
         </h1>
         }
 
-        @if(isLegendH1 && elements.hasErrors) {
+        @if(isLegendH1 && formErrors.nonEmpty) {
         <div class="form-group-error">
         }
         <span class="form-label-bold">@elements.label</span>
@@ -53,34 +63,35 @@ elements.args.getOrElse('_isLegendH1, false).asInstanceOf[Boolean]
             <span class="form-hint">@elements.args.get('_hintText)</span>
         }
 
-        @if(elements.hasErrors) {
-            @elements.errors.map { error => <span class="error-message"><span class="visually-hidden">@messages("cds.error.field.hint")</span> @messages(error)</span>}
+        @if(formErrors.nonEmpty) {
+            @formErrors.map { error => <span class="error-message"><span class="visually-hidden">@messages("cds.error.field.hint")</span> @messages(error.message)</span>}
         }
-        @if(isLegendH1 && elements.hasErrors) {
+
+        @if(isLegendH1 && formErrors.nonEmpty) {
         </div>
         }
     </legend>
         @input_di(
-            formItem(s"$fieldName.day"),
+            formItem(s"$fieldName.day").copy(errors = Seq.empty),
             '_label -> messages("date.fields.day"),
             '_labelClass -> "form-group form-group-day",
-            '_inputClass -> inputClass,
+            '_inputClass -> inputClass(dayField),
             '_pattern -> "[0-9]*",
             '_emptyValueText -> " "
         )
         @input_di(
-            formItem(s"$fieldName.month"),
+            formItem(s"$fieldName.month").copy(errors = Seq.empty),
             '_label -> messages("date.fields.month"),
             '_labelClass -> "form-group form-group-month",
-            '_inputClass -> inputClass,
+            '_inputClass -> inputClass(monthField),
             '_pattern -> "[0-9]*",
             '_emptyValueText -> " "
         )
         @input_di(
-            formItem(s"$fieldName.year"),
+            formItem(s"$fieldName.year").copy(errors = Seq.empty),
             '_label -> messages("date.fields.year"),
             '_labelClass -> "form-group form-group-year",
-            '_inputClass -> inputClass,
+            '_inputClass -> inputClass(yearField),
             '_pattern -> "[0-9]*",
             '_emptyValueText -> " "
         )

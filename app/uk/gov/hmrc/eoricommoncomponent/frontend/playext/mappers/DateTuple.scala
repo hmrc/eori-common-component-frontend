@@ -17,48 +17,42 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.playext.mappers
 
 import org.joda.time.LocalDate
-import play.api.data.Forms.{optional, text, tuple}
+import play.api.data.Forms.{text, tuple}
 import play.api.data.Mapping
 import uk.gov.hmrc.play.mappers.DateFields._
+import uk.gov.voa.play.form.ConditionalMappings._
+import uk.gov.voa.play.form._
 
-import scala.util.Try
+import scala.util.{Success, Try}
 
 object DateTuple {
 
   def dateTuple(
-    validate: Boolean = true,
+    dateField: String,
     invalidDateError: String = "cds.error.invalid.date.format"
   ): Mapping[Option[LocalDate]] = {
     def tuple2Date(tuple: (Option[String], Option[String], Option[String])) = tuple match {
-      case (Some(y), Some(m), Some(d)) =>
-        try Some(new LocalDate(y.trim.toInt, m.trim.toInt, d.trim.toInt))
+      case (Some(day), Some(month), Some(year)) =>
+        try Some(new LocalDate(year.trim.toInt, month.trim.toInt, day.trim.toInt))
         catch {
-          case e: Exception if validate => throw e
-          case _: Throwable             => None
+          case _: Throwable => None
         }
 
       case _ => None
     }
 
     def date2Tuple(maybeDate: Option[LocalDate]) = maybeDate match {
-      case Some(d) => (Some(d.getYear.toString), Some(d.getMonthOfYear.toString), Some(d.getDayOfMonth.toString))
+      case Some(d) => (Some(d.getDayOfMonth.toString), Some(d.getMonthOfYear.toString), Some(d.getYear.toString))
       case _       => (None, None, None)
     }
 
-    dateTupleMapping
+    dateTupleMapping(dateField)
       .verifying(
         invalidDateError,
         _ match {
-          case (None, None, None) => true
-
-          case (yearOption, monthOption, dayOption) if validate =>
+          case (Some(day), Some(month), Some(year)) =>
             Try {
-              val y = yearOption.getOrElse(throw new Exception("Year missing")).trim.toInt
-              if (!(1000 to 9999 contains y)) throw new Exception("Year must be 4 digits")
-
-              val m = monthOption.getOrElse(throw new Exception("Month missing"))
-              val d = dayOption.getOrElse(throw new Exception("Day missing"))
-              new LocalDate(y, m.trim.toInt, d.trim.toInt)
+              new LocalDate(year.trim.toInt, month.trim.toInt, day.trim.toInt)
             }.isSuccess
 
           case _ => true
@@ -67,7 +61,26 @@ object DateTuple {
       .transform[Option[LocalDate]](tuple2Date, date2Tuple)
   }
 
-  private val dateTupleMapping =
-    tuple(year -> optional(text), month -> optional(text), day -> optional(text))
+  private val isInRange: (Int, Int) => String => Boolean = (min: Int, max: Int) =>
+    (input: String) =>
+      Try(input.trim.toInt) match {
+        case Success(value) => value >= min && value <= max
+        case _              => false
+      }
+
+  private def hasBothValuesFor(dateField: String, field1: String, field2: String): Condition =
+    isNotEqual(s"$dateField.$field1", "") and isNotEqual(s"$dateField.$field2", "")
+
+  private def dayMapping(dateField: String): Mapping[Option[String]] =
+    mandatoryIf(hasBothValuesFor(dateField, month, year), text().verifying("date.day.error", isInRange(1, 31)))
+
+  private def monthMapping(dateField: String): Mapping[Option[String]] =
+    mandatoryIf(hasBothValuesFor(dateField, day, year), text().verifying("date.month.error", isInRange(1, 12)))
+
+  private def yearMapping(dateField: String): Mapping[Option[String]] =
+    mandatoryIf(hasBothValuesFor(dateField, day, month), text().verifying("date.year.error", isInRange(1000, 9999)))
+
+  private def dateTupleMapping(dateField: String): Mapping[(Option[String], Option[String], Option[String])] =
+    tuple(day -> dayMapping(dateField), month -> monthMapping(dateField), year -> yearMapping(dateField))
 
 }

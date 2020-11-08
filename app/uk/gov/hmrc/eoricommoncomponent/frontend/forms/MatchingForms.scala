@@ -20,13 +20,13 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation._
 import play.api.i18n.Messages
+import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.{JourneyType, UserLocation}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.{mandatoryDateTodayOrBefore, _}
-import uk.gov.hmrc.domain.Nino
-import uk.gov.voa.play.form.ConditionalMappings._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation._
+import uk.gov.voa.play.form.ConditionalMappings._
 
 object MatchingForms {
 
@@ -237,8 +237,12 @@ object MatchingForms {
       "first-name" -> text.verifying(validFirstName),
       "last-name"  -> text.verifying(validLastName),
       "date-of-birth" -> mandatoryDateTodayOrBefore(
-        onEmptyError = "cds.registration-model.form-error.date-of-birth.empty",
-        onInvalidDateError = "cds.registration-model.form-error.date-of-birth"
+        "date-of-birth",
+        onEmptyError = "dob.error.empty-date",
+        onInvalidDateError = "dob.error.invalid-date",
+        onDateInFutureError = "dob.error.future-date",
+        onDateTooEarlyError = "dob.error.early-date",
+        earliestDate = FormValidation.earliestDateOfBirth
       ),
       "nino" -> text.verifying(validNino)
     )(NinoMatch.apply)(NinoMatch.unapply)
@@ -250,8 +254,12 @@ object MatchingForms {
       "middle-name" -> optional(text.verifying(validMiddleName)),
       "last-name"   -> text.verifying(validLastName),
       "date-of-birth" -> mandatoryDateTodayOrBefore(
-        onEmptyError = "cds.registration-model.form-error.date-of-birth.empty",
-        onInvalidDateError = "cds.registration-model.form-error.date-of-birth"
+        "date-of-birth",
+        onEmptyError = "dob.error.empty-date",
+        onInvalidDateError = "dob.error.invalid-date",
+        onDateInFutureError = "dob.error.future-date",
+        onDateTooEarlyError = "dob.error.early-date",
+        earliestDate = FormValidation.earliestDateOfBirth
       )
     )(NameDobMatchModel.apply)(NameDobMatchModel.unapply)
   )
@@ -400,8 +408,12 @@ object MatchingForms {
         "middle-name" -> optional(text.verifying(validMiddleName)),
         "family-name" -> text.verifying(validFamilyName),
         "date-of-birth" -> mandatoryDateTodayOrBefore(
-          onEmptyError = "cds.registration-model.form-error.date-of-birth.empty",
-          onInvalidDateError = "cds.registration-model.form-error.date-of-birth"
+          "date-of-birth",
+          onEmptyError = "dob.error.empty-date",
+          onInvalidDateError = "dob.error.invalid-date",
+          onDateInFutureError = "dob.error.future-date",
+          onDateTooEarlyError = "dob.error.early-date",
+          earliestDate = FormValidation.earliestDateOfBirth
         )
       )(IndividualNameAndDateOfBirth.apply)(IndividualNameAndDateOfBirth.unapply)
     )

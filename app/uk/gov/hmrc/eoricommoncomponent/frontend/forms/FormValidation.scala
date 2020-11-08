@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.forms
 
+import org.joda.time.LocalDate
 import play.api.data.Forms.text
 import play.api.data.Mapping
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
@@ -27,6 +28,10 @@ import uk.gov.voa.play.form.{Condition, MandatoryOptionalMapping}
 import scala.util.matching.Regex
 
 object FormValidation {
+
+  val earliestDateOfBirth: LocalDate         = new LocalDate(1900, 1, 1)
+  val earliestEffectiveVatDate: LocalDate    = new LocalDate(1000, 1, 1)
+  val earliestDateOfEstablishment: LocalDate = new LocalDate(1000, 1, 1)
 
   val postcodeRegex: Regex =
     "^(?i)(GIR 0AA)|((([A-Z][0-9][0-9]?)|(([A-Z][A-HJ-Y][0-9][0-9]?)|(([A-Z][0-9][A-Z])|([A-Z][A-HJ-Y][0-9]?[A-Z])))) ?[0-9][A-Z]{2})$".r

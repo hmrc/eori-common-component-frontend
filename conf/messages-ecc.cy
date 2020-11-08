@@ -97,3 +97,22 @@ confirm-business-details.individual.yes-wrong-address=TRANSLATE No, I need to ch
 confirm-business-details.individual.no=TRANSLATE No, I need to enter all my details again
 
 cds.error.field.hint=Gwall:
+
+date.day.error=TRANSLATE Enter a day between 1 and 31
+date.month.error=TRANSLATE Enter a month between 1 and 12
+date.year.error=TRANSLATE Enter a year
+
+dob.error.empty-date=TRANSLATE Enter your date of birth
+dob.error.future-date=TRANSLATE Date of birth must be in the past
+dob.error.early-date=TRANSLATE Date of birth must be after 1 January 1900
+dob.error.invalid-date=TRANSLATE Date of birth must be a real date
+
+doe.error.empty-date=TRANSLATE Enter your date of establishment
+doe.error.future-date=TRANSLATE Date of establishment must be in the past
+doe.error.early-date=TRANSLATE Date of establishment must be after 1 January 1000
+doe.error.invalid-date=TRANSLATE Date of establishment must be a real date
+
+vat.error.empty-date=TRANSLATE Enter your effective VAT date
+vat.error.future-date=TRANSLATE Effective VAT date must be in the past
+vat.error.early-date=TRANSLATE Effective VAT date must be after 1 January 1000
+vat.error.invalid-date=TRANSLATE Effective VAT date must be a real date

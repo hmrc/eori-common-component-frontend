@@ -26,22 +26,30 @@ import uk.gov.hmrc.play.mappers.DateFields._
 
 class DateTupleSpec extends UnitSpec {
 
-  private val customError            = "some.custom.error.key"
-  private val defaultDateTuple       = DateTuple.dateTuple()
-  private val customDateTuple        = DateTuple.dateTuple(invalidDateError = customError)
-  private val nonValidatingDateTuple = DateTuple.dateTuple(validate = false)
+  private val dateField        = "some-date"
+  private val customError      = "some.custom.error.key"
+  private val defaultDateTuple = DateTuple.dateTuple(dateField)
+  private val customDateTuple  = DateTuple.dateTuple(dateField, customError)
 
-  private val d            = "15"
-  private val m            = "7"
-  private val y            = "2010"
-  private val validRequest = Map(day -> d, month -> m, year -> y)
-  private val defaultDate  = LocalDate.parse("2010-7-15")
+  private val d = "15"
+  private val m = "7"
+  private val y = "2010"
+
+  private val defaultDate = LocalDate.parse("2010-7-15")
+
+  private def request(dayValue: String = d, monthValue: String = m, yearValue: String = y) = Map(
+    s"$dateField.$day"   -> dayValue,
+    day                  -> dayValue,
+    s"$dateField.$month" -> monthValue,
+    month                -> monthValue,
+    s"$dateField.$year"  -> yearValue,
+    year                 -> yearValue
+  )
 
   private val allMappings = Table(
     ("date mapping label", "date mapping instance"),
     ("default date mapping", defaultDateTuple),
-    ("date mapping with custom error message", customDateTuple),
-    ("not validating date mapping", nonValidatingDateTuple)
+    ("date mapping with custom error message", customDateTuple)
   )
 
   private val validatingMappings = Table(
@@ -55,15 +63,15 @@ class DateTupleSpec extends UnitSpec {
 
     label should {
       "accept a valid date" in {
-        assertSuccessfulBinding(validRequest, Some(defaultDate))
+        assertSuccessfulBinding(request(), Some(defaultDate))
       }
 
       "trim date elements" in {
-        assertSuccessfulBinding(Map(day -> s"$d ", month -> s" $m", year -> s" $y "), Some(defaultDate))
+        assertSuccessfulBinding(request(s" $d ", s" $m ", s" $y "), Some(defaultDate))
       }
 
       "return None when all the fields are empty" in {
-        assertSuccessfulBinding(Map(day -> "", month -> "", year -> ""), None)
+        assertSuccessfulBinding(request("", "", ""), None)
       }
     }
   }
@@ -74,104 +82,56 @@ class DateTupleSpec extends UnitSpec {
     s"validating $label" should {
 
       "reject invalid date" in {
-        assertErrorTriggered(validRequest + (day -> "32"), errorMessage)
+        assertErrorTriggered(request(dayValue = "30", monthValue = "2"), "", errorMessage)
+      }
+
+      "reject invalid day" in {
+        assertErrorTriggered(request(dayValue = "32"), day, "date.day.error")
       }
 
       "reject date without day" in {
-        assertErrorTriggered(validRequest - day, errorMessage)
+        assertErrorTriggered(request(dayValue = ""), day, "date.day.error")
       }
 
       "reject date without month" in {
-        assertErrorTriggered(validRequest - month, errorMessage)
+        assertErrorTriggered(request(monthValue = ""), month, "date.month.error")
       }
 
       "reject date without year" in {
-        assertErrorTriggered(validRequest - year, errorMessage)
+        assertErrorTriggered(request(yearValue = ""), year, "date.year.error")
       }
 
       "reject day with characters instead of numbers" in {
-        assertErrorTriggered(validRequest + (day -> "foo"), errorMessage)
+        assertErrorTriggered(request(dayValue = "foo"), day, "date.day.error")
       }
 
       "reject month with characters instead of numbers" in {
-        assertErrorTriggered(validRequest + (month -> "foo"), errorMessage)
+        assertErrorTriggered(request(monthValue = "foo"), month, "date.month.error")
       }
 
       "reject year with characters instead of numbers" in {
-        assertErrorTriggered(validRequest + (year -> "foo"), errorMessage)
+        assertErrorTriggered(request(yearValue = "foo"), year, "date.year.error")
       }
 
       "reject invalid month" in {
-        assertErrorTriggered(validRequest + (month -> "13"), errorMessage)
+        assertErrorTriggered(request(monthValue = "13"), month, "date.month.error")
       }
 
       "reject year with 1 digit length" in {
-        assertErrorTriggered(validRequest + (year -> "9"), errorMessage)
+        assertErrorTriggered(request(yearValue = "9"), year, "date.year.error")
       }
 
       "reject year with 2 digits length" in {
-        assertErrorTriggered(validRequest + (year -> "73"), errorMessage)
+        assertErrorTriggered(request(yearValue = "73"), year, "date.year.error")
       }
 
       "reject year with 3 digits length" in {
-        assertErrorTriggered(validRequest + (year -> "832"), errorMessage)
+        assertErrorTriggered(request(yearValue = "832"), year, "date.year.error")
       }
 
       "reject year with more than 4 digits length" in {
-        assertErrorTriggered(validRequest + (year -> "12017"), errorMessage)
+        assertErrorTriggered(request(yearValue = "12017"), year, "date.year.error")
       }
-    }
-  }
-
-  "non-validating date mapping" should {
-    implicit val dm = nonValidatingDateTuple
-
-    "ignore invalid date" in {
-      assertSuccessfulBinding(validRequest + (day -> "32"), None)
-    }
-
-    "ignore date without day" in {
-      assertSuccessfulBinding(validRequest - day, None)
-    }
-
-    "ignore date without month" in {
-      assertSuccessfulBinding(validRequest - month, None)
-    }
-
-    "ignore date without year" in {
-      assertSuccessfulBinding(validRequest - year, None)
-    }
-
-    "ignore day with characters instead of numbers" in {
-      assertSuccessfulBinding(validRequest + (day -> "foo"), None)
-    }
-
-    "ignore month with characters instead of numbers" in {
-      assertSuccessfulBinding(validRequest + (month -> "foo"), None)
-    }
-
-    "ignore year with characters instead of numbers" in {
-      assertSuccessfulBinding(validRequest + (year -> "foo"), None)
-    }
-
-    "ignore invalid month" in {
-      assertSuccessfulBinding(validRequest + (month -> "13"), None)
-    }
-
-    "accept year with 1 digit length" in {
-      assertSuccessfulBinding(validRequest + (year -> "9"), Some(LocalDate.parse("9-7-15")))
-    }
-
-    "accept year with 2 digits length" in {
-      assertSuccessfulBinding(validRequest + (year -> "73"), Some(LocalDate.parse("73-7-15")))
-    }
-
-    "accept year with 3 digits length" in {
-      assertSuccessfulBinding(validRequest + (year -> "832"), Some(LocalDate.parse("832-7-15")))
-    }
-
-    "accept year with more than 4 digits length" in {
-      assertSuccessfulBinding(validRequest + (year -> "12017"), Some(LocalDate.parse("12017-7-15")))
     }
   }
 
@@ -181,10 +141,10 @@ class DateTupleSpec extends UnitSpec {
     dateMapping.bind(request) shouldBe Right(expectedResult)
   }
 
-  private def assertErrorTriggered(request: Map[String, String], errorMessage: String)(implicit
+  private def assertErrorTriggered(request: Map[String, String], field: String, errorMessage: String)(implicit
     dateMapping: Mapping[Option[LocalDate]]
   ) {
-    dateMapping.bind(request) shouldBe Left(Seq(FormError("", errorMessage)))
+    dateMapping.bind(request) shouldBe Left(Seq(FormError(field, errorMessage)))
   }
 
 }

@@ -313,14 +313,14 @@ class RowIndividualNameDateOfBirthControllerSpec
           assertInvalidField(formData(individualNameAndDateOfBirth) + (dateOfBirthDayField -> "32"), webPage)(
             DateOfBirth,
             fieldLevelErrorDateOfBirth,
-            "Enter a date of birth in the right format"
+            "Enter a day between 1 and 31"
           )
       }
 
       "not be in the future " in testControllerWithModel(validFormModelGens) {
         (controllerFixture, individualNameAndDateOfBirth) =>
           val tomorrow   = LocalDate.now().plusDays(1)
-          val FutureDate = "You must specify a date that is not in the future"
+          val FutureDate = "Date of birth must be in the past"
           import controllerFixture._
           assertInvalidField(
             formData(individualNameAndDateOfBirth) + (dateOfBirthDayField -> tomorrow.getDayOfMonth.toString,
@@ -333,11 +333,11 @@ class RowIndividualNameDateOfBirthControllerSpec
       "reject letters entered instead of numbers" in testControllerWithModel(validFormModelGens) {
         (controllerFixture, individualNameAndDateOfBirth) =>
           import controllerFixture._
-          val lettersDateFields: Map[String, String] = webPage.dateOfBirthFields.zip(List("a", "b", "c")).toMap
+          val lettersDateFields: Map[String, String] = webPage.dateOfBirthFields.zip(List("1", "May", "2000")).toMap
           assertInvalidField(formData(individualNameAndDateOfBirth) ++ lettersDateFields, webPage)(
             DateOfBirth,
             fieldLevelErrorDateOfBirth,
-            "Enter a date of birth in the right format"
+            "Enter a month between 1 and 12"
           )
       }
     }

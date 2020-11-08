@@ -30,14 +30,16 @@ object FormUtils {
   val messageKeyMandatoryField    = "cds.error.mandatory.field"
   val messageKeyInvalidDateFormat = "cds.error.invalid.date.format"
   val messageKeyFutureDate        = "cds.error.future-date"
+  val messageKeyTooEarlyDate      = "cds.error.early-date"
 
   val messageKeyOptionInvalid = "cds.error.option.invalid"
 
   def mandatoryDate(
+    dateField: String,
     onEmptyError: String = messageKeyMandatoryField,
     onInvalidDateError: String = messageKeyInvalidDateFormat
   ): Mapping[LocalDate] =
-    dateTuple(invalidDateError = onInvalidDateError)
+    dateTuple(dateField, invalidDateError = onInvalidDateError)
       .verifying(onEmptyError, d => d.isDefined)
       .transform(_.get, Option(_))
 
@@ -54,17 +56,22 @@ object FormUtils {
       .transform[String](o => o.get, s => Some(s))
 
   def mandatoryDateTodayOrBefore(
+    dateField: String,
     onEmptyError: String = messageKeyMandatoryField,
     onInvalidDateError: String = messageKeyInvalidDateFormat,
-    onDateInFutureError: String = messageKeyFutureDate
+    onDateInFutureError: String = messageKeyFutureDate,
+    onDateTooEarlyError: String = messageKeyTooEarlyDate,
+    earliestDate: LocalDate
   ): Mapping[LocalDate] =
-    mandatoryDate(onEmptyError, onInvalidDateError).verifying(
-      onDateInFutureError,
-      d => {
-        val today = LocalDate.now()
-        d.isEqual(today) || d.isBefore(today)
-      }
-    )
+    mandatoryDate(dateField, onEmptyError, onInvalidDateError)
+      .verifying(
+        onDateInFutureError,
+        d => {
+          val today = LocalDate.now()
+          d.isEqual(today) || d.isBefore(today)
+        }
+      )
+      .verifying(onDateTooEarlyError, d => d.isAfter(earliestDate))
 
   def nonEmptyString(error: => String = messageKeyMandatoryField): Constraint[String] = Constraint { s =>
     Option(s).filter(_.trim.nonEmpty).fold[ValidationResult](ifEmpty = Invalid(error))(_ => Valid)

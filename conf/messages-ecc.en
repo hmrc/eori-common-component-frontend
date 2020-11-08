@@ -97,3 +97,22 @@ confirm-business-details.individual.yes-wrong-address=No, I need to change my ad
 confirm-business-details.individual.no=No, I need to enter all my details again
 
 cds.error.field.hint=Error:
+
+date.day.error=Enter a day between 1 and 31
+date.month.error=Enter a month between 1 and 12
+date.year.error=Enter a year
+
+dob.error.empty-date=Enter your date of birth
+dob.error.future-date=Date of birth must be in the past
+dob.error.early-date=Date of birth must be after 1 January 1900
+dob.error.invalid-date=Date of birth must be a real date
+
+doe.error.empty-date=Enter your date of establishment
+doe.error.future-date=Date of establishment must be in the past
+doe.error.early-date=Date of establishment must be after 1 January 1000
+doe.error.invalid-date=Date of establishment must be a real date
+
+vat.error.empty-date=Enter your effective VAT date
+vat.error.future-date=Effective VAT date must be in the past
+vat.error.early-date=Effective VAT date must be after 1 January 1000
+vat.error.invalid-date=Effective VAT date must be a real date

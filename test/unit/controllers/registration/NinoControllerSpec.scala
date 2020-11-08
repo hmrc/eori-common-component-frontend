@@ -151,12 +151,8 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter with AuthAct
       submitForm(NinoFormBuilder.asForm + ("date-of-birth.day" -> "32")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(
-          NinoMatchPage.pageLevelErrorSummaryListXPath
-        ) shouldBe "Enter a date of birth in the right format"
-        page.getElementsText(
-          NinoMatchPage.fieldLevelErrorDateOfBirth
-        ) shouldBe "Error: Enter a date of birth in the right format"
+        page.getElementsText(NinoMatchPage.pageLevelErrorSummaryListXPath) shouldBe "Enter a day between 1 and 31"
+        page.getElementsText(NinoMatchPage.fieldLevelErrorDateOfBirth) shouldBe "Error: Enter a day between 1 and 31"
       }
     }
 
@@ -169,12 +165,8 @@ class NinoControllerSpec extends ControllerSpec with BeforeAndAfter with AuthAct
       ) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(
-          pageLevelErrorSummaryListXPath
-        ) shouldBe "You must specify a date that is not in the future"
-        page.getElementsText(
-          fieldLevelErrorDateOfBirth
-        ) shouldBe "Error: You must specify a date that is not in the future"
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Date of birth must be in the past"
+        page.getElementsText(fieldLevelErrorDateOfBirth) shouldBe "Error: Date of birth must be in the past"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
