@@ -68,6 +68,13 @@ object DateTuple {
         case _              => false
       }
 
+  val isYear: () => String => Boolean = () =>
+    (input: String) =>
+      Try(input.trim.toInt) match {
+        case Success(value) => value > 0
+        case _              => false
+      }
+
   private def hasBothValuesFor(dateField: String, field1: String, field2: String): Condition =
     isNotEqual(s"$dateField.$field1", "") and isNotEqual(s"$dateField.$field2", "")
 
@@ -78,7 +85,7 @@ object DateTuple {
     mandatoryIf(hasBothValuesFor(dateField, day, year), text().verifying("date.month.error", isInRange(1, 12)))
 
   private def yearMapping(dateField: String): Mapping[Option[String]] =
-    mandatoryIf(hasBothValuesFor(dateField, day, month), text().verifying("date.year.error", isInRange(1000, 9999)))
+    mandatoryIf(hasBothValuesFor(dateField, day, month), text().verifying("date.year.error", isYear()))
 
   private def dateTupleMapping(dateField: String): Mapping[(Option[String], Option[String], Option[String])] =
     tuple(day -> dayMapping(dateField), month -> monthMapping(dateField), year -> yearMapping(dateField))

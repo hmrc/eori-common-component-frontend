@@ -117,20 +117,8 @@ class DateTupleSpec extends UnitSpec {
         assertErrorTriggered(request(monthValue = "13"), month, "date.month.error")
       }
 
-      "reject year with 1 digit length" in {
-        assertErrorTriggered(request(yearValue = "9"), year, "date.year.error")
-      }
-
-      "reject year with 2 digits length" in {
-        assertErrorTriggered(request(yearValue = "73"), year, "date.year.error")
-      }
-
-      "reject year with 3 digits length" in {
-        assertErrorTriggered(request(yearValue = "832"), year, "date.year.error")
-      }
-
-      "reject year with more than 4 digits length" in {
-        assertErrorTriggered(request(yearValue = "12017"), year, "date.year.error")
+      "reject invalid year" in {
+        assertErrorTriggered(request(yearValue = "0"), year, "date.year.error")
       }
     }
   }
