@@ -114,7 +114,6 @@ object SubscriptionForm {
 
   val subscriptionDateOfEstablishmentForm: Form[LocalDate] = Form(
     "date-of-establishment" -> mandatoryDateTodayOrBefore(
-      "date-of-establishment",
       onEmptyError = "doe.error.empty-date",
       onInvalidDateError = "doe.error.invalid-date",
       onDateTooEarlyError = "doe.error.early-date",

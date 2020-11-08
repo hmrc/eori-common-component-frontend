@@ -34,7 +34,7 @@
         <a href="javascript:history.back()" id="back" class="link-back js-visible">@messages("cds.navigation.back")</a>
 
         @helpers.errorSummary(vatForm,
-            focusOverrides = Map("vat-effective-date" -> "vat-effective-date\\.day"))
+            focusOverrides = Map("vat-effective-date" -> "vat-effective-date.day"))
 
         @helper.form(formAction, 'id -> "vat-details-form") {
 

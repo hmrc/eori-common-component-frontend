@@ -35,11 +35,10 @@ object FormUtils {
   val messageKeyOptionInvalid = "cds.error.option.invalid"
 
   def mandatoryDate(
-    dateField: String,
     onEmptyError: String = messageKeyMandatoryField,
     onInvalidDateError: String = messageKeyInvalidDateFormat
   ): Mapping[LocalDate] =
-    dateTuple(dateField, invalidDateError = onInvalidDateError)
+    dateTuple(invalidDateError = onInvalidDateError)
       .verifying(onEmptyError, d => d.isDefined)
       .transform(_.get, Option(_))
 
@@ -56,14 +55,13 @@ object FormUtils {
       .transform[String](o => o.get, s => Some(s))
 
   def mandatoryDateTodayOrBefore(
-    dateField: String,
     onEmptyError: String = messageKeyMandatoryField,
     onInvalidDateError: String = messageKeyInvalidDateFormat,
     onDateInFutureError: String = messageKeyFutureDate,
     onDateTooEarlyError: String = messageKeyTooEarlyDate,
     earliestDate: LocalDate
   ): Mapping[LocalDate] =
-    mandatoryDate(dateField, onEmptyError, onInvalidDateError)
+    mandatoryDate(onEmptyError, onInvalidDateError)
       .verifying(
         onDateInFutureError,
         d => {

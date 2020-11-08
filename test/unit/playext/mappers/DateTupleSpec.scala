@@ -28,8 +28,8 @@ class DateTupleSpec extends UnitSpec {
 
   private val dateField        = "some-date"
   private val customError      = "some.custom.error.key"
-  private val defaultDateTuple = DateTuple.dateTuple(dateField)
-  private val customDateTuple  = DateTuple.dateTuple(dateField, customError)
+  private val defaultDateTuple = DateTuple.dateTuple()
+  private val customDateTuple  = DateTuple.dateTuple(customError)
 
   private val d = "15"
   private val m = "7"
@@ -89,18 +89,6 @@ class DateTupleSpec extends UnitSpec {
         assertErrorTriggered(request(dayValue = "32"), day, "date.day.error")
       }
 
-      "reject date without day" in {
-        assertErrorTriggered(request(dayValue = ""), day, "date.day.error")
-      }
-
-      "reject date without month" in {
-        assertErrorTriggered(request(monthValue = ""), month, "date.month.error")
-      }
-
-      "reject date without year" in {
-        assertErrorTriggered(request(yearValue = ""), year, "date.year.error")
-      }
-
       "reject day with characters instead of numbers" in {
         assertErrorTriggered(request(dayValue = "foo"), day, "date.day.error")
       }
@@ -120,6 +108,18 @@ class DateTupleSpec extends UnitSpec {
       "reject invalid year" in {
         assertErrorTriggered(request(yearValue = "0"), year, "date.year.error")
       }
+
+      "return no date without day" in {
+        assertNoDateReturned(request(dayValue = ""))
+      }
+
+      "return no date without month" in {
+        assertNoDateReturned(request(monthValue = ""))
+      }
+
+      "return no date without year" in {
+        assertNoDateReturned(request(yearValue = ""))
+      }
     }
   }
 
@@ -133,6 +133,10 @@ class DateTupleSpec extends UnitSpec {
     dateMapping: Mapping[Option[LocalDate]]
   ) {
     dateMapping.bind(request) shouldBe Left(Seq(FormError(field, errorMessage)))
+  }
+
+  private def assertNoDateReturned(request: Map[String, String])(implicit dateMapping: Mapping[Option[LocalDate]]) {
+    dateMapping.bind(request) shouldBe Right(None)
   }
 
 }

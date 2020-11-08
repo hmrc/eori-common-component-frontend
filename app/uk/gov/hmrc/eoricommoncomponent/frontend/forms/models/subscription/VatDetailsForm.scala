@@ -56,7 +56,6 @@ object VatDetailsForm {
       "postcode"   -> text.verifying(validPostcode),
       "vat-number" -> text.verifying(validVatNumber),
       "vat-effective-date" -> mandatoryDateTodayOrBefore(
-        "vat-effective-date",
         onEmptyError = "vat.error.empty-date",
         onInvalidDateError = "vat.error.invalid-date",
         onDateInFutureError = "vat.error.future-date",

@@ -237,7 +237,6 @@ object MatchingForms {
       "first-name" -> text.verifying(validFirstName),
       "last-name"  -> text.verifying(validLastName),
       "date-of-birth" -> mandatoryDateTodayOrBefore(
-        "date-of-birth",
         onEmptyError = "dob.error.empty-date",
         onInvalidDateError = "dob.error.invalid-date",
         onDateInFutureError = "dob.error.future-date",
@@ -254,7 +253,6 @@ object MatchingForms {
       "middle-name" -> optional(text.verifying(validMiddleName)),
       "last-name"   -> text.verifying(validLastName),
       "date-of-birth" -> mandatoryDateTodayOrBefore(
-        "date-of-birth",
         onEmptyError = "dob.error.empty-date",
         onInvalidDateError = "dob.error.invalid-date",
         onDateInFutureError = "dob.error.future-date",
@@ -408,7 +406,6 @@ object MatchingForms {
         "middle-name" -> optional(text.verifying(validMiddleName)),
         "family-name" -> text.verifying(validFamilyName),
         "date-of-birth" -> mandatoryDateTodayOrBefore(
-          "date-of-birth",
           onEmptyError = "dob.error.empty-date",
           onInvalidDateError = "dob.error.invalid-date",
           onDateInFutureError = "dob.error.future-date",

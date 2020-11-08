@@ -315,8 +315,8 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     "validation error when DAY of birth is not submitted" in {
       submitFormInCreateMode(createFormAllFieldsNameDobMap + (dobDayFieldName -> "")) { result =>
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a day between 1 and 31"
-        page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Error: Enter a day between 1 and 31"
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your date of birth"
+        page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Error: Enter your date of birth"
         page.getElementsText("title") should startWith("Error: ")
         verifyZeroInteractions(mockSubscriptionBusinessService)
       }
@@ -325,8 +325,8 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     "validation error when MONTH of birth is not submitted" in {
       submitFormInCreateMode(createFormAllFieldsNameDobMap + (dobMonthFieldName -> "")) { result =>
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a month between 1 and 12"
-        page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Error: Enter a month between 1 and 12"
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your date of birth"
+        page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Error: Enter your date of birth"
         page.getElementsText("title") should startWith("Error: ")
         verifyZeroInteractions(mockSubscriptionBusinessService)
       }
@@ -335,8 +335,8 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     "validation error when YEAR of birth is not submitted" in {
       submitFormInCreateMode(createFormAllFieldsNameDobMap + (dobYearFieldName -> "")) { result =>
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a year"
-        page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Error: Enter a year"
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your date of birth"
+        page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Error: Enter your date of birth"
         page.getElementsText("title") should startWith("Error: ")
         verifyZeroInteractions(mockSubscriptionBusinessService)
       }
