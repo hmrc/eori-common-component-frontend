@@ -40,12 +40,14 @@ object DateConverter {
         Failure(e)
     }.toOption
 
-  def updateDateOfBirthErrors(errors: Seq[FormError]) = updateYearErrors(errors, earliestYearDateOfBirth)
+  def updateDateOfBirthErrors(errors: Seq[FormError]): Seq[FormError] =
+    updateYearErrors(errors, earliestYearDateOfBirth)
 
-  def updateDateOfEstablishmentErrors(errors: Seq[FormError]) =
+  def updateDateOfEstablishmentErrors(errors: Seq[FormError]): Seq[FormError] =
     updateYearErrors(errors, earliestYearDateOfEstablishment)
 
-  def updateEffectiveVatDateErrors(errors: Seq[FormError]) = updateYearErrors(errors, earliestYearEffectiveVatDate)
+  def updateEffectiveVatDateErrors(errors: Seq[FormError]): Seq[FormError] =
+    updateYearErrors(errors, earliestYearEffectiveVatDate)
 
   private def updateYearErrors(errors: Seq[FormError], minYear: Int): Seq[FormError] = errors.map(
     err =>
