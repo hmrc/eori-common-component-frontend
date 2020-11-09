@@ -63,7 +63,7 @@ cds.subscription.outcomes.rejected.heading=TRANSLATE The [SERVICE] application f
 cds.subscription.outcomes.in-processing.title=TRANSLATE The [SERVICE] application is being processed
 cds.subscription.outcomes.in-processing.heading=TRANSLATE We are processing the registration for [USER]
 
-enter-email-body-text=TRANSLATE We’ll use this to send you the result of your application.
+enter-email-body-text=TRANSLATE We will use this to send you the result of your application.
 cds.subscription.verify-email.para2=TRANSLATE For your security the link in the email will expire after 72 hours.
 
 cds.email-confirmed.para.get-access=TRANSLATE You can continue with your application.
