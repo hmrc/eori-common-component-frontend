@@ -16,6 +16,8 @@
 
 package unit.controllers.registration
 
+import java.time.Year
+
 import common.pages.matching.NameDateOfBirthPage
 import common.pages.matching.NameDateOfBirthPage._
 import org.joda.time.LocalDate
@@ -183,10 +185,10 @@ class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
         val page = CdsPage(contentAsString(result))
         page.getElementsText(
           pageLevelErrorSummaryListXPath
-        ) shouldBe "Enter a day between 1 and 31 Enter a month between 1 and 12 Enter a year"
+        ) shouldBe s"Enter a day between 1 and 31 Enter a month between 1 and 12 Enter a year between 1900 and ${Year.now.getValue}"
         page.getElementsText(
           fieldLevelErrorDateOfBirth
-        ) shouldBe "Error: Enter a day between 1 and 31 Error: Enter a month between 1 and 12 Error: Enter a year"
+        ) shouldBe s"Error: Enter a day between 1 and 31 Error: Enter a month between 1 and 12 Error: Enter a year between 1900 and ${Year.now.getValue}"
         page.getElementsText("title") should startWith("Error: ")
       }
     }

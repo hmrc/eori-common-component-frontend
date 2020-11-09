@@ -16,6 +16,8 @@
 
 package unit.forms
 
+import java.time.Year
+
 import base.UnitSpec
 import org.joda.time.LocalDate
 import play.api.data.{Form, FormError}
@@ -120,14 +122,23 @@ class FormValidationSpec extends UnitSpec {
       res.errors shouldBe Seq(FormError("date-of-birth", Seq("dob.error.empty-date")))
     }
     "fail when a date of birth in future" in {
-      val data = formData.updated("date-of-birth.year", "3000")
-      val res  = nameDobForm.bind(data)
+      val todayPlusOneDay = LocalDate.now().plusDays(1)
+      val data = formData.updated("date-of-birth.day", todayPlusOneDay.toString("dd")).updated(
+        "date-of-birth.month",
+        todayPlusOneDay.toString("MM")
+      ).updated("date-of-birth.year", todayPlusOneDay.toString("YYYY"))
+      val res = nameDobForm.bind(data)
       res.errors shouldBe Seq(FormError("date-of-birth", Seq("dob.error.future-date")))
+    }
+    "fail when a date of birth year invalid" in {
+      val data = formData.updated("date-of-birth.year", Year.now.plusYears(1).getValue.toString)
+      val res  = nameDobForm.bind(data)
+      res.errors shouldBe Seq(FormError("date-of-birth.year", Seq("date.year.error")))
     }
     "fail when a date of birth too early" in {
       val data = formData.updated("date-of-birth.year", "1800")
       val res  = nameDobForm.bind(data)
-      res.errors shouldBe Seq(FormError("date-of-birth", Seq("dob.error.early-date")))
+      res.errors shouldBe Seq(FormError("date-of-birth.year", Seq("date.year.error")))
     }
   }
 
@@ -164,14 +175,23 @@ class FormValidationSpec extends UnitSpec {
       res.errors shouldBe Seq(FormError("date-of-birth", Seq("dob.error.empty-date")))
     }
     "fail when a date of birth in future" in {
-      val data = formDataNino.updated("date-of-birth.year", "3000")
-      val res  = ninoForm.bind(data)
+      val todayPlusOneDay = LocalDate.now().plusDays(1)
+      val data = formDataNino.updated("date-of-birth.day", todayPlusOneDay.toString("dd")).updated(
+        "date-of-birth.month",
+        todayPlusOneDay.toString("MM")
+      ).updated("date-of-birth.year", todayPlusOneDay.toString("YYYY"))
+      val res = ninoForm.bind(data)
       res.errors shouldBe Seq(FormError("date-of-birth", Seq("dob.error.future-date")))
+    }
+    "fail when a date of birth year invalid" in {
+      val data = formDataNino.updated("date-of-birth.year", Year.now.plusYears(1).getValue.toString)
+      val res  = ninoForm.bind(data)
+      res.errors shouldBe Seq(FormError("date-of-birth.year", Seq("date.year.error")))
     }
     "fail when a date of birth too early" in {
       val data = formDataNino.updated("date-of-birth.year", "1800")
       val res  = ninoForm.bind(data)
-      res.errors shouldBe Seq(FormError("date-of-birth", Seq("dob.error.early-date")))
+      res.errors shouldBe Seq(FormError("date-of-birth.year", Seq("date.year.error")))
     }
   }
 
@@ -213,14 +233,23 @@ class FormValidationSpec extends UnitSpec {
       res.errors shouldBe Seq(FormError("date-of-birth", Seq("dob.error.empty-date")))
     }
     "fail when a date of birth in future" in {
-      val data = formDataRow.updated("date-of-birth.year", "3000")
-      val res  = thirdCountryIndividualNameDateOfBirthForm.bind(data)
+      val todayPlusOneDay = LocalDate.now().plusDays(1)
+      val data = formDataRow.updated("date-of-birth.day", todayPlusOneDay.toString("dd")).updated(
+        "date-of-birth.month",
+        todayPlusOneDay.toString("MM")
+      ).updated("date-of-birth.year", todayPlusOneDay.toString("YYYY"))
+      val res = thirdCountryIndividualNameDateOfBirthForm.bind(data)
       res.errors shouldBe Seq(FormError("date-of-birth", Seq("dob.error.future-date")))
+    }
+    "fail when a date of birth year invalid" in {
+      val data = formDataRow.updated("date-of-birth.year", Year.now.plusYears(1).getValue.toString)
+      val res  = thirdCountryIndividualNameDateOfBirthForm.bind(data)
+      res.errors shouldBe Seq(FormError("date-of-birth.year", Seq("date.year.error")))
     }
     "fail when a date of birth too early" in {
       val data = formDataRow.updated("date-of-birth.year", "1800")
       val res  = thirdCountryIndividualNameDateOfBirthForm.bind(data)
-      res.errors shouldBe Seq(FormError("date-of-birth", Seq("dob.error.early-date")))
+      res.errors shouldBe Seq(FormError("date-of-birth.year", Seq("date.year.error")))
     }
   }
 
@@ -236,14 +265,23 @@ class FormValidationSpec extends UnitSpec {
       res.errors shouldBe Seq(FormError("vat-effective-date", Seq("vat.error.empty-date")))
     }
     "fail when effective date in future" in {
-      val data = formDataVAT.updated("vat-effective-date.year", "3000")
-      val res  = vatDetailsForm.bind(data)
+      val todayPlusOneDay = LocalDate.now().plusDays(1)
+      val data = formDataVAT.updated("vat-effective-date.day", todayPlusOneDay.toString("dd")).updated(
+        "vat-effective-date.month",
+        todayPlusOneDay.toString("MM")
+      ).updated("vat-effective-date.year", todayPlusOneDay.toString("YYYY"))
+      val res = vatDetailsForm.bind(data)
       res.errors shouldBe Seq(FormError("vat-effective-date", Seq("vat.error.future-date")))
+    }
+    "fail when effective date year invalid" in {
+      val data = formDataVAT.updated("vat-effective-date.year", Year.now.plusYears(1).getValue.toString)
+      val res  = vatDetailsForm.bind(data)
+      res.errors shouldBe Seq(FormError("vat-effective-date.year", Seq("date.year.error")))
     }
     "fail when effective date too early" in {
       val data = formDataVAT.updated("vat-effective-date.year", "1000")
       val res  = vatDetailsForm.bind(data)
-      res.errors shouldBe Seq(FormError("vat-effective-date", Seq("vat.error.early-date")))
+      res.errors shouldBe Seq(FormError("vat-effective-date.year", Seq("date.year.error")))
     }
   }
 
@@ -253,20 +291,29 @@ class FormValidationSpec extends UnitSpec {
       val res  = dateOfEstablishmentForm.bind(data)
       assert(res.errors.isEmpty)
     }
-    "fail when effective date is missing" in {
+    "fail when date of establishment is missing" in {
       val data = formDataDoE.updated("date-of-establishment.day", "").updated("date-of-establishment.month", "")
       val res  = dateOfEstablishmentForm.bind(data)
       res.errors shouldBe Seq(FormError("date-of-establishment", Seq("doe.error.empty-date")))
     }
-    "fail when effective date in future" in {
-      val data = formDataDoE.updated("date-of-establishment.year", "3000")
-      val res  = dateOfEstablishmentForm.bind(data)
+    "fail when date of establishment in future" in {
+      val todayPlusOneDay = LocalDate.now().plusDays(1)
+      val data = formDataDoE.updated("date-of-establishment.day", todayPlusOneDay.toString("dd")).updated(
+        "date-of-establishment.month",
+        todayPlusOneDay.toString("MM")
+      ).updated("date-of-establishment.year", todayPlusOneDay.toString("YYYY"))
+      val res = dateOfEstablishmentForm.bind(data)
       res.errors shouldBe Seq(FormError("date-of-establishment", Seq("doe.error.future-date")))
     }
-    "fail when effective date too early" in {
-      val data = formDataDoE.updated("date-of-establishment.year", "1000")
+    "fail when date of establishment year invalid" in {
+      val data = formDataDoE.updated("date-of-establishment.year", Year.now.plusYears(1).getValue.toString)
       val res  = dateOfEstablishmentForm.bind(data)
-      res.errors shouldBe Seq(FormError("date-of-establishment", Seq("doe.error.early-date")))
+      res.errors shouldBe Seq(FormError("date-of-establishment.year", Seq("date.year.error")))
+    }
+    "fail when date of establishment too early" in {
+      val data = formDataDoE.updated("date-of-establishment.year", "999")
+      val res  = dateOfEstablishmentForm.bind(data)
+      res.errors shouldBe Seq(FormError("date-of-establishment.year", Seq("date.year.error")))
     }
   }
 }

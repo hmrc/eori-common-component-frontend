@@ -21,6 +21,7 @@ import play.api.data.Forms._
 import play.api.data.validation._
 import play.api.i18n.Messages
 import uk.gov.hmrc.domain.Nino
+import uk.gov.hmrc.eoricommoncomponent.frontend.DateConverter
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.{JourneyType, UserLocation}
@@ -240,8 +241,7 @@ object MatchingForms {
         onEmptyError = "dob.error.empty-date",
         onInvalidDateError = "dob.error.invalid-date",
         onDateInFutureError = "dob.error.future-date",
-        onDateTooEarlyError = "dob.error.early-date",
-        earliestDate = FormValidation.earliestDateOfBirth
+        minYear = DateConverter.earliestYearDateOfBirth
       ),
       "nino" -> text.verifying(validNino)
     )(NinoMatch.apply)(NinoMatch.unapply)
@@ -256,8 +256,7 @@ object MatchingForms {
         onEmptyError = "dob.error.empty-date",
         onInvalidDateError = "dob.error.invalid-date",
         onDateInFutureError = "dob.error.future-date",
-        onDateTooEarlyError = "dob.error.early-date",
-        earliestDate = FormValidation.earliestDateOfBirth
+        minYear = DateConverter.earliestYearDateOfBirth
       )
     )(NameDobMatchModel.apply)(NameDobMatchModel.unapply)
   )
@@ -409,8 +408,7 @@ object MatchingForms {
           onEmptyError = "dob.error.empty-date",
           onInvalidDateError = "dob.error.invalid-date",
           onDateInFutureError = "dob.error.future-date",
-          onDateTooEarlyError = "dob.error.early-date",
-          earliestDate = FormValidation.earliestDateOfBirth
+          minYear = DateConverter.earliestYearDateOfBirth
         )
       )(IndividualNameAndDateOfBirth.apply)(IndividualNameAndDateOfBirth.unapply)
     )

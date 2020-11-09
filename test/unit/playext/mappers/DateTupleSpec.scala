@@ -28,8 +28,8 @@ class DateTupleSpec extends UnitSpec {
 
   private val dateField        = "some-date"
   private val customError      = "some.custom.error.key"
-  private val defaultDateTuple = DateTuple.dateTuple()
-  private val customDateTuple  = DateTuple.dateTuple(customError)
+  private val defaultDateTuple = DateTuple.dateTuple(minYear = 1999)
+  private val customDateTuple  = DateTuple.dateTuple(customError, minYear = 1999)
 
   private val d = "15"
   private val m = "7"

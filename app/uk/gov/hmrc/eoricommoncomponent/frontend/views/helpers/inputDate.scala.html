@@ -27,7 +27,7 @@
 @yearField = @{formItem(s"$fieldName.$year")}
 
 @formErrors = @{
-    (dateField.errors ++ dayField.errors ++ monthField.errors ++ yearField.errors)//.map(err => messages(err.message, err.args:_*)).mkString("<br>")
+    dateField.errors ++ dayField.errors ++ monthField.errors ++ yearField.errors
 }
 
 @elements = @{ FieldElements(formItem(fieldName).id, formItem(fieldName), null, args.toMap, messages) }
@@ -64,7 +64,7 @@ elements.args.getOrElse('_isLegendH1, false).asInstanceOf[Boolean]
         }
 
         @if(formErrors.nonEmpty) {
-            @formErrors.map { error => <span class="error-message"><span class="visually-hidden">@messages("cds.error.field.hint")</span> @messages(error.message)</span>}
+            @formErrors.map { error => <span class="error-message"><span class="visually-hidden">@messages("cds.error.field.hint")</span> @messages(error.message, error.args :_*)</span>}
         }
 
         @if(isLegendH1 && formErrors.nonEmpty) {

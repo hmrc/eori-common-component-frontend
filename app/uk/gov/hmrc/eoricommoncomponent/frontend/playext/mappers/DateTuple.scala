@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.playext.mappers
 
+import java.time.Year
+
 import org.joda.time.LocalDate
 import play.api.data.Forms.{optional, text, tuple}
 import play.api.data.Mapping
@@ -25,7 +27,10 @@ import scala.util.{Success, Try}
 
 object DateTuple {
 
-  def dateTuple(invalidDateError: String = "cds.error.invalid.date.format"): Mapping[Option[LocalDate]] = {
+  def dateTuple(
+    invalidDateError: String = "cds.error.invalid.date.format",
+    minYear: Int
+  ): Mapping[Option[LocalDate]] = {
     def tuple2Date(tuple: (Option[String], Option[String], Option[String])) = tuple match {
       case (Some(day), Some(month), Some(year)) =>
         try Some(new LocalDate(year.trim.toInt, month.trim.toInt, day.trim.toInt))
@@ -41,12 +46,12 @@ object DateTuple {
       case _       => (None, None, None)
     }
 
-    dateTupleMapping
+    dateTupleMapping(minYear)
       .verifying(
         invalidDateError,
         _ match {
           case (Some(day), Some(month), Some(year)) =>
-            if (!(isValidDay(day) && isValidMonth(month) && isValidYear(year))) true
+            if (!(isDayValid(day) && isMonthValid(month) && isYearValid(minYear)(year))) true
             else
               Try {
                 new LocalDate(year.trim.toInt, month.trim.toInt, day.trim.toInt)
@@ -58,10 +63,6 @@ object DateTuple {
       .transform[Option[LocalDate]](tuple2Date, date2Tuple)
   }
 
-  private def isValidDay(value: String)   = isInRange(1, 31).apply(value)
-  private def isValidMonth(value: String) = isInRange(1, 12).apply(value)
-  private def isValidYear(value: String)  = isYear().apply(value)
-
   private val isInRange: (Int, Int) => String => Boolean = (min: Int, max: Int) =>
     (input: String) =>
       Try(input.trim.toInt) match {
@@ -69,23 +70,25 @@ object DateTuple {
         case _              => false
       }
 
-  private val isYear: () => String => Boolean = () =>
-    (input: String) =>
-      Try(input.trim.toInt) match {
-        case Success(value) => value > 0
-        case _              => false
-      }
+  private def isDayValid: String => Boolean =
+    isInRange(1, 31)
+
+  private def isMonthValid: String => Boolean =
+    isInRange(1, 12)
+
+  private def isYearValid(minYear: Int): String => Boolean =
+    isInRange(minYear, Year.now.getValue)
 
   private def dayMapping: Mapping[Option[String]] =
-    optional(text.verifying("date.day.error", isInRange(1, 31)))
+    optional(text.verifying("date.day.error", isDayValid))
 
   private def monthMapping: Mapping[Option[String]] =
-    optional(text.verifying("date.month.error", isInRange(1, 12)))
+    optional(text.verifying("date.month.error", isMonthValid))
 
-  private def yearMapping: Mapping[Option[String]] =
-    optional(text.verifying("date.year.error", isYear()))
+  private def yearMapping(minYear: Int): Mapping[Option[String]] =
+    optional(text.verifying("date.year.error", isYearValid(minYear)))
 
-  private val dateTupleMapping: Mapping[(Option[String], Option[String], Option[String])] =
-    tuple(day -> dayMapping, month -> monthMapping, year -> yearMapping)
+  private def dateTupleMapping(minYear: Int): Mapping[(Option[String], Option[String], Option[String])] =
+    tuple(day -> dayMapping, month -> monthMapping, year -> yearMapping(minYear))
 
 }

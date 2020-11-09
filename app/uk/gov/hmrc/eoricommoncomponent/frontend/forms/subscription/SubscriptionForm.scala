@@ -21,10 +21,10 @@ import play.api.data.Forms._
 import play.api.data.validation._
 import play.api.data.{Form, Forms, Mapping}
 import uk.gov.hmrc.emailaddress.EmailAddress
+import uk.gov.hmrc.eoricommoncomponent.frontend.DateConverter
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.CompanyShortNameViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils._
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.playext.form.ConditionalMapping
 import uk.gov.voa.play.form.ConditionalMappings.{isEqual, mandatoryIf}
@@ -116,9 +116,8 @@ object SubscriptionForm {
     "date-of-establishment" -> mandatoryDateTodayOrBefore(
       onEmptyError = "doe.error.empty-date",
       onInvalidDateError = "doe.error.invalid-date",
-      onDateTooEarlyError = "doe.error.early-date",
       onDateInFutureError = "doe.error.future-date",
-      earliestDate = FormValidation.earliestDateOfEstablishment
+      minYear = DateConverter.earliestYearDateOfEstablishment
     )
   )
 

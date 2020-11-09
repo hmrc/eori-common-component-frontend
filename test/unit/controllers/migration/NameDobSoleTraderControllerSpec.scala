@@ -16,6 +16,8 @@
 
 package unit.controllers.migration
 
+import java.time.Year
+
 import common.pages.migration.NameDobSoleTraderPage
 import common.pages.migration.NameDobSoleTraderPage._
 import common.pages.registration.DoYouHaveAnEoriPage.pageLevelErrorSummaryListXPath
@@ -345,18 +347,36 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     "validation error when date of birth is too early" in {
       submitFormInCreateMode(createFormAllFieldsNameDobTooEarlyMap) { result =>
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Date of birth must be after 1 January 1900"
-        page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Error: Date of birth must be after 1 January 1900"
+        page.getElementsText(
+          pageLevelErrorSummaryListXPath
+        ) shouldBe s"Enter a year between 1900 and ${Year.now.getValue}"
+        page.getElementsText(
+          dobFieldLevelErrorXPath
+        ) shouldBe s"Error: Enter a year between 1900 and ${Year.now.getValue}"
         page.getElementsText("title") should startWith("Error: ")
         verifyZeroInteractions(mockSubscriptionBusinessService)
       }
     }
 
-    "validation error when YEAR of birth is in the future" in {
-      submitFormInCreateMode(createFormAllFieldsNameDobInFutureMap) { result =>
+    "validation error when date of birth is tomorrow" in {
+      submitFormInCreateMode(createFormAllFieldsNameDobTomorrowMap) { result =>
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Date of birth must be in the past"
         page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Error: Date of birth must be in the past"
+        page.getElementsText("title") should startWith("Error: ")
+        verifyZeroInteractions(mockSubscriptionBusinessService)
+      }
+    }
+
+    "validation error when YEAR of birth is next year" in {
+      submitFormInCreateMode(createFormAllFieldsNameDobNextYearMap) { result =>
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(
+          pageLevelErrorSummaryListXPath
+        ) shouldBe s"Enter a year between 1900 and ${Year.now.getValue}"
+        page.getElementsText(
+          dobFieldLevelErrorXPath
+        ) shouldBe s"Error: Enter a year between 1900 and ${Year.now.getValue}"
         page.getElementsText("title") should startWith("Error: ")
         verifyZeroInteractions(mockSubscriptionBusinessService)
       }
@@ -435,7 +455,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     dobYearFieldName   -> ""
   )
 
-  def createFormAllFieldsNameDobInFutureMap: Map[String, String] = {
+  def createFormAllFieldsNameDobNextYearMap: Map[String, String] = {
     val todayPlusOneYear = LocalDate.now().plusYears(1)
     Map(
       firstNameFieldName -> "Test First Name",
@@ -443,6 +463,17 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
       dobDayFieldName    -> "03",
       dobMonthFieldName  -> "09",
       dobYearFieldName   -> todayPlusOneYear.toString("YYYY")
+    )
+  }
+
+  def createFormAllFieldsNameDobTomorrowMap: Map[String, String] = {
+    val todayPlusOneDay = LocalDate.now().plusDays(1)
+    Map(
+      firstNameFieldName -> "Test First Name",
+      lastNameFieldName  -> "Test Last Name",
+      dobDayFieldName    -> todayPlusOneDay.toString("dd"),
+      dobMonthFieldName  -> todayPlusOneDay.toString("MM"),
+      dobYearFieldName   -> todayPlusOneDay.toString("YYYY")
     )
   }
 
