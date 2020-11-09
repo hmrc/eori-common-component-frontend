@@ -23,6 +23,7 @@ import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.eoricommoncomponent.frontend.DateConverter
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.VatIdentification
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation._
@@ -54,8 +55,11 @@ object VatDetailsForm {
     mapping(
       "postcode"   -> text.verifying(validPostcode),
       "vat-number" -> text.verifying(validVatNumber),
-      "vat-effective-date" -> mandatoryDateTodayOrBefore(onEmptyError =
-        "cds.subscription.vat-details.vat-effective-date.required.error"
+      "vat-effective-date" -> mandatoryDateTodayOrBefore(
+        onEmptyError = "vat.error.empty-date",
+        onInvalidDateError = "vat.error.invalid-date",
+        onDateInFutureError = "vat.error.future-date",
+        minYear = DateConverter.earliestYearEffectiveVatDate
       )
     )(VatDetails.apply)(VatDetails.unapply)
   )

@@ -91,12 +91,12 @@ class DateOfEstablishmentControllerSpec
 
   val existingSubscriptionDetailsHolder = SubscriptionDetails()
 
-  private val DateOfEstablishmentMissingErrorPage   = "Enter your date of establishment"
-  private val DateOfEstablishmentMissingErrorField  = "Error: Enter your date of establishment"
-  private val DateOfEstablishmentInvalidErrorPage   = "Please enter a valid date of establishment"
-  private val DateOfEstablishmentInvalidErrorField  = "Error: Please enter a valid date of establishment"
-  private val DateOfEstablishmentInFutureErrorPage  = "You cannot enter a date of establishment in the future"
-  private val DateOfEstablishmentInFutureErrorField = "Error: You cannot enter a date of establishment in the future"
+  private val DateOfEstablishmentMissingErrorPage     = "Enter your date of establishment"
+  private val DateOfEstablishmentMissingErrorField    = "Error: Enter your date of establishment"
+  private val DateOfEstablishmentInvalidDayErrorPage  = "Enter a day between 1 and 31"
+  private val DateOfEstablishmentInvalidDayErrorField = "Error: Enter a day between 1 and 31"
+  private val DateOfEstablishmentInFutureErrorPage    = "Date of establishment must be in the past"
+  private val DateOfEstablishmentInFutureErrorField   = "Error: Date of establishment must be in the past"
 
   override protected def beforeEach(): Unit = {
     reset(mockSubscriptionFlowManager, mockSubscriptionBusinessService, mockSubscriptionDetailsHolderService)
@@ -303,10 +303,10 @@ class DateOfEstablishmentControllerSpec
           val page = CdsPage(contentAsString(result))
           page.getElementsText(
             SubscriptionDateOfEstablishmentPage.pageLevelErrorSummaryListXPath
-          ) shouldBe DateOfEstablishmentInvalidErrorPage
+          ) shouldBe DateOfEstablishmentInvalidDayErrorPage
           page.getElementsText(
             SubscriptionDateOfEstablishmentPage.dateOfEstablishmentErrorXpath
-          ) shouldBe DateOfEstablishmentInvalidErrorField
+          ) shouldBe DateOfEstablishmentInvalidDayErrorField
         }
       }
 

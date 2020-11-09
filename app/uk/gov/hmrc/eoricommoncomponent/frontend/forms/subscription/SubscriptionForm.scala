@@ -21,6 +21,7 @@ import play.api.data.Forms._
 import play.api.data.validation._
 import play.api.data.{Form, Forms, Mapping}
 import uk.gov.hmrc.emailaddress.EmailAddress
+import uk.gov.hmrc.eoricommoncomponent.frontend.DateConverter
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.CompanyShortNameViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils._
@@ -113,9 +114,10 @@ object SubscriptionForm {
 
   val subscriptionDateOfEstablishmentForm: Form[LocalDate] = Form(
     "date-of-establishment" -> mandatoryDateTodayOrBefore(
-      onEmptyError = "cds.subscription.date-of-establishment.error.required.date-of-establishment",
-      onInvalidDateError = "cds.subscription.date-of-establishment.error.invalid.date-of-establishment",
-      onDateInFutureError = "cds.subscription.date-of-establishment.error.in-future.date-of-establishment"
+      onEmptyError = "doe.error.empty-date",
+      onInvalidDateError = "doe.error.invalid-date",
+      onDateInFutureError = "doe.error.future-date",
+      minYear = DateConverter.earliestYearDateOfEstablishment
     )
   )
 

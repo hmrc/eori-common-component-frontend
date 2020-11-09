@@ -192,12 +192,8 @@ class VatDetailsControllerSpec
       ) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(
-          pageLevelErrorSummaryListXPath
-        ) shouldBe "Enter your effective VAT date, for example '31 3 1980'"
-        page.getElementsText(
-          vatEffectiveDateFieldLevelError
-        ) shouldBe "Error: Enter your effective VAT date, for example '31 3 1980'"
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your effective VAT date"
+        page.getElementsText(vatEffectiveDateFieldLevelError) shouldBe "Error: Enter your effective VAT date"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -211,12 +207,8 @@ class VatDetailsControllerSpec
       ) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(
-          pageLevelErrorSummaryListXPath
-        ) shouldBe "Please enter a valid date, for example '31 3 1980'"
-        page.getElementsText(
-          vatEffectiveDateFieldLevelError
-        ) shouldBe "Error: Please enter a valid date, for example '31 3 1980'"
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Effective VAT date must be a real date"
+        page.getElementsText(vatEffectiveDateFieldLevelError) shouldBe "Error: Effective VAT date must be a real date"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -231,12 +223,8 @@ class VatDetailsControllerSpec
       ) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(
-          pageLevelErrorSummaryListXPath
-        ) shouldBe "You must specify a date that is not in the future"
-        page.getElementsText(
-          vatEffectiveDateFieldLevelError
-        ) shouldBe "Error: You must specify a date that is not in the future"
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Effective VAT date must be in the past"
+        page.getElementsText(vatEffectiveDateFieldLevelError) shouldBe "Error: Effective VAT date must be in the past"
         page.getElementsText("title") should startWith("Error: ")
       }
     }

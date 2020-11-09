@@ -22,7 +22,7 @@
         <ul class="error-summary-list">
             @form.globalErrors.map { error =>
                 <li class="error-list">
-                    @messages(error.messages, error.args)
+                    @messages(error.messages, error.args :_*)
                 </li>
             }
             @defining(form.errors.filter(!_.key.isEmpty)) { fieldLevelErrors =>
@@ -32,7 +32,7 @@
                     ) { fieldName =>
                             <li>
                                 <a href="#@focusOverrides.getOrElse(fieldName, fieldName)" class="error-list" data-focuses="">
-                                    @messages(error.messages)
+                                    @messages(error.messages, error.args :_*)
                                 </a>
                             </li>
 
