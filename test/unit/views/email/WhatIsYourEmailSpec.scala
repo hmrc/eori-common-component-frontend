@@ -44,7 +44,7 @@ class WhatIsYourEmailSpec extends ViewSpec {
     "have the correct hint text" in {
       MigrateDoc.body().getElementById(
         "email-hint"
-      ).text() mustBe "We’ll use this to send you the result of your application."
+      ).text() mustBe "We will use this to send you the result of your application."
     }
     "have an input of type 'email'" in {
       MigrateDoc.body().getElementById("email").attr("type") mustBe "email"
