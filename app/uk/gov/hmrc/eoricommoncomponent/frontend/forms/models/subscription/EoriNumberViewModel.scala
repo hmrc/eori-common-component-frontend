@@ -16,4 +16,11 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription
 
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils
+
 case class EoriNumberViewModel(eoriNumber: String)
+
+object EoriNumberViewModel {
+
+  def apply(value: String) = new EoriNumberViewModel(FormUtils.formatInput(value))
+}

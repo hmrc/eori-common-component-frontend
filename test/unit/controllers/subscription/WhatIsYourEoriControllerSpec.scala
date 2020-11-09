@@ -37,6 +37,7 @@ import util.builders.SubscriptionAmendCompanyDetailsFormBuilder._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 
 class WhatIsYourEoriControllerSpec
     extends SubscriptionFlowCreateModeTestSupport with BusinessDatesOrganisationTypeTables with BeforeAndAfterEach
@@ -308,17 +309,16 @@ class WhatIsYourEoriControllerSpec
 
       }
     }
-    "should reject lowercase gb in EORI number" in {
+    "should allow lowercase gb in EORI number" in {
       submitFormInCreateMode(Map("eori-number" -> "gb145678901234")) { result =>
-        status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(contentAsString(result))
-        page.getElementsText(
-          SubscriptionAmendCompanyDetailsPage.pageLevelErrorSummaryListXPath
-        ) shouldBe enterAGbEoriPage
-        page.getElementsText(
-          SubscriptionAmendCompanyDetailsPage.eoriNumberFieldLevelErrorXpath
-        ) shouldBe enterAGbEoriField
-
+        status(result) shouldBe SEE_OTHER
+        verify(mockSubscriptionDetailsHolderService).cacheEoriNumber(meq("GB145678901234"))(any())
+      }
+    }
+    "should allow spaces in EORI number" in {
+      submitFormInCreateMode(Map("eori-number" -> "GB 3534 5353 6545")) { result =>
+        status(result) shouldBe SEE_OTHER
+        verify(mockSubscriptionDetailsHolderService).cacheEoriNumber(meq("GB353453536545"))(any())
       }
     }
   }

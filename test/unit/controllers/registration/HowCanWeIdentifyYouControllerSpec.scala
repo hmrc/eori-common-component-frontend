@@ -17,10 +17,10 @@
 package unit.controllers.registration
 
 import common.pages.SubscribeHowCanWeIdentifyYouPage
-import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.scalatest.BeforeAndAfter
+import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.Mockito.{verify, when}
+import org.mockito.{ArgumentMatchers, Mockito}
+import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -49,7 +49,7 @@ import util.builders.{AuthActionMock, SessionBuilder}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAfter with AuthActionMock {
+class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector                    = mock[AuthConnector]
   private val mockAuthAction                       = authAction(mockAuthConnector)
@@ -68,6 +68,21 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
     howCanWeIdentifyYouView,
     mockSubscriptionDetailsHolderService
   )
+
+  override def beforeEach() {
+    super.beforeEach()
+
+    Mockito.reset(mockSubscriptionDetailsHolderService, mockSubscriptionFlowManager)
+
+    when(mockSubscriptionDetailsHolderService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
+      .thenReturn(Future.successful(()))
+    when(
+      mockSubscriptionFlowManager.stepInformation(ArgumentMatchers.eq(HowCanWeIdentifyYouSubscriptionFlowPage))(
+        any[Request[AnyContent]]
+      )
+    ).thenReturn(SubscriptionFlowInfo(3, 5, AddressDetailsSubscriptionFlowPage))
+
+  }
 
   "Loading the page" should {
 
@@ -182,31 +197,33 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
     }
 
     "redirect to the 'Enter your business address' page when a valid nino is provided" in {
-      when(mockSubscriptionDetailsHolderService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(()))
-      when(
-        mockSubscriptionFlowManager.stepInformation(ArgumentMatchers.eq(HowCanWeIdentifyYouSubscriptionFlowPage))(
-          any[Request[AnyContent]]
-        )
-      ).thenReturn(SubscriptionFlowInfo(3, 5, AddressDetailsSubscriptionFlowPage))
       submitForm(Map("nino" -> "AB123456C", "ninoOrUtrRadio" -> "nino")) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers("Location") shouldBe "/customs-enrolment-services/atar/subscribe/address"
       }
     }
 
+    "allow a NINO with spaces and lower case" in {
+      submitForm(Map("nino" -> "ab 12 34 56 c", "ninoOrUtrRadio" -> "nino")) { result =>
+        status(result) shouldBe SEE_OTHER
+        result.header.headers("Location") shouldBe "/customs-enrolment-services/atar/subscribe/address"
+      }
+      verify(mockSubscriptionDetailsHolderService).cacheCustomsId(meq(Nino("AB123456C")))(any())
+    }
+
     "redirect to the 'Enter your business address' page when a valid utr is provided" in {
-      when(mockSubscriptionDetailsHolderService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(()))
-      when(
-        mockSubscriptionFlowManager.stepInformation(ArgumentMatchers.eq(HowCanWeIdentifyYouSubscriptionFlowPage))(
-          any[Request[AnyContent]]
-        )
-      ).thenReturn(SubscriptionFlowInfo(3, 5, AddressDetailsSubscriptionFlowPage))
       submitForm(Map("utr" -> "2108834503", "ninoOrUtrRadio" -> "utr")) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers("Location") shouldBe "/customs-enrolment-services/atar/subscribe/address"
       }
+    }
+
+    "allow a UTR with spaces and lower case" in {
+      submitForm(Map("utr" -> "21 08 83 45 03k", "ninoOrUtrRadio" -> "utr")) { result =>
+        status(result) shouldBe SEE_OTHER
+        result.header.headers("Location") shouldBe "/customs-enrolment-services/atar/subscribe/address"
+      }
+      verify(mockSubscriptionDetailsHolderService).cacheCustomsId(meq(Utr("2108834503K")))(any())
     }
 
     "throw an IllegalArgument exception when Nino or Utr are not provided in the request" in {

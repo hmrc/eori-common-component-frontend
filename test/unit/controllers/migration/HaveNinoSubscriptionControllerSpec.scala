@@ -35,6 +35,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.Nino
 import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -103,10 +104,14 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
       )
         .thenReturn(Future.successful(()))
       mockSubscriptionFlow(nextPageFlowUrl)
-      submit(Journey.Subscribe, ValidNinoRequest) { result =>
+      submit(Journey.Subscribe, Map("have-nino" -> "true", "nino" -> "ab 12 34 56 c")) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
       }
+      verify(mockSubscriptionDetailsService).cacheCustomsIdAndNinoMatch(
+        meq(Some(Nino("AB123456C"))),
+        meq(Some(NinoMatchModel(Some(true), Some("AB123456C"))))
+      )(any[HeaderCarrier])
     }
 
     "cache None for CustomsId and redirect to Address Page of the flow" in {
