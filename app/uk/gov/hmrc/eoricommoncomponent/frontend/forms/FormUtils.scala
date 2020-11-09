@@ -33,6 +33,9 @@ object FormUtils {
 
   val messageKeyOptionInvalid = "cds.error.option.invalid"
 
+  def formatInput(value: String): String                      = value.replaceAll(" ", "").toUpperCase
+  def formatInput(maybeValue: Option[String]): Option[String] = maybeValue.map(value => formatInput(value))
+
   def mandatoryDate(
     onEmptyError: String = messageKeyMandatoryField,
     onInvalidDateError: String = messageKeyInvalidDateFormat

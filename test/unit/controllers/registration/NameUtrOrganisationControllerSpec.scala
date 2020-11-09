@@ -320,7 +320,7 @@ class NameUtrOrganisationControllerSpec
       }
     }
 
-    "allow UTR of length 11 with suffix of lowercase K" in {
+    "allow UTR with 11 digits plus spaces and a suffix of lowercase K" in {
       when(
         mockMatchingService.matchBusiness(any[Utr], any[Organisation], any[Option[LocalDate]], any())(
           any[Request[AnyContent]],
@@ -328,10 +328,11 @@ class NameUtrOrganisationControllerSpec
         )
       ).thenReturn(Future.successful(true))
 
-      val utr = "2108834503k"
-      submitForm(Map("name" -> "My company name", "utr" -> utr)) { result =>
+      val requestUtr  = "21 08 83 45 03k"
+      val expectedUtr = "2108834503K"
+      submitForm(Map("name" -> "My company name", "utr" -> requestUtr)) { result =>
         await(result)
-        verify(mockMatchingService).matchBusiness(meq(Utr(utr)), any[Organisation], meq(None), any())(
+        verify(mockMatchingService).matchBusiness(meq(Utr(expectedUtr)), any[Organisation], meq(None), any())(
           any[Request[AnyContent]],
           any[HeaderCarrier]
         )
