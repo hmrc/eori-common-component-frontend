@@ -340,9 +340,9 @@ cds.subscription.verify-email.progressive-disclosure.content	"Check your junk fo
 subscription.enter-email.heading	What is your email address?	Beth yw’ch cyfeiriad e-bost?	English message unchanged
 subscription.check-your-email.heading	Check  your email address	Gwirio’ch cyfeiriad e-bost	No Welsh translation found
 subscription.check-your-email.label	Email address	Cyfeiriad e-bost	No Welsh translation found
-subscription.check-your-email.confirm.label	We''ll send you a link to confirm your email address.	Byddwn yn anfon cysylltiad atoch i gadarnhau’ch cyfeiriad e-bost.	No Welsh translation found
+subscription.check-your-email.confirm.label	We will send you a link to confirm your email address.	Byddwn yn anfon cysylltiad atoch i gadarnhau’ch cyfeiriad e-bost.	No Welsh translation found
 subscription.check-your-email.confirm.question	Is this the email address you want to use?	Ai dyma’r cyfeiriad e-bost rydych am ei ddefnyddio?	No Welsh translation found
-subscription.check-your-email.yes	Yes, this is the email address I want to use	Iawn, dyma’r cyfeiriad e-bost rwyf am ei ddefnyddio	No Welsh translation found
+subscription.check-your-email.yes	Yes	Iawn	No Welsh translation found
 subscription.check-your-email.no	No, I need to change this email	Na, mae angen i mi newid yr e-bost hwn	No Welsh translation found
 enter-email-body-text	We''ll use this to send you:	Byddwn yn defnyddio hwn i anfon y canlynol atoch:	No Welsh translation found
 subscription.enter-email-hint-text	the result of your application to get access to CDS	canlyniad eich cais i gael mynediad at CDS	No Welsh translation found
