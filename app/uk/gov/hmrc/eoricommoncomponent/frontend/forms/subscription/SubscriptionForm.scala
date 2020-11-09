@@ -20,6 +20,7 @@ import org.joda.time.LocalDate
 import play.api.data.Forms._
 import play.api.data.validation._
 import play.api.data.{Form, Forms, Mapping}
+import uk.gov.hmrc.emailaddress.EmailAddress
 import uk.gov.hmrc.eoricommoncomponent.frontend.DateConverter
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.CompanyShortNameViewModel
