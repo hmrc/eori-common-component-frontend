@@ -63,7 +63,7 @@
 
             @inputText("first-name", firstNameLabel, '_autocomplete ->  "given-name")
             @inputText("last-name", lastNameLabel, '_autocomplete ->  "family-name")
-            @inputDate_di(updateFormErrors, "date-of-birth",
+            @inputDate_di(updateFormErrors, "date-of-birth", None,
                 '_label -> Html(messages("cds.matching.individual.what-is-your-date-of-birth")),
                 '_hintText -> Html(messages("cds.date-of-birth.hint"))
             )

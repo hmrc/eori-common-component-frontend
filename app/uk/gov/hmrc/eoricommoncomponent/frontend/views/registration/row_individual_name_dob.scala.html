@@ -50,7 +50,7 @@
             @inputText("given-name", messages("cds.matching.individual.given-name"), '_autocomplete ->  "given-name")
             @inputText("middle-name", messages("cds.matching.individual.middle-name.optional"), '_autocomplete ->  "additional-name")
             @inputText("family-name", messages("cds.matching.individual.family-name"), '_autocomplete ->  "family-name")
-            @inputDate_di(updateFormErrors, "date-of-birth",
+            @inputDate_di(updateFormErrors, "date-of-birth", None,
                 '_label -> Html(messages("cds.matching.individual.what-is-your-date-of-birth")),
                 '_hintText -> Html(messages("cds.date-of-birth.hint"))
                 )
