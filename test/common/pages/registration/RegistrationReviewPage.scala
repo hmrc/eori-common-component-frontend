@@ -20,72 +20,72 @@ import common.pages.WebPage
 
 class RegistrationReviewPage extends WebPage {
 
-  val BusinessNameXPath           = "//td[@id='review-tbl__business-name']"
+  val BusinessNameXPath           = "//dd[@id='review-tbl__business-name']"
   val BusinessNameReviewLinkXPath = "//a[@id='review-tbl__business-name_change']"
 
-  val BusinessNameAndAddressLabelXPath = "//th[@id='review-tbl__name-and-address_heading']"
+  val BusinessNameAndAddressLabelXPath = "//dt[@id='review-tbl__name-and-address_heading']"
 
-  val UKVatIdentificationNumberXpath      = "//td[@id='review-tbl__gb-vat_number']"
-  val UKVatIdentificationNumberXpathLabel = "//td[@id='review-tbl__gb-vat_number_heading']"
+  val UKVatIdentificationNumberXpath      = "//dd[@id='review-tbl__gb-vat-number']"
+  val UKVatIdentificationNumberXpathLabel = "//dt[@id='review-tbl__gb-vat-number_heading']"
 
-  val UKVatIdentificationPostcodeXpath = "//td[@id='review-tbl__gb-vat_postcode']"
+  val UKVatIdentificationPostcodeXpath = "//dd[@id='review-tbl__gb-vat-postcode']"
 
-  val UKVatIdentificationDateXpath = "//td[@id='review-tbl__gb-vat_date']"
+  val UKVatIdentificationDateXpath = "//dd[@id='review-tbl__gb-vat-date']"
 
-  val UKVatIdentificationNumbersReviewLinkXpath = "//a[@id='review-tbl__gb-vat_change']"
+  val UKVatIdentificationNumbersReviewLinkXpath = "//a[@id='review-tbl__gb-vat-number_change']"
 
-  val EUVatDetailsXpath = "//td[@id='review-tbl__eu-vat']"
+  val EUVatDetailsXpath = "//dd[@id='review-tbl__eu-vat']"
 
   val EUVatIdentificationNumbersReviewLinkXpath = "//a[@id='review-tbl__eu-vat_change']"
 
   val UkVatDetailsChangeLinkId = "review-tbl__gb-vat_change"
 
-  val ContactDetailsXPath = "//td[@id='review-tbl__contact']"
+  val ContactDetailsXPath = "//dd[@id='review-tbl__contact']"
 
   val ContactDetailsReviewLinkXPath = "//a[@id='review-tbl__contact_change']"
 
-  val CorrespondenceAddressXpath = "//td[@id='review-tbl__correspondence']"
+  val CorrespondenceAddressXpath = "//dd[@id='review-tbl__correspondence']"
 
-  val ThirdCountryIdNumbersXPath = "//td[@id='review-tbl__third-country-id']"
+  val ThirdCountryIdNumbersXPath = "//dd[@id='review-tbl__third-country-id']"
 
   val ThirdCountryIdNumbersReviewLinkXPath = "//a[@id='review-tbl__third-country-id_change']"
 
   val EUDisclosureConsentXPath = "//tr[@id='review-tbl__disclosure']/td[1]"
 
-  val ShortNameXPath = "//td[@id='review-tbl__short-name']"
+  val ShortNameXPath = "//dd[@id='review-tbl__short-name']"
 
   val ShortNameReviewLinkXPath = "//a[@id='review-tbl__short-name_change']"
 
-  val DateOfEstablishmentXPath = "//tr[@id='review-tbl__doe']/td[1]"
+  val DateOfEstablishmentXPath = "//dd[@id='review-tbl__doe']"
 
-  val DateOfEstablishmentLabelXPath = "//tr[@id='review-tbl__doe']/th"
+  val DateOfEstablishmentLabelXPath = "//dt[@id='review-tbl__doe_heading']"
 
-  val IndividualDateOfBirthXPath           = "//td[@id='review-tbl__date-of-birth']"
+  val IndividualDateOfBirthXPath           = "//dd[@id='review-tbl__date-of-birth']"
   val IndividualDateOfBirthReviewLinkXPath = "//a[@id='review-tbl__date-of-birth_change']"
 
-  val IndividualDateOfBirthLabelXPath = "//td[@id='review-tbl__date-of-birth_heading']"
+  val IndividualDateOfBirthLabelXPath = "//dt[@id='review-tbl__date-of-birth_heading']"
 
-  val PrincipalEconomicActivityXPath = "//td[@id='review-tbl__activity']"
+  val PrincipalEconomicActivityXPath = "//dd[@id='review-tbl__activity']"
 
-  val AddressXPath           = "//td[@id='review-tbl__address']"
+  val AddressXPath           = "//dd[@id='review-tbl__address']"
   val AddressReviewLinkXPath = "//a[@id='review-tbl__address_change']"
 
-  val SixLineAddressXPath           = "//td[@id='review-tbl__six_line_address']"
-  val SixLineAddressXPathLabel      = "//td[@id='review-tbl__six_line_address_heading']"
-  val SixLineAddressReviewLinkXPath = "//a[@id='review-tbl__six_line_address_change']"
+  val SixLineAddressXPath           = "//dd[@id='review-tbl__six-line-address']"
+  val SixLineAddressXPathLabel      = "//dt[@id='review-tbl__six-line-address_heading']"
+  val SixLineAddressReviewLinkXPath = "//a[@id='review-tbl__six-line-address_change']"
 
-  val AddressHeadingXPath = "//th[@id='review-tbl__address_heading']"
+  val AddressHeadingXPath = "//dt[@id='review-tbl__address_heading']"
 
-  val BusinessNameLabelXPath = "//th[@id='review-tbl__business-name_heading']"
+  val BusinessNameLabelXPath = "//dt[@id='review-tbl__business-name_heading']"
 
-  val UtrLabelXPath = "//*[@id='review-tbl__utr_heading']"
+  val UtrLabelXPath = "//*[@id='review-tbl__nino-or-utr_heading']"
 
-  val FullNameXPath           = "//td[@id='review-tbl__full-name']"
+  val FullNameXPath           = "//dd[@id='review-tbl__full-name']"
   val FullNameReviewLinkXPath = "//a[@id='review-tbl__full-name_change']"
 
   val organisationAddressValueXpath = "//*[@id='review-tbl__six_line_address']"
 
-  def changeAnswerText(heading: String): String = s"Change $heading"
+  def changeAnswerText(heading: String): String = s"ChangeChange $heading"
 
   override val title = "Check your answers"
 

@@ -15,19 +15,22 @@
  *@
 
 @import org.joda.time.LocalDate
-@import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
-@import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
+    @import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.{VatRegisteredUkController => VATNumberPage, _}
 @import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
-@import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, Eori, EtmpOrganisationType, LLP, Nino, Partnership, RegistrationDetails, RegistrationDetailsIndividual, Utr}
+@import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, Eori, Nino, RegistrationDetails, RegistrationDetailsIndividual, Utr}
 @import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.dateTimeFormat
-@import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactDetailsModel
 @import views.html.helper._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.frontend._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.helpers.summaryRow
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+@import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
+@import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
+@import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactDetailsModel
+@import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.VatEUDetailsModel
 
-@this(layout_di: layout)
+@this(layout_di: layout, summaryRow_di: summaryRow)
 @(cdsOrgType: Option[CdsOrganisationType],
 isPartnership: Boolean,
 registration: RegistrationDetails,
@@ -170,293 +173,188 @@ isUserIdentifiedByRegService: Boolean
     }
 }
 
+@addressViewModelHtml(ad: AddressViewModel) = {
+    @helpers.noMarginParagraph(ad.street)
+    @helpers.noMarginParagraph(ad.city)
+    @ad.postcode.map(helpers.noMarginParagraph(_))
+    @transformCountryCodeToOptionalLabel(Some(ad.countryCode)).map(helpers.noMarginParagraph(_))
+}
+@addressHtml(ad: Address) = {
+    @helpers.noMarginParagraph(ad.addressLine1)
+    @ad.addressLine2.map(helpers.noMarginParagraph(_))
+    @ad.addressLine3.map(helpers.noMarginParagraph(_))
+    @ad.addressLine4.map(helpers.noMarginParagraph(_))
+    @ad.postalCode.map(helpers.noMarginParagraph(_))
+    @transformCountryCodeToOptionalLabel(Some(ad.countryCode)).map(helpers.noMarginParagraph(_))
+}
+@contactDetailsHtml(details: ContactDetailsModel) = {
+    @helpers.noMarginParagraph(details.fullName)
+    @helpers.noMarginParagraph(details.emailAddress)
+    @helpers.noMarginParagraph(details.telephone)
+    @optionalFaxNumberWithPrefix(details.fax).map(helpers.noMarginParagraph(_))
+    @details.street.map(helpers.noMarginParagraph(_))
+    @details.city.map(helpers.noMarginParagraph(_))
+    @details.postcode.map(helpers.noMarginParagraph(_))
+    @transformCountryCodeToOptionalLabel(details.countryCode).map(helpers.noMarginParagraph(_))
+}
+@euVatDetails(details: Seq[VatEUDetailsModel]) = {
+    @if(details.nonEmpty) {
+        @details.map { vatModel =>
+            @helpers.noMarginParagraph(s"${vatModel.vatNumber} - ${euCountry(vatModel.vatCountry)}")
+        }
+    }else {
+        @messages("cds.not-entered.label")
+    }
+}
 @layout_di(messages("cds.form.check-answers")) {
     <div class="column-two-thirds">
 
-        <h1>@messages("cds.form.check-answers")</h1>
+        <header>
+            <h1 class="heading-large">@messages("cds.form.check-answers")</h1>
+        </header>
 
-        <table id="review-tbl" class="form-group">
-            <tr>
-                <td colspan="3">
-                    <a id="review-tbl__start-again" href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.CacheController.clearCache(service, journey)" class="float--right">@messages("cds.form.start-again")</a>
-                </td>
-            </tr>
-
+        <dl id="review-tbl" class="govuk-check-your-answers cya-questions-short">
             @if(isIndividual || isSoleTrader) {
-            <tr id="full_name">
-                <th id="review-tbl__full-name_heading" class="bold">@messages("subscription.check-your-details.full-name.label")</th>
-                <td id="review-tbl__full-name" @if(isUserIdentifiedByRegService) {colspan="2"}>
-                    @individualName
-                </td>
-                @if(!isUserIdentifiedByRegService) {
-                <td>
-                    <a id="review-tbl__full-name_change" href="@RowIndividualNameDateOfBirthController.reviewForm(orgType, service, journey)">
-                        @messages("cds.form.change") <span class="visually-hidden"> @messages("subscription.check-your-details.full-name.label")</span>
-                    </a>
-                </td>
-                }
-            </tr>
+                @summaryRow_di(
+                    "full-name",
+                    messages("subscription.check-your-details.full-name.label"),
+                    Html.apply(individualName),
+                    if(!isUserIdentifiedByRegService) Some(RowIndividualNameDateOfBirthController.reviewForm(orgType, service, journey)) else None,
+                    messages("subscription.check-your-details.full-name.label")
+                )
             }
-
             @if(isIndividual || isSoleTrader) {
-                <tr id="date-of-birth">
-                    <th id="review-tbl__date-of-birth_heading" class="bold">@messages("subscription.check-your-details.date-of-birth.label")</th>
-                    <td id="review-tbl__date-of-birth" @if(isUserIdentifiedByRegService) {colspan="2"}>
-                        @formattedIndividualDateOfBirth
-                    </td>
-                    @if(!isUserIdentifiedByRegService) {
-                    <td>
-                        <a id="review-tbl__date-of-birth_change" href="@RowIndividualNameDateOfBirthController.reviewForm(orgType, service, journey)">
-                            @messages("cds.form.change") <span class="visually-hidden"> @messages("subscription.check-your-details.date-of-birth.label")</span>
-                        </a>
-                    </td>
-                    }
-                </tr>
-
+                @summaryRow_di(
+                    "date-of-birth",
+                    messages("subscription.check-your-details.date-of-birth.label"),
+                    Html.apply(formattedIndividualDateOfBirth.getOrElse("")),
+                    if(!isUserIdentifiedByRegService) Some(RowIndividualNameDateOfBirthController.reviewForm(orgType, service, journey)) else None,
+                    messages("subscription.check-your-details.date-of-birth.label")
+                )
             }
-
             @if(!isIndividual && !isSoleTrader) {
-                <tr id="business_name">
-                    <th id="review-tbl__business-name_heading" class="bold">@orgNameLabel</th>
-                    <td id="review-tbl__business-name" @if(isUserIdentifiedByRegService) {colspan="2"}>
-                        @orgName
-                    </td>
-                    @if(!isUserIdentifiedByRegService) {
-                        <td>
-                            <a id="review-tbl__business-name_change" href="@WhatIsYourOrgNameController.showForm(isInReviewMode = true, organisationType = orgType, service, journey)">
-                                @messages("cds.form.change") <span class="visually-hidden"> @orgNameLabel</span>
-                            </a>
-                        </td>
-                    }
-                </tr>
-
+                @summaryRow_di(
+                    "business-name",
+                    orgNameLabel,
+                    Html.apply(orgName),
+                    if(!isUserIdentifiedByRegService) Some(WhatIsYourOrgNameController.showForm(isInReviewMode = true, organisationType = orgType, service, journey)) else None,
+                    orgNameLabel
+                )
             }
-
             @if(isRowOrganisation && !isUserIdentifiedByRegService) {
-            <tr id="have_utr">
-                <th id="review-tbl__have-utr_heading" class="bold">@messages("cds.matching.organisation-utr.label")</th>
-                <td id="review-tbl__have-utr" colspan="2">
-                    @messages("cds.not-entered.label")
-                </td>
-            </tr>
+                @summaryRow_di(
+                    "have-utr",
+                    messages("cds.matching.organisation-utr.label"),
+                    Html.apply(messages("cds.not-entered.label")),
+                    None
+                )
             }
-
             @registration.customsId.map { x =>
-                <tr id="nino_or_utr">
-                    <th id="review-tbl__utr_heading" class="bold">
-                        @ninoOrUtrLabel
-                    </th>
-                    <td id="review-tbl__utr" colspan="2">
-                        @x.id
-                    </td>
-                </tr>
+                @summaryRow_di(
+                    "nino-or-utr",
+                    ninoOrUtrLabel,
+                    Html.apply(x.id),
+                    None
+                )
             }
-
             @if(isUserIdentifiedByRegService) {
                 @subscription.addressDetails.map { address =>
-                    <tr>
-                        <th id="review-tbl__address_heading" class="bold">@businessDetailsLabel</th>
-                        <td id="review-tbl__address" colspan="2">
-                            @address.street.appendBr
-                            @address.city.appendBr
-                            @address.postcode.map(_.appendBr)
-                            @transformCountryCodeToOptionalLabel(Some(address.countryCode))
-                        </td>
-                    </tr>
+                    @summaryRow_di(
+                        "address",
+                        businessDetailsLabel,
+                        addressViewModelHtml(address),
+                        None
+                    )
                 }.getOrElse {
-                    <tr>
-                        <th id="review-tbl__six_line_address_heading_reg" class="bold">@businessDetailsLabel</th>
-                        <td id="review-tbl__six_line_address_reg">
-                            @registration.address.addressLine1.appendBr
-                            @registration.address.addressLine2.map(_.appendBr)
-                            @registration.address.addressLine3.map(_.appendBr)
-                            @registration.address.addressLine4.map(_.appendBr)
-                            @registration.address.postalCode.map(_.appendBr)
-                            @transformCountryCodeToOptionalLabel(Some(registration.address.countryCode))
-                         </td>
-                    </tr>
-                            }
-                } else {
-                <tr>
-                    <th id="review-tbl__six_line_address_heading" class="bold">@businessDetailsLabel</th>
-                    <td id="review-tbl__six_line_address">
-                        @registration.address.addressLine1.appendBr
-                        @registration.address.addressLine2.map(_.appendBr)
-                        @registration.address.addressLine3.map(_.appendBr)
-                        @registration.address.addressLine4.map(_.appendBr)
-                        @registration.address.postalCode.map(_.appendBr)
-                        @transformCountryCodeToOptionalLabel(Some(registration.address.countryCode))
-                    </td>
-                    <td>
-                        <a id="review-tbl__six_line_address_change" href="@SixLineAddressController.showForm(isInReviewMode = true, organisationType = orgType, service, journey)">
-                            @messages("cds.form.change") <span class="visually-hidden"> @businessDetailsLabel</span>
-                        </a>
-                    </td>
-                </tr>
+                    @summaryRow_di(
+                        "six-line-address",
+                        businessDetailsLabel,
+                        addressHtml(registration.address),
+                        None
+                    )
+                }
+            } else {
+                @summaryRow_di(
+                    "six-line-address",
+                    businessDetailsLabel,
+                    addressHtml(registration.address),
+                    Some(SixLineAddressController.showForm(isInReviewMode = true, organisationType = orgType, service, journey)),
+                    businessDetailsLabel
+                )
             }
-
             @subscription.dateEstablished.map { de =>
-                <tr id="review-tbl__doe">
-                    <th class="bold">
-                        @getDateOfEstablishmentLabel
-                    </th>
-                    <td>@formatDate(de)</td>
-                    <td>
-                        <a href="@DateOfEstablishmentController.reviewForm(service, journey)">
-                            @messages("cds.form.change") <span class="visually-hidden"> @getDateOfEstablishmentLabel</span>
-                        </a>
-                    </td>
-                </tr>
+                @summaryRow_di(
+                    "doe",
+                    getDateOfEstablishmentLabel,
+                    Html.apply(formatDate(de)),
+                    Some(DateOfEstablishmentController.reviewForm(service, journey)),
+                    getDateOfEstablishmentLabel
+                )
             }
-
-            @subscription.contactDetails.map { address =>
-                <tr>
-                    <th id="review-tbl__contact_heading" class="bold">@messages("cds.form.customs-contact")</th>
-                    <td id="review-tbl__contact">
-                        @address.fullName <br/>
-                        @address.emailAddress.appendBr
-                        @address.telephone.appendBr
-                        @optionalFaxNumberWithPrefix(address.fax).map(_.appendBr)
-                        @address.street.map(_.appendBr)
-                        @address.city.map(_.appendBr)
-                        @address.postcode.map(_.appendBr)
-                        @transformCountryCodeToOptionalLabel(address.countryCode).map(_.appendBr)
-                    </td>
-                    <td>
-                        <a id="review-tbl__contact_change" href="@ContactDetailsController.reviewForm(service, journey)">
-                            @messages("cds.form.change") <span class="visually-hidden"> @messages("cds.form.customs-contact")</span>
-                        </a>
-                    </td>
-                </tr>
+            @subscription.contactDetails.map { contactDetails =>
+                @summaryRow_di(
+                    "contact",
+                    messages("cds.form.customs-contact"),
+                    contactDetailsHtml(contactDetails),
+                    Some(ContactDetailsController.reviewForm(service, journey)),
+                    messages("cds.form.customs-contact")
+                )
             }
-
             @subscription.businessShortName.map { n =>
-                <tr>
-                    <th id="review-tbl__short-name_heading" class="bold">@messages("cds.form.shortened-name")</th>
-                    <td id="review-tbl__short-name">
-                    @n.shortName.getOrElse(messages("cds.not-entered.label"))
-                    </td>
-                    <td>
-                        <a id="review-tbl__short-name_change" href="@BusinessShortNameController.reviewForm(service, journey)">
-                            @messages("cds.form.change") <span class="visually-hidden"> @messages("cds.form.shortened-name")</span>
-                        </a>
-                    </td>
-                </tr>
+                @summaryRow_di(
+                    "short-name",
+                    messages("cds.form.shortened-name"),
+                    Html.apply(n.shortName.getOrElse(messages("cds.not-entered.label"))),
+                    Some(BusinessShortNameController.reviewForm(service, journey)),
+                    messages("cds.form.shortened-name")
+                )
             }
-
             @if(!isIndividual) {
-                <tr>
-                    <th id="review-tbl__gb-vat_number_heading" class="bold">@messages("cds.form.gb-vat-number")</th>
-                    <td id="review-tbl__gb-vat_number">
-
-                    @if(subscription.ukVatDetails.isEmpty) {
-                        @messages("cds.not-entered.label")
-                    } else {
-                        @subscription.ukVatDetails.map { vat =>
-                            @vat.number <br/>
-                        }
-                    }
-                    </td>
-                    <td>
-                        <a id="review-tbl__gb-vat_change" href="@VATNumberPage.reviewForm(service, journey)">
-                            @messages("cds.form.change") <span class="visually-hidden"> @messages("cds.form.gb-vat-number")</span>
-                        </a>
-                    </td>
-                </tr>
-            }
-
-            @if(!isIndividual) {
-                <tr>
-                    <th id="review-tbl__gb-vat_postcode_heading" class="bold">@messages("cds.form.gb-vat-postcode")</th>
-                    <td id="review-tbl__gb-vat_postcode" colspan="2">
-
-                    @if(subscription.ukVatDetails.isEmpty) {
-                        @messages("cds.not-entered.label")
-                    } else {
-                        @subscription.ukVatDetails.map { vat =>
-                            @vat.postcode
-                        }
-                    }
-                    </td>
-                </tr>
-            }
-
-            @if(!isIndividual) {
-                <tr>
-                    <th id="review-tbl__gb-vat_date_heading" class="bold">@messages("cds.form.gb-vat-date")</th>
-                    <td id="review-tbl__gb-vat_date" colspan="2">
-
-                    @if(subscription.ukVatDetails.isEmpty) {
-                        @messages("cds.not-entered.label")
-                    } else {
-                        @subscription.ukVatDetails.map { vat =>
-                            @formatDate(vat.effectiveDate)
-                        }
-                    }
-                    </td>
-                </tr>
-            }
-
-            @if(!isIndividual) {
-                <tr>
-                    <th id="review-tbl__eu-vat_heading" class="bold">@messages("cds.form.eu-vat-numbers")</th>
-                    <td id="review-tbl__eu-vat">
-
-                        @if(subscription.vatEUDetails.nonEmpty) {
-                            @subscription.vatEUDetails.map { vatModel =>
-                            @vatModel.vatNumber - @euCountry(vatModel.vatCountry)<br> }
-                        }else {
-                            @messages("cds.not-entered.label")
-                        }
-
-                    </td>
-
-                    <td>
-                        @if(subscription.vatEUDetails.nonEmpty) {
-                        <a id="review-tbl__eu-vat_change" href="@VatDetailsEuConfirmController.reviewForm(service, journey)">
-                            @messages("cds.form.change") <span class="visually-hidden"> @messages("cds.form.eu-vat-numbers")</span>
-                        </a>
-                        } else {
-                        <a id="review-tbl__eu-vat_change" href="@VatRegisteredEuController.reviewForm(service, journey)">
-                            @messages("cds.form.change") <span class="visually-hidden"> @messages("cds.form.eu-vat-numbers")</span>
-                        </a>
-                        }
-
-                    </td>
-                </tr>
-            }
-
-            @if(!isIndividual) {
+                @summaryRow_di(
+                    "gb-vat-number",
+                    messages("cds.form.gb-vat-number"),
+                    Html.apply(subscription.ukVatDetails.map(_.number).getOrElse(messages("cds.not-entered.label"))),
+                    Some(VATNumberPage.reviewForm(service, journey)),
+                    messages("cds.form.gb-vat-number")
+                )
+                @summaryRow_di(
+                    "gb-vat-postcode",
+                    messages("cds.form.gb-vat-postcode"),
+                    Html.apply(subscription.ukVatDetails.map(_.postcode).getOrElse(messages("cds.not-entered.label"))),
+                    None
+                )
+                @summaryRow_di(
+                    "gb-vat-date",
+                    messages("cds.form.gb-vat-date"),
+                    Html.apply(subscription.ukVatDetails.map(vat => formatDate(vat.effectiveDate)).getOrElse(messages("cds.not-entered.label"))),
+                    None
+                )
+                @summaryRow_di(
+                    "eu-vat",
+                    messages("cds.form.eu-vat-numbers"),
+                    euVatDetails(subscription.vatEUDetails),
+                    if(subscription.vatEUDetails.nonEmpty) Some(VatDetailsEuConfirmController.reviewForm(service, journey)) else Some(VatRegisteredEuController.reviewForm(service, journey)),
+                    messages("cds.form.eu-vat-numbers")
+                )
                 @subscription.sicCode.map { sic =>
-                    <tr>
-                        <th id="review-tbl__activity_heading" class="bold">@messages("cds.form.sic-code")</th>
-                        <td id="review-tbl__activity">@sic</td>
-                        <td>
-                            <a id="review-tbl__activity_change" href="@SicCodeController.submit(isInReviewMode = true, service, journey)">
-                                @messages("cds.form.change") <span class="visually-hidden"> @messages("cds.form.sic-code")</span>
-                            </a>
-                        </td>
-                    </tr>
+                    @summaryRow_di(
+                        "activity",
+                        messages("cds.form.sic-code"),
+                        Html.apply(sic),
+                        Some(SicCodeController.submit(isInReviewMode = true, service, journey)),
+                        messages("cds.form.sic-code")
+                    )
                 }
             }
+            @summaryRow_di(
+                "disclosure",
+                disclosureLabel,
+                Html.apply(if(personalDataDisclosureConsent) eoriCheckerConsentYes else messages("cds.eori-checker-consent.no")),
+                Some(DisclosePersonalDetailsConsentController.reviewForm(service, journey)),
+                disclosureLabel
+            )
 
-            <tr id="review-tbl__disclosure">
-                <th id="review-tbl__disclosure_heading" class="bold">@disclosureLabel</th>
-                <td>@{
-                    if(personalDataDisclosureConsent) {
-                        eoriCheckerConsentYes
-                    } else {
-                        messages("cds.eori-checker-consent.no")
-                    }
-                }
-                </td>
-                <td>
-                <a id="review-tbl__disclosure_change" href="@DisclosePersonalDetailsConsentController.reviewForm(service, journey)">
-                    @messages("cds.form.change") <span class="visually-hidden"> @disclosureLabel</span>
-                </a>
-                </td>
-            </tr>
-        </table>
+        </dl>
 
         <p id="disclaimer-content">@messages("cds.form.disclaimer")</p>
 

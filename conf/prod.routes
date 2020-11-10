@@ -74,8 +74,6 @@ POST        /customs-enrolment-services/:service/:journey/chooseid              
 GET         /customs-enrolment-services/:service/:journey/chooseid/review                             @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.HowCanWeIdentifyYouController.reviewForm(service: Service , journey: Journey.Value)
 POST        /customs-enrolment-services/:service/:journey/chooseid/review                             @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.HowCanWeIdentifyYouController.submit(isInReviewMode: Boolean = true, service: Service, journey: Journey.Value)
 
-GET         /customs-enrolment-services/:service/:journey/start-again                                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.CacheController.clearCache(service: Service, journey: Journey.Value)
-
 GET         /customs-enrolment-services/:service/:journey/matching/what-is-your-email                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.WhatIsYourEmailController.createForm(service: Service, journey: Journey.Value)
 POST        /customs-enrolment-services/:service/:journey/matching/what-is-your-email                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.WhatIsYourEmailController.submit(service: Service, journey: Journey.Value)
 
