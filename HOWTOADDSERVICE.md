@@ -8,18 +8,19 @@ The following values are required to add the configuration for a new service.
 | -------------           | ----------------------- | 
 | `enrolment`             | The enrolment key for the new service.  Details for creating a new service enrolment key can be found [here](https://github.com/hmrc/service-enrolment-config). | 
 | `shortName`             | This is the abbreviation of the service. | 
-| `callBack`              | ECC will re-direct the user to this url to once they have the requested enrolment (see below). | 
+| `callBack`              | ECC will re-direct the user to this url once they have the requested enrolment (see below). | 
 | `friendlyName`          | This is the "long" name of the service that is used on confirmation pages and emails. | 
 | `friendlyNameWelsh`     | (Optional) Welsh translation of the long name.| 
 | `feedBack`              | (Optional) If provided ECC will re-direct the user at the end of the journey (see below). | 
 
-## Note on `callBack` and `feedBack` urls ##
-At the end of a successful subscription journey, where the user is immediately enrolled to the service, the user will be shown a "Continue"
+## `callBack` url ##
+At the end of a successful subscription journey, if the user has immediate access to the service, they will be shown a "Continue"
 button which will re-direct them to the `callBack` url.  This url is typically the "start" page of the service.
 
-In all other situations, where the user is not immediately enrolled to the service, ECC will provide the user with a "Continue" button
-if a `feedBack` url has been configured.   ECC will append a `status` parameter to the `feedBack` url to provide some additional information
-to the service.  Valid `status` values are as follows - 
+## `feedBack` url ##
+Where the user does not have immediate access to the service, if a `feedBack` url has been configured ECC will provide the user with a "More about..." link.
+
+ECC will append a `status` parameter to the `feedBack` url to provide some additional information to the service.  Valid `status` values are as follows - 
 
 | Status                    | Description             | 
 | --------------------------| ----------------------- |  
