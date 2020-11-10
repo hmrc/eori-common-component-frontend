@@ -55,6 +55,7 @@ class AllTheCountriesSpec extends WordSpec with Matchers with GuiceOneAppPerSuit
     "BH",
     "BI",
     "BJ",
+    "BL",
     "BM",
     "BN",
     "BO",
