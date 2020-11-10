@@ -90,7 +90,7 @@ class WhatIsYourEoriController @Inject() (
     service: Service,
     journey: Journey.Value
   )(implicit request: Request[AnyContent]) = {
-    val form = eoriNumber.map(EoriNumberViewModel).fold(eoriNumberForm)(eoriNumberForm.fill)
+    val form = eoriNumber.map(EoriNumberViewModel.apply).fold(eoriNumberForm)(eoriNumberForm.fill)
     Ok(whatIsYourEoriView(form, isInReviewMode, UserLocation.isRow(requestSessionData), service, journey))
   }
 

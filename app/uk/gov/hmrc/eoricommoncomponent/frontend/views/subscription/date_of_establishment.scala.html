@@ -20,6 +20,7 @@
 @import views.html.helper._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+@import uk.gov.hmrc.eoricommoncomponent.frontend.DateConverter
 
 
 @this(inputDate_di: inputDate, layout_di: layout)
@@ -32,39 +33,35 @@
     else "cds.subscription.business.date-established.label"
 }
 
+@introHtml = {
+    @if(orgType != LLP && orgType != Partnership && !isRestOfWorldJourney){
+      <p id="date-of-establishment-label">@Html(messages(introText))</p>
+    }
+}
+
 @headerAndTitle = @{
     if (orgType == Partnership || orgType == LLP) "cds.subscription.partnership.date-of-establishment.title-and-heading" else "cds.subscription.date-of-establishment.title-and-heading"
 }
 
-@label = @{
-    if (isRestOfWorldJourney) messages("cds.subscription.row.date-established.label")
-    else ""
+@updateFormErrors =@{
+    dateForm.copy(errors = DateConverter.updateDateOfEstablishmentErrors(dateForm.errors))
 }
 
 @layout_di(messages(headerAndTitle), form = Some(dateForm)) {
     <div class="column-two-thirds">
         <a href="javascript:history.back()" id="back" class="link-back js-visible">@messages("cds.navigation.back")</a>
     
-        @helpers.errorSummary(dateForm,
-            focusOverrides = Map("date-of-establishment" -> "date-of-establishment\\.day"))
-    
-        <h1 class="heading-large" id="page-heading">@messages(headerAndTitle)</h1>
+        @helpers.errorSummary(updateFormErrors,
+            focusOverrides = Map("date-of-establishment" -> "date-of-establishment.day"))
 
         @helper.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController.submit(isInReviewMode, service, journey), 'id -> "date-of-birth-form") {
 
         @CSRF.formField
 
-        @if(orgType != LLP && orgType != Partnership && !isRestOfWorldJourney){
-            <p id="date-of-establishment-label">@Html(messages(introText))</p>
-        }
-
-
-        <div class="form-group">
-        @inputDate_di(formItem = dateForm, fieldName = "date-of-establishment",
-            '_label -> label,
+        @inputDate_di(formItem = updateFormErrors, fieldName = "date-of-establishment", Some(introHtml),
+            '_isLegendH1 -> true,
+            '_label -> messages(headerAndTitle),
             '_hintText -> Html(messages("cds.date-established.hint")))
-        </div>
-
 
         <input class="button" type="submit" value='@uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper.continueButtonText(isInReviewMode)'>
         }

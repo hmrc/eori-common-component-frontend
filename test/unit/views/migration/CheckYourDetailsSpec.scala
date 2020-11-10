@@ -124,10 +124,6 @@ class CheckYourDetailsSpec extends ViewSpec {
         .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
       page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
       page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
-      page.getElementById("review-tbl__start-again").text mustBe "Start again"
-      page.body.getElementById("review-tbl__start-again").attr(
-        "href"
-      ) mustBe "/customs-enrolment-services/atar/subscribe/start-again"
     }
 
     "display the review page for 'Sole Trader' with 'UTR'" in {
@@ -161,10 +157,6 @@ class CheckYourDetailsSpec extends ViewSpec {
         .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
       page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
       page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
-      page.getElementById("review-tbl__start-again").text mustBe "Start again"
-      page.body.getElementById("review-tbl__start-again").attr(
-        "href"
-      ) mustBe "/customs-enrolment-services/atar/subscribe/start-again"
     }
 
     "not display the address country code in the UK case" in {
@@ -211,10 +203,6 @@ class CheckYourDetailsSpec extends ViewSpec {
         .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
       page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
       page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
-      page.getElementById("review-tbl__start-again").text mustBe "Start again"
-      page.body.getElementById("review-tbl__start-again").attr(
-        "href"
-      ) mustBe "/customs-enrolment-services/atar/subscribe/start-again"
     }
 
     "display the review page for 'Sole Trader' when 'No UTR' is entered" in {
@@ -257,10 +245,6 @@ class CheckYourDetailsSpec extends ViewSpec {
         .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
       page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
       page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
-      page.getElementById("review-tbl__start-again").text mustBe "Start again"
-      page.body.getElementById("review-tbl__start-again").attr(
-        "href"
-      ) mustBe "/customs-enrolment-services/atar/subscribe/start-again"
     }
 
     "display address label for the following Company organisation types" in {

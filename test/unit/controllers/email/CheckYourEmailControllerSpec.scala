@@ -100,7 +100,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     "display title as 'Check your email address'" in {
       showForm(journey = Journey.Subscribe) { result =>
         val page = CdsPage(contentAsString(result))
-        page.title() should startWith("Check your email address")
+        page.title() should startWith("Is this the email address you want to use?")
       }
     }
   }

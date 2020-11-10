@@ -63,7 +63,7 @@ cds.subscription.outcomes.rejected.heading=TRANSLATE The [SERVICE] application f
 cds.subscription.outcomes.in-processing.title=TRANSLATE The [SERVICE] application is being processed
 cds.subscription.outcomes.in-processing.heading=TRANSLATE We are processing the registration for [USER]
 
-enter-email-body-text=TRANSLATE We’ll use this to send you the result of your application.
+enter-email-body-text=TRANSLATE We will use this to send you the result of your application.
 cds.subscription.verify-email.para2=TRANSLATE For your security the link in the email will expire after 72 hours.
 
 cds.email-confirmed.para.get-access=TRANSLATE You can continue with your application.
@@ -97,3 +97,19 @@ confirm-business-details.individual.yes-wrong-address=TRANSLATE No, I need to ch
 confirm-business-details.individual.no=TRANSLATE No, I need to enter all my details again
 
 cds.error.field.hint=Gwall:
+
+date.day.error=TRANSLATE Enter a day between 1 and 31
+date.month.error=TRANSLATE Enter a month between 1 and 12
+date.year.error=TRANSLATE Enter a year between [YEAR] and [YEAR]
+
+dob.error.empty-date=TRANSLATE Enter your date of birth
+dob.error.future-date=TRANSLATE Date of birth must be in the past
+dob.error.invalid-date=TRANSLATE Date of birth must be a real date
+
+doe.error.empty-date=TRANSLATE Enter your date of establishment
+doe.error.future-date=TRANSLATE Date of establishment must be in the past
+doe.error.invalid-date=TRANSLATE Date of establishment must be a real date
+
+vat.error.empty-date=TRANSLATE Enter your effective VAT date
+vat.error.future-date=TRANSLATE Effective VAT date must be in the past
+vat.error.invalid-date=TRANSLATE Effective VAT date must be a real date

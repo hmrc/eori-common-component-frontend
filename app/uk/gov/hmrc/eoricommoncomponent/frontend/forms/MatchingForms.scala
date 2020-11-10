@@ -20,13 +20,14 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation._
 import play.api.i18n.Messages
+import uk.gov.hmrc.domain.Nino
+import uk.gov.hmrc.eoricommoncomponent.frontend.DateConverter
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.{JourneyType, UserLocation}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.{mandatoryDateTodayOrBefore, _}
-import uk.gov.hmrc.domain.Nino
-import uk.gov.voa.play.form.ConditionalMappings._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation._
+import uk.gov.voa.play.form.ConditionalMappings._
 
 object MatchingForms {
 
@@ -201,10 +202,10 @@ object MatchingForms {
     def validLength: String => Boolean = s => s.length == 10 || (s.endsWith("k") || s.endsWith("K") && s.length == 11)
 
     Constraint({
-      case s if s.isEmpty                => Invalid(ValidationError("cds.matching-error.business-details.utr.isEmpty"))
-      case s if !validLength(s)          => Invalid(ValidationError("cds.matching-error.utr.length"))
-      case s if !validUtrFormat(Some(s)) => Invalid(ValidationError("cds.matching-error.utr.invalid"))
-      case _                             => Valid
+      case s if formatInput(s).isEmpty                => Invalid(ValidationError("cds.matching-error.business-details.utr.isEmpty"))
+      case s if !validLength(formatInput(s))          => Invalid(ValidationError("cds.matching-error.utr.length"))
+      case s if !validUtrFormat(Some(formatInput(s))) => Invalid(ValidationError("cds.matching-error.utr.invalid"))
+      case _                                          => Valid
     })
   }
 
@@ -237,8 +238,10 @@ object MatchingForms {
       "first-name" -> text.verifying(validFirstName),
       "last-name"  -> text.verifying(validLastName),
       "date-of-birth" -> mandatoryDateTodayOrBefore(
-        onEmptyError = "cds.registration-model.form-error.date-of-birth.empty",
-        onInvalidDateError = "cds.registration-model.form-error.date-of-birth"
+        onEmptyError = "dob.error.empty-date",
+        onInvalidDateError = "dob.error.invalid-date",
+        onDateInFutureError = "dob.error.future-date",
+        minYear = DateConverter.earliestYearDateOfBirth
       ),
       "nino" -> text.verifying(validNino)
     )(NinoMatch.apply)(NinoMatch.unapply)
@@ -250,8 +253,10 @@ object MatchingForms {
       "middle-name" -> optional(text.verifying(validMiddleName)),
       "last-name"   -> text.verifying(validLastName),
       "date-of-birth" -> mandatoryDateTodayOrBefore(
-        onEmptyError = "cds.registration-model.form-error.date-of-birth.empty",
-        onInvalidDateError = "cds.registration-model.form-error.date-of-birth"
+        onEmptyError = "dob.error.empty-date",
+        onInvalidDateError = "dob.error.invalid-date",
+        onDateInFutureError = "dob.error.future-date",
+        minYear = DateConverter.earliestYearDateOfBirth
       )
     )(NameDobMatchModel.apply)(NameDobMatchModel.unapply)
   )
@@ -302,11 +307,11 @@ object MatchingForms {
 
   private def validNino: Constraint[String] =
     Constraint({
-      case s if s.isEmpty                    => Invalid(ValidationError("cds.subscription.nino.error.empty"))
-      case s if s.length != 9                => Invalid(ValidationError("cds.subscription.nino.error.wrong-length"))
-      case s if !s.matches("[a-zA-Z0-9]*")   => Invalid(ValidationError("cds.matching.nino.invalid"))
-      case s if !Nino.isValid(s.toUpperCase) => Invalid(ValidationError("cds.matching.nino.invalid"))
-      case _                                 => Valid
+      case s if formatInput(s).isEmpty                  => Invalid(ValidationError("cds.subscription.nino.error.empty"))
+      case s if formatInput(s).length != 9              => Invalid(ValidationError("cds.subscription.nino.error.wrong-length"))
+      case s if !formatInput(s).matches("[a-zA-Z0-9]*") => Invalid(ValidationError("cds.matching.nino.invalid"))
+      case s if !Nino.isValid(formatInput(s))           => Invalid(ValidationError("cds.matching.nino.invalid"))
+      case _                                            => Valid
     })
 
   val subscriptionNinoForm: Form[IdMatchModel] = Form(
@@ -400,8 +405,10 @@ object MatchingForms {
         "middle-name" -> optional(text.verifying(validMiddleName)),
         "family-name" -> text.verifying(validFamilyName),
         "date-of-birth" -> mandatoryDateTodayOrBefore(
-          onEmptyError = "cds.registration-model.form-error.date-of-birth.empty",
-          onInvalidDateError = "cds.registration-model.form-error.date-of-birth"
+          onEmptyError = "dob.error.empty-date",
+          onInvalidDateError = "dob.error.invalid-date",
+          onDateInFutureError = "dob.error.future-date",
+          minYear = DateConverter.earliestYearDateOfBirth
         )
       )(IndividualNameAndDateOfBirth.apply)(IndividualNameAndDateOfBirth.unapply)
     )

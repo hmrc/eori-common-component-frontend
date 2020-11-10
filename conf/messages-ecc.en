@@ -63,7 +63,7 @@ cds.subscription.outcomes.rejected.heading=The {0} application for {1} has been 
 cds.subscription.outcomes.in-processing.title=The {0} application is being processed
 cds.subscription.outcomes.in-processing.heading=We are processing the registration for {0}
 
-enter-email-body-text=We’ll use this to send you the result of your application.
+enter-email-body-text=We will use this to send you the result of your application.
 cds.subscription.verify-email.para2=For your security the link in the email will expire after 72 hours.
 
 cds.email-confirmed.para.get-access=You can continue with your application.
@@ -97,3 +97,19 @@ confirm-business-details.individual.yes-wrong-address=No, I need to change my ad
 confirm-business-details.individual.no=No, I need to enter all my details again
 
 cds.error.field.hint=Error:
+
+date.day.error=Enter a day between 1 and 31
+date.month.error=Enter a month between 1 and 12
+date.year.error=Enter a year between {0} and {1}
+
+dob.error.empty-date=Enter your date of birth
+dob.error.future-date=Date of birth must be in the past
+dob.error.invalid-date=Date of birth must be a real date
+
+doe.error.empty-date=Enter your date of establishment
+doe.error.future-date=Date of establishment must be in the past
+doe.error.invalid-date=Date of establishment must be a real date
+
+vat.error.empty-date=Enter your effective VAT date
+vat.error.future-date=Effective VAT date must be in the past
+vat.error.invalid-date=Effective VAT date must be a real date

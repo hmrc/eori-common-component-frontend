@@ -32,14 +32,17 @@
             <p class="heading-large" id="active-from">
                 @messages("subscription.subscription-results.active-from") @processedDate
             </p>
-            <p id="eori-number" class="heading-medium">@messages("cds.reg.existing.outcomes.success.eori.number")<br/>@eori</p>
+            <p class="heading-medium mb-0">@messages("cds.reg.existing.outcomes.success.eori.number")</p>
+            <p id="eori-number" class="heading-medium mt-0">@eori</p>
         </div>
 
         <div id='additional-information'>
             <h3 class="heading-medium">@messages("cds.subscription.outcomes.steps.next")</h3>
             <p>@messages("cds.subscription.outcomes.success.will-send-email", longName)</p>
-            <p>
-                <a id="download-eori" href="/customs-enrolment-services/subscribe/download/pdf">@messages("cds.reg.existing.outcomes.success.download-eori.21kb")</a><br>
+            <p class="mb-0">
+                <a id="download-eori" href="/customs-enrolment-services/subscribe/download/pdf">@messages("cds.reg.existing.outcomes.success.download-eori.21kb")</a>
+            </p>
+            <p class="mt-0">
                 <a id="download-eori-text" href="/customs-enrolment-services/subscribe/download/text">@messages("cds.reg.existing.outcomes.success.download-eori-textfile")</a>
             </p>
         </div>

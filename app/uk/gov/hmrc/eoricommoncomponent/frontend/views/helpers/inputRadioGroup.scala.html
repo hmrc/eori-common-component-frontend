@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@(field: Field, radioOptions: Seq[(String, String)], hints: Map[String, String],  args: (Symbol, Any)*)(implicit messages: Messages, formInstance: Option[Form[_]] = None)
+@(field: Field, radioOptions: Seq[(String, String)], hints: Map[String, String], hintHtml: Option[Html],  args: (Symbol, Any)*)(implicit messages: Messages, formInstance: Option[Form[_]] = None)
 
 @import play.api.i18n._
 @import views.html.helper._
@@ -51,6 +51,9 @@
         @if(elements.args.get('_hintText).isDefined) {
             <p class="form-hint">@elements.args.get('_hintText)</p>
         }
+
+        @hintHtml
+
         @if(elements.hasErrors) {
             @elements.errors.map { error => <span class="error-message"><span class="visually-hidden">@messages("cds.error.field.hint")</span> @messages(error)</span> }
             </div>

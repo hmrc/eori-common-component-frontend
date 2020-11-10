@@ -366,9 +366,9 @@ cds.subscription.verify-email.progressive-disclosure.content=Check your junk fol
 subscription.enter-email.heading=What is your email address?
 subscription.check-your-email.heading=Check  your email address
 subscription.check-your-email.label=Email address
-subscription.check-your-email.confirm.label=We''ll send you a link to confirm your email address.
+subscription.check-your-email.confirm.label=We will send you a link to confirm your email address.
 subscription.check-your-email.confirm.question=Is this the email address you want to use?
-subscription.check-your-email.yes=Yes, this is the email address I want to use
+subscription.check-your-email.yes=Yes
 subscription.check-your-email.no=No, I need to change this email
 
 enter-email-body-text=We''ll use this to send you:

@@ -38,10 +38,10 @@ class CheckYourEmailSpec extends ViewSpec {
 
   "What Is Your Email Address page" should {
     "display correct title" in {
-      doc.title must startWith("Check your email address")
+      doc.title must startWith("Is this the email address you want to use?")
     }
     "have the correct h1 text" in {
-      doc.body.getElementsByTag("h1").text() mustBe "Check your email address"
+      doc.body.getElementsByTag("h1").text() mustBe "Is this the email address you want to use?"
     }
     "have the correct class on the h1" in {
       doc.body.getElementsByTag("h1").hasClass("heading-large") mustBe true

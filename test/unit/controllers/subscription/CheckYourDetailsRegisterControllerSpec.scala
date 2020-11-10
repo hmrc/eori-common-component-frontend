@@ -446,11 +446,6 @@ class CheckYourDetailsRegisterControllerSpec
       val page: CdsPage = CdsPage(contentAsString(result))
       page.title should startWith("Check your answers")
 
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.startAgainLinkXPath) shouldBe "Start again"
-      page.getElementsHref(
-        SubscriptionExistingDetailsReviewPage.startAgainLinkXPath
-      ) shouldBe "/customs-enrolment-services/atar/register/start-again"
-
       page.getElementsText(SubscriptionExistingDetailsReviewPage.BusinessNameLabelXpath) shouldBe "Organisation name"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.BusinessNameValueXpath) shouldBe "orgName"
 
@@ -592,11 +587,6 @@ class CheckYourDetailsRegisterControllerSpec
     showForm(userSelectedOrgType = LimitedLiabilityPartnership) { result =>
       val page: CdsPage = CdsPage(contentAsString(result))
       page.title should startWith("Check your answers")
-
-      page.getElementsText(SubscriptionExistingDetailsReviewPage.startAgainLinkXPath) shouldBe "Start again"
-      page.getElementsHref(
-        SubscriptionExistingDetailsReviewPage.startAgainLinkXPath
-      ) shouldBe "/customs-enrolment-services/atar/register/start-again"
 
       page.getElementsText(
         SubscriptionExistingDetailsReviewPage.BusinessNameLabelXpath
@@ -767,7 +757,7 @@ class CheckYourDetailsRegisterControllerSpec
     showForm(userSelectedOrgType = CdsOrganisationType.ThirdCountryOrganisation) { result =>
       val page: CdsPage = CdsPage(contentAsString(result))
 
-      page.elementIsPresent("//*[@id='have_utr']") shouldBe true
+      page.elementIsPresent("//*[@id='review-tbl__have-utr']") shouldBe true
       page.getElementsText("//*[@id='review-tbl__have-utr']") shouldBe NotEntered
     }
   }

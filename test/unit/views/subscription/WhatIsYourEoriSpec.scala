@@ -41,7 +41,7 @@ class WhatIsYourEoriSpec extends ViewSpec {
     SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> "GB"))
 
   val formWithTooLongError: Form[EoriNumberViewModel] =
-    SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> "this eori is too long"))
+    SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> "this eori is too long when you ignore spaces"))
 
   val formWithEmptyFieldError: Form[EoriNumberViewModel] =
     SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> ""))
