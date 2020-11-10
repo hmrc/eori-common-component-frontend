@@ -169,7 +169,7 @@ class RegisterWithEoriAndIdController @Inject() (
       for {
         name          <- cachedName
         processedDate <- cache.sub01Outcome.map(_.processedDate)
-      } yield Ok(sub01OutcomeRejectedView(Some(name), processedDate))
+      } yield Ok(sub01OutcomeRejectedView(Some(name), processedDate, service))
   }
 
   def pending(service: Service, date: String): Action[AnyContent] =
@@ -180,7 +180,7 @@ class RegisterWithEoriAndIdController @Inject() (
         )
         name <- cache.subscriptionDetails.map(_.name)
         _    <- cache.remove
-      } yield Ok(subscriptionOutcomePendingView(eori, date, name))
+      } yield Ok(subscriptionOutcomePendingView(eori, date, name, service))
     }
 
   def fail(service: Service, date: String): Action[AnyContent] =
@@ -197,7 +197,7 @@ class RegisterWithEoriAndIdController @Inject() (
         name <- cache.subscriptionDetails.map(_.name)
         date <- cache.registerWithEoriAndIdResponse.map(_.responseCommon.processingDate)
         _    <- cache.remove
-      } yield Ok(reg06EoriAlreadyLinked(name, date))
+      } yield Ok(reg06EoriAlreadyLinked(name, date, service))
     }
 
   def rejectedPreviously(service: Service): Action[AnyContent] =
@@ -206,7 +206,7 @@ class RegisterWithEoriAndIdController @Inject() (
         name <- cache.subscriptionDetails.map(_.name)
         date <- cache.registerWithEoriAndIdResponse.map(r => dateTimeFormat.print(r.responseCommon.processingDate))
         _    <- cache.remove
-      } yield Ok(sub01OutcomeRejectedView(Some(name), date))
+      } yield Ok(sub01OutcomeRejectedView(Some(name), date, service))
     }
 
   private def handleErrorCodes(service: Service, statusText: Option[String])(implicit

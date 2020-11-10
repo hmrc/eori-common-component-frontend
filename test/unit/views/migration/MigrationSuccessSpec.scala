@@ -33,7 +33,7 @@ class MigrationSuccessSpec extends ViewSpec {
 
     "have a feedback 'continue' button" in {
       val link = doc().body.getElementById("feedback-continue")
-      link.text mustBe "Continue"
+      link.text mustBe "More about Advance Tariff Rulings"
       link.attr("href") mustBe "/test-atar/feedback?status=Processing"
     }
 

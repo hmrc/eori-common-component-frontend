@@ -18,8 +18,8 @@ package unit.views.subscription
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.subscription_outcome_pending
 import util.ViewSpec
 
@@ -36,27 +36,40 @@ class SubscriptionOutcomePendingSpec extends ViewSpec {
   "'Subscription Pending' Page" should {
 
     "display correct heading" in {
-      doc.body.getElementsByTag("h1").text() must startWith(s"We are processing the registration for $orgName")
+      doc().body.getElementsByTag("h1").text() must startWith(s"We are processing the registration for $orgName")
     }
     "have the correct class on the h1" in {
-      doc.body.getElementsByTag("h1").hasClass("heading-xlarge") mustBe true
+      doc().body.getElementsByTag("h1").hasClass("heading-xlarge") mustBe true
     }
     "have the correct class on the message" in {
-      doc.body.getElementById("active-from").hasClass("heading-medium") mustBe true
-      doc.body.getElementById("eori-number").hasClass("heading-medium") mustBe true
+      doc().body.getElementById("active-from").hasClass("heading-medium") mustBe true
+      doc().body.getElementById("eori-number").hasClass("heading-medium") mustBe true
     }
     "have the correct processing date and text" in {
-      doc.body.getElementById("active-from").text mustBe s"Application received by HMRC on $processedDate"
+      doc().body.getElementById("active-from").text mustBe s"Application received by HMRC on $processedDate"
     }
     "have the correct eori number" in {
-      doc.body.getElementById("eori-number").text mustBe s"EORI number: $eoriNumber"
+      doc().body.getElementById("eori-number").text mustBe s"EORI number: $eoriNumber"
     }
     "have the correct 'what happens next' text" in {
-      doc.body
+      doc().body
         .getElementById("what-happens-next")
         .text mustBe "What happens next We are processing your registration to ATaR. This can take up to 5 working days. You will need to sign back in to see the result of your registration."
     }
+
+    "have a feedback 'continue' button" in {
+      val link = doc().body.getElementById("feedback-continue")
+      link.text mustBe "More about Advance Tariff Rulings"
+      link.attr("href") mustBe "/test-atar/feedback?status=Processing"
+    }
+
+    "have a no feedback 'continue' button when config missing" in {
+      val link = doc(atarService.copy(feedbackUrl = None)).body.getElementById("feedback-continue")
+      link mustBe null
+    }
   }
 
-  lazy val doc: Document = Jsoup.parse(contentAsString(view(eoriNumber, processedDate, orgName)))
+  def doc(service: Service = atarService): Document =
+    Jsoup.parse(contentAsString(view(eoriNumber, processedDate, orgName, service)))
+
 }

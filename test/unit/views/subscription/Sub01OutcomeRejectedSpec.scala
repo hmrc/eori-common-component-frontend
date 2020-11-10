@@ -20,6 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.sub01_outcome_rejected
 import util.ViewSpec
 
@@ -35,21 +36,32 @@ class Sub01OutcomeRejectedSpec extends ViewSpec {
   "'Sub01 Outcome Rejected' Page with name" should {
 
     "display correct title" in {
-      docWithName.title() must startWith("The ATaR application has been unsuccessful")
+      docWithName().title() must startWith("The ATaR application has been unsuccessful")
     }
     "display correct heading" in {
-      docWithName.body.getElementsByTag("h1").text() must startWith(
+      docWithName().body.getElementsByTag("h1").text() must startWith(
         s"The ATaR application for $orgName has been unsuccessful"
       )
     }
     "have the correct class on the h1" in {
-      docWithName.body.getElementsByTag("h1").hasClass("heading-xlarge") mustBe true
+      docWithName().body.getElementsByTag("h1").hasClass("heading-xlarge") mustBe true
     }
     "have the correct class on the message" in {
-      docWithName.body.getElementById("processed-date").hasClass("heading-medium") mustBe true
+      docWithName().body.getElementById("processed-date").hasClass("heading-medium") mustBe true
     }
     "have the correct processing date and text" in {
-      docWithName.body.getElementById("processed-date").text mustBe s"Application received by HMRC on $processedDate"
+      docWithName().body.getElementById("processed-date").text mustBe s"Application received by HMRC on $processedDate"
+    }
+
+    "have a feedback 'continue' button" in {
+      val link = docWithName().body.getElementById("feedback-continue")
+      link.text mustBe "More about Advance Tariff Rulings"
+      link.attr("href") mustBe "/test-atar/feedback?status=Failed"
+    }
+
+    "have a no feedback 'continue' button when config missing" in {
+      val link = docWithName(atarService.copy(feedbackUrl = None)).body.getElementById("feedback-continue")
+      link mustBe null
     }
 
   }
@@ -57,19 +69,37 @@ class Sub01OutcomeRejectedSpec extends ViewSpec {
   "'Sub01 Outcome Rejected' Page without name" should {
 
     "display correct heading" in {
-      docWithoutName.body.getElementsByTag("h1").text() must startWith("The ATaR application has been unsuccessful")
+      docWithoutName().body.getElementsByTag("h1").text() must startWith("The ATaR application has been unsuccessful")
     }
     "have the correct class on the h1" in {
-      docWithoutName.body.getElementsByTag("h1").hasClass("heading-xlarge") mustBe true
+      docWithoutName().body.getElementsByTag("h1").hasClass("heading-xlarge") mustBe true
     }
     "have the correct class on the message" in {
-      docWithoutName.body.getElementById("processed-date").hasClass("heading-medium") mustBe true
+      docWithoutName().body.getElementById("processed-date").hasClass("heading-medium") mustBe true
     }
     "have the correct processing date and text" in {
-      docWithoutName.body.getElementById("processed-date").text mustBe s"Application received by HMRC on $processedDate"
+      docWithoutName().body.getElementById(
+        "processed-date"
+      ).text mustBe s"Application received by HMRC on $processedDate"
     }
+
+    "have a feedback 'continue' button" in {
+      val link = docWithoutName().body.getElementById("feedback-continue")
+      link.text mustBe "More about Advance Tariff Rulings"
+      link.attr("href") mustBe "/test-atar/feedback?status=Failed"
+    }
+
+    "have a no feedback 'continue' button when config missing" in {
+      val link = docWithoutName(atarService.copy(feedbackUrl = None)).body.getElementById("feedback-continue")
+      link mustBe null
+    }
+
   }
 
-  lazy val docWithName: Document    = Jsoup.parse(contentAsString(view(Some(orgName), processedDate)))
-  lazy val docWithoutName: Document = Jsoup.parse(contentAsString(view(None, processedDate)))
+  def docWithName(service: Service = atarService): Document =
+    Jsoup.parse(contentAsString(view(Some(orgName), processedDate, service)))
+
+  def docWithoutName(service: Service = atarService): Document =
+    Jsoup.parse(contentAsString(view(None, processedDate, service)))
+
 }

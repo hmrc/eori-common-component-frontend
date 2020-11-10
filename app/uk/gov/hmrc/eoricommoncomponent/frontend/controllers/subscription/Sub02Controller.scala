@@ -124,7 +124,7 @@ class Sub02Controller @Inject() (
       for {
         sub02Outcome <- sessionCache.sub02Outcome
         _            <- sessionCache.remove
-      } yield Ok(sub01OutcomeRejected(Some(sub02Outcome.fullName), sub02Outcome.processedDate))
+      } yield Ok(sub01OutcomeRejected(Some(sub02Outcome.fullName), sub02Outcome.processedDate, service))
   }
 
   def eoriAlreadyExists(service: Service): Action[AnyContent] =

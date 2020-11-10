@@ -113,3 +113,5 @@ doe.error.invalid-date=Date of establishment must be a real date
 vat.error.empty-date=Enter your effective VAT date
 vat.error.future-date=Effective VAT date must be in the past
 vat.error.invalid-date=Effective VAT date must be a real date
+
+cds.feedback.continue=More about {0}

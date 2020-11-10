@@ -197,7 +197,7 @@ class ConfirmContactDetailsController @Inject() (
       for {
         name          <- cdsFrontendDataCache.registrationDetails.map(_.name)
         processedDate <- cdsFrontendDataCache.sub01Outcome.map(_.processedDate)
-      } yield Ok(sub01OutcomeRejected(Some(name), processedDate))
+      } yield Ok(sub01OutcomeRejected(Some(name), processedDate, service))
   }
 
   private def determineRoute(
