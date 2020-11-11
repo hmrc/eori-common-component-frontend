@@ -22,6 +22,7 @@ import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.dateTimeFormat
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.reg06_eori_already_linked
 import util.ViewSpec
 
@@ -37,35 +38,46 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
 
   "GYE EORI Already Linked outcome page" should {
     "have the correct page title" in {
-      doc.title() must startWith(expectedPageTitle)
+      doc().title() must startWith(expectedPageTitle)
     }
 
     "have the right heading" in {
-      doc.getElementById("page-heading").text() mustBe pageHeadingExpectedText
+      doc().getElementById("page-heading").text() mustBe pageHeadingExpectedText
     }
 
     "have the right processed date" in {
-      doc.getElementById("processed-date").text() mustBe processDateExpectedText
+      doc().getElementById("processed-date").text() mustBe processDateExpectedText
     }
 
     "have the right vat registered text" in {
-      doc.getElementById("use-cds-heading").text() mustBe "To use ATaR"
-      doc
+      doc().getElementById("use-cds-heading").text() mustBe "To use ATaR"
+      doc()
         .getElementById("use-cds-para")
         .text() mustBe s"You need to sign in with the Government Gateway $name used to get access to ATaR."
     }
 
     "have the feedback link" in {
-      doc
+      doc()
         .getElementById("what-you-think")
         .text() must include("What did you think of this service?")
-      doc.getElementById("feedback_link").attributes().get("href") must endWith(
+      doc().getElementById("feedback_link").attributes().get("href") must endWith(
         "/feedback/eori-common-component-subscribe-atar"
       )
+    }
+
+    "have a feedback 'continue' button" in {
+      val link = doc().body.getElementById("feedback-continue")
+      link.text mustBe "More about Advance Tariff Rulings"
+      link.attr("href") mustBe "/test-atar/feedback?status=Failed"
+    }
+
+    "have a no feedback 'continue' button when config missing" in {
+      val link = doc(atarService.copy(feedbackUrl = None)).body.getElementById("feedback-continue")
+      link mustBe null
     }
   }
 
   implicit val request = withFakeCSRF(FakeRequest.apply("GET", "/atar/subscribe"))
 
-  lazy val doc: Document = Jsoup.parse(contentAsString(view(name, processedDate)))
+  def doc(service: Service = atarService): Document = Jsoup.parse(contentAsString(view(name, processedDate, service)))
 }

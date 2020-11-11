@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,18 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-@import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName.service
-@import uk.gov.hmrc.eoricommoncomponent.frontend.views.JourneyExtractor.journey
+package uk.gov.hmrc.eoricommoncomponent.frontend.models
 
-@this(appConfig: AppConfig)
+object JourneyStatus extends Enumeration {
 
-@()(implicit messages: Messages, request: Request[_])
-
-<div id="what-you-think" class="mt-2">
-    <p>
-     <a id="feedback_link" href="@{appConfig.feedbackUrl(service, journey)}" rel="noopener noreferrer">@messages("cds.subscription.outcomes.feedback")</a>
-    </p>
-</div>
+  val Failed, Processing = Value
+}

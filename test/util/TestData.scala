@@ -20,5 +20,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 trait TestData {
 
-  val atarService: Service = Service("atar", "HMRC-ATAR-ORG", "ATaR", "", "", "")
+  val atarService: Service =
+    Service("atar", "HMRC-ATAR-ORG", "ATaR", "/test-atar/callback", "", "", Some("/test-atar/feedback"))
+
 }

@@ -15,6 +15,8 @@
  *@
 
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.models.JourneyStatus
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName.service
 
 
 @this(layout_di: layout, feedback_di: helpers.feedback)
@@ -46,6 +48,8 @@
         <p>@messages("cds.subscription.outcomes.success.extra.information")</p>
         <p>@messages("cds.subscription.outcomes.success.extra.information2")</p>
     </div>
+
+    @helpers.feedbackBackContinue(service, JourneyStatus.Processing)
 
     @feedback_di()
 

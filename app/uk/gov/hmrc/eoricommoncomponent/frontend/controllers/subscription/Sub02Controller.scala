@@ -113,10 +113,10 @@ class Sub02Controller @Inject() (
     implicit request => _: LoggedInUserWithEnrolments =>
       if (UserLocation.isRow(requestSessionData))
         subscriptionDetailsService.cachedCustomsId flatMap {
-          case Some(_) => renderPageWithName
-          case _       => renderPageWithNameRow
+          case Some(_) => renderPageWithName(service)
+          case _       => renderPageWithNameRow(service)
         }
-      else renderPageWithName
+      else renderPageWithName(service)
   }
 
   def rejected(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
@@ -124,7 +124,7 @@ class Sub02Controller @Inject() (
       for {
         sub02Outcome <- sessionCache.sub02Outcome
         _            <- sessionCache.remove
-      } yield Ok(sub01OutcomeRejected(Some(sub02Outcome.fullName), sub02Outcome.processedDate))
+      } yield Ok(sub01OutcomeRejected(Some(sub02Outcome.fullName), sub02Outcome.processedDate, service))
   }
 
   def eoriAlreadyExists(service: Service): Action[AnyContent] =
@@ -166,7 +166,7 @@ class Sub02Controller @Inject() (
       } yield Ok(sub01OutcomeView(Some(sub02Outcome.fullName), sub02Outcome.processedDate))
   }
 
-  private def renderPageWithName(implicit hc: HeaderCarrier, request: Request[_]) =
+  private def renderPageWithName(service: Service)(implicit hc: HeaderCarrier, request: Request[_]) =
     for {
       name <- sessionCache.registerWithEoriAndIdResponse.map(
         _.responseDetail.flatMap(_.responseData.map(_.trader.fullName))
@@ -180,15 +180,16 @@ class Sub02Controller @Inject() (
       migrationSuccessView(
         sub02Outcome.eori,
         name.getOrElse(throw new IllegalStateException("Name not populated from reg06")),
-        sub02Outcome.processedDate
+        sub02Outcome.processedDate,
+        service
       )
     )
 
-  private def renderPageWithNameRow(implicit hc: HeaderCarrier, request: Request[_]) =
+  private def renderPageWithNameRow(service: Service)(implicit hc: HeaderCarrier, request: Request[_]) =
     for {
       sub02Outcome <- sessionCache.sub02Outcome
       _            <- sessionCache.remove
       _            <- sessionCache.saveSub02Outcome(sub02Outcome)
-    } yield Ok(migrationSuccessView(sub02Outcome.eori, sub02Outcome.fullName, sub02Outcome.processedDate))
+    } yield Ok(migrationSuccessView(sub02Outcome.eori, sub02Outcome.fullName, sub02Outcome.processedDate, service))
 
 }

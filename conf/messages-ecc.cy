@@ -113,3 +113,8 @@ doe.error.invalid-date=TRANSLATE Date of establishment must be a real date
 vat.error.empty-date=TRANSLATE Enter your effective VAT date
 vat.error.future-date=TRANSLATE Effective VAT date must be in the past
 vat.error.invalid-date=TRANSLATE Effective VAT date must be a real date
+
+cds.feedback.continue=TRANSLATE More about [SERVICE]
+
+cds.subscription.sign-in-with-different-details.para1=TRANSLATE [USER] has already registered for [SERVICE] with a different Government Gateway.
+cds.subscription.sign-in-with-different-details.para1-noname=TRANSLATE You have already registered for [SERVICE] with a different Government Gateway.

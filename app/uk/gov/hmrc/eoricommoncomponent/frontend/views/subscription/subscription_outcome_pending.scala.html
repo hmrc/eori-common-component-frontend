@@ -16,10 +16,12 @@
 
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.models.JourneyStatus
+@import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 
 @this(layout_di: layout, feedback_di: helpers.feedback)
-@(eori: String, processedDate: String, name: String)(implicit messages: Messages, request: Request[_])
+@(eori: String, processedDate: String, name: String, service: Service)(implicit messages: Messages, request: Request[_])
 
 @layout_di(messages("cds.subscription.outcomes.in-processing.title", shortName)) {
     <div class="column-two-thirds">
@@ -35,6 +37,8 @@
                 @messages("cds.subscription.outcomes.inprocessing.we-are-processing", shortName)
             </p>
         </div>
+
+        @helpers.feedbackBackContinue(service, JourneyStatus.Processing)
         
         @feedback_di()
 

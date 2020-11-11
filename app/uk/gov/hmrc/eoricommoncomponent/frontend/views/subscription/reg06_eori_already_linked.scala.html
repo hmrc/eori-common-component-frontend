@@ -18,10 +18,12 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.dateTimeFormat
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.models.JourneyStatus
+@import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 
 @this(layout_di: layout, feedback_di: helpers.feedback)
-@(orgName: String, processedDate: DateTime)(implicit messages: Messages, request: Request[_])
+@(orgName: String, processedDate: DateTime, service: Service)(implicit messages: Messages, request: Request[_])
 @layout_di(messages("cds.reg06.outcome.eori-already-linked.title", shortName)) {
     <div class="column-two-thirds">
         <div class="govuk-box-highlight">
@@ -31,6 +33,8 @@
 
         <h2 class="heading-small" id="use-cds-heading">@messages("cds.subscription.outcomes.eori-already-linked.use-cds-heading", shortName)</h2>
         <p id="use-cds-para">@messages("cds.subscription.outcomes.eori-already-linked.use-cds-para", orgName, shortName)</p>
+
+        @helpers.feedbackBackContinue(service, JourneyStatus.Failed)
 
         @feedback_di()
     </div>

@@ -65,12 +65,12 @@ class SignInWithDifferentDetailsControllerSpec
       controller.form(atarService, Journey.Register)
     )
 
-    "display para1 as 'Test Org Name has already registered for CDS with a different Government Gateway.'" in {
+    "display para1 as 'Test Org Name has already registered for Advance Tariff Rulings with a different Government Gateway.'" in {
       showCreateForm() { result =>
         val page = CdsPage(contentAsString(result))
         page.getElementsText(
           "//*[@id='para1']"
-        ) shouldBe "Test Org Name has already registered for CDS with a different Government Gateway."
+        ) shouldBe "Test Org Name has already registered for Advance Tariff Rulings with a different Government Gateway."
       }
     }
   }
@@ -79,7 +79,11 @@ class SignInWithDifferentDetailsControllerSpec
     test: Future[Result] => Any
   ) {
     withAuthorisedUser(userId, mockAuthConnector)
-    test(controller.form(atarService, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(
+      controller.form(atarService, journey).apply(
+        SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe", userId)
+      )
+    )
   }
 
   private def mockFunctionWithRegistrationDetails(registrationDetails: RegistrationDetails) {

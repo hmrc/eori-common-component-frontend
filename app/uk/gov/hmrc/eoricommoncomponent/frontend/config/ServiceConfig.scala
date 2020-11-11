@@ -37,7 +37,8 @@ class ServiceConfig(configuration: Configuration) {
         shortName = configuration.get[String](s"services-config.$service.shortName"),
         callBack = configuration.get[String](s"services-config.$service.callBack"),
         friendlyName = englishFriendlyName,
-        friendlyNameWelsh = welshFriendlyName
+        friendlyNameWelsh = welshFriendlyName,
+        feedbackUrl = configuration.getOptional[String](s"services-config.$service.feedBack").filter(_.nonEmpty)
       )
     }
 

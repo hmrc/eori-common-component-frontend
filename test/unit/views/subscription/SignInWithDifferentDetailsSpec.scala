@@ -18,14 +18,13 @@ package unit.views.subscription
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.sign_in_with_different_details
 import util.ViewSpec
 
 class SignInWithDifferentDetailsSpec extends ViewSpec {
 
-  implicit val request = withFakeCSRF(FakeRequest())
+  implicit val request = withFakeCSRF(fakeAtarSubscribeRequest)
 
   private val view = instanceOf[sign_in_with_different_details]
 
@@ -48,7 +47,7 @@ class SignInWithDifferentDetailsSpec extends ViewSpec {
     "have the correct explanation text" in {
       docWithName.body
         .getElementById("para1")
-        .text mustBe s"$orgName has already registered for CDS with a different Government Gateway."
+        .text mustBe s"$orgName has already registered for Advance Tariff Rulings with a different Government Gateway."
       docWithName.body
         .getElementById("para2")
         .text mustBe "You need to sign in with the Government Gateway you used to register."
@@ -77,7 +76,7 @@ class SignInWithDifferentDetailsSpec extends ViewSpec {
     "have the correct explanation text" in {
       docWithoutName.body
         .getElementById("para1")
-        .text mustBe s"You have already registered for CDS with a different Government Gateway."
+        .text mustBe s"You have already registered for Advance Tariff Rulings with a different Government Gateway."
       docWithoutName.body
         .getElementById("para2")
         .text mustBe "You need to sign in with the Government Gateway you used to register."

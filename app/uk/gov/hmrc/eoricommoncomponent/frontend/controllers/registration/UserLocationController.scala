@@ -211,7 +211,7 @@ class UserLocationController @Inject() (
     implicit request => _: LoggedInUserWithEnrolments =>
       sessionCache.sub01Outcome
         .map(_.processedDate)
-        .map(processedDate => Ok(sub01OutcomeRejected(None, processedDate)))
+        .map(processedDate => Ok(sub01OutcomeRejected(None, processedDate, service)))
   }
 
 }

@@ -82,7 +82,8 @@ class ServiceConfigSpec extends ControllerSpec {
         "ATaR",
         "/advance-tariff-application",
         "Advance Tariff Rulings",
-        "Dyfarniadau Tariffau Uwch (ATaR)"
+        "Dyfarniadau Tariffau Uwch (ATaR)",
+        None
       )
     }
 
