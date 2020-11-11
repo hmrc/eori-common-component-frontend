@@ -9,7 +9,7 @@ The following values are required to add the configuration for a new service.
 | `enrolment`             | The enrolment key for the new service.  Details for creating a new service enrolment key can be found [here](https://github.com/hmrc/service-enrolment-config). | 
 | `shortName`             | This is the abbreviation of the service. | 
 | `callBack`              | ECC will re-direct the user to this url once they have the requested enrolment (see below). | 
-| `accessibility`         | The url of the accessibility statement of the calling service.  This url should be available to users who _are not enrolled_ to the service. | 
+| `accessibility`         | The url of the accessibility statement of the calling service.  This url should be available to users who ***are not enrolled*** to the service. | 
 | `friendlyName`          | This is the "long" name of the service that is used on confirmation pages and emails. | 
 | `friendlyNameWelsh`     | (Optional) Welsh translation of the long name.| 
 | `feedBack`              | (Optional) If provided ECC will re-direct the user at the end of the journey (see below). | 
