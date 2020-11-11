@@ -19,14 +19,18 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.HaveUtrSubscriptionController
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+@import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 
 
-@this(layout_di: layout)
+@this(layout_di: layout, appConfig: AppConfig)
 @(matchOrgIdForm: Form[UtrMatchModel], organisationType: String, service: Service, journey: Journey.Value)(implicit request: Request[_], messages: Messages)
 
 
 @inputText(field: String, label: String, args: (Symbol, Any)*) = {
-    @defining(Seq('_label -> Html(messages(label))) ++ args) { args =>
+    @defining(Seq(
+        '_label -> Html(messages(label)),
+        '_plainLabel -> true
+        ) ++ args) { args =>
         @helpers.input(matchOrgIdForm(field), args: _*)
     }
 }
@@ -49,6 +53,15 @@
     organisationType match {
         case CdsOrganisationType.SoleTraderId | CdsOrganisationType.IndividualId => messages("cds.matching.row-sole-trader-individual.utr.paragraph")
         case _ => messages("cds.matching.row-organisation.utr.paragraph")
+    }
+}
+@utrlink = {
+    <a href="@appConfig.findLostUtr" target="_blank">@messages("cds.matching.row-lost-urt.hint.link")</a>
+}
+@hint = @{
+    organisationType match {
+        case CdsOrganisationType.SoleTraderId | CdsOrganisationType.IndividualId => Html(messages("cds.matching.row-sole-trader-individual.utr.hint", utrlink))
+        case _ => Html(messages("cds.matching.row-organisation.utr.hint", utrlink))
     }
 }
 
@@ -76,8 +89,9 @@
         otherHtmlInLegend = Html("<p id='intro'>" + intro + "</p>")
         ) {
         @inputText(
-        "utr",
-        utrLabel
+            "utr",
+            utrLabel,
+            '_hintText -> hint
         )
         }
     </div>

@@ -56,6 +56,12 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
         .getElementById("intro")
         .text mustBe "You will have a UTR number if your organisation pays corporation tax in the UK."
     }
+
+    "have correct hint" in {
+      companyDoc.body
+        .getElementById("utr-hint")
+        .text must include("It will be on tax returns and other letters about Corporation Tax.")
+    }
   }
 
   "Fresh Subscription Have Utr Page for Individual" should {
@@ -74,6 +80,11 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
       individualDoc.body
         .getElementById("intro")
         .text mustBe "You will have a self assessment UTR number if you registered for Self Assessment in the UK."
+    }
+    "have correct hint" in {
+      individualDoc.body
+        .getElementById("utr-hint")
+        .text must include("It will be on tax returns and other letters about Self Assessment.")
     }
   }
 

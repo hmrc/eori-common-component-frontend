@@ -26,7 +26,9 @@
 @import views.html.helper._
 
 @inputText(field: String, label: String, args: (Symbol, Any)*) = {
-    @defining(Seq('_label -> Html(messages(label))) ++ args) { args =>
+    @defining(Seq('_label -> Html(messages(label)),
+        '_plainLabel -> true
+    ) ++ args) { args =>
         @helpers.input(matchNinoIdForm(field), args: _*)
     }
 }
