@@ -25,28 +25,33 @@
 @this(layout_di: layout, appConfig: AppConfig)
 @(service: Service)(implicit messages: Messages, request: Request[_])
 
-@link(text: String, url: String) = {
-    <a href="@url" target="_blank">@messages(text)</a>
+@link(text: String, url: String, target: String = "_blank") = {
+    <a href="@url" target="@target">@messages(text)</a>
 }
 
-@layout_di(messages("cds.subscription.information.title")) {
+@layout_di(messages("cds.subscription.information.heading")) {
 
     <div class="column-two-thirds start_page">
         <h1 class="heading-xlarge">@messages("cds.subscription.information.heading", ServiceName.longName)</h1>
 
-        <h2 class="heading-medium">@messages("cds.subscription.information.subheading", ServiceName.longName)</h2>
-
         <p>@messages("cds.subscription.information.para1")</p>
 
-        <p>@messages("cds.subscription.information.para2")</p>
-
+        <h2 class="heading-small">@messages("cds.subscription.information.subheading1")</h2>
         <ul class="bullets list">
-            <li>@Html(messages("cds.subscription.information.bullet1", link(messages("cds.subscription.information.bullet1.link"), appConfig.externalGetEORILink(service))))</li>
-            <li>@messages("cds.subscription.information.bullet2")</li>
-            <li>@Html(messages("cds.subscription.information.bullet3", link("cds.subscription.information.bullet3.link", appConfig.findLostUtr)))</li>
+            <li>@Html(messages("cds.subscription.information.bullet1", link(messages("cds.subscription.information.bullet1.link"), appConfig.externalGetEORILink(service), "_self")))</li>
         </ul>
 
-        <p>@messages("cds.subscription.information.para3")</p>
+        <h2 class="heading-small">@messages("cds.subscription.information.subheading2")</h2>
+        <ul class="bullets list">
+            <li>@Html(messages("cds.subscription.information.bullet2", link(messages("cds.subscription.information.bullet2.link"), appConfig.externalGetEORILink(service))))</li>
+        </ul>
+
+        <h2 class="heading-small">@messages("cds.subscription.information.subheading3")</h2>
+        <ul class="bullets list">
+            <li>@Html(messages("cds.subscription.information.bullet3"))</li>
+        </ul>
+
+        <p>@messages("cds.subscription.information.para2")</p>
 
         <a href="@EmailController.form(service, Journey.Subscribe)" class="button" role="button" id="continue">@messages("cds.navigation.subscribe")</a>
 
