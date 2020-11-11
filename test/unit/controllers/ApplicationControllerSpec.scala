@@ -27,7 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{ApplicationControll
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, KeyValue}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, start, start_subscribe}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{start, start_subscribe}
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -42,17 +42,15 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
   private val mockAuthAction    = authAction(mockAuthConnector)
   private val mockSessionCache  = mock[SessionCache]
 
-  private val startRegisterView          = instanceOf[start]
-  private val startSubscribeView         = instanceOf[start_subscribe]
-  private val accessibilityStatementView = instanceOf[accessibility_statement]
-  private val groupEnrolmentExtractor    = mock[GroupEnrolmentExtractor]
+  private val startRegisterView       = instanceOf[start]
+  private val startSubscribeView      = instanceOf[start_subscribe]
+  private val groupEnrolmentExtractor = mock[GroupEnrolmentExtractor]
 
   val controller = new ApplicationController(
     mockAuthAction,
     mcc,
     startSubscribeView,
     startRegisterView,
-    accessibilityStatementView,
     mockSessionCache,
     groupEnrolmentExtractor,
     appConfig
