@@ -9,6 +9,7 @@ The following values are required to add the configuration for a new service.
 | `enrolment`             | The enrolment key for the new service.  Details for creating a new service enrolment key can be found [here](https://github.com/hmrc/service-enrolment-config). | 
 | `shortName`             | This is the abbreviation of the service. | 
 | `callBack`              | ECC will re-direct the user to this url once they have the requested enrolment (see below). | 
+| `accessibility`         | The url of the accessibility statement of the calling service.  This url should be available to users who _are not enrolled_ to the service. | 
 | `friendlyName`          | This is the "long" name of the service that is used on confirmation pages and emails. | 
 | `friendlyNameWelsh`     | (Optional) Welsh translation of the long name.| 
 | `feedBack`              | (Optional) If provided ECC will re-direct the user at the end of the journey (see below). | 
@@ -51,6 +52,7 @@ Add the following entries to the configuration file replacing `example` with the
 services-config.example.enrolment: "[ENROLMENT_KEY_HERE]"
 services-config.example.shortName: "[SHORT_NAME_HERE]"
 services-config.example.callBack: "[URL_HERE]"
+services-config.example.accessibility: "[URL_HERE]"
 services-config.example.friendlyName: "[FRIENDLY_NAME_HERE]"
 services-config.example.friendlyNameWelsh: "[(OPTIONAL)WELSH_NAME_HERE]"
 services-config.example.feedBack: "[(OPTIONAL)FEEDBACK_URL_HERE]"
@@ -61,6 +63,7 @@ For example
 services-config.example.enrolment: "HMRC-NEW-ORG"
 services-config.example.shortName: "NEWS"
 services-config.example.callBack: "/new-service/start"
+services-config.example.accessibility: "/new-service/accessibility"
 services-config.example.friendlyName: "New_Service"
 services-config.example.friendlyNameWelsh: "Optional_Welsh_Service_Name"
 services-config.example.feedBack: "/new-service/feedback"
