@@ -88,7 +88,9 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
         controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       status(result) shouldBe OK
-      CdsPage(contentAsString(result)).title should startWith("You need to subscribe")
+      CdsPage(contentAsString(result)).title should startWith(
+        "We need more information before you can use this service"
+      )
     }
 
     "direct authenticated users with CDS enrolment to start short-cut subscription" in {
