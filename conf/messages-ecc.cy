@@ -118,3 +118,7 @@ cds.feedback.continue=TRANSLATE More about [SERVICE]
 
 cds.subscription.sign-in-with-different-details.para1=TRANSLATE [USER] has already registered for [SERVICE] with a different Government Gateway.
 cds.subscription.sign-in-with-different-details.para1-noname=TRANSLATE You have already registered for [SERVICE] with a different Government Gateway.
+
+cds.matching.row-organisation.utr.hint=TRANSLATE This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Corporation Tax. It may be called 'reference', 'UTR' or 'official use'. You can [find a lost UTR number].
+cds.matching.row-sole-trader-individual.utr.hint=TRANSLATE This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’. You can [find a lost UTR number].
+cds.matching.row-lost-urt.hint.link=TODO find a lost UTR number
