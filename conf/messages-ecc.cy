@@ -75,17 +75,22 @@ cds.subscription.outcomes.success.will-send-email=TRANSLATE We will send you an 
 cds.registration.you-already-have-eori.title=TRANSLATE You already have an EORI
 cds.registration.you-already-have-eori.para1=TRANSLATE We have detected you already have an EORI.  You can continue and subscribe to the [SERVICE] service.
 
-cds.subscription.information.heading=TRANSLATE We need more information before you can use this service
-cds.subscription.information.para1=TRANSLATE This only needs to be done once.
-cds.subscription.information.subheading1=TRANSLATE You will need to give us your:
-cds.subscription.information.bullet1=TRANSLATE GB EORI (Economic Operator and Registration Identification) number. From 1 January 2021 you will need one to move goods between Great Britain (England, Scotland and Wales) and the rest of the world. If you don’t already have one, you need to [apply for an EORI number].
-cds.subscription.information.bullet1.link=TODO apply for an EORI number
-cds.subscription.information.subheading2=TRANSLATE If you are an organisation you will also need to give us your:
-cds.subscription.information.bullet2=TRANSLATE Unique Taxpayer Reference (UTR). You can [find a lost UTR number (opens in a new window or tab)].
-cds.subscription.information.bullet2.link=TODO find a lost UTR number (opens in a new window or tab)
-cds.subscription.information.subheading3=TRANSLATE If you are an individual or sole trader in the UK you will also need to give us your:
-cds.subscription.information.bullet3=TRANSLATE National Insurance number or Self Assessment Unique Taxpayer Reference.
-cds.subscription.information.para2=TRANSLATE You will receive a confirmation email within 2 hours.
+cds.subscription.information.heading=You must subscribe before you can use this service
+cds.subscription.information.para1=From 1 January 2021, you will need a GB EORI (Economic Operator and Registration Identification) number to move goods between Great Britain (England, Scotland and Wales) and the rest of the world.
+cds.subscription.information.para2=If you don’t already have one, you must {0}.
+cds.subscription.information.para2.link=apply for an EORI number
+
+cds.subscription.information.section.organisation.subheading=TRANSLATE As an organisation:
+cds.subscription.information.section.organisation.utr=TRANSLATE You will also need your Corporation Tax Unique Tax Reference (UTR). You can [find a lost UTR number (opens in a new window or tab)].
+cds.subscription.information.section.organisation.utr.link=TODO find a lost UTR number (opens in a new window or tab)
+
+cds.subscription.information.section.individual.subheading=TRANSLATE As an individual or sole trader in the UK:
+cds.subscription.information.section.individual.para=TRANSLATE You will need one of the following:
+cds.subscription.information.section.individual.nino=TRANSLATE National Insurance number
+cds.subscription.information.section.individual.utr=TRANSLATE Self Assessment Unique Taxpayer Reference (UTR)
+
+cds.subscription.information.para3=TRANSLATE This only needs to be done once.
+cds.subscription.information.para4=TRANSLATE You will receive a confirmation email within 2 hours.
 
 cds.navigation.subscribe=TRANSLATE Subscribe
 
