@@ -30,11 +30,13 @@ class ServiceConfigSpec extends ControllerSpec {
       |services-config.atar.enrolment=HMRC-ATAR-ORG
       |services-config.atar.shortName=ATaR
       |services-config.atar.callBack=/advance-tariff-application
+      |services-config.atar.accessibility=/advance-tariff-application/accessibility
       |services-config.atar.friendlyName=Advance_Tariff_Rulings
       |services-config.atar.friendlyNameWelsh=Dyfarniadau_Tariffau_Uwch_(ATaR)
       |services-config.gvms.enrolment=HMRC-GVMS-ORG
       |services-config.gvms.shortName=GVMS
       |services-config.gvms.callBack=/goods-movement
+      |services-config.gvms.accessibility=/goods-movement/accessibility
       |services-config.gvms.friendlyName=Goods_Movement
       |services-config.gvms.friendlyNameWelsh=Symud_Cerbydau_Nwyddau_(GVMS)
       """.stripMargin)
@@ -45,6 +47,7 @@ class ServiceConfigSpec extends ControllerSpec {
                                 |services-config.atar.enrolment=HMRC-ATAR-ORG
                                 |services-config.atar.shortName=ATaR
                                 |services-config.atar.callBack=/advance-tariff-application
+                                |services-config.atar.accessibility=/advance-tariff-application
                                 |services-config.atar.friendlyName=Advance_Tariff_Rulings
       """.stripMargin)
 
@@ -54,6 +57,7 @@ class ServiceConfigSpec extends ControllerSpec {
                                 |services-config.atar.enrolment=HMRC-ATAR-ORG
                                 |services-config.atar.shortName=ATaR
                                 |services-config.atar.callBack=/advance-tariff-application
+                                |services-config.atar.accessibility=/advance-tariff-application
                                 |services-config.atar.friendlyName=Binding_Tariffs
                                 |services-config.atar.friendlyNameWelsh=""
       """.stripMargin)
@@ -81,7 +85,7 @@ class ServiceConfigSpec extends ControllerSpec {
         "HMRC-ATAR-ORG",
         "ATaR",
         "/advance-tariff-application",
-        "/advance-tariff-application",
+        "/advance-tariff-application/accessibility",
         "Advance Tariff Rulings",
         "Dyfarniadau Tariffau Uwch (ATaR)",
         None

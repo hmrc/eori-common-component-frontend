@@ -53,7 +53,7 @@ class FooterSpec extends ViewSpec {
     "have correct Accessibility link" in {
       doc.getElementById("accessibility").attr(
         "href"
-      ) mustBe "/customs-enrolment-services/atar/subscribe/accessibility-statement"
+      ) mustBe "http://localhost:9582/advance-tariff-application/accessibility"
     }
   }
 
