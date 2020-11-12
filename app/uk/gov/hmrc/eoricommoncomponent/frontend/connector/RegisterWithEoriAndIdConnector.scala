@@ -18,6 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
+import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
@@ -26,6 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   RegisterWithEoriAndIdResponse,
   RegisterWithEoriAndIdResponseHolder
 }
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.RegistrationSubmitted
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -62,10 +64,10 @@ class RegisterWithEoriAndIdConnector @Inject() (http: HttpClient, appConfig: App
   }
 
   private def auditCallRequest(url: String, request: RegisterWithEoriAndIdRequest)(implicit hc: HeaderCarrier): Unit =
-    audit.sendDataEvent(
-      transactionName = "customs-registration",
+    audit.sendExtendedDataEvent(
+      transactionName = "ecc-registration",
       path = url,
-      detail = request.keyValueMap(),
+      details = Json.toJson(RegistrationSubmitted(request)),
       eventType = "RegistrationSubmitted"
     )
 
