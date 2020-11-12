@@ -25,7 +25,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
   SubscriptionRequest,
   SubscriptionResponse
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.SubscriptionSubmitted
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{SubscriptionResult, SubscriptionSubmitted}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -71,10 +71,10 @@ class SubscriptionServiceConnector @Inject() (http: HttpClient, appConfig: AppCo
     )
 
   private def auditCallResponse(response: SubscriptionResponse, url: String)(implicit hc: HeaderCarrier): Unit =
-    audit.sendDataEvent(
-      transactionName = "customs-subscription",
+    audit.sendExtendedDataEvent(
+      transactionName = "ecc-subscription",
       path = url,
-      detail = response.subscriptionCreateResponse.keyValueMap(),
+      details = Json.toJson(SubscriptionResult(response)),
       eventType = "SubscriptionResult"
     )
 
