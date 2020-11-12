@@ -27,7 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   RegisterWithEoriAndIdResponse,
   RegisterWithEoriAndIdResponseHolder
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{RegistrationResult, RegistrationSubmitted}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{Registration, RegistrationResult, RegistrationSubmitted}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -43,8 +43,7 @@ class RegisterWithEoriAndIdConnector @Inject() (http: HttpClient, appConfig: App
 
   def register(
     request: RegisterWithEoriAndIdRequest
-  )(implicit hc: HeaderCarrier): Future[RegisterWithEoriAndIdResponse] = {
-    auditCallRequest(url, request)
+  )(implicit hc: HeaderCarrier): Future[RegisterWithEoriAndIdResponse] =
     http.POST[RegisterWithEoriAndIdRequestHolder, RegisterWithEoriAndIdResponseHolder](
       url,
       RegisterWithEoriAndIdRequestHolder(request)
@@ -52,7 +51,7 @@ class RegisterWithEoriAndIdConnector @Inject() (http: HttpClient, appConfig: App
       logger.info(
         s"REG06 successful. postUrl $url, acknowledgement ref: ${request.requestCommon.acknowledgementReference}, response status: ${resp.registerWithEORIAndIDResponse.responseCommon.statusText}"
       )
-      auditCallResponse(url, resp)
+      auditCall(url, request, resp)
       resp.registerWithEORIAndIDResponse
     } recover {
       case e: Throwable =>
@@ -61,24 +60,21 @@ class RegisterWithEoriAndIdConnector @Inject() (http: HttpClient, appConfig: App
         )
         throw e
     }
+
+  private def auditCall(
+    url: String,
+    request: RegisterWithEoriAndIdRequest,
+    response: RegisterWithEoriAndIdResponseHolder
+  )(implicit hc: HeaderCarrier): Unit = {
+    val registrationSubmitted = RegistrationSubmitted(request)
+    val registrationResult    = RegistrationResult(response)
+
+    audit.sendExtendedDataEvent(
+      transactionName = "ecc-registration",
+      path = url,
+      details = Json.toJson(Registration(registrationSubmitted, registrationResult)),
+      eventType = "Registration"
+    )
   }
-
-  private def auditCallRequest(url: String, request: RegisterWithEoriAndIdRequest)(implicit hc: HeaderCarrier): Unit =
-    audit.sendExtendedDataEvent(
-      transactionName = "ecc-registration",
-      path = url,
-      details = Json.toJson(RegistrationSubmitted(request)),
-      eventType = "RegistrationSubmitted"
-    )
-
-  private def auditCallResponse(url: String, response: RegisterWithEoriAndIdResponseHolder)(implicit
-    hc: HeaderCarrier
-  ): Unit =
-    audit.sendExtendedDataEvent(
-      transactionName = "ecc-registration",
-      path = url,
-      details = Json.toJson(RegistrationResult(response)),
-      eventType = "RegistrationResult"
-    )
 
 }
