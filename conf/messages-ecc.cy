@@ -75,10 +75,10 @@ cds.subscription.outcomes.success.will-send-email=TRANSLATE We will send you an 
 cds.registration.you-already-have-eori.title=TRANSLATE You already have an EORI
 cds.registration.you-already-have-eori.para1=TRANSLATE We have detected you already have an EORI.  You can continue and subscribe to the [SERVICE] service.
 
-cds.subscription.information.heading=You must subscribe before you can use this service
-cds.subscription.information.para1=From 1 January 2021, you will need a GB EORI (Economic Operator and Registration Identification) number to move goods between Great Britain (England, Scotland and Wales) and the rest of the world.
-cds.subscription.information.para2=If you don’t already have one, you must {0}.
-cds.subscription.information.para2.link=apply for an EORI number
+cds.subscription.information.heading=TRANSLATE You must subscribe before you can use this service
+cds.subscription.information.para1=TRANSLATE From 1 January 2021, you will need a GB EORI (Economic Operator and Registration Identification) number to move goods between Great Britain (England, Scotland and Wales) and the rest of the world.
+cds.subscription.information.para2=TRANSLATE If you don’t already have one, you must [apply for an EORI number].
+cds.subscription.information.para2.link=TODO apply for an EORI number
 
 cds.subscription.information.section.organisation.subheading=TRANSLATE As an organisation:
 cds.subscription.information.section.organisation.utr=TRANSLATE You will also need your Corporation Tax Unique Tax Reference (UTR). You can [find a lost UTR number (opens in a new window or tab)].
