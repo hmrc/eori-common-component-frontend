@@ -173,7 +173,7 @@
                     "eori-number",
                     messages("cds.subscription.enter-eori-number.eori-number.label"),
                     Html.apply(eoriNumber.getOrElse("")),
-                    Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.reviewForm(service, journey)),
+                    Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.reviewForm(service)),
                     messages("cds.subscription.enter-eori-number.eori-number.label")
                 )
                 @nameOrganisationDetails.map { d =>
