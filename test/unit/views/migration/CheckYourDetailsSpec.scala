@@ -277,23 +277,27 @@ class CheckYourDetailsSpec extends ViewSpec {
       page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Organisation address"
     }
 
-    "not display change link for the following for utr if isThirdCountrySubscription " in {
+    "display change link for the following for utr if isThirdCountrySubscription " in {
       val page = doc(
         orgType = Some(CdsOrganisationType.ThirdCountryOrganisation),
         isThirdCountrySubscription = true,
         nameIdOrganisationDetails = None
       )
-      page.body.getElementById("review-tbl__utr_change") mustBe null
+      page.body.getElementById("review-tbl__utr_change").attr(
+        "href"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/row-utr"
     }
 
-    "not display change link for the following for nino if isThirdCountrySubscription " in {
+    "display change link for the following for nino if isThirdCountrySubscription " in {
       val page = doc(
         customsId = nino,
         orgType = Some(CdsOrganisationType.ThirdCountryOrganisation),
         isThirdCountrySubscription = true,
         nameIdOrganisationDetails = None
       )
-      page.body.getElementById("review-tbl__nino_change") mustBe null
+      page.body.getElementById("review-tbl__nino_change").attr(
+        "href"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/row-nino"
     }
   }
 

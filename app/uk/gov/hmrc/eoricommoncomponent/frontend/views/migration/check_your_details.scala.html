@@ -126,7 +126,7 @@
             case Some(_) => None
             case None => customsId match {
                 case u@Some(Utr(_)) => u
-                case _ => None
+                case _ => if(isThirdCountrySubscription) Some(Utr(messages("cds.not-entered.label"))) else None
             }
         }
     }
@@ -134,7 +134,8 @@
     @nino = @{
         customsId match {
             case n@Some(Nino(_)) => n
-            case _ => None
+            case u@Some(Utr(_)) => None
+            case _ => if(isThirdCountrySubscription) Some(Nino(messages("cds.not-entered.label"))) else None
         }
     }
 
@@ -203,22 +204,28 @@
                         messages("subscription.check-your-details.date-of-birth.label")
                     )
                 }
-                @nino.map { n =>
-                    @summaryRow_di(
-                        "nino",
-                        messages("cds.nino.label"),
-                        Html.apply(n.id),
-                        if(!isThirdCountrySubscription) Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController.reviewForm(service, journey)) else None,
-                        messages("cds.nino.label")
-                    )
-                }
                 @utr.map { u =>
                     @summaryRow_di(
                         "utr",
                         messages("cds.utr.label"),
                         Html.apply(u.id),
-                        if(!isThirdCountrySubscription) Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController.reviewForm(service, journey)) else None,
+                        if(!isThirdCountrySubscription)
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController.reviewForm(service, journey))
+                        else
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.HaveUtrSubscriptionController.createForm(service, journey)),
                         messages("cds.utr.label")
+                    )
+                }
+                @nino.map { n =>
+                    @summaryRow_di(
+                        "nino",
+                        messages("cds.nino.label"),
+                        Html.apply(n.id),
+                        if(!isThirdCountrySubscription)
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController.reviewForm(service, journey))
+                        else
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.HaveNinoSubscriptionController.createForm(service, journey)),
+                        messages("cds.nino.label")
                     )
                 }
                 @nameIdOrganisationDetails.map { n =>
@@ -235,7 +242,10 @@
                         "utr",
                         utrLabel,
                         Html.apply(n.id),
-                        if(!isThirdCountrySubscription) Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController.reviewForm(service, journey)) else None,
+                        if(!isThirdCountrySubscription)
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController.reviewForm(service, journey))
+                        else
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.HaveUtrSubscriptionController.createForm(service, journey)),
                         utrLabel
                     )
                 }
