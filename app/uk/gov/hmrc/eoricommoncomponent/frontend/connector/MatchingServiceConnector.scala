@@ -18,9 +18,11 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
+import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching._
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.RegisterWithIdSubmitted
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -64,10 +66,10 @@ class MatchingServiceConnector @Inject() (http: HttpClient, appConfig: AppConfig
   }
 
   private def auditCallRequest(url: String, request: MatchingRequestHolder)(implicit hc: HeaderCarrier): Unit =
-    audit.sendDataEvent(
-      transactionName = "customs-registration-with-id",
+    audit.sendExtendedDataEvent(
+      transactionName = "ecc-registration-with-id",
       path = url,
-      detail = request.keyValueMap(),
+      details = Json.toJson(RegisterWithIdSubmitted(request)),
       eventType = "RegistrationWithIdSubmitted"
     )
 
