@@ -14,7 +14,8 @@ To run all tests:
 `./precheck.sh`
 
 # Maintenance
-[How to add support](HOWTOADDSERVICE.md) for getting access to a new HMRC service.
+For information on adding support for a new service - 
+[How to add a new service](https://github.com/hmrc/eori-common-component-frontend/wiki/How-to-add-a-new-service).
 
 # License
 
