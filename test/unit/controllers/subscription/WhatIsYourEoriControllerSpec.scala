@@ -25,7 +25,12 @@ import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.EoriNumberSubscriptionFlowPage
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, RegistrationDetailsIndividual}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
+  CdsOrganisationType,
+  EnrolmentResponse,
+  KeyValue,
+  RegistrationDetailsIndividual
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.what_is_your_eori
@@ -38,6 +43,7 @@ import util.builders.SubscriptionAmendCompanyDetailsFormBuilder._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import org.mockito.ArgumentMatchers.{any, eq => meq}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
 
 class WhatIsYourEoriControllerSpec
     extends SubscriptionFlowCreateModeTestSupport with BusinessDatesOrganisationTypeTables with BeforeAndAfterEach
@@ -46,22 +52,24 @@ class WhatIsYourEoriControllerSpec
 
   protected override def submitInCreateModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController
-      .submit(isInReviewMode = false, atarService, Journey.Subscribe)
+      .submit(isInReviewMode = false, atarService)
       .url
 
   protected override def submitInReviewModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController
-      .submit(isInReviewMode = true, atarService, Journey.Subscribe)
+      .submit(isInReviewMode = true, atarService)
       .url
 
-  private val mockRequestSessionData = mock[RequestSessionData]
-  private val whatIsYourEoriView     = instanceOf[what_is_your_eori]
+  private val mockRequestSessionData  = mock[RequestSessionData]
+  private val groupEnrolmentExtractor = mock[GroupEnrolmentExtractor]
+  private val whatIsYourEoriView      = instanceOf[what_is_your_eori]
 
   private val controller = new WhatIsYourEoriController(
     mockAuthAction,
     mockSubscriptionBusinessService,
     mockSubscriptionFlowManager,
     mockSubscriptionDetailsHolderService,
+    groupEnrolmentExtractor,
     mcc,
     whatIsYourEoriView,
     mockRequestSessionData
@@ -71,24 +79,26 @@ class WhatIsYourEoriControllerSpec
   val enterAGbEoriPage        = "Enter an EORI number that starts with GB"
   val enterAGbEoriField       = "Error: Enter an EORI number that starts with GB"
 
+  val existingGroupEnrolment: EnrolmentResponse =
+    EnrolmentResponse("HMRC-OTHER-ORG", "Active", List(KeyValue("EORINumber", "GB1234567890")))
+
   override def beforeEach: Unit = {
     reset(
       mockSubscriptionBusinessService,
       mockSubscriptionFlowManager,
       mockRequestSessionData,
-      mockSubscriptionDetailsHolderService
+      mockSubscriptionDetailsHolderService,
+      groupEnrolmentExtractor
     )
     when(mockSubscriptionBusinessService.cachedEoriNumber(any[HeaderCarrier])).thenReturn(None)
+    when(groupEnrolmentExtractor.groupIdEnrolments(anyString())(any())).thenReturn(Future.successful(List.empty))
     registerSaveDetailsMockSuccess()
     setupMockSubscriptionFlowManager(EoriNumberSubscriptionFlowPage)
   }
 
   "Subscription What Is Your Eori Number form in create mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
-      mockAuthConnector,
-      controller.createForm(atarService, Journey.Subscribe)
-    )
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(atarService))
 
     "display title as 'What is your GB EORI number?'" in {
       showCreateForm(journey = Journey.Subscribe) { result =>
@@ -134,14 +144,22 @@ class WhatIsYourEoriControllerSpec
       }
     }
 
+    "redirect to  when the user has existing EORI" in {
+      when(groupEnrolmentExtractor.groupIdEnrolments(anyString())(any())).thenReturn(
+        Future.successful(List(existingGroupEnrolment))
+      )
+      when(mockSubscriptionDetailsHolderService.cacheExistingEoriNumber(any())(any())).thenReturn(Future.successful(()))
+      showCreateForm(journey = Journey.Subscribe) { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("/atar/subscribe/matching/use-this-eori")
+      }
+    }
+
   }
 
   "Subscription Eori Number form in review mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
-      mockAuthConnector,
-      controller.reviewForm(atarService, Journey.Subscribe)
-    )
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.reviewForm(atarService))
 
     "display title as 'What is your GB EORI number'" in {
       showReviewForm() { result =>
@@ -157,7 +175,7 @@ class WhatIsYourEoriControllerSpec
     "retrieve the cached data" in {
       showReviewForm() { result =>
         CdsPage(contentAsString(result))
-        verify(mockSubscriptionBusinessService).getCachedEoriNumber(any[HeaderCarrier])
+        verify(mockSubscriptionBusinessService).cachedEoriNumber(any[HeaderCarrier])
       }
     }
 
@@ -180,7 +198,7 @@ class WhatIsYourEoriControllerSpec
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
-      controller.submit(isInReviewMode = false, atarService, Journey.Subscribe)
+      controller.submit(isInReviewMode = false, atarService)
     )
 
     "wait until the saveSubscriptionDetailsHolder is completed before progressing" in {
@@ -333,7 +351,7 @@ class WhatIsYourEoriControllerSpec
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(userSelectedOrgType)
 
     test(
-      controller.submit(isInReviewMode = false, atarService, Journey.Subscribe)(
+      controller.submit(isInReviewMode = false, atarService)(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )
@@ -349,7 +367,7 @@ class WhatIsYourEoriControllerSpec
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(userSelectedOrgType)
 
     test(
-      controller.submit(isInReviewMode = true, atarService, Journey.Subscribe)(
+      controller.submit(isInReviewMode = true, atarService)(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
       )
     )
@@ -375,7 +393,7 @@ class WhatIsYourEoriControllerSpec
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]]))
       .thenReturn(userSelectedOrganisationType)
 
-    test(controller.createForm(atarService, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def showReviewForm(
@@ -387,9 +405,9 @@ class WhatIsYourEoriControllerSpec
 
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]]))
       .thenReturn(userSelectedOrganisationType)
-    when(mockSubscriptionBusinessService.getCachedEoriNumber(any[HeaderCarrier])).thenReturn(dataToEdit)
+    when(mockSubscriptionBusinessService.cachedEoriNumber(any[HeaderCarrier])).thenReturn(Some(dataToEdit))
 
-    test(controller.reviewForm(atarService, Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def verifyEoriNumberFieldExistsAndPopulatedCorrectly(page: CdsPage): Unit =

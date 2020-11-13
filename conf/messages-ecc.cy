@@ -127,3 +127,10 @@ cds.subscription.sign-in-with-different-details.para1-noname=TRANSLATE You have 
 cds.matching.row-organisation.utr.hint=TRANSLATE This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Corporation Tax. It may be called 'reference', 'UTR' or 'official use'. You can [find a lost UTR number].
 cds.matching.row-sole-trader-individual.utr.hint=TRANSLATE This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’. You can [find a lost UTR number].
 cds.matching.row-lost-urt.hint.link=TODO find a lost UTR number
+
+cds.subscribe.use-this-eori.heading=TRANSLATE Your GB Economic Operator Registration and Identification (EORI) number
+cds.subscribe.use-this-eori.paragraph1=TRANSLATE This EORI is linked to the Government Gateway account you are using.
+cds.subscribe.use-this-eori.paragraph2=TRANSLATE To use a different EORI you must [sign out] and start again with a different Government Gateway user ID and password.
+cds.subscribe.use-this-eori.signout=TODO sign out
+cds.subscribe.use-this-eori.paragraph3=TRANSLATE Confirm that this is the EORI number to use for your application.
+cds.subscribe.use-this-eori.confirm=TRANSLATE Confirm and continue

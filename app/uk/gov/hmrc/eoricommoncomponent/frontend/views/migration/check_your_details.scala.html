@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, NameIdOrganisationMatchModel}
+@import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, NameIdOrganisationMatchModel, ExistingEori}
 @import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.dateTimeFormat
 @import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactDetailsModel
 @import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
@@ -34,6 +34,7 @@
         addressDetails: Option[AddressViewModel],
         principalEconomicActivity: Option[String],
         eoriNumber: Option[String],
+        existingEori: Option[ExistingEori],
         email: Option[String],
         nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel],
         nameOrganisationDetails: Option[NameOrganisationMatchModel],
@@ -174,7 +175,7 @@
                     "eori-number",
                     messages("cds.subscription.enter-eori-number.eori-number.label"),
                     Html.apply(eoriNumber.getOrElse("")),
-                    Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.reviewForm(service, journey)),
+                    if(existingEori.isEmpty) Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.reviewForm(service)) else None,
                     messages("cds.subscription.enter-eori-number.eori-number.label")
                 )
                 @nameOrganisationDetails.map { d =>

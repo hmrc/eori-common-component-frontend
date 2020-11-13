@@ -60,10 +60,6 @@ class SubscriptionBusinessService @Inject() (cdsFrontendDataCache: SessionCache)
   def cachedSicCode(implicit hc: HeaderCarrier): Future[Option[String]] =
     cdsFrontendDataCache.subscriptionDetails map (_.sicCode)
 
-  def getCachedEoriNumber(implicit hc: HeaderCarrier): Future[String] = cdsFrontendDataCache.subscriptionDetails map {
-    _.eoriNumber.getOrElse(throw new IllegalStateException("No Eori Number Cached"))
-  }
-
   def cachedEoriNumber(implicit hc: HeaderCarrier): Future[Option[String]] =
     cdsFrontendDataCache.subscriptionDetails map (_.eoriNumber)
 
