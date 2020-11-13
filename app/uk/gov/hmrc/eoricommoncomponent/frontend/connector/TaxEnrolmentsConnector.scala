@@ -19,8 +19,6 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.http.Status.BAD_REQUEST
-import play.api.libs.json.Json
-import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.GovernmentGatewayEnrolmentRequest
@@ -30,9 +28,8 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
-  ec: ExecutionContext
-) extends CaseClassAuditHelper {
+class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig)(implicit ec: ExecutionContext)
+    extends CaseClassAuditHelper {
 
   private val logger         = Logger(this.getClass)
   private val baseUrl        = appConfig.taxEnrolmentsBaseUrl
@@ -65,7 +62,6 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig, 
 
     logger.info(s"putUrl: $url")
     http.doPut[TaxEnrolmentsRequest](url, request) map { response: HttpResponse =>
-      auditCall(url, request, response)
       response.status match {
         case s @ BAD_REQUEST =>
           logger.error(s"tax enrolment request failed with BAD_REQUEST status")
@@ -81,30 +77,7 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig, 
     hc: HeaderCarrier
   ): Future[HttpResponse] = {
     val url = s"$baseUrl/$serviceContext/service/$enrolmentKey/enrolment"
-    http.PUT[GovernmentGatewayEnrolmentRequest, HttpResponse](url = url, body = request).map { response =>
-      auditCall(url, request, response)
-      response
-    }
+    http.PUT[GovernmentGatewayEnrolmentRequest, HttpResponse](url = url, body = request)
   }
-
-  private def auditCall(url: String, request: TaxEnrolmentsRequest, response: HttpResponse)(implicit
-    hc: HeaderCarrier
-  ): Unit =
-    audit.sendExtendedDataEvent(
-      transactionName = "Issuer-Call",
-      path = url,
-      details = Json.toJson(RequestResponse(Json.toJson(request), Json.toJson(response.status))),
-      eventType = "IssuerCall"
-    )
-
-  private def auditCall(url: String, request: GovernmentGatewayEnrolmentRequest, response: HttpResponse)(implicit
-    hc: HeaderCarrier
-  ): Unit =
-    audit.sendExtendedDataEvent(
-      transactionName = "Synchronous-Enrolment",
-      path = url,
-      details = Json.toJson(RequestResponse(Json.toJson(request), Json.toJson(response.status))),
-      eventType = "SynchronousEnrolment"
-    )
 
 }
