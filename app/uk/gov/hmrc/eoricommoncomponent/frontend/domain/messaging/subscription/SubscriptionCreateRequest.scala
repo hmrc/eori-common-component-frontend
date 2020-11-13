@@ -35,15 +35,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
 }
 
 case class SubscriptionCreateRequest(requestCommon: RequestCommon, requestDetail: RequestDetail)
-    extends CaseClassAuditHelper {
-
-  def keyValueMap(): Map[String, String] = {
-    val m  = requestCommon.keyValueMap()
-    val rd = requestDetail.keyValueMap()
-    m ++ rd
-  }
-
-}
 
 object SubscriptionCreateRequest {
 

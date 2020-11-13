@@ -21,46 +21,22 @@ import org.joda.time.format.ISODateTimeFormat
 import play.api.libs.json.{JsObject, JsValue, Json}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.CommonHeader
 
-case class SubscriptionStatusQueryParams(receiptDate: DateTime, regime: String, idType: String, id: String)
-    extends CaseClassAuditHelper {
+case class SubscriptionStatusQueryParams(receiptDate: DateTime, regime: String, idType: String, id: String) {
 
   def queryParams: Seq[(String, String)] = {
     val receiptDateAsString = receiptDate.toString(ISODateTimeFormat.dateTimeNoMillis().withZoneUTC())
     Seq("receiptDate" -> receiptDateAsString, "regime" -> regime, idType -> id)
   }
 
-  def keyValueMap(): Map[String, String] =
-    toMap(this)
-
-  def jsObject(): JsValue =
-    Json.toJson(this.keyValueMap())
-
 }
 
-case class SubscriptionStatusResponseCommon(status: String, processingDate: DateTime) extends CaseClassAuditHelper {
-
-  def keyValueMap(): Map[String, String] =
-    toMap(this)
-
-  def jsObject(): JsValue =
-    Json.toJson(this.keyValueMap())
-
-}
+case class SubscriptionStatusResponseCommon(status: String, processingDate: DateTime)
 
 object SubscriptionStatusResponseCommon extends CommonHeader {
   implicit val jsonFormat = Json.format[SubscriptionStatusResponseCommon]
 }
 
 case class SubscriptionStatusResponseDetail(subscriptionStatus: String, idValue: Option[String])
-    extends CaseClassAuditHelper {
-
-  def keyValueMap(): Map[String, String] =
-    toMap(this)
-
-  def jsObject(): JsValue =
-    Json.toJson(this.keyValueMap())
-
-}
 
 object SubscriptionStatusResponseDetail {
   implicit val jsonFormat = Json.format[SubscriptionStatusResponseDetail]
@@ -69,30 +45,14 @@ object SubscriptionStatusResponseDetail {
 case class SubscriptionStatusResponse(
   responseCommon: SubscriptionStatusResponseCommon,
   responseDetail: SubscriptionStatusResponseDetail
-) {
-
-  def jsObject(): JsValue =
-    responseCommon.jsObject().as[JsObject].deepMerge(responseDetail.jsObject().as[JsObject])
-
-}
+)
 
 object SubscriptionStatusResponse {
   implicit val jsonFormat = Json.format[SubscriptionStatusResponse]
 }
 
-case class SubscriptionStatusResponseHolder(subscriptionStatusResponse: SubscriptionStatusResponse) {
-
-  def jsObject(): JsValue =
-    subscriptionStatusResponse.jsObject()
-
-}
+case class SubscriptionStatusResponseHolder(subscriptionStatusResponse: SubscriptionStatusResponse)
 
 object SubscriptionStatusResponseHolder {
   implicit val jsonFormat = Json.format[SubscriptionStatusResponseHolder]
-}
-
-case class RequestResponse(request: JsValue, response: JsValue)
-
-object RequestResponse {
-  implicit val jsonFormat = Json.format[RequestResponse]
 }

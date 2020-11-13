@@ -134,42 +134,6 @@ class CaseObjectAuditHelperSubscriptionSpec extends UnitSpec {
                  |    }
                  |}""".stripMargin).as[SubscriptionCreateRequest]
 
-  "SubscriptionCreateRequest Object" should {
-    "create audit map" in {
-      val subscriptionCreateRequestMap = subscriptionCreateRequestFromJson.keyValueMap()
-      subscriptionCreateRequestMap shouldBe Map(
-        "SAFE"                                         -> "SAFEID",
-        "receiptDate"                                  -> "2001-12-17T09:30:47.000Z",
-        "contactInformation.countryCode"               -> "GB",
-        "contactInformation.streetAndNumber"           -> "2nd floor, Alexander House",
-        "contactInformation.city"                      -> "Southend-on-sea",
-        "typeOfPerson"                                 -> "1",
-        "contactInformation.postalCode"                -> "SS99 1AA",
-        "regime"                                       -> "CDS",
-        "address.postalCode"                           -> "SW11 5RZ",
-        "vatIDs.countryCode"                           -> "GB",
-        "contactInformation.personOfContact"           -> "Pepper Pott",
-        "address.city"                                 -> "London",
-        "contactInformation.emailAddress"              -> "Pepper.p@example.com",
-        "address.countryCode"                          -> "GB",
-        "EORINo"                                       -> "GBE9EEK910BCKEYAX",
-        "address.streetAndNumber"                      -> "86 Mysore Road",
-        "principalEconomicActivity"                    -> "2000",
-        "consentToDisclosureOfPersonalData"            -> "1",
-        "vatIDs.vatID"                                 -> "12164568990",
-        "originatingSystem"                            -> "MDTP-Internal",
-        "contactInformation.faxNumber"                 -> "01702 215002",
-        "CDSFullName"                                  -> "Tony Stark",
-        "typeOfLegalEntity"                            -> "0001",
-        "acknowledgementReference"                     -> "01234567890123456789012345678901",
-        "contactInformation.telephoneNumber"           -> "01702 215001",
-        "shortName"                                    -> " Robinson",
-        "contactInformation.sepCorrAddrIndicator"      -> "true",
-        "establishmentInTheCustomsTerritoryOfTheUnion" -> "0"
-      )
-    }
-  }
-
   val subscriptionCreateResponseFromeJson =
     Json.parse(s"""
          |{
@@ -193,18 +157,4 @@ class CaseObjectAuditHelperSubscriptionSpec extends UnitSpec {
          |}
       """.stripMargin).as[SubscriptionCreateResponse]
 
-  "SubscriptionCreateResponse Object" should {
-    "create audit map" in {
-      val subscriptionCreateResponseMap = subscriptionCreateResponseFromeJson.keyValueMap()
-      subscriptionCreateResponseMap shouldBe Map(
-        "processingDate" -> "2001-12-17T09:30:47.000Z",
-        "EORINo"         -> "ZZZ1ZZZZ23ZZZZZZZ",
-        "paramValue.0"   -> "Form-Bundle-Id",
-        "status"         -> "OK",
-        "paramName.1"    -> "POSITION",
-        "paramValue.1"   -> "LINK",
-        "paramName.0"    -> "ETMPFORMBUNDLENUMBER"
-      )
-    }
-  }
 }

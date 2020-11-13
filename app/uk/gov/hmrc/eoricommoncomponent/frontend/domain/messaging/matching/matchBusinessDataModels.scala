@@ -63,12 +63,7 @@ object MatchingRequest {
   implicit val formats = Json.format[MatchingRequest]
 }
 
-case class MatchingRequestHolder(registerWithIDRequest: MatchingRequest) {
-
-  def keyValueMap(): Map[String, String] =
-    registerWithIDRequest.keyValueMap()
-
-}
+case class MatchingRequestHolder(registerWithIDRequest: MatchingRequest)
 
 object MatchingRequestHolder {
   implicit val formats = Json.format[MatchingRequestHolder]
