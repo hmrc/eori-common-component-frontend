@@ -1,11 +1,10 @@
 cds.banner.registration=Get an EORI
 cds.banner.subscription=Subscribe to {0}
 
-cds.subscription.enter-eori-number.page.title=What is your GB EORI number?
-cds.subscription.enter-eori-number.heading=What is your GB EORI number?
+cds.subscription.enter-eori-number.heading=What is your GB Economic Operator Registration and Identification (EORI) number?
 cds.subscription.enter-eori-number.no-eori.summary=I do not have an EORI number
-cds.subscription.enter-eori-number.no-eori=You need to {0} before you can subscribe to {1}.
-cds.subscription.enter-eori-number.no-eori.link=Get an EORI number
+cds.subscription.enter-eori-number.no-eori=You must {0} before you can apply for {1}.
+cds.subscription.enter-eori-number.no-eori.link=get an EORI number
 
 cds.has-existing-eori.title=Your Government Gateway user ID is linked to an EORI
 cds.has-existing-eori.heading=Your Government Gateway user ID is linked to an EORI
@@ -67,8 +66,6 @@ enter-email-body-text=We will use this to send you the result of your applicatio
 cds.subscription.verify-email.para2=For your security the link in the email will expire after 72 hours.
 
 cds.email-confirmed.para.get-access=You can continue with your application.
-
-cds.subscription.address-details.street.label=Building and street
 
 cds.subscription.outcomes.success.will-send-email=We will send you an email to confirm when you have access to {0}. This can take up to two hours.
 
@@ -143,4 +140,24 @@ cds.subscription.contact-details.error.use-registered-address=Select yes if the 
 cds.subscription.nino.utr.invalid=Select how we can identify you
 cds.matching.nino.row.yes-no.error=Select yes if you have a National Insurance number
 
+cds.email-confirmed.title-and-heading=You have confirmed your email address
+cds.registration.user-location.location.uk.label=United Kingdom
+cds.registration.user-location.location.eu.label=The European Union
+cds.registration.user-location.location.third-country.label=Outside the European Union
 
+cds.matching.name-id-organisation.company.utr=Corporation Tax Unique Taxpayer Reference (UTR)
+cds.matching.name-id-organisation.registered-company.utr=Corporation Tax Unique Taxpayer Reference (UTR)
+cds.matching.name-id-organisation.partnership.utr=Partnership Self Assessment Unique Taxpayer Reference (UTR)
+cds.matching.name-id-organisation.organisation.utr=Organisation Self Assessment Unique Taxpayer Reference (UTR)
+
+cds.subscription.date-of-establishment.company.title-and-heading=When was the company established?
+
+cds.enter-address-details.company.title-and-heading=What is your company's registered address?
+
+cds.subscription.address-details.postcode.row.label=Postal code
+
+cds.matching.row-organisation.utr.title-and-heading=Does your organisation have a Unique Taxpayer Reference (UTR) issued in the UK?
+cds.matching.row-sole-trader-individual.utr.title-and-heading=Do you have a Self Assessment Unique Taxpayer Reference (UTR) issued in the UK?
+
+cds.form.declaration=Declaration
+cds.form.send=Confirm and send

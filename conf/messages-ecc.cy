@@ -1,11 +1,11 @@
 cds.banner.registration=TRANSLATE Get an EORI
 cds.banner.subscription=TRANSLATE Subscribe to [SERVICE]
 
-cds.subscription.enter-eori-number.page.title=Beth yw’ch rhif EORI GB?
+cds.subscription.enter-eori-number.heading=TRANSLATE What is your GB Economic Operator Registration and Identification (EORI) number?
 cds.subscription.enter-eori-number.heading=Beth yw’ch rhif EORI GB?
 cds.subscription.enter-eori-number.no-eori.summary=TRANSLATE I do not have an EORI number
-cds.subscription.enter-eori-number.no-eori=TRANSLATE You need to [Get an EORI number] before you can subscribe to [SERVICE].
-cds.subscription.enter-eori-number.no-eori.link=TODO Get an EORI number
+cds.subscription.enter-eori-number.no-eori=You must [get an EORI number] before you can apply for [SERVICE].
+cds.subscription.enter-eori-number.no-eori.link=TODO get an EORI number
 
 cds.has-existing-eori.title=Mae’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth yn gysylltiedig ag EORI
 cds.has-existing-eori.heading=Mae’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth yn gysylltiedig ag EORI
@@ -67,8 +67,6 @@ enter-email-body-text=TRANSLATE We will use this to send you the result of your 
 cds.subscription.verify-email.para2=TRANSLATE For your security the link in the email will expire after 72 hours.
 
 cds.email-confirmed.para.get-access=TRANSLATE You can continue with your application.
-
-cds.subscription.address-details.street.label=TRANSLATE Building and street
 
 cds.subscription.outcomes.success.will-send-email=TRANSLATE We will send you an email to confirm when you have access to [SERVICE]. This can take up to two hours.
 

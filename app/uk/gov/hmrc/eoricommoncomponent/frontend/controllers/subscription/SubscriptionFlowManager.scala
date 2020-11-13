@@ -132,8 +132,6 @@ class SubscriptionFlowManager @Inject() (requestSessionData: RequestSessionData,
 
     val selectedFlow: SubscriptionFlow =
       (registrationDetails, maybeOrgType, registrationDetails.customsId, journey) match {
-        case (_: RegistrationDetailsOrganisation, Some(CdsOrganisationType.Partnership), _, _) =>
-          SubscriptionFlow(subscribePrefix + PartnershipSubscriptionFlow.name)
         case (_: RegistrationDetailsOrganisation, _, None, Journey.Subscribe) =>
           SubscriptionFlow(subscribePrefix + OrganisationSubscriptionFlow.name)
         case (_: RegistrationDetailsIndividual, _, None, Journey.Subscribe) =>
