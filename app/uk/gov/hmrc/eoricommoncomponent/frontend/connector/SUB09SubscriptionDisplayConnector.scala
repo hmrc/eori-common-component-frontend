@@ -18,11 +18,17 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
+import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
   SubscriptionDisplayResponse,
   SubscriptionDisplayResponseHolder
+}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{
+  SubscriptionDisplay,
+  SubscriptionDisplayResult,
+  SubscriptionDisplaySubmitted
 }
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http._
@@ -41,36 +47,30 @@ class SUB09SubscriptionDisplayConnector @Inject() (http: HttpClient, appConfig: 
 
   def subscriptionDisplay(
     sub09Request: Seq[(String, String)]
-  )(implicit hc: HeaderCarrier): Future[Either[EoriHttpResponse, SubscriptionDisplayResponse]] = {
-    auditCallRequest(url, sub09Request)
+  )(implicit hc: HeaderCarrier): Future[Either[EoriHttpResponse, SubscriptionDisplayResponse]] =
     http.GET[SubscriptionDisplayResponseHolder](url, sub09Request) map { resp =>
       logger.info(s"subscription-display SUB09 successful. url: $url")
-      auditCallResponse(url, resp)
+      auditCall(url, sub09Request, resp)
       Right(resp.subscriptionDisplayResponse)
     } recover {
       case NonFatal(e) =>
         logger.error(s"subscription-display SUB09 failed. url: $url, error: $e")
         Left(ServiceUnavailableResponse)
     }
+
+  private def auditCall(url: String, request: Seq[(String, String)], response: SubscriptionDisplayResponseHolder)(
+    implicit hc: HeaderCarrier
+  ): Unit = {
+
+    val subscriptionDisplaySubmitted = SubscriptionDisplaySubmitted(request.toMap)
+    val subscriptionDisplayResult    = SubscriptionDisplayResult(response)
+
+    audit.sendExtendedDataEvent(
+      transactionName = "ecc-subscription-display",
+      path = url,
+      details = Json.toJson(SubscriptionDisplay(subscriptionDisplaySubmitted, subscriptionDisplayResult)),
+      eventType = "SubscriptionDisplay"
+    )
   }
-
-  private def auditCallRequest(url: String, request: Seq[(String, String)])(implicit hc: HeaderCarrier): Unit =
-    audit.sendDataEvent(
-      transactionName = "customs-subscription-display",
-      path = url,
-      detail = request.toMap,
-      eventType = "SubscriptionDisplaySubmitted"
-    )
-
-  private def auditCallResponse(url: String, response: SubscriptionDisplayResponseHolder)(implicit
-    hc: HeaderCarrier
-  ): Unit =
-    audit.sendDataEvent(
-      transactionName = "customs-subscription-display",
-      path = url,
-      detail = response.subscriptionDisplayResponse
-        .keyValueMap(),
-      eventType = "SubscriptionDisplayResult"
-    )
 
 }

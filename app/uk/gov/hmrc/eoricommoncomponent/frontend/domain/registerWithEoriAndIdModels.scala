@@ -116,15 +116,6 @@ object RegisterWithEoriAndIdDetail {
 }
 
 case class RegisterWithEoriAndIdRequest(requestCommon: RequestCommon, requestDetail: RegisterWithEoriAndIdDetail)
-    extends CaseClassAuditHelper {
-
-  def keyValueMap(): Map[String, String] = {
-    val rcm = requestCommon.keyValueMap()
-    val rdm = requestDetail.keyValueMap()
-    rcm ++ rdm
-  }
-
-}
 
 object RegisterWithEoriAndIdRequest {
   implicit val format = Json.format[RegisterWithEoriAndIdRequest]

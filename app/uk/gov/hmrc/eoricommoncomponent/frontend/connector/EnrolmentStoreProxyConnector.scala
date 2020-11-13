@@ -24,6 +24,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, EnrolmentStoreProxyResponse}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.{KnownFacts, KnownFactsQuery}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.EnrolmentStoreProxyEvent
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -44,15 +45,16 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
     val url =
       s"$baseUrl/$serviceContext/enrolment-store/groups/$groupId/enrolments?type=principal"
     http.GET[HttpResponse](url) map { resp =>
-      auditCall(url, resp)
       logger.info(s"enrolment-store-proxy. url: $url")
-      resp.status match {
+      val parsedResponse = resp.status match {
         case OK => resp.json.as[EnrolmentStoreProxyResponse]
         case NO_CONTENT =>
           EnrolmentStoreProxyResponse(enrolments = List.empty[EnrolmentResponse])
         case _ =>
           throw new BadRequestException(s"Enrolment Store Proxy Status : ${resp.status}")
       }
+      auditCall(url, groupId, parsedResponse)
+      parsedResponse
     } recover {
       case e: Throwable =>
         logger.error(s"enrolment-store-proxy failed. url: $url, error: $e", e)
@@ -60,15 +62,15 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
     }
   }
 
-  private def auditCall(url: String, response: HttpResponse)(implicit hc: HeaderCarrier): Unit = {
-    import AuditHelp._
+  private def auditCall(url: String, groupId: String, response: EnrolmentStoreProxyResponse)(implicit
+    hc: HeaderCarrier
+  ): Unit =
     audit.sendExtendedDataEvent(
       transactionName = "Enrolment-Store-Proxy-Call",
       path = url,
-      details = response,
+      details = Json.toJson(EnrolmentStoreProxyEvent(groupId = groupId, enrolments = response.enrolments)),
       eventType = "EnrolmentStoreProxyCall"
     )
-  }
 
   def queryKnownFactsByIdentifiers(
     knownFactsQuery: KnownFactsQuery
@@ -77,19 +79,5 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
       s"$baseUrl/$serviceContext/enrolment-store/enrolments",
       knownFactsQuery
     )
-
-  object AuditHelp {
-
-    implicit def httpResponseToJsvalue(httpResponse: HttpResponse): JsValue =
-      new Writes[HttpResponse] {
-
-        override def writes(o: HttpResponse): JsValue =
-          if (o.body.nonEmpty)
-            Json.obj("status"    -> o.status, "body" -> o.json)
-          else Json.obj("status" -> o.status)
-
-      }.writes(httpResponse)
-
-  }
 
 }
