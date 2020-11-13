@@ -22,6 +22,11 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{
+  SubscriptionStatus,
+  SubscriptionStatusResult,
+  SubscriptionStatusSubmitted
+}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -53,12 +58,17 @@ class SubscriptionStatusConnector @Inject() (http: HttpClient, appConfig: AppCon
     url: String,
     request: SubscriptionStatusQueryParams,
     response: SubscriptionStatusResponseHolder
-  )(implicit hc: HeaderCarrier): Unit =
+  )(implicit hc: HeaderCarrier): Unit = {
+
+    val subscriptionStatusSubmitted = SubscriptionStatusSubmitted(request)
+    val subscriptionStatusResult    = SubscriptionStatusResult(response)
+
     audit.sendExtendedDataEvent(
-      transactionName = "customs-subscription-status",
+      transactionName = "ecc-subscription-status",
       path = url,
-      details = Json.toJson(RequestResponse(request.jsObject(), response.jsObject())),
+      details = Json.toJson(SubscriptionStatus(subscriptionStatusSubmitted, subscriptionStatusResult)),
       eventType = "SubscriptionStatus"
     )
+  }
 
 }
