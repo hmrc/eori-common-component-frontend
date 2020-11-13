@@ -41,6 +41,7 @@ case class SubscriptionDetails(
   dateOfBirth: Option[LocalDate] = None,
   sicCode: Option[String] = None,
   eoriNumber: Option[String] = None,
+  existingEoriNumber: Option[ExistingEori] = None,
   email: Option[String] = None,
   addressDetails: Option[AddressViewModel] = None,
   nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = None,

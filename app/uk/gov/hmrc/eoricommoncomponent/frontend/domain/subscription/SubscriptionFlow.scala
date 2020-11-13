@@ -451,7 +451,7 @@ case object EoriNumberSubscriptionFlowPage extends SubscriptionPage {
 
   override def url(service: Service): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController
-      .createForm(service, Journey.Subscribe)
+      .createForm(service)
       .url
 
 }

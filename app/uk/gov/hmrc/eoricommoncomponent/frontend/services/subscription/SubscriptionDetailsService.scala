@@ -196,6 +196,12 @@ class SubscriptionDetailsService @Inject() (
   def cachedCustomsId(implicit hc: HeaderCarrier): Future[Option[CustomsId]] =
     sessionCache.subscriptionDetails map (_.customsId)
 
+  def cacheExistingEoriNumber(eori: ExistingEori)(implicit hc: HeaderCarrier): Future[Unit] =
+    saveSubscriptionDetails(sd => sd.copy(existingEoriNumber = Some(eori)))
+
+  def cachedExistingEoriNumber(implicit hc: HeaderCarrier): Future[Option[ExistingEori]] =
+    sessionCache.subscriptionDetails map (_.existingEoriNumber)
+
   def updateSubscriptionDetails(implicit hc: HeaderCarrier) =
     // TODO: to be refactored by redesigning the cache
     sessionCache.subscriptionDetails flatMap { subDetails =>
