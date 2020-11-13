@@ -219,7 +219,7 @@ class DateOfEstablishmentControllerSpec
       showCreateForm(cachedDate = Some(DateOfEstablishment)) { result =>
         val page = CdsPage(contentAsString(result))
         page.getElementText(SubscriptionDateOfEstablishmentPage.dateOfEstablishmentLabelXPath) should startWith(
-          "Enter the date shown on the organisation's certificate of incorporation. You can find the date your organisation was established on the Companies House register (opens in a new window or tab)"
+          "Enter the date shown on the organisation’s certificate of incorporation. You can find the date your organisation was established on the Companies House register (opens in a new window or tab)"
         )
         page.title should startWith("When was the organisation established?")
         page.getElementsText(

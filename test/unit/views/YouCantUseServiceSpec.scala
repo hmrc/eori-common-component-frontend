@@ -98,7 +98,7 @@ class YouCantUseServiceSpec extends ViewSpec {
     "display correct para" in {
       cannotUseService003.body
         .getElementById("para")
-        .text mustBe "To apply for an EORI number phone 0300 322 7067 and ask for an assisted digital application form. They're open 8am to 6pm, Monday to Friday (closed bank holidays)."
+        .text mustBe "To apply for an EORI number phone 0300 322 7067 and ask for an assisted digital application form. They’re open 8am to 6pm, Monday to Friday (closed bank holidays)."
     }
   }
 

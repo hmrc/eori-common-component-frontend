@@ -109,7 +109,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
     errorTemplate
   )
 
-  private val ProblemWithSelectionError = "Tell us where you are based"
+  private val ProblemWithSelectionError = "Select where you are based"
 
   private val locationFieldName = "location"
 

@@ -49,7 +49,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   private val answerNo       = false.toString
 
   private val problemWithSelectionError =
-    "Tell us if this is the correct email address"
+    "Select yes if this is the correct email address"
 
   private val mockAuthConnector = mock[AuthConnector]
   private val mockAuthAction    = authAction(mockAuthConnector)

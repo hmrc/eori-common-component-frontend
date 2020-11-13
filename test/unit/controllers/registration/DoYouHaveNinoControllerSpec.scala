@@ -109,7 +109,7 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
         page.getElementsText(ninoLabelBold) should include("National Insurance number")
         page.getElementsText(
           ninoHint
-        ) shouldBe "It's on your National Insurance card, benefit letter, payslip or P60. For example, 'QQ123456C'"
+        ) shouldBe "It’s on your National Insurance card, benefit letter, payslip or P60. For example, 'QQ123456C'"
         page.elementIsPresent(ninoInput) shouldBe true
 
         page.getElementsText(fieldLevelErrorNino) shouldBe empty

@@ -112,10 +112,10 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
 
       notSelectedIndividualDoc.body
         .getElementsByAttributeValue("href", "#have-utr")
-        .text mustBe "Tell us if you have a UTR number"
+        .text mustBe "Select yes if you have a UTR number"
       notSelectedCompanyDoc.body
         .getElementsByAttributeValue("href", "#have-utr")
-        .text mustBe "Tell us if you have a UTR number"
+        .text mustBe "Select yes if you have a UTR number"
     }
   }
 

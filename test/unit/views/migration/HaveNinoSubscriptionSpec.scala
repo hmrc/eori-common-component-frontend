@@ -62,7 +62,7 @@ class HaveNinoSubscriptionSpec extends ViewSpec {
 
     "Have correct hint for nino field" in {
       doc.body.getElementById("nino-hint").text must include(
-        "It's on your National Insurance card, benefit letter, payslip or P60."
+        "It’s on your National Insurance card, benefit letter, payslip or P60."
       )
       doc.body.getElementById("nino-hint").text must include("For example, 'QQ123456C'")
     }
@@ -77,7 +77,7 @@ class HaveNinoSubscriptionSpec extends ViewSpec {
       docWithNoOptionSelected.body.getElementById("form-error-heading").text mustBe "There is a problem"
       docWithNoOptionSelected.body
         .getElementsByAttributeValue("href", "#have-nino")
-        .text mustBe "Tell us if you have a National Insurance number"
+        .text mustBe "Select yes if you have a National Insurance number"
     }
   }
 
