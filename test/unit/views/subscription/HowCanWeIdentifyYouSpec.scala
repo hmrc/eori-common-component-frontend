@@ -73,14 +73,14 @@ class HowCanWeIdentifyYouSpec extends ViewSpec {
       docWithRadioButtonsError
         .body()
         .getElementsByClass("error-summary-list")
-        .text() mustBe "Tell us how we can identify you"
+        .text() mustBe "Select how we can identify you"
     }
 
     "display an field level error if no radio button is selected" in {
       docWithRadioButtonsError
         .body()
         .getElementsByClass("error-message")
-        .text() mustBe "Tell us how we can identify you"
+        .text() mustBe "Select how we can identify you"
     }
 
     "display an page level error if nino radio button is selected but no nino entered" in {

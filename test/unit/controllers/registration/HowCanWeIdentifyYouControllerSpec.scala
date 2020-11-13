@@ -113,7 +113,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
         val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
-        ) shouldBe "Tell us how we can identify you"
+        ) shouldBe "Select how we can identify you"
       }
     }
 
@@ -151,7 +151,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
         val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
-        ) shouldBe "Tell us how we can identify you"
+        ) shouldBe "Select how we can identify you"
         page.getElementsText(SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorUtr) shouldBe empty
         page.getElementsText(SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorNino) shouldBe empty
       }

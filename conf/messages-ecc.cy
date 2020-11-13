@@ -134,3 +134,11 @@ cds.subscribe.use-this-eori.paragraph2=TRANSLATE To use a different EORI you mus
 cds.subscribe.use-this-eori.signout=TODO sign out
 cds.subscribe.use-this-eori.paragraph3=TRANSLATE Confirm that this is the EORI number to use for your application.
 cds.subscribe.use-this-eori.confirm=TRANSLATE Confirm and continue
+
+cds.subscription.check-your-email.page-error.yes-no-answer=TRANSLATE Select yes if this is the correct email address
+cds.registration.user-location.error.location=TRANSLATE Select where you are based
+cds.matching.organisation-type.page-error.organisation-type-field.error.required=TRANSLATE Select what you want to apply as
+cds.matching.organisation-utr.field-error.have-utr=TRANSLATE Select yes if you have a UTR number
+cds.subscription.contact-details.error.use-registered-address=TRANSLATE Select yes if the contact address is right
+cds.subscription.nino.utr.invalid=TRANSLATE Select how we can identify you
+cds.matching.nino.row.yes-no.error=TRANSLATE Select yes if you have a National Insurance number

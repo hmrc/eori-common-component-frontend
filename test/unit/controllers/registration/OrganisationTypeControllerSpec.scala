@@ -66,7 +66,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
     mockSubscriptionDetailsService
   )
 
-  private val ProblemWithSelectionError     = "Tell us what you want to apply as"
+  private val ProblemWithSelectionError     = "Select what you want to apply as"
   private val thirdCountryOrganisationXpath = "//*[@id='organisation-type-third-country-organisation']"
   private val thirdCountrySoleTraderXpath   = "//*[@id='organisation-type-third-country-sole-trader']"
   private val thirdCountryIndividualXpath   = "//*[@id='organisation-type-third-country-individual']"

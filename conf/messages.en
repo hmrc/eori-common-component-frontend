@@ -57,7 +57,7 @@ cds.you-cant-use-service-agent.hint2=You need to sign in with the Government Gat
 cds.you-cant-use-service-standard-organisation.hint1=You signed in to Government Gateway as a standard user. To apply for an EORI number you must be an administrator user.
 cds.you-cant-use-service-standard-organisation.hint2=Contact the person who set up your Government Gateway.
 cds.you-cant-use-service.heading=You cannot use this service
-cds.you-cant-use-service.paragraph=To apply for an EORI number phone 0300 322 7067 and ask for an assisted digital application form. They''re open 8am to 6pm, Monday to Friday (closed bank holidays).
+cds.you-cant-use-service.paragraph=To apply for an EORI number phone 0300 322 7067 and ask for an assisted digital application form. They’re open 8am to 6pm, Monday to Friday (closed bank holidays).
 cds.country-picker.hint.screen-reader=Start to type the name of the country and then use up and down arrows to review and enter to select a country
 cds.country-picker.no-results=No results found
 cds.enrolment-already-exists-against-groupid-gye.paragraph=The Government Gateway ID you used is part of a team that already has an EORI linked to it.
@@ -371,7 +371,7 @@ subscription.check-your-email.confirm.question=Is this the email address you wan
 subscription.check-your-email.yes=Yes
 subscription.check-your-email.no=No, I need to change this email
 
-enter-email-body-text=We''ll use this to send you:
+enter-email-body-text=We’ll use this to send you:
 subscription.enter-email-hint-text=the result of your application to get access to CDS
 registration.enter-email-hint-text=the result of your EORI application
 enter-email-hint-text-1=updates on changes to CDS declarations and services
@@ -450,7 +450,7 @@ cds.matching.id.page-error.ninoOrUtrRadio=Tell us how we can identify you
 #What is your Nino
 subscription-journey.what-is-your-nino=What is your National Insurance number?
 subscription-journey.what-is-your-nino.label=National Insurance number
-subscription-journey.what-is-your-nino.hint=It''s on your National Insurance card, benefit letter, payslip or P60. For example, QQ123456C
+subscription-journey.what-is-your-nino.hint=It’s on your National Insurance card, benefit letter, payslip or P60. For example, QQ123456C
 cds.subscription.nino-details.page-error.nino=National Insurance number
 cds.subscription.nino.error.empty=Enter your National Insurance number
 cds.subscription.nino.error.wrong-length=The National Insurance number must be 9 characters
@@ -554,7 +554,6 @@ cds.matching.organisation-type.radio.eu-individual.label=EU Individual
 cds.matching.organisation-type.radio.third-country-organisation.label=Third country organisation
 cds.matching.organisation-type.radio.third-country-sole-trader.label=Third country sole trader
 cds.matching.organisation-type.radio.third-country-individual.label=Third country individual
-cds.matching.organisation-type.page-error.organisation-type=Tell us what you want to apply as
 cds.matching.organisation-type.page-error.organisation-type-field.error.required=Tell us what you want to apply as
 
 # Sub01 Outcomes
@@ -688,7 +687,7 @@ cds.matching.sole-trader-individual-utr.error.utr=Enter the Self Assessment UTR 
 cds.matching.sole-trader-individual-utr.error.have-utr=Tell us if you have a Self Assessment UTR number
 
 #UTR Help
-cds.matching.utr.help=Can''t find your Corporation Tax UTR number?
+cds.matching.utr.help=Can’t find your Corporation Tax UTR number?
 cds.matching.utr.help-message.header=This can be found on HMRC letters to your organisation, such as:
 cds.matching.utr.help-message.bullet-1=''Notice to deliver a Company Tax Return'' (CT603)
 cds.matching.utr.help-message.bullet-2=''Corporation Tax notice'' (CT610)
@@ -721,7 +720,7 @@ cds.matching.nino.row.header=Do you have a National Insurance number issued in t
 cds.matching.nino.row.description=You will have a National Insurance number if you have worked in the UK.
 cds.matching.nino.row.error.have-nino=Tell us if you have a National Insurance number
 
-cds.matching.nino.nino.hint=It''s on your National Insurance card, benefit letter, payslip or P60.<br>For example, ''QQ123456C''
+cds.matching.nino.nino.hint=It’s on your National Insurance card, benefit letter, payslip or P60.<br>For example, ''QQ123456C''
 cds.matching.nino.date-of-birth=Date of birth
 
 #Nino Or UTR
@@ -979,14 +978,14 @@ cds.subscription.date-of-establishment.title-and-heading=When was the organisati
 cds.subscription.partnership.date-of-establishment.title-and-heading=When was the partnership established?
 cds.subscription.date-of-establishment.date-of-establishment.label=Date of establishment
 cds.subscription.date-of-establishment.page-error.date-of-establishment=Enter your date of establishment
-cds.subscription.business.date-established.label=Enter the date shown on the organisation''s certificate of incorporation. You can find the date your organisation was established on the <a href="https://beta.companieshouse.gov.uk/" target="_blank" rel="noopener noreferrer">Companies House register (opens in a new window or tab)</a>
-cds.subscription.llp.date-established.charity-label=Enter the date shown on the organisation''s certificate of incorporation or registration certificate.
-cds.subscription.llp.date-established.label=Enter the date shown on the partnership''s certificate of incorporation. You can find the date your business was established on the <a href="https://beta.companieshouse.gov.uk/" target="_blank" rel="noopener noreferrer">Companies House register (opens in a new window or tab)</a>
+cds.subscription.business.date-established.label=Enter the date shown on the organisation’s certificate of incorporation. You can find the date your organisation was established on the <a href="https://beta.companieshouse.gov.uk/" target="_blank" rel="noopener noreferrer">Companies House register (opens in a new window or tab)</a>
+cds.subscription.llp.date-established.charity-label=Enter the date shown on the organisation’s certificate of incorporation or registration certificate.
+cds.subscription.llp.date-established.label=Enter the date shown on the partnership’s certificate of incorporation. You can find the date your business was established on the <a href="https://beta.companieshouse.gov.uk/" target="_blank" rel="noopener noreferrer">Companies House register (opens in a new window or tab)</a>
 cds.subscription.row.date-established.label=Enter the date your organisation was established
 cds.subscription.date-of-establishment.error.required.date-of-establishment=Enter your date of establishment
 cds.subscription.date-of-establishment.error.invalid.date-of-establishment=Please enter a valid date of establishment
 cds.subscription.date-of-establishment.error.in-future.date-of-establishment=You cannot enter a date of establishment in the future
-cds.subscription.date-of-establishment.cannot-find=Can''t find the certificate?
+cds.subscription.date-of-establishment.cannot-find=Can’t find the certificate?
 cds.subscription.date-of-establishment.find-it=You can find the incorporated date on the <a href="https://beta.companieshouse.gov.uk/" target="_blank"> Companies House register</a>
 
 #Sic Code
