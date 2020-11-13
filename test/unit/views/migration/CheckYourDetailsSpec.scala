@@ -325,6 +325,13 @@ class CheckYourDetailsSpec extends ViewSpec {
         "href"
       ) mustBe "/customs-enrolment-services/atar/subscribe/row-nino"
     }
+
+    "not display change link for EORI when feature is turned off" in {
+      val page = doc(eoriNumberChange = false)
+      page.body.getElementById("review-tbl__eori-number").text mustBe eori.get
+      page.body.getElementById("review-tbl__eori-number_change") mustBe null
+      page.body.getElementById("review-tbl__eori-number_row").text must not contain "Change"
+    }
   }
 
   def doc(
@@ -333,7 +340,8 @@ class CheckYourDetailsSpec extends ViewSpec {
     orgType: Option[CdsOrganisationType] = organisationType,
     nameDobMatchModel: Option[NameDobMatchModel] = nameDobMatchModel,
     isThirdCountrySubscription: Boolean = false,
-    nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg
+    nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg,
+    eoriNumberChange: Boolean = true
   ): Document = {
 
     implicit val request = withFakeCSRF(FakeRequest().withSession(("selected-user-location", "third-country")))
@@ -345,6 +353,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       address,
       sicCode,
       eori,
+      eoriNumberChange,
       email,
       nameIdOrganisationDetails,
       None,

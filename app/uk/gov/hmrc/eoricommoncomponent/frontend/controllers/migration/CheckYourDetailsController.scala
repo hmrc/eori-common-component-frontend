@@ -53,6 +53,7 @@ class CheckYourDetailsController @Inject() (
             contactDetails = subscriptionDetailsHolder.contactDetails,
             principalEconomicActivity = subscriptionDetailsHolder.sicCode,
             eoriNumber = subscriptionDetailsHolder.eoriNumber,
+            eoriNumberChange = subscriptionDetailsHolder.existingEoriNumber.isEmpty,
             email = Some(email),
             nameIdOrganisationDetails = subscriptionDetailsHolder.nameIdOrganisationDetails,
             nameOrganisationDetails = subscriptionDetailsHolder.nameOrganisationDetails,

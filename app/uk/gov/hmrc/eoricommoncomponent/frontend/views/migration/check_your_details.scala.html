@@ -34,6 +34,7 @@
         addressDetails: Option[AddressViewModel],
         principalEconomicActivity: Option[String],
         eoriNumber: Option[String],
+        eoriNumberChange: Boolean,
         email: Option[String],
         nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel],
         nameOrganisationDetails: Option[NameOrganisationMatchModel],
@@ -174,7 +175,7 @@
                     "eori-number",
                     messages("cds.subscription.enter-eori-number.eori-number.label"),
                     Html.apply(eoriNumber.getOrElse("")),
-                    Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.reviewForm(service)),
+                    if(eoriNumberChange) Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.reviewForm(service)) else None,
                     messages("cds.subscription.enter-eori-number.eori-number.label")
                 )
                 @nameOrganisationDetails.map { d =>
