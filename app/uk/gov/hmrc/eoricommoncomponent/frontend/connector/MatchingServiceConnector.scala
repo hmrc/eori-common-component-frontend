@@ -22,7 +22,11 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{RegisterWithIdConfirmation, RegisterWithIdSubmitted}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{
+  RegisterWithId,
+  RegisterWithIdConfirmation,
+  RegisterWithIdSubmitted
+}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -48,12 +52,11 @@ class MatchingServiceConnector @Inject() (http: HttpClient, appConfig: AppConfig
     logger.info(
       s"REG01 postUrl: $url,  acknowledgement ref: ${req.registerWithIDRequest.requestCommon.acknowledgementReference}"
     )
-    auditCallRequest(url, req)
     http.POST[MatchingRequestHolder, MatchingResponse](url, req) map { resp =>
       logger.info(
         s"REG01 business match found for acknowledgement ref: ${req.registerWithIDRequest.requestCommon.acknowledgementReference}"
       )
-      auditCallResponse(url, resp)
+      auditCall(url, req, resp)
       handleResponse(resp)
     } recover {
       case e: Throwable =>
@@ -65,20 +68,18 @@ class MatchingServiceConnector @Inject() (http: HttpClient, appConfig: AppConfig
 
   }
 
-  private def auditCallRequest(url: String, request: MatchingRequestHolder)(implicit hc: HeaderCarrier): Unit =
-    audit.sendExtendedDataEvent(
-      transactionName = "ecc-registration-with-id",
-      path = url,
-      details = Json.toJson(RegisterWithIdSubmitted(request)),
-      eventType = "RegistrationWithIdSubmitted"
-    )
+  private def auditCall(url: String, request: MatchingRequestHolder, response: MatchingResponse)(implicit
+    hc: HeaderCarrier
+  ): Unit = {
+    val registerWithIdSubmitted    = RegisterWithIdSubmitted(request)
+    val registerWithIdConfirmation = RegisterWithIdConfirmation(response)
 
-  private def auditCallResponse(url: String, response: MatchingResponse)(implicit hc: HeaderCarrier): Unit =
     audit.sendExtendedDataEvent(
       transactionName = "ecc-registration-with-id",
       path = url,
-      details = Json.toJson(RegisterWithIdConfirmation(response)),
-      eventType = "RegistrationWithIdConfirmation"
+      details = Json.toJson(RegisterWithId(registerWithIdSubmitted, registerWithIdConfirmation)),
+      eventType = "RegistrationWithId"
     )
+  }
 
 }
