@@ -326,8 +326,8 @@ class CheckYourDetailsSpec extends ViewSpec {
       ) mustBe "/customs-enrolment-services/atar/subscribe/row-nino"
     }
 
-    "not display change link for EORI when feature is turned off" in {
-      val page = doc(eoriNumberChange = false)
+    "not display change link for EORI when existing EORI exists" in {
+      val page = doc(existingEori = Some(ExistingEori("GB12121212212", "HMRC-GVMS-ORG")))
       page.body.getElementById("review-tbl__eori-number").text mustBe eori.get
       page.body.getElementById("review-tbl__eori-number_change") mustBe null
       page.body.getElementById("review-tbl__eori-number_row").text must not contain "Change"
@@ -341,7 +341,7 @@ class CheckYourDetailsSpec extends ViewSpec {
     nameDobMatchModel: Option[NameDobMatchModel] = nameDobMatchModel,
     isThirdCountrySubscription: Boolean = false,
     nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg,
-    eoriNumberChange: Boolean = true
+    existingEori: Option[ExistingEori] = None
   ): Document = {
 
     implicit val request = withFakeCSRF(FakeRequest().withSession(("selected-user-location", "third-country")))
@@ -353,7 +353,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       address,
       sicCode,
       eori,
-      eoriNumberChange,
+      existingEori,
       email,
       nameIdOrganisationDetails,
       None,
