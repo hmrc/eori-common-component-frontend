@@ -103,7 +103,9 @@ class WhatIsYourEoriControllerSpec
     "display title as 'What is your GB EORI number?'" in {
       showCreateForm(journey = Journey.Subscribe) { result =>
         val page = CdsPage(contentAsString(result))
-        page.title() should startWith("What is your GB EORI number?")
+        page.title() should startWith(
+          "What is your GB Economic Operator Registration and Identification (EORI) number?"
+        )
       }
     }
 
@@ -164,7 +166,9 @@ class WhatIsYourEoriControllerSpec
     "display title as 'What is your GB EORI number'" in {
       showReviewForm() { result =>
         val page = CdsPage(contentAsString(result))
-        page.title() should startWith("What is your GB EORI number?")
+        page.title() should startWith(
+          "What is your GB Economic Operator Registration and Identification (EORI) number?"
+        )
       }
     }
 

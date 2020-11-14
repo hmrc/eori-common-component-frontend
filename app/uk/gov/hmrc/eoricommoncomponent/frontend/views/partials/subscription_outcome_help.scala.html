@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,20 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package common.pages.subscription
+@()(implicit messages: Messages, request: Request[_])
 
-import common.pages.WebPage
-
-trait ApplicationUnsuccessfulPage extends WebPage {
-
-  override val title = "The subscription request has been unsuccessful"
-}
-
-object ApplicationPendingPage extends WebPage {
-
-  override val title = "We are processing the subscription request"
-}
-
-object ApplicationUnsuccessfulPage extends ApplicationUnsuccessfulPage
+<div id='additional-information-help'>
+    <h2 class="heading-medium">@messages("cds.subscription.outcomes.help.heading")</h2>
+    <p>@messages("cds.subscription.outcomes.help.paragraph1")</p>
+    <p>@messages("cds.subscription.outcomes.help.paragraph2")</p>
+</div>

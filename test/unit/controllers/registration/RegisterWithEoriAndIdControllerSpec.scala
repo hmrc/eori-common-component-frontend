@@ -30,8 +30,8 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegisterWithEoriAndIdResponse._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, ResponseCommon}
@@ -188,7 +188,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
     "redirect to enrolment exists if user has group enrolment to service" in {
       when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any())).thenReturn(Future.successful(true))
 
-      regExistingEori { result =>
+      regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe EnrolmentAlreadyExistsController
           .enrolmentAlreadyExistsForGroup(atarService, Journey.Subscribe)
@@ -231,7 +231,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           .saveKeyIdentifiers(any[GroupId], any[InternalId])(any())
       ).thenReturn(Future.successful(()))
 
-      regExistingEori { result =>
+      regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe Sub02Controller
           .migrationEnd(atarService)
@@ -274,7 +274,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
 
-      regExistingEori { result =>
+      regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe Sub02Controller
           .migrationEnd(atarService)
@@ -317,7 +317,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
 
-      regExistingEori { result =>
+      regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe Sub02Controller
           .migrationEnd(atarService)
@@ -364,7 +364,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         )
       )
 
-      regExistingEori { result =>
+      regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe Sub02Controller
           .migrationEnd(atarService)
@@ -408,7 +408,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           .getStatus(meq("SAFE"), meq("SomeSafeId"))(any())
       ).thenReturn(Future.successful(NewSubscription))
 
-      regExistingEori { result =>
+      regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe Sub02Controller
           .migrationEnd(atarService)
@@ -452,7 +452,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
 
-      regExistingEori { result =>
+      regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe Sub02Controller
           .migrationEnd(atarService)
@@ -491,7 +491,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           .getStatus(meq("SAFE"), meq("SomeSafeId"))(any())
       ).thenReturn(Future.successful(NewSubscription))
 
-      regExistingEori { result =>
+      regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .pending(atarService, processingDateResponse)
@@ -510,7 +510,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponseFail))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
-      regExistingEori { result =>
+      regExistingEori(Journey.Register) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .fail(atarService, DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
@@ -544,7 +544,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         )
       )
 
-      regExistingEori { result =>
+      regExistingEori(Journey.Register) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .pending(atarService, DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
@@ -560,7 +560,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponseExceptionCase))
 
-      regExistingEori { result =>
+      regExistingEori(Journey.Register) { result =>
         the[IllegalStateException] thrownBy {
           status(result) shouldBe SEE_OTHER
         } should have message "Unknown RegistrationDetailsOutCome"
@@ -578,7 +578,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
         .thenReturn(Future.successful(None))
 
-      regExistingEori { result =>
+      regExistingEori(Journey.Register) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .fail(atarService, DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
@@ -615,7 +615,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           .getStatus(meq("SAFE"), meq("SomeSafeId"))(any())
       ).thenReturn(Future.successful(SubscriptionProcessing))
 
-      regExistingEori { result =>
+      regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .processing(atarService)
@@ -659,7 +659,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           .doesEnrolmentExist(meq(SafeId("SomeSafeId")))(any(), any())
       ).thenReturn(Future.successful(true))
 
-      regExistingEori { result =>
+      regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe SignInWithDifferentDetailsController
           .form(service = atarService, journey = Journey.Subscribe)
@@ -703,7 +703,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           .doesEnrolmentExist(meq(SafeId("SomeSafeId")))(any(), any())
       ).thenReturn(Future.successful(false))
 
-      regExistingEori { result =>
+      regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe SubscriptionRecoveryController
           .complete(atarService, Journey.Subscribe)
@@ -745,7 +745,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           .saveKeyIdentifiers(any[GroupId], any[InternalId])(any())
       ).thenReturn(Future.successful(()))
 
-      regExistingEori { result =>
+      regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .fail(atarService, processingDateResponse)
@@ -778,7 +778,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Future.successful(stubHandleErrorCodeResponse(EoriAlreadyLinked)))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
-      regExistingEori { result =>
+      regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .eoriAlreadyLinked(atarService)
@@ -814,7 +814,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         )
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
-      regExistingEori { result =>
+      regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .rejectedPreviously(atarService)
@@ -847,7 +847,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Future.successful(stubHandleErrorCodeResponse("")))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
-      regExistingEori { result =>
+      regExistingEori(Journey.Register) { result =>
         status(result) shouldBe SERVICE_UNAVAILABLE
       }
     }
@@ -865,7 +865,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockRegisterWithEoriAndIdResponse.responseDetail)
         .thenReturn(Some(RegisterWithEoriAndIdResponseDetail(Some("PASS"), None)))
 
-      regExistingEori { result =>
+      regExistingEori() { result =>
         the[IllegalStateException] thrownBy {
           status(result) shouldBe OK
         } should have message "SafeId can't be none"
@@ -880,7 +880,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Future.successful(mockSub01Outcome))
       when(mockSub01Outcome.processedDate).thenReturn("11 January 2015")
 
-      invokeProcessing { result =>
+      invokeProcessing() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
         page.title() should startWith(RegistrationProcessingPage.title)
@@ -902,7 +902,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Future.successful(mockSub01Outcome))
       when(mockSub01Outcome.processedDate).thenReturn("11 January 2015")
 
-      invokeProcessing { result =>
+      invokeProcessing() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
         page.title() should startWith(RegistrationProcessingPage.title)
@@ -923,16 +923,25 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Future.successful(mockSub01Outcome))
       when(mockSub01Outcome.processedDate).thenReturn("11 January 2015")
 
-      invokeRejected { result =>
+      invokeRejected(Journey.Subscribe) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
         page.title() should startWith(RegistrationRejectedPage.title)
         page.getElementsText(
           RegistrationRejectedPage.pageHeadingXpath
-        ) shouldBe RegistrationRejectedPage.individualHeading
+        ) shouldBe RegistrationRejectedPage.individualHeadingSubscription
         page.getElementsText(
           RegistrationRejectedPage.processedDateXpath
         ) shouldBe "Application received by HMRC on 11 January 2015"
+      }
+
+      invokeRejected(Journey.Register) { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title() should startWith(RegistrationRejectedPage.titleRegistration)
+        page.getElementsText(
+          RegistrationRejectedPage.pageHeadingXpath
+        ) shouldBe RegistrationRejectedPage.individualHeadingRegistration
       }
     }
 
@@ -979,7 +988,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       invokeEoriAlreadyLinked() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title() should startWith("The ATaR application has been unsuccessful")
+        page.title() should startWith("The Advance Tariff Rulings subscription request has been unsuccessful")
       }
     }
 
@@ -995,10 +1004,16 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockCache.remove(any[HeaderCarrier]))
         .thenReturn(Future.successful(true))
 
-      invokeRejectedPreviously() { result =>
+      invokeRejectedPreviously(journey = Journey.Subscribe) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title() should startWith("The ATaR application has been unsuccessful")
+        page.title() should startWith("The Advance Tariff Rulings subscription request has been unsuccessful")
+      }
+
+      invokeRejectedPreviously(journey = Journey.Register) { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title() should startWith("The Advance Tariff Rulings registration request has been unsuccessful")
       }
     }
 
@@ -1017,53 +1032,63 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
     }
   }
 
-  private def regExistingEori(test: Future[Result] => Any) {
-    test(controller.registerWithEoriAndId(atarService, Journey.Subscribe)(requestWithPath))
+  private def regExistingEori(journey: Journey.Value = Journey.Subscribe)(test: Future[Result] => Any) {
+    test(controller.registerWithEoriAndId(atarService, Journey.Subscribe)(requestWithPath(journey)))
   }
 
-  private def invokeProcessing(test: Future[Result] => Any) {
+  private def invokeProcessing(journey: Journey.Value = Journey.Subscribe)(test: Future[Result] => Any) {
     test(
       controller.processing(atarService)
-        .apply(requestWithPath)
+        .apply(requestWithPath(journey))
     )
   }
 
-  private def invokeRejected(test: Future[Result] => Any) {
+  private def invokeRejected(journey: Journey.Value = Journey.Subscribe)(test: Future[Result] => Any) {
     test(
       controller.rejected(atarService)
-        .apply(requestWithPath)
+        .apply(requestWithPath(journey))
     )
   }
 
-  private def invokePending(date: String = "11 August 2015")(test: Future[Result] => Any) {
+  private def invokePending(date: String = "11 August 2015", journey: Journey.Value = Journey.Subscribe)(
+    test: Future[Result] => Any
+  ) {
     test(
       controller
         .pending(atarService, date)
-        .apply(requestWithPath)
+        .apply(requestWithPath(journey))
     )
   }
 
-  private def invokeFail(date: String = "11 September 2015")(test: Future[Result] => Any) {
+  private def invokeFail(date: String = "11 September 2015", journey: Journey.Value = Journey.Subscribe)(
+    test: Future[Result] => Any
+  ) {
     test(
       controller
         .fail(atarService, date)
-        .apply(requestWithPath)
+        .apply(requestWithPath(journey))
     )
   }
 
-  private def invokeEoriAlreadyLinked()(test: Future[Result] => Assertion): Unit =
+  private def invokeEoriAlreadyLinked(
+    journey: Journey.Value = Journey.Subscribe
+  )(test: Future[Result] => Assertion): Unit =
     test(
       controller
         .eoriAlreadyLinked(atarService)
-        .apply(requestWithPath)
+        .apply(requestWithPath(journey))
     )
 
-  private def invokeRejectedPreviously()(test: Future[Result] => Assertion): Unit =
+  private def invokeRejectedPreviously(
+    journey: Journey.Value = Journey.Subscribe
+  )(test: Future[Result] => Assertion): Unit =
     test(
       controller
         .rejectedPreviously(atarService)
-        .apply(requestWithPath)
+        .apply(requestWithPath(journey))
     )
 
-  private def requestWithPath = SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe", defaultUserId)
+  private def requestWithPath(journey: Journey.Value) =
+    SessionBuilder.buildRequestWithSessionAndPath(s"/atar/${journey.toString.toLowerCase}", defaultUserId)
+
 }

@@ -2,7 +2,6 @@ cds.banner.registration=TRANSLATE Get an EORI
 cds.banner.subscription=TRANSLATE Subscribe to [SERVICE]
 
 cds.subscription.enter-eori-number.heading=TRANSLATE What is your GB Economic Operator Registration and Identification (EORI) number?
-cds.subscription.enter-eori-number.heading=Beth yw’ch rhif EORI GB?
 cds.subscription.enter-eori-number.no-eori.summary=TRANSLATE I do not have an EORI number
 cds.subscription.enter-eori-number.no-eori=You must [get an EORI number] before you can apply for [SERVICE].
 cds.subscription.enter-eori-number.no-eori.link=TODO get an EORI number
@@ -34,16 +33,19 @@ cds.you-cant-use-service-agent.para2=TRANSLATE You need to sign in with the Gove
 cds.you-cant-use-service-standard-organisation.para1=TRANSLATE You signed in to Government Gateway as a standard user. To apply for access to [SERVICE] you must be an administrator user.
 cds.you-cant-use-service-standard-organisation.para2=TRANSLATE Please log in as an administrator or contact the person who set up your Government Gateway.
 
-cds.sub01.outcome.rejected.heading=TRANSLATE The [SERVICE] application for [USER] has been unsuccessful
-cds.sub01.outcome.rejected.heading-noname=TRANSLATE The [SERVICE] application has been unsuccessful
-cds.sub01.outcome.rejected.title=TRANSLATE The [SERVICE] application has been unsuccessful
+cds.sub01.outcome.rejected.subscribe.heading=TRANSLATE The [SERVICE] subscription request for [USER] has been unsuccessful
+cds.sub01.outcome.rejected.subscribe.heading-noname=TRANSLATE The [SERVICE] subscription request has been unsuccessful
+cds.sub01.outcome.rejected.subscribe.title=TRANSLATE The [SERVICE] subscription request has been unsuccessful
 
-cds.reg06.outcome.eori-already-linked.title=TRANSLATE The [SERVICE] application has been unsuccessful
-cds.reg06.outcome.eori-already-linked.heading=TRANSLATE The [SERVICE] application for [USER] has been unsuccessful
-cds.subscription.outcomes.eori-already-linked.use-cds-heading=TRANSLATE To use [SERVICE]
+cds.sub01.outcome.rejected.register.heading=TRANSLATE The [SERVICE] registration request for [USER] has been unsuccessful
+cds.sub01.outcome.rejected.register.heading-noname=TRANSLATE The [SERVICE] registration request has been unsuccessful
+cds.sub01.outcome.rejected.register.title=TRANSLATE The [SERVICE] registration request has been unsuccessful
+
+cds.reg06.outcome.eori-already-linked.title=TRANSLATE The [SERVICE] subscription request has been unsuccessful
+cds.reg06.outcome.eori-already-linked.heading=TRANSLATE The [SERVICE] subscription request for [USER] has been unsuccessful
 cds.subscription.outcomes.eori-already-linked.use-cds-para=TRANSLATE You need to sign in with the Government Gateway [USER] used to get access to [SERVICE].
 
-cds.subscription.outcomes.inprocessing.we-are-processing=TRANSLATE We are processing your registration to [SERVICE]. This can take up to 5 working days. You will need to sign back in to see the result of your registration.
+cds.subscription.outcomes.inprocessing.we-are-processing=TRANSLATE We are processing your [SERVICE] subscription request. This can take up to 5 working days. You will need to sign back in to see the result of your registration.
 
 cds.enrolment.already.exists.for-group.para1=TRANSLATE Your organisation is already enrolled to [SERVICE]. Ask a team member for access.
 
@@ -57,11 +59,11 @@ cds.sub01.outcome.processing.we-are-processing=TRANSLATE We are processing your 
 
 cds.subscription.verify-email.title=TRANSLATE Confirm your email address
 
-cds.subscription.outcomes.rejected.title=TRANSLATE The [SERVICE] application has been unsuccessful
-cds.subscription.outcomes.rejected.heading=TRANSLATE The [SERVICE] application for [USER] has been unsuccessful
+cds.subscription.outcomes.rejected.title=TRANSLATE The subscription request has been unsuccessful
+cds.subscription.outcomes.rejected.heading=TRANSLATE The subscription request for [USER] has been unsuccessful
 
-cds.subscription.outcomes.in-processing.title=TRANSLATE The [SERVICE] application is being processed
-cds.subscription.outcomes.in-processing.heading=TRANSLATE We are processing the registration for [USER]
+cds.subscription.outcomes.in-processing.title=TRANSLATE We are processing the subscription request
+cds.subscription.outcomes.in-processing.heading=TRANSLATE We are processing the subscription request for [USER]
 
 enter-email-body-text=TRANSLATE We will use this to send you the result of your application.
 cds.subscription.verify-email.para2=TRANSLATE For your security the link in the email will expire after 72 hours.
@@ -140,3 +142,32 @@ cds.matching.organisation-utr.field-error.have-utr=TRANSLATE Select yes if you h
 cds.subscription.contact-details.error.use-registered-address=TRANSLATE Select yes if the contact address is right
 cds.subscription.nino.utr.invalid=TRANSLATE Select how we can identify you
 cds.matching.nino.row.yes-no.error=TRANSLATE Select yes if you have a National Insurance number
+
+cds.email-confirmed.title-and-heading=TRANSLATE You have confirmed your email address
+cds.registration.user-location.location.uk.label=TRANSLATE United Kingdom
+cds.registration.user-location.location.eu.label=TRANSLATE The European Union
+cds.registration.user-location.location.third-country.label=TRANSLATE Outside the European Union
+
+cds.matching.name-id-organisation.company.utr=TRANSLATE Corporation Tax Unique Taxpayer Reference (UTR)
+cds.matching.name-id-organisation.registered-company.utr=TRANSLATE Corporation Tax Unique Taxpayer Reference (UTR)
+cds.matching.name-id-organisation.partnership.utr=TRANSLATE Partnership Self Assessment Unique Taxpayer Reference (UTR)
+cds.matching.name-id-organisation.organisation.utr=TRANSLATE Organisation Self Assessment Unique Taxpayer Reference (UTR)
+
+cds.subscription.date-of-establishment.company.title-and-heading=TRANSLATE When was the company established?
+
+cds.enter-address-details.company.title-and-heading=TRANSLATE What is your company’s registered address?
+
+cds.subscription.address-details.postcode.row.label=TRANSLATE Postal code
+
+cds.matching.row-organisation.utr.title-and-heading=TRANSLATE Does your organisation have a Unique Taxpayer Reference (UTR) issued in the UK?
+cds.matching.row-sole-trader-individual.utr.title-and-heading=TRANSLATE Do you have a Self Assessment Unique Taxpayer Reference (UTR) issued in the UK?
+
+cds.form.declaration=TRANSLATE Declaration
+cds.form.send=TRANSLATE Confirm and send
+
+cds.mig.existing.outcomes.application-received.title=TRANSLATE Subscription request received
+cds.reg.existing.outcomes.success.heading.part1=TRANSLATE Subscription request received for [USER]
+
+cds.subscription.outcomes.help.heading=TRANSLATE If you need help
+cds.subscription.outcomes.help.paragraph1=TRANSLATE Phone the subscription support team on 0300 322 7067. This is available 8am to 6pm, Monday to Friday (closed bank holidays).
+cds.subscription.outcomes.help.paragraph2=TRANSLATE You can also find more information about this subject on GOV.UK.

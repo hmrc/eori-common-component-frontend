@@ -36,11 +36,11 @@ class Sub01OutcomeRejectedSpec extends ViewSpec {
   "'Sub01 Outcome Rejected' Page with name" should {
 
     "display correct title" in {
-      docWithName().title() must startWith("The ATaR application has been unsuccessful")
+      docWithName().title() must startWith("The Advance Tariff Rulings subscription request has been unsuccessful")
     }
     "display correct heading" in {
       docWithName().body.getElementsByTag("h1").text() must startWith(
-        s"The ATaR application for $orgName has been unsuccessful"
+        s"The Advance Tariff Rulings subscription request for $orgName has been unsuccessful"
       )
     }
     "have the correct class on the h1" in {
@@ -69,7 +69,9 @@ class Sub01OutcomeRejectedSpec extends ViewSpec {
   "'Sub01 Outcome Rejected' Page without name" should {
 
     "display correct heading" in {
-      docWithoutName().body.getElementsByTag("h1").text() must startWith("The ATaR application has been unsuccessful")
+      docWithoutName().body.getElementsByTag("h1").text() must startWith(
+        "The Advance Tariff Rulings subscription request has been unsuccessful"
+      )
     }
     "have the correct class on the h1" in {
       docWithoutName().body.getElementsByTag("h1").hasClass("heading-xlarge") mustBe true

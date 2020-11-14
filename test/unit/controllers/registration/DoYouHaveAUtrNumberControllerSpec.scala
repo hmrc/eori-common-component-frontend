@@ -219,10 +219,8 @@ class DoYouHaveAUtrNumberControllerSpec
     "when ThirdCountryOrganisationId is passed" in {
       showForm(CdsOrganisationType.ThirdCountryOrganisationId) { result =>
         val page = CdsPage(contentAsString(result))
-        page.title should startWith(
-          "Does your organisation have a Unique Taxpayer Reference (UTR) number issued in the UK?"
-        )
-        page.h1 shouldBe "Does your organisation have a Unique Taxpayer Reference (UTR) number issued in the UK?"
+        page.title should startWith("Does your organisation have a Unique Taxpayer Reference (UTR) issued in the UK?")
+        page.h1 shouldBe "Does your organisation have a Unique Taxpayer Reference (UTR) issued in the UK?"
 
         page.getElementsText(
           "//*[@id='intro']"
@@ -274,10 +272,8 @@ class DoYouHaveAUtrNumberControllerSpec
     "contain a proper content for sole traders" in {
       showForm(CdsOrganisationType.ThirdCountrySoleTraderId, defaultUserId) { result =>
         val page = CdsPage(contentAsString(result))
-        page.title should startWith(
-          "Do you have a Self Assessment Unique Taxpayer Reference (UTR) number issued in the UK?"
-        )
-        page.h1 shouldBe "Do you have a Self Assessment Unique Taxpayer Reference (UTR) number issued in the UK?"
+        page.title should startWith("Do you have a Self Assessment Unique Taxpayer Reference (UTR) issued in the UK?")
+        page.h1 shouldBe "Do you have a Self Assessment Unique Taxpayer Reference (UTR) issued in the UK?"
         page.getElementsText(
           "//*[@id='intro']"
         ) shouldBe "You will have a self assessment UTR number if you registered for Self Assessment in the UK."
@@ -286,10 +282,8 @@ class DoYouHaveAUtrNumberControllerSpec
     "contain a proper content for individuals" in {
       showForm(CdsOrganisationType.ThirdCountryIndividualId, defaultUserId) { result =>
         val page = CdsPage(contentAsString(result))
-        page.title should startWith(
-          "Do you have a Self Assessment Unique Taxpayer Reference (UTR) number issued in the UK?"
-        )
-        page.h1 shouldBe "Do you have a Self Assessment Unique Taxpayer Reference (UTR) number issued in the UK?"
+        page.title should startWith("Do you have a Self Assessment Unique Taxpayer Reference (UTR) issued in the UK?")
+        page.h1 shouldBe "Do you have a Self Assessment Unique Taxpayer Reference (UTR) issued in the UK?"
         page.getElementsText(
           "//*[@id='intro']"
         ) shouldBe "You will have a self assessment UTR number if you registered for Self Assessment in the UK."

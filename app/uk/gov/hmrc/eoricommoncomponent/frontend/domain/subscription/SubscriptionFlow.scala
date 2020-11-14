@@ -261,6 +261,7 @@ object SubscriptionFlow {
       .find(_.name == flowName)
       .fold(throw new IllegalStateException(s"Incorrect Subscription flowname $flowName"))(identity)
   }
+
 }
 
 sealed abstract class SubscriptionPage() {

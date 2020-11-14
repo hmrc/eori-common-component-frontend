@@ -31,23 +31,13 @@ class EmailConfirmedSpec extends ViewSpec {
 
   "Email Address Confirmed page" should {
     "display correct title" in {
-      migrateDoc.title must startWith("Email address confirmed")
+      migrateDoc.title must startWith("You have confirmed your email address")
     }
     "have the correct h1 text" in {
-      migrateDoc.body.getElementsByTag("h1").text() mustBe "Email address confirmed"
+      migrateDoc.body.getElementsByTag("h1").text() mustBe "You have confirmed your email address"
     }
     "have the correct class on the h1" in {
       migrateDoc.body.getElementsByTag("h1").hasClass("heading-large") mustBe true
-    }
-    "have an correct text for Subscribe journey" in {
-      migrateDoc.body
-        .getElementById("info")
-        .text() mustBe "You can continue with your application."
-    }
-    "have an correct text for Get Eori journey" in {
-      getEoriDoc.body
-        .getElementById("info")
-        .text() mustBe "You can continue with your application to get an EORI number."
     }
     "have a continue button" in {
       migrateDoc.body.getElementsByClass("button").text() mustBe "Continue"
