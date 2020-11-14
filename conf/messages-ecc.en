@@ -75,17 +75,22 @@ cds.subscription.outcomes.success.will-send-email=We will send you an email to c
 cds.registration.you-already-have-eori.title=You already have an EORI
 cds.registration.you-already-have-eori.para1=We have detected you already have an EORI.  You can continue and subscribe to the the {0} service.
 
-cds.subscription.information.heading=We need more information before you can use this service
-cds.subscription.information.para1=This only needs to be done once.
-cds.subscription.information.subheading1=You will need to give us your:
-cds.subscription.information.bullet1=GB EORI (Economic Operator and Registration Identification) number. From 1 January 2021 you will need one to move goods between Great Britain (England, Scotland and Wales) and the rest of the world. If you don’t already have one, you need to {0}.
-cds.subscription.information.bullet1.link=apply for an EORI number
-cds.subscription.information.subheading2=If you are an organisation you will also need to give us your:
-cds.subscription.information.bullet2=Unique Taxpayer Reference (UTR). You can {0}.
-cds.subscription.information.bullet2.link=find a lost UTR number (opens in a new window or tab)
-cds.subscription.information.subheading3=If you are an individual or sole trader in the UK you will also need to give us your:
-cds.subscription.information.bullet3=National Insurance number or Self Assessment Unique Taxpayer Reference.
-cds.subscription.information.para2=You will receive a confirmation email within 2 hours.
+cds.subscription.information.heading=You must subscribe before you can use this service
+cds.subscription.information.para1=From 1 January 2021, you will need a GB EORI (Economic Operator and Registration Identification) number to move goods between Great Britain (England, Scotland and Wales) and the rest of the world.
+cds.subscription.information.para2=If you don’t already have one, you must {0}.
+cds.subscription.information.para2.link=apply for an EORI number
+
+cds.subscription.information.section.organisation.subheading=As an organisation:
+cds.subscription.information.section.organisation.utr=You will also need your Corporation Tax Unique Tax Reference (UTR). You can {0}.
+cds.subscription.information.section.organisation.utr.link=find a lost UTR number (opens in a new window or tab)
+
+cds.subscription.information.section.individual.subheading=As an individual or sole trader in the UK:
+cds.subscription.information.section.individual.para=You will need one of the following:
+cds.subscription.information.section.individual.nino=National Insurance number
+cds.subscription.information.section.individual.utr=Self Assessment Unique Taxpayer Reference (UTR)
+
+cds.subscription.information.para3=This only needs to be done once.
+cds.subscription.information.para4=You will receive a confirmation email within 2 hours.
 
 cds.navigation.subscribe=Subscribe
 
@@ -122,3 +127,20 @@ cds.subscription.sign-in-with-different-details.para1-noname=You have already re
 cds.matching.row-organisation.utr.hint=This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Corporation Tax. It may be called 'reference', 'UTR' or 'official use'. You can {0}.
 cds.matching.row-sole-trader-individual.utr.hint=This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’. You can {0}.
 cds.matching.row-lost-urt.hint.link=find a lost UTR number
+
+cds.subscribe.use-this-eori.heading=Your GB Economic Operator Registration and Identification (EORI) number
+cds.subscribe.use-this-eori.paragraph1=This EORI is linked to the Government Gateway account you are using.
+cds.subscribe.use-this-eori.paragraph2=To use a different EORI you must {0} and start again with a different Government Gateway user ID and password.
+cds.subscribe.use-this-eori.signout=sign out
+cds.subscribe.use-this-eori.paragraph3=Confirm that this is the EORI number to use for your application.
+cds.subscribe.use-this-eori.confirm=Confirm and continue
+
+cds.subscription.check-your-email.page-error.yes-no-answer=Select yes if this is the correct email address
+cds.registration.user-location.error.location=Select where you are based
+cds.matching.organisation-type.page-error.organisation-type-field.error.required=Select what you want to apply as
+cds.matching.organisation-utr.field-error.have-utr=Select yes if you have a UTR number
+cds.subscription.contact-details.error.use-registered-address=Select yes if the contact address is right
+cds.subscription.nino.utr.invalid=Select how we can identify you
+cds.matching.nino.row.yes-no.error=Select yes if you have a National Insurance number
+
+

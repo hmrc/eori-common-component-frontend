@@ -18,12 +18,14 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
+import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
   SubscriptionRequest,
   SubscriptionResponse
 }
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{Subscription, SubscriptionResult, SubscriptionSubmitted}
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -38,13 +40,12 @@ class SubscriptionServiceConnector @Inject() (http: HttpClient, appConfig: AppCo
   private val logger = Logger(this.getClass)
   private val url    = appConfig.getServiceUrl("subscribe")
 
-  def subscribe(request: SubscriptionRequest)(implicit hc: HeaderCarrier): Future[SubscriptionResponse] = {
-    auditCallRequest(request, url)
+  def subscribe(request: SubscriptionRequest)(implicit hc: HeaderCarrier): Future[SubscriptionResponse] =
     http.POST[SubscriptionRequest, SubscriptionResponse](url, request) map { response =>
       logger.info(
         s"SUB02 complete for acknowledgementReference : ${request.subscriptionCreateRequest.requestCommon.acknowledgementReference}"
       )
-      auditCallResponse(response, url)
+      auditCall(url, request, response)
       response
     } recoverWith {
       case e: BadRequestException =>
@@ -58,22 +59,19 @@ class SubscriptionServiceConnector @Inject() (http: HttpClient, appConfig: AppCo
         )
         Future.failed(e)
     }
+
+  private def auditCall(url: String, request: SubscriptionRequest, response: SubscriptionResponse)(implicit
+    hc: HeaderCarrier
+  ): Unit = {
+    val subscriptionRequest  = SubscriptionSubmitted(request)
+    val subscriptionResponse = SubscriptionResult(response)
+
+    audit.sendExtendedDataEvent(
+      transactionName = "ecc-subscription",
+      path = url,
+      details = Json.toJson(Subscription(subscriptionRequest, subscriptionResponse)),
+      eventType = "Subscription"
+    )
   }
-
-  private def auditCallRequest(request: SubscriptionRequest, url: String)(implicit hc: HeaderCarrier): Unit =
-    audit.sendDataEvent(
-      transactionName = "customs-subscription",
-      path = url,
-      detail = request.subscriptionCreateRequest.keyValueMap(),
-      eventType = "SubscriptionSubmitted"
-    )
-
-  private def auditCallResponse(response: SubscriptionResponse, url: String)(implicit hc: HeaderCarrier): Unit =
-    audit.sendDataEvent(
-      transactionName = "customs-subscription",
-      path = url,
-      detail = response.subscriptionCreateResponse.keyValueMap(),
-      eventType = "SubscriptionResult"
-    )
 
 }

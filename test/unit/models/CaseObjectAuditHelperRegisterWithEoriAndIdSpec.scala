@@ -337,28 +337,5 @@ class CaseObjectAuditHelperRegisterWithEoriAndIdSpec extends UnitSpec {
       registerModeEoriMap.size shouldBe 6
     }
   }
-  "RegisterWithEoriAndIdRequest Object" should {
-    "create audit map" in {
-      val registerWithEoriAndIdRequestMap = registerWithEoriAndIdRequestFromJson.keyValueMap()
-      registerWithEoriAndIdRequestMap shouldBe Map(
-        "receiptDate"              -> "2001-12-17T09:30:47.000Z",
-        "IDNumber"                 -> "45646757",
-        "organisation.type"        -> "0001",
-        "isNameMatched"            -> "false",
-        "email"                    -> "pg@example.com",
-        "regime"                   -> "CDS",
-        "address.postalCode"       -> "BN1 6HJ",
-        "fullName"                 -> "Piyush Goyal",
-        "EORI"                     -> "GB012345678911",
-        "address.city"             -> "Brighton",
-        "organisation.name"        -> "pg",
-        "IDType"                   -> "UTR",
-        "address.countryCode"      -> "GB",
-        "address.streetAndNumber"  -> "55 West Street",
-        "acknowledgementReference" -> "2438490385338590358"
-      )
-      registerWithEoriAndIdRequestMap.size shouldBe 15
-    }
-  }
 
 }

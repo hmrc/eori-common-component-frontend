@@ -277,23 +277,60 @@ class CheckYourDetailsSpec extends ViewSpec {
       page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Organisation address"
     }
 
-    "not display change link for the following for utr if isThirdCountrySubscription " in {
+    "display change link for the following for utr if isThirdCountrySubscription organisation" in {
       val page = doc(
         orgType = Some(CdsOrganisationType.ThirdCountryOrganisation),
         isThirdCountrySubscription = true,
         nameIdOrganisationDetails = None
       )
-      page.body.getElementById("review-tbl__utr_change") mustBe null
+      page.body.getElementById("review-tbl__utr_change").attr(
+        "href"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/row-utr"
     }
 
-    "not display change link for the following for nino if isThirdCountrySubscription " in {
+    "display change link for the following for utr if isThirdCountrySubscription individual" in {
+      val page = doc(
+        isIndividualSubscriptionFlow = true,
+        customsId = utr,
+        orgType = Some(CdsOrganisationType.ThirdCountryIndividual),
+        isThirdCountrySubscription = true,
+        nameIdOrganisationDetails = None
+      )
+      page.body.getElementById("review-tbl__utr_change").attr(
+        "href"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/row-utr"
+    }
+
+    "display change link for the following for nino if isThirdCountrySubscription organisation" in {
       val page = doc(
         customsId = nino,
         orgType = Some(CdsOrganisationType.ThirdCountryOrganisation),
         isThirdCountrySubscription = true,
         nameIdOrganisationDetails = None
       )
-      page.body.getElementById("review-tbl__nino_change") mustBe null
+      page.body.getElementById("review-tbl__nino_change").attr(
+        "href"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/row-nino"
+    }
+
+    "display change link for the following for nino if isThirdCountrySubscription individual" in {
+      val page = doc(
+        isIndividualSubscriptionFlow = true,
+        customsId = nino,
+        orgType = Some(CdsOrganisationType.ThirdCountryIndividual),
+        isThirdCountrySubscription = true,
+        nameIdOrganisationDetails = None
+      )
+      page.body.getElementById("review-tbl__nino_change").attr(
+        "href"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/row-nino"
+    }
+
+    "not display change link for EORI when existing EORI exists" in {
+      val page = doc(existingEori = Some(ExistingEori("GB12121212212", "HMRC-GVMS-ORG")))
+      page.body.getElementById("review-tbl__eori-number").text mustBe eori.get
+      page.body.getElementById("review-tbl__eori-number_change") mustBe null
+      page.body.getElementById("review-tbl__eori-number_row").text must not contain "Change"
     }
   }
 
@@ -303,7 +340,8 @@ class CheckYourDetailsSpec extends ViewSpec {
     orgType: Option[CdsOrganisationType] = organisationType,
     nameDobMatchModel: Option[NameDobMatchModel] = nameDobMatchModel,
     isThirdCountrySubscription: Boolean = false,
-    nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg
+    nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg,
+    existingEori: Option[ExistingEori] = None
   ): Document = {
 
     implicit val request = withFakeCSRF(FakeRequest().withSession(("selected-user-location", "third-country")))
@@ -315,6 +353,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       address,
       sicCode,
       eori,
+      existingEori,
       email,
       nameIdOrganisationDetails,
       None,

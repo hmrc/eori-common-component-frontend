@@ -227,24 +227,6 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
     }
   }
 
-  "Calling getCachedEoriNumber" should {
-    "retrieve any previously cached Eori Number from the cdsFrontendCache" in {
-      when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)
-      when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(Some(eoriId))
-      await(subscriptionBusinessService.getCachedEoriNumber) shouldBe eoriId
-
-    }
-
-    "throw exception when there are no Eori Number details in the cdsFrontendCache" in {
-      when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)
-      when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(None)
-      val thrown = intercept[IllegalStateException] {
-        await(subscriptionBusinessService.getCachedEoriNumber)
-      }
-      thrown.getMessage shouldBe "No Eori Number Cached"
-    }
-  }
-
   "Calling maybeCachedEoriNumber" should {
     "retrieve cached data if already stored in cdsFrontendCache" in {
       when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)

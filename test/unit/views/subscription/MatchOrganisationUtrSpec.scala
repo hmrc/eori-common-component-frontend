@@ -66,7 +66,7 @@ class MatchOrganisationUtrSpec extends ViewSpec {
         .text() mustBe "Your organisation will have a Corporation Tax UTR number if you pay corporation tax. It is on tax returns and other letters from HMRC."
     }
     "display correct progressive disclosure heading" in {
-      doc.body.getElementsByTag("summary").text() mustBe "Can't find your Corporation Tax UTR number?"
+      doc.body.getElementsByTag("summary").text() mustBe "Can’t find your Corporation Tax UTR number?"
     }
     "display correct progressive disclosure content" in {
       doc.body
@@ -100,17 +100,17 @@ class MatchOrganisationUtrSpec extends ViewSpec {
       docWithNoSelectionError.body
         .getElementById("have-utr-field")
         .getElementsByClass("error-message")
-        .text mustBe "Error: Tell us if you have a UTR number"
+        .text mustBe "Error: Select yes if you have a UTR number"
     }
     "display a page level error message" in {
       docWithNoSelectionError.body
         .getElementsByClass("error-summary-list")
-        .text mustBe "Tell us if you have a UTR number"
+        .text mustBe "Select yes if you have a UTR number"
     }
     "display the correct problem message at the top of the page" in {
       docWithNoSelectionError.body
         .getElementById("errors")
-        .text mustBe "There is a problem Tell us if you have a UTR number"
+        .text mustBe "There is a problem Select yes if you have a UTR number"
     }
   }
 
@@ -119,17 +119,17 @@ class MatchOrganisationUtrSpec extends ViewSpec {
       docWithNoSelectionErrorAsSoleTrader.body
         .getElementById("have-utr-field")
         .getElementsByClass("error-message")
-        .text mustBe "Error: Tell us if you have a UTR number"
+        .text mustBe "Error: Select yes if you have a UTR number"
     }
     "display a page level error message" in {
       docWithNoSelectionErrorAsSoleTrader.body
         .getElementsByClass("error-summary-list")
-        .text mustBe "Tell us if you have a UTR number"
+        .text mustBe "Select yes if you have a UTR number"
     }
     "display the correct problem message at the top of the page" in {
       docWithNoSelectionErrorAsSoleTrader.body
         .getElementById("errors")
-        .text mustBe "There is a problem Tell us if you have a UTR number"
+        .text mustBe "There is a problem Select yes if you have a UTR number"
     }
   }
 

@@ -383,7 +383,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
 
       await(RegisterWithEoriAndIdConnector.register(individualNinoRequest))
 
-      eventually(AuditService.verifyXAuditWrite(2))
+      eventually(AuditService.verifyXAuditWrite(1))
     }
     "not audit a failed request" in {
       RegisterWithEoriAndIdMessagingService.returnTheResponseWhenReceiveRequest(
@@ -397,7 +397,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
         await(RegisterWithEoriAndIdConnector.register(individualNinoRequest))
       }
 
-      eventually(AuditService.verifyXAuditWrite(1))
+      eventually(AuditService.verifyXAuditWrite(0))
     }
   }
 }

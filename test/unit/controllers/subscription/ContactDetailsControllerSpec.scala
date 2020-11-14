@@ -633,7 +633,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       submitFormInCreateMode(createFormMandatoryFieldsMap - useRegisteredAddressFlagFieldName) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Tell us if the contact address is right"
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Select yes if the contact address is right"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
@@ -753,7 +753,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe
           "Enter your contact name " +
             "Enter your contact telephone number " +
-            "Tell us if the contact address is right"
+            "Select yes if the contact address is right"
         page.getElementsText("title") should startWith("Error: ")
       }
     }

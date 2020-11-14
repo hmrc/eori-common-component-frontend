@@ -114,3 +114,6 @@ h1 {
 .mt-2 {
     margin-top: 2em;
 }
+.eori-number {
+    font-weight: bold;
+}

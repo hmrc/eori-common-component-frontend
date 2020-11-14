@@ -111,32 +111,32 @@ class WhatIsYourEoriSpec extends ViewSpec {
   }
 
   lazy val doc: Document = {
-    val result = view(form, isInReviewMode, isRestOfWorldJourney = false, atarService, Journey.Subscribe)
+    val result = view(form, isInReviewMode, isRestOfWorldJourney = false, atarService)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val docWithInvalidError: Document = {
-    val result = view(formWithInvalidError, isInReviewMode, isRestOfWorldJourney, atarService, Journey.Subscribe)
+    val result = view(formWithInvalidError, isInReviewMode, isRestOfWorldJourney, atarService)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val docWithInvalidGbEoriError: Document = {
-    val result = view(formWithInvalidGbEoriError, isInReviewMode, isRestOfWorldJourney, atarService, Journey.Subscribe)
+    val result = view(formWithInvalidGbEoriError, isInReviewMode, isRestOfWorldJourney, atarService)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val docWithTooShortError: Document = {
-    val result = view(formWithTooShortError, isInReviewMode, isRestOfWorldJourney, atarService, Journey.Subscribe)
+    val result = view(formWithTooShortError, isInReviewMode, isRestOfWorldJourney, atarService)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val docWithTooLongError: Document = {
-    val result = view(formWithTooLongError, isInReviewMode, isRestOfWorldJourney, atarService, Journey.Subscribe)
+    val result = view(formWithTooLongError, isInReviewMode, isRestOfWorldJourney, atarService)
     Jsoup.parse(contentAsString(result))
   }
 
   lazy val docWithEmptyFieldError: Document = {
-    val result = view(formWithEmptyFieldError, isInReviewMode, isRestOfWorldJourney, atarService, Journey.Subscribe)
+    val result = view(formWithEmptyFieldError, isInReviewMode, isRestOfWorldJourney, atarService)
     Jsoup.parse(contentAsString(result))
   }
 

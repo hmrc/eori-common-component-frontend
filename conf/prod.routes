@@ -35,11 +35,14 @@ GET         /customs-enrolment-services/:service/subscribe                      
 GET         /customs-enrolment-services/:service/:journey/check-email                                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EmailController.form(service: Service, journey: Journey.Value)
 GET         /customs-enrolment-services/:service/subscribe/match-for-existing-registration            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.MatchingIdController.matchWithIdOnlyForExistingReg(service: Service)
 
-GET         /customs-enrolment-services/:service/:journey/matching/what-is-your-eori                  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriController.createForm(service: Service, journey: Journey.Value)
-POST        /customs-enrolment-services/:service/:journey/matching/what-is-your-eori                  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriController.submit(isInReviewMode: Boolean = false, service: Service, journey: Journey.Value)
-GET         /customs-enrolment-services/:service/:journey/matching/what-is-your-eori/review           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriController.reviewForm(service: Service, journey: Journey.Value)
-POST        /customs-enrolment-services/:service/:journey/matching/what-is-your-eori/review           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriController.submit(isInReviewMode: Boolean = true, service: Service, journey: Journey.Value)
+GET         /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriController.createForm(service: Service)
+POST        /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriController.submit(isInReviewMode: Boolean = false, service: Service)
+GET         /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori/review          @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriController.reviewForm(service: Service)
+POST        /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori/review          @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriController.submit(isInReviewMode: Boolean = true, service: Service)
 GET         /customs-enrolment-services/:service/:journey/matching/check-your-details                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.CheckYourDetailsController.reviewDetails(service: Service, journey: Journey.Value)
+
+GET         /customs-enrolment-services/:service/subscribe/matching/use-this-eori                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.UseThisEoriController.display(service: Service)
+POST        /customs-enrolment-services/:service/subscribe/matching/use-this-eori                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.UseThisEoriController.submit(service: Service)
 
 GET         /customs-enrolment-services/:service/:journey/matching/review-determine                   @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.DetermineReviewPageController.determineRoute(service: Service, journey: Journey.Value)
 

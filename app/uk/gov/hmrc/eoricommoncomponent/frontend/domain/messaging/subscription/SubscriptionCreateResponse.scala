@@ -26,31 +26,13 @@ case class MDGResponseCommon(
   processingDate: DateTime,
   returnParameters: List[MessagingServiceParam],
   statusText: Option[String] = None
-) extends CaseClassAuditHelper {
-  val ignoredFields = List("returnParameters")
-
-  def keyValueMap(): Map[String, String] = {
-    val m  = toMap(this, ignoredFields = ignoredFields)
-    val rd = convertToMap(returnParameters.map(_.keyValueMap()))
-    m ++ rd
-  }
-
-}
+)
 
 object MDGResponseCommon extends CommonHeader {
   implicit val formats = Json.format[MDGResponseCommon]
 }
 
 case class SubscriptionCreateResponse(responseCommon: MDGResponseCommon, responseDetail: Option[ResponseDetail])
-    extends CaseClassAuditHelper {
-
-  def keyValueMap(): Map[String, String] = {
-    val m  = responseCommon.keyValueMap()
-    val rd = responseDetail.fold(Map.empty[String, String])(_.toMap())
-    m ++ rd
-  }
-
-}
 
 object SubscriptionCreateResponse {
   implicit val jsonFormat    = Json.format[SubscriptionCreateResponse]
