@@ -28,7 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{accessibility_statement, start, start_subscribe}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{start, start_subscribe}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,7 +39,6 @@ class ApplicationController @Inject() (
   mcc: MessagesControllerComponents,
   viewStartSubscribe: start_subscribe,
   viewStartRegister: start,
-  accessibilityStatementView: accessibility_statement,
   cache: SessionCache,
   groupEnrolment: GroupEnrolmentExtractor,
   appConfig: AppConfig
@@ -81,11 +80,6 @@ class ApplicationController @Inject() (
         case _ =>
           Future.successful(Ok(viewStartSubscribe(service))) // Display information page
       }
-
-  def accessibilityStatement(service: Service, journey: Journey.Value): Action[AnyContent] = Action {
-    implicit request =>
-      Ok(accessibilityStatementView())
-  }
 
   def logout(service: Service, journey: Journey.Value): Action[AnyContent] =
     authorise.ggAuthorisedUserAction {
