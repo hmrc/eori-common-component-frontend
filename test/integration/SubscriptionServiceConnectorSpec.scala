@@ -224,7 +224,7 @@ class SubscriptionServiceConnectorSpec extends IntegrationTestsSpec with ScalaFu
       await(subscriptionServiceConnector.subscribe(serviceRequestJson.as[SubscriptionRequest])) must be(
         serviceSubscriptionGenerateResponseJson.as[SubscriptionResponse]
       )
-      eventually(AuditService.verifyXAuditWrite(2))
+      eventually(AuditService.verifyXAuditWrite(1))
     }
 
     "return subscription link status successful response when subscription service returns 200" in {
@@ -271,7 +271,7 @@ class SubscriptionServiceConnectorSpec extends IntegrationTestsSpec with ScalaFu
         await(subscriptionServiceConnector.subscribe(serviceRequestJson.as[SubscriptionRequest]))
       }
       caught.message must include(s"Response body: '$subscribe500ErrorResponse'")
-      eventually(AuditService.verifyXAuditWrite(1))
+      eventually(AuditService.verifyXAuditWrite(0))
     }
 
     "return Exception when Subscription service fails with 4xx (any 4xx response apart from 400)" in {
@@ -285,7 +285,7 @@ class SubscriptionServiceConnectorSpec extends IntegrationTestsSpec with ScalaFu
         await(subscriptionServiceConnector.subscribe(serviceRequestJson.as[SubscriptionRequest]))
       }
       caught.message must include("Response body: 'Forbidden'")
-      eventually(AuditService.verifyXAuditWrite(1))
+      eventually(AuditService.verifyXAuditWrite(0))
     }
 
     "return Exception when Subscription service returns a 400 response" in {
@@ -299,7 +299,7 @@ class SubscriptionServiceConnectorSpec extends IntegrationTestsSpec with ScalaFu
         await(subscriptionServiceConnector.subscribe(serviceRequestJson.as[SubscriptionRequest]))
       }
       caught.message must include(s"Response body '$subscribe400ErrorResponse'")
-      eventually(AuditService.verifyXAuditWrite(1))
+      eventually(AuditService.verifyXAuditWrite(0))
     }
 
     "audit a successful request" in {
@@ -310,7 +310,7 @@ class SubscriptionServiceConnectorSpec extends IntegrationTestsSpec with ScalaFu
       )
       await(subscriptionServiceConnector.subscribe(serviceRequestJson.as[SubscriptionRequest]))
 
-      eventually(AuditService.verifyXAuditWrite(2))
+      eventually(AuditService.verifyXAuditWrite(1))
     }
   }
 }

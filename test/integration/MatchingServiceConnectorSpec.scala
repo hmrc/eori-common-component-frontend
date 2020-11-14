@@ -257,7 +257,7 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
       )
       await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder]))
 
-      eventually(AuditService.verifyXAuditWrite(2))
+      eventually(AuditService.verifyXAuditWrite(1))
     }
 
     "not audit a failed request" in {
@@ -270,7 +270,7 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
       intercept[BadRequestException] {
         await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder]))
       }
-      AuditService.verifyXAuditWrite(1)
+      AuditService.verifyXAuditWrite(0)
     }
 
   }

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription
+package uk.gov.hmrc.eoricommoncomponent.frontend.models.events
 
 import play.api.libs.json.Json
 
-case class SubscriptionDisplayResponseHolder(subscriptionDisplayResponse: SubscriptionDisplayResponse)
+case class RegisterWithId(request: RegisterWithIdSubmitted, response: RegisterWithIdConfirmation)
 
-object SubscriptionDisplayResponseHolder {
-  implicit val jsonFormat = Json.format[SubscriptionDisplayResponseHolder]
+object RegisterWithId {
+  implicit val format = Json.format[RegisterWithId]
 }
