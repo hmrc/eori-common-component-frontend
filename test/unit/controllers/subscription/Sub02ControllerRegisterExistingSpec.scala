@@ -142,8 +142,10 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
           status(result) shouldBe OK
           val page = CdsPage(contentAsString(result))
           verify(mockSessionCache).remove(any[HeaderCarrier])
-          page.title should startWith("Application received")
-          page.getElementsText(RegistrationCompletePage.pageHeadingXpath) shouldBe "Application received for Name"
+          page.title should startWith("Subscription request received")
+          page.getElementsText(
+            RegistrationCompletePage.pageHeadingXpath
+          ) shouldBe "Subscription request received for Name"
           page.getElementsText(RegistrationCompletePage.activeFromXpath) shouldBe "on 22 May 2016"
           page.getElementsText(RegistrationCompletePage.eoriNumberXpath) shouldBe "ZZZ1ZZZZ23ZZZZZZZ"
 
@@ -151,14 +153,8 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
             "What happens next We will send you an email to confirm when you have access to Advance Tariff Rulings. This can take up to two hours."
           )
 
-          page.getElementsText(RegistrationCompletePage.DownloadEoriTextLinkXpath) should include(
-            "Download an accessible text file with your registration details (1 kb)"
-          )
           page.getElementsText(RegistrationCompletePage.DownloadEoriLinkXpath) should include(
             "Download a PDF with your registration details (21kb)"
-          )
-          page.getElementsHref(RegistrationCompletePage.DownloadEoriTextLinkXpath) should endWith(
-            "/customs-enrolment-services/subscribe/download/text"
           )
           page.getElementsHref(RegistrationCompletePage.DownloadEoriLinkXpath) should endWith(
             "/customs-enrolment-services/subscribe/download/pdf"

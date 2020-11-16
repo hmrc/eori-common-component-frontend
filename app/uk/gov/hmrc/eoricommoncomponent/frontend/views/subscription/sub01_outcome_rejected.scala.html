@@ -18,18 +18,25 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.JourneyStatus
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.JourneyExtractor
+@import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 
 
 @this(layout_di: layout, feedback_di: helpers.feedback)
 @(name: Option[String], processedDate: String, service: Service)(implicit messages: Messages, request: Request[_])
 
+
+@journeyKey = @{
+  JourneyExtractor.journey.toString.toLowerCase
+}
+
 @heading = {@name match {
-    case Some(user) => {@messages("cds.sub01.outcome.rejected.heading", shortName, user)}
-    case None => {@messages("cds.sub01.outcome.rejected.heading-noname", shortName)}
+    case Some(user) => {@messages(s"cds.sub01.outcome.rejected.$journeyKey.heading", longName, user)}
+    case None => {@messages(s"cds.sub01.outcome.rejected.$journeyKey.heading-noname", longName)}
   }
 }
 
-@layout_di(messages("cds.sub01.outcome.rejected.title", shortName)) {
+@layout_di(messages(s"cds.sub01.outcome.rejected.$journeyKey.title", longName)) {
     <div class="column-two-thirds">
         <div class="govuk-box-highlight">
             <h1 id="page-heading" class="heading-xlarge">@heading</h1>
@@ -39,7 +46,9 @@
         </div>
 
         @helpers.feedbackBackContinue(service, JourneyStatus.Failed)
-        
+
+        @partials.subscription_outcome_help()
+
         @feedback_di()
 
     </div>

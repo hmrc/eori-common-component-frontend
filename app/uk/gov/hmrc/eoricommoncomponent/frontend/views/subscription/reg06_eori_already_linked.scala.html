@@ -24,17 +24,18 @@
 
 @this(layout_di: layout, feedback_di: helpers.feedback)
 @(orgName: String, processedDate: DateTime, service: Service)(implicit messages: Messages, request: Request[_])
-@layout_di(messages("cds.reg06.outcome.eori-already-linked.title", shortName)) {
+@layout_di(messages("cds.reg06.outcome.eori-already-linked.title", longName)) {
     <div class="column-two-thirds">
         <div class="govuk-box-highlight">
-            <h1 id="page-heading" class="heading-xlarge" >@messages("cds.reg06.outcome.eori-already-linked.heading", shortName, orgName)</h1>
+            <h1 id="page-heading" class="heading-xlarge" >@messages("cds.reg06.outcome.eori-already-linked.heading", longName, orgName)</h1>
             <div class="heading-medium" id="processed-date">@messages("cds.reg06.outcome.eori-already-linked.received", dateTimeFormat.print(processedDate))</div>
         </div>
 
-        <h2 class="heading-small" id="use-cds-heading">@messages("cds.subscription.outcomes.eori-already-linked.use-cds-heading", shortName)</h2>
-        <p id="use-cds-para">@messages("cds.subscription.outcomes.eori-already-linked.use-cds-para", orgName, shortName)</p>
+        <p id="use-cds-para">@messages("cds.subscription.outcomes.eori-already-linked.use-cds-para", orgName, longName)</p>
 
         @helpers.feedbackBackContinue(service, JourneyStatus.Failed)
+
+        @partials.subscription_outcome_help()
 
         @feedback_di()
     </div>

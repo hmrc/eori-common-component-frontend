@@ -221,10 +221,10 @@ class DateOfEstablishmentControllerSpec
         page.getElementText(SubscriptionDateOfEstablishmentPage.dateOfEstablishmentLabelXPath) should startWith(
           "Enter the date shown on the organisation’s certificate of incorporation. You can find the date your organisation was established on the Companies House register (opens in a new window or tab)"
         )
-        page.title should startWith("When was the organisation established?")
+        page.title should startWith("When was the company established?")
         page.getElementsText(
           SubscriptionDateOfEstablishmentPage.dateOfEstablishmentHeadingXPath
-        ) shouldBe "When was the organisation established?"
+        ) shouldBe "When was the company established?"
       }
     }
   }

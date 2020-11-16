@@ -36,12 +36,12 @@ class SubscriptionOutcomeFailSpec extends ViewSpec {
   "'Subscription Fail' Page" should {
 
     "have the correct title " in {
-      doc().title() must startWith(s"The ATaR application has been unsuccessful")
+      doc().title() must startWith(s"The subscription request has been unsuccessful")
     }
 
     "display correct heading" in {
       doc().body.getElementsByTag("h1").text() must startWith(
-        s"The ATaR application for $orgName has been unsuccessful"
+        s"The subscription request for $orgName has been unsuccessful"
       )
     }
     "have the correct class on the h1" in {

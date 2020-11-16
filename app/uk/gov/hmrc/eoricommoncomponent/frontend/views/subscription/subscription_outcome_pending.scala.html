@@ -23,7 +23,7 @@
 @this(layout_di: layout, feedback_di: helpers.feedback)
 @(eori: String, processedDate: String, name: String, service: Service)(implicit messages: Messages, request: Request[_])
 
-@layout_di(messages("cds.subscription.outcomes.in-processing.title", shortName)) {
+@layout_di(messages("cds.subscription.outcomes.in-processing.title")) {
     <div class="column-two-thirds">
         <div class="govuk-box-highlight">
             <h1 id="page-heading" class="heading-xlarge">@messages("cds.subscription.outcomes.in-processing.heading", name)</h1>
@@ -34,11 +34,13 @@
         <div id="what-happens-next">
             <h2>@messages("cds.subscription.outcomes.steps.next")</h2>
             <p>
-                @messages("cds.subscription.outcomes.inprocessing.we-are-processing", shortName)
+                @messages("cds.subscription.outcomes.inprocessing.we-are-processing", longName)
             </p>
         </div>
 
         @helpers.feedbackBackContinue(service, JourneyStatus.Processing)
+
+        @partials.subscription_outcome_help()
         
         @feedback_di()
 

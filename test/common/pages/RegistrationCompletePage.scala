@@ -22,9 +22,8 @@ class RegistrationCompletePage extends RegistrationOutcomePage("complete") with 
 
   override val title = "Application complete"
 
-  val LeaveFeedbackLinkXpath    = "//a[@id='feedback_link']"
-  val DownloadEoriLinkXpath     = "//a[@id='download-eori']"
-  val DownloadEoriTextLinkXpath = "//a[@id='download-eori-text']"
+  val LeaveFeedbackLinkXpath = "//a[@id='feedback_link']"
+  val DownloadEoriLinkXpath  = "//a[@id='download-eori']"
 }
 
 object RegistrationCompletePage extends RegistrationCompletePage

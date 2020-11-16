@@ -27,7 +27,7 @@
     <div class="column-two-thirds">
         <div class="govuk-box-highlight">
             <h1 id="page-heading" class="heading-xlarge">
-                @messages("cds.reg.existing.outcomes.success.heading.part1") @name
+                @messages("cds.reg.existing.outcomes.success.heading.part1", name)
             </h1>
             <p class="heading-large" id="active-from">
                 @messages("subscription.subscription-results.active-from") @processedDate
@@ -37,13 +37,10 @@
         </div>
 
         <div id='additional-information'>
-            <h3 class="heading-medium">@messages("cds.subscription.outcomes.steps.next")</h3>
+            <h2 class="heading-medium">@messages("cds.subscription.outcomes.steps.next")</h2>
             <p>@messages("cds.subscription.outcomes.success.will-send-email", longName)</p>
             <p class="mb-0">
                 <a id="download-eori" href="/customs-enrolment-services/subscribe/download/pdf">@messages("cds.reg.existing.outcomes.success.download-eori.21kb")</a>
-            </p>
-            <p class="mt-0">
-                <a id="download-eori-text" href="/customs-enrolment-services/subscribe/download/text">@messages("cds.reg.existing.outcomes.success.download-eori-textfile")</a>
             </p>
         </div>
 

@@ -281,7 +281,8 @@
 
             </dl>
 
-            <p class="govuk-body mt-2">@messages("cds.form.disclaimer")</p>
+            <h2>@messages("cds.form.declaration")</h2>
+            <p class="govuk-body">@messages("cds.form.disclaimer")</p>
 
             <div class="form-group">
                 @helper.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.RegisterWithEoriAndIdController.registerWithEoriAndId(service, journey)) {

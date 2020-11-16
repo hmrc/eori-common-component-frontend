@@ -42,13 +42,11 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
     "display correct heading" in {
       companyDoc.body
         .getElementsByTag("h1")
-        .text mustBe "Does your organisation have a Unique Taxpayer Reference (UTR) number issued in the UK?"
+        .text mustBe "Does your organisation have a Unique Taxpayer Reference (UTR) issued in the UK?"
     }
 
     "display correct title" in {
-      companyDoc.title must startWith(
-        "Does your organisation have a Unique Taxpayer Reference (UTR) number issued in the UK?"
-      )
+      companyDoc.title must startWith("Does your organisation have a Unique Taxpayer Reference (UTR) issued in the UK?")
     }
 
     "have correct intro" in {
@@ -68,12 +66,12 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
     "display correct heading" in {
       individualDoc.body
         .getElementsByTag("h1")
-        .text mustBe "Do you have a Self Assessment Unique Taxpayer Reference (UTR) number issued in the UK?"
+        .text mustBe "Do you have a Self Assessment Unique Taxpayer Reference (UTR) issued in the UK?"
     }
 
     "display correct title" in {
       individualDoc.title must startWith(
-        "Do you have a Self Assessment Unique Taxpayer Reference (UTR) number issued in the UK?"
+        "Do you have a Self Assessment Unique Taxpayer Reference (UTR) issued in the UK?"
       )
     }
     "have correct intro" in {

@@ -141,12 +141,12 @@ class NameUtrOrganisationControllerSpec
               "Error: Enter your registered organisation name"
           }
           val labelForUtr = organisationType match {
-            case "partnership" => "Partnership Self Assessment Unique Taxpayer Reference (UTR) number"
+            case "partnership" => "Partnership Self Assessment Unique Taxpayer Reference (UTR)"
             case "limited-liability-partnership" =>
-              "Partnership Self Assessment Unique Taxpayer Reference (UTR) number"
+              "Partnership Self Assessment Unique Taxpayer Reference (UTR)"
             case "charity-public-body-not-for-profit" =>
-              "Organisation Self Assessment Unique Taxpayer Reference (UTR) number"
-            case _ => "Corporation Tax Unique Taxpayer Reference (UTR) number"
+              "Organisation Self Assessment Unique Taxpayer Reference (UTR)"
+            case _ => "Corporation Tax Unique Taxpayer Reference (UTR)"
           }
 
           val UtrHintText = organisationType match {

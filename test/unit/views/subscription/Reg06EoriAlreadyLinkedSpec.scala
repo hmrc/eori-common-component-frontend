@@ -28,10 +28,13 @@ import util.ViewSpec
 
 class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
 
-  private val name                    = "John Doe"
-  private val processedDate           = DateTime.now()
-  private val expectedPageTitle       = "The ATaR application has been unsuccessful"
-  private val pageHeadingExpectedText = s"The ATaR application for $name has been unsuccessful"
+  private val name              = "John Doe"
+  private val processedDate     = DateTime.now()
+  private val expectedPageTitle = "The Advance Tariff Rulings subscription request has been unsuccessful"
+
+  private val pageHeadingExpectedText =
+    s"The Advance Tariff Rulings subscription request for $name has been unsuccessful"
+
   private val processDateExpectedText = s"Application received by HMRC on ${dateTimeFormat.print(processedDate)}"
 
   private val view = instanceOf[reg06_eori_already_linked]
@@ -50,10 +53,9 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
     }
 
     "have the right vat registered text" in {
-      doc().getElementById("use-cds-heading").text() mustBe "To use ATaR"
       doc()
         .getElementById("use-cds-para")
-        .text() mustBe s"You need to sign in with the Government Gateway $name used to get access to ATaR."
+        .text() mustBe s"You need to sign in with the Government Gateway $name used to get access to Advance Tariff Rulings."
     }
 
     "have the feedback link" in {
