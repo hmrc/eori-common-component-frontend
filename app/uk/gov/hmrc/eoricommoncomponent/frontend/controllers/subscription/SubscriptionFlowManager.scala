@@ -131,10 +131,16 @@ class SubscriptionFlowManager @Inject() (requestSessionData: RequestSessionData,
     }
 
     val selectedFlow: SubscriptionFlow =
-      registrationDetails match {
-        case _: RegistrationDetailsOrganisation =>
+      (registrationDetails, maybeOrgType, registrationDetails.customsId, journey) match {
+        case (_: RegistrationDetailsOrganisation, Some(CdsOrganisationType.Partnership), _, _) =>
+          SubscriptionFlow(subscribePrefix + PartnershipSubscriptionFlow.name)
+        case (_: RegistrationDetailsOrganisation, _, None, Journey.Subscribe) =>
           SubscriptionFlow(subscribePrefix + OrganisationSubscriptionFlow.name)
-        case _: RegistrationDetailsIndividual =>
+        case (_: RegistrationDetailsIndividual, _, None, Journey.Subscribe) =>
+          SubscriptionFlow(subscribePrefix + IndividualSubscriptionFlow.name)
+        case (_: RegistrationDetailsOrganisation, _, _, _) =>
+          SubscriptionFlow(subscribePrefix + OrganisationSubscriptionFlow.name)
+        case (_: RegistrationDetailsIndividual, _, _, _) =>
           SubscriptionFlow(subscribePrefix + IndividualSubscriptionFlow.name)
         case _ => throw new IllegalStateException("Incomplete cache cannot complete journey")
       }
