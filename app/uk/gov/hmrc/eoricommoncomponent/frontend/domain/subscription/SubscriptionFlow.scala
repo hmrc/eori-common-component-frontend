@@ -255,12 +255,9 @@ case object MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow
 
 object SubscriptionFlow {
 
-  def apply(flowName: String): SubscriptionFlow = {
-    println(s"NEED A FLOW - $flowName")
-    SubscriptionFlows.flows.keys
-      .find(_.name == flowName)
-      .fold(throw new IllegalStateException(s"Incorrect Subscription flowname $flowName"))(identity)
-  }
+  def apply(flowName: String): SubscriptionFlow = SubscriptionFlows.flows.keys
+    .find(_.name == flowName)
+    .fold(throw new IllegalStateException(s"Incorrect Subscription flowname $flowName"))(identity)
 
 }
 
