@@ -14,7 +14,7 @@ cds.has-existing-eori.para3=If you use a different EORI most of the time then yo
 
 cds.enrolment.already.exists.title=There is a problem
 cds.enrolment.already.exists.heading=There is a problem
-cds.enrolment.already.exists.para1=Our records show that this Government Gateway user ID has already been used to register for {0}.
+cds.enrolment.already.exists.para1=Our records show that this Government Gateway user ID has already been used to subscribe to {0}.
 
 cds.proposition.name.service=Register for a customs service
 
@@ -47,7 +47,7 @@ cds.subscription.outcomes.eori-already-linked.use-cds-para=You need to sign in w
 
 cds.subscription.outcomes.inprocessing.we-are-processing=We are processing your {0} subscription request. This can take up to 5 working days. You will need to sign back in to see the result of your registration.
 
-cds.enrolment.already.exists.for-group.para1=Your organisation is already enrolled to {0}. Ask a team member for access.
+cds.enrolment.already.exists.for-group.para1=Your organisation is already subscribed to {0}. Ask a team member for access.
 
 cds.enrolment.already.exists.group.title=There is a problem
 cds.enrolment.already.exists.group.paragraph=Our records show that someone in the organisation has already applied for this service.

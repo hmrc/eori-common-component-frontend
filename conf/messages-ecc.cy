@@ -14,7 +14,7 @@ cds.has-existing-eori.para3=Os defnyddiwch EORI gwahanol gan amlaf, dylech allgo
 
 cds.enrolment.already.exists.title=Mae problem wedi codi
 cds.enrolment.already.exists.heading=Mae problem wedi codi
-cds.enrolment.already.exists.para1=Mae ein cofnodion yn dangos bod y Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth eisoes wedi’i ddefnyddio i gofrestru ar gyfer {0}.
+cds.enrolment.already.exists.para1=TRANSLATE Our records show that this Government Gateway user ID has already been used to subscribe to [SERVICE].
 
 cds.proposition.name.service=TRANSLATE Register for a customs service
 
@@ -47,7 +47,7 @@ cds.subscription.outcomes.eori-already-linked.use-cds-para=TRANSLATE You need to
 
 cds.subscription.outcomes.inprocessing.we-are-processing=TRANSLATE We are processing your [SERVICE] subscription request. This can take up to 5 working days. You will need to sign back in to see the result of your registration.
 
-cds.enrolment.already.exists.for-group.para1=TRANSLATE Your organisation is already enrolled to [SERVICE]. Ask a team member for access.
+cds.enrolment.already.exists.for-group.para1=TRANSLATE Your organisation is already subscribed to [SERVICE]. Ask a team member for access.
 
 cds.enrolment.already.exists.group.title=TRANSLATE There is a problem
 cds.enrolment.already.exists.group.paragraph=TRANSLATE Our records show that someone in the organisation has already applied for this service.
