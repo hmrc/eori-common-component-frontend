@@ -55,10 +55,12 @@ class WhatIsYourEoriSpec extends ViewSpec {
 
   "What Is Your EORI page" should {
     "display correct title" in {
-      doc.title must startWith("What is your GB EORI number?")
+      doc.title must startWith("What is your GB Economic Operator Registration and Identification (EORI) number?")
     }
     "have the correct heading text" in {
-      doc.body.getElementsByClass("heading-large").text() mustBe "What is your GB EORI number?"
+      doc.body.getElementsByClass(
+        "heading-large"
+      ).text() mustBe "What is your GB Economic Operator Registration and Identification (EORI) number?"
     }
     "have the correct text in the label" in {
       doc.body
@@ -72,7 +74,7 @@ class WhatIsYourEoriSpec extends ViewSpec {
       doc.body.getElementsByAttributeValue(
         "href",
         routes.ApplicationController.startRegister(atarService).url
-      ).text() mustBe "Get an EORI number"
+      ).text() mustBe "get an EORI number"
     }
 
     "display a field level error message when the Eori is invalid" in {

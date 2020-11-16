@@ -36,7 +36,9 @@ class SubscriptionOutcomePendingSpec extends ViewSpec {
   "'Subscription Pending' Page" should {
 
     "display correct heading" in {
-      doc().body.getElementsByTag("h1").text() must startWith(s"We are processing the registration for $orgName")
+      doc().body.getElementsByTag("h1").text() must startWith(
+        s"We are processing the subscription request for $orgName"
+      )
     }
     "have the correct class on the h1" in {
       doc().body.getElementsByTag("h1").hasClass("heading-xlarge") mustBe true
@@ -54,7 +56,7 @@ class SubscriptionOutcomePendingSpec extends ViewSpec {
     "have the correct 'what happens next' text" in {
       doc().body
         .getElementById("what-happens-next")
-        .text mustBe "What happens next We are processing your registration to ATaR. This can take up to 5 working days. You will need to sign back in to see the result of your registration."
+        .text mustBe "What happens next We are processing your Advance Tariff Rulings subscription request. This can take up to 5 working days. You will need to sign back in to see the result of your registration."
     }
 
     "have a feedback 'continue' button" in {
