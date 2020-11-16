@@ -46,7 +46,7 @@ class DateOfEstablishmentSpec extends ViewSpec {
       doc.body.getElementsByTag("h1").hasClass("heading-large") mustBe true
     }
     "have the correct text in the hint" in {
-      doc.body.getElementById("date-of-establishment-hint").text() mustBe "For example, 31 3 1980."
+      doc.body.getElementById("date-of-establishment-hint").text() mustBe "For example, 31 03 1980."
     }
     "have the correct text in the intro paragraph" in {
       doc.body
@@ -57,10 +57,10 @@ class DateOfEstablishmentSpec extends ViewSpec {
 
   "On a RoW journey the 'When was the organisation established?' page" should {
     "display correct title" in {
-      docRestOfWorld.title must startWith("When was the company established?")
+      docRestOfWorld.title must startWith("When was the organisation established?")
     }
     "have the correct h1 text" in {
-      docRestOfWorld.body.getElementsByTag("h1").text() mustBe "When was the company established?"
+      docRestOfWorld.body.getElementsByTag("h1").text() mustBe "When was the organisation established?"
     }
     "have the correct class on the h1" in {
       docRestOfWorld.body.getElementsByTag("h1").hasClass("heading-large") mustBe true
@@ -68,7 +68,7 @@ class DateOfEstablishmentSpec extends ViewSpec {
     "have the correct text in the description" in {
       docRestOfWorld.body
         .getElementById("date-of-establishment-description")
-        .text() mustBe "For example, 31 3 1980."
+        .text() mustBe "For example, 31 03 1980."
     }
   }
 

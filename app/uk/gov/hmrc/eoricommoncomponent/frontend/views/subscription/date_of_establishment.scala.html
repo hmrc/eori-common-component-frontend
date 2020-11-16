@@ -41,7 +41,7 @@
 
 @headerAndTitle = @{
     if (orgType == Partnership || orgType == LLP) "cds.subscription.partnership.date-of-establishment.title-and-heading"
-    else if(orgType == CorporateBody) "cds.subscription.date-of-establishment.company.title-and-heading"
+    else if(orgType == CorporateBody && !isRestOfWorldJourney) "cds.subscription.date-of-establishment.company.title-and-heading"
     else "cds.subscription.date-of-establishment.title-and-heading"
 }
 

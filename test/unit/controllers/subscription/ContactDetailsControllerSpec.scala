@@ -341,7 +341,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         page.getElementsText(headingXPath) shouldBe "Who can we contact?"
         page.getElementsText(
           introXPath
-        ) shouldBe "We will use these details to contact you about your EORI number. We will also use them to contact you if there are any issues with your customs activities."
+        ) shouldBe "We will use these details to contact you about your request. We will also use them to contact you if there are any issues with your customs activities."
       }
     }
 
