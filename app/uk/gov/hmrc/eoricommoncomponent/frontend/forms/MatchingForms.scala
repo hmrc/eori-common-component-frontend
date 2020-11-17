@@ -261,6 +261,20 @@ object MatchingForms {
     )(NameDobMatchModel.apply)(NameDobMatchModel.unapply)
   )
 
+  val enterNameDobFormRow: Form[NameDobMatchModel] = Form(
+    mapping(
+      "first-name"  -> text.verifying(validGivenName),
+      "middle-name" -> optional(text.verifying(validMiddleName)),
+      "last-name"   -> text.verifying(validFamilyName),
+      "date-of-birth" -> mandatoryDateTodayOrBefore(
+        onEmptyError = "dob.error.empty-date",
+        onInvalidDateError = "dob.error.invalid-date",
+        onDateInFutureError = "dob.error.future-date",
+        minYear = DateConverter.earliestYearDateOfBirth
+      )
+    )(NameDobMatchModel.apply)(NameDobMatchModel.unapply)
+  )
+
   private def validFirstName: Constraint[String] =
     Constraint("constraints.first-name")({
       case s if s.isEmpty => Invalid(ValidationError("cds.subscription.first-name.error.empty"))

@@ -43,8 +43,8 @@ import unit.controllers.subscription.SubscriptionFlowSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.SessionBuilder
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEach {
 
@@ -250,6 +250,16 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
       }
     }
 
+    "validation error when first name is not submitted for Row" in {
+      submitFormInCreateMode(createFormAllFieldsNameDobMap + (firstNameFieldId -> ""), location = "eu") { result =>
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your given name"
+        page.getElementsText(firstNameFieldLevelErrorXPath) shouldBe "Error: Enter your given name"
+        page.getElementsText("title") should startWith("Error: ")
+        verifyZeroInteractions(mockSubscriptionBusinessService)
+      }
+    }
+
     "validation error when first name more than 35 characters" in {
       submitFormInCreateMode(createFormAllFieldsNameDobMap + (firstNameFieldName -> stringContaining36Characters)) {
         result =>
@@ -258,6 +268,22 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
           page.getElementsText(
             firstNameFieldLevelErrorXPath
           ) shouldBe "Error: The first name must be 35 characters or less"
+          page.getElementsText("title") should startWith("Error: ")
+          verifyZeroInteractions(mockSubscriptionBusinessService)
+      }
+    }
+
+    "validation error when first name more than 35 characters for Row" in {
+      submitFormInCreateMode(
+        createFormAllFieldsNameDobMap + (firstNameFieldName -> stringContaining36Characters),
+        location = "eu"
+      ) {
+        result =>
+          val page = CdsPage(contentAsString(result))
+          page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The given name must be 35 characters or less"
+          page.getElementsText(
+            firstNameFieldLevelErrorXPath
+          ) shouldBe "Error: The given name must be 35 characters or less"
           page.getElementsText("title") should startWith("Error: ")
           verifyZeroInteractions(mockSubscriptionBusinessService)
       }
@@ -288,6 +314,16 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
       }
     }
 
+    "validation error when last name is not submitted for Row" in {
+      submitFormInCreateMode(createFormAllFieldsNameDobMap + (lastNameFieldName -> ""), location = "eu") { result =>
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your family name"
+        page.getElementsText(lastNameFieldLevelErrorXPath) shouldBe "Error: Enter your family name"
+        page.getElementsText("title") should startWith("Error: ")
+        verifyZeroInteractions(mockSubscriptionBusinessService)
+      }
+    }
+
     "validation error when last name more than 35 characters" in {
       submitFormInCreateMode(createFormAllFieldsNameDobMap + (lastNameFieldName -> stringContaining36Characters)) {
         result =>
@@ -309,6 +345,22 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
           page.getElementsText(
             lastNameFieldLevelErrorXPath
           ) shouldBe "Error: Enter a last name without invalid characters"
+          page.getElementsText("title") should startWith("Error: ")
+          verifyZeroInteractions(mockSubscriptionBusinessService)
+      }
+    }
+
+    "validation error when last name has invalid characters for Row" in {
+      submitFormInCreateMode(
+        createFormAllFieldsNameDobMap + (lastNameFieldName -> stringContainingInvalidCharacters),
+        location = "eu"
+      ) {
+        result =>
+          val page = CdsPage(contentAsString(result))
+          page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a family name without invalid characters"
+          page.getElementsText(
+            lastNameFieldLevelErrorXPath
+          ) shouldBe "Error: Enter a family name without invalid characters"
           page.getElementsText("title") should startWith("Error: ")
           verifyZeroInteractions(mockSubscriptionBusinessService)
       }
@@ -482,10 +534,13 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
       .thenReturn(registrationDetails)
   }
 
-  private def submitFormInCreateMode(form: Map[String, String], userId: String = defaultUserId)(
-    test: Future[Result] => Any
-  ) {
+  private def submitFormInCreateMode(
+    form: Map[String, String],
+    userId: String = defaultUserId,
+    location: String = "uk"
+  )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
+    when(mockRequestSessionData.selectedUserLocation(any())).thenReturn(Some(location))
 
     val result = controller.submit(isInReviewMode = false, atarService, Journey.Subscribe)(
       SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)

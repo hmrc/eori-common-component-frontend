@@ -45,7 +45,7 @@ cds.reg06.outcome.eori-already-linked.title=TRANSLATE The [SERVICE] subscription
 cds.reg06.outcome.eori-already-linked.heading=TRANSLATE The [SERVICE] subscription request for [USER] has been unsuccessful
 cds.subscription.outcomes.eori-already-linked.use-cds-para=TRANSLATE You need to sign in with the Government Gateway [USER] used to get access to [SERVICE].
 
-cds.subscription.outcomes.inprocessing.we-are-processing=TRANSLATE We are processing your [SERVICE] subscription request. This can take up to 5 working days. You will need to sign back in to see the result of your registration.
+cds.subscription.outcomes.inprocessing.we-are-processing=TRANSLATE We are processing your [SERVICE] subscription request. This can take up to 5 working days. You will need to sign back in to see the result of your request.
 
 cds.enrolment.already.exists.for-group.para1=TRANSLATE Your organisation is already subscribed to [SERVICE]. Ask a team member for access.
 
@@ -155,8 +155,6 @@ cds.matching.name-id-organisation.organisation.utr=TRANSLATE Organisation Self A
 
 cds.subscription.date-of-establishment.company.title-and-heading=TRANSLATE When was the company established?
 
-cds.enter-address-details.company.title-and-heading=TRANSLATE What is your company’s registered address?
-
 cds.subscription.address-details.postcode.row.label=TRANSLATE Postal code
 
 cds.matching.row-organisation.utr.title-and-heading=TRANSLATE Does your organisation have a Unique Taxpayer Reference (UTR) issued in the UK?
@@ -171,3 +169,5 @@ cds.reg.existing.outcomes.success.heading.part1=TRANSLATE Subscription request r
 cds.subscription.outcomes.help.heading=TRANSLATE If you need help
 cds.subscription.outcomes.help.paragraph1=TRANSLATE Phone the subscription support team on 0300 322 7067. This is available 8am to 6pm, Monday to Friday (closed bank holidays).
 cds.subscription.outcomes.help.paragraph2=TRANSLATE You can also find more information about this subject on GOV.UK.
+
+cds.subscription.contact-details.intro=TRANSLATE We will use these details to contact you about your request. We will also use them to contact you if there are any issues with your customs activities.

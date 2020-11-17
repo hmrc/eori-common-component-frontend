@@ -23,6 +23,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.AddressDetailsSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.YesNoWrongAddress
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
@@ -117,7 +118,7 @@ class AddressController @Inject() (
             case _ =>
               Countries.getCountryParameters(requestSessionData.selectedUserLocationWithIslands)
           }
-        val isRow = requestSessionData.selectedUserLocationWithIslands == Some("third-country")
+        val isRow = UserLocation.isRow(requestSessionData)
         Future.successful(
           status(
             addressView(

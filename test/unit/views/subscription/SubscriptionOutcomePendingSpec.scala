@@ -56,7 +56,7 @@ class SubscriptionOutcomePendingSpec extends ViewSpec {
     "have the correct 'what happens next' text" in {
       doc().body
         .getElementById("what-happens-next")
-        .text mustBe "What happens next We are processing your Advance Tariff Rulings subscription request. This can take up to 5 working days. You will need to sign back in to see the result of your registration."
+        .text mustBe "What happens next We are processing your Advance Tariff Rulings subscription request. This can take up to 5 working days. You will need to sign back in to see the result of your request."
     }
 
     "have a feedback 'continue' button" in {
