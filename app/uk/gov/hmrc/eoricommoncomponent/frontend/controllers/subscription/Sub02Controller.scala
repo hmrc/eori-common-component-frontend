@@ -20,11 +20,11 @@ import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, EnrolmentExtractor}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionCreateResponse._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
@@ -51,7 +51,7 @@ class Sub02Controller @Inject() (
   subscriptionOutcomeView: subscription_outcome,
   cdsSubscriber: CdsSubscriber
 )(implicit ec: ExecutionContext)
-    extends CdsController(mcc) {
+    extends CdsController(mcc) with EnrolmentExtractor{
 
   private val logger = Logger(this.getClass)
 
@@ -109,8 +109,9 @@ class Sub02Controller @Inject() (
       )
   }
 
-  def migrationEnd(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
+  // End of normal subscription journey
+  def migrationEnd(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithServiceAction {
+    implicit request => user: LoggedInUserWithEnrolments =>
       if (UserLocation.isRow(requestSessionData))
         subscriptionDetailsService.cachedCustomsId flatMap {
           case Some(_) => renderPageWithName(service)

@@ -55,8 +55,9 @@ class SubscriptionRecoveryController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
+  // End of subscription recovery journey
   def complete(service: Service, journey: Journey.Value): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction {
+    authAction.ggAuthorisedUserWithServiceAction {
       implicit request => _: LoggedInUserWithEnrolments =>
         val isRowF           = Future.successful(UserLocation.isRow(requestSessionData))
         val journeyF         = Future.successful(journey)
