@@ -33,31 +33,31 @@ import scala.util.control.NonFatal
 class HandleSubscriptionConnector @Inject() (http: HttpClient, appConfig: AppConfig)(implicit ec: ExecutionContext) {
 
   private val logger = Logger(this.getClass)
+  private val url    = s"${appConfig.handleSubscriptionBaseUrl}/${appConfig.handleSubscriptionServiceContext}"
 
   def call(request: HandleSubscriptionRequest)(implicit hc: HeaderCarrier): Future[Unit] = {
-    val url     = s"${appConfig.handleSubscriptionBaseUrl}/${appConfig.handleSubscriptionServiceContext}"
     val headers = Seq(ACCEPT -> "application/vnd.hmrc.1.0+json", CONTENT_TYPE -> MimeTypes.JSON)
 
     // $COVERAGE-OFF$Loggers
-    logger.debug(s"[Post: $url, body: $request, headers: $headers and hc: $hc")
+    logger.debug(s"[Call: $url, body: $request, headers: $headers and hc: $hc")
     // $COVERAGE-ON
 
     http.POST[HandleSubscriptionRequest, HttpResponse](url, request, headers) map { response =>
       response.status match {
         case OK | NO_CONTENT =>
-          logger.info(s"complete for call to $url and headers ${hc.headers}. Status:${response.status}")
+          logger.debug(s"Call complete for call to $url and headers ${hc.headers}. Status:${response.status}")
           ()
         case _ => throw new BadRequestException(s"Status:${response.status}")
       }
     } recoverWith {
       case e: BadRequestException =>
         logger.error(
-          s"request failed with BAD_REQUEST status for call to $url and headers ${hc.headers}: ${e.getMessage}",
+          s"Call failed with BAD_REQUEST status for call to $url and headers ${hc.headers}: ${e.getMessage}",
           e
         )
         Future.failed(e)
       case NonFatal(e) =>
-        logger.error(s"request failed for call to $url and headers ${hc.headers}: ${e.getMessage}", e)
+        logger.warn(s"Call failed for call to $url and headers ${hc.headers}: ${e.getMessage}", e)
         Future.failed(e)
     }
   }

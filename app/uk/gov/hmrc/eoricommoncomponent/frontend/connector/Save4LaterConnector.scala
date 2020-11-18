@@ -38,8 +38,8 @@ class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, aud
   private def logSuccess(method: String, url: String)(implicit hc: HeaderCarrier) =
     logger.debug(s"$method complete for call to $url and headers ${hc.headers}")
 
-  private def logError(method: String, url: String, e: Throwable)(implicit hc: HeaderCarrier) =
-    logger.error(s"$method request failed for call to $url and headers ${hc.headers}: ${e.getMessage}", e)
+  private def logFailure(method: String, url: String, e: Throwable)(implicit hc: HeaderCarrier) =
+    logger.warn(s"$method request failed for call to $url and headers ${hc.headers}: ${e.getMessage}", e)
 
   def get[T](id: String, key: String)(implicit hc: HeaderCarrier, reads: Reads[T]): Future[Option[T]] = {
     val url = s"${appConfig.handleSubscriptionBaseUrl}/save4later/$id/$key"
@@ -60,7 +60,7 @@ class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, aud
       }
     } recoverWith {
       case NonFatal(e) =>
-        logError("Get", url, e)
+        logFailure("Get", url, e)
         Future.failed(e)
     }
   }
@@ -80,7 +80,7 @@ class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, aud
       }
     } recoverWith {
       case NonFatal(e) =>
-        logError("Put", url, e)
+        logFailure("Put", url, e)
         Future.failed(e)
     }
   }
@@ -100,7 +100,7 @@ class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, aud
       }
     } recoverWith {
       case NonFatal(e) =>
-        logError("Delete", url, e)
+        logFailure("Delete", url, e)
         Future.failed(e)
     }
   }

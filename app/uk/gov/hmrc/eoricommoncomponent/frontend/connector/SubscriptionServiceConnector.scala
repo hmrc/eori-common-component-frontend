@@ -55,12 +55,12 @@ class SubscriptionServiceConnector @Inject() (http: HttpClient, appConfig: AppCo
       response
     } recoverWith {
       case e: BadRequestException =>
-        logger.error(
+        logger.warn(
           s"Subscribe SUB02 request failed for acknowledgementReference : ${request.subscriptionCreateRequest.requestCommon.acknowledgementReference}. Reason: $e"
         )
         Future.failed(e)
       case NonFatal(e) =>
-        logger.error(
+        logger.warn(
           s"Subscribe SUB02 request failed for acknowledgementReference : ${request.subscriptionCreateRequest.requestCommon.acknowledgementReference}. Reason: $e"
         )
         Future.failed(e)

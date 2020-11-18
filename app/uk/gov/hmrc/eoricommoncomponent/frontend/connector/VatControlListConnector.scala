@@ -60,6 +60,6 @@ class VatControlListConnector @Inject() (http: HttpClient, appConfig: AppConfig)
     }
   }
 
-  def logFailed(e: Throwable) = logger.error(s"VatControlList failed. url: $url, error: $e", e)
+  def logFailed(e: Throwable) = logger.warn(s"VatControlList failed. url: $url, error: $e", e)
 
 }

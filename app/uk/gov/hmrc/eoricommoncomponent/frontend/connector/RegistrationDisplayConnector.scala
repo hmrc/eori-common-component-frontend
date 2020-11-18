@@ -52,7 +52,7 @@ class RegistrationDisplayConnector @Inject() (http: HttpClient, appConfig: AppCo
       Right(resp.registrationDisplayResponse)
     } recover {
       case NonFatal(e) =>
-        logger.error(s"registration-display failed. url: $url, error: $e")
+        logger.warn(s"registration-display failed. url: $url, error: $e")
         Left(ServiceUnavailableResponse)
     }
   }

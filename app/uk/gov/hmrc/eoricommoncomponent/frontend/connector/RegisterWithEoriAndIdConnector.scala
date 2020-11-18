@@ -61,7 +61,7 @@ class RegisterWithEoriAndIdConnector @Inject() (http: HttpClient, appConfig: App
       resp.registerWithEORIAndIDResponse
     } recover {
       case e: Throwable =>
-        logger.debug(
+        logger.warn(
           s"REG06 Register failed. postUrl: $url, acknowledgement ref: ${request.requestCommon.acknowledgementReference}, error: $e"
         )
         throw e
