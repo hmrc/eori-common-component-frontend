@@ -247,6 +247,11 @@ class CheckYourDetailsSpec extends ViewSpec {
       page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
     }
 
+    "not display NINO for RoW Company organisation types" in {
+      val page = doc(customsId = None, isThirdCountrySubscription = true, orgType = Some(CdsOrganisationType.Company))
+      page.body.getElementById("review-tbl__nino_row") mustBe null
+    }
+
     "display address label for the following Company organisation types" in {
       val page = doc(orgType = Some(CdsOrganisationType.Company))
       page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Company address"

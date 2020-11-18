@@ -136,7 +136,7 @@
         customsId match {
             case n@Some(Nino(_)) => n
             case u@Some(Utr(_)) => None
-            case _ => if(isThirdCountrySubscription) Some(Nino(messages("cds.not-entered.label"))) else None
+            case _ => if(isThirdCountrySubscription && isIndividualSubscriptionFlow) Some(Nino(messages("cds.not-entered.label"))) else None
         }
     }
 
