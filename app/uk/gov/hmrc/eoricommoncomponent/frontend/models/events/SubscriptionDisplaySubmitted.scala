@@ -23,10 +23,9 @@ case class SubscriptionDisplaySubmitted(parameters: Map[String, String])
 object SubscriptionDisplaySubmitted {
   implicit val format = Json.format[SubscriptionDisplaySubmitted]
 
-  def applyAndAlignKeys(parameters: Map[String, String]): SubscriptionDisplaySubmitted =
-    parameters.get("EORI").map { eoriValue =>
-      val newParameters = parameters.filterNot { case (key, _) => key == "EORI" } ++ Map("eori" -> eoriValue)
-      new SubscriptionDisplaySubmitted(newParameters)
-    }.getOrElse(SubscriptionDisplaySubmitted(parameters))
+  def applyAndAlignKeys(parameters: Map[String, String]): SubscriptionDisplaySubmitted = {
+    def key(oldKey: String): String = if("EORI".equalsIgnoreCase(oldKey)) "eori" else oldKey
+    SubscriptionDisplaySubmitted(parameters.map(entry => key(entry._1) -> entry._2))
+  }
 
 }
