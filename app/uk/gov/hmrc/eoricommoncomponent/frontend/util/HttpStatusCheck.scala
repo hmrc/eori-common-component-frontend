@@ -18,5 +18,6 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.util
 
 object HttpStatusCheck {
 
-  def is2xxSuccessfull: Int => Boolean = status => status >= 200 && status < 299
+  def is2xx: Int => Boolean = status => status >= 200 && status < 300
+
 }
