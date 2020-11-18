@@ -62,7 +62,7 @@ class SUB09SubscriptionDisplayConnector @Inject() (http: HttpClient, appConfig: 
     implicit hc: HeaderCarrier
   ): Unit = {
 
-    val subscriptionDisplaySubmitted = SubscriptionDisplaySubmitted(request.toMap)
+    val subscriptionDisplaySubmitted = SubscriptionDisplaySubmitted.applyAndAlignKeys(request.toMap)
     val subscriptionDisplayResult    = SubscriptionDisplayResult(response)
 
     audit.sendExtendedDataEvent(

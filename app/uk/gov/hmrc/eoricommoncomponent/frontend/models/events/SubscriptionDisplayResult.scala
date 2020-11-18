@@ -21,8 +21,19 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.MessagingServic
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
   ContactInformation,
   EstablishmentAddress,
-  SubscriptionDisplayResponseHolder,
-  SubscriptionInfoVatId
+  SubscriptionDisplayResponseHolder
+}
+
+case class SubscriptionInfoVatId(countryCode: Option[String], vatId: Option[String])
+
+object SubscriptionInfoVatId {
+  implicit val format = Json.format[SubscriptionInfoVatId]
+
+  def from(
+    vatId: uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionInfoVatId
+  ): SubscriptionInfoVatId =
+    SubscriptionInfoVatId(vatId.countryCode, vatId.VATID)
+
 }
 
 case class SubscriptionDisplayResult(
@@ -50,6 +61,12 @@ object SubscriptionDisplayResult {
     val responseCommon = response.subscriptionDisplayResponse.responseCommon
     val responseDetail = response.subscriptionDisplayResponse.responseDetail
 
+    val subscriptionInfoVatIds = responseDetail.VATIDs.map { vatIds =>
+      vatIds.map { id =>
+        SubscriptionInfoVatId.from(id)
+      }
+    }
+
     SubscriptionDisplayResult(
       status = responseCommon.status,
       eori = responseDetail.EORINo,
@@ -57,7 +74,7 @@ object SubscriptionDisplayResult {
       cdsEstablishmentAddress = responseDetail.CDSEstablishmentAddress,
       typeOfLegalEntity = responseDetail.typeOfLegalEntity,
       contactInformation = responseDetail.contactInformation,
-      vatIds = responseDetail.VATIDs,
+      vatIds = subscriptionInfoVatIds,
       thirdCountryUniqueIdentificationNumber = responseDetail.thirdCountryUniqueIdentificationNumber,
       consentToDisclosureOfPersonalData = responseDetail.consentToDisclosureOfPersonalData,
       shortName = responseDetail.shortName,
