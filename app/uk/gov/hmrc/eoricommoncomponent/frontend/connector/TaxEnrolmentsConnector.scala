@@ -94,7 +94,7 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig)(
   }
 
   private def logResponse(service: String, response: HttpResponse): Unit =
-    if (HttpStatusCheck.is2xxSuccessfull(response.status))
+    if (HttpStatusCheck.is2xx(response.status))
       logger.debug(s"$service request is successful")
     else
       logger.warn(s"$service request is failed with response $response")
