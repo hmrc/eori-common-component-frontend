@@ -43,23 +43,30 @@ class RegisterWithEoriAndIdConnector @Inject() (http: HttpClient, appConfig: App
 
   def register(
     request: RegisterWithEoriAndIdRequest
-  )(implicit hc: HeaderCarrier): Future[RegisterWithEoriAndIdResponse] =
+  )(implicit hc: HeaderCarrier): Future[RegisterWithEoriAndIdResponse] = {
+
+    // $COVERAGE-OFF$Loggers
+    logger.debug(s"[REG06 Register: $url, body: $request and hc: $hc")
+    // $COVERAGE-ON
+
     http.POST[RegisterWithEoriAndIdRequestHolder, RegisterWithEoriAndIdResponseHolder](
       url,
       RegisterWithEoriAndIdRequestHolder(request)
     ) map { resp =>
-      logger.info(
-        s"REG06 successful. postUrl $url, acknowledgement ref: ${request.requestCommon.acknowledgementReference}, response status: ${resp.registerWithEORIAndIDResponse.responseCommon.statusText}"
-      )
+      // $COVERAGE-OFF$Loggers
+      logger.debug(s"[REG06 Register: response: $resp")
+      // $COVERAGE-ON
+
       auditCall(url, request, resp)
       resp.registerWithEORIAndIDResponse
     } recover {
       case e: Throwable =>
-        logger.debug(
-          s"REG06 failed. postUrl: $url, acknowledgement ref: ${request.requestCommon.acknowledgementReference}, error: $e"
+        logger.warn(
+          s"REG06 Register failed. postUrl: $url, acknowledgement ref: ${request.requestCommon.acknowledgementReference}, error: $e"
         )
         throw e
     }
+  }
 
   private def auditCall(
     url: String,

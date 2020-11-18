@@ -40,25 +40,32 @@ class SubscriptionServiceConnector @Inject() (http: HttpClient, appConfig: AppCo
   private val logger = Logger(this.getClass)
   private val url    = appConfig.getServiceUrl("subscribe")
 
-  def subscribe(request: SubscriptionRequest)(implicit hc: HeaderCarrier): Future[SubscriptionResponse] =
+  def subscribe(request: SubscriptionRequest)(implicit hc: HeaderCarrier): Future[SubscriptionResponse] = {
+
+    // $COVERAGE-OFF$Loggers
+    logger.debug(s"[Subscribe SUB02: $url, body: $request and hc: $hc")
+    // $COVERAGE-ON
+
     http.POST[SubscriptionRequest, SubscriptionResponse](url, request) map { response =>
-      logger.info(
-        s"SUB02 complete for acknowledgementReference : ${request.subscriptionCreateRequest.requestCommon.acknowledgementReference}"
-      )
+      // $COVERAGE-OFF$Loggers
+      logger.debug(s"[Subscribe SUB02: response: $response")
+      // $COVERAGE-ON
+
       auditCall(url, request, response)
       response
     } recoverWith {
       case e: BadRequestException =>
-        logger.error(
-          s"SUB02 request failed for acknowledgementReference : ${request.subscriptionCreateRequest.requestCommon.acknowledgementReference}. Reason: $e"
+        logger.warn(
+          s"Subscribe SUB02 request failed for acknowledgementReference : ${request.subscriptionCreateRequest.requestCommon.acknowledgementReference}. Reason: $e"
         )
         Future.failed(e)
       case NonFatal(e) =>
-        logger.error(
-          s"SUB02 request failed for acknowledgementReference : ${request.subscriptionCreateRequest.requestCommon.acknowledgementReference}. Reason: $e"
+        logger.warn(
+          s"Subscribe SUB02 request failed for acknowledgementReference : ${request.subscriptionCreateRequest.requestCommon.acknowledgementReference}. Reason: $e"
         )
         Future.failed(e)
     }
+  }
 
   private def auditCall(url: String, request: SubscriptionRequest, response: SubscriptionResponse)(implicit
     hc: HeaderCarrier

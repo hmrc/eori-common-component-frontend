@@ -18,13 +18,15 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.Inject
 import play.api.Logger
-import play.api.libs.json.{JsValue, Json, Reads, Writes}
+import play.api.libs.json.{Json, Reads}
 import play.mvc.Http.Status.{NO_CONTENT, OK}
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.EmailVerificationRequestHttpParser.EmailVerificationRequestResponse
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, EnrolmentStoreProxyResponse}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.{KnownFacts, KnownFactsQuery}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.EnrolmentStoreProxyEvent
+import uk.gov.hmrc.eoricommoncomponent.frontend.util.HttpStatusCheck
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -44,8 +46,14 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
   )(implicit hc: HeaderCarrier, reads: Reads[EnrolmentStoreProxyResponse]): Future[EnrolmentStoreProxyResponse] = {
     val url =
       s"$baseUrl/$serviceContext/enrolment-store/groups/$groupId/enrolments?type=principal"
+
+    // $COVERAGE-OFF$Loggers
+    logger.debug(s"[GetEnrolmentByGroupId: $url and hc: $hc")
+    // $COVERAGE-ON
+
     http.GET[HttpResponse](url) map { resp =>
-      logger.info(s"enrolment-store-proxy. url: $url")
+      logResponse(resp)
+
       val parsedResponse = resp.status match {
         case OK => resp.json.as[EnrolmentStoreProxyResponse]
         case NO_CONTENT =>
@@ -62,6 +70,12 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
     }
   }
 
+  private def logResponse(response: HttpResponse): Unit =
+    if (HttpStatusCheck.is2xx(response.status))
+      logger.debug("GetEnrolmentByGroupId request is successful")
+    else
+      logger.warn(s"GetEnrolmentByGroupId request is failed with response $response")
+
   private def auditCall(url: String, groupId: String, response: EnrolmentStoreProxyResponse)(implicit
     hc: HeaderCarrier
   ): Unit =
@@ -74,10 +88,21 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
 
   def queryKnownFactsByIdentifiers(
     knownFactsQuery: KnownFactsQuery
-  )(implicit hc: HeaderCarrier): Future[Option[KnownFacts]] =
-    http.POST[KnownFactsQuery, Option[KnownFacts]](
-      s"$baseUrl/$serviceContext/enrolment-store/enrolments",
-      knownFactsQuery
-    )
+  )(implicit hc: HeaderCarrier): Future[Option[KnownFacts]] = {
+
+    val url = s"$baseUrl/$serviceContext/enrolment-store/enrolments"
+
+    // $COVERAGE-OFF$Loggers
+    logger.debug(s"[QueryKnownFactsByIdentifiers: $url, body: $knownFactsQuery and hc: $hc")
+    // $COVERAGE-ON
+
+    http.POST[KnownFactsQuery, Option[KnownFacts]](url, knownFactsQuery) map {
+      response =>
+        // $COVERAGE-OFF$Loggers
+        logger.debug(s"QueryKnownFactsByIdentifiers response $response")
+        // $COVERAGE-ON
+        response
+    }
+  }
 
 }

@@ -47,16 +47,25 @@ class SUB09SubscriptionDisplayConnector @Inject() (http: HttpClient, appConfig: 
 
   def subscriptionDisplay(
     sub09Request: Seq[(String, String)]
-  )(implicit hc: HeaderCarrier): Future[Either[EoriHttpResponse, SubscriptionDisplayResponse]] =
+  )(implicit hc: HeaderCarrier): Future[Either[EoriHttpResponse, SubscriptionDisplayResponse]] = {
+
+    // $COVERAGE-OFF$Loggers
+    logger.debug(s"[SubscriptionDisplay SUB09: $url, body: $sub09Request and hc: $hc")
+    // $COVERAGE-ON
+
     http.GET[SubscriptionDisplayResponseHolder](url, sub09Request) map { resp =>
-      logger.info(s"subscription-display SUB09 successful. url: $url")
+      // $COVERAGE-OFF$Loggers
+      logger.debug(s"[SubscriptionDisplay SUB09: response: $resp")
+      // $COVERAGE-ON
+
       auditCall(url, sub09Request, resp)
       Right(resp.subscriptionDisplayResponse)
     } recover {
       case NonFatal(e) =>
-        logger.error(s"subscription-display SUB09 failed. url: $url, error: $e")
+        logger.warn(s"SubscriptionDisplay SUB09 failed. url: $url, error: $e")
         Left(ServiceUnavailableResponse)
     }
+  }
 
   private def auditCall(url: String, request: Seq[(String, String)], response: SubscriptionDisplayResponseHolder)(
     implicit hc: HeaderCarrier

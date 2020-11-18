@@ -22,6 +22,7 @@ import play.api.http.Status.BAD_REQUEST
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.GovernmentGatewayEnrolmentRequest
+import uk.gov.hmrc.eoricommoncomponent.frontend.util.HttpStatusCheck
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -37,12 +38,19 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig)(
 
   def getEnrolments(safeId: String)(implicit hc: HeaderCarrier): Future[List[TaxEnrolmentsResponse]] = {
     val url = s"$baseUrl/$serviceContext/businesspartners/$safeId/subscriptions"
+
+    // $COVERAGE-OFF$Loggers
+    logger.debug(s"[GetEnrolments: $url and hc: $hc")
+    // $COVERAGE-ON
+
     http.GET[List[TaxEnrolmentsResponse]](url) map { resp =>
-      logger.info(s"tax-enrolments. url: $url")
+      // $COVERAGE-OFF$Loggers
+      logger.debug(s"[GetEnrolments: response: $resp")
+      // $COVERAGE-ON
       resp
     } recover {
       case e: Throwable =>
-        logger.error(s"tax-enrolments failed. url: $url, error: $e", e)
+        logger.warn(s"GetEnrolments failed. url: $url, error: $e", e)
         throw e
     }
   }
@@ -60,16 +68,13 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig)(
   def enrol(request: TaxEnrolmentsRequest, formBundleId: String)(implicit hc: HeaderCarrier): Future[Int] = {
     val url = s"$baseUrl/$serviceContext/subscriptions/$formBundleId/issuer"
 
-    logger.info(s"putUrl: $url")
+    // $COVERAGE-OFF$Loggers
+    logger.debug(s"[Enrol: $url, body: $request and hc: $hc")
+    // $COVERAGE-ON
+
     http.doPut[TaxEnrolmentsRequest](url, request) map { response: HttpResponse =>
-      response.status match {
-        case s @ BAD_REQUEST =>
-          logger.error(s"tax enrolment request failed with BAD_REQUEST status")
-          s
-        case s =>
-          logger.info(s"tax enrolment complete. Status:$s")
-          s
-      }
+      logResponse("Enrol", response)
+      response.status
     }
   }
 
@@ -77,7 +82,21 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig)(
     hc: HeaderCarrier
   ): Future[HttpResponse] = {
     val url = s"$baseUrl/$serviceContext/service/$enrolmentKey/enrolment"
-    http.PUT[GovernmentGatewayEnrolmentRequest, HttpResponse](url = url, body = request)
+
+    // $COVERAGE-OFF$Loggers
+    logger.debug(s"[EnrolAndActivate: $url, body: $request and hc: $hc")
+    // $COVERAGE-ON
+
+    http.PUT[GovernmentGatewayEnrolmentRequest, HttpResponse](url = url, body = request) map { response: HttpResponse =>
+      logResponse("EnrolAndActivate", response)
+      response
+    }
   }
+
+  private def logResponse(service: String, response: HttpResponse): Unit =
+    if (HttpStatusCheck.is2xx(response.status))
+      logger.debug(s"$service request is successful")
+    else
+      logger.warn(s"$service request is failed with response $response")
 
 }

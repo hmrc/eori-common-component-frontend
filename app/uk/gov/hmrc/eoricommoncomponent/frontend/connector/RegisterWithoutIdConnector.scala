@@ -36,18 +36,24 @@ class RegisterWithoutIdConnector @Inject() (http: HttpClient, appConfig: AppConf
 
   def register(request: RegisterWithoutIDRequest)(implicit hc: HeaderCarrier): Future[RegisterWithoutIDResponse] = {
     auditCallRequest(url, request)
+
+    // $COVERAGE-OFF$Loggers
+    logger.debug(s"[Register: $url, body: $request and hc: $hc")
+    // $COVERAGE-ON
+
     http.POST[RegisterWithoutIdRequestHolder, RegisterWithoutIdResponseHolder](
       url,
       RegisterWithoutIdRequestHolder(request)
     ) map { resp =>
-      logger.info(
-        s"Successful. postUrl $url, acknowledgement ref: ${request.requestCommon.acknowledgementReference}, response status: ${resp.registerWithoutIDResponse.responseCommon.statusText}"
-      )
+      // $COVERAGE-OFF$Loggers
+      logger.debug(s"[Register: response: $resp")
+      // $COVERAGE-ON
+
       auditCallResponse(url, resp)
       resp.registerWithoutIDResponse
     } recover {
       case e: Throwable =>
-        logger.debug(
+        logger.warn(
           s"Failure. postUrl: $url, acknowledgement ref: ${request.requestCommon.acknowledgementReference}, error: $e"
         )
         throw e

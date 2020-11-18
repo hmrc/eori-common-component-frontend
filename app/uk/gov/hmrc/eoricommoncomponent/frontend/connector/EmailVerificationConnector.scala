@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.{Inject, Singleton}
+import play.api.Logger
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.EmailVerificationKeys.{
@@ -34,6 +35,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class EmailVerificationConnector @Inject() (http: HttpClient, appConfig: AppConfig)(implicit ec: ExecutionContext) {
 
+  private val logger = Logger(this.getClass)
+
   private[connector] lazy val checkVerifiedEmailUrl: String =
     s"${appConfig.emailVerificationBaseUrl}/${appConfig.emailVerificationServiceContext}/verified-email-check"
 
@@ -42,8 +45,28 @@ class EmailVerificationConnector @Inject() (http: HttpClient, appConfig: AppConf
 
   def getEmailVerificationState(
     emailAddress: String
-  )(implicit hc: HeaderCarrier): Future[EmailVerificationStateResponse] =
-    http.POST[JsObject, EmailVerificationStateResponse](checkVerifiedEmailUrl, Json.obj("email" -> emailAddress))
+  )(implicit hc: HeaderCarrier): Future[EmailVerificationStateResponse] = {
+
+    val body = Json.obj("email" -> emailAddress)
+
+    // $COVERAGE-OFF$Loggers
+    logger.debug(s"[GetEmailVerificationState: $checkVerifiedEmailUrl, body: $body and hc: $hc")
+    // $COVERAGE-ON
+
+    def logResponse(response: EmailVerificationStateResponse): Unit =
+      // $COVERAGE-OFF$Loggers
+      response match {
+        case Right(success) => logger.debug(s"GetEmailVerificationState succeeded $success")
+        case Left(failed)   => logger.warn(s"GetEmailVerificationState failed $failed")
+      }
+    // $COVERAGE-ON
+
+    http.POST[JsObject, EmailVerificationStateResponse](checkVerifiedEmailUrl, body).map {
+      response =>
+        logResponse(response)
+        response
+    }
+  }
 
   def createEmailVerificationRequest(emailAddress: String, continueUrl: String)(implicit
     hc: HeaderCarrier
@@ -56,7 +79,24 @@ class EmailVerificationConnector @Inject() (http: HttpClient, appConfig: AppConf
         LinkExpiryDurationKey -> appConfig.emailVerificationLinkExpiryDuration,
         ContinueUrlKey        -> continueUrl
       )
-    http.POST[JsObject, EmailVerificationRequestResponse](createEmailVerificationRequestUrl, jsonBody)
+
+    // $COVERAGE-OFF$Loggers
+    logger.debug(s"[CreateEmailVerificationRequest: $createEmailVerificationRequestUrl, body: $jsonBody and hc: $hc")
+    // $COVERAGE-ON
+
+    def logResponse(response: EmailVerificationRequestResponse): Unit =
+      // $COVERAGE-OFF$Loggers
+      response match {
+        case Right(success) => logger.debug(s"CreateEmailVerificationRequest succeeded $success")
+        case Left(failed)   => logger.warn(s"CreateEmailVerificationRequest failed $failed")
+      }
+    // $COVERAGE-ON
+
+    http.POST[JsObject, EmailVerificationRequestResponse](createEmailVerificationRequestUrl, jsonBody).map {
+      response =>
+        logResponse(response)
+        response
+    }
   }
 
 }

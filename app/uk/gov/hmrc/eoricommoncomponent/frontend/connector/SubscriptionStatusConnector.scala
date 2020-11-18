@@ -41,18 +41,25 @@ class SubscriptionStatusConnector @Inject() (http: HttpClient, appConfig: AppCon
   private val logger = Logger(this.getClass)
   private val url    = appConfig.getServiceUrl("subscription-status")
 
-  def status(request: SubscriptionStatusQueryParams)(implicit hc: HeaderCarrier): Future[SubscriptionStatusResponse] =
+  def status(request: SubscriptionStatusQueryParams)(implicit hc: HeaderCarrier): Future[SubscriptionStatusResponse] = {
+
+    // $COVERAGE-OFF$Loggers
+    logger.debug(s"[Status SUB01: $url, queryParams: ${request.queryParams} and hc: $hc")
+    // $COVERAGE-ON
+
     http.GET[SubscriptionStatusResponseHolder](url, request.queryParams) map { resp =>
-      logger.info(
-        s"SUB01 successful. url: $url, response status: ${resp.subscriptionStatusResponse.responseCommon.status}"
-      )
+      // $COVERAGE-OFF$Loggers
+      logger.debug(s"[Status SUB01: response: $resp")
+      // $COVERAGE-ON
+
       auditCall(url, request, resp)
       resp.subscriptionStatusResponse
     } recover {
       case e: Throwable =>
-        logger.error(s"SUB01 failed. url: $url, error: $e", e)
+        logger.warn(s"Status SUB01 failed. url: $url, error: $e", e)
         throw e
     }
+  }
 
   private def auditCall(
     url: String,
