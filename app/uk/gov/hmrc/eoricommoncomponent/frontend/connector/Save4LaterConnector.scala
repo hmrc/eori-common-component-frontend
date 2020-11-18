@@ -35,17 +35,21 @@ class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, aud
 
   private val logger = Logger(this.getClass)
 
-  private def logSuccess(url: String)(implicit hc: HeaderCarrier) =
-    logger.info(s"complete for call to $url and headers ${hc.headers}")
+  private def logSuccess(method: String, url: String)(implicit hc: HeaderCarrier) =
+    logger.debug(s"$method complete for call to $url and headers ${hc.headers}")
 
-  private def logError(url: String, e: Throwable)(implicit hc: HeaderCarrier) =
-    logger.error(s"request failed for call to $url and headers ${hc.headers}: ${e.getMessage}", e)
+  private def logError(method: String, url: String, e: Throwable)(implicit hc: HeaderCarrier) =
+    logger.error(s"$method request failed for call to $url and headers ${hc.headers}: ${e.getMessage}", e)
 
   def get[T](id: String, key: String)(implicit hc: HeaderCarrier, reads: Reads[T]): Future[Option[T]] = {
     val url = s"${appConfig.handleSubscriptionBaseUrl}/save4later/$id/$key"
-    logger.info(s"GET: $url")
+
+    // $COVERAGE-OFF$Loggers
+    logger.debug(s"[Get: $url and hc: $hc")
+    // $COVERAGE-ON
+
     http.GET[HttpResponse](url) map { response =>
-      logSuccess(url)
+      logSuccess("Get", url)
 
       response.status match {
         case OK =>
@@ -56,39 +60,47 @@ class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, aud
       }
     } recoverWith {
       case NonFatal(e) =>
-        logError(url, e)
+        logError("Get", url, e)
         Future.failed(e)
     }
   }
 
   def put[T](id: String, key: String, payload: JsValue)(implicit hc: HeaderCarrier): Future[Unit] = {
     val url = s"${appConfig.handleSubscriptionBaseUrl}/save4later/$id/$key"
-    logger.info(s"PUT: $url")
+
+    // $COVERAGE-OFF$Loggers
+    logger.debug(s"[Put: $url, body: $payload and hc: $hc")
+    // $COVERAGE-ON
+
     http.PUT[JsValue, HttpResponse](url, payload) map { response =>
-      logSuccess(url)
+      logSuccess("Put", url)
       response.status match {
         case NO_CONTENT | CREATED | OK => ()
         case _                         => throw new BadRequestException(s"Status:${response.status}")
       }
     } recoverWith {
       case NonFatal(e) =>
-        logError(url, e)
+        logError("Put", url, e)
         Future.failed(e)
     }
   }
 
   def delete[T](id: String)(implicit hc: HeaderCarrier): Future[Unit] = {
     val url = s"${appConfig.handleSubscriptionBaseUrl}/save4later/$id"
-    logger.info(s"DELETE: $url")
+
+    // $COVERAGE-OFF$Loggers
+    logger.debug(s"[Delete: $url and hc: $hc")
+    // $COVERAGE-ON
+
     http.DELETE[HttpResponse](url) map { response =>
-      logSuccess(url)
+      logSuccess("Delete", url)
       response.status match {
         case NO_CONTENT => ()
         case _          => throw new BadRequestException(s"Status:${response.status}")
       }
     } recoverWith {
       case NonFatal(e) =>
-        logError(url, e)
+        logError("Delete", url, e)
         Future.failed(e)
     }
   }

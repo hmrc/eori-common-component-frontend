@@ -35,10 +35,13 @@ class HandleSubscriptionConnector @Inject() (http: HttpClient, appConfig: AppCon
   private val logger = Logger(this.getClass)
 
   def call(request: HandleSubscriptionRequest)(implicit hc: HeaderCarrier): Future[Unit] = {
-    val url = s"${appConfig.handleSubscriptionBaseUrl}/${appConfig.handleSubscriptionServiceContext}"
-    logger.info(s"postUrl: $url")
-
+    val url     = s"${appConfig.handleSubscriptionBaseUrl}/${appConfig.handleSubscriptionServiceContext}"
     val headers = Seq(ACCEPT -> "application/vnd.hmrc.1.0+json", CONTENT_TYPE -> MimeTypes.JSON)
+
+    // $COVERAGE-OFF$Loggers
+    logger.debug(s"[Post: $url, body: $request, headers: $headers and hc: $hc")
+    // $COVERAGE-ON
+
     http.POST[HandleSubscriptionRequest, HttpResponse](url, request, headers) map { response =>
       response.status match {
         case OK | NO_CONTENT =>

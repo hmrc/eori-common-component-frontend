@@ -38,8 +38,16 @@ class RegistrationDisplayConnector @Inject() (http: HttpClient, appConfig: AppCo
     request: RegistrationDisplayRequestHolder
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[EoriHttpResponse, RegistrationDisplayResponse]] = {
     auditCallRequest(url, request)
+
+    // $COVERAGE-OFF$Loggers
+    logger.debug(s"[RegistrationDisplay: $url, body: $request and hc: $hc")
+    // $COVERAGE-ON
+
     http.POST[RegistrationDisplayRequestHolder, RegistrationDisplayResponseHolder](url, request) map { resp =>
-      logger.info(s"registration-display successful. url: $url")
+      // $COVERAGE-OFF$Loggers
+      logger.debug(s"[RegistrationDisplay: response: $resp")
+      // $COVERAGE-ON
+
       auditCallResponse(url, resp)
       Right(resp.registrationDisplayResponse)
     } recover {

@@ -39,29 +39,32 @@ class MatchingServiceConnector @Inject() (http: HttpClient, appConfig: AppConfig
 
   private val logger = Logger(this.getClass)
 
-  private val url  = appConfig.getServiceUrl("register-with-id")
-  val NoMatchFound = "002 - No Match Found"
+  private val url          = appConfig.getServiceUrl("register-with-id")
+  private val NoMatchFound = "002 - No Match Found"
 
-  def handleResponse(response: MatchingResponse): Option[MatchingResponse] = {
+  private def handleResponse(response: MatchingResponse): Option[MatchingResponse] = {
     val statusTxt = response.registerWithIDResponse.responseCommon.statusText
     if (statusTxt.exists(_.equalsIgnoreCase(NoMatchFound))) None
     else Some(response)
   }
 
   def lookup(req: MatchingRequestHolder)(implicit hc: HeaderCarrier): Future[Option[MatchingResponse]] = {
-    logger.info(
-      s"REG01 postUrl: $url,  acknowledgement ref: ${req.registerWithIDRequest.requestCommon.acknowledgementReference}"
-    )
+
+    // $COVERAGE-OFF$Loggers
+    logger.debug(s"[REG01 Lookup: $url, body: $req and hc: $hc")
+    // $COVERAGE-ON
+
     http.POST[MatchingRequestHolder, MatchingResponse](url, req) map { resp =>
-      logger.info(
-        s"REG01 business match found for acknowledgement ref: ${req.registerWithIDRequest.requestCommon.acknowledgementReference}"
-      )
+      // $COVERAGE-OFF$Loggers
+      logger.debug(s"[REG01 Lookup: response: $resp")
+      // $COVERAGE-ON
+
       auditCall(url, req, resp)
       handleResponse(resp)
     } recover {
       case e: Throwable =>
         logger.info(
-          s"REG01 Match request failed for acknowledgement ref: ${req.registerWithIDRequest.requestCommon.acknowledgementReference}. Reason: $e"
+          s"REG01 Lookup failed for acknowledgement ref: ${req.registerWithIDRequest.requestCommon.acknowledgementReference}. Reason: $e"
         )
         throw e
     }
