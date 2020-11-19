@@ -64,12 +64,19 @@ object Countries {
   val islands: List[Country] =
     countries filter (c => mdgCountryCodes("/mdg-country-codes-islands.csv") contains c.countryCode)
 
-  def getCountryParameters(location: Option[String]): (List[Country], CountriesInCountryPicker) = location match {
+  val iom: List[Country] =
+    countries filter (c => c.countryCode == "IM")
+
+  def getCountryParameters(
+    location: Option[String],
+    includeIoM: Boolean = false
+  ): (List[Country], CountriesInCountryPicker) = location match {
     case Some(UserLocation.Eu) => (eu, EUCountriesInCountryPicker)
     case Some(UserLocation.ThirdCountry) =>
       (third, ThirdCountriesInCountryPicker)
-    case Some(UserLocation.Islands) => (islands, IslandsInCountryPicker)
-    case _                          => (allExceptIom, AllCountriesExceptIomInCountryPicker)
+    case Some(UserLocation.Islands) =>
+      if (includeIoM) (islands ++ iom, IslandsPlusIomInCountryPicker) else (islands, IslandsInCountryPicker)
+    case _ => (allExceptIom, AllCountriesExceptIomInCountryPicker)
   }
 
   def getCountryParametersForAllCountries(): (List[Country], CountriesInCountryPicker) =
@@ -84,4 +91,5 @@ case object AllCountriesExceptIomInCountryPicker extends CountriesInCountryPicke
 case object EUCountriesInCountryPicker           extends CountriesInCountryPicker
 case object ThirdCountriesInCountryPicker        extends CountriesInCountryPicker
 case object IslandsInCountryPicker               extends CountriesInCountryPicker
+case object IslandsPlusIomInCountryPicker        extends CountriesInCountryPicker
 case object NoCountriesInCountryPicker           extends CountriesInCountryPicker

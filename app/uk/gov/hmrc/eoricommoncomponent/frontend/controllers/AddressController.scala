@@ -112,7 +112,7 @@ class AddressController @Inject() (
         val (countriesToInclude, countriesInCountryPicker) =
           (rd.customsId, cid, journey) match {
             case (_, _, Journey.Subscribe) =>
-              Countries.getCountryParametersForAllCountries()
+              Countries.getCountryParameters(requestSessionData.selectedUserLocationWithIslands, includeIoM = true)
             case (Some(_: Utr | _: Nino), _, _) | (_, Some(_: Utr | _: Nino), _) =>
               Countries.getCountryParameters(None)
             case _ =>

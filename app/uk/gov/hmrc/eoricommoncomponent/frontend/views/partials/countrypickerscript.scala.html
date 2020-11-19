@@ -22,7 +22,8 @@
 @countryFilter = @{
   countriesInCountryPicker match {
     case EUCountriesInCountryPicker => "country.isEu"
-    case IslandsInCountryPicker=> "country.isChannelIsland"
+    case IslandsInCountryPicker => "country.isChannelIsland"
+    case IslandsPlusIomInCountryPicker => "country.isChannelIsland || country.isIom"
     case ThirdCountriesInCountryPicker => Html("!country.isEu && !country.isChannelIsland && !country.isUk && !country.isIom")
     case AllCountriesExceptIomInCountryPicker => "!country.isIom"
     case _ => "true"
