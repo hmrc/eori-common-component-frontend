@@ -37,8 +37,6 @@
         <p>@messages("cds-start-page.intro1")</p>
         <p>@messages("cds-start-page.intro2")</p>
         <p>@messages("cds-start-page.intro3")</p>
-        <p>@messages("cds-start-page.intro4")</p>
-
 
         <h2>@messages("cds.start-page.ni.heading")</h2>
         <p>@messages("cds.start-page.ni.paragraph1")</p>
@@ -55,33 +53,30 @@
         <ul class="bullets list">
             <li>@messages("cds.start-page.get.bullet1")</li>
             <li>@messages("cds.start-page.get.bullet2")</li>
-            <li>@Html(messages("cds.start-page.get.bullet3", link(messages("cds.start-page.get.bullet3.link"), appConfig.findLostUtr, "_blank")))</li>
+            <li>@messages("cds.start-page.get.bullet3")</li>
         </ul>
-        <p>@Html(messages("cds.start-page.get.paragraph1", link(messages("cds.start-page.get.paragraph1.link"), appConfig.getCompanyInformation, "_self")))</p>
+        <p>@messages("cds.start-page.get.paragraph1")</p>
         <ul class="bullets list">
             <li>@messages("cds.start-page.get.bullet4")</li>
             <li>@messages("cds.start-page.get.bullet5")</li>
             <li>@messages("cds.start-page.get.bullet6")</li>
         </ul>
-        <p>@messages("cds.start-page.get.paragraph2")</p>
+        <p>@Html(messages("cds.start-page.get.paragraph2", link(messages("cds.start-page.get.paragraph2.link"), appConfig.getCompanyInformation, "_self")))</p>
+        <p>@messages("cds.start-page.get.paragraph3")</p>
 
         <p class="mt-2">
             <a class="button button--get-started" href='@startLink' role="button">@messages("cds.start-page.start-now")</a>
         </p>
 
         <h3 class="mt-2">@messages("cds.start-page.help.heading")</h3>
-        <p class="mb-0">@link(messages("cds.start-page.help.eori.forgotten.link"), "#", "_self")</p>
-        <p>@messages("cds.start-page.help.eori.forgotten")</p>
-
-        <p class="mb-0">@messages("cds.start-page.help.eori.other")</p>
-        <p>@Html(messages("cds.start-page.help.eori.other.contact", link(messages("cds.start-page.help.eori.other.contact.link"), "#", "_self")))</p>
-
-        <p class="mb-0">@messages("cds.start-page.help.telephone1")</p>
-        <p class="mb-0">@messages("cds.start-page.help.telephone2")</p>
-        <p >@link(messages("cds.start-page.help.telephone.link"), "#", "_self")</p>
-
-
-        <h3>@messages("cds.start-page.service.heading")</h3>
+        <p>
+            @helpers.noMarginParagraph(html = Some(link(messages("cds.start-page.help.eori.contact"), appConfig.contactEORITeam, "_self")))
+        </p>
+        <p>
+            @helpers.noMarginParagraph(messages("cds.start-page.help.telephone1"))
+            @helpers.noMarginParagraph(messages("cds.start-page.help.telephone2"))
+            @helpers.noMarginParagraph(html = Some(link(messages("cds.start-page.help.telephone.link"), appConfig.callCharges, "_self")))
+        </p>
 
         @helpers.helpAndSupport()
     </div>

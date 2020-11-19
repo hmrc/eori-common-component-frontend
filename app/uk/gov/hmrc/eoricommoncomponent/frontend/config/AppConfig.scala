@@ -67,9 +67,11 @@ class AppConfig @Inject() (
       ApplicationController.startRegister(service).url
   }
 
-  lazy val findLostUtr: String = config.get[String]("external-url.find-lost-utr")
-  lazy val traderSupportService: String = config.get[String]("external-url.trader-support-service")
+  lazy val findLostUtr: String           = config.get[String]("external-url.find-lost-utr")
+  lazy val traderSupportService: String  = config.get[String]("external-url.trader-support-service")
   lazy val getCompanyInformation: String = config.get[String]("external-url.get-company-information")
+  lazy val contactEORITeam: String       = config.get[String]("external-url.contact-eori-team")
+  lazy val callCharges: String           = config.get[String]("external-url.call-charges")
 
   lazy val blockedRoutesRegex: Seq[Regex] =
     config.getOptional[String]("routes-to-block") match {
