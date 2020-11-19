@@ -171,3 +171,48 @@ cds.subscription.outcomes.help.paragraph1=Phone the subscription support team on
 cds.subscription.outcomes.help.paragraph2=You can also find more information about this subject on GOV.UK.
 
 cds.subscription.contact-details.intro=We will use these details to contact you about your request. We will also use them to contact you if there are any issues with your customs activities.
+
+#Get An EORI Journey
+# Start Page
+cds.start-page.title=Get a GB EORI number
+
+cds-start-page.intro1=From 1st January 2021 if you want to move goods between Great Britain (England, Scotland and Wales) and the rest of the world, or carry out other customs activities, you may need an Economic Operator and Registration Identification (EORI) number.
+cds-start-page.intro2=You may also need one if you move goods to or from Northern Ireland.
+cds-start-page.intro3=HMRC use this to identify you and collect duty on your goods.
+cds-start-page.intro4=If you do not get an EORI number you may experience increased costs and delays. For example, if HMRC cannot clear your goods you may have to pay storage fees.
+
+cds.start-page.ni.heading=If you move goods to or from Northern Ireland
+cds.start-page.ni.paragraph1=From 1 January 2021 you’ll need an EORI number that starts with XI to:
+cds.start-page.ni.paragraph1.bullet1=move goods between Northern Ireland and non-EU countries
+cds.start-page.ni.paragraph1.bullet2=make a declaration in Northern Ireland
+cds.start-page.ni.paragraph1.bullet3=get a customs decision in Northern Ireland
+cds.start-page.ni.paragraph2=To get an EORI number that starts with XI, you must already have an EORI number that starts with GB. If you do not have one, apply for an EORI number that starts with GB as soon as possible.
+cds.start-page.ni.paragraph3=If you already have an EORI number that starts with GB and HMRC thinks you need one that starts with XI, they’ll automatically send you one in mid-December 2020.
+cds.start-page.ni.paragraph4=To get advice on moving goods between Great Britain and Northern Ireland sign up for the {0}. If you sign up your business before 23 November, this will also ensure you’ll be sent an EORI starting with XI.
+cds.start-page.ni.paragraph4.link=Trader Support Service
+
+cds.start-page.get.heading=To get an EORI number you might need to tell us
+cds.start-page.get.bullet1=VAT number, the postcode of the registered VAT address and the effective date - this is on your VAT registration certificate
+cds.start-page.get.bullet2=National Insurance number (if you are an individual or sole trader)
+cds.start-page.get.bullet3=your Unique Taxpayer Reference (UTR). This will be on tax returns and other letters about Self Assessment. It may be called 'reference', 'UTR' or 'official use'. You can {0}
+cds.start-page.get.bullet3.link=find a lost UTR number (opens in a new window or tab)
+cds.start-page.get.paragraph1=You can find the following information on the {0}
+cds.start-page.get.paragraph1.link=Companies House register
+cds.start-page.get.bullet4=the registered company name
+cds.start-page.get.bullet5=the date you started your business
+cds.start-page.get.bullet6=the Standard Industrial Classification (SIC) code for your business
+cds.start-page.get.paragraph2=It takes around 5 to 10 minutes to apply for a GB EORI number. You should get it immediately and it should be ready to use to subscribe to a customs service in two hours and for use with the UK Border Agency in 48 hours, but it may take up to 5 working days if we need to make more checks.
+
+cds.start-page.help.heading=If you need help
+cds.start-page.help.eori.forgotten=You can contact the EORI team online.
+cds.start-page.help.eori.forgotten.link=Forgotten or lost EORI number
+cds.start-page.help.eori.other=Other problems getting an EORI number
+cds.start-page.help.eori.other.contact=You can {0} or by phone.
+cds.start-page.help.eori.other.contact.link=contact the EORI team online
+cds.start-page.help.telephone1=Telephone: 0300 322 7067
+cds.start-page.help.telephone2=Monday to Friday, 8am to 6pm (closed bank holidays)
+cds.start-page.help.telephone.link=Find out about call charges
+
+cds.start-page.service.heading=Service issues
+
+# Start Page (end)

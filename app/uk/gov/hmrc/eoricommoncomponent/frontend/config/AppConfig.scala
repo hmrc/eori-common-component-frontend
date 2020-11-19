@@ -68,6 +68,8 @@ class AppConfig @Inject() (
   }
 
   lazy val findLostUtr: String = config.get[String]("external-url.find-lost-utr")
+  lazy val traderSupportService: String = config.get[String]("external-url.trader-support-service")
+  lazy val getCompanyInformation: String = config.get[String]("external-url.get-company-information")
 
   lazy val blockedRoutesRegex: Seq[Regex] =
     config.getOptional[String]("routes-to-block") match {
