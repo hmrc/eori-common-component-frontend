@@ -128,7 +128,7 @@ class AddressController @Inject() (
               isInReviewMode,
               service,
               journey,
-              isIndividualOrSoleTrader,
+              requestSessionData.isIndividualOrSoleTrader,
               requestSessionData.isPartnership,
               requestSessionData.isCompany,
               isRow
@@ -182,13 +182,5 @@ class AddressController @Inject() (
         }
     }
   }
-
-  private def isIndividualOrSoleTrader(implicit request: Request[AnyContent]) =
-    requestSessionData.userSelectedOrganisationType.fold(false) { oType =>
-      oType == CdsOrganisationType.Individual ||
-      oType == CdsOrganisationType.SoleTrader ||
-      oType == CdsOrganisationType.ThirdCountryIndividual ||
-      oType == CdsOrganisationType.ThirdCountrySoleTrader
-    }
 
 }
