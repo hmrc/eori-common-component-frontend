@@ -41,7 +41,7 @@ class EnrolmentService @Inject() (
     enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(KnownFactsQuery(eori)).flatMap {
       case Some(knownFacts) =>
         val cdsEnrolmentVerifiers =
-          knownFacts.enrolments.headOption.map(_.verifiers).getOrElse(throw MissingEnrolmentException())
+          knownFacts.enrolments.headOption.map(_.verifiers).getOrElse(throw MissingEnrolmentException(eori))
 
         val governmentGatewayEnrolmentRequest = GovernmentGatewayEnrolmentRequest(
           identifiers = List(Identifier("EORINumber", eori)),
@@ -49,9 +49,9 @@ class EnrolmentService @Inject() (
         )
 
         taxEnrolmentsConnector.enrolAndActivate(service.enrolmentKey, governmentGatewayEnrolmentRequest).map(_.status)
-      case _ => throw MissingEnrolmentException()
+      case _ => throw MissingEnrolmentException(eori)
     }
 
 }
 
-case class MissingEnrolmentException(msg: String = "Missing key enrolment information") extends Exception(msg)
+case class MissingEnrolmentException(eori: String) extends Exception(s"Missing key enrolment information: $eori")

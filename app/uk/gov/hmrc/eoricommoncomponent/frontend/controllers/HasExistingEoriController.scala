@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import javax.inject.{Inject, Singleton}
+import play.api.Logger
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
   AuthAction,
@@ -26,7 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{EnrolmentService, MissingEnrolmentException}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{eori_enrol_success, has_existing_eori}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -43,6 +44,8 @@ class HasExistingEoriController @Inject() (
   cache: SessionCache
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) with EnrolmentExtractor {
+
+  private val logger = Logger(this.getClass)
 
   def displayPage(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
@@ -66,6 +69,10 @@ class HasExistingEoriController @Inject() (
               enrolmentService.enrolWithExistingCDSEnrolment(eori, service).map {
                 case NO_CONTENT => Redirect(routes.HasExistingEoriController.enrolSuccess(service))
                 case status     => throw FailedEnrolmentException(status)
+              } recover {
+                case e: MissingEnrolmentException =>
+                  logger.info(s"EnrolWithExistingCDSEnrolment : ${e.getMessage}")
+                  Redirect(routes.EmailController.form(service, Journey.Subscribe))
               }
             }
       }
