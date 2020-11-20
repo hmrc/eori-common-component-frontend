@@ -45,7 +45,7 @@ class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, aud
     val url = s"${appConfig.handleSubscriptionBaseUrl}/save4later/$id/$key"
 
     // $COVERAGE-OFF$Loggers
-    logger.debug(s"[Get: $url and hc: $hc")
+    logger.debug(s"GET: $url")
     // $COVERAGE-ON
 
     http.GET[HttpResponse](url) map { response =>
@@ -69,7 +69,7 @@ class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, aud
     val url = s"${appConfig.handleSubscriptionBaseUrl}/save4later/$id/$key"
 
     // $COVERAGE-OFF$Loggers
-    logger.debug(s"[Put: $url, body: $payload and hc: $hc")
+    logger.debug(s"PUT: $url")
     // $COVERAGE-ON
 
     http.PUT[JsValue, HttpResponse](url, payload) map { response =>
@@ -89,7 +89,7 @@ class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, aud
     val url = s"${appConfig.handleSubscriptionBaseUrl}/save4later/$id"
 
     // $COVERAGE-OFF$Loggers
-    logger.debug(s"[Delete: $url and hc: $hc")
+    logger.debug(s"DELETE: $url")
     // $COVERAGE-ON
 
     http.DELETE[HttpResponse](url) map { response =>

@@ -38,7 +38,7 @@ class RegisterWithoutIdConnector @Inject() (http: HttpClient, appConfig: AppConf
     auditCallRequest(url, request)
 
     // $COVERAGE-OFF$Loggers
-    logger.debug(s"[Register: $url, body: $request and hc: $hc")
+    logger.debug(s"Register: $url, body: $request and hc: $hc")
     // $COVERAGE-ON
 
     http.POST[RegisterWithoutIdRequestHolder, RegisterWithoutIdResponseHolder](
@@ -46,7 +46,7 @@ class RegisterWithoutIdConnector @Inject() (http: HttpClient, appConfig: AppConf
       RegisterWithoutIdRequestHolder(request)
     ) map { resp =>
       // $COVERAGE-OFF$Loggers
-      logger.debug(s"[Register: response: $resp")
+      logger.debug(s"Register: responseCommon: ${resp.registerWithoutIDResponse.responseCommon}")
       // $COVERAGE-ON
 
       auditCallResponse(url, resp)

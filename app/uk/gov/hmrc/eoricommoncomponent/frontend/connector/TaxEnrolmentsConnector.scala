@@ -18,7 +18,6 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
-import play.api.http.Status.BAD_REQUEST
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.GovernmentGatewayEnrolmentRequest
@@ -40,12 +39,12 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig)(
     val url = s"$baseUrl/$serviceContext/businesspartners/$safeId/subscriptions"
 
     // $COVERAGE-OFF$Loggers
-    logger.debug(s"[GetEnrolments: $url and hc: $hc")
+    logger.debug(s"GetEnrolments: $url and hc: $hc")
     // $COVERAGE-ON
 
     http.GET[List[TaxEnrolmentsResponse]](url) map { resp =>
       // $COVERAGE-OFF$Loggers
-      logger.debug(s"[GetEnrolments: response: $resp")
+      logger.debug(s"GetEnrolments: response: $resp")
       // $COVERAGE-ON
       resp
     } recover {

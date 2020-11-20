@@ -51,12 +51,12 @@ class MatchingServiceConnector @Inject() (http: HttpClient, appConfig: AppConfig
   def lookup(req: MatchingRequestHolder)(implicit hc: HeaderCarrier): Future[Option[MatchingResponse]] = {
 
     // $COVERAGE-OFF$Loggers
-    logger.debug(s"[REG01 Lookup: $url, body: $req and hc: $hc")
+    logger.debug(s"REG01 Lookup: $url, requestCommon: ${req.registerWithIDRequest.requestCommon} and hc: $hc")
     // $COVERAGE-ON
 
     http.POST[MatchingRequestHolder, MatchingResponse](url, req) map { resp =>
       // $COVERAGE-OFF$Loggers
-      logger.debug(s"[REG01 Lookup: response: $resp")
+      logger.debug(s"REG01 Lookup: responseCommon: ${resp.registerWithIDResponse.responseCommon}")
       // $COVERAGE-ON
 
       auditCall(url, req, resp)

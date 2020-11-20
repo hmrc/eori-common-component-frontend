@@ -48,7 +48,7 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
       s"$baseUrl/$serviceContext/enrolment-store/groups/$groupId/enrolments?type=principal"
 
     // $COVERAGE-OFF$Loggers
-    logger.debug(s"[GetEnrolmentByGroupId: $url and hc: $hc")
+    logger.debug(s"GetEnrolmentByGroupId: $url and hc: $hc")
     // $COVERAGE-ON
 
     http.GET[HttpResponse](url) map { resp =>
@@ -93,7 +93,7 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
     val url = s"$baseUrl/$serviceContext/enrolment-store/enrolments"
 
     // $COVERAGE-OFF$Loggers
-    logger.debug(s"[QueryKnownFactsByIdentifiers: $url, body: $knownFactsQuery and hc: $hc")
+    logger.debug(s"QueryKnownFactsByIdentifiers: $url, body: $knownFactsQuery and hc: $hc")
     // $COVERAGE-ON
 
     http.POST[KnownFactsQuery, Option[KnownFacts]](url, knownFactsQuery) map {

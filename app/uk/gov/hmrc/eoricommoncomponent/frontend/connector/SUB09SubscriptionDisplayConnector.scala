@@ -50,12 +50,12 @@ class SUB09SubscriptionDisplayConnector @Inject() (http: HttpClient, appConfig: 
   )(implicit hc: HeaderCarrier): Future[Either[EoriHttpResponse, SubscriptionDisplayResponse]] = {
 
     // $COVERAGE-OFF$Loggers
-    logger.debug(s"[SubscriptionDisplay SUB09: $url, body: $sub09Request and hc: $hc")
+    logger.debug(s"SubscriptionDisplay SUB09: $url, body: $sub09Request and hc: $hc")
     // $COVERAGE-ON
 
     http.GET[SubscriptionDisplayResponseHolder](url, sub09Request) map { resp =>
       // $COVERAGE-OFF$Loggers
-      logger.debug(s"[SubscriptionDisplay SUB09: response: $resp")
+      logger.debug(s"SubscriptionDisplay SUB09: responseCommon: ${resp.subscriptionDisplayResponse.responseCommon}")
       // $COVERAGE-ON
 
       auditCall(url, sub09Request, resp)

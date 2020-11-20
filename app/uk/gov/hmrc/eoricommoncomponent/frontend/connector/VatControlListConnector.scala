@@ -33,15 +33,10 @@ class VatControlListConnector @Inject() (http: HttpClient, appConfig: AppConfig)
 
   def vatControlList(
     request: VatControlListRequest
-  )(implicit hc: HeaderCarrier): Future[Either[EoriHttpResponse, VatControlListResponse]] = {
-
-    // $COVERAGE-OFF$Loggers
-    logger.debug(s"[VatControlList: $url, queryParams: ${request.queryParams} and hc: $hc")
-    // $COVERAGE-ON
-
+  )(implicit hc: HeaderCarrier): Future[Either[EoriHttpResponse, VatControlListResponse]] =
     http.GET[VatControlListResponse](url, request.queryParams) map { resp =>
       // $COVERAGE-OFF$Loggers
-      logger.debug(s"[VatControlList: response: $resp")
+      logger.debug(s"vat-known-facts-control-list successful. url: $url")
       // $COVERAGE-ON
       Right(resp)
     } recover {
@@ -58,7 +53,6 @@ class VatControlListConnector @Inject() (http: HttpClient, appConfig: AppConfig)
         logFailed(e)
         throw e
     }
-  }
 
   def logFailed(e: Throwable) = logger.warn(s"VatControlList failed. url: $url, error: $e", e)
 
