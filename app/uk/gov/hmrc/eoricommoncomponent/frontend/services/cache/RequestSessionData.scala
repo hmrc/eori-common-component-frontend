@@ -92,6 +92,14 @@ class RequestSessionData {
     oType == CdsOrganisationType.Company
   }
 
+  def isIndividualOrSoleTrader(implicit request: Request[AnyContent]) =
+    userSelectedOrganisationType.fold(false) { oType =>
+      oType == CdsOrganisationType.Individual ||
+      oType == CdsOrganisationType.SoleTrader ||
+      oType == CdsOrganisationType.ThirdCountryIndividual ||
+      oType == CdsOrganisationType.ThirdCountrySoleTrader
+    }
+
 }
 
 object RequestSessionDataKeys {

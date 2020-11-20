@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
+import org.joda.time.{DateTime, LocalDate}
 import play.api.i18n.Messages
 import play.api.mvc.{Action, _}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SUB09SubscriptionDisplayConnector
@@ -97,6 +98,11 @@ class SubscriptionRecoveryController @Inject() (
           safeId,
           Eori(eori),
           subscriptionDisplayResponse,
+          getDateOfBirthOrDateOfEstablishment(
+            subscriptionDisplayResponse,
+            registrationDetails.dateOfEstablishmentOption,
+            registrationDetails.dateOfBirthOption
+          ),
           service,
           Journey.Register
         )(Redirect(Sub02Controller.end(service)))
@@ -128,6 +134,11 @@ class SubscriptionRecoveryController @Inject() (
           safeId,
           Eori(eori),
           subscriptionDisplayResponse,
+          getDateOfBirthOrDateOfEstablishment(
+            subscriptionDisplayResponse,
+            subscriptionDetails.dateEstablished,
+            subscriptionDetails.dateOfBirth
+          ),
           service,
           Journey.Subscribe
         )(Redirect(Sub02Controller.migrationEnd(service)))
@@ -157,6 +168,11 @@ class SubscriptionRecoveryController @Inject() (
           safeId,
           Eori(eori),
           subscriptionDisplayResponse,
+          getDateOfBirthOrDateOfEstablishment(
+            subscriptionDisplayResponse,
+            subscriptionDetails.dateEstablished,
+            subscriptionDetails.dateOfBirth
+          ),
           service,
           Journey.Subscribe
         )(Redirect(Sub02Controller.migrationEnd(service)))
@@ -169,12 +185,25 @@ class SubscriptionRecoveryController @Inject() (
   private def buildQueryParams: List[(String, String)] =
     List("regime" -> "CDS", "acknowledgementReference" -> uuidGenerator.generateUUIDAsString)
 
+  private case class SubscriptionInformation(
+    processedDate: String,
+    email: String,
+    emailVerificationTimestamp: Option[DateTime],
+    formBundleId: String,
+    recipientFullName: String,
+    name: String,
+    eori: Eori,
+    safeId: SafeId,
+    dateOfEstablishment: Option[LocalDate]
+  )
+
   private def onSUB09Success(
     processedDate: String,
     email: String,
     safeId: String,
     eori: Eori,
     subscriptionDisplayResponse: SubscriptionDisplayResponse,
+    dateOfEstablishment: Option[LocalDate],
     service: Service,
     journey: Journey.Value
   )(redirect: => Result)(implicit headerCarrier: HeaderCarrier, messages: Messages): Future[Result] = {
@@ -190,40 +219,99 @@ class SubscriptionRecoveryController @Inject() (
     val emailVerificationTimestamp =
       subscriptionDisplayResponse.responseDetail.contactInformation.flatMap(_.emailVerificationTimestamp)
 
-    sessionCache
-      .saveSub02Outcome(Sub02Outcome(processedDate, name, subscriptionDisplayResponse.responseDetail.EORINo))
-      .flatMap(
-        _ =>
-          handleSubscriptionService
-            .handleSubscription(
-              formBundleId,
-              RecipientDetails(service, journey, email, recipientFullName, Some(name), Some(processedDate)),
-              TaxPayerId(safeId),
-              Some(eori),
-              emailVerificationTimestamp,
-              SafeId(safeId)
-            )
-            .flatMap { _ =>
-              if (journey == Journey.Subscribe)
-                issuerCall(eori, formBundleId, subscriptionDisplayResponse, service)(redirect)
-              else
-                Future.successful(redirect)
-            }
-      )
+    val subscriptionInformation = SubscriptionInformation(
+      processedDate,
+      email,
+      emailVerificationTimestamp,
+      formBundleId,
+      recipientFullName,
+      name,
+      eori,
+      SafeId(safeId),
+      dateOfEstablishment
+    )
+
+    completeEnrolment(service, journey, subscriptionInformation)(redirect)
   }
 
-  private def issuerCall(
-    eori: Eori,
-    formBundleId: String,
-    subscriptionDisplayResponse: SubscriptionDisplayResponse,
-    service: Service
-  )(redirect: => Result)(implicit headerCarrier: HeaderCarrier): Future[Result] = {
-    val dateOfEstablishment = subscriptionDisplayResponse.responseDetail.dateOfEstablishment
-    taxEnrolmentService.issuerCall(formBundleId, eori, dateOfEstablishment, service).map {
+  private def completeEnrolment(
+    service: Service,
+    journey: Journey.Value,
+    subscriptionInformation: SubscriptionInformation
+  )(redirect: => Result)(implicit hc: HeaderCarrier, messages: Messages): Future[Result] =
+    for {
+      // Update Recovered Subscription Information
+      _ <- updateSubscription(subscriptionInformation)
+      // Update Email
+//      _ <- updateEmail(journey, subscriptionInformation)  // TODO - ECC-307
+      // Subscribe Call for enrolment
+      _ <- subscribe(service, journey, subscriptionInformation)
+      // Issuer Call for enrolment
+      res <- issue(service, journey, subscriptionInformation)
+    } yield res match {
       case NO_CONTENT => redirect
-      case _          => throw new IllegalArgumentException("Tax enrolment call failed")
+      case _          => throw new IllegalArgumentException("Tax Enrolment issuer call failed")
     }
 
+  private def updateSubscription(subscriptionInformation: SubscriptionInformation)(implicit hc: HeaderCarrier) =
+    sessionCache.saveSub02Outcome(
+      Sub02Outcome(
+        subscriptionInformation.processedDate,
+        subscriptionInformation.name,
+        Some(subscriptionInformation.eori.id)
+      )
+    )
+
+  private def subscribe(
+    service: Service,
+    journey: Journey.Value,
+    subscriptionInformation: SubscriptionInformation
+  )(implicit hc: HeaderCarrier, messages: Messages): Future[Unit] =
+    handleSubscriptionService
+      .handleSubscription(
+        subscriptionInformation.formBundleId,
+        RecipientDetails(
+          service,
+          journey,
+          subscriptionInformation.email,
+          subscriptionInformation.recipientFullName,
+          Some(subscriptionInformation.name),
+          Some(subscriptionInformation.processedDate)
+        ),
+        TaxPayerId(subscriptionInformation.safeId.id),
+        Some(subscriptionInformation.eori),
+        subscriptionInformation.emailVerificationTimestamp,
+        subscriptionInformation.safeId
+      )
+
+  private def issue(service: Service, journey: Journey.Value, subscriptionInformation: SubscriptionInformation)(implicit
+    hc: HeaderCarrier
+  ): Future[Int] =
+    if (journey == Journey.Subscribe)
+      taxEnrolmentService.issuerCall(
+        subscriptionInformation.formBundleId,
+        subscriptionInformation.eori,
+        subscriptionInformation.dateOfEstablishment,
+        service
+      )
+    else
+      Future.successful(NO_CONTENT)
+
+  private def getDateOfBirthOrDateOfEstablishment(
+    response: SubscriptionDisplayResponse,
+    dateOfEstablishmentCaptured: Option[LocalDate],
+    dateOfBirthCaptured: Option[LocalDate]
+  )(implicit request: Request[AnyContent], headerCarrier: HeaderCarrier): Option[LocalDate] = {
+    val isIndividualOrSoleTrader = requestSessionData.isIndividualOrSoleTrader
+    val dateOfEstablishment      = response.responseDetail.dateOfEstablishment // Date we hold
+    (isIndividualOrSoleTrader, dateOfEstablishment, dateOfEstablishmentCaptured, dateOfBirthCaptured) match {
+      case (_, Some(date), _, _)     => Some(date)
+      case (false, _, Some(date), _) => Some(date)
+      case (true, _, _, Some(date))  => Some(date)
+      case _                         => throw MissingDateException()
+    }
   }
+
+  case class MissingDateException(msg: String = "Missing date of enrolment or birth") extends Exception(msg)
 
 }

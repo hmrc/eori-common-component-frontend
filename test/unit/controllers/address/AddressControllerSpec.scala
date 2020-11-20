@@ -517,8 +517,8 @@ class AddressControllerSpec
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
 
-    when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]]))
-      .thenReturn(userSelectedOrganisationType)
+    when(mockRequestSessionData.isIndividualOrSoleTrader(any[Request[AnyContent]]))
+      .thenReturn(isIndividual(userSelectedOrganisationType))
     when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(organisationRegistrationDetails)
 
     test(controller.createForm(atarService, Journey.Register).apply(SessionBuilder.buildRequestWithSession(userId)))
@@ -531,8 +531,8 @@ class AddressControllerSpec
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
 
-    when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]]))
-      .thenReturn(userSelectedOrganisationType)
+    when(mockRequestSessionData.isIndividualOrSoleTrader(any[Request[AnyContent]]))
+      .thenReturn(isIndividual(userSelectedOrganisationType))
     when(mockSubscriptionBusinessService.addressOrException(any[HeaderCarrier])).thenReturn(dataToEdit)
     when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(individualRegistrationDetails)
 
@@ -551,5 +551,8 @@ class AddressControllerSpec
     page.getElementValue(AddressPage.postcodeFieldXPath) shouldBe empty
     page.getElementValue(AddressPage.countryCodeFieldXPath) shouldBe empty
   }
+
+  private def isIndividual(userSelectedOrganisationType: Option[CdsOrganisationType]) =
+    userSelectedOrganisationType.contains(CdsOrganisationType.Individual)
 
 }

@@ -46,6 +46,9 @@ sealed trait RegistrationDetails {
   def name: String
 
   def address: Address
+
+  def dateOfEstablishmentOption: Option[LocalDate] = None
+  def dateOfBirthOption: Option[LocalDate]         = None
 }
 
 case class RegistrationDetailsOrganisation(
@@ -56,7 +59,9 @@ case class RegistrationDetailsOrganisation(
   address: Address,
   dateOfEstablishment: Option[LocalDate],
   etmpOrganisationType: Option[EtmpOrganisationType]
-) extends RegistrationDetails
+) extends RegistrationDetails {
+  override def dateOfEstablishmentOption: Option[LocalDate] = dateOfEstablishment
+}
 
 case class RegistrationDetailsIndividual(
   customsId: Option[CustomsId],
@@ -65,7 +70,9 @@ case class RegistrationDetailsIndividual(
   name: String,
   address: Address,
   dateOfBirth: LocalDate
-) extends RegistrationDetails
+) extends RegistrationDetails {
+  override def dateOfBirthOption: Option[LocalDate] = Some(dateOfBirth)
+}
 
 case class RegistrationDetailsSafeId(
   safeId: SafeId,
