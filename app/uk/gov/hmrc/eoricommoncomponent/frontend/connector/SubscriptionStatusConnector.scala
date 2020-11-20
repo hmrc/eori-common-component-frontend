@@ -44,12 +44,12 @@ class SubscriptionStatusConnector @Inject() (http: HttpClient, appConfig: AppCon
   def status(request: SubscriptionStatusQueryParams)(implicit hc: HeaderCarrier): Future[SubscriptionStatusResponse] = {
 
     // $COVERAGE-OFF$Loggers
-    logger.debug(s"[Status SUB01: $url, queryParams: ${request.queryParams} and hc: $hc")
+    logger.debug(s"Status SUB01: $url, queryParams: ${request.queryParams} and hc: $hc")
     // $COVERAGE-ON
 
     http.GET[SubscriptionStatusResponseHolder](url, request.queryParams) map { resp =>
       // $COVERAGE-OFF$Loggers
-      logger.debug(s"[Status SUB01: response: $resp")
+      logger.debug(s"Status SUB01: responseCommon: ${resp.subscriptionStatusResponse.responseCommon}")
       // $COVERAGE-ON
 
       auditCall(url, request, resp)

@@ -50,7 +50,7 @@ class EmailVerificationConnector @Inject() (http: HttpClient, appConfig: AppConf
     val body = Json.obj("email" -> emailAddress)
 
     // $COVERAGE-OFF$Loggers
-    logger.debug(s"[GetEmailVerificationState: $checkVerifiedEmailUrl, body: $body and hc: $hc")
+    logger.debug(s"GetEmailVerificationState: $checkVerifiedEmailUrl, body: $body and hc: $hc")
     // $COVERAGE-ON
 
     def logResponse(response: EmailVerificationStateResponse): Unit =
@@ -81,7 +81,7 @@ class EmailVerificationConnector @Inject() (http: HttpClient, appConfig: AppConf
       )
 
     // $COVERAGE-OFF$Loggers
-    logger.debug(s"[CreateEmailVerificationRequest: $createEmailVerificationRequestUrl, body: $jsonBody and hc: $hc")
+    logger.debug(s"CreateEmailVerificationRequest: $createEmailVerificationRequestUrl, body: $jsonBody and hc: $hc")
     // $COVERAGE-ON
 
     def logResponse(response: EmailVerificationRequestResponse): Unit =

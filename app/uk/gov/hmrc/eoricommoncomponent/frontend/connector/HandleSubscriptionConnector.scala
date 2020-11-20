@@ -39,7 +39,7 @@ class HandleSubscriptionConnector @Inject() (http: HttpClient, appConfig: AppCon
     val headers = Seq(ACCEPT -> "application/vnd.hmrc.1.0+json", CONTENT_TYPE -> MimeTypes.JSON)
 
     // $COVERAGE-OFF$Loggers
-    logger.debug(s"[Call: $url, body: $request, headers: $headers and hc: $hc")
+    logger.debug(s"Call: $url, eori: ${request.eori}, headers: $headers and hc: $hc")
     // $COVERAGE-ON
 
     http.POST[HandleSubscriptionRequest, HttpResponse](url, request, headers) map { response =>

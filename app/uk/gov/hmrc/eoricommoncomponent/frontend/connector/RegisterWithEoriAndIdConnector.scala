@@ -46,7 +46,7 @@ class RegisterWithEoriAndIdConnector @Inject() (http: HttpClient, appConfig: App
   )(implicit hc: HeaderCarrier): Future[RegisterWithEoriAndIdResponse] = {
 
     // $COVERAGE-OFF$Loggers
-    logger.debug(s"[REG06 Register: $url, body: $request and hc: $hc")
+    logger.debug(s"REG06 Register: $url, requestCommon: ${request.requestCommon} and hc: $hc")
     // $COVERAGE-ON
 
     http.POST[RegisterWithEoriAndIdRequestHolder, RegisterWithEoriAndIdResponseHolder](
@@ -54,7 +54,7 @@ class RegisterWithEoriAndIdConnector @Inject() (http: HttpClient, appConfig: App
       RegisterWithEoriAndIdRequestHolder(request)
     ) map { resp =>
       // $COVERAGE-OFF$Loggers
-      logger.debug(s"[REG06 Register: response: $resp")
+      logger.debug(s"REG06 Register: responseCommon: ${resp.registerWithEORIAndIDResponse.responseCommon}")
       // $COVERAGE-ON
 
       auditCall(url, request, resp)

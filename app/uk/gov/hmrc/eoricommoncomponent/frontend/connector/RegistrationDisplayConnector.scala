@@ -40,7 +40,9 @@ class RegistrationDisplayConnector @Inject() (http: HttpClient, appConfig: AppCo
     auditCallRequest(url, request)
 
     // $COVERAGE-OFF$Loggers
-    logger.debug(s"[RegistrationDisplay: $url, body: $request and hc: $hc")
+    logger.debug(
+      s"RegistrationDisplay: $url, requestCommon: ${request.registrationDisplayRequest.requestCommon} and hc: $hc"
+    )
     // $COVERAGE-ON
 
     http.POST[RegistrationDisplayRequestHolder, RegistrationDisplayResponseHolder](url, request) map { resp =>

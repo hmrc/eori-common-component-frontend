@@ -43,12 +43,14 @@ class SubscriptionServiceConnector @Inject() (http: HttpClient, appConfig: AppCo
   def subscribe(request: SubscriptionRequest)(implicit hc: HeaderCarrier): Future[SubscriptionResponse] = {
 
     // $COVERAGE-OFF$Loggers
-    logger.debug(s"[Subscribe SUB02: $url, body: $request and hc: $hc")
+    logger.debug(
+      s"[Subscribe SUB02: $url, requestCommon: ${request.subscriptionCreateRequest.requestCommon} and hc: $hc"
+    )
     // $COVERAGE-ON
 
     http.POST[SubscriptionRequest, SubscriptionResponse](url, request) map { response =>
       // $COVERAGE-OFF$Loggers
-      logger.debug(s"[Subscribe SUB02: response: $response")
+      logger.debug(s"[Subscribe SUB02: responseCommon: ${response.subscriptionCreateResponse.responseCommon}")
       // $COVERAGE-ON
 
       auditCall(url, request, response)
