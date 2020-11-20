@@ -308,8 +308,10 @@ class SubscriptionRecoveryController @Inject() (
       case (_, Some(date), _, _)     => Some(date)
       case (false, _, Some(date), _) => Some(date)
       case (true, _, _, Some(date))  => Some(date)
-      case _                         => None
+      case _                         => throw MissingDateException()
     }
   }
+
+  case class MissingDateException(msg: String = "Missing date of enrolment or birth") extends Exception(msg)
 
 }
