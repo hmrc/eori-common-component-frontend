@@ -27,7 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{FailedEnrolmentExce
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, KeyValue}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{EnrolmentService, MissingEnrolmentException}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{eori_enrol_success, has_existing_eori}
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
@@ -115,7 +115,14 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     "redirect to confirmation page on success" in {
       enrol(atarService, NO_CONTENT) { result =>
         status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("/check-existing-eori/confirmation")
+        await(result).header.headers("Location") should endWith("/atar/subscribe/check-existing-eori/confirmation")
+      }
+    }
+
+    "redirect to check email page when enrolWithExistingCDSEnrolment fails" in {
+      enrolMissingEnrolment(atarService) { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("/atar/subscribe/check-email")
       }
     }
 
@@ -124,7 +131,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
       enrol(atarService, NO_CONTENT) { result =>
         status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("/enrolment-already-exists-for-group")
+        await(result).header.headers("Location") should endWith("/atar/subscribe/enrolment-already-exists-for-group")
       }
     }
 
@@ -178,6 +185,14 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     when(mockEnrolmentService.enrolWithExistingCDSEnrolment(any[String], any[Service])(any())).thenReturn(
       Future(responseStatus)
+    )
+    await(test(controller.enrol(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+  }
+
+  private def enrolMissingEnrolment(service: Service)(test: Future[Result] => Any) = {
+    withAuthorisedUser(defaultUserId, mockAuthConnector)
+    when(mockEnrolmentService.enrolWithExistingCDSEnrolment(any[String], any[Service])(any())).thenReturn(
+      Future.failed(MissingEnrolmentException("EORI"))
     )
     await(test(controller.enrol(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
