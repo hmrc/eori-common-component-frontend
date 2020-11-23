@@ -14,5 +14,9 @@
  * limitations under the License.
  *@
 
-@(text: String)
-<p class="mt-0 mb-0">@text</p>
+@(text: String = "", html: Option[Html] = None)
+
+@content = @{
+  html.getOrElse(Html(text))
+}
+<p class="mt-0 mb-0">@content</p>

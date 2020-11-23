@@ -77,7 +77,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       val result = controller.startRegister(atarService).apply(SessionBuilder.buildRequestWithSessionNoUser)
 
       status(result) shouldBe OK
-      CdsPage(contentAsString(result)).title should startWith("Get an EORI number")
+      CdsPage(contentAsString(result)).title should startWith("Get a GB EORI number")
     }
 
     "direct authenticated users to start subscription" in {
