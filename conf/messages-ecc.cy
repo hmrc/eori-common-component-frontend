@@ -1,10 +1,10 @@
-cds.banner.registration=TRANSLATE Get an EORI
-cds.banner.subscription=TRANSLATE Subscribe to [SERVICE]
+cds.banner.registration=Cael rhif EORI
+cds.banner.subscription=Tanysgrifio i {0}
 
-cds.subscription.enter-eori-number.heading=TRANSLATE What is your GB Economic Operator Registration and Identification (EORI) number?
-cds.subscription.enter-eori-number.no-eori.summary=TRANSLATE I do not have an EORI number
-cds.subscription.enter-eori-number.no-eori=You must [get an EORI number] before you can apply for [SERVICE].
-cds.subscription.enter-eori-number.no-eori.link=TODO get an EORI number
+cds.subscription.enter-eori-number.heading=Beth yw’ch rif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI)?
+cds.subscription.enter-eori-number.no-eori.summary=Nid oes gennyf rif EORI
+cds.subscription.enter-eori-number.no-eori=Rhaid i chi {0} cyn y gallwch wneud cais am {1}.
+cds.subscription.enter-eori-number.no-eori.link=gael rhif EORI
 
 cds.has-existing-eori.title=Mae’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth yn gysylltiedig ag EORI
 cds.has-existing-eori.heading=Mae’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth yn gysylltiedig ag EORI
@@ -14,9 +14,9 @@ cds.has-existing-eori.para3=Os defnyddiwch EORI gwahanol gan amlaf, dylech allgo
 
 cds.enrolment.already.exists.title=Mae problem wedi codi
 cds.enrolment.already.exists.heading=Mae problem wedi codi
-cds.enrolment.already.exists.para1=TRANSLATE Our records show that this Government Gateway user ID has already been used to subscribe to [SERVICE].
+cds.enrolment.already.exists.para1=Mae ein cofnodion yn dangos bod y Dynodydd Defnyddiwr (ID) hwn ar gyfer Porth y Llywodraeth eisoes wedi’i ddefnyddio i ddanysgrifio i {0}.
 
-cds.proposition.name.service=TRANSLATE Register for a customs service
+cds.proposition.name.service=Cofrestru ar gyfer gwasanaeth tollau
 
 eds.existing-eori.enrolment.confirmation.title=Cais wedi’i gwblhau
 eds.existing-eori.enrolment.confirmation.heading=Cais wedi’i gwblhau
@@ -28,149 +28,149 @@ countries-in-the-eu.list=Yr Almaen, Awstria, Bwlgaria, Croatia, Denmarc, yr Eida
 
 cds.registration.user-location.location.eu.label=Gwlad yn yr UE
 
-cds.you-cant-use-service-agent.para1=TRANSLATE You signed in to Government Gateway with an agent services account.
-cds.you-cant-use-service-agent.para2=TRANSLATE You need to sign in with the Government Gateway for the organisation or individual that is applying for access to [SERVICE].
-cds.you-cant-use-service-standard-organisation.para1=TRANSLATE You signed in to Government Gateway as a standard user. To apply for access to [SERVICE] you must be an administrator user.
-cds.you-cant-use-service-standard-organisation.para2=TRANSLATE Please log in as an administrator or contact the person who set up your Government Gateway.
+cds.you-cant-use-service-agent.para1=Gwnaethoch fewngofnodi i Borth y Llywodraeth gyda chyfrif gwasanaethau asiant.
+cds.you-cant-use-service-agent.para2=Mae angen i chi fewngofnodi gyda Phorth y Llywodraeth ar gyfer y sefydliad neu’r unigolyn sy’n gwneud cais am fynediad at {0}.
+cds.you-cant-use-service-standard-organisation.para1=Gwnaethoch fewngofnodi i Borth y Llywodraeth fel defnyddiwr safonol. I wneud cais am fynediad at {0}, mae’n rhaid i chi fod yn ddefnyddiwr gweinyddwr.
+cds.you-cant-use-service-standard-organisation.para2=Dylech fewngofnodi fel gweinyddwr neu gysylltu â’r person a greodd eich Porth y Llywodraeth.
 
-cds.sub01.outcome.rejected.subscribe.heading=TRANSLATE The [SERVICE] subscription request for [USER] has been unsuccessful
-cds.sub01.outcome.rejected.subscribe.heading-noname=TRANSLATE The [SERVICE] subscription request has been unsuccessful
-cds.sub01.outcome.rejected.subscribe.title=TRANSLATE The [SERVICE] subscription request has been unsuccessful
+cds.sub01.outcome.rejected.subscribe.heading=Mae’r cais am danysgrifiad {0} ar gyfer {1} wedi bod yn aflwyddiannus
+cds.sub01.outcome.rejected.subscribe.heading-noname=Mae’r cais am danysgrifiad {0} wedi bod yn aflwyddiannus
+cds.sub01.outcome.rejected.subscribe.title=Mae’r cais am danysgrifiad {0} wedi bod yn aflwyddiannus
 
-cds.sub01.outcome.rejected.register.heading=TRANSLATE The [SERVICE] registration request for [USER] has been unsuccessful
-cds.sub01.outcome.rejected.register.heading-noname=TRANSLATE The [SERVICE] registration request has been unsuccessful
-cds.sub01.outcome.rejected.register.title=TRANSLATE The [SERVICE] registration request has been unsuccessful
+cds.sub01.outcome.rejected.register.heading=Mae’r cais am {0} ar gyfer {1} wedi bod yn aflwyddiannus
+cds.sub01.outcome.rejected.register.heading-noname=Mae’r cais am {0} wedi bod yn aflwyddiannus
+cds.sub01.outcome.rejected.register.title=Mae’r cais am {0} wedi bod yn aflwyddiannus
 
-cds.reg06.outcome.eori-already-linked.title=TRANSLATE The [SERVICE] subscription request has been unsuccessful
-cds.reg06.outcome.eori-already-linked.heading=TRANSLATE The [SERVICE] subscription request for [USER] has been unsuccessful
-cds.subscription.outcomes.eori-already-linked.use-cds-para=TRANSLATE You need to sign in with the Government Gateway [USER] used to get access to [SERVICE].
+cds.reg06.outcome.eori-already-linked.title=Mae’r cais am danysgrifiad {0} wedi bod yn aflwyddiannus
+cds.reg06.outcome.eori-already-linked.heading=Mae’r cais am danysgrifiad {0} ar gyfer {1} wedi bod yn aflwyddiannus
+cds.subscription.outcomes.eori-already-linked.use-cds-para=Mae’n rhaid i chi fewngofnodi gyda Phorth y Llywodraeth a ddefnyddiwyd gan {0} i gael mynediad at {1}.
 
-cds.subscription.outcomes.inprocessing.we-are-processing=TRANSLATE We are processing your [SERVICE] subscription request. This can take up to 5 working days. You will need to sign back in to see the result of your request.
+cds.subscription.outcomes.inprocessing.we-are-processing=Rydym yn prosesu’ch cais am {0}. Gall hyn gymryd hyd at 5 diwrnod gwaith. Bydd yn rhaid i chi fewngofnodi eto i weld canlyniad eich cofrestriad.
 
-cds.enrolment.already.exists.for-group.para1=TRANSLATE Your organisation is already subscribed to [SERVICE]. Ask a team member for access.
+cds.enrolment.already.exists.for-group.para1=Mae eich sefydliad eisoes wedi tanysgrifio i {0}. Gofynnwch i aelod o’r tîm am fynediad.
 
-cds.enrolment.already.exists.group.title=TRANSLATE There is a problem
-cds.enrolment.already.exists.group.paragraph=TRANSLATE Our records show that someone in the organisation has already applied for this service.
+cds.enrolment.already.exists.group.title=Mae problem wedi codi
+cds.enrolment.already.exists.group.paragraph=Mae ein cofnodion yn dangos bod rhywun yn y sefydliad eisoes wedi gwneud cais am y gwasanaeth hwn.
 
-cds.sub01.outcome.processing.heading=TRANSLATE The [SERVICE] application for [USER] is being processed
-cds.sub01.outcome.processing.heading-noname=TRANSLATE The [SERVICE] application is being processed
-cds.sub01.outcome.processing.title=TRANSLATE The [SERVICE] application is being processed
-cds.sub01.outcome.processing.we-are-processing=TRANSLATE We are processing your [SERVICE] application. This can take up to 5 working days. You will need to sign back in to see the result of your registration.
+cds.sub01.outcome.processing.heading=Mae’r cais am {0} ar gyfer {1} wrthi’n cael ei brosesu
+cds.sub01.outcome.processing.heading-noname=Mae’r cais am {0} wrthi’n cael ei brosesu
+cds.sub01.outcome.processing.title=Mae’r cais am {0} wrthi’n cael ei brosesu
+cds.sub01.outcome.processing.we-are-processing=Rydym yn prosesu’ch cais am {0}. Gall hyn gymryd hyd at 5 diwrnod gwaith. Bydd yn rhaid i chi fewngofnodi eto i weld canlyniad eich cofrestriad.
 
-cds.subscription.verify-email.title=TRANSLATE Confirm your email address
+cds.subscription.verify-email.title=Cadarnhau’ch cyfeiriad e-bost
 
-cds.subscription.outcomes.rejected.title=TRANSLATE The subscription request has been unsuccessful
-cds.subscription.outcomes.rejected.heading=TRANSLATE The subscription request for [USER] has been unsuccessful
+cds.subscription.outcomes.rejected.title=Mae’r cais am danysgrifiad wedi bod yn aflwyddiannus
+cds.subscription.outcomes.rejected.heading=Mae’r cais am danysgrifiad ar gyfer {0} wedi bod yn aflwyddiannus
 
-cds.subscription.outcomes.in-processing.title=TRANSLATE We are processing the subscription request
-cds.subscription.outcomes.in-processing.heading=TRANSLATE We are processing the subscription request for [USER]
+cds.subscription.outcomes.in-processing.title=Rydym yn prosesu’r cais am danysgrifiad
+cds.subscription.outcomes.in-processing.heading=Rydym yn prosesu’r cais am danysgrifiad ar gyfer {0}
 
-enter-email-body-text=TRANSLATE We will use this to send you the result of your application.
-cds.subscription.verify-email.para2=TRANSLATE For your security the link in the email will expire after 72 hours.
+enter-email-body-text=Byddwn yn defnyddio hyn i anfon canlyniad eich cais atoch.
+cds.subscription.verify-email.para2=Er eich diogelwch, bydd y cysylltiad yn yr e-bost yn dod i ben ar ôl 72 awr.
 
-cds.email-confirmed.para.get-access=TRANSLATE You can continue with your application.
+cds.email-confirmed.para.get-access=Gallwch fynd yn eich blaen â’ch cais.
 
-cds.subscription.outcomes.success.will-send-email=TRANSLATE We will send you an email to confirm when you have access to [SERVICE]. This can take up to two hours.
+cds.subscription.outcomes.success.will-send-email=Byddwn yn anfon e-bost atoch i gadarnhau pan fydd gennych fynediad at {0}. Gall hyn gymryd hyd at ddwy awr.
 
-cds.registration.you-already-have-eori.title=TRANSLATE You already have an EORI
-cds.registration.you-already-have-eori.para1=TRANSLATE We have detected you already have an EORI.  You can continue and subscribe to the [SERVICE] service.
+cds.registration.you-already-have-eori.title=Mae gennych EORI eisoes
+cds.registration.you-already-have-eori.para1=Rydym wedi canfod bod gennych EORI eisoes. Gallwch fynd yn eich blaen a thanysgrifio i’r gwasanaeth {0}.
 
-cds.subscription.information.heading=TRANSLATE You must subscribe before you can use this service
-cds.subscription.information.para1=TRANSLATE From 1 January 2021, you will need a GB EORI (Economic Operator and Registration Identification) number to move goods between Great Britain (England, Scotland and Wales) and the rest of the world.
-cds.subscription.information.para2=TRANSLATE If you don’t already have one, you must [apply for an EORI number].
-cds.subscription.information.para2.link=TODO apply for an EORI number
+cds.subscription.information.heading=Mae’n rhaid i chi danysgrifio cyn i chi allu defnyddio’r gwasanaeth hwn
+cds.subscription.information.para1=O 1 Ionawr 2021 ymlaen, bydd angen rhif EORI GB (Cofrestru ac Adnabod Gweithredwr Economaidd) i symud nwyddau rhwng Prydain Fawr (Cymru, yr Alban a Lloegr) a gweddill y byd.
+cds.subscription.information.para2=Os nad oes gennych un eisoes, mae’n rhaid i chi {0}.
+cds.subscription.information.para2.link=wneud cais am rif EORI
 
-cds.subscription.information.section.organisation.subheading=TRANSLATE As an organisation:
-cds.subscription.information.section.organisation.utr=TRANSLATE You will also need your Corporation Tax Unique Tax Reference (UTR). You can [find a lost UTR number (opens in a new window or tab)].
-cds.subscription.information.section.organisation.utr.link=TODO find a lost UTR number (opens in a new window or tab)
+cds.subscription.information.section.organisation.subheading=Fel sefydliad:
+cds.subscription.information.section.organisation.utr=Bydd angen eich Cyfeirnod Treth Gorfforaeth Unigryw y Treth (UTR) arnoch. Gallwch {0}.
+cds.subscription.information.section.organisation.utr.link=ddod o hyd i UTR coll (yn agor ffenestr neu dab newydd)
 
-cds.subscription.information.section.individual.subheading=TRANSLATE As an individual or sole trader in the UK:
-cds.subscription.information.section.individual.para=TRANSLATE You will need one of the following:
-cds.subscription.information.section.individual.nino=TRANSLATE National Insurance number
-cds.subscription.information.section.individual.utr=TRANSLATE Self Assessment Unique Taxpayer Reference (UTR)
+cds.subscription.information.section.individual.subheading=Fel unigolyn neu unig fasnachwr yn y DU:
+cds.subscription.information.section.individual.para=Bydd angen un o’r canlynol arnoch:
+cds.subscription.information.section.individual.nino=Rhif Yswiriant Gwladol
+cds.subscription.information.section.individual.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad
 
-cds.subscription.information.para3=TRANSLATE This only needs to be done once.
-cds.subscription.information.para4=TRANSLATE You will receive a confirmation email within 2 hours.
+cds.subscription.information.para3=Dim ond unwaith y mae angen gwneud hyn.
+cds.subscription.information.para4=Byddwch yn cael cadarnhad cyn pen 2 awr.
 
-cds.navigation.subscribe=TRANSLATE Subscribe
+cds.navigation.subscribe=Tanysgrifio
 
-subscription.check-your-email.no=TRANSLATE No, I need to change this email address
+subscription.check-your-email.no=Na, mae angen i mi newid y cyfeiriad e-bost hwn
 
-cds.form.contact-details=TRANSLATE Your address
+cds.form.contact-details=Eich cyfeiriad
 
-confirm-business-details.individual.yes-wrong-address=TRANSLATE No, I need to change my address
-confirm-business-details.individual.no=TRANSLATE No, I need to enter all my details again
+confirm-business-details.individual.yes-wrong-address=Na, mae angen i mi newid fy nghyfeiriad
+confirm-business-details.individual.no=Na, mae angen i mi nodi fy holl fanylion eto
 
 cds.error.field.hint=Gwall:
 
-date.day.error=TRANSLATE Enter a day between 1 and 31
-date.month.error=TRANSLATE Enter a month between 1 and 12
-date.year.error=TRANSLATE Enter a year between [YEAR] and [YEAR]
+date.day.error=Nodwch ddiwrnod rhwng 1 a 31
+date.month.error=Nodwch fis rhwng 1 a 12
+date.year.error=Nodwch flwyddyn rhwng {0} a {1}
 
-dob.error.empty-date=TRANSLATE Enter your date of birth
-dob.error.future-date=TRANSLATE Date of birth must be in the past
-dob.error.invalid-date=TRANSLATE Date of birth must be a real date
+dob.error.empty-date=Nodwch eich dyddiad geni
+dob.error.future-date=Mae’n rhaid i’r dyddiad geni fod yn y gorffennol
+dob.error.invalid-date=Mae’n rhaid i’r dyddiad geni fod yn ddyddiad go iawn
 
-doe.error.empty-date=TRANSLATE Enter your date of establishment
-doe.error.future-date=TRANSLATE Date of establishment must be in the past
-doe.error.invalid-date=TRANSLATE Date of establishment must be a real date
+doe.error.empty-date=Nodwch eich dyddiad sefydlu
+doe.error.future-date=Mae’n rhaid i’r dyddiad sefydlu fod yn y gorffennol
+doe.error.invalid-date=Mae’n rhaid i’r dyddiad sefydlu fod yn ddyddiad go iawn
 
-vat.error.empty-date=TRANSLATE Enter your effective VAT date
-vat.error.future-date=TRANSLATE Effective VAT date must be in the past
-vat.error.invalid-date=TRANSLATE Effective VAT date must be a real date
+vat.error.empty-date=Nodwch eich dyddiad dod i rym ar gyfer TAW
+vat.error.future-date=Mae’n rhaid i’r dyddiad dod i rym ar gyfer TAW fod yn y gorffennol
+vat.error.invalid-date=Mae’n rhaid i’r dyddiad dod i rym ar gyfer TAW fod yn ddyddiad go iawn
 
-cds.feedback.continue=TRANSLATE More about [SERVICE]
+cds.feedback.continue=Rhagor am {0}
 
-cds.subscription.sign-in-with-different-details.para1=TRANSLATE [USER] has already registered for [SERVICE] with a different Government Gateway.
-cds.subscription.sign-in-with-different-details.para1-noname=TRANSLATE You have already registered for [SERVICE] with a different Government Gateway.
+cds.subscription.sign-in-with-different-details.para1=Mae {0} eisoes wedi cofrestru ar gyfer {1} gyda Phorth y Llywodraeth gwahanol.
+cds.subscription.sign-in-with-different-details.para1-noname=Rydych eisoes wedi cofrestru ar gyfer {0} gyda Phorth y Llywodraeth gwahanol.
 
-cds.matching.row-organisation.utr.hint=TRANSLATE This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Corporation Tax. It may be called 'reference', 'UTR' or 'official use'. You can [find a lost UTR number].
-cds.matching.row-sole-trader-individual.utr.hint=TRANSLATE This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’. You can [find a lost UTR number].
-cds.matching.row-lost-urt.hint.link=TODO find a lost UTR number
+cds.matching.row-organisation.utr.hint=Mae hwn yn cynnwys 10 rhif, er enghraifft 1234567890. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Treth Gorfforaeth. Efallai y cyfeirir ato gan ddefnyddio’r geiriau ‘cyfeirnod’, ‘UTR’ neu ‘defnydd swyddogol’. Mae modd dod o hyd i UTR sydd ar goll.
+cds.matching.row-sole-trader-individual.utr.hint=Mae hwn yn cynnwys 10 rhif, er enghraifft 1234567890. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Hunanasesiad. Efallai y cyfeirir ato gan ddefnyddio’r geiriau ‘cyfeirnod’, ‘UTR’ neu ‘defnydd swyddogol’. Mae modd {0}.
+cds.matching.row-lost-urt.hint.link=dod o hyd i UTR sydd ar goll
 
-cds.subscribe.use-this-eori.heading=TRANSLATE Your GB Economic Operator Registration and Identification (EORI) number
-cds.subscribe.use-this-eori.paragraph1=TRANSLATE This EORI is linked to the Government Gateway account you are using.
-cds.subscribe.use-this-eori.paragraph2=TRANSLATE To use a different EORI you must [sign out] and start again with a different Government Gateway user ID and password.
-cds.subscribe.use-this-eori.signout=TODO sign out
-cds.subscribe.use-this-eori.paragraph3=TRANSLATE Confirm that this is the EORI number to use for your application.
-cds.subscribe.use-this-eori.confirm=TRANSLATE Confirm and continue
+cds.subscribe.use-this-eori.heading=Eich rhif Cofrestru ac Adnabod Gweithredwr Economaidd (EORI)
+cds.subscribe.use-this-eori.paragraph1=Mae’r EORI hwn yn gysylltiedig â chyfrif Porth y Llywodraeth rydych yn ei ddefnyddio.
+cds.subscribe.use-this-eori.paragraph2=I ddefnyddio EORI gwahanol mae’n rhaid i chi {0} a dechrau eto gyda Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth a chyfrinair gwahanol.
+cds.subscribe.use-this-eori.signout=gofrestru
+cds.subscribe.use-this-eori.paragraph3=Cadarnhau mai dyma’r rhif EORI i’w ddefnyddio ar gyfer eich cais.
+cds.subscribe.use-this-eori.confirm=Cadarnhau ac yn eich blaen
 
-cds.subscription.check-your-email.page-error.yes-no-answer=TRANSLATE Select yes if this is the correct email address
-cds.registration.user-location.error.location=TRANSLATE Select where you are based
-cds.matching.organisation-type.page-error.organisation-type-field.error.required=TRANSLATE Select what you want to apply as
-cds.matching.organisation-utr.field-error.have-utr=TRANSLATE Select yes if you have a UTR number
-cds.subscription.contact-details.error.use-registered-address=TRANSLATE Select yes if the contact address is right
-cds.subscription.nino.utr.invalid=TRANSLATE Select how we can identify you
-cds.matching.nino.row.yes-no.error=TRANSLATE Select yes if you have a National Insurance number
+cds.subscription.check-your-email.page-error.yes-no-answer=Dewiswch ‘Iawn’ os mai dyma’r cyfeiriad e-bost cywir
+cds.registration.user-location.error.location=Dewiswch ble rydych wedi’ch lleoli
+cds.matching.organisation-type.page-error.organisation-type-field.error.required=Dewiswch yr hyn rydych am wneud cais fel
+cds.matching.organisation-utr.field-error.have-utr=Dewiswch ‘Iawn’ os oes gennych rif UTR
+cds.subscription.contact-details.error.use-registered-address=Dewiswch ‘Iawn’ os yw’r cyfeiriad cyswllt yn gywir
+cds.subscription.nino.utr.invalid=Dewiswch sut y gallwn eich adnabod
+cds.matching.nino.row.yes-no.error=Dewiswch ‘Iawn’ os oes gennych rif Yswiriant Gwladol
 
-cds.email-confirmed.title-and-heading=TRANSLATE You have confirmed your email address
-cds.registration.user-location.location.uk.label=TRANSLATE United Kingdom
-cds.registration.user-location.location.eu.label=TRANSLATE The European Union
-cds.registration.user-location.location.third-country.label=TRANSLATE Outside the European Union
+cds.email-confirmed.title-and-heading=Rydych wedi cadarnhau’ch cyfeiriad e-bost
+cds.registration.user-location.location.uk.label=Y Deyrnas Unedig
+cds.registration.user-location.location.eu.label=Yr Undeb Ewropeaidd
+cds.registration.user-location.location.third-country.label=Y tu allan i’r Undeb Ewropeaidd
 
-cds.matching.name-id-organisation.company.utr=TRANSLATE Corporation Tax Unique Taxpayer Reference (UTR)
-cds.matching.name-id-organisation.registered-company.utr=TRANSLATE Corporation Tax Unique Taxpayer Reference (UTR)
-cds.matching.name-id-organisation.partnership.utr=TRANSLATE Partnership Self Assessment Unique Taxpayer Reference (UTR)
-cds.matching.name-id-organisation.organisation.utr=TRANSLATE Organisation Self Assessment Unique Taxpayer Reference (UTR)
+cds.matching.name-id-organisation.company.utr=Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)
+cds.matching.name-id-organisation.registered-company.utr=Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)
+cds.matching.name-id-organisation.partnership.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad y Bartneriaeth
+cds.matching.name-id-organisation.organisation.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad y Sefydliad
 
-cds.subscription.date-of-establishment.company.title-and-heading=TRANSLATE When was the company established?
+cds.subscription.date-of-establishment.company.title-and-heading=Pryd y cafodd y Cwmni ei sefydlu?
 
-cds.subscription.address-details.postcode.row.label=TRANSLATE Postal code
+cds.subscription.address-details.postcode.row.label=Cod post
 
-cds.matching.row-organisation.utr.title-and-heading=TRANSLATE Does your organisation have a Unique Taxpayer Reference (UTR) issued in the UK?
-cds.matching.row-sole-trader-individual.utr.title-and-heading=TRANSLATE Do you have a Self Assessment Unique Taxpayer Reference (UTR) issued in the UK?
+cds.matching.row-organisation.utr.title-and-heading=A oes gan eich sefydliad Gyfeirnod Unigryw y Trethdalwr (UTR) a gyhoeddwyd yn y DU?
+cds.matching.row-sole-trader-individual.utr.title-and-heading=A oes gennych Gyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad a gyhoeddwyd yn y DU?
 
-cds.form.declaration=TRANSLATE Declaration
-cds.form.send=TRANSLATE Confirm and send
+cds.form.declaration=Datganiad
+cds.form.send=Cadarnhau ac anfon
 
-cds.mig.existing.outcomes.application-received.title=TRANSLATE Subscription request received
-cds.reg.existing.outcomes.success.heading.part1=TRANSLATE Subscription request received for [USER]
+cds.mig.existing.outcomes.application-received.title=Cais am danysgrifiad wedi dod i law
+cds.reg.existing.outcomes.success.heading.part1=Cais am danysgrifiad wedi dod i law ar gyfer {0}
 
-cds.subscription.outcomes.help.heading=TRANSLATE If you need help
-cds.subscription.outcomes.help.paragraph1=TRANSLATE Phone the subscription support team on 0300 322 7067. This is available 8am to 6pm, Monday to Friday (closed bank holidays).
-cds.subscription.outcomes.help.paragraph2=TRANSLATE You can also find more information about this subject on GOV.UK.
+cds.subscription.outcomes.help.heading=Os oes angen help arnoch
+cds.subscription.outcomes.help.paragraph1=Ffoniwch y Tîm Cymorth Tanysgrifio ar 0300 322 7067. Ar gael 08:00 i 18:00 o ddydd Llun i ddydd Gwener (ar gau ar wyliau banc).
+cds.subscription.outcomes.help.paragraph2=Gallwch hefyd ddod o hyd i ragor o wybodaeth am y pwnc hwn ar GOV.UK.
 
-cds.subscription.contact-details.intro=TRANSLATE We will use these details to contact you about your request. We will also use them to contact you if there are any issues with your customs activities.
+cds.subscription.contact-details.intro=Byddwn yn defnyddio’r manylion hyn i gysylltu â chi ynglŷn â’ch cais. Byddwn hefyd yn eu defnyddio i gysylltu â chi os oes unrhyw broblemau gyda’ch gweithgareddau tollau.
 
 #Get An EORI Journey
 # Start Page
