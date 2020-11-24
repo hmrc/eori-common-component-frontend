@@ -81,6 +81,7 @@ cds.country.BY=Belarus
 cds.country.BE=Gwlad Belg
 cds.country.BZ=Belize
 cds.country.BJ=Benin
+cds.country.BL=Saint Barthélemy
 cds.country.BM=Bermuda
 cds.country.BT=Bhutan
 cds.country.BO=Bolivia
