@@ -168,8 +168,8 @@ cds.reg.existing.outcomes.success.heading.part1=Cais am danysgrifiad wedi dod i 
 
 cds.if.you.need.help.heading=Os oes angen help arnoch
 cds.if.you.need.help.telephone1=Ffôn: 0300 322 7067
-cds.if.you.need.help.telephone2=Dydd Llun i ddydd Gwener, 08:00 i 18:00 (gwyliau banc caeedig)
-cds.if.you.need.help.telephone.link=Darganfyddwch fwy am daliadau galwadau
+cds.if.you.need.help.telephone2=Dydd Llun i Ddydd Gwener, 08.00 i 18.00 (heblaw am wyliau cyhoeddus)
+cds.if.you.need.help.telephone.link=Gwybodaeth am gostau galwadau
 
 cds.subscription.contact-details.intro=Byddwn yn defnyddio’r manylion hyn i gysylltu â chi ynglŷn â’ch cais. Byddwn hefyd yn eu defnyddio i gysylltu â chi os oes unrhyw broblemau gyda’ch gweithgareddau tollau.
 
