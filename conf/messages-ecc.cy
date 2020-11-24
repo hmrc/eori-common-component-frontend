@@ -166,9 +166,10 @@ cds.form.send=Cadarnhau ac anfon
 cds.mig.existing.outcomes.application-received.title=Cais am danysgrifiad wedi dod i law
 cds.reg.existing.outcomes.success.heading.part1=Cais am danysgrifiad wedi dod i law ar gyfer {0}
 
-cds.subscription.outcomes.help.heading=Os oes angen help arnoch
-cds.subscription.outcomes.help.paragraph1=Ffoniwch y Tîm Cymorth Tanysgrifio ar 0300 322 7067. Ar gael 08:00 i 18:00 o ddydd Llun i ddydd Gwener (ar gau ar wyliau banc).
-cds.subscription.outcomes.help.paragraph2=Gallwch hefyd ddod o hyd i ragor o wybodaeth am y pwnc hwn ar GOV.UK.
+cds.if.you.need.help.heading=Os oes angen help arnoch
+cds.if.you.need.help.telephone1=Ffôn: 0300 322 7067
+cds.if.you.need.help.telephone2=Dydd Llun i Ddydd Gwener, 08.00 i 18.00 (heblaw am wyliau cyhoeddus)
+cds.if.you.need.help.telephone.link=Gwybodaeth am gostau galwadau
 
 cds.subscription.contact-details.intro=Byddwn yn defnyddio’r manylion hyn i gysylltu â chi ynglŷn â’ch cais. Byddwn hefyd yn eu defnyddio i gysylltu â chi os oes unrhyw broblemau gyda’ch gweithgareddau tollau.
 
@@ -202,10 +203,6 @@ cds.start-page.get.paragraph2=POST_MVP This information can be found on the {0}
 cds.start-page.get.paragraph2.link=POST_MVP Companies House register
 cds.start-page.get.paragraph3=POST_MVP It takes around 5 to 10 minutes to apply for a GB EORI number. You should get it immediately and it should be ready to use to subscribe to a customs service in two hours and for use with the UK Border Agency in 48 hours, but it may take up to 5 working days if we need to make more checks.
 
-cds.start-page.help.heading=POST_MVP If you need help
 cds.start-page.help.eori.contact=POST_MVP Contact the EORI team online.
-cds.start-page.help.telephone1=POST_MVP Telephone: 0300 322 7067
-cds.start-page.help.telephone2=POST_MVP Monday to Friday, 8am to 6pm (closed bank holidays)
-cds.start-page.help.telephone.link=POST_MVP Find out about call charges
 
 # Start Page (end)

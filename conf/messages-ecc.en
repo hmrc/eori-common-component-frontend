@@ -166,9 +166,10 @@ cds.form.send=Confirm and send
 cds.mig.existing.outcomes.application-received.title=Subscription request received
 cds.reg.existing.outcomes.success.heading.part1=Subscription request received for {0}
 
-cds.subscription.outcomes.help.heading=If you need help
-cds.subscription.outcomes.help.paragraph1=Phone the subscription support team on 0300 322 7067. This is available 8am to 6pm, Monday to Friday (closed bank holidays).
-cds.subscription.outcomes.help.paragraph2=You can also find more information about this subject on GOV.UK.
+cds.if.you.need.help.heading=If you need help
+cds.if.you.need.help.telephone1=Telephone: 0300 322 7067
+cds.if.you.need.help.telephone2=Monday to Friday, 8am to 6pm (closed bank holidays)
+cds.if.you.need.help.telephone.link=Find out about call charges
 
 cds.subscription.contact-details.intro=We will use these details to contact you about your request. We will also use them to contact you if there are any issues with your customs activities.
 
@@ -202,10 +203,6 @@ cds.start-page.get.paragraph2=This information can be found on the {0}
 cds.start-page.get.paragraph2.link=Companies House register
 cds.start-page.get.paragraph3=It takes around 5 to 10 minutes to apply for a GB EORI number. You should get it immediately and it should be ready to use to subscribe to a customs service in two hours and for use with the UK Border Agency in 48 hours, but it may take up to 5 working days if we need to make more checks.
 
-cds.start-page.help.heading=If you need help
 cds.start-page.help.eori.contact=Contact the EORI team online.
-cds.start-page.help.telephone1=Telephone: 0300 322 7067
-cds.start-page.help.telephone2=Monday to Friday, 8am to 6pm (closed bank holidays)
-cds.start-page.help.telephone.link=Find out about call charges
 
 # Start Page (end)
