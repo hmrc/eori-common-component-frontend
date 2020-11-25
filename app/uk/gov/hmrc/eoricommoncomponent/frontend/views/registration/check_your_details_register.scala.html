@@ -359,7 +359,7 @@ isUserIdentifiedByRegService: Boolean
         <p id="disclaimer-content">@messages("cds.form.disclaimer")</p>
 
         <div class="form-group">
-            @helper.form(CheckYourDetailsRegisterController.submitDetails(service, journey)) {
+            @helpers.form(CheckYourDetailsRegisterController.submitDetails(service, journey)) {
                 @CSRF.formField
 
                 <p><input class="button" type="submit" value=@messages("cds.form.send")></p>

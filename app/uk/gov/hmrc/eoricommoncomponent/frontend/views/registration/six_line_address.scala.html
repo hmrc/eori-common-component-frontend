@@ -59,7 +59,7 @@
 
         <h1 class="heading-large">@messages(headerLabel)</h1>
 
-        @helper.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.SixLineAddressController.submit(isInReviewMode, cdsOrgType, service, journey), 'id -> s"$cdsOrgType-form") {
+        @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.SixLineAddressController.submit(isInReviewMode, cdsOrgType, service, journey), s"$cdsOrgType-form") {
         @CSRF.formField
 
             @inputTextBoundToForm("line-1", messages("cds.matching.organisation-address.line-1"), '_autocomplete ->  "address-line1")

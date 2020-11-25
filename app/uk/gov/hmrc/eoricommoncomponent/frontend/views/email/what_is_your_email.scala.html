@@ -44,7 +44,7 @@
 
     @helpers.errorSummary(emailForm)
 
-    @helper.form(WhatIsYourEmailController.submit(service, journey),'id -> "emailForm") {
+    @helpers.form(WhatIsYourEmailController.submit(service, journey),"emailForm") {
 
         @CSRF.formField
 

@@ -41,7 +41,7 @@
 
     @helpers.errorSummary(matchNinoIdForm)
 
-    @helper.form(HaveNinoSubscriptionController.submit(service, journey), 'id -> "subscriptionNinoForm") {
+    @helpers.form(HaveNinoSubscriptionController.submit(service, journey), "subscriptionNinoForm") {
     @CSRF.formField
     <div class="form-group">
         @helpers.hideRevealToggle(

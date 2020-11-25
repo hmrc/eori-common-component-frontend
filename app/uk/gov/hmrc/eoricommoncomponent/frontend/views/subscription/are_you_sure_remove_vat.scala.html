@@ -57,8 +57,7 @@
     <fieldset>
         <legend>
             <h1 class="heading-large" id="titleHeading">@heading</h1>
-            @helper.form(AreYouSureYouWantToDeleteVatController.submit(vatDetail.index, service, journey, isInReviewMode),
-            'id -> "vatDetailEuRemoveCreateForm") {
+            @helpers.form(AreYouSureYouWantToDeleteVatController.submit(vatDetail.index, service, journey, isInReviewMode), "vatDetailEuRemoveCreateForm") {
 
             @CSRF.formField
         </legend>

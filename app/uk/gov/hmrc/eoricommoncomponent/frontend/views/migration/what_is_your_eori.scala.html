@@ -50,7 +50,7 @@
 
     @helpers.errorSummary(eoriNumberForm)
 
-    @helper.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.submit(isInReviewMode, service),'id -> "eoriNumberForm") {
+    @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.submit(isInReviewMode, service), "eoriNumberForm") {
         @CSRF.formField
 
         @inputText("eori-number",

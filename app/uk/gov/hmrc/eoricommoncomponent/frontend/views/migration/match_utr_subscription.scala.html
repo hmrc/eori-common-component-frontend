@@ -78,7 +78,7 @@
 
     @helpers.errorSummary(matchOrgIdForm)
 
-    @helper.form(HaveUtrSubscriptionController.submit(service, journey), 'id -> "subscriptionUtrForm") {
+    @helpers.form(HaveUtrSubscriptionController.submit(service, journey), "subscriptionUtrForm") {
     @CSRF.formField
     <div class="form-group">
         @helpers.hideRevealToggle(

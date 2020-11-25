@@ -45,7 +45,7 @@ uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.VatRegi
 
     @helpers.errorSummary(vatRegisteredUkYesNoAnswerForm, focusOverrides = Map("yes-no-answer" -> "yes-no-answer-true"))
 
-    @helper.form(formAction, 'id -> "yes-no-form") {
+    @helpers.form(formAction, "yes-no-form") {
 
     @CSRF.formField
 

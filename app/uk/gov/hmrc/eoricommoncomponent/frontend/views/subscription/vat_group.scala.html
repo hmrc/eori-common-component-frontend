@@ -45,7 +45,7 @@
 
         @helpers.errorSummary(vatGroupYesNoAnswerForm, focusOverrides = Map("yes-no-answer" -> "yes-no-answer-true"))
 
-        @helper.form(formAction, 'id -> "vat-group-createForm") {
+        @helpers.form(formAction, "vat-group-createForm") {
 
             @CSRF.formField
 

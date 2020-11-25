@@ -59,7 +59,7 @@
 
     <h1 class="heading-large">@headerAndTitle</h1>
 
-    @helper.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController.submit(isInReviewMode, service, journey), 'id -> "nameUtrOrganisationForm") {
+    @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController.submit(isInReviewMode, service, journey), "nameUtrOrganisationForm") {
         @CSRF.formField
 
         @inputText(
