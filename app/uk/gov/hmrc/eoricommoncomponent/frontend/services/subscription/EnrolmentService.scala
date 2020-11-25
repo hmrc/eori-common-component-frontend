@@ -20,12 +20,7 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{EnrolmentStoreProxyConnector, TaxEnrolmentsConnector}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.EnrolmentExtractor
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.{
-  GovernmentGatewayEnrolmentRequest,
-  Identifier,
-  KnownFactsQuery,
-  Verifier
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,12 +35,14 @@ class EnrolmentService @Inject() (
   def enrolWithExistingCDSEnrolment(eori: String, service: Service)(implicit hc: HeaderCarrier): Future[Int] =
     enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(KnownFactsQuery(eori)).flatMap {
       case Some(knownFacts) =>
-        val cdsEnrolmentVerifiers =
-          knownFacts.enrolments.headOption.map(_.verifiers).getOrElse(throw MissingEnrolmentException(eori))
+        val doeVerifier: KeyValuePair =
+          knownFacts.enrolments.flatMap(_.verifiers).find(_.key == "DATEOFESTABLISHMENT").getOrElse(
+            throw MissingEnrolmentException(eori)
+          )
 
         val governmentGatewayEnrolmentRequest = GovernmentGatewayEnrolmentRequest(
           identifiers = List(Identifier("EORINumber", eori)),
-          verifiers = cdsEnrolmentVerifiers.map(Verifier.fromKeyValuePair)
+          verifiers = Seq(Verifier.fromKeyValuePair(doeVerifier))
         )
 
         taxEnrolmentsConnector.enrolAndActivate(service.enrolmentKey, governmentGatewayEnrolmentRequest).map(_.status)

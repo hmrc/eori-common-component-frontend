@@ -108,6 +108,33 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
           await(enrolmentService.enrolWithExistingCDSEnrolment("GB234232342", atarService)(headerCarrier))
         }
       }
+
+      "empty verifiers are returned" in {
+
+        val knownFact  = KnownFact(List.empty, List.empty)
+        val knownFacts = KnownFacts("atar", List(knownFact))
+
+        when(enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(any())(any()))
+          .thenReturn(Future.successful(Some(knownFacts)))
+
+        intercept[MissingEnrolmentException] {
+          await(enrolmentService.enrolWithExistingCDSEnrolment("GB234232342", atarService)(headerCarrier))
+        }
+      }
+
+      "verifiers are returned but do not contain DoE" in {
+
+        val verifiers  = List(KeyValuePair(key = "Postcode", value = "SW1A 2AA"))
+        val knownFact  = KnownFact(List.empty, verifiers)
+        val knownFacts = KnownFacts("atar", List(knownFact))
+
+        when(enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(any())(any()))
+          .thenReturn(Future.successful(Some(knownFacts)))
+
+        intercept[MissingEnrolmentException] {
+          await(enrolmentService.enrolWithExistingCDSEnrolment("GB234232342", atarService)(headerCarrier))
+        }
+      }
     }
   }
 }
