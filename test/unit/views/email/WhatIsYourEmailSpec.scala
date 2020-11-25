@@ -52,6 +52,9 @@ class WhatIsYourEmailSpec extends ViewSpec {
     "have an autocomplet of type 'email'" in {
       MigrateDoc.body().getElementById("email").attr("autocomplete") mustBe "email"
     }
+    "associate hint with input field" in {
+      MigrateDoc.body().getElementById("email").attr("aria-describedby") mustBe "email-hint"
+    }
   }
   "What Is Your Email Address page with errors" should {
     "display a field level error message" in {
@@ -60,6 +63,13 @@ class WhatIsYourEmailSpec extends ViewSpec {
         .getElementById("email-outer")
         .getElementsByClass("error-message")
         .text() mustBe "Error: Enter a valid email address"
+    }
+
+    "associate error with input field" in {
+      docWithErrors
+        .body()
+        .getElementById("email")
+        .attr("aria-describedby") mustBe "email-hint email-error"
     }
   }
 

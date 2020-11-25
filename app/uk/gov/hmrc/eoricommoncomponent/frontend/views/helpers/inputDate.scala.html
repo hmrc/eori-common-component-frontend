@@ -40,8 +40,17 @@ elements.args.getOrElse('_isLegendH1, false).asInstanceOf[Boolean]
     if(dateField.hasErrors || field.hasErrors) {"form-control form-control-error"}
     else "form-control"
 }
+
+@errorId = @{
+    if(formErrors.nonEmpty) s"$fieldName-error" else ""
+}
+
+@describedBy = @{
+    Seq(s"$fieldName-description", errorId).filterNot(_.isEmpty).mkString(" ")
+}
+
 <div class="form-group @if(formErrors.nonEmpty){form-group-error}">
-    <fieldset class="date-form-group form-date" id="@fieldName-fieldset" aria-describedby="@fieldName-description">
+    <fieldset class="date-form-group form-date" id="@fieldName-fieldset" aria-describedby="@describedBy">
         <legend id="@elements.field.name-field">
             @if(isLegendH1){
                 <h1 class="heading-large">
@@ -63,7 +72,7 @@ elements.args.getOrElse('_isLegendH1, false).asInstanceOf[Boolean]
         </div>
 
         @if(formErrors.nonEmpty) {
-            @formErrors.map { error => <span class="error-message"><span class="visually-hidden">@messages("cds.error.field.hint")</span> @messages(error.message, error.args :_*)</span>}
+            @formErrors.map { error => <span class="error-message" id="@errorId"><span class="visually-hidden">@messages("cds.error.field.hint")</span> @messages(error.message, error.args :_*)</span>}
         }
 
         @input_di(
