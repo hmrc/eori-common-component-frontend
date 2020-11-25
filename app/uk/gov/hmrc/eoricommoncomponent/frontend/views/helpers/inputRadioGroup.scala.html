@@ -28,9 +28,29 @@
 @legend = @{
     elements.args.getOrElse('_legend, "").asInstanceOf[String]
 }
+@hasHint = @{
+    elements.args.contains('_hintText)
+}
+@hintId = @{
+    if(hasHint) s"${field.id}-hint" else ""
+}
+
+@hasErrors = @{
+    elements.hasErrors
+}
+@errorId = @{
+    if(hasErrors) s"${field.id}-error" else ""
+}
+@describedBy = @{
+  Seq(hintId, errorId).filterNot(_.isEmpty).mkString(" ")
+}
 
 <div id="@field.id-field" class="form-group">
-    <fieldset id="@field.id-fieldset">
+    <fieldset
+        id="@field.id-fieldset"
+        @if(hasHint || hasErrors){
+            aria-describedby="@describedBy"
+        } >
 
         <legend>
         @if(isLegendH1){
@@ -44,23 +64,23 @@
         }
         </legend>
 
-        @if(elements.hasErrors) {
+        @if(hasErrors) {
             <div class="form-group-error">
         }
 
-        @if(elements.args.get('_hintText).isDefined) {
-            <p class="form-hint">@elements.args.get('_hintText)</p>
+        @if(hasHint) {
+            <p class="form-hint" id="@hintId">@elements.args.get('_hintText)</p>
         }
 
         @hintHtml
 
-        @if(elements.hasErrors) {
-            @elements.errors.map { error => <span class="error-message"><span class="visually-hidden">@messages("cds.error.field.hint")</span> @messages(error)</span> }
+        @if(hasErrors) {
+            @elements.errors.map { error => <span class="error-message" id="@errorId"><span class="visually-hidden">@messages("cds.error.field.hint")</span> @messages(error)</span> }
             </div>
         }
 
-        @if(elements.hasErrors) {
-        <div class="form-group-error">
+        @if(hasErrors) {
+            <div class="form-group-error">
         }
         @radioOptions.map { case (value, label) =>
             @defining(s"${elements.field.name}-${value.toLowerCase.replace(" ", "_")}") { inputId =>
@@ -81,8 +101,8 @@
             }
 
         }
-        @if(elements.hasErrors) {
-        </div>
+        @if(hasErrors) {
+            </div>
         }
     </fieldset>
 </div>
