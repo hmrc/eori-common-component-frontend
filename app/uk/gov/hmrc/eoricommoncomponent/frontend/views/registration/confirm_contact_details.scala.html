@@ -176,7 +176,7 @@ journey: Journey.Value)(implicit request: Request[_], messages: Messages)
     </dl>
 
     <div class="form-group">
-        @helper.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.ConfirmContactDetailsController.submit(service, journey), 'id -> "yes-no-wrong-address-form") {
+        @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.ConfirmContactDetailsController.submit(service, journey), "yes-no-wrong-address-form") {
             @CSRF.formField
 
             @inputRadioGroup("yes-no-wrong-address",

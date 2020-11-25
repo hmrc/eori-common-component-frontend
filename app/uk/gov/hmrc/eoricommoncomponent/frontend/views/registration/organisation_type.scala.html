@@ -87,7 +87,7 @@
 
         @helpers.errorSummary(OrganisationTypeForm, focusOverrides = Map("organisation-type" -> s"organisation-type-${validOptions.head._1}"))
 
-        @helper.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.OrganisationTypeController.submit(service, journey), 'id -> "OrganisationTypeForm") {
+        @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.OrganisationTypeController.submit(service, journey), "OrganisationTypeForm") {
             @CSRF.formField
 
             @inputRadioGroup("organisation-type", validOptions, hintTextOptions)

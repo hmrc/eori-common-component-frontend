@@ -56,7 +56,7 @@
         <h1 class="heading-large">@headerAndTitle</h1>
 
         <div class="form-group">
-            @helper.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.NameIdOrganisationController.submit(organisationType, service, journey), 'id -> "matchNameUtrOrganisationForm") {
+            @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.NameIdOrganisationController.submit(organisationType, service, journey), "matchNameUtrOrganisationForm") {
             @CSRF.formField
 
                 @inputText(

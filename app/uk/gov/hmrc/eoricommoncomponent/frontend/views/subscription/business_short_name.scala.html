@@ -43,7 +43,7 @@
     
         @helpers.errorSummary(shortNameForm)
 
-        @helper.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.BusinessShortNameController.submit(isInReviewMode, service, journey), 'id -> "shortNameForm") {
+        @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.BusinessShortNameController.submit(isInReviewMode, service, journey), "shortNameForm") {
 
             @CSRF.formField
 

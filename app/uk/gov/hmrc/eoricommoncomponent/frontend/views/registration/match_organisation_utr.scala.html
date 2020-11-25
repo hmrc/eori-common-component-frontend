@@ -78,7 +78,7 @@
 
         @helpers.errorSummary(matchOrgIdForm)
 
-            @helper.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.DoYouHaveAUtrNumberController.submit(organisationType, service, journey, isInReviewMode), 'id -> "matchOrganisationUtrForm") {
+            @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.DoYouHaveAUtrNumberController.submit(organisationType, service, journey, isInReviewMode), "matchOrganisationUtrForm") {
             @CSRF.formField
             <div class="form-group">
                 @helpers.hideRevealToggle(

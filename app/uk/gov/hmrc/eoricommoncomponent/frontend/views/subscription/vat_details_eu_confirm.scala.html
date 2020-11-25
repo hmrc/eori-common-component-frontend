@@ -64,8 +64,7 @@
         <fieldset>
             <legend>
                 <h1 class="heading-large" id="titleHeading">@heading</h1>
-                @helper.form(VatDetailsEuConfirmController.submit(isInReviewMode, service, journey),
-                'id -> "subscriptionVatEUDetailsConfirmForm") {
+                @helpers.form(VatDetailsEuConfirmController.submit(isInReviewMode, service, journey), "subscriptionVatEUDetailsConfirmForm") {
 
                 @CSRF.formField
             </legend>

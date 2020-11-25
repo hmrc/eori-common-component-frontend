@@ -52,7 +52,7 @@
     @helpers.errorSummary(confirmEmailYesNoAnswerForm, focusOverrides = Map("yes-no-answer" -> "yes-no-answer-true"))
 
 
-    @helper.form(CheckYourEmailController.submit(service, journey), 'id -> "confirmEmailYesNoAnswerForm") {
+    @helpers.form(CheckYourEmailController.submit(service, journey), "confirmEmailYesNoAnswerForm") {
     @CSRF.formField
 
     @inputRadioGroup("yes-no-answer",

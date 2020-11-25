@@ -44,11 +44,11 @@
                 <h1 class="heading-large">@messages("subscription-journey.how-confirm-identity")</h1>
             </legend>
 
-            @helper.form(
+            @helpers.form(
             if(journey == Journey.Subscribe)
                 HowCanWeIdentifyYouController.submit(isInReviewMode, service, journey)
             else
-                GYEHowCanWeIdentifyYouController.submit(organisationType.getOrElse(throw new IllegalArgumentException("Missing Organisation type")), service, journey), 'id -> "nino-utr-form") {
+                GYEHowCanWeIdentifyYouController.submit(organisationType.getOrElse(throw new IllegalArgumentException("Missing Organisation type")), service, journey), "nino-utr-form") {
             @CSRF.formField
             <div class="form-group @if(elements.hasErrors){error}">
 
