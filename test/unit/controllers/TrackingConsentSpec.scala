@@ -40,7 +40,7 @@ import util.builders.{AuthActionMock, SessionBuilder}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class GoogleTagManagerSpec extends ControllerSpec with GuiceOneAppPerSuite with MockitoSugar with AuthActionMock {
+class TrackingConsentSpec extends ControllerSpec with GuiceOneAppPerSuite with MockitoSugar with AuthActionMock {
 
   private val mockAuthConnector                    = mock[AuthConnector]
   private val mockAuthAction                       = authAction(mockAuthConnector)
@@ -58,21 +58,11 @@ class GoogleTagManagerSpec extends ControllerSpec with GuiceOneAppPerSuite with 
     mockSubscriptionDetailsHolderService
   )
 
-  "Google Tag Manager" should {
+  "Tracking Consent Snippet" should {
     "include the javascript file in the header" in {
       showForm(Map.empty) { result =>
         val page = CdsPage(contentAsString(result))
-        page.getElementAttribute("//head/script[1]", "src") should endWith("google-tag-manager.js")
-      }
-    }
-
-    "include a noscript snippet in the body" in {
-      showForm(Map.empty) { result =>
-        val page = CdsPage(contentAsString(result))
-        page.getElementAttribute(
-          "//body/noscript/iframe",
-          "src"
-        ) shouldBe "https://www.googletagmanager.com/ns.html?id=GTM-NDJKHWK"
+        page.getElementAttribute("//head/script[1]", "src") should endWith("/tracking-consent/tracking.js")
       }
     }
   }
