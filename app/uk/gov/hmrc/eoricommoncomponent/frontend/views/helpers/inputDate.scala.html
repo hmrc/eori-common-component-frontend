@@ -81,6 +81,7 @@ elements.args.getOrElse('_isLegendH1, false).asInstanceOf[Boolean]
             '_labelClass -> "form-group form-group-day",
             '_inputClass -> inputClass(dayField),
             '_pattern -> "[0-9]*",
+            '_inputmode -> "numeric",
             '_emptyValueText -> " "
         )
         @input_di(
@@ -89,6 +90,7 @@ elements.args.getOrElse('_isLegendH1, false).asInstanceOf[Boolean]
             '_labelClass -> "form-group form-group-month",
             '_inputClass -> inputClass(monthField),
             '_pattern -> "[0-9]*",
+            '_inputmode -> "numeric",
             '_emptyValueText -> " "
         )
         @input_di(
@@ -97,6 +99,7 @@ elements.args.getOrElse('_isLegendH1, false).asInstanceOf[Boolean]
             '_labelClass -> "form-group form-group-year",
             '_inputClass -> inputClass(yearField),
             '_pattern -> "[0-9]*",
+            '_inputmode -> "numeric",
             '_emptyValueText -> " "
         )
 
