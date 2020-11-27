@@ -28,7 +28,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.CheckYo
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.WhatIsYourEmailController.createForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.{
   EnrolmentAlreadyExistsController,
-  EnrolmentPendingController,
   YouAlreadyHaveEoriController
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, InternalId, LoggedInUserWithEnrolments}
@@ -37,6 +36,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.{Save4LaterService, UserGroupIdSubscriptionStatusCheckService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{
+  enrolment_pending_against_group_id,
+  enrolment_pending_for_user
+}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -49,17 +52,29 @@ class EmailController @Inject() (
   mcc: MessagesControllerComponents,
   save4LaterService: Save4LaterService,
   userGroupIdSubscriptionStatusCheckService: UserGroupIdSubscriptionStatusCheckService,
-  groupEnrolment: GroupEnrolmentExtractor
+  groupEnrolment: GroupEnrolmentExtractor,
+  enrolmentPendingForUser: enrolment_pending_for_user,
+  enrolmentPendingAgainstGroupId: enrolment_pending_against_group_id
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) with EnrolmentExtractor {
 
   private val logger = Logger(this.getClass)
 
-  private def userIsInProcess(service: Service, journey: Journey.Value): Future[Result] =
-    Future.successful(Redirect(EnrolmentPendingController.pendingUser(service, journey)))
+  private def userIsInProcess(service: Service, journey: Journey.Value)(implicit
+    request: Request[AnyContent],
+    user: LoggedInUserWithEnrolments
+  ): Future[Result] =
+    save4LaterService
+      .fetchProcessingService(GroupId(user.groupId))
+      .map(processingService => Ok(enrolmentPendingForUser(service, processingService)))
 
-  private def otherUserWithinGroupIsInProcess(service: Service, journey: Journey.Value): Future[Result] =
-    Future.successful(Redirect(EnrolmentPendingController.pendingGroup(service, journey)))
+  private def otherUserWithinGroupIsInProcess(service: Service, journey: Journey.Value)(implicit
+    request: Request[AnyContent],
+    user: LoggedInUserWithEnrolments
+  ): Future[Result] =
+    save4LaterService
+      .fetchProcessingService(GroupId(user.groupId))
+      .map(processingService => Ok(enrolmentPendingAgainstGroupId(service, journey, processingService)))
 
   private def continue(service: Service, journey: Journey.Value)(implicit
     request: Request[AnyContent],

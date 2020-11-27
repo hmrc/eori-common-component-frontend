@@ -19,10 +19,13 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, InternalId, SafeId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CacheIds, CdsOrganisationType, GroupId, InternalId, SafeId}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.CachedData
 import uk.gov.hmrc.http.HeaderCarrier
-import scala.concurrent.Future
+
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class Save4LaterService @Inject() (save4LaterConnector: Save4LaterConnector) {
@@ -67,6 +70,19 @@ class Save4LaterService @Inject() (save4LaterConnector: Save4LaterConnector) {
     logger.info("fetching EmailStatus from mongo")
     save4LaterConnector
       .get[EmailStatus](internalId.id, emailKey)
+  }
+
+  def fetchProcessingService(
+    groupId: GroupId
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Service]] = {
+    logger.info("fetching Processing service from mongo")
+    save4LaterConnector
+      .get[CacheIds](groupId.id, CachedData.groupIdKey)
+      .map {
+        case Some(cacheIds) => cacheIds.serviceCode.flatMap(Service.withName)
+        case _              => throw new IllegalStateException("No cacheIds stored for this group")
+      }
+
   }
 
 }

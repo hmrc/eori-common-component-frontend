@@ -37,6 +37,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionStatusService
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.{Save4LaterService, UserGroupIdSubscriptionStatusCheckService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{
+  enrolment_pending_against_group_id,
+  enrolment_pending_for_user
+}
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -48,14 +52,18 @@ import scala.concurrent.Future
 class EmailControllerSpec
     extends ControllerSpec with AddressPageFactoring with MockitoSugar with BeforeAndAfterEach with AuthActionMock {
 
-  private val mockAuthConnector             = mock[AuthConnector]
-  private val mockAuthAction                = authAction(mockAuthConnector)
-  private val mockEmailVerificationService  = mock[EmailVerificationService]
-  private val mockSave4LaterService         = mock[Save4LaterService]
-  private val mockSessionCache              = mock[SessionCache]
-  private val mockSave4LaterConnector       = mock[Save4LaterConnector]
-  private val mockSubscriptionStatusService = mock[SubscriptionStatusService]
-  private val groupEnrolmentExtractor       = mock[GroupEnrolmentExtractor]
+  private val mockAuthConnector                  = mock[AuthConnector]
+  private val mockAuthAction                     = authAction(mockAuthConnector)
+  private val mockEmailVerificationService       = mock[EmailVerificationService]
+  private val mockSave4LaterService              = mock[Save4LaterService]
+  private val mockSessionCache                   = mock[SessionCache]
+  private val mockSave4LaterConnector            = mock[Save4LaterConnector]
+  private val mockSubscriptionStatusService      = mock[SubscriptionStatusService]
+  private val groupEnrolmentExtractor            = mock[GroupEnrolmentExtractor]
+  private val enrolmentPendingAgainstGroupIdView = instanceOf[enrolment_pending_against_group_id]
+  private val enrolmentPendingForUserView        = instanceOf[enrolment_pending_for_user]
+
+  private val infoXpath = "//*[@id='info']"
 
   private val userGroupIdSubscriptionStatusCheckService =
     new UserGroupIdSubscriptionStatusCheckService(mockSubscriptionStatusService, mockSave4LaterConnector)
@@ -67,7 +75,9 @@ class EmailControllerSpec
     mcc,
     mockSave4LaterService,
     userGroupIdSubscriptionStatusCheckService,
-    groupEnrolmentExtractor
+    groupEnrolmentExtractor,
+    enrolmentPendingForUserView,
+    enrolmentPendingAgainstGroupIdView
   )
 
   private val emailStatus = EmailStatus("test@example.com")
@@ -89,6 +99,7 @@ class EmailControllerSpec
       .thenReturn(Future.successful(false))
     when(groupEnrolmentExtractor.groupIdEnrolments(any())(any()))
       .thenReturn(Future.successful(List.empty))
+    when(mockSave4LaterService.fetchProcessingService(any())(any(), any())).thenReturn(Future.successful(None))
   }
 
   "Viewing the form on Subscribe" should {
@@ -132,15 +143,41 @@ class EmailControllerSpec
       }
     }
 
-    "block when subscription is in progress for group" in {
+    "block when same service subscription is in progress for group" in {
       when(mockSave4LaterConnector.get[CacheIds](any(), any())(any(), any()))
-        .thenReturn(Future.successful(Some(CacheIds(InternalId("int-id"), SafeId("safe-id"), Some("atar")))))
+        .thenReturn(Future.successful(Some(CacheIds(InternalId("int-id"), SafeId("safe-id"), Some(atarService.code)))))
+      when(mockSave4LaterService.fetchProcessingService(any())(any(), any())).thenReturn(
+        Future.successful(Some(atarService))
+      )
       when(mockSubscriptionStatusService.getStatus(any(), any())(any()))
         .thenReturn(Future.successful(SubscriptionProcessing))
 
       showFormSubscription() { result =>
-        status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("/atar/subscribe/enrolment-pending-against-groupId")
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should startWith("There is a problem")
+        page.getElementText(infoXpath) should include(
+          "Our records show that someone in your organisation has already applied for this service"
+        )
+      }
+    }
+
+    "block when different service subscription is in progress for group" in {
+      when(mockSave4LaterConnector.get[CacheIds](any(), any())(any(), any()))
+        .thenReturn(Future.successful(Some(CacheIds(InternalId("int-id"), SafeId("safe-id"), Some(otherService.code)))))
+      when(mockSave4LaterService.fetchProcessingService(any())(any(), any())).thenReturn(
+        Future.successful(Some(otherService))
+      )
+      when(mockSubscriptionStatusService.getStatus(any(), any())(any()))
+        .thenReturn(Future.successful(SubscriptionProcessing))
+
+      showFormSubscription() { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should startWith("There is a problem")
+        page.getElementText(infoXpath) should include(
+          "We are currently processing a subscription request to Other Service from someone in your organisation"
+        )
       }
     }
 
@@ -151,8 +188,12 @@ class EmailControllerSpec
         .thenReturn(Future.successful(SubscriptionProcessing))
 
       showFormSubscription() { result =>
-        status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("/atar/subscribe/enrolment-pending")
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should startWith("There is a problem")
+        page.getElementText(infoXpath) should include(
+          "We are currently processing your subscription request to another service"
+        )
       }
     }
 
@@ -216,15 +257,19 @@ class EmailControllerSpec
       }
     }
 
-    "redirect when subscription is in progress" in {
+    "block when subscription is in progress" in {
       when(mockSave4LaterConnector.get[CacheIds](any(), any())(any(), any()))
         .thenReturn(Future.successful(Some(CacheIds(InternalId("int-id"), SafeId("safe-id"), Some("atar")))))
       when(mockSubscriptionStatusService.getStatus(any(), any())(any()))
         .thenReturn(Future.successful(SubscriptionProcessing))
 
       showFormRegister() { result =>
-        status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("/atar/register/enrolment-pending-against-groupId")
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should startWith("There is a problem")
+        page.getElementText(infoXpath) should include(
+          "The Government Gateway ID you used to sign in is part of a team that has already applied for an EORI number"
+        )
       }
     }
 

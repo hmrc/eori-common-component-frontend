@@ -54,7 +54,7 @@ class EnrolmentPendingAgainstGroupIdViewSpec extends ViewSpec {
       migrateDoc(atarService)
         .body()
         .getElementById("info")
-        .text mustBe "Our records show that someone in the organisation has already applied for this service."
+        .text mustBe "Our records show that someone in your organisation has already applied for this service."
     }
 
     "display the correct text for Subscribe to different service" in {

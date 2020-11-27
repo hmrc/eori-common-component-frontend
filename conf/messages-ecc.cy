@@ -203,10 +203,3 @@ cds.start-page.help.eori.contact=POST_MVP Contact the EORI team online.
 # Start Page (end)
 
 cds.enrolment.pending.title=Mae problem wedi codi
-cds.enrolment.pending.otherService=TRANSLATE another service
-cds.enrolment.pending.user.paragraph1=TRANSLATE We are currently processing your subscription request to {0}.
-cds.enrolment.pending.user.paragraph2=TRANSLATE This process must be completed before you can apply for another service.
-cds.enrolment.pending.user.paragraph3=TRANSLATE Sign out and wait until you receive an email notification about {0} before applying to {1}.
-cds.enrolment.pending.group.otherService.paragraph1=TRANSLATE We are currently processing a subscription request to {0} from someone in your organisation.
-cds.enrolment.pending.group.otherService.paragraph2=TRANSLATE This process must be completed before you can apply for another service.
-cds.enrolment.pending.group.sameService.paragraph1=TRANSLATE Our records show that someone in the organisation has already applied for this service.
