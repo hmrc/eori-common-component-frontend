@@ -37,61 +37,61 @@ class Save4LaterService @Inject() (save4LaterConnector: Save4LaterConnector) {
   private val emailKey   = "email"
 
   def saveSafeId(internalId: InternalId, safeId: SafeId)(implicit hc: HeaderCarrier): Future[Unit] = {
-    logger.info("saving SafeId to mongo")
+    logger.debug(s"saving SafeId $safeId for internalId $internalId")
     save4LaterConnector.put[SafeId](internalId.id, safeIdKey, safeId)
   }
 
   def saveOrgType(internalId: InternalId, mayBeOrgType: Option[CdsOrganisationType])(implicit
     hc: HeaderCarrier
   ): Future[Unit] = {
-    logger.info("saving OrganisationType to mongo")
+    logger.debug(s"saving OrganisationType $mayBeOrgType for internalId $internalId")
     save4LaterConnector
       .put[CdsOrganisationType](internalId.id, orgTypeKey, mayBeOrgType)
   }
 
   def saveEmail(internalId: InternalId, emailStatus: EmailStatus)(implicit hc: HeaderCarrier): Future[Unit] = {
-    logger.info("saving email address to mongo")
+    logger.debug(s"saving email address $emailStatus for internalId $internalId")
     save4LaterConnector.put[EmailStatus](internalId.id, emailKey, emailStatus)
   }
 
   def deleteEmail(internalId: InternalId)(implicit hc: HeaderCarrier): Future[Unit] = {
-    logger.info("deleting email address on mongo")
+    logger.debug(s"deleting email address for internalId $internalId")
     save4LaterConnector.delete[EmailStatus](internalId.id)
   }
 
   def fetchOrgType(internalId: InternalId)(implicit hc: HeaderCarrier): Future[Option[CdsOrganisationType]] = {
-    logger.info("fetching OrganisationType from mongo")
+    logger.debug(s"fetching OrganisationType for internalId $internalId")
     save4LaterConnector
       .get[CdsOrganisationType](internalId.id, orgTypeKey)
   }
 
   def fetchSafeId(internalId: InternalId)(implicit hc: HeaderCarrier): Future[Option[SafeId]] = {
-    logger.info("fetching SafeId from mongo")
+    logger.debug(s"fetching SafeId for internalId $internalId")
     save4LaterConnector
       .get[SafeId](internalId.id, safeIdKey)
   }
 
   def fetchEmail(internalId: InternalId)(implicit hc: HeaderCarrier): Future[Option[EmailStatus]] = {
-    logger.info("fetching EmailStatus from mongo")
+    logger.debug(s"fetching EmailStatus internalId $internalId")
     save4LaterConnector
       .get[EmailStatus](internalId.id, emailKey)
   }
 
   def fetchCacheIds(groupId: GroupId)(implicit hc: HeaderCarrier): Future[Option[CacheIds]] = {
-    logger.info("fetching CacheIds from mongo")
+    logger.debug("fetching CacheIds groupId $groupId")
     save4LaterConnector
       .get[CacheIds](groupId.id, CachedData.groupIdKey)
   }
 
   def deleteCacheIds(groupId: GroupId)(implicit hc: HeaderCarrier): Future[Unit] = {
-    logger.info("deleting CachIds on mongo")
+    logger.debug(s"deleting CachIds for groupId $groupId")
     save4LaterConnector.delete[CacheIds](groupId.id)
   }
 
   def fetchProcessingService(
     groupId: GroupId
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Service]] = {
-    logger.info("fetching Processing service from mongo")
+    logger.debug(s"fetching Processing service for groupId $groupId")
     save4LaterConnector
       .get[CacheIds](groupId.id, CachedData.groupIdKey)
       .map {
