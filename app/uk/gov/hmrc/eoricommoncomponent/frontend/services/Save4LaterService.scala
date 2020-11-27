@@ -80,7 +80,7 @@ class Save4LaterService @Inject() (save4LaterConnector: Save4LaterConnector) {
       .get[CacheIds](groupId.id, CachedData.groupIdKey)
       .map {
         case Some(cacheIds) => cacheIds.serviceCode.flatMap(Service.withName)
-        case _              => throw new IllegalStateException("No cacheIds stored for this group")
+        case _              => None
       }
 
   }
