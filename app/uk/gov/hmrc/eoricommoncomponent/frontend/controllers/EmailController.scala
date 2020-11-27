@@ -28,7 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.CheckYo
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.WhatIsYourEmailController.createForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.{
   EnrolmentAlreadyExistsController,
-  EnrolmentPendingAgainstGroupIdController,
+  EnrolmentPendingController,
   YouAlreadyHaveEoriController
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, InternalId, LoggedInUserWithEnrolments}
@@ -55,14 +55,11 @@ class EmailController @Inject() (
 
   private val logger = Logger(this.getClass)
 
-  private def userIsInProcess(service: Service, journey: Journey.Value)(implicit
-    request: Request[AnyContent],
-    user: LoggedInUserWithEnrolments
-  ): Future[Result] =
-    continue(service, journey)
+  private def userIsInProcess(service: Service, journey: Journey.Value): Future[Result] =
+    Future.successful(Redirect(EnrolmentPendingController.pendingUser(service, journey)))
 
   private def otherUserWithinGroupIsInProcess(service: Service, journey: Journey.Value): Future[Result] =
-    Future.successful(Redirect(EnrolmentPendingAgainstGroupIdController.show(service, journey)))
+    Future.successful(Redirect(EnrolmentPendingController.pendingGroup(service, journey)))
 
   private def continue(service: Service, journey: Journey.Value)(implicit
     request: Request[AnyContent],
@@ -93,9 +90,9 @@ class EmailController @Inject() (
     service: Service
   )(implicit hc: HeaderCarrier, request: Request[AnyContent], user: LoggedInUserWithEnrolments) =
     userGroupIdSubscriptionStatusCheckService
-      .checksToProceed(GroupId(user.groupId), InternalId(user.internalId))(continue(service, Journey.Subscribe))(
-        userIsInProcess(service, Journey.Subscribe)
-      )(otherUserWithinGroupIsInProcess(service, Journey.Subscribe))
+      .checksToProceed(GroupId(user.groupId), InternalId(user.internalId), service)(
+        continue(service, Journey.Subscribe)
+      )(userIsInProcess(service, Journey.Subscribe))(otherUserWithinGroupIsInProcess(service, Journey.Subscribe))
 
   private def startRegisterJourney(
     service: Service
@@ -114,7 +111,7 @@ class EmailController @Inject() (
               Future.successful(Redirect(YouAlreadyHaveEoriController.display(service)))
             case None =>
               userGroupIdSubscriptionStatusCheckService
-                .checksToProceed(GroupId(user.groupId), InternalId(user.internalId))(
+                .checksToProceed(GroupId(user.groupId), InternalId(user.internalId), service)(
                   continue(service, Journey.Register)
                 )(userIsInProcess(service, Journey.Register))(
                   otherUserWithinGroupIsInProcess(service, Journey.Register)

@@ -28,11 +28,11 @@ object ServiceName {
   def longName(implicit messages: Messages, request: Request[_]): String =
     longName(service)
 
-  def shortName(service: Service)(implicit messages: Messages): String = service.shortName
+  def shortName(service: Service): String = service.shortName
 
   private def isWelsh(implicit messages: Messages) = messages.lang.code == "cy"
 
-  def shortName(implicit messages: Messages, request: Request[_]): String =
+  def shortName(implicit request: Request[_]): String =
     shortName(service)
 
   def service(implicit request: Request[_]): Service =

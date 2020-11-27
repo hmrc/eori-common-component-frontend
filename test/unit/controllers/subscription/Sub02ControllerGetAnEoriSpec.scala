@@ -92,7 +92,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
 
   override def beforeEach: Unit = {
     reset(mockAuthConnector, mockCdsSubscriber, mockPdfGeneratorService, mockSessionCache)
-    when(mockSubscriptionDetailsService.saveKeyIdentifiers(any[GroupId], any[InternalId])(any()))
+    when(mockSubscriptionDetailsService.saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any()))
       .thenReturn(Future.successful(()))
 
   }

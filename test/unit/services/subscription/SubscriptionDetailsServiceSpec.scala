@@ -27,6 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{BusinessShortName, FormData, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{NameOrganisationMatchModel, _}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactDetailsModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{ContactDetailsAdaptor, RegistrationDetailsCreator}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
@@ -84,7 +85,8 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
       registrationInfo,
       mockRegistrationDetails,
       mockSubscriptionDetailsHolder,
-      mockContactDetailsAdaptor
+      mockContactDetailsAdaptor,
+      mockSave4LaterConnector
     )
 
     when(mockSessionCache.saveRegistrationDetails(any[RegistrationDetails])(any[HeaderCarrier]))
@@ -112,7 +114,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
       val internalId = InternalId("internalId")
       val safeId     = SafeId("safeId")
       val key        = "cachedGroupId"
-      val cacheIds   = CacheIds(internalId, safeId)
+      val cacheIds   = CacheIds(internalId, safeId, Some("atar"))
       when(mockSessionCache.safeId).thenReturn(Future.successful(SafeId("safeId")))
       when(
         mockSave4LaterConnector.put[CacheIds](
@@ -121,7 +123,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
           ArgumentMatchers.eq(cacheIds)
         )(any())
       ).thenReturn(Future.successful(()))
-      val expected = await(subscriptionDetailsHolderService.saveKeyIdentifiers(groupId, internalId))
+      val expected = await(subscriptionDetailsHolderService.saveKeyIdentifiers(groupId, internalId, atarService))
       expected shouldBe ()
     }
   }

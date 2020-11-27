@@ -236,15 +236,15 @@ class RegisterWithEoriAndIdController @Inject() (
       .flatMap {
         case _: SubscriptionSuccessful =>
           subscriptionDetailsService
-            .saveKeyIdentifiers(groupId, internalId)
+            .saveKeyIdentifiers(groupId, internalId, service)
             .map(_ => Redirect(Sub02Controller.migrationEnd(service)))
         case sp: SubscriptionPending =>
           subscriptionDetailsService
-            .saveKeyIdentifiers(groupId, internalId)
+            .saveKeyIdentifiers(groupId, internalId, service)
             .map(_ => Redirect(RegisterWithEoriAndIdController.pending(service, sp.processingDate)))
         case sf: SubscriptionFailed =>
           subscriptionDetailsService
-            .saveKeyIdentifiers(groupId, internalId)
+            .saveKeyIdentifiers(groupId, internalId, service)
             .map(_ => Redirect(RegisterWithEoriAndIdController.fail(service, sf.processingDate)))
       }
   }

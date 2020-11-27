@@ -22,6 +22,7 @@ import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.IndividualName
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.formatInput
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 sealed trait CustomsId {
   def id: String
@@ -69,14 +70,16 @@ object GroupId {
   implicit val format = Json.format[GroupId]
 }
 
-case class CacheIds(internalId: InternalId, safeId: SafeId)
+case class CacheIds(internalId: InternalId, safeId: SafeId, serviceCode: Option[String])
 
 object CacheIds {
 
-  def apply(mayBeInternalId: Option[String], mayBeSafeId: Option[String]): CacheIds = {
+  def apply(mayBeInternalId: Option[String], mayBeSafeId: Option[String], mayBeService: Option[Service]): CacheIds = {
     val internalId = InternalId(mayBeInternalId.getOrElse(throw new IllegalArgumentException("InternalId missing")))
     val safeId     = SafeId(mayBeSafeId.getOrElse(throw new IllegalArgumentException("SafeId missing")))
-    new CacheIds(internalId, safeId)
+    val service    = mayBeService.map(_.code)
+
+    new CacheIds(internalId, safeId, service)
   }
 
   implicit val jsonFormat                                = Json.format[CacheIds]

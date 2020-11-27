@@ -47,9 +47,6 @@ cds.subscription.outcomes.inprocessing.we-are-processing=We are processing your 
 
 cds.enrolment.already.exists.for-group.para1=Your organisation is already subscribed to {0}. Ask a team member for access.
 
-cds.enrolment.already.exists.group.title=There is a problem
-cds.enrolment.already.exists.group.paragraph=Our records show that someone in the organisation has already applied for this service.
-
 cds.sub01.outcome.processing.heading=The {0} application for {1} is being processed
 cds.sub01.outcome.processing.heading-noname=The {0} application is being processed
 cds.sub01.outcome.processing.title=The {0} application is being processed
@@ -204,3 +201,12 @@ cds.start-page.get.paragraph3=It takes around 5 to 10 minutes to apply for a GB 
 cds.start-page.help.eori.contact=Contact the EORI team online.
 
 # Start Page (end)
+
+cds.enrolment.pending.title=There is a problem
+cds.enrolment.pending.otherService=another service
+cds.enrolment.pending.user.paragraph1=We are currently processing your subscription request to {0}.
+cds.enrolment.pending.user.paragraph2=This process must be completed before you can apply for another service.
+cds.enrolment.pending.user.paragraph3=Sign out and wait until you receive an email notification about {0} before applying to {1}.
+cds.enrolment.pending.group.otherService.paragraph1=We are currently processing a subscription request to {0} from someone in your organisation.
+cds.enrolment.pending.group.otherService.paragraph2=This process must be completed before you can apply for another service.
+cds.enrolment.pending.group.sameService.paragraph1=Our records show that someone in the organisation has already applied for this service.

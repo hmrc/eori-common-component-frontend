@@ -20,6 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.Result
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CacheIds, GroupId, InternalId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.CachedData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -33,7 +34,7 @@ class UserGroupIdSubscriptionStatusCheckService @Inject() (
 )(implicit ec: ExecutionContext) {
   private val idType = "SAFE"
 
-  def checksToProceed(groupId: GroupId, internalId: InternalId)(continue: => Future[Result])(
+  def checksToProceed(groupId: GroupId, internalId: InternalId, service: Service)(continue: => Future[Result])(
     userIsInProcess: => Future[Result]
   )(otherUserWithinGroupIsInProcess: => Future[Result])(implicit hc: HeaderCarrier): Future[Result] =
     save4LaterConnector
@@ -48,10 +49,13 @@ class UserGroupIdSubscriptionStatusCheckService @Inject() (
                   .delete(groupId.id)
                   .flatMap(_ => continue)
               case _ =>
-                if (cacheIds.internalId == internalId)
-                  userIsInProcess
-                else
-                  otherUserWithinGroupIsInProcess
+                val sameUser    = cacheIds.internalId == internalId
+                val sameService = cacheIds.serviceCode.contains(service.code)
+                (sameUser, sameService) match {
+                  case (true, true)  => continue
+                  case (true, false) => userIsInProcess
+                  case (false, _)    => otherUserWithinGroupIsInProcess
+                }
             }
         case _ =>
           continue

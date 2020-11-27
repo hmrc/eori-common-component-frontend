@@ -67,11 +67,11 @@ class Sub02Controller @Inject() (
           (subscribeResult, journey) match {
             case (_: SubscriptionSuccessful, Journey.Register) =>
               subscriptionDetailsService
-                .saveKeyIdentifiers(groupId, internalId)
+                .saveKeyIdentifiers(groupId, internalId, service)
                 .map(_ => Redirect(Sub02Controller.end(service)))
             case (_: SubscriptionPending, _) =>
               subscriptionDetailsService
-                .saveKeyIdentifiers(groupId, internalId)
+                .saveKeyIdentifiers(groupId, internalId, service)
                 .map(_ => Redirect(Sub02Controller.pending(service)))
             case (SubscriptionFailed(EoriAlreadyExists, _), _) =>
               Future.successful(Redirect(Sub02Controller.eoriAlreadyExists(service)))

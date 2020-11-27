@@ -132,15 +132,39 @@ class EmailControllerSpec
       }
     }
 
-    "redirect when subscription is in progress" in {
+    "block when subscription is in progress for group" in {
       when(mockSave4LaterConnector.get[CacheIds](any(), any())(any(), any()))
-        .thenReturn(Future.successful(Some(CacheIds(InternalId("int-id"), SafeId("safe-id")))))
+        .thenReturn(Future.successful(Some(CacheIds(InternalId("int-id"), SafeId("safe-id"), Some("atar")))))
       when(mockSubscriptionStatusService.getStatus(any(), any())(any()))
         .thenReturn(Future.successful(SubscriptionProcessing))
 
       showFormSubscription() { result =>
         status(result) shouldBe SEE_OTHER
         await(result).header.headers("Location") should endWith("/atar/subscribe/enrolment-pending-against-groupId")
+      }
+    }
+
+    "block when different subscription is in progress for user" in {
+      when(mockSave4LaterConnector.get[CacheIds](any(), any())(any(), any()))
+        .thenReturn(Future.successful(Some(CacheIds(InternalId(defaultUserId), SafeId("safe-id"), Some("other")))))
+      when(mockSubscriptionStatusService.getStatus(any(), any())(any()))
+        .thenReturn(Future.successful(SubscriptionProcessing))
+
+      showFormSubscription() { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("/atar/subscribe/enrolment-pending")
+      }
+    }
+
+    "continue when same subscription is in progress for user" in {
+      when(mockSave4LaterConnector.get[CacheIds](any(), any())(any(), any()))
+        .thenReturn(Future.successful(Some(CacheIds(InternalId(defaultUserId), SafeId("safe-id"), Some("atar")))))
+      when(mockSubscriptionStatusService.getStatus(any(), any())(any()))
+        .thenReturn(Future.successful(SubscriptionProcessing))
+
+      showFormSubscription() { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("/atar/subscribe/email-confirmed")
       }
     }
   }
@@ -194,7 +218,7 @@ class EmailControllerSpec
 
     "redirect when subscription is in progress" in {
       when(mockSave4LaterConnector.get[CacheIds](any(), any())(any(), any()))
-        .thenReturn(Future.successful(Some(CacheIds(InternalId("int-id"), SafeId("safe-id")))))
+        .thenReturn(Future.successful(Some(CacheIds(InternalId("int-id"), SafeId("safe-id"), Some("atar")))))
       when(mockSubscriptionStatusService.getStatus(any(), any())(any()))
         .thenReturn(Future.successful(SubscriptionProcessing))
 
@@ -236,7 +260,7 @@ class EmailControllerSpec
     test(
       controller
         .form(atarService, journey)
-        .apply(SessionBuilder.buildRequestWithSession(userId))
+        .apply(SessionBuilder.buildRequestWithSessionAndPath("/atar", userId))
     )
   }
 

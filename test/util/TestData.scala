@@ -27,9 +27,21 @@ trait TestData {
       "ATaR",
       "/test-atar/callback",
       "/test-atar/accessibility",
-      "",
+      "ATaR Service",
       "",
       Some("/test-atar/feedback")
+    )
+
+  val otherService: Service =
+    Service(
+      "other",
+      "HMRC-OTHER-ORG",
+      "Other",
+      "/other-service/callback",
+      "/other-service/accessibility",
+      "Other Service",
+      "",
+      Some("/other-service/feedback")
     )
 
 }

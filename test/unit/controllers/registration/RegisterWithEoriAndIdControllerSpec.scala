@@ -228,7 +228,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(NewSubscription))
       when(
         mockSubscriptionDetailsService
-          .saveKeyIdentifiers(any[GroupId], any[InternalId])(any())
+          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any())
       ).thenReturn(Future.successful(()))
 
       regExistingEori() { result =>
@@ -252,7 +252,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Some(CdsOrganisationType.SoleTrader))
       when(
         mockSubscriptionDetailsService
-          .saveKeyIdentifiers(any[GroupId], any[InternalId])(any())
+          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any())
       ).thenReturn(Future.successful(()))
 
       when(
@@ -295,7 +295,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Some(CdsOrganisationType.SoleTrader))
       when(
         mockSubscriptionDetailsService
-          .saveKeyIdentifiers(any[GroupId], any[InternalId])(any())
+          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any())
       ).thenReturn(Future.successful(()))
 
       when(
@@ -344,7 +344,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Some(CdsOrganisationType.Individual))
       when(
         mockSubscriptionDetailsService
-          .saveKeyIdentifiers(any[GroupId], any[InternalId])(any())
+          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any())
       ).thenReturn(Future.successful(()))
 
       when(
@@ -400,7 +400,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Eu))
       when(
         mockSubscriptionDetailsService
-          .saveKeyIdentifiers(any[GroupId], any[InternalId])(any())
+          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any())
       ).thenReturn(Future.successful(()))
 
       when(
@@ -430,7 +430,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Some(CdsOrganisationType.SoleTrader))
       when(
         mockSubscriptionDetailsService
-          .saveKeyIdentifiers(any[GroupId], any[InternalId])(any())
+          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any())
       ).thenReturn(Future.successful(()))
 
       when(
@@ -483,7 +483,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
       when(
         mockSubscriptionDetailsService
-          .saveKeyIdentifiers(any[GroupId], any[InternalId])(any())
+          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any())
       ).thenReturn(Future.successful(()))
 
       when(
@@ -742,7 +742,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Future.successful(NewSubscription))
       when(
         mockSubscriptionDetailsService
-          .saveKeyIdentifiers(any[GroupId], any[InternalId])(any())
+          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any())
       ).thenReturn(Future.successful(()))
 
       regExistingEori() { result =>
