@@ -32,12 +32,13 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CacheIds, GroupId, Inter
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.UserGroupIdSubscriptionStatusCheckService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
+import util.TestData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class UserGroupIdSubscriptionStatusCheckServiceSpec
-    extends UnitSpec with MockitoSugar with BeforeAndAfterEach with ScalaFutures {
+    extends UnitSpec with MockitoSugar with BeforeAndAfterEach with ScalaFutures with TestData {
 
   private val mockSubscriptionStatusService = mock[SubscriptionStatusService]
   private val mockSave4LaterConnector       = mock[Save4LaterConnector]
@@ -45,7 +46,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
   private val safeId                        = SafeId("safeId")
   private val groupId                       = GroupId("groupId-123")
   private val internalId                    = InternalId("internalId-123")
-  private val cacheIds                      = CacheIds(internalId, safeId)
+  private val cacheIds                      = CacheIds(internalId, safeId, Some("atar"))
 
   private val service =
     new UserGroupIdSubscriptionStatusCheckService(mockSubscriptionStatusService, mockSave4LaterConnector)
@@ -61,17 +62,19 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
 
   "UserGroupIdSubscriptionStatusCheckService" should {
 
-    "block the user for the groupID is cache and subscription status is SubscriptionProcessing" in {
+    "block the user for the groupID is cache for different service and subscription status is SubscriptionProcessing" in {
 
       when(
         mockSave4LaterConnector
           .get[CacheIds](any[String], any[String])(any[HeaderCarrier], any[Reads[CacheIds]])
-      ).thenReturn(Future.successful(Some(cacheIds)))
+      ).thenReturn(Future.successful(Some(cacheIds.copy(serviceCode = Some("otherService")))))
       when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(SubscriptionProcessing))
 
       val result: Result = service
-        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(otherUserWithinGroupIsInProcess).futureValue
+        .checksToProceed(groupId, internalId, atarService)(continue)(userIsInProcess)(
+          otherUserWithinGroupIsInProcess
+        ).futureValue
 
       result.header.headers(LOCATION) shouldBe "/blocked/userIsInProcess"
     }
@@ -86,9 +89,28 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
         .thenReturn(Future.successful(SubscriptionProcessing))
 
       val result: Result = service
-        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(otherUserWithinGroupIsInProcess).futureValue
+        .checksToProceed(groupId, internalId, atarService)(continue)(userIsInProcess)(
+          otherUserWithinGroupIsInProcess
+        ).futureValue
 
       result.header.headers(LOCATION) shouldBe "/blocked/otherUserWithinGroupIsInProcess"
+    }
+
+    "allow the user for the groupID is cache for same service and subscription status is SubscriptionProcessing" in {
+
+      when(
+        mockSave4LaterConnector
+          .get[CacheIds](any[String], any[String])(any[HeaderCarrier], any[Reads[CacheIds]])
+      ).thenReturn(Future.successful(Some(cacheIds.copy(serviceCode = Some(atarService.code)))))
+      when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(SubscriptionProcessing))
+
+      val result: Result = service
+        .checksToProceed(groupId, internalId, atarService)(continue)(userIsInProcess)(
+          otherUserWithinGroupIsInProcess
+        ).futureValue
+
+      result.header.headers(LOCATION) shouldBe "/continue"
     }
 
     "Allow the user for the groupID is cached and subscription status is SubscriptionRejected" in {
@@ -102,7 +124,9 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
       when(mockSave4LaterConnector.delete(any[String])(any[HeaderCarrier])).thenReturn(Future.successful(()))
 
       val result: Result = service
-        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(otherUserWithinGroupIsInProcess).futureValue
+        .checksToProceed(groupId, internalId, atarService)(continue)(userIsInProcess)(
+          otherUserWithinGroupIsInProcess
+        ).futureValue
 
       result.header.headers(LOCATION) shouldBe "/continue"
     }
@@ -118,7 +142,9 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
       when(mockSave4LaterConnector.delete(any[String])(any[HeaderCarrier])).thenReturn(Future.successful(()))
 
       val result: Result = service
-        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(otherUserWithinGroupIsInProcess).futureValue
+        .checksToProceed(groupId, internalId, atarService)(continue)(userIsInProcess)(
+          otherUserWithinGroupIsInProcess
+        ).futureValue
 
       result.header.headers(LOCATION) shouldBe "/continue"
     }
@@ -131,7 +157,9 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
       ).thenReturn(Future.successful(None))
 
       val result: Result = service
-        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(otherUserWithinGroupIsInProcess).futureValue
+        .checksToProceed(groupId, internalId, atarService)(continue)(userIsInProcess)(
+          otherUserWithinGroupIsInProcess
+        ).futureValue
 
       result.header.headers(LOCATION) shouldBe "/continue"
     }

@@ -32,7 +32,7 @@ GET         /customs-enrolment-services/:service/:journey/email-confirmed-contin
 # subscribe
 GET         /customs-enrolment-services/:service/subscribe                                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.startSubscription(service: Service)
 
-GET         /customs-enrolment-services/:service/:journey/check-email                                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EmailController.form(service: Service, journey: Journey.Value)
+GET         /customs-enrolment-services/:service/:journey/check-user                                  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EmailController.form(service: Service, journey: Journey.Value)
 GET         /customs-enrolment-services/:service/subscribe/match-for-existing-registration            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.MatchingIdController.matchWithIdOnlyForExistingReg(service: Service)
 
 GET         /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriController.createForm(service: Service)
@@ -126,7 +126,6 @@ GET         /customs-enrolment-services/:service/register/complete              
 GET         /customs-enrolment-services/:service/:journey/business-details-recovery           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.BusinessDetailsRecoveryController.form(service: Service, journey: Journey.Value)
 GET         /customs-enrolment-services/:service/:journey/business-details-recovery/continue  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.BusinessDetailsRecoveryController.continue(service: Service, journey: Journey.Value)
 
-GET         /customs-enrolment-services/:service/:journey/enrolment-pending-against-groupId   @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EnrolmentPendingAgainstGroupIdController.show(service: Service, journey: Journey.Value)
 # Return
 GET         /customs-enrolment-services/:service/register/return-processing                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.UserLocationController.processing(service: Service)
 GET         /customs-enrolment-services/:service/register/return-rejected                              @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.UserLocationController.rejected(service: Service)

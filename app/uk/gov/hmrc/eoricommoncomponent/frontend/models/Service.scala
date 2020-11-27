@@ -35,13 +35,13 @@ case class Service(
 
 object Service {
 
-  val cds = Service("cds", "HMRC-CUS-ORG", "", "", "", "", "", None)
+  val cds: Service = Service("cds", "HMRC-CUS-ORG", "", "", "", "", "", None)
 
   private val supportedServicesMap: Map[String, Service] = new ServiceConfig(
     Configuration(ConfigFactory.load())
   ).supportedServicesMap
 
-  private def withName(str: String): Option[Service] =
+  def withName(str: String): Option[Service] =
     supportedServicesMap.get(str)
 
   implicit def binder(implicit stringBinder: PathBindable[String]): PathBindable[Service] = new PathBindable[Service] {

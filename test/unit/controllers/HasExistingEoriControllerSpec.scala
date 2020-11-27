@@ -122,7 +122,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     "redirect to check email page when enrolWithExistingCDSEnrolment fails" in {
       enrolMissingEnrolment(atarService) { result =>
         status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("/atar/subscribe/check-email")
+        await(result).header.headers("Location") should endWith("/atar/subscribe/check-user")
       }
     }
 

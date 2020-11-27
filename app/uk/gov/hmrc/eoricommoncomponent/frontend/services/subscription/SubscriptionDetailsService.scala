@@ -26,6 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
   ContactDetailsModel,
   VatDetails
 }
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{CachedData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.ContactDetailsAdaptor
 import uk.gov.hmrc.http.HeaderCarrier
@@ -39,10 +40,12 @@ class SubscriptionDetailsService @Inject() (
   save4LaterConnector: Save4LaterConnector
 )(implicit ec: ExecutionContext) {
 
-  def saveKeyIdentifiers(groupId: GroupId, internalId: InternalId)(implicit hc: HeaderCarrier): Future[Unit] = {
+  def saveKeyIdentifiers(groupId: GroupId, internalId: InternalId, service: Service)(implicit
+    hc: HeaderCarrier
+  ): Future[Unit] = {
     val key = CachedData.groupIdKey
     sessionCache.safeId.flatMap { safeId =>
-      val cacheIds = CacheIds(internalId, safeId)
+      val cacheIds = CacheIds(internalId, safeId, Some(service.code))
       save4LaterConnector.put[CacheIds](groupId.id, key, cacheIds)
     }
   }
