@@ -19,7 +19,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CacheIds, CdsOrganisationType, GroupId, InternalId, SafeId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.CachedData
@@ -54,6 +54,11 @@ class Save4LaterService @Inject() (save4LaterConnector: Save4LaterConnector) {
     save4LaterConnector.put[EmailStatus](internalId.id, emailKey, emailStatus)
   }
 
+  def deleteEmail(internalId: InternalId)(implicit hc: HeaderCarrier): Future[Unit] = {
+    logger.info("deleting email address on mongo")
+    save4LaterConnector.delete[EmailStatus](internalId.id)
+  }
+
   def fetchOrgType(internalId: InternalId)(implicit hc: HeaderCarrier): Future[Option[CdsOrganisationType]] = {
     logger.info("fetching OrganisationType from mongo")
     save4LaterConnector
@@ -70,6 +75,17 @@ class Save4LaterService @Inject() (save4LaterConnector: Save4LaterConnector) {
     logger.info("fetching EmailStatus from mongo")
     save4LaterConnector
       .get[EmailStatus](internalId.id, emailKey)
+  }
+
+  def fetchCacheIds(groupId: GroupId)(implicit hc: HeaderCarrier): Future[Option[CacheIds]] = {
+    logger.info("fetching CacheIds from mongo")
+    save4LaterConnector
+      .get[CacheIds](groupId.id, CachedData.groupIdKey)
+  }
+
+  def deleteCacheIds(groupId: GroupId)(implicit hc: HeaderCarrier): Future[Unit] = {
+    logger.info("deleting CachIds on mongo")
+    save4LaterConnector.delete[CacheIds](groupId.id)
   }
 
   def fetchProcessingService(

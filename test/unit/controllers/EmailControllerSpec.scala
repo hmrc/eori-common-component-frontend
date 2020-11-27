@@ -57,7 +57,6 @@ class EmailControllerSpec
   private val mockEmailVerificationService       = mock[EmailVerificationService]
   private val mockSave4LaterService              = mock[Save4LaterService]
   private val mockSessionCache                   = mock[SessionCache]
-  private val mockSave4LaterConnector            = mock[Save4LaterConnector]
   private val mockSubscriptionStatusService      = mock[SubscriptionStatusService]
   private val groupEnrolmentExtractor            = mock[GroupEnrolmentExtractor]
   private val enrolmentPendingAgainstGroupIdView = instanceOf[enrolment_pending_against_group_id]
@@ -66,7 +65,7 @@ class EmailControllerSpec
   private val infoXpath = "//*[@id='info']"
 
   private val userGroupIdSubscriptionStatusCheckService =
-    new UserGroupIdSubscriptionStatusCheckService(mockSubscriptionStatusService, mockSave4LaterConnector)
+    new UserGroupIdSubscriptionStatusCheckService(mockSubscriptionStatusService, mockSave4LaterService)
 
   private val controller = new EmailController(
     mockAuthAction,
@@ -93,7 +92,7 @@ class EmailControllerSpec
       .thenReturn(Future.successful(()))
     when(mockSessionCache.saveEmail(any())(any[HeaderCarrier]))
       .thenReturn(Future.successful(true))
-    when(mockSave4LaterConnector.get(any(), any())(any(), any()))
+    when(mockSave4LaterService.fetchCacheIds(any())(any()))
       .thenReturn(Future.successful(None))
     when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any()))
       .thenReturn(Future.successful(false))
@@ -144,7 +143,7 @@ class EmailControllerSpec
     }
 
     "block when same service subscription is in progress for group" in {
-      when(mockSave4LaterConnector.get[CacheIds](any(), any())(any(), any()))
+      when(mockSave4LaterService.fetchCacheIds(any())(any()))
         .thenReturn(Future.successful(Some(CacheIds(InternalId("int-id"), SafeId("safe-id"), Some(atarService.code)))))
       when(mockSave4LaterService.fetchProcessingService(any())(any(), any())).thenReturn(
         Future.successful(Some(atarService))
@@ -163,7 +162,7 @@ class EmailControllerSpec
     }
 
     "block when different service subscription is in progress for group" in {
-      when(mockSave4LaterConnector.get[CacheIds](any(), any())(any(), any()))
+      when(mockSave4LaterService.fetchCacheIds(any())(any()))
         .thenReturn(Future.successful(Some(CacheIds(InternalId("int-id"), SafeId("safe-id"), Some(otherService.code)))))
       when(mockSave4LaterService.fetchProcessingService(any())(any(), any())).thenReturn(
         Future.successful(Some(otherService))
@@ -182,7 +181,7 @@ class EmailControllerSpec
     }
 
     "block when different subscription is in progress for user" in {
-      when(mockSave4LaterConnector.get[CacheIds](any(), any())(any(), any()))
+      when(mockSave4LaterService.fetchCacheIds(any())(any()))
         .thenReturn(Future.successful(Some(CacheIds(InternalId(defaultUserId), SafeId("safe-id"), Some("other")))))
       when(mockSubscriptionStatusService.getStatus(any(), any())(any()))
         .thenReturn(Future.successful(SubscriptionProcessing))
@@ -198,7 +197,7 @@ class EmailControllerSpec
     }
 
     "continue when same subscription is in progress for user" in {
-      when(mockSave4LaterConnector.get[CacheIds](any(), any())(any(), any()))
+      when(mockSave4LaterService.fetchCacheIds(any())(any()))
         .thenReturn(Future.successful(Some(CacheIds(InternalId(defaultUserId), SafeId("safe-id"), Some("atar")))))
       when(mockSubscriptionStatusService.getStatus(any(), any())(any()))
         .thenReturn(Future.successful(SubscriptionProcessing))
@@ -258,7 +257,7 @@ class EmailControllerSpec
     }
 
     "block when subscription is in progress" in {
-      when(mockSave4LaterConnector.get[CacheIds](any(), any())(any(), any()))
+      when(mockSave4LaterService.fetchCacheIds(any())(any()))
         .thenReturn(Future.successful(Some(CacheIds(InternalId("int-id"), SafeId("safe-id"), Some("atar")))))
       when(mockSubscriptionStatusService.getStatus(any(), any())(any()))
         .thenReturn(Future.successful(SubscriptionProcessing))
