@@ -50,7 +50,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     new WhatIsYourEmailController(mockAuthAction, mcc, whatIsYourEmailView, mockSave4LaterService)
 
   val email       = "test@example.com"
-  val emailStatus = EmailStatus(email)
+  val emailStatus = EmailStatus(Some(email))
 
   val EmailFieldsMap            = Map("email" -> email)
   val unpopulatedEmailFieldsMap = Map("email" -> "")

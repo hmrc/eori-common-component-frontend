@@ -19,6 +19,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.Result
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, InternalId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -46,7 +47,7 @@ class UserGroupIdSubscriptionStatusCheckService @Inject() (
             .flatMap {
               case NewSubscription | SubscriptionRejected =>
                 for {
-                  _   <- if (!sameService) save4Later.deleteEmail(internalId) else Future.successful()
+                  _   <- if (!sameService) save4Later.saveEmail(internalId, EmailStatus(None)) else Future.successful()
                   res <- save4Later.deleteCacheIds(groupId).flatMap(_ => continue)
                 } yield res
               case _ =>

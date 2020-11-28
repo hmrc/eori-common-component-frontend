@@ -20,7 +20,7 @@ import play.api.libs.json.{JsValue, Json}
 
 case class EmailViewModel(email: String)
 
-case class EmailStatus(email: String, isVerified: Boolean = false, isConfirmed: Option[Boolean] = None)
+case class EmailStatus(email: Option[String], isVerified: Boolean = false, isConfirmed: Option[Boolean] = None)
 
 object EmailStatus {
   implicit val jsonFormat = Json.format[EmailStatus]

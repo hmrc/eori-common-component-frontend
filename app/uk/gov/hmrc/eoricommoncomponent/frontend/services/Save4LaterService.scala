@@ -54,11 +54,6 @@ class Save4LaterService @Inject() (save4LaterConnector: Save4LaterConnector) {
     save4LaterConnector.put[EmailStatus](internalId.id, emailKey, emailStatus)
   }
 
-  def deleteEmail(internalId: InternalId)(implicit hc: HeaderCarrier): Future[Unit] = {
-    logger.debug(s"deleting email address for internalId $internalId")
-    save4LaterConnector.delete[EmailStatus](internalId.id)
-  }
-
   def fetchOrgType(internalId: InternalId)(implicit hc: HeaderCarrier): Future[Option[CdsOrganisationType]] = {
     logger.debug(s"fetching OrganisationType for internalId $internalId")
     save4LaterConnector
