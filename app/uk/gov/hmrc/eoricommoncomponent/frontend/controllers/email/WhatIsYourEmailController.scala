@@ -70,7 +70,7 @@ class WhatIsYourEmailController @Inject() (
     journey: Journey.Value
   )(implicit hc: HeaderCarrier): Future[Result] =
     save4LaterService
-      .saveEmail(internalId, EmailStatus(formData.email))
+      .saveEmail(internalId, EmailStatus(Some(formData.email)))
       .flatMap(_ => Future.successful(Redirect(routes.CheckYourEmailController.createForm(service, journey))))
 
 }

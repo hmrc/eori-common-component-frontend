@@ -1043,7 +1043,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
     )
   }
 
-  private def invokeRejected(journey: Journey.Value = Journey.Subscribe)(test: Future[Result] => Any) {
+  private def invokeRejected(journey: Journey.Value)(test: Future[Result] => Any) {
     test(
       controller.rejected(atarService)
         .apply(requestWithPath(journey))
@@ -1079,9 +1079,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .apply(requestWithPath(journey))
     )
 
-  private def invokeRejectedPreviously(
-    journey: Journey.Value = Journey.Subscribe
-  )(test: Future[Result] => Assertion): Unit =
+  private def invokeRejectedPreviously(journey: Journey.Value)(test: Future[Result] => Assertion): Unit =
     test(
       controller
         .rejectedPreviously(atarService)

@@ -75,7 +75,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   )
 
   val email       = "test@example.com"
-  val emailStatus = EmailStatus(email)
+  val emailStatus = EmailStatus(Some(email))
 
   val internalId = "InternalID"
   val jsonValue  = Json.toJson(emailStatus)

@@ -43,7 +43,7 @@ class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAft
   private val organisationType: CdsOrganisationType =
     CdsOrganisationType.Company
 
-  private val emailStatus = EmailStatus("test@example.com")
+  private val emailStatus = EmailStatus(Some("test@example.com"))
 
   private val safeIdKey  = "safeId"
   private val orgTypeKey = "orgType"

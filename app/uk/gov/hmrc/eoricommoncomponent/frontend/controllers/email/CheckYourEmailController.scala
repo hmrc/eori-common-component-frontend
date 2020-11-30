@@ -17,13 +17,13 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc._
 import play.api.Logger
+import play.api.mvc._
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.MatchingIdController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{InternalId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.{confirmEmailYesNoAnswerForm, YesNo}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
@@ -68,7 +68,7 @@ class CheckYourEmailController @Inject() (
             logger.warn("[CheckYourEmailController][createForm] -   emailStatus cache none")
             populateView(None, isInReviewMode = false, service, journey)
           } { emailStatus =>
-            populateView(Some(emailStatus.email), isInReviewMode = false, service, journey)
+            populateView(emailStatus.email, isInReviewMode = false, service, journey)
           }
         }
     }
@@ -100,7 +100,7 @@ class CheckYourEmailController @Inject() (
                     Future(
                       BadRequest(
                         checkYourEmailView(
-                          Some(emailStatus.email),
+                          emailStatus.email,
                           formWithErrors,
                           isInReviewMode = isInReviewMode,
                           service = service,
@@ -123,7 +123,7 @@ class CheckYourEmailController @Inject() (
             logger.warn("[CheckYourEmailController][verifyEmailView] -  emailStatus cache none")
             populateEmailVerificationView(None, service, journey)
           } { email =>
-            populateEmailVerificationView(Some(email.email), service, journey)
+            populateEmailVerificationView(email.email, service, journey)
           }
         }
     }
@@ -174,8 +174,11 @@ class CheckYourEmailController @Inject() (
         logger.warn("[CheckYourEmailController][submitNewDetails] -  emailStatus cache none")
         throw new IllegalStateException("[CheckYourEmailController][submitNewDetails] - emailStatus cache none")
       } { emailStatus =>
+        val email: String = emailStatus.email.getOrElse(
+          throw new IllegalStateException("[CheckYourEmailController][submitNewDetails] - emailStatus.email none")
+        )
         emailVerificationService.createEmailVerificationRequest(
-          emailStatus.email,
+          email,
           EmailController.form(service, journey).url
         ) flatMap {
           case Some(true) =>
@@ -188,7 +191,7 @@ class CheckYourEmailController @Inject() (
             save4LaterService
               .saveEmail(internalId, emailStatus.copy(isVerified = true))
               .flatMap { _ =>
-                cdsFrontendDataCache.saveEmail(emailStatus.email).map { _ =>
+                cdsFrontendDataCache.saveEmail(email).map { _ =>
                   Redirect(EmailController.form(service, journey))
                 }
               }

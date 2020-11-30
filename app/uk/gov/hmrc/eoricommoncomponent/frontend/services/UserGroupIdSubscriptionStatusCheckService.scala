@@ -18,10 +18,9 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services
 
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.Result
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CacheIds, GroupId, InternalId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, InternalId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.CachedData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -30,27 +29,28 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class UserGroupIdSubscriptionStatusCheckService @Inject() (
   subscriptionStatusService: SubscriptionStatusService,
-  save4LaterConnector: Save4LaterConnector
+  save4Later: Save4LaterService
 )(implicit ec: ExecutionContext) {
   private val idType = "SAFE"
 
   def checksToProceed(groupId: GroupId, internalId: InternalId, service: Service)(continue: => Future[Result])(
     userIsInProcess: => Future[Result]
   )(otherUserWithinGroupIsInProcess: => Future[Result])(implicit hc: HeaderCarrier): Future[Result] =
-    save4LaterConnector
-      .get[CacheIds](groupId.id, CachedData.groupIdKey)
+    save4Later.fetchCacheIds(groupId)
       .flatMap {
         case Some(cacheIds) =>
+          val sameUser    = cacheIds.internalId == internalId
+          val sameService = cacheIds.serviceCode.contains(service.code)
+
           subscriptionStatusService
             .getStatus(idType, cacheIds.safeId.id)
             .flatMap {
               case NewSubscription | SubscriptionRejected =>
-                save4LaterConnector
-                  .delete(groupId.id)
-                  .flatMap(_ => continue)
+                for {
+                  _   <- if (!sameService) save4Later.saveEmail(internalId, EmailStatus(None)) else Future.successful()
+                  res <- save4Later.deleteCacheIds(groupId).flatMap(_ => continue)
+                } yield res
               case _ =>
-                val sameUser    = cacheIds.internalId == internalId
-                val sameService = cacheIds.serviceCode.contains(service.code)
                 (sameUser, sameService) match {
                   case (true, true)  => continue
                   case (true, false) => userIsInProcess

@@ -24,8 +24,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
   EnrolmentExtractor,
   GroupEnrolmentExtractor
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.CheckYourEmailController
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.WhatIsYourEmailController.createForm
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.{
+  CheckYourEmailController,
+  WhatIsYourEmailController
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.{
   EnrolmentAlreadyExistsController,
   YouAlreadyHaveEoriController
@@ -82,14 +84,18 @@ class EmailController @Inject() (
   ): Future[Result] =
     save4LaterService.fetchEmail(InternalId(user.internalId)) flatMap {
       _.fold {
-        logger.warn(s"emailStatus cache none ${user.internalId}")
-        Future.successful(Redirect(createForm(service, journey)))
+        logger.info(s"emailStatus cache none ${user.internalId}")
+        Future.successful(Redirect(WhatIsYourEmailController.createForm(service, journey)))
       } { cachedEmailStatus =>
-        if (cachedEmailStatus.isVerified)
-          sessionCache.saveEmail(cachedEmailStatus.email) map { _ =>
-            Redirect(CheckYourEmailController.emailConfirmed(service, journey))
-          }
-        else checkWithEmailService(cachedEmailStatus, service, journey)
+        cachedEmailStatus.email match {
+          case Some(email) =>
+            if (cachedEmailStatus.isVerified)
+              sessionCache.saveEmail(email) map { _ =>
+                Redirect(CheckYourEmailController.emailConfirmed(service, journey))
+              }
+            else checkWithEmailService(email, cachedEmailStatus, service, journey)
+          case _ => Future.successful(Redirect(WhatIsYourEmailController.createForm(service, journey)))
+        }
       }
     }
 
@@ -134,11 +140,12 @@ class EmailController @Inject() (
           }
     }
 
-  private def checkWithEmailService(emailStatus: EmailStatus, service: Service, journey: Journey.Value)(implicit
+  private def checkWithEmailService(email: String, emailStatus: EmailStatus, service: Service, journey: Journey.Value)(
+    implicit
     hc: HeaderCarrier,
     userWithEnrolments: LoggedInUserWithEnrolments
   ): Future[Result] =
-    emailVerificationService.isEmailVerified(emailStatus.email).flatMap {
+    emailVerificationService.isEmailVerified(email).flatMap {
       case Some(true) =>
         for {
           _ <- {
@@ -147,7 +154,7 @@ class EmailController @Inject() (
           }
           _ <- {
             logger.warn("saved verified email address true to cache")
-            sessionCache.saveEmail(emailStatus.email)
+            sessionCache.saveEmail(email)
           }
         } yield Redirect(CheckYourEmailController.emailConfirmed(service, journey))
       case Some(false) =>
