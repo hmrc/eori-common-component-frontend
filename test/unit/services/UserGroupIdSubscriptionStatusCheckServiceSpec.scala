@@ -118,38 +118,17 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
 
     "Allow the user for the groupID is cached and subscription status is SubscriptionRejected" in {
 
-      when(
-        mockSave4LaterService
-          .fetchCacheIds(any())(any[HeaderCarrier])
-      ).thenReturn(Future.successful(Some(cacheIds)))
-      when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(SubscriptionRejected))
-      when(mockSave4LaterService.deleteCacheIds(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
-
-      val result: Result = service
-        .checksToProceed(groupId, internalId, atarService)(continue)(userIsInProcess)(
-          otherUserWithinGroupIsInProcess
-        ).futureValue
-
-      result.header.headers(LOCATION) shouldBe "/continue"
+      allowUserWhenGroupIdCachedAndSubscriptionStatusIs(SubscriptionRejected)
     }
 
     "Allow the user for the groupID is cached and subscription status is NewSubscription" in {
 
-      when(
-        mockSave4LaterService
-          .fetchCacheIds(any())(any[HeaderCarrier])
-      ).thenReturn(Future.successful(Some(cacheIds)))
-      when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(NewSubscription))
-      when(mockSave4LaterService.deleteCacheIds(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
+      allowUserWhenGroupIdCachedAndSubscriptionStatusIs(NewSubscription)
+    }
 
-      val result: Result = service
-        .checksToProceed(groupId, internalId, atarService)(continue)(userIsInProcess)(
-          otherUserWithinGroupIsInProcess
-        ).futureValue
+    "Allow the user for the groupID is cached and subscription status is SubscriptionExists" in {
 
-      result.header.headers(LOCATION) shouldBe "/continue"
+      allowUserWhenGroupIdCachedAndSubscriptionStatusIs(SubscriptionExists)
     }
 
     "Delete email for user when starting a second subscription" in {
@@ -188,4 +167,22 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
       result.header.headers(LOCATION) shouldBe "/continue"
     }
   }
+
+  private def allowUserWhenGroupIdCachedAndSubscriptionStatusIs(status: PreSubscriptionStatus) = {
+    when(
+      mockSave4LaterService
+        .fetchCacheIds(any())(any[HeaderCarrier])
+    ).thenReturn(Future.successful(Some(cacheIds)))
+    when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier]))
+      .thenReturn(Future.successful(status))
+    when(mockSave4LaterService.deleteCacheIds(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
+
+    val result: Result = service
+      .checksToProceed(groupId, internalId, atarService)(continue)(userIsInProcess)(
+        otherUserWithinGroupIsInProcess
+      ).futureValue
+
+    result.header.headers(LOCATION) shouldBe "/continue"
+  }
+
 }

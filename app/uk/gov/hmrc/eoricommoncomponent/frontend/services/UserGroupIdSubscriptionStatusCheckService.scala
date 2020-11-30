@@ -44,13 +44,13 @@ class UserGroupIdSubscriptionStatusCheckService @Inject() (
 
           subscriptionStatusService
             .getStatus(idType, cacheIds.safeId.id)
-            .flatMap {
-              case NewSubscription | SubscriptionRejected =>
+            .flatMap { status =>
+              if (status != SubscriptionProcessing)
                 for {
                   _   <- if (!sameService) save4Later.saveEmail(internalId, EmailStatus(None)) else Future.successful()
                   res <- save4Later.deleteCacheIds(groupId).flatMap(_ => continue)
                 } yield res
-              case _ =>
+              else
                 (sameUser, sameService) match {
                   case (true, true)  => continue
                   case (true, false) => userIsInProcess
