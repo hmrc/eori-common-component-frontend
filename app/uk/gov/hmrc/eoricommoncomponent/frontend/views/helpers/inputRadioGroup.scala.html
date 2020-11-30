@@ -92,7 +92,7 @@
                     value="@value"
                     @field.value.filter(_ == value).map { _ => checked="checked" }>
                     <label for="@inputId">
-                        @label
+                        @label&nbsp;
                         @hints.get(value).map { hint =>
                             <span class="form-hint">@hint</span>
                         }
