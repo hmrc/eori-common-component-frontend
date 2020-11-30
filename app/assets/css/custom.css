@@ -117,3 +117,28 @@ h1 {
 .eori-number {
     font-weight: bold;
 }
+
+.hmrc-language-select {
+    float: right;
+    margin: 0;
+}
+.hmrc-language-select__list {
+    float: right;
+}
+
+.hmrc-language-select__list-item {
+    display: inline-block;
+}
+
+.hmrc-language-select__list-item:first-child::after {
+    content: "";
+    display: inline-block;
+    position: relative;
+    top: 0.1875em;
+    height: 1em;
+    border-right: 0.09375em solid;
+}
+
+a.hmrc-language-select__list-item {
+    padding: 0.3125em;
+}
