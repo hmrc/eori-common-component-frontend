@@ -210,3 +210,7 @@ cds.enrolment.pending.user.paragraph3=TRANSLATE Sign out and wait until you rece
 cds.enrolment.pending.group.otherService.paragraph1=TRANSLATE We are currently processing a subscription request to {0} from someone in your organisation.
 cds.enrolment.pending.group.otherService.paragraph2=TRANSLATE This process must be completed before you can apply for another service.
 cds.enrolment.pending.group.sameService.paragraph1=TRANSLATE Our records show that someone in your organisation has already applied for this service.
+
+cds.languageSelect.current.label=Cymraeg
+cds.languageSelect.select.label=English
+cds.languageSelect.select.hint=Change the language to English

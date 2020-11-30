@@ -97,7 +97,7 @@ class HeaderSpec extends ControllerSpec with AuthActionMock {
       val result = controller.startRegister(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       val page = CdsPage(contentAsString(result))
-      page.elementIsPresent("//p[@class='language-toggle']") shouldBe true
+      page.elementIsPresent("//nav[@class='hmrc-language-select']") shouldBe true
     }
   }
 }
