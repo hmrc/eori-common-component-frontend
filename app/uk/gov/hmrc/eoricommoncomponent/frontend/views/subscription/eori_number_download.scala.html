@@ -53,6 +53,12 @@
                 .heading-medium {
                     font-size: 24px;
                 }
+                .mt0 {
+                    margin-top: 0;
+                }
+                .mb0 {
+                    margin-bottom: 0;
+                }
                 .service-info {
                     padding-bottom: 0.5em
                 }
@@ -184,10 +190,10 @@
 </div>
 <div class="column-two-thirds">
     <div class="govuk-box-highlight">
-        <h1 id="page-heading" class="heading-large">
+        <h1 id="page-heading" class="heading-large mb0">
             @messages("cds.reg.existing.outcomes.success.heading.part1", name)
         </h1>
-        <p id="active-from" class="heading-large">@messages("subscription.subscription-results.active-from", processedDate)</p>
+        <p id="active-from" class="heading-large mt0">@messages("subscription.subscription-results.active-from", processedDate)</p>
         <p class="heading-medium">@messages("cds.pdf.outcomes.eori.number", eori)</p>
     </div>
 </div>
