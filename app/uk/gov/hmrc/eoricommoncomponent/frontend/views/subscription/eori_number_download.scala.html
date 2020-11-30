@@ -38,7 +38,7 @@
                     margin: 1em 0 1em 0;
                     padding: 2em 0 1em 0;
                     color: #fff;
-                    background: #28a197;
+                    background: #00703c;
                     text-align: center;
                 }
                 .bold-large {
@@ -47,9 +47,17 @@
                     text-transform: none;
                     font-weight: 700
                 }
+                .heading-large {
+                    font-size: 36px;
+                }
                 .heading-medium {
-                    margin-top: 1.875em;
-                    margin-bottom: .83333em
+                    font-size: 24px;
+                }
+                .mt0 {
+                    margin-top: 0;
+                }
+                .mb0 {
+                    margin-bottom: 0;
                 }
                 .service-info {
                     padding-bottom: 0.5em
@@ -182,11 +190,11 @@
 </div>
 <div class="column-two-thirds">
     <div class="govuk-box-highlight">
-        <h1 id="page-heading" class="heading-xlarge" style="margin-bottom: 0;">
+        <h1 id="page-heading" class="heading-large mb0">
             @messages("cds.reg.existing.outcomes.success.heading.part1", name)
         </h1>
-        <p id="active-from" class="heading-large"  style="margin-top: 0;">@messages("subscription.subscription-results.active-from") @processedDate</p>
-        <p id="eori-number" class="heading-medium">@messages("cds.reg.existing.outcomes.success.eori.number") @eori</p>
+        <p id="active-from" class="heading-large mt0">@messages("subscription.subscription-results.active-from", processedDate)</p>
+        <p class="heading-medium">@messages("cds.pdf.outcomes.eori.number", eori)</p>
     </div>
 </div>
 </body>

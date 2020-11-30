@@ -214,3 +214,5 @@ cds.enrolment.pending.group.sameService.paragraph1=TRANSLATE Our records show th
 cds.languageSelect.current.label=Cymraeg
 cds.languageSelect.select.label=English
 cds.languageSelect.select.hint=Change the language to English
+
+cds.pdf.outcomes.eori.number=Rhif EORI: {0}

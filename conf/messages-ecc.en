@@ -214,3 +214,5 @@ cds.enrolment.pending.group.sameService.paragraph1=Our records show that someone
 cds.languageSelect.current.label=English
 cds.languageSelect.select.label=Cymraeg
 cds.languageSelect.select.hint=Newid yr iaith ir Gymraeg
+
+cds.pdf.outcomes.eori.number=EORI number: {0}
