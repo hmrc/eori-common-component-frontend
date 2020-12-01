@@ -538,16 +538,16 @@ cds.registration.part-of-vat-group.page-error.yes-no-answer=Tell us if you are a
 # Organisation type
 cds.matching.organisation-type.user.header=What do you want to apply as?
 cds.matching.organisation-type.organisation-type=Business type
-cds.matching.organisation-type.radio.company.label=company
-cds.matching.organisation-type.radio.organisation.label=organisation
+cds.matching.organisation-type.radio.company.label=Company
+cds.matching.organisation-type.radio.organisation.label=Organisation
 cds.matching.organisation-type.radio.organisation.hint-text=For example a limited company, corporation, limited liability company or charity
-cds.matching.organisation-type.radio.sole-trader.label=sole trader
+cds.matching.organisation-type.radio.sole-trader.label=Sole trader
 cds.matching.organisation-type.radio.sole-trader.hint-text=Also known as a sole proprietorship or sole entrepreneurship
-cds.matching.organisation-type.radio.individual.label=individual
+cds.matching.organisation-type.radio.individual.label=Individual
 cds.matching.organisation-type.radio.individual.hint-text=Someone who is moving goods for personal use
-cds.matching.organisation-type.radio.partnership.label=partnership
+cds.matching.organisation-type.radio.partnership.label=Partnership
 cds.matching.organisation-type.radio.limited-liability-partnership.label=Limited Liability Partnership
-cds.matching.organisation-type.radio.charity-public-body-not-for-profit.label=charity, public body or not for profit organisation
+cds.matching.organisation-type.radio.charity-public-body-not-for-profit.label=Charity, public body or not for profit organisation
 
 cds.matching.organisation-type.radio.eu-organisation.label=EU Organisation
 cds.matching.organisation-type.radio.eu-individual.label=EU Individual
