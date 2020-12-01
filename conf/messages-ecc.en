@@ -159,7 +159,7 @@ cds.form.declaration=Declaration
 cds.form.send=Confirm and send
 
 cds.mig.existing.outcomes.application-received.title=Subscription request received
-cds.reg.existing.outcomes.success.heading.part1=Subscription request received for {0}
+cds.reg.existing.outcomes.success.heading.part1=Subscription request received for
 
 cds.if.you.need.help.heading=If you need help
 cds.if.you.need.help.telephone1=Telephone: 0300 322 7067
