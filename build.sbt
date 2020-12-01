@@ -113,8 +113,7 @@ val compileDependencies = Seq(
   "uk.gov.hmrc" %% "logback-json-logger" % "4.8.0",
   "com.typesafe.play" %% "play-json-joda" % "2.6.10",
   "uk.gov.hmrc" %% "play-language" % "4.4.0-play-26",
-  "uk.gov.hmrc" %% "play-ui" % "8.18.0-play-26",
-  "uk.gov.hmrc" %% "govuk-template" % "5.60.0-play-26"
+  "uk.gov.hmrc" %% "play-ui" % "8.18.0-play-26"
 )
 
 
