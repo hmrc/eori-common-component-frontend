@@ -36,7 +36,7 @@ class EnrolmentService @Inject() (
     enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(KnownFactsQuery(eori)).flatMap {
       case Some(knownFacts) =>
         val doeVerifier: KeyValuePair =
-          knownFacts.enrolments.flatMap(_.verifiers).find(_.key == "DATEOFESTABLISHMENT").getOrElse(
+          knownFacts.enrolments.flatMap(_.verifiers).find(_.key.toUpperCase == "DATEOFESTABLISHMENT").getOrElse(
             throw MissingEnrolmentException(eori)
           )
 
