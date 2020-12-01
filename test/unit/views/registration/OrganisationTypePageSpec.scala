@@ -36,15 +36,15 @@ class OrganisationTypePageSpec extends ViewSpec {
 
   "Rest of World (ROW) What do you want to apply as? page" should {
     "display 'an organisation' as an option" in {
-      doc.select(thirdCountryOrganisationLabel).text() mustBe "organisation"
+      doc.select(thirdCountryOrganisationLabel).text() mustBe "Organisation"
     }
 
     "display 'a sole trader' as an option" in {
-      doc.select(thirdCountrySoleTraderLabel).text() mustBe "sole trader"
+      doc.select(thirdCountrySoleTraderLabel).text() mustBe "Sole trader"
     }
 
     "display 'an individual' as an option" in {
-      doc.select(thirdCountryIndividualLabel).text() mustBe "individual"
+      doc.select(thirdCountryIndividualLabel).text() mustBe "Individual"
     }
   }
 
