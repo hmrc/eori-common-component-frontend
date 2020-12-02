@@ -5,6 +5,9 @@ $(document).ready(function () {
     // with role="button" when the space key is pressed.
     GOVUK.shimLinksWithButtonRole.init()
 
+    // Initialise details component
+    GOVUK.details.init();
+
     let errors = document.getElementById("errors")
     if(errors) errors.focus();
 })
