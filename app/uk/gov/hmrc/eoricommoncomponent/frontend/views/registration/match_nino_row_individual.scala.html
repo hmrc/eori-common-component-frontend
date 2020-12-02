@@ -37,7 +37,7 @@
 <div class="column-two-thirds">
     <a href="javascript:history.back()" id="back" class="link-back js-visible">@messages("cds.navigation.back")</a>
 
-    @helpers.errorSummary(matchNinoIdForm)
+    @helpers.errorSummary(matchNinoIdForm, focusOverrides = Map("have-nino" -> "have-nino-yes"))
 
     @helpers.form(DoYouHaveNinoController.submit(service, journey), "matchRowIndividualsNinoForm") {
     @CSRF.formField
