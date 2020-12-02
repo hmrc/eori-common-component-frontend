@@ -109,10 +109,10 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
       notSelectedCompanyDoc.body.getElementById("form-error-heading").text mustBe "There is a problem"
 
       notSelectedIndividualDoc.body
-        .getElementsByAttributeValue("href", "#have-utr")
+        .getElementsByAttributeValue("href", "#have-utr-yes")
         .text mustBe "Select yes if you have a UTR number"
       notSelectedCompanyDoc.body
-        .getElementsByAttributeValue("href", "#have-utr")
+        .getElementsByAttributeValue("href", "#have-utr-yes")
         .text mustBe "Select yes if you have a UTR number"
     }
   }

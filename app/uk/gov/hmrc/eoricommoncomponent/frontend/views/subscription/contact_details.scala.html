@@ -74,7 +74,7 @@
 <div class="column-two-thirds">
     <a href="javascript:history.back()" id="back" class="link-back js-visible">@messages("cds.navigation.back")</a>
 
-    @helpers.errorSummary(contactForm)
+    @helpers.errorSummary(contactForm, focusOverrides = Map("use-registered-address" -> "use-registered-address-yes"))
 
     @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactDetailsController.submit(isInReviewMode, service, journey), "contactDetailsForm") {
 

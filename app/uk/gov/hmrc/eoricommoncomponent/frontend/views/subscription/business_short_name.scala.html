@@ -41,7 +41,7 @@
     <div class="column-two-thirds">
         <a href="javascript:history.back()" id="back" class="link-back js-visible">@messages("cds.navigation.back")</a>
     
-        @helpers.errorSummary(shortNameForm)
+        @helpers.errorSummary(shortNameForm, focusOverrides = Map("use-short-name" -> "use-short-name-yes"))
 
         @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.BusinessShortNameController.submit(isInReviewMode, service, journey), "shortNameForm") {
 

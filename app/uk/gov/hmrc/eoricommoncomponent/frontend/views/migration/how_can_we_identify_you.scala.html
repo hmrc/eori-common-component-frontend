@@ -37,7 +37,7 @@
     <div class="column-two-thirds">
         <a href="javascript:history.back()" id="back" class="link-back js-visible">@messages("cds.navigation.back")</a>
 
-        @helpers.errorSummary(ninoUtrForm)
+        @helpers.errorSummary(ninoUtrForm, focusOverrides = Map("ninoOrUtrRadio" -> "nino-radio"))
 
         <fieldset>
             <legend>

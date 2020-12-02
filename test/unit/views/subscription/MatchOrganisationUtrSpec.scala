@@ -110,7 +110,8 @@ class MatchOrganisationUtrSpec extends ViewSpec {
     "display the correct problem message at the top of the page" in {
       docWithNoSelectionError.body
         .getElementById("errors")
-        .text mustBe "There is a problem Select yes if you have a UTR number"
+        .getElementsByAttributeValue("href", "#have-utr-yes")
+        .text mustBe "Select yes if you have a UTR number"
     }
   }
 

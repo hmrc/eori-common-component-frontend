@@ -76,7 +76,7 @@ class HaveNinoSubscriptionSpec extends ViewSpec {
     "have page level error with correct message" in {
       docWithNoOptionSelected.body.getElementById("form-error-heading").text mustBe "There is a problem"
       docWithNoOptionSelected.body
-        .getElementsByAttributeValue("href", "#have-nino")
+        .getElementsByAttributeValue("href", "#have-nino-yes")
         .text mustBe "Select yes if you have a National Insurance number"
     }
   }
