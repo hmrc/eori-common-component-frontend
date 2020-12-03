@@ -90,6 +90,7 @@ h1 {
 
 .govuk-box-highlight {
     background-color: #00703c;
+    border: 5px solid;
 }
 
 .govuk-box-highlight h1 {
