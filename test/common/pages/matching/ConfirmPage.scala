@@ -20,12 +20,11 @@ import common.pages.WebPage
 
 trait ConfirmPage extends WebPage {
 
-  val BusinessAddressXPath = "//dd[@class='cya-answer']"
-  val fullDetailsXpath     = "//dd[@class='cya-answer']"
+  val addressXPath = "//div[@id='address']"
 
   val fieldLevelErrorYesNoWrongAddress = "//*[@id='yes-no-wrong-address-fieldset']//span[@class='error-message']"
 
-  override val title = "These are the details we have about your organisation"
+  override val title = "Is this your registered address"
 }
 
 object ConfirmPage extends ConfirmPage

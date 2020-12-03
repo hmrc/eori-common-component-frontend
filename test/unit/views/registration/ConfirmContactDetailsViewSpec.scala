@@ -43,55 +43,50 @@ class ConfirmContactDetailsViewSpec extends ViewSpec {
 
   "Confirm Contact Details" should {
     "display correct title" in {
-      CorporateBodyDoc.title() must startWith("These are the details we have about your organisation")
-      SoleTraderOrIndividualWithNinoDoc.title() must startWith("These are the details we have about you")
-      PartnershipBodyDoc.title() must startWith("These are the details we have about your partnership")
+      CorporateBodyDoc.title() must startWith("Is this your registered address")
+      SoleTraderOrIndividualWithNinoDoc.title() must startWith("Is this your address")
+      PartnershipBodyDoc.title() must startWith("Is this your registered address")
     }
     "have the correct h1 text" in {
       CorporateBodyDoc
         .body()
         .getElementsByTag("h1")
-        .text() mustBe "These are the details we have about your organisation"
+        .text() mustBe "Is this your registered address?"
       SoleTraderOrIndividualWithNinoDoc
         .body()
         .getElementsByTag("h1")
-        .text() mustBe "These are the details we have about you"
+        .text() mustBe "Is this your address?"
       PartnershipBodyDoc
         .body()
         .getElementsByTag("h1")
-        .text() mustBe "These are the details we have about your partnership"
+        .text() mustBe "Is this your registered address?"
     }
     "have the correct class on the h1" in {
       CorporateBodyDoc.body().getElementsByTag("h1").hasClass("heading-large") mustBe true
     }
-    "have the right labels in the definition list" in {
-      CorporateBodyDoc.body().getElementById("idNumber").text() mustBe "Corporation Tax UTR number"
-      CorporateBodyDoc.body().getElementById("name").text() mustBe "Registered company name"
-      CorporateBodyDoc.body().getElementById("address").text() mustBe "Registered address"
+    "have the address" in {
+      CorporateBodyDoc.body().getElementById("address").text() mustBe "street city SE28 1AA United Kingdom"
 
-      SoleTraderOrIndividualWithNinoDoc.body().getElementById("idNumber").text() mustBe "National Insurance number"
-      SoleTraderOrIndividualWithUtrDoc.body().getElementById("idNumber").text() mustBe "Self Assessment UTR number"
-      SoleTraderOrIndividualWithNinoDoc.body().getElementById("name").text() mustBe "Name"
-      SoleTraderOrIndividualWithNinoDoc.body().getElementById("address").text() mustBe "Address"
+      SoleTraderOrIndividualWithNinoDoc.body().getElementById(
+        "address"
+      ).text() mustBe "street city SE28 1AA United Kingdom"
 
-      PartnershipBodyDoc.body().getElementById("idNumber").text() mustBe "Partnership Self Assessment UTR number"
-      PartnershipBodyDoc.body().getElementById("name").text() mustBe "Registered partnership name"
-      PartnershipBodyDoc.body().getElementById("address").text() mustBe "Registered address"
+      PartnershipBodyDoc.body().getElementById("address").text() mustBe "street city SE28 1AA United Kingdom"
 
     }
     "have the right legend" in {
       CorporateBodyDoc
         .body()
         .getElementsByTag("legend")
-        .text() mustBe "Are these the organisation details you want to use to get an EORI number?"
+        .text() mustBe "Is this your registered address?"
       SoleTraderOrIndividualWithNinoDoc
         .body()
         .getElementsByTag("legend")
-        .text() mustBe "Are these the details you want to use to get an EORI number?"
+        .text() mustBe "Is this your address?"
       PartnershipBodyDoc
         .body()
         .getElementsByTag("legend")
-        .text() mustBe "Are these the partnership details you want to use to get an EORI number?"
+        .text() mustBe "Is this your registered address?"
     }
     "have an input of type 'radio' for Yes option" in {
       CorporateBodyDoc.body().getElementById("yes-no-wrong-address-yes").attr("type") mustBe "radio"
@@ -100,15 +95,15 @@ class ConfirmContactDetailsViewSpec extends ViewSpec {
       CorporateBodyDoc
         .body()
         .getElementsByAttributeValue("for", "yes-no-wrong-address-yes")
-        .text() mustBe "Yes, these are the details I want to use"
+        .text() mustBe "Yes"
       SoleTraderOrIndividualWithNinoDoc
         .body()
         .getElementsByAttributeValue("for", "yes-no-wrong-address-yes")
-        .text() mustBe "Yes, these are the details I want to use"
+        .text() mustBe "Yes"
       PartnershipBodyDoc
         .body()
         .getElementsByAttributeValue("for", "yes-no-wrong-address-yes")
-        .text() mustBe "Yes, these are the details I want to use"
+        .text() mustBe "Yes"
     }
     "have an input of type 'radio' for Wrong Address option" in {
       CorporateBodyDoc.body().getElementById("yes-no-wrong-address-wrong-address").attr("type") mustBe "radio"
@@ -117,32 +112,15 @@ class ConfirmContactDetailsViewSpec extends ViewSpec {
       CorporateBodyDoc
         .body()
         .getElementsByAttributeValue("for", "yes-no-wrong-address-wrong-address")
-        .text() mustBe "No, I need to change my organisation address"
+        .text() mustBe "No, I want to change the address"
       SoleTraderOrIndividualWithNinoDoc
         .body()
         .getElementsByAttributeValue("for", "yes-no-wrong-address-wrong-address")
-        .text() mustBe "No, I need to change my address"
+        .text() mustBe "No, I want to change my address"
       PartnershipBodyDoc
         .body()
         .getElementsByAttributeValue("for", "yes-no-wrong-address-wrong-address")
-        .text() mustBe "No, I need to change my partnership address"
-    }
-    "have an input of type 'radio' for No option" in {
-      CorporateBodyDoc.body().getElementById("yes-no-wrong-address-no").attr("type") mustBe "radio"
-    }
-    "have the right text on the No option" in {
-      CorporateBodyDoc
-        .body()
-        .getElementsByAttributeValue("for", "yes-no-wrong-address-no")
-        .text() mustBe "No, I need to enter all my organisation details again"
-      SoleTraderOrIndividualWithNinoDoc
-        .body()
-        .getElementsByAttributeValue("for", "yes-no-wrong-address-no")
-        .text() mustBe "No, I need to enter all my details again"
-      PartnershipBodyDoc
-        .body()
-        .getElementsByAttributeValue("for", "yes-no-wrong-address-no")
-        .text() mustBe "No, I need to enter all my partnership details again"
+        .text() mustBe "No, I want to change the address"
     }
   }
 

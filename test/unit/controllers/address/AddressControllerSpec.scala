@@ -263,7 +263,7 @@ class AddressControllerSpec
     "redirect to next screen" in {
       submitFormInCreateModeForIndividual(mandatoryFields) { result =>
         val page = CdsPage(contentAsString(result))
-        page.title should startWith("These are the details we have about you")
+        page.title should startWith("Is this your address")
       }
     }
   }
