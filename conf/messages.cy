@@ -313,8 +313,8 @@ cds.matching.header.company=Beth yw manylion eich cwmni?
 cds.matching.intro=Bydd hyn yn cysylltu’ch busnes, eich Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth a’ch rhif EORI â’i gilydd sy’n eich helpu i symud a datgan nwyddau.
 cds.matching.individual.header=Nodwch eich manylion
 cds.matching-lede=Byddwn yn ceisio paru’ch manylion â’r wybodaeth sydd gennym ar hyn o bryd.
-cds.matching.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890. Bydd hwn ar Ffurflenni Treth a llythyrau eraill am Dreth Gorfforaeth. Efallai y cyfeirir ato gan ddefnyddio’r geiriau “cyfeirnod”, “UTR” neu “defnydd swyddogol”. Gallwch <a href=”https://www.gov.uk/find-lost-utr-number” target=”_blank” rel=”noopener noreferrer”>ddod o hyd i UTR sydd ar goll (yn agor ffenestr neu dab newydd)</a>.
-cds.matching.partnership.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890. Bydd hwn i’w weld ar Ffurflenni Treth partneriaeth a llythyrau eraill ynghylch eich partneriaeth. Efallai y cyfeirir ato gan ddefnyddio’r geiriau “cyfeirnod”, “UTR” neu “defnydd swyddogol”. Gallwch <a href=”https://www.gov.uk/find-lost-utr-number” target=”_blank” rel=”noopener noreferrer”>ddod o hyd i UTR sydd ar goll (yn agor ffenestr neu dab newydd)</a>.
+cds.matching.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890. Bydd hwn ar Ffurflenni Treth a llythyrau eraill am Dreth Gorfforaeth. Efallai y cyfeirir ato gan ddefnyddio’r geiriau “cyfeirnod”, “UTR” neu “defnydd swyddogol”. Gallwch <a href="https://www.gov.uk/find-lost-utr-number" target="_blank" rel="noopener noreferrer">ddod o hyd i UTR sydd ar goll (yn agor ffenestr neu dab newydd)</a>.
+cds.matching.partnership.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890. Bydd hwn i’w weld ar Ffurflenni Treth partneriaeth a llythyrau eraill ynghylch eich partneriaeth. Efallai y cyfeirir ato gan ddefnyddio’r geiriau “cyfeirnod”, “UTR” neu “defnydd swyddogol”. Gallwch <a href="https://www.gov.uk/find-lost-utr-number" target="_blank" rel="noopener noreferrer">ddod o hyd i UTR sydd ar goll (yn agor ffenestr neu dab newydd)</a>.
 cds.matching.eori.hint=Mae gan eich rhif EORI rhwng 14 ac 17 o gymeriadau.
 cds.matching.back=Yn ôl
 subscription.start-page.heading=Cofrestru ar gyfer y Gwasanaeth Datgan Tollau (CDS)
@@ -334,9 +334,9 @@ cds.subscription.enter-email.email.label=cyfeiriad e-bost
 cds.subscription.verify-email.title=Dilysu’ch cyfeiriad e-bost
 cds.subscription.verify-email.para1=Rydym wedi anfon e-bost i {0}. Cliciwch ar y cysylltiad yn yr e-bost i ddilysu’ch cyfeiriad e-bost.
 cds.subscription.verify-email.missing-email-text=eich cyfeiriad e-bost
-cds.subscription.verify-email.para2=Gallwch <a href=”{0}”>newid eich cyfeiriad e-bost</a> os nad yw’n gywir.
+cds.subscription.verify-email.para2=Gallwch <a href="{0}">newid eich cyfeiriad e-bost</a> os nad yw’n gywir.
 cds.subscription.verify-email.progressive-disclosure.heading=Ches i ddim e-bost
-cds.subscription.verify-email.progressive-disclosure.content=Chwiliwch yn eich ffolder sothach. Os nad yw’r neges yno, gallwn <a href=""{0}"">ei hanfon eto</a>. Os byddwn yn anfon eich e-bost eto, ni fydd cysylltiadau blaenorol yn gweithio.
+cds.subscription.verify-email.progressive-disclosure.content=Chwiliwch yn eich ffolder sothach. Os nad yw’r neges yno, gallwn <a href="{0}">ei hanfon eto</a>. Os byddwn yn anfon eich e-bost eto, ni fydd cysylltiadau blaenorol yn gweithio.
 subscription.enter-email.heading=Beth yw’ch cyfeiriad e-bost?
 subscription.check-your-email.heading=Gwirio’ch cyfeiriad e-bost
 subscription.check-your-email.label=Cyfeiriad e-bost
@@ -405,7 +405,7 @@ countries-in-the-eu.title=Gwledydd yn yr UE
 countries-in-the-eu.list=Yr Almaen, Awstria, Bwlgaria, Croatia, Denmarc, y DU, yr Eidal, Estonia, y Ffindir, Ffrainc, Gweriniaeth Cyprus, Gwlad Belg, Gwlad Groeg, Gwlad Pwyl, Hwngari, Yr Iseldiroedd, Iwerddon, Latvia, Lithuania, Lwcsembwrg, Malta, Portiwgal, România, Slovakia, Slovenia, Sbaen, Sweden, a’r Weriniaeth Tsiec.
 subscription-journey.how-confirm-identity=Pa wybodaeth y gallwn ei defnyddio i gadarnhau pwy ydych chi?
 subscription-journey.utr.label=Rhif Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad
-subscription-journey.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890. Bydd hwn i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Hunanasesiad. Efallai y cyfeirir ato gan ddefnyddio’r geiriau “cyfeirnod”, “UTR” neu “defnydd swyddogol”. Gallwch <a href=”https://www.gov.uk/find-lost-utr-number” target=”_blank” rel=”noopener noreferrer”>ddod o hyd i UTR sydd ar goll (yn agor ffenestr neu dab newydd)</a>.
+subscription-journey.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890. Bydd hwn i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Hunanasesiad. Efallai y cyfeirir ato gan ddefnyddio’r geiriau “cyfeirnod”, “UTR” neu “defnydd swyddogol”. Gallwch <a href="https://www.gov.uk/find-lost-utr-number" target="_blank" rel="noopener noreferrer">ddod o hyd i UTR sydd ar goll (yn agor ffenestr neu dab newydd)</a>.
 cds.matching.id.page-error.nino=Nodwch eich rhif Yswiriant Gwladol
 cds.matching.id.page-error.utr=Nodwch eich Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad
 cds.matching.id.page-error.ninoOrUtrRadio=Rhowch wybod sut y gallwn eich adnabod
@@ -440,7 +440,7 @@ cds.start-page.before-you-start.bullet1=rhif TAW a dyddiad y daw’ch cofrestria
 cds.start-page.before-you-start.bullet2=Rhif Yswiriant Gwladol (os ydych yn cofrestru fel unigolyn neu unig fasnachwr)
 cds.start-page.before-you-start.bullet3=eich Cyfeirnod Unigryw y Trethdalwr (UTR)
 cds.start-page.cannot-use-outside-uk=Ar hyn o bryd, ni allwch ddefnyddio’r gwasanaeth hwn os ydych wedi’ch lleoli y tu allan i’r DU.
-cds.start-page.find-information=Gallwch ddod o hyd i’r wybodaeth ganlynol ar <a href=“https://www.gov.uk/get-information-about-a-company”>Gofrestr Tŷ’r Cwmnïau</a>
+cds.start-page.find-information=Gallwch ddod o hyd i’r wybodaeth ganlynol ar <a href="https://www.gov.uk/get-information-about-a-company">Gofrestr Tŷ’r Cwmnïau</a>
 cds.start-page.before-you-start.bullet4=y dyddiad y gwnaethoch ddechrau’ch busnes
 cds.start-page.before-you-start.bullet5=y Cod Dosbarthiad Diwydiannol Safonol (SIC) ar gyfer eich busnes
 cds.start-page.it-takes=Mae’n cymryd 5 i 10 munud i wneud cais am rif EORI. Dylech ei gael ar unwaith, ond gall gymryd hyd at 2 ddiwrnod gwaith os bydd angen i ni wneud gwiriadau pellach.
@@ -557,11 +557,11 @@ cds.matching.name-id-organisation.partnership.utr=Rhif Cyfeirnod Unigryw y Treth
 cds.matching.name-id-organisation.organisation.name=Enw’r sefydliad
 cds.matching.name-id-organisation.organisation.name.hint=Mae hwn ar eich tystysgrif ymgorffori oddi wrth Dŷ’r Cwmnïau.
 cds.matching.name-id-organisation.organisation.utr=Rhif Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad y Sefydliad
-cds.matching.name-id-organisation.not-registered=Os nad ydych wedi’ch cofrestru ar gyfer Hunanasesiad, neu os yw’ch cofrestriad ar y gweill ac nid oes gennych Gyfeirnod Unigryw y Trethdalwr (UTR) eto, gallwch <a href=“{0}”>gofrestru gan ddefnyddio’ch enw a chyfeiriad</a> yn lle hynny.
+cds.matching.name-id-organisation.not-registered=Os nad ydych wedi’ch cofrestru ar gyfer Hunanasesiad, neu os yw’ch cofrestriad ar y gweill ac nid oes gennych Gyfeirnod Unigryw y Trethdalwr (UTR) eto, gallwch <a href="{0}">gofrestru gan ddefnyddio’ch enw a chyfeiriad</a> yn lle hynny.
 cds.matching.name-id-organisation.eu-organisation.name=Enw’r sefydliad cofrestredig
 cds.matching.name-id-organisation.eu-organisation.name.hint=Mae hwn ar eich tystysgrif ymgorffori oddi wrth Dŷ’r Cwmnïau.
 cds.matching.name-id-organisation.eu-organisation.eori=Rhif EORI
-cds.matching.name-id-organisation.eu-organisation.name-and-address=Os nad oes gennych EORI, gallwch <a href=“{0}”>gofrestru gan ddefnyddio’ch enw a chyfeiriad</a> yn lle hynny.
+cds.matching.name-id-organisation.eu-organisation.name-and-address=Os nad oes gennych EORI, gallwch <a href="{0}">gofrestru gan ddefnyddio’ch enw a chyfeiriad</a> yn lle hynny.
 cds.matching.name-id-organisation.eu-organisation.date-established=Dyddiad sefydlu
 cds.matching.name-id-organisation.eu-organisation.date-established.hint=Er enghraifft, 31 3 1980
 cds.matching.name-id-organisation.error.company.name=Nodwch enw’ch cwmni
@@ -602,9 +602,9 @@ cds.matching.utr.help-message.bullet-1=‘Hysbysiad i gyflwyno Ffurflen Dreth y 
 cds.matching.utr.help-message.bullet-2=‘Hysbysiad Treth Gorfforaeth’ (CT610)
 cds.matching.utr.help-message.footer=Byddai’ch Cyfeirnod Unigryw y Trethdalwr (UTR) gyda’ch cyfrifydd neu’ch rheolwr treth fel arfer.
 cds.matching.different-service.title-and-heading=Rhaid i chi ddefnyddio gwasanaeth gwahanol
-cds.matching.different-service.para1=Nid oes gennych rif Cyfeirnod Unigryw y Trethdalwr (UTR), felly ni allwch gofrestru ar gyfer EORI. I gofrestru ar gyfer EORI, bydd yn rhaid i chi ddefnyddio’r <a href=“https://www.gov.uk/eori”>Gwasanaeth cael EORI</a>.
+cds.matching.different-service.para1=Nid oes gennych rif Cyfeirnod Unigryw y Trethdalwr (UTR), felly ni allwch gofrestru ar gyfer EORI. I gofrestru ar gyfer EORI, bydd yn rhaid i chi ddefnyddio’r <a href="https://www.gov.uk/eori">Gwasanaeth cael EORI</a>.
 cds.matching.cannot-register-using-service.title-and-heading=Rhaid i chi ddefnyddio gwasanaeth gwahanol
-cds.matching.cannot-register-using-service.para1=Nid yw’r gwasanaeth hwn ar gael ar hyn o bryd i ymgeiswyr sy’n rhan o grŵp TAW. Bydd yn rhaid i chi ddefnyddio <a href=“https://www.tax.service.gov.uk/shortforms/form/EORIVAT”> Gwasanaeth cael EORI</a> gwahanol.
+cds.matching.cannot-register-using-service.para1=Nid yw’r gwasanaeth hwn ar gael ar hyn o bryd i ymgeiswyr sy’n rhan o grŵp TAW. Bydd yn rhaid i chi ddefnyddio <a href="https://www.tax.service.gov.uk/shortforms/form/EORIVAT"> Gwasanaeth cael EORI</a> gwahanol.
 cds.matching.nino.title=Nodwch eich manylion
 cds.matching.nino.header=Nodwch eich manylion
 cds.matching.nino.first-name=Enw cyntaf
@@ -643,7 +643,7 @@ cds.matching.individual.page-error.family-name=Nodwch eich enw teuluol
 cds.matching.individual.page-error.full-name=Nodwch eich enw llawn
 cds.matching.individual.page-error.date-of-birth=Rhowch wybod i ni beth yw eich dyddiad geni
 cds.matching.individual.matching-id.utr=Rhif Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad
-cds.matching.individual.not-registered=Os nad ydych wedi’ch cofrestru ar gyfer Hunanasesiad, neu os yw’ch cofrestriad ar y gweill ac nid oes gennych Gyfeirnod Unigryw y Trethdalwr (UTR) eto, gallwch <a href=“{0}”>gofrestru gan ddefnyddio’ch rhif Yswiriant Gwladol</a> yn lle hynny.
+cds.matching.individual.not-registered=Os nad ydych wedi’ch cofrestru ar gyfer Hunanasesiad, neu os yw’ch cofrestriad ar y gweill ac nid oes gennych Gyfeirnod Unigryw y Trethdalwr (UTR) eto, gallwch <a href="{0}">gofrestru gan ddefnyddio’ch rhif Yswiriant Gwladol</a> yn lle hynny.
 cds.matching.individual-address.header=Nodwch eich cyfeiriad
 cds.matching.individual.line-1=Cyfeiriad
 cds.matching.individual.line-2=Cyfeiriad - llinell 2
@@ -814,7 +814,7 @@ cds.subscription.vat-country=Gwlad TAW
 cds.subscription.vat-question-uk=A yw’ch sefydliad wedi’i gofrestru ar gyfer TAW yn y DU?
 cds.subscription.vat-question-uk.sole-trader=A ydych wedi’ch cofrestru ar gyfer TAW yn y DU?
 cds.subscription.vat-question-uk.individual=A ydych wedi’ch cofrestru ar gyfer TAW yn y DU?
-cds.subscription.vat-question-uk.intro=Gallai TAW mewnforio gael ei chodi ar rai eitemau gwerth uchel sy’n dod i mewn i’r DU. Gweler <a href=“https://www.gov.uk/guidance/vat-imports-acquisitions-and-purchases-from-abroad”>y canllaw mewnforio hwn i gael rhagor o wybodaeth</a>.
+cds.subscription.vat-question-uk.intro=Gallai TAW mewnforio gael ei chodi ar rai eitemau gwerth uchel sy’n dod i mewn i’r DU. Gweler <a href="https://www.gov.uk/guidance/vat-imports-acquisitions-and-purchases-from-abroad">y canllaw mewnforio hwn i gael rhagor o wybodaeth</a>.
 cds.subscription.vat-question-eu=A yw’ch sefydliad wedi’i gofrestru ar gyfer TAW mewn aelod-wladwriaethau eraill o’r UE?
 cds.subscription.vat-enter-eu=Nodwch fanylion TAW ar gyfer gwlad yn yr UE
 cds.subscription.vat-question-eu.individual=A ydych wedi’ch cofrestru ar gyfer TAW mewn aelod-wladwriaethau eraill o’r UE?
@@ -853,29 +853,29 @@ cds.subscription.date-of-establishment.title-and-heading=Pryd y cafodd y sefydli
 cds.subscription.partnership.date-of-establishment.title-and-heading=Pryd y cafodd y bartneriaeth ei sefydlu?
 cds.subscription.date-of-establishment.date-of-establishment.label=Dyddiad sefydlu
 cds.subscription.date-of-establishment.page-error.date-of-establishment=Nodwch eich dyddiad sefydlu
-cds.subscription.business.date-established.label=Nodwch y dyddiad a ddangosir ar dystysgrif ymgorffori’r sefydliad. Gallwch ddod o hyd i ddyddiad sefydlu’ch sefydliad ar <a href=“https://beta.companieshouse.gov.uk/” target=“_blank” rel=”noopener noreferrer”>gofrestr Tŷ’r Cwmnïau (yn agor ffenestr neu dab newydd)</a>
+cds.subscription.business.date-established.label=Nodwch y dyddiad a ddangosir ar dystysgrif ymgorffori’r sefydliad. Gallwch ddod o hyd i ddyddiad sefydlu’ch sefydliad ar <a href="https://beta.companieshouse.gov.uk/" target="_blank" rel="noopener noreferrer">gofrestr Tŷ’r Cwmnïau (yn agor ffenestr neu dab newydd)</a>
 cds.subscription.llp.date-established.charity-label=Nodwch y dyddiad a ddangosir ar dystysgrif ymgorffori’r sefydliad, neu’r dystysgrif cofrestru.
-cds.subscription.llp.date-established.label=Nodwch y dyddiad a ddangosir ar dystysgrif ymgorffori’r bartneriaeth. Gallwch ddod o hyd i ddyddiad sefydlu’ch busnes ar <a href=“https://beta.companieshouse.gov.uk/” target=“_blank” rel=”noopener noreferrer”>gofrestr Tŷ’r Cwmnïau (yn agor ffenestr neu dab newydd)</a>
+cds.subscription.llp.date-established.label=Nodwch y dyddiad a ddangosir ar dystysgrif ymgorffori’r bartneriaeth. Gallwch ddod o hyd i ddyddiad sefydlu’ch busnes ar <a href="https://beta.companieshouse.gov.uk/" target="_blank" rel="noopener noreferrer">gofrestr Tŷ’r Cwmnïau (yn agor ffenestr neu dab newydd)</a>
 cds.subscription.row.date-established.label=Nodwch ddyddiad sefydlu’ch sefydliad
 cds.subscription.date-of-establishment.error.required.date-of-establishment=Nodwch eich dyddiad sefydlu
 cds.subscription.date-of-establishment.error.invalid.date-of-establishment=Nodwch ddyddiad sefydlu dilys
 cds.subscription.date-of-establishment.error.in-future.date-of-establishment=Ni allwch nodi dyddiad sefydlu sydd yn y dyfodol
 cds.subscription.date-of-establishment.cannot-find=Methu dod o hyd i’r dystysgrif?
-cds.subscription.date-of-establishment.find-it=Gallwch ddod o hyd i’r dyddiad ymgorffori ar <a href=“https://beta.companieshouse.gov.uk/” target=“_blank”> gofrestr Tŷ’r Cwmnïau</a>
+cds.subscription.date-of-establishment.find-it=Gallwch ddod o hyd i’r dyddiad ymgorffori ar <a href="https://beta.companieshouse.gov.uk/" target="_blank"> gofrestr Tŷ’r Cwmnïau</a>
 cds.subscription.sic.page.title=Beth yw’r cod Dosbarthiad Diwydiannol Safonol (SIC) ar gyfer eich sefydliad?
 cds.subscription.sic.heading=Beth yw’r cod Dosbarthiad Diwydiannol Safonol (SIC) ar gyfer eich sefydliad?
 cds.subscription.sic.nonuk.soleTrader.heading=Nodwch god Dosbarthiad Diwydiannol Safonol (SIC) sy’n disgrifio’r hyn y mae’ch busnes yn ei wneud
-cds.subscription.sic.description=Mae cod SIC yn rhif 5 digid sy’n helpu CThEM i nodi’r hyn y mae’ch sefydliad yn ei wneud. Gallwch chwilio’r gofrestr ar wefan <a href=“https://resources.companieshouse.gov.uk/sic/” target=“_blank” rel=”noopener noreferrer”>Tŷ’r Cwmnïau am eich cod SIC (yn agor ffenestr neu dab newydd).</a>
-cds.subscription.sic.nonuk.organisation.description=Mae cod SIC yn rhif 5 digid sy’n helpu CThEM i nodi’r hyn y mae’ch sefydliad yn ei wneud. Mewn rhai gwledydd fe’i hadweinir hefyd fel rhif masnach. Os nad oes gennych un, gallwch chwilio am god SIC perthnasol ar wefan <a href=“https://resources.companieshouse.gov.uk/sic/” target=“_blank” rel=”noopener noreferrer”>Tŷ’r Cwmnïau (yn agor ffenestr neu dab newydd).</a>
-cds.subscription.sic.nonuk.soleTrader.description=Mae cod SIC yn rhif 5 digid sy’n helpu CThEM i nodi’r hyn y mae’ch busnes yn ei wneud. Mewn rhai gwledydd fe’i hadweinir hefyd fel rhif masnach. Os nad oes gennych un, gallwch chwilio am god SIC perthnasol ar wefan <a href=“https://resources.companieshouse.gov.uk/sic/” target=“_blank” rel=”noopener noreferrer”>Tŷ’r Cwmnïau (yn agor ffenestr neu dab newydd).</a>
-cds.subscription.sic.uk.soleTrader.description=Mae cod SIC yn rhif 5 digid sy’n helpu CThEM i nodi’r hyn y mae’ch busnes yn ei wneud. Os nad oes gennych un, gallwch chwilio am god SIC perthnasol ar wefan <a href=“https://resources.companieshouse.gov.uk/sic/” target=“_blank” rel=”noopener noreferrer”>Tŷ’r Cwmnïau (yn agor ffenestr neu dab newydd).</a>
-cds.subscription.sic.charity-description=Mae cod SIC yn rhif 5 digid sy’n helpu CThEM i nodi’r hyn y mae’ch sefydliad yn ei wneud. Gallwch chwilio am god SIC perthnasol ar wefan <a href=“https://resources.companieshouse.gov.uk/sic/” target=“_blank” rel=”noopener noreferrer”>Tŷ’r Cwmnïau (yn agor ffenestr neu dab newydd). </a>
+cds.subscription.sic.description=Mae cod SIC yn rhif 5 digid sy’n helpu CThEM i nodi’r hyn y mae’ch sefydliad yn ei wneud. Gallwch chwilio’r gofrestr ar wefan <a href="https://resources.companieshouse.gov.uk/sic/" target="_blank" rel="noopener noreferrer">Tŷ’r Cwmnïau am eich cod SIC (yn agor ffenestr neu dab newydd).</a>
+cds.subscription.sic.nonuk.organisation.description=Mae cod SIC yn rhif 5 digid sy’n helpu CThEM i nodi’r hyn y mae’ch sefydliad yn ei wneud. Mewn rhai gwledydd fe’i hadweinir hefyd fel rhif masnach. Os nad oes gennych un, gallwch chwilio am god SIC perthnasol ar wefan <a href="https://resources.companieshouse.gov.uk/sic/" target="_blank" rel="noopener noreferrer">Tŷ’r Cwmnïau (yn agor ffenestr neu dab newydd).</a>
+cds.subscription.sic.nonuk.soleTrader.description=Mae cod SIC yn rhif 5 digid sy’n helpu CThEM i nodi’r hyn y mae’ch busnes yn ei wneud. Mewn rhai gwledydd fe’i hadweinir hefyd fel rhif masnach. Os nad oes gennych un, gallwch chwilio am god SIC perthnasol ar wefan <a href="https://resources.companieshouse.gov.uk/sic/" target="_blank" rel="noopener noreferrer">Tŷ’r Cwmnïau (yn agor ffenestr neu dab newydd).</a>
+cds.subscription.sic.uk.soleTrader.description=Mae cod SIC yn rhif 5 digid sy’n helpu CThEM i nodi’r hyn y mae’ch busnes yn ei wneud. Os nad oes gennych un, gallwch chwilio am god SIC perthnasol ar wefan <a href="https://resources.companieshouse.gov.uk/sic/" target="_blank" rel="noopener noreferrer">Tŷ’r Cwmnïau (yn agor ffenestr neu dab newydd).</a>
+cds.subscription.sic.charity-description=Mae cod SIC yn rhif 5 digid sy’n helpu CThEM i nodi’r hyn y mae’ch sefydliad yn ei wneud. Gallwch chwilio am god SIC perthnasol ar wefan <a href="https://resources.companieshouse.gov.uk/sic/" target="_blank" rel="noopener noreferrer">Tŷ’r Cwmnïau (yn agor ffenestr neu dab newydd). </a>
 cds.subscription.sic.partnership.page.title=Beth yw’r cod Dosbarthiad Diwydiannol Safonol (SIC) ar gyfer eich partneriaeth?
 cds.subscription.sic.partnership.heading=Beth yw’r cod Dosbarthiad Diwydiannol Safonol (SIC) ar gyfer eich partneriaeth?
-cds.subscription.sic.partnership.description=Mae cod SIC yn rhif 5 digid sy’n helpu CThEM i nodi’r hyn y mae’ch partneriaeth yn ei wneud. Os nad oes gennych un, gallwch chwilio am god SIC perthnasol ar wefan <a href=“https://resources.companieshouse.gov.uk/sic/” target=“_blank” rel=”noopener noreferrer”>Tŷ’r Cwmnïau (yn agor ffenestr neu dab newydd).</a>
+cds.subscription.sic.partnership.description=Mae cod SIC yn rhif 5 digid sy’n helpu CThEM i nodi’r hyn y mae’ch partneriaeth yn ei wneud. Os nad oes gennych un, gallwch chwilio am god SIC perthnasol ar wefan <a href="https://resources.companieshouse.gov.uk/sic/" target="_blank" rel="noopener noreferrer">Tŷ’r Cwmnïau (yn agor ffenestr neu dab newydd).</a>
 cds.subscription.sic.individual.page.title=Nodwch god Dosbarthiad Diwydiannol Safonol (SIC) sy’n disgrifio’r hyn y mae’ch busnes yn ei wneud
 cds.subscription.sic.individual.heading=Nodwch god Dosbarthiad Diwydiannol Safonol (SIC) sy’n disgrifio’r hyn y mae’ch busnes yn ei wneud
-cds.subscription.sic.individual.description=Mae cod SIC yn rhif 5 digid sy’n helpu CThEM i nodi’r hyn y mae’ch sefydliad yn ei wneud. Os nad oes gennych un, gallwch chwilio am god SIC perthnasol ar wefan <a href=“https://resources.companieshouse.gov.uk/sic/” target=“_blank” rel=”noopener noreferrer”>Tŷ’r Cwmnïau (yn agor ffenestr neu dab newydd).</a>
+cds.subscription.sic.individual.description=Mae cod SIC yn rhif 5 digid sy’n helpu CThEM i nodi’r hyn y mae’ch sefydliad yn ei wneud. Os nad oes gennych un, gallwch chwilio am god SIC perthnasol ar wefan <a href="https://resources.companieshouse.gov.uk/sic/" target="_blank" rel="noopener noreferrer">Tŷ’r Cwmnïau (yn agor ffenestr neu dab newydd).</a>
 cds.subscription.sic.label=Cod SIC
 cds.subscription.sic.error.empty=Nodwch god SIC
 cds.subscription.sic.error.too-long=Rhaid i’r cod SIC fod yn 5 digid neu lai
@@ -883,7 +883,7 @@ cds.subscription.sic.error.too-short=Rhaid i’r cod SIC fod yn fwy na 3 digid
 cds.subscription.sic.error.wrong-format=Nodwch god SIC yn y fformat cywir
 cds.sic.label=Cod SIC
 cds.subscription.sic.sic.label=Cod SIC
-cds.sic.hint=Defnyddiwch <a href=“https://beta.companieshouse.gov.uk/” target=“_blank” rel=”noopener noreferrer”>y rhestr hon</a> i ddod o hyd i’r cod perthnasol (yn agor ffenestr neu dab newydd)
+cds.sic.hint=Defnyddiwch <a href="https://beta.companieshouse.gov.uk/" target="_blank" rel="noopener noreferrer">y rhestr hon</a> i ddod o hyd i’r cod perthnasol (yn agor ffenestr neu dab newydd)
 cds.subscription.outcomes.steps.Received=Wedi dod i law
 cds.subscription.outcomes.steps.Processing=Wrthi’n prosesu
 cds.subscription.outcomes.steps.Review=Adolygiad
@@ -1148,11 +1148,11 @@ footer.privacy-policy=Polisi Preifatrwydd
 footer.terms-conditions=Telerau ac amodau
 footer.accessibility=Datganiad Hygyrchedd
 footer.licence=Trwydded Llywodraeth Agored
-footer.licence3=Mae’r holl gynnwys ar gael dan y <a id=”licence-text” href=”https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/” rel=”license”>Drwydded Llywodraeth Agored fersiwn 3.0</a>, oni nodir yn wahanol
+footer.licence3=Mae’r holl gynnwys ar gael dan y <a id="licence-text" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Drwydded Llywodraeth Agored fersiwn 3.0</a>, oni nodir yn wahanol
 footer.copyright=© Hawlfraint y Goron
 accessibility-statement.heading-and-title=Datganiad hygyrchedd ar gyfer Cael rhif EORI
 accessibility-statement.paragraph1=Mae’r datganiad hygyrchedd hwn yn esbonio pa mor hygyrch yw’r gwasanaeth hwn, beth i’w wneud os ydych yn cael anhawster i’w ddefnyddio, a sut i roi gwybod am broblemau hygyrchedd gyda’r gwasanaeth.
-accessibility-statement.paragraph2=Mae’r gwasanaeth hwn yn rhan o wefan ehangach GOV.UK. Mae <a href=”https://www.gov.uk/help/accessibility”>datganiad hygyrchedd</a> ar wahân ar gyfer prif wefan GOV.UK.
+accessibility-statement.paragraph2=Mae’r gwasanaeth hwn yn rhan o wefan ehangach GOV.UK. Mae <a href="https://www.gov.uk/help/accessibility">datganiad hygyrchedd</a> ar wahân ar gyfer prif wefan GOV.UK.
 accessibility-statement.paragraph3=Mae’r dudalen hon yn cynnwys gwybodaeth am y gwasanaeth Cael rhif EORI yn unig, sydd ar gael yn gov.uk/eori.gov
 accessibility-statement.using-service=Defnyddio’r gwasanaeth hwn
 accessibility-statement.what-do=Mae’r gwasanaeth hwn ar gyfer defnyddwyr y mae angen rhif EORI arnynt i symud nwyddau i’r UE neu allan ohono (gan gynnwys y DU).
@@ -1163,23 +1163,23 @@ accessibility-statement.using-service.bullet3=mynd o ddechrau’r gwasanaeth i�
 accessibility-statement.using-service.bullet4=mynd o ddechrau’r gwasanaeth i’r diwedd gan ddefnyddio meddalwedd adnabod lleferydd
 accessibility-statement.using-service.bullet5=gwrando ar y gwasanaeth drwy ddefnyddio darllenydd sgrin (gan gynnwys y fersiynau diweddaraf o JAWS, NVDA a VoiceOver)
 accessibility-statement.using-service.paragraph2=Rydym hefyd wedi sicrhau bod y testun a ddefnyddir yn y gwasanaeth mor syml â phosibl i’w ddeall.
-accessibility-statement.using-service.paragraph3=Mae gan <a class=”govuk-link” href=”https://mcmw.abilitynet.org.uk/”>AbilityNet</a> gyngor ar wneud eich dyfais yn haws i’w defnyddio os oes gennych anabledd.
+accessibility-statement.using-service.paragraph3=Mae gan <a class="govuk-link" href="https://mcmw.abilitynet.org.uk/">AbilityNet</a> gyngor ar wneud eich dyfais yn haws i’w defnyddio os oes gennych anabledd.
 accessibility-statement.how-accessible=Pa mor hygyrch yw’r gwasanaeth hwn
-accessibility-statement.how-accessible.paragraph1=Mae’r gwasanaeth hwn yn cydymffurfio’n rhannol â <a class=”govuk-link” href=”https://www.w3.org/TR/WCAG21/”>safon AA Canllawiau Hygyrchedd Cynnwys y We, fersiwn 2.1</a>.
+accessibility-statement.how-accessible.paragraph1=Mae’r gwasanaeth hwn yn cydymffurfio’n rhannol â <a class="govuk-link" href="https://www.w3.org/TR/WCAG21/">safon AA Canllawiau Hygyrchedd Cynnwys y We, fersiwn 2.1</a>.
 accessibility-statement.how-accessible.paragraph2=Mae’n bosibl y bydd rhai pobl yn cael anhawster i ddefnyddio rhannau o’r gwasanaeth hwn:
 accessibility-statement.how-accessible.bullet1=ar un adeg gofynnwn i ddefnyddwyr nodi enw gwlad. Pan fyddant yn dechrau teipio, bydd y maes yn dangos enwau gwledydd. Fodd bynnag, efallai na fydd y nodwedd hon yn gwbl gydnaws â darllenwyr sgrin oherwydd er bod yr opsiynau sydd wedi’u hidlo ar gael yn weledol, nid yw’r darllenydd sgrin yn eu cyhoeddi.
 accessibility-statement.difficulty-using-service=Beth i’w wneud os ydych yn cael anhawster wrth ddefnyddio’r gwasanaeth hwn
 accessibility-statement.difficulty-using-service.bullet-intro=Os ydych yn cael anhawster wrth ddefnyddio’r gwasanaeth hwn, cysylltwch â ni drwy:
-accessibility-statement.difficulty-using-service.bullet1=<a href=”https://www.tax.service.gov.uk/shortforms/form/EORIContact”>ffurflen ar-lein</a>
+accessibility-statement.difficulty-using-service.bullet1=<a href="https://www.tax.service.gov.uk/shortforms/form/EORIContact">ffurflen ar-lein</a>
 accessibility-statement.difficulty-using-service.bullet2=ffonio 0300 200 3705
 accessibility-statement.reporting-problems=Rhoi gwybod am broblemau hygyrchedd gyda’r gwasanaeth hwn
-accessibility-statement.reporting-problems.paragraph=Rydym bob amser yn ceisio gwella hygyrchedd y gwasanaeth hwn. Os byddwch yn dod o hyd i unrhyw broblem nad yw wedi’i rhestru ar y dudalen hon, neu os ydych o’r farn nad ydym yn bodloni gofynion hygyrchedd, gallwch <a href=”https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=CDS”>roi gwybod am y broblem hygyrchedd</a>.
+accessibility-statement.reporting-problems.paragraph=Rydym bob amser yn ceisio gwella hygyrchedd y gwasanaeth hwn. Os byddwch yn dod o hyd i unrhyw broblem nad yw wedi’i rhestru ar y dudalen hon, neu os ydych o’r farn nad ydym yn bodloni gofynion hygyrchedd, gallwch <a href="https://www.tax.service.gov.uk/contact/beta-feedback-unauthenticated?service=CDS">roi gwybod am y broblem hygyrchedd</a>.
 accessibility-statement.not-happy=Beth i’w wneud os nad ydych yn hapus â sut rydym yn ymateb i’ch cwyn
-accessibility-statement.not-happy.paragraph=Mae’r Comisiwn Cydraddoldeb a Hawliau Dynol (EHRC) yn gyfrifol am orfodi Rheoliadau Hygyrchedd Cyrff Sector Cyhoeddus (Gwefannau a Chymwysiadau Symudol) (Rhif 2) 2018 (y ‘rheoliadau hygyrchedd’). Os nad ydych yn hapus â sut rydym yn ymateb i’ch cwyn, <a href=""https://www.equalityadvisoryservice.com/"">cysylltwch â’r Gwasanaeth Cynghori a Chymorth Cydraddoldeb</a> (EASS), neu’r <a href=""https://www.equalityni.org/Home"">Equality Commission for Northern Ireland</a> (ECNI) os ydych yn byw yng Ngogledd Iwerddon.
+accessibility-statement.not-happy.paragraph=Mae’r Comisiwn Cydraddoldeb a Hawliau Dynol (EHRC) yn gyfrifol am orfodi Rheoliadau Hygyrchedd Cyrff Sector Cyhoeddus (Gwefannau a Chymwysiadau Symudol) (Rhif 2) 2018 (y ‘rheoliadau hygyrchedd’). Os nad ydych yn hapus â sut rydym yn ymateb i’ch cwyn, <a href=""https://www.equalityadvisoryservice.com/"">cysylltwch â’r Gwasanaeth Cynghori a Chymorth Cydraddoldeb</a> (EASS), neu’r <a href="https://www.equalityni.org/Home">Equality Commission for Northern Ireland</a> (ECNI) os ydych yn byw yng Ngogledd Iwerddon.
 accessibility-statement.contact-us=Cysylltu â ni dros y ffôn neu gael ymweliad personol gennym
 accessibility-statement.contact-us.paragraph1=Rydym yn cynnig gwasanaeth text relay os ydych yn fyddar, â nam ar eich clyw neu os oes gennych nam ar eich lleferydd.
 accessibility-statement.contact-us.paragraph2=Gallwn ddarparu dehonglydd Iaith Arwyddion Prydain (BSL), neu gallwch drefnu ymweliad gan ymgynghorydd CThEM i’ch helpu i gwblhau’r gwasanaeth.
-accessibility-statement.contact-us.paragraph3=Gwybodaeth am sut i <a href=”https://www.gov.uk/dealing-hmrc-additional-needs”>gysylltu â ni</a>.
+accessibility-statement.contact-us.paragraph3=Gwybodaeth am sut i <a href="https://www.gov.uk/dealing-hmrc-additional-needs">gysylltu â ni</a>.
 accessibility-statement.technical-information=Gwybodaeth dechnegol am hygyrchedd y gwasanaeth hwn
 accessibility-statement.technical-information.paragraph1=Mae CThEM wedi ymrwymo i wneud y gwasanaeth hwn yn hygyrch, yn unol â Rheoliadau Hygyrchedd Cyrff Sector Cyhoeddus (Gwefannau a Chymwysiadau Symudol) (Rhif 2) 2018.
 accessibility-statement.non-accessible=Cynnwys nad yw’n hygyrch
@@ -1188,10 +1188,10 @@ accessibility-statement.non-accessible.paragraph2=Diffyg cydymffurfio â’r rhe
 accessibility-statement.non-accessible.paragraph3=Rydym yn defnyddio nodwedd awtogwblhau testun i helpu defnyddwyr i nodi enw gwlad ddilys.
 accessibility-statement.non-accessible.paragraph4=Pan fydd defnyddiwr yn dechrau teipio, bydd y maes yn dangos enwau gwledydd. Fodd bynnag, efallai na fydd y nodwedd hon yn gwbl gydnaws â darllenwyr sgrin oherwydd er bod yr opsiynau sydd wedi’u hidlo ar gael yn weledol, nid yw’r darllenydd sgrin yn eu cyhoeddi. Nid yw hyn yn bodloni maen prawf llwyddiant 4.1.1 (Parsing) Canllawiau Hygyrchedd Cynnwys y We, fersiwn 2.1.
 accessibility-statement.non-accessible.paragraph5=Rydym yn bwriadu ychwanegu cyhoeddiadau clywadwy i’r nodwedd awtogwblhau erbyn mis Hydref 2019 i fodloni maen prawf llwyddiant 4.1.1 (Parsing) Canllawiau Hygyrchedd Cynnwys y We, fersiwn 2.1.
-accessibility-statement.technical-information.paragraph2=Mae’r gwasanaeth hwn yn cydymffurfio’n rhannol â <a href=”https://www.w3.org/TR/WCAG21/”>safon AA Canllawiau Hygyrchedd Cynnwys y We, fersiwn 2.1</a>.
+accessibility-statement.technical-information.paragraph2=Mae’r gwasanaeth hwn yn cydymffurfio’n rhannol â <a href="https://www.w3.org/TR/WCAG21/">safon AA Canllawiau Hygyrchedd Cynnwys y We, fersiwn 2.1</a>.
 accessibility-statement.how-tested=Sut gwnaethom brofi’r gwasanaeth hwn
 accessibility-statement.how-tested.paragraph1=Cafodd y gwasanaeth ei brofi ddiwethaf ar 28 Chwefror 2019 a gwiriwyd ei fod yn cydymffurfio â safon AA Canllawiau Hygyrchedd Cynnwys y We, fersiwn 2.1.
-accessibility-statement.how-tested.paragraph2=Adeiladwyd y gwasanaeth gan ddefnyddio rhannau a brofwyd gan y <a href=”http://www.digitalaccessibilitycentre.org/”>Ganolfan Hygyrchedd Digidol</a>. Profwyd y gwasanaeth llawn gan CThEM, ac roedd y gwaith o brofi’r gwasanaeth yn cynnwys defnyddwyr anabl.
+accessibility-statement.how-tested.paragraph2=Adeiladwyd y gwasanaeth gan ddefnyddio rhannau a brofwyd gan y <a href="http://www.digitalaccessibilitycentre.org/">Ganolfan Hygyrchedd Digidol</a>. Profwyd y gwasanaeth llawn gan CThEM, ac roedd y gwaith o brofi’r gwasanaeth yn cynnwys defnyddwyr anabl.
 accessibility-statement.how-tested.paragraph3=Paratowyd y dudalen hon ar 23 Medi 2019. Cafodd ei diweddaru ddiwethaf ar 23 Medi 2019.
 cds.enrolment-already-exists-against-groupid-gye.paragraph=Mae’r Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth a ddefnyddioch yn rhan o dîm sydd eisoes â rhif EORI yn gysylltiedig ag ef.
 cds.enrolment-already-exists-against-groupid-migrate.paragraph=Mae’r Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth a ddefnyddioch wrth fewngofnodi yn rhan o dîm sydd eisoes â mynediad at CDS.
