@@ -45,7 +45,7 @@ class TaxEnrolmentsService @Inject() (taxEnrolmentsConnector: TaxEnrolmentsConne
       dateOfEstablishment.map(doe => List(KeyValue(key = "DATEOFESTABLISHMENT", value = doe.toString(pattern))))
     val taxEnrolmentsRequest =
       TaxEnrolmentsRequest(serviceName = service.enrolmentKey, identifiers = identifiers, verifiers = verifiers)
-    taxEnrolmentsConnector.enrol(taxEnrolmentsRequest, formBundleId + service.code)
+    taxEnrolmentsConnector.enrol(taxEnrolmentsRequest, formBundleId)
   }
 
 }
