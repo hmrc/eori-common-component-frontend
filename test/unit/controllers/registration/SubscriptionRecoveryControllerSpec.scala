@@ -176,16 +176,28 @@ class SubscriptionRecoveryControllerSpec
           .issuerCall(anyString, any[Eori], any[Option[LocalDate]], any[Service])(any[HeaderCarrier])
       ).thenReturn(Future.successful(NO_CONTENT))
 
+      val expectedFormBundleId = fullyPopulatedResponse.responseCommon.returnParameters
+        .flatMap(_.find(_.paramName.equals("ETMPFORMBUNDLENUMBER")).map(_.paramValue)).get + "atar"
+
       callEnrolmentComplete(journey = Journey.Subscribe) { result =>
         status(result) shouldBe SEE_OTHER
         header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/subscribe/complete")
       }
       verify(mockTaxEnrolmentsService).issuerCall(
-        anyString,
+        meq(expectedFormBundleId),
         meq(Eori("testEORInumber")),
         any[Option[LocalDate]],
         meq(atarService)
       )(any[HeaderCarrier])
+
+      verify(mockHandleSubscriptionService).handleSubscription(
+        meq(expectedFormBundleId),
+        any(),
+        any(),
+        meq(Some(Eori("testEORInumber"))),
+        any(),
+        any()
+      )(any())
     }
 
     "call Enrolment Complete with successful SUB09 call for Subscription ROW journey" in {
@@ -204,16 +216,28 @@ class SubscriptionRecoveryControllerSpec
           .issuerCall(anyString, any[Eori], any[Option[LocalDate]], any[Service])(any[HeaderCarrier])
       ).thenReturn(Future.successful(NO_CONTENT))
 
+      val expectedFormBundleId = fullyPopulatedResponse.responseCommon.returnParameters
+        .flatMap(_.find(_.paramName.equals("ETMPFORMBUNDLENUMBER")).map(_.paramValue)).get + "atar"
+
       callEnrolmentComplete(journey = Journey.Subscribe) { result =>
         status(result) shouldBe SEE_OTHER
         header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/subscribe/complete")
       }
       verify(mockTaxEnrolmentsService).issuerCall(
-        anyString,
+        meq(expectedFormBundleId),
         meq(Eori("testEORInumber2")),
         any[Option[LocalDate]],
         meq(atarService)
       )(any[HeaderCarrier])
+
+      verify(mockHandleSubscriptionService).handleSubscription(
+        meq(expectedFormBundleId),
+        any(),
+        any(),
+        meq(Some(Eori("testEORInumber"))),
+        any(),
+        any()
+      )(any())
     }
     "call Enrolment Complete with successful SUB09 call for Subscription ROW journey without Identifier" in {
       setupMockCommon()
@@ -231,16 +255,27 @@ class SubscriptionRecoveryControllerSpec
           .issuerCall(anyString, any[Eori], any[Option[LocalDate]], any[Service])(any[HeaderCarrier])
       ).thenReturn(Future.successful(NO_CONTENT))
 
+      val expectedFormBundleId = fullyPopulatedResponse.responseCommon.returnParameters
+        .flatMap(_.find(_.paramName.equals("ETMPFORMBUNDLENUMBER")).map(_.paramValue)).get + "atar"
+
       callEnrolmentComplete(journey = Journey.Subscribe) { result =>
         status(result) shouldBe SEE_OTHER
         header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/subscribe/complete")
       }
       verify(mockTaxEnrolmentsService).issuerCall(
-        anyString,
+        meq(expectedFormBundleId),
         meq(Eori("testEORInumber3")),
         any[Option[LocalDate]],
         meq(atarService)
       )(any[HeaderCarrier])
+      verify(mockHandleSubscriptionService).handleSubscription(
+        meq(expectedFormBundleId),
+        any(),
+        any(),
+        meq(Some(Eori("testEORInumber"))),
+        any(),
+        any()
+      )(any())
     }
 
     "call Enrolment Complete with unsuccessful SUB09 call" in {
