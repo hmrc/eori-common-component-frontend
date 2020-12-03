@@ -93,9 +93,6 @@ subscription.check-your-email.no=No, I need to change this email address
 
 cds.form.contact-details=Your address
 
-confirm-business-details.individual.yes-wrong-address=No, I need to change my address
-confirm-business-details.individual.no=No, I need to enter all my details again
-
 cds.error.field.hint=Error:
 
 date.day.error=Enter a day between 1 and 31
@@ -216,3 +213,12 @@ cds.languageSelect.select.label=Cymraeg
 cds.languageSelect.select.hint=Newid yr iaith ir Gymraeg
 
 cds.pdf.outcomes.eori.number=EORI number: {0}
+
+confirm-business-details.title-and-heading=Is this your registered address?
+confirm-business-details.partnership.title-and-heading=Is this your registered address?
+confirm-business-details.individual.title-and-heading=Is this your address?
+confirm-business-details.yes=Yes
+confirm-business-details.yes-wrong-address=No, I want to change the address
+confirm-business-details.partnership.yes-wrong-address=No, I want to change the address
+confirm-business-details.individual.yes-wrong-address=No, I want to change my address
+yes-no-wrong-address.error=Select yes if this is your address

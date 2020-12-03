@@ -47,40 +47,6 @@ journey: Journey.Value)(implicit request: Request[_], messages: Messages)
     else messages("confirm-business-details.title-and-heading")
 }
 
-@nameLabel = @{
-    organisationType match {
-        case Some(oT) => {
-            if(oT == LLP || oT == Partnership) messages("confirm-business-details.registered-partnership-name")
-            else if (oT == CorporateBody) messages("confirm-business-details.registered-company-name")
-            else messages("confirm-business-details.registered-business-name")
-        }
-        case None => messages("cds.sole-trader.address-check.page.name")
-    }
-}
-
-@ninoOrUtrLabel = @{
-    organisationType match {
-        case Some(oT) => {
-            if(oT == LLP || oT == Partnership) messages("cds.partnership-utr.label")
-            else messages("cds.company.utr.label")
-        }
-        case None => {
-            customsId match {
-                case Some(Utr(_)) => messages("cds.matching.sole-trader-individual-utr.label")
-                case Some(Nino(_)) => messages("cds.nino.label")
-                case _ => messages("cds.nino.label")
-            }
-        }
-    }
-}
-
-@addressLabel = @{
-    organisationType match {
-        case None => messages("cds.sole-trader.address-check.page.address")
-        case _ => messages("confirm-business-details.registered-address")
-    }
-}
-
 @labelForEUCountry(countryCode: String) = @{
     messages(messageKeyForEUCountryCode(countryCode))
 }
@@ -101,12 +67,6 @@ journey: Journey.Value)(implicit request: Request[_], messages: Messages)
     }
 }
 
-@radioGroupLegend = @{
-    if(isPartnership) messages("confirm-business-details.partnership.heading2")
-    else if(isIndividual) messages("cds.sole-trader.address-check.page.heading2")
-    else messages("confirm-business-details.heading2")
-}
-
 @radioGroupYes = @{
     messages("confirm-business-details.yes")
 }
@@ -117,10 +77,13 @@ journey: Journey.Value)(implicit request: Request[_], messages: Messages)
     else messages("confirm-business-details.yes-wrong-address")
 }
 
-@radioGroupNo = @{
-    if(isPartnership) messages("confirm-business-details.partnership.no")
-    else if(isIndividual) messages("confirm-business-details.individual.no")
-    else messages("confirm-business-details.no")
+@addressHtml = {
+  <div id="address" class="mb-2">
+      @helpers.noMarginParagraph(address.street)
+      @helpers.noMarginParagraph(address.city)
+      @address.postcode.map(code => helpers.noMarginParagraph(code))
+      @helpers.noMarginParagraph(countryCodeToLabel(address.countryCode))
+  </div>
 }
 
 @inputRadioGroup(field: String, options: Seq[(String, String)]) = {
@@ -128,9 +91,10 @@ journey: Journey.Value)(implicit request: Request[_], messages: Messages)
         yesNoWrongAddress(field),
         options,
         Map.empty,
-        None,
+        Some(addressHtml),
         '_divClass -> "form-group",
-        '_legend -> radioGroupLegend
+        '_legend -> pageTitleAndHeading,
+        '_isLegendH1 -> true
     )
 }
 
@@ -140,49 +104,13 @@ journey: Journey.Value)(implicit request: Request[_], messages: Messages)
 
     @helpers.errorSummary(yesNoWrongAddress, focusOverrides = Map("yes-no-wrong-address" -> "yes-no-wrong-address-yes"))
 
-    <h1 class="heading-large">@pageTitleAndHeading</h1>
-
-    <dl class="govuk-check-your-answers cya-questions-long">
-        @customsId.map { cid =>
-            <div>
-                <dt class="cya-question" id="idNumber">
-                    @ninoOrUtrLabel
-                </dt>
-                <dd class="cya-answer">
-                    @cid.id
-                </dd>
-            </div>
-        }
-        <div>
-            <dt class="cya-question" id="name">
-                @nameLabel
-            </dt>
-            <dd class="cya-answer" id="orgname">
-                @name
-            </dd>
-        </div>
-
-        <div>
-            <dt class="cya-question" id="address">
-                @addressLabel
-            </dt>
-            <dd class="cya-answer" id="details">
-                @address.street.appendBr
-                @address.city.appendBr
-                @address.postcode.map(_.appendBr)
-                @countryCodeToLabel(address.countryCode)
-            </dd>
-        </div>
-    </dl>
-
     <div class="form-group">
         @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.ConfirmContactDetailsController.submit(service, journey), "yes-no-wrong-address-form") {
             @CSRF.formField
 
             @inputRadioGroup("yes-no-wrong-address",
                 Seq("yes" -> radioGroupYes,
-                    "wrong-address" -> radioGroupWrongAddress,
-                    "no" -> radioGroupNo))
+                    "wrong-address" -> radioGroupWrongAddress))
 
             <input class='button' type='submit' value='@messages("cds.navigation.continue")'>
         }
