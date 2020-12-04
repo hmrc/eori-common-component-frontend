@@ -18,6 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.config
 
 import javax.inject.{Inject, Named, Singleton}
 import play.api.Configuration
+import play.api.i18n.Messages
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.ApplicationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
@@ -67,11 +68,18 @@ class AppConfig @Inject() (
       ApplicationController.startRegister(service).url
   }
 
-  lazy val findLostUtr: String           = config.get[String]("external-url.find-lost-utr")
-  lazy val traderSupportService: String  = config.get[String]("external-url.trader-support-service")
-  lazy val getCompanyInformation: String = config.get[String]("external-url.get-company-information")
-  lazy val contactEORITeam: String       = config.get[String]("external-url.contact-eori-team")
-  lazy val callCharges: String           = config.get[String]("external-url.call-charges")
+  private def languageKey(implicit messages: Messages) = messages.lang.language match {
+    case "cy" => "cy"
+    case _    => "en"
+  }
+
+  def findLostUtr()(implicit messages: Messages): String =
+    config.get[String](s"external-url.find-lost-utr-$languageKey")
+
+  lazy val traderSupportService: String                  = config.get[String]("external-url.trader-support-service")
+  lazy val getCompanyInformation: String                 = config.get[String]("external-url.get-company-information")
+  lazy val contactEORITeam: String                       = config.get[String]("external-url.contact-eori-team")
+  def callCharges()(implicit messages: Messages): String = config.get[String](s"external-url.call-charges-$languageKey")
 
   lazy val blockedRoutesRegex: Seq[Regex] =
     config.getOptional[String]("routes-to-block") match {

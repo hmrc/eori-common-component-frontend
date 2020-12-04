@@ -313,8 +313,8 @@ cds.matching.header.company=Beth yw manylion eich cwmni?
 cds.matching.intro=Bydd hyn yn cysylltu’ch busnes, eich Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth a’ch rhif EORI â’i gilydd sy’n eich helpu i symud a datgan nwyddau.
 cds.matching.individual.header=Nodwch eich manylion
 cds.matching-lede=Byddwn yn ceisio paru’ch manylion â’r wybodaeth sydd gennym ar hyn o bryd.
-cds.matching.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890. Bydd hwn ar Ffurflenni Treth a llythyrau eraill am Dreth Gorfforaeth. Efallai y cyfeirir ato gan ddefnyddio’r geiriau “cyfeirnod”, “UTR” neu “defnydd swyddogol”. Gallwch <a href="https://www.gov.uk/find-lost-utr-number" target="_blank" rel="noopener noreferrer">ddod o hyd i UTR sydd ar goll (yn agor ffenestr neu dab newydd)</a>.
-cds.matching.partnership.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890. Bydd hwn i’w weld ar Ffurflenni Treth partneriaeth a llythyrau eraill ynghylch eich partneriaeth. Efallai y cyfeirir ato gan ddefnyddio’r geiriau “cyfeirnod”, “UTR” neu “defnydd swyddogol”. Gallwch <a href="https://www.gov.uk/find-lost-utr-number" target="_blank" rel="noopener noreferrer">ddod o hyd i UTR sydd ar goll (yn agor ffenestr neu dab newydd)</a>.
+cds.matching.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890. Bydd hwn ar Ffurflenni Treth a llythyrau eraill am Dreth Gorfforaeth. Efallai y cyfeirir ato gan ddefnyddio’r geiriau “cyfeirnod”, “UTR” neu “defnydd swyddogol”. Gallwch <a href="https://www.gov.uk/dod-o-hyd-i-utr-sydd-ar-goll" target="_blank" rel="noopener noreferrer">ddod o hyd i UTR sydd ar goll (yn agor ffenestr neu dab newydd)</a>.
+cds.matching.partnership.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890. Bydd hwn i’w weld ar Ffurflenni Treth partneriaeth a llythyrau eraill ynghylch eich partneriaeth. Efallai y cyfeirir ato gan ddefnyddio’r geiriau “cyfeirnod”, “UTR” neu “defnydd swyddogol”. Gallwch <a href="https://www.gov.uk/dod-o-hyd-i-utr-sydd-ar-goll" target="_blank" rel="noopener noreferrer">ddod o hyd i UTR sydd ar goll (yn agor ffenestr neu dab newydd)</a>.
 cds.matching.eori.hint=Mae gan eich rhif EORI rhwng 14 ac 17 o gymeriadau.
 cds.matching.back=Yn ôl
 subscription.start-page.heading=Cofrestru ar gyfer y Gwasanaeth Datgan Tollau (CDS)
@@ -405,7 +405,7 @@ countries-in-the-eu.title=Gwledydd yn yr UE
 countries-in-the-eu.list=Yr Almaen, Awstria, Bwlgaria, Croatia, Denmarc, y DU, yr Eidal, Estonia, y Ffindir, Ffrainc, Gweriniaeth Cyprus, Gwlad Belg, Gwlad Groeg, Gwlad Pwyl, Hwngari, Yr Iseldiroedd, Iwerddon, Latvia, Lithuania, Lwcsembwrg, Malta, Portiwgal, România, Slovakia, Slovenia, Sbaen, Sweden, a’r Weriniaeth Tsiec.
 subscription-journey.how-confirm-identity=Pa wybodaeth y gallwn ei defnyddio i gadarnhau pwy ydych chi?
 subscription-journey.utr.label=Rhif Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad
-subscription-journey.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890. Bydd hwn i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Hunanasesiad. Efallai y cyfeirir ato gan ddefnyddio’r geiriau “cyfeirnod”, “UTR” neu “defnydd swyddogol”. Gallwch <a href="https://www.gov.uk/find-lost-utr-number" target="_blank" rel="noopener noreferrer">ddod o hyd i UTR sydd ar goll (yn agor ffenestr neu dab newydd)</a>.
+subscription-journey.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890. Bydd hwn i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Hunanasesiad. Efallai y cyfeirir ato gan ddefnyddio’r geiriau “cyfeirnod”, “UTR” neu “defnydd swyddogol”. Gallwch <a href="https://www.gov.uk/dod-o-hyd-i-utr-sydd-ar-goll" target="_blank" rel="noopener noreferrer">ddod o hyd i UTR sydd ar goll (yn agor ffenestr neu dab newydd)</a>.
 cds.matching.id.page-error.nino=Nodwch eich rhif Yswiriant Gwladol
 cds.matching.id.page-error.utr=Nodwch eich Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad
 cds.matching.id.page-error.ninoOrUtrRadio=Rhowch wybod sut y gallwn eich adnabod
@@ -969,7 +969,7 @@ cds.form.gb-vat-number=Rhif TAW yn y DU
 cds.form.gb-vat-postcode=Cod post eich cyfeiriad o ran cofrestru ar gyfer TAW yn y DU
 cds.form.gb-vat-date=Dyddiad dod i rym ar gyfer TAW yn y DU
 cds.form.eu-vat-numbers=Rhifau TAW yn yr UE
-cds.form.customs-contact=Cysylltu
+cds.form.customs-contact=Cyswllt
 cds.form.contact-details=Cyfeiriad
 cds.form.partnership.contact-details=Cyfeiriad y bartneriaeth
 cds.form.disclosure=Manylion y sefydliad wedi’u cynnwys ar y gwiriwr EORI

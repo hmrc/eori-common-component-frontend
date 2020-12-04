@@ -1,7 +1,7 @@
 cds.banner.registration=Cael rhif EORI
 cds.banner.subscription=Tanysgrifio i {0}
 
-cds.subscription.enter-eori-number.heading=Beth yw’ch rif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI)?
+cds.subscription.enter-eori-number.heading=Beth yw’ch rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI)?
 cds.subscription.enter-eori-number.no-eori.summary=Nid oes gennyf rif EORI
 cds.subscription.enter-eori-number.no-eori=Rhaid i chi {0} cyn y gallwch wneud cais am {1}.
 cds.subscription.enter-eori-number.no-eori.link=gael rhif EORI
@@ -76,7 +76,7 @@ cds.subscription.information.para2=Os nad oes gennych un eisoes, mae’n rhaid i
 cds.subscription.information.para2.link=wneud cais am rif EORI
 
 cds.subscription.information.section.organisation.subheading=Fel sefydliad:
-cds.subscription.information.section.organisation.utr=Bydd angen eich Cyfeirnod Treth Gorfforaeth Unigryw y Treth (UTR) arnoch. Gallwch {0}.
+cds.subscription.information.section.organisation.utr=Bydd angen eich Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR) arnoch. Gallwch {0}.
 cds.subscription.information.section.organisation.utr.link=ddod o hyd i UTR coll (yn agor ffenestr neu dab newydd)
 
 cds.subscription.information.section.individual.subheading=Fel unigolyn neu unig fasnachwr yn y DU:
@@ -145,7 +145,7 @@ cds.matching.name-id-organisation.registered-company.utr=Cyfeirnod Unigryw y Tre
 cds.matching.name-id-organisation.partnership.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad y Bartneriaeth
 cds.matching.name-id-organisation.organisation.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad y Sefydliad
 
-cds.subscription.date-of-establishment.company.title-and-heading=Pryd y cafodd y Cwmni ei sefydlu?
+cds.subscription.date-of-establishment.company.title-and-heading=Pryd y cafodd y cwmni ei sefydlu?
 
 cds.subscription.address-details.postcode.row.label=Cod post
 
