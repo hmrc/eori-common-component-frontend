@@ -44,6 +44,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.language.LanguageUtils
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder._
@@ -80,6 +81,8 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
   private val reg06EoriAlreadyLinked = instanceOf[reg06_eori_already_linked]
 
+  private val languageUtils = instanceOf[LanguageUtils]
+
   private val controller = new RegisterWithEoriAndIdController(
     mockAuthAction,
     mockRequestSessionData,
@@ -97,7 +100,8 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
     subscriptionOutcomeFailView,
     reg06EoriAlreadyLinked,
     mockTaxEnrolmentsService,
-    groupEnrolmentExtractor
+    groupEnrolmentExtractor,
+    languageUtils
   )(global)
 
   private val formBundleIdResponse: String = "Form-Bundle-Id"

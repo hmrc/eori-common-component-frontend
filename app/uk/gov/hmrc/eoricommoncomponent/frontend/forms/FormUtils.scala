@@ -17,15 +17,12 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.forms
 
 import org.joda.time.LocalDate
-import org.joda.time.format.DateTimeFormat
 import play.api.data.Forms.{optional, text}
 import play.api.data.Mapping
 import play.api.data.validation._
 import uk.gov.hmrc.eoricommoncomponent.frontend.playext.mappers.DateTuple._
 
 object FormUtils {
-
-  val dateTimeFormat = DateTimeFormat.forPattern("d MMMM yyyy")
 
   val messageKeyMandatoryField    = "cds.error.mandatory.field"
   val messageKeyInvalidDateFormat = "cds.error.invalid.date.format"

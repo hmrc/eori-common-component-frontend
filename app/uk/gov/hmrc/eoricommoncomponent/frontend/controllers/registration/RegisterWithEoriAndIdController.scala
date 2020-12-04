@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
+import com.github.nscala_time.time.Imports.LocalDate
 import javax.inject.{Inject, Singleton}
 import org.joda.time.DateTime
 import play.api.Logger
@@ -28,7 +29,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, Miss
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegisterWithEoriAndIdResponse._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.dateTimeFormat
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{MatchingService, Reg06Service}
@@ -36,6 +36,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.language.LanguageUtils
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -57,7 +58,8 @@ class RegisterWithEoriAndIdController @Inject() (
   subscriptionOutcomeFailView: subscription_outcome_fail,
   reg06EoriAlreadyLinked: reg06_eori_already_linked,
   taxEnrolmentsService: TaxEnrolmentsService,
-  groupEnrolment: GroupEnrolmentExtractor
+  groupEnrolment: GroupEnrolmentExtractor,
+  languageUtils: LanguageUtils
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
@@ -77,7 +79,7 @@ class RegisterWithEoriAndIdController @Inject() (
               case true          => handleREG06Response(service, journey)
               case false =>
                 logger.error("Reg01 BadRequest ROW")
-                val formattedDate = dateTimeFormat.print(DateTime.now())
+                val formattedDate = languageUtils.Dates.formatDate(LocalDate.now())
                 Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service, formattedDate)))
             }
       }
@@ -140,12 +142,10 @@ class RegisterWithEoriAndIdController @Inject() (
             .getOrElse(throw new IllegalStateException("SafeId can't be none"))
           onRegistrationPassCheckSubscriptionStatus(service, journey, idType = "SAFE", id = safeId, SafeId(safeId))
         case Some("DEFERRED") =>
-          val formattedDate =
-            dateTimeFormat.print(resp.responseCommon.processingDate)
+          val formattedDate = languageUtils.Dates.formatDate(resp.responseCommon.processingDate.toLocalDate)
           Future.successful(Redirect(RegisterWithEoriAndIdController.pending(service, formattedDate)))
         case Some("FAIL") =>
-          val formattedDate =
-            dateTimeFormat.print(resp.responseCommon.processingDate)
+          val formattedDate = languageUtils.Dates.formatDate(resp.responseCommon.processingDate.toLocalDate)
           Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service, formattedDate)))
         case None =>
           val statusText = resp.responseCommon.statusText
@@ -204,8 +204,10 @@ class RegisterWithEoriAndIdController @Inject() (
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         name <- cache.subscriptionDetails.map(_.name)
-        date <- cache.registerWithEoriAndIdResponse.map(r => dateTimeFormat.print(r.responseCommon.processingDate))
-        _    <- cache.remove
+        date <- cache.registerWithEoriAndIdResponse.map(
+          r => languageUtils.Dates.formatDate(r.responseCommon.processingDate.toLocalDate)
+        )
+        _ <- cache.remove
       } yield Ok(sub01OutcomeRejectedView(Some(name), date, service))
     }
 

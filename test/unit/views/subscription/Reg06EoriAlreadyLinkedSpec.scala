@@ -21,9 +21,9 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.dateTimeFormat
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.reg06_eori_already_linked
+import uk.gov.hmrc.play.language.LanguageUtils
 import util.ViewSpec
 
 class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
@@ -31,11 +31,13 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
   private val name              = "John Doe"
   private val processedDate     = DateTime.now()
   private val expectedPageTitle = "The Advance Tariff Rulings subscription request has been unsuccessful"
+  private val languageUtils     = instanceOf[LanguageUtils]
 
   private val pageHeadingExpectedText =
     s"The Advance Tariff Rulings subscription request for $name has been unsuccessful"
 
-  private val processDateExpectedText = s"Application received by HMRC on ${dateTimeFormat.print(processedDate)}"
+  private val processDateExpectedText =
+    s"Application received by HMRC on ${languageUtils.Dates.formatDate(processedDate.toLocalDate)}"
 
   private val view = instanceOf[reg06_eori_already_linked]
 
