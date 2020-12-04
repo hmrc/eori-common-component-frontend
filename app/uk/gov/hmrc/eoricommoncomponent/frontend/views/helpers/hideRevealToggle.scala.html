@@ -56,12 +56,36 @@ otherHtmlInLegend: Html = Html(""))(hiddenHtml: Html)(implicit messages: Message
         @hiddenHtml
     </div>
 }
-
+@hasHint = @{
+    hintText != ""
+}
+@hintId = @{
+    if(hasHint) s"${field.id}-hint" else ""
+}
+@hasOtherHtml = @{
+    otherHtmlInLegend.toString() != ""
+}
+@otherHtmlId = @{
+    if(hasOtherHtml) s"${field.id}-other" else ""
+}
+@hasErrors = @{
+    elements.hasErrors
+}
+@errorId = @{
+    if(hasErrors) s"${field.id}-error" else ""
+}
+@describedBy = @{
+    Seq(hintId, otherHtmlId, errorId).filterNot(_.isEmpty).mkString(" ")
+}
 <div id='@{s"${field.name}-field"}' class="form-group"
         data-trigger="js-toggle-trigger"
         data-open="@if(isRevealedByYes){@yesId}else{@noId}"
         data-close="@if(isRevealedByYes){@noId}else{@yesId}">
-        <fieldset id="@field.id-fieldset">
+    <fieldset
+        id="@field.id-fieldset"
+            @if(hasHint || hasOtherHtml || hasErrors){
+                aria-describedby="@describedBy"
+                } >
             <legend>
                 @if(isLegendH1){
                     <h1 class="heading-large">
@@ -74,18 +98,22 @@ otherHtmlInLegend: Html = Html(""))(hiddenHtml: Html)(implicit messages: Message
                 }
             </legend>
 
-            @if(elements.hasErrors) {
+            @if(hasErrors) {
             <div class="form-group-error">
             }
 
-            @if(hintText != "") {
-                <p class="form-hint">@hintText</p>
+            @if(hasHint) {
+                <p class="form-hint" id="@hintId">@hintText</p>
             }
 
-            @otherHtmlInLegend
+            @if(hasOtherHtml){
+              <div id="@otherHtmlId">
+                @otherHtmlInLegend
+              </div>
+            }
 
-            @if(elements.hasErrors) {
-                @elements.errors.map { error => <span class="error-message"><span class="visually-hidden">@messages("cds.error.field.hint")</span> @messages(error)</span> }
+            @if(hasErrors) {
+                @elements.errors.map { error => <span class="error-message" id="@errorId"><span class="visually-hidden">@messages("cds.error.field.hint")</span> @messages(error)</span> }
             </div>
             }
 

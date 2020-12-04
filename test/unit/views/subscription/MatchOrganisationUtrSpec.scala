@@ -65,6 +65,17 @@ class MatchOrganisationUtrSpec extends ViewSpec {
         .getElementById("intro")
         .text() mustBe "Your organisation will have a Corporation Tax UTR number if you pay corporation tax. It is on tax returns and other letters from HMRC."
     }
+    "have other html content" in {
+      doc.body
+        .getElementById("have-utr-other")
+        .text() must include("Your organisation will have a Corporation Tax UTR number if you pay corporation tax")
+    }
+    "have aria-described-by on the fieldset" in {
+      doc.body
+        .getElementById("have-utr-fieldset")
+        .attr("aria-describedby") mustBe "have-utr-other"
+
+    }
     "display correct progressive disclosure heading" in {
       doc.body.getElementsByTag("summary").text() mustBe "Can’t find your Corporation Tax UTR number?"
     }
