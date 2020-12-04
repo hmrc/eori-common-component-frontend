@@ -89,7 +89,7 @@ h1 {
 }
 
 .govuk-box-highlight {
-    outline: 5px solid;
+    border: 5px solid;
 }
 
 .govuk-box-highlight h1 {
