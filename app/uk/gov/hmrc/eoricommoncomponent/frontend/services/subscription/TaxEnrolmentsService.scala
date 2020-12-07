@@ -20,22 +20,14 @@ import javax.inject.{Inject, Singleton}
 import org.joda.time.LocalDate
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.TaxEnrolmentsConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.TaxEnrolmentsRequest._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Eori, KeyValue, SafeId, TaxEnrolmentsRequest}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Eori, KeyValue, TaxEnrolmentsRequest}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class TaxEnrolmentsService @Inject() (taxEnrolmentsConnector: TaxEnrolmentsConnector) {
-
-  private val serviceName = "HMRC-CUS-ORG"
-
-  // TODO This method is not necessary, we can remove it
-  def doesEnrolmentExist(safeId: SafeId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
-    taxEnrolmentsConnector.getEnrolments(safeId.id).map { enrolments =>
-      enrolments.exists(_.serviceName == serviceName)
-    }
 
   def issuerCall(formBundleId: String, eori: Eori, dateOfEstablishment: Option[LocalDate], service: Service)(implicit
     hc: HeaderCarrier

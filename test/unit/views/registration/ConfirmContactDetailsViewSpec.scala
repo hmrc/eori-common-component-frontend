@@ -134,11 +134,6 @@ class ConfirmContactDetailsViewSpec extends ViewSpec {
     Jsoup.parse(contentAsString(result))
   }
 
-  private lazy val SoleTraderOrIndividualWithUtrDoc: Document = {
-    val result = view(name, address, customsIdUtr, None, form, atarService, Journey.Register)
-    Jsoup.parse(contentAsString(result))
-  }
-
   private lazy val PartnershipBodyDoc: Document = {
     val result = view(name, address, customsIdUtr, partnership, form, atarService, Journey.Register)
     Jsoup.parse(contentAsString(result))

@@ -52,7 +52,7 @@ import util.builders.RegistrationDetailsBuilder._
 import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
@@ -67,7 +67,6 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
   private val mockCdsFrontendDataCache      = mock[SessionCache]
   private val mockSubscriptionFlowManager   = mock[SubscriptionFlowManager]
   private val mockOrgTypeLookup             = mock[OrgTypeLookup]
-  private val mockTaxEnrolmentsService      = mock[TaxEnrolmentsService]
   private val mockHandleSubscriptionService = mock[HandleSubscriptionService]
 
   private val confirmContactDetailsView = instanceOf[confirm_contact_details]
@@ -83,7 +82,6 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
     mockCdsFrontendDataCache,
     mockOrgTypeLookup,
     mockSubscriptionFlowManager,
-    mockTaxEnrolmentsService,
     mcc,
     confirmContactDetailsView,
     sub01OutcomeProcessingView,
@@ -116,7 +114,6 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       mockCdsFrontendDataCache,
       mockSubscriptionFlowManager,
       mockOrgTypeLookup,
-      mockTaxEnrolmentsService,
       mockHandleSubscriptionService
     )
   }
@@ -382,54 +379,6 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       invokeConfirmContactDetailsWithSelectedOption() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe redirectUrl
-      }
-    }
-
-    "redirect to SignInWithDifferentDetailsController when subscription status is SubscriptionExists and Existing Enrolment Exist" in {
-      when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier]))
-        .thenReturn(Future.successful(subscriptionDetailsHolder))
-      when(mockRegistrationConfirmService.currentSubscriptionStatus(any[HeaderCarrier]))
-        .thenReturn(Future.successful(SubscriptionExists))
-      when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier]))
-        .thenReturn(Future.successful(organisationRegistrationDetails))
-      when(
-        mockCdsFrontendDataCache
-          .saveSubscriptionDetails(any[SubscriptionDetails])(any[HeaderCarrier])
-      ).thenReturn(Future.successful(true))
-      when(mockTaxEnrolmentsService.doesEnrolmentExist(any[SafeId])(any[HeaderCarrier], any[ExecutionContext]))
-        .thenReturn(true)
-
-      invokeConfirmContactDetailsWithSelectedOption() { result =>
-        status(result) shouldBe SEE_OTHER
-        result.header.headers(
-          LOCATION
-        ) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.SignInWithDifferentDetailsController
-          .form(atarService, Journey.Register)
-          .url
-      }
-    }
-
-    "redirect to SignInWithDifferentDetailsController when subscription status is SubscriptionExists and Existing Enrolment DOES NOT Exist" in {
-      when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier]))
-        .thenReturn(Future.successful(subscriptionDetailsHolder))
-      when(mockRegistrationConfirmService.currentSubscriptionStatus(any[HeaderCarrier]))
-        .thenReturn(Future.successful(SubscriptionExists))
-      when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier]))
-        .thenReturn(Future.successful(organisationRegistrationDetails))
-      when(
-        mockCdsFrontendDataCache
-          .saveSubscriptionDetails(any[SubscriptionDetails])(any[HeaderCarrier])
-      ).thenReturn(Future.successful(true))
-      when(mockTaxEnrolmentsService.doesEnrolmentExist(any[SafeId])(any[HeaderCarrier], any[ExecutionContext]))
-        .thenReturn(false)
-
-      invokeConfirmContactDetailsWithSelectedOption() { result =>
-        status(result) shouldBe SEE_OTHER
-        result.header.headers(
-          LOCATION
-        ) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.SubscriptionRecoveryController
-          .complete(atarService, Journey.Register)
-          .url
       }
     }
 
