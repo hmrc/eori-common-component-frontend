@@ -3,7 +3,7 @@ cds.banner.subscription=Tanysgrifio i {0}
 
 cds.subscription.enter-eori-number.heading=Beth yw’ch rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI)?
 cds.subscription.enter-eori-number.no-eori.summary=Nid oes gennyf rif EORI
-cds.subscription.enter-eori-number.no-eori=Rhaid i chi {0} cyn y gallwch wneud cais am {1}.
+cds.subscription.enter-eori-number.no-eori=Mae’n rhaid i chi {0} cyn i chi allu gwneud cais am {1}.
 cds.subscription.enter-eori-number.no-eori.link=gael rhif EORI
 
 cds.has-existing-eori.title=Mae’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth yn gysylltiedig ag EORI
