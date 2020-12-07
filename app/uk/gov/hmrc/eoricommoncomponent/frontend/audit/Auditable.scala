@@ -35,7 +35,7 @@ class Auditable @Inject() (auditConnector: AuditConnector, appConfig: AppConfig)
 
   def sendDataEvent(
     transactionName: String,
-    path: String = "N/A",
+    path: String,
     tags: Map[String, String] = Map.empty,
     detail: Map[String, String],
     eventType: String
@@ -51,7 +51,7 @@ class Auditable @Inject() (auditConnector: AuditConnector, appConfig: AppConfig)
 
   def sendExtendedDataEvent(
     transactionName: String,
-    path: String = "N/A",
+    path: String,
     tags: Map[String, String] = Map.empty,
     details: JsValue,
     eventType: String
