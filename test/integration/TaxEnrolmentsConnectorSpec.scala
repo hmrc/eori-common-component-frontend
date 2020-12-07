@@ -23,9 +23,8 @@ import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers.{BAD_REQUEST, NO_CONTENT}
-import play.mvc.Http.Status.{FORBIDDEN, INTERNAL_SERVER_ERROR}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.TaxEnrolmentsConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{TaxEnrolmentsRequest, TaxEnrolmentsResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.TaxEnrolmentsRequest
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.{
   GovernmentGatewayEnrolmentRequest,
   Identifier,
@@ -52,8 +51,6 @@ class TaxEnrolmentsConnectorSpec extends IntegrationTestsSpec with ScalaFutures 
     .build()
 
   private lazy val taxEnrolmentsConnector = app.injector.instanceOf[TaxEnrolmentsConnector]
-  private val safeId                      = "XE111123456789"
-  private val expectedGetUrl              = s"/tax-enrolments/businesspartners/$safeId/subscriptions"
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -110,31 +107,6 @@ class TaxEnrolmentsConnectorSpec extends IntegrationTestsSpec with ScalaFutures 
     stopMockServer()
 
   "TaxEnrolments" should {
-    "return successful response with OK status when TaxEnrolments  returns 200" in {
-
-      TaxEnrolmentsService.returnTheTaxEnrolmentsResponseOK("XE111123456789")
-      await(taxEnrolmentsConnector.getEnrolments(safeId)) must be(responseWithOk.as[List[TaxEnrolmentsResponse]])
-    }
-
-    "fail when Internal Server Error" in {
-      TaxEnrolmentsService.stubTheTaxEnrolmentsResponse(expectedGetUrl, responseWithOk.toString, INTERNAL_SERVER_ERROR)
-
-      val caught: Upstream5xxResponse = intercept[Upstream5xxResponse] {
-        await(taxEnrolmentsConnector.getEnrolments(safeId))
-      }
-
-      caught.getMessage must startWith("GET of ")
-    }
-
-    "http exception when 4xx status code is received" in {
-      TaxEnrolmentsService.stubTheTaxEnrolmentsResponse(expectedGetUrl, responseWithOk.toString, FORBIDDEN)
-
-      val caught: Upstream4xxResponse = intercept[Upstream4xxResponse] {
-        await(taxEnrolmentsConnector.getEnrolments(safeId))
-      }
-
-      caught.getMessage must startWith("GET of ")
-    }
 
     "return successful future with correct status when enrolment status service returns good status(204)" in {
       TaxEnrolmentsService.returnEnrolmentResponseWhenReceiveRequest(

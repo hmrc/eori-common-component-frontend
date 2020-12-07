@@ -148,7 +148,7 @@ class UserLocationController @Inject() (
         safeId =>
           sessionCache
             .saveRegistrationDetails(RegistrationDetails.rdSafeId(safeId.get))
-            .map( _ => Redirect(SubscriptionRecoveryController.complete(service, Journey.Register)))
+            .map(_ => Redirect(SubscriptionRecoveryController.complete(service, Journey.Register)))
       )
 
   def subscriptionStatus(

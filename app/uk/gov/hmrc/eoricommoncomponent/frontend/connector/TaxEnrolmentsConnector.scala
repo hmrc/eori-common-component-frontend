@@ -35,25 +35,6 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig)(
   private val baseUrl        = appConfig.taxEnrolmentsBaseUrl
   val serviceContext: String = appConfig.taxEnrolmentsServiceContext
 
-  def getEnrolments(safeId: String)(implicit hc: HeaderCarrier): Future[List[TaxEnrolmentsResponse]] = {
-    val url = s"$baseUrl/$serviceContext/businesspartners/$safeId/subscriptions"
-
-    // $COVERAGE-OFF$Loggers
-    logger.debug(s"GetEnrolments: $url and hc: $hc")
-    // $COVERAGE-ON
-
-    http.GET[List[TaxEnrolmentsResponse]](url) map { resp =>
-      // $COVERAGE-OFF$Loggers
-      logger.debug(s"GetEnrolments: response: $resp")
-      // $COVERAGE-ON
-      resp
-    } recover {
-      case e: Throwable =>
-        logger.warn(s"GetEnrolments failed. url: $url, error: $e", e)
-        throw e
-    }
-  }
-
   /**
     *
     * @param request

@@ -132,7 +132,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
       mockEnrolmentStoreProxyService
         .enrolmentForGroup(any(), any())(any())
     ).thenReturn(Future.successful(None))
-
+    when(mockSessionCache.saveRegistrationDetails(any())(any())).thenReturn(Future.successful(true))
   }
 
   "Viewing the user location form" should {

@@ -118,12 +118,7 @@ class RegisterWithEoriAndIdController @Inject() (
     loggedInUser: LoggedInUserWithEnrolments
   ) =
     cache.registrationDetails.flatMap { regDetails =>
-      onRegistrationPassCheckSubscriptionStatus(
-        service,
-        journey,
-        "taxPayerID",
-        regDetails.sapNumber.mdgTaxPayerId
-      )
+      onRegistrationPassCheckSubscriptionStatus(service, journey, "taxPayerID", regDetails.sapNumber.mdgTaxPayerId)
     }
 
   private def handleREG06Response(service: Service, journey: Journey.Value)(implicit
