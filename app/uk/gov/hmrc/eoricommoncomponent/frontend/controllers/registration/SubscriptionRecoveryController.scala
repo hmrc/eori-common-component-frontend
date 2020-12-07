@@ -18,12 +18,15 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
 import org.joda.time.{DateTime, LocalDate}
+import play.api.Logger
 import play.api.i18n.Messages
 import play.api.mvc.{Action, _}
+import uk.gov.hmrc.emailaddress.EmailAddress
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SUB09SubscriptionDisplayConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionDisplayResponse
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
@@ -37,6 +40,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   TaxEnrolmentsService
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.recovery_registration_exists
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -52,7 +56,8 @@ class SubscriptionRecoveryController @Inject() (
   errorTemplateView: error_template,
   uuidGenerator: RandomUUIDGenerator,
   requestSessionData: RequestSessionData,
-  subscriptionDetailsService: SubscriptionDetailsService
+  subscriptionDetailsService: SubscriptionDetailsService,
+  alreadyHaveEori: recovery_registration_exists
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
@@ -76,6 +81,14 @@ class SubscriptionRecoveryController @Inject() (
         result.flatMap(identity)
     }
 
+  def eoriExist(service: Service, journey: Journey.Value): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithServiceAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        for {
+          eori <- sessionCache.eori
+        } yield Ok(alreadyHaveEori(eori))
+    }
+
   private def subscribeGetAnEori(
     service: Service
   )(implicit ec: ExecutionContext, request: Request[AnyContent]): Future[Result] = {
@@ -87,25 +100,32 @@ class SubscriptionRecoveryController @Inject() (
       sub01Outcome <- sessionCache.sub01Outcome
     } yield sub09Result match {
       case Right(subscriptionDisplayResponse) =>
-        val email = subscriptionDisplayResponse.responseDetail.contactInformation
-          .flatMap(_.emailAddress)
-          .getOrElse(throw new IllegalStateException("Register Journey: No email address available."))
         val eori = subscriptionDisplayResponse.responseDetail.EORINo
           .getOrElse(throw new IllegalStateException("no eori found in the response"))
-        onSUB09Success(
-          sub01Outcome.processedDate,
-          email,
-          safeId,
-          Eori(eori),
-          subscriptionDisplayResponse,
-          getDateOfBirthOrDateOfEstablishment(
-            subscriptionDisplayResponse,
-            registrationDetails.dateOfEstablishmentOption,
-            registrationDetails.dateOfBirthOption
-          ),
-          service,
-          Journey.Register
-        )(Redirect(Sub02Controller.end(service)))
+
+        sessionCache.saveEori(Eori(eori)).flatMap { _ =>
+          val mayBeEmail = subscriptionDisplayResponse.responseDetail.contactInformation
+            .flatMap(c => c.emailAddress.filter(EmailAddress.isValid(_) && c.emailVerificationTimestamp.isDefined))
+          mayBeEmail.map { email =>
+            onSUB09Success(
+              sub01Outcome.processedDate,
+              email,
+              safeId,
+              Eori(eori),
+              subscriptionDisplayResponse,
+              getDateOfBirthOrDateOfEstablishment(
+                subscriptionDisplayResponse,
+                registrationDetails.dateOfEstablishmentOption,
+                registrationDetails.dateOfBirthOption
+              ),
+              service,
+              Journey.Register
+            )(Redirect(Sub02Controller.end(service)))
+          }.getOrElse {
+            Logger.info("Email Missing")
+            Future.successful(Redirect(SubscriptionRecoveryController.eoriExist(service, Journey.Register)))
+          }
+        }
       case Left(_) =>
         Future.successful(ServiceUnavailable(errorTemplateView()))
     }

@@ -43,7 +43,8 @@ sealed case class CachedData(
   registerWithEoriAndIdResponse: Option[RegisterWithEoriAndIdResponse] = None,
   email: Option[String] = None,
   groupEnrolment: Option[EnrolmentResponse] = None,
-  keepAlive: Option[String] = None
+  keepAlive: Option[String] = None,
+  eori: Option[String] = None
 ) {
 
   def registrationDetails(sessionId: Id): RegistrationDetails =
@@ -98,6 +99,7 @@ object CachedData {
   val safeIdKey                        = "safeId"
   val groupIdKey                       = "cachedGroupId"
   val groupEnrolmentKey                = "groupEnrolment"
+  val eoriKey                          = "eori"
   implicit val format                  = Json.format[CachedData]
 }
 
@@ -162,6 +164,9 @@ class SessionCache @Inject() (
   def saveEmail(email: String)(implicit hc: HeaderCarrier): Future[Boolean] =
     createOrUpdate(sessionId, emailKey, Json.toJson(email)) map (_ => true)
 
+  def saveEori(eori: Eori)(implicit hc: HeaderCarrier): Future[Boolean] =
+    createOrUpdate(sessionId, eoriKey, Json.toJson(eori.id)) map (_ => true)
+
   def keepAlive(implicit hc: HeaderCarrier): Future[Boolean] =
     createOrUpdate(sessionId, keepAliveKey, Json.toJson(LocalDateTime.now().toString)) map (_ => true)
 
@@ -187,6 +192,9 @@ class SessionCache @Inject() (
 
   def email(implicit hc: HeaderCarrier): Future[String] =
     getCached[String](sessionId, (cachedData, id) => cachedData.email(id))
+
+  def eori(implicit hc: HeaderCarrier): Future[Option[String]] =
+    getCached[Option[String]](sessionId, (cachedData, id) => cachedData.eori)
 
   def safeId(implicit hc: HeaderCarrier): Future[SafeId] =
     getCached[SafeId](sessionId, (cachedData, id) => cachedData.safeId(id))
