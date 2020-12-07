@@ -62,7 +62,6 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
   private val mockMatchingService            = mock[MatchingService]
   private val mockCdsSubscriber              = mock[CdsSubscriber]
   private val mockSubscriptionStatusService  = mock[SubscriptionStatusService]
-  private val mockTaxEnrolmentsService       = mock[TaxEnrolmentsService]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
   private val mockSubscriptionDetails        = mock[SubscriptionDetails]
   private val mockSub01Outcome               = mock[Sub01Outcome]
@@ -96,7 +95,6 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
     subscriptionOutcomePendingView,
     subscriptionOutcomeFailView,
     reg06EoriAlreadyLinked,
-    mockTaxEnrolmentsService,
     groupEnrolmentExtractor
   )(global)
 
@@ -626,50 +624,6 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       }
     }
 
-    "redirect to SignInWithDifferentDetails when Subscription Status (SUB01) response is SubscriptionExists and enrolment service returns true" in {
-      when(
-        mockCdsSubscriber.subscribeWithCachedDetails(
-          any[Option[CdsOrganisationType]],
-          any[Service],
-          any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
-      ).thenReturn(
-        Future.successful(
-          SubscriptionSuccessful(
-            Eori("EORI-Number"),
-            formBundleIdResponse,
-            processingDateResponse,
-            Some(emailVerificationTimestamp)
-          )
-        )
-      )
-      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
-        .thenReturn(Future.successful(true))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
-        .thenReturn(Future.successful(organisationRegistrationDetails))
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
-        .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
-      when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
-      when(
-        mockSubscriptionStatusService
-          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any())
-      ).thenReturn(Future.successful(SubscriptionExists))
-      when(
-        mockTaxEnrolmentsService
-          .doesEnrolmentExist(meq(SafeId("SomeSafeId")))(any(), any())
-      ).thenReturn(Future.successful(true))
-
-      regExistingEori() { result =>
-        status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe SignInWithDifferentDetailsController
-          .form(service = atarService, journey = Journey.Subscribe)
-          .url
-        verify(mockReg06Service).sendOrganisationRequest(any(), any(), any())
-        verify(mockSubscriptionStatusService)
-          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any[HeaderCarrier])
-      }
-    }
-
     "redirect to CompleteEnrolment when Subscription Status (SUB01) response is SubscriptionExists and enrolment service returns false" in {
       when(
         mockCdsSubscriber.subscribeWithCachedDetails(
@@ -698,10 +652,6 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         mockSubscriptionStatusService
           .getStatus(meq("SAFE"), meq("SomeSafeId"))(any())
       ).thenReturn(Future.successful(SubscriptionExists))
-      when(
-        mockTaxEnrolmentsService
-          .doesEnrolmentExist(meq(SafeId("SomeSafeId")))(any(), any())
-      ).thenReturn(Future.successful(false))
 
       regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER

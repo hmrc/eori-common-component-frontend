@@ -21,7 +21,6 @@ import play.api.mvc._
 import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.registration.RegistrationDisplayResponse
@@ -48,7 +47,6 @@ class UserLocationController @Inject() (
   requestSessionData: RequestSessionData,
   save4LaterService: Save4LaterService,
   subscriptionStatusService: SubscriptionStatusService,
-  taxEnrolmentsService: TaxEnrolmentsService,
   sessionCache: SessionCache,
   registrationDisplayService: RegistrationDisplayService,
   mcc: MessagesControllerComponents,
@@ -150,20 +148,7 @@ class UserLocationController @Inject() (
         safeId =>
           sessionCache
             .saveRegistrationDetails(RegistrationDetails.rdSafeId(safeId.get))
-            .flatMap { _ =>
-              taxEnrolmentsService.doesEnrolmentExist(safeId.get).map {
-                case true =>
-                  Redirect(
-                    SignInWithDifferentDetailsController
-                      .form(service, Journey.Register)
-                  )
-                case false =>
-                  Redirect(
-                    SubscriptionRecoveryController
-                      .complete(service, Journey.Register)
-                  )
-              }
-            }
+            .map( _ => Redirect(SubscriptionRecoveryController.complete(service, Journey.Register)))
       )
 
   def subscriptionStatus(

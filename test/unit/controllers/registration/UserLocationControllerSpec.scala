@@ -32,7 +32,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.connector.ServiceUnavailableResp
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.UserLocationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.SignInWithDifferentDetailsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.{
   ContactResponse,
@@ -70,7 +69,7 @@ import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with BeforeAndAfterEach with AuthActionMock {
 
@@ -81,7 +80,6 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
   private val mockSessionCache               = mock[SessionCache]
   private val mockSave4LaterService          = mock[Save4LaterService]
   private val mockSubscriptionStatusService  = mock[SubscriptionStatusService]
-  private val mockTaxEnrolmentsService       = mock[TaxEnrolmentsService]
   private val mockRegistrationDisplayService = mock[RegistrationDisplayService]
   private val mockSubscriptionFlowManager    = mock[SubscriptionFlowManager]
   private val mockEnrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
@@ -99,7 +97,6 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
     mockRequestSessionData,
     mockSave4LaterService,
     mockSubscriptionStatusService,
-    mockTaxEnrolmentsService,
     mockSessionCache,
     mockRegistrationDisplayService,
     mcc,
@@ -118,7 +115,6 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
       mockRequestSessionData,
       mockSave4LaterService,
       mockSubscriptionStatusService,
-      mockTaxEnrolmentsService,
       mockRegistrationDisplayService,
       mockSubscriptionFlowManager
     )
@@ -237,7 +233,6 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
       mockRequestSessionData,
       mockSave4LaterService,
       mockSubscriptionStatusService,
-      mockTaxEnrolmentsService,
       mockSessionCache,
       mockRegistrationDisplayService,
       mcc,
@@ -404,26 +399,6 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         }
       }
 
-      s"redirect to SignInWithDifferentDetailsController when SubscriptionExists status and enrolment exists is true page when '$selectedOptionValue' is selected" in {
-        when(mockSave4LaterService.fetchSafeId(any[InternalId])(any[HeaderCarrier]))
-          .thenReturn(Future.successful(Some(SafeId("safeid"))))
-        when(
-          mockSubscriptionStatusService
-            .getStatus(any[String], any[String])(any[HeaderCarrier])
-        ).thenReturn(Future.successful(SubscriptionExists))
-        when(mockTaxEnrolmentsService.doesEnrolmentExist(any[SafeId])(any[HeaderCarrier], any[ExecutionContext]))
-          .thenReturn(Future.successful(true))
-        when(mockSessionCache.saveRegistrationDetails(any[RegistrationDetailsSafeId])(any[HeaderCarrier]))
-          .thenReturn(Future.successful(true))
-
-        submitForm(Map(locationFieldName -> selectedOptionValue)) { result =>
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) should endWith(
-            SignInWithDifferentDetailsController.form(atarService, Journey.Register).url
-          )
-        }
-      }
-
       s"redirect to CompleteEnrolmentAfterSubscriptionTimeoutController when SubscriptionExists status and enrolment exists is false and when '$selectedOptionValue' is selected" in {
         when(mockSave4LaterService.fetchSafeId(any[InternalId])(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(SafeId("safeid"))))
@@ -431,8 +406,6 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
           mockSubscriptionStatusService
             .getStatus(any[String], any[String])(any[HeaderCarrier])
         ).thenReturn(Future.successful(SubscriptionExists))
-        when(mockTaxEnrolmentsService.doesEnrolmentExist(any[SafeId])(any[HeaderCarrier], any[ExecutionContext]))
-          .thenReturn(Future.successful(false))
 
         submitForm(Map(locationFieldName -> selectedOptionValue)) { result =>
           status(result) shouldBe SEE_OTHER
@@ -474,7 +447,6 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
           mockRequestSessionData,
           mockSave4LaterService,
           mockSubscriptionStatusService,
-          mockTaxEnrolmentsService,
           mockSessionCache,
           mockRegistrationDisplayService,
           mcc,
@@ -530,7 +502,6 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
           mockRequestSessionData,
           mockSave4LaterService,
           mockSubscriptionStatusService,
-          mockTaxEnrolmentsService,
           mockSessionCache,
           mockRegistrationDisplayService,
           mcc,
