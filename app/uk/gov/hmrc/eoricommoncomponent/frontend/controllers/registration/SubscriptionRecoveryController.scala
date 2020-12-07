@@ -304,12 +304,6 @@ class SubscriptionRecoveryController @Inject() (
   )(implicit request: Request[AnyContent], headerCarrier: HeaderCarrier): Option[LocalDate] = {
     val isIndividualOrSoleTrader = requestSessionData.isIndividualOrSoleTrader
     val dateOfEstablishment      = response.responseDetail.dateOfEstablishment // Date we hold
-    println("######")
-    println(isIndividualOrSoleTrader)
-    println(dateOfEstablishment)
-    println(dateOfEstablishmentCaptured)
-    println(dateOfBirthCaptured)
-    println("######")
 
     (isIndividualOrSoleTrader, dateOfEstablishment, dateOfEstablishmentCaptured, dateOfBirthCaptured) match {
       case (_, Some(date), _, _)     => Some(date)
