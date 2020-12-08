@@ -23,7 +23,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
@@ -37,7 +36,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{
   sub01_outcome_processing,
   sub01_outcome_rejected
 }
-import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -49,7 +47,6 @@ class ConfirmContactDetailsController @Inject() (
   cdsFrontendDataCache: SessionCache,
   orgTypeLookup: OrgTypeLookup,
   subscriptionFlowManager: SubscriptionFlowManager,
-  taxEnrolmentsService: TaxEnrolmentsService,
   mcc: MessagesControllerComponents,
   confirmContactDetailsView: confirm_contact_details,
   sub01OutcomeProcessingView: sub01_outcome_processing,
@@ -214,7 +211,7 @@ class ConfirmContactDetailsController @Inject() (
           case SubscriptionProcessing =>
             Future.successful(Redirect(ConfirmContactDetailsController.processing(service)))
           case SubscriptionExists =>
-            handleExistingSubscription(service, journey: Journey.Value)
+            Future.successful(Redirect(SubscriptionRecoveryController.complete(service, journey)))
           case status =>
             throw new IllegalStateException(s"Invalid subscription status : $status")
         }
@@ -261,22 +258,6 @@ class ConfirmContactDetailsController @Inject() (
         }
     }
   }
-
-  private def handleExistingSubscription(service: Service, journey: Journey.Value)(implicit
-    hc: HeaderCarrier
-  ): Future[Result] =
-    cdsFrontendDataCache.registrationDetails.flatMap(
-      rd =>
-        taxEnrolmentsService.doesEnrolmentExist(rd.safeId).map {
-          case true =>
-            Redirect(SignInWithDifferentDetailsController.form(service, journey))
-          case false =>
-            Redirect(
-              SubscriptionRecoveryController
-                .complete(service, journey)
-            )
-        }
-    )
 
   private def concatenateAddress(registrationDetails: RegistrationDetails): AddressViewModel =
     AddressViewModel(registrationDetails.address)

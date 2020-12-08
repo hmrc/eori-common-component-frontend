@@ -18,7 +18,7 @@ package unit.services.subscription
 
 import base.UnitSpec
 import org.joda.time.LocalDate
-import org.mockito.ArgumentMatchers.{eq => meq, _}
+import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfter
 import org.scalatest.mockito.MockitoSugar
@@ -29,7 +29,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.TaxEnrolmentsService
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class TaxEnrolmentsServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter {
@@ -49,16 +48,8 @@ class TaxEnrolmentsServiceSpec extends UnitSpec with MockitoSugar with BeforeAnd
   val formBundleId         = "formBundleId"
   val date                 = LocalDate.parse("2010-04-28")
   val taxEnrolmentResponse = TaxEnrolmentsResponse(serviceName = testService.enrolmentKey)
+
   "TaxEnrolmentsService" should {
-
-    "determine enrolmentExists" in {
-      when(mockTaxEnrolmentsConnector.getEnrolments(any[String])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(List(taxEnrolmentResponse)))
-
-      await(service.doesEnrolmentExist(safeId)) shouldBe true
-
-      verify(mockTaxEnrolmentsConnector).getEnrolments(any[String])(meq(headerCarrier))
-    }
 
     "make issuer call" in {
       when(

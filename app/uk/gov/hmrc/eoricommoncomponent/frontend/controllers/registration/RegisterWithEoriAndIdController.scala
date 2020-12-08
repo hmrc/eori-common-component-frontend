@@ -18,13 +18,12 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import com.github.nscala_time.time.Imports.LocalDate
 import javax.inject.{Inject, Singleton}
-import org.joda.time.DateTime
 import play.api.Logger
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, GroupEnrolmentExtractor}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.EnrolmentAlreadyExistsController
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.{Sub02Controller, _}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.Sub02Controller
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, MissingGroupId}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegisterWithEoriAndIdResponse._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -57,7 +56,6 @@ class RegisterWithEoriAndIdController @Inject() (
   subscriptionOutcomePendingView: subscription_outcome_pending,
   subscriptionOutcomeFailView: subscription_outcome_fail,
   reg06EoriAlreadyLinked: reg06_eori_already_linked,
-  taxEnrolmentsService: TaxEnrolmentsService,
   groupEnrolment: GroupEnrolmentExtractor,
   languageUtils: LanguageUtils
 )(implicit ec: ExecutionContext)
@@ -121,13 +119,7 @@ class RegisterWithEoriAndIdController @Inject() (
     loggedInUser: LoggedInUserWithEnrolments
   ) =
     cache.registrationDetails.flatMap { regDetails =>
-      onRegistrationPassCheckSubscriptionStatus(
-        service,
-        journey,
-        "taxPayerID",
-        regDetails.sapNumber.mdgTaxPayerId,
-        regDetails.safeId
-      )
+      onRegistrationPassCheckSubscriptionStatus(service, journey, "taxPayerID", regDetails.sapNumber.mdgTaxPayerId)
     }
 
   private def handleREG06Response(service: Service, journey: Journey.Value)(implicit
@@ -140,7 +132,7 @@ class RegisterWithEoriAndIdController @Inject() (
           val safeId = resp.responseDetail
             .flatMap(_.responseData.map(x => x.SAFEID))
             .getOrElse(throw new IllegalStateException("SafeId can't be none"))
-          onRegistrationPassCheckSubscriptionStatus(service, journey, idType = "SAFE", id = safeId, SafeId(safeId))
+          onRegistrationPassCheckSubscriptionStatus(service, journey, idType = "SAFE", id = safeId)
         case Some("DEFERRED") =>
           val formattedDate = languageUtils.Dates.formatDate(resp.responseCommon.processingDate.toLocalDate)
           Future.successful(Redirect(RegisterWithEoriAndIdController.pending(service, formattedDate)))
@@ -255,24 +247,14 @@ class RegisterWithEoriAndIdController @Inject() (
     service: Service,
     journey: Journey.Value,
     idType: String,
-    id: String,
-    safeId: SafeId
+    id: String
   )(implicit request: Request[AnyContent], loggedInUser: LoggedInUserWithEnrolments, hc: HeaderCarrier) =
     subscriptionStatusService.getStatus(idType, id).flatMap {
       case NewSubscription | SubscriptionRejected =>
         onSuccessfulSubscriptionStatusSubscribe(service, journey)
       case SubscriptionProcessing =>
         Future.successful(Redirect(RegisterWithEoriAndIdController.processing(service)))
-      case SubscriptionExists => handleExistingSubscription(safeId, service, journey)
-    }
-
-  private def handleExistingSubscription(safeId: SafeId, service: Service, journey: Journey.Value)(implicit
-    hc: HeaderCarrier
-  ): Future[Result] =
-    taxEnrolmentsService.doesEnrolmentExist(safeId).map {
-      case true => Redirect(SignInWithDifferentDetailsController.form(service, journey))
-      case false =>
-        Redirect(SubscriptionRecoveryController.complete(service, journey))
+      case SubscriptionExists => Future.successful(Redirect(SubscriptionRecoveryController.complete(service, journey)))
     }
 
   private def cachedName(implicit request: Request[AnyContent]) =

@@ -31,8 +31,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionDa
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDisplayService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   EnrolmentStoreProxyService,
-  SubscriptionStatusService,
-  TaxEnrolmentsService
+  SubscriptionStatusService
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.user_location
@@ -56,7 +55,6 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach wi
   private val mockSessionCache               = mock[SessionCache]
   private val mockSave4LaterService          = mock[Save4LaterService]
   private val mockSubscriptionStatusService  = mock[SubscriptionStatusService]
-  private val mockTaxEnrolmentsService       = mock[TaxEnrolmentsService]
   private val mockRegistrationDisplayService = mock[RegistrationDisplayService]
   private val mockSave4LaterConnector        = mock[Save4LaterConnector]
   private val mockEnrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
@@ -74,7 +72,6 @@ class UserLocationFormViewSpec extends ControllerSpec with BeforeAndAfterEach wi
     mockRequestSessionData,
     mockSave4LaterService,
     mockSubscriptionStatusService,
-    mockTaxEnrolmentsService,
     mockSessionCache,
     mockRegistrationDisplayService,
     mcc,
