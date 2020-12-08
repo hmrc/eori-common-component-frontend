@@ -165,6 +165,7 @@ GET         /customs-enrolment-services/:service/:journey/matching/row/nino     
 POST        /customs-enrolment-services/:service/:journey/matching/row/nino                           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.DoYouHaveNinoController.submit(service: Service, journey: Journey.Value)
 
 GET         /customs-enrolment-services/:service/:journey/complete-enrolment                          @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.SubscriptionRecoveryController.complete(service: Service, journey: Journey.Value)
+GET         /customs-enrolment-services/:service/:journey/eori-exist                                  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.SubscriptionRecoveryController.eoriExist(service: Service, journey: Journey.Value)
 
 GET         /customs-enrolment-services/:service/register/match                                       @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.MatchingIdController.matchWithIdOnly(service: Service)
 

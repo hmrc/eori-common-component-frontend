@@ -16,11 +16,11 @@
 
 package util.builders
 
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{MessagingServiceParam, ResponseCommon}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetails
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.{DateTime, LocalDate}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{MessagingServiceParam, ResponseCommon}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetails
 
 object SubscriptionInfoBuilder {
 
@@ -144,6 +144,11 @@ object SubscriptionInfoBuilder {
   val responseDetailWithoutEmail =
     fullyPopulatedResponseDetail.copy(contactInformation = Some(partiallyPopulatedContactInformation))
 
+  val responseDetailWithUnverifiedEmail =
+    fullyPopulatedResponseDetail.copy(contactInformation =
+      Some(fullyPopulatedContactInformation.copy(emailVerificationTimestamp = None))
+    )
+
   val responseDetailWithoutPersonOfContact = fullyPopulatedResponseDetail.copy(contactInformation =
     Some(partiallyPopulatedContactInformation.copy(emailAddress = Some(emailAddress)))
   )
@@ -198,6 +203,9 @@ object SubscriptionInfoBuilder {
     SubscriptionDisplayResponse(sampleResponseCommon, onlyMandatoryPopulatedResponseDetail)
 
   val responseWithoutEmailAddress = SubscriptionDisplayResponse(sampleResponseCommon, responseDetailWithoutEmail)
+
+  val responseWithUnverifiedEmailAddress =
+    SubscriptionDisplayResponse(sampleResponseCommon, responseDetailWithUnverifiedEmail)
 
   val responseWithoutPersonOfContact =
     SubscriptionDisplayResponse(sampleResponseCommon, responseDetailWithoutPersonOfContact)

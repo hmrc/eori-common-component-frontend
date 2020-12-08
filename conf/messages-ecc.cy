@@ -222,3 +222,6 @@ confirm-business-details.yes-wrong-address=TRANSLATE No, I want to change the ad
 confirm-business-details.partnership.yes-wrong-address=TRANSLATE No, I want to change the address
 confirm-business-details.individual.yes-wrong-address=TRANSLATE No, I want to change my address
 yes-no-wrong-address.error=TRANSLATE Select yes if this is your address
+
+cds.existing.reg.eori-already-exists.title=Mae gennych EORI eisoes
+cds.existing.reg.eori.number=Rhif EORI:
