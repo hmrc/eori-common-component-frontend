@@ -145,3 +145,7 @@ h1 {
 a.hmrc-language-select__list-item {
     padding: 0.3125em;
 }
+
+details .arrow {
+    display: none!important;
+}
