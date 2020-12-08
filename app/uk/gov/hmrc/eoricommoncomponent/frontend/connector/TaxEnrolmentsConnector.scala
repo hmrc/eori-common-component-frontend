@@ -18,9 +18,12 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
+import play.api.libs.json.Json
+import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.GovernmentGatewayEnrolmentRequest
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{IssuerCall, IssuerRequest, IssuerResponse}
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.HttpStatusCheck
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -28,31 +31,13 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig)(implicit ec: ExecutionContext)
-    extends CaseClassAuditHelper {
+class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
+  ec: ExecutionContext
+) extends CaseClassAuditHelper {
 
   private val logger         = Logger(this.getClass)
   private val baseUrl        = appConfig.taxEnrolmentsBaseUrl
   val serviceContext: String = appConfig.taxEnrolmentsServiceContext
-
-  def getEnrolments(safeId: String)(implicit hc: HeaderCarrier): Future[List[TaxEnrolmentsResponse]] = {
-    val url = s"$baseUrl/$serviceContext/businesspartners/$safeId/subscriptions"
-
-    // $COVERAGE-OFF$Loggers
-    logger.debug(s"GetEnrolments: $url and hc: $hc")
-    // $COVERAGE-ON
-
-    http.GET[List[TaxEnrolmentsResponse]](url) map { resp =>
-      // $COVERAGE-OFF$Loggers
-      logger.debug(s"GetEnrolments: response: $resp")
-      // $COVERAGE-ON
-      resp
-    } recover {
-      case e: Throwable =>
-        logger.warn(s"GetEnrolments failed. url: $url, error: $e", e)
-        throw e
-    }
-  }
 
   /**
     *
@@ -73,6 +58,7 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig)(
 
     http.doPut[TaxEnrolmentsRequest](url, request) map { response: HttpResponse =>
       logResponse("Enrol", response)
+      auditCall(url, request, response)
       response.status
     }
   }
@@ -90,6 +76,20 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig)(
       logResponse("EnrolAndActivate", response)
       response
     }
+  }
+
+  private def auditCall(url: String, request: TaxEnrolmentsRequest, response: HttpResponse)(implicit
+    hc: HeaderCarrier
+  ): Unit = {
+    val issuerRequest  = IssuerRequest(request)
+    val issuerResponse = IssuerResponse(response)
+
+    audit.sendExtendedDataEvent(
+      transactionName = "ecc-issuer-call",
+      path = url,
+      details = Json.toJson(IssuerCall(issuerRequest, issuerResponse)),
+      eventType = "IssuerCall"
+    )
   }
 
   private def logResponse(service: String, response: HttpResponse): Unit =

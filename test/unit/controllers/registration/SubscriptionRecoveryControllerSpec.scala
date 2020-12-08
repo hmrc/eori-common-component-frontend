@@ -148,6 +148,9 @@ class SubscriptionRecoveryControllerSpec
           any[SafeId]
         )(any[HeaderCarrier])
       ).thenReturn(Future.successful(result = ()))
+      when(mockSubscriptionDetailsHolder.dateOfBirth).thenReturn(None)
+      when(mockSubscriptionDetailsHolder.nameDobDetails)
+        .thenReturn(Some(NameDobMatchModel("fname", Some("mName"), "lname", LocalDate.parse("2019-01-01"))))
     }
 
     "call Enrolment Complete with successful SUB09 call for Get Your EORI journey" in {

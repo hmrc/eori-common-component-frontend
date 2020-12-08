@@ -33,7 +33,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.SessionBuilder
-import util.builders.SubscriptionAmendCompanyDetailsFormBuilder._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

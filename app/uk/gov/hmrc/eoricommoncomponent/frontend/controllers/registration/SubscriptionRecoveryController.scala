@@ -25,8 +25,8 @@ import uk.gov.hmrc.emailaddress.EmailAddress
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SUB09SubscriptionDisplayConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionDisplayResponse
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
@@ -116,7 +116,7 @@ class SubscriptionRecoveryController @Inject() (
               getDateOfBirthOrDateOfEstablishment(
                 subscriptionDisplayResponse,
                 registrationDetails.dateOfEstablishmentOption,
-                registrationDetails.dateOfBirthOption
+                registrationDetails.dateOfBirthOption // TODO See fixes below, fix applied to subscription journey need to be applied to register too
               ),
               service,
               Journey.Register
@@ -157,7 +157,7 @@ class SubscriptionRecoveryController @Inject() (
           getDateOfBirthOrDateOfEstablishment(
             subscriptionDisplayResponse,
             subscriptionDetails.dateEstablished,
-            subscriptionDetails.dateOfBirth
+            subscriptionDetails.dateOfBirth orElse subscriptionDetails.nameDobDetails.map(_.dateOfBirth)
           ),
           service,
           Journey.Subscribe
@@ -191,7 +191,7 @@ class SubscriptionRecoveryController @Inject() (
           getDateOfBirthOrDateOfEstablishment(
             subscriptionDisplayResponse,
             subscriptionDetails.dateEstablished,
-            subscriptionDetails.dateOfBirth
+            subscriptionDetails.dateOfBirth orElse subscriptionDetails.nameDobDetails.map(_.dateOfBirth)
           ),
           service,
           Journey.Subscribe
