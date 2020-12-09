@@ -75,11 +75,11 @@ cds.subscription.information.para1=O 1 Ionawr 2021 ymlaen, bydd angen rhif EORI 
 cds.subscription.information.para2=Os nad oes gennych rif {0}, mae’n rhaid i chi gael un cyn i chi fynd yn eich blaen.
 cds.subscription.information.para2.link=EORI eisoes
 
-cds.subscription.information.section.organisation.subheading=Fel sefydliad:
+cds.subscription.information.section.organisation.subheading=Fel sefydliad
 cds.subscription.information.section.organisation.utr=Bydd angen eich Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR) arnoch. Gallwch {0}.
 cds.subscription.information.section.organisation.utr.link=ddod o hyd i UTR coll (yn agor ffenestr neu dab newydd)
 
-cds.subscription.information.section.individual.subheading=Fel unigolyn neu unig fasnachwr yn y DU:
+cds.subscription.information.section.individual.subheading=Fel unigolyn neu unig fasnachwr yn y DU
 cds.subscription.information.section.individual.para=Bydd angen un o’r canlynol arnoch:
 cds.subscription.information.section.individual.nino=Rhif Yswiriant Gwladol
 cds.subscription.information.section.individual.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad
