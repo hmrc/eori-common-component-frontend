@@ -52,8 +52,8 @@ import util.builders.RegistrationDetailsBuilder.{
 import util.builders.SessionBuilder
 import util.builders.SubscriptionContactDetailsFormBuilder._
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEach {
 
@@ -313,7 +313,6 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
           page.getElementText(emailFieldXPath) shouldBe Email
           page.getElementValue(fullNameFieldXPath) shouldBe FullName
           page.getElementValue(telephoneFieldXPath) shouldBe Telephone
-          page.getElementValue(faxFieldXPath) shouldBe Fax
           page.radioButtonIsChecked(useRegisteredAddressYesRadioButtonXPath) shouldBe false
           page.radioButtonIsChecked(useRegisteredAddressNoRadioButtonXPath) shouldBe true
           page.getElementValue(streetFieldXPath) shouldBe Street
@@ -339,9 +338,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       showCreateForm() { result =>
         val page = CdsPage(contentAsString(result))
         page.getElementsText(headingXPath) shouldBe "Who can we contact?"
-        page.getElementsText(
-          introXPath
-        ) shouldBe "We will use these details to contact you about your request. We will also use them to contact you if there are any issues with your customs activities."
+        page.getElementsText(introXPath) shouldBe "We will use these details to contact you about your application."
       }
     }
 
@@ -356,7 +353,6 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       showCreateForm() { result =>
         val page = CdsPage(contentAsString(result))
         page.getElementsText(hintTextTelephonXpath) shouldBe hintTextTelAndFax
-        page.getElementsText(hintTextFaxXpath) shouldBe hintTextTelAndFax
       }
     }
 
@@ -368,7 +364,6 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         page.getElementValue(fullNameFieldXPath) shouldBe FullName
         page.getElementText(emailFieldXPath) shouldBe Email
         page.getElementValue(telephoneFieldXPath) shouldBe Telephone
-        page.getElementValue(faxFieldXPath) shouldBe Fax
         page.radioButtonIsChecked(useRegisteredAddressYesRadioButtonXPath) shouldBe false
         page.radioButtonIsChecked(useRegisteredAddressNoRadioButtonXPath) shouldBe true
         page.getElementValue(streetFieldXPath) shouldBe Street
@@ -386,7 +381,6 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         page.getElementValue(fullNameFieldXPath) shouldBe FullName
         page.getElementText(emailFieldXPath) shouldBe Email
         page.getElementValue(telephoneFieldXPath) shouldBe Telephone
-        page.getElementValue(faxFieldXPath) shouldBe Fax
         page.radioButtonIsChecked(useRegisteredAddressYesRadioButtonXPath) shouldBe true
         page.radioButtonIsChecked(useRegisteredAddressNoRadioButtonXPath) shouldBe false
         page.getElementValue(streetFieldXPath) shouldBe empty
@@ -402,7 +396,6 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         page.getElementValue(fullNameFieldXPath) shouldBe empty
         page.getElementValue(emailFieldXPath) shouldBe empty
         page.getElementValue(telephoneFieldXPath) shouldBe empty
-        page.getElementValue(faxFieldXPath) shouldBe empty
         page.getElementValue(streetFieldXPath) shouldBe empty
         page.getElementValue(cityFieldXPath) shouldBe empty
         page.getElementValue(postcodeFieldXPath) shouldBe empty
@@ -425,7 +418,6 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         page.getElementValue(fullNameFieldXPath) shouldBe FullName
         page.getElementText(emailFieldXPath) shouldBe Email
         page.getElementValue(telephoneFieldXPath) shouldBe Telephone
-        page.getElementValue(faxFieldXPath) shouldBe Fax
         page.getElementValue(streetFieldXPath) shouldBe Street
         page.getElementValue(cityFieldXPath) shouldBe City
         page.getElementValue(postcodeFieldXPath) shouldBe Postcode
@@ -455,7 +447,6 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         page.getElementText(emailLabelXPath) shouldBe emailAddressFieldLabel
         page.getElementText(emailFieldXPath) shouldBe Email
         page.getElementValue(telephoneFieldXPath) shouldBe Telephone
-        page.getElementValue(faxFieldXPath) shouldBe Fax
         page.getElementValue(streetFieldXPath) shouldBe Street
         page.getElementValue(cityFieldXPath) shouldBe City
         page.getElementValue(postcodeFieldXPath) shouldBe Postcode
@@ -475,7 +466,6 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         page.getElementText(emailLabelXPath) shouldBe emailAddressFieldLabel
         page.getElementText(emailFieldXPath) shouldBe Email
         page.getElementValue(telephoneFieldXPath) shouldBe Telephone
-        page.getElementValue(faxFieldXPath) shouldBe Fax
         page.getElementValue(streetFieldXPath) shouldBe Street
         page.getElementValue(cityFieldXPath) shouldBe City
         page.getElementValue(postcodeFieldXPath) shouldBe Postcode
@@ -600,26 +590,6 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     "Allow when Telephone contains plus character" in {
       submitFormInCreateMode(createFormMandatoryFieldsMap + (telephoneFieldName -> "+")) { result =>
         status(result) shouldBe SEE_OTHER
-      }
-    }
-
-    "produce validation error when Fax more than 24 characters" in {
-      submitFormInCreateMode(createFormMandatoryFieldsMap + (faxFieldName -> oversizedString(24))) { result =>
-        status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(contentAsString(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The fax number must be 24 digits or less"
-        page.getElementsText(faxFieldLevelErrorXPath) shouldBe "Error: The fax number must be 24 digits or less"
-        page.getElementsText("title") should startWith("Error: ")
-      }
-    }
-
-    "produce validation error when fax contains invalid characters" in {
-      submitFormInCreateMode(createFormMandatoryFieldsMap + (faxFieldName -> "$£")) { result =>
-        status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(contentAsString(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Please enter a valid fax number"
-        page.getElementsText(faxFieldLevelErrorXPath) shouldBe "Error: Please enter a valid fax number"
-        page.getElementsText("title") should startWith("Error: ")
       }
     }
 
