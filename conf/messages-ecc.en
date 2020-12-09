@@ -75,11 +75,11 @@ cds.subscription.information.para1=From 1 January 2021, you will need a GB EORI 
 cds.subscription.information.para2=If you do not already have one, you must {0} before you proceed.
 cds.subscription.information.para2.link=get an EORI number
 
-cds.subscription.information.section.organisation.subheading=As an organisation:
+cds.subscription.information.section.organisation.subheading=As an organisation
 cds.subscription.information.section.organisation.utr=You will also need your Corporation Tax Unique Tax Reference (UTR). You can {0}.
 cds.subscription.information.section.organisation.utr.link=find a lost UTR number (opens in a new window or tab)
 
-cds.subscription.information.section.individual.subheading=As an individual or sole trader in the UK:
+cds.subscription.information.section.individual.subheading=As an individual or sole trader in the UK
 cds.subscription.information.section.individual.para=You will need one of the following:
 cds.subscription.information.section.individual.nino=National Insurance number
 cds.subscription.information.section.individual.utr=Self Assessment Unique Taxpayer Reference (UTR)
