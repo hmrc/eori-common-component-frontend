@@ -37,7 +37,7 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
     s"The Advance Tariff Rulings subscription request for $name has been unsuccessful"
 
   private val processDateExpectedText =
-    s"Application received by HMRC on ${languageUtils.Dates.formatDate(processedDate.toLocalDate)}"
+    s"Application received on ${languageUtils.Dates.formatDate(processedDate.toLocalDate)}"
 
   private val view = instanceOf[reg06_eori_already_linked]
 
@@ -57,7 +57,7 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
     "have the right vat registered text" in {
       doc()
         .getElementById("use-cds-para")
-        .text() mustBe s"You need to sign in with the Government Gateway $name used to get access to Advance Tariff Rulings."
+        .text() mustBe s"You need to sign in with the Government Gateway login details for $name used to access Advance Tariff Rulings."
     }
 
     "have the feedback link" in {

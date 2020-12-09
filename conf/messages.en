@@ -593,7 +593,7 @@ cds.sub02.outcome.subscription-in-progress.send-you-an-email=We will send you an
 cds.reg06.outcome.eori-already-linked.title-and-heading=The application for
 cds.reg06.outcome.eori-already-linked.heading={0} has been unsuccessful
 
-cds.reg06.outcome.eori-already-linked.received=Application received by HMRC on {0}
+cds.reg06.outcome.eori-already-linked.received=Application received on {0}
 cds.subscription.outcomes.eori-already-linked.use-cds-heading=To use CDS
 cds.subscription.outcomes.eori-already-linked.use-cds-para=You need to sign in with the Government Gateway {0} used to get access to CDS.
 
