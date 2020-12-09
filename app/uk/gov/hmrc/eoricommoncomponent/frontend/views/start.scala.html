@@ -30,7 +30,7 @@
     <a href="@url" target="@target">@messages(text)</a>
 }
 
-@layout_di(messages("cds.start-page.title")) {
+@layout_di(messages("cds.start-page.title"), suppressTelephoneNumberDetection = false) {
 
     <div class="column-two-thirds start_page">
         <h1 class="heading-large">@messages("cds.start-page.title")</h1>

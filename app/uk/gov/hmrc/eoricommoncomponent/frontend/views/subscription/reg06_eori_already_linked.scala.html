@@ -28,7 +28,7 @@
 @formatDate(dateTime: DateTime) = @{
     languageUtils.Dates.formatDate(LocalDate.fromDateFields(dateTime.toDate))
 }
-@layout_di(messages("cds.reg06.outcome.eori-already-linked.title", longName)) {
+@layout_di(messages("cds.reg06.outcome.eori-already-linked.title", longName), suppressTelephoneNumberDetection = false) {
     <div class="column-two-thirds">
         <div class="govuk-box-highlight">
             <h1 id="page-heading" class="heading-xlarge" >@messages("cds.reg06.outcome.eori-already-linked.heading", longName, orgName)</h1>

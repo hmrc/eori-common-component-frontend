@@ -25,7 +25,7 @@
   otherService.map(other => ServiceName.longName(other)).getOrElse(messages("cds.enrolment.pending.otherService"))
 }
 
-@layout_di(messages("cds.enrolment.pending.title")) {
+@layout_di(messages("cds.enrolment.pending.title"), suppressTelephoneNumberDetection = false) {
 
     <div class="column-two-thirds">
         <h1 id="page-heading" class="heading-large">@messages("cds.enrolment.pending.title")</h1>

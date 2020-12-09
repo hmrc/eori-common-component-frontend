@@ -24,7 +24,7 @@
 
 @journey = @{if(request.path.contains("register")) Journey.Register else Journey.Subscribe}
 
-@layout_di(messages("cds.you-cant-use-service.heading")) {
+@layout_di(messages("cds.you-cant-use-service.heading"), suppressTelephoneNumberDetection = false) {
     <div class="column-two-thirds">
         <header class="page-header">
             <h1 id="page-heading" class="heading-large">@messages("cds.you-cant-use-service.heading")</h1>
