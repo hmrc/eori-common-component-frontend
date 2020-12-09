@@ -200,13 +200,13 @@ cds.start-page.help.eori.contact=TRANSLATE Contact the EORI team online.
 # Start Page (end)
 
 cds.enrolment.pending.title=Mae problem wedi codi
-cds.enrolment.pending.otherService=TRANSLATE another service
-cds.enrolment.pending.user.paragraph1=TRANSLATE We are currently processing your subscription request to {0}.
-cds.enrolment.pending.user.paragraph2=TRANSLATE This process must be completed before you can apply for another service.
-cds.enrolment.pending.user.paragraph3=TRANSLATE Sign out and wait until you receive an email notification about {0} before applying to {1}.
-cds.enrolment.pending.group.otherService.paragraph1=TRANSLATE We are currently processing a subscription request to {0} from someone in your organisation.
-cds.enrolment.pending.group.otherService.paragraph2=TRANSLATE This process must be completed before you can apply for another service.
-cds.enrolment.pending.group.sameService.paragraph1=TRANSLATE Our records show that someone in your organisation has already applied for this service.
+cds.enrolment.pending.otherService=gwasanaeth arall
+cds.enrolment.pending.user.paragraph1=Rydym wrthi’n prosesu’ch cais am danysgrifiad i’r gwasanaeth {0}.
+cds.enrolment.pending.user.paragraph2=Mae’n rhaid i’r broses hon gael ei chwblhau cyn i chi allu gwneud cais am wasanaeth arall.
+cds.enrolment.pending.user.paragraph3=Allgofnodwch ac arhoswch tan i chi gael hysbysiadau drwy e-bost ynghylch {0} cyn gwneud cais i’r gwasanaeth {1}.
+cds.enrolment.pending.group.otherService.paragraph1=Rydym wrthi’n prosesu cais am danysgrifiad i’r gwasanaeth {0} gan rywun yn eich sefydliad.
+cds.enrolment.pending.group.otherService.paragraph2=Mae’n rhaid i’r broses hon gael ei chwblhau cyn i chi allu gwneud cais am wasanaeth arall.
+cds.enrolment.pending.group.sameService.paragraph1=Yn ôl ein cofnodion, mae rhywun yn eich sefydliad eisoes wedi gwneud cais am y gwasanaeth hwn.
 
 cds.languageSelect.current.label=Cymraeg
 cds.languageSelect.select.label=English
