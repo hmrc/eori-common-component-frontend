@@ -72,8 +72,8 @@ cds.registration.you-already-have-eori.para1=Rydym wedi canfod bod gennych EORI 
 
 cds.subscription.information.heading=Mae’n rhaid i chi danysgrifio cyn i chi allu defnyddio’r gwasanaeth hwn
 cds.subscription.information.para1=O 1 Ionawr 2021 ymlaen, bydd angen rhif EORI GB (Cofrestru ac Adnabod Gweithredwr Economaidd) i symud nwyddau rhwng Prydain Fawr (Cymru, yr Alban a Lloegr) a gweddill y byd.
-cds.subscription.information.para2=Os nad oes gennych un eisoes, mae’n rhaid i chi {0}.
-cds.subscription.information.para2.link=wneud cais am rif EORI
+cds.subscription.information.para2=Os nad oes gennych rif {0}, mae’n rhaid i chi gael un cyn i chi fynd yn eich blaen.
+cds.subscription.information.para2.link=EORI eisoes
 
 cds.subscription.information.section.organisation.subheading=Fel sefydliad:
 cds.subscription.information.section.organisation.utr=Bydd angen eich Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR) arnoch. Gallwch {0}.
@@ -84,8 +84,8 @@ cds.subscription.information.section.individual.para=Bydd angen un o’r canlyno
 cds.subscription.information.section.individual.nino=Rhif Yswiriant Gwladol
 cds.subscription.information.section.individual.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad
 
-cds.subscription.information.para3=Dim ond unwaith y mae angen gwneud hyn.
-cds.subscription.information.para4=Byddwch yn cael cadarnhad cyn pen 2 awr.
+cds.subscription.information.only.once=Dim ond unwaith y mae angen gwneud hyn.
+cds.subscription.information.email.confirm=Byddwch yn cael cadarnhad cyn pen 2 awr.
 
 cds.navigation.subscribe=Tanysgrifio
 
