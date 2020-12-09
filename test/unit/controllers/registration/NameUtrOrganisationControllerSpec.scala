@@ -40,8 +40,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.{AuthActionMock, SessionBuilder}
 import util.builders.matching.NameIdOrganisationFormBuilder._
+import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -151,9 +151,9 @@ class NameUtrOrganisationControllerSpec
 
           val UtrHintText = organisationType match {
             case "partnership" | "limited-liability-partnership" =>
-              "This is 10 numbers, for example 1234567890. It will be on partnership tax returns and other letters about your partnership. It may be called 'reference', 'UTR' or 'official use'. You can find a lost UTR number (opens in a new window or tab)."
+              "This is 10 numbers, for example 1234567890, which may be followed by a K. It will be on partnership tax returns and other letters about your partnership. It may be called 'reference', 'UTR' or 'official use'. You can find a lost UTR number (opens in a new window or tab)."
             case _ =>
-              "This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Corporation Tax. It may be called 'reference', 'UTR' or 'official use'. You can find a lost UTR number (opens in a new window or tab)."
+              "This is 10 numbers, for example 1234567890, which may be followed by a K. It will be on tax returns and other letters about Corporation Tax. It may be called 'reference', 'UTR' or 'official use'. You can find a lost UTR number (opens in a new window or tab)."
           }
 
           val UtrHintTextLink = "https://www.gov.uk/find-lost-utr-number"
