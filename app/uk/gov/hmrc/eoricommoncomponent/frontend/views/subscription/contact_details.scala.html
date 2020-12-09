@@ -65,9 +65,7 @@
 
 @address = @{Html(fourLineBusinessAddress.mkString("<br>")) }
 
-@weWillUseThisAddress = @{Html("<p class='form-hint'>" + messages("cds.subscription.contact-details.address.we-will-use") + "</p>" +
-    "<span id='registered-address' class='form-label panel panel-border-wide'>" + address + "</span>"
-)}
+@weWillUseThisAddress = @{Html("<span id='registered-address' class='form-label panel panel-border-wide'>" + address + "</span>")}
 
 @layout_di(messages("cds.subscription.contact-details.page.title"), AllCountriesInCountryPicker, form = Some(contactForm)) {
 
@@ -88,13 +86,13 @@
                 <p class="form-hint">@Html(messages("cds.subscription.contact-details.intro"))</p>
             </legend>
 
-            @inputText("full-name", "cds.subscription.contact-details.full-name.label")
+
             <div id="email-outer" class="form-group ">
                 <label for="email" class="form-label-bold">@messages("subscription.check-your-email.label")</label>
                 <div id="email">@email</div>
             </div>
+            @inputText("full-name", "cds.subscription.contact-details.full-name.label")
             @inputText("telephone", "cds.subscription.contact-details.telephone.label", '_hintText -> messages("cds.subscription.contact-details.telephone.hint"))
-            @inputText("fax", "cds.subscription.contact-details.fax.label", '_hintText -> messages("cds.subscription.contact-details.fax.hint"), '_autocomplete -> "fax")
 
 
         @helpers.hideRevealToggle(
