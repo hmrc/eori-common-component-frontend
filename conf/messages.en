@@ -57,7 +57,7 @@ cds.you-cant-use-service-agent.hint2=You need to sign in with the Government Gat
 cds.you-cant-use-service-standard-organisation.hint1=You signed in to Government Gateway as a standard user. To apply for an EORI number you must be an administrator user.
 cds.you-cant-use-service-standard-organisation.hint2=Contact the person who set up your Government Gateway.
 cds.you-cant-use-service.heading=You cannot use this service
-cds.you-cant-use-service.paragraph=To apply for an EORI number phone 0300 322 7067 and ask for an assisted digital application form. They’re open 8am to 6pm, Monday to Friday (closed bank holidays).
+cds.you-cant-use-service.paragraph=To apply for an EORI number phone 0300 322 7067 and ask for an assisted digital application form. They’re open 8am to 6pm, Monday to Friday (except public holidays).
 cds.country-picker.hint.screen-reader=Start to type the name of the country and then use up and down arrows to review and enter to select a country
 cds.country-picker.no-results=No results found
 cds.enrolment-already-exists-against-groupid-gye.paragraph=The Government Gateway ID you used is part of a team that already has an EORI linked to it.
@@ -410,7 +410,7 @@ subscription.confirmation.been-rejected=The EORI registration for<br>{0}<br>has 
 subscription.confirmation.download-pdf=Download a PDF with your subscription details
 subscription.confirmation.download-accessible-text=Download an accessible text file with your subscription details
 subscription.confirmation.what-happens-next-sentence1-processing=We will send you an email when your application has been processed.
-subscription.confirmation.what-happens-next-sentence1-rejected=You can phone HMRC to discuss your application on 0300 322 7067. Open 8am to 6pm, Monday to Friday (closed bank holidays).
+subscription.confirmation.what-happens-next-sentence1-rejected=You can phone HMRC to discuss your application on 0300 322 7067. Open 8am to 6pm, Monday to Friday (except public holidays).
 
 cds.subscription.name-dob-details.page-error.full-name=Full name
 cds.subscription.name-dob-details.error.full-name=Please enter a valid full name
@@ -1050,7 +1050,7 @@ cds.subscription.outcomes.rejected.sub-title=Your Customs registration has been 
 cds.subscription.outcomes.rejected.optional-paragraph=We have sent you an email.
 cds.subscription.outcomes.rejected.next-steps.1=Phone HMRC to discuss your application on
 cds.subscription.outcomes.rejected.received=Application received by HMRC on {0}
-cds.subscription.outcomes.rejected.you-can-phone=You can phone HMRC to discuss your application on 0300 322 7067. Open 8am to 6pm, Monday to Friday (closed bank holidays).
+cds.subscription.outcomes.rejected.you-can-phone=You can phone HMRC to discuss your application on 0300 322 7067. Open 8am to 6pm, Monday to Friday (except public holidays).
 cds.subscription.outcomes.review.title=EORI in review
 cds.subscription.outcomes.review.heading=Registration in review
 cds.subscription.outcomes.review.sub-title=Your application needs checking by HMRC
@@ -1094,7 +1094,7 @@ cds.contact.title=Help and support
 cds.contact.problem=Telephone:
 cds.contact.problem.complete-page=To get help or change any of the details you have given us, phone:
 cds.contact.number=0300 322 7067
-cds.contact.hours=Open 8am to 6pm, Monday to Friday (closed bank holidays).
+cds.contact.hours=Open 8am to 6pm, Monday to Friday (except public holidays).
 #cds process global
 cds.global.title=Get an EORI number
 cds.form.change=Change
@@ -1298,7 +1298,7 @@ cds.error.message.part1=Please try again later.
 cds.error.message.part2=We have not saved your answers. When the service is available, you will have to start again.
 cds.error.helpSupport=Help and support
 cds.error.contact.part1=Telephone: 0300 322 7067
-cds.error.contact.part2=Open 8am to 6pm, Monday to Friday (closed bank holidays).
+cds.error.contact.part2=Open 8am to 6pm, Monday to Friday (except public holidays).
 
 #Are you based in the UK?
 cds.based-in-uk.page.title=Are you or your organisation based in the UK?

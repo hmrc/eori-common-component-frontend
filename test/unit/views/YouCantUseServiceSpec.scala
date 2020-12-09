@@ -18,7 +18,6 @@ package unit.views
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Organisation}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.sub02_request_not_processed
@@ -98,7 +97,7 @@ class YouCantUseServiceSpec extends ViewSpec {
     "display correct para" in {
       cannotUseService003.body
         .getElementById("para")
-        .text mustBe "To apply for an EORI number phone 0300 322 7067 and ask for an assisted digital application form. They’re open 8am to 6pm, Monday to Friday (closed bank holidays)."
+        .text mustBe "To apply for an EORI number phone 0300 322 7067 and ask for an assisted digital application form. They’re open 8am to 6pm, Monday to Friday (except public holidays)."
     }
   }
 
