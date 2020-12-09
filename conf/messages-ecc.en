@@ -72,8 +72,8 @@ cds.registration.you-already-have-eori.para1=We have detected you already have a
 
 cds.subscription.information.heading=You must subscribe before you can use this service
 cds.subscription.information.para1=From 1 January 2021, you will need a GB EORI (Economic Operator and Registration Identification) number to move goods between Great Britain (England, Scotland and Wales) and the rest of the world.
-cds.subscription.information.para2=If you don’t already have one, you must {0}.
-cds.subscription.information.para2.link=apply for an EORI number
+cds.subscription.information.para2=If you do not already have one, you must {0} before you proceed.
+cds.subscription.information.para2.link=get an EORI number
 
 cds.subscription.information.section.organisation.subheading=As an organisation:
 cds.subscription.information.section.organisation.utr=You will also need your Corporation Tax Unique Tax Reference (UTR). You can {0}.
@@ -84,8 +84,8 @@ cds.subscription.information.section.individual.para=You will need one of the fo
 cds.subscription.information.section.individual.nino=National Insurance number
 cds.subscription.information.section.individual.utr=Self Assessment Unique Taxpayer Reference (UTR)
 
-cds.subscription.information.para3=This only needs to be done once.
-cds.subscription.information.para4=You will receive a confirmation email within 2 hours.
+cds.subscription.information.only.once=This only needs to be done once.
+cds.subscription.information.email.confirm=You will receive a confirmation email within 2 hours.
 
 cds.navigation.subscribe=Subscribe
 

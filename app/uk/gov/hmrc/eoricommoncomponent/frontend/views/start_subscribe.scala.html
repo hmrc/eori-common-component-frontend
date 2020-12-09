@@ -34,6 +34,8 @@
     <div class="column-two-thirds start_page">
         <h1 class="heading-large">@messages("cds.subscription.information.heading", ServiceName.longName)</h1>
 
+        <p>@messages("cds.subscription.information.only.once")</p>
+
         <p>@messages("cds.subscription.information.para1")</p>
         <p>@Html(messages("cds.subscription.information.para2", link(messages("cds.subscription.information.para2.link"), appConfig.externalGetEORILink(service), "_self")))</p>
 
@@ -47,8 +49,7 @@
             <li>@messages("cds.subscription.information.section.individual.utr")</li>
         </ul>
 
-        <p>@messages("cds.subscription.information.para3")</p>
-        <p>@messages("cds.subscription.information.para4")</p>
+        <p>@messages("cds.subscription.information.email.confirm")</p>
 
         <a href="@EmailController.form(service, Journey.Subscribe)" class="button" role="button" id="continue">@messages("cds.navigation.continue")</a>
 
