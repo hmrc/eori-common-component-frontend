@@ -36,7 +36,7 @@
   }
 }
 
-@layout_di(messages(s"cds.sub01.outcome.rejected.$journeyKey.title", longName)) {
+@layout_di(messages(s"cds.sub01.outcome.rejected.$journeyKey.title", longName), suppressTelephoneNumberDetection = false) {
     <div class="column-two-thirds">
         <div class="govuk-box-highlight">
             <h1 id="page-heading" class="heading-xlarge">@heading</h1>

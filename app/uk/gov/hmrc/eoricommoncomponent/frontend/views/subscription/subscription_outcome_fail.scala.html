@@ -23,7 +23,7 @@
 @this(layout_di: layout, feedback_di: helpers.feedback, help_di: partials.if_you_need_help)
 @(processedDate: String, name: String, service: Service)(implicit messages: Messages, request: Request[_])
 
-@layout_di(messages("cds.subscription.outcomes.rejected.title", shortName)) {
+@layout_di(messages("cds.subscription.outcomes.rejected.title", shortName), suppressTelephoneNumberDetection = false) {
 <div class="column-two-thirds">
     <div class="govuk-box-highlight">
         <h1 id="page-heading" class="heading-xlarge">@messages("cds.subscription.outcomes.rejected.heading", shortName, name) </h1>
