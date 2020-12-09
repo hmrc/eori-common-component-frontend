@@ -47,7 +47,7 @@
     else messages("cds.matching.utr.hint")
 }
 
-    @layout_di(headerAndTitle, form = Some(businessDetailsForm)) {
+    @layout_di(headerAndTitle, form = Some(businessDetailsForm), suppressTelephoneNumberDetection = true) {
     <div class="column-two-thirds">
         <a href="javascript:history.back()" id="back" class="link-back js-visible">@messages("cds.navigation.back")</a>
 

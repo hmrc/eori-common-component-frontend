@@ -33,7 +33,7 @@
     FieldElements("nino-radio", ninoUtrForm("ninoOrUtrRadio"), null, Map.empty, messages)
 }
 
-@layout_di(messages("subscription-journey.how-confirm-identity"), form = Some(ninoUtrForm)) {
+@layout_di(messages("subscription-journey.how-confirm-identity"), form = Some(ninoUtrForm), suppressTelephoneNumberDetection = true) {
     <div class="column-two-thirds">
         <a href="javascript:history.back()" id="back" class="link-back js-visible">@messages("cds.navigation.back")</a>
 

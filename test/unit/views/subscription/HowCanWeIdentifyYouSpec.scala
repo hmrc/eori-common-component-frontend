@@ -69,6 +69,10 @@ class HowCanWeIdentifyYouSpec extends ViewSpec {
       doc.body().getElementById("utr-radio").attr("type") mustBe "radio"
     }
 
+    "suppress the detection of telephone numbers" in {
+      doc.head().getElementsByAttributeValueMatching("name", "format-detection").attr("content") mustBe "telephone=no"
+    }
+
     "display an page level error if no radio button is selected" in {
       docWithRadioButtonsError
         .body()

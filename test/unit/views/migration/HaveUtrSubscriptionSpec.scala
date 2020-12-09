@@ -60,6 +60,12 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
         .getElementById("utr-hint")
         .text must include("It will be on tax returns and other letters about Corporation Tax.")
     }
+
+    "suppress the detection of telephone numbers" in {
+      companyDoc.head().getElementsByAttributeValueMatching("name", "format-detection").attr(
+        "content"
+      ) mustBe "telephone=no"
+    }
   }
 
   "Fresh Subscription Have Utr Page for Individual" should {

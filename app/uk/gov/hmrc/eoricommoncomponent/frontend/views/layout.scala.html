@@ -29,7 +29,8 @@
 
 @(title: String,
 countriesInCountryPicker: CountriesInCountryPicker = NoCountriesInCountryPicker,
-form: Option[Form[_]] = None
+form: Option[Form[_]] = None,
+suppressTelephoneNumberDetection: Boolean = false
 )(content: Html)(implicit messages: Messages, request: Request[_])
 
 @isLoggedIn = @{!request.session.isEmpty && request.session.get("authToken").isDefined}
@@ -63,6 +64,9 @@ else (reportAProblemLink(appConfig.reportAProblemPartialUrlSubscribe(service), a
 <!--[if gt IE 8]><!--><html lang="en"><!--<![endif]-->
     <head>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+        @if(suppressTelephoneNumberDetection) {
+        <meta name="format-detection" content="telephone=no" />
+        }
         <!-- Tracking Consent Snippet -->
         @trackingConsentSnippet()
         <!-- End Tracking Consent Snippet -->
