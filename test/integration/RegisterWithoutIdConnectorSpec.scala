@@ -262,7 +262,7 @@ class RegisterWithoutIdConnectorSpec extends IntegrationTestsSpec with ScalaFutu
 
         await(registerWithoutIdConnector.register(registerWithoutIdRequest))
 
-        eventually(AuditService.verifyXAuditWrite(2))
+        eventually(AuditService.verifyXAuditWrite(1))
       }
 
       s"not audit a failed request for $registeringEntityType" in {
@@ -277,7 +277,7 @@ class RegisterWithoutIdConnectorSpec extends IntegrationTestsSpec with ScalaFutu
           await(registerWithoutIdConnector.register(registerWithoutIdRequest))
         }
 
-        AuditService.verifyXAuditWrite(1)
+        AuditService.verifyXAuditWrite(0)
       }
     }
   }

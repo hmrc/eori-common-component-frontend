@@ -17,20 +17,14 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.models.events
 
 import play.api.libs.json.Json
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.registration.{
-  RegistrationDisplayRequestHolder,
-  RegistrationDisplayResponseHolder
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{RegisterWithoutIDRequest, RegisterWithoutIdResponseHolder}
 
-case class RegistrationDisplay(request: RegistrationDisplaySubmitted, response: RegistrationDisplayResult)
+case class RegisterWithoutId(request: RegisterWithoutIdSubmitted, response: RegisterWithoutIdResult)
 
-object RegistrationDisplay {
-  implicit val format = Json.format[RegistrationDisplay]
+object RegisterWithoutId {
+  implicit val format = Json.format[RegisterWithoutId]
 
-  def apply(
-    request: RegistrationDisplayRequestHolder,
-    response: RegistrationDisplayResponseHolder
-  ): RegistrationDisplay =
-    RegistrationDisplay(request = RegistrationDisplaySubmitted(request), response = RegistrationDisplayResult(response))
+  def apply(request: RegisterWithoutIDRequest, response: RegisterWithoutIdResponseHolder): RegisterWithoutId =
+    RegisterWithoutId(request = RegisterWithoutIdSubmitted(request), response = RegisterWithoutIdResult(response))
 
 }

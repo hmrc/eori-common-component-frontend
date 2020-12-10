@@ -18,9 +18,11 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
+import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{RegisterWithoutIdRequestHolder, _}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.RegisterWithoutId
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -35,7 +37,6 @@ class RegisterWithoutIdConnector @Inject() (http: HttpClient, appConfig: AppConf
   private val url    = appConfig.getServiceUrl("register-without-id")
 
   def register(request: RegisterWithoutIDRequest)(implicit hc: HeaderCarrier): Future[RegisterWithoutIDResponse] = {
-    auditCallRequest(url, request)
 
     // $COVERAGE-OFF$Loggers
     logger.debug(s"Register: $url, body: $request and hc: $hc")
@@ -44,13 +45,13 @@ class RegisterWithoutIdConnector @Inject() (http: HttpClient, appConfig: AppConf
     http.POST[RegisterWithoutIdRequestHolder, RegisterWithoutIdResponseHolder](
       url,
       RegisterWithoutIdRequestHolder(request)
-    ) map { resp =>
+    ) map { response =>
       // $COVERAGE-OFF$Loggers
-      logger.debug(s"Register: responseCommon: ${resp.registerWithoutIDResponse.responseCommon}")
+      logger.debug(s"Register: responseCommon: ${response.registerWithoutIDResponse.responseCommon}")
       // $COVERAGE-ON
 
-      auditCallResponse(url, resp)
-      resp.registerWithoutIDResponse
+      auditCall(url, request, response)
+      response.registerWithoutIDResponse
     } recover {
       case e: Throwable =>
         logger.warn(
@@ -60,22 +61,14 @@ class RegisterWithoutIdConnector @Inject() (http: HttpClient, appConfig: AppConf
     }
   }
 
-  private def auditCallRequest(url: String, request: RegisterWithoutIDRequest)(implicit hc: HeaderCarrier): Unit =
-    audit.sendDataEvent(
-      transactionName = "customs-registration-without-id",
-      path = url,
-      detail = request.requestDetail.keyValueMap(),
-      eventType = "RegistrationWithoutIdSubmitted"
-    )
-
-  private def auditCallResponse(url: String, response: RegisterWithoutIdResponseHolder)(implicit
-    hc: HeaderCarrier
+  private def auditCall(url: String, request: RegisterWithoutIDRequest, response: RegisterWithoutIdResponseHolder)(
+    implicit hc: HeaderCarrier
   ): Unit =
-    audit.sendDataEvent(
-      transactionName = "customs-registration-without-id",
+    audit.sendExtendedDataEvent(
+      transactionName = "ecc-registration-without-id",
       path = url,
-      detail = response.registerWithoutIDResponse.keyValueMap(),
-      eventType = "RegistrationWithoutIdResult"
+      details = Json.toJson(RegisterWithoutId(request, response)),
+      eventType = "RegistrationWithoutId"
     )
 
 }
