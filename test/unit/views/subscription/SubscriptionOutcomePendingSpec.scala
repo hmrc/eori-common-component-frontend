@@ -31,7 +31,7 @@ class SubscriptionOutcomePendingSpec extends ViewSpec {
 
   val orgName       = "Test Organisation Name"
   val eoriNumber    = "EORI123"
-  val processedDate = "01 Jan 2019"
+  val processedDate = "01 Feb 2020"
 
   "'Subscription Pending' Page" should {
 
@@ -48,7 +48,7 @@ class SubscriptionOutcomePendingSpec extends ViewSpec {
       doc().body.getElementById("eori-number").hasClass("heading-medium") mustBe true
     }
     "have the correct processing date and text" in {
-      doc().body.getElementById("active-from").text mustBe s"Application received by HMRC on $processedDate"
+      doc().body.getElementById("active-from").text mustBe s"Application received by HMRC on 1 February 2020"
     }
     "have the correct eori number" in {
       doc().body.getElementById("eori-number").text mustBe s"EORI number: $eoriNumber"

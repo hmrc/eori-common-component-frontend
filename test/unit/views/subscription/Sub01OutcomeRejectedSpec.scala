@@ -49,7 +49,7 @@ class Sub01OutcomeRejectedSpec extends ViewSpec {
       docWithName().body.getElementById("processed-date").hasClass("heading-medium") mustBe true
     }
     "have the correct processing date and text" in {
-      docWithName().body.getElementById("processed-date").text mustBe s"Application received by HMRC on $processedDate"
+      docWithName().body.getElementById("processed-date").text mustBe s"Application received by HMRC on 1 January 2019"
     }
 
     "have a feedback 'continue' button" in {
@@ -81,7 +81,7 @@ class Sub01OutcomeRejectedSpec extends ViewSpec {
     "have the correct processing date and text" in {
       docWithoutName().body.getElementById(
         "processed-date"
-      ).text mustBe s"Application received by HMRC on $processedDate"
+      ).text mustBe s"Application received by HMRC on 1 January 2019"
     }
 
     "have a feedback 'continue' button" in {
