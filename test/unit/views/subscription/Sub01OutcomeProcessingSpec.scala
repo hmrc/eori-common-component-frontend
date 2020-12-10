@@ -46,7 +46,7 @@ class Sub01OutcomeProcessingSpec extends ViewSpec {
       docWithName.body.getElementById("processed-date").hasClass("heading-medium") mustBe true
     }
     "have the correct processing date and text" in {
-      docWithName.body.getElementById("processed-date").text mustBe s"Application received by HMRC on $processedDate"
+      docWithName.body.getElementById("processed-date").text mustBe s"Application received by HMRC on 1 January 2019"
     }
     "have the correct 'what happens next' text" in {
       docWithName.body
@@ -68,7 +68,7 @@ class Sub01OutcomeProcessingSpec extends ViewSpec {
       docWithoutName.body.getElementById("processed-date").hasClass("heading-medium") mustBe true
     }
     "have the correct processing date and text" in {
-      docWithoutName.body.getElementById("processed-date").text mustBe s"Application received by HMRC on $processedDate"
+      docWithoutName.body.getElementById("processed-date").text mustBe s"Application received by HMRC on 1 January 2019"
     }
     "have the correct 'what happens next' text" in {
       docWithoutName.body

@@ -51,7 +51,7 @@ class SubscriptionOutcomeFailSpec extends ViewSpec {
       doc().body.getElementById("active-from").hasClass("heading-medium") mustBe true
     }
     "have the correct processing date and text" in {
-      doc().body.getElementById("active-from").text mustBe s"Application received by HMRC on $processedDate"
+      doc().body.getElementById("active-from").text mustBe s"Application received by HMRC on 1 January 2019"
     }
 
     "have a feedback 'continue' button" in {

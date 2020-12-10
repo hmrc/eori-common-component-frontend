@@ -42,7 +42,7 @@ class SubscriptionCompleteSpec extends ViewSpec {
       doc.body.getElementsByTag("h1").hasClass("heading-xlarge") mustBe true
     }
     "have the correct processing date and text" in {
-      doc.body.getElementById("issued-date").text mustBe s"issued by HMRC on $issuedDate"
+      doc.body.getElementById("issued-date").text mustBe s"issued by HMRC on 1 January 2019"
     }
   }
 
