@@ -18,9 +18,11 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.Inject
 import play.api.Logger
+import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.registration._
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.RegistrationDisplay
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -32,12 +34,11 @@ class RegistrationDisplayConnector @Inject() (http: HttpClient, appConfig: AppCo
 
   private val logger = Logger(this.getClass)
 
-  protected val url = appConfig.getServiceUrl("registration-display")
+  protected val url: String = appConfig.getServiceUrl("registration-display")
 
   def registrationDisplay(
     request: RegistrationDisplayRequestHolder
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[EoriHttpResponse, RegistrationDisplayResponse]] = {
-    auditCallRequest(url, request)
 
     // $COVERAGE-OFF$Loggers
     logger.debug(
@@ -45,13 +46,13 @@ class RegistrationDisplayConnector @Inject() (http: HttpClient, appConfig: AppCo
     )
     // $COVERAGE-ON
 
-    http.POST[RegistrationDisplayRequestHolder, RegistrationDisplayResponseHolder](url, request) map { resp =>
+    http.POST[RegistrationDisplayRequestHolder, RegistrationDisplayResponseHolder](url, request) map { response =>
       // $COVERAGE-OFF$Loggers
-      logger.debug(s"[RegistrationDisplay: response: $resp")
+      logger.debug(s"[RegistrationDisplay: response: $response")
       // $COVERAGE-ON
 
-      auditCallResponse(url, resp)
-      Right(resp.registrationDisplayResponse)
+      auditCall(url, request, response)
+      Right(response.registrationDisplayResponse)
     } recover {
       case NonFatal(e) =>
         logger.warn(s"registration-display failed. url: $url, error: $e")
@@ -59,27 +60,16 @@ class RegistrationDisplayConnector @Inject() (http: HttpClient, appConfig: AppCo
     }
   }
 
-  private def auditCallRequest(url: String, request: RegistrationDisplayRequestHolder)(implicit
-    hc: HeaderCarrier
-  ): Unit =
-    audit.sendDataEvent(
-      transactionName = "customs-registration-display",
+  private def auditCall(
+    url: String,
+    request: RegistrationDisplayRequestHolder,
+    response: RegistrationDisplayResponseHolder
+  )(implicit hc: HeaderCarrier): Unit =
+    audit.sendExtendedDataEvent(
+      transactionName = "ecc-registration-display",
       path = url,
-      detail =
-        request.registrationDisplayRequest.requestCommon
-          .keyValueMap(),
-      eventType = "RegistrationDisplaySubmitted"
-    )
-
-  private def auditCallResponse(url: String, response: RegistrationDisplayResponseHolder)(implicit
-    hc: HeaderCarrier
-  ): Unit =
-    audit.sendDataEvent(
-      transactionName = "customs-registration-display",
-      path = url,
-      detail = response.registrationDisplayResponse
-        .keyValueMap(),
-      eventType = "RegistrationDisplayResult"
+      details = Json.toJson(RegistrationDisplay(request, response)),
+      eventType = "RegistrationDisplay"
     )
 
 }
