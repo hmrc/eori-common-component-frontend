@@ -25,12 +25,12 @@ class SixLineAddressMatchModelSpec extends UnitSpec {
 
     "trim lines 1 to 4" in {
       val address =
-        SixLineAddressMatchModel(" line 1 ", Some(" line 2 "), " line 3 ", Some(" line 4 "), Some("HJ23HJ"), "FR")
+        SixLineAddressMatchModel(" line 1 ", Some(" line 2 "), " line 3 ", Some(" line 4 "), Some(" HJ2 3HJ "), "FR")
       address.lineOne shouldBe "line 1"
       address.lineTwo shouldBe Some("line 2")
       address.lineThree shouldBe "line 3"
       address.lineFour shouldBe Some("line 4")
-      address.postcode shouldBe Some("HJ23HJ")
+      address.postcode shouldBe Some("HJ2 3HJ")
       address.country shouldBe "FR"
     }
   }

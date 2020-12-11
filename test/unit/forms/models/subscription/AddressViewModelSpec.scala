@@ -42,18 +42,10 @@ class AddressViewModelSpec extends UnitSpec {
 
     "trim address" in {
       def pad(line: String) = s" $line "
-      val address = Address(
-        pad(addressLine1),
-        Some(pad(addressLine2)),
-        Some(pad(addressLine3)),
-        Some(pad(addressLine4)),
-        Some(postCode),
-        countryCode
-      )
-      AddressViewModel(" street ", " city ", Some("HG12TY"), "GB") shouldEqual AddressViewModel(
+      AddressViewModel(" street ", " city ", Some(" HG12 TY "), "GB") shouldEqual AddressViewModel(
         "street",
         "city",
-        Some("HG12TY"),
+        Some("HG12 TY"),
         "GB"
       )
     }
@@ -65,7 +57,7 @@ class AddressViewModelSpec extends UnitSpec {
         Some(pad(addressLine2)),
         Some(pad(addressLine3)),
         Some(pad(addressLine4)),
-        Some(postCode),
+        Some(pad(postCode)),
         countryCode
       )
       AddressViewModel(address) shouldEqual expectedAddress

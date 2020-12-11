@@ -231,7 +231,7 @@ object SixLineAddressMatchModel {
     lineTwo.map(_.trim),
     lineThree.trim,
     lineFour.map(_.trim),
-    postcode,
+    postcode.map(_.trim),
     country
   )
 
