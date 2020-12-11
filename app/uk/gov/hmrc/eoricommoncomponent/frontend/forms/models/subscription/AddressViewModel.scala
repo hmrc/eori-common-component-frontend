@@ -31,6 +31,9 @@ object AddressViewModel {
   val sixLineAddressLine2MaxLength = 34
   val townCityMaxLength            = 35
 
+  def apply(street: String, city: String, postcode: Option[String], countryCode: String): AddressViewModel =
+    new AddressViewModel(street.trim, city.trim, postcode, countryCode)
+
   def apply(sixLineAddress: Address): AddressViewModel = {
     val line1 = (sixLineAddress.addressLine1.trim.take(sixLineAddressLine1MaxLength) + " " + sixLineAddress.addressLine2
       .getOrElse("")
