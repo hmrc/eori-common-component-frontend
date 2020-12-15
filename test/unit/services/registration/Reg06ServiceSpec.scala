@@ -910,7 +910,6 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       when(subscriptionDetailsHolder.addressDetails)
         .thenReturn(cachedAddressViewModel)
       when(subscriptionDetailsHolder.eoriNumber).thenReturn(eori)
-      when(subscriptionDetailsHolder.dateOfBirth).thenReturn(dob)
       when(subscriptionDetailsHolder.nameDobDetails).thenReturn(nameDobDetails)
       when(subscriptionDetailsHolder.customsId).thenReturn(nino)
 

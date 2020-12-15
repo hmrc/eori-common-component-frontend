@@ -249,20 +249,14 @@ class SubscriptionServiceSpec
     }
 
     "call connector with date of birth captured in subscription flow when user is an individual" in {
-      val capturedDateOfBirth = dateOfEstablishment
       val expectedRequest = requestJsonIndividual(
         name = individualName,
         vatIds = EmptyVatIds,
         organisationType = None,
-        expectedDateOfBirthString = capturedDateOfBirth.toString
+        expectedDateOfBirthString = dateOfBirthString
       )
 
-      assertIndividualSubscriptionRequest(
-        expectedRequest,
-        subscriptionSuccessResult,
-        None,
-        dateOfBirth = Some(capturedDateOfBirth)
-      )
+      assertIndividualSubscriptionRequest(expectedRequest, subscriptionSuccessResult, None)
     }
 
     "return failed future for matchBusinessWithOrganisationName when connector fails to return result" in {
@@ -668,14 +662,12 @@ class SubscriptionServiceSpec
     expectedServiceCallResult: SubscriptionSuccessful,
     ukVatDetails: Option[VatDetails],
     subscriptionContactDetails: ContactDetailsModel = subscriptionContactDetailsModel,
-    personalDataDisclosureConsent: Boolean = false,
-    dateOfBirth: Option[LocalDate] = None
+    personalDataDisclosureConsent: Boolean = false
   ): Unit = {
 
     val subscriptionDetailsHolder = SubscriptionDetails(
       contactDetails = Some(subscriptionContactDetails),
       personalDataDisclosureConsent = Some(personalDataDisclosureConsent),
-      dateOfBirth = dateOfBirth,
       ukVatDetails = ukVatDetails
     )
 

@@ -127,19 +127,6 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
     }
   }
 
-  "Calling cacheDateOfBirthDetails" should {
-    "save Date Of Birth Details in frontend cache" in {
-
-      await(subscriptionDetailsHolderService.cacheDateOfBirth(expectedDate))
-      val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
-
-      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
-      val holder: SubscriptionDetails = requestCaptor.getValue
-      holder.dateOfBirth shouldBe Some(expectedDate)
-
-    }
-  }
-
   "Calling cacheAddressDetails" should {
     "save Address Details in frontend cache" in {
 

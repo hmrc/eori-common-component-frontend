@@ -38,7 +38,6 @@ case class SubscriptionDetails(
   vatEUDetails: Seq[VatEUDetailsModel] = Nil,
   personalDataDisclosureConsent: Option[Boolean] = None,
   contactDetails: Option[ContactDetailsModel] = None,
-  dateOfBirth: Option[LocalDate] = None,
   sicCode: Option[String] = None,
   eoriNumber: Option[String] = None,
   existingEoriNumber: Option[ExistingEori] = None,

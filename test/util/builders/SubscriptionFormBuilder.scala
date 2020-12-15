@@ -85,7 +85,6 @@ object SubscriptionFormBuilder {
   val detailsHolderWithAllFields = SubscriptionDetails(
     personalDataDisclosureConsent = Some(true),
     contactDetails = Some(contactDetailsModel),
-    dateOfBirth = Some(DateOfBirthForIndividual),
     businessShortName = Some(BusinessShortName(Some(ShortName))),
     dateEstablished = Some(DateEstablished),
     sicCode = Some(sic),

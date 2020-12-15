@@ -89,8 +89,6 @@ class CheckYourDetailsRegisterControllerSpec
 
   private val shortName = "Company Details Short name"
 
-  private val dateOfEstablishmentOrDob = LocalDate.parse("1980-01-01")
-
   private val NotEntered: String = "Not entered"
 
   override def beforeEach: Unit = {
@@ -101,7 +99,6 @@ class CheckYourDetailsRegisterControllerSpec
     when(mockSubscriptionDetailsHolder.vatEUDetails).thenReturn(Nil)
     when(mockSubscriptionDetailsHolder.ukVatDetails).thenReturn(None)
     when(mockSubscriptionDetailsHolder.businessShortName).thenReturn(None)
-    when(mockSubscriptionDetailsHolder.dateOfBirth).thenReturn(None)
     when(mockSubscriptionDetailsHolder.dateEstablished).thenReturn(None)
     when(mockSubscriptionDetailsHolder.sicCode).thenReturn(None)
     when(mockSubscriptionDetailsHolder.nameDobDetails).thenReturn(None)
@@ -280,7 +277,6 @@ class CheckYourDetailsRegisterControllerSpec
     "display all fields including date of establishment when all are provided" in {
       when(mockSessionCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(
         detailsHolderWithAllFields.copy(
-          dateOfBirth = None,
           contactDetails = Some(contactDetailsModelWithAllValues),
           addressDetails = Some(addressDetails),
           nameDobDetails = Some(NameDobMatchModel("John", None, "Doe", LocalDate.parse("1980-07-23")))
@@ -404,7 +400,6 @@ class CheckYourDetailsRegisterControllerSpec
         contactDetails = Some(contactDetailsModelWithAllValues),
         dateEstablished = None,
         businessShortName = None,
-        dateOfBirth = Some(dateOfEstablishmentOrDob),
         addressDetails = Some(addressDetails),
         nameDobDetails = Some(NameDobMatchModel("John", None, "Doe", LocalDate.parse("1980-07-23")))
       )
@@ -437,7 +432,6 @@ class CheckYourDetailsRegisterControllerSpec
       contactDetails = Some(contactDetailsModelWithAllValues),
       dateEstablished = Some(LocalDate.parse("1980-07-23")),
       addressDetails = Some(addressDetails),
-      dateOfBirth = None,
       nameOrganisationDetails = Some(NameOrganisationMatchModel("orgName"))
     )
     when(mockSessionCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(holder)
@@ -579,7 +573,6 @@ class CheckYourDetailsRegisterControllerSpec
       contactDetails = Some(contactDetailsModelWithAllValues),
       dateEstablished = Some(LocalDate.parse("1980-07-23")),
       addressDetails = Some(addressDetails),
-      dateOfBirth = None,
       nameOrganisationDetails = Some(NameOrganisationMatchModel("orgName"))
     )
     when(mockSessionCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(holder)
@@ -728,7 +721,6 @@ class CheckYourDetailsRegisterControllerSpec
       contactDetails = Some(contactDetailsModelWithAllValues),
       dateEstablished = Some(LocalDate.parse("1980-07-23")),
       addressDetails = Some(addressDetails),
-      dateOfBirth = None,
       nameDobDetails = Some(NameDobMatchModel("John", None, "Doe", LocalDate.parse("1980-07-23")))
     )
     when(mockSessionCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(holder)
@@ -771,7 +763,6 @@ class CheckYourDetailsRegisterControllerSpec
       contactDetails = Some(contactDetailsModelWithAllValues),
       dateEstablished = Some(LocalDate.parse("1980-07-23")),
       addressDetails = Some(addressDetails),
-      dateOfBirth = None,
       nameDobDetails = Some(NameDobMatchModel("John", None, "Doe", LocalDate.parse("1980-07-23")))
     )
     when(mockSessionCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(holder)
