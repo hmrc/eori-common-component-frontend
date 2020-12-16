@@ -35,8 +35,9 @@ object UserLocation {
 
   def isRow(requestSessionData: RequestSessionData)(implicit request: Request[AnyContent]) =
     requestSessionData.selectedUserLocation match {
-      case Some(UserLocation.Eu) | Some(UserLocation.ThirdCountry) | Some(UserLocation.Islands) |
-          Some(UserLocation.ThirdCountryIncEU) =>
+      case Some(UserLocation.Eu) | Some(UserLocation.ThirdCountry) | Some(UserLocation.Islands) | Some(
+            UserLocation.ThirdCountryIncEU
+          ) =>
         true
       case _ => false
     }
