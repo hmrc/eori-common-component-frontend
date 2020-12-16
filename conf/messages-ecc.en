@@ -139,6 +139,7 @@ cds.email-confirmed.title-and-heading=You have confirmed your email address
 cds.registration.user-location.location.uk.label=United Kingdom
 cds.registration.user-location.location.eu.label=The European Union
 cds.registration.user-location.location.third-country.label=Outside the European Union
+cds.registration.user-location.location.third-country-inc-eu.label=Rest of the world
 
 cds.matching.name-id-organisation.company.utr=Corporation Tax Unique Taxpayer Reference (UTR)
 cds.matching.name-id-organisation.registered-company.utr=Corporation Tax Unique Taxpayer Reference (UTR)

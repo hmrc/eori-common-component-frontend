@@ -67,6 +67,7 @@
         case (Some(UserLocation.Uk), _) => ukOptionsFirstScreen
         case (Some(UserLocation.Eu), _) => euOptions
         case (Some(UserLocation.ThirdCountry), _) => thirdCountryOptions
+        case (Some(UserLocation.ThirdCountryIncEU), _) => thirdCountryOptions
         case _ => ukOptionsFirstScreen
     }
 }

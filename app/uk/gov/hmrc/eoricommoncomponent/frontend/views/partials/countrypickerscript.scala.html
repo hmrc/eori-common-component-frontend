@@ -24,6 +24,7 @@
     case EUCountriesInCountryPicker => "country.isEu"
     case IslandsInCountryPicker=> "country.isChannelIsland"
     case ThirdCountriesInCountryPicker => Html("!country.isEu && !country.isChannelIsland && !country.isUk && !country.isIom")
+    case ThirdCountriesIncEuInCountryPicker => Html("!country.isChannelIsland && !country.isUk && !country.isIom")
     case AllCountriesExceptIomInCountryPicker => "!country.isIom"
     case _ => "true"
   } 

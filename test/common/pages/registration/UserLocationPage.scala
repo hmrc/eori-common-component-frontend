@@ -24,11 +24,12 @@ trait UserLocationPage extends WebPage {
 
   val fieldLevelErrorLocation = "//*[@id='location-fieldset']//span[@class='error-message']"
 
-  val locationUkField           = "//*[@id='location-uk']"
-  val locationIomField          = "//*[@id='location-iom']"
-  val locationIslandsField      = "//*[@id='location-islands']"
-  val locationEuField           = "//*[@id='location-eu']"
-  val locationThirdCountryField = "//*[@id='location-third-country']"
+  val locationUkField                = "//*[@id='location-uk']"
+  val locationIomField               = "//*[@id='location-iom']"
+  val locationIslandsField           = "//*[@id='location-islands']"
+  val locationEuField                = "//*[@id='location-eu']"
+  val locationThirdCountryField      = "//*[@id='location-third-country']"
+  val locationThirdCountryIncEuField = "//*[@id='location-third-country-inc-eu']"
 
   val countriesInTheEuTitleElement    = "//*[@id='user-location-form']/div/details/summary"
   val countriesInTheEuContentsElement = "//*[@id='user-location-form']/div/details/div"
