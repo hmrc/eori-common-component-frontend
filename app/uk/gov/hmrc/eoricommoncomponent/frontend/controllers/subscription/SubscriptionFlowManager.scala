@@ -111,22 +111,12 @@ class SubscriptionFlowManager @Inject() (requestSessionData: RequestSessionData,
     maybeOrgType: => Option[CdsOrganisationType],
     journey: Journey.Value
   )(implicit request: Request[AnyContent]): SubscriptionFlow = {
-    val userLocation = requestSessionData.selectedUserLocation
+    val isRow = UserLocation.isRow(requestSessionData)
 
-    val subscribePrefix = (userLocation, journey, registrationDetails.customsId) match {
-      case (
-            Some(UserLocation.Eu) | Some(UserLocation.Islands) | Some(UserLocation.ThirdCountry) |
-            Some(UserLocation.ThirdCountryIncEU),
-            Journey.Subscribe,
-            None
-          ) =>
+    val subscribePrefix = (isRow, journey, registrationDetails.customsId) match {
+      case (true, Journey.Subscribe, None) =>
         "migration-eori-row-utrNino-enabled-"
-      case (
-            Some(UserLocation.Eu) | Some(UserLocation.Islands) | Some(UserLocation.ThirdCountry) |
-            Some(UserLocation.ThirdCountryIncEU),
-            Journey.Subscribe,
-            _
-          ) =>
+      case (true, Journey.Subscribe, _) =>
         "migration-eori-row-"
       case (_, Journey.Subscribe, _) => "migration-eori-" // This means UK
       case _                         => ""

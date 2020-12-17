@@ -31,16 +31,15 @@ object UserLocation {
 
   val validLocations: Set[String] = Set(Uk, Iom, Eu, ThirdCountry, ThirdCountryIncEU, Islands)
 
+  private val rowLocations = Set(Eu, ThirdCountry, ThirdCountryIncEU, Islands)
+
   def forId(locationId: String): Boolean = validLocations(locationId)
 
-  def isRow(requestSessionData: RequestSessionData)(implicit request: Request[AnyContent]) =
+  def isRow(requestSessionData: RequestSessionData)(implicit request: Request[AnyContent]): Boolean =
     requestSessionData.selectedUserLocation match {
-      case Some(UserLocation.Eu) | Some(UserLocation.ThirdCountry) | Some(UserLocation.Islands) | Some(
-            UserLocation.ThirdCountryIncEU
-          ) =>
-        true
-      case _ => false
+      case Some(location) => isRow(location)
+      case _              => false
     }
 
-  def isRow(location: String) = location != Uk
+  def isRow(location: String): Boolean = rowLocations.contains(location)
 }
