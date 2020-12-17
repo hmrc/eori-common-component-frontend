@@ -35,32 +35,32 @@ class AppConfig @Inject() (
   @Named("appName") val appName: String
 ) {
 
-  lazy val env: String = runMode.env
+  val env: String = runMode.env
 
-  lazy val messageFiles: Seq[String] = config.get[Seq[String]]("messages.file.names")
+  val messageFiles: Seq[String] = config.get[Seq[String]]("messages.file.names")
 
-  lazy val ttl: Duration = Duration.create(config.get[String]("cds-frontend-cache.ttl"))
+  val ttl: Duration = Duration.create(config.get[String]("cds-frontend-cache.ttl"))
 
-  lazy val allowlistReferrers: Seq[String] =
+  val allowlistReferrers: Seq[String] =
     config.get[String]("allowlist-referrers").split(',').map(_.trim).filter(_.nonEmpty)
 
-  private lazy val contactBaseUrl = servicesConfig.baseUrl("contact-frontend")
+  private val contactBaseUrl = servicesConfig.baseUrl("contact-frontend")
 
-  private lazy val serviceIdentifierRegister =
+  private val serviceIdentifierRegister =
     config.get[String]("microservice.services.contact-frontend.serviceIdentifierRegister")
 
-  private lazy val serviceIdentifierSubscribe =
+  private val serviceIdentifierSubscribe =
     config.get[String]("microservice.services.contact-frontend.serviceIdentifierSubscribe")
 
-  private lazy val feedbackLink          = config.get[String]("external-url.feedback-survey")
-  private lazy val feedbackLinkSubscribe = config.get[String]("external-url.feedback-survey-subscribe")
+  private val feedbackLink          = config.get[String]("external-url.feedback-survey")
+  private val feedbackLinkSubscribe = config.get[String]("external-url.feedback-survey-subscribe")
 
   def feedbackUrl(service: Service, journey: Journey.Value) = journey match {
     case Journey.Register  => s"$feedbackLink-${service.code}"
     case Journey.Subscribe => s"$feedbackLinkSubscribe-${service.code}"
   }
 
-  private lazy val displayEuLocationUntil: DateTime = DateTime.parse(config.get[String]("displayEuLocationUntil"))
+  private val displayEuLocationUntil: DateTime = DateTime.parse(config.get[String]("displayEuLocationUntil"))
 
   def displayEuLocation: Boolean = displayEuLocationUntil.isAfterNow
 
@@ -81,12 +81,12 @@ class AppConfig @Inject() (
   def findLostUtr()(implicit messages: Messages): String =
     config.get[String](s"external-url.find-lost-utr-$languageKey")
 
-  lazy val traderSupportService: String                  = config.get[String]("external-url.trader-support-service")
-  lazy val getCompanyInformation: String                 = config.get[String]("external-url.get-company-information")
-  lazy val contactEORITeam: String                       = config.get[String]("external-url.contact-eori-team")
+  val traderSupportService: String                       = config.get[String]("external-url.trader-support-service")
+  val getCompanyInformation: String                      = config.get[String]("external-url.get-company-information")
+  val contactEORITeam: String                            = config.get[String]("external-url.contact-eori-team")
   def callCharges()(implicit messages: Messages): String = config.get[String](s"external-url.call-charges-$languageKey")
 
-  lazy val blockedRoutesRegex: Seq[Regex] =
+  val blockedRoutesRegex: Seq[Regex] =
     config.getOptional[String]("routes-to-block") match {
       case Some(routes) if routes.nonEmpty => routes.split(',').map(_.r).toSeq
       case _                               => Seq.empty
@@ -106,7 +106,7 @@ class AppConfig @Inject() (
   def reportAProblemNonJSUrlSubscribe(service: Service): String =
     s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifierSubscribe-${service.code}"
 
-  private lazy val betafeedbackBaseUrl = s"${contactBaseUrl}/contact/beta-feedback"
+  private val betafeedbackBaseUrl = s"${contactBaseUrl}/contact/beta-feedback"
 
   def betaFeedBackRegister(service: Service) =
     s"${betafeedbackBaseUrl}?service=${serviceIdentifierRegister}-${service.code}"
@@ -115,33 +115,33 @@ class AppConfig @Inject() (
     s"${betafeedbackBaseUrl}?service=${serviceIdentifierSubscribe}-${service.code}"
 
   //email verification service
-  lazy val emailVerificationBaseUrl: String = servicesConfig.baseUrl("email-verification")
+  val emailVerificationBaseUrl: String = servicesConfig.baseUrl("email-verification")
 
-  lazy val emailVerificationServiceContext: String =
+  val emailVerificationServiceContext: String =
     config.get[String]("microservice.services.email-verification.context")
 
-  lazy val emailVerificationTemplateId: String =
+  val emailVerificationTemplateId: String =
     config.get[String]("microservice.services.email-verification.templateId")
 
-  lazy val emailVerificationLinkExpiryDuration: String =
+  val emailVerificationLinkExpiryDuration: String =
     config.get[String]("microservice.services.email-verification.linkExpiryDuration")
 
   //handle subscription service
-  lazy val handleSubscriptionBaseUrl: String = servicesConfig.baseUrl("handle-subscription")
+  val handleSubscriptionBaseUrl: String = servicesConfig.baseUrl("handle-subscription")
 
-  lazy val handleSubscriptionServiceContext: String =
+  val handleSubscriptionServiceContext: String =
     config.get[String]("microservice.services.handle-subscription.context")
 
   //pdf generation
-  lazy val pdfGeneratorBaseUrl: String = servicesConfig.baseUrl("pdf-generator")
+  val pdfGeneratorBaseUrl: String = servicesConfig.baseUrl("pdf-generator")
   // tax enrolments
-  lazy val taxEnrolmentsBaseUrl: String = servicesConfig.baseUrl("tax-enrolments")
+  val taxEnrolmentsBaseUrl: String = servicesConfig.baseUrl("tax-enrolments")
 
-  lazy val taxEnrolmentsServiceContext: String = config.get[String]("microservice.services.tax-enrolments.context")
+  val taxEnrolmentsServiceContext: String = config.get[String]("microservice.services.tax-enrolments.context")
 
-  lazy val enrolmentStoreProxyBaseUrl: String = servicesConfig.baseUrl("enrolment-store-proxy")
+  val enrolmentStoreProxyBaseUrl: String = servicesConfig.baseUrl("enrolment-store-proxy")
 
-  lazy val enrolmentStoreProxyServiceContext: String =
+  val enrolmentStoreProxyServiceContext: String =
     config.get[String]("microservice.services.enrolment-store-proxy.context")
 
   def getServiceUrl(proxyServiceName: String): String = {
