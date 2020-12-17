@@ -20,12 +20,12 @@ import akka.actor.ActorSystem
 import akka.stream.{ActorMaterializer, Materializer}
 import base.UnitSpec
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{reset, spy, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
-import play.api.Configuration
 import play.api.mvc.{RequestHeader, Result, Results}
 import play.api.test.FakeRequest
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.eoricommoncomponent.frontend.CdsErrorHandler
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.filters.RouteFilter
@@ -35,22 +35,26 @@ import scala.concurrent.Future
 
 class RouteFilterSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
 
+  val env: Environment          = Environment.simple()
+  val realConfig: Configuration = Configuration.load(env)
+
   implicit val system            = ActorSystem()
   implicit val mat: Materializer = ActorMaterializer()
-  val errorHandler               = mock[CdsErrorHandler]
-  val config                     = mock[Configuration]
-  val servicesConfig             = mock[ServicesConfig]
-  val runMode                    = mock[RunMode]
+  val mockErrorHandler           = mock[CdsErrorHandler]
+  val mockConfig                 = spy(realConfig)
+  val mockServicesConfig         = mock[ServicesConfig]
+  val mockRunMode                = mock[RunMode]
 
-  private def filter = new RouteFilter(new AppConfig(config, servicesConfig, runMode, "test"), errorHandler)
+  private def filter =
+    new RouteFilter(new AppConfig(mockConfig, mockServicesConfig, mockRunMode, "test"), mockErrorHandler)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    when(errorHandler.onClientError(any(), any(), any())).thenReturn(Future.successful(Results.NotFound("Content")))
+    when(mockErrorHandler.onClientError(any(), any(), any())).thenReturn(Future.successful(Results.NotFound("Content")))
   }
 
   override protected def afterEach(): Unit = {
-    reset(errorHandler, config)
+    reset(mockErrorHandler, mockConfig)
     super.afterEach()
   }
 
@@ -112,7 +116,7 @@ class RouteFilterSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach
   }
 
   private def whenRoutesToBlock(routes: Option[String]) =
-    when(config.getOptional[String]("routes-to-block")).thenReturn(routes)
+    when(mockConfig.getOptional[String]("routes-to-block")).thenReturn(routes)
 
   private val okAction = (rh: RequestHeader) => Future.successful(Results.Ok)
 }

@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit
 
 import org.joda.time.DateTime
 import org.mockito.Mockito
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{spy, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.Configuration
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
@@ -33,7 +33,7 @@ import scala.concurrent.duration.Duration
 
 class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
 
-  private val mockConfig: Configuration = mock[Configuration]
+  private val mockConfig: Configuration = spy(config)
   private val mockServiceConfig         = mock[ServicesConfig]
   private val runMode                   = mock[RunMode]
 
