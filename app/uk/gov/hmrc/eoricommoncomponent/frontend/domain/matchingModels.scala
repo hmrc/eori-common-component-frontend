@@ -217,6 +217,26 @@ case class SixLineAddressMatchModel(
   private def postCodeMandatoryForCountryCode = List("GG", "JE").contains(country)
 }
 
+object SixLineAddressMatchModel {
+
+  def apply(
+    lineOne: String,
+    lineTwo: Option[String],
+    lineThree: String,
+    lineFour: Option[String],
+    postcode: Option[String],
+    country: String
+  ): SixLineAddressMatchModel = new SixLineAddressMatchModel(
+    lineOne.trim,
+    lineTwo.map(_.trim),
+    lineThree.trim,
+    lineFour.map(_.trim),
+    postcode.map(_.trim),
+    country
+  )
+
+}
+
 case class IndividualNameAndDateOfBirth(
   firstName: String,
   middleName: Option[String],
