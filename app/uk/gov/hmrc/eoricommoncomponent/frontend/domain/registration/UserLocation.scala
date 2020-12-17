@@ -22,21 +22,24 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionDat
 //TODO Make these sealed trait / case object with a isROW fn
 object UserLocation {
 
-  val Uk           = "uk"
-  val Iom          = "iom"
-  val Eu           = "eu"
-  val ThirdCountry = "third-country"
-  val Islands      = "islands"
+  val Uk                = "uk"
+  val Iom               = "iom"
+  val Eu                = "eu"
+  val ThirdCountry      = "third-country"
+  val ThirdCountryIncEU = "third-country-inc-eu"
+  val Islands           = "islands"
 
-  val validLocations: Set[String] = Set(Uk, Iom, Eu, ThirdCountry, Islands)
+  val validLocations: Set[String] = Set(Uk, Iom, Eu, ThirdCountry, ThirdCountryIncEU, Islands)
+
+  private val rowLocations = Set(Eu, ThirdCountry, ThirdCountryIncEU, Islands)
 
   def forId(locationId: String): Boolean = validLocations(locationId)
 
-  def isRow(requestSessionData: RequestSessionData)(implicit request: Request[AnyContent]) =
+  def isRow(requestSessionData: RequestSessionData)(implicit request: Request[AnyContent]): Boolean =
     requestSessionData.selectedUserLocation match {
-      case Some(UserLocation.Eu) | Some(UserLocation.ThirdCountry) | Some(UserLocation.Islands) => true
-      case _                                                                                    => false
+      case Some(location) => isRow(location)
+      case _              => false
     }
 
-  def isRow(location: String) = location != Uk
+  def isRow(location: String): Boolean = rowLocations.contains(location)
 }

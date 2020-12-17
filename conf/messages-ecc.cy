@@ -139,6 +139,7 @@ cds.email-confirmed.title-and-heading=Rydych wedi cadarnhau’ch cyfeiriad e-bos
 cds.registration.user-location.location.uk.label=Y Deyrnas Unedig
 cds.registration.user-location.location.eu.label=Yr Undeb Ewropeaidd
 cds.registration.user-location.location.third-country.label=Y tu allan i’r Undeb Ewropeaidd
+cds.registration.user-location.location.third-country-inc-eu.label=Gweddill y byd
 
 cds.matching.name-id-organisation.company.utr=Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)
 cds.matching.name-id-organisation.registered-company.utr=Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)
@@ -180,7 +181,7 @@ cds.start-page.ni.paragraph1.bullet2=TRANSLATE make a declaration in Northern Ir
 cds.start-page.ni.paragraph1.bullet3=TRANSLATE get a customs decision in Northern Ireland
 cds.start-page.ni.paragraph2=TRANSLATE To get an EORI number that starts with XI, you must already have an EORI number that starts with GB. If you do not have one, apply for an EORI number that starts with GB as soon as possible.
 cds.start-page.ni.paragraph3=TRANSLATE If you already have an EORI number that starts with GB and HMRC thinks you need one that starts with XI, they’ll automatically send you one in mid-December 2020.
-cds.start-page.ni.paragraph4=TRANSLATE To get advice on moving goods between Great Britain and Northern Ireland sign up for the {0}.
+cds.start-page.ni.paragraph4=TRANSLATE To get advice on moving goods between Great Britain and Northern Ireland sign up for the [Trader Support Service].
 cds.start-page.ni.paragraph4.link=TRANSLATE Trader Support Service
 
 cds.start-page.get.heading=TRANSLATE To get an EORI number you will need
@@ -191,7 +192,7 @@ cds.start-page.get.paragraph1=TRANSLATE You will also need
 cds.start-page.get.bullet4=TRANSLATE registered company name
 cds.start-page.get.bullet5=TRANSLATE date the business was registered
 cds.start-page.get.bullet6=TRANSLATE Standard Industrial Classification (SIC) code for the business
-cds.start-page.get.paragraph2=TRANSLATE This information can be found on the {0}
+cds.start-page.get.paragraph2=TRANSLATE This information can be found on the [Companies House register]
 cds.start-page.get.paragraph2.link=TRANSLATE Companies House register
 cds.start-page.get.paragraph3=TRANSLATE It takes around 5 to 10 minutes to apply for a GB EORI number. You should get it immediately and it should be ready to use to subscribe to a customs service in two hours and for use with the UK Border Agency in 48 hours, but it may take up to 5 working days if we need to make more checks.
 

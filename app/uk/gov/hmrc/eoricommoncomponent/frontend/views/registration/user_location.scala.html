@@ -21,8 +21,9 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+@import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 
-@this(layout_di: layout)
+@this(layout_di: layout, appConfig: AppConfig)
 @(userLocationForm: Form[UserLocationDetails], service: Service, journey: Journey.Value, isAffinityOrganisation: Boolean)(implicit request: Request[_], messages: Messages)
 
 @title = @{
@@ -31,22 +32,29 @@
 }
 
 @validOptions = @{
-    if (journey == Journey.Register) {
+    val baseChoices =  if (journey == Journey.Register) {
         Seq(
             (UserLocation.Uk, messages("cds.registration.user-location.location.uk.label"), None),
             (UserLocation.Iom, messages("cds.registration.user-location.location.isle-of-man.label"), None),
-            (UserLocation.Islands, messages("cds.registration.user-location.location.islands.label"), None),
-            (UserLocation.Eu, messages("cds.registration.user-location.location.eu.label"), None),
-            (UserLocation.ThirdCountry, messages("cds.registration.user-location.location.third-country.label"), None)
+            (UserLocation.Islands, messages("cds.registration.user-location.location.islands.label"), None)
         )
     } else {
         Seq(
             (UserLocation.Uk, messages("cds.registration.user-location.location.uk.label"), None),
-            (UserLocation.Islands, messages("cds.registration.user-location.location.islands-or-iom.label"), None),
-            (UserLocation.Eu, messages("cds.registration.user-location.location.eu.label"), None),
-            (UserLocation.ThirdCountry, messages("cds.registration.user-location.location.third-country.label"), None)
+            (UserLocation.Islands, messages("cds.registration.user-location.location.islands-or-iom.label"), None)
         )
     }
+    if(appConfig.displayEuLocation){
+      baseChoices ++ Seq(
+          (UserLocation.Eu, messages("cds.registration.user-location.location.eu.label"), None),
+          (UserLocation.ThirdCountry, messages("cds.registration.user-location.location.third-country.label"), None)
+      )
+    } else {
+        baseChoices ++ Seq(
+            (UserLocation.ThirdCountryIncEU, messages("cds.registration.user-location.location.third-country-inc-eu.label"), None)
+        )
+    }
+
 }
 
 @inputRadioGroup(field: String, options: Seq[(String, String, Option[String])]) = {
@@ -71,7 +79,9 @@
 
             @inputRadioGroup("location", validOptions)
 
-            @helpers.locationHint()
+            @if(appConfig.displayEuLocation){
+                @helpers.locationHint()
+            }
             <input class="button" type="submit" value='@messages("cds.navigation.continue")'>
         }
         @helpers.helpAndSupport()

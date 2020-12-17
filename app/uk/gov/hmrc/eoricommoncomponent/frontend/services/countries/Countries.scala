@@ -61,6 +61,9 @@ object Countries {
   val third: List[Country] =
     countries filter (c => mdgCountryCodes("/mdg-country-codes-third-countries.csv") contains c.countryCode)
 
+  val thirdIncEu: List[Country] =
+    countries filter (c => mdgCountryCodes("/mdg-country-codes-third-countries-inc-eu.csv") contains c.countryCode)
+
   val islands: List[Country] =
     countries filter (c => mdgCountryCodes("/mdg-country-codes-islands.csv") contains c.countryCode)
 
@@ -68,6 +71,8 @@ object Countries {
     case Some(UserLocation.Eu) => (eu, EUCountriesInCountryPicker)
     case Some(UserLocation.ThirdCountry) =>
       (third, ThirdCountriesInCountryPicker)
+    case Some(UserLocation.ThirdCountryIncEU) =>
+      (thirdIncEu, ThirdCountriesIncEuInCountryPicker)
     case Some(UserLocation.Islands) => (islands, IslandsInCountryPicker)
     case _                          => (allExceptIom, AllCountriesExceptIomInCountryPicker)
   }
@@ -83,5 +88,6 @@ case object AllCountriesInCountryPicker          extends CountriesInCountryPicke
 case object AllCountriesExceptIomInCountryPicker extends CountriesInCountryPicker
 case object EUCountriesInCountryPicker           extends CountriesInCountryPicker
 case object ThirdCountriesInCountryPicker        extends CountriesInCountryPicker
+case object ThirdCountriesIncEuInCountryPicker   extends CountriesInCountryPicker
 case object IslandsInCountryPicker               extends CountriesInCountryPicker
 case object NoCountriesInCountryPicker           extends CountriesInCountryPicker

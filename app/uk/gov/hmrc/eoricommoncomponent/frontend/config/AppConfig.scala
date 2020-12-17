@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.config
 
 import javax.inject.{Inject, Named, Singleton}
+import org.joda.time.DateTime
 import play.api.Configuration
 import play.api.i18n.Messages
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.ApplicationController
@@ -58,6 +59,10 @@ class AppConfig @Inject() (
     case Journey.Register  => s"$feedbackLink-${service.code}"
     case Journey.Subscribe => s"$feedbackLinkSubscribe-${service.code}"
   }
+
+  private lazy val displayEuLocationUntil: DateTime = DateTime.parse(config.get[String]("displayEuLocationUntil"))
+
+  def displayEuLocation: Boolean = displayEuLocationUntil.isAfterNow
 
   def externalGetEORILink(service: Service): String = {
     def registerBlocked = blockedRoutesRegex.exists(_.findFirstIn("register").isDefined)

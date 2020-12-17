@@ -18,6 +18,7 @@ package unit.config
 
 import java.util.concurrent.TimeUnit
 
+import org.joda.time.DateTime
 import org.mockito.Mockito
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
@@ -187,5 +188,26 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
 
     }
 
+    "displayEuLocation" when {
+
+      "date is in the future" in {
+        val euDate: DateTime = DateTime.now().plusDays(1)
+        when(mockConfig.get[String]("displayEuLocationUntil")).thenReturn(euDate.toString())
+
+        val testAppConfig = new AppConfig(mockConfig, mockServiceConfig, runMode, "appName")
+
+        testAppConfig.displayEuLocation shouldBe true
+      }
+
+      "date is in the past" in {
+        val euDate: DateTime = DateTime.now().minusDays(1)
+        when(mockConfig.get[String]("displayEuLocationUntil")).thenReturn(euDate.toString())
+
+        val testAppConfig = new AppConfig(mockConfig, mockServiceConfig, runMode, "appName")
+
+        testAppConfig.displayEuLocation shouldBe false
+      }
+
+    }
   }
 }
