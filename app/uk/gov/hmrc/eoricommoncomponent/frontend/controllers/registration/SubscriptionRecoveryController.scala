@@ -116,7 +116,7 @@ class SubscriptionRecoveryController @Inject() (
               getDateOfBirthOrDateOfEstablishment(
                 subscriptionDisplayResponse,
                 registrationDetails.dateOfEstablishmentOption,
-                registrationDetails.dateOfBirthOption // TODO See fixes below, fix applied to subscription journey need to be applied to register too
+                registrationDetails.dateOfBirthOption
               ),
               service,
               Journey.Register
