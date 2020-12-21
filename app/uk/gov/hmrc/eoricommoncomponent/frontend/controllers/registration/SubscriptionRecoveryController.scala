@@ -321,7 +321,7 @@ class SubscriptionRecoveryController @Inject() (
     response: SubscriptionDisplayResponse,
     dateOfEstablishmentCaptured: Option[LocalDate],
     dateOfBirthCaptured: Option[LocalDate]
-  )(implicit request: Request[AnyContent], headerCarrier: HeaderCarrier): Option[LocalDate] = {
+  )(implicit request: Request[AnyContent]): Option[LocalDate] = {
     val isIndividualOrSoleTrader = requestSessionData.isIndividualOrSoleTrader
     val dateOfEstablishment      = response.responseDetail.dateOfEstablishment // Date we hold
     (isIndividualOrSoleTrader, dateOfEstablishment, dateOfEstablishmentCaptured, dateOfBirthCaptured) match {
