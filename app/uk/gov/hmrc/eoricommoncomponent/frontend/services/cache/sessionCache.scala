@@ -168,7 +168,9 @@ class SessionCache @Inject() (
     createOrUpdate(sessionId, eoriKey, Json.toJson(eori.id)) map (_ => true)
 
   def keepAlive(implicit hc: HeaderCarrier): Future[Boolean] =
-    createOrUpdate(sessionId, keepAliveKey, Json.toJson(LocalDateTime.now().toString)) map (_ => true)
+    hc.sessionId.map(
+      id => createOrUpdate(model.Id(id.value), keepAliveKey, Json.toJson(LocalDateTime.now().toString)) map (_ => true)
+    ).getOrElse(Future.successful(true))
 
   def saveGroupEnrolment(groupEnrolment: EnrolmentResponse)(implicit hc: HeaderCarrier): Future[Boolean] =
     createOrUpdate(sessionId, groupEnrolmentKey, Json.toJson(groupEnrolment)) map (_ => true)
