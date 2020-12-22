@@ -52,10 +52,11 @@ class SubscriptionService @Inject() (connector: SubscriptionServiceConnector, fe
     registration: RegistrationDetails,
     subscription: SubscriptionDetails,
     journey: Journey.Value,
-    service: Service
+    service: Service,
+    cachedEmail: Option[String]
   )(implicit hc: HeaderCarrier): Future[SubscriptionResult] = {
     val email =
-      if (journey == Journey.Register) subscription.contactDetails.map(_.emailAddress) else subscription.email
+      if (journey == Journey.Register) subscription.contactDetails.map(_.emailAddress) else cachedEmail
     val request = SubscriptionRequest(SubscriptionCreateRequest(registration, subscription, email, maybe(service)))
     subscribeWithConnector(request)
   }

@@ -84,7 +84,8 @@ class CdsSubscriber @Inject() (
           registrationDetails,
           subscriptionDetails,
           journey,
-          service
+          service,
+          Some(email)
         )
         _ <- onSubscriptionResultForRowSubscribe(
           subscriptionResult,

@@ -57,7 +57,8 @@ class RegisterWithEoriAndIdController @Inject() (
   subscriptionOutcomeFailView: subscription_outcome_fail,
   reg06EoriAlreadyLinked: reg06_eori_already_linked,
   groupEnrolment: GroupEnrolmentExtractor,
-  languageUtils: LanguageUtils
+  languageUtils: LanguageUtils,
+  notifyRcmService: NotifyRcmService
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
@@ -134,8 +135,10 @@ class RegisterWithEoriAndIdController @Inject() (
             .getOrElse(throw new IllegalStateException("SafeId can't be none"))
           onRegistrationPassCheckSubscriptionStatus(service, journey, idType = "SAFE", id = safeId)
         case Some("DEFERRED") =>
-          val formattedDate = languageUtils.Dates.formatDate(resp.responseCommon.processingDate.toLocalDate)
-          Future.successful(Redirect(RegisterWithEoriAndIdController.pending(service, formattedDate)))
+          notifyRcmService.notifyRcm(service).map { _ =>
+            val formattedDate = languageUtils.Dates.formatDate(resp.responseCommon.processingDate.toLocalDate)
+            Redirect(RegisterWithEoriAndIdController.pending(service, formattedDate))
+          }
         case Some("FAIL") =>
           val formattedDate = languageUtils.Dates.formatDate(resp.responseCommon.processingDate.toLocalDate)
           Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service, formattedDate)))

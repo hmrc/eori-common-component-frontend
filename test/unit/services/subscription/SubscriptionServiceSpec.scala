@@ -736,7 +736,7 @@ class SubscriptionServiceSpec
 
     val actualServiceCallResult = await(
       service
-        .subscribeWithMandatoryOnly(registrationDetails, fullyPopulatedSubscriptionDetails, journey, atarService)(
+        .subscribeWithMandatoryOnly(registrationDetails, fullyPopulatedSubscriptionDetails, journey, atarService, None)(
           mockHeaderCarrier
         )
     )

@@ -51,7 +51,7 @@ import util.builders.AuthBuilder._
 import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
@@ -61,6 +61,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
   private val mockCache                      = mock[SessionCache]
   private val mockReg06Service               = mock[Reg06Service]
   private val mockMatchingService            = mock[MatchingService]
+  private val mockNotifyRcmService           = mock[NotifyRcmService]
   private val mockCdsSubscriber              = mock[CdsSubscriber]
   private val mockSubscriptionStatusService  = mock[SubscriptionStatusService]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
@@ -99,7 +100,8 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
     subscriptionOutcomeFailView,
     reg06EoriAlreadyLinked,
     groupEnrolmentExtractor,
-    languageUtils
+    languageUtils,
+    mockNotifyRcmService
   )(global)
 
   private val formBundleIdResponse: String = "Form-Bundle-Id"
@@ -529,6 +531,8 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Future.successful(organisationRegistrationDetails))
       when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponseDeferred))
+      when(mockNotifyRcmService.notifyRcm(meq(atarService))(any(), any()))
+        .thenReturn(Future.successful(()))
       when(
         mockCdsSubscriber.subscribeWithCachedDetails(
           any[Option[CdsOrganisationType]],
@@ -551,6 +555,8 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .pending(atarService, DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
           .url
+        verify(mockNotifyRcmService)
+          .notifyRcm(meq(atarService))(any[HeaderCarrier], any[ExecutionContext])
       }
     }
 
