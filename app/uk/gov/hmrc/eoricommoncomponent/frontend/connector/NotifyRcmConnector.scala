@@ -49,13 +49,13 @@ class NotifyRcmConnector @Inject() (http: HttpClient, appConfig: AppConfig, audi
       }
     } recoverWith {
       case e: BadRequestException =>
-        logger.error(
+        logger.warn(
           s"request failed with BAD_REQUEST status for call to $url and headers ${hc.headers}: ${e.getMessage}",
           e
         )
         Future.failed(e)
       case NonFatal(e) =>
-        logger.error(s"request failed for call to $url and headers ${hc.headers}: ${e.getMessage}", e)
+        logger.warn(s"request failed for call to $url and headers ${hc.headers}: ${e.getMessage}", e)
         Future.failed(e)
     }
   }
