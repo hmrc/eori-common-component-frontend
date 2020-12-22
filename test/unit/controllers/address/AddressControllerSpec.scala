@@ -16,7 +16,6 @@
 
 package unit.controllers.address
 
-import common.pages.matching.ConfirmPage
 import common.pages.subscription.AddressPage
 import common.support.testdata.subscription.BusinessDatesOrganisationTypeTables
 import org.joda.time.LocalDate
@@ -36,7 +35,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionDa
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Country
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.address
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.confirm_contact_details
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import unit.controllers.subscription.{
@@ -70,8 +68,7 @@ class AddressControllerSpec
   private val emulatedFailure                = new UnsupportedOperationException("Emulation of service call failure")
   private val mockOrganisationType           = mock[CdsOrganisationType]
 
-  private val viewConfirmContectDetails = instanceOf[confirm_contact_details]
-  private val viewAddress               = instanceOf[address]
+  private val viewAddress = instanceOf[address]
 
   private val controller = new AddressController(
     mockAuthAction,
@@ -82,7 +79,6 @@ class AddressControllerSpec
     mockSubscriptionDetailsHolderService,
     mcc,
     mockSubscriptionDetailsService,
-    viewConfirmContectDetails,
     viewAddress
   )
 
@@ -253,8 +249,8 @@ class AddressControllerSpec
 
     "redirect to next screen" in {
       submitFormInCreateModeForOrganisation(mandatoryFields) { result =>
-        val page = CdsPage(contentAsString(result))
-        page.title should startWith(ConfirmPage.title)
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) shouldBe Some("/customs-enrolment-services/atar/register/matching/confirm")
       }
     }
   }
@@ -263,8 +259,8 @@ class AddressControllerSpec
 
     "redirect to next screen" in {
       submitFormInCreateModeForIndividual(mandatoryFields) { result =>
-        val page = CdsPage(contentAsString(result))
-        page.title should startWith("Is this your address")
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) shouldBe Some("/customs-enrolment-services/atar/register/matching/confirm")
       }
     }
   }
@@ -278,21 +274,6 @@ class AddressControllerSpec
       ) { result =>
         status(result) shouldBe SEE_OTHER
       }
-    }
-  }
-
-  "submitting the form for GYE journey without organisation type in the request session" should {
-
-    "thrown an exception with 'No Etmp org type' message" in {
-      when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
-
-      val caught = intercept[IllegalStateException] {
-        submitFormInCreateModeForOrganisation(mandatoryFields) { result =>
-          await(result)
-        }
-      }
-
-      caught.getMessage shouldBe "No Etmp org type"
     }
   }
 

@@ -20,13 +20,13 @@ import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.AddressDetailsSubscriptionFlowPage
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.YesNoWrongAddress
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.AddressDetailsForm.addressDetailsCreateForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
@@ -37,7 +37,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionDetailsService
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.confirm_contact_details
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -52,7 +51,6 @@ class AddressController @Inject() (
   subscriptionDetailsHolderService: SubscriptionDetailsService,
   mcc: MessagesControllerComponents,
   subscriptionDetailsService: SubscriptionDetailsService,
-  confirmContactDetails: confirm_contact_details,
   addressView: address
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
@@ -168,34 +166,12 @@ class AddressController @Inject() (
     inReviewMode: Boolean,
     service: Service,
     journey: Journey.Value
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
-    val etmpOrgType = requestSessionData.userSelectedOrganisationType
-      .map(EtmpOrganisationType(_))
-      .getOrElse(throw new IllegalStateException("No Etmp org type"))
-
+  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
     subscriptionDetailsHolderService.cacheAddressDetails(address).flatMap { _ =>
       if (inReviewMode)
         Future.successful(Redirect(DetermineReviewPageController.determineRoute(service, journey)))
       else
-        sessionCache.registrationDetails map {
-          case RegistrationDetailsIndividual(customsId, _, _, name, _, _) =>
-            Ok(confirmContactDetails(name, address, customsId, None, YesNoWrongAddress.createForm(), service, journey))
-          case RegistrationDetailsOrganisation(customsId, _, _, name, _, _, _) =>
-            Ok(
-              confirmContactDetails(
-                name,
-                address,
-                customsId,
-                Some(etmpOrgType),
-                YesNoWrongAddress.createForm(),
-                service,
-                journey
-              )
-            )
-          case _ =>
-            throw new IllegalStateException("No details stored in cache for this session")
-        }
+        Future.successful(Redirect(ConfirmContactDetailsController.form(service, journey)))
     }
-  }
 
 }
