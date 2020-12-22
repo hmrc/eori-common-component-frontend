@@ -25,7 +25,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionResponse
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, MessagingServiceParam, ResponseCommon}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{ContactDetailsModel, VatDetails}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
+  AddressViewModel,
+  ContactDetailsModel,
+  VatDetails
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
   EtmpLegalStatus,
   EtmpTypeOfPerson,
@@ -137,7 +141,9 @@ trait SubscriptionServiceTestData extends TestData {
     contactDetails = Some(subscriptionContactDetailsModel),
     dateEstablished = Some(dateOfEstablishment),
     sicCode = Some(principalEconomicActivity),
-    email = Some(capturedEmail)
+    email = Some(capturedEmail),
+    eoriNumber = Some("GB123456789000"),
+    addressDetails = Some(AddressViewModel("Line 1 line 2", "city name", Some("SE28 1AA"), "GB"))
   )
 
   val fullyPopulatedSubscriptionDetailsWithPlusSignInTelephone: SubscriptionDetails = SubscriptionDetails(
@@ -187,7 +193,12 @@ trait SubscriptionServiceTestData extends TestData {
 
   def stubRegisterWithPartialResponse(outcomeType: String = "PASS"): RegisterWithEoriAndIdResponse = {
     val establishmentAddress =
-      EstablishmentAddress(streetAndNumber = "Street", city = "city", postalCode = Some("NE1 1BG"), countryCode = "GB")
+      EstablishmentAddress(
+        streetAndNumber = "Line 1 line 2",
+        city = "city name",
+        postalCode = Some("SE28 1AA"),
+        countryCode = "GB"
+      )
     val responseData = ResponseData(
       SAFEID = "SafeID123",
       trader = Trader(fullName = "Name", shortName = "nt"),
@@ -381,7 +392,7 @@ trait SubscriptionServiceTestData extends TestData {
 
   def organisationAutomaticExistingRegistrationRequestJson(contactEmail: String): JsValue =
     Json.parse(
-      s"""{"subscriptionCreateRequest":{"requestCommon":{"regime":"CDS","receiptDate":"2016-08-18T14:00:05Z","acknowledgementReference":"4482baa81c844d23a8db3fc180325e7a","originatingSystem":"MDTP"},"requestDetail":{"SAFE":"SafeID123","EORINo":"ZZZ1ZZZZ23ZZZZZZZ","CDSFullName":"Name","CDSEstablishmentAddress":{"streetAndNumber":"Street","city":"city","postalCode":"NE1 1BG","countryCode":"GB"},"contactInformation":{"city":"-","emailAddress":"$contactEmail", "emailVerificationTimestamp": "$emailVerificationTimestamp"},"shortName":"nt","dateOfEstablishment":"1963-05-01","serviceName":"${atarService.enrolmentKey}"}}}""".stripMargin
+      s"""{"subscriptionCreateRequest":{"requestCommon":{"regime":"CDS","receiptDate":"2016-08-18T14:00:05Z","acknowledgementReference":"4482baa81c844d23a8db3fc180325e7a","originatingSystem":"MDTP"},"requestDetail":{"SAFE":"SafeID123","EORINo":"GB123456789000","CDSFullName":"Name","CDSEstablishmentAddress":{"streetAndNumber":"Line 1 line 2","city":"city name","postalCode":"SE28 1AA","countryCode":"GB"},"contactInformation":{"city":"-","emailAddress":"$contactEmail", "emailVerificationTimestamp": "$emailVerificationTimestamp"},"shortName":"nt","dateOfEstablishment":"1963-05-01","serviceName":"${atarService.enrolmentKey}"}}}""".stripMargin
     )
 
   def existingRegistrationSubcriptionRequestJson(contactEmail: String): JsValue =
@@ -395,12 +406,12 @@ trait SubscriptionServiceTestData extends TestData {
          |    },
          |    "requestDetail": {
          |      "SAFE": "SafeID123",
-         |      "EORINo": "ZZZ1ZZZZ23ZZZZZZZ",
+         |      "EORINo": "GB123456789000",
          |      "CDSFullName": "Name",
          |      "CDSEstablishmentAddress": {
-         |        "streetAndNumber": "Street",
-         |        "city": "city",
-         |        "postalCode": "NE1 1BG",
+         |        "streetAndNumber": "Line 1 line 2",
+         |        "city": "city name",
+         |        "postalCode": "SE28 1AA",
          |        "countryCode": "GB"
          |      },
          |      "establishmentInTheCustomsTerritoryOfTheUnion": "1",

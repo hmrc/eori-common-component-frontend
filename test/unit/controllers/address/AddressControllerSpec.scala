@@ -66,7 +66,6 @@ class AddressControllerSpec
 
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockCdsFrontendDataCache       = mock[SessionCache]
-  private val mockRegistrationDetails        = mock[RegistrationDetails]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
   private val emulatedFailure                = new UnsupportedOperationException("Emulation of service call failure")
   private val mockOrganisationType           = mock[CdsOrganisationType]
@@ -114,7 +113,9 @@ class AddressControllerSpec
     )
     when(mockSubscriptionBusinessService.address(any[HeaderCarrier])).thenReturn(None)
     when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier])).thenReturn(None)
-    when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(mockRegistrationDetails)
+    when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(organisationRegistrationDetails)
+    when(mockCdsFrontendDataCache.saveRegistrationDetails(any[RegistrationDetails])(any[HeaderCarrier]))
+      .thenReturn(Future.successful(true))
     when(mockRequestSessionData.mayBeUnMatchedUser(any[Request[AnyContent]])).thenReturn(None)
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]]))
       .thenReturn(Some(mockOrganisationType))

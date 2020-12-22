@@ -23,6 +23,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.AddressDetailsSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.YesNoWrongAddress
@@ -45,7 +46,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddressController @Inject() (
   authorise: AuthAction,
   subscriptionBusinessService: SubscriptionBusinessService,
-  cdsFrontendDataCache: SessionCache,
+  sessionCache: SessionCache,
   subscriptionFlowManager: SubscriptionFlowManager,
   requestSessionData: RequestSessionData,
   subscriptionDetailsHolderService: SubscriptionDetailsService,
@@ -94,11 +95,25 @@ class AddressController @Inject() (
                         )
                   )
               case _ =>
-                showReviewPage(address, isInReviewMode, service, journey)
+                updateRegistrationAddress(address).flatMap { _ =>
+                  showReviewPage(address, isInReviewMode, service, journey)
+                }
             }
           }
         )
     }
+
+  private def updateRegistrationAddress(
+    address: AddressViewModel
+  )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Boolean] =
+    sessionCache.registrationDetails.map {
+      case org: RegistrationDetailsOrganisation =>
+        org.copy(address = Address(address))
+      case ind: RegistrationDetailsIndividual =>
+        ind.copy(address = Address(address))
+    }.map { rd =>
+      sessionCache.saveRegistrationDetails(rd)
+    }.flatMap(identity)
 
   private def populateCountriesToInclude(
     isInReviewMode: Boolean,
@@ -107,7 +122,7 @@ class AddressController @Inject() (
     form: Form[AddressViewModel],
     status: Status
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]) =
-    cdsFrontendDataCache.registrationDetails flatMap { rd =>
+    sessionCache.registrationDetails flatMap { rd =>
       subscriptionDetailsService.cachedCustomsId flatMap { cid =>
         val (countriesToInclude, countriesInCountryPicker) =
           (rd.customsId, cid, journey) match {
@@ -162,7 +177,7 @@ class AddressController @Inject() (
       if (inReviewMode)
         Future.successful(Redirect(DetermineReviewPageController.determineRoute(service, journey)))
       else
-        cdsFrontendDataCache.registrationDetails map {
+        sessionCache.registrationDetails map {
           case RegistrationDetailsIndividual(customsId, _, _, name, _, _) =>
             Ok(confirmContactDetails(name, address, customsId, None, YesNoWrongAddress.createForm(), service, journey))
           case RegistrationDetailsOrganisation(customsId, _, _, name, _, _, _) =>

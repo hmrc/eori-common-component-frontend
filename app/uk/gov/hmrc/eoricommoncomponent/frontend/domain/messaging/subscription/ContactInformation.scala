@@ -21,6 +21,7 @@ import java.time.Clock
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.CommonHeader
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CaseClassAuditHelper, ContactDetail}
 
 case class ContactInformation(
@@ -36,24 +37,43 @@ case class ContactInformation(
   emailVerificationTimestamp: Option[DateTime] = Some(
     new DateTime(Clock.systemUTC().instant.toEpochMilli, DateTimeZone.UTC)
   )
-) extends CaseClassAuditHelper
+) extends CaseClassAuditHelper {
+
+  def withEmail(email: String): ContactInformation =
+    this.copy(emailAddress = Some(email))
+
+}
 
 object ContactInformation extends CommonHeader {
   implicit val jsonFormat = Json.format[ContactInformation]
 
-  def getContactInformation(contactDetail: Option[ContactDetail]): Option[ContactInformation] =
-    contactDetail.map { cd =>
-      ContactInformation(
-        personOfContact = Some(cd.contactName),
-        sepCorrAddrIndicator = Some(true), //ASSUMPTION
-        streetAndNumber = Some(cd.address.streetAndNumber),
-        city = Some(cd.address.city),
-        postalCode = cd.address.postalCode,
-        countryCode = Some(cd.address.countryCode),
-        telephoneNumber = cd.phone,
-        emailAddress = cd.email,
-        faxNumber = cd.fax
-      )
-    }
+  private def dashForEmpty(s: String): String =
+    if (s.isEmpty) "-" else s
+
+  def createContactInformation(cd: ContactDetail): ContactInformation =
+    ContactInformation(
+      personOfContact = Some(cd.contactName),
+      sepCorrAddrIndicator = Some(true), //ASSUMPTION
+      streetAndNumber = Some(cd.address.streetAndNumber),
+      city = Some(dashForEmpty(cd.address.city)),
+      postalCode = cd.address.postalCode,
+      countryCode = Some(cd.address.countryCode),
+      telephoneNumber = cd.phone,
+      emailAddress = cd.email,
+      faxNumber = cd.fax
+    )
+
+  def createContactInformation(contactDetails: ContactDetails): ContactInformation =
+    ContactInformation(
+      personOfContact = Some(contactDetails.fullName),
+      sepCorrAddrIndicator = Some(true),
+      streetAndNumber = Some(contactDetails.street),
+      city = Some(dashForEmpty(contactDetails.city)),
+      postalCode = contactDetails.postcode.filter(_.nonEmpty),
+      countryCode = Some(contactDetails.countryCode),
+      telephoneNumber = Some(contactDetails.telephone),
+      faxNumber = contactDetails.fax,
+      emailAddress = Some(contactDetails.emailAddress)
+    )
 
 }
