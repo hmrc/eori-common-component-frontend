@@ -84,6 +84,7 @@ class AppConfig @Inject() (
   val traderSupportService: String                       = config.get[String]("external-url.trader-support-service")
   val getCompanyInformation: String                      = config.get[String]("external-url.get-company-information")
   val contactEORITeam: String                            = config.get[String]("external-url.contact-eori-team")
+  val checkEORINumber: String                            = config.get[String]("external-url.check-eori-number")
   def callCharges()(implicit messages: Messages): String = config.get[String](s"external-url.call-charges-$languageKey")
 
   val blockedRoutesRegex: Seq[Regex] =

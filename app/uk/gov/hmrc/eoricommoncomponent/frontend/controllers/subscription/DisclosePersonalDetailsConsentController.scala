@@ -39,7 +39,6 @@ class DisclosePersonalDetailsConsentController @Inject() (
   authAction: AuthAction,
   subscriptionDetailsService: SubscriptionDetailsService,
   subscriptionBusinessService: SubscriptionBusinessService,
-  requestSessionData: RequestSessionData,
   mcc: MessagesControllerComponents,
   disclosePersonalDetailsConsentView: disclose_personal_details_consent,
   subscriptionFlowManager: SubscriptionFlowManager
@@ -54,8 +53,6 @@ class DisclosePersonalDetailsConsentController @Inject() (
             disclosePersonalDetailsConsentView(
               isInReviewMode = false,
               disclosePersonalDetailsYesNoAnswerForm,
-              isIndividualFlow,
-              requestSessionData.isPartnership,
               service,
               journey
             )
@@ -73,8 +70,6 @@ class DisclosePersonalDetailsConsentController @Inject() (
           disclosePersonalDetailsConsentView(
             isInReviewMode = true,
             disclosePersonalDetailsYesNoAnswerForm.fill(yesNo),
-            isIndividualFlow,
-            requestSessionData.isPartnership,
             service,
             journey
           )
@@ -88,16 +83,7 @@ class DisclosePersonalDetailsConsentController @Inject() (
         .fold(
           formWithErrors =>
             Future.successful(
-              BadRequest(
-                disclosePersonalDetailsConsentView(
-                  isInReviewMode,
-                  formWithErrors,
-                  isIndividualFlow,
-                  requestSessionData.isPartnership,
-                  service,
-                  journey
-                )
-              )
+              BadRequest(disclosePersonalDetailsConsentView(isInReviewMode, formWithErrors, service, journey))
             ),
           yesNoAnswer =>
             subscriptionDetailsService.cacheConsentToDisclosePersonalDetails(yesNoAnswer).flatMap { _ =>
@@ -112,8 +98,5 @@ class DisclosePersonalDetailsConsentController @Inject() (
             }
         )
     }
-
-  private def isIndividualFlow(implicit rq: Request[AnyContent]) =
-    subscriptionFlowManager.currentSubscriptionFlow.isIndividualFlow
 
 }

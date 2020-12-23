@@ -226,3 +226,9 @@ yes-no-wrong-address.error=Select yes if this is your address
 
 cds.existing.reg.eori-already-exists.title=You already have an EORI
 cds.existing.reg.eori.number=EORI number:
+
+cds.subscription.organisation-disclose-personal-details-consent.heading=Do you want to include your name and address on the EORI checker?
+cds.subscription.organisation-disclose-personal-details-consent.declaration=HMRC will add your GB EORI number to a {0}. You can also include you or your organisation’s name and address. This will help customs and freight agents identify you and process your shipments.
+cds.subscription.organisation-disclose-personal-details-consent.declaration.link=public checker
+cds.subscription.organisation-disclose-personal-details-consent.yes=Yes - I want the name and address on the EORI checker
+cds.subscription.organisation-disclose-personal-details-consent.no=No - Just show my EORI number
