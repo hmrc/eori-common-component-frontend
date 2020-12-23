@@ -31,7 +31,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Disclos
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.YesNo
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.disclose_personal_details_consent
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
@@ -40,8 +39,8 @@ import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.SessionBuilder
 import util.builders.YesNoFormBuilder._
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class DisclosePersonalDetailsConsentControllerSpec
     extends ControllerSpec with SubscriptionFlowSpec with MockitoSugar with BeforeAndAfterEach {
@@ -58,7 +57,6 @@ class DisclosePersonalDetailsConsentControllerSpec
       .submit(isInReviewMode = true, atarService, Journey.Register)
       .url
 
-  private val mockRequestSession                 = mock[RequestSessionData]
   private val disclosePersonalDetailsConsentView = instanceOf[disclose_personal_details_consent]
 
   private val problemWithSelectionError = "Tell us if you want to include your name and address on the EORI checker"
@@ -68,7 +66,6 @@ class DisclosePersonalDetailsConsentControllerSpec
     mockAuthAction,
     mockSubscriptionDetailsHolderService,
     mockSubscriptionBusinessService,
-    mockRequestSession,
     mcc,
     disclosePersonalDetailsConsentView,
     mockSubscriptionFlowManager
@@ -78,21 +75,21 @@ class DisclosePersonalDetailsConsentControllerSpec
     ("Flow name", "Consent Info", "Yes Label", "No Label"),
     (
       IndividualSubscriptionFlow,
-      "HMRC will add your EORI number to a public checker kept by the European Commission. You can also agree to include your name and address. This can help customs and freight agents identify you and process your shipments.",
-      "Yes - I want my name and address on the EORI checker",
-      "No - Just show my EORI number on the EORI checker"
+      "HMRC will add your GB EORI number to a public checker. You can also include you or your organisation’s name and address. This will help customs and freight agents identify you and process your shipments.",
+      "Yes - I want the name and address on the EORI checker",
+      "No - Just show my EORI number"
     ),
     (
       OrganisationSubscriptionFlow,
-      "HMRC will add your EORI number to a public checker kept by the European Commission. You can also agree to include your organisation name and address. This can help customs and freight agents identify you and process your shipments.",
-      "Yes - I want my organisation name and address on the EORI checker",
-      "No - Just show my EORI number on the EORI checker"
+      "HMRC will add your GB EORI number to a public checker. You can also include you or your organisation’s name and address. This will help customs and freight agents identify you and process your shipments.",
+      "Yes - I want the name and address on the EORI checker",
+      "No - Just show my EORI number"
     ),
     (
       SoleTraderSubscriptionFlow,
-      "HMRC will add your EORI number to a public checker kept by the European Commission. You can also agree to include your name and address. This can help customs and freight agents identify you and process your shipments.",
-      "Yes - I want my name and address on the EORI checker",
-      "No - Just show my EORI number on the EORI checker"
+      "HMRC will add your GB EORI number to a public checker. You can also include you or your organisation’s name and address. This will help customs and freight agents identify you and process your shipments.",
+      "Yes - I want the name and address on the EORI checker",
+      "No - Just show my EORI number"
     )
   )
 
@@ -120,10 +117,7 @@ class DisclosePersonalDetailsConsentControllerSpec
               val html: String = contentAsString(result)
               html should include("id=\"yes-no-answer-true\"")
               html should include("id=\"yes-no-answer-false\"")
-              if (subscriptionFlow.isIndividualFlow)
-                html should include("Do you want to include your name and address on the EORI checker?")
-              else
-                html should include("Do you want to include your organisation name and address on the EORI checker?")
+              html should include("Do you want to include your name and address on the EORI checker?")
             }
           }
 
