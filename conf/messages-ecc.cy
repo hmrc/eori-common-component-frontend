@@ -226,3 +226,9 @@ yes-no-wrong-address.error=TRANSLATE Select yes if this is your address
 
 cds.existing.reg.eori-already-exists.title=Mae gennych EORI eisoes
 cds.existing.reg.eori.number=Rhif EORI:
+
+cds.subscription.organisation-disclose-personal-details-consent.heading=A ydych am gynnwys eich enw a chyfeiriad ar y gwiriwr EORI?
+cds.subscription.organisation-disclose-personal-details-consent.declaration=Bydd CThEM yn ychwanegu eich rhif EORI GB at {0}. Gallwch hefyd gynnwys eich enw a’ch cyfeiriad chi, neu’ch sefydliad. Bydd hyn yn helpu asiantau tollau a chludo nwyddau i gadarnhau pwy ydych a phrosesu eich llwythi.
+cds.subscription.organisation-disclose-personal-details-consent.declaration.link=wiriwr cyhoeddus
+cds.subscription.organisation-disclose-personal-details-consent.yes=Iawn - Rwyf am i’r enw a’r cyfeiriad fod ar y gwiriwr EORI
+cds.subscription.organisation-disclose-personal-details-consent.no=Na - Dangoswch fy rhif EORI yn unig

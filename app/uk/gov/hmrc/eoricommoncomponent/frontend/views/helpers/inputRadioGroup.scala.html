@@ -34,6 +34,12 @@
 @hintId = @{
     if(hasHint) s"${field.id}-hint" else ""
 }
+@hasHintHtml = @{
+    hintHtml.isDefined
+}
+@hintHtmlId = @{
+    if(hasHintHtml) s"${field.id}-hintHtml" else ""
+}
 
 @hasErrors = @{
     elements.hasErrors
@@ -42,13 +48,13 @@
     if(hasErrors) s"${field.id}-error" else ""
 }
 @describedBy = @{
-  Seq(hintId, errorId).filterNot(_.isEmpty).mkString(" ")
+  Seq(hintId, hintHtmlId, errorId).filterNot(_.isEmpty).mkString(" ")
 }
 
 <div id="@field.id-field" class="form-group">
     <fieldset
         id="@field.id-fieldset"
-        @if(hasHint || hasErrors){
+        @if(hasHint || hasHintHtml || hasErrors){
             aria-describedby="@describedBy"
         } >
 
@@ -72,7 +78,9 @@
             <p class="form-hint" id="@hintId">@elements.args.get('_hintText)</p>
         }
 
-        @hintHtml
+        @hintHtml.map{ hint =>
+            <p class="form-hint" id="@hintHtmlId">@hint</p>
+        }
 
         @if(hasErrors) {
             @elements.errors.map { error => <span class="error-message" id="@errorId"><span class="visually-hidden">@messages("cds.error.field.hint")</span> @messages(error)</span> }
