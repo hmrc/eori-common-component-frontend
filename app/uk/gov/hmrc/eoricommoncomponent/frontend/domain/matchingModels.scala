@@ -201,6 +201,8 @@ object NinoOrUtr {
 
 }
 
+case class NinoOrUtrChoice(ninoOrUtrRadio: Option[String])
+
 case class SixLineAddressMatchModel(
   lineOne: String,
   lineTwo: Option[String],

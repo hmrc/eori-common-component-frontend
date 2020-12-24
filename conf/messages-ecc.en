@@ -232,3 +232,6 @@ cds.subscription.organisation-disclose-personal-details-consent.declaration=HMRC
 cds.subscription.organisation-disclose-personal-details-consent.declaration.link=public checker
 cds.subscription.organisation-disclose-personal-details-consent.yes=Yes - I want the name and address on the EORI checker
 cds.subscription.organisation-disclose-personal-details-consent.no=No - Just show my EORI number
+
+subscription-journey.how-confirm-identity.nino.heading=Enter your National Insurance number
+subscription-journey.how-confirm-identity.utr.heading=Enter your Unique Tax Reference number

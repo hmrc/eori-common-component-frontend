@@ -24,7 +24,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.ninoOrUtrForm
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.subscriptionNinoForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.MatchingService
@@ -34,60 +34,47 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class GYEHowCanWeIdentifyYouController @Inject() (
+class GYEHowCanWeIdentifyYouNinoController @Inject() (
   authAction: AuthAction,
   matchingService: MatchingService,
   mcc: MessagesControllerComponents,
-  howCanWeIdentifyYouView: how_can_we_identify_you,
+  howCanWeIdentifyYouView: how_can_we_identify_you_nino,
   cdsFrontendDataCache: SessionCache
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def form(organisationType: String, service: Service, journey: Journey.Value): Action[AnyContent] =
+  def form(service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      Future.successful(
-        Ok(howCanWeIdentifyYouView(ninoOrUtrForm, isInReviewMode = false, service, journey, Some(organisationType)))
-      )
+      Future.successful(Ok(howCanWeIdentifyYouView(subscriptionNinoForm, isInReviewMode = false, service, journey)))
     }
 
-  def submit(organisationType: String, service: Service, journey: Journey.Value): Action[AnyContent] =
+  def submit(service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
-      ninoOrUtrForm.bindFromRequest.fold(
+      subscriptionNinoForm.bindFromRequest.fold(
         formWithErrors =>
           Future.successful(
-            BadRequest(
-              howCanWeIdentifyYouView(formWithErrors, isInReviewMode = false, service, journey, Some(organisationType))
-            )
+            BadRequest(howCanWeIdentifyYouView(formWithErrors, isInReviewMode = false, service, journey))
           ),
         formData =>
           matchOnId(formData, InternalId(loggedInUser.internalId)).map {
             case true =>
               Redirect(ConfirmContactDetailsController.form(service, journey))
             case false =>
-              matchNotFoundBadRequest(formData, organisationType, service, journey)
+              matchNotFoundBadRequest(formData, service, journey)
           }
       )
     }
 
-  private def matchOnId(formData: NinoOrUtr, internalId: InternalId)(implicit hc: HeaderCarrier): Future[Boolean] =
-    formData match {
-      case NinoOrUtr(Some(nino), _, selected) if selected.contains("nino") =>
-        retrieveNameDobFromCache().flatMap(ind => matchingService.matchIndividualWithNino(nino, ind, internalId))
-      case NinoOrUtr(_, Some(utr), selected) if selected.contains("utr") =>
-        retrieveNameDobFromCache().flatMap(ind => matchingService.matchIndividualWithId(Utr(utr), ind, internalId))
-      case _ => Future.successful(false)
-    }
+  private def matchOnId(formData: IdMatchModel, internalId: InternalId)(implicit hc: HeaderCarrier): Future[Boolean] =
+    retrieveNameDobFromCache().flatMap(ind => matchingService.matchIndividualWithNino(formData.id, ind, internalId))
 
-  private def matchNotFoundBadRequest(
-    individualFormData: NinoOrUtr,
-    organisationType: String,
-    service: Service,
-    journey: Journey.Value
-  )(implicit request: Request[AnyContent]): Result = {
-    val errorForm = ninoOrUtrForm
+  private def matchNotFoundBadRequest(individualFormData: IdMatchModel, service: Service, journey: Journey.Value)(
+    implicit request: Request[AnyContent]
+  ): Result = {
+    val errorForm = subscriptionNinoForm
       .withGlobalError(Messages("cds.matching-error.individual-not-found"))
       .fill(individualFormData)
-    BadRequest(howCanWeIdentifyYouView(errorForm, isInReviewMode = false, service, journey, Some(organisationType)))
+    BadRequest(howCanWeIdentifyYouView(errorForm, isInReviewMode = false, service, journey))
   }
 
   // TODO Get rid of `.get`. Now if there is no information Exception will be thrown, understand what should happen if this is not provided

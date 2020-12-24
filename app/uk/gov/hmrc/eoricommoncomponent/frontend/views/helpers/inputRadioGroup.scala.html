@@ -102,7 +102,7 @@
                     <label for="@inputId">
                         @label&nbsp;
                         @hints.get(value).map { hint =>
-                            <span class="form-hint">@hint</span>
+                            <span class="form-hint">@{Html(hint)}</span>
                         }
                     </label>
                 </div>

@@ -21,17 +21,15 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NinoOrUtr
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NinoOrUtrChoice
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you
 import util.ViewSpec
 
 class HowCanWeIdentifyYouSpec extends ViewSpec {
-  val form: Form[NinoOrUtr]                    = ninoOrUtrForm
-  val formWithNothingSelected: Form[NinoOrUtr] = ninoOrUtrForm.bind(Map("ninoOrUtrRadio" -> ""))
-  val formWithNinoSelected: Form[NinoOrUtr]    = ninoOrUtrForm.bind(Map("ninoOrUtrRadio" -> "nino", "nino" -> ""))
-  val formWithUtrSelected: Form[NinoOrUtr]     = ninoOrUtrForm.bind(Map("ninoOrUtrRadio" -> "utr", "utr" -> ""))
+  val form: Form[NinoOrUtrChoice]                    = ninoOrUtrChoiceForm
+  val formWithNothingSelected: Form[NinoOrUtrChoice] = ninoOrUtrChoiceForm.bind(Map("ninoOrUtrRadio" -> ""))
 
   val isInReviewMode   = false
   val previousPageUrl  = "/"
@@ -39,7 +37,7 @@ class HowCanWeIdentifyYouSpec extends ViewSpec {
 
   private val view = instanceOf[how_can_we_identify_you]
 
-  "Subscription Enter Your Nino Page" should {
+  "How Can We Identify You Page" should {
 
     "display correct heading" in {
       doc.body().getElementsByTag("h1").text() mustBe "What information can we use to confirm your identity?"
@@ -54,19 +52,19 @@ class HowCanWeIdentifyYouSpec extends ViewSpec {
     }
 
     "have nino displayed but not selected" in {
-      doc.body().getElementById("nino-radio").attr("checked") mustBe empty
+      doc.body().getElementById("ninoOrUtrRadio-nino").attr("checked") mustBe empty
     }
 
     "have utr displayed but not selected" in {
-      doc.body().getElementById("utr-radio").attr("checked") mustBe empty
+      doc.body().getElementById("ninoOrUtrRadio-utr").attr("checked") mustBe empty
     }
 
     "have an input of type 'radio' for nino" in {
-      doc.body().getElementById("nino-radio").attr("type") mustBe "radio"
+      doc.body().getElementById("ninoOrUtrRadio-nino").attr("type") mustBe "radio"
     }
 
     "have an input of type 'radio' for utr" in {
-      doc.body().getElementById("utr-radio").attr("type") mustBe "radio"
+      doc.body().getElementById("ninoOrUtrRadio-utr").attr("type") mustBe "radio"
     }
 
     "display an page level error if no radio button is selected" in {
@@ -80,28 +78,7 @@ class HowCanWeIdentifyYouSpec extends ViewSpec {
       docWithRadioButtonsError
         .body()
         .getElementsByClass("error-message")
-        .text() mustBe "Select how we can identify you"
-    }
-
-    "display an page level error if nino radio button is selected but no nino entered" in {
-      docWithNoNinoError
-        .body()
-        .getElementsByClass("error-summary-list")
-        .text() mustBe "Enter your National Insurance number"
-    }
-
-    "display an field level error if nino radio button is selected but no nino entered" in {
-      docWithNoNinoError.body().getElementsByClass(
-        "error-message"
-      ).text() mustBe "Error: Enter your National Insurance number"
-    }
-
-    "display an page level error if utr radio button is selected but no nino entered" in {
-      docWithNoUtrError.body().getElementsByClass("error-summary-list").text() mustBe "Enter your UTR number"
-    }
-
-    "display an field level error if utr radio button is selected but no utr entered" in {
-      docWithNoUtrError.body().getElementsByClass("error-message").text() mustBe "Error: Enter your UTR number"
+        .text() mustBe "Error: Select how we can identify you"
     }
   }
 
@@ -109,11 +86,5 @@ class HowCanWeIdentifyYouSpec extends ViewSpec {
 
   lazy val docWithRadioButtonsError: Document =
     Jsoup.parse(contentAsString(view(formWithNothingSelected, isInReviewMode, atarService, Journey.Subscribe)))
-
-  lazy val docWithNoNinoError: Document =
-    Jsoup.parse(contentAsString(view(formWithNinoSelected, isInReviewMode, atarService, Journey.Subscribe)))
-
-  lazy val docWithNoUtrError: Document =
-    Jsoup.parse(contentAsString(view(formWithUtrSelected, isInReviewMode, atarService, Journey.Subscribe)))
 
 }

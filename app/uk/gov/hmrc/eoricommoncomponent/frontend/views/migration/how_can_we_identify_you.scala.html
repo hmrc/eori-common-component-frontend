@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NinoOrUtr
+@import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NinoOrUtrChoice
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 @import views.html.helper._
@@ -22,64 +22,42 @@
 
 
 @this(layout_di: layout)
-@(ninoUtrForm: Form[NinoOrUtr], isInReviewMode: Boolean, service: Service, journey: Journey.Value, organisationType: Option[String] = None)(implicit request: Request[_], messages: Messages)
+@(ninoUtrForm: Form[NinoOrUtrChoice], isInReviewMode: Boolean, service: Service, journey: Journey.Value, organisationType: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
-@inputText(field: String, label: String) = {
-@defining(Seq(
-    '_label -> Html(messages(label)), '_plainLabel -> true)) { args => @helpers.input(ninoUtrForm(field), args: _*) }
+@title = @{
+    messages("subscription-journey.how-confirm-identity")
+}
+@validOptions = @{
+    Seq(
+        ("nino", messages("subscription-journey.what-is-your-nino.label"), Some(messages("subscription-journey.what-is-your-nino.hint"))),
+        ("utr", messages("subscription-journey.utr.label"), Some(messages("subscription-journey.utr.hint")))
+    )
+}
+@inputRadioGroup(field: String, options: Seq[(String, String, Option[String])]) = {
+    @helpers.inputRadioGroup(
+        ninoUtrForm(field),
+        options.map { option => (option._1, option._2) },
+        options.flatMap(option => option._3.map(option._1 -> _)).toMap,
+        None,
+        '_divClass -> "form-group",
+        '_legend -> title,
+        '_isLegendH1 -> true)
 }
 
-@elements = @{
-    FieldElements("nino-radio", ninoUtrForm("ninoOrUtrRadio"), null, Map.empty, messages)
-}
-
-@layout_di(messages("subscription-journey.how-confirm-identity"), form = Some(ninoUtrForm)) {
+@layout_di(title, form = Some(ninoUtrForm)) {
     <div class="column-two-thirds">
         <a href="javascript:history.back()" id="back" class="link-back js-visible">@messages("cds.navigation.back")</a>
 
         @helpers.errorSummary(ninoUtrForm, focusOverrides = Map("ninoOrUtrRadio" -> "nino-radio"))
 
-        <fieldset>
-            <legend>
-                <h1 class="heading-large">@messages("subscription-journey.how-confirm-identity")</h1>
-            </legend>
-
-            @helpers.form(
-            if(journey == Journey.Subscribe)
-                HowCanWeIdentifyYouController.submit(isInReviewMode, service, journey)
-            else
-                GYEHowCanWeIdentifyYouController.submit(organisationType.getOrElse(throw new IllegalArgumentException("Missing Organisation type")), service, journey), "nino-utr-form") {
+        @helpers.form(HowCanWeIdentifyYouController.submit(isInReviewMode, service, journey), "nino-utr-form") {
             @CSRF.formField
-            <div class="form-group @if(elements.hasErrors){error}">
 
-                @if(elements.hasErrors) {
-                    @elements.errors.map { error => <span class="error-message">@messages(error)</span> }
-                }
+            @inputRadioGroup("ninoOrUtrRadio", validOptions)
 
-                <div class="multiple-choice" data-target="nino-panel">
-                    <input id="nino-radio" type="radio" name="ninoOrUtrRadio" value="nino" @if(ninoUtrForm("ninoOrUtrRadio").value.contains("nino")) {checked="checked"}>
-                    <label for="nino-radio">@messages("subscription-journey.what-is-your-nino.label")
-                        <span class="form-hint">@messages("subscription-journey.what-is-your-nino.hint")</span>
-                    </label>
-                </div>
-                <div class="panel panel-border-narrow js-hidden" id="nino-panel">
-                    @inputText("nino", "subscription-journey.what-is-your-nino.label")
-                </div>
+            <input class="button" type="submit" value='@uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper.continueButtonText(isInReviewMode)'>
 
-                <div class="multiple-choice" data-target="utr-panel">
-                    <input id="utr-radio" type="radio" name="ninoOrUtrRadio" value="utr" @if(ninoUtrForm("ninoOrUtrRadio").value.contains("utr")) {checked="checked"} >
-                    <label for="utr-radio">@messages("subscription-journey.utr.label")
-                        <span class="form-hint">@Html(messages("subscription-journey.utr.hint"))</span>
-                    </label>
-                </div>
-                <div class="panel panel-border-narrow js-hidden" id="utr-panel">
-                    @inputText("utr", "subscription-journey.utr.label")
-                </div>
-            </div>
-        </fieldset>
-        <input class="button" type="submit" value='@uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper.continueButtonText(isInReviewMode)'>
-
-        @helpers.helpAndSupport()
+            @helpers.helpAndSupport()
         }
     </div>
 }

@@ -232,3 +232,6 @@ cds.subscription.organisation-disclose-personal-details-consent.declaration=Bydd
 cds.subscription.organisation-disclose-personal-details-consent.declaration.link=wiriwr cyhoeddus
 cds.subscription.organisation-disclose-personal-details-consent.yes=Iawn - Rwyf am i’r enw a’r cyfeiriad fod ar y gwiriwr EORI
 cds.subscription.organisation-disclose-personal-details-consent.no=Na - Dangoswch fy rhif EORI yn unig
+
+subscription-journey.how-confirm-identity.nino.heading=Nodwch eich rhif Yswiriant Gwladol
+subscription-journey.how-confirm-identity.utr.heading=Nodwch eich Cyfeirnod Unigryw y Trethdalwr

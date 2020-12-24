@@ -25,33 +25,33 @@ import org.scalatest.BeforeAndAfter
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.GYEHowCanWeIdentifyYouController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.GYEHowCanWeIdentifyYouNinoController
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NameDobMatchModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, NameDobMatchModel, Utr}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.MatchingService
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you_nino
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
-class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAfter with AuthActionMock {
+class GYEHowCanWeIdentifyYouNinoControllerSpec extends ControllerSpec with BeforeAndAfter with AuthActionMock {
 
   private val mockAuthConnector     = mock[AuthConnector]
   private val mockAuthAction        = authAction(mockAuthConnector)
   private val mockMatchingService   = mock[MatchingService]
   private val mockFrontendDataCache = mock[SessionCache]
 
-  private val howCanWeIdentifyYouView = instanceOf[how_can_we_identify_you]
+  private val howCanWeIdentifyYouView = instanceOf[how_can_we_identify_you_nino]
 
-  private val controller = new GYEHowCanWeIdentifyYouController(
+  private val controller = new GYEHowCanWeIdentifyYouNinoController(
     mockAuthAction,
     mockMatchingService,
     mcc,
@@ -62,7 +62,7 @@ class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAnd
   "Viewing the form " should {
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.form(CdsOrganisationType.IndividualId, atarService, Journey.Register)
+      controller.form(atarService, Journey.Register)
     )
   }
 
@@ -70,7 +70,7 @@ class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAnd
 
     assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
       mockAuthConnector,
-      controller.submit(CdsOrganisationType.IndividualId, atarService, Journey.Register)
+      controller.submit(atarService, Journey.Register)
     )
 
     "redirect to the Confirm page when a nino is matched" in {
@@ -86,27 +86,7 @@ class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAnd
           .matchIndividualWithNino(ArgumentMatchers.eq(nino), any[Individual], any())(any[HeaderCarrier])
       ).thenReturn(Future.successful(true))
 
-      submitForm(Map("nino" -> nino, "ninoOrUtrRadio" -> "nino"), CdsOrganisationType.IndividualId, Journey.Register) {
-        result =>
-          status(result) shouldBe SEE_OTHER
-          result.header.headers("Location") shouldBe "/customs-enrolment-services/atar/register/matching/confirm"
-      }
-    }
-
-    "redirect to the Confirm page when a UTR is matched" in {
-
-      val utr = "2108834503"
-      when(mockFrontendDataCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(
-        Future.successful(
-          SubscriptionDetails(nameDobDetails = Some(NameDobMatchModel("test", None, "user", LocalDate.now)))
-        )
-      )
-      when(
-        mockMatchingService
-          .matchIndividualWithId(ArgumentMatchers.eq(Utr(utr)), any[Individual], any())(any[HeaderCarrier])
-      ).thenReturn(Future.successful(true))
-
-      submitForm(Map("utr" -> utr, "ninoOrUtrRadio" -> "utr"), CdsOrganisationType.IndividualId, Journey.Register) {
+      submitForm(Map("nino" -> nino), Journey.Register) {
         result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers("Location") shouldBe "/customs-enrolment-services/atar/register/matching/confirm"
@@ -125,7 +105,7 @@ class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAnd
           .matchIndividualWithNino(ArgumentMatchers.eq(nino), any[Individual], any())(any[HeaderCarrier])
       ).thenReturn(Future.successful(false))
 
-      submitForm(Map("nino" -> nino, "ninoOrUtrRadio" -> "nino"), CdsOrganisationType.IndividualId, Journey.Register) {
+      submitForm(Map("nino" -> nino), Journey.Register) {
         result =>
           status(result) shouldBe BAD_REQUEST
           val page = CdsPage(contentAsString(result))
@@ -135,37 +115,14 @@ class GYEHowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAnd
       }
     }
 
-    "give a page level error when a UTR is not matched" in {
-      val utr = "2108834503"
-      when(mockFrontendDataCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(
-        Future.successful(
-          SubscriptionDetails(nameDobDetails = Some(NameDobMatchModel("test", None, "user", LocalDate.now)))
-        )
-      )
-      when(
-        mockMatchingService
-          .matchIndividualWithId(ArgumentMatchers.eq(Utr(utr)), any[Individual], any())(any[HeaderCarrier])
-      ).thenReturn(Future.successful(false))
-
-      submitForm(Map("utr" -> utr, "ninoOrUtrRadio" -> "utr"), CdsOrganisationType.IndividualId, Journey.Register) {
-        result =>
-          status(result) shouldBe BAD_REQUEST
-          val page = CdsPage(contentAsString(result))
-          page.getElementsText(
-            RegisterHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
-          ) shouldBe "Your details have not been found. Check that your details are correct and then try again."
-      }
-    }
   }
 
-  def submitForm(form: Map[String, String], orgType: String, journey: Journey.Value, userId: String = defaultUserId)(
+  def submitForm(form: Map[String, String], journey: Journey.Value, userId: String = defaultUserId)(
     test: Future[Result] => Any
   ) {
     withAuthorisedUser(userId, mockAuthConnector)
     test(
-      controller.submit(orgType, atarService, journey).apply(
-        SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
-      )
+      controller.submit(atarService, journey).apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }
 
