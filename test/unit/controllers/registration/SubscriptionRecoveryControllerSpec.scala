@@ -364,10 +364,22 @@ class SubscriptionRecoveryControllerSpec
       .thenReturn(Future.successful(Right(responseWithoutContactDetails)))
     when(mockSessionCache.sub01Outcome(any[HeaderCarrier])).thenReturn(Future.successful(mockSub01Outcome))
 
+    val expectedFormBundleId = fullyPopulatedResponse.responseCommon.returnParameters
+      .flatMap(_.find(_.paramName.equals("ETMPFORMBUNDLENUMBER")).map(_.paramValue)).get + "atar"
+
     callEnrolmentComplete(journey = Journey.Register) { result =>
       status(result) shouldBe SEE_OTHER
       header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/register/eori-exist")
     }
+
+    verify(mockHandleSubscriptionService).handleSubscription(
+      meq(expectedFormBundleId),
+      any(),
+      any(),
+      meq(Some(Eori("testEORInumber"))),
+      any(),
+      any()
+    )(any())
   }
 
   "call Enrolment Complete with successful SUB09 call without EmailAddress should show existing EORI" in {
@@ -381,10 +393,22 @@ class SubscriptionRecoveryControllerSpec
       .thenReturn(Future.successful(Right(responseWithoutEmailAddress)))
     when(mockSessionCache.sub01Outcome(any[HeaderCarrier])).thenReturn(Future.successful(mockSub01Outcome))
 
+    val expectedFormBundleId = fullyPopulatedResponse.responseCommon.returnParameters
+      .flatMap(_.find(_.paramName.equals("ETMPFORMBUNDLENUMBER")).map(_.paramValue)).get + "atar"
+
     callEnrolmentComplete(journey = Journey.Register) { result =>
       status(result) shouldBe SEE_OTHER
       header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/register/eori-exist")
     }
+
+    verify(mockHandleSubscriptionService).handleSubscription(
+      meq(expectedFormBundleId),
+      any(),
+      any(),
+      meq(Some(Eori("testEORInumber"))),
+      any(),
+      any()
+    )(any())
   }
 
   "call Enrolment Complete with successful SUB09 call with un-verified EmailAddress should show existing EORI" in {
@@ -398,10 +422,22 @@ class SubscriptionRecoveryControllerSpec
       .thenReturn(Future.successful(Right(responseWithUnverifiedEmailAddress)))
     when(mockSessionCache.sub01Outcome(any[HeaderCarrier])).thenReturn(Future.successful(mockSub01Outcome))
 
+    val expectedFormBundleId = fullyPopulatedResponse.responseCommon.returnParameters
+      .flatMap(_.find(_.paramName.equals("ETMPFORMBUNDLENUMBER")).map(_.paramValue)).get + "atar"
+
     callEnrolmentComplete(journey = Journey.Register) { result =>
       status(result) shouldBe SEE_OTHER
       header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/register/eori-exist")
     }
+
+    verify(mockHandleSubscriptionService).handleSubscription(
+      meq(expectedFormBundleId),
+      any(),
+      any(),
+      meq(Some(Eori("testEORInumber"))),
+      any(),
+      any()
+    )(any())
   }
 
   "should show existing EORI" in {
@@ -439,10 +475,22 @@ class SubscriptionRecoveryControllerSpec
       )(any[HeaderCarrier])
     ).thenReturn(Future.successful(result = ()))
 
+    val expectedFormBundleId = fullyPopulatedResponse.responseCommon.returnParameters
+      .flatMap(_.find(_.paramName.equals("ETMPFORMBUNDLENUMBER")).map(_.paramValue)).get + "atar"
+
     callEnrolmentComplete(journey = Journey.Register) { result =>
       status(result) shouldBe SEE_OTHER
       header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/register/complete")
     }
+
+    verify(mockHandleSubscriptionService).handleSubscription(
+      meq(expectedFormBundleId),
+      any(),
+      any(),
+      meq(Some(Eori("testEORInumber"))),
+      any(),
+      any()
+    )(any())
   }
 
   def callEnrolmentComplete(userId: String = defaultUserId, journey: Journey.Value)(test: Future[Result] => Any) {

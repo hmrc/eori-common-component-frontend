@@ -243,7 +243,7 @@ class SubscriptionRecoveryController @Inject() (
       processedDate,
       email,
       emailVerificationTimestamp,
-      if (journey == Journey.Subscribe) formBundleId + service.code else formBundleId,
+      formBundleId + service.code,
       recipientFullName,
       name,
       eori,
