@@ -190,41 +190,15 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
     }
   }
 
-  "Calling cacheNameIdCustomsIdAndUtrMatch" should {
-    "save NameId Details and CustomsId in frontend cache" in {
-
-      await(subscriptionDetailsHolderService.cacheNameIdCustomsIdAndUtrMatch(nameId.name, nameId.id, None))
-      val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
-
-      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
-      val holder: SubscriptionDetails = requestCaptor.getValue
-      holder.nameIdOrganisationDetails shouldBe Some(nameId)
-      holder.customsId shouldBe Some(Utr(nameId.id))
-    }
-  }
-
-  "Calling cacheCustomsIdAndUtrMatch" should {
-    "save CustomsId an UtrMatchModel in frontend cache" in {
-
-      await(subscriptionDetailsHolderService.cacheCustomsIdAndUtrMatch(customsIdUTR, Some(utrMatch)))
-      val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
-
-      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
-      val holder: SubscriptionDetails = requestCaptor.getValue
-      holder.customsId shouldBe Some(customsIdUTR)
-      holder.formData.utrMatch shouldBe Some(utrMatch)
-    }
-  }
-
   "Calling cacheCustomsIdAndNinoMatch" should {
     "save CustomsId an NinoMatchModel in frontend cache" in {
 
-      await(subscriptionDetailsHolderService.cacheCustomsIdAndNinoMatch(Some(customsIdUTR), Some(ninoMatch)))
+      await(subscriptionDetailsHolderService.cacheNinoMatchForNoAnswer(Some(ninoMatch)))
       val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
 
       verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
       val holder: SubscriptionDetails = requestCaptor.getValue
-      holder.customsId shouldBe Some(customsIdUTR)
+      holder.customsId shouldBe None
       holder.formData.ninoMatch shouldBe Some(ninoMatch)
     }
   }

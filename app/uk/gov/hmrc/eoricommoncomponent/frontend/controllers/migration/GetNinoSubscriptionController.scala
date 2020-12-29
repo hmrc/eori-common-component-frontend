@@ -14,34 +14,30 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
+package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration
 
 import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.HowCanWeIdentifyYouSubscriptionFlowPage
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NinoSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.subscriptionNinoForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  SubscriptionBusinessService,
-  SubscriptionDetailsService
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you_nino
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class HowCanWeIdentifyYouNinoController @Inject() (
+class GetNinoSubscriptionController @Inject() (
   authAction: AuthAction,
-  subscriptionBusinessService: SubscriptionBusinessService,
   subscriptionFlowManager: SubscriptionFlowManager,
   mcc: MessagesControllerComponents,
-  howCanWeIdentifyYouView: how_can_we_identify_you_nino,
+  getNinoSubscriptionView: how_can_we_identify_you_nino,
   subscriptionDetailsHolderService: SubscriptionDetailsService
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
@@ -49,71 +45,68 @@ class HowCanWeIdentifyYouNinoController @Inject() (
   def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
-        populateView(service, journey, isInReviewMode = false)
+        populateView(false, service, journey)
     }
 
   def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
-        populateView(service, journey, isInReviewMode = true)
+        populateView(true, service, journey)
     }
 
-  private def populateView(service: Service, journey: Journey.Value, isInReviewMode: Boolean)(implicit
+  private def populateView(isInReviewMode: Boolean, service: Service, journey: Journey.Value)(implicit
     hc: HeaderCarrier,
-    request: Request[_]
+    request: Request[AnyContent]
   ) =
-    subscriptionBusinessService.getCachedCustomsId.map {
+    subscriptionDetailsHolderService.cachedCustomsId.map {
       case Some(Nino(id)) =>
         Ok(
-          howCanWeIdentifyYouView(
+          getNinoSubscriptionView(
             subscriptionNinoForm.fill(IdMatchModel(id)),
             isInReviewMode,
-            routes.HowCanWeIdentifyYouNinoController.submit(isInReviewMode, service, journey)
+            routes.GetNinoSubscriptionController.submit(isInReviewMode, service, journey)
           )
         )
+
       case _ =>
         Ok(
-          howCanWeIdentifyYouView(
+          getNinoSubscriptionView(
             subscriptionNinoForm,
             isInReviewMode,
-            routes.HowCanWeIdentifyYouNinoController.submit(isInReviewMode, service, journey)
+            routes.GetNinoSubscriptionController.submit(isInReviewMode, service, journey)
           )
         )
     }
 
   def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      subscriptionNinoForm
-        .bindFromRequest()
-        .fold(
-          invalidForm =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        subscriptionNinoForm.bindFromRequest.fold(
+          formWithErrors =>
             Future.successful(
               BadRequest(
-                howCanWeIdentifyYouView(
-                  invalidForm,
+                getNinoSubscriptionView(
+                  formWithErrors,
                   isInReviewMode,
-                  routes.HowCanWeIdentifyYouNinoController.submit(isInReviewMode, service, journey)
+                  routes.GetNinoSubscriptionController.submit(isInReviewMode, service, journey)
                 )
               )
             ),
-          form => storeId(form, isInReviewMode, service, journey)
+          formData => cacheAndContinue(isInReviewMode, formData, service, journey)
         )
     }
 
-  private def storeId(formData: IdMatchModel, inReviewMode: Boolean, service: Service, journey: Journey.Value)(implicit
+  private def cacheAndContinue(isInReviewMode: Boolean, form: IdMatchModel, service: Service, journey: Journey.Value)(
+    implicit
     hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] =
-    subscriptionDetailsHolderService
-      .cacheCustomsId(Nino(formData.id))
-      .map(
-        _ =>
-          if (inReviewMode)
-            Redirect(DetermineReviewPageController.determineRoute(service, journey))
-          else
-            Redirect(
-              subscriptionFlowManager.stepInformation(HowCanWeIdentifyYouSubscriptionFlowPage).nextPage.url(service)
-            )
-      )
+    subscriptionDetailsHolderService.cacheCustomsId(Nino(form.id)).map(
+      _ =>
+        if (isInReviewMode)
+          Redirect(DetermineReviewPageController.determineRoute(service, journey))
+        else
+          Redirect(subscriptionFlowManager.stepInformation(NinoSubscriptionFlowPage).nextPage.url(service))
+    )
 
 }

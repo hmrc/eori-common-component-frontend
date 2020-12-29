@@ -34,7 +34,6 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
   private val invalidUtr                        = "0123456789"
   private val standardForm: Form[UtrMatchModel] = utrForm
   private val noOptionSelectedForm              = utrForm.bind(Map.empty[String, String])
-  private val incorrectUtrForm                  = utrForm.bind(Map("have-utr" -> "true", "utr" -> invalidUtr))
 
   private val view = instanceOf[match_utr_subscription]
 
@@ -51,13 +50,13 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
 
     "have correct intro" in {
       companyDoc.body
-        .getElementById("intro")
-        .text mustBe "You will have a UTR number if your organisation pays corporation tax in the UK."
+        .getElementById("have-utr-hintHtml")
+        .text must include("You will have a UTR number if your organisation pays corporation tax in the UK.")
     }
 
     "have correct hint" in {
       companyDoc.body
-        .getElementById("utr-hint")
+        .getElementById("have-utr-hintHtml")
         .text must include("It will be on tax returns and other letters about Corporation Tax.")
     }
   }
@@ -76,31 +75,29 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
     }
     "have correct intro" in {
       individualDoc.body
-        .getElementById("intro")
-        .text mustBe "You will have a self assessment UTR number if you registered for Self Assessment in the UK."
+        .getElementById("have-utr-hintHtml")
+        .text must include(
+        "You will have a self assessment UTR number if you registered for Self Assessment in the UK."
+      )
     }
     "have correct hint" in {
       individualDoc.body
-        .getElementById("utr-hint")
+        .getElementById("have-utr-hintHtml")
         .text must include("It will be on tax returns and other letters about Self Assessment.")
     }
   }
 
   "Subscription Have Utr Page" should {
     "radio button yes with correct label" in {
-      companyDoc.body.getElementById("have-utr-yes").attr("value") mustBe "true"
-      companyDoc.body.getElementsByAttributeValue("for", "have-utr-yes").text must include("Yes")
+      companyDoc.body.getElementById("have-utr-true").attr("value") mustBe "true"
+      companyDoc.body.getElementsByAttributeValue("for", "have-utr-true").text must include("Yes")
     }
 
     "radio button no with correct label" in {
-      companyDoc.body.getElementById("have-utr-no").attr("value") mustBe "false"
-      companyDoc.body.getElementsByAttributeValue("for", "have-utr-no").text must include("No")
+      companyDoc.body.getElementById("have-utr-false").attr("value") mustBe "false"
+      companyDoc.body.getElementsByAttributeValue("for", "have-utr-false").text must include("No")
     }
 
-    "text input with correct label" in {
-      companyDoc.body.getElementById("utr").attr("type") mustBe "text"
-      companyDoc.body.getElementsByAttributeValue("for", "utr").text must include("Corporation Tax UTR number")
-    }
   }
 
   "Form with no option selected" should {
@@ -109,39 +106,52 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
       notSelectedCompanyDoc.body.getElementById("form-error-heading").text mustBe "There is a problem"
 
       notSelectedIndividualDoc.body
-        .getElementsByAttributeValue("href", "#have-utr-yes")
+        .getElementsByAttributeValue("href", "#have-utr-true")
         .text mustBe "Select yes if you have a UTR number"
       notSelectedCompanyDoc.body
-        .getElementsByAttributeValue("href", "#have-utr-yes")
+        .getElementsByAttributeValue("href", "#have-utr-true")
         .text mustBe "Select yes if you have a UTR number"
-    }
-  }
-
-  "Form with incorrect UTR format" should {
-    "display item level error message" in {
-      incorrectUtrDoc.body.getElementsByClass("error-message").text mustBe "Error: Enter a valid UTR number"
     }
   }
 
   lazy val companyDoc: Document =
-    Jsoup.parse(contentAsString(view(standardForm, CdsOrganisationType.CompanyId, atarService, Journey.Subscribe)))
+    Jsoup.parse(
+      contentAsString(
+        view(standardForm, CdsOrganisationType.CompanyId, isInReviewMode = false, atarService, Journey.Subscribe)
+      )
+    )
 
   lazy val notSelectedCompanyDoc: Document =
     Jsoup.parse(
-      contentAsString(view(noOptionSelectedForm, CdsOrganisationType.CompanyId, atarService, Journey.Subscribe))
+      contentAsString(
+        view(
+          noOptionSelectedForm,
+          CdsOrganisationType.CompanyId,
+          isInReviewMode = false,
+          atarService,
+          Journey.Subscribe
+        )
+      )
     )
 
   lazy val individualDoc: Document =
-    Jsoup.parse(contentAsString(view(standardForm, CdsOrganisationType.SoleTraderId, atarService, Journey.Subscribe)))
+    Jsoup.parse(
+      contentAsString(
+        view(standardForm, CdsOrganisationType.SoleTraderId, isInReviewMode = false, atarService, Journey.Subscribe)
+      )
+    )
 
   lazy val notSelectedIndividualDoc: Document =
     Jsoup.parse(
-      contentAsString(view(noOptionSelectedForm, CdsOrganisationType.SoleTraderId, atarService, Journey.Subscribe))
-    )
-
-  lazy val incorrectUtrDoc: Document =
-    Jsoup.parse(
-      contentAsString(view(incorrectUtrForm, CdsOrganisationType.SoleTraderId, atarService, Journey.Subscribe))
+      contentAsString(
+        view(
+          noOptionSelectedForm,
+          CdsOrganisationType.SoleTraderId,
+          isInReviewMode = false,
+          atarService,
+          Journey.Subscribe
+        )
+      )
     )
 
 }

@@ -23,7 +23,7 @@
 
 
 @this(layout_di: layout)
-@(ninoForm: Form[IdMatchModel], isInReviewMode: Boolean, service: Service, journey: Journey.Value)(implicit request: Request[_], messages: Messages)
+@(ninoForm: Form[IdMatchModel], isInReviewMode: Boolean, submit: Call)(implicit request: Request[_], messages: Messages)
 
 @inputText(field: String, args: (Symbol, Any)*) = {
     @defining(Seq(
@@ -34,9 +34,9 @@
 }
 
 @submitCall = @{
-    journey match {
-        case Journey.Subscribe => HowCanWeIdentifyYouNinoController.submit(isInReviewMode, service, journey)
-        case Journey.Register => GYEHowCanWeIdentifyYouNinoController.submit(service, journey)
+    "" match {
+        case "a" => HowCanWeIdentifyYouNinoController.submit(isInReviewMode, ???, ???)
+        case "b" => GYEHowCanWeIdentifyYouNinoController.submit(???, ???)
     }
 }
 
@@ -46,7 +46,7 @@
 
         @helpers.errorSummary(ninoForm)
 
-        @helpers.form(submitCall, "ninoForm") {
+        @helpers.form(submit, "ninoForm") {
             @CSRF.formField
 
             @inputText("nino")

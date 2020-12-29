@@ -336,15 +336,6 @@ object MatchingForms {
     mapping("utr" -> text.verifying(validUtr))(IdMatchModel.apply)(IdMatchModel.unapply)
   )
 
-  val ninoOrUtrForm: Form[NinoOrUtr] = Form(
-    mapping(
-      "nino" -> mandatoryIfEqual("ninoOrUtrRadio", "nino", text.verifying(validNino)),
-      "utr"  -> mandatoryIfEqual("ninoOrUtrRadio", "utr", text.verifying(validUtr)),
-      "ninoOrUtrRadio" -> optional(text)
-        .verifying("cds.subscription.nino.utr.invalid", _.fold(false)(x => x.trim.nonEmpty))
-    )(NinoOrUtr.apply)(NinoOrUtr.unapply)
-  )
-
   val ninoOrUtrChoiceForm: Form[NinoOrUtrChoice] = Form(
     mapping(
       "ninoOrUtrRadio" -> optional(text)
@@ -455,6 +446,10 @@ object MatchingForms {
     )(UtrMatchModel.apply)(UtrMatchModel.unapply)
   )
 
+  val haveUtrForm: Form[UtrMatchModel] = Form(
+    mapping("have-utr" -> optional(boolean).verifying(validHaveUtr))(UtrMatchModel.apply)(model => Some(model.haveUtr))
+  )
+
   def validHaveNino: Constraint[Option[Boolean]] =
     Constraint({
       case None => Invalid(ValidationError("cds.matching.nino.row.yes-no.error"))
@@ -466,6 +461,12 @@ object MatchingForms {
       "have-nino" -> optional(boolean).verifying(validHaveNino),
       "nino"      -> mandatoryIfTrue("have-nino", text.verifying(validNino))
     )(NinoMatchModel.apply)(NinoMatchModel.unapply)
+  )
+
+  val haveRowIndividualsNinoForm: Form[NinoMatchModel] = Form(
+    mapping("have-nino" -> optional(boolean).verifying(validHaveNino))(NinoMatchModel.apply)(
+      model => Some(model.haveNino)
+    )
   )
 
 }

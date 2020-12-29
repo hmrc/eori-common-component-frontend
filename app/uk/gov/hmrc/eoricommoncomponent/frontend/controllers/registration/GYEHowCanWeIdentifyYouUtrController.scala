@@ -45,7 +45,15 @@ class GYEHowCanWeIdentifyYouUtrController @Inject() (
 
   def form(service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      Future.successful(Ok(howCanWeIdentifyYouView(subscriptionUtrForm, isInReviewMode = false, service, journey)))
+      Future.successful(
+        Ok(
+          howCanWeIdentifyYouView(
+            subscriptionUtrForm,
+            isInReviewMode = false,
+            routes.GYEHowCanWeIdentifyYouUtrController.submit(service, journey)
+          )
+        )
+      )
     }
 
   def submit(service: Service, journey: Journey.Value): Action[AnyContent] =
@@ -53,7 +61,13 @@ class GYEHowCanWeIdentifyYouUtrController @Inject() (
       subscriptionUtrForm.bindFromRequest.fold(
         formWithErrors =>
           Future.successful(
-            BadRequest(howCanWeIdentifyYouView(formWithErrors, isInReviewMode = false, service, journey))
+            BadRequest(
+              howCanWeIdentifyYouView(
+                formWithErrors,
+                isInReviewMode = false,
+                routes.GYEHowCanWeIdentifyYouUtrController.submit(service, journey)
+              )
+            )
           ),
         formData =>
           matchOnId(formData, InternalId(loggedInUser.internalId)).map {
@@ -74,7 +88,13 @@ class GYEHowCanWeIdentifyYouUtrController @Inject() (
     val errorForm = subscriptionUtrForm
       .withGlobalError(Messages("cds.matching-error.individual-not-found"))
       .fill(individualFormData)
-    BadRequest(howCanWeIdentifyYouView(errorForm, isInReviewMode = false, service, journey))
+    BadRequest(
+      howCanWeIdentifyYouView(
+        errorForm,
+        isInReviewMode = false,
+        routes.GYEHowCanWeIdentifyYouUtrController.submit(service, journey)
+      )
+    )
   }
 
   // TODO Get rid of `.get`. Now if there is no information Exception will be thrown, understand what should happen if this is not provided

@@ -33,7 +33,6 @@ class HaveNinoSubscriptionSpec extends ViewSpec {
 
   private val standardForm: Form[NinoMatchModel] = rowIndividualsNinoForm
   private val noOptionSelectedForm               = rowIndividualsNinoForm.bind(Map.empty[String, String])
-  private val incorrectNinoForm                  = rowIndividualsNinoForm.bind(Map("have-nino" -> "true", "nino" -> "012345789!@#$"))
 
   private val view = instanceOf[match_nino_subscription]
 
@@ -47,60 +46,41 @@ class HaveNinoSubscriptionSpec extends ViewSpec {
     }
 
     "have 'yes' radio button" in {
-      doc.body.getElementById("have-nino-yes").attr("value") mustBe "true"
+      doc.body.getElementById("have-nino-true").attr("value") mustBe "true"
     }
 
     "have 'no' radio button" in {
-      doc.body.getElementById("have-nino-no").attr("value") mustBe "false"
+      doc.body.getElementById("have-nino-false").attr("value") mustBe "false"
     }
 
     "have description with proper content" in {
       doc.body
-        .getElementById("description")
-        .text mustBe "You will have a National Insurance number if you have worked in the UK."
+        .getElementById("have-nino-hintHtml")
+        .text must include("You will have a National Insurance number if you have worked in the UK.")
     }
 
     "Have correct hint for nino field" in {
-      doc.body.getElementById("nino-hint").text must include(
+      doc.body.getElementById("have-nino-hintHtml").text must include(
         "It’s on your National Insurance card, benefit letter, payslip or P60."
       )
-      doc.body.getElementById("nino-hint").text must include("For example, 'QQ123456C'")
+      doc.body.getElementById("have-nino-hintHtml").text must include("For example, 'QQ123456C'")
     }
 
-    "Have correct label for nino field" in {
-      doc.body.getElementsByAttributeValue("for", "nino").text must include("National Insurance number")
-    }
   }
 
   "No option selected Subscription Have Nino Page" should {
     "have page level error with correct message" in {
       docWithNoOptionSelected.body.getElementById("form-error-heading").text mustBe "There is a problem"
       docWithNoOptionSelected.body
-        .getElementsByAttributeValue("href", "#have-nino-yes")
+        .getElementsByAttributeValue("href", "#have-nino-true")
         .text mustBe "Select yes if you have a National Insurance number"
     }
   }
 
-  "Subscription Have Nino Page with incorrect Nino format" should {
-    "have page level error with correct message" in {
-      docWithIncorrectNino.body.getElementById("form-error-heading").text mustBe "There is a problem"
-      docWithIncorrectNino.body
-        .getElementsByAttributeValue("href", "#nino")
-        .text mustBe "The National Insurance number must be 9 characters"
-    }
-    "inform field level that number must be 9 characters when input is too long" in {
-      docWithIncorrectNino.body.getElementsByClass("error-message").text must include(
-        "The National Insurance number must be 9 characters"
-      )
-    }
-  }
-
-  lazy val doc: Document = Jsoup.parse(contentAsString(view(standardForm, atarService, Journey.Subscribe)))
+  lazy val doc: Document =
+    Jsoup.parse(contentAsString(view(standardForm, isInReviewMode = false, atarService, Journey.Subscribe)))
 
   lazy val docWithNoOptionSelected: Document =
-    Jsoup.parse(contentAsString(view(noOptionSelectedForm, atarService, Journey.Subscribe)))
-
-  lazy val docWithIncorrectNino: Document =
-    Jsoup.parse(contentAsString(view(incorrectNinoForm, atarService, Journey.Subscribe)))
+    Jsoup.parse(contentAsString(view(noOptionSelectedForm, isInReviewMode = false, atarService, Journey.Subscribe)))
 
 }
