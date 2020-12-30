@@ -28,14 +28,13 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.match_or
 import util.ViewSpec
 
 class MatchOrganisationUtrSpec extends ViewSpec {
-  val form: Form[UtrMatchModel]                      = utrForm
-  val formWithNoSelectionError: Form[UtrMatchModel]  = utrForm.bind(Map.empty[String, String])
-  val formWithNoUtrEnteredError: Form[UtrMatchModel] = utrForm.bind(Map("have-utr" -> "true", "utr" -> ""))
-  val isInReviewMode                                 = false
-  val previousPageUrl                                = "/"
-  val nonSoleTraderType                              = "charity-public-body-not-for-profit"
-  val soleTraderType                                 = "sole-trader"
-  implicit val request                               = withFakeCSRF(FakeRequest())
+  val form: Form[UtrMatchModel]                     = utrForm
+  val formWithNoSelectionError: Form[UtrMatchModel] = utrForm.bind(Map.empty[String, String])
+  val isInReviewMode                                = false
+  val previousPageUrl                               = "/"
+  val nonSoleTraderType                             = "charity-public-body-not-for-profit"
+  val soleTraderType                                = "sole-trader"
+  implicit val request                              = withFakeCSRF(FakeRequest())
 
   private val view = instanceOf[match_organisation_utr]
 
@@ -52,28 +51,25 @@ class MatchOrganisationUtrSpec extends ViewSpec {
       doc.body.getElementsByTag("h1").hasClass("heading-large") mustBe true
     }
     "have an input of type 'radio' for Yes I have a UTR" in {
-      doc.body.getElementById("have-utr-yes").attr("type") mustBe "radio"
+      doc.body.getElementById("have-utr-true").attr("type") mustBe "radio"
     }
     "have an input of type 'radio' for No I don't have a UTR" in {
-      doc.body.getElementById("have-utr-no").attr("type") mustBe "radio"
-    }
-    "have an input of type 'text' for UTR" in {
-      doc.body.getElementById("utr").attr("type") mustBe "text"
+      doc.body.getElementById("have-utr-false").attr("type") mustBe "radio"
     }
     "display correct intro paragraph" in {
       doc.body
-        .getElementById("intro")
+        .getElementById("have-utr-hintHtml")
         .text() mustBe "Your organisation will have a Corporation Tax UTR number if you pay corporation tax. It is on tax returns and other letters from HMRC."
     }
     "have other html content" in {
       doc.body
-        .getElementById("have-utr-other")
+        .getElementById("have-utr-hintHtml")
         .text() must include("Your organisation will have a Corporation Tax UTR number if you pay corporation tax")
     }
     "have aria-described-by on the fieldset" in {
       doc.body
         .getElementById("have-utr-fieldset")
-        .attr("aria-describedby") mustBe "have-utr-other"
+        .attr("aria-describedby") mustBe "have-utr-hintHtml"
 
     }
     "display correct progressive disclosure heading" in {
@@ -100,10 +96,6 @@ class MatchOrganisationUtrSpec extends ViewSpec {
       docAsSoleTraderIndividual.body.getElementById("details-content-1") mustBe null
     }
 
-    "show correctly display the non sole trader field label" in {
-      docAsSoleTraderIndividual.body.getElementsByClass("form-label-bold").text.trim mustBe "Self Assessment UTR number"
-    }
-
   }
 
   "Match UTR page without selecting any radio button in the non sole trader case" should {
@@ -121,7 +113,7 @@ class MatchOrganisationUtrSpec extends ViewSpec {
     "display the correct problem message at the top of the page" in {
       docWithNoSelectionError.body
         .getElementById("errors")
-        .getElementsByAttributeValue("href", "#have-utr-yes")
+        .getElementsByAttributeValue("href", "#have-utr-true")
         .text mustBe "Select yes if you have a UTR number"
     }
   }
@@ -145,32 +137,6 @@ class MatchOrganisationUtrSpec extends ViewSpec {
     }
   }
 
-  "Match UTR page without filling in the UTR field as a non sole trader" should {
-    "display a field level error message" in {
-      docWithNoUtrEnteredError.body
-        .getElementById("utr-outer")
-        .getElementsByClass("error-message")
-        .text mustBe "Error: Enter your UTR number"
-    }
-    "display a page level error message" in {
-      docWithNoUtrEnteredError.body.getElementsByClass("error-summary-list").text mustBe "Enter your UTR number"
-    }
-  }
-
-  "Match UTR page without filling in the UTR field as a sole trader" should {
-    "display a field level error message" in {
-      docWithNoUtrEnteredErrorAsSoleTrader.body
-        .getElementById("utr-outer")
-        .getElementsByClass("error-message")
-        .text mustBe "Error: Enter your UTR number"
-    }
-    "display a page level error message" in {
-      docWithNoUtrEnteredErrorAsSoleTrader.body
-        .getElementsByClass("error-summary-list")
-        .text mustBe "Enter your UTR number"
-    }
-  }
-
   lazy val doc: Document = getDoc(form)
 
   private def getDoc(form: Form[UtrMatchModel]) = {
@@ -184,11 +150,6 @@ class MatchOrganisationUtrSpec extends ViewSpec {
     Jsoup.parse(contentAsString(result))
   }
 
-  lazy val docWithNoUtrEnteredError: Document = {
-    val result = view(formWithNoUtrEnteredError, nonSoleTraderType, "", atarService, Journey.Register)
-    Jsoup.parse(contentAsString(result))
-  }
-
   lazy val docAsSoleTraderIndividual: Document = {
     val result = view(form, soleTraderType, "", atarService, Journey.Register)
     Jsoup.parse(contentAsString(result))
@@ -196,11 +157,6 @@ class MatchOrganisationUtrSpec extends ViewSpec {
 
   lazy val docWithNoSelectionErrorAsSoleTrader: Document = {
     val result = view(formWithNoSelectionError, soleTraderType, "", atarService, Journey.Register)
-    Jsoup.parse(contentAsString(result))
-  }
-
-  lazy val docWithNoUtrEnteredErrorAsSoleTrader: Document = {
-    val result = view(formWithNoUtrEnteredError, soleTraderType, "", atarService, Journey.Register)
     Jsoup.parse(contentAsString(result))
   }
 

@@ -18,8 +18,8 @@ package unit.controllers.registration
 
 import common.pages.matching.DoYouHaveNinoPage._
 import org.joda.time.LocalDate
-import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
 import play.api.test.Helpers._
@@ -27,27 +27,25 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.DoYouHaveNinoController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, NameDobMatchModel, Nino, NinoMatchModel}
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.rowIndividualsNinoForm
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.haveRowIndividualsNinoForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.MatchingService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.match_nino_row_individual
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.{AuthActionMock, SessionBuilder}
 import util.builders.matching.NinoFormBuilder
+import util.builders.{AuthActionMock, SessionBuilder}
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector              = mock[AuthConnector]
   private val mockAuthAction                 = authAction(mockAuthConnector)
-  private val mockMatchingService            = mock[MatchingService]
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
 
@@ -55,7 +53,6 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
 
   private val doYouHaveNinoController = new DoYouHaveNinoController(
     mockAuthAction,
-    mockMatchingService,
     mockRequestSessionData,
     mcc,
     matchNinoRowIndividualView,
@@ -66,14 +63,12 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
     "Your details have not been found. Check that your details are correct and then try again."
 
   override def beforeEach: Unit =
-    reset(mockMatchingService)
+    when(mockSubscriptionDetailsService.cacheNinoMatch(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
 
   val validNino                           = Nino(NinoFormBuilder.Nino)
-  val yesNinoSubmitData                   = Map("have-nino" -> "true", "nino" -> NinoFormBuilder.Nino)
-  val yesNinoNotProvidedSubmitData        = Map("have-nino" -> "true", "nino" -> "")
-  val yesNinoWrongFormatSubmitData        = Map("have-nino" -> "true", "nino" -> "ABZ")
+  val yesNinoSubmitData                   = Map("have-nino" -> "true")
   val noNinoSubmitData                    = Map("have-nino" -> "false")
-  val mandatoryNinoFields: NinoMatchModel = rowIndividualsNinoForm.bind(yesNinoSubmitData).value.get
+  val mandatoryNinoFields: NinoMatchModel = haveRowIndividualsNinoForm.bind(yesNinoSubmitData).value.get
 
   "Viewing the NINO Individual/Sole trader Rest of World Matching form" should {
 
@@ -100,39 +95,19 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
       }
     }
 
-    "display nino field when user select yes" in {
-      displayForm() { result =>
-        status(result) shouldBe OK
-        val page = CdsPage(contentAsString(result))
-        page.elementIsPresent(yesRadioButton) shouldBe true
-
-        page.getElementsText(ninoLabelBold) should include("National Insurance number")
-        page.getElementsText(
-          ninoHint
-        ) shouldBe "It’s on your National Insurance card, benefit letter, payslip or P60. For example, 'QQ123456C'"
-        page.elementIsPresent(ninoInput) shouldBe true
-
-        page.getElementsText(fieldLevelErrorNino) shouldBe empty
-      }
-    }
   }
 
   "Submitting the form" should {
-    "redirect to 'These are the details we have about you' page when Y is selected and given NINO is matched" in {
+    "redirect to 'Get Nino' page when Y is selected" in {
       when(mockSubscriptionDetailsService.cachedNameDobDetails(any[HeaderCarrier])).thenReturn(
         Future.successful(Some(NameDobMatchModel("First name", None, "Last name", new LocalDate(2015, 10, 15))))
       )
-      when(mockMatchingService.matchIndividualWithId(any[Nino], any[Individual], any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(true))
 
       submitForm(yesNinoSubmitData) { result =>
         await(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith("register/matching/confirm")
+        result.header.headers("Location") should endWith("register/matching/row/get-nino")
         val expectedIndividual = Individual.withLocalDate("First name", None, "Last name", new LocalDate(2015, 10, 15))
-        verify(mockMatchingService).matchIndividualWithId(meq(validNino), meq(expectedIndividual), any())(
-          any[HeaderCarrier]
-        )
       }
     }
 
@@ -147,60 +122,6 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
       }
     }
 
-    "keep the user on the same page with proper message when NINO was not recognized" in {
-      when(mockSubscriptionDetailsService.cachedNameDobDetails(any[HeaderCarrier])).thenReturn(
-        Future.successful(Some(NameDobMatchModel("First name", None, "Last name", new LocalDate(2015, 10, 15))))
-      )
-      when(mockMatchingService.matchIndividualWithId(any[Nino], any[Individual], any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(false))
-
-      submitForm(yesNinoSubmitData) { result =>
-        await(result)
-        val page = CdsPage(contentAsString(result))
-        status(result) shouldBe BAD_REQUEST
-        val expectedIndividual = Individual.withLocalDate("First name", None, "Last name", new LocalDate(2015, 10, 15))
-        verify(mockMatchingService).matchIndividualWithId(meq(validNino), meq(expectedIndividual), any())(
-          any[HeaderCarrier]
-        )
-
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe notMatchedError
-      }
-    }
-
-    "keep the user on the same page with error message when NINO was not recognized for no name in cache" in {
-      when(mockSubscriptionDetailsService.cachedNameDobDetails(any[HeaderCarrier])).thenReturn(Future.successful(None))
-      when(mockMatchingService.matchIndividualWithId(any[Nino], any[Individual], any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(false))
-
-      submitForm(yesNinoSubmitData) { result =>
-        await(result)
-        val page = CdsPage(contentAsString(result))
-        status(result) shouldBe BAD_REQUEST
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe notMatchedError
-      }
-    }
-
-    "nino" should {
-      "be mandatory" in {
-        submitForm(yesNinoNotProvidedSubmitData) { result =>
-          status(result) shouldBe BAD_REQUEST
-          val page = CdsPage(contentAsString(result))
-          page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your National Insurance number"
-          page.getElementsText(fieldLevelErrorNino) shouldBe "Error: Enter your National Insurance number"
-        }
-      }
-
-      "be valid" in {
-        submitForm(yesNinoWrongFormatSubmitData) { result =>
-          status(result) shouldBe BAD_REQUEST
-          val page = CdsPage(contentAsString(result))
-          page.getElementsText(
-            pageLevelErrorSummaryListXPath
-          ) shouldBe "The National Insurance number must be 9 characters"
-          page.getElementText(fieldLevelErrorNino) shouldBe "Error: The National Insurance number must be 9 characters"
-        }
-      }
-    }
   }
 
   private def displayForm()(test: Future[Result] => Any): Unit = {
