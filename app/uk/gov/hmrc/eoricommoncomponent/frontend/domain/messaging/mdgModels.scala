@@ -20,6 +20,7 @@ import org.joda.time.format.ISODateTimeFormat
 import org.joda.time.{DateTime, LocalDate}
 import play.api.libs.json._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CaseClassAuditHelper
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 
 case class Header(originatingSystem: String, requestTimeStamp: String, correlationId: String)
 
@@ -67,6 +68,9 @@ object Address {
       postalCode.filter(_.nonEmpty),
       countryCode.toUpperCase()
     ) {}
+
+  def apply(address: AddressViewModel): Address =
+    new Address(address.street, None, Some(address.city), None, address.postcode, address.countryCode) {}
 
 }
 

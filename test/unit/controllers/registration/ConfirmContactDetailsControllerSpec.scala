@@ -405,6 +405,44 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
         ) shouldBe "Application received by HMRC on 22 May 2016"
       }
     }
+
+    "redirect to Address Page when the postcode return from REG01(Register with Id) response is invalid for a Organisation" in {
+      val address: Address = Address("Line 1", Some("line 2"), Some("line 3"), Some("line 4"), Some("AAA 123"), "GB")
+      mockCacheWithRegistrationDetails(organisationRegistrationDetails.copy(address = address))
+
+      when(
+        mockOrgTypeLookup
+          .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
+      ).thenReturn(Future.successful(Some(Partnership)))
+
+      invokeConfirm() { result =>
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(
+          LOCATION
+        ) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController
+          .createForm(atarService, Journey.Register)
+          .url
+      }
+    }
+
+    "redirect to Address Page when the postcode return from REG01(Register with Id) response is invalid for a SoleTrader/Individual" in {
+      val address: Address = Address("Line 1", Some("line 2"), Some("line 3"), Some("line 4"), None, "GB")
+      mockCacheWithRegistrationDetails(individualRegistrationDetails.copy(address = address))
+
+      when(
+        mockOrgTypeLookup
+          .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
+      ).thenReturn(Future.successful(Some(Partnership)))
+
+      invokeConfirm() { result =>
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(
+          LOCATION
+        ) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController
+          .createForm(atarService, Journey.Register)
+          .url
+      }
+    }
   }
 
   "Selecting No" should {

@@ -18,10 +18,23 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription
 
 import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CaseClassAuditHelper
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 
 case class EstablishmentAddress(streetAndNumber: String, city: String, postalCode: Option[String], countryCode: String)
     extends CaseClassAuditHelper
 
 object EstablishmentAddress {
   implicit val jsonFormat = Json.format[EstablishmentAddress]
+
+  def createEstablishmentAddress(address: Address): EstablishmentAddress = {
+    val fourLineAddress = AddressViewModel(address)
+    new EstablishmentAddress(
+      fourLineAddress.street,
+      fourLineAddress.city,
+      address.postalCode.filterNot(p => p.isEmpty),
+      fourLineAddress.countryCode
+    )
+  }
+
 }

@@ -63,13 +63,15 @@ class SubscriptionService @Inject() (connector: SubscriptionServiceConnector, fe
 
   def existingReg(
     registerWithEoriAndIdResponse: RegisterWithEoriAndIdResponse,
-    eori: Eori,
+    subscriptionDetails: SubscriptionDetails,
     capturedEmail: String,
     service: Service
   )(implicit hc: HeaderCarrier): Future[SubscriptionResult] =
     registerWithEoriAndIdResponse.responseDetail.flatMap(_.responseData) match {
       case Some(data) =>
-        val request = SubscriptionRequest(SubscriptionCreateRequest(data, eori, capturedEmail, maybe(service)))
+        val request = SubscriptionRequest(
+          SubscriptionCreateRequest(data, subscriptionDetails, capturedEmail, maybe(service))
+        )
         subscribeWithConnector(request)
       case _ =>
         val err = "REGO6 ResponseData is non existent. This is required to populate subscription request"
