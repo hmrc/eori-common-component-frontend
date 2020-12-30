@@ -61,8 +61,8 @@ class NameDobController @Inject() (
   )(implicit hc: HeaderCarrier): Future[Result] =
     cdsFrontendDataCache.saveSubscriptionDetails(SubscriptionDetails(nameDobDetails = Some(formData))).map { _ =>
       Redirect(
-        uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.GYEHowCanWeIdentifyYouController
-          .form(organisationType, service, journey)
+        uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController
+          .createForm(service, journey)
       )
     }
 

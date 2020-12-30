@@ -45,14 +45,12 @@ class TrackingConsentSpec extends ControllerSpec with GuiceOneAppPerSuite with M
   private val mockAuthConnector                    = mock[AuthConnector]
   private val mockAuthAction                       = authAction(mockAuthConnector)
   private val mockSubscriptionBusinessService      = mock[SubscriptionBusinessService]
-  private val mockSubscriptionFlowManager          = mock[SubscriptionFlowManager]
   private val mockSubscriptionDetailsHolderService = mock[SubscriptionDetailsService]
   private val howCanWeIdentifyYouView              = instanceOf[how_can_we_identify_you]
 
   private val controller = new HowCanWeIdentifyYouController(
     mockAuthAction,
     mockSubscriptionBusinessService,
-    mockSubscriptionFlowManager,
     mcc,
     howCanWeIdentifyYouView,
     mockSubscriptionDetailsHolderService
@@ -69,8 +67,8 @@ class TrackingConsentSpec extends ControllerSpec with GuiceOneAppPerSuite with M
 
   def showForm(form: Map[String, String], userId: String = defaultUserId)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
-    when(mockSubscriptionBusinessService.getCachedCustomsId(any[HeaderCarrier]))
-      .thenReturn(Future.successful(Some(Utr("id"))))
+    when(mockSubscriptionBusinessService.getCachedNinoOrUtrChoice(any[HeaderCarrier]))
+      .thenReturn(Future.successful(Some("utr")))
     test(
       controller.createForm(atarService, Journey.Subscribe).apply(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)

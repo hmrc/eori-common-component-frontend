@@ -17,22 +17,27 @@
 package unit.controllers.registration
 
 import common.pages.SubscribeHowCanWeIdentifyYouPage
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito
-import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.Mockito.{verify, when}
+import org.mockito.{ArgumentMatchers, Mockito}
 import org.scalatest.BeforeAndAfterEach
-import play.api.mvc.Result
+import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.HowCanWeIdentifyYouController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.HowCanWeIdentifyYouNinoController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  AddressDetailsSubscriptionFlowPage,
+  HowCanWeIdentifyYouSubscriptionFlowPage,
+  SubscriptionFlowInfo
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
   SubscriptionDetailsService
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you_nino
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
@@ -42,18 +47,20 @@ import util.builders.{AuthActionMock, SessionBuilder}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
+class HowCanWeIdentifyYouNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector                    = mock[AuthConnector]
   private val mockAuthAction                       = authAction(mockAuthConnector)
   private val mockSubscriptionBusinessService      = mock[SubscriptionBusinessService]
+  private val mockSubscriptionFlowManager          = mock[SubscriptionFlowManager]
   private val mockSubscriptionDetailsHolderService = mock[SubscriptionDetailsService]
 
-  private val howCanWeIdentifyYouView = instanceOf[how_can_we_identify_you]
+  private val howCanWeIdentifyYouView = instanceOf[how_can_we_identify_you_nino]
 
-  private val controller = new HowCanWeIdentifyYouController(
+  private val controller = new HowCanWeIdentifyYouNinoController(
     mockAuthAction,
     mockSubscriptionBusinessService,
+    mockSubscriptionFlowManager,
     mcc,
     howCanWeIdentifyYouView,
     mockSubscriptionDetailsHolderService
@@ -64,12 +71,16 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
 
     Mockito.reset(mockSubscriptionDetailsHolderService)
 
-    when(mockSubscriptionDetailsHolderService.cacheNinoOrUtrChoice(any[NinoOrUtrChoice])(any[HeaderCarrier]))
+    when(mockSubscriptionDetailsHolderService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
       .thenReturn(Future.successful(()))
+    when(mockSubscriptionBusinessService.getCachedCustomsId(any[HeaderCarrier]))
+      .thenReturn(Future.successful(None))
 
-    when(mockSubscriptionBusinessService.getCachedNinoOrUtrChoice(any[HeaderCarrier])).thenReturn(
-      Future.successful(None)
-    )
+    when(
+      mockSubscriptionFlowManager.stepInformation(ArgumentMatchers.eq(HowCanWeIdentifyYouSubscriptionFlowPage))(
+        any[Request[AnyContent]]
+      )
+    ).thenReturn(SubscriptionFlowInfo(3, 5, AddressDetailsSubscriptionFlowPage))
   }
 
   "Loading the page" should {
@@ -95,55 +106,63 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
       controller.submit(isInReviewMode = false, atarService, Journey.Subscribe)
     )
 
-    "give a page level error when neither radio button is selected" in {
-      submitForm(Map("ninoOrUtrRadio" -> "")) { result =>
+    "give a page level error when nino not provided" in {
+      submitForm(Map("nino" -> "")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
-        ) shouldBe "Select how we can identify you"
-        page.getElementsText(SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorUtr) shouldBe empty
-        page.getElementsText(SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorNino) shouldBe empty
+        ) shouldBe "Enter your National Insurance number"
       }
     }
 
-    "redirect to the 'Enter your nino' page when nino is selected" in {
-      submitForm(Map("ninoOrUtrRadio" -> "nino")) { result =>
+    "give a page and field level error when a nino of the wrong length is provided" in {
+      submitForm(Map("nino" -> "TOOSHORT")) { result =>
+        status(result) shouldBe BAD_REQUEST
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(
+          SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "The National Insurance number must be 9 characters"
+        page.getElementsText(
+          SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorNino
+        ) shouldBe "Error: The National Insurance number must be 9 characters"
+      }
+    }
+
+    "give a page and field level error when an invalid nino is provided" in {
+      submitForm(Map("nino" -> "123456789")) { result =>
+        status(result) shouldBe BAD_REQUEST
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(
+          SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "Enter a National Insurance number in the right format"
+        page.getElementsText(
+          SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorNino
+        ) shouldBe "Error: Enter a National Insurance number in the right format"
+      }
+    }
+
+    "redirect to the 'Enter your business address' page when a valid nino is provided" in {
+      submitForm(Map("nino" -> "AB123456C")) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") shouldBe "/customs-enrolment-services/atar/subscribe/chooseid/nino"
+        result.header.headers("Location") shouldBe "/customs-enrolment-services/atar/subscribe/address"
       }
     }
 
-    "redirect to the 'Enter your utr' page when utr is selected" in {
-      submitForm(Map("ninoOrUtrRadio" -> "utr")) { result =>
+    "allow a NINO with spaces and lower case" in {
+      submitForm(Map("nino" -> "ab 12 34 56 c")) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") shouldBe "/customs-enrolment-services/atar/subscribe/chooseid/utr"
+        result.header.headers("Location") shouldBe "/customs-enrolment-services/atar/subscribe/address"
       }
+      verify(mockSubscriptionDetailsHolderService).cacheCustomsId(meq(Nino("AB123456C")))(any())
     }
 
-    "in review mode redirect to 'Enter nino' page when nino selected" in {
-      submitFormInReviewMode(Map("ninoOrUtrRadio" -> "nino")) { result =>
+    "redirect to 'Check your details' page when valid Nino is provided" in {
+      submitFormInReviewMode(Map("nino" -> "AB123456C")) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") shouldBe "/customs-enrolment-services/atar/subscribe/chooseid/nino/review"
-      }
-    }
-
-    "in review mode redirect to 'Enter utr' page when utr selected" in {
-      submitFormInReviewMode(Map("ninoOrUtrRadio" -> "utr")) { result =>
-        status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") shouldBe "/customs-enrolment-services/atar/subscribe/chooseid/utr/review"
-      }
-    }
-
-    "redirect to 'What information can we use to confirm your identity' page when Utr is needed to be changed" in {
-      reviewForm(Map("utr" -> "2108834503", "ninoOrUtrRadio" -> "utr")) { result =>
-        status(result) shouldBe OK
-      }
-    }
-
-    "redirect to 'What information can we use to confirm your identity' page when Nino is needed to be changed" in {
-      reviewForm(Map("nino" -> "SM2810293A", "ninoOrUtrRadio" -> "nino")) { result =>
-        status(result) shouldBe OK
+        result.header.headers(
+          "Location"
+        ) shouldBe "/customs-enrolment-services/atar/subscribe/matching/review-determine"
       }
     }
 
@@ -151,8 +170,6 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
 
   def showForm(form: Map[String, String], userId: String = defaultUserId)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
-    when(mockSubscriptionBusinessService.getCachedCustomsId(any[HeaderCarrier]))
-      .thenReturn(Future.successful(Some(Utr("id"))))
     test(
       controller.createForm(atarService, Journey.Subscribe).apply(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
@@ -182,8 +199,13 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
     )
   }
 
-  def reviewForm(form: Map[String, String], userId: String = defaultUserId)(test: Future[Result] => Any): Unit = {
+  def reviewForm(form: Map[String, String], userId: String = defaultUserId, customsId: CustomsId)(
+    test: Future[Result] => Any
+  ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
+    when(mockSubscriptionBusinessService.getCachedCustomsId(any[HeaderCarrier]))
+      .thenReturn(Future.successful(Some(customsId)))
+
     test(
       controller.reviewForm(atarService, Journey.Subscribe).apply(
         SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)

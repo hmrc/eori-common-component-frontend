@@ -140,6 +140,11 @@ class SubscriptionDetailsService @Inject() (
   def cacheCustomsId(subscriptionCustomsId: CustomsId)(implicit hc: HeaderCarrier): Future[Unit] =
     saveSubscriptionDetails(sd => sd.copy(customsId = Some(subscriptionCustomsId)))
 
+  def cacheNinoOrUtrChoice(ninoOrUtrChoice: NinoOrUtrChoice)(implicit hc: HeaderCarrier): Future[Unit] =
+    saveSubscriptionDetails(
+      sd => sd.copy(formData = sd.formData.copy(ninoOrUtrChoice = ninoOrUtrChoice.ninoOrUtrRadio))
+    )
+
   def cacheCustomsIdAndUtrMatch(subscriptionCustomsId: CustomsId, utrMatch: Option[UtrMatchModel])(implicit
     hc: HeaderCarrier
   ): Future[Unit] =

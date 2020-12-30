@@ -136,6 +136,11 @@ class SubscriptionBusinessService @Inject() (cdsFrontendDataCache: SessionCache)
       subscriptionDetails.customsId
     }
 
+  def getCachedNinoOrUtrChoice(implicit hc: HeaderCarrier): Future[Option[String]] =
+    cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
+      subscriptionDetails.formData.ninoOrUtrChoice
+    }
+
   def getCachedSubscriptionIdViewModel(implicit hc: HeaderCarrier): Future[IdMatchModel] =
     cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
       subscriptionDetails.idDetails.getOrElse(throw new IllegalStateException("No Nino/Id Details Cached"))

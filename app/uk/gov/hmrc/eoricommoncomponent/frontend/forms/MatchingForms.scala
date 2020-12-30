@@ -332,6 +332,10 @@ object MatchingForms {
     mapping("nino" -> text.verifying(validNino))(IdMatchModel.apply)(IdMatchModel.unapply)
   )
 
+  val subscriptionUtrForm: Form[IdMatchModel] = Form(
+    mapping("utr" -> text.verifying(validUtr))(IdMatchModel.apply)(IdMatchModel.unapply)
+  )
+
   val ninoOrUtrForm: Form[NinoOrUtr] = Form(
     mapping(
       "nino" -> mandatoryIfEqual("ninoOrUtrRadio", "nino", text.verifying(validNino)),
@@ -339,6 +343,13 @@ object MatchingForms {
       "ninoOrUtrRadio" -> optional(text)
         .verifying("cds.subscription.nino.utr.invalid", _.fold(false)(x => x.trim.nonEmpty))
     )(NinoOrUtr.apply)(NinoOrUtr.unapply)
+  )
+
+  val ninoOrUtrChoiceForm: Form[NinoOrUtrChoice] = Form(
+    mapping(
+      "ninoOrUtrRadio" -> optional(text)
+        .verifying("cds.subscription.nino.utr.invalid", _.fold(false)(x => x.trim.nonEmpty))
+    )(NinoOrUtrChoice.apply)(NinoOrUtrChoice.unapply)
   )
 
   private val countryCodeGB = "GB"

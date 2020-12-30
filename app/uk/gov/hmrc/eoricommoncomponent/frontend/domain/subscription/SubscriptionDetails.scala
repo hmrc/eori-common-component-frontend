@@ -73,7 +73,8 @@ object SubscriptionDetails {
 case class FormData(
   utrMatch: Option[UtrMatchModel] = None,
   ninoMatch: Option[NinoMatchModel] = None,
-  organisationType: Option[CdsOrganisationType] = None
+  organisationType: Option[CdsOrganisationType] = None,
+  ninoOrUtrChoice: Option[String] = None
 )
 
 object FormData {
