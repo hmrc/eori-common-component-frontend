@@ -80,9 +80,11 @@ class GetNinoController @Inject() (
             Individual.withLocalDate(details.firstName, details.middleName, details.lastName, details.dateOfBirth),
             internalId
           )
-          .map {
-            case true  => Redirect(ConfirmContactDetailsController.form(service, journey))
-            case false => matchNotFoundBadRequest(formData, service, journey)
+          .map { matched =>
+            if (matched)
+              Redirect(ConfirmContactDetailsController.form(service, journey))
+            else
+              matchNotFoundBadRequest(formData, service, journey)
           }
       case None => Future.successful(matchNotFoundBadRequest(formData, service, journey))
     }

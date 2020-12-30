@@ -135,9 +135,11 @@ class GetUtrNumberController @Inject() (
             )
           case None => Future.successful(false)
         }
-    }).map {
-      case true  => Redirect(ConfirmContactDetailsController.form(service, journey))
-      case false => matchNotFoundBadRequest(organisationType, formData, isInReviewMode, service, journey)
+    }).map { matched =>
+      if (matched)
+        Redirect(ConfirmContactDetailsController.form(service, journey))
+      else
+        matchNotFoundBadRequest(organisationType, formData, isInReviewMode, service, journey)
     }
 
   private def matchNotFoundBadRequest(
