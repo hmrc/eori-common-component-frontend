@@ -56,7 +56,7 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
 
     "return NO_CONTENT" when {
 
-      "user has eori and all calls are successful" in {
+      "user has eori and all calls are successful (with capitalised date of establishment)" in {
 
         val date       = LocalDate.now().toString
         val verifiers  = List(KeyValuePair(key = "DATEOFESTABLISHMENT", value = date))
@@ -73,6 +73,35 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
         val expectedResult = GovernmentGatewayEnrolmentRequest(
           identifiers = List(Identifier("EORINumber", eori)),
           verifiers = List(Verifier("DATEOFESTABLISHMENT", date))
+        )
+
+        val result = enrolmentService.enrolWithExistingCDSEnrolment(eori, atarService)(headerCarrier)
+
+        result.futureValue shouldBe NO_CONTENT
+
+        verify(taxEnrolmentsConnector).enrolAndActivate(enrolmentKeyCaptor.capture(), requestCaptor.capture())(any())
+
+        enrolmentKeyCaptor.getValue shouldBe "HMRC-ATAR-ORG"
+        requestCaptor.getValue shouldBe expectedResult
+      }
+
+      "user has eori and all calls are successful (with camel case date of establishment)" in {
+
+        val date       = LocalDate.now().toString
+        val verifiers  = List(KeyValuePair(key = "DateOfEstablishment", value = date))
+        val knownFact  = KnownFact(List.empty, verifiers)
+        val knownFacts = KnownFacts("atar", List(knownFact))
+
+        when(enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(any())(any()))
+          .thenReturn(Future.successful(Some(knownFacts)))
+
+        val enrolmentKeyCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+        val requestCaptor: ArgumentCaptor[GovernmentGatewayEnrolmentRequest] =
+          ArgumentCaptor.forClass(classOf[GovernmentGatewayEnrolmentRequest])
+
+        val expectedResult = GovernmentGatewayEnrolmentRequest(
+          identifiers = List(Identifier("EORINumber", eori)),
+          verifiers = List(Verifier("DateOfEstablishment", date))
         )
 
         val result = enrolmentService.enrolWithExistingCDSEnrolment(eori, atarService)(headerCarrier)
