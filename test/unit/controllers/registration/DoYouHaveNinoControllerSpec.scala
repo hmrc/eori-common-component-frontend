@@ -59,9 +59,6 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
     mockSubscriptionDetailsService
   )
 
-  private val notMatchedError =
-    "Your details have not been found. Check that your details are correct and then try again."
-
   override def beforeEach: Unit =
     when(mockSubscriptionDetailsService.cacheNinoMatch(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
 
@@ -120,6 +117,25 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
         status(result) shouldBe SEE_OTHER
         result.header.headers("Location") should endWith("register/matching/address/third-country-sole-trader")
       }
+    }
+
+    "display error when form empty" in {
+      submitForm(Map("have-nino" -> "")) { result =>
+        status(result) shouldBe BAD_REQUEST
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText("//*[@id='errors']") should include("Select yes if you have a National Insurance number")
+      }
+    }
+
+    "throw exeption when N is selected and no org cached" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(any()))
+        .thenReturn(None)
+
+      intercept[IllegalStateException] {
+        submitForm(form = noNinoSubmitData) { result =>
+          status(result) shouldBe SEE_OTHER
+        }
+      }.getMessage should include("No userSelectedOrganisationType details in session")
     }
 
   }

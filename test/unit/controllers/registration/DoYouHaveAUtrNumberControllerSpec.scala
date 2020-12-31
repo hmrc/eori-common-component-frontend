@@ -58,12 +58,6 @@ class DoYouHaveAUtrNumberControllerSpec
   private val controller =
     new DoYouHaveAUtrNumberController(mockAuthAction, mcc, matchOrganisationUtrView, mockSubscriptionDetailsService)
 
-  private val BusinessNotMatchedError =
-    "Your business details have not been found. Check that your details are correct and try again."
-
-  private val IndividualNotMatchedError =
-    "Your details have not been found. Check that your details are correct and then try again."
-
   override def beforeEach: Unit =
     when(mockSubscriptionDetailsService.cacheUtrMatch(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
 
@@ -93,14 +87,20 @@ class DoYouHaveAUtrNumberControllerSpec
     )
   }
 
-  "submitting the form for a charity without a utr" should {
+  "submitting an invalid form" should {
 
-    "direct the user to the Are You VAT Registered in the UK? page" in {
-      submitForm(NoUtrRequest, CdsOrganisationType.CharityPublicBodyNotForProfitId) { result =>
+    "display error when form empty" in {
+      submitForm(Map("have-utr" -> ""), CdsOrganisationType.ThirdCountryOrganisationId) { result =>
+        status(result) shouldBe BAD_REQUEST
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText("//*[@id='errors']") should include("Select yes if you have a UTR number")
+      }
+    }
+
+    "display 'use different service' when org type is not valid page based on NO answer" in {
+      submitForm(form = NoUtrRequest, CdsOrganisationType.CompanyId) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith(
-          "/customs-enrolment-services/atar/register/are-you-vat-registered-in-uk"
-        )
+        result.header.headers("Location") should endWith("register/you-need-a-different-service")
       }
     }
   }
