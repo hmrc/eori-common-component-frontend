@@ -56,8 +56,11 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
 
     "have the right vat registered text" in {
       doc()
-        .getElementById("use-cds-para")
-        .text() mustBe s"You need to sign in with the Government Gateway login details for $name used to access Advance Tariff Rulings."
+        .getElementById("use-cds-para1")
+        .text() mustBe s"To access Advance Tariff Rulings, you should sign in using the Government Gateway login details for $name."
+      doc()
+        .getElementById("use-cds-para2")
+        .text() mustBe "You will not be able to use Advance Tariff Rulings until this issue has been resolved."
     }
 
     "have the feedback link" in {

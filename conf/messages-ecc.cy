@@ -41,7 +41,8 @@ cds.sub01.outcome.rejected.register.title=Mae’r cais am {0} wedi bod yn aflwyd
 
 cds.reg06.outcome.eori-already-linked.title=Mae’r cais am danysgrifiad {0} wedi bod yn aflwyddiannus
 cds.reg06.outcome.eori-already-linked.heading=Mae’r cais am danysgrifiad {0} ar gyfer {1} wedi bod yn aflwyddiannus
-cds.subscription.outcomes.eori-already-linked.use-cds-para=Mae angen i chi fewngofnodi gyda manylion mewngofnodi {0} ar gyfer Porth y Llywodraeth, a ddefnyddiwyd i gael mynediad at {1}.
+cds.subscription.outcomes.eori-already-linked.use-cds-para1=Mae angen i chi fewngofnodi gyda manylion mewngofnodi {0} ar gyfer Porth y Llywodraeth, a ddefnyddiwyd i gael mynediad at {1}.
+cds.subscription.outcomes.eori-already-linked.use-cds-para2=
 
 cds.subscription.outcomes.inprocessing.we-are-processing=Rydym yn prosesu’ch cais am {0}. Gall hyn gymryd hyd at 5 diwrnod gwaith. Bydd yn rhaid i chi fewngofnodi eto i weld canlyniad eich cofrestriad.
 
