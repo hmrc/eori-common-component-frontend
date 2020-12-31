@@ -16,6 +16,7 @@
 
 package unit.controllers.subscription
 
+import base.FixedDate
 import common.pages.subscription.SubscriptionContactDetailsPage._
 import common.pages.subscription.{
   SubscriptionDateOfBirthPage,
@@ -50,7 +51,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class DateOfEstablishmentControllerSpec
     extends SubscriptionFlowTestSupport with BeforeAndAfterEach with SubscriptionFlowCreateModeTestSupport
-    with SubscriptionFlowReviewModeTestSupport {
+    with FixedDate with SubscriptionFlowReviewModeTestSupport {
 
   protected override val formId: String = SubscriptionDateOfBirthPage.formId
 

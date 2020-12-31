@@ -16,6 +16,7 @@
 
 package unit.controllers.registration
 
+import base.FixedDate
 import common.pages.NinoMatchPage
 import common.pages.matching.NameDateOfBirthPage.{fieldLevelErrorDateOfBirth, pageLevelErrorSummaryListXPath}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.NinoController
@@ -40,7 +41,7 @@ import util.builders.matching.NinoFormBuilder
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class NinoControllerSpec extends ControllerSpec with BeforeAndAfter with AuthActionMock {
+class NinoControllerSpec extends ControllerSpec with BeforeAndAfter with AuthActionMock with FixedDate {
 
   private val mockAuthConnector   = mock[AuthConnector]
   private val mockAuthAction      = authAction(mockAuthConnector)

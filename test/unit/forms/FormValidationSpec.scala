@@ -18,7 +18,7 @@ package unit.forms
 
 import java.time.Year
 
-import base.UnitSpec
+import base.{FixedDate, UnitSpec}
 import org.joda.time.LocalDate
 import play.api.data.{Form, FormError}
 import uk.gov.hmrc.domain.Generator
@@ -29,7 +29,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionF
 
 import scala.util.Random
 
-class FormValidationSpec extends UnitSpec {
+class FormValidationSpec extends UnitSpec with FixedDate {
 
   def randomNino: String = new Generator(new Random()).nextNino.nino
 

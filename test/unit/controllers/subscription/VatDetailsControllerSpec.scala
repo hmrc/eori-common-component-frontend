@@ -16,6 +16,7 @@
 
 package unit.controllers.subscription
 
+import base.FixedDate
 import common.pages.subscription.SubscriptionVatDetailsPage._
 import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers._
@@ -46,7 +47,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class VatDetailsControllerSpec
     extends SubscriptionFlowTestSupport with BeforeAndAfterEach with SubscriptionFlowCreateModeTestSupport
-    with SubscriptionFlowReviewModeTestSupport {
+    with FixedDate with SubscriptionFlowReviewModeTestSupport {
 
   protected override val formId: String = "vat-details-form"
 

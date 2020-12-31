@@ -224,6 +224,8 @@ confirm-business-details.partnership.yes-wrong-address=No, I want to change the 
 confirm-business-details.individual.yes-wrong-address=No, I want to change my address
 yes-no-wrong-address.error=Select yes if this is your address
 
+cds.enter-address-details.company.title-and-heading=Enter your full registered company address
+
 cds.existing.reg.eori-already-exists.title=You already have an EORI
 cds.existing.reg.eori.number=EORI number:
 
