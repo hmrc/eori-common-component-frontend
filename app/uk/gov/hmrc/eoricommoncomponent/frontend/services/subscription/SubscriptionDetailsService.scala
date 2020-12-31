@@ -50,22 +50,20 @@ class SubscriptionDetailsService @Inject() (
     }
   }
 
-  // TODO method return incorrect type
   def saveSubscriptionDetails(
     insertNewDetails: SubscriptionDetails => SubscriptionDetails
-  )(implicit hc: HeaderCarrier): Future[Unit] =
-    sessionCache.subscriptionDetails map { subDetails =>
-      sessionCache.saveSubscriptionDetails(insertNewDetails(subDetails))
-    }
+  )(implicit hc: HeaderCarrier): Future[Unit] = sessionCache.subscriptionDetails flatMap { subDetails =>
+    sessionCache.saveSubscriptionDetails(insertNewDetails(subDetails)).map(_ => ())
+
+  }
 
   def cacheCompanyShortName(shortName: BusinessShortName)(implicit hc: HeaderCarrier): Future[Unit] =
     saveSubscriptionDetails(sd => sd.copy(businessShortName = Some(shortName)))
 
-  // TODO method return incorrect type
   def cacheContactDetails(contactDetailsModel: ContactDetailsModel, isInReviewMode: Boolean = false)(implicit
     hc: HeaderCarrier
   ): Future[Unit] =
-    contactDetails(contactDetailsModel, isInReviewMode) map { contactDetails =>
+    contactDetails(contactDetailsModel, isInReviewMode) flatMap { contactDetails =>
       saveSubscriptionDetails(sd => sd.copy(contactDetails = Some(contactDetails)))
     }
 

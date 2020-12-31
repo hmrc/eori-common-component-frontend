@@ -16,9 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.playext.mappers
 
-import java.time.Year
-
-import org.joda.time.LocalDate
+import org.joda.time.{DateTime, LocalDate}
 import play.api.data.Forms.{optional, text, tuple}
 import play.api.data.Mapping
 import uk.gov.hmrc.play.mappers.DateFields._
@@ -77,7 +75,7 @@ object DateTuple {
     isInRange(1, 12)
 
   private def isYearValid(minYear: Int): String => Boolean =
-    isInRange(minYear, Year.now.getValue)
+    isInRange(minYear, DateTime.now().getYear)
 
   private def dayMapping: Mapping[Option[String]] =
     optional(text.verifying("date.day.error", isDayValid))

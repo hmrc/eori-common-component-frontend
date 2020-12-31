@@ -24,10 +24,11 @@ import org.joda.time.{DateTime, DateTimeZone, LocalDate}
 import play.api.Logger
 import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.ContactInformation.createContactInformation
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.EstablishmentAddress.createEstablishmentAddress
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionRequest.principalEconomicActivityLength
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, RequestCommon, RequestParameter}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{ContactDetails, SubscriptionDetails}
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{RequestCommon, RequestParameter}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
   CdsToEtmpOrganisationType,
@@ -54,7 +55,6 @@ object SubscriptionCreateRequest {
           safeId,
           name,
           fourFieldAddress(subscription, registration),
-          email,
           dob,
           CdsToEtmpOrganisationType(registration),
           subscription,
@@ -67,7 +67,6 @@ object SubscriptionCreateRequest {
           safeId,
           name,
           fourFieldAddress(subscription, registration),
-          email,
           dateOfEstablishment,
           CdsToEtmpOrganisationType(registration),
           subscription,
@@ -77,6 +76,44 @@ object SubscriptionCreateRequest {
       case _ =>
         throw new IllegalArgumentException("Invalid Registration Details. Unable to create SubscriptionCreateRequest.")
     }
+
+  def apply(
+    data: ResponseData,
+    subscription: SubscriptionDetails,
+    email: String,
+    service: Option[Service]
+  ): SubscriptionCreateRequest = {
+    val ea = subscription.addressDetails.map { address =>
+      new EstablishmentAddress(
+        address.street,
+        address.city,
+        address.postcode.filterNot(p => p.isEmpty),
+        address.countryCode
+      )
+    }.getOrElse(throw new IllegalStateException("Reg06 EstablishmentAddress cannot be empty"))
+
+    SubscriptionCreateRequest(
+      generateWithOriginatingSystem(),
+      RequestDetail(
+        SAFE = data.SAFEID,
+        EORINo = subscription.eoriNumber,
+        CDSFullName = data.trader.fullName,
+        CDSEstablishmentAddress = ea,
+        establishmentInTheCustomsTerritoryOfTheUnion =
+          data.hasEstablishmentInCustomsTerritory.map(bool => if (bool) "1" else "0"),
+        typeOfLegalEntity = data.legalStatus,
+        contactInformation = data.contactDetail.map(cd => createContactInformation(cd).withEmail(email)),
+        vatIDs =
+          data.VATIDs.map(_.map(vs => VatId(countryCode = Some(vs.countryCode), vatID = Some(vs.vatNumber))).toList),
+        consentToDisclosureOfPersonalData = None,
+        shortName = Some(data.trader.shortName),
+        dateOfEstablishment = handleEmptyDate(data.dateOfEstablishmentBirth),
+        typeOfPerson = data.personType.map(_.toString),
+        principalEconomicActivity = data.principalEconomicActivity,
+        serviceName = service.map(_.enrolmentKey)
+      )
+    )
+  }
 
   def apply(data: ResponseData, eori: Eori, email: String, service: Option[Service]): SubscriptionCreateRequest = {
     val ea = new EstablishmentAddress(
@@ -95,10 +132,7 @@ object SubscriptionCreateRequest {
         establishmentInTheCustomsTerritoryOfTheUnion =
           data.hasEstablishmentInCustomsTerritory.map(bool => if (bool) "1" else "0"),
         typeOfLegalEntity = data.legalStatus,
-        contactInformation = contactInfoWithCapturedEmail(
-          ContactInformation.getContactInformation(data.contactDetail),
-          email
-        ) map dashIfCityEmpty,
+        contactInformation = data.contactDetail.map(cd => createContactInformation(cd).withEmail(email)),
         vatIDs =
           data.VATIDs.map(_.map(vs => VatId(countryCode = Some(vs.countryCode), vatID = Some(vs.vatNumber))).toList),
         consentToDisclosureOfPersonalData = None,
@@ -132,7 +166,7 @@ object SubscriptionCreateRequest {
           CDSEstablishmentAddress = fourFieldAddress(sub, reg),
           establishmentInTheCustomsTerritoryOfTheUnion = None,
           typeOfLegalEntity = org.map(_.legalStatus),
-          contactInformation = Some(dashIfCityEmpty(createContactInformation(sub.contactDetails.get.contactDetails))),
+          contactInformation = sub.contactDetails.map(c => createContactInformation(c.contactDetails)),
           vatIDs = createVatIds(Some(ukVatId ++: euVatIds)),
           consentToDisclosureOfPersonalData = sub.personalDataDisclosureConsent.map(bool => if (bool) "1" else "0"),
           shortName = sub.businessShortName flatMap (_.shortName),
@@ -150,7 +184,6 @@ object SubscriptionCreateRequest {
     safeId: SafeId,
     fullName: String,
     establishmentAddress: EstablishmentAddress,
-    contactEmail: Option[String],
     dateOfEstablishment: LocalDate,
     etmpTypeOfPerson: Option[OrganisationTypeConfiguration],
     sub: SubscriptionDetails,
@@ -165,7 +198,7 @@ object SubscriptionCreateRequest {
         CDSEstablishmentAddress = establishmentAddress,
         establishmentInTheCustomsTerritoryOfTheUnion = None,
         typeOfLegalEntity = etmpTypeOfPerson.map(_.legalStatus),
-        contactInformation = Some(dashIfCityEmpty(createContactInformation(sub.contactDetails.get.contactDetails))),
+        contactInformation = sub.contactDetails.map(c => createContactInformation(c.contactDetails)),
         vatIDs = None,
         consentToDisclosureOfPersonalData = None,
         shortName = None,
@@ -176,11 +209,10 @@ object SubscriptionCreateRequest {
       )
     )
 
+  private def dashForEmpty(s: String): String =
+    if (s.isEmpty) "-" else s
+
   private def fourFieldAddress(subscription: SubscriptionDetails, registration: RegistrationDetails) = {
-    def dashForEmpty: String => String = {
-      case s if s.isEmpty => "-"
-      case nonEmpty       => nonEmpty
-    }
 
     val address = subscription.addressDetails match {
       case Some(a) =>
@@ -189,21 +221,6 @@ object SubscriptionCreateRequest {
     }
 
     address.copy(city = dashForEmpty(address.city))
-  }
-
-  private def dashIfCityEmpty: ContactInformation => ContactInformation = {
-    case c: ContactInformation if c.city.getOrElse("").isEmpty => c.copy(city = Some("-"))
-    case nonEmptyCity                                          => nonEmptyCity
-  }
-
-  def createEstablishmentAddress(address: Address): EstablishmentAddress = {
-    val fourLineAddress = AddressViewModel(address)
-    new EstablishmentAddress(
-      fourLineAddress.street,
-      fourLineAddress.city,
-      address.postalCode.filterNot(p => p.isEmpty),
-      fourLineAddress.countryCode
-    )
   }
 
   def generateWithOriginatingSystem(requestParameters: Option[Seq[RequestParameter]] = None): RequestCommon =
@@ -221,25 +238,6 @@ object SubscriptionCreateRequest {
       logger.warn("No establishment date returned from REG06")
       None
   }
-
-  private def contactInfoWithCapturedEmail(contactInfoFromReg06: Option[ContactInformation], capturedEmail: String) =
-    contactInfoFromReg06 match {
-      case Some(c) => Some(c.copy(emailAddress = Some(capturedEmail)))
-      case None    => Some(ContactInformation(emailAddress = Some(capturedEmail)))
-    }
-
-  private def createContactInformation(subscriptionContactDetails: ContactDetails): ContactInformation =
-    ContactInformation(
-      personOfContact = Some(subscriptionContactDetails.fullName),
-      sepCorrAddrIndicator = Some(true),
-      streetAndNumber = Some(subscriptionContactDetails.street),
-      city = Some(subscriptionContactDetails.city),
-      postalCode = subscriptionContactDetails.postcode.filter(_.nonEmpty),
-      countryCode = Some(subscriptionContactDetails.countryCode),
-      telephoneNumber = Some(subscriptionContactDetails.telephone),
-      faxNumber = subscriptionContactDetails.fax,
-      emailAddress = Some(subscriptionContactDetails.emailAddress)
-    )
 
   private def createVatIds(vis: Option[List[VatIdentification]]): Option[List[VatId]] = {
     def removeEmpty: List[VatIdentification] => List[VatId] = _.flatMap {

@@ -33,12 +33,6 @@
     }
 }
 
-@submitCall = @{
-    "" match {
-        case "a" => HowCanWeIdentifyYouNinoController.submit(isInReviewMode, ???, ???)
-        case "b" => GYEHowCanWeIdentifyYouNinoController.submit(???, ???)
-    }
-}
 
 @layout_di(messages("subscription-journey.how-confirm-identity.nino.heading"), form = Some(ninoForm)) {
     <div class="column-two-thirds">

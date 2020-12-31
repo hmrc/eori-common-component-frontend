@@ -16,6 +16,7 @@
 
 package util.scalacheck
 
+import base.FixedDate.dateTimeFixed
 import org.joda.time.LocalDate
 import org.scalacheck.{Arbitrary, Gen}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -26,23 +27,23 @@ trait TestDataGenerators {
 
   val emptyString: Gen[String] = Gen.const("")
 
-  val maxLengthOfName = MatchingForms.Length35
+  val maxLengthOfName: Int = MatchingForms.Length35
 
   val nameGenerator: Gen[String] = for {
     nameLength <- Gen.chooseNum(1, maxLengthOfName)
     name       <- Gen.listOfN(nameLength, Gen.alphaChar) map (_.mkString)
   } yield name
 
-  val baselineDate = new LocalDate()
+  val baselineDate = new LocalDate(dateTimeFixed)
 
-  val dateOfBirthGenerator = for {
+  val dateOfBirthGenerator: Gen[LocalDate] = for {
     days  <- Gen.chooseNum(1, 365)
     years <- Gen.chooseNum(0, 110)
   } yield baselineDate minusYears years minusDays days
 
-  val maxLengthOfAddressLine = MatchingForms.Length35
+  val maxLengthOfAddressLine: Int = MatchingForms.Length35
 
-  val addressLineGenerator = for {
+  val addressLineGenerator: Gen[String] = for {
     nameLength <- Gen.chooseNum(1, maxLengthOfAddressLine)
     address    <- Gen.listOfN(nameLength, Gen.alphaNumChar) map (_.mkString)
   } yield address
@@ -55,7 +56,7 @@ trait TestDataGenerators {
 
   // Quick and dirty approach for now, may need to extend this if validation tightens up.
   // TODO: should generate enough space not to breach the limit of an acceptable postcode length.
-  val postcodeGenerator = for {
+  val postcodeGenerator: Gen[String] = for {
     area     <- Gen.oneOf(Gen.alphaChar map (_.toString), Gen.listOfN(2, Gen.alphaChar) map (_.mkString))
     district <- Gen.chooseNum(1, 99)
     space    <- Gen.option(Gen.const(" "))
@@ -66,12 +67,12 @@ trait TestDataGenerators {
 
   val GBUpperCase = "GB"
 
-  val countryGenerator = for {
+  val countryGenerator: Gen[String] = for {
     capitalisedCaseCountry <- Gen.oneOf(GBUpperCase, "US", "ES", "NL")
     convertToLowerCase     <- Arbitrary.arbitrary[Boolean]
   } yield if (convertToLowerCase) capitalisedCaseCountry.toLowerCase else capitalisedCaseCountry
 
-  val countryWithoutGBGenerator = countryGenerator.filter(_.toLowerCase != GBUpperCase.toLowerCase)
+  val countryWithoutGBGenerator: Gen[String] = countryGenerator.filter(_.toLowerCase != GBUpperCase.toLowerCase)
 
   case class IndividualGens[E](
     firstNameGen: Gen[String] = nameGenerator,
@@ -98,10 +99,10 @@ trait TestDataGenerators {
 
   def individualNameAndDateOfBirthGens(): IndividualGens[LocalDate] = IndividualGens(extraBitGen = dateOfBirthGenerator)
 
-  val individualNameAndDateOfBirthGenerator =
+  val individualNameAndDateOfBirthGenerator: AbstractIndividualGenerator[LocalDate, IndividualNameAndDateOfBirth] =
     new AbstractIndividualGenerator[LocalDate, IndividualNameAndDateOfBirth] {
 
-      def apply(data: DataItems) =
+      def apply(data: DataItems): IndividualNameAndDateOfBirth =
         IndividualNameAndDateOfBirth(data.firstName, data.middleName, data.lastName, dateOfBirth = data.extraBit)
 
     }

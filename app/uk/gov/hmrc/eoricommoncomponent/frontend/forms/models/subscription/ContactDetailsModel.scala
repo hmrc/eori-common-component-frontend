@@ -18,6 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription
 
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetails
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactDetailsModel.trim
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionTimeOutException
 
 case class ContactDetailsModel(
@@ -37,9 +38,9 @@ case class ContactDetailsModel(
     emailAddress,
     telephone,
     fax,
-    street.getOrElse(""),
-    city.getOrElse(""),
-    postcode,
+    trim(street).getOrElse(""),
+    trim(city).getOrElse(""),
+    trim(postcode),
     countryCode.getOrElse("")
   )
 
@@ -49,9 +50,9 @@ case class ContactDetailsModel(
     telephone,
     fax,
     useAddressFromRegistrationDetails,
-    street,
-    city,
-    postcode,
+    trim(street),
+    trim(city),
+    trim(postcode),
     countryCode
   )
 
@@ -59,6 +60,8 @@ case class ContactDetailsModel(
 
 object ContactDetailsModel {
   implicit val jsonFormat: OFormat[ContactDetailsModel] = Json.format[ContactDetailsModel]
+
+  def trim(value: Option[String]): Option[String] = value.map(_.trim)
 }
 
 //TODO remove email address read from cache and populate the contact details
@@ -80,9 +83,9 @@ case class ContactDetailsViewModel(
     telephone,
     fax,
     useAddressFromRegistrationDetails,
-    street,
-    city,
-    postcode,
+    trim(street),
+    trim(city),
+    trim(postcode),
     countryCode
   )
 

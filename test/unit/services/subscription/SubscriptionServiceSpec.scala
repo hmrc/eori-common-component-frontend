@@ -129,7 +129,7 @@ class SubscriptionServiceSpec
     "send a request using a partial REG06 response and captured email address" in {
       val result = makeExistingRegistrationRequest(
         stubRegisterWithPartialResponse(),
-        Eori(responseEoriNumber),
+        Eori("GB123456789000"),
         subscriptionGenerateResponse,
         contactEmail
       )
@@ -148,7 +148,7 @@ class SubscriptionServiceSpec
     "send a request using a complete REG06 response and captured email address" in {
       val result = makeExistingRegistrationRequest(
         stubRegisterWithCompleteResponse(),
-        Eori(responseEoriNumber),
+        Eori("GB123456789000"),
         subscriptionGenerateResponse,
         contactEmail
       )
@@ -473,9 +473,12 @@ class SubscriptionServiceSpec
     "throw an exception when doe/ dob is missing when subscribing" in {
       val service = constructService(_ => None)
       the[IllegalArgumentException] thrownBy {
-        service.existingReg(stubRegisterWithPartialResponseWithNoDoe(), Eori("GB123456"), "", atarService)(
-          mockHeaderCarrier
-        )
+        service.existingReg(
+          stubRegisterWithPartialResponseWithNoDoe(),
+          fullyPopulatedSubscriptionDetails,
+          "",
+          atarService
+        )(mockHeaderCarrier)
       } should have message "requirement failed"
     }
 
@@ -758,7 +761,9 @@ class SubscriptionServiceSpec
     )
 
     val actualServiceCallResult = await(
-      service.existingReg(registerWithEoriAndIdResponse, eori, email, atarService)(mockHeaderCarrier)
+      service.existingReg(registerWithEoriAndIdResponse, fullyPopulatedSubscriptionDetails, email, atarService)(
+        mockHeaderCarrier
+      )
     )
     val actualConnectorRequest = subscribeDataCaptor.getValue
     SubscriptionCallResult(actualServiceCallResult, actualConnectorRequest)

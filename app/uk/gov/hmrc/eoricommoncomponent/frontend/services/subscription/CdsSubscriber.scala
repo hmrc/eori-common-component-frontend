@@ -47,17 +47,19 @@ class CdsSubscriber @Inject() (
   )(implicit hc: HeaderCarrier, request: Request[AnyContent], messages: Messages): Future[SubscriptionResult] = {
     def migrationEoriUK: Future[SubscriptionResult] =
       for {
-        subscriptionDetailsHolder <- sessionCache.subscriptionDetails
-        eori = subscriptionDetailsHolder.eoriNumber.getOrElse(
-          throw new IllegalStateException("Eori not found in cache")
+        subscriptionDetails           <- sessionCache.subscriptionDetails
+        email                         <- sessionCache.email
+        registerWithEoriAndIdResponse <- sessionCache.registerWithEoriAndIdResponse
+        subscriptionResult <- subscriptionService.existingReg(
+          registerWithEoriAndIdResponse,
+          subscriptionDetails,
+          email,
+          service
         )
-        email               <- sessionCache.email
-        registrationDetails <- sessionCache.registerWithEoriAndIdResponse(hc)
-        subscriptionResult  <- subscriptionService.existingReg(registrationDetails, Eori(eori), email, service)
         _ <- onSubscriptionResultForUKSubscribe(
           subscriptionResult,
-          registrationDetails,
-          subscriptionDetailsHolder,
+          registerWithEoriAndIdResponse,
+          subscriptionDetails,
           email,
           service
         )
@@ -77,7 +79,7 @@ class CdsSubscriber @Inject() (
 
     def migrationEoriROW: Future[SubscriptionResult] =
       for {
-        registrationDetails <- sessionCache.registrationDetails(hc)
+        registrationDetails <- sessionCache.registrationDetails
         subscriptionDetails <- sessionCache.subscriptionDetails
         email               <- sessionCache.email
         subscriptionResult <- subscriptionService.subscribeWithMandatoryOnly(

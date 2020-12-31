@@ -17,13 +17,15 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc._
 import play.api.Logger
+import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation.{postCodeMandatoryCountryCodes, postcodeRegex}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
@@ -57,8 +59,11 @@ class ConfirmContactDetailsController @Inject() (
   private val logger = Logger(this.getClass)
 
   def form(service: Service, journey: Journey.Value): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser =>
       cdsFrontendDataCache.registrationDetails flatMap {
+        case rd: RegistrationDetails if !isValidAddressForMandatoryCountryCodes(rd.address) =>
+          logger.warn("Not a valid Address for Country")
+          determineRoute(registrationConfirmService, WrongAddress, service, journey)
         case individual: RegistrationDetailsIndividual =>
           Future.successful(
             Ok(
@@ -99,6 +104,13 @@ class ConfirmContactDetailsController @Inject() (
           Future.successful(Redirect(OrganisationTypeController.form(service, journey)))
       }
     }
+
+  private def isValidAddressForMandatoryCountryCodes(
+    address: Address
+  )(implicit request: Request[AnyContent], loggedInUser: LoggedInUserWithEnrolments) =
+    if (postCodeMandatoryCountryCodes.contains(address.countryCode))
+      address.postalCode.exists(_.matches(postcodeRegex.regex))
+    else true
 
   def submit(service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser =>
