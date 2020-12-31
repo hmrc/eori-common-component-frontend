@@ -16,6 +16,7 @@
 
 package unit.controllers.registration
 
+import base.FixedDate
 import common.pages.matching.{
   IndividualNameAndDateOfBirthPage,
   ThirdCountryIndividualNameAndDateOfBirthPage,
@@ -49,7 +50,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class RowIndividualNameDateOfBirthControllerSpec
     extends ControllerSpec with Checkers with TestDataGenerators with BeforeAndAfterEach with ScalaFutures
-    with AuthActionMock {
+    with FixedDate with AuthActionMock {
 
   class ControllerFixture(organisationType: String, form: Form[IndividualNameAndDateOfBirth])
       extends AbstractControllerFixture[RowIndividualNameDateOfBirthController] {

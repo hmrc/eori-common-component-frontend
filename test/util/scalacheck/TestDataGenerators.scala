@@ -16,6 +16,7 @@
 
 package util.scalacheck
 
+import base.FixedDate.dateTimeFixed
 import org.joda.time.LocalDate
 import org.scalacheck.{Arbitrary, Gen}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -33,7 +34,7 @@ trait TestDataGenerators {
     name       <- Gen.listOfN(nameLength, Gen.alphaChar) map (_.mkString)
   } yield name
 
-  val baselineDate = new LocalDate()
+  val baselineDate = new LocalDate(dateTimeFixed)
 
   val dateOfBirthGenerator = for {
     days  <- Gen.chooseNum(1, 365)
