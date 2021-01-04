@@ -26,7 +26,7 @@ import play.api.Configuration
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.ApplicationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
-import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import util.ControllerSpec
 
 import scala.concurrent.duration.Duration
@@ -35,11 +35,10 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
 
   private val mockConfig: Configuration = spy(config)
   private val mockServiceConfig         = mock[ServicesConfig]
-  private val runMode                   = mock[RunMode]
 
   override def beforeEach() {
     super.beforeEach()
-    Mockito.reset(mockConfig, mockServiceConfig, runMode)
+    Mockito.reset(mockConfig, mockServiceConfig)
   }
 
   "AppConfig" should {
@@ -173,7 +172,7 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
         when(mockConfig.getOptional[String]("routes-to-block")).thenReturn(Some("register"))
         when(mockConfig.get[String]("external-url.get-cds-eori")).thenReturn("/config-url")
 
-        val testAppConfig = new AppConfig(mockConfig, mockServiceConfig, runMode, "appName")
+        val testAppConfig = new AppConfig(mockConfig, mockServiceConfig, "appName")
 
         testAppConfig.externalGetEORILink(atarService) shouldBe "/config-url"
       }
@@ -181,7 +180,7 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
       "register is un-blocked" in {
         when(mockConfig.getOptional[String]("routes-to-block")).thenReturn(None)
 
-        val testAppConfig = new AppConfig(mockConfig, mockServiceConfig, runMode, "appName")
+        val testAppConfig = new AppConfig(mockConfig, mockServiceConfig, "appName")
 
         testAppConfig.externalGetEORILink(atarService) shouldBe ApplicationController.startRegister(atarService).url
       }
@@ -194,7 +193,7 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
         val euDate: DateTime = DateTime.now().plusDays(1)
         when(mockConfig.get[String]("displayEuLocationUntil")).thenReturn(euDate.toString())
 
-        val testAppConfig = new AppConfig(mockConfig, mockServiceConfig, runMode, "appName")
+        val testAppConfig = new AppConfig(mockConfig, mockServiceConfig, "appName")
 
         testAppConfig.displayEuLocation shouldBe true
       }
@@ -203,7 +202,7 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
         val euDate: DateTime = DateTime.now().minusDays(1)
         when(mockConfig.get[String]("displayEuLocationUntil")).thenReturn(euDate.toString())
 
-        val testAppConfig = new AppConfig(mockConfig, mockServiceConfig, runMode, "appName")
+        val testAppConfig = new AppConfig(mockConfig, mockServiceConfig, "appName")
 
         testAppConfig.displayEuLocation shouldBe false
       }

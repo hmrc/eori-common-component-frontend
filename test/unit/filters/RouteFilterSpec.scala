@@ -29,7 +29,7 @@ import play.api.{Configuration, Environment}
 import uk.gov.hmrc.eoricommoncomponent.frontend.CdsErrorHandler
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.filters.RouteFilter
-import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.Future
 
@@ -43,10 +43,9 @@ class RouteFilterSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach
   val mockErrorHandler           = mock[CdsErrorHandler]
   val mockConfig                 = spy(realConfig)
   val mockServicesConfig         = mock[ServicesConfig]
-  val mockRunMode                = mock[RunMode]
 
   private def filter =
-    new RouteFilter(new AppConfig(mockConfig, mockServicesConfig, mockRunMode, "test"), mockErrorHandler)
+    new RouteFilter(new AppConfig(mockConfig, mockServicesConfig, "test"), mockErrorHandler)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
