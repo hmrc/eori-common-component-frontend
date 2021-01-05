@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -424,6 +424,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     "validation error when YEAR of birth is next year" in {
       submitFormInCreateMode(createFormAllFieldsNameDobNextYearMap) { result =>
         val page = CdsPage(contentAsString(result))
+
         page.getElementsText(
           pageLevelErrorSummaryListXPath
         ) shouldBe s"Enter a year between 1900 and ${Year.now.getValue}"
@@ -510,6 +511,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
   def createFormAllFieldsNameDobNextYearMap: Map[String, String] = {
     val todayPlusOneYear = LocalDate.now().plusYears(1)
+
     Map(
       firstNameFieldName -> "Test First Name",
       lastNameFieldName  -> "Test Last Name",

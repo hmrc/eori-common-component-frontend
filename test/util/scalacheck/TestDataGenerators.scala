@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,12 +34,10 @@ trait TestDataGenerators {
     name       <- Gen.listOfN(nameLength, Gen.alphaChar) map (_.mkString)
   } yield name
 
-  val baselineDate = new LocalDate(dateTimeFixed)
-
-  val dateOfBirthGenerator: Gen[LocalDate] = for {
+  val dateOfBirthGenerator = for {
     days  <- Gen.chooseNum(1, 365)
     years <- Gen.chooseNum(0, 110)
-  } yield baselineDate minusYears years minusDays days
+  } yield new LocalDate() minusYears years minusDays days
 
   val maxLengthOfAddressLine: Int = MatchingForms.Length35
 

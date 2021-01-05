@@ -41,7 +41,8 @@ cds.sub01.outcome.rejected.register.title=The {0} registration request has been 
 
 cds.reg06.outcome.eori-already-linked.title=The {0} subscription request has been unsuccessful
 cds.reg06.outcome.eori-already-linked.heading=The {0} subscription request for {1} has been unsuccessful
-cds.subscription.outcomes.eori-already-linked.use-cds-para=You need to sign in with the Government Gateway login details for {0} used to access {1}.
+cds.subscription.outcomes.eori-already-linked.use-cds-para1=To access {0}, you should sign in using the Government Gateway login details for {1}.
+cds.subscription.outcomes.you-will-not-be-able-to-use-service=You will not be able to use {0} until this issue has been resolved.
 
 cds.subscription.outcomes.inprocessing.we-are-processing=We are processing your {0} subscription request. This can take up to 5 working days. You will need to sign back in to see the result of your request.
 
@@ -223,6 +224,8 @@ confirm-business-details.yes-wrong-address=No, I want to change the address
 confirm-business-details.partnership.yes-wrong-address=No, I want to change the address
 confirm-business-details.individual.yes-wrong-address=No, I want to change my address
 yes-no-wrong-address.error=Select yes if this is your address
+
+cds.enter-address-details.company.title-and-heading=Enter your full registered company address
 
 cds.existing.reg.eori-already-exists.title=You already have an EORI
 cds.existing.reg.eori.number=EORI number:

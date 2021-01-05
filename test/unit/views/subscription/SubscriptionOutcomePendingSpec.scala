@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ class SubscriptionOutcomePendingSpec extends ViewSpec {
     "have the correct 'what happens next' text" in {
       doc().body
         .getElementById("what-happens-next")
-        .text mustBe "What happens next We are processing your Advance Tariff Rulings subscription request. This can take up to 5 working days. You will need to sign back in to see the result of your request."
+        .text mustBe "What happens next We are processing your Advance Tariff Rulings subscription request. This can take up to 5 working days. You will need to sign back in to see the result of your request. You will not be able to use Advance Tariff Rulings until this issue has been resolved."
     }
 
     "have a feedback 'continue' button" in {
