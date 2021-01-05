@@ -207,13 +207,13 @@ class RegisterWithEoriAndIdController @Inject() (
     request: Request[AnyContent]
   ): Future[Result] =
     statusText match {
-      case _ if statusText.contains(EoriAlreadyLinked) =>
+      case _ if statusText.exists(_.equalsIgnoreCase(EoriAlreadyLinked)) =>
         logger.warn("Reg06 EoriAlreadyLinked")
         Future.successful(Redirect(RegisterWithEoriAndIdController.eoriAlreadyLinked(service)))
-      case _ if statusText.contains(IDLinkedWithEori) =>
+      case _ if statusText.exists(_.equalsIgnoreCase(IDLinkedWithEori)) =>
         logger.warn("Reg06 IDLinkedWithEori")
         Future.successful(Redirect(RegisterWithEoriAndIdController.eoriAlreadyLinked(service)))
-      case _ if statusText.contains(RejectedPreviouslyAndRetry) =>
+      case _ if statusText.exists(_.equalsIgnoreCase(RejectedPreviouslyAndRetry)) =>
         Future.successful(Redirect(RegisterWithEoriAndIdController.rejectedPreviously(service)))
       case _ => Future.successful(ServiceUnavailable(errorTemplateView()))
     }
