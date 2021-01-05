@@ -18,7 +18,6 @@ package unit.controllers.migration
 
 import java.time.Year
 
-import base.FixedDate
 import common.pages.migration.NameDobSoleTraderPage
 import common.pages.migration.NameDobSoleTraderPage._
 import common.pages.registration.DoYouHaveAnEoriPage.pageLevelErrorSummaryListXPath
@@ -47,7 +46,7 @@ import util.builders.SessionBuilder
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEach with FixedDate {
+class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEach {
 
   protected override val mockSubscriptionFlowManager: SubscriptionFlowManager = mock[SubscriptionFlowManager]
   protected override val formId: String                                       = NameDobSoleTraderPage.formId
@@ -424,6 +423,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     "validation error when YEAR of birth is next year" in {
       submitFormInCreateMode(createFormAllFieldsNameDobNextYearMap) { result =>
         val page = CdsPage(contentAsString(result))
+
         page.getElementsText(
           pageLevelErrorSummaryListXPath
         ) shouldBe s"Enter a year between 1900 and ${Year.now.getValue}"
@@ -510,6 +510,9 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
   def createFormAllFieldsNameDobNextYearMap: Map[String, String] = {
     val todayPlusOneYear = LocalDate.now().plusYears(1)
+
+    println(LocalDate.now())
+    println(LocalDate.now().plusYears(1))
     Map(
       firstNameFieldName -> "Test First Name",
       lastNameFieldName  -> "Test Last Name",
