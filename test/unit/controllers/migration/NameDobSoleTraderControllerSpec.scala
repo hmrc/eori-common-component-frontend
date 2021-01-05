@@ -18,7 +18,6 @@ package unit.controllers.migration
 
 import java.time.Year
 
-import base.FixedDate
 import common.pages.migration.NameDobSoleTraderPage
 import common.pages.migration.NameDobSoleTraderPage._
 import common.pages.registration.DoYouHaveAnEoriPage.pageLevelErrorSummaryListXPath
@@ -47,7 +46,7 @@ import util.builders.SessionBuilder
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEach with FixedDate {
+class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEach {
 
   protected override val mockSubscriptionFlowManager: SubscriptionFlowManager = mock[SubscriptionFlowManager]
   protected override val formId: String                                       = NameDobSoleTraderPage.formId

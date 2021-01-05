@@ -18,7 +18,6 @@ package unit.controllers.registration
 
 import java.time.Year
 
-import base.FixedDate
 import common.pages.matching.NameDateOfBirthPage
 import common.pages.matching.NameDateOfBirthPage._
 import org.joda.time.LocalDate
@@ -43,8 +42,7 @@ import util.builders.matching.IndividualIdFormBuilder._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class NameDobControllerSpec
-    extends ControllerSpec with BeforeAndAfterEach with SubscriptionFlowTestSupport with FixedDate {
+class NameDobControllerSpec extends ControllerSpec with BeforeAndAfterEach with SubscriptionFlowTestSupport {
   protected override val formId: String      = NameDateOfBirthPage.formId
   val mockCdsFrontendDataCache: SessionCache = mock[SessionCache]
 
