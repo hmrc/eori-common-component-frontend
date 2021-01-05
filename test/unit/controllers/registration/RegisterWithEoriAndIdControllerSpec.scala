@@ -746,6 +746,105 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       }
     }
 
+    "return success with error code as 'EORI already linked to a different ID' ignoring letter case" in {
+      when(
+        mockCdsSubscriber.subscribeWithCachedDetails(
+          any[Option[CdsOrganisationType]],
+          any[Service],
+          any[Journey.Value]
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+      ).thenReturn(
+        Future.successful(
+          SubscriptionSuccessful(
+            Eori("EORI-Number"),
+            formBundleIdResponse,
+            processingDateResponse,
+            Some(emailVerificationTimestamp)
+          )
+        )
+      )
+      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
+        .thenReturn(Future.successful(true))
+      when(mockCache.registrationDetails(any[HeaderCarrier]))
+        .thenReturn(Future.successful(organisationRegistrationDetails))
+      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+        .thenReturn(Future.successful(stubHandleErrorCodeResponse("600 - EORI Already Linked TO a different ID")))
+      when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
+
+      regExistingEori() { result =>
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+          .eoriAlreadyLinked(atarService)
+          .url
+      }
+    }
+
+    "return success with error code as 'ID already linked to a different EORI'" in {
+      when(
+        mockCdsSubscriber.subscribeWithCachedDetails(
+          any[Option[CdsOrganisationType]],
+          any[Service],
+          any[Journey.Value]
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+      ).thenReturn(
+        Future.successful(
+          SubscriptionSuccessful(
+            Eori("EORI-Number"),
+            formBundleIdResponse,
+            processingDateResponse,
+            Some(emailVerificationTimestamp)
+          )
+        )
+      )
+      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
+        .thenReturn(Future.successful(true))
+      when(mockCache.registrationDetails(any[HeaderCarrier]))
+        .thenReturn(Future.successful(organisationRegistrationDetails))
+      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+        .thenReturn(Future.successful(stubHandleErrorCodeResponse(IDLinkedWithEori)))
+      when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
+
+      regExistingEori() { result =>
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+          .eoriAlreadyLinked(atarService)
+          .url
+      }
+    }
+
+    "return success with error code as 'ID already linked to a different EORI' ignoring letter case" in {
+      when(
+        mockCdsSubscriber.subscribeWithCachedDetails(
+          any[Option[CdsOrganisationType]],
+          any[Service],
+          any[Journey.Value]
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+      ).thenReturn(
+        Future.successful(
+          SubscriptionSuccessful(
+            Eori("EORI-Number"),
+            formBundleIdResponse,
+            processingDateResponse,
+            Some(emailVerificationTimestamp)
+          )
+        )
+      )
+      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
+        .thenReturn(Future.successful(true))
+      when(mockCache.registrationDetails(any[HeaderCarrier]))
+        .thenReturn(Future.successful(organisationRegistrationDetails))
+      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+        .thenReturn(Future.successful(stubHandleErrorCodeResponse("602 - ID Already Linked To A Different EORI")))
+      when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
+
+      regExistingEori() { result =>
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+          .eoriAlreadyLinked(atarService)
+          .url
+      }
+    }
+
     "return success with error code as 'Rejected previously'" in {
       when(
         mockCdsSubscriber.subscribeWithCachedDetails(
@@ -771,6 +870,42 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(
           Future
             .successful(stubHandleErrorCodeResponse(RejectedPreviouslyAndRetry))
+        )
+      when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
+
+      regExistingEori() { result =>
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+          .rejectedPreviously(atarService)
+          .url
+      }
+    }
+
+    "return success with error code as 'Rejected previously' ignoring letter case" in {
+      when(
+        mockCdsSubscriber.subscribeWithCachedDetails(
+          any[Option[CdsOrganisationType]],
+          any[Service],
+          any[Journey.Value]
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+      ).thenReturn(
+        Future.successful(
+          SubscriptionSuccessful(
+            Eori("EORI-Number"),
+            formBundleIdResponse,
+            processingDateResponse,
+            Some(emailVerificationTimestamp)
+          )
+        )
+      )
+      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
+        .thenReturn(Future.successful(true))
+      when(mockCache.registrationDetails(any[HeaderCarrier]))
+        .thenReturn(Future.successful(organisationRegistrationDetails))
+      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+        .thenReturn(
+          Future
+            .successful(stubHandleErrorCodeResponse("601 - Rejected Previously AND Retry Failed"))
         )
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 

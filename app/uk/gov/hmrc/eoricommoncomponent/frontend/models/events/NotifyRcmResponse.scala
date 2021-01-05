@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.models.events
 
 import play.api.libs.json.Json
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NotifyRcmRequest
 import uk.gov.hmrc.http.HttpResponse
 
 case class NotifyRcmResponse(status: String, body: String)
