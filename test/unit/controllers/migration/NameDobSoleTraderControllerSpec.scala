@@ -511,8 +511,6 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
   def createFormAllFieldsNameDobNextYearMap: Map[String, String] = {
     val todayPlusOneYear = LocalDate.now().plusYears(1)
 
-    println(LocalDate.now())
-    println(LocalDate.now().plusYears(1))
     Map(
       firstNameFieldName -> "Test First Name",
       lastNameFieldName  -> "Test Last Name",
