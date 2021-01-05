@@ -33,12 +33,10 @@ trait TestDataGenerators {
     name       <- Gen.listOfN(nameLength, Gen.alphaChar) map (_.mkString)
   } yield name
 
-  val baselineDate = new LocalDate()
-
   val dateOfBirthGenerator = for {
     days  <- Gen.chooseNum(1, 365)
     years <- Gen.chooseNum(0, 110)
-  } yield baselineDate minusYears years minusDays days
+  } yield new LocalDate() minusYears years minusDays days
 
   val maxLengthOfAddressLine = MatchingForms.Length35
 

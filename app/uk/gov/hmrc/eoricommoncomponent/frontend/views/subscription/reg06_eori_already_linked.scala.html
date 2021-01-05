@@ -30,12 +30,13 @@
 }
 @layout_di(messages("cds.reg06.outcome.eori-already-linked.title", longName), suppressTelephoneNumberDetection = false) {
     <div class="column-two-thirds">
-        <div class="govuk-box-highlight">
+        <div>
             <h1 id="page-heading" class="heading-xlarge" >@messages("cds.reg06.outcome.eori-already-linked.heading", longName, orgName)</h1>
             <div class="heading-medium" id="processed-date">@messages("cds.reg06.outcome.eori-already-linked.received", formatDate(processedDate))</div>
         </div>
 
-        <p id="use-cds-para">@messages("cds.subscription.outcomes.eori-already-linked.use-cds-para", orgName, longName)</p>
+        <p id="use-cds-para1">@messages("cds.subscription.outcomes.eori-already-linked.use-cds-para1", longName, orgName)</p>
+        <p id="use-cds-para2">@messages("cds.subscription.outcomes.you-will-not-be-able-to-use-service", longName)</p>
 
         @helpers.feedbackBackContinue(service, JourneyStatus.Failed)
 

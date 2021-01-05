@@ -423,6 +423,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     "validation error when YEAR of birth is next year" in {
       submitFormInCreateMode(createFormAllFieldsNameDobNextYearMap) { result =>
         val page = CdsPage(contentAsString(result))
+
         page.getElementsText(
           pageLevelErrorSummaryListXPath
         ) shouldBe s"Enter a year between 1900 and ${Year.now.getValue}"
@@ -509,6 +510,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
   def createFormAllFieldsNameDobNextYearMap: Map[String, String] = {
     val todayPlusOneYear = LocalDate.now().plusYears(1)
+
     Map(
       firstNameFieldName -> "Test First Name",
       lastNameFieldName  -> "Test Last Name",
