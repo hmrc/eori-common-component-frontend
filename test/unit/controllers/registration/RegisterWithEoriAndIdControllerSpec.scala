@@ -741,7 +741,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .eoriAlreadyLinked(atarService, false, false)
+          .eoriAlreadyLinked(atarService)
           .url
       }
     }
@@ -774,7 +774,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .eoriAlreadyLinked(atarService, false, false)
+          .eoriAlreadyLinked(atarService)
           .url
       }
     }
@@ -807,7 +807,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .eoriAlreadyLinked(atarService, false, false)
+          .eoriAlreadyLinked(atarService)
           .url
       }
     }
@@ -840,7 +840,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .eoriAlreadyLinked(atarService, false, false)
+          .eoriAlreadyLinked(atarService)
           .url
       }
     }
@@ -1166,13 +1166,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
   }
 
   private def invokeEoriAlreadyLinked(
-    journey: Journey.Value = Journey.Subscribe,
-    isIndividual: Boolean = false,
-    hasUtr: Boolean = false
+    journey: Journey.Value = Journey.Subscribe
   )(test: Future[Result] => Assertion): Unit =
     test(
       controller
-        .eoriAlreadyLinked(atarService, isIndividual, hasUtr)
+        .eoriAlreadyLinked(atarService)
         .apply(requestWithPath(journey))
     )
 
