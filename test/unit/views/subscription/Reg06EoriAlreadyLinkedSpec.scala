@@ -21,6 +21,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.ApplicationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.reg06_eori_already_linked
 import uk.gov.hmrc.play.language.LanguageUtils
@@ -149,6 +150,13 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
       page.getElementById("individual") mustBe null
       page.getElementById("individual-utr") mustBe null
       page.getElementById("individual-nino") mustBe null
+    }
+
+    "has link to start again" in {
+
+      val link = doc().body().getElementById("again-link")
+
+      link.toString must include(ApplicationController.startSubscription(atarService).url)
     }
   }
 
