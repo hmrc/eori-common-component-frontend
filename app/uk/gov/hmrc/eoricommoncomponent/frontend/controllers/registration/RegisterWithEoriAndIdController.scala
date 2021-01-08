@@ -143,8 +143,7 @@ class RegisterWithEoriAndIdController @Inject() (
           val formattedDate = languageUtils.Dates.formatDate(resp.responseCommon.processingDate.toLocalDate)
           Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service, formattedDate)))
         case None =>
-          val statusText = resp.responseCommon.statusText
-          handleErrorCodes(service, statusText)
+          handleErrorCodes(service, resp)
         case _ =>
           logger.error("Unknown RegistrationDetailsOutCome")
           throw new IllegalStateException("Unknown RegistrationDetailsOutCome")
@@ -189,10 +188,37 @@ class RegisterWithEoriAndIdController @Inject() (
   def eoriAlreadyLinked(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
-        name <- cache.subscriptionDetails.map(_.name)
-        date <- cache.registerWithEoriAndIdResponse.map(_.responseCommon.processingDate)
-        _    <- cache.remove
-      } yield Ok(reg06EoriAlreadyLinked(name, date, service))
+        name              <- cache.subscriptionDetails.map(_.name)
+        maybeEori         <- cache.subscriptionDetails.map(_.eoriNumber)
+        maybeExistingEori <- cache.subscriptionDetails.map(_.existingEoriNumber)
+        response          <- cache.registerWithEoriAndIdResponse
+        _                 <- cache.remove
+      } yield {
+        val eoriNumber = (maybeEori, maybeExistingEori) match {
+          case (_, Some(eori)) => eori.id
+          case (Some(eori), _) => eori
+          case _               => ""
+        }
+        val (hasUtr, isIndividual) = response.additionalInformation match {
+          case Some(info) =>
+            (info.id, info.isIndividual) match {
+              case (_: Utr, true) => (true, true)
+              case (_, true)      => (false, true)
+              case (_, _)         => (false, false)
+            }
+          case _ => (false, false)
+        }
+        Ok(
+          reg06EoriAlreadyLinked(
+            name,
+            eoriNumber,
+            response.responseCommon.processingDate,
+            service,
+            isIndividual,
+            hasUtr
+          )
+        )
+      }
     }
 
   def rejectedPreviously(service: Service): Action[AnyContent] =
@@ -206,9 +232,21 @@ class RegisterWithEoriAndIdController @Inject() (
       } yield Ok(sub01OutcomeRejectedView(Some(name), date, service))
     }
 
-  private def handleErrorCodes(service: Service, statusText: Option[String])(implicit
+  private def handleErrorCodes(service: Service, response: RegisterWithEoriAndIdResponse)(implicit
     request: Request[AnyContent]
-  ): Future[Result] =
+  ): Future[Result] = {
+    val statusText = response.responseCommon.statusText
+
+    val (hasUtr, isIndividual) = response.additionalInformation match {
+      case Some(info) =>
+        (info.id, info.isIndividual) match {
+          case (_: Utr, true) => (true, true)
+          case (_, true)      => (false, true)
+          case (_, _)         => (false, false)
+        }
+      case _ => (false, false)
+    }
+
     statusText match {
       case _ if statusText.exists(_.equalsIgnoreCase(EoriAlreadyLinked)) =>
         logger.warn("Reg06 EoriAlreadyLinked")
@@ -220,6 +258,7 @@ class RegisterWithEoriAndIdController @Inject() (
         Future.successful(Redirect(RegisterWithEoriAndIdController.rejectedPreviously(service)))
       case _ => Future.successful(ServiceUnavailable(errorTemplateView()))
     }
+  }
 
   private def onSuccessfulSubscriptionStatusSubscribe(service: Service, journey: Journey.Value)(implicit
     request: Request[AnyContent],

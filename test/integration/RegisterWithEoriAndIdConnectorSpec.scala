@@ -152,7 +152,8 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
             )
           )
         )
-      )
+      ),
+      Some(AdditionalInformation(Nino("AB123456C"), true))
     )
   )
 
@@ -219,7 +220,8 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
   val organisationUtrResponse = RegisterWithEoriAndIdResponseHolder(
     RegisterWithEoriAndIdResponse(
       ResponseCommon("OK", None, responseTime, None),
-      responseDetail = Some(RegisterWithEoriAndIdResponseDetail(Some("DEFERRED"), Some("a")))
+      responseDetail = Some(RegisterWithEoriAndIdResponseDetail(Some("DEFERRED"), Some("a"))),
+      additionalInformation = Some(AdditionalInformation(Utr("2108834503"), false))
     )
   )
 

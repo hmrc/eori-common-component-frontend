@@ -238,3 +238,13 @@ cds.subscription.organisation-disclose-personal-details-consent.no=No - Just sho
 
 subscription-journey.how-confirm-identity.nino.heading=Enter your National Insurance number
 subscription-journey.how-confirm-identity.utr.heading=Enter your Unique Tax Reference number
+
+ecc.reg06.outcome.why-heading = Why the application was unsuccessful
+ecc.reg06.outcome.eori = EORI number {0}
+ecc.reg06.outcome.why.individual = The following details do not match the name you entered:
+ecc.reg06.outcome.why.org = The following details do not match the company name you entered:
+ecc.reg06.outcome.why.individual.utr = Self Assessment Unique Taxpayer Reference (UTR)
+ecc.reg06.outcome.why.individual.nino = National Insurance number
+ecc.reg06.outcome.why.org.utr = Corporation Tax Unique Taxpayer Reference (UTR)
+ecc.reg06.outcome.why.eori = EORI number
+ecc.reg06.outcome.apply.again = Review these details and <a href="{0}">apply again</a>.
