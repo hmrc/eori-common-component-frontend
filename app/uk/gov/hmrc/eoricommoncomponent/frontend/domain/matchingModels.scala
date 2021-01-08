@@ -118,6 +118,15 @@ object CustomsId {
     }
   )
 
+  def apply(idType: String, idNumber: String): CustomsId =
+    idType match {
+      case "NINO"   => Nino(idNumber)
+      case "UTR"    => Utr(idNumber)
+      case "EORI"   => Eori(idNumber)
+      case "SAFEID" => SafeId(idNumber)
+      case _        => throw new IllegalArgumentException(s"Unknown Identifier $idType")
+    }
+
 }
 
 case class UserLocationDetails(location: Option[String])

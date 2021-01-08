@@ -741,7 +741,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .eoriAlreadyLinked(atarService)
+          .eoriAlreadyLinked(atarService, false, false)
           .url
       }
     }
@@ -774,7 +774,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .eoriAlreadyLinked(atarService)
+          .eoriAlreadyLinked(atarService, false, false)
           .url
       }
     }
@@ -807,7 +807,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .eoriAlreadyLinked(atarService)
+          .eoriAlreadyLinked(atarService, false, false)
           .url
       }
     }
@@ -840,7 +840,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .eoriAlreadyLinked(atarService)
+          .eoriAlreadyLinked(atarService, false, false)
           .url
       }
     }
@@ -1166,11 +1166,13 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
   }
 
   private def invokeEoriAlreadyLinked(
-    journey: Journey.Value = Journey.Subscribe
+    journey: Journey.Value = Journey.Subscribe,
+    isIndividual: Boolean = false,
+    hasUtr: Boolean = false
   )(test: Future[Result] => Assertion): Unit =
     test(
       controller
-        .eoriAlreadyLinked(atarService)
+        .eoriAlreadyLinked(atarService, isIndividual, hasUtr)
         .apply(requestWithPath(journey))
     )
 

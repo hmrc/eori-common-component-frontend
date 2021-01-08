@@ -58,7 +58,7 @@ class RegisterWithEoriAndIdConnector @Inject() (http: HttpClient, appConfig: App
       // $COVERAGE-ON
 
       auditCall(url, request, resp)
-      resp.registerWithEORIAndIDResponse
+      resp.registerWithEORIAndIDResponse.withAdditionalInfo(request.requestDetail.registerModeID)
     } recover {
       case e: Throwable =>
         logger.warn(

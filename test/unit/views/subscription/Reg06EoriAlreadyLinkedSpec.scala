@@ -29,6 +29,7 @@ import util.ViewSpec
 class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
 
   private val name              = "John Doe"
+  private val eori              = "GB123456789012"
   private val processedDate     = DateTime.now()
   private val expectedPageTitle = "The Advance Tariff Rulings subscription request has been unsuccessful"
   private val languageUtils     = instanceOf[LanguageUtils]
@@ -42,28 +43,31 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
   private val view = instanceOf[reg06_eori_already_linked]
 
   "GYE EORI Already Linked outcome page" should {
+
     "have the correct page title" in {
+
       doc().title() must startWith(expectedPageTitle)
     }
 
     "have the right heading" in {
+
       doc().getElementById("page-heading").text() mustBe pageHeadingExpectedText
     }
 
     "have the right processed date" in {
+
       doc().getElementById("processed-date").text() mustBe processDateExpectedText
     }
 
     "have the right vat registered text" in {
+
       doc()
-        .getElementById("use-cds-para1")
-        .text() mustBe s"To access Advance Tariff Rulings, you should sign in using the Government Gateway login details for $name."
-      doc()
-        .getElementById("use-cds-para2")
+        .getElementById("use-cds-para")
         .text() mustBe "You will not be able to use Advance Tariff Rulings until this issue has been resolved."
     }
 
     "have the feedback link" in {
+
       doc()
         .getElementById("what-you-think")
         .text() must include("What did you think of this service?")
@@ -73,18 +77,84 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
     }
 
     "have a feedback 'continue' button" in {
+
       val link = doc().body.getElementById("feedback-continue")
+
       link.text mustBe "More about Advance Tariff Rulings"
       link.attr("href") mustBe "/test-atar/feedback?status=Failed"
     }
 
     "have a no feedback 'continue' button when config missing" in {
-      val link = doc(atarService.copy(feedbackUrl = None)).body.getElementById("feedback-continue")
+
+      val link = doc(service = atarService.copy(feedbackUrl = None)).body.getElementById("feedback-continue")
+
       link mustBe null
+    }
+  }
+
+  "EORI already linked page" should {
+
+    "has specific content for individual with UTR" in {
+
+      val page = doc(isIndividual = true, hasUtr = true).body()
+
+      val heading           = page.getElementById("why-heading")
+      val individualHeading = page.getElementById("individual")
+      val utrElement        = page.getElementById("individual-utr")
+      val eoriElement       = page.getElementById("eori")
+
+      heading.text() mustBe "Why the application was unsuccessful"
+      individualHeading.text() mustBe "The following details do not match the name you entered:"
+      utrElement.text() mustBe "Self Assessment Unique Taxpayer Reference (UTR)"
+      eoriElement.text() mustBe "EORI number"
+
+      page.getElementById("individual-nino") mustBe null
+      page.getElementById("organisation") mustBe null
+      page.getElementById("organisation-utr") mustBe null
+    }
+
+    "has specific content for individual with NINO" in {
+
+      val page = doc(isIndividual = true, hasUtr = false).body()
+
+      val heading           = page.getElementById("why-heading")
+      val individualHeading = page.getElementById("individual")
+      val ninoElement       = page.getElementById("individual-nino")
+      val eoriElement       = page.getElementById("eori")
+
+      heading.text() mustBe "Why the application was unsuccessful"
+      individualHeading.text() mustBe "The following details do not match the name you entered:"
+      ninoElement.text() mustBe "National Insurance number"
+      eoriElement.text() mustBe "EORI number"
+
+      page.getElementById("individual-utr") mustBe null
+      page.getElementById("organisation") mustBe null
+      page.getElementById("organisation-utr") mustBe null
+    }
+
+    "has specific content for organisation" in {
+
+      val page = doc(isIndividual = false, hasUtr = false).body()
+
+      val heading             = page.getElementById("why-heading")
+      val organisationHeading = page.getElementById("organisation")
+      val utrElement          = page.getElementById("organisation-utr")
+      val eoriElement         = page.getElementById("eori")
+
+      heading.text() mustBe "Why the application was unsuccessful"
+      organisationHeading.text() mustBe "The following details do not match the company name you entered:"
+      utrElement.text() mustBe "Corporation Tax Unique Taxpayer Reference (UTR)"
+      eoriElement.text() mustBe "EORI number"
+
+      page.getElementById("individual") mustBe null
+      page.getElementById("individual-utr") mustBe null
+      page.getElementById("individual-nino") mustBe null
     }
   }
 
   implicit val request = withFakeCSRF(FakeRequest.apply("GET", "/atar/subscribe"))
 
-  def doc(service: Service = atarService): Document = Jsoup.parse(contentAsString(view(name, processedDate, service)))
+  def doc(isIndividual: Boolean = true, hasUtr: Boolean = true, service: Service = atarService): Document =
+    Jsoup.parse(contentAsString(view(name, eori, processedDate, service, isIndividual, hasUtr)))
+
 }

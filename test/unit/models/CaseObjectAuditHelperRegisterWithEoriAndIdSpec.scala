@@ -226,49 +226,6 @@ class CaseObjectAuditHelperRegisterWithEoriAndIdSpec extends UnitSpec {
     }
   }
 
-  "RegisterWithEoriAndIdResponse Object" should {
-    "create audit map" in {
-      val registerWithEoriAndIdResponseMap = registerWithEoriAndIdResponse.keyValueMap()
-      registerWithEoriAndIdResponseMap shouldBe Map(
-        "thirdCountryIDNumber.1"                -> "1234",
-        "VATIDs.countryCode.1"                  -> "GB",
-        "dateOfEstablishmentBirth"              -> "2018-05-16",
-        "contactDetail.email"                   -> "asp@example.com",
-        "address.postalCode"                    -> "SS16 1TU",
-        "VATIDs.vatNumber.0"                    -> "1234",
-        "caseNumber"                            -> "C001",
-        "outcome"                               -> "PASS",
-        "thirdCountryIDNumber.2"                -> "67890",
-        "processingDate"                        -> "2001-12-17T09:30:47.000Z",
-        "contactDetail.phone"                   -> "1234567",
-        "address.city"                          -> "London",
-        "expiryDate"                            -> "2018-05-16",
-        "legalStatus"                           -> "Official",
-        "contactDetail.contactName"             -> "Joe Smith",
-        "address.countryCode"                   -> "GB",
-        "contactDetail.address.postalCode"      -> "SS16 5BH",
-        "address.streetAndNumber"               -> "98 High Street",
-        "hasInternetPublication"                -> "false",
-        "hasEstablishmentInCustomsTerritory"    -> "true",
-        "contactDetail.fax"                     -> "89067",
-        "personType"                            -> "9",
-        "status"                                -> "OK",
-        "principalEconomicActivity"             -> "P001",
-        "VATIDs.countryCode.0"                  -> "AD",
-        "contactDetail.address.streetAndNumber" -> "98 London Road",
-        "SAFEID"                                -> "XA1234567890123",
-        "startDate"                             -> "2018-05-15",
-        "VATIDs.vatNumber.1"                    -> "4567",
-        "trader.shortName"                      -> "Mr S",
-        "trader.fullName"                       -> "john doe",
-        "contactDetail.address.city"            -> "SouthEnd",
-        "contactDetail.address.countryCode"     -> "GB"
-      )
-      registerWithEoriAndIdResponseMap.size shouldBe 33
-
-    }
-  }
-
   val requestCommonFromJson = Json.parse("""  {
       |    "regime":"CDS",
       |    "receiptDate": "2001-12-17T09:30:47Z",

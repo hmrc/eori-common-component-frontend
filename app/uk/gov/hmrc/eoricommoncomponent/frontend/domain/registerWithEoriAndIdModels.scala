@@ -214,16 +214,17 @@ object RegisterWithEoriAndIdResponseDetail {
   implicit val format = Json.format[RegisterWithEoriAndIdResponseDetail]
 }
 
+case class AdditionalInformation(id: CustomsId, isIndividual: Boolean)
+
+object AdditionalInformation {
+  implicit val format = Json.format[AdditionalInformation]
+}
+
 case class RegisterWithEoriAndIdResponse(
   responseCommon: ResponseCommon,
-  responseDetail: Option[RegisterWithEoriAndIdResponseDetail]
-) extends CaseClassAuditHelper {
-
-  def keyValueMap(): Map[String, String] = {
-    val rc = responseCommon.keyValueMap()
-    val rm = responseDetail.fold(Map.empty[String, String])(_.keyValueMap())
-    rc ++ rm
-  }
+  responseDetail: Option[RegisterWithEoriAndIdResponseDetail],
+  additionalInformation: Option[AdditionalInformation] = None
+) {
 
   def isDoE: Boolean = {
     val doe = for {
@@ -262,6 +263,12 @@ case class RegisterWithEoriAndIdResponse(
       res  <- responseDetail
       data <- res.responseData.map(_.copy(dateOfEstablishmentBirth = dob))
     } yield this.copy(responseDetail = Some(res.copy(responseData = Some(data))))
+
+  def withAdditionalInfo(request: RegisterModeId): RegisterWithEoriAndIdResponse = {
+    val customsId             = CustomsId(request.IDType, request.IDNumber)
+    val additionalInformation = AdditionalInformation(customsId, request.individual.isDefined)
+    this.copy(additionalInformation = Some(additionalInformation))
+  }
 
 }
 
