@@ -21,7 +21,7 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 @import uk.gov.hmrc.play.language.LanguageUtils
 @import org.joda.time.LocalDate
-@import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 
 @this(layout_di: layout, feedback_di: helpers.feedback, help_di: partials.if_you_need_help, languageUtils: LanguageUtils)
 
@@ -56,7 +56,7 @@
                 }
                 <li id="eori">@messages("ecc.reg06.outcome.why.eori")</li>
             </ul>
-            <p>@Html(messages("ecc.reg06.outcome.apply.again", WhatIsYourEoriController.createForm(service).url))</p>
+            <p id="again-link">@Html(messages("ecc.reg06.outcome.apply.again", ApplicationController.startSubscription(service).url))</p>
         </div>
 
         <p id="use-cds-para">@messages("cds.subscription.outcomes.you-will-not-be-able-to-use-service", longName)</p>
