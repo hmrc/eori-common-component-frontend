@@ -236,3 +236,13 @@ cds.subscription.organisation-disclose-personal-details-consent.no=Na - Dangoswc
 
 subscription-journey.how-confirm-identity.nino.heading=Nodwch eich rhif Yswiriant Gwladol
 subscription-journey.how-confirm-identity.utr.heading=Nodwch eich Cyfeirnod Unigryw y Trethdalwr
+
+ecc.reg06.outcome.why-heading = Why the application was unsuccessful
+ecc.reg06.outcome.eori = EORI number {0}
+ecc.reg06.outcome.why.individual = The following details do not match the name you entered:
+ecc.reg06.outcome.why.org = The following details do not match the company name you entered:
+ecc.reg06.outcome.why.individual.utr = Self Assessment Unique Taxpayer Reference (UTR)
+ecc.reg06.outcome.why.individual.nino = National Insurance number
+ecc.reg06.outcome.why.org.utr = Corporation Tax Unique Taxpayer Reference (UTR)
+ecc.reg06.outcome.why.eori = EORI number
+ecc.reg06.outcome.apply.again = Check your details are correct and <a href="{0}">apply again</a>.

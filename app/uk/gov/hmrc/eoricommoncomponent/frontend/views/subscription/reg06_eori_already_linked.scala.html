@@ -21,22 +21,45 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 @import uk.gov.hmrc.play.language.LanguageUtils
 @import org.joda.time.LocalDate
-
+@import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 
 @this(layout_di: layout, feedback_di: helpers.feedback, help_di: partials.if_you_need_help, languageUtils: LanguageUtils)
-@(orgName: String, processedDate: DateTime, service: Service)(implicit messages: Messages, request: Request[_])
+
+@(orgName: String, eori: String, processedDate: DateTime, service: Service, isIndividual: Boolean, hasUtr: Boolean)(implicit messages: Messages, request: Request[_])
+
 @formatDate(dateTime: DateTime) = @{
     languageUtils.Dates.formatDate(LocalDate.fromDateFields(dateTime.toDate))
 }
+
 @layout_di(messages("cds.reg06.outcome.eori-already-linked.title", longName), suppressTelephoneNumberDetection = false) {
     <div class="column-two-thirds">
         <div>
             <h1 id="page-heading" class="heading-xlarge" >@messages("cds.reg06.outcome.eori-already-linked.heading", longName, orgName)</h1>
-            <div class="heading-medium" id="processed-date">@messages("cds.reg06.outcome.eori-already-linked.received", formatDate(processedDate))</div>
+            <p id="processed-date">@messages("cds.reg06.outcome.eori-already-linked.received", formatDate(processedDate))</p>
+            <p id="eori-number">@messages("ecc.reg06.outcome.eori", eori)</p>
         </div>
 
-        <p id="use-cds-para1">@messages("cds.subscription.outcomes.eori-already-linked.use-cds-para1", longName, orgName)</p>
-        <p id="use-cds-para2">@messages("cds.subscription.outcomes.you-will-not-be-able-to-use-service", longName)</p>
+        <div id="why-unsuccessful">
+            <h2 class="heading-medium" id="why-heading">@messages("ecc.reg06.outcome.why-heading")</h2>
+            @if(isIndividual){
+                <p id="individual">@messages("ecc.reg06.outcome.why.individual")</p>
+            }else {
+                <p id="organisation">@messages("ecc.reg06.outcome.why.org")</p>
+            }
+            <ul class="bullets list">
+                @if(isIndividual && hasUtr){
+                    <li id="individual-utr">@messages("ecc.reg06.outcome.why.individual.utr")</li>
+                }else if(isIndividual && !hasUtr){
+                <li id="individual-nino">@messages("ecc.reg06.outcome.why.individual.nino")</li>
+                }else {
+                <li id="organisation-utr">@messages("ecc.reg06.outcome.why.org.utr")</li>
+                }
+                <li id="eori">@messages("ecc.reg06.outcome.why.eori")</li>
+            </ul>
+            <p id="again-link">@Html(messages("ecc.reg06.outcome.apply.again", ApplicationController.startSubscription(service).url))</p>
+        </div>
+
+        <p id="use-cds-para">@messages("cds.subscription.outcomes.you-will-not-be-able-to-use-service", longName)</p>
 
         @helpers.feedbackBackContinue(service, JourneyStatus.Failed)
 
