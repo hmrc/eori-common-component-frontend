@@ -18,7 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.filters
 
 import javax.inject.Inject
 import play.http.DefaultHttpFilters
-import uk.gov.hmrc.play.bootstrap.filters.FrontendFilters
+import uk.gov.hmrc.play.bootstrap.frontend.filters.FrontendFilters
 
 class Filters @Inject() (routeFilter: RouteFilter, allowlistFilter: AllowlistFilter, frontendFilters: FrontendFilters)
     extends DefaultHttpFilters(frontendFilters.filters :+ routeFilter :+ allowlistFilter: _*) {}

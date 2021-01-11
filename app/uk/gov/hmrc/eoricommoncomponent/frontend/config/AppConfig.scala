@@ -22,7 +22,7 @@ import play.api.Configuration
 import play.api.i18n.Messages
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.ApplicationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
-import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.duration.Duration
 import scala.util.matching.Regex
@@ -31,11 +31,8 @@ import scala.util.matching.Regex
 class AppConfig @Inject() (
   config: Configuration,
   servicesConfig: ServicesConfig,
-  runMode: RunMode,
   @Named("appName") val appName: String
 ) {
-
-  val env: String = runMode.env
 
   val messageFiles: Seq[String] = config.get[Seq[String]]("messages.file.names")
 

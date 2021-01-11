@@ -34,7 +34,7 @@ import util.builders.{AuthBuilder, SessionBuilder}
 import play.api.i18n.Lang._
 import play.api.test.NoMaterializer
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.play.bootstrap.config.{RunMode, ServicesConfig}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
@@ -64,11 +64,9 @@ trait ControllerSpec extends UnitSpec with MockitoSugar with I18nSupport with In
 
   val config: Configuration = Configuration.load(env)
 
-  private val runMode = new RunMode(config, Mode.Dev)
+  private val serviceConfig = new ServicesConfig(config)
 
-  private val serviceConfig = new ServicesConfig(config, runMode)
-
-  val appConfig: AppConfig = new AppConfig(config, serviceConfig, runMode, "eori-common-component-frontend")
+  val appConfig: AppConfig = new AppConfig(config, serviceConfig, "eori-common-component-frontend")
 
   protected def assertNotLoggedInUserShouldBeRedirectedToLoginPage(
     mockAuthConnector: AuthConnector,

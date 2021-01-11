@@ -85,7 +85,7 @@
         <span class="form-hint" id="@hintId">@elements.args.get('_hintText)</span>
     }
     @if(hasError) {
-        @allErrors.map { error => <span class="error-message" id="@errorId"><span class="visually-hidden">@messages("cds.error.field.hint")</span> @messages(error)</span> }
+        @allErrors.map { error => <span class="error-message" id="@errorId"><span class="visually-hidden">@messages("cds.error.field.hint")</span> @messages(key = error.toString)</span> }
     }
 
     <input

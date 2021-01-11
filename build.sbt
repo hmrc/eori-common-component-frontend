@@ -104,30 +104,30 @@ lazy val scoverageSettings = {
 scalastyleConfig := baseDirectory.value / "project" / "scalastyle-config.xml"
 
 val compileDependencies = Seq(
-  "uk.gov.hmrc" %% "bootstrap-play-26" % "2.0.0",
-  "uk.gov.hmrc" %% "auth-client" % "3.2.0-play-26",
-  "uk.gov.hmrc" %% "play-conditional-form-mapping" % "1.3.0-play-26",
-  "uk.gov.hmrc" %% "domain" % "5.10.0-play-26",
-  "uk.gov.hmrc" %% "mongo-caching" % "6.15.0-play-26",
+  "uk.gov.hmrc" %% "bootstrap-frontend-play-27" % "2.25.0",
+  "uk.gov.hmrc" %% "auth-client" % "3.2.0-play-27",
+  "uk.gov.hmrc" %% "play-conditional-form-mapping" % "1.5.0-play-27",
+  "uk.gov.hmrc" %% "domain" % "5.10.0-play-27",
+  "uk.gov.hmrc" %% "mongo-caching" % "6.15.0-play-27",
   "uk.gov.hmrc" %% "emailaddress" % "3.5.0",
   "uk.gov.hmrc" %% "logback-json-logger" % "4.8.0",
   "com.typesafe.play" %% "play-json-joda" % "2.6.10",
-  "uk.gov.hmrc" %% "play-language" % "4.4.0-play-26",
-  "uk.gov.hmrc" %% "play-ui" % "8.18.0-play-26"
+  "uk.gov.hmrc" %% "play-language" % "4.5.0-play-27",
+  "uk.gov.hmrc" %% "play-ui" % "8.19.0-play-27"
 )
 
 
 val testDependencies = Seq(
   "org.scalatest" %% "scalatest" % "3.0.5" % "test,it",
   "com.typesafe.play" %% "play-test" % PlayVersion.current % "test,it",
-  "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % "test,it",
+  "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3" % "test,it",
   "com.github.tomakehurst" % "wiremock-standalone" % "2.23.2" % "test, it"
     exclude("org.apache.httpcomponents", "httpclient") exclude("org.apache.httpcomponents", "httpcore"),
   "org.scalacheck" %% "scalacheck" % "1.14.0" % "test,it",
   "org.jsoup" % "jsoup" % "1.11.3" % "test,it",
   "us.codecraft" % "xsoup" % "0.3.1" % "test,it",
   "org.mockito" % "mockito-core" % "3.0.0" % "test,it",
-  "uk.gov.hmrc" %% "reactivemongo-test" % "4.21.0-play-26" % "test, it"
+  "uk.gov.hmrc" %% "reactivemongo-test" % "4.22.0-play-27" % "test, it"
 )
 
 libraryDependencies ++= compileDependencies ++ testDependencies

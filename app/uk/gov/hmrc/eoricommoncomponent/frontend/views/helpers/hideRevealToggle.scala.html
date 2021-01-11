@@ -113,7 +113,7 @@ otherHtmlInLegend: Html = Html(""))(hiddenHtml: Html)(implicit messages: Message
             }
 
             @if(hasErrors) {
-                @elements.errors.map { error => <span class="error-message" id="@errorId"><span class="visually-hidden">@messages("cds.error.field.hint")</span> @messages(error)</span> }
+                @elements.errors.map { error => <span class="error-message" id="@errorId"><span class="visually-hidden">@messages("cds.error.field.hint")</span> @messages(key = error.toString)</span> }
             </div>
             }
 
