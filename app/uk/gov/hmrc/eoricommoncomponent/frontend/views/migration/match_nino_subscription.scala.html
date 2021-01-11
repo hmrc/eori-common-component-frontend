@@ -21,41 +21,41 @@
 
 
 @this(layout_di: layout)
-@(matchNinoIdForm: Form[NinoMatchModel], service: Service, journey: Journey.Value)(implicit request: Request[_], messages: Messages)
+@(matchNinoIdForm: Form[NinoMatchModel], isInReviewMode: Boolean, service: Service, journey: Journey.Value)(implicit request: Request[_], messages: Messages)
 
 @import views.html.helper._
 
-@inputText(field: String, label: String, args: (Symbol, Any)*) = {
-    @defining(Seq('_label -> Html(messages(label)),
-        '_plainLabel -> true
-    ) ++ args) { args =>
-        @helpers.input(matchNinoIdForm(field), args: _*)
-    }
+@inputRadioGroup(field: String, options: Seq[(String, String)]) = {
+    @helpers.inputRadioGroup(
+        matchNinoIdForm(field),
+        options,
+        Map.empty,
+        Some(hint),
+        '_divClass -> "form-group inline",
+        '_legend -> messages("cds.matching.nino.row.header"),
+        '_isLegendH1 -> true
+    )
 }
-
-@description = @{messages("cds.matching.nino.row.description")}
+@hint = {
+    <span>@messages("cds.matching.nino.row.description")</span> <br><br>
+    <span>@Html(messages("cds.matching.nino.nino.hint"))</span>
+}
 
 @layout_di(messages("cds.matching.nino.row.header"), form = Some(matchNinoIdForm)) {
     <div class="column-two-thirds">
         <a href="javascript:history.back()" id="back" class="link-back js-visible">@messages("cds.navigation.back")</a>
 
-    @helpers.errorSummary(matchNinoIdForm, focusOverrides = Map("have-nino" -> "have-nino-yes"))
+    @helpers.errorSummary(matchNinoIdForm, focusOverrides = Map("have-nino" -> "have-nino-true"))
 
-    @helpers.form(HaveNinoSubscriptionController.submit(service, journey), "subscriptionNinoForm") {
+    @helpers.form(HaveNinoSubscriptionController.submit(isInReviewMode, service, journey), "subscriptionNinoForm") {
     @CSRF.formField
     <div class="form-group">
-        @helpers.hideRevealToggle(
-        matchNinoIdForm("have-nino"),
-        isYesFirst = true,
-        legend = messages("cds.matching.nino.row.header"),
-        isLegendH1 = true,
-        otherHtmlInLegend = Html("<p id='description'>" + description + "</p>")
-        ) {
-        @inputText("nino", messages("cds.matching.nino.nino"),
-        '_hintText -> Html(messages("cds.matching.nino.nino.hint")))
-        }
+        @inputRadioGroup("have-nino",
+            Seq("true" -> messages("cds.yes"),
+                "false" -> messages("cds.no")))
+
     </div>
-        <p><input class="button" type="submit" value="@messages("cds.navigation.continue")"></p>
+    <p><input class="button" type="submit" value='@uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper.continueButtonText(isInReviewMode)'></p>
 
     @helpers.helpAndSupport()
     }

@@ -24,11 +24,17 @@
 @(matchOrgIdForm: Form[UtrMatchModel], organisationType: String, displayMode: String, service: Service, journey: Journey.Value, isInReviewMode: Boolean = false)(implicit request: Request[_], messages: Messages)
 
 
-    @inputText(field: String, label: String, args: (Symbol, Any)*) = {
-        @defining(Seq('_label -> Html(messages(label))) ++ args) { args =>
-            @helpers.input(matchOrgIdForm(field), args: _*)
-        }
-    }
+@inputRadioGroup(field: String, options: Seq[(String, String)]) = {
+    @helpers.inputRadioGroup(
+        matchOrgIdForm(field),
+        options,
+        Map.empty,
+        Some(Html(hint)),
+        '_divClass -> "form-group inline",
+        '_legend -> headerAndTitle,
+        '_isLegendH1 -> true
+    )
+}
 
 @headerAndTitle = @{
     organisationType match {
@@ -39,7 +45,7 @@
     }
 }
 
-@intro = @{
+@hint = @{
     organisationType match {
         case CdsOrganisationType.ThirdCountryOrganisationId => messages("cds.matching.row-organisation.utr.paragraph")
         case CdsOrganisationType.IndividualId | CdsOrganisationType.ThirdCountryIndividualId | CdsOrganisationType.ThirdCountrySoleTraderId | CdsOrganisationType.SoleTraderId
@@ -56,43 +62,18 @@
     }
 }
 
-@errorMessage  = @{
-    organisationType match {
-        case CdsOrganisationType.ThirdCountrySoleTraderId | CdsOrganisationType.SoleTraderId | CdsOrganisationType.ThirdCountryIndividualId | CdsOrganisationType.IndividualId
-                => "cds.matching.sole-trader-individual-utr.error"
-        case _ => "cds.matching.organisation-utr.error"
-    }
-}
-
-@fieldLabel = @{
-    organisationType match {
-        case CdsOrganisationType.ThirdCountrySoleTraderId | CdsOrganisationType.SoleTraderId | CdsOrganisationType.ThirdCountryIndividualId | CdsOrganisationType.IndividualId
-                => "cds.matching.sole-trader-individual-utr.label"
-        case _ => "cds.matching.organisation-utr.label"
-    }
-}
-
 @layout_di(headerAndTitle, form = Some(matchOrgIdForm)) {
     <div class="column-two-thirds">
         <a href="javascript:history.back()" id="back" class="link-back js-visible">@messages("cds.navigation.back")</a>
 
-        @helpers.errorSummary(matchOrgIdForm, focusOverrides = Map("have-utr" -> "have-utr-yes"))
+        @helpers.errorSummary(matchOrgIdForm, focusOverrides = Map("have-utr" -> "have-utr-true"))
 
             @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.DoYouHaveAUtrNumberController.submit(organisationType, service, journey, isInReviewMode), "matchOrganisationUtrForm") {
             @CSRF.formField
             <div class="form-group">
-                @helpers.hideRevealToggle(
-                    matchOrgIdForm("have-utr"),
-                    isYesFirst = true,
-                    legend = headerAndTitle,
-                    isLegendH1 = true,
-                    otherHtmlInLegend = Html("<p id='intro'>" + intro + "</p>")
-                ) {
-                    @inputText(
-                        "utr",
-                        messages(fieldLabel)
-                    )
-                }
+                @inputRadioGroup("have-utr",
+                    Seq("true" -> messages("cds.yes"),
+                        "false" -> messages("cds.no")))
                 @if(isNotSoleTrader) {
                 <details>
                     <summary class="summary" role="button" aria-expanded="true">@messages("cds.matching.utr.help")</summary>

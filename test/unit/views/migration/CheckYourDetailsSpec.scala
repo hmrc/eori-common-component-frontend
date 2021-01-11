@@ -290,7 +290,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       )
       page.body.getElementById("review-tbl__utr_change").attr(
         "href"
-      ) mustBe "/customs-enrolment-services/atar/subscribe/row-utr"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/row-utr/review"
     }
 
     "display change link for the following for utr if isThirdCountrySubscription individual" in {
@@ -303,7 +303,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       )
       page.body.getElementById("review-tbl__utr_change").attr(
         "href"
-      ) mustBe "/customs-enrolment-services/atar/subscribe/row-utr"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/row-utr/review"
     }
 
     "display change link for the following for nino if isThirdCountrySubscription organisation" in {
@@ -315,7 +315,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       )
       page.body.getElementById("review-tbl__nino_change").attr(
         "href"
-      ) mustBe "/customs-enrolment-services/atar/subscribe/row-nino"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/row-nino/review"
     }
 
     "display change link for the following for nino if isThirdCountrySubscription individual" in {
@@ -328,7 +328,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       )
       page.body.getElementById("review-tbl__nino_change").attr(
         "href"
-      ) mustBe "/customs-enrolment-services/atar/subscribe/row-nino"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/row-nino/review"
     }
 
     "not display change link for EORI when existing EORI exists" in {

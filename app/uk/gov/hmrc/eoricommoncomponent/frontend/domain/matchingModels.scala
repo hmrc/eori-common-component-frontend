@@ -274,7 +274,7 @@ case class UtrMatchModel(haveUtr: Option[Boolean], id: Option[String])
 object UtrMatchModel {
   implicit val jsonFormat = Json.format[UtrMatchModel]
 
-  def apply(haveUtr: Option[Boolean], id: Option[String]): UtrMatchModel = new UtrMatchModel(haveUtr, formatInput(id))
+  def apply(haveUtr: Option[Boolean]): UtrMatchModel = new UtrMatchModel(haveUtr, None)
 }
 
 trait NameMatch {
@@ -292,8 +292,8 @@ case class NinoMatchModel(haveNino: Option[Boolean], nino: Option[String])
 object NinoMatchModel {
   implicit val jsonFormat = Json.format[NinoMatchModel]
 
-  def apply(haveNino: Option[Boolean], nino: Option[String]): NinoMatchModel =
-    new NinoMatchModel(haveNino, formatInput(nino))
+  def apply(haveNino: Option[Boolean]): NinoMatchModel =
+    new NinoMatchModel(haveNino, None)
 
 }
 

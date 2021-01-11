@@ -27,7 +27,6 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.HowCanWeIdentifyYouController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
   SubscriptionDetailsService

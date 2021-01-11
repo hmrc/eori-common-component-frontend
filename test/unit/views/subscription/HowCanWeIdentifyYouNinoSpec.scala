@@ -21,6 +21,7 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.IdMatchModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
@@ -62,9 +63,25 @@ class HowCanWeIdentifyYouNinoSpec extends ViewSpec {
 
   }
 
-  lazy val doc: Document = Jsoup.parse(contentAsString(view(form, isInReviewMode, atarService, Journey.Subscribe)))
+  lazy val doc: Document = Jsoup.parse(
+    contentAsString(
+      view(
+        form,
+        isInReviewMode,
+        routes.HowCanWeIdentifyYouNinoController.submit(isInReviewMode, atarService, Journey.Subscribe)
+      )
+    )
+  )
 
   lazy val docWithNoNinoError: Document =
-    Jsoup.parse(contentAsString(view(formWithNothingEntered, isInReviewMode, atarService, Journey.Subscribe)))
+    Jsoup.parse(
+      contentAsString(
+        view(
+          formWithNothingEntered,
+          isInReviewMode,
+          routes.HowCanWeIdentifyYouNinoController.submit(isInReviewMode, atarService, Journey.Subscribe)
+        )
+      )
+    )
 
 }

@@ -22,7 +22,6 @@ import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.you_already_have_eori
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
@@ -31,7 +30,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class YouAlreadyHaveEoriController @Inject() (
   authAction: AuthAction,
   eoriExistsView: you_already_have_eori,
-  cache: SessionCache,
   mcc: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {

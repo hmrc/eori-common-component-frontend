@@ -16,22 +16,21 @@
 
 package unit.controllers.migration
 
-import common.pages.matching.{SubscriptionRowCompanyUtr, SubscriptionRowIndividualsUtr}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.HaveUtrSubscriptionController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.GetUtrSubscriptionController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubscriptionFlowInfo, SubscriptionPage}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{NameOrganisationMatchModel, UtrMatchModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CustomsId, NameOrganisationMatchModel, Utr}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_utr_subscription
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you_utr
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
@@ -42,7 +41,7 @@ import util.builders.{AuthActionMock, SessionBuilder}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterEach {
+class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterEach {
 
   private val mockAuthConnector              = mock[AuthConnector]
   private val mockAuthAction                 = authAction(mockAuthConnector)
@@ -52,14 +51,11 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
   private val mockSubscriptionFlowInfo       = mock[SubscriptionFlowInfo]
   private val mockSubscriptionPage           = mock[SubscriptionPage]
 
-  private val matchUtrSubscriptionView = instanceOf[match_utr_subscription]
+  private val matchUtrSubscriptionView = instanceOf[how_can_we_identify_you_utr]
 
-  private val nextPageFlowUrl = "/customs-enrolment-services/subscribe/row-nino"
-
-  val controller = new HaveUtrSubscriptionController(
+  val controller = new GetUtrSubscriptionController(
     mockAuthAction,
     mockRequestSessionData,
-    mockSubscriptionFlowManager,
     mcc,
     matchUtrSubscriptionView,
     mockSubscriptionDetailsService
@@ -75,7 +71,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       mockSubscriptionFlowInfo,
       mockSubscriptionPage
     )
-    when(mockSubscriptionDetailsService.cachedUtrMatch(any[HeaderCarrier]))
+    when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
       .thenReturn(Future.successful(None))
   }
 
@@ -86,7 +82,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       createForm(Journey.Subscribe) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should include(SubscriptionRowCompanyUtr.title)
+        page.title should include("Enter your Unique Tax Reference number")
       }
     }
 
@@ -96,8 +92,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       createForm(Journey.Subscribe) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should include(SubscriptionRowIndividualsUtr.title)
-
+        page.title should include("Enter your Unique Tax Reference number")
       }
     }
 
@@ -107,7 +102,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       createForm(Journey.Subscribe) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should include(SubscriptionRowIndividualsUtr.title)
+        page.title should include("Enter your Unique Tax Reference number")
       }
     }
 
@@ -134,56 +129,60 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       }
     }
 
-    "return BadRequest when invalid option provided" in {
+    "return BadRequest when invalidUtr provided" in {
+      val invalidUtr = "0123456789"
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
-      submit(Journey.Subscribe, Map("have-utr" -> "non")) { result =>
+      submit(Journey.Subscribe, ValidUtrRequest + ("utr" -> invalidUtr)) { result =>
         status(result) shouldBe BAD_REQUEST
       }
     }
 
-    "cache UTR and redirect to Get Utr Page of the flow when rest of world and Company" in {
+    "cache UTR and redirect to Address Page of the flow when rest of world and Company" in {
       reset(mockSubscriptionDetailsService)
       val nameOrganisationMatchModel = NameOrganisationMatchModel("orgName")
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
+      when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(()))
       when(mockSubscriptionDetailsService.cachedNameDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(nameOrganisationMatchModel)))
-      when(mockSubscriptionDetailsService.cacheUtrMatch(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
-      submit(Journey.Subscribe, Map("have-utr" -> "true", "utr" -> "11 11 111111k")) { result =>
+      when(
+        mockSubscriptionDetailsService.cacheNameAndCustomsId(any[String], any[CustomsId])(any[HeaderCarrier])
+      ).thenReturn(Future.successful(()))
+      submit(Journey.Subscribe, Map("utr" -> "11 11 111111k")) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-get-utr"
+        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/address"
       }
-      verify(mockSubscriptionDetailsService, times(1)).cacheUtrMatch(meq(Some(UtrMatchModel(Some(true), None))))(
+      verify(mockSubscriptionDetailsService, times(1)).cacheNameAndCustomsId(meq("orgName"), meq(Utr("1111111111K")))(
         any[HeaderCarrier]
       )
     }
 
-    "cache UTR and redirect to Get Utr Page of the flow when rest of world other than Company" in {
+    "cache UTR and redirect to Address Page of the flow when rest of world other than Company" in {
       reset(mockSubscriptionDetailsService)
       val nameOrganisationMatchModel = NameOrganisationMatchModel("orgName")
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(SoleTrader))
-      when(mockSubscriptionDetailsService.cacheUtrMatch(any[Option[UtrMatchModel]])(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
         .thenReturn(Future.successful(()))
       when(mockSubscriptionDetailsService.cachedNameDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(nameOrganisationMatchModel)))
       submit(Journey.Subscribe, ValidUtrRequest) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-get-utr"
+        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/address"
       }
-      verify(mockSubscriptionDetailsService, times(1)).cacheUtrMatch(meq(Some(UtrMatchModel(Some(true), None))))(
-        any[HeaderCarrier]
-      )
+      verify(mockSubscriptionDetailsService, times(1)).cacheCustomsId(meq(ValidUtr))(any[HeaderCarrier])
     }
 
-    "redirect to next page in the flow when 'No' UTR selected" in {
-      when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(SoleTrader))
-      when(mockSubscriptionDetailsService.cacheUtrMatchForNoAnswer(any[Option[UtrMatchModel]])(any[HeaderCarrier]))
+    "throws an exception with the orgType is Company and No business name or CustomsId cached" in {
+      reset(mockSubscriptionDetailsService)
+      when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
+      when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
         .thenReturn(Future.successful(()))
-      mockSubscriptionFlow(nextPageFlowUrl)
-      submit(Journey.Subscribe, NoUtrRequest) { result =>
-        status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe nextPageFlowUrl
-      }
+      when(mockSubscriptionDetailsService.cachedNameDetails(any[HeaderCarrier])).thenReturn(Future.successful(None))
+      intercept[IllegalStateException] {
+        submit(Journey.Subscribe, ValidUtrRequest)(result => status(result))
+      }.getMessage shouldBe "No business name cached"
     }
+
   }
 
   private def createForm(journey: Journey.Value)(test: Future[Result] => Any) = {

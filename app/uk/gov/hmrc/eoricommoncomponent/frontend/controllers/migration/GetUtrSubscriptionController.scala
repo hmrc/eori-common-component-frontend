@@ -20,26 +20,23 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.GetUtrSubscriptionController
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.{AddressController, DetermineReviewPageController}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.UtrSubscriptionFlowPage
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.haveUtrForm
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.subscriptionUtrForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_utr_subscription
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you_utr
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class HaveUtrSubscriptionController @Inject() (
+class GetUtrSubscriptionController @Inject() (
   authAction: AuthAction,
   requestSessionData: RequestSessionData,
-  subscriptionFlowManager: SubscriptionFlowManager,
   mcc: MessagesControllerComponents,
-  matchUtrSubscriptionView: match_utr_subscription,
+  getUtrSubscriptionView: how_can_we_identify_you_utr,
   subscriptionDetailsService: SubscriptionDetailsService
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
@@ -56,17 +53,30 @@ class HaveUtrSubscriptionController @Inject() (
         populateView(true, service, journey)
     }
 
-  private def populateView(inReviewMode: Boolean, service: Service, journey: Journey.Value)(implicit
+  private def populateView(isInReviewMode: Boolean, service: Service, journey: Journey.Value)(implicit
     hc: HeaderCarrier,
     request: Request[AnyContent]
   ) =
     requestSessionData.userSelectedOrganisationType match {
-      case Some(orgType) =>
-        subscriptionDetailsService.cachedUtrMatch.map {
-          case Some(formData) =>
-            Ok(matchUtrSubscriptionView(haveUtrForm.fill(formData), orgType.id, inReviewMode, service, journey))
+      case Some(_) =>
+        subscriptionDetailsService.cachedCustomsId.map {
+          case Some(Utr(id)) =>
+            Ok(
+              getUtrSubscriptionView(
+                subscriptionUtrForm.fill(IdMatchModel(id)),
+                isInReviewMode,
+                routes.GetUtrSubscriptionController.submit(isInReviewMode, service, journey)
+              )
+            )
 
-          case _ => Ok(matchUtrSubscriptionView(haveUtrForm, orgType.id, inReviewMode, service, journey))
+          case _ =>
+            Ok(
+              getUtrSubscriptionView(
+                subscriptionUtrForm,
+                isInReviewMode,
+                routes.GetUtrSubscriptionController.submit(isInReviewMode, service, journey)
+              )
+            )
         }
       case None => noOrgTypeSelected
     }
@@ -76,40 +86,49 @@ class HaveUtrSubscriptionController @Inject() (
       implicit request => _: LoggedInUserWithEnrolments =>
         requestSessionData.userSelectedOrganisationType match {
           case Some(orgType) =>
-            haveUtrForm.bindFromRequest.fold(
+            subscriptionUtrForm.bindFromRequest.fold(
               formWithErrors =>
                 Future.successful(
-                  BadRequest(matchUtrSubscriptionView(formWithErrors, orgType.id, isInReviewMode, service, journey))
+                  BadRequest(
+                    getUtrSubscriptionView(
+                      formWithErrors,
+                      isInReviewMode,
+                      routes.GetUtrSubscriptionController.submit(isInReviewMode, service, journey)
+                    )
+                  )
                 ),
-              formData => destinationsByAnswer(isInReviewMode, formData, service, journey)
+              formData => cacheAndContinue(isInReviewMode, formData, service, journey, orgType)
             )
           case None => noOrgTypeSelected
         }
     }
 
-  private def destinationsByAnswer(
+  private def cacheAndContinue(
     isInReviewMode: Boolean,
-    form: UtrMatchModel,
+    form: IdMatchModel,
     service: Service,
-    journey: Journey.Value
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
-    form.haveUtr match {
-      case Some(true) =>
-        subscriptionDetailsService.cacheUtrMatch(Some(form)).map {
-          _ =>
-            Redirect(
-              if (isInReviewMode) GetUtrSubscriptionController.reviewForm(service, journey)
-              else GetUtrSubscriptionController.createForm(service, journey)
-            )
-        }
-      case Some(false) =>
-        subscriptionDetailsService.cacheUtrMatchForNoAnswer(Some(form)).map {
-          _ =>
-            Redirect(subscriptionFlowManager.stepInformation(UtrSubscriptionFlowPage).nextPage.url(service))
-        }
-      case _ => throw new IllegalStateException("No Data from the form")
-    }
+    journey: Journey.Value,
+    orgType: CdsOrganisationType
+  )(implicit hc: HeaderCarrier): Future[Result] =
+    cacheUtr(form, orgType).map(
+      _ =>
+        if (isInReviewMode)
+          Redirect(DetermineReviewPageController.determineRoute(service, journey))
+        else
+          Redirect(AddressController.createForm(service, journey))
+    )
+
+  private def cacheUtr(form: IdMatchModel, orgType: CdsOrganisationType)(implicit hc: HeaderCarrier): Future[Unit] =
+    if (orgType == CdsOrganisationType.Company)
+      subscriptionDetailsService.cachedNameDetails.flatMap {
+        case Some(nameDetails) =>
+          subscriptionDetailsService.cacheNameAndCustomsId(nameDetails.name, Utr(form.id))
+        case _ => noBusinessName
+
+      }
+    else subscriptionDetailsService.cacheCustomsId(Utr(form.id))
 
   private lazy val noOrgTypeSelected = throw new IllegalStateException("No organisation type selected by user")
+  private lazy val noBusinessName    = throw new IllegalStateException("No business name cached")
 
 }

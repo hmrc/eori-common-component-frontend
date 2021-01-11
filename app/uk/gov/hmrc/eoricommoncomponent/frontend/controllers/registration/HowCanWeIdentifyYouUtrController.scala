@@ -64,8 +64,21 @@ class HowCanWeIdentifyYouUtrController @Inject() (
   ) =
     subscriptionBusinessService.getCachedCustomsId.map {
       case Some(Utr(id)) =>
-        Ok(howCanWeIdentifyYouView(subscriptionUtrForm.fill(IdMatchModel(id)), isInReviewMode, service, journey))
-      case _ => Ok(howCanWeIdentifyYouView(subscriptionUtrForm, isInReviewMode, service, journey))
+        Ok(
+          howCanWeIdentifyYouView(
+            subscriptionUtrForm.fill(IdMatchModel(id)),
+            isInReviewMode,
+            routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service, journey)
+          )
+        )
+      case _ =>
+        Ok(
+          howCanWeIdentifyYouView(
+            subscriptionUtrForm,
+            isInReviewMode,
+            routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service, journey)
+          )
+        )
     }
 
   def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
@@ -74,7 +87,15 @@ class HowCanWeIdentifyYouUtrController @Inject() (
         .bindFromRequest()
         .fold(
           invalidForm =>
-            Future.successful(BadRequest(howCanWeIdentifyYouView(invalidForm, isInReviewMode, service, journey))),
+            Future.successful(
+              BadRequest(
+                howCanWeIdentifyYouView(
+                  invalidForm,
+                  isInReviewMode,
+                  routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service, journey)
+                )
+              )
+            ),
           form => storeId(form, isInReviewMode, service, journey)
         )
     }
@@ -94,12 +115,5 @@ class HowCanWeIdentifyYouUtrController @Inject() (
               subscriptionFlowManager.stepInformation(HowCanWeIdentifyYouSubscriptionFlowPage).nextPage.url(service)
             )
       )
-
-  private def customsId(ninoOrUtr: NinoOrUtr): CustomsId = ninoOrUtr match {
-    case NinoOrUtr(Some(nino), _, ninoOrUtrRadio) if ninoOrUtrRadio.contains("nino") => Nino(nino)
-    case NinoOrUtr(_, Some(utr), ninoOrUtrRadio) if ninoOrUtrRadio.contains("utr")   => Utr(utr)
-    case unexpected =>
-      throw new IllegalArgumentException("Expected only nino or utr to be populated but got: " + unexpected)
-  }
 
 }

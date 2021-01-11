@@ -16,20 +16,19 @@
 
 package unit.controllers.migration
 
-import common.pages.matching.SubscriptionNinoPage
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.HaveNinoSubscriptionController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.GetNinoSubscriptionController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NinoMatchModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubscriptionFlowInfo, SubscriptionPage}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CustomsId, Nino}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_nino_subscription
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you_nino
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
@@ -39,7 +38,7 @@ import util.builders.{AuthActionMock, SessionBuilder}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
+class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector              = mock[AuthConnector]
   private val mockAuthAction                 = authAction(mockAuthConnector)
@@ -48,20 +47,18 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
   private val mockSubscriptionFlowInfo       = mock[SubscriptionFlowInfo]
   private val mockSubscriptionPage           = mock[SubscriptionPage]
 
-  private val matchNinoSubscriptionView = instanceOf[match_nino_subscription]
-
-  private val ValidNinoNoRequest = Map("have-nino" -> "false")
+  private val matchNinoSubscriptionView = instanceOf[how_can_we_identify_you_nino]
 
   private val nextPageFlowUrl = "/customs-enrolment-services/subscribe/address"
 
   override protected def beforeEach: Unit = {
     super.beforeEach()
     reset(mockSubscriptionDetailsService)
-    when(mockSubscriptionDetailsService.cachedNinoMatch(any[HeaderCarrier]))
+    when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
       .thenReturn(Future.successful(None))
   }
 
-  val controller = new HaveNinoSubscriptionController(
+  val controller = new GetNinoSubscriptionController(
     mockAuthAction,
     mockSubscriptionFlowManager,
     mcc,
@@ -74,7 +71,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
       createForm(Journey.Subscribe) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should include(SubscriptionNinoPage.title)
+        page.title should include("Enter your National Insurance number")
       }
     }
   }
@@ -86,38 +83,24 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
       }
     }
 
-    "return BadRequest when invalid option" in {
-      submit(Journey.Subscribe, Map("have-nino" -> "yes")) { result =>
+    "return BadRequest when invalidUtr provided" in {
+      val invalidNino = "01234567890123"
+      submit(Journey.Subscribe, Map("nino" -> invalidNino)) { result =>
         status(result) shouldBe BAD_REQUEST
       }
     }
 
-    "cache NINO and redirect to Get Nino Page of the flow" in {
-      when(mockSubscriptionDetailsService.cacheNinoMatch(any[Option[NinoMatchModel]])(any[HeaderCarrier]))
+    "cache NINO and redirect to Address Page of the flow" in {
+      when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
         .thenReturn(Future.successful(()))
       mockSubscriptionFlow(nextPageFlowUrl)
-      submit(Journey.Subscribe, Map("have-nino" -> "true")) { result =>
-        status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-get-nino"
-      }
-      verify(mockSubscriptionDetailsService).cacheNinoMatch(meq(Some(NinoMatchModel(Some(true), None))))(
-        any[HeaderCarrier]
-      )
-    }
-
-    "cache None for CustomsId and redirect to Address Page of the flow" in {
-      when(
-        mockSubscriptionDetailsService.cacheNinoMatchForNoAnswer(any[Option[NinoMatchModel]])(any[HeaderCarrier])
-      ).thenReturn(Future.successful(()))
-      mockSubscriptionFlow(nextPageFlowUrl)
-      submit(Journey.Subscribe, ValidNinoNoRequest) { result =>
+      submit(Journey.Subscribe, Map("nino" -> "ab 12 34 56 c")) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
       }
-      verify(mockSubscriptionDetailsService).cacheNinoMatchForNoAnswer(meq(Some(NinoMatchModel(Some(false), None))))(
-        any[HeaderCarrier]
-      )
+      verify(mockSubscriptionDetailsService).cacheCustomsId(meq(Nino("AB123456C")))(any[HeaderCarrier])
     }
+
   }
 
   private def createForm(journey: Journey.Value)(test: Future[Result] => Any) = {

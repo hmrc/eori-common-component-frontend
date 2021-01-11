@@ -22,7 +22,7 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 
 @this(layout_di: layout)
-@(utrForm: Form[IdMatchModel], isInReviewMode: Boolean, service: Service, journey: Journey.Value)(implicit request: Request[_], messages: Messages)
+@(utrForm: Form[IdMatchModel], isInReviewMode: Boolean, submit: Call)(implicit request: Request[_], messages: Messages)
 
 @inputText(field: String, args: (Symbol, Any)*) = {
     @defining(Seq(
@@ -32,19 +32,13 @@
     }
 }
 
-@submitCall = @{ journey match {
-        case Journey.Subscribe => HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service, journey)
-        case Journey.Register => GYEHowCanWeIdentifyYouUtrController.submit(service, journey)
-    }
-}
-
 @layout_di(messages("subscription-journey.how-confirm-identity.utr.heading"), form = Some(utrForm)) {
     <div class="column-two-thirds">
         <a href="javascript:history.back()" id="back" class="link-back js-visible">@messages("cds.navigation.back")</a>
 
         @helpers.errorSummary(utrForm)
 
-        @helpers.form(submitCall, "utrForm") {
+        @helpers.form(submit, "utrForm") {
             @CSRF.formField
 
             @inputText("utr")
