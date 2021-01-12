@@ -17,6 +17,7 @@
 package unit.models
 
 import base.UnitSpec
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.EstablishmentAddress
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription._
 
 import scala.collection.Map

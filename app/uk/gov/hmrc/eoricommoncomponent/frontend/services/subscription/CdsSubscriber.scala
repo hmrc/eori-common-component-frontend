@@ -17,12 +17,16 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
 import javax.inject.{Inject, Singleton}
-import play.api.Logger
+import org.joda.time.DateTime
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{RecipientDetails, SubscriptionDetails}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  ContactDetails,
+  RecipientDetails,
+  SubscriptionDetails
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -37,8 +41,6 @@ class CdsSubscriber @Inject() (
   subscriptionDetailsService: SubscriptionDetailsService,
   requestSessionData: RequestSessionData
 )(implicit ec: ExecutionContext) {
-
-  private val logger = Logger(this.getClass)
 
   def subscribeWithCachedDetails(
     cdsOrganisationType: Option[CdsOrganisationType],
@@ -134,62 +136,59 @@ class CdsSubscriber @Inject() (
 
   private def onSubscriptionResult(
     subscriptionResult: SubscriptionResult,
-    registrationDetails: RegistrationDetails,
+    regDetails: RegistrationDetails,
     subscriptionDetails: Option[SubscriptionDetails],
     service: Service
-  )(implicit hc: HeaderCarrier, messages: Messages): Future[Unit] = {
-
-    val sapNumber = registrationDetails.sapNumber
-    val safeId    = registrationDetails.safeId
-
-    def recipientDetails(formBundleId: String, processingDate: String) = {
-      val contactDetails = subscriptionDetails
-        .flatMap(_.contactDetails.map(_.contactDetails))
-        .getOrElse(
-          throw new IllegalStateException(s"No contact details available to save for formBundleId $formBundleId")
-        )
-      RecipientDetails(
-        service,
-        Journey.Register,
-        contactDetails.emailAddress,
-        contactDetails.fullName,
-        Some(registrationDetails.name),
-        Some(processingDate)
-      )
-    }
+  )(implicit hc: HeaderCarrier, messages: Messages): Future[Unit] =
     subscriptionResult match {
-
       case success: SubscriptionSuccessful =>
-        sessionCache.saveSub02Outcome(
-          Sub02Outcome(success.processingDate, registrationDetails.name, Some(success.eori.id))
-        )
-        val formBundleId = success.formBundleId
-        handleSubscriptionService.handleSubscription(
-          formBundleId,
-          recipientDetails(formBundleId, success.processingDate),
-          sapNumber,
-          Some(success.eori),
-          success.emailVerificationTimestamp,
-          safeId
+        val safeId = regDetails.safeId
+        val contactDetails: Option[ContactDetails] = subscriptionDetails
+          .flatMap(_.contactDetails.map(_.contactDetails))
+        val contactName = contactDetails.map(_.fullName)
+        val cdsFullName = Some(regDetails.name)
+        val email       = contactDetails.map(_.emailAddress).getOrElse(throw new IllegalStateException("Email required"))
+        val mayBeEori   = Some(success.eori)
+
+        completeSubscription(
+          service,
+          Journey.Register,
+          regDetails.name,
+          mayBeEori,
+          email,
+          safeId,
+          contactName,
+          cdsFullName,
+          success.processingDate,
+          success.formBundleId,
+          success.emailVerificationTimestamp
         )
 
       case pending: SubscriptionPending =>
-        sessionCache.saveSub02Outcome(Sub02Outcome(pending.processingDate, registrationDetails.name))
-        val formBundleId = pending.formBundleId
-        handleSubscriptionService.handleSubscription(
-          formBundleId,
-          recipientDetails(formBundleId, pending.processingDate),
-          sapNumber,
-          eori = None,
-          pending.emailVerificationTimestamp,
-          safeId
+        val safeId = regDetails.safeId
+        val contactDetails: Option[ContactDetails] = subscriptionDetails
+          .flatMap(_.contactDetails.map(_.contactDetails))
+        val contactName = contactDetails.map(_.fullName)
+        val cdsFullName = Some(regDetails.name)
+        val email       = contactDetails.map(_.emailAddress).getOrElse(throw new IllegalStateException("Email required"))
+        val mayBeEori   = None
+        completeSubscription(
+          service,
+          Journey.Register,
+          regDetails.name,
+          mayBeEori,
+          email,
+          safeId,
+          contactName,
+          cdsFullName,
+          pending.processingDate,
+          pending.formBundleId,
+          pending.emailVerificationTimestamp
         )
 
       case failed: SubscriptionFailed =>
-        sessionCache.saveSub02Outcome(Sub02Outcome(failed.processingDate, registrationDetails.name))
-        Future.successful(())
+        sessionCache.saveSub02Outcome(Sub02Outcome(failed.processingDate, regDetails.name)).map(_ => (): Unit)
     }
-  }
 
   private def onSubscriptionResultForRowSubscribe(
     subscriptionResult: SubscriptionResult,
@@ -197,34 +196,44 @@ class CdsSubscriber @Inject() (
     subDetails: SubscriptionDetails,
     email: String,
     service: Service
-  )(implicit hc: HeaderCarrier, messages: Messages): Future[Unit] = {
-
-    val completionDate = subscriptionResult match {
-      case success: SubscriptionSuccessful => Some(success.processingDate)
-      case _                               => None
-    }
-
+  )(implicit hc: HeaderCarrier, messages: Messages): Future[Unit] =
     subscriptionResult match {
       case success: SubscriptionSuccessful =>
-        sessionCache.saveSub02Outcome(Sub02Outcome(success.processingDate, regDetails.name, Some(success.eori.id)))
-      case _ =>
-    }
+        val contactName = subDetails.contactDetails.map(_.fullName)
+        val cdsFullName = Some(regDetails.name)
+        completeSubscription(
+          service,
+          Journey.Subscribe,
+          subDetails.name,
+          Some(success.eori),
+          email,
+          regDetails.safeId,
+          contactName,
+          cdsFullName,
+          success.processingDate,
+          success.formBundleId,
+          success.emailVerificationTimestamp
+        )
 
-    callHandle(
-      subscriptionResult,
-      RecipientDetails(
-        service,
-        Journey.Subscribe,
-        email,
-        subDetails.contactDetails.map(_.fullName).getOrElse(""),
-        Some(regDetails.name),
-        completionDate
-      ),
-      regDetails.sapNumber,
-      subDetails.eoriNumber.map(Eori),
-      regDetails.safeId
-    )
-  }
+      case pending: SubscriptionPending =>
+        val contactName = subDetails.contactDetails.map(_.fullName)
+        val cdsFullName = Some(regDetails.name)
+        completeSubscription(
+          service,
+          Journey.Subscribe,
+          subDetails.name,
+          subDetails.eoriNumber.map(Eori),
+          email,
+          regDetails.safeId,
+          contactName,
+          cdsFullName,
+          pending.processingDate,
+          pending.formBundleId,
+          pending.emailVerificationTimestamp
+        )
+      case failed: SubscriptionFailed =>
+        sessionCache.saveSub02Outcome(Sub02Outcome(failed.processingDate, regDetails.name)).map(_ => (): Unit)
+    }
 
   private def onSubscriptionResultForUKSubscribe(
     subscriptionResult: SubscriptionResult,
@@ -233,64 +242,76 @@ class CdsSubscriber @Inject() (
     email: String,
     service: Service
   )(implicit hc: HeaderCarrier, messages: Messages): Future[Unit] = {
-
-    val taxPayerId  = regDetails.responseDetail.flatMap(_.responseData.map(r => TaxPayerId(r.SAFEID)))
+    val safeId = regDetails.responseDetail
+      .flatMap(_.responseData.map(x => SafeId(x.SAFEID)))
+      .getOrElse(throw new IllegalArgumentException("SAFEID Missing"))
     val contactName = regDetails.responseDetail.flatMap(_.responseData.flatMap(_.contactDetail.map(_.contactName)))
-
-    val completionDate = Some(subscriptionResult.processingDate)
+    val cdsFullName = regDetails.responseDetail.flatMap(_.responseData.map(_.trader.fullName))
 
     subscriptionResult match {
       case success: SubscriptionSuccessful =>
-        sessionCache.saveSub02Outcome(
-          Sub02Outcome(success.processingDate, "", Some(success.eori.id))
-        ) //TODO  name is blank
-      case _ => //TODO needs clarification
-    }
-
-    (contactName, taxPayerId) match {
-      case (name, Some(id)) =>
-        if (name.isEmpty) logger.warn("ContactName missing")
-        val orgName = Some(subDetails.name)
-        callHandle(
-          subscriptionResult,
-          RecipientDetails(service, Journey.Subscribe, email, name.getOrElse(""), orgName, completionDate),
-          id,
-          subDetails.eoriNumber.map(Eori),
-          SafeId(id.id)
+        completeSubscription(
+          service,
+          Journey.Subscribe,
+          subDetails.name,
+          Some(success.eori),
+          email,
+          safeId,
+          contactName,
+          cdsFullName,
+          success.processingDate,
+          success.formBundleId,
+          success.emailVerificationTimestamp
         )
-      case _ =>
-        logger.error("No contact details available to save")
-        Future.failed(throw new IllegalStateException("No contact details available to save)"))
+      case pending: SubscriptionPending =>
+        completeSubscription(
+          service,
+          Journey.Subscribe,
+          subDetails.name,
+          subDetails.eoriNumber.map(Eori),
+          email,
+          safeId,
+          contactName,
+          cdsFullName,
+          pending.processingDate,
+          pending.formBundleId,
+          pending.emailVerificationTimestamp
+        )
+
+      case failed: SubscriptionFailed =>
+        sessionCache.saveSub02Outcome(Sub02Outcome(failed.processingDate, cdsFullName.getOrElse(subDetails.name))).map(
+          _ => (): Unit
+        )
     }
   }
 
-  private def callHandle(
-    subscriptionResult: SubscriptionResult,
-    recipientDetails: RecipientDetails,
-    sapNumber: TaxPayerId,
-    eori: Option[Eori],
-    safeId: SafeId
-  )(implicit hc: HeaderCarrier) =
-    subscriptionResult match {
-      case s: SubscriptionSuccessful =>
-        handleSubscriptionService.handleSubscription(
-          s.formBundleId,
-          recipientDetails,
-          sapNumber,
-          eori,
-          s.emailVerificationTimestamp,
-          safeId
-        )
-      case p: SubscriptionPending =>
-        handleSubscriptionService.handleSubscription(
-          p.formBundleId,
-          recipientDetails,
-          sapNumber,
-          eori,
-          p.emailVerificationTimestamp,
-          safeId
-        )
-      case _ => Future.successful(())
+  private def completeSubscription(
+    service: Service,
+    journey: Journey.Value,
+    name: String,
+    maybeEori: Option[Eori],
+    email: String,
+    safeId: SafeId,
+    contactName: Option[String],
+    cdsFullName: Option[String],
+    processingDate: String,
+    formBundleId: String,
+    emailVerificationTimestamp: Option[DateTime]
+  )(implicit hc: HeaderCarrier, messages: Messages): Future[Unit] =
+    sessionCache.saveSub02Outcome(
+      Sub02Outcome(processingDate, cdsFullName.getOrElse(name), maybeEori.map(_.id))
+    ).flatMap { _ =>
+      val recipientDetails =
+        RecipientDetails(service, journey, email, contactName.getOrElse(""), cdsFullName, Some(processingDate))
+
+      handleSubscriptionService.handleSubscription(
+        formBundleId,
+        recipientDetails,
+        TaxPayerId(safeId.id),
+        maybeEori,
+        emailVerificationTimestamp,
+        safeId
+      )
     }
 
 }

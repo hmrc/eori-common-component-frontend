@@ -17,9 +17,11 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain
 
 import java.lang.reflect.Field
+
 import org.joda.time.DateTime
 import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging._
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 
 case class GovGatewayCredentials(email: String) extends CaseClassAuditHelper
 
@@ -38,7 +40,6 @@ object RegisterWithEoriAndIdRequestCommon extends CommonHeader {
   implicit val requestParamFormat = Json.format[RequestParameter]
 }
 
-//ToDo: Three four line address objects
 case class EstablishmentAddress(
   streetAndNumber: String,
   city: String,
@@ -48,6 +49,17 @@ case class EstablishmentAddress(
 
 object EstablishmentAddress {
   implicit val jsonFormat = Json.format[EstablishmentAddress]
+
+  def createEstablishmentAddress(address: Address): EstablishmentAddress = {
+    val fourLineAddress = AddressViewModel(address)
+    new EstablishmentAddress(
+      fourLineAddress.street,
+      fourLineAddress.city,
+      address.postalCode.filterNot(p => p.isEmpty),
+      fourLineAddress.countryCode
+    )
+  }
+
 }
 
 case class RegisterModeEori(EORI: String, fullName: String, address: EstablishmentAddress)

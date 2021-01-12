@@ -248,9 +248,9 @@ trait SubscriptionServiceTestData extends TestData {
       SAFEID = "SafeID123",
       trader = Trader(fullName = "Name", shortName = "nt"),
       establishmentAddress = EstablishmentAddress(
-        streetAndNumber = "Street",
-        city = "city",
-        postalCode = Some("NE1 1BG"),
+        streetAndNumber = "Line 1 line 2",
+        city = "city name",
+        postalCode = Some("SE28 1AA"),
         countryCode = "GB"
       ),
       hasInternetPublication = true,

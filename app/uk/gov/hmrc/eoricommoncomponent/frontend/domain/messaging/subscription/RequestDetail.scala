@@ -18,7 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription
 
 import org.joda.time.LocalDate
 import play.api.libs.json.Json
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CaseClassAuditHelper
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CaseClassAuditHelper, EstablishmentAddress}
 
 case class RequestDetail(
   SAFE: String,
