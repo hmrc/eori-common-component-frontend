@@ -166,7 +166,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
         )
       status(result) shouldBe SEE_OTHER
       result.header.headers("Location") should include(
-        "?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fsubscribe"
+        "/bas-gateway/sign-in?continue_url=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fsubscribe&origin=eori-common-component-frontend"
       )
     }
 
@@ -181,7 +181,7 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
         )
       status(result) shouldBe SEE_OTHER
       result.header.headers("Location") should include(
-        "?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fsubscribe"
+        "/bas-gateway/sign-in?continue_url=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fsubscribe&origin=eori-common-component-frontend"
       )
     }
 
