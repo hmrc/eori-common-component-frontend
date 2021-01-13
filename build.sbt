@@ -104,7 +104,7 @@ lazy val scoverageSettings = {
 scalastyleConfig := baseDirectory.value / "project" / "scalastyle-config.xml"
 
 val compileDependencies = Seq(
-  "uk.gov.hmrc" %% "bootstrap-frontend-play-27" % "2.25.0",
+  "uk.gov.hmrc" %% "bootstrap-frontend-play-27" % "3.3.0",
   "uk.gov.hmrc" %% "auth-client" % "3.2.0-play-27",
   "uk.gov.hmrc" %% "play-conditional-form-mapping" % "1.5.0-play-27",
   "uk.gov.hmrc" %% "domain" % "5.10.0-play-27",
