@@ -86,9 +86,9 @@ object SubscriptionCreateRequest {
   ): SubscriptionCreateRequest = {
     val ea = {
       if (postCodeMandatoryCountryCodes.contains(data.establishmentAddress.countryCode))
-        if (data.establishmentAddress.postalCode.exists(_.matches(postcodeRegex.regex))) // question post code
-          data.establishmentAddress                                                      //Use REG06 Response
-        else                                                                             // Use Traders captured Details
+        if (data.establishmentAddress.postalCode.exists(_.matches(postcodeRegex.regex)))
+          data.establishmentAddress
+        else
           subscription.addressDetails.map { address =>
             new EstablishmentAddress(
               address.street,
@@ -98,7 +98,7 @@ object SubscriptionCreateRequest {
             )
           }.getOrElse(throw new IllegalStateException("Reg06 EstablishmentAddress cannot be empty"))
       else
-        data.establishmentAddress //Use REG06 Response
+        data.establishmentAddress
     }
 
     SubscriptionCreateRequest(
