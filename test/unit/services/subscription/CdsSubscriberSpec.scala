@@ -136,6 +136,8 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
       val expectedEmail = "email@address.fromCache"
       when(mockRequestSessionData.selectedUserLocation(any())).thenReturn(Some(UserLocation.Uk))
       when(mockCdsFrontendDataCache.email(any[HeaderCarrier])).thenReturn(Future.successful(expectedEmail))
+      when(mockCdsFrontendDataCache.saveSub02Outcome(any[Sub02Outcome])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(true))
 
       mockSuccessfulExistingRegistration(
         stubRegisterWithEoriAndIdResponse,
@@ -152,7 +154,12 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
         )(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
       val inOrder =
-        org.mockito.Mockito.inOrder(mockCdsFrontendDataCache, mockSubscriptionService, mockHandleSubscriptionService)
+        org.mockito.Mockito.inOrder(
+          mockCdsFrontendDataCache,
+          mockSubscriptionService,
+          mockCdsFrontendDataCache,
+          mockHandleSubscriptionService
+        )
 
       whenReady(cdsSubscriber.subscribeWithCachedDetails(mockCdsOrganisationType, atarService, Journey.Subscribe)) {
         subscriptionResult =>
@@ -171,6 +178,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
               meq(expectedEmail),
               meq(atarService)
             )(any[HeaderCarrier])
+          inOrder.verify(mockCdsFrontendDataCache).saveSub02Outcome(any())(any())
           inOrder
             .verify(mockHandleSubscriptionService)
             .handleSubscription(
@@ -181,7 +189,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
                   Journey.Subscribe,
                   expectedEmail,
                   "",
-                  Some("orgname"),
+                  Some("New trading"),
                   Some(processingDate)
                 )
               ),
@@ -203,7 +211,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
           Journey.Subscribe,
           expectedEmail,
           "TEST NAME",
-          Some("orgname"),
+          Some("New trading"),
           Some(processingDate)
         )
       when(mockRequestSessionData.selectedUserLocation(any())).thenReturn(Some(UserLocation.Uk))
@@ -266,7 +274,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
           Journey.Subscribe,
           expectedEmail,
           "TEST NAME",
-          Some("orgname"),
+          Some("New trading"),
           Some(processingDate)
         )
 
@@ -282,7 +290,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
           val inOrder = org.mockito.Mockito.inOrder(mockCdsFrontendDataCache, mockHandleSubscriptionService)
           inOrder
             .verify(mockCdsFrontendDataCache)
-            .saveSub02Outcome(meq(Sub02Outcome(processingDate, "", Some(eori))))(meq(hc))
+            .saveSub02Outcome(meq(Sub02Outcome(processingDate, "New trading", Some(eori))))(meq(hc))
           inOrder
             .verify(mockHandleSubscriptionService)
             .handleSubscription(
@@ -320,6 +328,8 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
 
     "call SubscriptionService when there is only registration details in cache to get a pending subscription" in {
       mockPendingSubscribe(mockRegistrationDetails)
+      when(mockCdsFrontendDataCache.saveSub02Outcome(any[Sub02Outcome])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(true))
       val inOrder = org.mockito.Mockito.inOrder(mockCdsFrontendDataCache, mockSubscriptionService)
 
       whenReady(cdsSubscriber.subscribeWithCachedDetails(mockCdsOrganisationType, atarService, Journey.Register)) {
@@ -410,6 +420,8 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
         Some("19 April 2018")
       )
       mockPendingSubscribe(mockRegistrationDetails, expectedOrgName)
+      when(mockCdsFrontendDataCache.saveSub02Outcome(any[Sub02Outcome])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(true))
       when(
         mockHandleSubscriptionService.handleSubscription(
           anyString,
@@ -444,6 +456,8 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
     "not call handle-subscription service when subscription returns a failure status" in {
       val expectedName = "Org Already Has EORI in PDS"
       mockFailedSubscribe(mockRegistrationDetails, subscriptionDetails, expectedName)
+      when(mockCdsFrontendDataCache.saveSub02Outcome(any[Sub02Outcome])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(true))
       whenReady(cdsSubscriber.subscribeWithCachedDetails(mockCdsOrganisationType, atarService, Journey.Register)) {
         result =>
           result shouldBe SubscriptionFailed("EORI already exists", processingDate)
@@ -533,6 +547,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
     when(mockCdsFrontendDataCache.saveSub02Outcome(any[Sub02Outcome])(any[HeaderCarrier]))
       .thenReturn(Future.successful(true))
     when(mockRegistrationDetails.name).thenReturn(registeredName)
+    when(mockRegistrationDetails.safeId).thenReturn(SafeId("safeId"))
   }
 
   private def mockSuccessfulExistingRegistration(
@@ -597,6 +612,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
       )(any[HeaderCarrier])
     ).thenReturn(Future.successful(()))
     when(mockRegistrationDetails.name).thenReturn(registeredName)
+    when(mockRegistrationDetails.safeId).thenReturn(SafeId("safeId"))
   }
 
   private def mockFailedSubscribe(
@@ -618,6 +634,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
         )(any[HeaderCarrier])
     ).thenReturn(Future.successful(SubscriptionFailed("EORI already exists", processingDate)))
     when(mockRegistrationDetails.name).thenReturn(registeredName)
+    when(mockRegistrationDetails.safeId).thenReturn(SafeId("safeId"))
   }
 
 }

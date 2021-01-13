@@ -24,11 +24,12 @@ import org.joda.time.{DateTime, DateTimeZone, LocalDate}
 import play.api.Logger
 import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.EstablishmentAddress.createEstablishmentAddress
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.ContactInformation.createContactInformation
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.EstablishmentAddress.createEstablishmentAddress
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionRequest.principalEconomicActivityLength
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{RequestCommon, RequestParameter}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation.{postCodeMandatoryCountryCodes, postcodeRegex}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
   CdsToEtmpOrganisationType,
@@ -83,50 +84,28 @@ object SubscriptionCreateRequest {
     email: String,
     service: Option[Service]
   ): SubscriptionCreateRequest = {
-    val ea = subscription.addressDetails.map { address =>
-      new EstablishmentAddress(
-        address.street,
-        address.city,
-        address.postcode.filterNot(p => p.isEmpty),
-        address.countryCode
-      )
-    }.getOrElse(throw new IllegalStateException("Reg06 EstablishmentAddress cannot be empty"))
+    val ea = {
+      if (postCodeMandatoryCountryCodes.contains(data.establishmentAddress.countryCode))
+        if (data.establishmentAddress.postalCode.exists(_.matches(postcodeRegex.regex)))
+          data.establishmentAddress
+        else
+          subscription.addressDetails.map { address =>
+            new EstablishmentAddress(
+              address.street,
+              address.city,
+              address.postcode.filterNot(p => p.isEmpty),
+              address.countryCode
+            )
+          }.getOrElse(throw new IllegalStateException("Reg06 EstablishmentAddress cannot be empty"))
+      else
+        data.establishmentAddress
+    }
 
     SubscriptionCreateRequest(
       generateWithOriginatingSystem(),
       RequestDetail(
         SAFE = data.SAFEID,
         EORINo = subscription.eoriNumber,
-        CDSFullName = data.trader.fullName,
-        CDSEstablishmentAddress = ea,
-        establishmentInTheCustomsTerritoryOfTheUnion =
-          data.hasEstablishmentInCustomsTerritory.map(bool => if (bool) "1" else "0"),
-        typeOfLegalEntity = data.legalStatus,
-        contactInformation = data.contactDetail.map(cd => createContactInformation(cd).withEmail(email)),
-        vatIDs =
-          data.VATIDs.map(_.map(vs => VatId(countryCode = Some(vs.countryCode), vatID = Some(vs.vatNumber))).toList),
-        consentToDisclosureOfPersonalData = None,
-        shortName = Some(data.trader.shortName),
-        dateOfEstablishment = handleEmptyDate(data.dateOfEstablishmentBirth),
-        typeOfPerson = data.personType.map(_.toString),
-        principalEconomicActivity = data.principalEconomicActivity,
-        serviceName = service.map(_.enrolmentKey)
-      )
-    )
-  }
-
-  def apply(data: ResponseData, eori: Eori, email: String, service: Option[Service]): SubscriptionCreateRequest = {
-    val ea = new EstablishmentAddress(
-      data.establishmentAddress.streetAndNumber,
-      data.establishmentAddress.city,
-      data.establishmentAddress.postalCode.filterNot(p => p.isEmpty),
-      data.establishmentAddress.countryCode
-    )
-    SubscriptionCreateRequest(
-      generateWithOriginatingSystem(),
-      RequestDetail(
-        SAFE = data.SAFEID,
-        EORINo = Some(eori.id),
         CDSFullName = data.trader.fullName,
         CDSEstablishmentAddress = ea,
         establishmentInTheCustomsTerritoryOfTheUnion =

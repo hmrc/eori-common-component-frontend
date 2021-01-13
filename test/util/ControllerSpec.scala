@@ -23,7 +23,7 @@ import base.{Injector, UnitSpec}
 import common.pages.WebPage
 import org.scalatest.mockito.MockitoSugar
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypesConfiguration}
-import play.api.{Configuration, Environment, Mode}
+import play.api.{Configuration, Environment}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesImpl}
 import play.api.mvc._
 import play.api.test.Helpers._

@@ -31,7 +31,6 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
 
   implicit val request = withFakeCSRF(FakeRequest())
 
-  private val invalidUtr                        = "0123456789"
   private val standardForm: Form[UtrMatchModel] = utrForm
   private val noOptionSelectedForm              = utrForm.bind(Map.empty[String, String])
 
