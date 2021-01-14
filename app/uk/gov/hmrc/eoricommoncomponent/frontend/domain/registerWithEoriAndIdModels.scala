@@ -45,7 +45,12 @@ case class EstablishmentAddress(
   city: String,
   postalCode: Option[String] = None,
   countryCode: String
-) extends CaseClassAuditHelper
+) extends CaseClassAuditHelper {
+
+  def updateCountryFromAddress(address: AddressViewModel): EstablishmentAddress =
+    this.copy(countryCode = address.countryCode)
+
+}
 
 object EstablishmentAddress {
   implicit val jsonFormat = Json.format[EstablishmentAddress]
