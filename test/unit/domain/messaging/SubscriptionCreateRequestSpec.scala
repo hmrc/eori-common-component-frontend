@@ -53,18 +53,9 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
 
   "Subscription Create Request" should {
 
-    "correctly generate request with REG06 response address" when {
+    "correctly generate the request with REG06 establishment address" when {
 
-      "REG06 response address is outside the UK" in {
-        val reg06Country                 = "PL"
-        val reg06ResponseData            = responseData(postCode = None, countryCode = reg06Country)
-        val sub02Request                 = SubscriptionCreateRequest(reg06ResponseData, subscriptionDetails, email, service)
-        val expectedEstablishmentAddress = EstablishmentAddress(reg06Street, reg06City, None, reg06Country)
-
-        sub02Request.requestDetail.CDSEstablishmentAddress shouldBe expectedEstablishmentAddress
-      }
-
-      "REG06 response address is in UK and postcode is correct" in {
+      "REG06 establishment address contains correct country code" in {
 
         val reg06Country                 = "GB"
         val reg06PostCode                = Some("AA11 1AA")
@@ -76,26 +67,15 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
       }
     }
 
-    "correctly generate request with address provided by user" when {
+    "correctly generate the request with country from user" when {
 
-      "REG06 response address is in the UK and has incorrect post code" in {
+      "REG06 contains incorrect country" in {
 
-        val reg06Country                 = "GB"
-        val reg06PostCode                = Some("incorrect")
+        val reg06Country                 = "incorrect"
+        val reg06PostCode                = Some("AA11 1AA")
         val reg06ResponseData            = responseData(postCode = reg06PostCode, countryCode = reg06Country)
         val sub02Request                 = SubscriptionCreateRequest(reg06ResponseData, subscriptionDetails, email, service)
-        val expectedEstablishmentAddress = EstablishmentAddress(cachedStreet, cachedCity, cachedPostCode, cachedCountry)
-
-        sub02Request.requestDetail.CDSEstablishmentAddress shouldBe expectedEstablishmentAddress
-      }
-
-      "REG06 response address is in the UK and has missing postcode" in {
-
-        val reg06Country                 = "GB"
-        val reg06PostCode                = None
-        val reg06ResponseData            = responseData(postCode = reg06PostCode, countryCode = reg06Country)
-        val sub02Request                 = SubscriptionCreateRequest(reg06ResponseData, subscriptionDetails, email, service)
-        val expectedEstablishmentAddress = EstablishmentAddress(cachedStreet, cachedCity, cachedPostCode, cachedCountry)
+        val expectedEstablishmentAddress = EstablishmentAddress(reg06Street, reg06City, reg06PostCode, cachedCountry)
 
         sub02Request.requestDetail.CDSEstablishmentAddress shouldBe expectedEstablishmentAddress
       }

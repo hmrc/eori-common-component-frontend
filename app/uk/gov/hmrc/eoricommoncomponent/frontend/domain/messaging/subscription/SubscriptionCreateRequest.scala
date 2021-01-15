@@ -31,6 +31,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{RequestCommon,
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation.{postCodeMandatoryCountryCodes, postcodeRegex}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
   CdsToEtmpOrganisationType,
   OrganisationTypeConfiguration
@@ -84,22 +85,15 @@ object SubscriptionCreateRequest {
     email: String,
     service: Option[Service]
   ): SubscriptionCreateRequest = {
-    val ea = {
-      if (postCodeMandatoryCountryCodes.contains(data.establishmentAddress.countryCode))
-        if (data.establishmentAddress.postalCode.exists(_.matches(postcodeRegex.regex)))
-          data.establishmentAddress
-        else
-          subscription.addressDetails.map { address =>
-            new EstablishmentAddress(
-              address.street,
-              address.city,
-              address.postcode.filterNot(p => p.isEmpty),
-              address.countryCode
-            )
-          }.getOrElse(throw new IllegalStateException("Reg06 EstablishmentAddress cannot be empty"))
+
+    val isReg06CountryValid: Boolean = Countries.all.map(_.countryCode).contains(data.establishmentAddress.countryCode)
+
+    val ea =
+      if (isReg06CountryValid) data.establishmentAddress
       else
-        data.establishmentAddress
-    }
+        subscription.addressDetails.map { address =>
+          data.establishmentAddress.updateCountryFromAddress(address)
+        }.getOrElse(throw new IllegalStateException("Reg06 EstablishmentAddress cannot be empty"))
 
     SubscriptionCreateRequest(
       generateWithOriginatingSystem(),
