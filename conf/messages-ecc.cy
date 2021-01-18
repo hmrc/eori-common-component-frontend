@@ -237,12 +237,12 @@ cds.subscription.organisation-disclose-personal-details-consent.no=Na - Dangoswc
 subscription-journey.how-confirm-identity.nino.heading=Nodwch eich rhif Yswiriant Gwladol
 subscription-journey.how-confirm-identity.utr.heading=Nodwch eich Cyfeirnod Unigryw y Trethdalwr
 
-ecc.reg06.outcome.why-heading = Why the application was unsuccessful
-ecc.reg06.outcome.eori = EORI number {0}
-ecc.reg06.outcome.why.individual = The following details do not match the name you entered:
-ecc.reg06.outcome.why.org = The following details do not match the company name you entered:
-ecc.reg06.outcome.why.individual.utr = Self Assessment Unique Taxpayer Reference (UTR)
-ecc.reg06.outcome.why.individual.nino = National Insurance number
-ecc.reg06.outcome.why.org.utr = Corporation Tax Unique Taxpayer Reference (UTR)
-ecc.reg06.outcome.why.eori = EORI number
-ecc.reg06.outcome.apply.again = Check your details are correct and <a href="{0}">apply again</a>.
+ecc.reg06.outcome.why-heading = Pam nad oedd y cais yn llwyddiannus
+ecc.reg06.outcome.eori = Rhif EORI {0}
+ecc.reg06.outcome.why.individual = Nid yw’r manylion canlynol yn cyd-fynd â’r enw a nodwyd gennych:
+ecc.reg06.outcome.why.org = Nid yw’r manylion canlynol yn cyd-fynd ag enw’r cwmni a nodwyd gennych:
+ecc.reg06.outcome.why.individual.utr = Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad
+ecc.reg06.outcome.why.individual.nino = rhif Yswiriant Gwladol
+ecc.reg06.outcome.why.org.utr = Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)
+ecc.reg06.outcome.why.eori = Rhif EORI
+ecc.reg06.outcome.apply.again = Ewch dros y manylion hyn a <a href="{0}">chyflwynwch gais eto</a>.
