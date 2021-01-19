@@ -174,7 +174,7 @@ class RegisterWithEoriAndIdController @Inject() (
         )
         name <- cache.subscriptionDetails.map(_.name)
         _    <- cache.remove
-      } yield Ok(subscriptionOutcomePendingView(eori, date, name, service))
+      } yield Ok(subscriptionOutcomePendingView(eori, date, name, service)).withSession(newUserSession)
     }
 
   def fail(service: Service, date: String): Action[AnyContent] =
@@ -182,7 +182,7 @@ class RegisterWithEoriAndIdController @Inject() (
       for {
         name <- cache.subscriptionDetails.map(_.name)
         _    <- cache.remove
-      } yield Ok(subscriptionOutcomeFailView(date, name, service))
+      } yield Ok(subscriptionOutcomeFailView(date, name, service)).withSession(newUserSession)
     }
 
   def eoriAlreadyLinked(service: Service): Action[AnyContent] =
@@ -217,7 +217,7 @@ class RegisterWithEoriAndIdController @Inject() (
             isIndividual,
             hasUtr
           )
-        )
+        ).withSession(newUserSession)
       }
     }
 
@@ -229,7 +229,7 @@ class RegisterWithEoriAndIdController @Inject() (
           r => languageUtils.Dates.formatDate(r.responseCommon.processingDate.toLocalDate)
         )
         _ <- cache.remove
-      } yield Ok(sub01OutcomeRejectedView(Some(name), date, service))
+      } yield Ok(sub01OutcomeRejectedView(Some(name), date, service)).withSession(newUserSession)
     }
 
   private def handleErrorCodes(service: Service, response: RegisterWithEoriAndIdResponse)(implicit
