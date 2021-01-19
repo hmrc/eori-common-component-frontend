@@ -20,4 +20,15 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-class CdsController(mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport
+class CdsController(mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport {
+
+  def newUserSession(implicit request: Request[_]): Session = {
+
+    val currentSessionData: Map[String, String] = request.session.data
+    val cleanedUpSessionData: Map[String, String] =
+      currentSessionData - ("selected-user-location", "subscription-flow", "selected-organisation-type", "uri-before-subscription-flow")
+
+    request.session.copy(data = cleanedUpSessionData)
+  }
+
+}

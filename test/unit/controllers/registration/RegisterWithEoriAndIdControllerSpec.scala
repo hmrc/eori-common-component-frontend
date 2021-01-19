@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.{Assertion, BeforeAndAfterEach}
 import play.api.i18n.Messages
-import play.api.mvc.{AnyContent, Request, Result}
+import play.api.mvc.{AnyContent, Request, Result, Session}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
@@ -180,6 +180,15 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       .thenReturn(Future.successful(false))
   }
 
+  private def assertCleanedSession(result: Future[Result]): Unit = {
+    val currentSession: Session = session(result)
+
+    currentSession.data.get("selected-user-location") shouldBe None
+    currentSession.data.get("subscription-flow") shouldBe None
+    currentSession.data.get("selected-organisation-type") shouldBe None
+    currentSession.data.get("uri-before-subscription-flow") shouldBe None
+  }
+
   "Register with existing eori" should {
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
@@ -279,6 +288,8 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
 
       regExistingEori() { result =>
+        assertCleanedSession(result)
+
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe Sub02Controller
           .migrationEnd(atarService)
@@ -322,6 +333,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
 
       regExistingEori() { result =>
+        assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe Sub02Controller
           .migrationEnd(atarService)
@@ -369,6 +381,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       )
 
       regExistingEori() { result =>
+        assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe Sub02Controller
           .migrationEnd(atarService)
@@ -413,6 +426,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(NewSubscription))
 
       regExistingEori() { result =>
+        assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe Sub02Controller
           .migrationEnd(atarService)
@@ -457,6 +471,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
 
       regExistingEori() { result =>
+        assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe Sub02Controller
           .migrationEnd(atarService)
@@ -496,6 +511,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(NewSubscription))
 
       regExistingEori() { result =>
+        assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .pending(atarService, processingDateResponse)
@@ -515,6 +531,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
       regExistingEori(Journey.Register) { result =>
+        assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .fail(atarService, DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
@@ -551,6 +568,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       )
 
       regExistingEori(Journey.Register) { result =>
+        assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .pending(atarService, DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
@@ -587,6 +605,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Future.successful(None))
 
       regExistingEori(Journey.Register) { result =>
+        assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .fail(atarService, DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
@@ -624,6 +643,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(SubscriptionProcessing))
 
       regExistingEori() { result =>
+        assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .processing(atarService)
@@ -664,6 +684,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(SubscriptionExists))
 
       regExistingEori() { result =>
+        assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe SubscriptionRecoveryController
           .complete(atarService, Journey.Subscribe)
@@ -706,6 +727,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(()))
 
       regExistingEori() { result =>
+        assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .fail(atarService, processingDateResponse)
@@ -739,6 +761,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
       regExistingEori() { result =>
+        assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .eoriAlreadyLinked(atarService)
@@ -772,6 +795,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
       regExistingEori() { result =>
+        assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .eoriAlreadyLinked(atarService)
@@ -805,6 +829,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
       regExistingEori() { result =>
+        assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .eoriAlreadyLinked(atarService)
@@ -838,6 +863,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
       regExistingEori() { result =>
+        assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .eoriAlreadyLinked(atarService)
@@ -874,6 +900,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
       regExistingEori() { result =>
+        assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .rejectedPreviously(atarService)
@@ -910,6 +937,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
       regExistingEori() { result =>
+        assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .rejectedPreviously(atarService)

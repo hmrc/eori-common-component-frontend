@@ -90,7 +90,11 @@ class OrganisationTypeController @Inject() (
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request =>
         def startSubscription: CdsOrganisationType => Future[Result] = { organisationType =>
-          subscriptionFlowManager.startSubscriptionFlow(service, journey) map {
+          subscriptionFlowManager.startSubscriptionFlow(
+            cdsOrganisationType = organisationType,
+            service = service,
+            journey = journey
+          ) map {
             case (page, newSession) =>
               val session = requestSessionData.sessionWithOrganisationTypeAdded(newSession, organisationType)
               Redirect(page.url(service)).withSession(session)

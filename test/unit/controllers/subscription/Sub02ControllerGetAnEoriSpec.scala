@@ -23,7 +23,7 @@ import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.i18n.Messages
-import play.api.mvc.{AnyContent, Request, Result}
+import play.api.mvc.{AnyContent, Request, Result, Session}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.PdfGeneratorConnector
@@ -94,7 +94,15 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
     reset(mockAuthConnector, mockCdsSubscriber, mockPdfGeneratorService, mockSessionCache)
     when(mockSubscriptionDetailsService.saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any()))
       .thenReturn(Future.successful(()))
+  }
 
+  private def assertCleanedSession(result: Future[Result]): Unit = {
+    val currentSession: Session = session(result)
+
+    currentSession.data.get("selected-user-location") shouldBe None
+    currentSession.data.get("subscription-flow") shouldBe None
+    currentSession.data.get("selected-organisation-type") shouldBe None
+    currentSession.data.get("uri-before-subscription-flow") shouldBe None
   }
 
   "Subscribe" should {
@@ -137,6 +145,8 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       )
       subscribeForGetYourEORI(organisationTypeOption = Some(mockCdsOrganisationType)) { result =>
         await(result)
+        assertCleanedSession(result)
+
         verify(mockCdsSubscriber).subscribeWithCachedDetails(
           meq(Some(mockCdsOrganisationType)),
           meq(atarService),
@@ -164,6 +174,8 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       )
       subscribeForGetYourEORI(organisationTypeOption = None) { result =>
         await(result)
+        assertCleanedSession(result)
+
         verify(mockCdsSubscriber).subscribeWithCachedDetails(meq(None), meq(atarService), meq(Journey.Register))(
           any[HeaderCarrier],
           any[Request[AnyContent]],
@@ -191,6 +203,8 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       )
 
       subscribeForGetYourEORI() { result =>
+        assertCleanedSession(result)
+
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe routes.Sub02Controller.end(atarService).url
       }
@@ -208,6 +222,8 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       )
 
       subscribeForGetYourEORI() { result =>
+        assertCleanedSession(result)
+
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe routes.Sub02Controller.pending(atarService).url
       }
@@ -223,6 +239,8 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       ).thenReturn(Future.successful(SubscriptionFailed("Subscription application has been rejected", processingDate)))
 
       subscribeForGetYourEORI() { result =>
+        assertCleanedSession(result)
+
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe routes.Sub02Controller.rejected(atarService).url
       }
@@ -238,6 +256,8 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       ).thenReturn(Future.successful(SubscriptionFailed(EoriAlreadyExists, processingDate)))
 
       subscribeForGetYourEORI() { result =>
+        assertCleanedSession(result)
+
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe routes.Sub02Controller.eoriAlreadyExists(atarService).url
       }
@@ -253,6 +273,8 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       ).thenReturn(Future.successful(SubscriptionFailed(EoriAlreadyAssociated, processingDate)))
 
       subscribeForGetYourEORI() { result =>
+        assertCleanedSession(result)
+
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe routes.Sub02Controller.eoriAlreadyAssociated(atarService).url
       }
@@ -268,6 +290,8 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       ).thenReturn(Future.successful(SubscriptionFailed(SubscriptionInProgress, processingDate)))
 
       subscribeForGetYourEORI() { result =>
+        assertCleanedSession(result)
+
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe routes.Sub02Controller.subscriptionInProgress(atarService).url
       }
@@ -283,6 +307,8 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       ).thenReturn(Future.successful(SubscriptionFailed(RequestNotProcessed, processingDate)))
 
       subscribeForGetYourEORI() { result =>
+        assertCleanedSession(result)
+
         status(result) shouldBe SEE_OTHER
         result.header.headers(
           LOCATION
@@ -367,6 +393,8 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
         .thenReturn(Future.successful(Sub02Outcome("testDate", "testFullName", Some("EoriTest"))))
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
       invokeEoriAlreadyExists { result =>
+        assertCleanedSession(result)
+
         status(result) shouldBe OK
       }
     }
@@ -378,6 +406,8 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
         .thenReturn(Future.successful(Sub02Outcome("testDate", "testFullName", Some("EoriTest"))))
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
       invokeSubscriptionInProgress { result =>
+        assertCleanedSession(result)
+
         status(result) shouldBe OK
       }
     }
@@ -389,6 +419,8 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
         .thenReturn(Future.successful(Sub02Outcome("testDate", "testFullName", Some("EoriTest"))))
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
       invokePending { result =>
+        assertCleanedSession(result)
+
         status(result) shouldBe OK
       }
     }
@@ -406,6 +438,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
       when(mockSessionCache.saveSub02Outcome(any[Sub02Outcome])(any[HeaderCarrier])).thenReturn(Future.successful(true))
       invokeMigrationEnd { result =>
+        assertCleanedSession(result)
         status(result) shouldBe OK
       }
     }
@@ -419,6 +452,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
       when(mockSessionCache.saveSub02Outcome(any[Sub02Outcome])(any[HeaderCarrier])).thenReturn(Future.successful(true))
       invokeMigrationEnd { result =>
+        assertCleanedSession(result)
         status(result) shouldBe OK
       }
     }
@@ -430,6 +464,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
       when(mockSessionCache.saveSub02Outcome(any[Sub02Outcome])(any[HeaderCarrier])).thenReturn(Future.successful(true))
       invokeMigrationEnd { result =>
+        assertCleanedSession(result)
         status(result) shouldBe OK
       }
     }
