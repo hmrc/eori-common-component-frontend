@@ -155,6 +155,17 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
       val option: String = cdsOrganisationType.id
 
       s"return a redirect to the matching form for the correct organisation type when '$option' is selected" in {
+        val updatedMockSession =
+          Session(Map()) + (RequestSessionDataKeys.selectedOrganisationType -> option)
+
+        when(
+          mockSubscriptionFlowManager
+            .startSubscriptionFlow(any(), any(), any[Service], any[Journey.Value])(
+              any[HeaderCarrier](),
+              any[Request[AnyContent]]()
+            )
+        ).thenReturn(Future.successful((EoriNumberSubscriptionFlowPage, updatedMockSession)))
+
         submitForm(
           Map("organisation-type" -> option),
           organisationType = Some(cdsOrganisationType),
