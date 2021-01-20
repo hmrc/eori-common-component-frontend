@@ -294,6 +294,7 @@ object RegisterWithEoriAndIdResponse {
   val EoriAlreadyLinked          = "600 - EORI already linked to a different ID"
   val IDLinkedWithEori           = "602 - ID already linked to a different EORI"
   val RejectedPreviouslyAndRetry = "601 - Rejected previously and retry failed"
+  val RequestCouldNotBeProcessed = "003 - Request could not be processed"
 }
 
 case class RegisterWithEoriAndIdResponseHolder(registerWithEORIAndIDResponse: RegisterWithEoriAndIdResponse)
