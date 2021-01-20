@@ -123,13 +123,15 @@ class SubscriptionService @Inject() (connector: SubscriptionServiceConnector, fe
           )
         case MessagingServiceParam.Pending =>
           SubscriptionPending(formBundleId(response), processingDate, emailVerificationTimestamp)
-        case MessagingServiceParam.Fail if responseCommon.statusText.contains(EoriAlreadyExists) =>
+        case MessagingServiceParam.Fail if responseCommon.statusText.exists(_.equalsIgnoreCase(EoriAlreadyExists)) =>
           SubscriptionFailed(EoriAlreadyExists, processingDate)
-        case MessagingServiceParam.Fail if responseCommon.statusText.contains(RequestNotProcessed) =>
+        case MessagingServiceParam.Fail if responseCommon.statusText.exists(_.equalsIgnoreCase(RequestNotProcessed)) =>
           SubscriptionFailed(RequestNotProcessed, processingDate)
-        case MessagingServiceParam.Fail if responseCommon.statusText.contains(EoriAlreadyAssociated) =>
+        case MessagingServiceParam.Fail
+            if responseCommon.statusText.exists(_.equalsIgnoreCase(EoriAlreadyAssociated)) =>
           SubscriptionFailed(EoriAlreadyAssociated, processingDate)
-        case MessagingServiceParam.Fail if responseCommon.statusText.contains(SubscriptionInProgress) =>
+        case MessagingServiceParam.Fail
+            if responseCommon.statusText.exists(_.equalsIgnoreCase(SubscriptionInProgress)) =>
           SubscriptionFailed(SubscriptionInProgress, processingDate)
         case MessagingServiceParam.Fail =>
           val message =

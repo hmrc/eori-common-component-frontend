@@ -385,6 +385,33 @@ class SubscriptionServiceSpec
       res shouldBe failResponse
     }
 
+    "return a valid fail response when subscription fails due to eori already exists - ignoring letter case" in {
+      val failResponse = SubscriptionFailed(EoriAlreadyExists, "18 Aug 2016")
+
+      val service = constructService(
+        connectorMock =>
+          when(connectorMock.subscribe(ArgumentMatchers.any())(ArgumentMatchers.any()))
+            .thenReturn(
+              Future.successful(subscriptionFailedResponseJson("069 - EORI Already Exists FOR the VAT Number")).as[
+                SubscriptionResponse
+              ]
+            )
+      )
+
+      val res = await(
+        service
+          .subscribe(
+            organisationRegistrationDetails,
+            fullyPopulatedSubscriptionDetails,
+            None,
+            Journey.Register,
+            atarService
+          )(mockHeaderCarrier)
+      )
+
+      res shouldBe failResponse
+    }
+
     "return a valid fail response when subscription fails due to request could not be processed" in {
       val failResponse = SubscriptionFailed(RequestNotProcessed, "18 Aug 2016")
 
@@ -392,6 +419,33 @@ class SubscriptionServiceSpec
         connectorMock =>
           when(connectorMock.subscribe(ArgumentMatchers.any())(ArgumentMatchers.any()))
             .thenReturn(Future.successful(subscriptionFailedResponseJson(RequestNotProcessed)).as[SubscriptionResponse])
+      )
+
+      val res = await(
+        service
+          .subscribe(
+            organisationRegistrationDetails,
+            fullyPopulatedSubscriptionDetails,
+            None,
+            Journey.Register,
+            atarService
+          )(mockHeaderCarrier)
+      )
+
+      res shouldBe failResponse
+    }
+
+    "return a valid fail response when subscription fails due to request could not be processed - ignoring letter case" in {
+      val failResponse = SubscriptionFailed(RequestNotProcessed, "18 Aug 2016")
+
+      val service = constructService(
+        connectorMock =>
+          when(connectorMock.subscribe(ArgumentMatchers.any())(ArgumentMatchers.any()))
+            .thenReturn(
+              Future.successful(subscriptionFailedResponseJson("003 - Request Could Not Be Processed")).as[
+                SubscriptionResponse
+              ]
+            )
       )
 
       val res = await(
@@ -433,6 +487,34 @@ class SubscriptionServiceSpec
       res shouldBe failResponse
     }
 
+    "return a valid fail response when subscription fails due to subscription already in-progress - ignoring letter case" in {
+      val failResponse = SubscriptionFailed(SubscriptionInProgress, "18 Aug 2016")
+
+      val service =
+        constructService(
+          connectorMock =>
+            when(connectorMock.subscribe(ArgumentMatchers.any())(ArgumentMatchers.any()))
+              .thenReturn(
+                Future.successful(
+                  subscriptionFailedResponseJson("068 - Subscription Already IN-Progress or active")
+                ).as[SubscriptionResponse]
+              )
+        )
+
+      val res = await(
+        service
+          .subscribe(
+            organisationRegistrationDetails,
+            fullyPopulatedSubscriptionDetails,
+            None,
+            Journey.Register,
+            atarService
+          )(mockHeaderCarrier)
+      )
+
+      res shouldBe failResponse
+    }
+
     "return a valid fail response when subscription fails due to eori already associated to different business partner record" in {
       val failResponse = SubscriptionFailed(EoriAlreadyAssociated, "18 Aug 2016")
 
@@ -441,6 +523,35 @@ class SubscriptionServiceSpec
           when(connectorMock.subscribe(ArgumentMatchers.any())(ArgumentMatchers.any()))
             .thenReturn(
               Future.successful(subscriptionFailedResponseJson(EoriAlreadyAssociated)).as[SubscriptionResponse]
+            )
+      )
+
+      val res = await(
+        service
+          .subscribe(
+            organisationRegistrationDetails,
+            fullyPopulatedSubscriptionDetails,
+            None,
+            Journey.Register,
+            atarService
+          )(mockHeaderCarrier)
+      )
+
+      res shouldBe failResponse
+    }
+
+    "return a valid fail response when subscription fails due to eori already associated to different business partner record - ignoring letter case" in {
+      val failResponse = SubscriptionFailed(EoriAlreadyAssociated, "18 Aug 2016")
+
+      val service = constructService(
+        connectorMock =>
+          when(connectorMock.subscribe(ArgumentMatchers.any())(ArgumentMatchers.any()))
+            .thenReturn(
+              Future.successful(
+                subscriptionFailedResponseJson(
+                  "070 - There IS Another EORI already associated TO this Business partner"
+                )
+              ).as[SubscriptionResponse]
             )
       )
 
