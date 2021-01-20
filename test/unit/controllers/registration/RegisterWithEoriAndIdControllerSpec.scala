@@ -945,6 +945,80 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       }
     }
 
+    "return success with error code as 'Request could not be processed'" in {
+      when(
+        mockCdsSubscriber.subscribeWithCachedDetails(
+          any[Option[CdsOrganisationType]],
+          any[Service],
+          any[Journey.Value]
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+      ).thenReturn(
+        Future.successful(
+          SubscriptionSuccessful(
+            Eori("EORI-Number"),
+            formBundleIdResponse,
+            processingDateResponse,
+            Some(emailVerificationTimestamp)
+          )
+        )
+      )
+      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
+        .thenReturn(Future.successful(true))
+      when(mockCache.registrationDetails(any[HeaderCarrier]))
+        .thenReturn(Future.successful(organisationRegistrationDetails))
+      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+        .thenReturn(
+          Future
+            .successful(stubHandleErrorCodeResponse(RequestCouldNotBeProcessed))
+        )
+      when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
+
+      regExistingEori() { result =>
+        assertCleanedSession(result)
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+          .fail(atarService, DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
+          .url
+      }
+    }
+
+    "return success with error code as 'Request could not be processed' ignoring letter case" in {
+      when(
+        mockCdsSubscriber.subscribeWithCachedDetails(
+          any[Option[CdsOrganisationType]],
+          any[Service],
+          any[Journey.Value]
+        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+      ).thenReturn(
+        Future.successful(
+          SubscriptionSuccessful(
+            Eori("EORI-Number"),
+            formBundleIdResponse,
+            processingDateResponse,
+            Some(emailVerificationTimestamp)
+          )
+        )
+      )
+      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
+        .thenReturn(Future.successful(true))
+      when(mockCache.registrationDetails(any[HeaderCarrier]))
+        .thenReturn(Future.successful(organisationRegistrationDetails))
+      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+        .thenReturn(
+          Future
+            .successful(stubHandleErrorCodeResponse("003 - Request Could Not Be Processed"))
+        )
+      when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
+
+      regExistingEori() { result =>
+        assertCleanedSession(result)
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+          .fail(atarService, DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
+          .url
+      }
+    }
+
     "return unexpected status text" in {
       when(
         mockCdsSubscriber.subscribeWithCachedDetails(

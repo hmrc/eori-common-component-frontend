@@ -255,7 +255,12 @@ class RegisterWithEoriAndIdController @Inject() (
         logger.warn("Reg06 IDLinkedWithEori")
         Future.successful(Redirect(RegisterWithEoriAndIdController.eoriAlreadyLinked(service)))
       case _ if statusText.exists(_.equalsIgnoreCase(RejectedPreviouslyAndRetry)) =>
+        logger.warn("REG06 Rejected previously")
         Future.successful(Redirect(RegisterWithEoriAndIdController.rejectedPreviously(service)))
+      case _ if statusText.exists(_.equalsIgnoreCase(RequestCouldNotBeProcessed)) =>
+        logger.warn("REG06 Request could not be processed")
+        val formattedDate = languageUtils.Dates.formatDate(LocalDate.now())
+        Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service, formattedDate)))
       case _ => Future.successful(ServiceUnavailable(errorTemplateView()))
     }
   }
