@@ -297,8 +297,10 @@ class RegisterWithEoriAndIdController @Inject() (
     id: String
   )(implicit request: Request[AnyContent], loggedInUser: LoggedInUserWithEnrolments, hc: HeaderCarrier) =
     subscriptionStatusService.getStatus(idType, id).flatMap {
-      case NewSubscription | SubscriptionRejected =>
+      case NewSubscription =>
         onSuccessfulSubscriptionStatusSubscribe(service, journey)
+      case SubscriptionRejected =>
+        Future.successful(Redirect(RegisterWithEoriAndIdController.rejected(service)))
       case SubscriptionProcessing =>
         Future.successful(Redirect(RegisterWithEoriAndIdController.processing(service)))
       case SubscriptionExists => Future.successful(Redirect(SubscriptionRecoveryController.complete(service, journey)))

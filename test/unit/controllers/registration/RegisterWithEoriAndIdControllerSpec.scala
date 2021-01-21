@@ -297,7 +297,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       }
     }
 
-    "create a subscription for sole trader with status SubscriptionRejected" in {
+    "display rejected screen for sole trader with status SubscriptionRejected" in {
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(individualRegistrationDetails))
@@ -335,8 +335,8 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe Sub02Controller
-          .migrationEnd(atarService)
+        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+          .rejected(atarService)
           .url
       }
     }
