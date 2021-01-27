@@ -25,7 +25,10 @@ import play.api.libs.json.{JsValue, Json}
 import play.mvc.Http.Status._
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.EnrolmentStoreProxyConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, EnrolmentStoreProxyResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.{
+  ES1Request,
+  ES1Response,
   KeyValuePair,
   KnownFact,
   KnownFacts,
@@ -161,6 +164,160 @@ class EnrolmentStoreProxyConnectorSpec extends IntegrationTestsSpec with ScalaFu
       val request = KnownFactsQuery("GB123456789012")
 
       enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(request).futureValue mustBe Some(knownFacts)
+    }
+
+    "return ES1 response" when {
+
+      "enrolment store proxy respond with status OK and principal and delegated groupIds" in {
+        val es1Request = ES1Request(Service.withName("atar").get, "GB123456789123")
+
+        val enrolmentStoreProxyResponse = Json.parse("""{
+            |    "principalGroupIds": [
+            |       "groupId1",
+            |       "groupId2"
+            |    ],
+            |    "delegatedGroupIds": [
+            |       "groupId3",
+            |       "groupId4"
+            |    ]
+            |}""".stripMargin)
+
+        EnrolmentStoreProxyService.stubTheEnrolmentStoreProxyResponse(
+          s"/enrolment-store-proxy/enrolment-store/enrolments/${es1Request.enrolment}/groups?type=${es1Request.queryType.value}",
+          enrolmentStoreProxyResponse.toString(),
+          OK
+        )
+
+        val result = enrolmentStoreProxyConnector.queryGroupsWithAllocatedEnrolment(es1Request)
+
+        val expectedResponse = ES1Response(Some(Seq("groupId1", "groupId2")), Some(Seq("groupId3", "groupId4")))
+
+        result.futureValue mustBe expectedResponse
+      }
+
+      "enrolment store proxy respond with status OK and principal groupIds" in {
+        val es1Request = ES1Request(Service.withName("atar").get, "GB123456789123")
+
+        val enrolmentStoreProxyResponse = Json.parse("""{
+            |    "principalGroupIds": [
+            |       "groupId1",
+            |       "groupId2"
+            |    ]
+            |}""".stripMargin)
+
+        EnrolmentStoreProxyService.stubTheEnrolmentStoreProxyResponse(
+          s"/enrolment-store-proxy/enrolment-store/enrolments/${es1Request.enrolment}/groups?type=${es1Request.queryType.value}",
+          enrolmentStoreProxyResponse.toString(),
+          OK
+        )
+
+        val result = enrolmentStoreProxyConnector.queryGroupsWithAllocatedEnrolment(es1Request)
+
+        val expectedResponse =
+          ES1Response(Some(Seq("groupId1", "groupId2")), None)
+
+        result.futureValue mustBe expectedResponse
+      }
+
+      "enrolment store proxy respond with status OK and delegated groupIds" in {
+        val es1Request = ES1Request(Service.withName("atar").get, "GB123456789123")
+
+        val enrolmentStoreProxyResponse = Json.parse("""{
+            |    "delegatedGroupIds": [
+            |       "groupId3",
+            |       "groupId4"
+            |    ]
+            |}""".stripMargin)
+
+        EnrolmentStoreProxyService.stubTheEnrolmentStoreProxyResponse(
+          s"/enrolment-store-proxy/enrolment-store/enrolments/${es1Request.enrolment}/groups?type=${es1Request.queryType.value}",
+          enrolmentStoreProxyResponse.toString(),
+          OK
+        )
+
+        val result = enrolmentStoreProxyConnector.queryGroupsWithAllocatedEnrolment(es1Request)
+
+        val expectedResponse =
+          ES1Response(None, Some(Seq("groupId3", "groupId4")))
+
+        result.futureValue mustBe expectedResponse
+      }
+
+      "enrolment store proxy respond with status NO_CONTENT" in {
+        val es1Request = ES1Request(Service.withName("atar").get, "GB123456789123")
+
+        EnrolmentStoreProxyService.stubTheEnrolmentStoreProxyResponse(
+          s"/enrolment-store-proxy/enrolment-store/enrolments/${es1Request.enrolment}/groups?type=${es1Request.queryType.value}",
+          "",
+          NO_CONTENT
+        )
+
+        val result = enrolmentStoreProxyConnector.queryGroupsWithAllocatedEnrolment(es1Request)
+
+        val expectedResponse = ES1Response(None, None)
+
+        result.futureValue mustBe expectedResponse
+      }
+    }
+
+    "throw an exception" when {
+
+      "status is 400 (BAD_REQUEST) with message INVALID_ENROLMENT_KEY" in {
+
+        val es1Request = ES1Request(Service.withName("atar").get, "GB123456789123")
+
+        val enrolmentStoreProxyResponse =
+          Json.parse("""{
+            |    "code":"INVALID_ENROLMENT_KEY",
+            |    "message":"The enrolment key provided did not match the specification"
+            |}""".stripMargin)
+
+        EnrolmentStoreProxyService.stubTheEnrolmentStoreProxyResponse(
+          s"/enrolment-store-proxy/enrolment-store/enrolments/${es1Request.enrolment}/groups?type=${es1Request.queryType.value}",
+          enrolmentStoreProxyResponse.toString(),
+          BAD_REQUEST
+        )
+
+        intercept[Exception] {
+          await(enrolmentStoreProxyConnector.queryGroupsWithAllocatedEnrolment(es1Request))
+        }
+      }
+
+      "status is 400 (BAD_REQUEST) with message TYPE_PARAMETER_INVALID" in {
+
+        val es1Request = ES1Request(Service.withName("atar").get, "GB123456789123")
+
+        val enrolmentStoreProxyResponse =
+          Json.parse("""{
+            |    "code":"TYPE_PARAMETER_INVALID",
+            |    "message":"The type parameter was invalid. Expected all, principal or delegated"
+            |}""".stripMargin)
+
+        EnrolmentStoreProxyService.stubTheEnrolmentStoreProxyResponse(
+          s"/enrolment-store-proxy/enrolment-store/enrolments/${es1Request.enrolment}/groups?type=${es1Request.queryType.value}",
+          enrolmentStoreProxyResponse.toString(),
+          BAD_REQUEST
+        )
+
+        intercept[Exception] {
+          await(enrolmentStoreProxyConnector.queryGroupsWithAllocatedEnrolment(es1Request))
+        }
+      }
+
+      "status is 500 (INTERNAL_SERVER_ERROR)" in {
+
+        val es1Request = ES1Request(Service.withName("atar").get, "GB123456789123")
+
+        EnrolmentStoreProxyService.stubTheEnrolmentStoreProxyResponse(
+          s"/enrolment-store-proxy/enrolment-store/enrolments/${es1Request.enrolment}/groups?type=${es1Request.queryType.value}",
+          "",
+          INTERNAL_SERVER_ERROR
+        )
+
+        intercept[Exception] {
+          await(enrolmentStoreProxyConnector.queryGroupsWithAllocatedEnrolment(es1Request))
+        }
+      }
     }
   }
 }
