@@ -25,9 +25,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
   EnrolmentExtractor,
   GroupEnrolmentExtractor
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Eori, ExistingEori, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{start, start_subscribe}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -41,6 +42,7 @@ class ApplicationController @Inject() (
   viewStartRegister: start,
   cache: SessionCache,
   groupEnrolment: GroupEnrolmentExtractor,
+  enrolmentStoreProxyService: EnrolmentStoreProxyService,
   appConfig: AppConfig
 )(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
     extends CdsController(mcc) with EnrolmentExtractor {
@@ -62,6 +64,19 @@ class ApplicationController @Inject() (
       }
   }
 
+  private def isEnrolmentInUse(service: Service, loggedInUser: LoggedInUserWithEnrolments)(implicit
+    hc: HeaderCarrier
+  ): Future[Option[ExistingEori]] = {
+    val groupId = loggedInUser.groupId.getOrElse(throw MissingGroupId())
+
+    groupEnrolment.groupIdEnrolments(groupId).flatMap { groupEnrolments =>
+      existingEoriForUserOrGroup(loggedInUser, groupEnrolments) match {
+        case Some(existingEori) => enrolmentStoreProxyService.isEnrolmentInUse(service, existingEori)
+        case _                  => Future.successful(None)
+      }
+    }
+  }
+
   private def isUserEnrolledFor(loggedInUser: LoggedInUserWithEnrolments, service: Service): Boolean =
     enrolledForService(loggedInUser, service).isDefined
 
@@ -69,17 +84,24 @@ class ApplicationController @Inject() (
     hc: HeaderCarrier,
     request: Request[_]
   ): Future[Result] =
-    if (isUserEnrolledFor(loggedInUser, Service.cds))
-      Future.successful(Redirect(routes.HasExistingEoriController.displayPage(service)))
-    else
-      groupEnrolment.groupIdEnrolmentTo(groupId, Service.cds).flatMap {
-        case Some(groupEnrolment) if groupEnrolment.eori.isDefined =>
-          cache.saveGroupEnrolment(groupEnrolment).map { _ =>
-            Redirect(routes.HasExistingEoriController.displayPage(service)) // AutoEnrolment
+    isEnrolmentInUse(service, loggedInUser).flatMap {
+      eoriFromUsedEnrolmentOpt =>
+        if (isUserEnrolledFor(loggedInUser, Service.cds) && eoriFromUsedEnrolmentOpt.isEmpty)
+          Future.successful(Redirect(routes.HasExistingEoriController.displayPage(service)))
+        else
+          groupEnrolment.groupIdEnrolmentTo(groupId, Service.cds).flatMap {
+            case Some(groupEnrolment) if groupEnrolment.eori.isDefined && eoriFromUsedEnrolmentOpt.isEmpty =>
+              cache.saveGroupEnrolment(groupEnrolment).map { _ =>
+                Redirect(routes.HasExistingEoriController.displayPage(service)) // AutoEnrolment
+              }
+            case _ if eoriFromUsedEnrolmentOpt.isDefined =>
+              cache.saveEori(Eori(eoriFromUsedEnrolmentOpt.get.id)).map { _ =>
+                Redirect(routes.YouCannotUseServiceController.unableToUseIdPage(service))
+              }
+            case _ =>
+              Future.successful(Ok(viewStartSubscribe(service))) // Display information page
           }
-        case _ =>
-          Future.successful(Ok(viewStartSubscribe(service))) // Display information page
-      }
+    }
 
   def logout(service: Service, journey: Journey.Value): Action[AnyContent] =
     authorise.ggAuthorisedUserAction {

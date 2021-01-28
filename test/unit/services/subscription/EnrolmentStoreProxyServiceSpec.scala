@@ -20,22 +20,25 @@ import base.UnitSpec
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfter
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.EnrolmentStoreProxyConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   EnrolmentResponse,
   EnrolmentStoreProxyResponse,
+  ExistingEori,
   GroupId,
   KeyValue
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.ES1Response
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class EnrolmentStoreProxyServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter {
+class EnrolmentStoreProxyServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter with ScalaFutures {
 
   private val mockEnrolmentStoreProxyConnector =
     mock[EnrolmentStoreProxyConnector]
@@ -112,6 +115,40 @@ class EnrolmentStoreProxyServiceSpec extends UnitSpec with MockitoSugar with Bef
       await(service.enrolmentsForGroup(groupId)) shouldBe List(enrolmentResponse)
 
       verify(mockEnrolmentStoreProxyConnector).getEnrolmentByGroupId(any[String])(meq(headerCarrier), any())
+    }
+
+    "return Existing EORI" when {
+
+      "EORI is allocated to different groupId" in {
+
+        val es1Response = ES1Response(Some(Seq("groupId")), None)
+
+        when(mockEnrolmentStoreProxyConnector.queryGroupsWithAllocatedEnrolment(any())(any()))
+          .thenReturn(Future.successful(es1Response))
+
+        val existingEori = ExistingEori("Gb123456789123", "HMRC-GVMS-ORG")
+
+        val result = service.isEnrolmentInUse(Service.withName("atar").get, existingEori)
+
+        result.futureValue shouldBe Some(existingEori)
+      }
+    }
+
+    "not return existing EORI" when {
+
+      "EORI is not allocated to different groupId" in {
+
+        val es1Response = ES1Response(None, None)
+
+        when(mockEnrolmentStoreProxyConnector.queryGroupsWithAllocatedEnrolment(any())(any()))
+          .thenReturn(Future.successful(es1Response))
+
+        val existingEori = ExistingEori("Gb123456789123", "HMRC-GVMS-ORG")
+
+        val result = service.isEnrolmentInUse(Service.withName("atar").get, existingEori)
+
+        result.futureValue shouldBe None
+      }
     }
   }
 

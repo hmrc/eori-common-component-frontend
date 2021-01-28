@@ -248,3 +248,8 @@ ecc.reg06.outcome.why.individual.nino = National Insurance number
 ecc.reg06.outcome.why.org.utr = Corporation Tax Unique Taxpayer Reference (UTR)
 ecc.reg06.outcome.why.eori = EORI number
 ecc.reg06.outcome.apply.again = Review these details and <a href="{0}">apply again</a>.
+
+ecc.unable-to-use.title = You cannot access {0} with this Government Gateway account
+ecc.unable-to-use.this-eori-number = The EORI number:
+ecc.unable-to-use.para1 = which is linked to your Government Gateway account is already used by another account to access {0}. You will need to sign in with that account to access {0}.
+ecc.unable-to-use.para2 = Sign out and sign in again with a different Government Gateway account.

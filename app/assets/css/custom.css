@@ -149,3 +149,7 @@ a.hmrc-language-select__list-item {
 details .arrow {
     display: none!important;
 }
+
+.panel-indent--thick {
+    border-left: 8px solid #bfc1c3;
+}

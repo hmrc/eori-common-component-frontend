@@ -246,3 +246,8 @@ ecc.reg06.outcome.why.individual.nino = rhif Yswiriant Gwladol
 ecc.reg06.outcome.why.org.utr = Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)
 ecc.reg06.outcome.why.eori = Rhif EORI
 ecc.reg06.outcome.apply.again = Ewch dros y manylion hyn a <a href="{0}">chyflwynwch gais eto</a>.
+
+ecc.unable-to-use.title = You cannot access {0} with this Government Gateway account
+ecc.unable-to-use.this-eori-number = The EORI number:
+ecc.unable-to-use.para1 = which is linked to your Government Gateway account is already used by another account to access {0}. You will need to sign in with that account to access {0}.
+ecc.unable-to-use.para2 = Sign out and sign in again with a different Government Gateway account.

@@ -24,6 +24,8 @@ GET         /customs-enrolment-services/:service/:journey/sign-out              
 GET         /customs-enrolment-services/:service/:journey/you-cannot-use-service                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.YouCannotUseServiceController.page(service: Service, journey: Journey.Value)
 GET         /customs-enrolment-services/:service/:journey/unauthorised                                @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.YouCannotUseServiceController.unauthorisedPage(service: Service, journey: Journey.Value)
 
+GET         /customs-enrolment-services/:service/subscribe/unable-to-use-id                           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.YouCannotUseServiceController.unableToUseIdPage(service: Service)
+
 GET         /customs-enrolment-services/:service/:journey/keep-alive                                  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.keepAlive(service: Service, journey: Journey.Value)
 
 GET         /customs-enrolment-services/:service/:journey/email-confirmed                             @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.emailConfirmed(service: Service, journey: Journey.Value)

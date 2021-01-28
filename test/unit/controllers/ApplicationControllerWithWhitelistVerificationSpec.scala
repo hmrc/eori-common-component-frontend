@@ -23,6 +23,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationControlle
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{start, start_subscribe}
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
@@ -41,6 +42,8 @@ class ApplicationControllerWithAllowlistVerificationSpec extends ControllerSpec 
   private val startSubscribeView      = instanceOf[start_subscribe]
   private val groupEnrolmentExtractor = mock[GroupEnrolmentExtractor]
 
+  private val enrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
+
   val controller = new ApplicationController(
     mockAuthAction,
     mcc,
@@ -48,6 +51,7 @@ class ApplicationControllerWithAllowlistVerificationSpec extends ControllerSpec 
     startRegisterView,
     mockSessionCache,
     groupEnrolmentExtractor,
+    enrolmentStoreProxyService,
     appConfig
   )
 
