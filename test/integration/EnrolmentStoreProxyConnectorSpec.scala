@@ -18,7 +18,9 @@ package integration
 
 import java.time.LocalDate
 
+import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
@@ -27,6 +29,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.connector.EnrolmentStoreProxyCon
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, EnrolmentStoreProxyResponse}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.{
+  ES1QueryType,
   ES1Request,
   ES1Response,
   KeyValuePair,
@@ -38,7 +41,7 @@ import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import util.externalservices.EnrolmentStoreProxyService
 import util.externalservices.ExternalServicesConfig._
 
-class EnrolmentStoreProxyConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
+class EnrolmentStoreProxyConnectorSpec extends IntegrationTestsSpec with ScalaFutures with MockitoSugar {
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
@@ -264,7 +267,9 @@ class EnrolmentStoreProxyConnectorSpec extends IntegrationTestsSpec with ScalaFu
 
       "status is 400 (BAD_REQUEST) with message INVALID_ENROLMENT_KEY" in {
 
-        val es1Request = ES1Request(Service.withName("atar").get, "GB123456789123")
+        val incorrectService =
+          Service("incorrect", "incorrect", "incorrect", "incorrect", "incorrect", "incorrect", "incorrect", None)
+        val es1Request = ES1Request(incorrectService, "GB123456789123")
 
         val enrolmentStoreProxyResponse =
           Json.parse("""{
@@ -285,7 +290,12 @@ class EnrolmentStoreProxyConnectorSpec extends IntegrationTestsSpec with ScalaFu
 
       "status is 400 (BAD_REQUEST) with message TYPE_PARAMETER_INVALID" in {
 
-        val es1Request = ES1Request(Service.withName("atar").get, "GB123456789123")
+        val mockES1Request   = mock[ES1Request]
+        val mockES1QueryType = mock[ES1QueryType]
+
+        when(mockES1QueryType.value).thenReturn("incorrect")
+        when(mockES1Request.enrolment).thenReturn("HMRC-ATAR-ORG~GB123456789123")
+        when(mockES1Request.queryType).thenReturn(mockES1QueryType)
 
         val enrolmentStoreProxyResponse =
           Json.parse("""{
@@ -294,13 +304,13 @@ class EnrolmentStoreProxyConnectorSpec extends IntegrationTestsSpec with ScalaFu
             |}""".stripMargin)
 
         EnrolmentStoreProxyService.stubTheEnrolmentStoreProxyResponse(
-          s"/enrolment-store-proxy/enrolment-store/enrolments/${es1Request.enrolment}/groups?type=${es1Request.queryType.value}",
+          s"/enrolment-store-proxy/enrolment-store/enrolments/${mockES1Request.enrolment}/groups?type=${mockES1Request.queryType.value}",
           enrolmentStoreProxyResponse.toString(),
           BAD_REQUEST
         )
 
         intercept[Exception] {
-          await(enrolmentStoreProxyConnector.queryGroupsWithAllocatedEnrolment(es1Request))
+          await(enrolmentStoreProxyConnector.queryGroupsWithAllocatedEnrolment(mockES1Request))
         }
       }
 
