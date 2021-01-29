@@ -21,7 +21,7 @@ import org.jsoup.nodes.Document
 import play.api.mvc.Request
 import play.api.test.Helpers.contentAsString
 import util.ViewSpec
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.unable_to_use_id
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.unable_to_use_id
 
 class UnableToUseIdViewSpec extends ViewSpec {
 
