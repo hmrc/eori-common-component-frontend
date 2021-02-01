@@ -247,17 +247,17 @@ ecc.reg06.outcome.why.org.utr = Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Go
 ecc.reg06.outcome.why.eori = Rhif EORI
 ecc.reg06.outcome.apply.again = Ewch dros y manylion hyn a <a href="{0}">chyflwynwch gais eto</a>.
 
-ecc.unable-to-use.title = You cannot access {0} with this Government Gateway account
-ecc.unable-to-use.this-eori-number = The EORI number:
-ecc.unable-to-use.para1 = which is linked to your Government Gateway account is already used by another account to access {0}. You will need to sign in with that account to access {0}.
-ecc.unable-to-use.para2 = Sign out and sign in again with a different Government Gateway account.
+ecc.unable-to-use.title = Ni allwch gael mynediad at {0} gyda chyfrif Porth y Llywodraeth hwn
+ecc.unable-to-use.this-eori-number = Mae’r rhif EORI:
+ecc.unable-to-use.para1 = sy’n gysylltiedig â’ch cyfrif Porth y Llywodraeth eisoes yn cael ei ddefnyddio gan gyfrif arall i gael mynediad at {0}. Bydd angen i chi fewngofnodi gyda’r cyfrif hwnnw i gael mynediad at {0}.
+ecc.unable-to-use.para2 = Allgofnodwch a mewngofnodwch eto gyda Dynodydd Defnyddiwr (ID) gwahanol ar gyfer Porth y Llywodraeth.
 
-ecc.what-is-your-eori.unable-to-use.title = Your Government Gateway account is not linked to this EORI
-ecc.what-is-your-eori.unable-to-use.question = What would you like to do?
-ecc.what-is-your-eori.unable-to-use.empty = Select what you would like to do
-ecc.what-is-your-eori.unable-to-use.changeEori = Change the EORI number
-ecc.what-is-your-eori.unable-to-use.signout = Sign out and sign in again with a different Government Gateway ID
+ecc.what-is-your-eori.unable-to-use.title = Nid yw’ch cyfrif Porth y Llywodraeth yn gysylltiedig â’r EORI hwn
+ecc.what-is-your-eori.unable-to-use.question = Beth ydych am ei wneud?
+ecc.what-is-your-eori.unable-to-use.empty = Dewiswch yr hyn yr hoffech ei wneud
+ecc.what-is-your-eori.unable-to-use.changeEori = Newidiwch y rhif EORI
+ecc.what-is-your-eori.unable-to-use.signout = Allgofnodwch a mewngofnodwch eto gyda Dynodydd Defnyddiwr (ID) gwahanol ar gyfer Porth y Llywodraeth
 
-ecc.unable-to-use.signout.title = You are about to sign out
-ecc.unable-to-use.signout.question = Is this what you want to do?
-ecc.unable-to-use.signout.empty = Select what you would like to do
+ecc.unable-to-use.signout.title = Rydych ar fin allgofnodi
+ecc.unable-to-use.signout.question = Ai dyma beth hoffech ei wneud?
+ecc.unable-to-use.signout.empty = Dewiswch yr hyn yr hoffech ei wneud
