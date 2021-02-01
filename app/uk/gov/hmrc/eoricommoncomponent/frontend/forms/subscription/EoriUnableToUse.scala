@@ -22,7 +22,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils._
 
 case class EoriUnableToUse(answer: Option[String]) {
 
-  def isAnswerChangeEori(): Boolean = answer.exists(_ == "change")
+  def isAnswerChangeEori(): Boolean = answer.exists(_ == EoriUnableToUse.changeEori)
 }
 
 object EoriUnableToUse {

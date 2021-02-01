@@ -70,24 +70,26 @@ class EoriUnableToUseControllerSpec extends ControllerSpec with AuthActionMock w
       verify(eoriUnableToUsePage).apply(any(), any(), any())(any(), any())
     }
 
-    "throw an exception" when {
+    "redirect to What is your eori page" when {
 
       "eori is not available for display page method" in {
 
         when(mockSubscriptionBusinessService.cachedEoriNumber(any())).thenReturn(Future.successful(None))
 
-        intercept[Exception] {
-          await(controller.displayPage(atarService)(FakeRequest("GET", "")))
-        }
+        val result = controller.displayPage(atarService)(FakeRequest("GET", ""))
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori"
       }
 
       "eori is not available for submit method" in {
 
         when(mockSubscriptionBusinessService.cachedEoriNumber(any())).thenReturn(Future.successful(None))
 
-        intercept[Exception] {
-          await(controller.submit(atarService)(FakeRequest("POST", "")))
-        }
+        val result = controller.submit(atarService)(FakeRequest("GET", ""))
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori"
       }
     }
 

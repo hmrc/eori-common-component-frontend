@@ -86,20 +86,21 @@ class ApplicationController @Inject() (
   ): Future[Result] =
     isEnrolmentInUse(service, loggedInUser).flatMap {
       eoriFromUsedEnrolmentOpt =>
-        if (isUserEnrolledFor(loggedInUser, Service.cds) && eoriFromUsedEnrolmentOpt.isEmpty)
-          Future.successful(Redirect(routes.HasExistingEoriController.displayPage(service)))
+        if (eoriFromUsedEnrolmentOpt.isEmpty)
+          if (isUserEnrolledFor(loggedInUser, Service.cds))
+            Future.successful(Redirect(routes.HasExistingEoriController.displayPage(service)))
+          else
+            groupEnrolment.groupIdEnrolmentTo(groupId, Service.cds).flatMap {
+              case Some(groupEnrolment) if groupEnrolment.eori.isDefined =>
+                cache.saveGroupEnrolment(groupEnrolment).map { _ =>
+                  Redirect(routes.HasExistingEoriController.displayPage(service)) // AutoEnrolment
+                }
+              case _ =>
+                Future.successful(Ok(viewStartSubscribe(service))) // Display information page
+            }
         else
-          groupEnrolment.groupIdEnrolmentTo(groupId, Service.cds).flatMap {
-            case Some(groupEnrolment) if groupEnrolment.eori.isDefined && eoriFromUsedEnrolmentOpt.isEmpty =>
-              cache.saveGroupEnrolment(groupEnrolment).map { _ =>
-                Redirect(routes.HasExistingEoriController.displayPage(service)) // AutoEnrolment
-              }
-            case _ if eoriFromUsedEnrolmentOpt.isDefined =>
-              cache.saveEori(Eori(eoriFromUsedEnrolmentOpt.get.id)).map { _ =>
-                Redirect(routes.YouCannotUseServiceController.unableToUseIdPage(service))
-              }
-            case _ =>
-              Future.successful(Ok(viewStartSubscribe(service))) // Display information page
+          cache.saveEori(Eori(eoriFromUsedEnrolmentOpt.get.id)).map { _ =>
+            Redirect(routes.YouCannotUseServiceController.unableToUseIdPage(service))
           }
     }
 

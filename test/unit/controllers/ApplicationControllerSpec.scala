@@ -230,7 +230,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       }
     }
 
-    "happen to authenticated users without enrolment and without groupId enrolment" when {
+    "happen to authenticated users with GVMS enrolment and without CDS enrolment and without groupId enrolment" when {
 
       "enrolment is in use" in {
 

@@ -31,7 +31,11 @@ class EoriSignoutViewSpec extends ViewSpec {
 
   private val form = eoriSignoutYesNoForm()
 
+  private val formWithError = form.bind(Map("yes-no-answer" -> "incorrect"))
+
   private val doc: Document = Jsoup.parse(contentAsString(view(atarService, form)))
+
+  private val docWithErrorSummary: Document = Jsoup.parse(contentAsString(view(atarService, formWithError)))
 
   "Eori signout page" should {
 
@@ -60,6 +64,12 @@ class EoriSignoutViewSpec extends ViewSpec {
       val continueButton = doc.body().getElementById("continue-button")
 
       continueButton.attr("value") mustBe "Continue"
+    }
+
+    "display error summary" in {
+
+      docWithErrorSummary.getElementById("form-error-heading").text() mustBe "There is a problem"
+      docWithErrorSummary.getElementsByClass("error-list").get(0).text() mustBe "Select what you would like to do"
     }
   }
 

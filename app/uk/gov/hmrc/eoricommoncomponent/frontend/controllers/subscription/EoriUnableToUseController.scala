@@ -22,10 +22,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.EoriUnableToUse
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  SubscriptionBusinessService,
-  SubscriptionDetailsService
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionBusinessService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.eori_unable_to_use
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,9 +38,15 @@ class EoriUnableToUseController @Inject() (
   def displayPage(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user =>
       subscriptionBusinessService.cachedEoriNumber.map { eoriOpt =>
-        val eori = eoriOpt.getOrElse(throw new Exception("Eori is missing"))
-
-        Ok(eoriUnableToUsePage(service, eori, EoriUnableToUse.form()))
+        eoriOpt match {
+          case Some(eori) => Ok(eoriUnableToUsePage(service, eori, EoriUnableToUse.form()))
+          case _ =>
+            Redirect(
+              uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.createForm(
+                service
+              )
+            )
+        }
       }
     }
 
@@ -52,9 +55,15 @@ class EoriUnableToUseController @Inject() (
       EoriUnableToUse.form().bindFromRequest().fold(
         formWithErrors =>
           subscriptionBusinessService.cachedEoriNumber.map { eoriOpt =>
-            val eori = eoriOpt.getOrElse(throw new Exception("Eori is missing"))
-
-            BadRequest(eoriUnableToUsePage(service, eori, formWithErrors))
+            eoriOpt match {
+              case Some(eori) => BadRequest(eoriUnableToUsePage(service, eori, formWithErrors))
+              case _ =>
+                Redirect(
+                  uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.createForm(
+                    service
+                  )
+                )
+            }
           },
         answer =>
           if (answer.isAnswerChangeEori())

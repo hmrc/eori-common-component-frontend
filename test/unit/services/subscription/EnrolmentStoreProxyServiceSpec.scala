@@ -136,7 +136,7 @@ class EnrolmentStoreProxyServiceSpec extends UnitSpec with MockitoSugar with Bef
 
     "not return existing EORI" when {
 
-      "EORI is not allocated to different groupId" in {
+      "EORI is not used for the service the user is attempting to enrol" in {
 
         val es1Response = ES1Response(None, None)
 

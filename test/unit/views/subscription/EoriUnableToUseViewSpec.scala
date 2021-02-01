@@ -31,7 +31,12 @@ class EoriUnableToUseViewSpec extends ViewSpec {
 
   private val form = EoriUnableToUse.form()
 
+  private val formWithError = form.bind(Map("answer" -> "incorrect"))
+
   private val doc: Document = Jsoup.parse(contentAsString(view(atarService, "GB123456789123", form)))
+
+  private val docWithErrorSummary: Document =
+    Jsoup.parse(contentAsString(view(atarService, "GB123456789123", formWithError)))
 
   "Eori unable to use page" should {
 
@@ -67,6 +72,12 @@ class EoriUnableToUseViewSpec extends ViewSpec {
       val continueButton = doc.body().getElementById("continue-button")
 
       continueButton.attr("value") mustBe "Continue"
+    }
+
+    "display error summary" in {
+
+      docWithErrorSummary.getElementById("form-error-heading").text() mustBe "There is a problem"
+      docWithErrorSummary.getElementsByClass("error-list").get(0).text() mustBe "Select what you would like to do"
     }
   }
 }

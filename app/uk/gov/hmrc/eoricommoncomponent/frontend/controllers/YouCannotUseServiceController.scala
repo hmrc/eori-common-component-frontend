@@ -60,9 +60,15 @@ class YouCannotUseServiceController @Inject() (
     implicit request => implicit user: LoggedInUserWithEnrolments =>
       cache.eori.flatMap { eoriOpt =>
         cache.remove.map { _ =>
-          val eori = eoriOpt.getOrElse(throw new Exception("Missing EORI"))
-
-          Ok(unableToUseIdPage(service, eori))
+          eoriOpt match {
+            case Some(eori) => Ok(unableToUseIdPage(service, eori))
+            case _ =>
+              Redirect(
+                uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.createForm(
+                  service
+                )
+              )
+          }
         }
       }
   }
