@@ -39,9 +39,11 @@ class MessagesSpec extends PlaySpec with Injector {
     "cds.subscription-details.tab.title.data"
   )
 
-  // TODO Remove ecc.unable-to-use key when we receive Welsh translations
+  // TODO Remove ecc.unable-to-use and ecc.what-is-your-eori.unable-to-use key when we receive Welsh translations
   def ignoreKey(key: String): Boolean =
-    key.startsWith("cds.country.") || sameTranslation.contains(key) || key.startsWith("ecc.unable-to-use")
+    key.startsWith("cds.country.") || sameTranslation.contains(key) || key.startsWith(
+      "ecc.unable-to-use"
+    ) || key.startsWith("ecc.what-is-your-eori.unable-to-use")
 
   "Messages" should {
 

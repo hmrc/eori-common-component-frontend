@@ -33,6 +33,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionF
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  EnrolmentStoreProxyService,
   SubscriptionBusinessService,
   SubscriptionDetailsService
 }
@@ -48,6 +49,7 @@ class WhatIsYourEoriController @Inject() (
   subscriptionFlowManager: SubscriptionFlowManager,
   subscriptionDetailsHolderService: SubscriptionDetailsService,
   groupEnrolment: GroupEnrolmentExtractor,
+  enrolmentStoreProxyService: EnrolmentStoreProxyService,
   mcc: MessagesControllerComponents,
   whatIsYourEoriView: what_is_your_eori,
   requestSessionData: RequestSessionData
@@ -103,9 +105,21 @@ class WhatIsYourEoriController @Inject() (
     hc: HeaderCarrier,
     request: Request[AnyContent]
   ) =
-    subscriptionDetailsHolderService.cacheEoriNumber(formData.eoriNumber).map { _ =>
-      if (isInReviewMode) Redirect(DetermineReviewPageController.determineRoute(service, Journey.Subscribe))
-      else Redirect(subscriptionFlowManager.stepInformation(EoriNumberSubscriptionFlowPage).nextPage.url(service))
+    subscriptionDetailsHolderService.cacheEoriNumber(formData.eoriNumber).flatMap { _ =>
+      enrolmentStoreProxyService.isEnrolmentInUse(
+        service,
+        ExistingEori(formData.eoriNumber, service.enrolmentKey)
+      ).map {
+        case Some(ExistingEori(id, _)) if id.nonEmpty =>
+          Redirect(
+            uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.EoriUnableToUseController.displayPage(
+              service
+            )
+          )
+        case _ =>
+          if (isInReviewMode) Redirect(DetermineReviewPageController.determineRoute(service, Journey.Subscribe))
+          else Redirect(subscriptionFlowManager.stepInformation(EoriNumberSubscriptionFlowPage).nextPage.url(service))
+      }
     }
 
   private def existingEori(user: LoggedInUserWithEnrolments)(implicit headerCarrier: HeaderCarrier) =

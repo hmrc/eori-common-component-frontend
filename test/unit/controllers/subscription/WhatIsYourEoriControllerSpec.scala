@@ -28,6 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.EoriNumberSu
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   CdsOrganisationType,
   EnrolmentResponse,
+  ExistingEori,
   KeyValue,
   RegistrationDetailsIndividual
 }
@@ -44,6 +45,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
 
 class WhatIsYourEoriControllerSpec
     extends SubscriptionFlowCreateModeTestSupport with BusinessDatesOrganisationTypeTables with BeforeAndAfterEach
@@ -64,12 +66,15 @@ class WhatIsYourEoriControllerSpec
   private val groupEnrolmentExtractor = mock[GroupEnrolmentExtractor]
   private val whatIsYourEoriView      = instanceOf[what_is_your_eori]
 
+  private val enrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
+
   private val controller = new WhatIsYourEoriController(
     mockAuthAction,
     mockSubscriptionBusinessService,
     mockSubscriptionFlowManager,
     mockSubscriptionDetailsHolderService,
     groupEnrolmentExtractor,
+    enrolmentStoreProxyService,
     mcc,
     whatIsYourEoriView,
     mockRequestSessionData
@@ -82,19 +87,23 @@ class WhatIsYourEoriControllerSpec
   val existingGroupEnrolment: EnrolmentResponse =
     EnrolmentResponse("HMRC-OTHER-ORG", "Active", List(KeyValue("EORINumber", "GB1234567890")))
 
-  override def beforeEach: Unit = {
+  override protected def beforeEach(): Unit = {
+    when(mockSubscriptionBusinessService.cachedEoriNumber(any[HeaderCarrier])).thenReturn(None)
+    when(groupEnrolmentExtractor.groupIdEnrolments(anyString())(any())).thenReturn(Future.successful(List.empty))
+    when(enrolmentStoreProxyService.isEnrolmentInUse(any(), any())(any())).thenReturn(Future.successful(None))
+    registerSaveDetailsMockSuccess()
+    setupMockSubscriptionFlowManager(EoriNumberSubscriptionFlowPage)
+  }
+
+  override protected def afterEach(): Unit =
     reset(
       mockSubscriptionBusinessService,
       mockSubscriptionFlowManager,
       mockRequestSessionData,
       mockSubscriptionDetailsHolderService,
-      groupEnrolmentExtractor
+      groupEnrolmentExtractor,
+      enrolmentStoreProxyService
     )
-    when(mockSubscriptionBusinessService.cachedEoriNumber(any[HeaderCarrier])).thenReturn(None)
-    when(groupEnrolmentExtractor.groupIdEnrolments(anyString())(any())).thenReturn(Future.successful(List.empty))
-    registerSaveDetailsMockSuccess()
-    setupMockSubscriptionFlowManager(EoriNumberSubscriptionFlowPage)
-  }
 
   "Subscription What Is Your Eori Number form in create mode" should {
 
@@ -341,6 +350,28 @@ class WhatIsYourEoriControllerSpec
       submitFormInCreateMode(Map("eori-number" -> "GB 3534 5353 6545")) { result =>
         status(result) shouldBe SEE_OTHER
         verify(mockSubscriptionDetailsHolderService).cacheEoriNumber(meq("GB353453536545"))(any())
+      }
+    }
+  }
+
+  "What is your eori controller" should {
+
+    "redirect to eori unable to use" when {
+
+      "EORI is already used for specific service" in {
+
+        when(enrolmentStoreProxyService.isEnrolmentInUse(any(), any())(any())).thenReturn(
+          Future.successful(Some(ExistingEori("GB123456789123", "HMRC-ATAR-ORG")))
+        )
+
+        submitFormInCreateMode(Map("eori-number" -> "GB353453536545")) { result =>
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(
+            result
+          ).get shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.EoriUnableToUseController.displayPage(
+            atarService
+          ).url
+        }
       }
     }
   }

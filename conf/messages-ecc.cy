@@ -251,3 +251,13 @@ ecc.unable-to-use.title = You cannot access {0} with this Government Gateway acc
 ecc.unable-to-use.this-eori-number = The EORI number:
 ecc.unable-to-use.para1 = which is linked to your Government Gateway account is already used by another account to access {0}. You will need to sign in with that account to access {0}.
 ecc.unable-to-use.para2 = Sign out and sign in again with a different Government Gateway account.
+
+ecc.what-is-your-eori.unable-to-use.title = Your Government Gateway account is not linked to this EORI
+ecc.what-is-your-eori.unable-to-use.question = What would you like to do?
+ecc.what-is-your-eori.unable-to-use.empty = Select what you would like to do
+ecc.what-is-your-eori.unable-to-use.changeEori = Change the EORI number
+ecc.what-is-your-eori.unable-to-use.signout = Sign out and sign in again with a different Government Gateway ID
+
+ecc.unable-to-use.signout.title = You are about to sign out
+ecc.unable-to-use.signout.question = Is this what you want to do?
+ecc.unable-to-use.signout.empty = Select what you would like to do
