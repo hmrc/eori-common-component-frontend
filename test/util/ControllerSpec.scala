@@ -85,7 +85,7 @@ trait ControllerSpec extends UnitSpec with MockitoSugar with I18nSupport with In
         )
         status(result) shouldBe SEE_OTHER
         header(LOCATION, result).get should include(
-          "?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fregister"
+          "/bas-gateway/sign-in?continue_url=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fregister&origin=eori-common-component-frontend"
         )
       }
     }
@@ -106,7 +106,7 @@ trait ControllerSpec extends UnitSpec with MockitoSugar with I18nSupport with In
       )
       status(result) shouldBe SEE_OTHER
       header(LOCATION, result).get should include(
-        "?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fregister"
+        "/bas-gateway/sign-in?continue_url=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fregister&origin=eori-common-component-frontend"
       )
     }
 
@@ -125,7 +125,7 @@ trait ControllerSpec extends UnitSpec with MockitoSugar with I18nSupport with In
       )
       status(result) shouldBe SEE_OTHER
       header(LOCATION, result).get should include(
-        "?continue=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fsubscribe"
+        "/bas-gateway/sign-in?continue_url=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fsubscribe&origin=eori-common-component-frontend"
       )
     }
 
