@@ -18,8 +18,9 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.EnrolmentStoreProxyConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, GroupId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, ExistingEori, GroupId}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.ES1Request
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,5 +45,17 @@ class EnrolmentStoreProxyService @Inject() (enrolmentStoreProxyConnector: Enrolm
       .getEnrolmentByGroupId(groupId.id)
       .map(_.enrolments)
       .map(enrolment => enrolment.filter(x => x.state == activatedState))
+
+  def isEnrolmentInUse(service: Service, existingEori: ExistingEori)(implicit
+    hc: HeaderCarrier
+  ): Future[Option[ExistingEori]] = {
+    val es1Request = ES1Request(service, existingEori.id)
+    enrolmentStoreProxyConnector
+      .queryGroupsWithAllocatedEnrolment(es1Request)
+      .map { es1Response =>
+        if (es1Response.isEnrolmentInUse) Some(existingEori)
+        else None
+      }
+  }
 
 }

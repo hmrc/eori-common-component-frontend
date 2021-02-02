@@ -148,6 +148,9 @@ object MatchingForms {
   def removeVatYesNoAnswer()(implicit messages: Messages): Form[YesNo] =
     createYesNoAnswerForm("cds.subscription.vat-details-eu.page-error.yes-no-answer")
 
+  def eoriSignoutYesNoForm()(implicit messages: Messages): Form[YesNo] =
+    createYesNoAnswerForm("ecc.unable-to-use.signout.empty")
+
   private def createYesNoAnswerForm(
     invalidErrorMsgKey: String = messageKeyOptionInvalid
   )(implicit messages: Messages): Form[YesNo] = Form(

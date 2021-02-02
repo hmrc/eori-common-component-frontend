@@ -24,9 +24,10 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{ApplicationController, MissingGroupId}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, KeyValue}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, ExistingEori, KeyValue}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{start, start_subscribe}
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
@@ -42,6 +43,8 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
   private val mockAuthAction    = authAction(mockAuthConnector)
   private val mockSessionCache  = mock[SessionCache]
 
+  private val mockEnrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
+
   private val startRegisterView       = instanceOf[start]
   private val startSubscribeView      = instanceOf[start_subscribe]
   private val groupEnrolmentExtractor = mock[GroupEnrolmentExtractor]
@@ -53,17 +56,21 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
     startRegisterView,
     mockSessionCache,
     groupEnrolmentExtractor,
+    mockEnrolmentStoreProxyService,
     appConfig
   )
 
-  override def beforeEach: Unit = {
-    super.beforeEach()
-    reset(mockAuthConnector, groupEnrolmentExtractor, mockSessionCache)
-
+  override protected def beforeEach(): Unit = {
     when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), any())(any()))
       .thenReturn(Future.successful(None))
     when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any()))
       .thenReturn(Future.successful(false))
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(mockAuthConnector, groupEnrolmentExtractor, mockSessionCache, mockEnrolmentStoreProxyService)
+
+    super.afterEach()
   }
 
   private def groupEnrolment(service: Service) = Some(
@@ -82,6 +89,10 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
     "direct authenticated users to start subscription" in {
       withAuthorisedUser(defaultUserId, mockAuthConnector)
+
+      when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(Future.successful(List.empty))
+      when(mockEnrolmentStoreProxyService.isEnrolmentInUse(any(), any())(any())).thenReturn(Future.successful(None))
+
       val result =
         controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
@@ -92,6 +103,8 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
     "direct authenticated users with CDS enrolment to start short-cut subscription" in {
       when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(atarService))(any()))
         .thenReturn(Future.successful(None))
+      when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(Future.successful(List.empty))
+      when(mockEnrolmentStoreProxyService.isEnrolmentInUse(any(), any())(any())).thenReturn(Future.successful(None))
 
       val cdsEnrolment = Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", "GB134123")
       withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set(cdsEnrolment))
@@ -110,6 +123,8 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(Service.cds))(any()))
         .thenReturn(Future.successful(groupEnrolment(Service.cds)))
       when(mockSessionCache.saveGroupEnrolment(any[EnrolmentResponse])(any())).thenReturn(Future.successful(true))
+      when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(Future.successful(List.empty))
+      when(mockEnrolmentStoreProxyService.isEnrolmentInUse(any(), any())(any())).thenReturn(Future.successful(None))
 
       withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set.empty)
 
@@ -155,6 +170,90 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
       intercept[MissingGroupId] {
         await(controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+      }
+    }
+  }
+
+  "Navigating to unable to use service" should {
+
+    "happen for authenticated users with CDS enrolment" when {
+
+      "enrolment is in use" in {
+
+        when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(atarService))(any()))
+          .thenReturn(Future.successful(None))
+        when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(
+          Future.successful(List(groupEnrolment(atarService).get))
+        )
+        when(mockEnrolmentStoreProxyService.isEnrolmentInUse(any(), any())(any())).thenReturn(
+          Future.successful(Some(ExistingEori("GB123456789123", "HMRC-GVMS-ORG")))
+        )
+        when(mockSessionCache.saveEori(any())(any())).thenReturn(Future.successful(true))
+
+        val cdsEnrolment = Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", "GB123456789123")
+        withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set(cdsEnrolment))
+
+        val result =
+          controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("unable-to-use-id")
+        verify(mockSessionCache).saveEori(any())(any())
+      }
+    }
+
+    "happen for authenticated users with groupId CDS enrolment" when {
+
+      "enrolment is in use" in {
+
+        when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(atarService))(any()))
+          .thenReturn(Future.successful(None))
+        when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(Service.cds))(any()))
+          .thenReturn(Future.successful(groupEnrolment(Service.cds)))
+        when(mockSessionCache.saveGroupEnrolment(any[EnrolmentResponse])(any())).thenReturn(Future.successful(true))
+        when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(
+          Future.successful(List(groupEnrolment(atarService).get))
+        )
+        when(mockEnrolmentStoreProxyService.isEnrolmentInUse(any(), any())(any())).thenReturn(
+          Future.successful(Some(ExistingEori("GB123456789123", "HMRC-GVMS-ORG")))
+        )
+        when(mockSessionCache.saveEori(any())(any())).thenReturn(Future.successful(true))
+
+        withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set.empty)
+
+        val result =
+          controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("unable-to-use-id")
+        verify(mockSessionCache).saveEori(any())(any())
+      }
+    }
+
+    "happen to authenticated users with GVMS enrolment and without CDS enrolment and without groupId enrolment" when {
+
+      "enrolment is in use" in {
+
+        when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(atarService))(any()))
+          .thenReturn(Future.successful(None))
+        when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(Service.cds))(any()))
+          .thenReturn(Future.successful(None))
+        when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(
+          Future.successful(List(groupEnrolment(atarService).get))
+        )
+        when(mockEnrolmentStoreProxyService.isEnrolmentInUse(any(), any())(any())).thenReturn(
+          Future.successful(Some(ExistingEori("GB123456789123", "HMRC-GVMS-ORG")))
+        )
+        when(mockSessionCache.saveEori(any())(any())).thenReturn(Future.successful(true))
+
+        withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set.empty)
+
+        val result =
+          controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("unable-to-use-id")
+        verify(mockSessionCache).saveEori(any())(any())
       }
     }
   }
