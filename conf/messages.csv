@@ -177,16 +177,16 @@ subscription-journey.what-is-your-nino.hint	It is on your National Insurance car
 cds.subscription.nino-details.page-error.nino	National Insurance Number		No Welsh translation found
 cds.subscription.nino.error.empty	Enter a National Insurance Number		No Welsh translation found
 cds.subscription.nino.error.wrong-length	The National Insurance Number must be 9 characters		No Welsh translation found
-cds.subscription.enter-eori-number.page.title	What is your EORI number?		No Welsh translation found
-cds.subscription.enter-eori-number.heading	What is your EORI number?		No Welsh translation found
+ecc.subscription.enter-eori-number.page.title	What is your EORI number?		No Welsh translation found
+ecc.subscription.enter-eori-number.heading	What is your EORI number?		No Welsh translation found
 cds.subscription.enter-eori-number.label	What is your EORI number?		No Welsh translation found
-cds.subscription.enter-eori-number.hint.rest-of-world	The number starts with a country code, for example FR for France, and is then followed by up to 15 characters.		No Welsh translation found
-cds.matching-error.eori	Enter an EORI number in the right format		No Welsh translation found
-cds.matching-error.eori.isEmpty	Enter an EORI number		No Welsh translation found
-cds.matching-error.eori.wrong-length	The EORI number must be 14 characters		No Welsh translation found
-cds.matching-error.eori.wrong-length.too-short	The EORI number must be more than 2 characters		No Welsh translation found
-cds.matching-error.eori.wrong-length.too-long	The EORI number must be 17 characters or less		No Welsh translation found
-cds.what-is-your-eori.page-error.eori-number	Enter your EORI number		No Welsh translation found
+ecc.subscription.enter-eori-number.hint.rest-of-world	The number starts with a country code, for example FR for France, and is then followed by up to 15 characters.		No Welsh translation found
+ecc.matching-error.eori	Enter an EORI number in the right format		No Welsh translation found
+ecc.matching-error.eori.isEmpty	Enter an EORI number		No Welsh translation found
+ecc.matching-error.gbeori.wrong-length	The EORI number must be 14 characters		No Welsh translation found
+ecc.matching-error.gbeori.wrong-length.too-short	The EORI number must be more than 2 characters		No Welsh translation found
+ecc.matching-error.gbeori.wrong-length.too-long	The EORI number must be 17 characters or less		No Welsh translation found
+ecc.what-is-your-eori.page-error.eori-number	Enter your EORI number		No Welsh translation found
 cds.start-page.title	Register for the Customs Declaration Service (EORI)		No Welsh translation found
 cds-start-page.intro1	Before you import or export goods from outside the EU, you will need an EORI (Economic Operator Registration and Identification) number. HMRC use this to clear your shipments, collect duty and carry out other customs services.		No Welsh translation found
 cds-start-page.intro2	If you do not register you may experience increased costs and delays when moving your goods.		No Welsh translation found
@@ -752,5 +752,5 @@ cds.error.message.part2	We have not saved your answers. When the service is avai
 cds.error.helpSupport	Help and support		No Welsh translation found
 cds.error.contact.part1	If you are having problems registering, phone: 0300 200 3700.		No Welsh translation found
 cds.error.contact.part2	Open 8am to 6pm, Monday to Friday (closed bank holidays).		No Welsh translation found
-cds.subscription.enter-eori-number.hint	The number starts with the country code it was issued in and is followed by 12 - 15 digits. For example, GB345834921730		No Welsh translation found
+ecc.subscription.enter-eori-number.hint	The number starts with the country code it was issued in and is followed by 12 - 15 digits. For example, GB345834921730		No Welsh translation found
 

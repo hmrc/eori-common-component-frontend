@@ -30,6 +30,7 @@ object SubscriptionAmendCompanyDetailsFormBuilder {
   val DateEstablished              = LocalDate.parse(DateEstablishedString)
   val DateEstablishedForPublicBody = LocalDate.parse("1900-01-01")
   val EoriNumber                   = "GB123456789000"
+  val EoriNumberDisplay            = EoriNumber.drop(2)
   val Email                        = "test@example.com"
 
   val mandatoryShortNameFieldsMap = Map("use-short-name" -> withoutShortName)

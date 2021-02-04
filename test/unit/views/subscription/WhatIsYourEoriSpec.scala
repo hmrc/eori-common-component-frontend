@@ -28,117 +28,128 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.what_is_you
 import util.ViewSpec
 
 class WhatIsYourEoriSpec extends ViewSpec {
-  val form: Form[EoriNumberViewModel] = SubscriptionForm.eoriNumberForm
 
-  val formWithInvalidError: Form[EoriNumberViewModel] =
-    SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> "invalidinvalid"))
-
-  val formWithInvalidGbEoriError: Form[EoriNumberViewModel] =
-    SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> "GBthatIsNotValid"))
-
-  val formWithTooShortError: Form[EoriNumberViewModel] =
-    SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> "GB"))
-
-  val formWithTooLongError: Form[EoriNumberViewModel] =
-    SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> "this eori is too long when you ignore spaces"))
-
-  val formWithEmptyFieldError: Form[EoriNumberViewModel] =
-    SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> ""))
-
-  val isInReviewMode       = false
-  val isRestOfWorldJourney = false
-  val previousPageUrl      = "/"
-  implicit val request     = withFakeCSRF(FakeRequest())
+  implicit val request = withFakeCSRF(FakeRequest())
 
   private val view = instanceOf[what_is_your_eori]
 
+  private def doc(form: Form[EoriNumberViewModel] = SubscriptionForm.eoriNumberForm): Document = {
+    val result = view(form, isInReviewMode = false, isRestOfWorldJourney = false, atarService)
+    Jsoup.parse(contentAsString(result))
+  }
+
   "What Is Your EORI page" should {
+
     "display correct title" in {
-      doc.title must startWith("What is your GB Economic Operator Registration and Identification (EORI) number?")
+
+      doc().title must startWith("What is your GB Economic Operator Registration and Identification (EORI) number?")
     }
+
     "have the correct heading text" in {
-      doc.body.getElementsByClass(
+
+      doc().body.getElementsByClass(
         "heading-large"
       ).text() mustBe "What is your GB Economic Operator Registration and Identification (EORI) number?"
     }
+
     "have the correct text in the label" in {
-      doc.body
+
+      doc().body
         .getElementById("eori-number-hint")
         .text() mustBe "The number starts with GB and is then followed by 12 digits, For example, GB345834921000."
     }
+
     "have an input of type 'text'" in {
-      doc.body.getElementById("eori-number").attr("type") mustBe "text"
+
+      doc().body.getElementById("eori-number").attr("type") mustBe "text"
     }
+
     "have a link to 'Get EORI'" in {
-      doc.body.getElementsByAttributeValue(
+
+      doc().body.getElementsByAttributeValue(
         "href",
         routes.ApplicationController.startRegister(atarService).url
       ).text() mustBe "get an EORI number"
     }
 
-    "display a field level error message when the Eori is invalid" in {
-      docWithInvalidError
-        .body()
-        .getElementById("eori-number-outer")
-        .getElementsByClass("error-message")
-        .text mustBe "Error: Enter an EORI number that starts with GB"
+    "display a field level error message" when {
+
+      "EORI field is empty" in {
+
+        val formWithEmptyFieldError: Form[EoriNumberViewModel] =
+          SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> ""))
+
+        doc(formWithEmptyFieldError).body
+          .getElementById("eori-number-outer")
+          .getElementsByClass("error-message")
+          .text mustBe "Error: Enter your EORI number"
+      }
+
+      "EORI field has only numbers and less than 12 digits" in {
+
+        val formWithTooShortNumberEori: Form[EoriNumberViewModel] =
+          SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> "123456"))
+
+        doc(formWithTooShortNumberEori).body
+          .getElementById("eori-number-outer")
+          .getElementsByClass("error-message")
+          .text mustBe "Error: The EORI number must be more than 11 digits"
+      }
+
+      "GB EORI has less than 14 characters" in {
+
+        val formWithTooShortEori: Form[EoriNumberViewModel] =
+          SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> "GB123456"))
+
+        doc(formWithTooShortEori).body
+          .getElementById("eori-number-outer")
+          .getElementsByClass("error-message")
+          .text mustBe "Error: The EORI number must be more than 13 characters"
+      }
+
+      "EORI field has only numbers and more than 15 digits" in {
+
+        val formWithTooShortEori: Form[EoriNumberViewModel] =
+          SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> "1234567890123456"))
+
+        doc(formWithTooShortEori).body
+          .getElementById("eori-number-outer")
+          .getElementsByClass("error-message")
+          .text mustBe "Error: The EORI number must be 15 digits or less"
+      }
+
+      "GB EORI has more than 17 characters" in {
+
+        val formWithTooShortEori: Form[EoriNumberViewModel] =
+          SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> "GB1234567890123456"))
+
+        doc(formWithTooShortEori).body
+          .getElementById("eori-number-outer")
+          .getElementsByClass("error-message")
+          .text mustBe "Error: The EORI number must be 17 characters or less"
+      }
+
+      "EORI Starts with letters and two first letters are not GB" in {
+
+        val formWithTooShortEori: Form[EoriNumberViewModel] =
+          SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> "FR123456789012"))
+
+        doc(formWithTooShortEori).body
+          .getElementById("eori-number-outer")
+          .getElementsByClass("error-message")
+          .text mustBe "Error: Enter an EORI number that starts with GB"
+      }
+
+      "EORI has letters in the middle" in {
+
+        val formWithTooShortEori: Form[EoriNumberViewModel] =
+          SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> "GB123asd789012"))
+
+        doc(formWithTooShortEori).body
+          .getElementById("eori-number-outer")
+          .getElementsByClass("error-message")
+          .text mustBe "Error: Enter an EORI number in the right format"
+      }
     }
-
-    "display a field level error message when the Eori is invalid and starts with GB" in {
-      docWithInvalidGbEoriError.body
-        .getElementById("eori-number-outer")
-        .getElementsByClass("error-message")
-        .text mustBe "Error: Enter an EORI number in the right format"
-    }
-
-    "display a field level error message when the Eori is too short" in {
-      docWithTooShortError.body
-        .getElementById("eori-number-outer")
-        .getElementsByClass("error-message")
-        .text mustBe "Error: The EORI number must be more than 13 characters"
-    }
-    "display a field level error message when the Eori is too long" in {
-      docWithTooLongError.body
-        .getElementById("eori-number-outer")
-        .getElementsByClass("error-message")
-        .text mustBe "Error: The EORI number must be 17 characters or less"
-    }
-    "display a field level error message when the Eori field is empty" in {
-      docWithEmptyFieldError.body
-        .getElementById("eori-number-outer")
-        .getElementsByClass("error-message")
-        .text mustBe "Error: Enter your EORI number"
-    }
   }
-
-  lazy val doc: Document = {
-    val result = view(form, isInReviewMode, isRestOfWorldJourney = false, atarService)
-    Jsoup.parse(contentAsString(result))
-  }
-
-  lazy val docWithInvalidError: Document = {
-    val result = view(formWithInvalidError, isInReviewMode, isRestOfWorldJourney, atarService)
-    Jsoup.parse(contentAsString(result))
-  }
-
-  lazy val docWithInvalidGbEoriError: Document = {
-    val result = view(formWithInvalidGbEoriError, isInReviewMode, isRestOfWorldJourney, atarService)
-    Jsoup.parse(contentAsString(result))
-  }
-
-  lazy val docWithTooShortError: Document = {
-    val result = view(formWithTooShortError, isInReviewMode, isRestOfWorldJourney, atarService)
-    Jsoup.parse(contentAsString(result))
-  }
-
-  lazy val docWithTooLongError: Document = {
-    val result = view(formWithTooLongError, isInReviewMode, isRestOfWorldJourney, atarService)
-    Jsoup.parse(contentAsString(result))
-  }
-
-  lazy val docWithEmptyFieldError: Document = {
-    val result = view(formWithEmptyFieldError, isInReviewMode, isRestOfWorldJourney, atarService)
-    Jsoup.parse(contentAsString(result))
-  }
-
 }
