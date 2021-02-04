@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
   AuthAction,
   EnrolmentExtractor,
@@ -62,7 +62,7 @@ class WhatIsYourEoriController @Inject() (
   def reviewForm(service: Service): Action[AnyContent] =
     displayForm(service, true)
 
-  private def displayForm(service: Service, isInReviewMode: Boolean) =
+  private def displayForm(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => user: LoggedInUserWithEnrolments =>
         existingEori(user).flatMap {
@@ -74,12 +74,23 @@ class WhatIsYourEoriController @Inject() (
 
     }
 
-  private def useExistingEori(eori: ExistingEori, service: Service)(implicit headerCarrier: HeaderCarrier) =
+  private def useExistingEori(eori: ExistingEori, service: Service)(implicit
+    headerCarrier: HeaderCarrier
+  ): Future[Result] =
     subscriptionDetailsHolderService.cacheExistingEoriNumber(eori).map { _ =>
       Redirect(
         uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.UseThisEoriController.display(service)
       )
     }
+
+  private def populateView(eoriNumber: Option[String], isInReviewMode: Boolean, service: Service)(implicit
+    request: Request[AnyContent]
+  ): Result = {
+    val eoriForForm = eoriNumber.map(eoriWithoutCountry(_))
+
+    val form = eoriForForm.map(EoriNumberViewModel.apply).fold(eoriNumberForm)(eoriNumberForm.fill)
+    Ok(whatIsYourEoriView(form, isInReviewMode, UserLocation.isRow(requestSessionData), service))
+  }
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
@@ -94,22 +105,14 @@ class WhatIsYourEoriController @Inject() (
       )
     }
 
-  private def populateView(eoriNumber: Option[String], isInReviewMode: Boolean, service: Service)(implicit
-    request: Request[AnyContent]
-  ) = {
-    val form = eoriNumber.map(EoriNumberViewModel.apply).fold(eoriNumberForm)(eoriNumberForm.fill)
-    Ok(whatIsYourEoriView(form, isInReviewMode, UserLocation.isRow(requestSessionData), service))
-  }
-
   private def submitNewDetails(formData: EoriNumberViewModel, isInReviewMode: Boolean, service: Service)(implicit
     hc: HeaderCarrier,
     request: Request[AnyContent]
-  ) =
-    subscriptionDetailsHolderService.cacheEoriNumber(formData.eoriNumber).flatMap { _ =>
-      enrolmentStoreProxyService.isEnrolmentInUse(
-        service,
-        ExistingEori(formData.eoriNumber, service.enrolmentKey)
-      ).map {
+  ) = {
+    val eori = eoriWithCountry(formData.eoriNumber)
+
+    subscriptionDetailsHolderService.cacheEoriNumber(eori).flatMap { _ =>
+      enrolmentStoreProxyService.isEnrolmentInUse(service, ExistingEori(eori, service.enrolmentKey)).map {
         case Some(ExistingEori(id, _)) if id.nonEmpty =>
           Redirect(
             uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.EoriUnableToUseController.displayPage(
@@ -121,11 +124,18 @@ class WhatIsYourEoriController @Inject() (
           else Redirect(subscriptionFlowManager.stepInformation(EoriNumberSubscriptionFlowPage).nextPage.url(service))
       }
     }
+  }
 
-  private def existingEori(user: LoggedInUserWithEnrolments)(implicit headerCarrier: HeaderCarrier) =
+  private def existingEori(
+    user: LoggedInUserWithEnrolments
+  )(implicit headerCarrier: HeaderCarrier): Future[Option[ExistingEori]] =
     groupEnrolment.groupIdEnrolments(user.groupId.getOrElse(throw MissingGroupId())).map {
       groupEnrolments =>
         existingEoriForUserOrGroup(user, groupEnrolments)
     }
+
+  private def eoriWithoutCountry(eori: String): String = if (eori.startsWith("GB")) eori.drop(2) else eori
+
+  private def eoriWithCountry(eori: String): String = if (eori.forall(_.isDigit)) "GB" + eori else eori
 
 }

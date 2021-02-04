@@ -139,7 +139,7 @@ class WhatIsYourEoriControllerSpec
       }
     }
 
-    "have Eori Number input field prepopulated if cached previously" in {
+    "have Eori Number (without GB) input field prepopulated if cached previously" in {
       when(mockSubscriptionBusinessService.cachedEoriNumber(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(EoriNumber)))
       showCreateForm(journey = Journey.Subscribe) { result =>
@@ -192,7 +192,7 @@ class WhatIsYourEoriControllerSpec
       }
     }
 
-    "have all the required input fields without data" in {
+    "have all the required input fields without data (EORI without GB)" in {
       showReviewForm(EoriNumber) { result =>
         val page = CdsPage(contentAsString(result))
         verifyEoriNumberFieldExistsAndPopulatedCorrectly(page)
@@ -374,6 +374,17 @@ class WhatIsYourEoriControllerSpec
         }
       }
     }
+
+    "save EORI with GB" when {
+
+      "EORI contains only numbers" in {
+
+        submitFormInCreateMode(Map("eori-number" -> "145678901234")) { result =>
+          status(result) shouldBe SEE_OTHER
+          verify(mockSubscriptionDetailsHolderService).cacheEoriNumber(meq("GB145678901234"))(any())
+        }
+      }
+    }
   }
 
   private def submitFormInCreateMode(
@@ -446,7 +457,7 @@ class WhatIsYourEoriControllerSpec
   }
 
   private def verifyEoriNumberFieldExistsAndPopulatedCorrectly(page: CdsPage): Unit =
-    page.getElementValueForLabel(SubscriptionAmendCompanyDetailsPage.eoriNumberLabelXpath) should be(EoriNumber)
+    page.getElementValueForLabel(SubscriptionAmendCompanyDetailsPage.eoriNumberLabelXpath) should be(EoriNumberDisplay)
 
   private def verifyEoriNumberFieldExistsWithNoData(page: CdsPage): Unit =
     page.getElementValueForLabel(SubscriptionAmendCompanyDetailsPage.eoriNumberLabelXpath) shouldBe ""

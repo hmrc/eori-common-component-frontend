@@ -153,3 +153,45 @@ details .arrow {
 .panel-indent--thick {
     border-left: 8px solid #bfc1c3;
 }
+
+.input-with-prefix {
+    display: flex;
+    font-weight: 400;
+    height: 38px;
+}
+
+.input-with-prefix__prefix {
+    font-size: 19px;
+    box-sizing: border-box;
+    display: inline;
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+    border: 2px solid #0b0c0c;
+    border-right: 0;
+    background-color: #f3f2f1;
+    padding: 5px;
+    text-align: center;
+    white-space: nowrap;
+    cursor: default;
+    flex: 0 0 auto;
+}
+
+.input-with-prefix__input {
+    flex: 0 1 auto;
+    width: 50% !important;
+    font-size: 1.1875rem;
+    box-sizing: border-box;
+    text-transform: none;
+    border: 2px solid #0b0c0c;
+}
+
+@media (max-width: 640px){
+    .input-with-prefix__prefix {
+        font-size: 16px;
+        padding: 8px;
+    }
+
+    .input-with-prefix__input {
+        width: 100% !important
+    }
+}

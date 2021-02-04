@@ -185,16 +185,22 @@ object SubscriptionForm {
       case _ => Valid
     })
 
-  def validEori: Constraint[String] =
+  def validEoriWithOrWithoutGB: Constraint[String] =
     Constraint({
-      case e if formatInput(e).isEmpty => Invalid(ValidationError("cds.matching-error.eori.isEmpty"))
-      case e if formatInput(e).length < 14 =>
-        Invalid(ValidationError("cds.matching-error.eori.wrong-length.too-short"))
-      case e if formatInput(e).length > 17 => Invalid(ValidationError("cds.matching-error.eori.wrong-length.too-long"))
-      case e if !formatInput(e).startsWith("GB") =>
-        Invalid(ValidationError("cds.matching-error.eori.not-gb"))
-      case e if !formatInput(e).matches("^GB[0-9]{11,15}$") =>
-        Invalid(ValidationError("cds.matching-error.eori"))
+      case e if formatInput(e).isEmpty =>
+        Invalid(ValidationError("ecc.matching-error.eori.isEmpty"))
+      case e if formatInput(e).forall(_.isDigit) && formatInput(e).length < 12 =>
+        Invalid(ValidationError("ecc.matching-error.eori.wrong-length.too-short"))
+      case e if formatInput(e).startsWith("GB") && formatInput(e).length < 14 =>
+        Invalid(ValidationError("ecc.matching-error.gbeori.wrong-length.too-short"))
+      case e if formatInput(e).forall(_.isDigit) && formatInput(e).length > 15 =>
+        Invalid(ValidationError("ecc.matching-error.eori.wrong-length.too-long"))
+      case e if formatInput(e).startsWith("GB") && formatInput(e).length > 17 =>
+        Invalid(ValidationError("ecc.matching-error.gbeori.wrong-length.too-long"))
+      case e if formatInput(e).take(2).forall(_.isLetter) && !formatInput(e).startsWith("GB") =>
+        Invalid(ValidationError("ecc.matching-error.eori.not-gb"))
+      case e if !formatInput(e).matches("^GB[0-9]{12,15}$") && !formatInput(e).matches("[0-9]{12,15}") =>
+        Invalid(ValidationError("ecc.matching-error.eori"))
       case _ => Valid
     })
 
@@ -224,7 +230,9 @@ object SubscriptionForm {
       .transform[Boolean](str => str.contains("true"), bool => if (bool) Some("true") else Some("false"))
 
   val eoriNumberForm = Form(
-    Forms.mapping("eori-number" -> text.verifying(validEori))(EoriNumberViewModel.apply)(EoriNumberViewModel.unapply)
+    Forms.mapping("eori-number" -> text.verifying(validEoriWithOrWithoutGB))(EoriNumberViewModel.apply)(
+      EoriNumberViewModel.unapply
+    )
   )
 
   val euVatForm = Form(
