@@ -227,7 +227,6 @@ cds.registration.user-location.title	Where is your organisation based?		No Welsh
 cds.registration.user-location.location	Where is your organisation based?		No Welsh translation found
 cds.registration.user-location.location.uk.label	United Kingdom		No Welsh translation found
 cds.registration.user-location.location.islands.label	Channel Islands or the Isle of Man		No Welsh translation found
-cds.registration.user-location.location.eu.label	A country in the European Union other than the UK		No Welsh translation found
 cds.registration.user-location.location.third-country.label	Outside the European Union		No Welsh translation found
 cds.registration.user-location.location.eu.summary	Countries in the EU		No Welsh translation found
 cds.registration.user-location.location.eu.hint	When trading, Channel Islands, Isle of Man, Akrotiri and Dhekelia, Faroe Islands are within the EU customs union.		No Welsh translation found

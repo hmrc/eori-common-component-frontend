@@ -31,29 +31,20 @@
 }
 
 @validOptions = @{
-    val baseChoices =  if (journey == Journey.Register) {
+    if (journey == Journey.Register) {
         Seq(
             (UserLocation.Uk, messages("cds.registration.user-location.location.uk.label"), None),
             (UserLocation.Iom, messages("cds.registration.user-location.location.isle-of-man.label"), None),
-            (UserLocation.Islands, messages("cds.registration.user-location.location.islands.label"), None)
+            (UserLocation.Islands, messages("cds.registration.user-location.location.islands.label"), None),
+            (UserLocation.ThirdCountryIncEU, messages("cds.registration.user-location.location.third-country-inc-eu.label"), None)
         )
     } else {
         Seq(
             (UserLocation.Uk, messages("cds.registration.user-location.location.uk.label"), None),
-            (UserLocation.Islands, messages("cds.registration.user-location.location.islands-or-iom.label"), None)
-        )
-    }
-    if(appConfig.displayEuLocation){
-      baseChoices ++ Seq(
-          (UserLocation.Eu, messages("cds.registration.user-location.location.eu.label"), None),
-          (UserLocation.ThirdCountry, messages("cds.registration.user-location.location.third-country.label"), None)
-      )
-    } else {
-        baseChoices ++ Seq(
+            (UserLocation.Islands, messages("cds.registration.user-location.location.islands-or-iom.label"), None),
             (UserLocation.ThirdCountryIncEU, messages("cds.registration.user-location.location.third-country-inc-eu.label"), None)
         )
     }
-
 }
 
 @inputRadioGroup(field: String, options: Seq[(String, String, Option[String])]) = {
@@ -78,9 +69,6 @@
 
             @inputRadioGroup("location", validOptions)
 
-            @if(appConfig.displayEuLocation){
-                @helpers.locationHint()
-            }
             <input class="button" type="submit" value='@messages("cds.navigation.continue")'>
         }
         @helpers.helpAndSupport()

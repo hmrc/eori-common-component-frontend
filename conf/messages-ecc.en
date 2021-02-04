@@ -24,8 +24,6 @@ eds.existing-eori.enrolment.confirmation.para1=You are now enrolled to the {0} s
 
 countries-in-the-eu.list=Austria, Belgium, Bulgaria, Croatia, Republic of Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Poland, Portugal, Romania, Slovakia, Slovenia, Spain and Sweden.
 
-cds.registration.user-location.location.eu.label=A country in the EU
-
 cds.you-cant-use-service-agent.para1=You signed in to Government Gateway with an agent services account.
 cds.you-cant-use-service-agent.para2=You need to sign in with the Government Gateway for the organisation or individual that is applying for access to {0}.
 cds.you-cant-use-service-standard-organisation.para1=You signed in to Government Gateway as a standard user. To apply for access to {0} you must be an administrator user.
@@ -138,7 +136,6 @@ cds.matching.nino.row.yes-no.error=Select yes if you have a National Insurance n
 
 cds.email-confirmed.title-and-heading=You have confirmed your email address
 cds.registration.user-location.location.uk.label=United Kingdom
-cds.registration.user-location.location.eu.label=The European Union
 cds.registration.user-location.location.third-country.label=Outside the European Union
 cds.registration.user-location.location.third-country-inc-eu.label=Rest of the world
 

@@ -462,7 +462,6 @@ cds.registration.user-location.location.uk.label	UK	Y DU	Message changed (previo
 cds.registration.user-location.location.isle-of-man.label	The Isle of Man	Ynys Manaw	No Welsh translation found
 cds.registration.user-location.location.islands.label	The Channel Islands	Ynysoedd y Sianel	Message changed (previous message was: Channel Islands or the Isle of Man / Ynysoedd y Sianel neu Ynys Manaw)
 cds.registration.user-location.location.islands-or-iom.label	Channel Islands or the Isle of Man	Ynysoedd y Sianel neu Ynys Manaw	No Welsh translation found
-cds.registration.user-location.location.eu.label	A country in the EU other than the UK	Gwlad yn yr UE heblaw’r DU	Message changed (previous message was: A country in the European Union other than the UK / Gwlad yn yr Undeb Ewropeaidd ar wahân i’r DU)
 cds.registration.user-location.location.third-country.label	Outside the EU	Y tu allan i’r UE	Message changed (previous message was: Outside the European Union / Y tu allan i’r Undeb Ewropeaidd)
 cds.registration.user-location.location.eu.summary	Countries in the EU	Gwledydd yn yr UE	English message unchanged
 cds.registration.user-location.location.eu.hint	When trading, Channel Islands, Isle of Man, Akrotiri and Dhekelia, Faroe Islands are within the EU customs union.	Wrth fasnachu, mae Ynysoedd y Sianel, Ynys Manaw, Akrotiri a Dhekelia, ac Ynysoedd Føroyar yn rhan o Undeb Tollau’r UE.	English message unchanged

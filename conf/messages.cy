@@ -462,7 +462,6 @@ cds.registration.user-location.location.uk.label=Y DU
 cds.registration.user-location.location.isle-of-man.label=Ynys Manaw
 cds.registration.user-location.location.islands.label=Ynysoedd y Sianel
 cds.registration.user-location.location.islands-or-iom.label=Ynysoedd y Sianel neu Ynys Manaw
-cds.registration.user-location.location.eu.label=Gwlad yn yr UE heblaw’r DU
 cds.registration.user-location.location.third-country.label=Y tu allan i’r UE
 cds.registration.user-location.location.eu.summary=Gwledydd yn yr UE
 cds.registration.user-location.location.eu.hint=Wrth fasnachu, mae Ynysoedd y Sianel, Ynys Manaw, Akrotiri a Dhekelia, ac Ynysoedd Føroyar yn rhan o Undeb Tollau’r UE.
