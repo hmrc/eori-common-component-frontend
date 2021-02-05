@@ -24,7 +24,11 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.EoriUnableToUseController
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionBusinessService
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.ExistingEori
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  EnrolmentStoreProxyService,
+  SubscriptionBusinessService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.eori_unable_to_use
 import util.ControllerSpec
 import util.builders.AuthActionMock
@@ -39,9 +43,16 @@ class EoriUnableToUseControllerSpec extends ControllerSpec with AuthActionMock w
   private val mockAuthAction                  = authAction(mockAuthConnector)
   private val mockSubscriptionBusinessService = mock[SubscriptionBusinessService]
   private val eoriUnableToUsePage             = mock[eori_unable_to_use]
+  private val mockEnrolmentStoreProxy         = mock[EnrolmentStoreProxyService]
 
   private val controller =
-    new EoriUnableToUseController(mockAuthAction, mockSubscriptionBusinessService, mcc, eoriUnableToUsePage)(global)
+    new EoriUnableToUseController(
+      mockAuthAction,
+      mockSubscriptionBusinessService,
+      mockEnrolmentStoreProxy,
+      mcc,
+      eoriUnableToUsePage
+    )(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -64,6 +75,10 @@ class EoriUnableToUseControllerSpec extends ControllerSpec with AuthActionMock w
         Future.successful(Some("GB123456789123"))
       )
 
+      when(mockEnrolmentStoreProxy.isEnrolmentInUse(any(), any())(any())).thenReturn(
+        Future.successful(Some(ExistingEori("GB123456789123", atarService.enrolmentKey)))
+      )
+
       val result = controller.displayPage(atarService)(FakeRequest("GET", ""))
 
       status(result) shouldBe OK
@@ -71,6 +86,20 @@ class EoriUnableToUseControllerSpec extends ControllerSpec with AuthActionMock w
     }
 
     "redirect to What is your eori page" when {
+
+      "enrolment in use method returns empty" in {
+
+        when(mockSubscriptionBusinessService.cachedEoriNumber(any())).thenReturn(
+          Future.successful(Some("GB123456789123"))
+        )
+
+        when(mockEnrolmentStoreProxy.isEnrolmentInUse(any(), any())(any())).thenReturn(Future.successful(None))
+
+        val result = controller.displayPage(atarService)(FakeRequest("GET", ""))
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori"
+      }
 
       "eori is not available for display page method" in {
 
