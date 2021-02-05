@@ -186,27 +186,5 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
       }
 
     }
-
-    "displayEuLocation" when {
-
-      "date is in the future" in {
-        val euDate: DateTime = DateTime.now().plusDays(1)
-        when(mockConfig.get[String]("displayEuLocationUntil")).thenReturn(euDate.toString())
-
-        val testAppConfig = new AppConfig(mockConfig, mockServiceConfig, "appName")
-
-        testAppConfig.displayEuLocation shouldBe true
-      }
-
-      "date is in the past" in {
-        val euDate: DateTime = DateTime.now().minusDays(1)
-        when(mockConfig.get[String]("displayEuLocationUntil")).thenReturn(euDate.toString())
-
-        val testAppConfig = new AppConfig(mockConfig, mockServiceConfig, "appName")
-
-        testAppConfig.displayEuLocation shouldBe false
-      }
-
-    }
   }
 }

@@ -24,8 +24,6 @@ eds.existing-eori.enrolment.confirmation.para1=Rydych nawr wedi’ch ymrestru i 
 
 countries-in-the-eu.list=Yr Almaen, Awstria, Bwlgaria, Croatia, Denmarc, yr Eidal, Estonia, y Ffindir, Ffrainc, Gweriniaeth Cyprus, Gwlad Belg, Gwlad Groeg, Gwlad Pwyl, Hwngari, yr Iseldiroedd, Iwerddon, Latfia, Lithiwania, Lwcsembwrg, Malta, Portiwgal, România, Slofacia, Slofenia, Sbaen, Sweden a’r Weriniaeth Tsiec.
 
-cds.registration.user-location.location.eu.label=Gwlad yn yr UE
-
 cds.you-cant-use-service-agent.para1=Gwnaethoch fewngofnodi i Borth y Llywodraeth gyda chyfrif gwasanaethau asiant.
 cds.you-cant-use-service-agent.para2=Mae angen i chi fewngofnodi gyda Phorth y Llywodraeth ar gyfer y sefydliad neu’r unigolyn sy’n gwneud cais am fynediad at {0}.
 cds.you-cant-use-service-standard-organisation.para1=Gwnaethoch fewngofnodi i Borth y Llywodraeth fel defnyddiwr safonol. I wneud cais am fynediad at {0}, mae’n rhaid i chi fod yn ddefnyddiwr gweinyddwr.
@@ -138,7 +136,6 @@ cds.matching.nino.row.yes-no.error=Dewiswch ‘Iawn’ os oes gennych rif Yswiri
 
 cds.email-confirmed.title-and-heading=Rydych wedi cadarnhau’ch cyfeiriad e-bost
 cds.registration.user-location.location.uk.label=Y Deyrnas Unedig
-cds.registration.user-location.location.eu.label=Yr Undeb Ewropeaidd
 cds.registration.user-location.location.third-country.label=Y tu allan i’r Undeb Ewropeaidd
 cds.registration.user-location.location.third-country-inc-eu.label=Gweddill y byd
 

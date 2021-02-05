@@ -57,10 +57,6 @@ class AppConfig @Inject() (
     case Journey.Subscribe => s"$feedbackLinkSubscribe-${service.code}"
   }
 
-  private val displayEuLocationUntil: DateTime = DateTime.parse(config.get[String]("displayEuLocationUntil"))
-
-  def displayEuLocation: Boolean = displayEuLocationUntil.isAfterNow
-
   def externalGetEORILink(service: Service): String = {
     def registerBlocked = blockedRoutesRegex.exists(_.findFirstIn("register").isDefined)
 
