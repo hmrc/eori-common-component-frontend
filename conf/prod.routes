@@ -279,10 +279,16 @@ GET         /customs-enrolment-services/:service/:journey/you-cannot-register-us
 
 GET         /customs-enrolment-services/:service/:journey/you-need-to-sign-in-with-different-details  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SignInWithDifferentDetailsController.form(service: Service, journey: Journey.Value)
 
-GET         /customs-enrolment-services/:service/:journey/contact-details                             @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ContactDetailsController.createForm(service: Service, journey: Journey.Value)
-POST        /customs-enrolment-services/:service/:journey/contact-details                             @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ContactDetailsController.submit(isInReviewMode:Boolean = false, service: Service, journey: Journey.Value)
-GET         /customs-enrolment-services/:service/:journey/contact-details/review                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ContactDetailsController.reviewForm(service: Service, journey: Journey.Value)
-POST        /customs-enrolment-services/:service/:journey/contact-details/review                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ContactDetailsController.submit(isInReviewMode:Boolean = true, service: Service, journey: Journey.Value)
+GET         /customs-enrolment-services/:service/subscribe/contact-details                             @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ContactDetailsController.createForm(service: Service)
+POST        /customs-enrolment-services/:service/subscribe/contact-details                             @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ContactDetailsController.submit(isInReviewMode:Boolean = false, service: Service)
+GET         /customs-enrolment-services/:service/subscribe/contact-details/review                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ContactDetailsController.reviewForm(service: Service)
+POST        /customs-enrolment-services/:service/subscribe/contact-details/review                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ContactDetailsController.submit(isInReviewMode:Boolean = true, service: Service)
+
+GET         /customs-enrolment-services/:service/register/contact-details                              @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.ContactDetailsController.createForm(service: Service)
+POST        /customs-enrolment-services/:service/register/contact-details                              @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.ContactDetailsController.submit(isInReviewMode:Boolean = false, service: Service)
+GET         /customs-enrolment-services/:service/register/contact-details/review                       @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.ContactDetailsController.reviewForm(service: Service)
+POST        /customs-enrolment-services/:service/register/contact-details/review                       @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.ContactDetailsController.submit(isInReviewMode:Boolean = true, service: Service)
+
 
 GET         /customs-enrolment-services/:service/:journey/logout                                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.logout(service: Service, journey: Journey.Value)
 

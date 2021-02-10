@@ -294,7 +294,7 @@ isUserIdentifiedByRegService: Boolean
                     "contact",
                     messages("cds.form.customs-contact"),
                     contactDetailsHtml(contactDetails),
-                    Some(ContactDetailsController.reviewForm(service, journey)),
+                    Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.ContactDetailsController.reviewForm(service)),
                     messages("cds.form.customs-contact")
                 )
             }

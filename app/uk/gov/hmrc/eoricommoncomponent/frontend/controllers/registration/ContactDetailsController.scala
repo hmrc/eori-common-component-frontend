@@ -14,28 +14,26 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
+package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetailsSubscriptionFlowPageMigrate
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{LoggedInUserWithEnrolments, NA}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetailsSubscriptionFlowPageGetEori
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactDetailsViewModel}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.ContactDetailsForm.contactDetailsCreateForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
   SubscriptionDetailsService
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.contact_details
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.contact_details
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -47,41 +45,14 @@ class ContactDetailsController @Inject() (
   cdsFrontendDataCache: SessionCache,
   subscriptionFlowManager: SubscriptionFlowManager,
   subscriptionDetailsService: SubscriptionDetailsService,
-  orgTypeLookup: OrgTypeLookup,
-  registrationDetailsService: RegistrationDetailsService,
   mcc: MessagesControllerComponents,
-  contactDetailsView: contact_details,
-  regDetailsCreator: RegistrationDetailsCreator
+  contactDetailsView: contact_details
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
   def createForm(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      val f = for {
-        orgType <- orgTypeLookup.etmpOrgType
-
-        cachedCustomsId <- orgType match {
-          case Some(NA) => subscriptionDetailsService.cachedCustomsId
-          case _        => Future.successful(None)
-        }
-
-        cachedNameIdDetails <- orgType match {
-          case Some(NA) => Future.successful(None)
-          case _        => subscriptionDetailsService.cachedNameIdDetails
-        }
-      } yield (cachedCustomsId, cachedNameIdDetails) match {
-        case (None, None) => populateFormGYE(service)(false)
-        case _ =>
-          Future.successful(
-            Redirect(
-              subscriptionFlowManager
-                .stepInformation(ContactDetailsSubscriptionFlowPageMigrate)
-                .nextPage
-                .url(service)
-            )
-          )
-      }
-      f.flatMap(identity)
+      populateFormGYE(service)(false)
     }
 
   def reviewForm(service: Service): Action[AnyContent] =
@@ -89,7 +60,9 @@ class ContactDetailsController @Inject() (
       populateFormGYE(service)(true)
     }
 
-  private def populateFormGYE(service: Service)(isInReviewMode: Boolean)(implicit request: Request[AnyContent]) = {
+  private def populateFormGYE(
+    service: Service
+  )(isInReviewMode: Boolean)(implicit request: Request[AnyContent]): Future[Result] = {
     for {
       email          <- cdsFrontendDataCache.email
       contactDetails <- subscriptionBusinessService.cachedContactDetailsModel
@@ -115,11 +88,11 @@ class ContactDetailsController @Inject() (
                   Some(email),
                   isInReviewMode,
                   service,
-                  Journey.Subscribe
+                  Journey.Register
                 )
               )
             },
-          formData => storeContactDetailsMigrate(formData, email, isInReviewMode, service)
+          formData => storeContactDetails(formData, email, isInReviewMode, service)
         )
       }
     }
@@ -136,12 +109,7 @@ class ContactDetailsController @Inject() (
               contactDetails.countryCode.getOrElse("")
             )
           )
-        case _ =>
-          subscriptionDetailsService.cachedAddressDetails.map {
-            case Some(addressViewModel) => addressViewModel
-            case _ =>
-              throw new IllegalStateException("No addressViewModel details found in cache")
-          }
+        case _ => cdsFrontendDataCache.registrationDetails.map(rd => AddressViewModel(rd.address))
       }
     }
 
@@ -162,24 +130,9 @@ class ContactDetailsController @Inject() (
 
     createContactDetails() map (
       contactDetails =>
-        Ok(contactDetailsView(form, Countries.all, contactDetails, email, isInReviewMode, service, Journey.Subscribe))
+        Ok(contactDetailsView(form, Countries.all, contactDetails, email, isInReviewMode, service, Journey.Register))
     )
   }
-
-  private def storeContactDetailsMigrate(
-    formData: ContactDetailsViewModel,
-    email: String,
-    isInReviewMode: Boolean,
-    service: Service
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
-    for {
-      cachedAddressDetails <- subscriptionDetailsService.cachedAddressDetails
-      _ <- registrationDetailsService.cacheAddress(
-        regDetailsCreator
-          .registrationAddressFromAddressViewModel(cachedAddressDetails.get)
-      )
-    } yield storeContactDetails(formData, email, isInReviewMode, service)
-  }.flatMap(identity)
 
   private def storeContactDetails(
     formData: ContactDetailsViewModel,
@@ -194,11 +147,11 @@ class ContactDetailsController @Inject() (
       )
       .map(
         _ =>
-          if (inReviewMode) Redirect(DetermineReviewPageController.determineRoute(service, Journey.Subscribe))
+          if (inReviewMode) Redirect(DetermineReviewPageController.determineRoute(service, Journey.Register))
           else
             Redirect(
               subscriptionFlowManager
-                .stepInformation(ContactDetailsSubscriptionFlowPageMigrate)
+                .stepInformation(ContactDetailsSubscriptionFlowPageGetEori)
                 .nextPage
                 .url(service)
             )

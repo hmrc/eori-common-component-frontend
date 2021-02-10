@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package unit.controllers.subscription
+package unit.controllers.registration
 
 import common.pages.subscription.SubscriptionContactDetailsPage
 import common.pages.subscription.SubscriptionContactDetailsPage._
@@ -26,22 +26,19 @@ import org.scalatest.prop.TableFor3
 import org.scalatest.prop.Tables.Table
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{
-  ContactDetailsController,
-  SubscriptionFlowManager
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.ContactDetailsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactDetailsModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDetailsService
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.contact_details
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.contact_details
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
+import unit.controllers.subscription.SubscriptionFlowSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.RegistrationDetailsBuilder.{
   defaultAddress,
@@ -65,11 +62,9 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   protected override val submitInReviewModeUrl: String =
     ContactDetailsController.submit(isInReviewMode = true, atarService).url
 
-  private val mockRequestSessionData         = mock[RequestSessionData]
-  private val mockRegistrationDetails        = mock[RegistrationDetails](RETURNS_DEEP_STUBS)
-  private val mockSubscriptionDetails        = mock[SubscriptionDetails](RETURNS_DEEP_STUBS)
-  private val mockRegistrationDetailsService = mock[RegistrationDetailsService]
-  private val mockRegistrationDetailsCreator = mock[RegistrationDetailsCreator]
+  private val mockRequestSessionData  = mock[RequestSessionData]
+  private val mockRegistrationDetails = mock[RegistrationDetails](RETURNS_DEEP_STUBS)
+  private val mockSubscriptionDetails = mock[SubscriptionDetails](RETURNS_DEEP_STUBS)
 
   private val hintTextTelAndFax = "Only enter numbers, for example 01632 960 001"
 
@@ -83,37 +78,23 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     mockCdsFrontendDataCache,
     mockSubscriptionFlowManager,
     mockSubscriptionDetailsHolderService,
-    mockOrgTypeLookup,
-    mockRegistrationDetailsService,
     mcc,
-    contactDetailsView,
-    mockRegistrationDetailsCreator
+    contactDetailsView
   )
 
-  override protected def beforeEach(): Unit = {
-    super.beforeEach()
-
-    when(mockSubscriptionBusinessService.cachedContactDetailsModel(any[HeaderCarrier])).thenReturn(None)
-    when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(mockSubscriptionDetails)
-    registerSaveContactDetailsMockSuccess()
-    when(mockSubscriptionDetailsHolderService.cachedAddressDetails(any()))
-      .thenReturn(Future.successful(Some(AddressViewModel("street", "city", None, "code"))))
-    mockFunctionWithRegistrationDetails(mockRegistrationDetails)
-    setupMockSubscriptionFlowManager(ContactDetailsSubscriptionFlowPageMigrate)
-    when(mockCdsFrontendDataCache.email(any[HeaderCarrier])).thenReturn(Future.successful(Email))
-    when(mockSubscriptionDetailsHolderService.cachedCustomsId(any())).thenReturn(Future.successful(None))
-    when(mockSubscriptionDetailsHolderService.cachedNameIdDetails(any())).thenReturn(Future.successful(None))
-  }
-
-  override protected def afterEach(): Unit = {
+  override def beforeEach: Unit = {
     reset(
       mockSubscriptionBusinessService,
       mockCdsFrontendDataCache,
       mockSubscriptionFlowManager,
       mockSubscriptionDetailsHolderService
     )
-
-    super.afterEach()
+    when(mockSubscriptionBusinessService.cachedContactDetailsModel(any[HeaderCarrier])).thenReturn(None)
+    when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(mockSubscriptionDetails)
+    registerSaveContactDetailsMockSuccess()
+    mockFunctionWithRegistrationDetails(mockRegistrationDetails)
+    setupMockSubscriptionFlowManager(ContactDetailsSubscriptionFlowPageGetEori)
+    when(mockCdsFrontendDataCache.email(any[HeaderCarrier])).thenReturn(Future.successful(Email))
   }
 
   val orgTypeFlows: TableFor3[SubscriptionFlow, String, EtmpOrganisationType] =
@@ -124,23 +105,21 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       (SoleTraderSubscriptionFlow, "Is this the right contact address?", NA)
     )
 
-  val formModesMigrate = Table(
+  val formModesGYE = Table(
     ("formMode", "showFormFunction"),
     (
-      "create Subscribe",
+      "create Register",
       (flow: SubscriptionFlow, orgType: EtmpOrganisationType) => showCreateForm(flow, orgType = orgType)(_)
     ),
-    ("review Subscribe", (flow: SubscriptionFlow, orgType: EtmpOrganisationType) => showReviewForm(flow)(_))
+    ("review Register", (flow: SubscriptionFlow, orgType: EtmpOrganisationType) => showReviewForm(flow)(_))
   )
 
-  forAll(formModesMigrate) { (formMode, showFormFunction) =>
+  forAll(formModesGYE) { (formMode, showFormFunction) =>
     s"The registration address when viewing the $formMode form" should {
       forAll(orgTypeFlows) {
         case (flow, expectedLabel, orgType) =>
           s"display appropriate label for address question in subscription flow $flow for mode $formMode" in {
-            setupMockSubscriptionFlowManager(ContactDetailsSubscriptionFlowPageMigrate)
             when(mockRegistrationDetails.address).thenReturn(defaultAddress)
-            mockMigrate()
             showFormFunction(flow, orgType) { result =>
               val page = CdsPage(contentAsString(result))
               page.getElementsText(registeredAddressQuestionXPath) shouldBe expectedLabel
@@ -149,7 +128,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       }
 
       s"display address correctly when all fields are populated for mode $formMode" in {
-        mockMigrate()
+        when(mockRegistrationDetails.address).thenReturn(defaultAddress)
         showFormFunction(OrganisationSubscriptionFlow, CorporateBody) { result =>
           val page = CdsPage(contentAsString(result))
           val expectedAddress =
@@ -159,11 +138,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       }
 
       s"display address correctly when only mandatory fields are populated for mode $formMode" in {
-        mockMigrate()
-        val cachedAddressDetails =
-          Some(AddressViewModel(street = "Line 1", city = "", postcode = None, countryCode = "GB"))
-        when(mockSubscriptionDetailsHolderService.cachedAddressDetails(any[HeaderCarrier]))
-          .thenReturn(Future.successful(cachedAddressDetails))
+        when(mockRegistrationDetails.address).thenReturn(defaultAddressWithMandatoryValuesOnly)
         showFormFunction(OrganisationSubscriptionFlow, CorporateBody) { result =>
           val page            = CdsPage(contentAsString(result))
           val expectedAddress = s"${defaultAddressWithMandatoryValuesOnly.addressLine1}<br>$defaultCountryName"
@@ -172,94 +147,27 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       }
 
       s"display country correctly when EU address is used for mode $formMode" in {
-        mockMigrate()
-        val cachedAddressDetails =
-          Some(AddressViewModel(street = "euAddressFirstLine", city = "", postcode = None, countryCode = "PL"))
-        when(mockSubscriptionDetailsHolderService.cachedAddressDetails(any[HeaderCarrier]))
-          .thenReturn(Future.successful(cachedAddressDetails))
+        val addressFirstLine = "euAddressFirstLine"
+        val euAddress        = Address(addressFirstLine, None, None, None, None, "PL")
+        when(mockRegistrationDetails.address).thenReturn(euAddress)
         showFormFunction(OrganisationSubscriptionFlow, CorporateBody) { result =>
           val page            = CdsPage(contentAsString(result))
-          val expectedAddress = s"euAddressFirstLine<br>Poland"
+          val expectedAddress = s"$addressFirstLine<br>Poland"
           page.getElementsHtml(registeredAddressParaXPath) shouldBe expectedAddress
         }
       }
 
       s"display country correctly when non-EU address is used for mode $formMode" in {
-        mockMigrate()
-        val cachedAddressDetails =
-          Some(AddressViewModel(street = "nonEuAddressFirstLine", city = "", postcode = None, countryCode = "CA"))
-        when(mockSubscriptionDetailsHolderService.cachedAddressDetails(any[HeaderCarrier]))
-          .thenReturn(Future.successful(cachedAddressDetails))
+        val addressFirstLine = "nonEuAddressFirstLine"
+        val nonEuAddress     = Address(addressFirstLine, None, None, None, None, "CA")
+        when(mockRegistrationDetails.address).thenReturn(nonEuAddress)
         showFormFunction(OrganisationSubscriptionFlow, CorporateBody) { result =>
           val page            = CdsPage(contentAsString(result))
-          val expectedAddress = s"nonEuAddressFirstLine<br>Canada"
+          val expectedAddress = s"$addressFirstLine<br>Canada"
           page.getElementsHtml(registeredAddressParaXPath) shouldBe expectedAddress
         }
       }
     }
-  }
-
-  forAll(orgTypeFlows) {
-    case (flow, expectedLabel, orgType) =>
-      s"throw IllegalStateException when no address details cached in subscription flow $flow for mode create Subscribe" in {
-        setupMockSubscriptionFlowManager(ContactDetailsSubscriptionFlowPageMigrate)
-        when(mockRegistrationDetails.address).thenReturn(defaultAddress)
-        when(mockSubscriptionDetailsHolderService.cachedNameIdDetails(any[HeaderCarrier]))
-          .thenReturn(Future.successful(None))
-        when(mockSubscriptionDetailsHolderService.cachedAddressDetails(any[HeaderCarrier]))
-          .thenReturn(Future.successful(None))
-
-        showCreateForm(flow, orgType = orgType) { result =>
-          val caught = intercept[IllegalStateException] {
-            await(result)
-          }
-          caught.getMessage shouldBe "No addressViewModel details found in cache"
-        }
-      }
-
-      s"redirect to next page in subscription flow $flow for mode create Subscribe" in {
-        setupMockSubscriptionFlowManager(ContactDetailsSubscriptionFlowPageMigrate)
-        when(mockRegistrationDetails.address).thenReturn(defaultAddress)
-
-        orgType match {
-          case CorporateBody =>
-            when(mockSubscriptionDetailsHolderService.cachedCustomsId(any[HeaderCarrier]))
-              .thenReturn(Future.successful(None))
-            when(mockSubscriptionDetailsHolderService.cachedNameIdDetails(any[HeaderCarrier]))
-              .thenReturn(Future.successful(Some(NameIdOrganisationMatchModel("Orgname", "SomeCustomsId"))))
-          case _ =>
-            when(mockSubscriptionDetailsHolderService.cachedCustomsId(any[HeaderCarrier]))
-              .thenReturn(Future.successful(Some(Utr("SomeCustomsId"))))
-            when(mockSubscriptionDetailsHolderService.cachedNameIdDetails(any[HeaderCarrier]))
-              .thenReturn(Future.successful(None))
-        }
-
-        showCreateForm(flow, orgType = orgType) { result =>
-          status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) should endWith("next-page-url")
-          verify(mockSubscriptionFlowManager, times(1))
-            .stepInformation(any())(any[Request[AnyContent]])
-        }
-      }
-
-      s"fill fields with contact details if stored in cache (new address entered) in subscription flow $flow for Subscribe" in {
-        mockMigrate()
-        when(mockSubscriptionBusinessService.cachedContactDetailsModel(any[HeaderCarrier]))
-          .thenReturn(Some(contactDetailsModel))
-        showCreateForm(flow, orgType = orgType) { result =>
-          val page = CdsPage(contentAsString(result))
-          page.getElementText(emailLabelXPath) shouldBe emailAddressFieldLabel
-          page.getElementText(emailFieldXPath) shouldBe Email
-          page.getElementValue(fullNameFieldXPath) shouldBe FullName
-          page.getElementValue(telephoneFieldXPath) shouldBe Telephone
-          page.radioButtonIsChecked(useRegisteredAddressYesRadioButtonXPath) shouldBe false
-          page.radioButtonIsChecked(useRegisteredAddressNoRadioButtonXPath) shouldBe true
-          page.getElementValue(streetFieldXPath) shouldBe Street
-          page.getElementValue(cityFieldXPath) shouldBe City
-          page.getElementValue(postcodeFieldXPath) shouldBe Postcode
-          page.getElementValue(countryCodeSelectedOptionXPath) shouldBe CountryCode
-        }
-      }
   }
 
   "Viewing the create form " should {
@@ -386,25 +294,6 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         page.getElementValue(countryCodeSelectedOptionXPath) shouldBe RevisedCountryCode
       }
     }
-
-    "display the contact details stored in the cache under as 'subscription details' for Subscribe" in {
-      mockMigrate()
-      mockFunctionWithRegistrationDetails(mockRegistrationDetails)
-      when(mockSubscriptionBusinessService.cachedContactDetailsModel(any())).thenReturn(
-        Some(revisedContactDetailsModel)
-      )
-      showReviewForm(contactDetailsModel = revisedContactDetailsModel) { result =>
-        val page = CdsPage(contentAsString(result))
-        page.getElementValue(fullNameFieldXPath) shouldBe FullName
-        page.getElementText(emailLabelXPath) shouldBe emailAddressFieldLabel
-        page.getElementText(emailFieldXPath) shouldBe Email
-        page.getElementValue(telephoneFieldXPath) shouldBe Telephone
-        page.getElementValue(streetFieldXPath) shouldBe Street
-        page.getElementValue(cityFieldXPath) shouldBe City
-        page.getElementValue(postcodeFieldXPath) shouldBe Postcode
-        page.getElementValue(countryCodeSelectedOptionXPath) shouldBe RevisedCountryCode
-      }
-    }
   }
 
   "submitting the form in Create mode" should {
@@ -414,35 +303,15 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       controller.submit(isInReviewMode = false, atarService)
     )
 
-    "save the details when user chooses to use Registered Address for Subscribe journey" in {
-      val cachedAddressDetails = Some(
-        AddressViewModel(street = "Line 1 line 2", city = "line 3", postcode = Some("SE28 1AA"), countryCode = "GB")
-      )
-      when(mockSubscriptionDetailsHolderService.cachedAddressDetails(any[HeaderCarrier]))
-        .thenReturn(Future.successful(cachedAddressDetails))
-
-      when(mockRegistrationDetailsService.cacheAddress(any())(any[HeaderCarrier]())).thenReturn(Future.successful(true))
-      setupMockSubscriptionFlowManager(ContactDetailsSubscriptionFlowPageMigrate)
-
+    "save the details when user chooses to use Registered Address for GYE journey" in {
       submitFormInCreateMode(createFormAllFieldsWhenUseRegAddressMap) { result =>
         await(result)
-        verify(mockSubscriptionDetailsHolderService).cachedAddressDetails(any[HeaderCarrier])
-        verify(mockRegistrationDetailsService).cacheAddress(any[Address])(any[HeaderCarrier])
         verify(mockSubscriptionDetailsHolderService)
           .cacheContactDetails(meq(createContactDetailsViewModelWhenUseRegAddress), meq(false))(any[HeaderCarrier])
       }
     }
 
-    "save the details when user chooses not to use Registered Address for Subscribe journey" in {
-      val cachedAddressDetails = Some(
-        AddressViewModel(street = "Line 1 line 2", city = "line 3", postcode = Some("SE28 1AA"), countryCode = "GB")
-      )
-      when(mockSubscriptionDetailsHolderService.cachedAddressDetails(any[HeaderCarrier]))
-        .thenReturn(Future.successful(cachedAddressDetails))
-
-      when(mockRegistrationDetailsService.cacheAddress(any())(any[HeaderCarrier]())).thenReturn(Future.successful(true))
-      setupMockSubscriptionFlowManager(ContactDetailsSubscriptionFlowPageMigrate)
-
+    "save the details when user chooses not to use Registered Address for GYE journey" in {
       submitFormInCreateMode(createFormAllFieldsWhenNotUsingRegAddressMap) { result =>
         await(result)
         verify(mockSubscriptionDetailsHolderService)
@@ -676,17 +545,6 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       )
       submitFormInCreateMode(params)(verifyRedirectToNextPageInCreateMode)
     }
-  }
-
-  private def mockMigrate() = {
-    when(mockSubscriptionDetailsHolderService.cachedCustomsId(any[HeaderCarrier])).thenReturn(Future.successful(None))
-    when(mockSubscriptionDetailsHolderService.cachedNameIdDetails(any[HeaderCarrier]))
-      .thenReturn(Future.successful(None))
-    val cachedAddressDetails = Some(
-      AddressViewModel(street = "Line 1 line 2", city = "line 3", postcode = Some("SE28 1AA"), countryCode = "GB")
-    )
-    when(mockSubscriptionDetailsHolderService.cachedAddressDetails(any[HeaderCarrier]))
-      .thenReturn(Future.successful(cachedAddressDetails))
   }
 
   private def mockFunctionWithRegistrationDetails(registrationDetails: RegistrationDetails) {
