@@ -258,3 +258,8 @@ ecc.what-is-your-eori.unable-to-use.signout = Allgofnodwch a mewngofnodwch eto g
 ecc.unable-to-use.signout.title = Rydych ar fin allgofnodi
 ecc.unable-to-use.signout.question = Ai dyma beth hoffech ei wneud?
 ecc.unable-to-use.signout.empty = Dewiswch yr hyn yr hoffech ei wneud
+
+ecc.registered-company-country.title = Where is your organisation registered?
+ecc.registered-company-country.error = Enter the country where your organisation is registered
+
+ecc.registered-company-country.individual.error = Enter the country where you are based

@@ -23,6 +23,7 @@ import play.api.libs.json.JodaReads._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
   AddressViewModel,
+  CompanyRegisteredCountry,
   ContactDetailsModel,
   VatDetails,
   VatEUDetailsModel
@@ -32,7 +33,6 @@ case class SubscriptionDetails(
   businessShortName: Option[BusinessShortName] = None,
   dateEstablished: Option[LocalDate] = None,
   vatRegisteredUk: Option[Boolean] = None,
-  vatGroup: Option[Boolean] = None,
   ukVatDetails: Option[VatDetails] = None,
   vatRegisteredEu: Option[Boolean] = None,
   vatEUDetails: Seq[VatEUDetailsModel] = Nil,
@@ -50,7 +50,8 @@ case class SubscriptionDetails(
   nameDetails: Option[NameMatchModel] = None,
   idDetails: Option[IdMatchModel] = None,
   customsId: Option[CustomsId] = None,
-  formData: FormData = FormData()
+  formData: FormData = FormData(),
+  registeredCompany: Option[CompanyRegisteredCountry] = None
 ) {
 
   def name: String =
