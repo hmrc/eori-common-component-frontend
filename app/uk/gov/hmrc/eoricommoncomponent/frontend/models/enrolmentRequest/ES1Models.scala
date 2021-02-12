@@ -34,7 +34,7 @@ case class ES1Request(enrolment: String, queryType: ES1QueryType)
 object ES1Request {
 
   def apply(service: Service, eori: String, queryType: ES1QueryType = ES1QueryType.All): ES1Request = {
-    val enrolment = service.enrolmentKey + "~" + eori
+    val enrolment = service.enrolmentKey + "~EORINumber~" + eori
 
     ES1Request(enrolment, queryType)
   }

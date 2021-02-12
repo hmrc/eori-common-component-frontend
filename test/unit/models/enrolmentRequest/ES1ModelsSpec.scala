@@ -38,7 +38,7 @@ class ES1ModelsSpec extends UnitSpec {
 
       val request = ES1Request(Service.withName("atar").get, "GB123456789123", ES1QueryType.Principal)
 
-      val expectedEnrolment = "HMRC-ATAR-ORG~GB123456789123"
+      val expectedEnrolment = "HMRC-ATAR-ORG~EORINumber~GB123456789123"
       val expectedRequest   = ES1Request(expectedEnrolment, ES1QueryType.Principal)
 
       request shouldBe expectedRequest
