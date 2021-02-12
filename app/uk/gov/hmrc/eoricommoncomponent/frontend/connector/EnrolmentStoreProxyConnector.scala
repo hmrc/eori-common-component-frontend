@@ -142,4 +142,11 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
     }
   }
 
+  def auditEs1Call(url: String, response: ES1Response)(implicit hc: HeaderCarrier): Unit =
+    audit.sendExtendedDataEvent(
+      transactionName = "ecc-es1-call",
+      path = url,
+      details = Json.toJson(response),
+      eventType = "ecc-es1"
+    )
 }
