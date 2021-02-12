@@ -149,4 +149,5 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
       details = Json.toJson(response),
       eventType = "ecc-es1"
     )
+
 }

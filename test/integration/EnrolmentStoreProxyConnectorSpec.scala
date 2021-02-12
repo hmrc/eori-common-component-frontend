@@ -294,7 +294,7 @@ class EnrolmentStoreProxyConnectorSpec extends IntegrationTestsSpec with ScalaFu
         val mockES1QueryType = mock[ES1QueryType]
 
         when(mockES1QueryType.value).thenReturn("incorrect")
-        when(mockES1Request.enrolment).thenReturn("HMRC-ATAR-ORG~GB123456789123")
+        when(mockES1Request.enrolment).thenReturn("HMRC-ATAR-ORG~EORINumber~GB123456789123")
         when(mockES1Request.queryType).thenReturn(mockES1QueryType)
 
         val enrolmentStoreProxyResponse =
