@@ -22,16 +22,16 @@ import play.api.mvc.Request
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.CompanyRegisteredCountry
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.country
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.country_individual
 import util.ViewSpec
 
-class CountryViewSpec extends ViewSpec {
+class CountryIndividualViewSpec extends ViewSpec {
 
-  private val view = instanceOf[country]
+  private val view = instanceOf[country_individual]
 
   implicit val request: Request[Any] = withFakeCSRF(fakeAtarSubscribeRequest)
 
-  private val form = CompanyRegisteredCountry.form()
+  private val form = CompanyRegisteredCountry.form("ecc.registered-company-country.individual.error")
 
   private val formWithError = form.bind(Map("countryCode" -> ""))
 
@@ -46,12 +46,12 @@ class CountryViewSpec extends ViewSpec {
 
     "display correct title" in {
 
-      doc.title() must startWith("Where is your organisation registered?")
+      doc.title() must startWith("In which country is you business registered?")
     }
 
     "display correct header" in {
 
-      doc.body().getElementsByTag("h1").text() mustBe "Where is your organisation registered?"
+      doc.body().getElementsByTag("h1").text() mustBe "In which country is you business registered?"
     }
 
     "display input with Country label" in {
@@ -73,7 +73,7 @@ class CountryViewSpec extends ViewSpec {
       docWithErrorSummary.getElementById("form-error-heading").text() mustBe "There is a problem"
       docWithErrorSummary.getElementsByClass("error-list").get(
         0
-      ).text() mustBe "Enter the country where your organisation is registered"
+      ).text() mustBe "Enter the country in which your business is registered"
     }
   }
 }

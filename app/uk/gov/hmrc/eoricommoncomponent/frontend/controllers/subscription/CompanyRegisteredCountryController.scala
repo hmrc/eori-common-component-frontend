@@ -17,16 +17,24 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
 import javax.inject.{Inject, Singleton}
+import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
+import play.twirl.api.Html
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.{
+  CompanyRegisteredCountryController,
+  ContactDetailsController,
+  DateOfEstablishmentController
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.CompanyRegisteredCountry
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.country
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{country_individual, country_organisation}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -34,8 +42,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class CompanyRegisteredCountryController @Inject() (
   authAction: AuthAction,
   subscriptionDetailsService: SubscriptionDetailsService,
+  requestSessionData: RequestSessionData,
   mcc: MessagesControllerComponents,
-  countryPage: country
+  countryIndividualPage: country_individual,
+  countryOrganisationPage: country_organisation
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
@@ -54,34 +64,53 @@ class CompanyRegisteredCountryController @Inject() (
     }
 
   private def populateView(country: Option[CompanyRegisteredCountry], service: Service, isInReviewMode: Boolean)(
-    implicit request: Request[_]
+    implicit request: Request[AnyContent]
   ): Result = {
 
-    val form = country.fold(CompanyRegisteredCountry.form())(CompanyRegisteredCountry.form().fill(_))
+    val form       = CompanyRegisteredCountry.form(errorMessageBasedOnType)
+    val filledForm = country.fold(form)(form.fill(_))
 
+    Ok(prepareViewBasedOnType(filledForm, service, isInReviewMode))
+  }
+
+  private def prepareViewBasedOnType(form: Form[CompanyRegisteredCountry], service: Service, isInReviewMode: Boolean)(
+    implicit request: Request[AnyContent]
+  ): Html = {
     val (countries, picker) = Countries.getCountryParametersForAllCountries()
 
-    Ok(countryPage(form, countries, picker, service, isInReviewMode))
+    if (requestSessionData.userSubscriptionFlow == MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow)
+      countryOrganisationPage(form, countries, picker, service, isInReviewMode)
+    else
+      countryIndividualPage(form, countries, picker, service, isInReviewMode)
   }
+
+  private def errorMessageBasedOnType()(implicit request: Request[AnyContent]): String =
+    if (requestSessionData.userSubscriptionFlow == MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow)
+      "ecc.registered-company-country.organisation.error"
+    else "ecc.registered-company-country.individual.error"
 
   def submit(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user =>
       CompanyRegisteredCountry
-        .form()
+        .form(errorMessageBasedOnType)
         .bindFromRequest()
         .fold(
-          formWithErrors => {
-            val (countries, picker) = Countries.getCountryParametersForAllCountries()
-            Future.successful(BadRequest(countryPage(formWithErrors, countries, picker, service, isInReviewMode)))
-          },
+          formWithErrors =>
+            Future.successful(BadRequest(prepareViewBasedOnType(formWithErrors, service, isInReviewMode))),
           country =>
             subscriptionDetailsService.cacheRegisteredCountry(country).map { _ =>
               if (isInReviewMode)
                 Redirect(DetermineReviewPageController.determineRoute(service, Journey.Subscribe))
               else
-                Redirect(DateOfEstablishmentController.createForm(service, Journey.Subscribe))
+                redirectBasedOnTheJourney(service)
             }
         )
     }
+
+  private def redirectBasedOnTheJourney(service: Service)(implicit request: Request[AnyContent]): Result =
+    if (requestSessionData.userSubscriptionFlow == MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow)
+      Redirect(DateOfEstablishmentController.createForm(service, Journey.Subscribe))
+    else
+      Redirect(ContactDetailsController.createForm(service))
 
 }

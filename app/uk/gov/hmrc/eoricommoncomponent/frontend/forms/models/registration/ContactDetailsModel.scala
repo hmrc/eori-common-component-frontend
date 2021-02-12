@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription
+package uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration
 
 import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.ContactInformation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetails
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactDetailsModel.trim
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel.trim
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionTimeOutException
 
 case class ContactDetailsModel(
@@ -55,6 +56,24 @@ case class ContactDetailsModel(
     trim(postcode),
     countryCode
   )
+
+  def toRowContactInformation(): ContactInformation = ContactInformation(
+    personOfContact = Some(fullName),
+    sepCorrAddrIndicator = Some(false),
+    streetAndNumber = clearEmptyOptions(street),
+    city = clearEmptyOptions(city),
+    postalCode = clearEmptyOptions(postcode),
+    countryCode = clearEmptyOptions(countryCode),
+    telephoneNumber = Some(telephone),
+    faxNumber = clearEmptyOptions(fax),
+    emailAddress = Some(emailAddress)
+  )
+
+  // TODO Investigate why ContactInformation model has Some("") instead of None
+  // This is a temporary solution to be able to build correct request
+  // Somehow during model transformation instead of having None there is Some("")
+  private def clearEmptyOptions(input: Option[String]): Option[String] =
+    if (input.exists(_.isEmpty)) None else input
 
 }
 

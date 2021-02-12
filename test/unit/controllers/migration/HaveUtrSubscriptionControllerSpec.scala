@@ -26,7 +26,11 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.HaveUtrSubscriptionController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubscriptionFlowInfo, SubscriptionPage}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow,
+  SubscriptionFlowInfo,
+  SubscriptionPage
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{NameOrganisationMatchModel, UtrMatchModel}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
@@ -182,6 +186,23 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       submit(Journey.Subscribe, NoUtrRequest) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe nextPageFlowUrl
+      }
+    }
+
+    "redirect to Company Registered Country page" when {
+
+      "'No' UTR selected and user is during Row organisation journey" in {
+
+        when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(SoleTrader))
+        when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(
+          MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow
+        )
+        when(mockSubscriptionDetailsService.cacheUtrMatchForNoAnswer(any[Option[UtrMatchModel]])(any[HeaderCarrier]))
+          .thenReturn(Future.successful(()))
+        submit(Journey.Subscribe, NoUtrRequest) { result =>
+          status(result) shouldBe SEE_OTHER
+          result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/registered-country"
+        }
       }
     }
   }

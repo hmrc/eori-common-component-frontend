@@ -28,10 +28,10 @@ object CompanyRegisteredCountry {
 
   implicit val format = Json.format[CompanyRegisteredCountry]
 
-  def form()(implicit messages: Messages): Form[CompanyRegisteredCountry] = Form(
+  def form(errorMessage: String)(implicit messages: Messages): Form[CompanyRegisteredCountry] = Form(
     mapping(
       "countryCode" -> text.verifying(
-        "ecc.registered-company-country.error",
+        errorMessage,
         s => s.trim.nonEmpty && s != messages("cds.subscription.address-details.country.emptyValueText")
       )
     )(CompanyRegisteredCountry.apply)(CompanyRegisteredCountry.unapply)

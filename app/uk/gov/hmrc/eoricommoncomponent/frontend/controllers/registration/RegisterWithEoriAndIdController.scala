@@ -73,47 +73,37 @@ class RegisterWithEoriAndIdController @Inject() (
               Redirect(EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service, journey))
             )
           else
-            sendRequest().flatMap {
-              case true if isRow => handleRowResponse(service, journey)
-              case true          => handleREG06Response(service, journey)
-              case false =>
-                logger.error("Reg01 BadRequest ROW")
-                val formattedDate = languageUtils.Dates.formatDate(LocalDate.now())
-                Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service, formattedDate)))
+            subscriptionDetailsService.cachedCustomsId.flatMap { cachedCustomsId =>
+              sendRequest(cachedCustomsId).flatMap {
+                case true if isRow && cachedCustomsId.isEmpty => handleREG01Response(service, journey)
+                case true                                     => handleREG06Response(service, journey)
+                case false =>
+                  logger.error("Reg01 BadRequest ROW")
+                  val formattedDate = languageUtils.Dates.formatDate(LocalDate.now())
+                  Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service, formattedDate)))
+              }
             }
       }
     }
 
-  private def sendRequest()(implicit
-    request: Request[AnyContent],
-    loggedInUser: LoggedInUserWithEnrolments
-  ): Future[Boolean] = {
-    for {
-      regDetails      <- cache.registrationDetails
-      cachedCustomsId <- subscriptionDetailsService.cachedCustomsId
-    } yield (regDetails, cachedCustomsId, isRow) match {
-      case (_: RegistrationDetailsOrganisation, Some(_), true) =>
-        reg06Service.sendOrganisationRequest
-      case (_: RegistrationDetailsOrganisation, None, true) =>
-        matchingService.sendOrganisationRequestForMatchingService
-      case (_: RegistrationDetailsOrganisation, _, false) =>
-        reg06Service.sendOrganisationRequest
-      case (_: RegistrationDetailsIndividual, Some(_), true) =>
-        reg06Service.sendIndividualRequest
-      case (_: RegistrationDetailsIndividual, None, true) =>
-        matchingService.sendIndividualRequestForMatchingService
-      case _ => reg06Service.sendIndividualRequest
+  private def sendRequest(
+    cachedCustomsId: Option[CustomsId]
+  )(implicit request: Request[AnyContent], loggedInUser: LoggedInUserWithEnrolments): Future[Boolean] =
+    cache.registrationDetails.flatMap { regDetails =>
+      (regDetails, cachedCustomsId, isRow) match {
+        case (_: RegistrationDetailsOrganisation, Some(_), true) =>
+          reg06Service.sendOrganisationRequest
+        case (_: RegistrationDetailsOrganisation, None, true) =>
+          matchingService.sendOrganisationRequestForMatchingService
+        case (_: RegistrationDetailsOrganisation, _, false) =>
+          reg06Service.sendOrganisationRequest
+        case (_: RegistrationDetailsIndividual, Some(_), true) =>
+          reg06Service.sendIndividualRequest
+        case (_: RegistrationDetailsIndividual, None, true) =>
+          matchingService.sendIndividualRequestForMatchingService
+        case _ => reg06Service.sendIndividualRequest
+      }
     }
-  }.flatMap(identity)
-
-  private def handleRowResponse(service: Service, journey: Journey.Value)(implicit
-    request: Request[AnyContent],
-    loggedInUser: LoggedInUserWithEnrolments,
-    hc: HeaderCarrier
-  ): Future[Result] = subscriptionDetailsService.cachedCustomsId flatMap {
-    case Some(_) => handleREG06Response(service, journey)
-    case _       => handleREG01Response(service, journey)
-  }
 
   private def handleREG01Response(service: Service, journey: Journey.Value)(implicit
     request: Request[AnyContent],

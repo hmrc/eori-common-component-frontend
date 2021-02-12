@@ -261,8 +261,10 @@ ecc.unable-to-use.signout.title = You are about to sign out
 ecc.unable-to-use.signout.question = Is this what you want to do?
 ecc.unable-to-use.signout.empty = Select what you would like to do
 
-ecc.registered-company-country.title = Where is your organisation registered?
-ecc.registered-company-country.error = Enter the country where your organisation is registered
+ecc.registered-company-country.organisation.title = In which country is your organisation registered?
+ecc.registered-company-country.organisation.error = Enter the country in which your organisation is registered
+ecc.registered-company-country.individual.title = In which country is you business registered?
+ecc.registered-company-country.individual.error = Enter the country in which your business is registered
+ecc.registered-company-country.summary = Country location
 
-ecc.registered-company-country.individual.error = Enter the country where you are based
 

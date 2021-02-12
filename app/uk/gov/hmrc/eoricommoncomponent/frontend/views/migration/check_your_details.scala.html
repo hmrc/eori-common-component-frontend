@@ -14,12 +14,12 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, NameIdOrganisationMatchModel, ExistingEori}
-@import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactDetailsModel
-@import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
+@import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, ExistingEori, NameIdOrganisationMatchModel}
+@import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, CompanyRegisteredCountry}
 @import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 @import org.joda.time.LocalDate
+@import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 @import views.html.helper._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.helpers.summaryRow
@@ -43,6 +43,7 @@
         dateEstablished: Option[LocalDate],
         idDetails: Option[IdMatchModel],
         customsId: Option[CustomsId],
+        registeredCountry: Option[CompanyRegisteredCountry],
         service: Service,
         journey: Journey.Value)(implicit request: Request[_], messages: Messages)
 
@@ -139,6 +140,10 @@
             case u@Some(Utr(_)) => None
             case _ => if(isThirdCountrySubscription && isIndividualSubscriptionFlow) Some(Nino(messages("cds.not-entered.label"))) else None
         }
+    }
+
+    @countryLocation(country: CompanyRegisteredCountry) = {
+      @labelForEUCountry(country.country)
     }
 
     @addressHtml(ad: AddressViewModel) = {
@@ -256,6 +261,15 @@
                         addressHtml(ad),
                         Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.reviewForm(service, journey)),
                         businessDetailsLabel
+                    )
+                }
+                @registeredCountry.map { country =>
+                    @summaryRow_di(
+                      "country-location",
+                      messages("ecc.registered-company-country.summary"),
+                      countryLocation(country),
+                      Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.CompanyRegisteredCountryController.reviewPage(service)),
+                      messages("ecc.registered-company-country.summary")
                     )
                 }
                 @contactDetails.map { cd =>

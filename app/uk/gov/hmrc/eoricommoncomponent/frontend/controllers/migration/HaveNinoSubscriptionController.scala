@@ -22,10 +22,15 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.GetNinoSubscriptionController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.CompanyRegisteredCountryController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NinoSubscriptionFlowPage
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow,
+  NinoSubscriptionFlowPage
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.haveRowIndividualsNinoForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_nino_subscription
 import uk.gov.hmrc.http.HeaderCarrier
@@ -36,6 +41,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class HaveNinoSubscriptionController @Inject() (
   authAction: AuthAction,
   subscriptionFlowManager: SubscriptionFlowManager,
+  requestSessionData: RequestSessionData,
   mcc: MessagesControllerComponents,
   matchNinoSubscriptionView: match_nino_subscription,
   subscriptionDetailsHolderService: SubscriptionDetailsService
@@ -94,7 +100,11 @@ class HaveNinoSubscriptionController @Inject() (
           )
       case Some(false) =>
         subscriptionDetailsHolderService.cacheNinoMatchForNoAnswer(Some(form)) map (
-          _ => Redirect(subscriptionFlowManager.stepInformation(NinoSubscriptionFlowPage).nextPage.url(service))
+          _ =>
+            if (requestSessionData.userSubscriptionFlow == MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow)
+              Redirect(CompanyRegisteredCountryController.displayPage(service))
+            else
+              Redirect(subscriptionFlowManager.stepInformation(NinoSubscriptionFlowPage).nextPage.url(service))
         )
       case _ => throw new IllegalStateException("No Data from the form")
     }

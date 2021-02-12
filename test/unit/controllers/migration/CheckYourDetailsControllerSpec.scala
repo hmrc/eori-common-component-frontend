@@ -28,7 +28,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.CheckYourDetailsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubscriptionDetails, SubscriptionFlow}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{IdMatchModel, NameDobMatchModel, _}
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, CompanyRegisteredCountry}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.check_your_details
@@ -72,7 +72,8 @@ class CheckYourDetailsControllerSpec
       nameIdOrganisationDetails = Some(NameIdOrganisationMatchModel(name = "Company UTR number", id = "UTRNUMBER")),
       addressDetails =
         Some(AddressViewModel(street = "street", city = "city", postcode = Some("postcode"), countryCode = "GB")),
-      email = Some("john.doe@example.com")
+      email = Some("john.doe@example.com"),
+      registeredCompany = Some(CompanyRegisteredCountry("GB"))
     )
     when(mockCdsDataCache.email(any[HeaderCarrier])).thenReturn(Future.successful(Email))
 

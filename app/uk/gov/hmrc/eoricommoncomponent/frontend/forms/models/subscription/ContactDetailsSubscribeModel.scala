@@ -14,32 +14,30 @@
  * limitations under the License.
  */
 
-package common.support.testdata.subscription
+package uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription
 
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 
-object SubscriptionContactDetailsModelBuilder {
+case class ContactDetailsSubscribeModel(fullName: String, telephone: String) {
 
-  val contactUkDetailsModelWithMandatoryValuesOnly = ContactDetailsModel(
-    fullName = "John Doe",
-    emailAddress = "john.doe@example.com",
-    telephone = "01632961234",
+  def toContactDetailsModel(email: String): ContactDetailsModel = ContactDetailsModel(
+    fullName = fullName,
+    emailAddress = email,
+    telephone = telephone,
     fax = None,
-    street = Some("Line 1"),
-    city = Some("city name"),
+    street = None,
+    city = None,
     postcode = None,
-    countryCode = Some("GB")
+    countryCode = None
   )
 
-  val contactDetailsModelWithAllValues = ContactDetailsModel(
-    fullName = "John Doe",
-    emailAddress = "john.doe@example.com",
-    telephone = "01632961234",
-    fax = Some("01632961234"),
-    street = Some("Line 1"),
-    city = Some("city name"),
-    postcode = Some("SE28 1AA"),
-    countryCode = Some("FR")
-  )
+}
+
+object ContactDetailsSubscribeModel {
+  implicit val format: OFormat[ContactDetailsSubscribeModel] = Json.format[ContactDetailsSubscribeModel]
+
+  def fromContactDetailsModel(details: ContactDetailsModel): ContactDetailsSubscribeModel =
+    ContactDetailsSubscribeModel(details.fullName, details.telephone)
 
 }

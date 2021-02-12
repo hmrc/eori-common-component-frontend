@@ -17,7 +17,7 @@
 package util.builders
 
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetails
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactDetailsModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 
 object SubscriptionContactDetailsFormBuilder {
 
@@ -49,6 +49,13 @@ object SubscriptionContactDetailsFormBuilder {
     emailFieldName                    -> Email,
     telephoneFieldName                -> Telephone,
     useRegisteredAddressFlagFieldName -> "true"
+  )
+
+  val createFormMandatoryFieldsMapSubscribe: Map[String, String] = Map(
+    fullNameFieldName                 -> FullName,
+    emailFieldName                    -> Email,
+    telephoneFieldName                -> Telephone,
+    useRegisteredAddressFlagFieldName -> "false"
   )
 
   val editFormFields: Map[String, String] = Map(

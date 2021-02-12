@@ -25,9 +25,14 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.CompanyRegisteredCountryController
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow,
+  MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.CompanyRegisteredCountry
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.country
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{country_individual, country_organisation}
 import util.ControllerSpec
 import util.builders.AuthActionMock
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -40,10 +45,19 @@ class CompanyRegisteredCountryControllerSpec extends ControllerSpec with AuthAct
   private val mockAuthConnector              = mock[AuthConnector]
   private val mockAuthAction                 = authAction(mockAuthConnector)
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
-  private val countryPage                    = mock[country]
+  private val mockRequestSessionData         = mock[RequestSessionData]
+  private val countryIndividualPage          = mock[country_individual]
+  private val countryOrganisationPage        = mock[country_organisation]
 
   private val controller =
-    new CompanyRegisteredCountryController(mockAuthAction, mockSubscriptionDetailsService, mcc, countryPage)(global)
+    new CompanyRegisteredCountryController(
+      mockAuthAction,
+      mockSubscriptionDetailsService,
+      mockRequestSessionData,
+      mcc,
+      countryIndividualPage,
+      countryOrganisationPage
+    )(global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -53,42 +67,107 @@ class CompanyRegisteredCountryControllerSpec extends ControllerSpec with AuthAct
       Future.successful(Some(CompanyRegisteredCountry("United Kingdom")))
     )
     when(mockSubscriptionDetailsService.cacheRegisteredCountry(any())(any())).thenReturn(Future.successful((): Unit))
-    when(countryPage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(countryIndividualPage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(countryOrganisationPage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockAuthConnector, mockSubscriptionDetailsService, countryPage)
+    reset(
+      mockAuthConnector,
+      mockSubscriptionDetailsService,
+      mockRequestSessionData,
+      countryIndividualPage,
+      countryOrganisationPage
+    )
 
     super.afterEach()
   }
 
   "Company Registerted Country Controller" should {
 
-    "display page" in {
+    "display organisation page" in {
+
+      when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(
+        MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow
+      )
 
       val result = controller.displayPage(atarService)(FakeRequest("GET", ""))
 
       status(result) shouldBe OK
-      verify(countryPage).apply(any(), any(), any(), any(), ArgumentMatchers.eq(false))(any(), any())
+      verify(countryOrganisationPage).apply(any(), any(), any(), any(), ArgumentMatchers.eq(false))(any(), any())
+      verifyZeroInteractions(countryIndividualPage)
     }
 
-    "display review page" in {
+    "display individual page" in {
+
+      when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(
+        MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow
+      )
+
+      val result = controller.displayPage(atarService)(FakeRequest("GET", ""))
+
+      status(result) shouldBe OK
+      verify(countryIndividualPage).apply(any(), any(), any(), any(), ArgumentMatchers.eq(false))(any(), any())
+      verifyZeroInteractions(countryOrganisationPage)
+    }
+
+    "display review organisation page" in {
+
+      when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(
+        MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow
+      )
 
       val result = controller.reviewPage(atarService)(FakeRequest("GET", ""))
 
       status(result) shouldBe OK
-      verify(countryPage).apply(any(), any(), any(), any(), ArgumentMatchers.eq(true))(any(), any())
+      verify(countryOrganisationPage).apply(any(), any(), any(), any(), ArgumentMatchers.eq(true))(any(), any())
+      verifyZeroInteractions(countryIndividualPage)
     }
 
-    "return 400 (BAD_REQUEST))" when {
+    "display review individual page" in {
+
+      when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(
+        MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow
+      )
+
+      val result = controller.reviewPage(atarService)(FakeRequest("GET", ""))
+
+      status(result) shouldBe OK
+      verify(countryIndividualPage).apply(any(), any(), any(), any(), ArgumentMatchers.eq(true))(any(), any())
+      verifyZeroInteractions(countryOrganisationPage)
+    }
+
+    "return 400 (BAD_REQUEST) for organisation" when {
 
       "user didn't choose value" in {
+
+        when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(
+          MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow
+        )
 
         val result =
           controller.submit(atarService, false)(FakeRequest("POST", "").withFormUrlEncodedBody("countryCode" -> ""))
 
         status(result) shouldBe BAD_REQUEST
-        verify(countryPage).apply(any(), any(), any(), any(), any())(any(), any())
+        verify(countryOrganisationPage).apply(any(), any(), any(), any(), ArgumentMatchers.eq(false))(any(), any())
+        verifyZeroInteractions(countryIndividualPage)
+      }
+    }
+
+    "return 400 (BAD_REQUEST) for individual" when {
+
+      "user didn't choose value" in {
+
+        when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(
+          MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow
+        )
+
+        val result =
+          controller.submit(atarService, false)(FakeRequest("POST", "").withFormUrlEncodedBody("countryCode" -> ""))
+
+        status(result) shouldBe BAD_REQUEST
+        verify(countryIndividualPage).apply(any(), any(), any(), any(), ArgumentMatchers.eq(false))(any(), any())
+        verifyZeroInteractions(countryOrganisationPage)
       }
     }
 
@@ -101,7 +180,8 @@ class CompanyRegisteredCountryControllerSpec extends ControllerSpec with AuthAct
         )
 
         status(result) shouldBe SEE_OTHER
-        verifyZeroInteractions(countryPage)
+        verifyZeroInteractions(countryOrganisationPage)
+        verifyZeroInteractions(countryIndividualPage)
       }
 
       "user provide correct country and is not in review mode" in {
@@ -111,7 +191,8 @@ class CompanyRegisteredCountryControllerSpec extends ControllerSpec with AuthAct
         )
 
         status(result) shouldBe SEE_OTHER
-        verifyZeroInteractions(countryPage)
+        verifyZeroInteractions(countryOrganisationPage)
+        verifyZeroInteractions(countryIndividualPage)
       }
     }
   }

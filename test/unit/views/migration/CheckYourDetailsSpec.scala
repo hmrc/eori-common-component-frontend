@@ -24,7 +24,8 @@ import org.scalatest.prop.Tables.Table
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactDetailsModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, CompanyRegisteredCountry}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.check_your_details
 import util.ViewSpec
@@ -66,6 +67,7 @@ class CheckYourDetailsSpec extends ViewSpec {
   private val dateTime          = Some(LocalDate.now())
   private val nino              = Some(Nino("AB123456C"))
   private val nameDobMatchModel = Some(NameDobMatchModel("FName", None, "LName", LocalDate.parse("2003-04-08")))
+  private val registeredCountry = Some(CompanyRegisteredCountry("GB"))
 
   private def strim(s: String): String = s.stripMargin.trim.lines mkString " "
 
@@ -337,6 +339,24 @@ class CheckYourDetailsSpec extends ViewSpec {
       page.body.getElementById("review-tbl__eori-number_change") mustBe null
       page.body.getElementById("review-tbl__eori-number_row").text must not contain "Change"
     }
+
+    "display registered company row if exists" in {
+
+      val view = doc(companyRegisteredCountry = registeredCountry)
+
+      view.body().getElementById("review-tbl__country-location_heading").text mustBe "Country location"
+      view.body().getElementById("review-tbl__country-location").text mustBe "United Kingdom"
+      view.body().getElementById("review-tbl__country-location_change").attr(
+        "href"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/registered-country/review"
+    }
+
+    "not display registered company row if nothing in cache" in {
+
+      doc().body().getElementById("review-tbl__country-location_heading") mustBe null
+      doc().body().getElementById("review-tbl__country-location") mustBe null
+      doc().body().getElementById("review-tbl__country_location_change") mustBe null
+    }
   }
 
   def doc(
@@ -346,7 +366,8 @@ class CheckYourDetailsSpec extends ViewSpec {
     nameDobMatchModel: Option[NameDobMatchModel] = nameDobMatchModel,
     isThirdCountrySubscription: Boolean = false,
     nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg,
-    existingEori: Option[ExistingEori] = None
+    existingEori: Option[ExistingEori] = None,
+    companyRegisteredCountry: Option[CompanyRegisteredCountry] = None
   ): Document = {
 
     implicit val request = withFakeCSRF(FakeRequest().withSession(("selected-user-location", "third-country")))
@@ -366,6 +387,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       dateTime,
       None,
       customsId,
+      companyRegisteredCountry,
       atarService,
       Journey.Subscribe
     )

@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package unit.forms.models.subscription
+package unit.forms.models.registration
 
 import base.UnitSpec
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{ContactDetailsModel, ContactDetailsViewModel}
+import org.joda.time.DateTime
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.ContactInformation
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.{ContactDetailsModel, ContactDetailsViewModel}
 
 class ContactDetailsModelSpec extends UnitSpec {
 
-  val contactDetailsModel = ContactDetailsModel(
+  private val contactDetailsModel = ContactDetailsModel(
     "name",
     "a@b.com",
     "1234566",
@@ -33,7 +35,7 @@ class ContactDetailsModelSpec extends UnitSpec {
     Some("GB")
   )
 
-  val contactDetailsViewModel = ContactDetailsViewModel(
+  private val contactDetailsViewModel = ContactDetailsViewModel(
     "name",
     Some("a@b.com"),
     "1234566",
@@ -45,7 +47,7 @@ class ContactDetailsModelSpec extends UnitSpec {
     Some("GB")
   )
 
-  def pad(line: String) = s" $line "
+  private def pad(line: String) = s" $line "
 
   "ContactDetailsModel" should {
     "trim address" in {
@@ -58,9 +60,7 @@ class ContactDetailsModelSpec extends UnitSpec {
 
       withSpaces.contactDetails shouldBe contactDetailsModel.contactDetails
       withSpaces.toContactDetailsViewModel shouldBe contactDetailsModel.toContactDetailsViewModel
-
     }
-
   }
 
   "ContactDetailsViewModel" should {
@@ -73,8 +73,29 @@ class ContactDetailsModelSpec extends UnitSpec {
       )
 
       withSpaces.toContactDetailsModel shouldBe contactDetailsModel
-
     }
+  }
 
+  "Contact Details model" should {
+
+    "correctly convert data with Some(\"\")" in {
+
+      val contactDetails =
+        ContactDetailsModel("Full name", "email", "01234123123", None, false, Some(""), Some(""), Some(""), Some(""))
+
+      def expectedContactInformation(emailVerificationTimestamp: Option[DateTime]) = ContactInformation(
+        personOfContact = Some("Full name"),
+        sepCorrAddrIndicator = Some(false),
+        telephoneNumber = Some("01234123123"),
+        emailAddress = Some("email"),
+        emailVerificationTimestamp = emailVerificationTimestamp
+      )
+
+      val contactInformation = contactDetails.toRowContactInformation()
+
+      val timestamp = contactInformation.emailVerificationTimestamp
+
+      contactInformation shouldBe expectedContactInformation(timestamp)
+    }
   }
 }

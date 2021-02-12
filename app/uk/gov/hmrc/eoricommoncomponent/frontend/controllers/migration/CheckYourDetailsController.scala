@@ -61,6 +61,7 @@ class CheckYourDetailsController @Inject() (
             dateEstablished = subscriptionDetailsHolder.dateEstablished,
             idDetails = subscriptionDetailsHolder.idDetails,
             customsId = subscriptionDetailsHolder.customsId,
+            registeredCountry = subscriptionDetailsHolder.registeredCompany,
             service = service,
             journey = journey
           )

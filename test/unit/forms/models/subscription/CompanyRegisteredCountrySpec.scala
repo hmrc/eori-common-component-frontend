@@ -31,7 +31,7 @@ class CompanyRegisteredCountrySpec extends UnitSpec with Injector {
 
       "the value is a correct country" in {
 
-        val form = CompanyRegisteredCountry.form().bind(Map("countryCode" -> "United Kingdom"))
+        val form = CompanyRegisteredCountry.form("errorMessage").bind(Map("countryCode" -> "United Kingdom"))
 
         form.errors shouldBe Seq.empty
       }
@@ -41,20 +41,20 @@ class CompanyRegisteredCountrySpec extends UnitSpec with Injector {
 
       "input is empty" in {
 
-        val form = CompanyRegisteredCountry.form().bind(Map("countryCode" -> ""))
+        val form = CompanyRegisteredCountry.form("errorMessage").bind(Map("countryCode" -> ""))
 
-        val expectedErrors = Seq(FormError("countryCode", "ecc.registered-company-country.error"))
+        val expectedErrors = Seq(FormError("countryCode", "errorMessage"))
 
         form.errors shouldBe expectedErrors
       }
 
       "input has empty value" in {
 
-        val form = CompanyRegisteredCountry.form().bind(
+        val form = CompanyRegisteredCountry.form("errorMessage").bind(
           Map("countryCode" -> "cds.subscription.address-details.country.emptyValueText")
         )
 
-        val expectedErrors = Seq(FormError("countryCode", "ecc.registered-company-country.error"))
+        val expectedErrors = Seq(FormError("countryCode", "errorMessage"))
 
         form.errors shouldBe expectedErrors
       }

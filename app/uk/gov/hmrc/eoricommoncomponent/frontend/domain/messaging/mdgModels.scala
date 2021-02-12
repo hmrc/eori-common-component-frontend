@@ -28,7 +28,7 @@ object Header {
   implicit val jsonFormat = Json.format[Header]
 }
 
-abstract case class Address(
+case class Address(
   addressLine1: String,
   addressLine2: Option[String],
   addressLine3: Option[String],

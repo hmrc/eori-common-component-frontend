@@ -18,11 +18,8 @@ package util.builders
 
 import org.joda.time.LocalDate
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{BusinessShortName, SubscriptionDetails}
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
-  ContactDetailsModel,
-  VatDetails,
-  VatEUDetailsModel
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{VatDetails, VatEUDetailsModel}
 
 object SubscriptionFormBuilder {
 
