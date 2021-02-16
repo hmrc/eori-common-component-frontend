@@ -26,6 +26,7 @@ case class ContactDetailsSubscribeModel(fullName: String, telephone: String) {
     emailAddress = email,
     telephone = telephone,
     fax = None,
+    useAddressFromRegistrationDetails = false,
     street = None,
     city = None,
     postcode = None,

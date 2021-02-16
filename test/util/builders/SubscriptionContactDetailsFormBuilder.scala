@@ -51,12 +51,8 @@ object SubscriptionContactDetailsFormBuilder {
     useRegisteredAddressFlagFieldName -> "true"
   )
 
-  val createFormMandatoryFieldsMapSubscribe: Map[String, String] = Map(
-    fullNameFieldName                 -> FullName,
-    emailFieldName                    -> Email,
-    telephoneFieldName                -> Telephone,
-    useRegisteredAddressFlagFieldName -> "false"
-  )
+  val createFormMandatoryFieldsMapSubscribe: Map[String, String] =
+    Map(fullNameFieldName -> FullName, emailFieldName -> Email, telephoneFieldName -> Telephone)
 
   val editFormFields: Map[String, String] = Map(
     fullNameFieldName    -> FullName,

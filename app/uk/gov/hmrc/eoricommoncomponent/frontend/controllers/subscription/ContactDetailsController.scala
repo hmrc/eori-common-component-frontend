@@ -65,7 +65,7 @@ class ContactDetailsController @Inject() (
           case _        => subscriptionDetailsService.cachedNameIdDetails
         }
       } yield (cachedCustomsId, cachedNameIdDetails) match {
-        case (None, None) => populateFormGYE(service)(false)
+        case (None, None) => populateForm(service)(false)
         case _ =>
           Future.successful(
             Redirect(
@@ -81,10 +81,10 @@ class ContactDetailsController @Inject() (
 
   def reviewForm(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      populateFormGYE(service)(true)
+      populateForm(service)(true)
     }
 
-  private def populateFormGYE(
+  private def populateForm(
     service: Service
   )(isInReviewMode: Boolean)(implicit request: Request[AnyContent]): Future[Result] = {
     for {

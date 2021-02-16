@@ -78,10 +78,20 @@ class ContactDetailsModelSpec extends UnitSpec {
 
   "Contact Details model" should {
 
-    "correctly convert data with Some(\"\")" in {
+    "correctly convert data with address data" in {
 
       val contactDetails =
-        ContactDetailsModel("Full name", "email", "01234123123", None, false, Some(""), Some(""), Some(""), Some(""))
+        ContactDetailsModel(
+          "Full name",
+          "email",
+          "01234123123",
+          None,
+          false,
+          Some("street"),
+          Some(""),
+          Some(""),
+          Some("")
+        )
 
       def expectedContactInformation(emailVerificationTimestamp: Option[DateTime]) = ContactInformation(
         personOfContact = Some("Full name"),

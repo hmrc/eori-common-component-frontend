@@ -60,20 +60,14 @@ case class ContactDetailsModel(
   def toRowContactInformation(): ContactInformation = ContactInformation(
     personOfContact = Some(fullName),
     sepCorrAddrIndicator = Some(false),
-    streetAndNumber = clearEmptyOptions(street),
-    city = clearEmptyOptions(city),
-    postalCode = clearEmptyOptions(postcode),
-    countryCode = clearEmptyOptions(countryCode),
+    streetAndNumber = None,
+    city = None,
+    postalCode = None,
+    countryCode = None,
     telephoneNumber = Some(telephone),
-    faxNumber = clearEmptyOptions(fax),
+    faxNumber = None,
     emailAddress = Some(emailAddress)
   )
-
-  // TODO Investigate why ContactInformation model has Some("") instead of None
-  // This is a temporary solution to be able to build correct request
-  // Somehow during model transformation instead of having None there is Some("")
-  private def clearEmptyOptions(input: Option[String]): Option[String] =
-    if (input.exists(_.isEmpty)) None else input
 
 }
 
