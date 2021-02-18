@@ -1320,7 +1320,7 @@ cds.checking-status-page.bullet3=National Insurance number
 
 #timeout dialog
 cds.timeout.message=For your security, we will delete your answers and you will be signed out in
-cds.timeout.keep-alive-button=Get another 15 minutes
+cds.timeout.keep-alive-button=Get another 20 minutes
 cds.timeout.sign-out-button=Sign out now
 
 #footer
