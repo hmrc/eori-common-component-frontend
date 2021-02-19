@@ -23,9 +23,13 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NinoSubscriptionFlowPage
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow,
+  NinoSubscriptionFlowPage
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.subscriptionNinoForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you_nino
 import uk.gov.hmrc.http.HeaderCarrier
@@ -36,6 +40,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class GetNinoSubscriptionController @Inject() (
   authAction: AuthAction,
   subscriptionFlowManager: SubscriptionFlowManager,
+  requestSessionData: RequestSessionData,
   mcc: MessagesControllerComponents,
   getNinoSubscriptionView: how_can_we_identify_you_nino,
   subscriptionDetailsHolderService: SubscriptionDetailsService
@@ -103,10 +108,13 @@ class GetNinoSubscriptionController @Inject() (
   ): Future[Result] =
     subscriptionDetailsHolderService.cacheCustomsId(Nino(form.id)).map(
       _ =>
-        if (isInReviewMode)
+        if (isInReviewMode && !isItRowJourney)
           Redirect(DetermineReviewPageController.determineRoute(service, journey))
         else
           Redirect(subscriptionFlowManager.stepInformation(NinoSubscriptionFlowPage).nextPage.url(service))
     )
+
+  private def isItRowJourney()(implicit request: Request[AnyContent]): Boolean =
+    requestSessionData.userSubscriptionFlow == MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow
 
 }

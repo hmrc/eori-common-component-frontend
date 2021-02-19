@@ -143,7 +143,18 @@
     }
 
     @countryLocation(country: CompanyRegisteredCountry) = {
-      @labelForEUCountry(country.country)
+        @labelForEUCountry(country.country)
+    }
+
+    @shouldCountryLocationBeDisplayed() = @{
+      val isOrgNinoEmpty = nameIdOrganisationDetails.forall(_.id == messages("cds.not-entered.label"))
+      val isIndividualUtrEmpty = utr.forall(_.id == messages("cds.not-entered.label"))
+      val isIndividualNinoEmpty = nino.forall(_.id == messages("cds.not-entered.label"))
+
+      val shouldCountryBeDisplayedOrg = isOrgNinoEmpty && !isIndividualSubscriptionFlow
+      val shouldCountryBeDisplayedInd = isIndividualUtrEmpty && isIndividualNinoEmpty && isIndividualSubscriptionFlow
+
+      shouldCountryBeDisplayedOrg || shouldCountryBeDisplayedInd
     }
 
     @addressHtml(ad: AddressViewModel) = {
@@ -255,22 +266,26 @@
                     )
                 }
                 @addressDetails.map { ad =>
-                    @summaryRow_di(
-                        "name-and-address",
-                        businessDetailsLabel,
-                        addressHtml(ad),
-                        Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.reviewForm(service, journey)),
-                        businessDetailsLabel
-                    )
+                    @if(!shouldCountryLocationBeDisplayed) {
+                        @summaryRow_di(
+                            "name-and-address",
+                            businessDetailsLabel,
+                            addressHtml(ad),
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.reviewForm(service, journey)),
+                            businessDetailsLabel
+                        )
+                    }
                 }
                 @registeredCountry.map { country =>
-                    @summaryRow_di(
-                      "country-location",
-                      messages("ecc.registered-company-country.summary"),
-                      countryLocation(country),
-                      Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.CompanyRegisteredCountryController.reviewPage(service)),
-                      messages("ecc.registered-company-country.summary")
-                    )
+                    @if(shouldCountryLocationBeDisplayed) {
+                        @summaryRow_di(
+                            "country-location",
+                            messages("ecc.registered-company-country.summary"),
+                            countryLocation(country),
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.CompanyRegisteredCountryController.reviewPage(service)),
+                            messages("ecc.registered-company-country.summary")
+                        )
+                    }
                 }
                 @contactDetails.map { cd =>
                     @summaryRow_di(
