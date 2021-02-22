@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.config
 
 import javax.inject.{Inject, Named, Singleton}
-import org.joda.time.DateTime
 import play.api.Configuration
 import play.api.i18n.Messages
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.ApplicationController
@@ -100,13 +99,13 @@ class AppConfig @Inject() (
   def reportAProblemNonJSUrlSubscribe(service: Service): String =
     s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifierSubscribe-${service.code}"
 
-  private val betafeedbackBaseUrl = s"${contactBaseUrl}/contact/beta-feedback"
+  private val betafeedbackBaseUrl = s"$contactBaseUrl/contact/beta-feedback"
 
   def betaFeedBackRegister(service: Service) =
-    s"${betafeedbackBaseUrl}?service=${serviceIdentifierRegister}-${service.code}"
+    s"$betafeedbackBaseUrl?service=$serviceIdentifierRegister-${service.code}"
 
   def betaFeedBackSubscribe(service: Service) =
-    s"${betafeedbackBaseUrl}?service=${serviceIdentifierSubscribe}-${service.code}"
+    s"$betafeedbackBaseUrl?service=$serviceIdentifierSubscribe-${service.code}"
 
   //email verification service
   val emailVerificationBaseUrl: String = servicesConfig.baseUrl("email-verification")
@@ -144,5 +143,10 @@ class AppConfig @Inject() (
       config.get[String](s"microservice.services.eori-common-component-hods-proxy.$proxyServiceName.context")
     s"$baseUrl/$serviceContext"
   }
+
+  private val addressLookupBaseUrl: String = servicesConfig.baseUrl("address-lookup")
+  private val addressLookupContext: String = config.get[String]("microservice.services.address-lookup.context")
+
+  val addressLookup: String = addressLookupBaseUrl + addressLookupContext
 
 }
