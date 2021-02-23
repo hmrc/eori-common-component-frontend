@@ -147,11 +147,11 @@
     }
 
     @shouldCountryLocationBeDisplayed() = @{
-      val isOrgNinoEmpty = nameIdOrganisationDetails.forall(_.id == messages("cds.not-entered.label"))
+      val isOrgUtrEmpty = nameIdOrganisationDetails.forall(_.id == messages("cds.not-entered.label"))
       val isIndividualUtrEmpty = utr.forall(_.id == messages("cds.not-entered.label"))
       val isIndividualNinoEmpty = nino.forall(_.id == messages("cds.not-entered.label"))
 
-      val shouldCountryBeDisplayedOrg = isOrgNinoEmpty && !isIndividualSubscriptionFlow
+      val shouldCountryBeDisplayedOrg = isOrgUtrEmpty && !isIndividualSubscriptionFlow
       val shouldCountryBeDisplayedInd = isIndividualUtrEmpty && isIndividualNinoEmpty && isIndividualSubscriptionFlow
 
       shouldCountryBeDisplayedOrg || shouldCountryBeDisplayedInd
