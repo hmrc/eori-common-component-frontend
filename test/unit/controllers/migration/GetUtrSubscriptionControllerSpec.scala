@@ -25,7 +25,13 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.GetUtrSubscriptionController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubscriptionFlowInfo, SubscriptionPage}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow,
+  MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow,
+  OrganisationSubscriptionFlow,
+  SubscriptionFlowInfo,
+  SubscriptionPage
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CustomsId, NameOrganisationMatchModel, Utr}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
@@ -61,8 +67,14 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
     mockSubscriptionDetailsService
   )
 
-  override def beforeEach: Unit = {
+  override protected def beforeEach(): Unit = {
     super.beforeEach()
+
+    when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
+      .thenReturn(Future.successful(None))
+  }
+
+  override protected def afterEach(): Unit = {
     reset(
       mockAuthConnector,
       mockRequestSessionData,
@@ -71,8 +83,8 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
       mockSubscriptionFlowInfo,
       mockSubscriptionPage
     )
-    when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
-      .thenReturn(Future.successful(None))
+
+    super.afterEach()
   }
 
   "HaveUtrSubscriptionController createForm" should {
@@ -138,7 +150,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
     }
 
     "cache UTR and redirect to Address Page of the flow when rest of world and Company" in {
-      reset(mockSubscriptionDetailsService)
+
       val nameOrganisationMatchModel = NameOrganisationMatchModel("orgName")
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
       when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
@@ -152,13 +164,13 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/address"
       }
-      verify(mockSubscriptionDetailsService, times(1)).cacheNameAndCustomsId(meq("orgName"), meq(Utr("1111111111K")))(
+      verify(mockSubscriptionDetailsService).cacheNameAndCustomsId(meq("orgName"), meq(Utr("1111111111K")))(
         any[HeaderCarrier]
       )
     }
 
     "cache UTR and redirect to Address Page of the flow when rest of world other than Company" in {
-      reset(mockSubscriptionDetailsService)
+
       val nameOrganisationMatchModel = NameOrganisationMatchModel("orgName")
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(SoleTrader))
       when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
@@ -169,11 +181,11 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/address"
       }
-      verify(mockSubscriptionDetailsService, times(1)).cacheCustomsId(meq(ValidUtr))(any[HeaderCarrier])
+      verify(mockSubscriptionDetailsService).cacheCustomsId(meq(ValidUtr))(any[HeaderCarrier])
     }
 
     "throws an exception with the orgType is Company and No business name or CustomsId cached" in {
-      reset(mockSubscriptionDetailsService)
+
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
       when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
         .thenReturn(Future.successful(()))
@@ -183,6 +195,63 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
       }.getMessage shouldBe "No business name cached"
     }
 
+    "redirect to Address page" when {
+
+      "user is in review mode and during ROW organisation journey" in {
+
+        when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
+        when(mockSubscriptionDetailsService.cachedNameDetails(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Some(NameOrganisationMatchModel("orgName"))))
+        when(mockSubscriptionDetailsService.cacheNameAndCustomsId(any(), any())(any()))
+          .thenReturn(Future.successful((): Unit))
+        when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(
+          MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow
+        )
+
+        submit(Journey.Subscribe, ValidUtrRequest, true) { result =>
+          status(result) shouldBe SEE_OTHER
+          result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/address"
+        }
+        verify(mockSubscriptionDetailsService).cacheNameAndCustomsId(any(), meq(ValidUtr))(any[HeaderCarrier])
+      }
+
+      "user is in review mode and during ROW individual journey" in {
+
+        when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(SoleTrader))
+        when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
+          .thenReturn(Future.successful(()))
+        when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(
+          MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow
+        )
+
+        submit(Journey.Subscribe, ValidUtrRequest, true) { result =>
+          status(result) shouldBe SEE_OTHER
+          result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/address"
+        }
+        verify(mockSubscriptionDetailsService).cacheCustomsId(meq(ValidUtr))(any[HeaderCarrier])
+      }
+    }
+
+    "determine the route for the user" when {
+
+      "user is in review mode and UK journey" in {
+
+        when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
+        when(mockSubscriptionDetailsService.cachedNameDetails(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Some(NameOrganisationMatchModel("orgName"))))
+        when(mockSubscriptionDetailsService.cacheNameAndCustomsId(any(), any())(any()))
+          .thenReturn(Future.successful((): Unit))
+        when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(OrganisationSubscriptionFlow)
+
+        submit(Journey.Subscribe, ValidUtrRequest, true) { result =>
+          status(result) shouldBe SEE_OTHER
+          result.header.headers(
+            LOCATION
+          ) shouldBe "/customs-enrolment-services/atar/subscribe/matching/review-determine"
+        }
+        verify(mockSubscriptionDetailsService).cacheNameAndCustomsId(any(), meq(ValidUtr))(any[HeaderCarrier])
+      }
+    }
   }
 
   private def createForm(journey: Journey.Value)(test: Future[Result] => Any) = {
@@ -203,13 +272,6 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
         )
       )
     )
-  }
-
-  private def mockSubscriptionFlow(url: String) = {
-    when(mockSubscriptionFlowManager.stepInformation(any())(any[Request[AnyContent]]))
-      .thenReturn(mockSubscriptionFlowInfo)
-    when(mockSubscriptionFlowInfo.nextPage).thenReturn(mockSubscriptionPage)
-    when(mockSubscriptionPage.url(atarService)).thenReturn(url)
   }
 
 }

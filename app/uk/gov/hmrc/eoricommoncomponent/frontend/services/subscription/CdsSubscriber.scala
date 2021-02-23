@@ -47,59 +47,6 @@ class CdsSubscriber @Inject() (
     service: Service,
     journey: Journey.Value
   )(implicit hc: HeaderCarrier, request: Request[AnyContent], messages: Messages): Future[SubscriptionResult] = {
-    def migrationEoriUK: Future[SubscriptionResult] =
-      for {
-        subscriptionDetails           <- sessionCache.subscriptionDetails
-        email                         <- sessionCache.email
-        registerWithEoriAndIdResponse <- sessionCache.registerWithEoriAndIdResponse
-        subscriptionResult <- subscriptionService.existingReg(
-          registerWithEoriAndIdResponse,
-          subscriptionDetails,
-          email,
-          service
-        )
-        _ <- onSubscriptionResultForUKSubscribe(
-          subscriptionResult,
-          registerWithEoriAndIdResponse,
-          subscriptionDetails,
-          email,
-          service
-        )
-      } yield subscriptionResult
-
-    def subscribeEori: Future[SubscriptionResult] =
-      for {
-        registrationDetails <- sessionCache.registrationDetails
-        (subscriptionResult, maybeSubscriptionDetails) <- fetchOtherDetailsFromCacheAndSubscribe(
-          registrationDetails,
-          cdsOrganisationType,
-          journey,
-          service
-        )
-        _ <- onSubscriptionResult(subscriptionResult, registrationDetails, maybeSubscriptionDetails, service)
-      } yield subscriptionResult
-
-    def migrationEoriROW: Future[SubscriptionResult] =
-      for {
-        registrationDetails <- sessionCache.registrationDetails
-        subscriptionDetails <- sessionCache.subscriptionDetails
-        email               <- sessionCache.email
-        subscriptionResult <- subscriptionService.subscribeWithMandatoryOnly(
-          registrationDetails,
-          subscriptionDetails,
-          journey,
-          service,
-          Some(email)
-        )
-        _ <- onSubscriptionResultForRowSubscribe(
-          subscriptionResult,
-          registrationDetails,
-          subscriptionDetails,
-          email,
-          service
-        )
-      } yield subscriptionResult
-
     val isRowF           = Future.successful(UserLocation.isRow(requestSessionData))
     val journeyF         = Future.successful(journey)
     val cachedCustomsIdF = subscriptionDetailsService.cachedCustomsId
@@ -109,13 +56,75 @@ class CdsSubscriber @Inject() (
       journey  <- journeyF
       customId <- if (isRow) cachedCustomsIdF else Future.successful(None)
     } yield (journey, isRow, customId) match {
-      case (Journey.Subscribe, true, Some(_)) => migrationEoriUK  //Has NINO/UTR as identifier UK journey
-      case (Journey.Subscribe, true, None)    => migrationEoriROW //ROW
-      case (Journey.Subscribe, false, _)      => migrationEoriUK  //UK Journey
-      case _                                  => subscribeEori    //Journey Get An EORI
+      case (Journey.Subscribe, true, Some(_)) => migrationEoriUK(service)                             //Has NINO/UTR as identifier UK journey
+      case (Journey.Subscribe, true, None)    => migrationEoriROW(journey, service)                   //ROW
+      case (Journey.Subscribe, false, _)      => migrationEoriUK(service)                             //UK Journey
+      case _                                  => subscribeEori(cdsOrganisationType, journey, service) //Journey Get An EORI
     }
     result.flatMap(identity)
   }
+
+  private def migrationEoriUK(
+    service: Service
+  )(implicit hc: HeaderCarrier, messages: Messages): Future[SubscriptionResult] =
+    for {
+      subscriptionDetails           <- sessionCache.subscriptionDetails
+      email                         <- sessionCache.email
+      registerWithEoriAndIdResponse <- sessionCache.registerWithEoriAndIdResponse
+      subscriptionResult <- subscriptionService.existingReg(
+        registerWithEoriAndIdResponse,
+        subscriptionDetails,
+        email,
+        service
+      )
+      _ <- onSubscriptionResultForUKSubscribe(
+        subscriptionResult,
+        registerWithEoriAndIdResponse,
+        subscriptionDetails,
+        email,
+        service
+      )
+    } yield subscriptionResult
+
+  private def subscribeEori(
+    cdsOrganisationType: Option[CdsOrganisationType],
+    journey: Journey.Value,
+    service: Service
+  )(implicit hc: HeaderCarrier, messages: Messages): Future[SubscriptionResult] =
+    for {
+      registrationDetails <- sessionCache.registrationDetails
+      (subscriptionResult, maybeSubscriptionDetails) <- fetchOtherDetailsFromCacheAndSubscribe(
+        registrationDetails,
+        cdsOrganisationType,
+        journey,
+        service
+      )
+      _ <- onSubscriptionResult(subscriptionResult, registrationDetails, maybeSubscriptionDetails, service)
+    } yield subscriptionResult
+
+  private def migrationEoriROW(journey: Journey.Value, service: Service)(implicit
+    hc: HeaderCarrier,
+    messages: Messages
+  ): Future[SubscriptionResult] =
+    for {
+      registrationDetails <- sessionCache.registrationDetails
+      subscriptionDetails <- sessionCache.subscriptionDetails
+      email               <- sessionCache.email
+      subscriptionResult <- subscriptionService.subscribeWithMandatoryOnly(
+        registrationDetails,
+        subscriptionDetails,
+        journey,
+        service,
+        Some(email)
+      )
+      _ <- onSubscriptionResultForRowSubscribe(
+        subscriptionResult,
+        registrationDetails,
+        subscriptionDetails,
+        email,
+        service
+      )
+    } yield subscriptionResult
 
   private def fetchOtherDetailsFromCacheAndSubscribe(
     registrationDetails: RegistrationDetails,

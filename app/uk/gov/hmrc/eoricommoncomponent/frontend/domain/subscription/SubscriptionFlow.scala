@@ -269,8 +269,8 @@ sealed abstract class SubscriptionPage() {
 case object ContactDetailsSubscriptionFlowPageGetEori extends SubscriptionPage {
 
   override def url(service: Service): String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactDetailsController
-      .createForm(service, Journey.Register)
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.ContactDetailsController
+      .createForm(service)
       .url
 
 }
@@ -279,7 +279,7 @@ case object ContactDetailsSubscriptionFlowPageMigrate extends SubscriptionPage {
 
   override def url(service: Service): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactDetailsController
-      .createForm(service, Journey.Subscribe)
+      .createForm(service)
       .url
 
 }

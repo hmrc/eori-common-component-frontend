@@ -18,7 +18,8 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping
 
 import javax.inject.Singleton
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactDetailsModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 
 @Singleton
 class ContactDetailsAdaptor {

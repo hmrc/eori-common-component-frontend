@@ -20,9 +20,9 @@ import javax.inject.{Inject, Singleton}
 import org.joda.time.LocalDate
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
   AddressViewModel,
-  ContactDetailsModel,
   VatDetails,
   VatEUDetailsModel
 }
@@ -82,11 +82,6 @@ class SubscriptionBusinessService @Inject() (cdsFrontendDataCache: SessionCache)
       _.vatRegisteredEu.getOrElse(
         throw new IllegalStateException("Whether the business is VAT registered in the EU has not been Cached")
       )
-    }
-
-  def getCachedVatGroup(implicit hc: HeaderCarrier): Future[Option[Boolean]] =
-    cdsFrontendDataCache.subscriptionDetails map {
-      _.vatGroup
     }
 
   def addressOrException(implicit hc: HeaderCarrier): Future[AddressViewModel] =

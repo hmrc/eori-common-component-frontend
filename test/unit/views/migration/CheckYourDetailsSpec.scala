@@ -24,7 +24,8 @@ import org.scalatest.prop.Tables.Table
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactDetailsModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, CompanyRegisteredCountry}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.check_your_details
 import util.ViewSpec
@@ -66,8 +67,9 @@ class CheckYourDetailsSpec extends ViewSpec {
   private val dateTime          = Some(LocalDate.now())
   private val nino              = Some(Nino("AB123456C"))
   private val nameDobMatchModel = Some(NameDobMatchModel("FName", None, "LName", LocalDate.parse("2003-04-08")))
+  private val registeredCountry = Some(CompanyRegisteredCountry("GB"))
 
-  private def strim(s: String): String = s.stripMargin.trim.lines mkString " "
+  private def strim(s: String): String = s.stripMargin.trim.split("\n").mkString(" ")
 
   "Check Your Answers Page" should {
     forAll(domIds) { (name, headingId, changeLinkId) =>
@@ -145,22 +147,15 @@ class CheckYourDetailsSpec extends ViewSpec {
         .getElementById("review-tbl__eori-number_change")
         .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/review"
 
-      page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Your address"
-      page.body.getElementById("review-tbl__name-and-address").text mustBe strim("""
-          |Street
-          |City
-          |Postcode
-          |United Kingdom
-        """)
-      page.body
-        .getElementById("review-tbl__name-and-address_change")
-        .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
+      page.body.getElementById("review-tbl__name-and-address_heading") mustBe null
+      page.body.getElementById("review-tbl__name-and-address") mustBe null
+      page.body.getElementById("review-tbl__name-and-address_change") mustBe null
       page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
       page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
     }
 
     "not display the address country code in the UK case" in {
-      val page = doc(isIndividualSubscriptionFlow = false, customsId = utr)
+      val page = doc(customsId = utr)
       page.getElementById("review-tbl__name-and-address").text mustBe strim("""|Street
            |City
            |Postcode
@@ -169,7 +164,7 @@ class CheckYourDetailsSpec extends ViewSpec {
     }
 
     "display the review page for 'SoleTrader' when 'No Nino' is entered" in {
-      val page = doc(true, customsId = None)
+      val page = doc(true, nameIdOrganisationDetails = None, customsId = None)
       page.title must startWith("Check your answers")
       page.body.getElementById("review-tbl__full-name_heading").text mustBe "Full name"
       page.body.getElementById("review-tbl__full-name").text mustBe "FName LName"
@@ -182,13 +177,8 @@ class CheckYourDetailsSpec extends ViewSpec {
       page.body
         .getElementById("review-tbl__eori-number_change")
         .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/review"
-      page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Your address"
-      page.body.getElementById("review-tbl__name-and-address").text mustBe strim("""
-          |Street
-          |City
-          |Postcode
-          |United Kingdom
-        """)
+      page.body.getElementById("review-tbl__name-and-address_heading") mustBe null
+      page.body.getElementById("review-tbl__name-and-address") mustBe null
       page.body().getElementById("review-tbl__contact-details_heading").text mustBe "Contact"
       page.body().getElementById("review-tbl__contact-details").text mustBe strim("""
           |John Doe
@@ -198,15 +188,13 @@ class CheckYourDetailsSpec extends ViewSpec {
           |POSTCODE
           |United Kingdom
         """.stripMargin)
-      page.body
-        .getElementById("review-tbl__name-and-address_change")
-        .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
+      page.body.getElementById("review-tbl__name-and-address_change") mustBe null
       page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
       page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
     }
 
     "display the review page for 'Sole Trader' when 'No UTR' is entered" in {
-      val page = doc(isIndividualSubscriptionFlow = true, customsId = None)
+      val page = doc(isIndividualSubscriptionFlow = true, nameIdOrganisationDetails = None, customsId = None)
 
       page.title must startWith("Check your answers")
       page.body.getElementById("review-tbl__full-name_heading").text mustBe "Full name"
@@ -215,8 +203,8 @@ class CheckYourDetailsSpec extends ViewSpec {
       page.body.getElementById("review-tbl__date-of-birth_heading").text mustBe "Date of birth"
       page.body.getElementById("review-tbl__date-of-birth").text mustBe "8 April 2003"
 
-      page.body.getElementById("review-tbl__utr_heading").text mustBe "UTR number"
-      page.body.getElementById("review-tbl__utr").text mustBe "UTRXXXXX"
+      page.body.getElementById("review-tbl__utr_heading") mustBe null
+      page.body.getElementById("review-tbl__utr") mustBe null
 
       page.body.getElementById("review-tbl__eori-number_heading").text mustBe "EORI number"
       page.body.getElementById("review-tbl__eori-number").text mustBe "ZZ123456789112"
@@ -224,13 +212,8 @@ class CheckYourDetailsSpec extends ViewSpec {
         .getElementById("review-tbl__eori-number_change")
         .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/review"
 
-      page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Your address"
-      page.body.getElementById("review-tbl__name-and-address").text mustBe strim("""
-          |Street
-          |City
-          |Postcode
-          |United Kingdom
-        """)
+      page.body.getElementById("review-tbl__name-and-address_heading") mustBe null
+      page.body.getElementById("review-tbl__name-and-address") mustBe null
       page.body().getElementById("review-tbl__contact-details_heading").text mustBe "Contact"
       page.body().getElementById("review-tbl__contact-details").text mustBe strim("""
           |John Doe
@@ -240,9 +223,7 @@ class CheckYourDetailsSpec extends ViewSpec {
           |POSTCODE
           |United Kingdom
         """.stripMargin)
-      page.body
-        .getElementById("review-tbl__name-and-address_change")
-        .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
+      page.body.getElementById("review-tbl__name-and-address_change") mustBe null
       page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
       page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
     }
@@ -337,6 +318,24 @@ class CheckYourDetailsSpec extends ViewSpec {
       page.body.getElementById("review-tbl__eori-number_change") mustBe null
       page.body.getElementById("review-tbl__eori-number_row").text must not contain "Change"
     }
+
+    "display registered company row if exists" in {
+
+      val view = doc(nameIdOrganisationDetails = None, companyRegisteredCountry = registeredCountry)
+
+      view.body().getElementById("review-tbl__country-location_heading").text mustBe "Country location"
+      view.body().getElementById("review-tbl__country-location").text mustBe "United Kingdom"
+      view.body().getElementById("review-tbl__country-location_change").attr(
+        "href"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/registered-country/review"
+    }
+
+    "not display registered company row if nothing in cache" in {
+
+      doc().body().getElementById("review-tbl__country-location_heading") mustBe null
+      doc().body().getElementById("review-tbl__country-location") mustBe null
+      doc().body().getElementById("review-tbl__country_location_change") mustBe null
+    }
   }
 
   def doc(
@@ -346,7 +345,8 @@ class CheckYourDetailsSpec extends ViewSpec {
     nameDobMatchModel: Option[NameDobMatchModel] = nameDobMatchModel,
     isThirdCountrySubscription: Boolean = false,
     nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg,
-    existingEori: Option[ExistingEori] = None
+    existingEori: Option[ExistingEori] = None,
+    companyRegisteredCountry: Option[CompanyRegisteredCountry] = None
   ): Document = {
 
     implicit val request = withFakeCSRF(FakeRequest().withSession(("selected-user-location", "third-country")))
@@ -366,6 +366,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       dateTime,
       None,
       customsId,
+      companyRegisteredCountry,
       atarService,
       Journey.Subscribe
     )

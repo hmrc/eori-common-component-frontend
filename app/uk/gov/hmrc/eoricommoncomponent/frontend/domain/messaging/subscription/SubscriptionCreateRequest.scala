@@ -43,6 +43,7 @@ object SubscriptionCreateRequest {
   implicit val jsonFormat = Json.format[SubscriptionCreateRequest]
   private val logger      = Logger(this.getClass)
 
+  // ROW without UTR apply - REG01
   def apply(
     registration: RegistrationDetails,
     subscription: SubscriptionDetails,
@@ -55,7 +56,7 @@ object SubscriptionCreateRequest {
           eori,
           safeId,
           name,
-          fourFieldAddress(subscription, registration),
+          createRowAddress(subscription, registration),
           dob,
           CdsToEtmpOrganisationType(registration),
           subscription,
@@ -67,7 +68,7 @@ object SubscriptionCreateRequest {
           eori,
           safeId,
           name,
-          fourFieldAddress(subscription, registration),
+          createRowAddress(subscription, registration),
           dateOfEstablishment,
           CdsToEtmpOrganisationType(registration),
           subscription,
@@ -77,6 +78,55 @@ object SubscriptionCreateRequest {
       case _ =>
         throw new IllegalArgumentException("Invalid Registration Details. Unable to create SubscriptionCreateRequest.")
     }
+
+  private def createRowAddress(
+    subscription: SubscriptionDetails,
+    registration: RegistrationDetails
+  ): EstablishmentAddress = {
+
+    val address =
+      if (Countries.all.map(_.countryCode).contains(registration.address.countryCode)) registration.address
+      else {
+        val subscriptionCountry =
+          subscription.registeredCompany.getOrElse(throw new Exception("Registered company is not in cache"))
+
+        registration.address.copy(countryCode = subscriptionCountry.country)
+      }
+
+    val establishmentAddress = createEstablishmentAddress(address)
+
+    establishmentAddress.copy(city = dashForEmpty(establishmentAddress.city))
+  }
+
+  private def mandatoryFieldsReq(
+    eori: String,
+    safeId: SafeId,
+    fullName: String,
+    establishmentAddress: EstablishmentAddress,
+    dateOfEstablishment: LocalDate,
+    etmpTypeOfPerson: Option[OrganisationTypeConfiguration],
+    sub: SubscriptionDetails,
+    service: Option[Service]
+  ) =
+    SubscriptionCreateRequest(
+      generateWithOriginatingSystem(),
+      RequestDetail(
+        SAFE = safeId.id,
+        EORINo = Some(eori),
+        CDSFullName = fullName,
+        CDSEstablishmentAddress = establishmentAddress,
+        establishmentInTheCustomsTerritoryOfTheUnion = None,
+        typeOfLegalEntity = etmpTypeOfPerson.map(_.legalStatus),
+        contactInformation = sub.contactDetails.map(_.toRowContactInformation()),
+        vatIDs = None,
+        consentToDisclosureOfPersonalData = None,
+        shortName = None,
+        dateOfEstablishment = Some(dateOfEstablishment),
+        typeOfPerson = etmpTypeOfPerson.map(_.typeOfPerson),
+        principalEconomicActivity = None,
+        serviceName = service.map(_.enrolmentKey)
+      )
+    )
 
   def apply(
     data: ResponseData,
@@ -150,36 +200,6 @@ object SubscriptionCreateRequest {
       )
     )
   }
-
-  private def mandatoryFieldsReq(
-    eori: String,
-    safeId: SafeId,
-    fullName: String,
-    establishmentAddress: EstablishmentAddress,
-    dateOfEstablishment: LocalDate,
-    etmpTypeOfPerson: Option[OrganisationTypeConfiguration],
-    sub: SubscriptionDetails,
-    service: Option[Service]
-  ) =
-    SubscriptionCreateRequest(
-      generateWithOriginatingSystem(),
-      RequestDetail(
-        SAFE = safeId.id,
-        EORINo = Some(eori),
-        CDSFullName = fullName,
-        CDSEstablishmentAddress = establishmentAddress,
-        establishmentInTheCustomsTerritoryOfTheUnion = None,
-        typeOfLegalEntity = etmpTypeOfPerson.map(_.legalStatus),
-        contactInformation = sub.contactDetails.map(c => createContactInformation(c.contactDetails)),
-        vatIDs = None,
-        consentToDisclosureOfPersonalData = None,
-        shortName = None,
-        dateOfEstablishment = Some(dateOfEstablishment),
-        typeOfPerson = etmpTypeOfPerson.map(_.typeOfPerson),
-        principalEconomicActivity = None,
-        serviceName = service.map(_.enrolmentKey)
-      )
-    )
 
   private def dashForEmpty(s: String): String =
     if (s.isEmpty) "-" else s

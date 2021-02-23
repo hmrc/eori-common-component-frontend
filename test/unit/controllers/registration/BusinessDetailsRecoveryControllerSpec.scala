@@ -24,11 +24,9 @@ import play.api.mvc.{AnyContent, Request, Result, Session}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.BusinessDetailsRecoveryController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.ContactDetailsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.{
-  ContactDetailsController,
-  DateOfEstablishmentController
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
@@ -146,9 +144,7 @@ class BusinessDetailsRecoveryControllerSpec extends ControllerSpec with BeforeAn
 
       invokeContinue() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) should endWith(
-          ContactDetailsController.createForm(atarService, Journey.Register).url
-        )
+        result.header.headers(LOCATION) should endWith(ContactDetailsController.createForm(atarService).url)
       }
     }
 

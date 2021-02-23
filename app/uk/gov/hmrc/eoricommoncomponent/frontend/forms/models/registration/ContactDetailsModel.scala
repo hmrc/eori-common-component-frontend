@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription
+package uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration
 
 import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.ContactInformation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetails
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactDetailsModel.trim
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel.trim
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionTimeOutException
 
 case class ContactDetailsModel(
@@ -54,6 +55,18 @@ case class ContactDetailsModel(
     trim(city),
     trim(postcode),
     countryCode
+  )
+
+  def toRowContactInformation(): ContactInformation = ContactInformation(
+    personOfContact = Some(fullName),
+    sepCorrAddrIndicator = Some(false),
+    streetAndNumber = None,
+    city = None,
+    postalCode = None,
+    countryCode = None,
+    telephoneNumber = Some(telephone),
+    faxNumber = None,
+    emailAddress = Some(emailAddress)
   )
 
 }

@@ -178,7 +178,7 @@ trait ControllerSpec extends UnitSpec with MockitoSugar with I18nSupport with In
   val defaultUserId: String = s"user-${UUID.randomUUID}"
 
   // TODO Extract below methods to some Utils class
-  def strim(s: String): String = s.stripMargin.trim.lines mkString " "
+  def strim(s: String): String = s.stripMargin.trim.split("\n").mkString(" ")
 
   def oversizedString(maxLength: Int): String = Random.alphanumeric.take(maxLength + 1).mkString
 

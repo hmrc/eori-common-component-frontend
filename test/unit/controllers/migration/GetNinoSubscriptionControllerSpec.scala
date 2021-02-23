@@ -24,9 +24,15 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.GetNinoSubscriptionController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubscriptionFlowInfo, SubscriptionPage}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  IndividualSubscriptionFlow,
+  MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow,
+  SubscriptionFlowInfo,
+  SubscriptionPage
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CustomsId, Nino}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you_nino
 import uk.gov.hmrc.http.HeaderCarrier
@@ -46,6 +52,7 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
   private val mockSubscriptionFlowInfo       = mock[SubscriptionFlowInfo]
   private val mockSubscriptionPage           = mock[SubscriptionPage]
+  private val mockRequestSessionData         = mock[RequestSessionData]
 
   private val matchNinoSubscriptionView = instanceOf[how_can_we_identify_you_nino]
 
@@ -61,6 +68,7 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
   val controller = new GetNinoSubscriptionController(
     mockAuthAction,
     mockSubscriptionFlowManager,
+    mockRequestSessionData,
     mcc,
     matchNinoSubscriptionView,
     mockSubscriptionDetailsService
@@ -101,6 +109,40 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
       verify(mockSubscriptionDetailsService).cacheCustomsId(meq(Nino("AB123456C")))(any[HeaderCarrier])
     }
 
+    "redirect to Address page" when {
+
+      "user is in review mode and during ROW individual journey" in {
+
+        when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(
+          MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow
+        )
+        when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
+          .thenReturn(Future.successful(()))
+        mockSubscriptionFlow(nextPageFlowUrl)
+        submit(Journey.Subscribe, Map("nino" -> "ab 12 34 56 c"), true) { result =>
+          status(result) shouldBe SEE_OTHER
+          result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
+        }
+        verify(mockSubscriptionDetailsService).cacheCustomsId(meq(Nino("AB123456C")))(any[HeaderCarrier])
+      }
+    }
+
+    "determine the route for the user" when {
+
+      "user is in review mode and UK journey" in {
+        when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(IndividualSubscriptionFlow)
+        when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
+          .thenReturn(Future.successful(()))
+        mockSubscriptionFlow(nextPageFlowUrl)
+        submit(Journey.Subscribe, Map("nino" -> "ab 12 34 56 c"), true) { result =>
+          status(result) shouldBe SEE_OTHER
+          result.header.headers(
+            LOCATION
+          ) shouldBe "/customs-enrolment-services/atar/subscribe/matching/review-determine"
+        }
+        verify(mockSubscriptionDetailsService).cacheCustomsId(meq(Nino("AB123456C")))(any[HeaderCarrier])
+      }
+    }
   }
 
   private def createForm(journey: Journey.Value)(test: Future[Result] => Any) = {

@@ -21,9 +21,13 @@ import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.GetUtrSubscriptionController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.CompanyRegisteredCountryController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.UtrSubscriptionFlowPage
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow,
+  UtrSubscriptionFlowPage
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.haveUtrForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
@@ -105,7 +109,10 @@ class HaveUtrSubscriptionController @Inject() (
       case Some(false) =>
         subscriptionDetailsService.cacheUtrMatchForNoAnswer(Some(form)).map {
           _ =>
-            Redirect(subscriptionFlowManager.stepInformation(UtrSubscriptionFlowPage).nextPage.url(service))
+            if (requestSessionData.userSubscriptionFlow == MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow)
+              Redirect(CompanyRegisteredCountryController.displayPage(service))
+            else
+              Redirect(subscriptionFlowManager.stepInformation(UtrSubscriptionFlowPage).nextPage.url(service))
         }
       case _ => throw new IllegalStateException("No Data from the form")
     }

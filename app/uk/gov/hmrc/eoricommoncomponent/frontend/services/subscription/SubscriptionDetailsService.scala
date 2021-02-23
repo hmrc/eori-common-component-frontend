@@ -21,9 +21,10 @@ import org.joda.time.LocalDate
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{BusinessShortName, SubscriptionDetails}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
   AddressViewModel,
-  ContactDetailsModel,
+  CompanyRegisteredCountry,
   VatDetails
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
@@ -169,9 +170,6 @@ class SubscriptionDetailsService @Inject() (
   def cacheVatRegisteredUk(yesNoAnswer: YesNo)(implicit hq: HeaderCarrier) =
     saveSubscriptionDetails(sd => sd.copy(vatRegisteredUk = Some(yesNoAnswer.isYes)))
 
-  def cacheVatGroup(yesNoAnswer: YesNo)(implicit hq: HeaderCarrier) =
-    saveSubscriptionDetails(sd => sd.copy(vatGroup = Some(yesNoAnswer.isYes)))
-
   def cacheConsentToDisclosePersonalDetails(yesNoAnswer: YesNo)(implicit hq: HeaderCarrier) =
     saveSubscriptionDetails(sd => sd.copy(personalDataDisclosureConsent = Some(yesNoAnswer.isYes)))
 
@@ -213,5 +211,11 @@ class SubscriptionDetailsService @Inject() (
         )
       )
     }
+
+  def cacheRegisteredCountry(country: CompanyRegisteredCountry)(implicit hc: HeaderCarrier): Future[Unit] =
+    saveSubscriptionDetails(sd => sd.copy(registeredCompany = Some(country)))
+
+  def cachedRegisteredCountry()(implicit hc: HeaderCarrier): Future[Option[CompanyRegisteredCountry]] =
+    sessionCache.subscriptionDetails.map(_.registeredCompany)
 
 }

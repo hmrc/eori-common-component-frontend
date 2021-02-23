@@ -22,6 +22,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.{AddressController, DetermineReviewPageController}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow,
+  MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.subscriptionUtrForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
@@ -109,14 +113,18 @@ class GetUtrSubscriptionController @Inject() (
     service: Service,
     journey: Journey.Value,
     orgType: CdsOrganisationType
-  )(implicit hc: HeaderCarrier): Future[Result] =
+  )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] =
     cacheUtr(form, orgType).map(
       _ =>
-        if (isInReviewMode)
+        if (isInReviewMode && !isItRowJourney)
           Redirect(DetermineReviewPageController.determineRoute(service, journey))
         else
           Redirect(AddressController.createForm(service, journey))
     )
+
+  private def isItRowJourney()(implicit request: Request[AnyContent]): Boolean =
+    requestSessionData.userSubscriptionFlow == MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow ||
+      requestSessionData.userSubscriptionFlow == MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow
 
   private def cacheUtr(form: IdMatchModel, orgType: CdsOrganisationType)(implicit hc: HeaderCarrier): Future[Unit] =
     if (orgType == CdsOrganisationType.Company)

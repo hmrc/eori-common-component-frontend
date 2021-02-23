@@ -36,11 +36,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
   SubscriptionResponse
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{BusinessShortName, SubscriptionDetails}
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
-  AddressViewModel,
-  ContactDetailsModel,
-  VatDetails
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, VatDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.EtmpTypeOfPerson
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._

@@ -26,7 +26,8 @@ import org.scalatest.mockito.MockitoSugar
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{BusinessShortName, FormData, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{NameOrganisationMatchModel, _}
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactDetailsModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, CompanyRegisteredCountry}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{ContactDetailsAdaptor, RegistrationDetailsCreator}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
@@ -488,23 +489,23 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
     }
   }
 
-  "Calling cacheVatGroup" should {
-    "save VatGroup value in frontend cache" in {
-      await(subscriptionDetailsHolderService.cacheVatGroup(YesNo(true)))
-      val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
-      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
-      val holder = requestCaptor.getValue
-      holder.vatGroup shouldBe Some(true)
-    }
-  }
-
-  "Calling cachConsentToDisclosePersonalDetails" should {
+  "Calling cacheConsentToDisclosePersonalDetails" should {
     "save personalDataDisclosureConsent value in frontend cache" in {
       await(subscriptionDetailsHolderService.cacheConsentToDisclosePersonalDetails(YesNo(true)))
       val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
       verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
       val holder = requestCaptor.getValue
       holder.personalDataDisclosureConsent shouldBe Some(true)
+    }
+  }
+
+  "Calliing cacheRegisteredCountry" should {
+    "save country value in frontend cache" in {
+      await(subscriptionDetailsHolderService.cacheRegisteredCountry(CompanyRegisteredCountry("United Kingdom")))
+      val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
+      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
+      val details = requestCaptor.getValue
+      details.registeredCompany shouldBe Some(CompanyRegisteredCountry("United Kingdom"))
     }
   }
 }
