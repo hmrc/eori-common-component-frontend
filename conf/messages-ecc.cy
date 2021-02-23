@@ -259,8 +259,8 @@ ecc.unable-to-use.signout.title = Rydych ar fin allgofnodi
 ecc.unable-to-use.signout.question = Ai dyma beth hoffech ei wneud?
 ecc.unable-to-use.signout.empty = Dewiswch yr hyn yr hoffech ei wneud
 
-ecc.registered-company-country.organisation.title = In which country is your organisation registered?
-ecc.registered-company-country.organisation.error = Enter the country in which your organisation is registered
-ecc.registered-company-country.individual.title = In which country is you business registered?
-ecc.registered-company-country.individual.error = Enter the country in which your business is registered
-ecc.registered-company-country.summary = Country location
+ecc.registered-company-country.organisation.title = Ym mha wlad y mae’ch sefydliad wedi’i gofrestru?
+ecc.registered-company-country.organisation.error = Nodwch y wlad lle y mae’ch sefydliad wedi’i gofrestruIn
+ecc.registered-company-country.individual.title = Ym mha wlad y mae’ch busnes wedi’i gofrestru?
+ecc.registered-company-country.individual.error = Nodwch y wlad lle y mae’ch busnes wedi’i gofrestruCountry location Lleoliad y wlad
+ecc.registered-company-country.summary = Lleoliad y wlad
