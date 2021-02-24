@@ -19,10 +19,16 @@ package unit.services.cache
 import base.UnitSpec
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Request, Session}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.OrganisationSubscriptionFlow
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  MigrationEoriIndividualSubscriptionFlow,
+  MigrationEoriOrganisationSubscriptionFlow,
+  MigrationEoriSoleTraderSubscriptionFlow,
+  OrganisationSubscriptionFlow,
+  ThirdCountryIndividualSubscriptionFlow
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 
 class RequestSessionDataSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
@@ -109,6 +115,48 @@ class RequestSessionDataSpec extends UnitSpec with MockitoSugar with BeforeAndAf
         "subscription-flow",
         "uri-before-subscription-flow"
       )
+    }
+
+    "return true for isUKJourney method" when {
+
+      "user is during organisation UK subscription journey" in {
+
+        when(mockRequest.session).thenReturn(
+          Session(Map("subscription-flow" -> MigrationEoriOrganisationSubscriptionFlow.name))
+        )
+
+        requestSessionData.isUKJourney shouldBe true
+      }
+
+      "user is during sole trader UK subscription journey" in {
+
+        when(mockRequest.session).thenReturn(
+          Session(Map("subscription-flow" -> MigrationEoriSoleTraderSubscriptionFlow.name))
+        )
+
+        requestSessionData.isUKJourney shouldBe true
+      }
+
+      "user is during individual UK subscription journey" in {
+
+        when(mockRequest.session).thenReturn(
+          Session(Map("subscription-flow" -> MigrationEoriIndividualSubscriptionFlow.name))
+        )
+
+        requestSessionData.isUKJourney shouldBe true
+      }
+    }
+
+    "return false for isUKJourney method" when {
+
+      "user is on different journey" in {
+
+        when(mockRequest.session).thenReturn(
+          Session(Map("subscription-flow" -> ThirdCountryIndividualSubscriptionFlow.name))
+        )
+
+        requestSessionData.isUKJourney shouldBe false
+      }
     }
   }
 }

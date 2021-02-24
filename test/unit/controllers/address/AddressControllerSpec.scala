@@ -76,9 +76,8 @@ class AddressControllerSpec
     mockCdsFrontendDataCache,
     mockSubscriptionFlowManager,
     mockRequestSessionData,
-    mockSubscriptionDetailsHolderService,
-    mcc,
     mockSubscriptionDetailsService,
+    mcc,
     viewAddress
   )
 
@@ -100,15 +99,11 @@ class AddressControllerSpec
   )
 
   override def beforeEach: Unit = {
-    reset(
-      mockSubscriptionBusinessService,
-      mockSubscriptionFlowManager,
-      mockRequestSessionData,
-      mockSubscriptionDetailsHolderService,
-      mockSubscriptionDetailsService
-    )
+    super.beforeEach()
+
     when(mockSubscriptionBusinessService.address(any[HeaderCarrier])).thenReturn(None)
     when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier])).thenReturn(None)
+    when(mockSubscriptionDetailsService.cacheAddressDetails(any())(any())).thenReturn(Future.successful((): Unit))
     when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(organisationRegistrationDetails)
     when(mockCdsFrontendDataCache.saveRegistrationDetails(any[RegistrationDetails])(any[HeaderCarrier]))
       .thenReturn(Future.successful(true))
@@ -117,6 +112,17 @@ class AddressControllerSpec
       .thenReturn(Some(mockOrganisationType))
     registerSaveDetailsMockSuccess()
     setupMockSubscriptionFlowManager(AddressDetailsSubscriptionFlowPage)
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(
+      mockSubscriptionBusinessService,
+      mockSubscriptionFlowManager,
+      mockRequestSessionData,
+      mockSubscriptionDetailsService
+    )
+
+    super.afterEach()
   }
 
   "Subscription Address Controller form in create mode" should {
@@ -269,10 +275,13 @@ class AddressControllerSpec
 
     "redirect to email address page when No Nino and No Utr is provided" in {
 
+      when(mockCdsFrontendDataCache.clearAddressLookupParams(any())).thenReturn(Future.successful((): Unit))
       submitFormInCreateModeForIndividualSubscription(
         Map("street" -> "My street", "city" -> "My city", "postcode" -> "SE281AA", "countryCode" -> "GB")
       ) { result =>
         status(result) shouldBe SEE_OTHER
+
+        verify(mockCdsFrontendDataCache).clearAddressLookupParams(any())
       }
     }
   }
@@ -407,11 +416,9 @@ class AddressControllerSpec
     }
   }
 
-  private def submitFormInCreateModeForOrganisation(
-    form: Map[String, String],
-    userId: String = defaultUserId,
-    userSelectedOrgType: Option[CdsOrganisationType] = None
-  )(test: Future[Result] => Any) {
+  private def submitFormInCreateModeForOrganisation(form: Map[String, String], userId: String = defaultUserId)(
+    test: Future[Result] => Any
+  ) {
     withAuthorisedUser(userId, mockAuthConnector)
 
     when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(organisationRegistrationDetails)
@@ -425,8 +432,7 @@ class AddressControllerSpec
 
   private def submitFormInCreateModeForIndividualSubscription(
     form: Map[String, String],
-    userId: String = defaultUserId,
-    userSelectedOrgType: Option[CdsOrganisationType] = None
+    userId: String = defaultUserId
   )(test: Future[Result] => Any) {
     val individualRegistrationDetails = RegistrationDetails.individual(
       sapNumber = "0123456789",
@@ -450,11 +456,9 @@ class AddressControllerSpec
     )
   }
 
-  private def submitFormInCreateModeForIndividual(
-    form: Map[String, String],
-    userId: String = defaultUserId,
-    userSelectedOrgType: Option[CdsOrganisationType] = None
-  )(test: Future[Result] => Any) {
+  private def submitFormInCreateModeForIndividual(form: Map[String, String], userId: String = defaultUserId)(
+    test: Future[Result] => Any
+  ) {
     withAuthorisedUser(userId, mockAuthConnector)
 
     when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(individualRegistrationDetails)
@@ -484,12 +488,12 @@ class AddressControllerSpec
   }
 
   private def registerSaveDetailsMockSuccess() {
-    when(mockSubscriptionDetailsHolderService.cacheAddressDetails(any())(any[HeaderCarrier]))
+    when(mockSubscriptionDetailsService.cacheAddressDetails(any())(any[HeaderCarrier]))
       .thenReturn(Future.successful(()))
   }
 
   private def registerSaveDetailsMockFailure(exception: Throwable) {
-    when(mockSubscriptionDetailsHolderService.cacheAddressDetails(any())(any[HeaderCarrier]))
+    when(mockSubscriptionDetailsService.cacheAddressDetails(any())(any[HeaderCarrier]))
       .thenReturn(Future.failed(exception))
   }
 
@@ -507,7 +511,7 @@ class AddressControllerSpec
   }
 
   private def showReviewForm(
-    dataToEdit: AddressViewModel = AddressPage.filledValues /* TODO */,
+    dataToEdit: AddressViewModel = AddressPage.filledValues,
     userId: String = defaultUserId,
     userSelectedOrganisationType: Option[CdsOrganisationType] = None
   )(test: Future[Result] => Any) {

@@ -267,4 +267,28 @@ ecc.registered-company-country.individual.title = In which country is you busine
 ecc.registered-company-country.individual.error = Enter the country in which your business is registered
 ecc.registered-company-country.summary = Country location
 
+ecc.address-lookup.postcode.organisation.title = What is your registered company address?
+ecc.address-lookup.postcode.individual.title = What is your registered business address?
+ecc.address-lookup.postcode.partnership.title = What is your registered partnership address?
+ecc.address-lookup.postcode.charity.title = What is your registered organisation address?
+ecc.address-lookup.postcode.default.hint = This may not be your business address.
+ecc.address-lookup.postcode.organisation.hint = This is the address registered with Companies House which may not be your business address.
+ecc.address-lookup.postcode.label = Postcode
+ecc.address-lookup.postcode.line1.label = Property name or number (optional)
+ecc.address-lookup.postcode.line1.error = Property name or number cannot have more than 35 characters
+ecc.address-lookup.postcode.summary.label = Postcode
+ecc.address-lookup.postcode.line1.summary.label = Property name or number
+ecc.address-lookup.postcode.address.label = Select your address
+ecc.address-lookup.postcode.address.error = Please select address from the list
+ecc.address-lookup.postcode.cannot-find-address = I can''t find my address in the list
+ecc.address-lookup.postcode.line1.hint = For example, The Mill, 116 or Flat 37a.
+ecc.address-lookup.postcode.find-address = Find address
 
+ecc.address-lookup.postcode.error = We have a problem
+ecc.address-lookup.postcode.error.hint = We are unable to view the list of matching addresses at this time. Try again in a few minutes or enter your address manually.
+ecc.address-lookup.postcode.error.re-enter = Re-enter postcode
+ecc.address-lookup.postcode.error.manual = I want to enter my address manually.
+
+ecc.address-lookup.postcode.no-results = No address found
+ecc.address-lookup.postcode.no-results.hint = We are unable to find an address associated with this postcode. Review the postcode below or enter your address manually.
+ecc.address-lookup.postcode.no-results.manual = I want to enter my address manually.

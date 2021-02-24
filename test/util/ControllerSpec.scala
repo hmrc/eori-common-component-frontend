@@ -32,7 +32,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import unit.controllers.CdsPage
 import util.builders.{AuthBuilder, SessionBuilder}
 import play.api.i18n.Lang._
-import play.api.test.NoMaterializer
+import play.api.test.{FakeRequest, NoMaterializer}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
@@ -67,6 +67,11 @@ trait ControllerSpec extends UnitSpec with MockitoSugar with I18nSupport with In
   private val serviceConfig = new ServicesConfig(config)
 
   val appConfig: AppConfig = new AppConfig(config, serviceConfig, "eori-common-component-frontend")
+
+  val getRequest = FakeRequest("GET", "")
+
+  def postRequest(data: (String, String)*): FakeRequest[AnyContentAsFormUrlEncoded] =
+    FakeRequest("POST", "").withFormUrlEncodedBody(data: _*)
 
   protected def assertNotLoggedInUserShouldBeRedirectedToLoginPage(
     mockAuthConnector: AuthConnector,

@@ -73,7 +73,7 @@ class Save4LaterService @Inject() (save4LaterConnector: Save4LaterConnector) {
   }
 
   def fetchCacheIds(groupId: GroupId)(implicit hc: HeaderCarrier): Future[Option[CacheIds]] = {
-    logger.debug("fetching CacheIds groupId $groupId")
+    logger.debug(s"fetching CacheIds groupId $groupId")
     save4LaterConnector
       .get[CacheIds](groupId.id, CachedData.groupIdKey)
   }

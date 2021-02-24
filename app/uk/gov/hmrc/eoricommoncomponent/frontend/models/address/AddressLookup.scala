@@ -19,14 +19,20 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.models.address
 import play.api.libs.json._
 import play.api.libs.json.Reads._
 import play.api.libs.functional.syntax._
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 
-case class AddressLookup(addressLine: String, city: String, postcode: String, country: String)
+case class AddressLookup(addressLine: String, city: String, postcode: String, country: String) {
+
+  def dropDownView: String = List(addressLine, city, postcode).mkString(", ")
+
+  def toAddressViewModel: AddressViewModel = AddressViewModel(addressLine, city, Some(postcode), country)
+}
 
 object AddressLookup {
 
   def applyWithLines(lines: Seq[String], town: String, postcode: String, country: String): AddressLookup = {
     val addressLine = lines match {
-      case Seq(line1, line2, _ @_*) => line1 + " " + line2
+      case Seq(line1, line2, _ @_*) => line1 + ", " + line2
       case Seq(line1, _ @_*)        => line1
     }
     val countryCode = if (country == "UK") "GB" else country

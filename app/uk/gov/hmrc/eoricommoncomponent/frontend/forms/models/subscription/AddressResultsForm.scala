@@ -18,22 +18,15 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription
 
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.i18n.Messages
-import play.api.libs.json.Json
 
-case class CompanyRegisteredCountry(country: String)
+case class AddressResultsForm(address: String)
 
-object CompanyRegisteredCountry {
+object AddressResultsForm {
 
-  implicit val format = Json.format[CompanyRegisteredCountry]
-
-  def form(errorMessage: String)(implicit messages: Messages): Form[CompanyRegisteredCountry] = Form(
-    mapping(
-      "countryCode" -> text.verifying(
-        errorMessage,
-        s => s.trim.nonEmpty && s != messages("cds.subscription.address-details.country.emptyValueText")
-      )
-    )(CompanyRegisteredCountry.apply)(CompanyRegisteredCountry.unapply)
+  def form(allowedAddresses: Seq[String]): Form[AddressResultsForm] = Form(
+    mapping("address" -> text.verifying("ecc.address-lookup.postcode.address.error", allowedAddresses.contains(_)))(
+      AddressResultsForm.apply
+    )(AddressResultsForm.unapply)
   )
 
 }

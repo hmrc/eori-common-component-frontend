@@ -18,11 +18,30 @@ package unit.models.address
 
 import base.UnitSpec
 import play.api.libs.json.Json
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.address.AddressLookup
 
 class AddressLookupSpec extends UnitSpec {
 
   "Address Lookup model" should {
+
+    "correctly convert to drop down view" in {
+
+      val addressLookup = AddressLookup("Line1", "City", "Postcode", "GB")
+
+      val expectedDropdownView = "Line1, City, Postcode"
+
+      addressLookup.dropDownView shouldBe expectedDropdownView
+    }
+
+    "correctly convert to AddressViewModel" in {
+
+      val addressLookup = AddressLookup("Line1", "City", "Postcode", "GB")
+
+      val expectedAddressViewModel = AddressViewModel("Line1", "City", Some("Postcode"), "GB")
+
+      addressLookup.toAddressViewModel shouldBe expectedAddressViewModel
+    }
 
     "correctly read only required information from json" in {
 
@@ -57,7 +76,7 @@ class AddressLookupSpec extends UnitSpec {
 
       val result = AddressLookup.addressReads.reads(addressJsonResponse)
 
-      val expectedModel = AddressLookup("Address Line 1 Address Line 2", "Town", "AA11 1AA", "GB")
+      val expectedModel = AddressLookup("Address Line 1, Address Line 2", "Town", "AA11 1AA", "GB")
 
       result.get shouldBe expectedModel
     }

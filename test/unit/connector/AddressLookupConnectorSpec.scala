@@ -119,9 +119,9 @@ class AddressLookupConnectorSpec
         val postcode = "AA11 1AA"
 
         val expectedFirstAddress =
-          AddressLookup("First Address Line 1 First Address Line 2", "First town", "AA11 1AA", "GB")
+          AddressLookup("First Address Line 1, First Address Line 2", "First town", "AA11 1AA", "GB")
         val expectedSecondAddress =
-          AddressLookup("Second Address Line 1 Second Address Line 2", "Second town", "AA11 1AA", "GB")
+          AddressLookup("Second Address Line 1, Second Address Line 2", "Second town", "AA11 1AA", "GB")
         val expectedResponse = AddressLookupSuccess(Seq(expectedFirstAddress, expectedSecondAddress))
 
         val result = connector.lookup(postcode)(hc)
@@ -138,7 +138,7 @@ class AddressLookupConnectorSpec
 
         val postcode = "AA11 1AA"
 
-        val expectedAddress  = AddressLookup("Address Line 1 Address Line 2", "Town", "AA11 1AA", "GB")
+        val expectedAddress  = AddressLookup("Address Line 1, Address Line 2", "Town", "AA11 1AA", "GB")
         val expectedResponse = AddressLookupSuccess(Seq(expectedAddress))
 
         val result = connector.lookup(postcode)(hc)

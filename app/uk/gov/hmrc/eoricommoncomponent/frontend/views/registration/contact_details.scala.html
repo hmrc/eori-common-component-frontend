@@ -22,10 +22,9 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
-
 @this(layout_di: layout)
-@(contactForm: Form[ContactDetailsViewModel], countries: List[Country], contactAddress: AddressViewModel, email:Option[String]=None, isInReviewMode: Boolean, service: Service, journey: Journey.Value)(implicit request: Request[_], messages: Messages)
 
+@(contactForm: Form[ContactDetailsViewModel], countries: List[Country], contactAddress: AddressViewModel, email:Option[String]=None, isInReviewMode: Boolean, service: Service)(implicit request: Request[_], messages: Messages)
 
 @labelForEUCountry(countryCode: String) = @{
     messages(messageKeyForEUCountryCode(countryCode))

@@ -79,6 +79,7 @@ class CheckYourDetailsControllerSpec
 
     when(mockCdsDataCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(subscriptionDetailsHolderForCompany)
     when(mockCdsDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(individualRegistrationDetails)
+    when(mockCdsDataCache.addressLookupParams(any[HeaderCarrier])).thenReturn(Future.successful(None))
   }
 
   "Reviewing the details" should {

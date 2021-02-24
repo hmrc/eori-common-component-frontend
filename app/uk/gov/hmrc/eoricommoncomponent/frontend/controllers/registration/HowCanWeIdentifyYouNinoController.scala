@@ -22,10 +22,12 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.AddressLookupPostcodeController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.HowCanWeIdentifyYouSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.subscriptionNinoForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
   SubscriptionDetailsService
@@ -40,6 +42,7 @@ class HowCanWeIdentifyYouNinoController @Inject() (
   authAction: AuthAction,
   subscriptionBusinessService: SubscriptionBusinessService,
   subscriptionFlowManager: SubscriptionFlowManager,
+  requestSessionData: RequestSessionData,
   mcc: MessagesControllerComponents,
   howCanWeIdentifyYouView: how_can_we_identify_you_nino,
   subscriptionDetailsHolderService: SubscriptionDetailsService
@@ -110,6 +113,8 @@ class HowCanWeIdentifyYouNinoController @Inject() (
         _ =>
           if (inReviewMode)
             Redirect(DetermineReviewPageController.determineRoute(service, journey))
+          else if (requestSessionData.isUKJourney)
+            Redirect(AddressLookupPostcodeController.displayPage(service))
           else
             Redirect(
               subscriptionFlowManager.stepInformation(HowCanWeIdentifyYouSubscriptionFlowPage).nextPage.url(service)

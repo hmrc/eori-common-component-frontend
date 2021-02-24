@@ -375,6 +375,25 @@ class DateOfEstablishmentControllerSpec
     }
   }
 
+  "Date of establishment Controller" should {
+
+    "redirect to Address Lookup page" when {
+
+      "user is during UK Subscribe journey" in {
+
+        when(mockSubscriptionDetailsHolderService.cacheDateEstablished(any())(any()))
+          .thenReturn(Future.successful((): Unit))
+        when(mockRequestSessionData.isUKJourney(any())).thenReturn(true)
+
+        val session = SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, ValidRequest)
+        val result  = controller.submit(false, atarService, Journey.Subscribe).apply(session)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("/customs-enrolment-services/atar/subscribe/address-postcode")
+      }
+    }
+  }
+
   private def showCreateForm(
     userId: String = defaultUserId,
     cachedDate: Option[LocalDate] = None,

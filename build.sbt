@@ -113,7 +113,8 @@ val compileDependencies = Seq(
   "uk.gov.hmrc" %% "logback-json-logger" % "4.8.0",
   "com.typesafe.play" %% "play-json-joda" % "2.6.10",
   "uk.gov.hmrc" %% "play-language" % "4.5.0-play-27",
-  "uk.gov.hmrc" %% "play-ui" % "8.19.0-play-27"
+  "uk.gov.hmrc" %% "play-ui" % "8.19.0-play-27",
+  "org.webjars.npm" % "accessible-autocomplete" % "2.0.3"
 )
 
 

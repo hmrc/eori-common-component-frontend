@@ -18,22 +18,24 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription
 
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.i18n.Messages
 import play.api.libs.json.Json
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation.postcodeRegex
 
-case class CompanyRegisteredCountry(country: String)
+case class AddressLookupParams(postcode: String, line1: Option[String]) {
 
-object CompanyRegisteredCountry {
+  def isEmpty(): Boolean = postcode == "" && line1.forall(_.isEmpty)
 
-  implicit val format = Json.format[CompanyRegisteredCountry]
+  def nonEmpty(): Boolean = !isEmpty()
+}
 
-  def form(errorMessage: String)(implicit messages: Messages): Form[CompanyRegisteredCountry] = Form(
+object AddressLookupParams {
+  implicit val format = Json.format[AddressLookupParams]
+
+  def form(): Form[AddressLookupParams] = Form(
     mapping(
-      "countryCode" -> text.verifying(
-        errorMessage,
-        s => s.trim.nonEmpty && s != messages("cds.subscription.address-details.country.emptyValueText")
-      )
-    )(CompanyRegisteredCountry.apply)(CompanyRegisteredCountry.unapply)
+      "postcode" -> text.verifying("cds.subscription.contact-details.error.postcode", _.matches(postcodeRegex.regex)),
+      "line1"    -> optional(text.verifying("ecc.address-lookup.postcode.line1.error", _.length < 36))
+    )(AddressLookupParams.apply)(AddressLookupParams.unapply)
   )
 
 }

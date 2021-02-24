@@ -195,3 +195,14 @@ details .arrow {
         width: 100% !important
     }
 }
+
+.postcode-address-value {
+    display:inline-block;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.postcode-address-change {
+    display: inline-block;
+    font-weight: bold;
+}
