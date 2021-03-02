@@ -55,10 +55,11 @@ class Reg06Service @Inject() (
     }
 
     def createRegDetail(address: AddressViewModel, nameDob: NameDobMatchModel, eori: String, id: CustomsId) = {
+      val addressStreet = address.street.take(70)
       val registerModeEori = RegisterModeEori(
         eori,
         nameDob.firstName + " " + nameDob.lastName,
-        EstablishmentAddress(address.street, address.city, address.postcode, address.countryCode)
+        EstablishmentAddress(addressStreet, address.city, address.postcode, address.countryCode)
       )
       val registerModeId = RegisterModeId(
         ninoOrUtr(id),
@@ -105,12 +106,15 @@ class Reg06Service @Inject() (
         Some(RegisterWithEoriAndIdOrganisation(orgName, EtmpOrganisationType(organisationType).etmpOrgTypeCode))
       )
 
-    def regModeEORI(address: AddressViewModel, eori: String, orgName: String) =
+    def regModeEORI(address: AddressViewModel, eori: String, orgName: String) = {
+      val addressStreet = address.street.take(70)
+
       RegisterModeEori(
         eori,
         orgName,
-        EstablishmentAddress(address.street, address.city, address.postcode.filter(_.nonEmpty), address.countryCode)
+        EstablishmentAddress(addressStreet, address.city, address.postcode.filter(_.nonEmpty), address.countryCode)
       )
+    }
 
     for {
       subscriptionDetails <- dataCache.subscriptionDetails

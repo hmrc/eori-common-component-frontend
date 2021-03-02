@@ -20,6 +20,8 @@ import base.UnitSpec
 import play.api.data.FormError
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressLookupParams
 
+import scala.util.Random
+
 class AddressLookupParamsSpec extends UnitSpec {
 
   "Address Lookup Params" should {
@@ -68,7 +70,7 @@ class AddressLookupParamsSpec extends UnitSpec {
 
       "line1 is longer than 35 characters" in {
 
-        val incorrectLine1: String = Seq.fill(36)("a").mkString("")
+        val incorrectLine1: String = Random.alphanumeric.take(36).mkString("")
         val form                   = AddressLookupParams.form().bind(Map("postcode" -> "AA11 1AA", "line1" -> incorrectLine1))
 
         val expectedErrors = Seq(FormError("line1", "ecc.address-lookup.postcode.line1.error"))
