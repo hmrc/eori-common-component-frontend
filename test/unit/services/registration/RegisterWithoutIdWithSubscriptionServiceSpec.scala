@@ -20,7 +20,7 @@ import base.UnitSpec
 import org.joda.time.{DateTime, LocalDate}
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import play.api.mvc.{Action, AnyContent, Request, Results}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller

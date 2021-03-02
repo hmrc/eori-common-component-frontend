@@ -21,7 +21,7 @@ import java.util.UUID
 import akka.stream.Materializer
 import base.{Injector, UnitSpec}
 import common.pages.WebPage
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypesConfiguration}
 import play.api.{Configuration, Environment}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesImpl}

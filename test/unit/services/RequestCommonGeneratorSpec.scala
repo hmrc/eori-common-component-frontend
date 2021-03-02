@@ -23,7 +23,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.RequestCommon
 import org.joda.time.DateTimeZone
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.eoricommoncomponent.frontend.services._
 
 class RequestCommonGeneratorSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {

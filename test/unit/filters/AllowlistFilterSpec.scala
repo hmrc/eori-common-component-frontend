@@ -20,7 +20,7 @@ import base.UnitSpec
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{RequestHeader, Result, Results}
 import play.api.test.{FakeRequest, NoMaterializer}
 import play.mvc.Http.HeaderNames

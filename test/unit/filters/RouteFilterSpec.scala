@@ -22,7 +22,7 @@ import base.UnitSpec
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, spy, when}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{RequestHeader, Result, Results}
 import play.api.test.FakeRequest
 import play.api.{Configuration, Environment}

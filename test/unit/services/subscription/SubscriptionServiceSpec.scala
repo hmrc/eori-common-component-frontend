@@ -22,7 +22,7 @@ import org.mockito.Mockito.when
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalacheck.{Gen, Prop}
 import org.scalatest.BeforeAndAfterAll
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.prop.Checkers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import play.api.libs.json.{JsObject, JsValue, Json}
