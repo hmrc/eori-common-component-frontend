@@ -166,7 +166,7 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
 
     "return 303 (SEE_OTHER) and redirect to no results page" when {
 
-      "user is in review mode and connector doesn't return any addresses for display page method" in {
+      "user is not in review mode and connector doesn't return any addresses for display page method" in {
 
         when(mockSessionCache.addressLookupParams(any())).thenReturn(Future.successful(Some(addressLookupParams)))
         when(mockAddressLookupConnector.lookup(any(), any())(any()))
@@ -178,7 +178,7 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
         redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/address-postcode/no-results"
       }
 
-      "user is not in review mode and connector doesn't return any addresses for display page method" in {
+      "user is in review mode and connector doesn't return any addresses for display page method" in {
 
         when(mockSessionCache.addressLookupParams(any())).thenReturn(Future.successful(Some(addressLookupParams)))
         when(mockAddressLookupConnector.lookup(any(), any())(any()))

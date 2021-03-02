@@ -106,16 +106,16 @@ class RequestSessionData {
       oType == CdsOrganisationType.ThirdCountrySoleTrader
     }
 
+  private val ukSubscriptionFlows = Seq(
+    MigrationEoriOrganisationSubscriptionFlow,
+    MigrationEoriSoleTraderSubscriptionFlow,
+    MigrationEoriIndividualSubscriptionFlow
+  )
+
   def isUKJourney(implicit request: Request[AnyContent]): Boolean =
     request.session.data.get(RequestSessionDataKeys.subscriptionFlow) match {
-      case Some(flowName) =>
-        val ukSubscriptionFlows = Seq(
-          MigrationEoriOrganisationSubscriptionFlow,
-          MigrationEoriSoleTraderSubscriptionFlow,
-          MigrationEoriIndividualSubscriptionFlow
-        )
-        ukSubscriptionFlows.contains(SubscriptionFlow(flowName))
-      case None => false
+      case Some(flowName) => ukSubscriptionFlows.contains(SubscriptionFlow(flowName))
+      case None           => false
     }
 
 }

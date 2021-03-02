@@ -33,7 +33,8 @@ object AddressLookup {
   def applyWithLines(lines: Seq[String], town: String, postcode: String, country: String): AddressLookup = {
     val addressLine = lines match {
       case Seq(line1, line2, _ @_*) => line1 + ", " + line2
-      case Seq(line1, _ @_*)        => line1
+      case Seq(line1)               => line1
+      case Seq()                    => throw new IllegalStateException("Address line cannot be empty")
     }
     val countryCode = if (country == "UK") "GB" else country
 

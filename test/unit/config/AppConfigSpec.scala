@@ -167,7 +167,7 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
 
     "return address lookup url" in {
 
-      appConfig.addressLookup shouldBe "http://localhost:9022/v2/uk/addresses"
+      appConfig.addressLookup shouldBe "http://localhost:6754/v2/uk/addresses"
     }
 
     "return url for 'get EORI" when {

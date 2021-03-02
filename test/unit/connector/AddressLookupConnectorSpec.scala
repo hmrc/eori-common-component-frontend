@@ -50,7 +50,7 @@ class AddressLookupConnectorSpec
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
-    when(appConfig.addressLookup).thenReturn("http://localhost:9022/v2/uk/addresses")
+    when(appConfig.addressLookup).thenReturn("http://localhost:6754/v2/uk/addresses")
   }
 
   override protected def afterEach(): Unit = {
@@ -71,7 +71,7 @@ class AddressLookupConnectorSpec
         val postcode = "AA11 1AA"
 
         val expectedResponse = AddressLookupSuccess(Seq.empty)
-        val expectedUrl      = "http://localhost:9022/v2/uk/addresses?postcode=AA11+1AA"
+        val expectedUrl      = "http://localhost:6754/v2/uk/addresses?postcode=AA11+1AA"
 
         val urlCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
@@ -93,7 +93,7 @@ class AddressLookupConnectorSpec
         val line1    = "Address Line 1"
 
         val expectedResponse = AddressLookupSuccess(Seq.empty)
-        val expectedUrl      = "http://localhost:9022/v2/uk/addresses?postcode=AA11+1AA&line1=Address+Line+1"
+        val expectedUrl      = "http://localhost:6754/v2/uk/addresses?postcode=AA11+1AA&line1=Address+Line+1"
 
         val urlCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
