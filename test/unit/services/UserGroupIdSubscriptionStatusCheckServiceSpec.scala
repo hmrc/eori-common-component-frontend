@@ -22,7 +22,7 @@ import org.mockito.Mockito
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.time.{Millis, Span}
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect

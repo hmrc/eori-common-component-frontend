@@ -21,7 +21,7 @@ import java.util.UUID
 import akka.stream.Materializer
 import base.{Injector, UnitSpec}
 import common.pages.WebPage
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypesConfiguration}
 import play.api.{Configuration, Environment}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesImpl}
@@ -32,7 +32,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import unit.controllers.CdsPage
 import util.builders.{AuthBuilder, SessionBuilder}
 import play.api.i18n.Lang._
-import play.api.test.NoMaterializer
+import play.api.test.{FakeRequest, NoMaterializer}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
@@ -67,6 +67,11 @@ trait ControllerSpec extends UnitSpec with MockitoSugar with I18nSupport with In
   private val serviceConfig = new ServicesConfig(config)
 
   val appConfig: AppConfig = new AppConfig(config, serviceConfig, "eori-common-component-frontend")
+
+  val getRequest = FakeRequest("GET", "")
+
+  def postRequest(data: (String, String)*): FakeRequest[AnyContentAsFormUrlEncoded] =
+    FakeRequest("POST", "").withFormUrlEncodedBody(data: _*)
 
   protected def assertNotLoggedInUserShouldBeRedirectedToLoginPage(
     mockAuthConnector: AuthConnector,

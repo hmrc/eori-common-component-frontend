@@ -94,7 +94,7 @@ class ContactDetailsController @Inject() (
       val contactDetailsModel = contactDetails.map(ContactDetailsSubscribeModel.fromContactDetailsModel(_))
       val form                = contactDetailsModel.fold(ContactDetailsForm.form())(ContactDetailsForm.form().fill(_))
 
-      Future.successful(Ok(contactDetailsView(form, email, isInReviewMode, service, Journey.Subscribe)))
+      Future.successful(Ok(contactDetailsView(form, email, isInReviewMode, service)))
     }
   }.flatMap(identity)
 
@@ -103,9 +103,7 @@ class ContactDetailsController @Inject() (
       cdsFrontendDataCache.email flatMap { email =>
         ContactDetailsForm.form().bindFromRequest.fold(
           formWithErrors =>
-            Future.successful(
-              BadRequest(contactDetailsView(formWithErrors, email, isInReviewMode, service, Journey.Subscribe))
-            ),
+            Future.successful(BadRequest(contactDetailsView(formWithErrors, email, isInReviewMode, service))),
           formData => storeContactDetails(formData, email, isInReviewMode, service)
         )
       }

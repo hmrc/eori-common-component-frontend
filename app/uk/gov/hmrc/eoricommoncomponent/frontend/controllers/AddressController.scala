@@ -48,9 +48,8 @@ class AddressController @Inject() (
   sessionCache: SessionCache,
   subscriptionFlowManager: SubscriptionFlowManager,
   requestSessionData: RequestSessionData,
-  subscriptionDetailsHolderService: SubscriptionDetailsService,
-  mcc: MessagesControllerComponents,
   subscriptionDetailsService: SubscriptionDetailsService,
+  mcc: MessagesControllerComponents,
   addressView: address
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
@@ -75,13 +74,13 @@ class AddressController @Inject() (
         .fold(
           formWithErrors => populateCountriesToInclude(isInReviewMode, service, journey, formWithErrors, BadRequest),
           address => {
-            subscriptionDetailsHolderService.cacheAddressDetails(address)
+            subscriptionDetailsService.cacheAddressDetails(address)
             journey match {
               case Journey.Subscribe =>
-                subscriptionDetailsHolderService
+                subscriptionDetailsService
                   .cacheAddressDetails(address)
-                  .map(
-                    _ =>
+                  .flatMap { _ =>
+                    sessionCache.clearAddressLookupParams.map { _ =>
                       if (isInReviewMode)
                         Redirect(DetermineReviewPageController.determineRoute(service, journey))
                       else
@@ -91,7 +90,8 @@ class AddressController @Inject() (
                             .nextPage
                             .url(service)
                         )
-                  )
+                    }
+                  }
               case _ =>
                 updateRegistrationAddress(address).flatMap { _ =>
                   showReviewPage(address, isInReviewMode, service, journey)
@@ -101,9 +101,7 @@ class AddressController @Inject() (
         )
     }
 
-  private def updateRegistrationAddress(
-    address: AddressViewModel
-  )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Boolean] =
+  private def updateRegistrationAddress(address: AddressViewModel)(implicit hc: HeaderCarrier): Future[Boolean] =
     sessionCache.registrationDetails.map {
       case org: RegistrationDetailsOrganisation =>
         org.copy(address = Address(address))
@@ -166,8 +164,8 @@ class AddressController @Inject() (
     inReviewMode: Boolean,
     service: Service,
     journey: Journey.Value
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
-    subscriptionDetailsHolderService.cacheAddressDetails(address).flatMap { _ =>
+  )(implicit hc: HeaderCarrier): Future[Result] =
+    subscriptionDetailsService.cacheAddressDetails(address).flatMap { _ =>
       if (inReviewMode)
         Future.successful(Redirect(DetermineReviewPageController.determineRoute(service, journey)))
       else

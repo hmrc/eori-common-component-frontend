@@ -116,6 +116,8 @@ class DateOfEstablishmentController @Inject() (
           saveDateEstablished(date).map { _ =>
             if (isInReviewMode)
               Redirect(DetermineReviewPageController.determineRoute(service, journey))
+            else if (requestSessionData.isUKJourney)
+              Redirect(routes.AddressLookupPostcodeController.displayPage(service))
             else {
               val page = subscriptionFlowManager
                 .stepInformation(getSubscriptionPage(journey, UserLocation.isRow(requestSessionData)))

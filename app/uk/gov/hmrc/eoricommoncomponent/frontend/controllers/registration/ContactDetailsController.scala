@@ -82,15 +82,7 @@ class ContactDetailsController @Inject() (
           formWithErrors =>
             createContactDetails().map { contactDetails =>
               BadRequest(
-                contactDetailsView(
-                  formWithErrors,
-                  Countries.all,
-                  contactDetails,
-                  Some(email),
-                  isInReviewMode,
-                  service,
-                  Journey.Register
-                )
+                contactDetailsView(formWithErrors, Countries.all, contactDetails, Some(email), isInReviewMode, service)
               )
             },
           formData => storeContactDetails(formData, email, isInReviewMode, service)
@@ -130,8 +122,7 @@ class ContactDetailsController @Inject() (
       .fold(contactDetailsCreateForm())(f => contactDetailsCreateForm().fill(f))
 
     createContactDetails() map (
-      contactDetails =>
-        Ok(contactDetailsView(form, Countries.all, contactDetails, email, isInReviewMode, service, Journey.Register))
+      contactDetails => Ok(contactDetailsView(form, Countries.all, contactDetails, email, isInReviewMode, service))
     )
   }
 

@@ -18,7 +18,6 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription
 
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.data.Forms.text
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 

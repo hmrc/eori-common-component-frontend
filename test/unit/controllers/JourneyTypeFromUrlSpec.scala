@@ -18,7 +18,7 @@ package unit.controllers
 
 import base.UnitSpec
 import org.mockito.Mockito._
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.JourneyTypeFromUrl
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey

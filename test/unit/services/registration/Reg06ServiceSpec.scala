@@ -23,7 +23,7 @@ import org.mockito.Mockito._
 import org.mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.RegisterWithEoriAndIdConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging._
@@ -41,6 +41,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
+import scala.util.Random
 
 class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
   private val mockConnector          = mock[RegisterWithEoriAndIdConnector]
@@ -1020,6 +1021,88 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       verify(mockConnector).register(captor.capture())(meq(hc))
 
       //TODO What is the point of this captor????  Copy / Paste job???
+    }
+
+    "correctly trim address street to 70 characters for organisation" when {
+
+      "address street has more than 70 characters" in {
+
+        val streetAndNumber = Random.alphanumeric.take(100).mkString("")
+
+        val mayBeCachedAddressViewModel =
+          Some(AddressViewModel(streetAndNumber, "city", Some("postcode"), "GB"))
+        val mayBeEori = Some("EORINUMBERXXXXXXX")
+        val nameIdOrganisationDetails =
+          Some(NameIdOrganisationMatchModel("test", "2108834503k"))
+
+        val mockSubscriptionDetailsHolder = mock[SubscriptionDetails]
+        when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+          .thenReturn(Future.successful(mockSubscriptionDetailsHolder))
+        when(mockDataCache.registrationDetails(any[HeaderCarrier]))
+          .thenReturn(Future.successful(organisationRegistrationDetails))
+        when(mockRequestSessionData.userSelectedOrganisationType(any()))
+          .thenReturn(Some(CdsOrganisationType.Company))
+
+        when(mockSubscriptionDetailsHolder.addressDetails)
+          .thenReturn(mayBeCachedAddressViewModel)
+        when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(mayBeEori)
+        when(mockSubscriptionDetailsHolder.nameIdOrganisationDetails)
+          .thenReturn(nameIdOrganisationDetails)
+        mockRegistrationSuccess()
+
+        service.sendOrganisationRequest(any(), mockLoggedInUser, hc).futureValue shouldBe true
+
+        val captor: ArgumentCaptor[RegisterWithEoriAndIdRequest] =
+          ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
+
+        verify(mockConnector).register(captor.capture())(meq(hc))
+
+        val registrationRequest        = captor.getValue
+        val registrationRequestAddress = registrationRequest.requestDetail.registerModeEORI.address
+
+        registrationRequestAddress.streetAndNumber.length shouldBe 70
+        registrationRequestAddress.streetAndNumber shouldBe streetAndNumber.take(70).mkString("")
+      }
+    }
+
+    "correctly trim address street to 70 characters for individual" when {
+
+      "address street has more than 70 characters" in {
+
+        val streetAndNumber = Random.alphanumeric.take(100).mkString("")
+
+        val address =
+          Some(AddressViewModel(streetAndNumber, "city", Some("postcode"), "GB"))
+        val eori = Some("EORINUMBERXXXXXXX")
+        val nino = Some(Nino("NINO1234"))
+
+        val mockSubscription = mock[SubscriptionDetails]
+        when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+          .thenReturn(Future.successful(mockSubscription))
+        when(mockDataCache.registrationDetails(any[HeaderCarrier]))
+          .thenReturn(Future.successful(organisationRegistrationDetails))
+        when(mockRequestSessionData.userSelectedOrganisationType(any()))
+          .thenReturn(Some(CdsOrganisationType.Company))
+        when(mockSubscription.addressDetails).thenReturn(address)
+        when(mockSubscription.eoriNumber).thenReturn(eori)
+        when(mockSubscription.customsId).thenReturn(nino)
+        when(mockSubscription.nameDobDetails)
+          .thenReturn(Some(NameDobMatchModel("Fname", None, "Lname", LocalDate.parse("1978-02-10"))))
+        mockRegistrationSuccess()
+
+        await(service.sendIndividualRequest(any(), mockLoggedInUser, hc)) shouldBe true
+
+        val captor: ArgumentCaptor[RegisterWithEoriAndIdRequest] =
+          ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
+
+        verify(mockConnector).register(captor.capture())(meq(hc))
+
+        val registrationRequest        = captor.getValue
+        val registrationRequestAddress = registrationRequest.requestDetail.registerModeEORI.address
+
+        registrationRequestAddress.streetAndNumber.length shouldBe 70
+        registrationRequestAddress.streetAndNumber shouldBe streetAndNumber.take(70).mkString("")
+      }
     }
   }
 }

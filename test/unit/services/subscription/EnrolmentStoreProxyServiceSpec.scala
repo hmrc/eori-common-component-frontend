@@ -21,7 +21,7 @@ import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.EnrolmentStoreProxyConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   EnrolmentResponse,

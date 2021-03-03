@@ -182,7 +182,9 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       showCreateForm() { result =>
         val page = CdsPage(contentAsString(result))
         page.getElementsText(headingXPath) shouldBe "Who can we contact?"
-        page.getElementsText(introXPath) shouldBe "We will use these details to contact you about your application."
+        page.getElementsText(
+          introXPathRegister
+        ) shouldBe "We will use these details to contact you about your application."
       }
     }
 

@@ -18,7 +18,7 @@ package util.builders
 
 import base.Injector
 import org.scalatest.WordSpec
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction

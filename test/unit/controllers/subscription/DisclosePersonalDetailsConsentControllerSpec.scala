@@ -22,7 +22,7 @@ import common.pages.subscription.DisclosePersonalDetailsConsentPage
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import org.scalatest.prop.Tables.Table
 import play.api.mvc.{AnyContent, Request, Result}

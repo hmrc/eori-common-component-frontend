@@ -34,7 +34,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.Contac
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.contact_details
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
@@ -115,7 +114,9 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       showCreateForm() { result =>
         val page = CdsPage(contentAsString(result))
         page.getElementsText(headingXPath) shouldBe "Who can we contact?"
-        page.getElementsText(introXPath) shouldBe "We will use these details to contact you about your application."
+        page.getElementsText(
+          introXPathSubscribe
+        ) shouldBe "We will use these details to contact you about your application."
       }
     }
 

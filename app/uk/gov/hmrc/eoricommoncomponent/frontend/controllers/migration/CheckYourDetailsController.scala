@@ -44,6 +44,7 @@ class CheckYourDetailsController @Inject() (
         for {
           subscriptionDetailsHolder <- cdsFrontendCache.subscriptionDetails
           email                     <- cdsFrontendCache.email
+          addressLookupParams       <- cdsFrontendCache.addressLookupParams
         } yield Ok(
           checkYourDetailsView(
             isThirdCountrySubscription = isThirdCountrySubscriptionFlow,
@@ -62,6 +63,7 @@ class CheckYourDetailsController @Inject() (
             idDetails = subscriptionDetailsHolder.idDetails,
             customsId = subscriptionDetailsHolder.customsId,
             registeredCountry = subscriptionDetailsHolder.registeredCompany,
+            addressLookupParams = addressLookupParams,
             service = service,
             journey = journey
           )

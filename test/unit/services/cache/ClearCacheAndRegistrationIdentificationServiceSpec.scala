@@ -20,7 +20,7 @@ import base.UnitSpec
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterAll
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUser
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
   ClearCacheAndRegistrationIdentificationService,

@@ -16,15 +16,13 @@
 
 @import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactDetailsSubscribeModel
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-@import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import views.html.helper._
-@import views._
 
 @this(layout_di: layout)
 
-@(contactForm: Form[ContactDetailsSubscribeModel], email: String, isInReviewMode: Boolean, service: Service, journey: Journey.Value)(implicit request: Request[_], messages: Messages)
+@(contactForm: Form[ContactDetailsSubscribeModel], email: String, isInReviewMode: Boolean, service: Service)(implicit request: Request[_], messages: Messages)
 
 @inputText(field: String, label: String, args: (Symbol, Any)*) = {
     @helpers.inputText(contactForm)(field, label, args: _*)
@@ -44,10 +42,8 @@
         <fieldset>
             <legend>
                 <h1 class="heading-large">@messages("cds.subscription.contact-details.heading")</h1>
-
-                <p class="form-hint">@Html(messages("cds.subscription.contact-details.intro"))</p>
             </legend>
-
+            <p class="form-hint">@Html(messages("cds.subscription.contact-details.intro"))</p>
 
             <div id="email-outer" class="form-group ">
                 <label for="email" class="form-label-bold">@messages("subscription.check-your-email.label")</label>
@@ -55,8 +51,8 @@
             </div>
             @inputText("full-name", "cds.subscription.contact-details.full-name.label")
             @inputText("telephone", "cds.subscription.contact-details.telephone.label", '_hintText -> messages("cds.subscription.contact-details.telephone.hint"))
+            <input class="button" type="submit" id="continue-button" value='@ViewHelper.continueButtonText(isInReviewMode)'>
         </fieldset>
-        <input class="button" type="submit" id="continue-button" value='@ViewHelper.continueButtonText(isInReviewMode)'>
     }
     @helpers.helpAndSupport()
 </div>

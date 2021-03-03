@@ -33,6 +33,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   SubscriptionFlowInfo
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
   SubscriptionDetailsService
@@ -53,6 +54,7 @@ class HowCanWeIdentifyYouUtrControllerSpec extends ControllerSpec with BeforeAnd
   private val mockAuthAction                       = authAction(mockAuthConnector)
   private val mockSubscriptionBusinessService      = mock[SubscriptionBusinessService]
   private val mockSubscriptionFlowManager          = mock[SubscriptionFlowManager]
+  private val mockRequestSessionData               = mock[RequestSessionData]
   private val mockSubscriptionDetailsHolderService = mock[SubscriptionDetailsService]
 
   private val howCanWeIdentifyYouView = instanceOf[how_can_we_identify_you_utr]
@@ -61,6 +63,7 @@ class HowCanWeIdentifyYouUtrControllerSpec extends ControllerSpec with BeforeAnd
     mockAuthAction,
     mockSubscriptionBusinessService,
     mockSubscriptionFlowManager,
+    mockRequestSessionData,
     mcc,
     howCanWeIdentifyYouView,
     mockSubscriptionDetailsHolderService
@@ -167,6 +170,18 @@ class HowCanWeIdentifyYouUtrControllerSpec extends ControllerSpec with BeforeAnd
       }
     }
 
+    "redirect to 'Address Lookup' page" when {
+
+      "user is during UK journey" in {
+
+        when(mockRequestSessionData.isUKJourney(any())).thenReturn(true)
+
+        submitForm(Map("utr" -> "2108834503")) { result =>
+          status(result) shouldBe SEE_OTHER
+          result.header.headers("Location") shouldBe "/customs-enrolment-services/atar/subscribe/address-postcode"
+        }
+      }
+    }
   }
 
   def showForm(form: Map[String, String], userId: String = defaultUserId)(test: Future[Result] => Any) {

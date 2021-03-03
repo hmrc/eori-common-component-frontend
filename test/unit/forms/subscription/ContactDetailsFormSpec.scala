@@ -20,6 +20,8 @@ import base.UnitSpec
 import play.api.data.FormError
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.ContactDetailsForm
 
+import scala.util.Random
+
 class ContactDetailsFormSpec extends UnitSpec {
 
   private val form = ContactDetailsForm.form()
@@ -44,7 +46,7 @@ class ContactDetailsFormSpec extends UnitSpec {
 
       "full name and telephone is too long" in {
 
-        val fullName  = Seq.fill(71)("a").mkString("")
+        val fullName  = Random.alphanumeric.take(71).mkString("")
         val telephone = Seq.fill(25)(1).mkString("")
         val formData  = Map("full-name" -> fullName, "telephone" -> telephone)
 

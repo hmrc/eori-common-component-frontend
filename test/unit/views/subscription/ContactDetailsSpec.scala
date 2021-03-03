@@ -21,7 +21,6 @@ import org.jsoup.nodes.Document
 import play.api.mvc.Request
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.ContactDetailsForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.contact_details
 import util.ViewSpec
 
@@ -36,10 +35,10 @@ class ContactDetailsSpec extends ViewSpec {
 
   private val formWithError = form.bind(Map("full-name" -> "", "telephone" -> ""))
 
-  private val doc: Document = Jsoup.parse(contentAsString(view(form, email, false, atarService, Journey.Subscribe)))
+  private val doc: Document = Jsoup.parse(contentAsString(view(form, email, false, atarService)))
 
   private val docWithErrorSummary: Document =
-    Jsoup.parse(contentAsString(view(formWithError, email, false, atarService, Journey.Subscribe)))
+    Jsoup.parse(contentAsString(view(formWithError, email, false, atarService)))
 
   "Contact details view" should {
 

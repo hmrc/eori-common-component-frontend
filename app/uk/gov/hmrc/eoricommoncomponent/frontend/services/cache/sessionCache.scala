@@ -27,6 +27,7 @@ import uk.gov.hmrc.cache.repository.CacheMongoRepository
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressLookupParams
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.CachedData._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -44,7 +45,8 @@ sealed case class CachedData(
   email: Option[String] = None,
   groupEnrolment: Option[EnrolmentResponse] = None,
   keepAlive: Option[String] = None,
-  eori: Option[String] = None
+  eori: Option[String] = None,
+  addressLookupParams: Option[AddressLookupParams] = None
 ) {
 
   def registrationDetails(sessionId: Id): RegistrationDetails =
@@ -100,6 +102,7 @@ object CachedData {
   val groupIdKey                       = "cachedGroupId"
   val groupEnrolmentKey                = "groupEnrolment"
   val eoriKey                          = "eori"
+  val addressLookupParamsKey           = "addressLookupParams"
   implicit val format                  = Json.format[CachedData]
 }
 
@@ -175,6 +178,9 @@ class SessionCache @Inject() (
   def saveGroupEnrolment(groupEnrolment: EnrolmentResponse)(implicit hc: HeaderCarrier): Future[Boolean] =
     createOrUpdate(sessionId, groupEnrolmentKey, Json.toJson(groupEnrolment)) map (_ => true)
 
+  def saveAddressLookupParams(addressLookupParams: AddressLookupParams)(implicit hc: HeaderCarrier): Future[Unit] =
+    createOrUpdate(sessionId, addressLookupParamsKey, Json.toJson(addressLookupParams)).map(_ => ())
+
   private def getCached[T](sessionId: Id, t: (CachedData, Id) => T): Future[T] =
     findById(sessionId.id).map {
       case Some(Cache(_, Some(data), _, _)) =>
@@ -196,7 +202,7 @@ class SessionCache @Inject() (
     getCached[String](sessionId, (cachedData, id) => cachedData.email(id))
 
   def eori(implicit hc: HeaderCarrier): Future[Option[String]] =
-    getCached[Option[String]](sessionId, (cachedData, id) => cachedData.eori)
+    getCached[Option[String]](sessionId, (cachedData, _) => cachedData.eori)
 
   def safeId(implicit hc: HeaderCarrier): Future[SafeId] =
     getCached[SafeId](sessionId, (cachedData, id) => cachedData.safeId(id))
@@ -221,6 +227,12 @@ class SessionCache @Inject() (
 
   def groupEnrolment(implicit hc: HeaderCarrier): Future[EnrolmentResponse] =
     getCached[EnrolmentResponse](sessionId, (cachedData, id) => cachedData.groupEnrolment(id))
+
+  def addressLookupParams(implicit hc: HeaderCarrier): Future[Option[AddressLookupParams]] =
+    getCached[Option[AddressLookupParams]](sessionId, (cachedData, _) => cachedData.addressLookupParams)
+
+  def clearAddressLookupParams(implicit hc: HeaderCarrier): Future[Unit] =
+    createOrUpdate(sessionId, addressLookupParamsKey, Json.toJson(AddressLookupParams("", None))).map(_ => ())
 
   def remove(implicit hc: HeaderCarrier): Future[Boolean] =
     removeById(sessionId.id) map (x => x.writeErrors.isEmpty && x.writeConcernError.isEmpty)

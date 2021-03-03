@@ -25,7 +25,11 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, CompanyRegisteredCountry}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
+  AddressLookupParams,
+  AddressViewModel,
+  CompanyRegisteredCountry
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.check_your_details
 import util.ViewSpec
@@ -346,7 +350,8 @@ class CheckYourDetailsSpec extends ViewSpec {
     isThirdCountrySubscription: Boolean = false,
     nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg,
     existingEori: Option[ExistingEori] = None,
-    companyRegisteredCountry: Option[CompanyRegisteredCountry] = None
+    companyRegisteredCountry: Option[CompanyRegisteredCountry] = None,
+    addressLookupParams: Option[AddressLookupParams] = None
   ): Document = {
 
     implicit val request = withFakeCSRF(FakeRequest().withSession(("selected-user-location", "third-country")))
@@ -367,6 +372,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       None,
       customsId,
       companyRegisteredCountry,
+      addressLookupParams,
       atarService,
       Journey.Subscribe
     )

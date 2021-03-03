@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{when, _}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.i18n.Lang.defaultLang
 import play.api.i18n.{Messages, MessagesApi, MessagesImpl}

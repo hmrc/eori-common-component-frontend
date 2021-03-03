@@ -264,3 +264,29 @@ ecc.registered-company-country.organisation.error = Nodwch y wlad lle y mae’ch
 ecc.registered-company-country.individual.title = Ym mha wlad y mae’ch busnes wedi’i gofrestru?
 ecc.registered-company-country.individual.error = Nodwch y wlad lle y mae’ch busnes wedi’i gofrestruCountry location Lleoliad y wlad
 ecc.registered-company-country.summary = Lleoliad y wlad
+
+ecc.address-lookup.postcode.organisation.title = Beth yw cyfeiriad cofrestredig eich cwmni?
+ecc.address-lookup.postcode.individual.title = What is your registered business address?
+ecc.address-lookup.postcode.partnership.title = What is your registered partnership address?
+ecc.address-lookup.postcode.charity.title = What is your registered organisation address?
+ecc.address-lookup.postcode.default.hint = This may not be your business address.
+ecc.address-lookup.postcode.organisation.hint = Dyma’r cyfeiriad sydd wedi’i gofrestru gyda Thŷ’r Cwmnïau. Mae’n bosibl nad dyma’ch cyfeiriad busnes.
+ecc.address-lookup.postcode.label = Cod post
+ecc.address-lookup.postcode.line1.label = Enw neu rif yr eiddo (dewisol)
+ecc.address-lookup.postcode.line1.error = Property name or number cannot have more than 35 characters
+ecc.address-lookup.postcode.summary.label = Cod post
+ecc.address-lookup.postcode.line1.summary.label = Enw neu rif yr eiddo
+ecc.address-lookup.postcode.address.label = Dewis eich cyfeiriad
+ecc.address-lookup.postcode.address.error = Please select address from the list
+ecc.address-lookup.postcode.cannot-find-address = I can''t find my address in the list
+ecc.address-lookup.postcode.line1.hint = Er enghraifft, Tegfan, 116 neu Fflat 37a
+ecc.address-lookup.postcode.find-address = Dod o hyd i gyfeiriad
+
+ecc.address-lookup.postcode.error = Mae problem wedi codi
+ecc.address-lookup.postcode.error.hint = Nid ydym yn gallu gweld y rhestr o gyfeiriadau cyfatebol ar hyn o bryd. Rhowch gynnig arall arni mewn ychydig o funudau, neu nodwch eich cyfeiriad â llaw.
+ecc.address-lookup.postcode.error.re-enter = Nodwch y cod post eto
+ecc.address-lookup.postcode.error.manual = Hoffwn nodi fy nghyfeiriad â llaw.
+
+ecc.address-lookup.postcode.no-results = Heb ddod o hyd i gyfeiriad
+ecc.address-lookup.postcode.no-results.hint = Nid ydym yn gallu dod o hyd i gyfeiriad sy’n gysylltiedig â’r cod post hwn. Adolygwch y cod post isod neu nodwch eich cyfeiriad â llaw.
+ecc.address-lookup.postcode.no-results.manual = Hoffwn nodi fy nghyfeiriad â llaw.

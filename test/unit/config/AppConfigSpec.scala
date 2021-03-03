@@ -18,7 +18,6 @@ package unit.config
 
 import java.util.concurrent.TimeUnit
 
-import org.joda.time.DateTime
 import org.mockito.Mockito
 import org.mockito.Mockito.{spy, when}
 import org.scalatest.BeforeAndAfterEach
@@ -166,6 +165,11 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
       ) shouldBe "http://localhost:6753/vat-known-facts-control-list"
     }
 
+    "return address lookup url" in {
+
+      appConfig.addressLookup shouldBe "http://localhost:6754/v2/uk/addresses"
+    }
+
     "return url for 'get EORI" when {
 
       "register is blocked" in {
@@ -184,7 +188,6 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
 
         testAppConfig.externalGetEORILink(atarService) shouldBe ApplicationController.startRegister(atarService).url
       }
-
     }
   }
 }

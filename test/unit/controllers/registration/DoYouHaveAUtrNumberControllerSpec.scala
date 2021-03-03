@@ -21,7 +21,7 @@ import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector

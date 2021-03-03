@@ -19,7 +19,12 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services.cache
 import javax.inject.Singleton
 import play.api.mvc.{AnyContent, Request, Session}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionFlow
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  MigrationEoriIndividualSubscriptionFlow,
+  MigrationEoriOrganisationSubscriptionFlow,
+  MigrationEoriSoleTraderSubscriptionFlow,
+  SubscriptionFlow
+}
 
 @Singleton
 class RequestSessionData {
@@ -84,20 +89,33 @@ class RequestSessionData {
   def sessionWithUnMatchedUser(unmatched: Boolean = false)(implicit request: Request[AnyContent]): Session =
     request.session + (RequestSessionDataKeys.unmatchedUser -> unmatched.toString)
 
-  def isPartnership(implicit request: Request[AnyContent]) = userSelectedOrganisationType.fold(false) { oType =>
-    oType == CdsOrganisationType.Partnership || oType == CdsOrganisationType.LimitedLiabilityPartnership
+  def isPartnership(implicit request: Request[AnyContent]): Boolean = userSelectedOrganisationType.fold(false) {
+    oType =>
+      oType == CdsOrganisationType.Partnership || oType == CdsOrganisationType.LimitedLiabilityPartnership
   }
 
-  def isCompany(implicit request: Request[AnyContent]) = userSelectedOrganisationType.fold(false) { oType =>
+  def isCompany(implicit request: Request[AnyContent]): Boolean = userSelectedOrganisationType.fold(false) { oType =>
     oType == CdsOrganisationType.Company
   }
 
-  def isIndividualOrSoleTrader(implicit request: Request[AnyContent]) =
+  def isIndividualOrSoleTrader(implicit request: Request[AnyContent]): Boolean =
     userSelectedOrganisationType.fold(false) { oType =>
       oType == CdsOrganisationType.Individual ||
       oType == CdsOrganisationType.SoleTrader ||
       oType == CdsOrganisationType.ThirdCountryIndividual ||
       oType == CdsOrganisationType.ThirdCountrySoleTrader
+    }
+
+  private val ukSubscriptionFlows = Seq(
+    MigrationEoriOrganisationSubscriptionFlow,
+    MigrationEoriSoleTraderSubscriptionFlow,
+    MigrationEoriIndividualSubscriptionFlow
+  )
+
+  def isUKJourney(implicit request: Request[AnyContent]): Boolean =
+    request.session.data.get(RequestSessionDataKeys.subscriptionFlow) match {
+      case Some(flowName) => ukSubscriptionFlows.contains(SubscriptionFlow(flowName))
+      case None           => false
     }
 
 }
