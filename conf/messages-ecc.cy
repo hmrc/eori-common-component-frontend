@@ -266,19 +266,19 @@ ecc.registered-company-country.individual.error = Nodwch y wlad lle y mae’ch b
 ecc.registered-company-country.summary = Lleoliad y wlad
 
 ecc.address-lookup.postcode.organisation.title = Beth yw cyfeiriad cofrestredig eich cwmni?
-ecc.address-lookup.postcode.individual.title = What is your registered business address?
-ecc.address-lookup.postcode.partnership.title = What is your registered partnership address?
-ecc.address-lookup.postcode.charity.title = What is your registered organisation address?
-ecc.address-lookup.postcode.default.hint = This may not be your business address.
+ecc.address-lookup.postcode.individual.title = Beth yw cyfeiriad cofrestredig eich busnes?
+ecc.address-lookup.postcode.partnership.title = Beth yw cyfeiriad cofrestredig eich partneriaeth?
+ecc.address-lookup.postcode.charity.title = Beth yw cyfeiriad cofrestredig eich sefydliad?
+ecc.address-lookup.postcode.default.hint = Mae’n bosibl nad dyma gyfeiriad eich busnes.
 ecc.address-lookup.postcode.organisation.hint = Dyma’r cyfeiriad sydd wedi’i gofrestru gyda Thŷ’r Cwmnïau. Mae’n bosibl nad dyma’ch cyfeiriad busnes.
 ecc.address-lookup.postcode.label = Cod post
 ecc.address-lookup.postcode.line1.label = Enw neu rif yr eiddo (dewisol)
-ecc.address-lookup.postcode.line1.error = Property name or number cannot have more than 35 characters
+ecc.address-lookup.postcode.line1.error = Ni all enw neu rif yr eiddo fod yn fwy na 35 o gymeriadau
 ecc.address-lookup.postcode.summary.label = Cod post
 ecc.address-lookup.postcode.line1.summary.label = Enw neu rif yr eiddo
 ecc.address-lookup.postcode.address.label = Dewis eich cyfeiriad
-ecc.address-lookup.postcode.address.error = Please select address from the list
-ecc.address-lookup.postcode.cannot-find-address = I can''t find my address in the list
+ecc.address-lookup.postcode.address.error = Dewiswch gyfeiriad o’r rhestr.
+ecc.address-lookup.postcode.cannot-find-address = Ni allaf ddod o hyd i’m cyfeiriad yn y rhestr
 ecc.address-lookup.postcode.line1.hint = Er enghraifft, Tegfan, 116 neu Fflat 37a
 ecc.address-lookup.postcode.find-address = Dod o hyd i gyfeiriad
 
