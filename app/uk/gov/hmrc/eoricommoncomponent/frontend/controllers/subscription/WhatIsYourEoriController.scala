@@ -24,10 +24,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
   GroupEnrolmentExtractor
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.UserLocationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, MissingGroupId}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{ExistingEori, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriNumberViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm.eoriNumberForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
@@ -46,13 +46,12 @@ import scala.concurrent.{ExecutionContext, Future}
 class WhatIsYourEoriController @Inject() (
   authAction: AuthAction,
   subscriptionBusinessService: SubscriptionBusinessService,
-  subscriptionFlowManager: SubscriptionFlowManager,
   subscriptionDetailsHolderService: SubscriptionDetailsService,
   groupEnrolment: GroupEnrolmentExtractor,
   enrolmentStoreProxyService: EnrolmentStoreProxyService,
+  requestSessionData: RequestSessionData,
   mcc: MessagesControllerComponents,
-  whatIsYourEoriView: what_is_your_eori,
-  requestSessionData: RequestSessionData
+  whatIsYourEoriView: what_is_your_eori
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) with EnrolmentExtractor {
 
@@ -121,7 +120,7 @@ class WhatIsYourEoriController @Inject() (
           )
         case _ =>
           if (isInReviewMode) Redirect(DetermineReviewPageController.determineRoute(service, Journey.Subscribe))
-          else Redirect(subscriptionFlowManager.stepInformation(EoriNumberSubscriptionFlowPage).nextPage.url(service))
+          else Redirect(UserLocationController.form(service, Journey.Subscribe))
       }
     }
   }

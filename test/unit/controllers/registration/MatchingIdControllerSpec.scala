@@ -20,10 +20,12 @@ import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
+import play.api.test.Helpers._
 import play.mvc.Http.Status.SEE_OTHER
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.FeatureFlags
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.MatchingIdController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.UserLocationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.MatchingService
@@ -199,16 +201,11 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
         )
 
       status(result) shouldBe SEE_OTHER
-      assertRedirectToUserLocationPage(result, atarService, Journey.Subscribe)
+      redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori"
     }
   }
 
   private def assertRedirectToUserLocationPage(result: Result, service: Service, journey: Journey.Value): Unit =
-    result.header.headers("Location") should be(
-      uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.UserLocationController.form(
-        service,
-        journey
-      ).url
-    )
+    redirectLocation(result).get shouldBe UserLocationController.form(service, journey).url
 
 }

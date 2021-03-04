@@ -20,9 +20,9 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.UserLocationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration._
 
@@ -31,7 +31,6 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class UseThisEoriController @Inject() (
   authAction: AuthAction,
-  subscriptionFlowManager: SubscriptionFlowManager,
   detailsService: SubscriptionDetailsService,
   mcc: MessagesControllerComponents,
   useThisEoriView: use_this_eori
@@ -51,10 +50,11 @@ class UseThisEoriController @Inject() (
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       detailsService.cachedExistingEoriNumber.flatMap { eori =>
         detailsService.cacheEoriNumber(eori.getOrElse(throw MissingExistingEori()).id).map { _ =>
-          Redirect(subscriptionFlowManager.stepInformation(EoriNumberSubscriptionFlowPage).nextPage.url(service))
+          Redirect(UserLocationController.form(service, Journey.Subscribe))
         }
       }
     }
 
-  case class MissingExistingEori() extends Exception(s"Existing EORI missing from cache")
 }
+
+case class MissingExistingEori() extends Exception(s"Existing EORI missing from cache")
