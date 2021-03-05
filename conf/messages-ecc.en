@@ -283,6 +283,7 @@ ecc.address-lookup.postcode.address.error = Please select address from the list
 ecc.address-lookup.postcode.cannot-find-address = I can''t find my address in the list
 ecc.address-lookup.postcode.line1.hint = For example, The Mill, 116 or Flat 37a.
 ecc.address-lookup.postcode.find-address = Find address
+ecc.address-lookup.postcode.find-address.manual = The registered address is outside the UK
 
 ecc.address-lookup.postcode.error = We have a problem
 ecc.address-lookup.postcode.error.hint = We are unable to view the list of matching addresses at this time. Try again in a few minutes or enter your address manually.

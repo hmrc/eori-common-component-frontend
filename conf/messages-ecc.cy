@@ -281,6 +281,7 @@ ecc.address-lookup.postcode.address.error = Dewiswch gyfeiriad o’r rhestr.
 ecc.address-lookup.postcode.cannot-find-address = Ni allaf ddod o hyd i’m cyfeiriad yn y rhestr
 ecc.address-lookup.postcode.line1.hint = Er enghraifft, Tegfan, 116 neu Fflat 37a
 ecc.address-lookup.postcode.find-address = Dod o hyd i gyfeiriad
+ecc.address-lookup.postcode.find-address.manual = The registered address is outside the UK
 
 ecc.address-lookup.postcode.error = Mae problem wedi codi
 ecc.address-lookup.postcode.error.hint = Nid ydym yn gallu gweld y rhestr o gyfeiriadau cyfatebol ar hyn o bryd. Rhowch gynnig arall arni mewn ychydig o funudau, neu nodwch eich cyfeiriad â llaw.

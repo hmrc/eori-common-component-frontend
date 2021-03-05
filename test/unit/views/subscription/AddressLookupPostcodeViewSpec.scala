@@ -39,6 +39,8 @@ class AddressLookupPostcodeViewSpec extends ViewSpec {
   private def doc(selectedOrganisationType: CdsOrganisationType = Company): Document =
     Jsoup.parse(contentAsString(view(form, false, selectedOrganisationType, atarService)))
 
+  private val reviewDoc: Document = Jsoup.parse(contentAsString(view(form, true, Company, atarService)))
+
   private val docWithErrorSummary = Jsoup.parse(contentAsString(view(formWithError, false, Company, atarService)))
 
   "Address Lookup Postcode page" should {
@@ -116,6 +118,22 @@ class AddressLookupPostcodeViewSpec extends ViewSpec {
       val continueButton = doc().body().getElementById("find-address-button")
 
       continueButton.attr("value") mustBe "Find address"
+    }
+
+    "display address is outside UK link" in {
+
+      val outsideUkAddressLink = doc().body().getElementById("cannot-find-address")
+
+      outsideUkAddressLink.text() mustBe "The registered address is outside the UK"
+      outsideUkAddressLink.attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address"
+    }
+
+    "display address is outside UK link for review mode" in {
+
+      val outsideUkAddressLink = reviewDoc.body().getElementById("cannot-find-address")
+
+      outsideUkAddressLink.text() mustBe "The registered address is outside the UK"
+      outsideUkAddressLink.attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
     }
 
     "display error summary" in {
