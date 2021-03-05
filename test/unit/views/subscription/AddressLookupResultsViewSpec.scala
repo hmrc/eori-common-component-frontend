@@ -94,13 +94,37 @@ class AddressLookupResultsViewSpec extends ViewSpec {
       ).text() mustBe "What is your registered organisation address?"
     }
 
-    "display summary of params with change links" in {
+    "display summary of params" in {
 
       doc().body().getElementById("review-tbl__postcode_heading").text mustBe "Postcode"
       doc().body().getElementById("review-tbl__postcode").text mustBe "AA11 1AA"
 
       doc().body().getElementById("review-tbl__line1_heading").text mustBe "Property name or number"
       doc().body().getElementById("review-tbl__line1").text mustBe "Flat 1"
+    }
+
+    "display change link to params page" in {
+
+      val postcodeChangeLink = doc().body().getElementById("review-tbl__postcode_change")
+      val line1ChangeLink    = doc().body().getElementById("review-tbl__line1_change")
+
+      postcodeChangeLink.text() must startWith("Change")
+      postcodeChangeLink.attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address-postcode"
+
+      line1ChangeLink.text() must startWith("Change")
+      line1ChangeLink.attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address-postcode"
+    }
+
+    "display change link to params page - review mode" in {
+
+      val postcodeChangeLink = reviewDoc.body().getElementById("review-tbl__postcode_change")
+      val line1ChangeLink    = reviewDoc.body().getElementById("review-tbl__line1_change")
+
+      postcodeChangeLink.text() must startWith("Change")
+      postcodeChangeLink.attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address-postcode/review"
+
+      line1ChangeLink.text() must startWith("Change")
+      line1ChangeLink.attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address-postcode/review"
     }
 
     "display dropdown with label" in {
