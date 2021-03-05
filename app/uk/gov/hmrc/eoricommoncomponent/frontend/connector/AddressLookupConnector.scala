@@ -54,7 +54,7 @@ class AddressLookupConnector @Inject() (http: HttpClient, appConfig: AppConfig)(
 
     http.GET[HttpResponse](url).map { response =>
       response.status match {
-        case OK => AddressLookupSuccess(response.json.as[Seq[AddressLookup]])
+        case OK => AddressLookupSuccess(response.json.as[Seq[AddressLookup]]).sorted()
         case _ =>
           logger.warn(s"Address lookup respond with status ${response.status} and body: ${response.body}")
           AddressLookupFailure
