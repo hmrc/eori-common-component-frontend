@@ -17,7 +17,7 @@
 package unit.controllers.subscription
 
 import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, verify, verifyZeroInteractions, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
@@ -127,6 +127,29 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
         status(result) shouldBe OK
         verify(mockAddressLookupResultsPage)
           .apply(any(), any(), any(), ArgumentMatchers.eq(true), any(), any())(any(), any())
+      }
+
+      "display page with results" when {
+
+        "there is no results for postcode and line1, but there are results for just postcode" in {
+
+          when(mockSessionCache.addressLookupParams(any()))
+            .thenReturn(Future.successful(Some(AddressLookupParams("postcode", Some("line1")))))
+          when(mockAddressLookupConnector.lookup(meq("postcode"), meq(Some("line1")))(any()))
+            .thenReturn(Future.successful(AddressLookupSuccess(Seq.empty)))
+          when(mockAddressLookupConnector.lookup(meq("postcode"), any())(any()))
+            .thenReturn(Future.successful(AddressLookupSuccess(Seq(addressLookup))))
+          when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(Some(CdsOrganisationType.Company))
+
+          val result = controller.displayPage(atarService)(getRequest)
+
+          status(result) shouldBe OK
+
+          verify(mockAddressLookupConnector).lookup(meq("postcode"), meq(Some("line1")))(any())
+          verify(mockAddressLookupConnector).lookup(meq("postcode"), any())(any())
+          verify(mockAddressLookupResultsPage)
+            .apply(any(), any(), any(), ArgumentMatchers.eq(false), any(), any())(any(), any())
+        }
       }
     }
 

@@ -21,7 +21,7 @@ import play.api.data.Forms._
 import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation.postcodeRegex
 
-case class AddressLookupParams(postcode: String, line1: Option[String]) {
+case class AddressLookupParams(postcode: String, line1: Option[String], skippedLine1: Boolean = false) {
 
   def isEmpty(): Boolean = postcode == "" && line1.forall(_.isEmpty)
 
@@ -35,7 +35,7 @@ object AddressLookupParams {
     mapping(
       "postcode" -> text.verifying("cds.subscription.contact-details.error.postcode", _.matches(postcodeRegex.regex)),
       "line1"    -> optional(text.verifying("ecc.address-lookup.postcode.line1.error", _.length < 36))
-    )(AddressLookupParams.apply)(AddressLookupParams.unapply)
+    )((postcode, line1) => AddressLookupParams(postcode, line1))(params => Some((params.postcode, params.line1)))
   )
 
 }

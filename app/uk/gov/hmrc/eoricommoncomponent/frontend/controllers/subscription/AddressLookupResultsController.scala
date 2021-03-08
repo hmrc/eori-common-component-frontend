@@ -36,6 +36,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.address.{
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.address_lookup_results
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -67,20 +68,25 @@ class AddressLookupResultsController @Inject() (
   ): Future[Result] =
     sessionCache.addressLookupParams.flatMap {
       case Some(addressLookupParams) =>
-        addressLookupConnector.lookup(addressLookupParams.postcode, addressLookupParams.line1).map { response =>
+        addressLookupConnector.lookup(addressLookupParams.postcode, addressLookupParams.line1).flatMap { response =>
           response match {
             case AddressLookupSuccess(addresses) if addresses.nonEmpty =>
-              Ok(
-                prepareView(
-                  AddressResultsForm.form(addresses.map(_.dropDownView)),
-                  addressLookupParams,
-                  addresses,
-                  isInReviewMode,
-                  service
+              Future.successful(
+                Ok(
+                  prepareView(
+                    AddressResultsForm.form(addresses.map(_.dropDownView)),
+                    addressLookupParams,
+                    addresses,
+                    isInReviewMode,
+                    service
+                  )
                 )
               )
-            case AddressLookupSuccess(_) => redirectToNoResultsPage(service, isInReviewMode)
-            case AddressLookupFailure    => throw AddressLookupException
+            case AddressLookupSuccess(_) if addressLookupParams.line1.exists(_.nonEmpty) =>
+              repeatQueryWithoutLine1(addressLookupParams, service, isInReviewMode)
+            case AddressLookupSuccess(_) =>
+              Future.successful(redirectToNoResultsPage(service, isInReviewMode))
+            case AddressLookupFailure => throw AddressLookupException
           }
         }.recoverWith {
           case _: AddressLookupException.type => Future.successful(redirectToErrorPage(service, isInReviewMode))
@@ -100,6 +106,33 @@ class AddressLookupResultsController @Inject() (
     )
 
     addressLookupResultsPage(form, addressLookupParams, addresses, isInReviewMode, selectedOrganisationType, service)
+  }
+
+  private def repeatQueryWithoutLine1(
+    addressLookupParams: AddressLookupParams,
+    service: Service,
+    isInReviewMode: Boolean
+  )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
+    val addressLookupParamsWithoutLine1 = AddressLookupParams(addressLookupParams.postcode, None, true)
+
+    addressLookupConnector.lookup(addressLookupParamsWithoutLine1.postcode).flatMap { secondResponse =>
+      secondResponse match {
+        case AddressLookupSuccess(addresses) if addresses.nonEmpty =>
+          sessionCache.saveAddressLookupParams(addressLookupParamsWithoutLine1).map { _ =>
+            Ok(
+              prepareView(
+                AddressResultsForm.form(addresses.map(_.dropDownView)),
+                addressLookupParamsWithoutLine1,
+                addresses,
+                isInReviewMode,
+                service
+              )
+            )
+          }
+        case AddressLookupSuccess(_) => Future.successful(redirectToNoResultsPage(service, isInReviewMode))
+        case AddressLookupFailure    => throw AddressLookupException
+      }
+    }
   }
 
   def submit(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
