@@ -291,3 +291,5 @@ ecc.address-lookup.postcode.error.manual = Hoffwn nodi fy nghyfeiriad â llaw.
 ecc.address-lookup.postcode.no-results = Heb ddod o hyd i gyfeiriad
 ecc.address-lookup.postcode.no-results.hint = Nid ydym yn gallu dod o hyd i gyfeiriad sy’n gysylltiedig â’r cod post hwn. Adolygwch y cod post isod neu nodwch eich cyfeiriad â llaw.
 ecc.address-lookup.postcode.no-results.manual = Hoffwn nodi fy nghyfeiriad â llaw.
+
+ecc.address-lookup.postcode.results.not-found = Heb ei ddarganfod
