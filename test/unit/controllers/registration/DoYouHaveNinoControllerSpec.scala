@@ -25,7 +25,6 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.DoYouHaveNinoController
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, NameDobMatchModel, Nino, NinoMatchModel}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.haveRowIndividualsNinoForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
@@ -104,7 +103,6 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
         await(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers("Location") should endWith("register/matching/row/get-nino")
-        val expectedIndividual = Individual.withLocalDate("First name", None, "Last name", new LocalDate(2015, 10, 15))
       }
     }
 

@@ -236,54 +236,40 @@ class SubscriptionFlowManagerSpec
       (ThirdCountrySoleTraderSubscriptionFlow, EoriConsentSubscriptionFlowPage, 8, 8, ReviewDetailsPageGetYourEORI),
       (
         MigrationEoriOrganisationSubscriptionFlow,
-        EoriNumberSubscriptionFlowPage,
-        1,
-        4,
-        NameUtrDetailsSubscriptionFlowPage
-      ),
-      (
-        MigrationEoriOrganisationSubscriptionFlow,
         NameUtrDetailsSubscriptionFlowPage,
-        2,
-        4,
+        1,
+        3,
         DateOfEstablishmentSubscriptionFlowPageMigrate
       ),
       (
         MigrationEoriOrganisationSubscriptionFlow,
         DateOfEstablishmentSubscriptionFlowPageMigrate,
+        2,
         3,
-        4,
         AddressDetailsSubscriptionFlowPage
       ),
       (
         MigrationEoriOrganisationSubscriptionFlow,
         AddressDetailsSubscriptionFlowPage,
-        4,
-        4,
+        3,
+        3,
         ReviewDetailsPageSubscription
       ),
       (
         MigrationEoriSoleTraderSubscriptionFlow,
-        EoriNumberSubscriptionFlowPage,
-        1,
-        4,
-        NameDobDetailsSubscriptionFlowPage
-      ),
-      (
-        MigrationEoriSoleTraderSubscriptionFlow,
         NameDobDetailsSubscriptionFlowPage,
-        2,
-        4,
+        1,
+        3,
         HowCanWeIdentifyYouSubscriptionFlowPage
       ),
       (
         MigrationEoriSoleTraderSubscriptionFlow,
         HowCanWeIdentifyYouSubscriptionFlowPage,
+        2,
         3,
-        4,
         AddressDetailsSubscriptionFlowPage
       ),
-      (MigrationEoriSoleTraderSubscriptionFlow, AddressDetailsSubscriptionFlowPage, 4, 4, ReviewDetailsPageSubscription)
+      (MigrationEoriSoleTraderSubscriptionFlow, AddressDetailsSubscriptionFlowPage, 3, 3, ReviewDetailsPageSubscription)
     )
 
     TableDrivenPropertyChecks.forAll(values) {

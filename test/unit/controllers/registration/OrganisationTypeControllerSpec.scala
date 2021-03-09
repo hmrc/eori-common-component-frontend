@@ -30,7 +30,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.Organis
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.EoriNumberSubscriptionFlowPage
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, RequestSessionDataKeys}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDetailsService
@@ -45,6 +45,7 @@ import util.builders.{AuthActionMock, SessionBuilder}
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
+// TODO Move view spec to separate test and keep here only controller logic test
 class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector              = mock[AuthConnector]
@@ -151,8 +152,18 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
         (CdsOrganisationType.ThirdCountryIndividual, "row-name-date-of-birth/third-country-individual")
       )
 
+    val subscriptionPage: Map[CdsOrganisationType, SubscriptionPage] = Map(
+      (CdsOrganisationType.Company, NameUtrDetailsSubscriptionFlowPage),
+      (CdsOrganisationType.SoleTrader, NameDobDetailsSubscriptionFlowPage),
+      (CdsOrganisationType.Individual, NameDobDetailsSubscriptionFlowPage),
+      (CdsOrganisationType.ThirdCountryOrganisation, NameDetailsSubscriptionFlowPage),
+      (CdsOrganisationType.ThirdCountrySoleTrader, NameDobDetailsSubscriptionFlowPage),
+      (CdsOrganisationType.ThirdCountryIndividual, NameDobDetailsSubscriptionFlowPage)
+    )
+
     forAll(urlParameters) { (cdsOrganisationType, urlParameter) =>
       val option: String = cdsOrganisationType.id
+      val page           = subscriptionPage(cdsOrganisationType)
 
       s"return a redirect to the matching form for the correct organisation type when '$option' is selected" in {
         val updatedMockSession =
@@ -164,7 +175,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
               any[HeaderCarrier](),
               any[Request[AnyContent]]()
             )
-        ).thenReturn(Future.successful((EoriNumberSubscriptionFlowPage, updatedMockSession)))
+        ).thenReturn(Future.successful((page, updatedMockSession)))
 
         submitForm(
           Map("organisation-type" -> option),
@@ -186,7 +197,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
         when(
           mockSubscriptionFlowManager
             .startSubscriptionFlow(any[Service], any[Journey.Value])(any[HeaderCarrier](), any[Request[AnyContent]]())
-        ).thenReturn(Future.successful((EoriNumberSubscriptionFlowPage, updatedMockSession)))
+        ).thenReturn(Future.successful((page, updatedMockSession)))
 
         submitForm(
           Map("organisation-type" -> option),
@@ -194,9 +205,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
           journey = Journey.Subscribe
         ) { result =>
           status(result) shouldBe SEE_OTHER
-          result.header.headers(
-            LOCATION
-          ) shouldBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori"
+          result.header.headers(LOCATION) shouldBe page.url(atarService)
         }
       }
 
@@ -223,7 +232,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
         when(
           mockSubscriptionFlowManager
             .startSubscriptionFlow(any[Service], any[Journey.Value])(any[HeaderCarrier](), any[Request[AnyContent]]())
-        ).thenReturn(Future.successful((EoriNumberSubscriptionFlowPage, updatedMockSession)))
+        ).thenReturn(Future.successful((page, updatedMockSession)))
 
         submitForm(
           Map("organisation-type" -> option),
