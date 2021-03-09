@@ -103,6 +103,17 @@ class AddressLookupResultsViewSpec extends ViewSpec {
       doc().body().getElementById("review-tbl__line1").text mustBe "Flat 1"
     }
 
+    "display summary of params with 'Not found' for property name or number" in {
+
+      val docWithNotFound =
+        Jsoup.parse(
+          contentAsString(view(form, params.copy(skippedLine1 = true), allowedAddress, false, Company, atarService))
+        )
+
+      docWithNotFound.body().getElementById("review-tbl__line1_heading").text mustBe "Property name or number"
+      docWithNotFound.body().getElementById("review-tbl__line1").text mustBe "Not found"
+    }
+
     "display change link to params page" in {
 
       val postcodeChangeLink = doc().body().getElementById("review-tbl__postcode_change")

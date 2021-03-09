@@ -21,6 +21,8 @@ import play.api.libs.json.Reads._
 import play.api.libs.functional.syntax._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 
+import scala.util.Try
+
 case class AddressLookup(addressLine: String, city: String, postcode: String, country: String) {
 
   def dropDownView: String = List(addressLine, city, postcode).mkString(", ")
@@ -52,6 +54,30 @@ object AddressLookup {
 
 sealed trait AddressLookupResponse
 
-case class AddressLookupSuccess(addresses: Seq[AddressLookup]) extends AddressLookupResponse
+case class AddressLookupSuccess(addresses: Seq[AddressLookup]) extends AddressLookupResponse {
+
+  def sorted(): AddressLookupSuccess = {
+    val sortedAddresses = addresses.sortWith { (a, b) =>
+      val numbersInA = numbersIn(a)
+      val numbersInB = numbersIn(b)
+
+      def sort(zipped: Seq[(Option[Int], Option[Int])]): Boolean = zipped match {
+        case (Some(nA), Some(nB)) :: tail if nA == nB => sort(tail)
+        case (Some(nA), Some(nB)) :: _                => nA < nB
+        case (Some(_), None) :: _                     => true
+        case (None, Some(_)) :: _                     => false
+        case _                                        => a.addressLine.toLowerCase < b.addressLine.toLowerCase
+      }
+
+      sort(numbersInA.zipAll(numbersInB, None, None).toList)
+    }
+
+    AddressLookupSuccess(sortedAddresses)
+  }
+
+  private def numbersIn(address: AddressLookup): Seq[Option[Int]] =
+    "([0-9]+)".r.findAllIn(address.addressLine.toLowerCase).map(n => Try(n.toInt).toOption).toSeq.reverse :+ None
+
+}
 
 case object AddressLookupFailure extends AddressLookupResponse

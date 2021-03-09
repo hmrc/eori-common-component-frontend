@@ -77,14 +77,24 @@
                     Some(changeParamsLink),
                     messages("ecc.address-lookup.postcode.summary.label")
                 )
-                @addressLookupParams.line1.map { line1 =>
+                @if(addressLookupParams.skippedLine1) {
                     @summaryRow_di(
                         "line1",
                         messages("ecc.address-lookup.postcode.line1.summary.label"),
-                        Html.apply(line1),
+                        Html.apply(messages("ecc.address-lookup.postcode.results.not-found")),
                         Some(changeParamsLink),
                         messages("ecc.address-lookup.postcode.line1.summary.label")
                     )
+                } else {
+                    @addressLookupParams.line1.map { line1 =>
+                        @summaryRow_di(
+                            "line1",
+                            messages("ecc.address-lookup.postcode.line1.summary.label"),
+                            Html.apply(line1),
+                            Some(changeParamsLink),
+                            messages("ecc.address-lookup.postcode.line1.summary.label")
+                        )
+                    }
                 }
             </dl>
             <div class="mb-2">
