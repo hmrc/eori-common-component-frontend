@@ -40,9 +40,7 @@ class MessagesSpec extends PlaySpec with Injector {
   )
 
   def ignoreKey(key: String): Boolean =
-    key.startsWith("cds.country.") || key.equals(
-      "ecc.address-lookup.postcode.find-address.manual"
-    ) || sameTranslation.contains(key)
+    key.startsWith("cds.country.") || sameTranslation.contains(key)
 
   "Messages" should {
 
