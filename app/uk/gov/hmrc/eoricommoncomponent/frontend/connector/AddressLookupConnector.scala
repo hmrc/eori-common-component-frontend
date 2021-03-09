@@ -35,14 +35,14 @@ class AddressLookupConnector @Inject() (http: HttpClient, appConfig: AppConfig)(
 
   private val logger = Logger(this.getClass)
 
-  def lookup(postcode: String, firstLineOpt: Option[String] = None)(implicit
+  def lookup(postcode: String, firstLineOpt: Option[String])(implicit
     hc: HeaderCarrier
   ): Future[AddressLookupResponse] = {
 
     val postcodeQueryParam: String = s"postcode=${postcode.replaceAll(" ", "+")}"
     val firstLineQueryParam: String = firstLineOpt match {
-      case Some(line) => s"&line1=${line.replaceAll(" ", "+")}"
-      case None       => ""
+      case Some(line) if line.nonEmpty => s"&line1=${line.replaceAll(" ", "+")}"
+      case None                        => ""
     }
 
     val queryParams: String = s"?$postcodeQueryParam$firstLineQueryParam"

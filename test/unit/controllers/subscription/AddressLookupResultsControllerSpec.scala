@@ -18,7 +18,7 @@ package unit.controllers.subscription
 
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito.{reset, verify, verifyZeroInteractions, when}
+import org.mockito.Mockito.{reset, times, verify, verifyZeroInteractions, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -137,18 +137,19 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
             .thenReturn(Future.successful(Some(AddressLookupParams("postcode", Some("line1")))))
           when(mockAddressLookupConnector.lookup(meq("postcode"), meq(Some("line1")))(any()))
             .thenReturn(Future.successful(AddressLookupSuccess(Seq.empty)))
-          when(mockAddressLookupConnector.lookup(meq("postcode"), any())(any()))
+          when(mockAddressLookupConnector.lookup(meq("postcode"), meq(None))(any()))
             .thenReturn(Future.successful(AddressLookupSuccess(Seq(addressLookup))))
           when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(Some(CdsOrganisationType.Company))
+          when(mockSessionCache.saveAddressLookupParams(any())(any())).thenReturn(Future.successful((): Unit))
 
           val result = controller.displayPage(atarService)(getRequest)
 
           status(result) shouldBe OK
 
           verify(mockAddressLookupConnector).lookup(meq("postcode"), meq(Some("line1")))(any())
-          verify(mockAddressLookupConnector).lookup(meq("postcode"), any())(any())
+          verify(mockAddressLookupConnector).lookup(meq("postcode"), meq(None))(any())
           verify(mockAddressLookupResultsPage)
-            .apply(any(), any(), any(), ArgumentMatchers.eq(false), any(), any())(any(), any())
+            .apply(any(), any(), meq(Seq(addressLookup)), meq(false), any(), any())(any(), any())
         }
       }
     }
@@ -199,6 +200,24 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/address-postcode/no-results"
+
+        verify(mockAddressLookupConnector).lookup(any(), any())(any())
+      }
+
+      "user is not in review mode and connector doesn't return any addresses for display page method - line1 and postcode presented" in {
+
+        when(mockSessionCache.addressLookupParams(any())).thenReturn(
+          Future.successful(Some(AddressLookupParams("postcode", Some("line1"))))
+        )
+        when(mockAddressLookupConnector.lookup(any(), any())(any()))
+          .thenReturn(Future.successful(AddressLookupSuccess(Seq.empty[AddressLookup])))
+
+        val result = controller.displayPage(atarService)(getRequest)
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/address-postcode/no-results"
+
+        verify(mockAddressLookupConnector, times(2)).lookup(any(), any())(any())
       }
 
       "user is in review mode and connector doesn't return any addresses for display page method" in {
@@ -255,6 +274,25 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
         redirectLocation(
           result
         ).get shouldBe "/customs-enrolment-services/atar/subscribe/address-postcode/unavailable/review"
+      }
+
+      "user is in review mode and connector request fail for the second call for display page method" in {
+
+        when(mockSessionCache.addressLookupParams(any()))
+          .thenReturn(Future.successful(Some(AddressLookupParams("postcode", Some("line1")))))
+        when(mockAddressLookupConnector.lookup(meq("postcode"), meq(Some("line1")))(any()))
+          .thenReturn(Future.successful(AddressLookupSuccess(Seq.empty)))
+        when(mockAddressLookupConnector.lookup(meq("postcode"), meq(None))(any()))
+          .thenReturn(Future.successful(AddressLookupFailure))
+
+        val result = controller.reviewPage(atarService)(getRequest)
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(
+          result
+        ).get shouldBe "/customs-enrolment-services/atar/subscribe/address-postcode/unavailable/review"
+
+        verify(mockAddressLookupConnector, times(2)).lookup(any(), any())(any())
       }
 
       "user is not in review mode and connector request fail for display page method" in {

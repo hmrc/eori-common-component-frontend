@@ -115,7 +115,7 @@ class AddressLookupResultsController @Inject() (
   )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     val addressLookupParamsWithoutLine1 = AddressLookupParams(addressLookupParams.postcode, None, true)
 
-    addressLookupConnector.lookup(addressLookupParamsWithoutLine1.postcode).flatMap { secondResponse =>
+    addressLookupConnector.lookup(addressLookupParamsWithoutLine1.postcode, None).flatMap { secondResponse =>
       secondResponse match {
         case AddressLookupSuccess(addresses) if addresses.nonEmpty =>
           sessionCache.saveAddressLookupParams(addressLookupParamsWithoutLine1).map { _ =>

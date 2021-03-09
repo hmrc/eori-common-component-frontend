@@ -75,7 +75,7 @@ class AddressLookupConnectorSpec
 
         val urlCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
-        val result = connector.lookup(postcode)(hc)
+        val result = connector.lookup(postcode, None)(hc)
 
         result.futureValue shouldBe expectedResponse
 
@@ -124,7 +124,7 @@ class AddressLookupConnectorSpec
           AddressLookup("Second Address Line 1, Second Address Line 2", "Second town", "AA11 1AA", "GB")
         val expectedResponse = AddressLookupSuccess(Seq(expectedFirstAddress, expectedSecondAddress))
 
-        val result = connector.lookup(postcode)(hc)
+        val result = connector.lookup(postcode, None)(hc)
 
         result.futureValue shouldBe expectedResponse
       }
@@ -141,7 +141,7 @@ class AddressLookupConnectorSpec
         val expectedAddress  = AddressLookup("Address Line 1, Address Line 2", "Town", "AA11 1AA", "GB")
         val expectedResponse = AddressLookupSuccess(Seq(expectedAddress))
 
-        val result = connector.lookup(postcode)(hc)
+        val result = connector.lookup(postcode, None)(hc)
 
         result.futureValue shouldBe expectedResponse
       }
@@ -155,7 +155,7 @@ class AddressLookupConnectorSpec
 
         val expectedResponse = AddressLookupSuccess(Seq.empty)
 
-        val result = connector.lookup(postcode)(hc)
+        val result = connector.lookup(postcode, None)(hc)
 
         result.futureValue shouldBe expectedResponse
       }
@@ -170,7 +170,7 @@ class AddressLookupConnectorSpec
 
         val postcode = "AA11 1AA"
 
-        val result = connector.lookup(postcode)(hc)
+        val result = connector.lookup(postcode, None)(hc)
 
         result.futureValue shouldBe AddressLookupFailure
       }
