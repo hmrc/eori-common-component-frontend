@@ -40,6 +40,14 @@ trait EnrolmentExtractor {
   def enrolledForService(loggedInUser: LoggedInUserWithEnrolments, service: Service): Option[Eori] =
     identifierFor(service.enrolmentKey, EoriIdentifier, loggedInUser).map(Eori)
 
+  def activatedEnrolmentForService(loggedInUser: LoggedInUserWithEnrolments, service: Service): Option[Eori] =
+    loggedInUser.enrolments
+      .getEnrolment(service.enrolmentKey)
+      .flatMap { enrolment =>
+        if (enrolment.state == "ACTIVATED") None
+        else enrolment.getIdentifier(EoriIdentifier).map(identifier => Eori(identifier.value))
+      }
+
   def enrolledCtUtr(loggedInUser: LoggedInUserWithEnrolments): Option[Utr] =
     identifierFor("IR-CT", "UTR", loggedInUser).map(Utr)
 
