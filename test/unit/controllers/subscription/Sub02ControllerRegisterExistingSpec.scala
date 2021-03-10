@@ -23,7 +23,7 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, EnrolmentIdentifier}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.PdfGeneratorConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -167,6 +167,25 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
           page.getElementsHref(RegistrationCompletePage.LeaveFeedbackLinkXpath) should endWith(
             "/feedback/eori-common-component-subscribe-atar"
           )
+      }
+    }
+  }
+
+  "SUB02Controller" should {
+
+    "redirect user to the completed enrolment page" when {
+
+      "enrolment happened immediately" in {
+
+        val atarEnrolment =
+          Enrolment("HMRC-ATAR-ORG", Seq(EnrolmentIdentifier("EORINumber", "GB123456789012")), "Activated")
+
+        withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set(atarEnrolment))
+
+        val result = subscriptionController.migrationEnd(atarService)(getRequest)
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/completed-enrolment"
       }
     }
   }

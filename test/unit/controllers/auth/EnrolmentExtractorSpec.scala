@@ -17,7 +17,7 @@
 package unit.controllers.auth
 
 import base.UnitSpec
-import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
+import uk.gov.hmrc.auth.core.{Enrolment, EnrolmentIdentifier, Enrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.EnrolmentExtractor
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
@@ -66,6 +66,37 @@ class EnrolmentExtractorSpec extends UnitSpec {
       "user is not enrolled for CDS" in {
 
         enrolmentExtractor.enrolledForService(loggedInUser(Set.empty), Service.cds) shouldBe None
+      }
+    }
+
+    "return EORI" when {
+
+      "user has activated enrolment" in {
+
+        val atarEnrolment = Enrolment("HMRC-ATAR-ORG", Seq(EnrolmentIdentifier("EORINumber", eori.id)), "Activated")
+
+        val result = enrolmentExtractor.activatedEnrolmentForService(loggedInUser(Set(atarEnrolment)), atarService)
+
+        result shouldBe Some(eori)
+      }
+    }
+
+    "doesn't return EORI" when {
+
+      "user has not activated enrolment" in {
+
+        val atarEnrolment = Enrolment("HMRC-ATAR-ORG", Seq(EnrolmentIdentifier("EORINumber", eori.id)), "Pending")
+
+        val result = enrolmentExtractor.activatedEnrolmentForService(loggedInUser(Set(atarEnrolment)), atarService)
+
+        result shouldBe None
+      }
+
+      "user doesn't have enrolment" in {
+
+        val result = enrolmentExtractor.activatedEnrolmentForService(loggedInUser(Set.empty), atarService)
+
+        result shouldBe None
       }
     }
 
