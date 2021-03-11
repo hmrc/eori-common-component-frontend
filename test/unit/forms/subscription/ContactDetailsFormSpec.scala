@@ -74,11 +74,35 @@ class ContactDetailsFormSpec extends UnitSpec {
       }
     }
 
+    Seq("!", "\"", "$", "%", "&", "'").map { elem =>
+      s"return errors for special character $elem in telephone input" in {
+
+        val invalidTelephone = Seq.fill(10)(elem).mkString("")
+
+        val formData = Map("full-name" -> "Full name", "telephone" -> invalidTelephone)
+
+        val boundForm = form.bind(formData)
+
+        val telephoneError = FormError("telephone", "cds.contact-details.page-error.telephone.wrong-format")
+
+        boundForm.errors shouldBe Seq(telephoneError)
+      }
+    }
+
     "return no errors" when {
 
       "full name and telephone is correct" in {
 
         val formData = Map("full-name" -> "Full name", "telephone" -> "01234123123")
+
+        val boundForm = form.bind(formData)
+
+        boundForm.errors shouldBe Seq.empty
+      }
+
+      "telephone contains all allowed characters" in {
+
+        val formData = Map("full-name" -> "Full name", "telephone" -> """() \ / - * # +""")
 
         val boundForm = form.bind(formData)
 
