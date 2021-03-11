@@ -331,7 +331,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       view.body().getElementById("review-tbl__country-location").text mustBe "United Kingdom"
       view.body().getElementById("review-tbl__country-location_change").attr(
         "href"
-      ) mustBe "/customs-enrolment-services/atar/subscribe/registered-country/review"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/row-country/review"
     }
 
     "not display registered company row if nothing in cache" in {

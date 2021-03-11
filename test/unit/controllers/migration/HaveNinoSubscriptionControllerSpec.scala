@@ -144,7 +144,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
       )
       submit(Journey.Subscribe, ValidNinoNoRequest) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/registered-country"
+        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-country"
       }
       verify(mockSubscriptionDetailsService).cacheNinoMatchForNoAnswer(meq(Some(NinoMatchModel(Some(false), None))))(
         any[HeaderCarrier]

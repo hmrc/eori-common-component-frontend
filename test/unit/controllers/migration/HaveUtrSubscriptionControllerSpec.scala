@@ -201,7 +201,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
           .thenReturn(Future.successful(()))
         submit(Journey.Subscribe, NoUtrRequest) { result =>
           status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/registered-country"
+          result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-country"
         }
       }
     }
