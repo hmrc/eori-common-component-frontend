@@ -122,6 +122,8 @@ GET         /customs-enrolment-services/:service/subscribe/status-rejected      
 GET         /customs-enrolment-services/:service/subscribe/eori-already-linked                @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController.eoriAlreadyLinked(service: Service)
 GET         /customs-enrolment-services/:service/subscribe/rejected-previously                @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController.rejectedPreviously(service: Service)
 
+GET         /customs-enrolment-services/:service/subscribe/completed-enrolment                @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.CompletedEnrolmentController.enrolSuccess(service: Service)
+
 GET         /customs-enrolment-services/subscribe/download/pdf                                                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EoriDownloadController.download()
 GET         /customs-enrolment-services/subscribe/download/text                                                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EoriTextDownloadController.download()
 
