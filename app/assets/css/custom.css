@@ -206,3 +206,9 @@ details .arrow {
     display: inline-block;
     font-weight: bold;
 }
+
+.numbered-list {
+    display: inline-block;
+    list-style-type: decimal;
+    padding-left:20px;
+}
