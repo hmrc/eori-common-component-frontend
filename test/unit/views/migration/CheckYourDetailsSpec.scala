@@ -19,8 +19,6 @@ package unit.views.migration
 import org.joda.time.LocalDate
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.scalatest.prop.TableDrivenPropertyChecks._
-import org.scalatest.prop.Tables.Table
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -38,14 +36,6 @@ class CheckYourDetailsSpec extends ViewSpec {
 
   val view = instanceOf[check_your_details]
 
-  private val domIds = Table(
-    ("name", "headingId", "changeLinkId"),
-    ("eori", "review-tbl__eori-number_heading", "review-tbl__eori-number_change"),
-    ("utr", "review-tbl__utr_heading", "review-tbl__utr_change"),
-    ("nameAndAddress", "review-tbl__name-and-address_heading", "review-tbl__name-and-address_change"),
-    ("contactAddress", "review-tbl__contact-details_heading", "review-tbl__contact-details_change")
-  )
-
   private val organisationType = Some(CdsOrganisationType.Company)
 
   private val contactDetails = Some(
@@ -54,11 +44,11 @@ class CheckYourDetailsSpec extends ViewSpec {
       "email@example.com",
       "11111111111",
       None,
-      useAddressFromRegistrationDetails = true,
-      Some("Street"),
-      Some("City"),
-      Some("POSTCODE"),
-      Some("GB")
+      useAddressFromRegistrationDetails = false,
+      None,
+      None,
+      None,
+      None
     )
   )
 
@@ -73,272 +63,468 @@ class CheckYourDetailsSpec extends ViewSpec {
   private val nameDobMatchModel = Some(NameDobMatchModel("FName", None, "LName", LocalDate.parse("2003-04-08")))
   private val registeredCountry = Some(CompanyRegisteredCountry("GB"))
 
-  private def strim(s: String): String = s.stripMargin.trim.split("\n").mkString(" ")
+  "Start page" should {
 
-  "Check Your Answers Page" should {
-    forAll(domIds) { (name, headingId, changeLinkId) =>
-      s"have the heading name as non-visual text for $name in the change link" in {
-        val headingText    = doc().body.getElementById(headingId).text
-        val changeLinkText = doc().body.getElementById(changeLinkId).text
-        changeLinkText must include(headingText)
+    "display all details" when {
+
+      "user is during UK Company journey" in {
+
+        doc().body.getElementById("review-tbl__email_heading").text mustBe "Email address"
+        doc().body.getElementById("review-tbl__email").text mustBe "email@example.com"
+
+        doc().body.getElementById("review-tbl__eori-number_heading").text mustBe "EORI number"
+        doc().body.getElementById("review-tbl__eori-number").text mustBe "ZZ123456789112"
+        doc().body
+          .getElementById("review-tbl__eori-number_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/review"
+
+        doc().body.getElementById("review-tbl__orgname_heading").text mustBe "Company name"
+        doc().body.getElementById("review-tbl__orgname").text mustBe "Name"
+        doc().body
+          .getElementById("review-tbl__orgname_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/nameid/review"
+
+        doc().body.getElementById("review-tbl__utr_heading").text mustBe "Corporation Tax UTR number"
+        doc().body.getElementById("review-tbl__utr").text mustBe "UTRXXXXX"
+        doc().body
+          .getElementById("review-tbl__utr_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/nameid/review"
+
+        doc().body.getElementById("review-tbl__name-and-address_heading").text mustBe "Company address"
+        doc().body.getElementById("review-tbl__name-and-address").text mustBe "Street City Postcode United Kingdom"
+        doc().body
+          .getElementById("review-tbl__name-and-address_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
+
+        doc().body.getElementById("review-tbl__date-established_heading").text mustBe "Date of establishment"
+        doc().body.getElementById("review-tbl__date-established").text mustBe "16 March 2021"
+        doc().body
+          .getElementById("review-tbl__date-established_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/date-established/review"
       }
 
-      s"have the class 'hidden' for the change $name link" in {
-        val changeVisbleSpan = doc().body.getElementById(changeLinkId).getElementsByTag("span").get(0)
-        val changeHiddenSpan = doc().body.getElementById(changeLinkId).getElementsByTag("span").get(1)
-        changeVisbleSpan.attr("aria-hidden") mustBe "true"
-        changeHiddenSpan.hasClass("visually-hidden") mustBe true
+      "user is during UK Sole Trader UTR journey" in {
+
+        val page = doc(true, nameIdOrganisationDetails = None)
+
+        page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
+        page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
+
+        page.body.getElementById("review-tbl__eori-number_heading").text mustBe "EORI number"
+        page.body.getElementById("review-tbl__eori-number").text mustBe "ZZ123456789112"
+        page.body
+          .getElementById("review-tbl__eori-number_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/review"
+
+        page.body.getElementById("review-tbl__full-name_heading").text mustBe "Full name"
+        page.body.getElementById("review-tbl__full-name").text mustBe "FName LName"
+        page.body
+          .getElementById("review-tbl__full-name_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
+
+        page.body.getElementById("review-tbl__date-of-birth_heading").text mustBe "Date of birth"
+        page.body.getElementById("review-tbl__date-of-birth").text mustBe "8 April 2003"
+        page.body
+          .getElementById("review-tbl__date-of-birth_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
+
+        page.body.getElementById("review-tbl__utr_heading").text mustBe "UTR number"
+        page.body.getElementById("review-tbl__utr").text mustBe "UTRXXXXX"
+        page.body
+          .getElementById("review-tbl__utr_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/chooseid/review"
+
+        page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Your address"
+        page.body.getElementById("review-tbl__name-and-address").text mustBe "Street City Postcode United Kingdom"
+        page.body
+          .getElementById("review-tbl__name-and-address_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
+      }
+
+      "user is during UK Sole Trader NINo journey" in {
+
+        val page = doc(true, customsId = nino, nameIdOrganisationDetails = None)
+
+        page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
+        page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
+
+        page.body.getElementById("review-tbl__eori-number_heading").text mustBe "EORI number"
+        page.body.getElementById("review-tbl__eori-number").text mustBe "ZZ123456789112"
+        page.body
+          .getElementById("review-tbl__eori-number_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/review"
+
+        page.body.getElementById("review-tbl__full-name_heading").text mustBe "Full name"
+        page.body.getElementById("review-tbl__full-name").text mustBe "FName LName"
+        page.body
+          .getElementById("review-tbl__full-name_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
+
+        page.body.getElementById("review-tbl__date-of-birth_heading").text mustBe "Date of birth"
+        page.body.getElementById("review-tbl__date-of-birth").text mustBe "8 April 2003"
+        page.body
+          .getElementById("review-tbl__date-of-birth_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
+
+        page.body.getElementById("review-tbl__nino_heading").text mustBe "National Insurance number"
+        page.body.getElementById("review-tbl__nino").text mustBe "AB123456C"
+        page.body
+          .getElementById("review-tbl__nino_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/chooseid/review"
+
+        page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Your address"
+        page.body.getElementById("review-tbl__name-and-address").text mustBe "Street City Postcode United Kingdom"
+        page.body
+          .getElementById("review-tbl__name-and-address_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
+      }
+
+      "user is during ROW Organisation journey without UTR" in {
+
+        val page = doc(
+          customsId = None,
+          isThirdCountrySubscription = true,
+          nameIdOrganisationDetails = None,
+          companyRegisteredCountry = registeredCountry
+        )
+
+        page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
+        page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
+
+        page.body.getElementById("review-tbl__eori-number_heading").text mustBe "EORI number"
+        page.body.getElementById("review-tbl__eori-number").text mustBe "ZZ123456789112"
+        page.body
+          .getElementById("review-tbl__eori-number_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/review"
+
+        page.body.getElementById("review-tbl__org_name_heading").text mustBe "Organisation name"
+        page.body.getElementById("review-tbl__org_name").text mustBe "Org name"
+        page.body
+          .getElementById("review-tbl__org_name_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/name/review"
+
+        page.body.getElementById("review-tbl__utr_heading").text mustBe "UTR number"
+        page.body.getElementById("review-tbl__utr").text mustBe "Not entered"
+        page.body
+          .getElementById("review-tbl__utr_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-utr/review"
+
+        page.body.getElementById("review-tbl__country-location_heading").text mustBe "Country location"
+        page.body.getElementById("review-tbl__country-location").text mustBe "United Kingdom"
+        page.body
+          .getElementById("review-tbl__country-location_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-country/review"
+
+        page.body.getElementById("review-tbl__contact-details_heading").text mustBe "Contact"
+        page.body.getElementById("review-tbl__contact-details").text mustBe "John Doe 11111111111"
+        page.body
+          .getElementById("review-tbl__contact-details_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/contact-details/review"
+
+        page.body.getElementById("review-tbl__date-established_heading").text mustBe "Date of establishment"
+        page.body.getElementById("review-tbl__date-established").text mustBe "16 March 2021"
+        page.body
+          .getElementById("review-tbl__date-established_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/date-established/review"
+      }
+
+      "user is during ROW Organisation journey with UTR" in {
+
+        val page = doc(isThirdCountrySubscription = true)
+
+        page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
+        page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
+
+        page.body.getElementById("review-tbl__eori-number_heading").text mustBe "EORI number"
+        page.body.getElementById("review-tbl__eori-number").text mustBe "ZZ123456789112"
+        page.body
+          .getElementById("review-tbl__eori-number_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/review"
+
+        page.body.getElementById("review-tbl__org_name_heading").text mustBe "Organisation name"
+        page.body.getElementById("review-tbl__org_name").text mustBe "Org name"
+        page.body
+          .getElementById("review-tbl__org_name_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/name/review"
+
+        page.body.getElementById("review-tbl__utr_heading").text mustBe "Corporation Tax UTR number"
+        page.body.getElementById("review-tbl__utr").text mustBe "UTRXXXXX"
+        page.body
+          .getElementById("review-tbl__utr_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-utr/review"
+
+        page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Organisation address"
+        page.body.getElementById("review-tbl__name-and-address").text mustBe "Street City Postcode United Kingdom"
+        page.body
+          .getElementById("review-tbl__name-and-address_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
+
+        page.body.getElementById("review-tbl__contact-details_heading").text mustBe "Contact"
+        page.body.getElementById("review-tbl__contact-details").text mustBe "John Doe 11111111111"
+        page.body
+          .getElementById("review-tbl__contact-details_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/contact-details/review"
+
+        page.body.getElementById("review-tbl__date-established_heading").text mustBe "Date of establishment"
+        page.body.getElementById("review-tbl__date-established").text mustBe "16 March 2021"
+        page.body
+          .getElementById("review-tbl__date-established_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/date-established/review"
+      }
+
+      "user is during ROW Individual journey without UTR and NINo" in {
+
+        val page = doc(
+          isIndividualSubscriptionFlow = true,
+          customsId = None,
+          nameIdOrganisationDetails = None,
+          isThirdCountrySubscription = true,
+          companyRegisteredCountry = registeredCountry
+        )
+
+        page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
+        page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
+
+        page.body.getElementById("review-tbl__eori-number_heading").text mustBe "EORI number"
+        page.body.getElementById("review-tbl__eori-number").text mustBe "ZZ123456789112"
+        page.body
+          .getElementById("review-tbl__eori-number_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/review"
+
+        page.body.getElementById("review-tbl__full-name_heading").text mustBe "Full name"
+        page.body.getElementById("review-tbl__full-name").text mustBe "FName LName"
+        page.body
+          .getElementById("review-tbl__full-name_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
+
+        page.body.getElementById("review-tbl__date-of-birth_heading").text mustBe "Date of birth"
+        page.body.getElementById("review-tbl__date-of-birth").text mustBe "8 April 2003"
+        page.body
+          .getElementById("review-tbl__date-of-birth_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
+
+        page.body.getElementById("review-tbl__utr_heading").text mustBe "UTR number"
+        page.body.getElementById("review-tbl__utr").text mustBe "Not entered"
+        page.body
+          .getElementById("review-tbl__utr_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-utr/review"
+
+        page.body.getElementById("review-tbl__nino_heading").text mustBe "National Insurance number"
+        page.body.getElementById("review-tbl__nino").text mustBe "Not entered"
+        page.body
+          .getElementById("review-tbl__nino_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-nino/review"
+
+        page.body.getElementById("review-tbl__country-location_heading").text mustBe "Country location"
+        page.body.getElementById("review-tbl__country-location").text mustBe "United Kingdom"
+        page.body
+          .getElementById("review-tbl__country-location_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-country/review"
+
+        page.body.getElementById("review-tbl__contact-details_heading").text mustBe "Contact"
+        page.body.getElementById("review-tbl__contact-details").text mustBe "John Doe 11111111111"
+        page.body
+          .getElementById("review-tbl__contact-details_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/contact-details/review"
+      }
+
+      "user is during ROW Individual journey with UTR" in {
+
+        val page =
+          doc(isIndividualSubscriptionFlow = true, nameIdOrganisationDetails = None, isThirdCountrySubscription = true)
+
+        page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
+        page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
+
+        page.body.getElementById("review-tbl__eori-number_heading").text mustBe "EORI number"
+        page.body.getElementById("review-tbl__eori-number").text mustBe "ZZ123456789112"
+        page.body
+          .getElementById("review-tbl__eori-number_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/review"
+
+        page.body.getElementById("review-tbl__full-name_heading").text mustBe "Full name"
+        page.body.getElementById("review-tbl__full-name").text mustBe "FName LName"
+        page.body
+          .getElementById("review-tbl__full-name_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
+
+        page.body.getElementById("review-tbl__date-of-birth_heading").text mustBe "Date of birth"
+        page.body.getElementById("review-tbl__date-of-birth").text mustBe "8 April 2003"
+        page.body
+          .getElementById("review-tbl__date-of-birth_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
+
+        page.body.getElementById("review-tbl__utr_heading").text mustBe "UTR number"
+        page.body.getElementById("review-tbl__utr").text mustBe "UTRXXXXX"
+        page.body
+          .getElementById("review-tbl__utr_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-utr/review"
+
+        page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Your address"
+        page.body.getElementById("review-tbl__name-and-address").text mustBe "Street City Postcode United Kingdom"
+        page.body
+          .getElementById("review-tbl__name-and-address_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
+
+        page.body.getElementById("review-tbl__contact-details_heading").text mustBe "Contact"
+        page.body.getElementById("review-tbl__contact-details").text mustBe "John Doe 11111111111"
+        page.body
+          .getElementById("review-tbl__contact-details_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/contact-details/review"
+      }
+
+      "user is during ROW Individual journey with NINo" in {
+
+        val page = doc(
+          isIndividualSubscriptionFlow = true,
+          customsId = nino,
+          nameIdOrganisationDetails = None,
+          isThirdCountrySubscription = true
+        )
+
+        page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
+        page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
+
+        page.body.getElementById("review-tbl__eori-number_heading").text mustBe "EORI number"
+        page.body.getElementById("review-tbl__eori-number").text mustBe "ZZ123456789112"
+        page.body
+          .getElementById("review-tbl__eori-number_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/review"
+
+        page.body.getElementById("review-tbl__full-name_heading").text mustBe "Full name"
+        page.body.getElementById("review-tbl__full-name").text mustBe "FName LName"
+        page.body
+          .getElementById("review-tbl__full-name_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
+
+        page.body.getElementById("review-tbl__date-of-birth_heading").text mustBe "Date of birth"
+        page.body.getElementById("review-tbl__date-of-birth").text mustBe "8 April 2003"
+        page.body
+          .getElementById("review-tbl__date-of-birth_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
+
+        page.body.getElementById("review-tbl__utr_heading").text mustBe "UTR number"
+        page.body.getElementById("review-tbl__utr").text mustBe "Not entered"
+        page.body
+          .getElementById("review-tbl__utr_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-utr/review"
+
+        page.body.getElementById("review-tbl__nino_heading").text mustBe "National Insurance number"
+        page.body.getElementById("review-tbl__nino").text mustBe "AB123456C"
+        page.body
+          .getElementById("review-tbl__nino_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-nino/review"
+
+        page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Your address"
+        page.body.getElementById("review-tbl__name-and-address").text mustBe "Street City Postcode United Kingdom"
+        page.body
+          .getElementById("review-tbl__name-and-address_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
+
+        page.body.getElementById("review-tbl__contact-details_heading").text mustBe "Contact"
+        page.body.getElementById("review-tbl__contact-details").text mustBe "John Doe 11111111111"
+        page.body
+          .getElementById("review-tbl__contact-details_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/contact-details/review"
       }
     }
-  }
 
-  "Check Your Answers Page" should {
-    "display the review page for organisation type 'Company'" in {
-      val page = doc(customsId = None)
-      page.title must startWith("Check your answers")
-      page.getElementById("review-tbl__utr_heading").text mustBe "Corporation Tax UTR number"
-      page.getElementById("review-tbl__name-and-address_heading").text mustBe "Company address"
-      page.getElementById("review-tbl__contact-details_heading").text mustBe "Contact"
+    "not display address" when {
+
+      "user is during organisation ROW journey without UTR" in {
+
+        val page = doc(
+          customsId = None,
+          nameIdOrganisationDetails = None,
+          isThirdCountrySubscription = true,
+          companyRegisteredCountry = registeredCountry
+        )
+
+        page.body.getElementById("review-tbl__country-location_heading").text mustBe "Country location"
+        page.body.getElementById("review-tbl__country-location").text mustBe "United Kingdom"
+        page.body
+          .getElementById("review-tbl__country-location_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-country/review"
+
+        page.body.getElementById("review-tbl__name-and-address_heading") mustBe null
+        page.body.getElementById("review-tbl__name-and-address") mustBe null
+        page.body.getElementById("review-tbl__name-and-address_change") mustBe null
+      }
+
+      "user is during individual ROW journey without UTR" in {
+
+        val page = doc(
+          isIndividualSubscriptionFlow = true,
+          customsId = None,
+          nameIdOrganisationDetails = None,
+          isThirdCountrySubscription = true,
+          companyRegisteredCountry = registeredCountry
+        )
+
+        page.body.getElementById("review-tbl__country-location_heading").text mustBe "Country location"
+        page.body.getElementById("review-tbl__country-location").text mustBe "United Kingdom"
+        page.body
+          .getElementById("review-tbl__country-location_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-country/review"
+
+        page.body.getElementById("review-tbl__name-and-address_heading") mustBe null
+        page.body.getElementById("review-tbl__name-and-address") mustBe null
+        page.body.getElementById("review-tbl__name-and-address_change") mustBe null
+      }
     }
 
-    "display the review page for 'SoleTrader' with 'Nino'" in {
-      val page = doc(true, customsId = nino)
-      page.title must startWith("Check your answers")
-      page.body.getElementById("review-tbl__full-name_heading").text mustBe "Full name"
-      page.body.getElementById("review-tbl__full-name").text mustBe "FName LName"
+    "not display country location" when {
 
-      page.body.getElementById("review-tbl__date-of-birth_heading").text mustBe "Date of birth"
-      page.body.getElementById("review-tbl__date-of-birth").text mustBe "8 April 2003"
+      "user is during organisation ROW journey with UTR" in {
 
-      page.body.getElementById("review-tbl__nino_heading").text mustBe "National Insurance number"
-      page.body.getElementById("review-tbl__nino").text mustBe "AB123456C"
+        val page = doc(isThirdCountrySubscription = true)
 
-      page.body.getElementById("review-tbl__eori-number_heading").text mustBe "EORI number"
-      page.body.getElementById("review-tbl__eori-number").text mustBe "ZZ123456789112"
-      page.body
-        .getElementById("review-tbl__eori-number_change")
-        .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/review"
-      page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Your address"
-      page.body.getElementById("review-tbl__name-and-address").text mustBe strim("""
-          |Street
-          |City
-          |Postcode
-          |United Kingdom
-        """)
-      page.body
-        .getElementById("review-tbl__name-and-address_change")
-        .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
-      page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
-      page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
-    }
+        page.body.getElementById("review-tbl__country-location_heading") mustBe null
+        page.body.getElementById("review-tbl__country-location") mustBe null
+        page.body.getElementById("review-tbl__country-location_change") mustBe null
 
-    "display the review page for 'Sole Trader' with 'UTR'" in {
-      val page = doc(isIndividualSubscriptionFlow = true, customsId = utr)
+        page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Organisation address"
+        page.body.getElementById("review-tbl__name-and-address").text mustBe "Street City Postcode United Kingdom"
+        page.body
+          .getElementById("review-tbl__name-and-address_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
+      }
 
-      page.title must startWith("Check your answers")
-      page.body.getElementById("review-tbl__full-name_heading").text mustBe "Full name"
-      page.body.getElementById("review-tbl__full-name").text mustBe "FName LName"
+      "user is during individual ROW journey with UTR" in {
 
-      page.body.getElementById("review-tbl__date-of-birth_heading").text mustBe "Date of birth"
-      page.body.getElementById("review-tbl__date-of-birth").text mustBe "8 April 2003"
+        val page =
+          doc(isIndividualSubscriptionFlow = true, nameIdOrganisationDetails = None, isThirdCountrySubscription = true)
 
-      page.body.getElementById("review-tbl__utr_heading").text mustBe "UTR number"
-      page.body.getElementById("review-tbl__utr").text mustBe "UTRXXXXX"
+        page.body.getElementById("review-tbl__country-location_heading") mustBe null
+        page.body.getElementById("review-tbl__country-location") mustBe null
+        page.body.getElementById("review-tbl__country-location_change") mustBe null
 
-      page.body.getElementById("review-tbl__eori-number_heading").text mustBe "EORI number"
-      page.body.getElementById("review-tbl__eori-number").text mustBe "ZZ123456789112"
-      page.body
-        .getElementById("review-tbl__eori-number_change")
-        .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/review"
+        page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Your address"
+        page.body.getElementById("review-tbl__name-and-address").text mustBe "Street City Postcode United Kingdom"
+        page.body
+          .getElementById("review-tbl__name-and-address_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
+      }
 
-      page.body.getElementById("review-tbl__name-and-address_heading") mustBe null
-      page.body.getElementById("review-tbl__name-and-address") mustBe null
-      page.body.getElementById("review-tbl__name-and-address_change") mustBe null
-      page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
-      page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
-    }
+      "user is during individual ROW journey with NINo" in {
 
-    "not display the address country code in the UK case" in {
-      val page = doc(customsId = utr)
-      page.getElementById("review-tbl__name-and-address").text mustBe strim("""|Street
-           |City
-           |Postcode
-           |United Kingdom
-        """)
-    }
+        val page = doc(
+          customsId = nino,
+          isIndividualSubscriptionFlow = true,
+          nameIdOrganisationDetails = None,
+          isThirdCountrySubscription = true
+        )
 
-    "display the review page for 'SoleTrader' when 'No Nino' is entered" in {
-      val page = doc(true, nameIdOrganisationDetails = None, customsId = None)
-      page.title must startWith("Check your answers")
-      page.body.getElementById("review-tbl__full-name_heading").text mustBe "Full name"
-      page.body.getElementById("review-tbl__full-name").text mustBe "FName LName"
+        page.body.getElementById("review-tbl__country-location_heading") mustBe null
+        page.body.getElementById("review-tbl__country-location") mustBe null
+        page.body.getElementById("review-tbl__country-location_change") mustBe null
 
-      page.body.getElementById("review-tbl__date-of-birth_heading").text mustBe "Date of birth"
-      page.body.getElementById("review-tbl__date-of-birth").text mustBe "8 April 2003"
-
-      page.body.getElementById("review-tbl__eori-number_heading").text mustBe "EORI number"
-      page.body.getElementById("review-tbl__eori-number").text mustBe "ZZ123456789112"
-      page.body
-        .getElementById("review-tbl__eori-number_change")
-        .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/review"
-      page.body.getElementById("review-tbl__name-and-address_heading") mustBe null
-      page.body.getElementById("review-tbl__name-and-address") mustBe null
-      page.body().getElementById("review-tbl__contact-details_heading").text mustBe "Contact"
-      page.body().getElementById("review-tbl__contact-details").text mustBe strim("""
-          |John Doe
-          |11111111111
-          |Street
-          |City
-          |POSTCODE
-          |United Kingdom
-        """.stripMargin)
-      page.body.getElementById("review-tbl__name-and-address_change") mustBe null
-      page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
-      page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
-    }
-
-    "display the review page for 'Sole Trader' when 'No UTR' is entered" in {
-      val page = doc(isIndividualSubscriptionFlow = true, nameIdOrganisationDetails = None, customsId = None)
-
-      page.title must startWith("Check your answers")
-      page.body.getElementById("review-tbl__full-name_heading").text mustBe "Full name"
-      page.body.getElementById("review-tbl__full-name").text mustBe "FName LName"
-
-      page.body.getElementById("review-tbl__date-of-birth_heading").text mustBe "Date of birth"
-      page.body.getElementById("review-tbl__date-of-birth").text mustBe "8 April 2003"
-
-      page.body.getElementById("review-tbl__utr_heading") mustBe null
-      page.body.getElementById("review-tbl__utr") mustBe null
-
-      page.body.getElementById("review-tbl__eori-number_heading").text mustBe "EORI number"
-      page.body.getElementById("review-tbl__eori-number").text mustBe "ZZ123456789112"
-      page.body
-        .getElementById("review-tbl__eori-number_change")
-        .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/review"
-
-      page.body.getElementById("review-tbl__name-and-address_heading") mustBe null
-      page.body.getElementById("review-tbl__name-and-address") mustBe null
-      page.body().getElementById("review-tbl__contact-details_heading").text mustBe "Contact"
-      page.body().getElementById("review-tbl__contact-details").text mustBe strim("""
-          |John Doe
-          |11111111111
-          |Street
-          |City
-          |POSTCODE
-          |United Kingdom
-        """.stripMargin)
-      page.body.getElementById("review-tbl__name-and-address_change") mustBe null
-      page.body.getElementById("review-tbl__email_heading").text mustBe "Email address"
-      page.body.getElementById("review-tbl__email").text mustBe "email@example.com"
-    }
-
-    "not display NINO for RoW Company organisation types" in {
-      val page = doc(customsId = None, isThirdCountrySubscription = true, orgType = Some(CdsOrganisationType.Company))
-      page.body.getElementById("review-tbl__nino_row") mustBe null
-    }
-
-    "display address label for the following Company organisation types" in {
-      val page = doc(orgType = Some(CdsOrganisationType.Company))
-      page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Company address"
-    }
-
-    "display address label for the following Partnership organisation types" in {
-      val page = doc(orgType = Some(CdsOrganisationType.Partnership))
-      page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Partnership address"
-    }
-
-    "display address label for the following LimitedLiabilityPartnership organisation types" in {
-      val page = doc(orgType = Some(CdsOrganisationType.LimitedLiabilityPartnership))
-      page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Partnership address"
-    }
-
-    "display address label for the following CharityPublicBodyNotForProfit organisation types" in {
-      val page = doc(orgType = Some(CdsOrganisationType.CharityPublicBodyNotForProfit))
-      page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Organisation address"
-    }
-
-    "display address label for the following EUOrganisation organisation types" in {
-      val page = doc(orgType = Some(CdsOrganisationType.EUOrganisation))
-      page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Organisation address"
-    }
-
-    "display address label for the following ThirdCountryOrganisation organisation types" in {
-      val page = doc(orgType = Some(CdsOrganisationType.ThirdCountryOrganisation))
-      page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Organisation address"
-    }
-
-    "display change link for the following for utr if isThirdCountrySubscription organisation" in {
-      val page = doc(
-        orgType = Some(CdsOrganisationType.ThirdCountryOrganisation),
-        isThirdCountrySubscription = true,
-        nameIdOrganisationDetails = None
-      )
-      page.body.getElementById("review-tbl__utr_change").attr(
-        "href"
-      ) mustBe "/customs-enrolment-services/atar/subscribe/row-utr/review"
-    }
-
-    "display change link for the following for utr if isThirdCountrySubscription individual" in {
-      val page = doc(
-        isIndividualSubscriptionFlow = true,
-        customsId = utr,
-        orgType = Some(CdsOrganisationType.ThirdCountryIndividual),
-        isThirdCountrySubscription = true,
-        nameIdOrganisationDetails = None
-      )
-      page.body.getElementById("review-tbl__utr_change").attr(
-        "href"
-      ) mustBe "/customs-enrolment-services/atar/subscribe/row-utr/review"
-    }
-
-    "display change link for the following for nino if isThirdCountrySubscription organisation" in {
-      val page = doc(
-        customsId = nino,
-        orgType = Some(CdsOrganisationType.ThirdCountryOrganisation),
-        isThirdCountrySubscription = true,
-        nameIdOrganisationDetails = None
-      )
-      page.body.getElementById("review-tbl__nino_change").attr(
-        "href"
-      ) mustBe "/customs-enrolment-services/atar/subscribe/row-nino/review"
-    }
-
-    "display change link for the following for nino if isThirdCountrySubscription individual" in {
-      val page = doc(
-        isIndividualSubscriptionFlow = true,
-        customsId = nino,
-        orgType = Some(CdsOrganisationType.ThirdCountryIndividual),
-        isThirdCountrySubscription = true,
-        nameIdOrganisationDetails = None
-      )
-      page.body.getElementById("review-tbl__nino_change").attr(
-        "href"
-      ) mustBe "/customs-enrolment-services/atar/subscribe/row-nino/review"
-    }
-
-    "not display change link for EORI when existing EORI exists" in {
-      val page = doc(existingEori = Some(ExistingEori("GB12121212212", "HMRC-GVMS-ORG")))
-      page.body.getElementById("review-tbl__eori-number").text mustBe eori.get
-      page.body.getElementById("review-tbl__eori-number_change") mustBe null
-      page.body.getElementById("review-tbl__eori-number_row").text must not contain "Change"
-    }
-
-    "display registered company row if exists" in {
-
-      val view = doc(nameIdOrganisationDetails = None, companyRegisteredCountry = registeredCountry)
-
-      view.body().getElementById("review-tbl__country-location_heading").text mustBe "Country location"
-      view.body().getElementById("review-tbl__country-location").text mustBe "United Kingdom"
-      view.body().getElementById("review-tbl__country-location_change").attr(
-        "href"
-      ) mustBe "/customs-enrolment-services/atar/subscribe/row-country/review"
-    }
-
-    "not display registered company row if nothing in cache" in {
-
-      doc().body().getElementById("review-tbl__country-location_heading") mustBe null
-      doc().body().getElementById("review-tbl__country-location") mustBe null
-      doc().body().getElementById("review-tbl__country_location_change") mustBe null
+        page.body.getElementById("review-tbl__name-and-address_heading").text mustBe "Your address"
+        page.body.getElementById("review-tbl__name-and-address").text mustBe "Street City Postcode United Kingdom"
+        page.body
+          .getElementById("review-tbl__name-and-address_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
+      }
     }
   }
 
@@ -366,7 +552,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       existingEori,
       email,
       nameIdOrganisationDetails,
-      None,
+      Some(NameOrganisationMatchModel("Org name")),
       nameDobMatchModel,
       dateTime,
       None,

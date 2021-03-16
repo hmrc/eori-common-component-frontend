@@ -198,7 +198,7 @@
                     messages("cds.subscription.enter-eori-number.eori-number.label")
                 )
                 @nameOrganisationDetails.map { d =>
-                    @if(isThirdCountrySubscription) {
+                    @if(isThirdCountrySubscription && !isIndividualSubscriptionFlow) {
                         @summaryRow_di(
                             "org_name",
                             nameLabel,
@@ -209,20 +209,22 @@
                     }
                 }
                 @nameDobDetails.map { nd =>
-                    @summaryRow_di(
-                        "full-name",
-                        messages("subscription.check-your-details.full-name.label"),
-                        Html.apply(s"${nd.firstName} ${nd.lastName}"),
-                        Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.reviewForm(service, journey)),
-                        messages("subscription.check-your-details.full-name.label")
-                    )
-                    @summaryRow_di(
-                        "date-of-birth",
-                        messages("subscription.check-your-details.date-of-birth.label"),
-                        Html.apply(formatDate(nd.dateOfBirth)),
-                        Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.reviewForm(service, journey)),
-                        messages("subscription.check-your-details.date-of-birth.label")
-                    )
+                    @if(isIndividualSubscriptionFlow) {
+                        @summaryRow_di(
+                            "full-name",
+                            messages("subscription.check-your-details.full-name.label"),
+                            Html.apply(s"${nd.firstName} ${nd.lastName}"),
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.reviewForm(service, journey)),
+                            messages("subscription.check-your-details.full-name.label")
+                        )
+                        @summaryRow_di(
+                            "date-of-birth",
+                            messages("subscription.check-your-details.date-of-birth.label"),
+                            Html.apply(formatDate(nd.dateOfBirth)),
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.reviewForm(service, journey)),
+                            messages("subscription.check-your-details.date-of-birth.label")
+                        )
+                    }
                 }
                 @utr.map { u =>
                     @summaryRow_di(
@@ -237,19 +239,21 @@
                     )
                 }
                 @nino.map { n =>
-                    @summaryRow_di(
-                        "nino",
-                        messages("cds.nino.label"),
-                        Html.apply(n.id),
-                        if(!isThirdCountrySubscription)
-                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController.reviewForm(service, journey))
-                        else
-                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.HaveNinoSubscriptionController.reviewForm(service, journey)),
-                        messages("cds.nino.label")
-                    )
+                    @if(isIndividualSubscriptionFlow){
+                        @summaryRow_di(
+                            "nino",
+                            messages("cds.nino.label"),
+                            Html.apply(n.id),
+                            if(!isThirdCountrySubscription)
+                                Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController.reviewForm(service, journey))
+                            else
+                                Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.HaveNinoSubscriptionController.reviewForm(service, journey)),
+                            messages("cds.nino.label")
+                        )
+                    }
                 }
                 @nameIdOrganisationDetails.map { n =>
-                    @if(!isThirdCountrySubscription){
+                    @if(!isThirdCountrySubscription && !isIndividualSubscriptionFlow) {
                         @summaryRow_di(
                             "orgname",
                             nameLabel,
@@ -258,16 +262,18 @@
                             nameLabel
                         )
                     }
-                    @summaryRow_di(
-                        "utr",
-                        utrLabel,
-                        Html.apply(n.id),
-                        if(!isThirdCountrySubscription)
-                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController.reviewForm(service, journey))
-                        else
-                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.HaveUtrSubscriptionController.reviewForm(service, journey)),
-                        utrLabel
-                    )
+                  @if(!isIndividualSubscriptionFlow){
+                        @summaryRow_di(
+                            "utr",
+                            utrLabel,
+                            Html.apply(n.id),
+                            if(!isThirdCountrySubscription)
+                                Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController.reviewForm(service, journey))
+                            else
+                                Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.HaveUtrSubscriptionController.reviewForm(service, journey)),
+                            utrLabel
+                        )
+                    }
                 }
                 @addressDetails.map { ad =>
                     @if(!shouldCountryLocationBeDisplayed) {
@@ -293,23 +299,26 @@
                     }
                 }
                 @contactDetails.map { cd =>
-                    @summaryRow_di(
-                        "contact-details",
-                        messages("cds.form.customs-contact"),
-                        contactDetailsHtml(cd),
-                        Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactDetailsController.reviewForm(service)),
-                        messages("cds.form.customs-contact")
-                    )
+                    @if(isThirdCountrySubscription) {
+                        @summaryRow_di(
+                            "contact-details",
+                            messages("cds.form.customs-contact"),
+                            contactDetailsHtml(cd),
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactDetailsController.reviewForm(service)),
+                            messages("cds.form.customs-contact")
+                        )
+                    }
                 }
                 @dateEstablished.map { de =>
-                    @summaryRow_di(
-                        "date-established",
-                        messages("cds.date-established.label"),
-                        Html.apply(formatDate(de)),
-                        Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController.reviewForm(service, journey)),
-                        messages("cds.date-established.label")
-                    )
-
+                    @if(!isIndividualSubscriptionFlow) {
+                        @summaryRow_di(
+                            "date-established",
+                            messages("cds.date-established.label"),
+                            Html.apply(formatDate(de)),
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController.reviewForm(service, journey)),
+                            messages("cds.date-established.label")
+                        )
+                    }
                 }
 
             </dl>
