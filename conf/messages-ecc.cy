@@ -69,34 +69,34 @@ cds.subscription.outcomes.success.will-send-email=Byddwn yn anfon e-bost atoch i
 cds.registration.you-already-have-eori.title=Mae gennych EORI eisoes
 cds.registration.you-already-have-eori.para1=Rydym wedi canfod bod gennych EORI eisoes. Gallwch fynd yn eich blaen a thanysgrifio i’r gwasanaeth {0}.
 
-ecc.subscription.information.heading=You must subscribe to use {0}
-ecc.subscription.information.para1.heading=What you will need
-ecc.subscription.information.para1=In order to subscribe you to {0} we need some information from you. Ensure you have all the correct details with you before you start otherwise your application may be delayed.
+ecc.subscription.information.heading=Mae’n rhaid i chi danysgrifio i ddefnyddio’r gwasanaeth {0}
+ecc.subscription.information.para1.heading=Yr hyn y bydd ei angen arnoch
+ecc.subscription.information.para1=Er mwyn eich tanysgrifio i’r gwasanaeth {0}, bydd arnom angen ychydig o wybodaeth gennych. Sicrhewch fod gennych yr holl fanylion cywir cyn i chi ddechrau, fel arall mae’n bosibl y caiff eich cais ei oedi.
 
-ecc.subscription.information.para2.heading=GB EORI number
-ecc.subscription.information.para2=You will need a GB Economic Operators Registration and Identification number (EORI number).
-ecc.subscription.information.para2.warning=The GB EORI number must be the one linked to the Government Gateway ID you used to sign in. <a href="https://www.tax.service.gov.uk/check-eori-number" target="_blank">Check EORI (opens in new window or tab)</a>.
-ecc.subscription.information.para2.text=If you do not have an EORI, you will get one with your [Service] subscription. You will need to provide:
-ecc.subscription.information.para2.list.first=VAT details if UK registered
-ecc.subscription.information.para2.list.bullet.first=VAT number
-ecc.subscription.information.para2.list.bullet.second=VAT registered address postcode
-ecc.subscription.information.para2.list.bullet.third=VAT effective date
-ecc.subscription.information.para2.list.second=Standard Industrial Classification (SIC) code. <a href="https://resources.companieshouse.gov.uk/sic/">Find your SIC code (opens in new window or tab)</a>.
+ecc.subscription.information.para2.heading=Rhif EORI GB
+ecc.subscription.information.para2=Bydd angen rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (rhif EORI) GB arnoch.
+ecc.subscription.information.para2.warning=!RhybuddMae’n rhaid i’r rhif EORI GB fod yr un sy’n gysylltiedig â’r Dynodydd Defnyddiwr (ID) Porth y Llywodraeth a ddefnyddiwyd gennych i fewngofnodi. <a href="https://www.tax.service.gov.uk/check-eori-number" target="_blank">Gwiriwch y rhif EORI GB (yn agor ffenestr neu dab newydd)</a>.
+ecc.subscription.information.para2.text=Os nad oes gennych rif EORI, byddwch yn cael un gyda’ch tanysgrifiad i’r gwasanaeth {0}. Bydd angen i chi ddarparu’r canlynol:
+ecc.subscription.information.para2.list.first=manylion TAW os ydych wedi’ch cofrestru yn y DU
+ecc.subscription.information.para2.list.bullet.first=rhif TAW
+ecc.subscription.information.para2.list.bullet.second=cod post y cyfeiriad a gofrestrwyd ar gyfer TAW
+ecc.subscription.information.para2.list.bullet.third=dyddiad y daw TAW i rym
+ecc.subscription.information.para2.list.second=Cod Dosbarthiad Diwydiannol Safonol (SIC). <a href="https://resources.companieshouse.gov.uk/sic/">Dewch o hyd i’ch cod SIC (yn agor ffenestr neu dab newydd)</a>.
 
-ecc.subscription.information.section.organisation.subheading=Company or other organisation details
-ecc.subscription.information.section.organisation.list.heading=If you are a limited company, partnership or charity, you will need:
-ecc.subscription.information.section.organisation.list.first=Corporation Tax Unique Tax Reference (UTR) if you pay corporation tax in the UK. You can <a href="https://www.tax.service.gov.uk/ask-for-copy-of-your-corporation-tax-utr" target="_blank" rel="noopener noreferrer">find a UTR number (opens in a new window or tab)</a>.
-ecc.subscription.information.section.organisation.list.second=Registered company name
-ecc.subscription.information.section.organisation.list.third=Registered company address
-ecc.subscription.information.section.organisation.list.fourth=Date of establishment
+ecc.subscription.information.section.organisation.subheading=Manylion y cwmni neu sefydliad arall
+ecc.subscription.information.section.organisation.list.heading=Os ydych yn gwmni cyfyngedig, partneriaeth neu elusen, bydd angen y canlynol arnoch:
+ecc.subscription.information.section.organisation.list.first=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth os ydych yn talu treth gorfforaeth yn y DU. Gallwch ddod o hyd i <a href="https://www.tax.service.gov.uk/ask-for-copy-of-your-corporation-tax-utr" target="_blank" rel="noopener noreferrer">UTR coll (yn agor ffenestr neu dab newydd)</a>.
+ecc.subscription.information.section.organisation.list.second=Enw’r cwmni cofrestredig
+ecc.subscription.information.section.organisation.list.third=Cyfeiriad cofrestredig y cwmni
+ecc.subscription.information.section.organisation.list.fourth=Dyddiad sefydlu
 
-ecc.subscription.information.section.individual.subheading=Sole trader or individual details
-ecc.subscription.information.section.individual.para=If you have worked in the UK or registered for self-assessment, you will need one of the following:
+ecc.subscription.information.section.individual.subheading=Manylion yr unig fasnachwr neu unigolyn
+ecc.subscription.information.section.individual.para=Os ydych wedi gweithio yn y DU neu wedi cofrestru ar gyfer Hunanasesiad, bydd angen un o’r canlynol arnoch:
 ecc.subscription.information.section.individual.nino=Rhif Yswiriant Gwladol
-ecc.subscription.information.section.individual.utr=Self Assessment Unique Taxpayer Reference (UTR). You can <a href="https://www.gov.uk/find-lost-utr-number" target="_blank" rel="noopener noreferrer">find a lost UTR number (opens in a new window or tab)</a>.
+ecc.subscription.information.section.individual.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad. Gallwch ddod o hyd i <a href="https://www.gov.uk/find-lost-utr-number" target="_blank" rel="noopener noreferrer">UTR coll (yn agor ffenestr neu dab newydd)</a>.
 
 ecc.subscription.information.only.once=Dim ond unwaith y mae angen gwneud hyn.
-ecc.subscription.information.email.confirm=We’ll process your application and email you with the result within 2 hours.
+ecc.subscription.information.email.confirm=Byddwn yn prosesu’ch cais ac yn anfon e-bost atoch gyda’r canlyniad cyn pen 2 awr.
 
 cds.navigation.subscribe=Tanysgrifio
 

@@ -74,7 +74,7 @@ class StartSubscriptionViewSpec extends ViewSpec {
 
       doc.body().getElementById(
         "gb-eori-list-heading"
-      ).text() mustBe "If you do not have an EORI, you will get one with your [Service] subscription. You will need to provide:"
+      ).text() mustBe "If you do not have an EORI, you will get one with your Advance Tariff Rulings subscription. You will need to provide:"
 
       val eoriList           = doc.body().getElementsByClass("numbered-list").get(0)
       val eoriListFirstElem  = eoriList.getElementsByTag("li").get(0)
