@@ -69,22 +69,34 @@ cds.subscription.outcomes.success.will-send-email=Byddwn yn anfon e-bost atoch i
 cds.registration.you-already-have-eori.title=Mae gennych EORI eisoes
 cds.registration.you-already-have-eori.para1=Rydym wedi canfod bod gennych EORI eisoes. Gallwch fynd yn eich blaen a thanysgrifio i’r gwasanaeth {0}.
 
-cds.subscription.information.heading=Mae’n rhaid i chi danysgrifio cyn i chi allu defnyddio’r gwasanaeth hwn
-cds.subscription.information.para1=O 1 Ionawr 2021 ymlaen, bydd angen rhif EORI GB (Cofrestru ac Adnabod Gweithredwr Economaidd) i symud nwyddau rhwng Prydain Fawr (Cymru, yr Alban a Lloegr) a gweddill y byd.
-cds.subscription.information.para2=Os nad oes gennych rif {0}, mae’n rhaid i chi gael un cyn i chi fynd yn eich blaen.
-cds.subscription.information.para2.link=EORI eisoes
+ecc.subscription.information.heading=Mae’n rhaid i chi danysgrifio i ddefnyddio’r gwasanaeth {0}
+ecc.subscription.information.para1.heading=Yr hyn y bydd ei angen arnoch
+ecc.subscription.information.para1=Er mwyn eich tanysgrifio i’r gwasanaeth {0}, bydd arnom angen ychydig o wybodaeth gennych. Sicrhewch fod gennych yr holl fanylion cywir cyn i chi ddechrau, fel arall mae’n bosibl y caiff eich cais ei oedi.
 
-cds.subscription.information.section.organisation.subheading=Fel sefydliad
-cds.subscription.information.section.organisation.utr=Bydd angen eich Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR) arnoch. Gallwch {0}.
-cds.subscription.information.section.organisation.utr.link=ddod o hyd i UTR coll (yn agor ffenestr neu dab newydd)
+ecc.subscription.information.para2.heading=Rhif EORI GB
+ecc.subscription.information.para2=Bydd angen rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (rhif EORI) GB arnoch.
+ecc.subscription.information.para2.warning=!RhybuddMae’n rhaid i’r rhif EORI GB fod yr un sy’n gysylltiedig â’r Dynodydd Defnyddiwr (ID) Porth y Llywodraeth a ddefnyddiwyd gennych i fewngofnodi. <a href="https://www.tax.service.gov.uk/check-eori-number" target="_blank">Gwiriwch y rhif EORI GB (yn agor ffenestr neu dab newydd)</a>.
+ecc.subscription.information.para2.text=Os nad oes gennych rif EORI, byddwch yn cael un gyda’ch tanysgrifiad i’r gwasanaeth {0}. Bydd angen i chi ddarparu’r canlynol:
+ecc.subscription.information.para2.list.first=manylion TAW os ydych wedi’ch cofrestru yn y DU
+ecc.subscription.information.para2.list.bullet.first=rhif TAW
+ecc.subscription.information.para2.list.bullet.second=cod post y cyfeiriad a gofrestrwyd ar gyfer TAW
+ecc.subscription.information.para2.list.bullet.third=dyddiad y daw TAW i rym
+ecc.subscription.information.para2.list.second=Cod Dosbarthiad Diwydiannol Safonol (SIC). <a href="https://resources.companieshouse.gov.uk/sic/">Dewch o hyd i’ch cod SIC (yn agor ffenestr neu dab newydd)</a>.
 
-cds.subscription.information.section.individual.subheading=Fel unigolyn neu unig fasnachwr yn y DU
-cds.subscription.information.section.individual.para=Bydd angen un o’r canlynol arnoch:
-cds.subscription.information.section.individual.nino=Rhif Yswiriant Gwladol
-cds.subscription.information.section.individual.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad
+ecc.subscription.information.section.organisation.subheading=Manylion y cwmni neu sefydliad arall
+ecc.subscription.information.section.organisation.list.heading=Os ydych yn gwmni cyfyngedig, partneriaeth neu elusen, bydd angen y canlynol arnoch:
+ecc.subscription.information.section.organisation.list.first=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth os ydych yn talu treth gorfforaeth yn y DU. Gallwch ddod o hyd i <a href="https://www.tax.service.gov.uk/ask-for-copy-of-your-corporation-tax-utr" target="_blank" rel="noopener noreferrer">UTR coll (yn agor ffenestr neu dab newydd)</a>.
+ecc.subscription.information.section.organisation.list.second=Enw’r cwmni cofrestredig
+ecc.subscription.information.section.organisation.list.third=Cyfeiriad cofrestredig y cwmni
+ecc.subscription.information.section.organisation.list.fourth=Dyddiad sefydlu
 
-cds.subscription.information.only.once=Dim ond unwaith y mae angen gwneud hyn.
-cds.subscription.information.email.confirm=Byddwch yn cael cadarnhad cyn pen 2 awr.
+ecc.subscription.information.section.individual.subheading=Manylion yr unig fasnachwr neu unigolyn
+ecc.subscription.information.section.individual.para=Os ydych wedi gweithio yn y DU neu wedi cofrestru ar gyfer Hunanasesiad, bydd angen un o’r canlynol arnoch:
+ecc.subscription.information.section.individual.nino=Rhif Yswiriant Gwladol
+ecc.subscription.information.section.individual.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad. Gallwch ddod o hyd i <a href="https://www.gov.uk/find-lost-utr-number" target="_blank" rel="noopener noreferrer">UTR coll (yn agor ffenestr neu dab newydd)</a>.
+
+ecc.subscription.information.only.once=Dim ond unwaith y mae angen gwneud hyn.
+ecc.subscription.information.email.confirm=Byddwn yn prosesu’ch cais ac yn anfon e-bost atoch gyda’r canlyniad cyn pen 2 awr.
 
 cds.navigation.subscribe=Tanysgrifio
 
