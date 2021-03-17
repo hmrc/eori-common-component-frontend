@@ -178,6 +178,10 @@
 
     @isAddressLookup = @{addressLookupParams.exists(_.nonEmpty())}
 
+    @isUtrAndNinoEmpty = @{
+        utr.forall(_.id == "Not entered") && nino.forall(_.id == "Not entered") && nameIdOrganisationDetails.forall(_.id.isEmpty)
+    }
+
     @layout_di(messages("cds.form.check-answers")) {
 
         <div class="column-two-thirds">
@@ -299,7 +303,7 @@
                     }
                 }
                 @contactDetails.map { cd =>
-                    @if(isThirdCountrySubscription) {
+                    @if(isThirdCountrySubscription && isUtrAndNinoEmpty) {
                         @summaryRow_di(
                             "contact-details",
                             messages("cds.form.customs-contact"),
@@ -323,14 +327,14 @@
 
             </dl>
 
-            <h2>@messages("cds.form.declaration")</h2>
-            <p class="govuk-body">@messages("cds.form.disclaimer")</p>
+            <h2 id="declaration">@messages("cds.form.declaration")</h2>
+            <p class="govuk-body" id="disclaimer">@messages("cds.form.disclaimer")</p>
 
             <div class="form-group">
                 @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.RegisterWithEoriAndIdController.registerWithEoriAndId(service, journey)) {
                     @CSRF.formField
 
-                    <p><input class="button" type="submit" value="@messages("cds.form.send")"></p>
+                    <p><input id="continue" class="button" type="submit" value="@messages("cds.form.send")"></p>
                 }
 
                 @helpers.helpAndSupport()

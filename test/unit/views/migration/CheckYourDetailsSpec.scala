@@ -30,11 +30,14 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.check_your_details
+import uk.gov.hmrc.play.language.LanguageUtils
 import util.ViewSpec
 
 class CheckYourDetailsSpec extends ViewSpec {
 
   val view = instanceOf[check_your_details]
+
+  private val languageUtils = instanceOf[LanguageUtils]
 
   private val organisationType = Some(CdsOrganisationType.Company)
 
@@ -97,7 +100,9 @@ class CheckYourDetailsSpec extends ViewSpec {
           .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
 
         doc().body.getElementById("review-tbl__date-established_heading").text mustBe "Date of establishment"
-        doc().body.getElementById("review-tbl__date-established").text mustBe "16 March 2021"
+        doc().body.getElementById("review-tbl__date-established").text mustBe languageUtils.Dates.formatDate(
+          dateTime.get
+        )
         doc().body
           .getElementById("review-tbl__date-established_change")
           .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/date-established/review"
@@ -222,7 +227,9 @@ class CheckYourDetailsSpec extends ViewSpec {
           .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/contact-details/review"
 
         page.body.getElementById("review-tbl__date-established_heading").text mustBe "Date of establishment"
-        page.body.getElementById("review-tbl__date-established").text mustBe "16 March 2021"
+        page.body.getElementById("review-tbl__date-established").text mustBe languageUtils.Dates.formatDate(
+          dateTime.get
+        )
         page.body
           .getElementById("review-tbl__date-established_change")
           .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/date-established/review"
@@ -259,14 +266,10 @@ class CheckYourDetailsSpec extends ViewSpec {
           .getElementById("review-tbl__name-and-address_change")
           .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
 
-        page.body.getElementById("review-tbl__contact-details_heading").text mustBe "Contact"
-        page.body.getElementById("review-tbl__contact-details").text mustBe "John Doe 11111111111"
-        page.body
-          .getElementById("review-tbl__contact-details_change")
-          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/contact-details/review"
-
         page.body.getElementById("review-tbl__date-established_heading").text mustBe "Date of establishment"
-        page.body.getElementById("review-tbl__date-established").text mustBe "16 March 2021"
+        page.body.getElementById("review-tbl__date-established").text mustBe languageUtils.Dates.formatDate(
+          dateTime.get
+        )
         page.body
           .getElementById("review-tbl__date-established_change")
           .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/date-established/review"
@@ -365,12 +368,6 @@ class CheckYourDetailsSpec extends ViewSpec {
         page.body
           .getElementById("review-tbl__name-and-address_change")
           .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
-
-        page.body.getElementById("review-tbl__contact-details_heading").text mustBe "Contact"
-        page.body.getElementById("review-tbl__contact-details").text mustBe "John Doe 11111111111"
-        page.body
-          .getElementById("review-tbl__contact-details_change")
-          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/contact-details/review"
       }
 
       "user is during ROW Individual journey with NINo" in {
@@ -420,12 +417,6 @@ class CheckYourDetailsSpec extends ViewSpec {
         page.body
           .getElementById("review-tbl__name-and-address_change")
           .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
-
-        page.body.getElementById("review-tbl__contact-details_heading").text mustBe "Contact"
-        page.body.getElementById("review-tbl__contact-details").text mustBe "John Doe 11111111111"
-        page.body
-          .getElementById("review-tbl__contact-details_change")
-          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/contact-details/review"
       }
     }
 
@@ -525,6 +516,141 @@ class CheckYourDetailsSpec extends ViewSpec {
           .getElementById("review-tbl__name-and-address_change")
           .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
       }
+    }
+
+    "not display any sole trader information" when {
+
+      "user is during UK company journey" in {
+
+        doc().body.getElementById("review-tbl__full-name_heading") mustBe null
+        doc().body.getElementById("review-tbl__full-name") mustBe null
+        doc().body.getElementById("review-tbl__full-name_change") mustBe null
+
+        doc().body.getElementById("review-tbl__date-of-birth_heading") mustBe null
+        doc().body.getElementById("review-tbl__date-of-birth") mustBe null
+        doc().body.getElementById("review-tbl__date-of-birth_change") mustBe null
+
+        doc().body.getElementById("review-tbl__nino_heading") mustBe null
+        doc().body.getElementById("review-tbl__nino") mustBe null
+        doc().body.getElementById("review-tbl__nino_change") mustBe null
+      }
+
+      "user is during ROW organisation journey" in {
+
+        val page = doc(isThirdCountrySubscription = true)
+
+        page.body.getElementById("review-tbl__full-name_heading") mustBe null
+        page.body.getElementById("review-tbl__full-name") mustBe null
+        page.body.getElementById("review-tbl__full-name_change") mustBe null
+
+        page.body.getElementById("review-tbl__date-of-birth_heading") mustBe null
+        page.body.getElementById("review-tbl__date-of-birth") mustBe null
+        page.body.getElementById("review-tbl__date-of-birth_change") mustBe null
+
+        page.body.getElementById("review-tbl__nino_heading") mustBe null
+        page.body.getElementById("review-tbl__nino") mustBe null
+        page.body.getElementById("review-tbl__nino_change") mustBe null
+      }
+    }
+
+    "not display any company information" when {
+
+      "user is during UK individual journey" in {
+
+        val page = doc(true, nameIdOrganisationDetails = None)
+
+        page.body.getElementById("review-tbl__orgname_heading") mustBe null
+        page.body.getElementById("review-tbl__orgname") mustBe null
+        page.body.getElementById("review-tbl__orgname_change") mustBe null
+
+        page.body.getElementById("review-tbl__date-established_heading") mustBe null
+        page.body.getElementById("review-tbl__date-established") mustBe null
+        page.body.getElementById("review-tbl__date-established_change") mustBe null
+      }
+
+      "user is during ROW individual journey" in {
+
+        val page = doc(
+          isIndividualSubscriptionFlow = true,
+          customsId = nino,
+          nameIdOrganisationDetails = None,
+          isThirdCountrySubscription = true
+        )
+
+        page.body.getElementById("review-tbl__orgname_heading") mustBe null
+        page.body.getElementById("review-tbl__orgname") mustBe null
+        page.body.getElementById("review-tbl__orgname_change") mustBe null
+
+        page.body.getElementById("review-tbl__date-established_heading") mustBe null
+        page.body.getElementById("review-tbl__date-established") mustBe null
+        page.body.getElementById("review-tbl__date-established_change") mustBe null
+      }
+    }
+
+    "not display NINo" when {
+
+      "UTR exists and user is during UK individual journey" in {
+
+        val page = doc(true, nameIdOrganisationDetails = None)
+
+        page.body.getElementById("review-tbl__nino_heading") mustBe null
+        page.body.getElementById("review-tbl__nino") mustBe null
+        page.body.getElementById("review-tbl__nino_change") mustBe null
+      }
+
+      "UTR exists and user is during ROW individual journey" in {
+        val page =
+          doc(isIndividualSubscriptionFlow = true, nameIdOrganisationDetails = None, isThirdCountrySubscription = true)
+
+        page.body.getElementById("review-tbl__nino_heading") mustBe null
+        page.body.getElementById("review-tbl__nino") mustBe null
+        page.body.getElementById("review-tbl__nino_change") mustBe null
+      }
+    }
+
+    "not display contact details for ROW journeys" when {
+
+      "user is organisation with UTR" in {
+
+        val page = doc(isThirdCountrySubscription = true)
+
+        page.body.getElementById("review-tbl__contact-details_heading") mustBe null
+        page.body.getElementById("review-tbl__contact-details") mustBe null
+        page.body.getElementById("review-tbl__contact-details_change") mustBe null
+      }
+
+      "user is individual with UTR" in {
+
+        val page =
+          doc(isIndividualSubscriptionFlow = true, nameIdOrganisationDetails = None, isThirdCountrySubscription = true)
+
+        page.body.getElementById("review-tbl__contact-details_heading") mustBe null
+        page.body.getElementById("review-tbl__contact-details") mustBe null
+        page.body.getElementById("review-tbl__contact-details_change") mustBe null
+      }
+
+      "user is individual with NINo" in {
+
+        val page = doc(
+          isIndividualSubscriptionFlow = true,
+          customsId = nino,
+          nameIdOrganisationDetails = None,
+          isThirdCountrySubscription = true
+        )
+
+        page.body.getElementById("review-tbl__contact-details_heading") mustBe null
+        page.body.getElementById("review-tbl__contact-details") mustBe null
+        page.body.getElementById("review-tbl__contact-details_change") mustBe null
+      }
+    }
+
+    "display note on the bottom of the page with 'Confirm and send' button" in {
+
+      doc().body.getElementById("declaration").text mustBe "Declaration"
+      doc().body.getElementById(
+        "disclaimer"
+      ).text mustBe "By sending this application you confirm that the information you are providing is correct and complete."
+      doc().body.getElementById("continue").attr("value") mustBe "Confirm and send"
     }
   }
 
