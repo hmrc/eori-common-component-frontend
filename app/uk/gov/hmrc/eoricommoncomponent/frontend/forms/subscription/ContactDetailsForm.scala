@@ -26,7 +26,7 @@ object ContactDetailsForm {
   def form(): Form[ContactDetailsSubscribeModel] =
     Form(
       mapping("full-name" -> text.verifying(validFullName), "telephone" -> text.verifying(validPhone))(
-        ContactDetailsSubscribeModel.apply
+        (fullName, telephone) => ContactDetailsSubscribeModel(fullName.trim, telephone.trim)
       )(ContactDetailsSubscribeModel.unapply)
     )
 
