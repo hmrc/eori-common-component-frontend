@@ -17,9 +17,8 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription
 
 import play.api.libs.json.Json
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CaseClassAuditHelper
 
-case class ResponseDetail(EORINo: String) extends CaseClassAuditHelper
+case class ResponseDetail(EORINo: String)
 
 object ResponseDetail {
   implicit val jsonFormat = Json.format[ResponseDetail]

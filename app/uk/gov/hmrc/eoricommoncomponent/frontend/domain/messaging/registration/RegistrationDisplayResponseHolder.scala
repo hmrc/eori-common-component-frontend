@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.registration
 
 import play.api.libs.json.Json
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CaseClassAuditHelper
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.{
   ContactResponse,
   IndividualResponse,
@@ -36,7 +35,7 @@ case class ResponseDetail(
   organisation: Option[OrganisationResponse] = None,
   address: Address,
   contactDetails: ContactResponse
-) extends CaseClassAuditHelper {
+) {
   require(
     isAnIndividual && individual.isDefined && organisation.isEmpty || !isAnIndividual && individual.isEmpty && organisation.isDefined
   )
@@ -52,36 +51,13 @@ case class ResponseCommon(
   processingDate: String,
   returnParameters: Option[List[MessagingServiceParam]] = None,
   taxPayerID: Option[String]
-) extends CaseClassAuditHelper {
-  val ignoredFields = List("returnParameters")
-
-  def keyValueMap(): Map[String, String] = {
-    val m  = toMap(this, ignoredFields = ignoredFields)
-    val rp = returnParameters.fold(Map.empty[String, String])(_.flatMap(_.toMap()).toMap)
-    m ++ rp
-  }
-
-  def keyValueMapNamedParams(): Map[String, String] = {
-    val m  = toMap(this, ignoredFields = ignoredFields)
-    val rp = returnParameters.fold(Map.empty[String, String])(_.flatMap(_.keyValueParams).toMap)
-    m ++ rp
-  }
-
-}
+)
 
 object ResponseCommon {
   implicit val format = Json.format[ResponseCommon]
 }
 
-case class RegistrationDisplayResponse(responseCommon: ResponseCommon, responseDetail: Option[ResponseDetail]) {
-
-  def keyValueMap(): Map[String, String] = {
-    val rc = responseCommon.keyValueMap()
-    val rs = responseDetail.fold(Map.empty[String, String])(_.toMap())
-    rc ++ rs
-  }
-
-}
+case class RegistrationDisplayResponse(responseCommon: ResponseCommon, responseDetail: Option[ResponseDetail])
 
 object RegistrationDisplayResponse {
   implicit val format = Json.format[RegistrationDisplayResponse]

@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
   ec: ExecutionContext
-) extends CaseClassAuditHelper {
+) {
 
   private val logger         = Logger(this.getClass)
   private val baseUrl        = appConfig.taxEnrolmentsBaseUrl

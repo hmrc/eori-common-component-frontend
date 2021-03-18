@@ -16,14 +16,12 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain
 
-import java.lang.reflect.Field
-
 import org.joda.time.DateTime
 import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 
-case class GovGatewayCredentials(email: String) extends CaseClassAuditHelper
+case class GovGatewayCredentials(email: String)
 
 object GovGatewayCredentials {
   implicit val format = Json.format[GovGatewayCredentials]
@@ -45,7 +43,7 @@ case class EstablishmentAddress(
   city: String,
   postalCode: Option[String] = None,
   countryCode: String
-) extends CaseClassAuditHelper {
+) {
 
   def updateCountryFromAddress(address: AddressViewModel): EstablishmentAddress =
     this.copy(countryCode = address.countryCode)
@@ -68,22 +66,12 @@ object EstablishmentAddress {
 }
 
 case class RegisterModeEori(EORI: String, fullName: String, address: EstablishmentAddress)
-    extends CaseClassAuditHelper {
-  val ignoredFields = List("address")
-
-  def keyValueMap(): Map[String, String] = {
-    val m  = toMap(this, ignoredFields = ignoredFields)
-    val am = prefixMapKey("address.", address.toMap())
-    m ++ am
-  }
-
-}
 
 object RegisterModeEori {
   implicit val format = Json.format[RegisterModeEori]
 }
 
-case class RegisterWithEoriAndIdOrganisation(name: String, `type`: String) extends CaseClassAuditHelper
+case class RegisterWithEoriAndIdOrganisation(name: String, `type`: String)
 
 object RegisterWithEoriAndIdOrganisation {
   implicit val formats = Json.format[RegisterWithEoriAndIdOrganisation]
@@ -95,18 +83,8 @@ case class RegisterModeId(
   isNameMatched: Boolean,
   individual: Option[Individual] = None,
   organisation: Option[RegisterWithEoriAndIdOrganisation] = None
-) extends CaseClassAuditHelper {
+) {
   require(individual.isDefined ^ organisation.isDefined)
-
-  val ignoredFields = List("individual", "organisation")
-
-  def keyValueMap(): Map[String, String] = {
-    val m  = toMap(this, ignoredFields = ignoredFields)
-    val om = prefixMapKey("organisation.", organisation.fold(Map.empty[String, String])(_.toMap()))
-    val im = prefixMapKey("individual.", individual.fold(Map.empty[String, String])(_.toMap()))
-    m ++ om ++ im
-  }
-
 }
 
 object RegisterModeId {
@@ -117,16 +95,7 @@ case class RegisterWithEoriAndIdDetail(
   registerModeEORI: RegisterModeEori,
   registerModeID: RegisterModeId,
   govGatewayCredentials: Option[GovGatewayCredentials]
-) extends CaseClassAuditHelper {
-
-  def keyValueMap(): Map[String, String] = {
-    val rem = registerModeEORI.keyValueMap()
-    val rim = registerModeID.keyValueMap()
-    val gcm = govGatewayCredentials.fold(Map.empty[String, String])(_.toMap())
-    rem ++ rim ++ gcm
-  }
-
-}
+)
 
 object RegisterWithEoriAndIdDetail {
   implicit val format = Json.format[RegisterWithEoriAndIdDetail]
@@ -144,7 +113,7 @@ object RegisterWithEoriAndIdRequestHolder {
   implicit val format = Json.format[RegisterWithEoriAndIdRequestHolder]
 }
 
-case class VatIds(countryCode: String, vatNumber: String) extends CaseClassAuditHelper
+case class VatIds(countryCode: String, vatNumber: String)
 
 object VatIds {
   implicit val format = Json.format[VatIds]
@@ -156,22 +125,13 @@ case class ContactDetail(
   phone: Option[String],
   fax: Option[String],
   email: Option[String]
-) extends CaseClassAuditHelper {
-  val ignoredFields = List("address")
-
-  def keyValueMap(): Map[String, String] = {
-    val m          = toMap(this, ignoredFields = ignoredFields)
-    val addressMap = prefixMapKey("address.", address.toMap())
-    m ++ addressMap
-  }
-
-}
+)
 
 object ContactDetail {
   implicit val format = Json.format[ContactDetail]
 }
 
-case class Trader(fullName: String, shortName: String) extends CaseClassAuditHelper
+case class Trader(fullName: String, shortName: String)
 
 object Trader {
   implicit val format = Json.format[Trader]
@@ -192,21 +152,7 @@ case class ResponseData(
   personType: Option[Int] = None,
   startDate: String,
   expiryDate: Option[String] = None
-) extends CaseClassAuditHelper {
-
-  val ignoredFields = List("establishmentAddress", "contactDetail", "VATIDs", "thirdCountryIDNumber", "trader")
-
-  def keyValueMap(): Map[String, String] = {
-    val m   = toMap(this, ignoredFields = ignoredFields)
-    val t   = prefixMapKey("trader.", trader.toMap())
-    val a   = prefixMapKey("address.", establishmentAddress.toMap())
-    val cd  = prefixMapKey("contactDetail.", contactDetail.fold(Map.empty[String, String])(_.keyValueMap()))
-    val tc  = thirdCountryIDNumber.fold(Map.empty[String, String])(x => prefixMapKey("thirdCountryIDNumber.", x))
-    val vds = VATIDs.fold(Map.empty[String, String])(x => prefixMapKey("VATIDs.", convertToMap(x.map(_.toMap()))))
-    m ++ t ++ a ++ cd ++ tc ++ vds
-  }
-
-}
+)
 
 object ResponseData {
   implicit val format = Json.format[ResponseData]
@@ -216,16 +162,7 @@ case class RegisterWithEoriAndIdResponseDetail(
   outcome: Option[String],
   caseNumber: Option[String],
   responseData: Option[ResponseData] = None
-) extends CaseClassAuditHelper {
-  val ignoredFields = List("responseData")
-
-  def keyValueMap(): Map[String, String] = {
-    val m    = toMap(this, ignoredFields = ignoredFields)
-    val rdpm = responseData.fold(Map.empty[String, String])(_.keyValueMap())
-    m ++ rdpm
-  }
-
-}
+)
 
 object RegisterWithEoriAndIdResponseDetail {
   implicit val format = Json.format[RegisterWithEoriAndIdResponseDetail]
@@ -301,70 +238,4 @@ case class RegisterWithEoriAndIdResponseHolder(registerWithEORIAndIDResponse: Re
 
 object RegisterWithEoriAndIdResponseHolder {
   implicit val format = Json.format[RegisterWithEoriAndIdResponseHolder]
-}
-
-trait CaseClassAuditHelper {
-
-  def toMap(caseClassObject: AnyRef = this, ignoredFields: List[String] = List.empty): Map[String, String] =
-    (Map[String, String]() /: caseClassObject.getClass.getDeclaredFields
-      .filterNot(field => ignoredFields.contains(field.getName))) {
-
-      def getKeyValue(acc: Map[String, String], value: Any) =
-        value match {
-          case v: CaseClassAuditHelper => v.toMap()
-          case _                       => acc
-        }
-
-      def fetchValue(acc: Map[String, String], f: Field, value: Any) =
-        if (isLeafNode(value))
-          acc + (f.getName -> value.toString)
-        else
-          getKeyValue(acc, value)
-
-      (acc, f) =>
-        f.setAccessible(true)
-        val value = f.get(caseClassObject)
-        if (value != null)
-          if (isScalaOption(value)) {
-            val option = value.asInstanceOf[Option[Any]]
-            if (option.isDefined)
-              fetchValue(acc, f, option.get)
-            else
-              acc
-          } else
-            fetchValue(acc, f, value)
-        else
-          acc
-    }
-
-  def prefixMapKey(prefix: String, map: Map[String, String]): Map[String, String] =
-    map.map(x => prefix + x._1 -> x._2)
-
-  def prefixMapKey(prefix: String, list: Seq[String]): Map[String, String] =
-    list.zipWithIndex.map(kv => prefix + (kv._2 + 1) -> kv._1).toMap
-
-  def convertToMap(list: Seq[Map[String, String]]): Map[String, String] =
-    list.zipWithIndex
-      .flatMap(
-        kv =>
-          kv._1.map { x =>
-            (x._1 + "." + kv._2) -> x._2
-          }
-      )
-      .toMap
-
-  private def isLeafNode(value: Any) =
-    value match {
-      case _: String     => true
-      case _: Int        => true
-      case _: Long       => true
-      case _: Boolean    => true
-      case _: Double     => true
-      case _: BigDecimal => true
-      case _: Float      => true
-      case _: DateTime   => true
-      case _             => false
-    }
-
-  private def isScalaOption(value: Object): Boolean = value.getClass.getSuperclass.equals(Class.forName("scala.Option"))
 }

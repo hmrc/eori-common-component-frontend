@@ -18,7 +18,6 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription
 
 import org.joda.time.DateTime
 import play.api.libs.json.Json
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CaseClassAuditHelper
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{CommonHeader, MessagingServiceParam}
 
 case class MDGResponseCommon(

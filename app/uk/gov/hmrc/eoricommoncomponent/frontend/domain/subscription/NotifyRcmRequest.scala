@@ -19,11 +19,9 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription
 import org.joda.time.DateTime
 import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CaseClassAuditHelper
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 case class NotifyRcmRequest(timestamp: String, eori: String, name: String, email: String, serviceName: String)
-    extends CaseClassAuditHelper
 
 object NotifyRcmRequest {
   val dateTimeFormat: DateTimeFormatter = DateTimeFormat.forPattern("d-MMM-yyyy HH:mm:ss")

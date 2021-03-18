@@ -22,15 +22,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.ResponseCommon
 case class SubscriptionDisplayResponse(
   responseCommon: ResponseCommon,
   responseDetail: SubscriptionDisplayResponseDetail
-) {
-
-  def keyValueMap(): Map[String, String] = {
-    val rc = responseCommon.keyValueMap()
-    val rd = responseDetail.keyValueMap()
-    rc ++ rd
-  }
-
-}
+)
 
 object SubscriptionDisplayResponse {
   implicit val jsonFormat = Json.format[SubscriptionDisplayResponse]
