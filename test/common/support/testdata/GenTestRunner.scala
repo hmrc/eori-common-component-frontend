@@ -18,12 +18,12 @@ package common.support.testdata
 
 import common.support.testdata.subscription.SubscriptionDataGenerators
 import org.scalacheck.{Gen, Prop}
-import org.scalatest.prop.Checkers
+import org.scalatestplus.scalacheck.Checkers
 
-trait GenTestRunner extends SubscriptionDataGenerators {
+trait GenTestRunner extends SubscriptionDataGenerators with Checkers {
 
   def testWithGen[T](gen: Gen[T])(test: T => Unit): Unit =
-    Checkers.check(Prop.forAllNoShrink(gen) { generatedValue =>
+    check(Prop.forAllNoShrink(gen) { generatedValue =>
       test(generatedValue)
       Prop.proved
     })

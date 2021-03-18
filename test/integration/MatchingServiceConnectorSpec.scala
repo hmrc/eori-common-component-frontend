@@ -23,7 +23,7 @@ import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.mvc.Http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR, OK}
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream4xxResponse, Upstream5xxResponse}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UpstreamErrorResponse}
 import util.externalservices.ExternalServicesConfig.{Host, Port}
 import util.externalservices.{AuditService, MatchService}
 
@@ -230,9 +230,11 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
         match500ErrorResponse.toString(),
         INTERNAL_SERVER_ERROR
       )
-      val caught = intercept[Upstream5xxResponse] {
+      val caught = intercept[UpstreamErrorResponse] {
         await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder]))
       }
+
+      caught.statusCode mustBe 500
       caught.message must include(s"Response body: '$match500ErrorResponse'")
     }
 
@@ -243,9 +245,11 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
         "Forbidden",
         FORBIDDEN
       )
-      val caught = intercept[Upstream4xxResponse] {
+      val caught = intercept[UpstreamErrorResponse] {
         await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder]))
       }
+
+      caught.statusCode mustBe 403
       caught.message must include("Response body: 'Forbidden'")
     }
 

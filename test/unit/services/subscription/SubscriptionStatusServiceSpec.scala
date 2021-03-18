@@ -37,7 +37,7 @@ import play.mvc.Http.Status._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
-import uk.gov.hmrc.http.{HeaderCarrier, Upstream4xxResponse, Upstream5xxResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
@@ -104,21 +104,23 @@ class SubscriptionStatusServiceSpec extends UnitSpec with MockitoSugar with Befo
 
     "return failed future for getStatus when connector fails with INTERNAL_SERVER_ERROR" in {
       when(mockConnector.status(any[SubscriptionStatusQueryParams])(any[HeaderCarrier]))
-        .thenReturn(Future.failed(Upstream5xxResponse("failure", INTERNAL_SERVER_ERROR, 1)))
+        .thenReturn(Future.failed(UpstreamErrorResponse("failure", INTERNAL_SERVER_ERROR, 1)))
 
-      val caught = intercept[Upstream5xxResponse] {
+      val caught = intercept[UpstreamErrorResponse] {
         await(service.getStatus("taxPayerID", TaxPayerId(AValidTaxPayerID).mdgTaxPayerId))
       }
+      caught.statusCode shouldBe 500
       caught.getMessage shouldBe "failure"
     }
 
     "return failed future for getStatus when connector fails with BAD_REQUEST" in {
       when(mockConnector.status(any[SubscriptionStatusQueryParams])(any[HeaderCarrier]))
-        .thenReturn(Future.failed(Upstream4xxResponse("failure", BAD_REQUEST, 1)))
+        .thenReturn(Future.failed(UpstreamErrorResponse("failure", BAD_REQUEST, 1)))
 
-      val caught = intercept[Upstream4xxResponse] {
+      val caught = intercept[UpstreamErrorResponse] {
         await(service.getStatus("taxPayerID", TaxPayerId(AValidTaxPayerID).mdgTaxPayerId))
       }
+      caught.statusCode shouldBe 400
       caught.getMessage shouldBe "failure"
     }
   }

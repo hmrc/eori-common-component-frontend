@@ -97,20 +97,22 @@ class VatControlListConnectorSpec extends IntegrationTestsSpec with ScalaFutures
         INTERNAL_SERVER_ERROR
       )
 
-      val caught: Upstream5xxResponse = intercept[Upstream5xxResponse] {
+      val caught: UpstreamErrorResponse = intercept[UpstreamErrorResponse] {
         await(vatControlListConnector.vatControlList(request))
       }
 
+      caught.statusCode mustBe 500
       caught.getMessage must startWith("GET of ")
     }
 
     "http exception when 4xx status code is received" in {
       VatControlListMessagingService.stubTheVatControlListResponse(expectedGetUrl, responseWithOk.toString, FORBIDDEN)
 
-      val caught: Upstream4xxResponse = intercept[Upstream4xxResponse] {
+      val caught: UpstreamErrorResponse = intercept[UpstreamErrorResponse] {
         await(vatControlListConnector.vatControlList(request))
       }
 
+      caught.statusCode mustBe 403
       caught.getMessage must startWith("GET of ")
     }
   }

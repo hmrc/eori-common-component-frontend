@@ -37,7 +37,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.MatchingService
-import uk.gov.hmrc.http.{HeaderCarrier, Upstream5xxResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
@@ -93,14 +93,15 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
       when(
         mockMatchingServiceConnector
           .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
-      ).thenReturn(Future.failed(Upstream5xxResponse("failure", INTERNAL_SERVER_ERROR, 1)))
+      ).thenReturn(Future.failed(UpstreamErrorResponse("failure", INTERNAL_SERVER_ERROR, 1)))
 
-      val caught = intercept[Upstream5xxResponse] {
+      val caught = intercept[UpstreamErrorResponse] {
         await(
           service
             .matchBusinessWithIdOnly(utr, loggedInCtUser)(mockHeaderCarrier)
         )
       }
+      caught.statusCode shouldBe 500
       caught.getMessage shouldBe "failure"
     }
 
@@ -220,9 +221,9 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
       when(
         mockMatchingServiceConnector
           .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
-      ).thenReturn(Future.failed(Upstream5xxResponse("failure", INTERNAL_SERVER_ERROR, 1)))
+      ).thenReturn(Future.failed(UpstreamErrorResponse("failure", INTERNAL_SERVER_ERROR, 1)))
 
-      val caught = intercept[Upstream5xxResponse] {
+      val caught = intercept[UpstreamErrorResponse] {
         await(
           service.matchBusiness(
             Utr("some-utr"),
@@ -232,6 +233,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
           )(mockRequest, mockHeaderCarrier)
         )
       }
+      caught.statusCode shouldBe 500
       caught.getMessage shouldBe "failure"
     }
 

@@ -19,14 +19,14 @@ package integration
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.mvc.Http.Status._
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SubscriptionServiceConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
   SubscriptionRequest,
   SubscriptionResponse
 }
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream4xxResponse, Upstream5xxResponse}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UpstreamErrorResponse}
 import util.externalservices.ExternalServicesConfig.{etmpFormBundleId, Host, Port}
 import util.externalservices.{AuditService, SubscriptionService}
 
@@ -47,11 +47,11 @@ class SubscriptionServiceConnectorSpec extends IntegrationTestsSpec with ScalaFu
 
   private lazy val subscriptionServiceConnector = app.injector.instanceOf[SubscriptionServiceConnector]
 
-  val expectedPostUrl = "/subscribe"
+  val expectedPostUrl: String = "/subscribe"
 
-  val EORI = "ZZZ1ZZZZ23ZZZZZZZ"
+  val EORI: String = "ZZZ1ZZZZ23ZZZZZZZ"
 
-  implicit val hc = HeaderCarrier()
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   before {
     resetMockServer()
@@ -64,7 +64,7 @@ class SubscriptionServiceConnectorSpec extends IntegrationTestsSpec with ScalaFu
   override def afterAll(): Unit =
     stopMockServer()
 
-  val serviceRequestJson =
+  val serviceRequestJson: JsValue =
     Json.parse(s"""
          |{
          |  "subscriptionCreateRequest": {
@@ -88,7 +88,7 @@ class SubscriptionServiceConnectorSpec extends IntegrationTestsSpec with ScalaFu
          |}
     """.stripMargin)
 
-  val serviceSubscriptionGenerateResponseJson =
+  val serviceSubscriptionGenerateResponseJson: JsValue =
     Json.parse(s"""
          |{
          |  "subscriptionCreateResponse": {
@@ -113,7 +113,7 @@ class SubscriptionServiceConnectorSpec extends IntegrationTestsSpec with ScalaFu
          |}
       """.stripMargin)
 
-  val serviceSubscriptionLinkResponseJson =
+  val serviceSubscriptionLinkResponseJson: JsValue =
     Json.parse(s"""
          |{
          |  "subscriptionCreateResponse": {
@@ -138,7 +138,7 @@ class SubscriptionServiceConnectorSpec extends IntegrationTestsSpec with ScalaFu
          |}
       """.stripMargin)
 
-  val serviceSubscriptionPendingResponseJson =
+  val serviceSubscriptionPendingResponseJson: JsValue =
     Json.parse(s"""
          |{
          |  "subscriptionCreateResponse": {
@@ -160,7 +160,7 @@ class SubscriptionServiceConnectorSpec extends IntegrationTestsSpec with ScalaFu
          |}
       """.stripMargin)
 
-  val serviceSubscriptionFailedResponseJson =
+  val serviceSubscriptionFailedResponseJson: JsValue =
     Json.parse(s"""
          |{
          |  "subscriptionCreateResponse": {
@@ -179,7 +179,7 @@ class SubscriptionServiceConnectorSpec extends IntegrationTestsSpec with ScalaFu
          |}
       """.stripMargin)
 
-  val subscribe400ErrorResponse = Json.parse("""
+  val subscribe400ErrorResponse: JsValue = Json.parse("""
       |{
       |  "errorDetail": {
       |    "timestamp": "2014­01­19T11:31:47Z",
@@ -196,7 +196,7 @@ class SubscriptionServiceConnectorSpec extends IntegrationTestsSpec with ScalaFu
       |}
     """.stripMargin)
 
-  val subscribe500ErrorResponse = Json.parse("""
+  val subscribe500ErrorResponse: JsValue = Json.parse("""
       |{
       |  "errorDetail": {
       |    "timestamp": "2016­09­08T10:55:32.766+0100",
@@ -267,9 +267,11 @@ class SubscriptionServiceConnectorSpec extends IntegrationTestsSpec with ScalaFu
         subscribe500ErrorResponse.toString(),
         INTERNAL_SERVER_ERROR
       )
-      val caught = intercept[Upstream5xxResponse] {
+      val caught = intercept[UpstreamErrorResponse] {
         await(subscriptionServiceConnector.subscribe(serviceRequestJson.as[SubscriptionRequest]))
       }
+
+      caught.statusCode mustBe 500
       caught.message must include(s"Response body: '$subscribe500ErrorResponse'")
       eventually(AuditService.verifyXAuditWrite(0))
     }
@@ -281,9 +283,11 @@ class SubscriptionServiceConnectorSpec extends IntegrationTestsSpec with ScalaFu
         "Forbidden",
         FORBIDDEN
       )
-      val caught = intercept[Upstream4xxResponse] {
+      val caught = intercept[UpstreamErrorResponse] {
         await(subscriptionServiceConnector.subscribe(serviceRequestJson.as[SubscriptionRequest]))
       }
+
+      caught.statusCode mustBe 403
       caught.message must include("Response body: 'Forbidden'")
       eventually(AuditService.verifyXAuditWrite(0))
     }

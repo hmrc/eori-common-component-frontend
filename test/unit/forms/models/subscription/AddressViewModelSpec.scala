@@ -40,16 +40,6 @@ class AddressViewModelSpec extends UnitSpec {
       AddressViewModel(actualAddress) shouldEqual expectedAddress
     }
 
-    "trim address" in {
-      def pad(line: String) = s" $line "
-      AddressViewModel(" street ", " city ", Some(" HG12 TY "), "GB") shouldEqual AddressViewModel(
-        "street",
-        "city",
-        Some("HG12 TY"),
-        "GB"
-      )
-    }
-
     "trim six line address" in {
       def pad(line: String) = s" $line "
       val address = Address(

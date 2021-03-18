@@ -71,7 +71,7 @@ class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAft
       val result: Unit = service
         .saveSafeId(internalId, safeId)
         .futureValue
-      result shouldBe ()
+      result shouldBe ((): Unit)
     }
 
     "save the CdsOrganisationType against the users InternalId" in {
@@ -86,7 +86,7 @@ class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAft
       val result: Unit = service
         .saveOrgType(internalId, Some(organisationType))
         .futureValue
-      result shouldBe ()
+      result shouldBe ((): Unit)
     }
 
     "save the email against the users InternalId" in {
@@ -101,7 +101,7 @@ class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAft
       val result: Unit = service
         .saveEmail(internalId, emailStatus)
         .futureValue
-      result shouldBe ()
+      result shouldBe ((): Unit)
     }
 
     "fetch the SafeId for the users InternalId" in {
