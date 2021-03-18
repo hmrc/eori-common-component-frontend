@@ -42,11 +42,7 @@ class Reg06Service @Inject() (
   requestSessionData: RequestSessionData
 )(implicit ec: ExecutionContext) {
 
-  def sendIndividualRequest(implicit
-    request: Request[AnyContent],
-    loggedInUser: LoggedInUser,
-    headerCarrier: HeaderCarrier
-  ): Future[Boolean] = {
+  def sendIndividualRequest(implicit request: Request[AnyContent], headerCarrier: HeaderCarrier): Future[Boolean] = {
     def ninoOrUtr(id: CustomsId): String = id match {
       case _: Nino => NINO
       case _: Utr  => UTR
@@ -92,11 +88,7 @@ class Reg06Service @Inject() (
     }
   }
 
-  def sendOrganisationRequest(implicit
-    request: Request[AnyContent],
-    loggedInUser: LoggedInUser,
-    headerCarrier: HeaderCarrier
-  ): Future[Boolean] = {
+  def sendOrganisationRequest(implicit request: Request[AnyContent], headerCarrier: HeaderCarrier): Future[Boolean] = {
     def regModeId(idType: String, id: String, organisationType: CdsOrganisationType, orgName: String) =
       RegisterModeId(
         idType,
@@ -146,7 +138,7 @@ class Reg06Service @Inject() (
     value: RegisterWithEoriAndIdDetail,
     subscriptionDetails: SubscriptionDetails,
     maybeOrganisationTypeConfiguration: Option[OrganisationTypeConfiguration]
-  )(implicit hc: HeaderCarrier, loggedInUser: LoggedInUser): Future[Boolean] = {
+  )(implicit hc: HeaderCarrier): Future[Boolean] = {
 
     def stripKFromUtr: RegisterWithEoriAndIdDetail => RegisterWithEoriAndIdDetail = {
       case r @ RegisterWithEoriAndIdDetail(_, id, _) if id.IDType == UTR =>

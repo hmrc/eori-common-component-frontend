@@ -17,26 +17,9 @@
 package unit.domain
 
 import base.UnitSpec
-import org.joda.time.DateTime
-import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.SixLineAddressMatchModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching._
 
 class MatchingBusinessDataModelsSpec extends UnitSpec {
-
-  private val processingDate = (new DateTime).withDate(2016, 1, 8).withTime(9, 0, 0, 0)
-  private val status         = "OK"
-  private val returnParams   = Some(List(MessagingServiceParam("SAP_NUMBER", "0000000000")))
-
-  private val safeId  = "XE0000123456789"
-  private val address = Address("Line 1", Some("City Name"), Some("addLine3"), Some("addLine4"), Some("SE28 1AA"), "GB")
-
-  private val contactResponse =
-    ContactResponse(Some("011 5666 4444"), Some("011 5666, 4445"), Some("011 5666 4556"), Some("john.doe@example.com"))
-
-  private val organisationResponse = Some(OrganisationResponse("orgName", None, Some(false), Some("LLP")))
-  private val individualResponse   = Some(IndividualResponse("John", Some("A"), "Doe", Some("01/01/1900")))
 
   private val countryCodesChannelIslands = Set(
     "AD",

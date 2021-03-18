@@ -33,12 +33,12 @@ class EoriUnableToUseSignoutController @Inject() (
 ) extends CdsController(mcc) {
 
   def displayPage(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _ =>
       Future.successful(Ok(eoriSignoutPage(service, eoriSignoutYesNoForm())))
     }
 
   def submit(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _ =>
       eoriSignoutYesNoForm().bindFromRequest().fold(
         formWithError => Future.successful(BadRequest(eoriSignoutPage(service, formWithError))),
         answer =>

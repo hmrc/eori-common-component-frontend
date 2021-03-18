@@ -22,7 +22,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, 
 import play.twirl.api.Html
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.{
-  CompanyRegisteredCountryController,
   ContactDetailsController,
   DateOfEstablishmentController
 }
@@ -50,14 +49,14 @@ class CompanyRegisteredCountryController @Inject() (
     extends CdsController(mcc) {
 
   def displayPage(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _ =>
       subscriptionDetailsService.cachedRegisteredCountry().map { countryOpt =>
         populateView(countryOpt, service, false)
       }
     }
 
   def reviewPage(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _ =>
       subscriptionDetailsService.cachedRegisteredCountry().map { countryOpt =>
         populateView(countryOpt, service, true)
       }
@@ -90,7 +89,7 @@ class CompanyRegisteredCountryController @Inject() (
     else "ecc.registered-company-country.individual.error"
 
   def submit(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _ =>
       CompanyRegisteredCountry
         .form(errorMessageBasedOnType)
         .bindFromRequest()

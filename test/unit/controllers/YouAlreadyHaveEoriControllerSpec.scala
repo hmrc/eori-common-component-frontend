@@ -25,7 +25,6 @@ import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class YouAlreadyHaveEoriControllerSpec extends ControllerSpec with AuthActionMock {

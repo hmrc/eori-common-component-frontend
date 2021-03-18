@@ -228,7 +228,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       )
       when(
         mockReg06Service
-          .sendOrganisationRequest(any(), any(), any[HeaderCarrier])
+          .sendOrganisationRequest(any(), any[HeaderCarrier])
       ).thenReturn(Future.successful(true))
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
@@ -256,7 +256,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(individualRegistrationDetails))
-      when(mockReg06Service.sendIndividualRequest(any(), any(), any[HeaderCarrier])).thenReturn(Future.successful(true))
+      when(mockReg06Service.sendIndividualRequest(any(), any[HeaderCarrier])).thenReturn(Future.successful(true))
       when(
         mockSubscriptionStatusService
           .getStatus(meq("SAFE"), meq("SomeSafeId"))(any())
@@ -301,7 +301,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(individualRegistrationDetails))
-      when(mockReg06Service.sendIndividualRequest(any(), any(), any[HeaderCarrier])).thenReturn(Future.successful(true))
+      when(mockReg06Service.sendIndividualRequest(any(), any[HeaderCarrier])).thenReturn(Future.successful(true))
       when(
         mockSubscriptionStatusService
           .getStatus(meq("SAFE"), meq("SomeSafeId"))(any())
@@ -408,7 +408,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       )
       when(
         mockReg06Service
-          .sendOrganisationRequest(any(), any(), any[HeaderCarrier])
+          .sendOrganisationRequest(any(), any[HeaderCarrier])
       ).thenReturn(Future.successful(true))
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
@@ -439,7 +439,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Some(UserLocation.ThirdCountry))
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(individualRegistrationDetails))
-      when(mockReg06Service.sendIndividualRequest(any(), any(), any[HeaderCarrier])).thenReturn(Future.successful(true))
+      when(mockReg06Service.sendIndividualRequest(any(), any[HeaderCarrier])).thenReturn(Future.successful(true))
       when(
         mockSubscriptionStatusService
           .getStatus(meq("SAFE"), meq("SomeSafeId"))(any())
@@ -491,10 +491,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           SubscriptionPending(formBundleIdResponse, processingDateResponse, Some(emailVerificationTimestamp))
         )
       )
-      when(
-        mockReg06Service
-          .sendOrganisationRequest(any(), any(), any[HeaderCarrier])
-      ).thenReturn(Future.successful(true))
+      when(mockReg06Service.sendOrganisationRequest(any(), any[HeaderCarrier])).thenReturn(Future.successful(true))
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
       when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
@@ -520,10 +517,8 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
     }
 
     "redirect to fail when REGO6 outcome is 'FAIL'" in {
-      when(
-        mockReg06Service
-          .sendOrganisationRequest(any(), any(), any[HeaderCarrier])
-      ).thenReturn(Future.successful(true))
+      when(mockReg06Service.sendOrganisationRequest(any(), any[HeaderCarrier]))
+        .thenReturn(Future.successful(true))
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
       when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
@@ -542,7 +537,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
     "redirect to pending when REGO6 outcome is 'DEFERRED'" in {
       when(
         mockReg06Service
-          .sendOrganisationRequest(any(), any(), any[HeaderCarrier])
+          .sendOrganisationRequest(any(), any[HeaderCarrier])
       ).thenReturn(Future.successful(true))
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
@@ -581,7 +576,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
     "throw an exception when REGO6 outcome is unexpected type" in {
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
-      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any()))
         .thenReturn(Future.successful(true))
       when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponseExceptionCase))
@@ -630,7 +625,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           )
         )
       )
-      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any()))
         .thenReturn(Future.successful(true))
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
@@ -648,7 +643,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .processing(atarService)
           .url
-        verify(mockReg06Service).sendOrganisationRequest(any(), any(), any())
+        verify(mockReg06Service).sendOrganisationRequest(any(), any())
         verify(mockSubscriptionStatusService)
           .getStatus(meq("SAFE"), meq("SomeSafeId"))(any[HeaderCarrier])
       }
@@ -671,7 +666,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           )
         )
       )
-      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any()))
         .thenReturn(Future.successful(true))
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
@@ -689,7 +684,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         result.header.headers(LOCATION) shouldBe SubscriptionRecoveryController
           .complete(atarService, Journey.Subscribe)
           .url
-        verify(mockReg06Service).sendOrganisationRequest(any(), any(), any())
+        verify(mockReg06Service).sendOrganisationRequest(any(), any())
         verify(mockSubscriptionStatusService)
           .getStatus(meq("SAFE"), meq("SomeSafeId"))(any[HeaderCarrier])
       }
@@ -712,7 +707,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       )
       when(
         mockReg06Service
-          .sendOrganisationRequest(any(), any(), any[HeaderCarrier])
+          .sendOrganisationRequest(any(), any[HeaderCarrier])
       ).thenReturn(Future.successful(true))
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
@@ -752,7 +747,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           )
         )
       )
-      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any()))
         .thenReturn(Future.successful(true))
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
@@ -786,7 +781,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           )
         )
       )
-      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any()))
         .thenReturn(Future.successful(true))
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
@@ -820,7 +815,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           )
         )
       )
-      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any()))
         .thenReturn(Future.successful(true))
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
@@ -854,7 +849,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           )
         )
       )
-      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any()))
         .thenReturn(Future.successful(true))
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
@@ -888,7 +883,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           )
         )
       )
-      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any()))
         .thenReturn(Future.successful(true))
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
@@ -925,7 +920,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           )
         )
       )
-      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any()))
         .thenReturn(Future.successful(true))
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
@@ -962,7 +957,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           )
         )
       )
-      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any()))
         .thenReturn(Future.successful(true))
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
@@ -999,7 +994,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           )
         )
       )
-      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any()))
         .thenReturn(Future.successful(true))
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
@@ -1036,7 +1031,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
           )
         )
       )
-      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any()))
         .thenReturn(Future.successful(true))
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
@@ -1055,7 +1050,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
-      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any()))
         .thenReturn(Future.successful(true))
       when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
         .thenReturn(Future.successful(mockRegisterWithEoriAndIdResponse))

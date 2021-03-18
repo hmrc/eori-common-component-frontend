@@ -105,9 +105,7 @@ class ConfirmContactDetailsController @Inject() (
       }
     }
 
-  private def isValidAddressForMandatoryCountryCodes(
-    address: Address
-  )(implicit request: Request[AnyContent], loggedInUser: LoggedInUserWithEnrolments) =
+  private def isValidAddressForMandatoryCountryCodes(address: Address) =
     if (postCodeMandatoryCountryCodes.contains(address.countryCode))
       address.postalCode.exists(_.matches(postcodeRegex.regex))
     else true

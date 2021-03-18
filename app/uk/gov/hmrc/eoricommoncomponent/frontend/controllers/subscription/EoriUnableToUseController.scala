@@ -41,7 +41,7 @@ class EoriUnableToUseController @Inject() (
     extends CdsController(mcc) {
 
   def displayPage(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _ =>
       subscriptionBusinessService.cachedEoriNumber.flatMap { eoriOpt =>
         eoriOpt match {
           case Some(eori) =>
@@ -68,7 +68,7 @@ class EoriUnableToUseController @Inject() (
     }
 
   def submit(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _ =>
       EoriUnableToUse.form().bindFromRequest().fold(
         formWithErrors =>
           subscriptionBusinessService.cachedEoriNumber.map { eoriOpt =>

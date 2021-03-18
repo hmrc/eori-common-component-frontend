@@ -48,7 +48,7 @@ class MatchingIdController @Inject() (
   }
 
   def matchWithIdOnlyForExistingReg(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { _ => _ =>
       Future.successful(Redirect(WhatIsYourEoriController.createForm(service)))
     }
 

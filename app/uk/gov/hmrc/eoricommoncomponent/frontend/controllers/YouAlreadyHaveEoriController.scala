@@ -25,14 +25,13 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.you_already_have_eori
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class YouAlreadyHaveEoriController @Inject() (
   authAction: AuthAction,
   eoriExistsView: you_already_have_eori,
   mcc: MessagesControllerComponents
-)(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+) extends FrontendController(mcc) with I18nSupport {
 
   // Note: permitted for user with service enrolment
   def display(service: Service): Action[AnyContent] =
