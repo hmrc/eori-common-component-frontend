@@ -109,5 +109,17 @@ class ContactDetailsFormSpec extends UnitSpec {
         boundForm.errors shouldBe Seq.empty
       }
     }
+
+    "trim the full name and address" in {
+
+      val formData = Map("full-name" -> "      Full name     ", "telephone" -> """     01234123123     """)
+
+      val boundForm = form.bind(formData)
+
+      boundForm.errors shouldBe Seq.empty
+
+      boundForm.value.get.fullName shouldBe "Full name"
+      boundForm.value.get.telephone shouldBe "01234123123"
+    }
   }
 }
