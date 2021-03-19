@@ -22,7 +22,7 @@ import org.joda.time.{DateTime, DateTimeZone}
 import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.CommonHeader
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetails
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CaseClassAuditHelper, ContactDetail}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.ContactDetail
 
 case class ContactInformation(
   personOfContact: Option[String] = None,
@@ -37,7 +37,7 @@ case class ContactInformation(
   emailVerificationTimestamp: Option[DateTime] = Some(
     new DateTime(Clock.systemUTC().instant.toEpochMilli, DateTimeZone.UTC)
   )
-) extends CaseClassAuditHelper {
+) {
 
   def withEmail(email: String): ContactInformation =
     this.copy(emailAddress = Some(email))

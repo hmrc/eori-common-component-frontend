@@ -80,7 +80,7 @@ class SixLineAddressController @Inject() (
     service: Service,
     journey: Journey.Value
   ): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser: LoggedInUser =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUser =>
       assertOrganisationTypeIsValid(organisationType)
       sessionCache.registrationDetails.flatMap(
         rd => populateView(Some(rd.address), isInReviewMode, organisationType, service, journey)
@@ -93,7 +93,7 @@ class SixLineAddressController @Inject() (
     service: Service,
     journey: Journey.Value
   ): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser: LoggedInUser =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUser =>
       val (countriesToInclude, countriesInCountryPicker) =
         Countries.getCountryParameters(requestSessionData.selectedUserLocationWithIslands)
       assertOrganisationTypeIsValid(organisationType)(request)

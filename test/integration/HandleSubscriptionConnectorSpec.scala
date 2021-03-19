@@ -113,7 +113,7 @@ class HandleSubscriptionConnectorSpec extends IntegrationTestsSpec with ScalaFut
         serviceRequestJson.toString,
         NO_CONTENT
       )
-      handleSubscriptionConnector.call(handleSubscriptionRequest).futureValue mustBe ()
+      handleSubscriptionConnector.call(handleSubscriptionRequest).futureValue mustBe ((): Unit)
     }
 
     "return a failed future when handle subscription endpoint returns 400" in {

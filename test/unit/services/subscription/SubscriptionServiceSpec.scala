@@ -23,7 +23,7 @@ import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalacheck.{Gen, Prop}
 import org.scalatest.BeforeAndAfterAll
 import org.scalatestplus.mockito.MockitoSugar
-import org.scalatest.prop.Checkers
+import org.scalatestplus.scalacheck.Checkers
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.mvc.Http.Status._
@@ -41,7 +41,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{Addre
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.EtmpTypeOfPerson
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
-import uk.gov.hmrc.http.{HeaderCarrier, Upstream5xxResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -124,12 +124,8 @@ class SubscriptionServiceSpec
     }
 
     "send a request using a partial REG06 response and captured email address" in {
-      val result = makeExistingRegistrationRequest(
-        stubRegisterWithPartialResponse(),
-        Eori("GB123456789000"),
-        subscriptionGenerateResponse,
-        contactEmail
-      )
+      val result =
+        makeExistingRegistrationRequest(stubRegisterWithPartialResponse(), subscriptionGenerateResponse, contactEmail)
 
       assertSameJson(
         Json.toJson(result.actualConnectorRequest),
@@ -143,12 +139,8 @@ class SubscriptionServiceSpec
     }
 
     "send a request using a complete REG06 response and captured email address" in {
-      val result = makeExistingRegistrationRequest(
-        stubRegisterWithCompleteResponse(),
-        Eori("GB123456789000"),
-        subscriptionGenerateResponse,
-        contactEmail
-      )
+      val result =
+        makeExistingRegistrationRequest(stubRegisterWithCompleteResponse(), subscriptionGenerateResponse, contactEmail)
 
       assertSameJson(
         Json.toJson(result.actualConnectorRequest),
@@ -266,10 +258,10 @@ class SubscriptionServiceSpec
       val service = constructService(
         connectorMock =>
           when(connectorMock.subscribe(ArgumentMatchers.any())(ArgumentMatchers.any()))
-            .thenReturn(Future.failed(Upstream5xxResponse("failure", INTERNAL_SERVER_ERROR, 1)))
+            .thenReturn(Future.failed(UpstreamErrorResponse("failure", INTERNAL_SERVER_ERROR, 1)))
       )
 
-      val caught = intercept[Upstream5xxResponse] {
+      val caught = intercept[UpstreamErrorResponse] {
         await(
           service
             .subscribe(
@@ -281,7 +273,8 @@ class SubscriptionServiceSpec
             )(mockHeaderCarrier)
         )
       }
-      caught.getMessage shouldEqual "failure"
+      caught.statusCode shouldBe 500
+      caught.getMessage shouldBe "failure"
     }
 
     "return failed future if response does not contain POSITION parameter" in {
@@ -857,7 +850,6 @@ class SubscriptionServiceSpec
 
   private def makeExistingRegistrationRequest(
     registerWithEoriAndIdResponse: RegisterWithEoriAndIdResponse,
-    eori: Eori,
     subscriptionResponse: SubscriptionResponse,
     email: String
   ): SubscriptionCallResult = {

@@ -18,19 +18,9 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.registration
 
 import org.joda.time.DateTime
 import play.api.libs.json.Json
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CaseClassAuditHelper
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{CommonHeader, RequestParameter}
 
-case class RequestCommon(receiptDate: DateTime, requestParameters: Seq[RequestParameter]) extends CaseClassAuditHelper {
-  val ignoredFields = List("receiptDate", "requestParameters")
-
-  def keyValueMap(): Map[String, String] = {
-    val m  = toMap(this, ignoredFields = ignoredFields)
-    val rp = requestParameters.flatMap(_.toMap())
-    m ++ rp
-  }
-
-}
+case class RequestCommon(receiptDate: DateTime, requestParameters: Seq[RequestParameter])
 
 object RequestCommon extends CommonHeader {
   implicit val format = Json.format[RequestCommon]

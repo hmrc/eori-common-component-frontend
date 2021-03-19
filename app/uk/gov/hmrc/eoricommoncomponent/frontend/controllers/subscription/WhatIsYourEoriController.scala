@@ -105,8 +105,7 @@ class WhatIsYourEoriController @Inject() (
     }
 
   private def submitNewDetails(formData: EoriNumberViewModel, isInReviewMode: Boolean, service: Service)(implicit
-    hc: HeaderCarrier,
-    request: Request[AnyContent]
+    hc: HeaderCarrier
   ) = {
     val eori = eoriWithCountry(formData.eoriNumber)
 

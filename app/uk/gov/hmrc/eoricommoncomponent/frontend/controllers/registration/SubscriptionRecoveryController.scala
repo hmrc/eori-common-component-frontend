@@ -61,6 +61,8 @@ class SubscriptionRecoveryController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
+  private val logger: Logger = Logger(this.getClass)
+
   // End of subscription recovery journey
   def complete(service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithServiceAction {
@@ -122,7 +124,7 @@ class SubscriptionRecoveryController @Inject() (
               Journey.Register
             )(Redirect(Sub02Controller.end(service)))
           }.getOrElse {
-            Logger.info("Email Missing")
+            logger.info("Email Missing")
             Future.successful(Redirect(SubscriptionRecoveryController.eoriExist(service, Journey.Register)))
           }
         }

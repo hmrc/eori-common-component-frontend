@@ -104,19 +104,6 @@ class RegisterWithoutIdServiceSpec
     )
   )
 
-  private val registrationResponseWithoutResponseDetail =
-    RegisterWithoutIdResponseHolder(
-      RegisterWithoutIDResponse(
-        ResponseCommon(
-          "status",
-          Some("Status text"),
-          DateTime.now(),
-          Some(List(MessagingServiceParam("SAP_NUMBER", sapNumber)))
-        ),
-        None
-      )
-    )
-
   private val mockDetailsOrganisation = mock[RegistrationDetailsOrganisation]
   private val mockDetailsIndividual   = mock[RegistrationDetailsIndividual]
 

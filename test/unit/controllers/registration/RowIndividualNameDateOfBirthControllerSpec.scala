@@ -27,7 +27,7 @@ import org.mockito.Mockito._
 import org.scalacheck.Prop
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.prop.Checkers
+import org.scalatestplus.scalacheck.Checkers
 import play.api.data.Form
 import play.api.mvc._
 import play.api.test.Helpers._

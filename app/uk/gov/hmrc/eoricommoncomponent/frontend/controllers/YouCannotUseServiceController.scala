@@ -57,7 +57,7 @@ class YouCannotUseServiceController @Inject() (
   }
 
   def unableToUseIdPage(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => implicit user: LoggedInUserWithEnrolments =>
+    implicit request => _: LoggedInUserWithEnrolments =>
       cache.eori.flatMap { eoriOpt =>
         cache.remove.map { _ =>
           eoriOpt match {

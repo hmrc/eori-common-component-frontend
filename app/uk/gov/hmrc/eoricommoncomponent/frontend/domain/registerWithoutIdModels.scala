@@ -20,7 +20,7 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 
-case class OrganisationName(organisationName: String) extends CaseClassAuditHelper
+case class OrganisationName(organisationName: String)
 
 object OrganisationName {
   implicit val format = Json.format[OrganisationName]
@@ -31,7 +31,7 @@ case class RegisterWithoutIdContactDetails(
   mobileNumber: Option[String] = None,
   faxNumber: Option[String] = None,
   emailAddress: Option[String] = None
-) extends CaseClassAuditHelper
+)
 
 object RegisterWithoutIdContactDetails {
   implicit val jsonFormat = Json.format[RegisterWithoutIdContactDetails]
@@ -42,19 +42,8 @@ case class RegisterWithoutIdReqDetails(
   address: Address,
   organisation: Option[OrganisationName] = None,
   individual: Option[Individual] = None
-) extends CaseClassAuditHelper {
+) {
   require(organisation.isDefined ^ individual.isDefined)
-  val ignoredFields = List("contactDetails", "address", "organisation", "individual")
-
-  def keyValueMap(): Map[String, String] = {
-    val m  = toMap(this, ignoredFields = ignoredFields)
-    val cd = prefixMapKey("contactDetail.", contactDetails.toMap())
-    val am = prefixMapKey("address.", address.toMap())
-    val om = prefixMapKey("organisation.", organisation.fold(Map.empty[String, String])(_.toMap()))
-    val im = prefixMapKey("individual.", individual.fold(Map.empty[String, String])(_.toMap()))
-    m ++ cd ++ am ++ om ++ im
-  }
-
 }
 
 object RegisterWithoutIdReqDetails {
@@ -102,12 +91,7 @@ object RegisterWithoutIdRequestHolder {
   implicit val format = Json.format[RegisterWithoutIdRequestHolder]
 }
 
-case class RegisterWithoutIdResponseDetail(SAFEID: String, ARN: Option[String]) extends CaseClassAuditHelper {
-
-  def keyValueMap(): Map[String, String] =
-    toMap(this)
-
-}
+case class RegisterWithoutIdResponseDetail(SAFEID: String, ARN: Option[String])
 
 object RegisterWithoutIdResponseDetail {
   implicit val formats = Json.format[RegisterWithoutIdResponseDetail]
@@ -116,17 +100,7 @@ object RegisterWithoutIdResponseDetail {
 case class RegisterWithoutIDResponse(
   responseCommon: ResponseCommon,
   responseDetail: Option[RegisterWithoutIdResponseDetail]
-) {
-
-  def keyValueMap(): Map[String, String] = {
-    val rc = responseCommon.keyValueMap()
-    responseDetail match {
-      case Some(rd) => rc ++ rd.keyValueMap()
-      case _        => rc
-    }
-  }
-
-}
+)
 
 object RegisterWithoutIDResponse {
   implicit val format = Json.format[RegisterWithoutIDResponse]

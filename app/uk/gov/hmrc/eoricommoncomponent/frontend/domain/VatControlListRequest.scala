@@ -16,12 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain
 
-case class VatControlListRequest(vrn: String) extends CaseClassAuditHelper {
+case class VatControlListRequest(vrn: String) {
 
-  def keyValueMap(): Map[String, String] =
-    toMap(this)
-
-  def queryParams: Seq[(String, String)] =
-    Seq("vrn" -> vrn)
-
+  def queryParams: Seq[(String, String)] = Seq("vrn" -> vrn)
 }

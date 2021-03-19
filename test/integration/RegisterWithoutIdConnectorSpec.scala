@@ -19,6 +19,7 @@ package integration
 import org.joda.time.DateTime
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.prop.TableDrivenPropertyChecks._
+import org.scalatest.prop.TableFor3
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
@@ -27,7 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.connector.RegisterWithoutIdConne
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream4xxResponse, Upstream5xxResponse}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UpstreamErrorResponse}
 import util.externalservices.ExternalServicesConfig._
 import util.externalservices.{AuditService, RegisterWithoutIdMessagingService}
 
@@ -47,7 +48,7 @@ class RegisterWithoutIdConnectorSpec extends IntegrationTestsSpec with ScalaFutu
     .build()
 
   private lazy val registerWithoutIdConnector = app.injector.instanceOf[RegisterWithoutIdConnector]
-  val expectedPostUrl                         = "/register-without-id"
+  val expectedPostUrl: String                 = "/register-without-id"
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -67,7 +68,7 @@ class RegisterWithoutIdConnectorSpec extends IntegrationTestsSpec with ScalaFutu
   private val contactDetails =
     ContactDetailsModel("John Doe", "john@example.com", "441234987654", None, true, None, None, None, None)
 
-  val organisationReq = RegisterWithoutIDRequest(
+  val organisationReq: RegisterWithoutIDRequest = RegisterWithoutIDRequest(
     RequestCommon("CDS", requestDate, "abcdefg1234567890hijklmnop0987654"),
     RegisterWithoutIdReqDetails.organisation(
       OrganisationName("orgName"),
@@ -106,7 +107,7 @@ class RegisterWithoutIdConnectorSpec extends IntegrationTestsSpec with ScalaFutu
         |}
       """.stripMargin).toString
 
-  val individualReq = RegisterWithoutIDRequest(
+  val individualReq: RegisterWithoutIDRequest = RegisterWithoutIDRequest(
     RequestCommon("CDS", requestDate, "abcdefg1234567890hijklmnop0987654"),
     RegisterWithoutIdReqDetails.individual(
       address = Address("Line 1", Some("line 2"), Some("line 3"), Some("line 4"), Some("SE28 1AA"), "ZZ"),
@@ -150,7 +151,7 @@ class RegisterWithoutIdConnectorSpec extends IntegrationTestsSpec with ScalaFutu
 
   private val processingDate = (new DateTime).withDate(2016, 3, 17).withTime(9, 31, 5, 0)
 
-  val registrationResponse = RegisterWithoutIdResponseHolder(
+  val registrationResponse: RegisterWithoutIdResponseHolder = RegisterWithoutIdResponseHolder(
     RegisterWithoutIDResponse(
       ResponseCommon(
         "OK",
@@ -185,7 +186,7 @@ class RegisterWithoutIdConnectorSpec extends IntegrationTestsSpec with ScalaFutu
       |}
     """.stripMargin
 
-  val testData =
+  val testData: TableFor3[String, String, RegisterWithoutIDRequest] =
     Table(
       ("Registering entity type", "Request json string", "Registration function"),
       ("organisation", organisationRequestJsonString, organisationReq),
@@ -231,10 +232,11 @@ class RegisterWithoutIdConnectorSpec extends IntegrationTestsSpec with ScalaFutu
           INTERNAL_SERVER_ERROR
         )
 
-        val caught: Upstream5xxResponse = intercept[Upstream5xxResponse] {
+        val caught: UpstreamErrorResponse = intercept[UpstreamErrorResponse] {
           await(registerWithoutIdConnector.register(registerWithoutIdRequest))
         }
 
+        caught.statusCode mustBe 500
         caught.getMessage must startWith("POST of ")
       }
 
@@ -246,10 +248,11 @@ class RegisterWithoutIdConnectorSpec extends IntegrationTestsSpec with ScalaFutu
           FORBIDDEN
         )
 
-        val caught: Upstream4xxResponse = intercept[Upstream4xxResponse] {
+        val caught: UpstreamErrorResponse = intercept[UpstreamErrorResponse] {
           await(registerWithoutIdConnector.register(registerWithoutIdRequest))
         }
 
+        caught.statusCode mustBe 403
         caught.getMessage must startWith("POST of ")
       }
 

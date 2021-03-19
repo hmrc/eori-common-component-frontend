@@ -20,7 +20,7 @@ import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.ExistingEori
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{ExistingEori, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.EoriUnableToUse
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
@@ -41,7 +41,7 @@ class EoriUnableToUseController @Inject() (
     extends CdsController(mcc) {
 
   def displayPage(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.cachedEoriNumber.flatMap { eoriOpt =>
         eoriOpt match {
           case Some(eori) =>
@@ -68,7 +68,7 @@ class EoriUnableToUseController @Inject() (
     }
 
   def submit(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       EoriUnableToUse.form().bindFromRequest().fold(
         formWithErrors =>
           subscriptionBusinessService.cachedEoriNumber.map { eoriOpt =>

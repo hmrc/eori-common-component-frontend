@@ -28,7 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   SubscriptionStatusResponseHolder,
   TaxPayerId
 }
-import uk.gov.hmrc.http.{HeaderCarrier, Upstream4xxResponse, Upstream5xxResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import util.externalservices.ExternalServicesConfig._
 import util.externalservices.{AuditService, SubscriptionStatusMessagingService}
 
@@ -105,20 +105,22 @@ class SubscriptionStatusConnectorSpec extends IntegrationTestsSpec with ScalaFut
         INTERNAL_SERVER_ERROR
       )
 
-      val caught: Upstream5xxResponse = intercept[Upstream5xxResponse] {
+      val caught: UpstreamErrorResponse = intercept[UpstreamErrorResponse] {
         await(subscriptionStatusConnector.status(request))
       }
 
+      caught.statusCode mustBe 500
       caught.getMessage must startWith("GET of ")
     }
 
     "fail when 4xx status code is received" in {
       SubscriptionStatusMessagingService.stubTheSubscriptionResponse(expectedGetUrl, responseWithOk.toString, FORBIDDEN)
 
-      val caught: Upstream4xxResponse = intercept[Upstream4xxResponse] {
+      val caught: UpstreamErrorResponse = intercept[UpstreamErrorResponse] {
         await(subscriptionStatusConnector.status(request))
       }
 
+      caught.statusCode mustBe 403
       caught.getMessage must startWith("GET of ")
     }
 

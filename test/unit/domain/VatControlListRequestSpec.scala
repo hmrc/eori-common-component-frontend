@@ -23,10 +23,6 @@ class VatControlListRequestSpec extends UnitSpec {
 
   "VAT Control List Request" should {
 
-    "have a correct keyValueMap" in {
-      VatControlListRequest("123456").keyValueMap() shouldBe Map("vrn" -> "123456")
-    }
-
     "have a correct query params" in {
       VatControlListRequest("123456").queryParams shouldBe Seq("vrn" -> "123456")
     }

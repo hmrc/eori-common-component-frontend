@@ -25,7 +25,7 @@ import play.mvc.Http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.RegisterWithEoriAndIdConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Individual, RequestCommon, ResponseCommon}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EstablishmentAddress, _}
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream4xxResponse, Upstream5xxResponse}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UpstreamErrorResponse}
 import util.externalservices.ExternalServicesConfig._
 import util.externalservices.{AuditService, RegisterWithEoriAndIdMessagingService}
 
@@ -45,7 +45,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
     .build()
 
   private lazy val RegisterWithEoriAndIdConnector = app.injector.instanceOf[RegisterWithEoriAndIdConnector]
-  val expectedPostUrl                             = "/register-with-eori-and-id"
+  val expectedPostUrl: String                     = "/register-with-eori-and-id"
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -62,7 +62,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
 
   private val requestDateInd = (new DateTime).withDate(2001, 12, 17).withTime(9, 30, 47, 0)
 
-  val individualNinoRequest = RegisterWithEoriAndIdRequest(
+  val individualNinoRequest: RegisterWithEoriAndIdRequest = RegisterWithEoriAndIdRequest(
     RequestCommon("CDS", requestDateInd, "012345678901234"),
     RegisterWithEoriAndIdDetail(
       registerModeEORI = RegisterModeEori(
@@ -118,7 +118,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
         |}
       """.stripMargin).toString
 
-  val individualNinoResponse = RegisterWithEoriAndIdResponseHolder(
+  val individualNinoResponse: RegisterWithEoriAndIdResponseHolder = RegisterWithEoriAndIdResponseHolder(
     RegisterWithEoriAndIdResponse(
       ResponseCommon("OK", None, requestDateInd, None),
       Some(
@@ -159,7 +159,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
 
   private val requestDateOrg = (new DateTime).withDate(2000, 1, 1).withTime(0, 0, 0, 0)
 
-  val organisationUtrRequest = RegisterWithEoriAndIdRequest(
+  val organisationUtrRequest: RegisterWithEoriAndIdRequest = RegisterWithEoriAndIdRequest(
     RequestCommon("CDS", requestDateOrg, "2438490385338590358"),
     RegisterWithEoriAndIdDetail(
       registerModeEORI = RegisterModeEori(
@@ -178,7 +178,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
     )
   )
 
-  val organisationUtrRequestJsonString =
+  val organisationUtrRequestJsonString: String =
     Json.parse("""
         |{
         |  "registerWithEORIAndIDRequest": {
@@ -217,7 +217,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
 
   private val responseTime = (new DateTime).withDate(2018, 1, 16).withTime(9, 0, 0, 0)
 
-  val organisationUtrResponse = RegisterWithEoriAndIdResponseHolder(
+  val organisationUtrResponse: RegisterWithEoriAndIdResponseHolder = RegisterWithEoriAndIdResponseHolder(
     RegisterWithEoriAndIdResponse(
       ResponseCommon("OK", None, responseTime, None),
       responseDetail = Some(RegisterWithEoriAndIdResponseDetail(Some("DEFERRED"), Some("a"))),
@@ -225,7 +225,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
     )
   )
 
-  val serviceResponsePassJsonString =
+  val serviceResponsePassJsonString: String =
     Json.parse("""
         |{
         |  "registerWithEORIAndIDResponse": {
@@ -288,7 +288,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
         |}
       """.stripMargin).toString
 
-  val serviceResponseDeferredJsonString =
+  val serviceResponseDeferredJsonString: String =
     Json.parse("""
         |{
         |  "registerWithEORIAndIDResponse": {
@@ -354,10 +354,11 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
         INTERNAL_SERVER_ERROR
       )
 
-      val caught: Upstream5xxResponse = intercept[Upstream5xxResponse] {
+      val caught: UpstreamErrorResponse = intercept[UpstreamErrorResponse] {
         await(RegisterWithEoriAndIdConnector.register(individualNinoRequest))
       }
 
+      caught.statusCode mustBe 500
       caught.getMessage must startWith("POST of ")
     }
 
@@ -369,10 +370,11 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
         FORBIDDEN
       )
 
-      val caught: Upstream4xxResponse = intercept[Upstream4xxResponse] {
+      val caught: UpstreamErrorResponse = intercept[UpstreamErrorResponse] {
         await(RegisterWithEoriAndIdConnector.register(individualNinoRequest))
       }
 
+      caught.statusCode mustBe 403
       caught.getMessage must startWith("POST of ")
     }
 

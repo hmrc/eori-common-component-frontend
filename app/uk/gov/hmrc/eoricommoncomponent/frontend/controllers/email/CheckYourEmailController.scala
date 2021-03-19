@@ -151,9 +151,7 @@ class CheckYourEmailController @Inject() (
     }
 
   def emailConfirmedContinue(service: Service, journey: Journey.Value): Action[AnyContent] =
-    Action { implicit request =>
-      toResult(service, journey)
-    }
+    Action(_ => toResult(service, journey))
 
   def toResult(service: Service, journey: Journey.Value): Result =
     journey match {

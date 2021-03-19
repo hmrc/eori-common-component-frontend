@@ -22,12 +22,12 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, 
 import play.twirl.api.Html
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.{
-  CompanyRegisteredCountryController,
   ContactDetailsController,
   DateOfEstablishmentController
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.CompanyRegisteredCountry
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
@@ -50,14 +50,14 @@ class CompanyRegisteredCountryController @Inject() (
     extends CdsController(mcc) {
 
   def displayPage(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionDetailsService.cachedRegisteredCountry().map { countryOpt =>
         populateView(countryOpt, service, false)
       }
     }
 
   def reviewPage(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionDetailsService.cachedRegisteredCountry().map { countryOpt =>
         populateView(countryOpt, service, true)
       }
@@ -90,7 +90,7 @@ class CompanyRegisteredCountryController @Inject() (
     else "ecc.registered-company-country.individual.error"
 
   def submit(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       CompanyRegisteredCountry
         .form(errorMessageBasedOnType)
         .bindFromRequest()

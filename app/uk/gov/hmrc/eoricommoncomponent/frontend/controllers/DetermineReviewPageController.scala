@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
@@ -31,13 +31,12 @@ class DetermineReviewPageController @Inject() (authAction: AuthAction, mcc: Mess
     extends CdsController(mcc) {
 
   def determineRoute(service: Service, journey: Journey.Value): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction {
-      implicit request => _: LoggedInUserWithEnrolments =>
-        journey match {
-          case Journey.Subscribe =>
-            Future.successful(Redirect(CheckYourDetailsController.reviewDetails(service, journey).url))
-          case _ => Future.successful(Redirect(CheckYourDetailsRegisterController.reviewDetails(service, journey).url))
-        }
+    authAction.ggAuthorisedUserWithEnrolmentsAction { _: Request[AnyContent] => _: LoggedInUserWithEnrolments =>
+      journey match {
+        case Journey.Subscribe =>
+          Future.successful(Redirect(CheckYourDetailsController.reviewDetails(service, journey).url))
+        case _ => Future.successful(Redirect(CheckYourDetailsRegisterController.reviewDetails(service, journey).url))
+      }
     }
 
 }

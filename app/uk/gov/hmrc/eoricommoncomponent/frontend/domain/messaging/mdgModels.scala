@@ -19,7 +19,6 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging
 import org.joda.time.format.ISODateTimeFormat
 import org.joda.time.{DateTime, LocalDate}
 import play.api.libs.json._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CaseClassAuditHelper
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 
 case class Header(originatingSystem: String, requestTimeStamp: String, correlationId: String)
@@ -35,19 +34,7 @@ case class Address(
   addressLine4: Option[String],
   postalCode: Option[String],
   countryCode: String
-) extends CaseClassAuditHelper {
-
-  override def toMap(caseClassObject: AnyRef = this, ignoredFields: List[String] = List.empty): Map[String, String] =
-    Map(
-      "addressLine1" -> addressLine1,
-      "addressLine2" -> addressLine2.getOrElse(""),
-      "addressLine3" -> addressLine3.getOrElse(""),
-      "addressLine4" -> addressLine4.getOrElse(""),
-      "postalCode"   -> postalCode.getOrElse(""),
-      "countryCode"  -> countryCode
-    )
-
-}
+)
 
 object Address {
   implicit val jsonFormat = Json.format[Address]
@@ -85,7 +72,7 @@ trait IndividualName {
 }
 
 case class Individual(firstName: String, middleName: Option[String], lastName: String, dateOfBirth: String)
-    extends IndividualName with CaseClassAuditHelper
+    extends IndividualName
 
 object Individual {
 
@@ -129,17 +116,7 @@ trait CommonHeader {
   implicit val dateTimeWrites = dateTimeWritesIsoUtc
 }
 
-case class MessagingServiceParam(paramName: String, paramValue: String) extends CaseClassAuditHelper {
-
-  private val param1CamelCase =
-    if (paramName.contains("_")) paramName.toLowerCase().replace("sap_number", "sapNumber")
-    else paramName
-
-  val ignoredFields                       = List("keyValueParams", "param1CamelCase")
-  val keyValueParams: Map[String, String] = Map(param1CamelCase -> paramValue)
-
-  def keyValueMap(): Map[String, String] = toMap(this, ignoredFields = ignoredFields)
-}
+case class MessagingServiceParam(paramName: String, paramValue: String)
 
 object MessagingServiceParam {
   implicit val formats = Json.format[MessagingServiceParam]
@@ -153,7 +130,7 @@ object MessagingServiceParam {
   val formBundleIdParamName = "ETMPFORMBUNDLENUMBER"
 }
 
-case class RequestParameter(paramName: String, paramValue: String) extends CaseClassAuditHelper
+case class RequestParameter(paramName: String, paramValue: String)
 
 object RequestParameter {
   implicit val formats = Json.format[RequestParameter]
@@ -165,16 +142,7 @@ case class RequestCommon(
   acknowledgementReference: String,
   originatingSystem: Option[String] = None,
   requestParameters: Option[Seq[RequestParameter]] = None
-) extends CaseClassAuditHelper {
-  val ignoredFields = List("requestParameters")
-
-  def keyValueMap(): Map[String, String] = {
-    val m  = toMap(this, ignoredFields = ignoredFields)
-    val rp = requestParameters.fold(Map.empty[String, String])(_.flatMap(_.toMap()).toMap)
-    m ++ rp
-  }
-
-}
+)
 
 object RequestCommon extends CommonHeader {
   implicit val requestParamFormat = Json.format[RequestParameter]
@@ -186,22 +154,7 @@ case class ResponseCommon(
   statusText: Option[String] = None,
   processingDate: DateTime,
   returnParameters: Option[List[MessagingServiceParam]] = None
-) extends CaseClassAuditHelper {
-  val ignoredFields = List("returnParameters")
-
-  def keyValueMap(): Map[String, String] = {
-    val m  = toMap(this, ignoredFields = ignoredFields)
-    val rp = returnParameters.fold(Map.empty[String, String])(_.flatMap(_.toMap()).toMap)
-    m ++ rp
-  }
-
-  def keyValueMapNamedParams(): Map[String, String] = {
-    val m  = toMap(this, ignoredFields = ignoredFields)
-    val rp = returnParameters.fold(Map.empty[String, String])(_.flatMap(_.keyValueParams).toMap)
-    m ++ rp
-  }
-
-}
+)
 
 object ResponseCommon extends CommonHeader {
   val StatusOK         = "OK"

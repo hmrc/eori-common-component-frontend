@@ -17,26 +17,9 @@
 package unit.domain
 
 import base.UnitSpec
-import org.joda.time.DateTime
-import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.SixLineAddressMatchModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching._
 
 class MatchingBusinessDataModelsSpec extends UnitSpec {
-
-  private val processingDate = (new DateTime).withDate(2016, 1, 8).withTime(9, 0, 0, 0)
-  private val status         = "OK"
-  private val returnParams   = Some(List(MessagingServiceParam("SAP_NUMBER", "0000000000")))
-
-  private val safeId  = "XE0000123456789"
-  private val address = Address("Line 1", Some("City Name"), Some("addLine3"), Some("addLine4"), Some("SE28 1AA"), "GB")
-
-  private val contactResponse =
-    ContactResponse(Some("011 5666 4444"), Some("011 5666, 4445"), Some("011 5666 4556"), Some("john.doe@example.com"))
-
-  private val organisationResponse = Some(OrganisationResponse("orgName", None, Some(false), Some("LLP")))
-  private val individualResponse   = Some(IndividualResponse("John", Some("A"), "Doe", Some("01/01/1900")))
 
   private val countryCodesChannelIslands = Set(
     "AD",
@@ -290,111 +273,6 @@ class MatchingBusinessDataModelsSpec extends UnitSpec {
     "ZM",
     "ZW"
   )
-
-  private val expectedJsonOrganisation = Json.parse("""{
-      |  "status": "OK",
-      |  "processingDate": "2016-01-08T09:00:00.000Z",
-      |  "sapNumber": "0000000000",
-      |  "isAnIndividual": "false",
-      |  "isAnAgent": "false",
-      |  "contactDetail": {
-      |    "phoneNumber": "011 5666 4444",
-      |    "mobileNumber": "011 5666, 4445",
-      |    "faxNumber": "011 5666 4556",
-      |    "emailAddress": "john.doe@example.com"
-      |  },
-      |  "isEditable": "true",
-      |  "organisationType": "LLP",
-      |  "address": {
-      |    "addressLine1": "Line 1",
-      |    "addressLine4": "addLine4",
-      |    "addressLine3": "addLine3",
-      |    "postalCode": "SE28 1AA",
-      |    "countryCode": "GB",
-      |    "addressLine2": "City Name"
-      |  },
-      |  "SAFEID": "XE0000123456789",
-      |  "organisationName": "orgName",
-      |  "isAGroup": "false"
-      |}
-    """.stripMargin)
-
-  private val expectedJsonIndividual = Json.parse("""{
-      |  "status": "OK",
-      |  "processingDate": "2016-01-08T09:00:00.000Z",
-      |  "sapNumber": "0000000000",
-      |  "isAnIndividual": "true",
-      |  "middleName": "A",
-      |  "isAnAgent": "false",
-      |  "contactDetail": {
-      |    "phoneNumber": "011 5666 4444",
-      |    "mobileNumber": "011 5666, 4445",
-      |    "faxNumber": "011 5666 4556",
-      |    "emailAddress": "john.doe@example.com"
-      |  },
-      |  "isEditable": "true",
-      |  "dateOfBirth": "01/01/1900",
-      |  "lastName": "Doe",
-      |  "firstName": "John",
-      |  "address": {
-      |    "addressLine1": "Line 1",
-      |    "addressLine4": "addLine4",
-      |    "addressLine3": "addLine3",
-      |    "postalCode": "SE28 1AA",
-      |    "countryCode": "GB",
-      |    "addressLine2": "City Name"
-      |  },
-      |  "SAFEID": "XE0000123456789"
-      |}""".stripMargin)
-
-  private val matchingResponseOrganisation: MatchingResponse = MatchingResponse(
-    RegisterWithIDResponse(
-      ResponseCommon(status, None, processingDate, returnParams),
-      Some(
-        ResponseDetail(
-          safeId,
-          None,
-          isEditable = true,
-          isAnAgent = false,
-          isAnIndividual = false,
-          None,
-          organisationResponse,
-          address,
-          contactResponse
-        )
-      )
-    )
-  )
-
-  private val matchingResponseIndividual: MatchingResponse = MatchingResponse(
-    RegisterWithIDResponse(
-      ResponseCommon(status, None, processingDate, returnParams),
-      Some(
-        ResponseDetail(
-          safeId,
-          None,
-          isEditable = true,
-          isAnAgent = false,
-          isAnIndividual = true,
-          individualResponse,
-          None,
-          address,
-          contactResponse
-        )
-      )
-    )
-  )
-
-  "matchingResponse.jsObject" should {
-    "return a valid json representation of the case class for an organisation" in {
-      matchingResponseOrganisation.jsObject() shouldBe expectedJsonOrganisation
-    }
-
-    "return a valid json representation of the case class for an individual" in {
-      matchingResponseIndividual.jsObject() shouldBe expectedJsonIndividual
-    }
-
-  }
 
   "matchingModels OrganisationAddress" should {
     "throw an exception if a postcode is missing and the country code is Jersey" in {

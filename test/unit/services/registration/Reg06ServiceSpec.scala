@@ -574,7 +574,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       mockRegistrationSuccess()
 
       service
-        .registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc, mockLoggedInUser)
+        .registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc)
         .futureValue shouldBe true
 
       val captor =
@@ -606,10 +606,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       mockRegistrationSuccess()
 
       await(
-        service.registerWithEoriAndId(organisationUtrDetailsNonePostCode, subscriptionDetails, personTypeCompany)(
-          hc,
-          mockLoggedInUser
-        )
+        service.registerWithEoriAndId(organisationUtrDetailsNonePostCode, subscriptionDetails, personTypeCompany)(hc)
       ) shouldBe true
 
       val captor =
@@ -636,9 +633,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         Some(GovGatewayCredentials("some@example.com"))
       )
 
-      await(
-        service.registerWithEoriAndId(orgDetails, subscriptionDetails, personTypeCompany)(hc, mockLoggedInUser)
-      ) shouldBe true
+      await(service.registerWithEoriAndId(orgDetails, subscriptionDetails, personTypeCompany)(hc)) shouldBe true
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
@@ -664,9 +659,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         Some(GovGatewayCredentials("some@example.com"))
       )
 
-      await(
-        service.registerWithEoriAndId(orgDetails, subscriptionDetails, personTypeCompany)(hc, mockLoggedInUser)
-      ) shouldBe true
+      await(service.registerWithEoriAndId(orgDetails, subscriptionDetails, personTypeCompany)(hc)) shouldBe true
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
@@ -692,9 +685,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         Some(GovGatewayCredentials("some@example.com"))
       )
 
-      await(
-        service.registerWithEoriAndId(orgDetails, subscriptionDetails, personTypeCompany)(hc, mockLoggedInUser)
-      ) shouldBe true
+      await(service.registerWithEoriAndId(orgDetails, subscriptionDetails, personTypeCompany)(hc)) shouldBe true
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
@@ -711,7 +702,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       val caught = intercept[RuntimeException](
         await(
           service
-            .registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc, mockLoggedInUser)
+            .registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc)
         )
       )
 
@@ -722,7 +713,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       mockRegistrationSuccess()
 
       await(
-        service.registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc, mockLoggedInUser)
+        service.registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc)
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(meq(registrationResponse.registerWithEORIAndIDResponse))(
@@ -737,7 +728,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       ) thenReturn Future.successful(registrationResponseNoSafeId.registerWithEORIAndIDResponse)
 
       await(
-        service.registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc, mockLoggedInUser)
+        service.registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc)
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
@@ -751,7 +742,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
           .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier])
       ) thenReturn Future.successful(registrationWithNoDoeAndNoPersonType.registerWithEORIAndIDResponse)
       await(
-        service.registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc, mockLoggedInUser)
+        service.registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc)
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
@@ -765,7 +756,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
           .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier])
       ) thenReturn Future.successful(registrationWithDoe.registerWithEORIAndIDResponse)
       await(
-        service.registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc, mockLoggedInUser)
+        service.registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc)
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
@@ -779,7 +770,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
           .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier])
       ) thenReturn Future.successful(registrationWithNoRespData.registerWithEORIAndIDResponse)
       await(
-        service.registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc, mockLoggedInUser)
+        service.registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc)
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
@@ -797,7 +788,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
           individualDetailsWithNoDob,
           subscriptionDetailsForIndividual,
           personTypeIndividual
-        )(hc, mockLoggedInUser)
+        )(hc)
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
@@ -815,7 +806,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
           individualDetailsWithNoDob,
           subscriptionDetailsForIndividual,
           personTypeIndividual
-        )(hc, mockLoggedInUser)
+        )(hc)
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
@@ -829,7 +820,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
           .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier])
       ) thenReturn Future.successful(registrationWithNoDoeAndPT.registerWithEORIAndIDResponse)
       await(
-        service.registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc, mockLoggedInUser)
+        service.registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc)
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
@@ -847,7 +838,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
           individualDetailsWithNoDob,
           subscriptionDetailsForIndividual,
           personTypeIndividual
-        )(hc, mockLoggedInUser)
+        )(hc)
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
@@ -864,7 +855,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       val caught = intercept[RuntimeException] {
         await(
           service
-            .registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc, mockLoggedInUser)
+            .registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc)
         )
       }
       caught shouldBe expectedException
@@ -875,7 +866,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
 
       await(
         service
-          .registerWithEoriAndId(individualDetails, subscriptionDetails, personTypeIndividual)(hc, mockLoggedInUser)
+          .registerWithEoriAndId(individualDetails, subscriptionDetails, personTypeIndividual)(hc)
       ) shouldBe true
 
       val captor =
@@ -918,7 +909,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       mockRegistrationSuccess()
 
       service
-        .sendIndividualRequest(any(), mockLoggedInUser, hc)
+        .sendIndividualRequest(any(), hc)
         .futureValue shouldBe true
 
       val captor =
@@ -952,7 +943,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       mockRegistrationSuccess()
 
       service
-        .sendOrganisationRequest(any(), mockLoggedInUser, hc)
+        .sendOrganisationRequest(any(), hc)
         .futureValue shouldBe true
 
       val captor =
@@ -985,7 +976,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         .thenReturn(nameIdOrganisationDetails)
       mockRegistrationSuccess()
 
-      await(service.sendOrganisationRequest(any(), mockLoggedInUser, hc)) shouldBe true
+      await(service.sendOrganisationRequest(any(), hc)) shouldBe true
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
@@ -1014,7 +1005,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         .thenReturn(Some(NameDobMatchModel("Fname", None, "Lname", LocalDate.parse("1978-02-10"))))
       mockRegistrationSuccess()
 
-      await(service.sendIndividualRequest(any(), mockLoggedInUser, hc)) shouldBe true
+      await(service.sendIndividualRequest(any(), hc)) shouldBe true
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
@@ -1050,7 +1041,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
           .thenReturn(nameIdOrganisationDetails)
         mockRegistrationSuccess()
 
-        service.sendOrganisationRequest(any(), mockLoggedInUser, hc).futureValue shouldBe true
+        service.sendOrganisationRequest(any(), hc).futureValue shouldBe true
 
         val captor: ArgumentCaptor[RegisterWithEoriAndIdRequest] =
           ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
@@ -1090,7 +1081,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
           .thenReturn(Some(NameDobMatchModel("Fname", None, "Lname", LocalDate.parse("1978-02-10"))))
         mockRegistrationSuccess()
 
-        await(service.sendIndividualRequest(any(), mockLoggedInUser, hc)) shouldBe true
+        await(service.sendIndividualRequest(any(), hc)) shouldBe true
 
         val captor: ArgumentCaptor[RegisterWithEoriAndIdRequest] =
           ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])

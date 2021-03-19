@@ -75,9 +75,7 @@ class HowCanWeIdentifyYouController @Inject() (
     }
 
   private def storeChoice(formData: NinoOrUtrChoice, inReviewMode: Boolean, service: Service, journey: Journey.Value)(
-    implicit
-    hc: HeaderCarrier,
-    request: Request[AnyContent]
+    implicit hc: HeaderCarrier
   ): Future[Result] =
     subscriptionDetailsHolderService
       .cacheNinoOrUtrChoice(formData)

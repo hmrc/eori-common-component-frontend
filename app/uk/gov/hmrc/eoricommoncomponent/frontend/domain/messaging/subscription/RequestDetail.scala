@@ -18,7 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription
 
 import org.joda.time.LocalDate
 import play.api.libs.json.Json
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CaseClassAuditHelper, EstablishmentAddress}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.EstablishmentAddress
 
 case class RequestDetail(
   SAFE: String,
@@ -35,18 +35,8 @@ case class RequestDetail(
   typeOfPerson: Option[String],
   principalEconomicActivity: Option[String],
   serviceName: Option[String]
-) extends CaseClassAuditHelper {
+) {
   require(dateOfEstablishment.isDefined)
-  val ignoredFields = List("CDSEstablishmentAddress", "contactInformation", "vatIDs")
-
-  def keyValueMap(): Map[String, String] = {
-    val m  = toMap(this, ignoredFields = ignoredFields)
-    val am = prefixMapKey("address.", CDSEstablishmentAddress.toMap())
-    val rd = prefixMapKey("contactInformation.", contactInformation.fold(Map.empty[String, String])(_.toMap()))
-    val vm = prefixMapKey("vatIDs.", vatIDs.fold(Map.empty[String, String])(_.flatMap(_.toMap()).toMap))
-    m ++ am ++ rd ++ vm
-  }
-
 }
 
 object RequestDetail {

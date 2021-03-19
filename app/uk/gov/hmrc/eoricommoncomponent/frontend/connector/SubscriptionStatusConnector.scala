@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class SubscriptionStatusConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
   ec: ExecutionContext
-) extends CaseClassAuditHelper {
+) {
 
   private val logger = Logger(this.getClass)
   private val url    = appConfig.getServiceUrl("subscription-status")

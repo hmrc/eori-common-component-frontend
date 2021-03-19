@@ -42,7 +42,7 @@ class SecuritySignOutController @Inject() (
 
   def signOut(service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
-      implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
+      implicit request => _: LoggedInUserWithEnrolments =>
         cdsFrontendDataCache.remove map { _ =>
           Redirect(SecuritySignOutController.displayPage(service, journey).url).withNewSession
         }

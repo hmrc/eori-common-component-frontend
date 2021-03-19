@@ -22,6 +22,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressLookupParams
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
@@ -40,7 +41,7 @@ class AddressLookupPostcodeController @Inject() (
     extends CdsController(mcc) {
 
   def displayPage(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _ =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       sessionCache.addressLookupParams.map {
         case Some(addressLookupParams) =>
           Ok(prepareView(AddressLookupParams.form().fill(addressLookupParams), false, service))
@@ -49,7 +50,7 @@ class AddressLookupPostcodeController @Inject() (
     }
 
   def reviewPage(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _ =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       sessionCache.addressLookupParams.map {
         case Some(addressLookupParams) =>
           Ok(prepareView(AddressLookupParams.form().fill(addressLookupParams), true, service))
@@ -68,7 +69,7 @@ class AddressLookupPostcodeController @Inject() (
   }
 
   def submit(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _ =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       AddressLookupParams.form().bindFromRequest().fold(
         formWithError => Future.successful(BadRequest(prepareView(formWithError, isInReviewMode, service))),
         validAddressParams =>

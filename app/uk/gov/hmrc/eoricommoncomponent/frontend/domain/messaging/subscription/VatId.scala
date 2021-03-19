@@ -17,16 +17,15 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription
 
 import play.api.libs.json.Json
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CaseClassAuditHelper
 
-case class VatId(countryCode: Option[String], vatID: Option[String]) extends CaseClassAuditHelper
+case class VatId(countryCode: Option[String], vatID: Option[String])
 
 object VatId {
   implicit val jsonFormat = Json.format[VatId]
 }
 
 // TODO - When messaging updates their specs with VATID across for all the interfaces,then this case class can be removed.
-case class SubscriptionInfoVatId(countryCode: Option[String], VATID: Option[String]) extends CaseClassAuditHelper
+case class SubscriptionInfoVatId(countryCode: Option[String], VATID: Option[String])
 
 object SubscriptionInfoVatId {
   implicit val jsonFormat = Json.format[SubscriptionInfoVatId]
