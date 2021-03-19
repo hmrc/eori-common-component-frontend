@@ -23,6 +23,7 @@ import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.affinityGroup
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthProviders, AuthorisedFunctions}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, AuthRedirectSupport, EnrolmentExtractor}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
@@ -56,7 +57,7 @@ class YouCannotUseServiceController @Inject() (
   }
 
   def unableToUseIdPage(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _ =>
+    implicit request => _: LoggedInUserWithEnrolments =>
       cache.eori.flatMap { eoriOpt =>
         cache.remove.map { _ =>
           eoriOpt match {

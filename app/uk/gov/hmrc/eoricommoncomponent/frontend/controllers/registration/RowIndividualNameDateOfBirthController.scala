@@ -68,7 +68,7 @@ class RowIndividualNameDateOfBirthController @Inject() (
     service: Service,
     journey: Journey.Value
   ): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _ =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUser =>
       assertOrganisationTypeIsValid(organisationType)
       thirdCountryIndividualNameDateOfBirthForm.bindFromRequest.fold(
         formWithErrors =>

@@ -20,6 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{
@@ -40,17 +41,17 @@ class AddressLookupErrorController @Inject() (
     extends CdsController(mcc) {
 
   def displayErrorPage(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _ =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       Future.successful(Ok(addressLookupErrorPage(service, false)))
     }
 
   def reviewErrorPage(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _ =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       Future.successful(Ok(addressLookupErrorPage(service, true)))
     }
 
   def displayNoResultsPage(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _ =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       sessionCache.addressLookupParams.map {
         case Some(addressLookupParams) => Ok(addressLookupNoResultsPage(addressLookupParams.postcode, service, false))
         case _                         => Redirect(routes.AddressLookupPostcodeController.displayPage(service))
@@ -58,7 +59,7 @@ class AddressLookupErrorController @Inject() (
     }
 
   def reviewNoResultsPage(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _ =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       sessionCache.addressLookupParams.map {
         case Some(addressLookupParams) => Ok(addressLookupNoResultsPage(addressLookupParams.postcode, service, true))
         case _                         => Redirect(routes.AddressLookupPostcodeController.reviewPage(service))
