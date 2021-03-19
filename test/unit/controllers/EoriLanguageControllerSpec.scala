@@ -27,7 +27,7 @@ class EoriLanguageControllerSpec extends ControllerSpec {
   private val languageUtils = instanceOf[LanguageUtils]
   private val cc            = instanceOf[ControllerComponents]
 
-  val controller = new EoriLanguageController(config, languageUtils, cc)
+  val controller = new EoriLanguageController(languageUtils, cc)
 
   "Eori Language Controller" should {
 

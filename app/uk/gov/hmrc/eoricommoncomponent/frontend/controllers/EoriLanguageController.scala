@@ -23,8 +23,8 @@ import play.api.mvc.{Call, ControllerComponents}
 import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}
 
 @Singleton
-class EoriLanguageController @Inject() (config: Configuration, languageUtils: LanguageUtils, cc: ControllerComponents)
-    extends LanguageController(config, languageUtils, cc) {
+class EoriLanguageController @Inject() (languageUtils: LanguageUtils, cc: ControllerComponents)
+    extends LanguageController(languageUtils, cc) {
 
   // TODO Find a way to include a service name in the url
   override protected def fallbackURL: String =
