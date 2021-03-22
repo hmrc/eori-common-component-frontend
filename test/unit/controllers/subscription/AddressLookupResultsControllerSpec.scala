@@ -259,6 +259,80 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/address-postcode/no-results"
       }
+
+      "address that come back doesn't have line 1 for display method" in {
+
+        when(mockSessionCache.addressLookupParams(any())).thenReturn(Future.successful(Some(addressLookupParams)))
+        when(mockAddressLookupConnector.lookup(any(), any())(any()))
+          .thenReturn(Future.successful(AddressLookupSuccess(Seq(AddressLookup("", "city", "postcode", "GB")))))
+
+        val result = controller.displayPage(atarService)(getRequest)
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/address-postcode/no-results"
+
+        verify(mockAddressLookupConnector).lookup(any(), any())(any())
+      }
+
+      "address that come back doesn't have line 1 for review method" in {
+
+        when(mockSessionCache.addressLookupParams(any())).thenReturn(Future.successful(Some(addressLookupParams)))
+        when(mockAddressLookupConnector.lookup(any(), any())(any()))
+          .thenReturn(Future.successful(AddressLookupSuccess(Seq(AddressLookup("", "city", "postcode", "GB")))))
+
+        val result = controller.submit(atarService, false)(postRequest("address" -> addressLookup.dropDownView))
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/address-postcode/no-results"
+
+        verify(mockAddressLookupConnector).lookup(any(), any())(any())
+      }
+
+      "address that come back doesn't have line 1 for submit method" in {
+
+        when(mockSessionCache.addressLookupParams(any())).thenReturn(Future.successful(Some(addressLookupParams)))
+        when(mockAddressLookupConnector.lookup(any(), any())(any()))
+          .thenReturn(Future.successful(AddressLookupSuccess(Seq(AddressLookup("", "city", "postcode", "GB")))))
+
+        val result = controller.displayPage(atarService)(getRequest)
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/address-postcode/no-results"
+
+        verify(mockAddressLookupConnector).lookup(any(), any())(any())
+      }
+
+      "address that come back doesn't have line 1 for second call during display method" in {
+
+        when(mockSessionCache.addressLookupParams(any()))
+          .thenReturn(Future.successful(Some(AddressLookupParams("postcode", Some("line1")))))
+        when(mockAddressLookupConnector.lookup(meq("postcode"), meq(Some("line1")))(any()))
+          .thenReturn(Future.successful(AddressLookupSuccess(Seq.empty)))
+        when(mockAddressLookupConnector.lookup(meq("postcode"), meq(None))(any()))
+          .thenReturn(Future.successful(AddressLookupSuccess(Seq(AddressLookup("", "city", "postcode", "GB")))))
+
+        val result = controller.displayPage(atarService)(getRequest)
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/address-postcode/no-results"
+      }
+
+      "address that come back doesn't have line 1 for second call during review method" in {
+
+        when(mockSessionCache.addressLookupParams(any()))
+          .thenReturn(Future.successful(Some(AddressLookupParams("postcode", Some("line1")))))
+        when(mockAddressLookupConnector.lookup(meq("postcode"), meq(Some("line1")))(any()))
+          .thenReturn(Future.successful(AddressLookupSuccess(Seq.empty)))
+        when(mockAddressLookupConnector.lookup(meq("postcode"), meq(None))(any()))
+          .thenReturn(Future.successful(AddressLookupSuccess(Seq(AddressLookup("", "city", "postcode", "GB")))))
+
+        val result = controller.reviewPage(atarService)(getRequest)
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(
+          result
+        ).get shouldBe "/customs-enrolment-services/atar/subscribe/address-postcode/no-results/review"
+      }
     }
 
     "return 303 (SEE_OTHER) and redirect to error page" when {

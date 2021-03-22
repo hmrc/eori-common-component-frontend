@@ -191,7 +191,7 @@ class SessionCache @Inject() (
             throw SessionTimeOutException(s"No Session data is cached for the sessionId : ${sessionId.id}")
         }
       case _ =>
-        eccLogger.error(s"No match session id for signed in user with session: ${sessionId.id}")
+        eccLogger.info(s"No match session id for signed in user with session: ${sessionId.id}")
         throw SessionTimeOutException(s"No match session id for signed in user with session : ${sessionId.id}")
     }
 
