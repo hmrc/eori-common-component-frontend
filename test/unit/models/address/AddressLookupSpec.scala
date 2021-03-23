@@ -43,13 +43,6 @@ class AddressLookupSpec extends UnitSpec {
       addressLookup.toAddressViewModel shouldBe expectedAddressViewModel
     }
 
-    "throw an exception when address line is missing" in {
-
-      intercept[IllegalStateException] {
-        AddressLookup.applyWithLines(Seq.empty, "town", "postcode", "GB")
-      }
-    }
-
     "correctly read only required information from json with one line address" in {
 
       val addressJsonResponse = Json.parse("""
@@ -157,6 +150,40 @@ class AddressLookupSpec extends UnitSpec {
       val result = AddressLookup.addressReads.reads(addressJsonResponse)
 
       val expectedModel = AddressLookup("Address Line 1, Address Line 2", "Town", "AA11 1AA", "GB")
+
+      result.get shouldBe expectedModel
+    }
+
+    "correctly read only required information from json without line address" in {
+
+      val addressJsonResponse = Json.parse("""
+         |{
+         |  "id": "id",
+         |  "uprn": 1234,
+         |  "address": {
+         |    "lines": [],
+         |    "town": "Town",
+         |    "county": "County",
+         |    "postcode": "AA11 1AA",
+         |    "subdivision": {
+         |      "code": "GB-ENG",
+         |      "name": "England"
+         |    },
+         |    "country": {
+         |      "code": "UK",
+         |      "name": "United Kingdom"
+         |    }
+         |  },
+         |  "language": "en",
+         |  "localCustodian": {
+         |    "code": 123,
+         |    "name": "Name"
+         |  }
+         |}""".stripMargin)
+
+      val result = AddressLookup.addressReads.reads(addressJsonResponse)
+
+      val expectedModel = AddressLookup("", "Town", "AA11 1AA", "GB")
 
       result.get shouldBe expectedModel
     }

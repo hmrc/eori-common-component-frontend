@@ -65,7 +65,7 @@ class CdsErrorHandler @Inject() (
 
     exception match {
       case sessionTimeOut: SessionTimeOutException =>
-        logger.error("Session time out: " + sessionTimeOut.errorMessage, exception)
+        logger.info("Session time out: " + sessionTimeOut.errorMessage, exception)
         Future.successful(Redirect(SecuritySignOutController.displayPage(service, journeyFromRequest)).withNewSession)
       case invalidRequirement: InvalidUrlValueException =>
         logger.warn(invalidRequirement.message)
