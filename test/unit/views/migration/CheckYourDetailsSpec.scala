@@ -652,6 +652,29 @@ class CheckYourDetailsSpec extends ViewSpec {
       ).text mustBe "By sending this application you confirm that the information you are providing is correct and complete."
       doc().body.getElementById("continue").attr("value") mustBe "Confirm and send"
     }
+
+    "should display individual UTR" when {
+
+      "user has organisation UTR in cache" in {
+
+        val individualUtr   = Utr("1111111111")
+        val organisationUtr = "2222222222"
+
+        val page = doc(
+          isIndividualSubscriptionFlow = true,
+          customsId = Some(individualUtr),
+          nameIdOrganisationDetails = Some(NameIdOrganisationMatchModel("test", organisationUtr))
+        )
+
+        page.body.getElementById("review-tbl__utr_heading").text mustBe "UTR number"
+        page.body.getElementById("review-tbl__utr").text mustBe individualUtr.id
+        page.body
+          .getElementById("review-tbl__utr_change")
+          .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/chooseid/review"
+
+        page.body.toString mustNot contain(organisationUtr)
+      }
+    }
   }
 
   def doc(

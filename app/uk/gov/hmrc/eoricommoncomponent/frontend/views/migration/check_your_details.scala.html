@@ -128,8 +128,8 @@
 @*Check NameIdModel for UTR, if it exits use that, if it doesn't use CustomsIdModel*@
     @utr = @{
         nameIdOrganisationDetails match {
-            case Some(_) => None
-            case None => customsId match {
+            case Some(_) if !isIndividualSubscriptionFlow => None
+            case _ => customsId match {
                 case u@Some(Utr(_)) => u
                 case _ => if(isThirdCountrySubscription) Some(Utr(messages("cds.not-entered.label"))) else None
             }
