@@ -28,11 +28,10 @@ object SubscriptionFormBuilder {
 
   val euVats: List[VatEUDetailsModel] = List(VatEUDetailsModel("FR", "VAT-2"), VatEUDetailsModel("PL", "VAT-3"))
 
-  val LegalStatus              = "corporate-body-uk"
-  val ShortName                = "Short Name"
-  val sic                      = "9999"
-  val DateEstablished          = new LocalDate("1900-11-11")
-  val DateOfBirthForIndividual = LocalDate.parse("1962-05-12")
+  val LegalStatus     = "corporate-body-uk"
+  val ShortName       = "Short Name"
+  val sic             = "9999"
+  val DateEstablished = new LocalDate("1900-11-11")
 
   private val contactDetailsModel = ContactDetailsModel(
     fullName = "John Doe",
@@ -82,7 +81,6 @@ object SubscriptionFormBuilder {
   val detailsHolderWithAllFields = SubscriptionDetails(
     personalDataDisclosureConsent = Some(true),
     contactDetails = Some(contactDetailsModel),
-    dateOfBirth = Some(DateOfBirthForIndividual),
     businessShortName = Some(BusinessShortName(Some(ShortName))),
     dateEstablished = Some(DateEstablished),
     sicCode = Some(sic),

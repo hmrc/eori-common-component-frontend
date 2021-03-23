@@ -87,8 +87,7 @@ class SubscriptionService @Inject() (connector: SubscriptionServiceConnector, fe
   ): SubscriptionRequest =
     reg match {
       case individual: RegistrationDetailsIndividual =>
-        val dob = subscription.dateOfBirth getOrElse individual.dateOfBirth
-        SubscriptionCreateRequest(individual, subscription, cdsOrgType, dob, maybe(service))
+        SubscriptionCreateRequest(individual, subscription, cdsOrgType, individual.dateOfBirth, maybe(service))
 
       case org: RegistrationDetailsOrganisation =>
         val doe = subscription.dateEstablished

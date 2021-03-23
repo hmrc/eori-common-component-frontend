@@ -17,7 +17,6 @@
 package unit.services.subscription
 
 import base.UnitSpec
-import org.joda.time.LocalDate
 import org.mockito.Mockito.when
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalacheck.{Gen, Prop}
@@ -238,7 +237,7 @@ class SubscriptionServiceSpec
     }
 
     "call connector with date of birth captured in subscription flow when user is an individual" in {
-      val capturedDateOfBirth = dateOfEstablishment
+      val capturedDateOfBirth = dateOfBirth
       val expectedRequest = requestJsonIndividual(
         name = individualName,
         vatIds = EmptyVatIds,
@@ -246,12 +245,7 @@ class SubscriptionServiceSpec
         expectedDateOfBirthString = capturedDateOfBirth.toString
       )
 
-      assertIndividualSubscriptionRequest(
-        expectedRequest,
-        subscriptionSuccessResult,
-        None,
-        dateOfBirth = Some(capturedDateOfBirth)
-      )
+      assertIndividualSubscriptionRequest(expectedRequest, subscriptionSuccessResult, None)
     }
 
     "return failed future for matchBusinessWithOrganisationName when connector fails to return result" in {
@@ -772,14 +766,12 @@ class SubscriptionServiceSpec
     expectedServiceCallResult: SubscriptionSuccessful,
     ukVatDetails: Option[VatDetails],
     subscriptionContactDetails: ContactDetailsModel = subscriptionContactDetailsModel,
-    personalDataDisclosureConsent: Boolean = false,
-    dateOfBirth: Option[LocalDate] = None
+    personalDataDisclosureConsent: Boolean = false
   ): Unit = {
 
     val subscriptionDetailsHolder = SubscriptionDetails(
       contactDetails = Some(subscriptionContactDetails),
       personalDataDisclosureConsent = Some(personalDataDisclosureConsent),
-      dateOfBirth = dateOfBirth,
       ukVatDetails = ukVatDetails
     )
 
