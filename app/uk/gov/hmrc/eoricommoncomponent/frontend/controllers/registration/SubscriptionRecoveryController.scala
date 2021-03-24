@@ -159,7 +159,7 @@ class SubscriptionRecoveryController @Inject() (
           getDateOfBirthOrDateOfEstablishment(
             subscriptionDisplayResponse,
             subscriptionDetails.dateEstablished,
-            subscriptionDetails.dateOfBirth orElse subscriptionDetails.nameDobDetails.map(_.dateOfBirth)
+            subscriptionDetails.nameDobDetails.map(_.dateOfBirth)
           ),
           service,
           Journey.Subscribe
@@ -193,7 +193,7 @@ class SubscriptionRecoveryController @Inject() (
           getDateOfBirthOrDateOfEstablishment(
             subscriptionDisplayResponse,
             subscriptionDetails.dateEstablished,
-            subscriptionDetails.dateOfBirth orElse subscriptionDetails.nameDobDetails.map(_.dateOfBirth)
+            subscriptionDetails.nameDobDetails.map(_.dateOfBirth)
           ),
           service,
           Journey.Subscribe

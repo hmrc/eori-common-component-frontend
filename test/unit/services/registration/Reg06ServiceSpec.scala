@@ -884,7 +884,6 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       val cachedAddressViewModel =
         Some(AddressViewModel("Address Line 1", "city", Some("postcode"), "GB"))
       val eori           = Some("EORINUMBERXXXXXXX")
-      val dob            = Some(LocalDate.parse("1976-04-13"))
       val nameDobDetails = Some(NameDobMatchModel("FName", None, "LastName", LocalDate.parse("1976-04-13")))
       val nino           = Some(Nino("NINO1234"))
 
@@ -902,7 +901,6 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       when(subscriptionDetailsHolder.addressDetails)
         .thenReturn(cachedAddressViewModel)
       when(subscriptionDetailsHolder.eoriNumber).thenReturn(eori)
-      when(subscriptionDetailsHolder.dateOfBirth).thenReturn(dob)
       when(subscriptionDetailsHolder.nameDobDetails).thenReturn(nameDobDetails)
       when(subscriptionDetailsHolder.customsId).thenReturn(nino)
 
