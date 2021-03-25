@@ -33,7 +33,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.Addres
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{CachedData, SessionCache, SessionTimeOutException}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.logging.SessionId
+import uk.gov.hmrc.http.SessionId
 import uk.gov.hmrc.mongo.{MongoConnector, MongoSpecSupport}
 import util.builders.RegistrationDetailsBuilder._
 
