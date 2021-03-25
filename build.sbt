@@ -104,16 +104,15 @@ lazy val scoverageSettings = {
 scalastyleConfig := baseDirectory.value / "project" / "scalastyle-config.xml"
 
 val compileDependencies = Seq(
-  "uk.gov.hmrc" %% "bootstrap-frontend-play-27" % "3.4.0",
-  "uk.gov.hmrc" %% "auth-client" % "3.2.0-play-27",
+  "uk.gov.hmrc" %% "bootstrap-frontend-play-27" % "4.1.0",
   "uk.gov.hmrc" %% "play-conditional-form-mapping" % "1.6.0-play-27",
-  "uk.gov.hmrc" %% "domain" % "5.10.0-play-27",
-  "uk.gov.hmrc" %% "mongo-caching" % "6.16.0-play-27",
+  "uk.gov.hmrc" %% "domain" % "5.11.0-play-27",
+  "uk.gov.hmrc" %% "mongo-caching" % "7.0.0-play-27",
   "uk.gov.hmrc" %% "emailaddress" % "3.5.0",
   "uk.gov.hmrc" %% "logback-json-logger" % "5.1.0",
   "com.typesafe.play" %% "play-json-joda" % "2.7.3",
-  "uk.gov.hmrc" %% "play-language" % "4.11.0-play-27",
-  "uk.gov.hmrc" %% "play-ui" % "8.19.0-play-27",
+  "uk.gov.hmrc" %% "play-language" % "4.12.0-play-27",
+  "uk.gov.hmrc" %% "play-ui" % "9.1.0-play-27",
   "org.webjars.npm" % "accessible-autocomplete" % "2.0.3"
 )
 

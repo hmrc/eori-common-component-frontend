@@ -36,10 +36,10 @@ class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, aud
   private val logger = Logger(this.getClass)
 
   private def logSuccess(method: String, url: String)(implicit hc: HeaderCarrier) =
-    logger.debug(s"$method complete for call to $url and headers ${hc.headers}")
+    logger.debug(s"$method complete for call to $url")
 
   private def logFailure(method: String, url: String, e: Throwable)(implicit hc: HeaderCarrier) =
-    logger.warn(s"$method request failed for call to $url and headers ${hc.headers}: ${e.getMessage}", e)
+    logger.warn(s"$method request failed for call to $url: ${e.getMessage}", e)
 
   def get[T](id: String, key: String)(implicit hc: HeaderCarrier, reads: Reads[T]): Future[Option[T]] = {
     val url = s"${appConfig.handleSubscriptionBaseUrl}/save4later/$id/$key"

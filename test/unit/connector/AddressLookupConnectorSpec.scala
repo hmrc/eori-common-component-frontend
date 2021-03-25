@@ -45,7 +45,7 @@ class AddressLookupConnectorSpec
 
   private val connector = new AddressLookupConnector(httpClient, appConfig)(global)
 
-  private val hc = HeaderCarrier()
+  implicit val hc = HeaderCarrier()
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -65,7 +65,7 @@ class AddressLookupConnectorSpec
 
       "there is only postcode" in {
 
-        when(httpClient.GET[HttpResponse](any())(any(), any(), any()))
+        when(httpClient.GET[HttpResponse](any(), any(), any())(any(), any(), any()))
           .thenReturn(Future.successful(HttpResponse(200, "[]")))
 
         val postcode = "AA11 1AA"
@@ -79,14 +79,14 @@ class AddressLookupConnectorSpec
 
         result.futureValue shouldBe expectedResponse
 
-        verify(httpClient).GET[HttpResponse](urlCaptor.capture())(any(), any(), any())
+        verify(httpClient).GET[HttpResponse](urlCaptor.capture(), any(), any())(any(), any(), any())
 
         urlCaptor.getValue shouldBe expectedUrl
       }
 
       "postcode and line 1 is specified" in {
 
-        when(httpClient.GET[HttpResponse](any())(any(), any(), any()))
+        when(httpClient.GET[HttpResponse](any(), any(), any())(any(), any(), any()))
           .thenReturn(Future.successful(HttpResponse(200, "[]")))
 
         val postcode = "AA11 1AA"
@@ -101,7 +101,7 @@ class AddressLookupConnectorSpec
 
         result.futureValue shouldBe expectedResponse
 
-        verify(httpClient).GET[HttpResponse](urlCaptor.capture())(any(), any(), any())
+        verify(httpClient).GET[HttpResponse](urlCaptor.capture(), any(), any())(any(), any(), any())
 
         urlCaptor.getValue shouldBe expectedUrl
       }
@@ -113,7 +113,7 @@ class AddressLookupConnectorSpec
 
         val addressLookupResponse = HttpResponse(status = 200, json = jsonResponseWithTwoResults, headers = Map.empty)
 
-        when(httpClient.GET[HttpResponse](any())(any(), any(), any()))
+        when(httpClient.GET[HttpResponse](any(), any(), any())(any(), any(), any()))
           .thenReturn(Future.successful(addressLookupResponse))
 
         val postcode = "AA11 1AA"
@@ -133,7 +133,7 @@ class AddressLookupConnectorSpec
 
         val addressLookupResponse = HttpResponse(status = 200, json = jsonResponseWithOneResult, headers = Map.empty)
 
-        when(httpClient.GET[HttpResponse](any())(any(), any(), any()))
+        when(httpClient.GET[HttpResponse](any(), any(), any())(any(), any(), any()))
           .thenReturn(Future.successful(addressLookupResponse))
 
         val postcode = "AA11 1AA"
@@ -148,7 +148,7 @@ class AddressLookupConnectorSpec
 
       "address lookup didn't return any addresses" in {
 
-        when(httpClient.GET[HttpResponse](any())(any(), any(), any()))
+        when(httpClient.GET[HttpResponse](any(), any(), any())(any(), any(), any()))
           .thenReturn(Future.successful(HttpResponse(200, "[]")))
 
         val postcode = "AA11 1AA"
@@ -165,7 +165,7 @@ class AddressLookupConnectorSpec
 
       "address lookup return different status than OK (200)" in {
 
-        when(httpClient.GET[HttpResponse](any())(any(), any(), any()))
+        when(httpClient.GET[HttpResponse](any(), any(), any())(any(), any(), any()))
           .thenReturn(Future.successful(HttpResponse(500, "Internal Server Error")))
 
         val postcode = "AA11 1AA"

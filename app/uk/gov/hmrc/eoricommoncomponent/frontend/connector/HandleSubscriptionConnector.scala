@@ -54,7 +54,7 @@ class HandleSubscriptionConnector @Inject() (http: HttpClient, appConfig: AppCon
         logger.warn(s"Call failed with BAD_REQUEST status for call to $url and  hc: $hc: ${e.getMessage}", e)
         Future.failed(e)
       case NonFatal(e) =>
-        logger.warn(s"Call failed for call to $url and headers ${hc.headers}: ${e.getMessage}", e)
+        logger.warn(s"Call failed for call to $url: ${e.getMessage}", e)
         Future.failed(e)
     }
   }
