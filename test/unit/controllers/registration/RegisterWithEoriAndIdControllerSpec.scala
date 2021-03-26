@@ -1040,7 +1040,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
       regExistingEori(Journey.Register) { result =>
-        status(result) shouldBe SERVICE_UNAVAILABLE
+        status(result) shouldBe INTERNAL_SERVER_ERROR
       }
     }
 

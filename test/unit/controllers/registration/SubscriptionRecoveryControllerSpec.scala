@@ -311,7 +311,7 @@ class SubscriptionRecoveryControllerSpec
       ).thenReturn(Future.successful(result = ()))
 
       callEnrolmentComplete(journey = Journey.Register) { result =>
-        status(result) shouldBe SERVICE_UNAVAILABLE
+        status(result) shouldBe INTERNAL_SERVER_ERROR
       }
     }
   }
