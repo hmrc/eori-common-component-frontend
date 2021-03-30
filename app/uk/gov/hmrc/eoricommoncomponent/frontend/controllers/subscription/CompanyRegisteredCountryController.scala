@@ -28,7 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.RowOrganisationFlow
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.CompanyRegisteredCountry
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
@@ -78,14 +78,14 @@ class CompanyRegisteredCountryController @Inject() (
   ): Html = {
     val (countries, picker) = Countries.getCountryParametersForAllCountries()
 
-    if (requestSessionData.userSubscriptionFlow == MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow)
+    if (requestSessionData.userSubscriptionFlow == RowOrganisationFlow)
       countryOrganisationPage(form, countries, picker, service, isInReviewMode)
     else
       countryIndividualPage(form, countries, picker, service, isInReviewMode)
   }
 
   private def errorMessageBasedOnType()(implicit request: Request[AnyContent]): String =
-    if (requestSessionData.userSubscriptionFlow == MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow)
+    if (requestSessionData.userSubscriptionFlow == RowOrganisationFlow)
       "ecc.registered-company-country.organisation.error"
     else "ecc.registered-company-country.individual.error"
 
@@ -108,7 +108,7 @@ class CompanyRegisteredCountryController @Inject() (
     }
 
   private def redirectBasedOnTheJourney(service: Service)(implicit request: Request[AnyContent]): Result =
-    if (requestSessionData.userSubscriptionFlow == MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow)
+    if (requestSessionData.userSubscriptionFlow == RowOrganisationFlow)
       Redirect(DateOfEstablishmentController.createForm(service, Journey.Subscribe))
     else
       Redirect(ContactDetailsController.createForm(service))

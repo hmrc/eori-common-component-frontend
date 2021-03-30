@@ -124,16 +124,7 @@ object SubscriptionFlows {
     )
   )
 
-  private val migrationEoriRowSoleTraderAndIndividualFlowConfig = createFlowConfig(
-    Journey.Subscribe,
-    List(
-      NameDobDetailsSubscriptionFlowPage,
-      AddressDetailsSubscriptionFlowPage,
-      ContactDetailsSubscriptionFlowPageMigrate
-    )
-  )
-
-  private val migrationEoriRowSoleTraderAndIndividualFlowConfigUtrNinoEnabled = createFlowConfig(
+  private val rowIndividualFlowConfig = createFlowConfig(
     Journey.Subscribe,
     List(
       NameDobDetailsSubscriptionFlowPage,
@@ -144,17 +135,7 @@ object SubscriptionFlows {
     )
   )
 
-  private val migrationEoriRowCorporateFlowConfig = createFlowConfig(
-    Journey.Subscribe,
-    List(
-      NameDetailsSubscriptionFlowPage,
-      AddressDetailsSubscriptionFlowPage,
-      RowDateOfEstablishmentSubscriptionFlowPage,
-      ContactDetailsSubscriptionFlowPageMigrate
-    )
-  )
-
-  private val migrationEoriRowCorporateFlowConfigUtrNinoEnabled = createFlowConfig(
+  private val rowOrganisationFlowConfig = createFlowConfig(
     Journey.Subscribe,
     List(
       NameDetailsSubscriptionFlowPage,
@@ -166,21 +147,18 @@ object SubscriptionFlows {
   )
 
   val flows: Map[SubscriptionFlow, SubscriptionFlowConfig] = Map(
-    OrganisationSubscriptionFlow                               -> corporateFlowConfig,
-    PartnershipSubscriptionFlow                                -> partnershipFlowConfig,
-    SoleTraderSubscriptionFlow                                 -> soleTraderFlowConfig,
-    IndividualSubscriptionFlow                                 -> individualFlowConfig,
-    ThirdCountryOrganisationSubscriptionFlow                   -> thirdCountryCorporateFlowConfig,
-    ThirdCountrySoleTraderSubscriptionFlow                     -> thirdCountrySoleTraderFlowConfig,
-    ThirdCountryIndividualSubscriptionFlow                     -> thirdCountryIndividualFlowConfig,
-    MigrationEoriOrganisationSubscriptionFlow                  -> corporateRegExistingEoriFlowConfig,
-    MigrationEoriSoleTraderSubscriptionFlow                    -> soleTraderRegExistingEoriFlowConfig,
-    MigrationEoriIndividualSubscriptionFlow                    -> soleTraderRegExistingEoriFlowConfig,
-    MigrationEoriRowOrganisationSubscriptionFlow               -> migrationEoriRowCorporateFlowConfig,
-    MigrationEoriRowSoleTraderSubscriptionFlow                 -> migrationEoriRowSoleTraderAndIndividualFlowConfig,
-    MigrationEoriRowIndividualSubscriptionFlow                 -> migrationEoriRowSoleTraderAndIndividualFlowConfig,
-    MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow -> migrationEoriRowCorporateFlowConfigUtrNinoEnabled,
-    MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow  -> migrationEoriRowSoleTraderAndIndividualFlowConfigUtrNinoEnabled
+    OrganisationSubscriptionFlow             -> corporateFlowConfig,
+    PartnershipSubscriptionFlow              -> partnershipFlowConfig,
+    SoleTraderSubscriptionFlow               -> soleTraderFlowConfig,
+    IndividualSubscriptionFlow               -> individualFlowConfig,
+    ThirdCountryOrganisationSubscriptionFlow -> thirdCountryCorporateFlowConfig,
+    ThirdCountrySoleTraderSubscriptionFlow   -> thirdCountrySoleTraderFlowConfig,
+    ThirdCountryIndividualSubscriptionFlow   -> thirdCountryIndividualFlowConfig,
+    OrganisationFlow                         -> corporateRegExistingEoriFlowConfig,
+    SoleTraderFlow                           -> soleTraderRegExistingEoriFlowConfig,
+    IndividualFlow                           -> soleTraderRegExistingEoriFlowConfig,
+    RowOrganisationFlow                      -> rowOrganisationFlowConfig,
+    RowIndividualFlow                        -> rowIndividualFlowConfig
   )
 
   private def createFlowConfig(journey: Journey.Value, flowStepList: List[SubscriptionPage]): SubscriptionFlowConfig =
@@ -223,28 +201,16 @@ case object ThirdCountryIndividualSubscriptionFlow
 
 case object SoleTraderSubscriptionFlow extends SubscriptionFlow(SoleTrader.id, isIndividualFlow = true)
 
-case object MigrationEoriOrganisationSubscriptionFlow
-    extends SubscriptionFlow("migration-eori-Organisation", isIndividualFlow = false)
+case object OrganisationFlow extends SubscriptionFlow("migration-eori-Organisation", isIndividualFlow = false)
 
-case object MigrationEoriIndividualSubscriptionFlow
-    extends SubscriptionFlow("migration-eori-Individual", isIndividualFlow = true)
+case object IndividualFlow extends SubscriptionFlow("migration-eori-Individual", isIndividualFlow = true)
 
-case object MigrationEoriSoleTraderSubscriptionFlow
-    extends SubscriptionFlow("migration-eori-sole-trader", isIndividualFlow = true)
+case object SoleTraderFlow extends SubscriptionFlow("migration-eori-sole-trader", isIndividualFlow = true)
 
-case object MigrationEoriRowOrganisationSubscriptionFlow
-    extends SubscriptionFlow("migration-eori-row-Organisation", isIndividualFlow = false)
-
-case object MigrationEoriRowSoleTraderSubscriptionFlow
-    extends SubscriptionFlow("migration-eori-row-sole-trader", isIndividualFlow = true)
-
-case object MigrationEoriRowIndividualSubscriptionFlow
-    extends SubscriptionFlow("migration-eori-row-Individual", isIndividualFlow = true)
-
-case object MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow
+case object RowOrganisationFlow
     extends SubscriptionFlow("migration-eori-row-utrNino-enabled-Organisation", isIndividualFlow = false)
 
-case object MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow
+case object RowIndividualFlow
     extends SubscriptionFlow("migration-eori-row-utrNino-enabled-Individual", isIndividualFlow = true)
 
 object SubscriptionFlow {

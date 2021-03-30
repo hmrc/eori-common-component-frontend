@@ -24,10 +24,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.Get
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.CompanyRegisteredCountryController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
-  MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow,
-  UtrSubscriptionFlowPage
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{RowOrganisationFlow, UtrSubscriptionFlowPage}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.haveUtrForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
@@ -109,7 +106,7 @@ class HaveUtrSubscriptionController @Inject() (
       case Some(false) =>
         subscriptionDetailsService.cacheUtrMatchForNoAnswer(Some(form)).map {
           _ =>
-            if (requestSessionData.userSubscriptionFlow == MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow)
+            if (requestSessionData.userSubscriptionFlow == RowOrganisationFlow)
               Redirect(CompanyRegisteredCountryController.displayPage(service))
             else
               Redirect(subscriptionFlowManager.stepInformation(UtrSubscriptionFlowPage).nextPage.url(service))

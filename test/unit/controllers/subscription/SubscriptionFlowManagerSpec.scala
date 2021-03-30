@@ -234,42 +234,12 @@ class SubscriptionFlowManagerSpec
       (ThirdCountrySoleTraderSubscriptionFlow, VatEUIdsSubscriptionFlowPage, 6, 8, VatEUConfirmSubscriptionFlowPage),
       (ThirdCountrySoleTraderSubscriptionFlow, VatEUConfirmSubscriptionFlowPage, 7, 8, EoriConsentSubscriptionFlowPage),
       (ThirdCountrySoleTraderSubscriptionFlow, EoriConsentSubscriptionFlowPage, 8, 8, ReviewDetailsPageGetYourEORI),
-      (
-        MigrationEoriOrganisationSubscriptionFlow,
-        NameUtrDetailsSubscriptionFlowPage,
-        1,
-        3,
-        DateOfEstablishmentSubscriptionFlowPageMigrate
-      ),
-      (
-        MigrationEoriOrganisationSubscriptionFlow,
-        DateOfEstablishmentSubscriptionFlowPageMigrate,
-        2,
-        3,
-        AddressDetailsSubscriptionFlowPage
-      ),
-      (
-        MigrationEoriOrganisationSubscriptionFlow,
-        AddressDetailsSubscriptionFlowPage,
-        3,
-        3,
-        ReviewDetailsPageSubscription
-      ),
-      (
-        MigrationEoriSoleTraderSubscriptionFlow,
-        NameDobDetailsSubscriptionFlowPage,
-        1,
-        3,
-        HowCanWeIdentifyYouSubscriptionFlowPage
-      ),
-      (
-        MigrationEoriSoleTraderSubscriptionFlow,
-        HowCanWeIdentifyYouSubscriptionFlowPage,
-        2,
-        3,
-        AddressDetailsSubscriptionFlowPage
-      ),
-      (MigrationEoriSoleTraderSubscriptionFlow, AddressDetailsSubscriptionFlowPage, 3, 3, ReviewDetailsPageSubscription)
+      (OrganisationFlow, NameUtrDetailsSubscriptionFlowPage, 1, 3, DateOfEstablishmentSubscriptionFlowPageMigrate),
+      (OrganisationFlow, DateOfEstablishmentSubscriptionFlowPageMigrate, 2, 3, AddressDetailsSubscriptionFlowPage),
+      (OrganisationFlow, AddressDetailsSubscriptionFlowPage, 3, 3, ReviewDetailsPageSubscription),
+      (SoleTraderFlow, NameDobDetailsSubscriptionFlowPage, 1, 3, HowCanWeIdentifyYouSubscriptionFlowPage),
+      (SoleTraderFlow, HowCanWeIdentifyYouSubscriptionFlowPage, 2, 3, AddressDetailsSubscriptionFlowPage),
+      (SoleTraderFlow, AddressDetailsSubscriptionFlowPage, 3, 3, ReviewDetailsPageSubscription)
     )
 
     TableDrivenPropertyChecks.forAll(values) {
@@ -363,27 +333,7 @@ class SubscriptionFlowManagerSpec
       session shouldBe mockSession
 
       verify(mockRequestSessionData)
-        .storeUserSubscriptionFlow(MigrationEoriOrganisationSubscriptionFlow, RegistrationConfirmPage.url(atarService))(
-          mockRequest
-        )
-    }
-
-    "start Corporate Subscription Flow when cached registration details are for an Organisation Reg-existing (a.k.a migration) user location is set to channel islands" in {
-      when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
-      when(mockRequestSessionData.selectedUserLocation(mockRequest)).thenReturn(Some("islands"))
-
-      when(mockCdsFrontendDataCache.registrationDetails(mockHC))
-        .thenReturn(Future.successful(mockOrgRegistrationDetails))
-      val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(atarService, Journey.Subscribe)(mockHC, mockRequest))
-
-      subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
-      session shouldBe mockSession
-
-      verify(mockRequestSessionData).storeUserSubscriptionFlow(
-        MigrationEoriRowOrganisationSubscriptionFlow,
-        RegistrationConfirmPage.url(atarService)
-      )(mockRequest)
+        .storeUserSubscriptionFlow(OrganisationFlow, RegistrationConfirmPage.url(atarService))(mockRequest)
     }
   }
 }
@@ -426,7 +376,7 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
       verify(mockRequestSessionData).storeUserSubscriptionFlow(
-        MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow,
+        RowIndividualFlow,
         RegistrationConfirmPage.url(atarService)
       )(mockRequest)
     }
@@ -443,7 +393,7 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
       verify(mockRequestSessionData).storeUserSubscriptionFlow(
-        MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow,
+        RowIndividualFlow,
         RegistrationConfirmPage.url(atarService)
       )(mockRequest)
     }
@@ -459,7 +409,7 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
       verify(mockRequestSessionData).storeUserSubscriptionFlow(
-        MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow,
+        RowOrganisationFlow,
         RegistrationConfirmPage.url(atarService)
       )(mockRequest)
     }
