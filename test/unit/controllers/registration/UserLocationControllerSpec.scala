@@ -318,7 +318,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         controller.cacheAndRedirect(atarService, Journey.Register, "third-country")
       val result = await(test(Left(ServiceUnavailableResponse)))
 
-      status(result) shouldBe SERVICE_UNAVAILABLE
+      status(result) shouldBe INTERNAL_SERVER_ERROR
     }
   }
 

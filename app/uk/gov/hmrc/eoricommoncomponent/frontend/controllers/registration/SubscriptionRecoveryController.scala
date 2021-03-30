@@ -129,7 +129,7 @@ class SubscriptionRecoveryController @Inject() (
           }
         }
       case Left(_) =>
-        Future.successful(ServiceUnavailable(errorTemplateView()))
+        Future.successful(InternalServerError(errorTemplateView()))
     }
     result.flatMap(identity)
   }
@@ -165,7 +165,7 @@ class SubscriptionRecoveryController @Inject() (
           Journey.Subscribe
         )(Redirect(Sub02Controller.migrationEnd(service)))
       case Left(_) =>
-        Future.successful(ServiceUnavailable(errorTemplateView()))
+        Future.successful(InternalServerError(errorTemplateView()))
     }
     result.flatMap(identity)
   }
@@ -199,7 +199,7 @@ class SubscriptionRecoveryController @Inject() (
           Journey.Subscribe
         )(Redirect(Sub02Controller.migrationEnd(service)))
       case Left(_) =>
-        Future.successful(ServiceUnavailable(errorTemplateView()))
+        Future.successful(InternalServerError(errorTemplateView()))
     }
     result.flatMap(identity)
   }

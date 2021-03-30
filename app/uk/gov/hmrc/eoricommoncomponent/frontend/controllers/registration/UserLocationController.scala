@@ -183,7 +183,7 @@ class UserLocationController @Inject() (
           )
         )
       }
-    case _ => Future.successful(ServiceUnavailable(errorTemplate()))
+    case _ => Future.successful(InternalServerError(errorTemplate()))
   }
 
   def processing(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {

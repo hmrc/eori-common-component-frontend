@@ -251,7 +251,7 @@ class RegisterWithEoriAndIdController @Inject() (
         logger.warn("REG06 Request could not be processed")
         val formattedDate = languageUtils.Dates.formatDate(LocalDate.now())
         Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service, formattedDate)))
-      case _ => Future.successful(ServiceUnavailable(errorTemplateView()))
+      case _ => Future.successful(InternalServerError(errorTemplateView()))
     }
   }
 
