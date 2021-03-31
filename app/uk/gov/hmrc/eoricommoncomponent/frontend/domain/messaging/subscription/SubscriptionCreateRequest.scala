@@ -128,6 +128,7 @@ object SubscriptionCreateRequest {
       )
     )
 
+  // ROW with customs ID or UK journey
   def apply(
     data: ResponseData,
     subscription: SubscriptionDetails,
@@ -167,6 +168,7 @@ object SubscriptionCreateRequest {
     )
   }
 
+  // Registration journey
   def apply(
     reg: RegistrationDetails,
     sub: SubscriptionDetails,
@@ -215,7 +217,7 @@ object SubscriptionCreateRequest {
     address.copy(city = dashForEmpty(address.city))
   }
 
-  def generateWithOriginatingSystem(requestParameters: Option[Seq[RequestParameter]] = None): RequestCommon =
+  private def generateWithOriginatingSystem(requestParameters: Option[Seq[RequestParameter]] = None): RequestCommon =
     RequestCommon(
       regime = "CDS",
       receiptDate = new DateTime(Clock.systemUTC().instant.toEpochMilli, DateTimeZone.UTC),
