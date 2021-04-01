@@ -28,6 +28,8 @@ case class AddressLookup(addressLine: String, city: String, postcode: String, co
   def dropDownView: String = List(addressLine, city, postcode).mkString(", ")
 
   def toAddressViewModel: AddressViewModel = AddressViewModel(addressLine, city, Some(postcode), country)
+
+  def nonEmpty: Boolean = addressLine.nonEmpty
 }
 
 object AddressLookup {
@@ -36,7 +38,7 @@ object AddressLookup {
     val addressLine = lines match {
       case Seq(line1, line2, _ @_*) => line1 + ", " + line2
       case Seq(line1)               => line1
-      case Seq()                    => throw new IllegalStateException("Address line cannot be empty")
+      case Seq()                    => ""
     }
     val countryCode = if (country == "UK") "GB" else country
 

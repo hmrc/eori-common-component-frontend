@@ -70,7 +70,7 @@ class AddressLookupResultsController @Inject() (
       case Some(addressLookupParams) =>
         addressLookupConnector.lookup(addressLookupParams.postcode, addressLookupParams.line1).flatMap { response =>
           response match {
-            case AddressLookupSuccess(addresses) if addresses.nonEmpty =>
+            case AddressLookupSuccess(addresses) if addresses.nonEmpty && addresses.forall(_.nonEmpty) =>
               Future.successful(
                 Ok(
                   prepareView(
@@ -117,7 +117,7 @@ class AddressLookupResultsController @Inject() (
 
     addressLookupConnector.lookup(addressLookupParamsWithoutLine1.postcode, None).flatMap { secondResponse =>
       secondResponse match {
-        case AddressLookupSuccess(addresses) if addresses.nonEmpty =>
+        case AddressLookupSuccess(addresses) if addresses.nonEmpty && addresses.forall(_.nonEmpty) =>
           sessionCache.saveAddressLookupParams(addressLookupParamsWithoutLine1).map { _ =>
             Ok(
               prepareView(
@@ -141,7 +141,7 @@ class AddressLookupResultsController @Inject() (
         case Some(addressLookupParams) =>
           addressLookupConnector.lookup(addressLookupParams.postcode, addressLookupParams.line1).flatMap { response =>
             response match {
-              case AddressLookupSuccess(addresses) if addresses.nonEmpty =>
+              case AddressLookupSuccess(addresses) if addresses.nonEmpty && addresses.forall(_.nonEmpty) =>
                 val addressesMap  = addresses.map(address => address.dropDownView -> address).toMap
                 val addressesView = addressesMap.keys.toSeq
 
