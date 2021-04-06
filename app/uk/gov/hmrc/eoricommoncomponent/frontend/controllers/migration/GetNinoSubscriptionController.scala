@@ -23,10 +23,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
-  MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow,
-  NinoSubscriptionFlowPage
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{NinoSubscriptionFlowPage, RowIndividualFlow}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.subscriptionNinoForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
@@ -115,6 +112,6 @@ class GetNinoSubscriptionController @Inject() (
     )
 
   private def isItRowJourney()(implicit request: Request[AnyContent]): Boolean =
-    requestSessionData.userSubscriptionFlow == MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow
+    requestSessionData.userSubscriptionFlow == RowIndividualFlow
 
 }

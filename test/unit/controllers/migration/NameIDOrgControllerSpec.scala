@@ -98,10 +98,8 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     setupMockSubscriptionFlowManager(NameUtrDetailsSubscriptionFlowPage)
   }
 
-  val subscriptionFlows: TableFor2[SubscriptionFlow, String] = Table[SubscriptionFlow, String](
-    ("Flow name", "Label"),
-    (MigrationEoriOrganisationSubscriptionFlow, "What are your company details?")
-  )
+  val subscriptionFlows: TableFor2[SubscriptionFlow, String] =
+    Table[SubscriptionFlow, String](("Flow name", "Label"), (OrganisationFlow, "What are your company details?"))
 
   val formModes = Table(
     ("formMode", "showFormFunction"),
@@ -126,7 +124,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
         when(mockSubscriptionBusinessService.cachedNameIdOrganisationViewModel(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(NameIdDetailsPage.filledValues)))
 
-        showFormFunction(MigrationEoriOrganisationSubscriptionFlow) { result =>
+        showFormFunction(OrganisationFlow) { result =>
           val page         = CdsPage(contentAsString(result))
           val expectedName = s"${NameIdDetailsPage.filledValues.name}"
           val expectedUtr  = s"${NameIdDetailsPage.filledValues.id}"
@@ -371,9 +369,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     test(result)
   }
 
-  private def showCreateForm(
-    subscriptionFlow: SubscriptionFlow = MigrationEoriOrganisationSubscriptionFlow
-  )(test: Future[Result] => Any) {
+  private def showCreateForm(subscriptionFlow: SubscriptionFlow = OrganisationFlow)(test: Future[Result] => Any) {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
@@ -383,9 +379,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     test(result)
   }
 
-  private def showReviewForm(
-    subscriptionFlow: SubscriptionFlow = MigrationEoriOrganisationSubscriptionFlow
-  )(test: Future[Result] => Any) {
+  private def showReviewForm(subscriptionFlow: SubscriptionFlow = OrganisationFlow)(test: Future[Result] => Any) {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)

@@ -20,9 +20,9 @@ import javax.inject.Singleton
 import play.api.mvc.{AnyContent, Request, Session}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
-  MigrationEoriIndividualSubscriptionFlow,
-  MigrationEoriOrganisationSubscriptionFlow,
-  MigrationEoriSoleTraderSubscriptionFlow,
+  IndividualFlow,
+  OrganisationFlow,
+  SoleTraderFlow,
   SubscriptionFlow
 }
 
@@ -106,11 +106,7 @@ class RequestSessionData {
       oType == CdsOrganisationType.ThirdCountrySoleTrader
     }
 
-  private val ukSubscriptionFlows = Seq(
-    MigrationEoriOrganisationSubscriptionFlow,
-    MigrationEoriSoleTraderSubscriptionFlow,
-    MigrationEoriIndividualSubscriptionFlow
-  )
+  private val ukSubscriptionFlows = Seq(OrganisationFlow, SoleTraderFlow, IndividualFlow)
 
   def isUKJourney(implicit request: Request[AnyContent]): Boolean =
     request.session.data.get(RequestSessionDataKeys.subscriptionFlow) match {

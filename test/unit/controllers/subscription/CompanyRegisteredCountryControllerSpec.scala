@@ -25,10 +25,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.CompanyRegisteredCountryController
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
-  MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow,
-  MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{RowIndividualFlow, RowOrganisationFlow}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.CompanyRegisteredCountry
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
@@ -87,9 +84,7 @@ class CompanyRegisteredCountryControllerSpec extends ControllerSpec with AuthAct
 
     "display organisation page" in {
 
-      when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(
-        MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow
-      )
+      when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowOrganisationFlow)
 
       val result = controller.displayPage(atarService)(FakeRequest("GET", ""))
 
@@ -100,9 +95,7 @@ class CompanyRegisteredCountryControllerSpec extends ControllerSpec with AuthAct
 
     "display individual page" in {
 
-      when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(
-        MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow
-      )
+      when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowIndividualFlow)
 
       val result = controller.displayPage(atarService)(FakeRequest("GET", ""))
 
@@ -113,9 +106,7 @@ class CompanyRegisteredCountryControllerSpec extends ControllerSpec with AuthAct
 
     "display review organisation page" in {
 
-      when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(
-        MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow
-      )
+      when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowOrganisationFlow)
 
       val result = controller.reviewPage(atarService)(FakeRequest("GET", ""))
 
@@ -126,9 +117,7 @@ class CompanyRegisteredCountryControllerSpec extends ControllerSpec with AuthAct
 
     "display review individual page" in {
 
-      when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(
-        MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow
-      )
+      when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowIndividualFlow)
 
       val result = controller.reviewPage(atarService)(FakeRequest("GET", ""))
 
@@ -141,9 +130,7 @@ class CompanyRegisteredCountryControllerSpec extends ControllerSpec with AuthAct
 
       "user didn't choose value" in {
 
-        when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(
-          MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow
-        )
+        when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowOrganisationFlow)
 
         val result =
           controller.submit(atarService, false)(FakeRequest("POST", "").withFormUrlEncodedBody("countryCode" -> ""))
@@ -158,9 +145,7 @@ class CompanyRegisteredCountryControllerSpec extends ControllerSpec with AuthAct
 
       "user didn't choose value" in {
 
-        when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(
-          MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow
-        )
+        when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowIndividualFlow)
 
         val result =
           controller.submit(atarService, false)(FakeRequest("POST", "").withFormUrlEncodedBody("countryCode" -> ""))

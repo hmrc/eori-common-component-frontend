@@ -26,7 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.GetNinoSub
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   IndividualSubscriptionFlow,
-  MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow,
+  RowIndividualFlow,
   SubscriptionFlowInfo,
   SubscriptionPage
 }
@@ -113,9 +113,7 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
 
       "user is in review mode and during ROW individual journey" in {
 
-        when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(
-          MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow
-        )
+        when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowIndividualFlow)
         when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
           .thenReturn(Future.successful(()))
         mockSubscriptionFlow(nextPageFlowUrl)

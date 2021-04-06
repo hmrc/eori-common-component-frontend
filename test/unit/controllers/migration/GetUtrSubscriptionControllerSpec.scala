@@ -26,9 +26,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.GetUtrSubs
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
-  MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow,
-  MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow,
   OrganisationSubscriptionFlow,
+  RowIndividualFlow,
+  RowOrganisationFlow,
   SubscriptionFlowInfo,
   SubscriptionPage
 }
@@ -204,9 +204,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
           .thenReturn(Future.successful(Some(NameOrganisationMatchModel("orgName"))))
         when(mockSubscriptionDetailsService.cacheNameAndCustomsId(any(), any())(any()))
           .thenReturn(Future.successful((): Unit))
-        when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(
-          MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow
-        )
+        when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowOrganisationFlow)
 
         submit(Journey.Subscribe, ValidUtrRequest, true) { result =>
           status(result) shouldBe SEE_OTHER
@@ -220,9 +218,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
         when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(SoleTrader))
         when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
           .thenReturn(Future.successful(()))
-        when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(
-          MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow
-        )
+        when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowIndividualFlow)
 
         submit(Journey.Subscribe, ValidUtrRequest, true) { result =>
           status(result) shouldBe SEE_OTHER

@@ -101,10 +101,8 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     setupMockSubscriptionFlowManager(NameDobDetailsSubscriptionFlowPage)
   }
 
-  val subscriptionFlows: TableFor2[SubscriptionFlow, String] = Table[SubscriptionFlow, String](
-    ("Flow name", "Label"),
-    (MigrationEoriSoleTraderSubscriptionFlow, "Enter your details")
-  )
+  val subscriptionFlows: TableFor2[SubscriptionFlow, String] =
+    Table[SubscriptionFlow, String](("Flow name", "Label"), (SoleTraderFlow, "Enter your details"))
 
   val formModes = Table(
     ("formMode", "showFormFunction"),
@@ -129,7 +127,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
         when(mockSubscriptionBusinessService.cachedSubscriptionNameDobViewModel(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(NameDobSoleTraderPage.filledValues)))
 
-        showFormFunction(MigrationEoriSoleTraderSubscriptionFlow) { result =>
+        showFormFunction(SoleTraderFlow) { result =>
           val page = CdsPage(contentAsString(result))
 
           val expectedFirstName = s"${NameDobSoleTraderPage.filledValues.firstName}"
@@ -561,9 +559,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     test(result)
   }
 
-  private def showCreateForm(
-    subscriptionFlow: SubscriptionFlow = MigrationEoriSoleTraderSubscriptionFlow
-  )(test: Future[Result] => Any) {
+  private def showCreateForm(subscriptionFlow: SubscriptionFlow = SoleTraderFlow)(test: Future[Result] => Any) {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
@@ -573,9 +569,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     test(result)
   }
 
-  private def showReviewForm(
-    subscriptionFlow: SubscriptionFlow = MigrationEoriSoleTraderSubscriptionFlow
-  )(test: Future[Result] => Any) {
+  private def showReviewForm(subscriptionFlow: SubscriptionFlow = SoleTraderFlow)(test: Future[Result] => Any) {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)

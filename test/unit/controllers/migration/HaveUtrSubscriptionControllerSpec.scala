@@ -27,7 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.HaveUtrSub
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
-  MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow,
+  RowOrganisationFlow,
   SubscriptionFlowInfo,
   SubscriptionPage
 }
@@ -194,9 +194,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       "'No' UTR selected and user is during Row organisation journey" in {
 
         when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(SoleTrader))
-        when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(
-          MigrationEoriRowOrganisationSubscriptionUtrNinoEnabledFlow
-        )
+        when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowOrganisationFlow)
         when(mockSubscriptionDetailsService.cacheUtrMatchForNoAnswer(any[Option[UtrMatchModel]])(any[HeaderCarrier]))
           .thenReturn(Future.successful(()))
         submit(Journey.Subscribe, NoUtrRequest) { result =>

@@ -27,8 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.HaveNinoSu
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NinoMatchModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
-  MigrationEoriRowIndividualSubscriptionFlow,
-  MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow,
+  RowIndividualFlow,
   SubscriptionFlowInfo,
   SubscriptionPage
 }
@@ -109,7 +108,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
     "cache NINO and redirect to Get Nino Page of the flow" in {
       when(mockSubscriptionDetailsService.cacheNinoMatch(any[Option[NinoMatchModel]])(any[HeaderCarrier]))
         .thenReturn(Future.successful(()))
-      when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(MigrationEoriRowIndividualSubscriptionFlow)
+      when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowIndividualFlow)
       mockSubscriptionFlow(nextPageFlowUrl)
       submit(Journey.Subscribe, Map("have-nino" -> "true")) { result =>
         status(result) shouldBe SEE_OTHER
@@ -120,28 +119,11 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
       )
     }
 
-    "cache None for CustomsId and redirect to Address Page of the flow" in {
-      when(
-        mockSubscriptionDetailsService.cacheNinoMatchForNoAnswer(any[Option[NinoMatchModel]])(any[HeaderCarrier])
-      ).thenReturn(Future.successful(()))
-      when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(MigrationEoriRowIndividualSubscriptionFlow)
-      mockSubscriptionFlow(nextPageFlowUrl)
-      submit(Journey.Subscribe, ValidNinoNoRequest) { result =>
-        status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
-      }
-      verify(mockSubscriptionDetailsService).cacheNinoMatchForNoAnswer(meq(Some(NinoMatchModel(Some(false), None))))(
-        any[HeaderCarrier]
-      )
-    }
-
     "cache None for CustomsId and redirect to Country page" in {
       when(
         mockSubscriptionDetailsService.cacheNinoMatchForNoAnswer(any[Option[NinoMatchModel]])(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
-      when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(
-        MigrationEoriRowIndividualsSubscriptionUtrNinoEnabledFlow
-      )
+      when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowIndividualFlow)
       submit(Journey.Subscribe, ValidNinoNoRequest) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-country"
