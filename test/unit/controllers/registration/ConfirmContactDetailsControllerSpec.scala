@@ -92,8 +92,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
   private val mockSubscriptionStartSession = mock[Session]
   private val mockRequestHeader            = mock[RequestHeader]
 
-  private val mockFlowStart =
-    (mockSubscriptionPage, mockSubscriptionStartSession)
+  private val mockFlowStart = (mockSubscriptionPage, mockSubscriptionStartSession)
 
   private val mockSub01Outcome = mock[Sub01Outcome]
   private val mockRegDetails   = mock[RegistrationDetails]
@@ -105,7 +104,10 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
   private val subscriptionDetailsHolder = SubscriptionDetails()
 
-  override def beforeEach {
+  override def beforeEach(): Unit =
+    super.beforeEach()
+
+  override def afterEach(): Unit = {
     reset(
       mockAuthConnector,
       mockRegistrationConfirmService,
@@ -116,6 +118,8 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       mockOrgTypeLookup,
       mockHandleSubscriptionService
     )
+
+    super.afterEach()
   }
 
   "Reviewing the details" should {
@@ -217,32 +221,33 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       }
     }
 
-    "truncate the business address when optional values are missing" in {
-      mockCacheWithRegistrationDetails(
-        organisationRegistrationDetails
-          .withBusinessAddress(Address("line1", None, None, None, None, "ZZ"))
-      )
-      when(
-        mockOrgTypeLookup
-          .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
-      ).thenReturn(Future.successful(Some(Partnership)))
+    "redirect to address page" when {
 
-      invokeConfirm() { result =>
-        val page = CdsPage(contentAsString(result))
-        page.getElementsText(ConfirmPage.addressXPath) shouldBe
-          strim("""
-              |line1
-              |ZZ
-            """)
+      "address doesn't have all required details" in {
+
+        mockCacheWithRegistrationDetails(
+          organisationRegistrationDetails
+            .withBusinessAddress(Address("line1", None, None, None, None, "GB"))
+        )
+        when(
+          mockOrgTypeLookup
+            .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
+        ).thenReturn(Future.successful(Some(Partnership)))
+        when(mockCdsFrontendDataCache.subscriptionDetails(any())).thenReturn(
+          Future.successful(SubscriptionDetails(addressDetails = None))
+        )
+        when(mockCdsFrontendDataCache.saveSubscriptionDetails(any())(any())).thenReturn(Future.successful(true))
+
+        invokeConfirm() { result =>
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/register/address"
+        }
       }
+
     }
 
     "display back link correctly" in {
-      mockCacheWithRegistrationDetails(
-        organisationRegistrationDetails.withBusinessAddress(
-          Address("line1", addressLine2 = None, addressLine3 = None, addressLine4 = None, postalCode = None, "ZZ")
-        )
-      )
+      mockCacheWithRegistrationDetails(organisationRegistrationDetails)
       when(
         mockOrgTypeLookup
           .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
@@ -415,6 +420,11 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
           .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
       ).thenReturn(Future.successful(Some(Partnership)))
 
+      when(mockCdsFrontendDataCache.subscriptionDetails(any())).thenReturn(
+        Future.successful(SubscriptionDetails(addressDetails = None))
+      )
+      when(mockCdsFrontendDataCache.saveSubscriptionDetails(any())(any())).thenReturn(Future.successful(true))
+
       invokeConfirm() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(
@@ -433,6 +443,11 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
         mockOrgTypeLookup
           .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
       ).thenReturn(Future.successful(Some(Partnership)))
+
+      when(mockCdsFrontendDataCache.subscriptionDetails(any())).thenReturn(
+        Future.successful(SubscriptionDetails(addressDetails = None))
+      )
+      when(mockCdsFrontendDataCache.saveSubscriptionDetails(any())(any())).thenReturn(Future.successful(true))
 
       invokeConfirm() { result =>
         status(result) shouldBe SEE_OTHER
