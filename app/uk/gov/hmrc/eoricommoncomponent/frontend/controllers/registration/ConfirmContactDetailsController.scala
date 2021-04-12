@@ -44,7 +44,7 @@ class ConfirmContactDetailsController @Inject() (
   authAction: AuthAction,
   registrationConfirmService: RegistrationConfirmService,
   requestSessionData: RequestSessionData,
-  cdsFrontendDataCache: SessionCache,
+  sessionCache: SessionCache,
   orgTypeLookup: OrgTypeLookup,
   subscriptionFlowManager: SubscriptionFlowManager,
   mcc: MessagesControllerComponents,
@@ -58,7 +58,7 @@ class ConfirmContactDetailsController @Inject() (
 
   def form(service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser =>
-      cdsFrontendDataCache.registrationDetails flatMap {
+      sessionCache.registrationDetails.flatMap {
         case individual: RegistrationDetailsIndividual =>
           if (!individual.address.isValidAddress())
             checkAddressDetails(journey, service, YesNoWrongAddress(Some("wrong-address")))
@@ -80,28 +80,28 @@ class ConfirmContactDetailsController @Inject() (
           if (!org.address.isValidAddress())
             checkAddressDetails(journey, service, YesNoWrongAddress(Some("wrong-address")))
           else
-            orgTypeLookup.etmpOrgType map {
+            orgTypeLookup.etmpOrgType.flatMap {
               case Some(ot) =>
-                Ok(
-                  confirmContactDetailsView(
-                    org.name,
-                    concatenateAddress(org),
-                    org.customsId,
-                    Some(ot),
-                    YesNoWrongAddress.createForm(),
-                    service,
-                    journey
+                Future.successful(
+                  Ok(
+                    confirmContactDetailsView(
+                      org.name,
+                      concatenateAddress(org),
+                      org.customsId,
+                      Some(ot),
+                      YesNoWrongAddress.createForm(),
+                      service,
+                      journey
+                    )
                   )
                 )
               case None =>
                 logger.warn("[ConfirmContactDetailsController.form] organisation type None")
-                cdsFrontendDataCache.remove
-                Redirect(OrganisationTypeController.form(service, journey))
+                sessionCache.remove.map(_ => Redirect(OrganisationTypeController.form(service, journey)))
             }
         case _ =>
           logger.warn("[ConfirmContactDetailsController.form] registrationDetails not found")
-          cdsFrontendDataCache.remove
-          Future.successful(Redirect(OrganisationTypeController.form(service, journey)))
+          sessionCache.remove.map(_ => Redirect(OrganisationTypeController.form(service, journey)))
       }
     }
 
@@ -112,7 +112,7 @@ class ConfirmContactDetailsController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors =>
-            cdsFrontendDataCache.registrationDetails flatMap {
+            sessionCache.registrationDetails.flatMap {
               case individual: RegistrationDetailsIndividual =>
                 Future.successful(
                   BadRequest(
@@ -128,28 +128,28 @@ class ConfirmContactDetailsController @Inject() (
                   )
                 )
               case org: RegistrationDetailsOrganisation =>
-                orgTypeLookup.etmpOrgType map {
+                orgTypeLookup.etmpOrgType.flatMap {
                   case Some(ot) =>
-                    BadRequest(
-                      confirmContactDetailsView(
-                        org.name,
-                        concatenateAddress(org),
-                        org.customsId,
-                        Some(ot),
-                        formWithErrors,
-                        service,
-                        journey
+                    Future.successful(
+                      BadRequest(
+                        confirmContactDetailsView(
+                          org.name,
+                          concatenateAddress(org),
+                          org.customsId,
+                          Some(ot),
+                          formWithErrors,
+                          service,
+                          journey
+                        )
                       )
                     )
                   case None =>
                     logger.warn("[ConfirmContactDetailsController.submit] organisation type None")
-                    cdsFrontendDataCache.remove
-                    Redirect(OrganisationTypeController.form(service, journey))
+                    sessionCache.remove.map(_ => Redirect(OrganisationTypeController.form(service, journey)))
                 }
               case _ =>
                 logger.warn("[ConfirmContactDetailsController.submit] registrationDetails not found")
-                cdsFrontendDataCache.remove
-                Future.successful(Redirect(OrganisationTypeController.form(service, journey)))
+                sessionCache.remove.map(_ => Redirect(OrganisationTypeController.form(service, journey)))
             },
           areDetailsCorrectAnswer => checkAddressDetails(journey, service, areDetailsCorrectAnswer)
         )
@@ -160,13 +160,13 @@ class ConfirmContactDetailsController @Inject() (
     service: Service,
     areDetailsCorrectAnswer: YesNoWrongAddress
   )(implicit request: Request[AnyContent], loggedInUser: LoggedInUserWithEnrolments): Future[Result] =
-    cdsFrontendDataCache.subscriptionDetails.flatMap { subDetails =>
+    sessionCache.subscriptionDetails.flatMap { subDetails =>
       subDetails.addressDetails match {
         case Some(_) =>
           determineRoute(registrationConfirmService, areDetailsCorrectAnswer.areDetailsCorrect, service, journey)
         case None =>
-          cdsFrontendDataCache.registrationDetails.flatMap { details =>
-            cdsFrontendDataCache
+          sessionCache.registrationDetails.flatMap { details =>
+            sessionCache
               .saveSubscriptionDetails(subDetails.copy(addressDetails = Some(concatenateAddress(details))))
               .flatMap { _ =>
                 determineRoute(registrationConfirmService, areDetailsCorrectAnswer.areDetailsCorrect, service, journey)
@@ -178,16 +178,16 @@ class ConfirmContactDetailsController @Inject() (
   def processing(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
-        name          <- cdsFrontendDataCache.registrationDetails.map(_.name)
-        processedDate <- cdsFrontendDataCache.sub01Outcome.map(_.processedDate)
+        name          <- sessionCache.registrationDetails.map(_.name)
+        processedDate <- sessionCache.sub01Outcome.map(_.processedDate)
       } yield Ok(sub01OutcomeProcessingView(Some(name), processedDate))
   }
 
   def rejected(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
-        name          <- cdsFrontendDataCache.registrationDetails.map(_.name)
-        processedDate <- cdsFrontendDataCache.sub01Outcome.map(_.processedDate)
+        name          <- sessionCache.registrationDetails.map(_.name)
+        processedDate <- sessionCache.sub01Outcome.map(_.processedDate)
       } yield Ok(sub01OutcomeRejected(Some(name), processedDate, service))
   }
 
@@ -237,7 +237,7 @@ class ConfirmContactDetailsController @Inject() (
   ): Future[Result] = {
     lazy val noSelectedOrganisationType =
       requestSessionData.userSelectedOrganisationType.isEmpty
-    cdsFrontendDataCache.registrationDetails flatMap {
+    sessionCache.registrationDetails flatMap {
       case _: RegistrationDetailsIndividual if noSelectedOrganisationType =>
         Future.successful(
           Redirect(
