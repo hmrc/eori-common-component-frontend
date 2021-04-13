@@ -61,25 +61,22 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
   private val mockRegistrationConfirmService = mock[RegistrationConfirmService]
   private val mockRequestSessionData         = mock[RequestSessionData]
 
-  private val mockSubscriptionDetailsReviewController =
-    mock[CheckYourDetailsRegisterController]
+  private val mockSubscriptionDetailsReviewController = mock[CheckYourDetailsRegisterController]
 
-  private val mockCdsFrontendDataCache      = mock[SessionCache]
+  private val mockSessionCache              = mock[SessionCache]
   private val mockSubscriptionFlowManager   = mock[SubscriptionFlowManager]
   private val mockOrgTypeLookup             = mock[OrgTypeLookup]
   private val mockHandleSubscriptionService = mock[HandleSubscriptionService]
 
-  private val confirmContactDetailsView = instanceOf[confirm_contact_details]
-
+  private val confirmContactDetailsView  = instanceOf[confirm_contact_details]
   private val sub01OutcomeProcessingView = instanceOf[sub01_outcome_processing]
-
-  private val sub01OutcomeRejected = instanceOf[sub01_outcome_rejected]
+  private val sub01OutcomeRejected       = instanceOf[sub01_outcome_rejected]
 
   private val controller = new ConfirmContactDetailsController(
     mockAuthAction,
     mockRegistrationConfirmService,
     mockRequestSessionData,
-    mockCdsFrontendDataCache,
+    mockSessionCache,
     mockOrgTypeLookup,
     mockSubscriptionFlowManager,
     mcc,
@@ -92,30 +89,30 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
   private val mockSubscriptionStartSession = mock[Session]
   private val mockRequestHeader            = mock[RequestHeader]
 
-  private val mockFlowStart =
-    (mockSubscriptionPage, mockSubscriptionStartSession)
+  private val mockFlowStart = (mockSubscriptionPage, mockSubscriptionStartSession)
 
   private val mockSub01Outcome = mock[Sub01Outcome]
   private val mockRegDetails   = mock[RegistrationDetails]
 
-  private val testSessionData =
-    Map[String, String]("some_session_key" -> "some_session_value")
+  private val testSessionData = Map[String, String]("some_session_key" -> "some_session_value")
 
   private val testSubscriptionStartPageUrl = "some_page_url"
 
   private val subscriptionDetailsHolder = SubscriptionDetails()
 
-  override def beforeEach {
+  override def afterEach(): Unit = {
     reset(
       mockAuthConnector,
       mockRegistrationConfirmService,
       mockRequestSessionData,
       mockSubscriptionDetailsReviewController,
-      mockCdsFrontendDataCache,
+      mockSessionCache,
       mockSubscriptionFlowManager,
       mockOrgTypeLookup,
       mockHandleSubscriptionService
     )
+
+    super.afterEach()
   }
 
   "Reviewing the details" should {
@@ -158,6 +155,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
         mockOrgTypeLookup
           .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
       ).thenReturn(Future.successful(None))
+      when(mockSessionCache.remove(any())).thenReturn(Future.successful(true))
 
       invokeConfirm() { result =>
         status(result) shouldBe SEE_OTHER
@@ -166,7 +164,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
         ) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.OrganisationTypeController
           .form(atarService, Journey.Register)
           .url
-        verify(mockCdsFrontendDataCache).remove(any[HeaderCarrier])
+        verify(mockSessionCache).remove(any[HeaderCarrier])
       }
     }
 
@@ -217,32 +215,33 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       }
     }
 
-    "truncate the business address when optional values are missing" in {
-      mockCacheWithRegistrationDetails(
-        organisationRegistrationDetails
-          .withBusinessAddress(Address("line1", None, None, None, None, "ZZ"))
-      )
-      when(
-        mockOrgTypeLookup
-          .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
-      ).thenReturn(Future.successful(Some(Partnership)))
+    "redirect to address page" when {
 
-      invokeConfirm() { result =>
-        val page = CdsPage(contentAsString(result))
-        page.getElementsText(ConfirmPage.addressXPath) shouldBe
-          strim("""
-              |line1
-              |ZZ
-            """)
+      "address doesn't have all required details" in {
+
+        mockCacheWithRegistrationDetails(
+          organisationRegistrationDetails
+            .withBusinessAddress(Address("line1", None, None, None, None, "GB"))
+        )
+        when(
+          mockOrgTypeLookup
+            .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
+        ).thenReturn(Future.successful(Some(Partnership)))
+        when(mockSessionCache.subscriptionDetails(any())).thenReturn(
+          Future.successful(SubscriptionDetails(addressDetails = None))
+        )
+        when(mockSessionCache.saveSubscriptionDetails(any())(any())).thenReturn(Future.successful(true))
+
+        invokeConfirm() { result =>
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/register/address"
+        }
       }
+
     }
 
     "display back link correctly" in {
-      mockCacheWithRegistrationDetails(
-        organisationRegistrationDetails.withBusinessAddress(
-          Address("line1", addressLine2 = None, addressLine3 = None, addressLine4 = None, postalCode = None, "ZZ")
-        )
-      )
+      mockCacheWithRegistrationDetails(organisationRegistrationDetails)
       when(
         mockOrgTypeLookup
           .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
@@ -263,10 +262,10 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
     )
 
     "redirect to the page defined by subscription flow start when service returns NewSubscription for organisation" in {
-      when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockSessionCache.subscriptionDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(subscriptionDetailsHolder))
       when(
-        mockCdsFrontendDataCache
+        mockSessionCache
           .saveSubscriptionDetails(any[SubscriptionDetails])(any[HeaderCarrier])
       ).thenReturn(Future.successful(true))
 
@@ -283,14 +282,14 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
     }
 
     "redirect to the page defined by subscription flow start when service returns NewSubscription for individual with selected type" in {
-      when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockSessionCache.subscriptionDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(subscriptionDetailsHolder))
       when(
         mockRequestSessionData
           .userSelectedOrganisationType(any[Request[AnyContent]])
       ).thenReturn(Some(CdsOrganisationType.Individual))
       when(
-        mockCdsFrontendDataCache
+        mockSessionCache
           .saveSubscriptionDetails(any[SubscriptionDetails])(any[HeaderCarrier])
       ).thenReturn(Future.successful(true))
 
@@ -307,10 +306,10 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
     }
 
     "redirect to the confirm individual type page when service returns NewSubscription for individual without selected type" in {
-      when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockSessionCache.subscriptionDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(subscriptionDetailsHolder))
       when(
-        mockCdsFrontendDataCache
+        mockSessionCache
           .saveSubscriptionDetails(any[SubscriptionDetails])(any[HeaderCarrier])
       ).thenReturn(Future.successful(true))
 
@@ -331,10 +330,10 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
     }
 
     "redirect to the confirm individual type page when service returns SubscriptionRejected for individual without selected type" in {
-      when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockSessionCache.subscriptionDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(subscriptionDetailsHolder))
       when(
-        mockCdsFrontendDataCache
+        mockSessionCache
           .saveSubscriptionDetails(any[SubscriptionDetails])(any[HeaderCarrier])
       ).thenReturn(Future.successful(true))
 
@@ -365,14 +364,14 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
         .url
     val subscriptionStatus = SubscriptionProcessing
     s"redirect to $redirectUrl when subscription status is $subscriptionStatus" in {
-      when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockSessionCache.subscriptionDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(subscriptionDetailsHolder))
       when(mockRegistrationConfirmService.currentSubscriptionStatus(any[HeaderCarrier]))
         .thenReturn(Future.successful(subscriptionStatus))
-      when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier]))
+      when(mockSessionCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
       when(
-        mockCdsFrontendDataCache
+        mockSessionCache
           .saveSubscriptionDetails(any[SubscriptionDetails])(any[HeaderCarrier])
       ).thenReturn(Future.successful(true))
 
@@ -415,6 +414,11 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
           .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
       ).thenReturn(Future.successful(Some(Partnership)))
 
+      when(mockSessionCache.subscriptionDetails(any())).thenReturn(
+        Future.successful(SubscriptionDetails(addressDetails = None))
+      )
+      when(mockSessionCache.saveSubscriptionDetails(any())(any())).thenReturn(Future.successful(true))
+
       invokeConfirm() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(
@@ -434,6 +438,11 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
           .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
       ).thenReturn(Future.successful(Some(Partnership)))
 
+      when(mockSessionCache.subscriptionDetails(any())).thenReturn(
+        Future.successful(SubscriptionDetails(addressDetails = None))
+      )
+      when(mockSessionCache.saveSubscriptionDetails(any())(any())).thenReturn(Future.successful(true))
+
       invokeConfirm() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(
@@ -447,16 +456,16 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
   "Selecting No" should {
     "clear data and redirect to organisation type page" in {
-      when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockSessionCache.subscriptionDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(subscriptionDetailsHolder))
       when(
         mockRegistrationConfirmService
           .clearRegistrationData(any[LoggedInUser])(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
-      when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier]))
+      when(mockSessionCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
       when(
-        mockCdsFrontendDataCache
+        mockSessionCache
           .saveSubscriptionDetails(any[SubscriptionDetails])(any[HeaderCarrier])
       ).thenReturn(Future.successful(true))
 
@@ -472,16 +481,16 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
     "throw an exception when an unexpected error occurs" in {
       val emulatedFailure = new RuntimeException("Something bad happened")
-      when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockSessionCache.subscriptionDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(subscriptionDetailsHolder))
       when(
         mockRegistrationConfirmService
           .clearRegistrationData(any[LoggedInUser])(any[HeaderCarrier])
       ).thenReturn(Future.failed(emulatedFailure))
-      when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier]))
+      when(mockSessionCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
       when(
-        mockCdsFrontendDataCache
+        mockSessionCache
           .saveSubscriptionDetails(any[SubscriptionDetails])(any[HeaderCarrier])
       ).thenReturn(Future.successful(true))
 
@@ -496,16 +505,16 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
   "Selecting wrong address" should {
     "clear data and redirect to organisation type page" in {
-      when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockSessionCache.subscriptionDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(subscriptionDetailsHolder))
       when(
         mockRegistrationConfirmService
           .clearRegistrationData(any[LoggedInUser])(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
-      when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier]))
+      when(mockSessionCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
       when(
-        mockCdsFrontendDataCache
+        mockSessionCache
           .saveSubscriptionDetails(any[SubscriptionDetails])(any[HeaderCarrier])
       ).thenReturn(Future.successful(true))
 
@@ -576,7 +585,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
   }
 
   private def mockCacheWithRegistrationDetails(details: RegistrationDetails): Unit =
-    when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier]))
+    when(mockSessionCache.registrationDetails(any[HeaderCarrier]))
       .thenReturn(details)
 
   private def mockNewSubscriptionFromSubscriptionStatus() =
@@ -629,10 +638,10 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
   }
 
   private def setupMocksForRejectedAndProcessingPages = {
-    when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier]))
+    when(mockSessionCache.registrationDetails(any[HeaderCarrier]))
       .thenReturn(mockRegDetails)
     when(mockRegDetails.name).thenReturn("orgName")
-    when(mockCdsFrontendDataCache.sub01Outcome(any[HeaderCarrier]))
+    when(mockSessionCache.sub01Outcome(any[HeaderCarrier]))
       .thenReturn(Future.successful(mockSub01Outcome))
     when(mockSub01Outcome.processedDate).thenReturn("22 May 2016")
   }
