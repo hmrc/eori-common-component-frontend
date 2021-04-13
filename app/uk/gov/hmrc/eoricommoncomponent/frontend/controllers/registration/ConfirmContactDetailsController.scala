@@ -161,16 +161,11 @@ class ConfirmContactDetailsController @Inject() (
     areDetailsCorrectAnswer: YesNoWrongAddress
   )(implicit request: Request[AnyContent], loggedInUser: LoggedInUserWithEnrolments): Future[Result] =
     sessionCache.subscriptionDetails.flatMap { subDetails =>
-      subDetails.addressDetails match {
-        case Some(_) =>
-          determineRoute(registrationConfirmService, areDetailsCorrectAnswer.areDetailsCorrect, service, journey)
-        case None =>
-          sessionCache.registrationDetails.flatMap { details =>
-            sessionCache
-              .saveSubscriptionDetails(subDetails.copy(addressDetails = Some(concatenateAddress(details))))
-              .flatMap { _ =>
-                determineRoute(registrationConfirmService, areDetailsCorrectAnswer.areDetailsCorrect, service, journey)
-              }
+      sessionCache.registrationDetails.flatMap { details =>
+        sessionCache
+          .saveSubscriptionDetails(subDetails.copy(addressDetails = Some(concatenateAddress(details))))
+          .flatMap { _ =>
+            determineRoute(areDetailsCorrectAnswer.areDetailsCorrect, service, journey)
           }
       }
     }
@@ -191,12 +186,10 @@ class ConfirmContactDetailsController @Inject() (
       } yield Ok(sub01OutcomeRejected(Some(name), processedDate, service))
   }
 
-  private def determineRoute(
-    registrationConfirmService: RegistrationConfirmService,
-    detailsCorrect: YesNoWrong,
-    service: Service,
-    journey: Journey.Value
-  )(implicit request: Request[AnyContent], loggedInUser: LoggedInUserWithEnrolments) =
+  private def determineRoute(detailsCorrect: YesNoWrong, service: Service, journey: Journey.Value)(implicit
+    request: Request[AnyContent],
+    loggedInUser: LoggedInUserWithEnrolments
+  ): Future[Result] =
     detailsCorrect match {
       case Yes =>
         registrationConfirmService.currentSubscriptionStatus flatMap {
