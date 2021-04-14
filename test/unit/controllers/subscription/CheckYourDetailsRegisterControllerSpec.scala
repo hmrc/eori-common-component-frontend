@@ -456,7 +456,7 @@ class CheckYourDetailsRegisterControllerSpec
             |SE28 1AA
             |United Kingdom
           """)
-      page.elementIsPresent(SubscriptionExistingDetailsReviewPage.LimitedAddressReviewLink) shouldBe false
+      page.elementIsPresent(SubscriptionExistingDetailsReviewPage.LimitedAddressReviewLink) shouldBe true
 
       page.getElementsText(
         SubscriptionExistingDetailsReviewPage.DateOfEstablishmentLabelXPath
@@ -601,7 +601,7 @@ class CheckYourDetailsRegisterControllerSpec
             |SE28 1AA
             |United Kingdom
           """)
-      page.elementIsPresent(SubscriptionExistingDetailsReviewPage.LimitedAddressReviewLink) shouldBe false
+      page.elementIsPresent(SubscriptionExistingDetailsReviewPage.LimitedAddressReviewLink) shouldBe true
 
       page.getElementsText(
         SubscriptionExistingDetailsReviewPage.DateOfEstablishmentLabelXPath
@@ -734,11 +734,11 @@ class CheckYourDetailsRegisterControllerSpec
     }
   }
 
-  "display the review page check-your-details with no option to change address for UK entities" in {
+  "display the review page check-your-details with option to change address for UK entities" in {
     showForm() { result =>
       val page: CdsPage = CdsPage(contentAsString(result))
 
-      page.elementIsPresent("//*[@id='review-tbl__address_change']") shouldBe false
+      page.elementIsPresent("//*[@id='review-tbl__address_change']") shouldBe true
     }
   }
 
