@@ -322,13 +322,15 @@ isUserIdentifiedByRegService: Boolean
                     "gb-vat-postcode",
                     messages("cds.form.gb-vat-postcode"),
                     Html.apply(subscription.ukVatDetails.map(_.postcode).getOrElse(messages("cds.not-entered.label"))),
-                    None
+                    Some(VATNumberPage.reviewForm(service, journey)),
+                    messages("cds.form.gb-vat-postcode")
                 )
                 @summaryRow_di(
                     "gb-vat-date",
                     messages("cds.form.gb-vat-date"),
                     Html.apply(subscription.ukVatDetails.map(vat => formatDate(vat.effectiveDate)).getOrElse(messages("cds.not-entered.label"))),
-                    None
+                    Some(VATNumberPage.reviewForm(service, journey)),
+                    messages("cds.form.gb-vat-date")
                 )
                 @summaryRow_di(
                     "eu-vat",
