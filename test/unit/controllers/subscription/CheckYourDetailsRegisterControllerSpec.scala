@@ -260,12 +260,14 @@ class CheckYourDetailsRegisterControllerSpec
     "display all mandatory fields for an organisation" in {
       showForm() { result =>
         val page = CdsPage(contentAsString(result))
+        page.getElementsText(
+          RegistrationReviewPage.EmailXPath
+        ) shouldBe contactUkDetailsModelWithMandatoryValuesOnly.emailAddress
         page.getElementsText(RegistrationReviewPage.UKVatIdentificationNumberXpath) shouldBe NotEntered
         page.getElementsText(RegistrationReviewPage.EUVatDetailsXpath) shouldBe NotEntered
         page.getElementsText(RegistrationReviewPage.ContactDetailsXPath) shouldBe
           strim(s"""
                  |${contactUkDetailsModelWithMandatoryValuesOnly.fullName}
-                 |${contactUkDetailsModelWithMandatoryValuesOnly.emailAddress}
                  |${contactUkDetailsModelWithMandatoryValuesOnly.telephone}
                  |${contactUkDetailsModelWithMandatoryValuesOnly.street.get}
                  |${contactUkDetailsModelWithMandatoryValuesOnly.city.get}
@@ -407,10 +409,11 @@ class CheckYourDetailsRegisterControllerSpec
 
       showForm(isIndividualSubscriptionFlow = true) { result =>
         val page = CdsPage(contentAsString(result))
+
+        page.getElementsText(RegistrationReviewPage.EmailXPath) shouldBe contactDetailsModelWithAllValues.emailAddress
         page.getElementsText(RegistrationReviewPage.ContactDetailsXPath) shouldBe
           strim(s"""
                  |${contactDetailsModelWithAllValues.fullName}
-                 |${contactDetailsModelWithAllValues.emailAddress}
                  |${contactDetailsModelWithAllValues.telephone}
                  |${messages("cds.review-page.fax-prefix")} ${contactDetailsModelWithAllValues.fax.get}
                  |${contactDetailsModelWithAllValues.street.get}
@@ -439,6 +442,8 @@ class CheckYourDetailsRegisterControllerSpec
     showForm(userSelectedOrgType = Company) { result =>
       val page: CdsPage = CdsPage(contentAsString(result))
       page.title should startWith("Check your answers")
+
+      page.getElementsText(RegistrationReviewPage.EmailXPath) shouldBe contactDetailsModelWithAllValues.emailAddress
 
       page.getElementsText(SubscriptionExistingDetailsReviewPage.BusinessNameLabelXpath) shouldBe "Organisation name"
       page.getElementsText(SubscriptionExistingDetailsReviewPage.BusinessNameValueXpath) shouldBe "orgName"
@@ -474,7 +479,6 @@ class CheckYourDetailsRegisterControllerSpec
       page.getElementsText(SubscriptionExistingDetailsReviewPage.ContactDetailsXPath) shouldBe
         strim("""
             |John Doe
-            |john.doe@example.com
             |01632961234
             |fax: 01632961234
             |Line 1
@@ -595,6 +599,8 @@ class CheckYourDetailsRegisterControllerSpec
       val page: CdsPage = CdsPage(contentAsString(result))
       page.title should startWith("Check your answers")
 
+      page.getElementsText(RegistrationReviewPage.EmailXPath) shouldBe contactDetailsModelWithAllValues.emailAddress
+
       page.getElementsText(
         SubscriptionExistingDetailsReviewPage.BusinessNameLabelXpath
       ) shouldBe "Registered partnership name"
@@ -633,7 +639,6 @@ class CheckYourDetailsRegisterControllerSpec
       page.getElementsText(SubscriptionExistingDetailsReviewPage.ContactDetailsXPath) shouldBe
         strim("""
             |John Doe
-            |john.doe@example.com
             |01632961234
             |fax: 01632961234
             |Line 1
@@ -869,10 +874,11 @@ class CheckYourDetailsRegisterControllerSpec
       case Some(x) => x
     }
 
+    page.getElementsText(RegistrationReviewPage.EmailXPath) shouldBe contactDetailsModelWithAllValues.emailAddress
+
     page.getElementsText(RegistrationReviewPage.ContactDetailsXPath) shouldBe
       strim(s"""
            |${contactDetailsModelWithAllValues.fullName}
-           |${contactDetailsModelWithAllValues.emailAddress}
            |${contactDetailsModelWithAllValues.telephone}
            |${messages("cds.review-page.fax-prefix")} ${contactDetailsModelWithAllValues.fax.get}
            |${contactDetailsModelWithAllValues.street.get}
