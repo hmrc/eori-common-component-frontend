@@ -531,6 +531,20 @@ class CheckYourDetailsRegisterControllerSpec
       page.getElementsHref(
         SubscriptionExistingDetailsReviewPage.UKVatIdentificationNumbersReviewLinkXpath
       ) shouldBe "/customs-enrolment-services/atar/register/vat-registered-uk/review"
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.UKVatIdentificationPostcodeReviewLinkXpath
+      ) shouldBe SubscriptionExistingDetailsReviewPage
+        .changeAnswerText("Postcode of your UK VAT registration address")
+      page.getElementsHref(
+        SubscriptionExistingDetailsReviewPage.UKVatIdentificationPostcodeReviewLinkXpath
+      ) shouldBe "/customs-enrolment-services/atar/register/vat-registered-uk/review"
+      page.getElementsText(
+        SubscriptionExistingDetailsReviewPage.UKVatIdentificationDateReviewLinkXpath
+      ) shouldBe SubscriptionExistingDetailsReviewPage
+        .changeAnswerText("UK VAT effective date")
+      page.getElementsHref(
+        SubscriptionExistingDetailsReviewPage.UKVatIdentificationDateReviewLinkXpath
+      ) shouldBe "/customs-enrolment-services/atar/register/vat-registered-uk/review"
 
       page.getElementsText(
         SubscriptionExistingDetailsReviewPage.EUVatIdentificationNumbersXpathLabel

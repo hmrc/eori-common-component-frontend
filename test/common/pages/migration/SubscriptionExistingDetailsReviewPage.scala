@@ -32,7 +32,9 @@ class SubscriptionExistingDetailsReviewPage extends WebPage {
   val UKVatIdentificationDateXpathLabel = "//dt[@id='review-tbl__gb-vat-date_heading']"
   val UKVatIdentificationDateXpath      = "//dd[@id='review-tbl__gb-vat-date']"
 
-  val UKVatIdentificationNumbersReviewLinkXpath = "//a[@id='review-tbl__gb-vat-number_change']"
+  val UKVatIdentificationNumbersReviewLinkXpath  = "//a[@id='review-tbl__gb-vat-number_change']"
+  val UKVatIdentificationPostcodeReviewLinkXpath = "//a[@id='review-tbl__gb-vat-postcode_change']"
+  val UKVatIdentificationDateReviewLinkXpath     = "//a[@id='review-tbl__gb-vat-date_change']"
 
   val EUVatIdentificationNumbersXpathLabel      = "//dt[@id='review-tbl__eu-vat_heading']"
   val EUVatIdentificationNumbersXpath           = "//dd[@id='review-tbl__eu-vat']"
