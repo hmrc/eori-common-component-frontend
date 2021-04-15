@@ -190,7 +190,6 @@ isUserIdentifiedByRegService: Boolean
 }
 @contactDetailsHtml(details: ContactDetailsModel) = {
     @helpers.noMarginParagraph(details.fullName)
-    @helpers.noMarginParagraph(details.emailAddress)
     @helpers.noMarginParagraph(details.telephone)
     @optionalFaxNumberWithPrefix(details.fax).map(helpers.noMarginParagraph(_))
     @details.street.map(helpers.noMarginParagraph(_))
@@ -213,6 +212,12 @@ isUserIdentifiedByRegService: Boolean
         <h1 class="heading-large">@messages("cds.form.check-answers")</h1>
 
         <dl id="review-tbl" class="govuk-check-your-answers cya-questions-short">
+            @summaryRow_di(
+                "email",
+                messages("subscription.enter-email.label"),
+                Html.apply(subscription.contactDetails.map(_.emailAddress).getOrElse("")),
+                None
+            )
             @if(isIndividual || isSoleTrader) {
                 @summaryRow_di(
                     "full-name",

@@ -20,6 +20,8 @@ import common.pages.WebPage
 
 class RegistrationReviewPage extends WebPage {
 
+  val EmailXPath = "//dd[@id='review-tbl__email']"
+
   val BusinessNameXPath           = "//dd[@id='review-tbl__business-name']"
   val BusinessNameReviewLinkXPath = "//a[@id='review-tbl__business-name_change']"
 
