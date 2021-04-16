@@ -162,7 +162,9 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
 
     "when UK, call SUB02, do not call registerOrganisation or registerIndividual" in {
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
-      when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(CorporateBody))
+      when(mockOrgTypeLookup.etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(
+        Some(CorporateBody)
+      )
       mockRegisterWithoutIdOKResponse()
       mockSub02ControllerCall()
 
@@ -175,7 +177,9 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
 
     "when UK, and Migration, call SUB02, do not call registerOrganisation or registerIndividual" in {
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
-      when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(CorporateBody))
+      when(mockOrgTypeLookup.etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(
+        Some(CorporateBody)
+      )
       mockRegisterWithoutIdOKResponse()
       mockSub02ControllerCall()
 
@@ -189,7 +193,9 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
     "when CorporateBody and ROW and Migration, call SUB02, do not call registerOrganisation or registerIndividual" in {
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]]))
         .thenReturn(Some(UserLocation.ThirdCountry))
-      when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(CorporateBody))
+      when(mockOrgTypeLookup.etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(
+        Some(CorporateBody)
+      )
       mockRegisterWithoutIdOKResponse()
       mockSub02ControllerCall()
 
@@ -203,7 +209,9 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
     "when CorporateBody and ROW and GYE, call SUB02, do not call Register without id" in {
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]]))
         .thenReturn(Some(UserLocation.ThirdCountry))
-      when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(CorporateBody))
+      when(mockOrgTypeLookup.etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(
+        Some(CorporateBody)
+      )
       when(mockRegistrationDetails.safeId).thenReturn(SafeId("SAFEID"))
       mockRegisterWithoutIdOKResponse()
       mockSub02ControllerCall()
@@ -218,7 +226,7 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
     "when NA and ROW, call SUB02, call registerIndividual, do not call registerOrganisation" in {
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]]))
         .thenReturn(Some(UserLocation.ThirdCountry))
-      when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(NA))
+      when(mockOrgTypeLookup.etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(NA))
       mockRegisterWithoutIdOKResponse()
       mockSub02ControllerCall()
       mockSessionCacheRegistrationDetails()
@@ -236,7 +244,9 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
     "when CorporateBody and ROW, call Register without id Successfully, then call SUB02" in {
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]]))
         .thenReturn(Some(UserLocation.ThirdCountry))
-      when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(CorporateBody))
+      when(mockOrgTypeLookup.etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(
+        Some(CorporateBody)
+      )
       mockSessionCacheRegistrationDetails()
       mockSessionCacheSubscriptionDetails()
       mockRegisterWithoutIdOKResponse()
@@ -260,7 +270,9 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
     "when CorporateBody and ROW, call Register without id which fails, do not call SUB02" in {
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]]))
         .thenReturn(Some(UserLocation.ThirdCountry))
-      when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(CorporateBody))
+      when(mockOrgTypeLookup.etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(
+        Some(CorporateBody)
+      )
       mockSessionCacheRegistrationDetails()
       mockSessionCacheSubscriptionDetails()
 
@@ -275,7 +287,9 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
     "when CorporateBody and ROW, call register without id, which returns NotOK status, do not call Sub02" in {
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]]))
         .thenReturn(Some(UserLocation.ThirdCountry))
-      when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(CorporateBody))
+      when(mockOrgTypeLookup.etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(
+        Some(CorporateBody)
+      )
       mockSessionCacheRegistrationDetails()
       mockSessionCacheSubscriptionDetails()
 

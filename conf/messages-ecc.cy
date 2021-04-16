@@ -310,3 +310,26 @@ ecc.address-lookup.postcode.no-results.manual = Hoffwn nodi fy nghyfeiriad â ll
 ecc.address-lookup.postcode.results.not-found = Heb ei ddarganfod
 
 cds.matching.organisation-address.postcode-optional=Cod post (dewisol)
+
+ecc.business-short-name-yes-no.company.title = Does your company use a shortened name?
+ecc.business-short-name-yes-no.partnership.title = A yw’ch partneriaeth yn defnyddio enw byrrach?
+ecc.business-short-name-yes-no.charity.title = Does you charity use a shortened name?
+ecc.business-short-name-yes-no.organisation.title = Does you organisation use a shortened name?
+ecc.business-short-name-yes-no.hint = Er enghraifft, mae Cyllid a Thollau Ei Mawrhydi hefyd yn cael ei alw’n CThEM.
+ecc.business-short-name-yes-no.company.empty = Tell us if your company uses a shortened name
+ecc.business-short-name-yes-no.partnership.empty = Rhowch wybod i ni a yw eich partneriaeth yn defnyddio enw byrrach
+ecc.business-short-name-yes-no.organisation.empty = Tell us if your organisation uses a shortened name
+ecc.business-short-name-yes-no.charity.empty = Tell us if your charity uses a shortened name
+
+ecc.business-short-name.company.title = What is your company''s short name?
+ecc.business-short-name.partnership.title = What is your partnership''s short name?
+ecc.business-short-name.charity.title = What is your charity''s short name?
+ecc.business-short-name.organisation.title = What is your organisation''s short name?
+
+ecc.business-short-name.short-name = Short name
+
+ecc.business-short-name.company.empty = Enter your company''s shortened name
+ecc.business-short-name.partnership.empty = Enter your partnership''s shortened name
+ecc.business-short-name.charity.empty = Enter your charity''s shortened name
+ecc.business-short-name.organisation.empty = Enter your organisation''s shortened name
+ecc.business-short-name.error = Rhaid i’r enw byrrach fod yn 20 o gymeriadau neu lai

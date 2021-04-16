@@ -151,6 +151,9 @@ object MatchingForms {
   def eoriSignoutYesNoForm()(implicit messages: Messages): Form[YesNo] =
     createYesNoAnswerForm("ecc.unable-to-use.signout.empty")
 
+  def businessShortNameYesNoForm(emptyErrorMessage: String)(implicit messages: Messages): Form[YesNo] =
+    createYesNoAnswerForm(emptyErrorMessage)
+
   private def createYesNoAnswerForm(
     invalidErrorMsgKey: String = messageKeyOptionInvalid
   )(implicit messages: Messages): Form[YesNo] = Form(

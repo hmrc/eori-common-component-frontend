@@ -23,12 +23,9 @@ import play.api.data.{Form, Forms, Mapping}
 import uk.gov.hmrc.emailaddress.EmailAddress
 import uk.gov.hmrc.eoricommoncomponent.frontend.DateConverter
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.CompanyShortNameViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription._
-import uk.gov.hmrc.eoricommoncomponent.frontend.playext.form.ConditionalMapping
 import uk.gov.voa.play.form.ConditionalMappings.{isEqual, mandatoryIf}
-import uk.gov.voa.play.form.MandatoryOptionalMapping
 
 object SubscriptionForm {
 
@@ -121,51 +118,9 @@ object SubscriptionForm {
     )
   )
 
-  val subscriptionCompanyShortNameForm: Form[CompanyShortNameViewModel] =
-    Form(
-      mapping(
-        "use-short-name" -> optional(boolean)
-          .verifying("cds.subscription.short-name.error.use-short-name", x => x.fold(false)(oneOf(Set(true, false)))),
-        "short-name" -> ConditionalMapping(
-          condition = isEqual("use-short-name", trueAnswer),
-          wrapped = MandatoryOptionalMapping(text.verifying(validShortName)),
-          elseValue = (key, data) => data.get(key)
-        )
-      )(CompanyShortNameViewModel.apply)(CompanyShortNameViewModel.unapply)
-    )
-
-  val subscriptionPartnershipShortNameForm: Form[CompanyShortNameViewModel] =
-    Form(
-      mapping(
-        "use-short-name" -> optional(boolean).verifying(
-          "cds.subscription.partnership.short-name.error.use-short-name",
-          x => x.fold(false)(oneOf(Set(true, false)))
-        ),
-        "short-name" -> ConditionalMapping(
-          condition = isEqual("use-short-name", trueAnswer),
-          wrapped = MandatoryOptionalMapping(text.verifying(validPartnershipShortName)),
-          elseValue = (key, data) => data.get(key)
-        )
-      )(CompanyShortNameViewModel.apply)(CompanyShortNameViewModel.unapply)
-    )
-
   val sicCodeform = Form(
     Forms.mapping("sic" -> text.verifying(validSicCode))(SicCodeViewModel.apply)(SicCodeViewModel.unapply)
   )
-
-  private def validShortName: Constraint[String] =
-    Constraint({
-      case s if s.trim == ""       => Invalid(ValidationError("cds.subscription.short-name.error.short-name"))
-      case s if s.trim.length > 70 => Invalid(ValidationError("cds.subscription.short-name.error.short-name.too-long"))
-      case _                       => Valid
-    })
-
-  private def validPartnershipShortName: Constraint[String] =
-    Constraint({
-      case s if s.trim == ""       => Invalid(ValidationError("cds.subscription.partnership.short-name.error.short-name"))
-      case s if s.trim.length > 70 => Invalid(ValidationError("cds.subscription.short-name.error.short-name.too-long"))
-      case _                       => Valid
-    })
 
   private def validSicCode: Constraint[String] =
     Constraint("constraints.sic")({

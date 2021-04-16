@@ -19,7 +19,6 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 import javax.inject.{Inject, Singleton}
 import org.joda.time.LocalDate
 import play.api.mvc._
-import uk.gov.hmrc.eoricommoncomponent.frontend.OrgTypeNotFoundException
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
@@ -57,13 +56,7 @@ class DateOfEstablishmentController @Inject() (
       for {
         maybeCachedDateModel <- subscriptionBusinessService.maybeCachedDateEstablished
         orgType              <- orgTypeLookup.etmpOrgType
-      } yield populateView(
-        maybeCachedDateModel,
-        isInReviewMode = false,
-        orgType.getOrElse(throw new OrgTypeNotFoundException()),
-        service,
-        journey
-      )
+      } yield populateView(maybeCachedDateModel, isInReviewMode = false, orgType, service, journey)
     }
 
   private def populateView(
@@ -82,13 +75,7 @@ class DateOfEstablishmentController @Inject() (
       for {
         cachedDateModel <- fetchDate
         orgType         <- orgTypeLookup.etmpOrgType
-      } yield populateView(
-        Some(cachedDateModel),
-        isInReviewMode = true,
-        orgType.getOrElse(throw new OrgTypeNotFoundException()),
-        service,
-        journey
-      )
+      } yield populateView(Some(cachedDateModel), isInReviewMode = true, orgType, service, journey)
     }
 
   private def fetchDate(implicit hc: HeaderCarrier): Future[LocalDate] =
@@ -98,19 +85,17 @@ class DateOfEstablishmentController @Inject() (
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionDateOfEstablishmentForm.bindFromRequest.fold(
         formWithErrors =>
-          orgTypeLookup.etmpOrgType map {
-            case Some(orgType) =>
-              BadRequest(
-                dateOfEstablishmentView(
-                  formWithErrors,
-                  isInReviewMode,
-                  orgType,
-                  UserLocation.isRow(requestSessionData),
-                  service,
-                  journey
-                )
+          orgTypeLookup.etmpOrgType map { orgType =>
+            BadRequest(
+              dateOfEstablishmentView(
+                formWithErrors,
+                isInReviewMode,
+                orgType,
+                UserLocation.isRow(requestSessionData),
+                service,
+                journey
               )
-            case None => throw new OrgTypeNotFoundException()
+            )
           },
         date =>
           saveDateEstablished(date).map { _ =>

@@ -133,7 +133,7 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
 
   "Calling getCachedCompanyShortName" should {
     "retrieve any previously cached Sic Code from the cdsFrontendCache" in {
-      val shortName = BusinessShortName(Some("ABCD"))
+      val shortName = BusinessShortName("ABCD")
       when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)
       when(mockSubscriptionDetailsHolder.businessShortName).thenReturn(Some(shortName))
       await(subscriptionBusinessService.getCachedCompanyShortName) shouldBe shortName

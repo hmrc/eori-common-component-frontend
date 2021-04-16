@@ -80,7 +80,7 @@ class ConfirmContactDetailsController @Inject() (
           if (!org.address.isValidAddress())
             checkAddressDetails(journey, service, YesNoWrongAddress(Some("wrong-address")))
           else
-            orgTypeLookup.etmpOrgType.flatMap {
+            orgTypeLookup.etmpOrgTypeOpt.flatMap {
               case Some(ot) =>
                 Future.successful(
                   Ok(
@@ -128,7 +128,7 @@ class ConfirmContactDetailsController @Inject() (
                   )
                 )
               case org: RegistrationDetailsOrganisation =>
-                orgTypeLookup.etmpOrgType.flatMap {
+                orgTypeLookup.etmpOrgTypeOpt.flatMap {
                   case Some(ot) =>
                     Future.successful(
                       BadRequest(

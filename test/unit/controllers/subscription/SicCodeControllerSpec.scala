@@ -45,7 +45,6 @@ import unit.controllers.CdsPage
 import util.StringThings._
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.SessionBuilder
-import util.builders.SubscriptionAmendCompanyDetailsFormBuilder._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -95,6 +94,13 @@ class SicCodeControllerSpec
     registerSaveDetailsMockSuccess()
     setupMockSubscriptionFlowManager(SicCodeSubscriptionFlowPage)
   }
+
+  val sic = "99996"
+
+  private val mandatoryFieldsMap = Map("sic" -> sic)
+
+  private val populatedSicCodeFieldsMap   = Map("sic" -> sic)
+  private val unpopulatedSicCodeFieldsMap = Map("sic" -> "")
 
   "Subscription Sic Code form in create mode" should {
 
@@ -463,7 +469,7 @@ class SicCodeControllerSpec
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
 
-    when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(orgType))
+    when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(orgType)
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]]))
       .thenReturn(Some(userSelectedOrgType))
 
@@ -484,7 +490,7 @@ class SicCodeControllerSpec
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
 
-    when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(orgType))
+    when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(orgType)
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]]))
       .thenReturn(Some(userSelectedOrgType))
 
@@ -515,7 +521,7 @@ class SicCodeControllerSpec
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
 
-    when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(orgType))
+    when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(orgType)
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]]))
       .thenReturn(Some(userSelectedOrgType))
     when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(userLocation)
@@ -532,7 +538,7 @@ class SicCodeControllerSpec
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
 
-    when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(orgType))
+    when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(orgType)
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]]))
       .thenReturn(Some(userSelectedOrgType))
     when(mockSubscriptionBusinessService.getCachedSicCode(any[HeaderCarrier])).thenReturn(dataToEdit)

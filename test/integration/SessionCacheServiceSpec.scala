@@ -58,7 +58,7 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
     "store, fetch and update Subscription details handler correctly" in {
       val sessionId: SessionId = setupSession
 
-      val holder = SubscriptionDetails(businessShortName = Some(BusinessShortName(Some("some business name"))))
+      val holder = SubscriptionDetails(businessShortName = Some(BusinessShortName("some business name")))
 
       await(sessionCache.saveSubscriptionDetails(holder)(hc))
 
@@ -70,7 +70,7 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       await(sessionCache.subscriptionDetails(hc)) mustBe holder
 
       val updatedHolder = SubscriptionDetails(
-        businessShortName = Some(BusinessShortName(Some("different business name"))),
+        businessShortName = Some(BusinessShortName("different business name")),
         sicCode = Some("sic")
       )
 

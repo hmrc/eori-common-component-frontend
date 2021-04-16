@@ -49,10 +49,12 @@ object CompanyDetailsWithoutDateOfEstablishmentViewModel {
   implicit val jsonFormat = Json.format[CompanyDetailsWithoutDateOfEstablishmentViewModel]
 }
 
-case class BusinessShortName(shortName: Option[String])
+case class BusinessShortName(shortNameProvided: Boolean, shortName: Option[String])
 
 object BusinessShortName {
   implicit val jsonFormat = Json.format[BusinessShortName]
+
+  def apply(shortName: String): BusinessShortName = BusinessShortName(true, Some(shortName))
 }
 
 case class CompanyShortNameViewModel(useShortName: Option[Boolean], shortName: Option[String])

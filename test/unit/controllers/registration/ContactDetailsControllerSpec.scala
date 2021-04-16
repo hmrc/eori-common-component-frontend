@@ -569,7 +569,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   )(test: Future[Result] => Any) {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
-    when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(orgType))
+    when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(orgType)
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
 
     test(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))

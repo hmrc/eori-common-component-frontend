@@ -311,7 +311,7 @@ isUserIdentifiedByRegService: Boolean
                     "short-name",
                     messages("cds.form.shortened-name"),
                     Html.apply(n.shortName.getOrElse(messages("cds.not-entered.label"))),
-                    Some(BusinessShortNameController.reviewForm(service, journey)),
+                    Some(BusinessShortNameYesNoController.reviewPage(service)),
                     messages("cds.form.shortened-name")
                 )
             }

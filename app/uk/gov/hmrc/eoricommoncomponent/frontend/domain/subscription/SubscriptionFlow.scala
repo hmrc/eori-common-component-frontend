@@ -347,8 +347,8 @@ case object VatRegisteredUkSubscriptionFlowPage extends SubscriptionPage {
 case object BusinessShortNameSubscriptionFlowPage extends SubscriptionPage {
 
   override def url(service: Service): String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.BusinessShortNameController
-      .createForm(service, Journey.Register)
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.BusinessShortNameYesNoController
+      .displayPage(service)
       .url
 
 }
