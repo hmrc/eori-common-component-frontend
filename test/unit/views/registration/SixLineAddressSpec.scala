@@ -90,7 +90,7 @@ class SixLineAddressSpec extends ViewSpec {
     }
 
     "have an label for line-1 of Postcode (optional)" in {
-      doc.body().getElementsByAttributeValue("for", "postcode").text mustBe "Postcode (optional)"
+      doc.body().getElementsByAttributeValue("for", "postcode").text mustBe "Postal code (optional)"
     }
 
     "have an label for line-1 of Country" in {
