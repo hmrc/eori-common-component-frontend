@@ -308,3 +308,5 @@ ecc.address-lookup.postcode.no-results.hint = Nid ydym yn gallu dod o hyd i gyfe
 ecc.address-lookup.postcode.no-results.manual = Hoffwn nodi fy nghyfeiriad â llaw.
 
 ecc.address-lookup.postcode.results.not-found = Heb ei ddarganfod
+
+cds.matching.organisation-address.postcode-optional=Cod post (dewisol)
