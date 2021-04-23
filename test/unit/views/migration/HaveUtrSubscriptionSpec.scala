@@ -40,11 +40,13 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
     "display correct heading" in {
       companyDoc.body
         .getElementsByTag("h1")
-        .text mustBe "Does your organisation have a Unique Taxpayer Reference (UTR) issued in the UK?"
+        .text mustBe "Does your organisation have a Corporation Tax Unique Taxpayer Reference (UTR) issued in the UK?"
     }
 
     "display correct title" in {
-      companyDoc.title must startWith("Does your organisation have a Unique Taxpayer Reference (UTR) issued in the UK?")
+      companyDoc.title must startWith(
+        "Does your organisation have a Corporation Tax Unique Taxpayer Reference (UTR) issued in the UK?"
+      )
     }
 
     "have correct intro" in {

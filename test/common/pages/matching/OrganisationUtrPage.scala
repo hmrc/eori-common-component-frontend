@@ -39,6 +39,6 @@ object SubscriptionRowIndividualsUtr extends OrganisationUtrPage {
 }
 
 object SubscriptionRowCompanyUtr extends OrganisationUtrPage {
-  override val title = "Does your organisation have a Unique Taxpayer Reference (UTR) issued in the UK?"
+  override val title = "Does your organisation have a Corporation Tax Unique Taxpayer Reference (UTR) issued in the UK?"
   val formId         = "SubscriptionUtrForm"
 }

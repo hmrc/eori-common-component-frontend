@@ -39,8 +39,10 @@
 @headerAndTitle = @{
     organisationType match {
         case CdsOrganisationType.ThirdCountryOrganisationId => messages("cds.matching.row-organisation.utr.title-and-heading")
-        case CdsOrganisationType.ThirdCountrySoleTraderId | CdsOrganisationType.ThirdCountryIndividualId | CdsOrganisationType.IndividualId | CdsOrganisationType.SoleTraderId
-                => messages("cds.matching.row-sole-trader-individual.utr.title-and-heading")
+        case CdsOrganisationType.ThirdCountrySoleTraderId | CdsOrganisationType.ThirdCountryIndividualId =>
+            messages("ecc.matching.row-sole-trader-individual.utr.title-and-heading")
+        case CdsOrganisationType.IndividualId | CdsOrganisationType.SoleTraderId =>
+            messages("cds.matching.row-sole-trader-individual.utr.title-and-heading")
         case _ => messages("cds.matching.organisation.utr.title-and-heading")
     }
 }
@@ -48,8 +50,10 @@
 @hint = @{
     organisationType match {
         case CdsOrganisationType.ThirdCountryOrganisationId => messages("cds.matching.row-organisation.utr.paragraph")
-        case CdsOrganisationType.IndividualId | CdsOrganisationType.ThirdCountryIndividualId | CdsOrganisationType.ThirdCountrySoleTraderId | CdsOrganisationType.SoleTraderId
-                => messages("cds.matching.row-sole-trader-individual.utr.paragraph")
+        case CdsOrganisationType.ThirdCountrySoleTraderId | CdsOrganisationType.ThirdCountryIndividualId =>
+            messages("ecc.matching.row-sole-trader-individual.utr.paragraph")
+        case CdsOrganisationType.IndividualId | CdsOrganisationType.SoleTraderId =>
+            messages("cds.matching.row-sole-trader-individual.utr.paragraph")
         case _ => messages("cds.matching.organisation.utr.paragraph")
     }
 }
