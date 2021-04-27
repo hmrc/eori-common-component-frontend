@@ -312,3 +312,26 @@ ecc.address-lookup.postcode.no-results.manual = I want to enter my address manua
 ecc.address-lookup.postcode.results.not-found = Not found
 
 cds.matching.organisation-address.postcode-optional=Postal code (optional)
+
+ecc.business-short-name-yes-no.company.title = Does your company use a shortened name?
+ecc.business-short-name-yes-no.partnership.title = Does your partnership use a shortened name?
+ecc.business-short-name-yes-no.charity.title = Does you charity use a shortened name?
+ecc.business-short-name-yes-no.organisation.title = Does you organisation use a shortened name?
+ecc.business-short-name-yes-no.hint = For example, Her Majesty''s Revenue and Customs is known as HMRC.
+ecc.business-short-name-yes-no.company.empty = Tell us if your company uses a shortened name
+ecc.business-short-name-yes-no.partnership.empty = Tell us if your partnership uses a shortened name
+ecc.business-short-name-yes-no.organisation.empty = Tell us if your organisation uses a shortened name
+ecc.business-short-name-yes-no.charity.empty = Tell us if your charity uses a shortened name
+
+ecc.business-short-name.company.title = What is your company''s short name?
+ecc.business-short-name.partnership.title = What is your partnership''s short name?
+ecc.business-short-name.charity.title = What is your charity''s short name?
+ecc.business-short-name.organisation.title = What is your organisation''s short name?
+
+ecc.business-short-name.short-name = Short name
+
+ecc.business-short-name.company.empty = Enter your company''s shortened name
+ecc.business-short-name.partnership.empty = Enter your partnership''s shortened name
+ecc.business-short-name.charity.empty = Enter your charity''s shortened name
+ecc.business-short-name.organisation.empty = Enter your organisation''s shortened name
+ecc.business-short-name.error = The shortened name must be 30 characters or less

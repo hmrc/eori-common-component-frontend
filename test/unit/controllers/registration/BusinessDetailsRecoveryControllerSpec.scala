@@ -96,7 +96,7 @@ class BusinessDetailsRecoveryControllerSpec extends ControllerSpec with BeforeAn
       when(
         mockOrgTypeLookup
           .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
-      ).thenReturn(Future.successful(Some(CorporateBody)))
+      ).thenReturn(Future.successful(CorporateBody))
       invokeConfirm() { result =>
         status(result) shouldBe OK
       }

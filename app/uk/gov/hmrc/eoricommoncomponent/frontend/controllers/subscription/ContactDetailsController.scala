@@ -53,17 +53,12 @@ class ContactDetailsController @Inject() (
   def createForm(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       val f = for {
-        orgType <- orgTypeLookup.etmpOrgType
+        orgType <- orgTypeLookup.etmpOrgTypeOpt
 
-        cachedCustomsId <- orgType match {
-          case Some(NA) => subscriptionDetailsService.cachedCustomsId
-          case _        => Future.successful(None)
-        }
-
-        cachedNameIdDetails <- orgType match {
-          case Some(NA) => Future.successful(None)
-          case _        => subscriptionDetailsService.cachedNameIdDetails
-        }
+        cachedCustomsId <- if (orgType == Some(NA)) subscriptionDetailsService.cachedCustomsId
+        else Future.successful(None)
+        cachedNameIdDetails <- if (orgType == Some(NA)) Future.successful(None)
+        else subscriptionDetailsService.cachedNameIdDetails
       } yield (cachedCustomsId, cachedNameIdDetails) match {
         case (None, None) => populateForm(service)(false)
         case _ =>

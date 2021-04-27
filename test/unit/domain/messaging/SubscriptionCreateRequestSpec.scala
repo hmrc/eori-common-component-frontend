@@ -283,7 +283,7 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
         addressDetails = Some(addressViewModel),
         contactDetails = Some(contactDetails),
         personalDataDisclosureConsent = Some(true),
-        businessShortName = Some(BusinessShortName(Some("short name"))),
+        businessShortName = Some(BusinessShortName("short name")),
         sicCode = Some("12345")
       )
       val cdsOrgType = CdsOrganisationType.Company

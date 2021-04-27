@@ -61,6 +61,9 @@ class SubscriptionDetailsService @Inject() (
   def cacheCompanyShortName(shortName: BusinessShortName)(implicit hc: HeaderCarrier): Future[Unit] =
     saveSubscriptionDetails(sd => sd.copy(businessShortName = Some(shortName)))
 
+  def cachedCompanyShortName(implicit hc: HeaderCarrier): Future[Option[BusinessShortName]] =
+    sessionCache.subscriptionDetails.map(_.businessShortName)
+
   def cacheContactDetails(contactDetailsModel: ContactDetailsModel, isInReviewMode: Boolean = false)(implicit
     hc: HeaderCarrier
   ): Future[Unit] =

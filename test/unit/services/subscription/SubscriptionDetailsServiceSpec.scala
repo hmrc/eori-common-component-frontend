@@ -429,7 +429,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
 
   "Calling updateSubscriptionDetails" should {
     "update cache with subscription details having name and dob details only" in {
-      val businessShortName = BusinessShortName(Some("shortName"))
+      val businessShortName = BusinessShortName("shortName")
       val nameDobDetails    = NameDobMatchModel("fname", Some("mname"), "lname", new LocalDate(2019, 1, 1))
       when(mockSessionCache.subscriptionDetails).thenReturn(
         Future.successful(
@@ -447,7 +447,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
 
     "update cache with subscription details having organisation name details only" in {
       val nameOrganisationDetails = NameOrganisationMatchModel("fname")
-      val businessShortName       = BusinessShortName(Some("shortName"))
+      val businessShortName       = BusinessShortName("shortName")
       when(mockSessionCache.subscriptionDetails).thenReturn(
         Future.successful(
           SubscriptionDetails(

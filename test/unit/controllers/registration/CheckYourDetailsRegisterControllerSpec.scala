@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package unit.controllers.subscription
+package unit.controllers.registration
 
 import common.pages.migration.SubscriptionExistingDetailsReviewPage
 import common.pages.registration.RegistrationReviewPage
@@ -370,7 +370,7 @@ class CheckYourDetailsRegisterControllerSpec
       s"display shortened name label and value for ${organisationType.id}" in {
         when(mockRequestSession.userSubscriptionFlow(any[Request[AnyContent]]))
           .thenReturn(SubscriptionFlow("Organisation"))
-        when(mockSubscriptionDetailsHolder.businessShortName).thenReturn(Some(BusinessShortName(Some(shortName))))
+        when(mockSubscriptionDetailsHolder.businessShortName).thenReturn(Some(BusinessShortName(shortName)))
         mockRegistrationDetailsBasedOnOrganisationType(organisationType)
 
         showForm(userSelectedOrgType = organisationType) { result =>
@@ -385,7 +385,7 @@ class CheckYourDetailsRegisterControllerSpec
       s"display shortened name and 'Not entered' for ${organisationType.id} if alternative name wasn't defined" in {
         when(mockRequestSession.userSubscriptionFlow(any[Request[AnyContent]]))
           .thenReturn(SubscriptionFlow("Organisation"))
-        when(mockSubscriptionDetailsHolder.businessShortName).thenReturn(Some(BusinessShortName(None)))
+        when(mockSubscriptionDetailsHolder.businessShortName).thenReturn(Some(BusinessShortName(false, None)))
         mockRegistrationDetailsBasedOnOrganisationType(organisationType)
 
         showForm(userSelectedOrgType = organisationType) { result =>
@@ -502,7 +502,7 @@ class CheckYourDetailsRegisterControllerSpec
         .changeAnswerText("Shortened name")
       page.getElementsHref(
         SubscriptionExistingDetailsReviewPage.ShortNameReviewLinkXPath
-      ) shouldBe "/customs-enrolment-services/atar/register/company-short-name/review"
+      ) shouldBe "/customs-enrolment-services/atar/register/company-short-name-yes-no/review"
 
       page.getElementsText(
         SubscriptionExistingDetailsReviewPage.NatureOfBusinessXPathLabel
@@ -662,7 +662,7 @@ class CheckYourDetailsRegisterControllerSpec
         .changeAnswerText("Shortened name")
       page.getElementsHref(
         SubscriptionExistingDetailsReviewPage.ShortNameReviewLinkXPath
-      ) shouldBe "/customs-enrolment-services/atar/register/company-short-name/review"
+      ) shouldBe "/customs-enrolment-services/atar/register/company-short-name-yes-no/review"
 
       page.getElementsText(
         SubscriptionExistingDetailsReviewPage.NatureOfBusinessXPathLabel

@@ -96,7 +96,7 @@ class RegisterWithoutIdWithSubscriptionService @Inject() (
       }
 
     for {
-      orgType <- orgTypeLookup.etmpOrgType
+      orgType <- orgTypeLookup.etmpOrgTypeOpt
       rd      <- sessionCache.registrationDetails
       sd      <- sessionCache.subscriptionDetails
       call    <- registerWithoutIdWithSubscription(orgType, rd, sd)

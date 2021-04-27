@@ -740,7 +740,7 @@ class SubscriptionServiceSpec
     val subscriptionDetailsHolder = SubscriptionDetails(
       contactDetails = Some(subscriptionContactDetails),
       personalDataDisclosureConsent = Some(personalDataDisclosureConsent),
-      businessShortName = Some(BusinessShortName(Some(shortName))),
+      businessShortName = Some(BusinessShortName(shortName)),
       dateEstablished = Some(dateOfEstablishment),
       sicCode = Some(principalEconomicActivity),
       ukVatDetails = ukVatDetails

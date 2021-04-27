@@ -52,7 +52,7 @@ class OrgTypeLookupSpec extends UnitSpec with BeforeAndAfterEach with MockitoSug
 
       val orgType = await(lookup.etmpOrgType(req, hc))
 
-      orgType shouldBe Some(CorporateBody)
+      orgType shouldBe CorporateBody
     }
 
     "give org type from cache" in {
@@ -62,17 +62,19 @@ class OrgTypeLookupSpec extends UnitSpec with BeforeAndAfterEach with MockitoSug
 
       val orgType = await(lookup.etmpOrgType(req, hc))
 
-      orgType shouldBe Some(Partnership)
+      orgType shouldBe Partnership
     }
 
-    "return None when neither the request session or cache contains the org type" in {
+    "throw an exception when neither the request session or cache contains the org type" in {
       when(mockReqSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(RegistrationDetailsBuilder.emptyETMPOrgTypeRegistrationDetails))
 
-      val orgType = await(lookup.etmpOrgType(req, hc))
+      val thrown = intercept[IllegalStateException] {
+        await(lookup.etmpOrgType(req, hc))
+      }
 
-      orgType shouldBe None
+      thrown.getMessage shouldBe "Unable to retrieve Org Type from the cache"
     }
 
     "throw an exception when different type of registration details is retrieved" in {

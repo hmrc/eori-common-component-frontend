@@ -126,7 +126,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       mockCacheWithRegistrationDetails(organisationRegistrationDetails)
       when(
         mockOrgTypeLookup
-          .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
+          .etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])
       ).thenReturn(Future.successful(Some(Partnership)))
 
       invokeConfirm() { result =>
@@ -138,7 +138,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       mockCacheWithRegistrationDetails(limitedLiabilityPartnershipRegistrationDetails)
       when(
         mockOrgTypeLookup
-          .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
+          .etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])
       ).thenThrow(new IllegalStateException("No Registration details in cache."))
 
       invokeConfirm() { result =>
@@ -149,30 +149,11 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       }
     }
 
-    "clear the cache and redirect to Select Organisation Type when org type is empty" in {
-      mockCacheWithRegistrationDetails(limitedLiabilityPartnershipRegistrationDetails)
-      when(
-        mockOrgTypeLookup
-          .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
-      ).thenReturn(Future.successful(None))
-      when(mockSessionCache.remove(any())).thenReturn(Future.successful(true))
-
-      invokeConfirm() { result =>
-        status(result) shouldBe SEE_OTHER
-        result.header.headers(
-          LOCATION
-        ) shouldBe uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.OrganisationTypeController
-          .form(atarService, Journey.Register)
-          .url
-        verify(mockSessionCache).remove(any[HeaderCarrier])
-      }
-    }
-
     "display all fields when all are provided from the cache" in {
       mockCacheWithRegistrationDetails(organisationRegistrationDetails)
       when(
         mockOrgTypeLookup
-          .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
+          .etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])
       ).thenReturn(Future.successful(Some(Partnership)))
 
       invokeConfirm() { result =>
@@ -188,7 +169,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       mockCacheWithRegistrationDetails(soleTraderRegistrationDetails)
       when(
         mockOrgTypeLookup
-          .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
+          .etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])
       ).thenReturn(Future.successful(Some(Partnership)))
 
       invokeConfirm() { result =>
@@ -204,7 +185,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       mockCacheWithRegistrationDetails(soleTraderRegistrationDetails.copy(customsId = Some(Nino("QQ123456C"))))
       when(
         mockOrgTypeLookup
-          .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
+          .etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])
       ).thenReturn(Future.successful(Some(Partnership)))
 
       invokeConfirm() { result =>
@@ -225,7 +206,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
         )
         when(
           mockOrgTypeLookup
-            .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
+            .etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])
         ).thenReturn(Future.successful(Some(Partnership)))
         when(mockSessionCache.subscriptionDetails(any())).thenReturn(
           Future.successful(SubscriptionDetails(addressDetails = None))
@@ -244,7 +225,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       mockCacheWithRegistrationDetails(organisationRegistrationDetails)
       when(
         mockOrgTypeLookup
-          .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
+          .etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])
       ).thenReturn(Future.successful(Some(Partnership)))
 
       invokeConfirm() { result =>
@@ -411,7 +392,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
       when(
         mockOrgTypeLookup
-          .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
+          .etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])
       ).thenReturn(Future.successful(Some(Partnership)))
 
       when(mockSessionCache.subscriptionDetails(any())).thenReturn(
@@ -435,7 +416,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
 
       when(
         mockOrgTypeLookup
-          .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
+          .etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])
       ).thenReturn(Future.successful(Some(Partnership)))
 
       when(mockSessionCache.subscriptionDetails(any())).thenReturn(
@@ -535,7 +516,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       mockCacheWithRegistrationDetails(organisationRegistrationDetails)
       when(
         mockOrgTypeLookup
-          .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
+          .etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])
       ).thenReturn(Future.successful(Some(Partnership)))
 
       invokeConfirmContactDetailsWithoutOptionSelected() { result =>
@@ -552,7 +533,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       mockCacheWithRegistrationDetails(individualRegistrationDetails)
       when(
         mockOrgTypeLookup
-          .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
+          .etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])
       ).thenReturn(Future.successful(Some(Partnership)))
 
       invokeConfirmContactDetailsWithoutOptionSelected() { result =>
@@ -570,7 +551,7 @@ class ConfirmContactDetailsControllerSpec extends ControllerSpec with BeforeAndA
       mockCacheWithRegistrationDetails(organisationRegistrationDetails)
       when(
         mockOrgTypeLookup
-          .etmpOrgType(any[Request[AnyContent]], any[HeaderCarrier])
+          .etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])
       ).thenReturn(Future.successful(Some(Partnership)))
 
       invokeConfirmContactDetailsWithSelectedOption(selectedOption = invalidOption) { result =>
