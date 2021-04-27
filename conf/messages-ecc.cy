@@ -332,4 +332,4 @@ ecc.business-short-name.company.empty = Enter your company''s shortened name
 ecc.business-short-name.partnership.empty = Enter your partnership''s shortened name
 ecc.business-short-name.charity.empty = Enter your charity''s shortened name
 ecc.business-short-name.organisation.empty = Enter your organisation''s shortened name
-ecc.business-short-name.error = Rhaid i’r enw byrrach fod yn 20 o gymeriadau neu lai
+ecc.business-short-name.error = Rhaid i’r enw byrrach fod yn 30 o gymeriadau neu lai

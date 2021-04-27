@@ -334,4 +334,4 @@ ecc.business-short-name.company.empty = Enter your company''s shortened name
 ecc.business-short-name.partnership.empty = Enter your partnership''s shortened name
 ecc.business-short-name.charity.empty = Enter your charity''s shortened name
 ecc.business-short-name.organisation.empty = Enter your organisation''s shortened name
-ecc.business-short-name.error = The shortened name must be 20 characters or less
+ecc.business-short-name.error = The shortened name must be 30 characters or less
