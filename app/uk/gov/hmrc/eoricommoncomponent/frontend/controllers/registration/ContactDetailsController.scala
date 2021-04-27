@@ -63,17 +63,17 @@ class ContactDetailsController @Inject() (
 
   private def populateFormGYE(
     service: Service
-  )(isInReviewMode: Boolean)(implicit request: Request[AnyContent]): Future[Result] = {
-    for {
-      email          <- cdsFrontendDataCache.email
-      contactDetails <- subscriptionBusinessService.cachedContactDetailsModel
-    } yield populateOkView(
-      contactDetails.map(_.toContactDetailsViewModel),
-      Some(email),
-      isInReviewMode = isInReviewMode,
-      service
-    )
-  }.flatMap(identity)
+  )(isInReviewMode: Boolean)(implicit request: Request[AnyContent]): Future[Result] =
+    subscriptionBusinessService.cachedContactDetailsModel.flatMap { contactDetails =>
+      cdsFrontendDataCache.email.flatMap { email =>
+        populateOkView(
+          contactDetails.map(_.toContactDetailsViewModel),
+          Some(email),
+          isInReviewMode = isInReviewMode,
+          service
+        )
+      }
+    }
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>

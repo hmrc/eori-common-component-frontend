@@ -462,13 +462,6 @@ object MatchingForms {
       case _    => Valid
     })
 
-  val rowIndividualsNinoForm: Form[NinoMatchModel] = Form(
-    mapping(
-      "have-nino" -> optional(boolean).verifying(validHaveNino),
-      "nino"      -> mandatoryIfTrue("have-nino", text.verifying(validNino))
-    )(NinoMatchModel.apply)(NinoMatchModel.unapply)
-  )
-
   val haveRowIndividualsNinoForm: Form[NinoMatchModel] = Form(
     mapping("have-nino" -> optional(boolean).verifying(validHaveNino))(NinoMatchModel.apply)(
       model => Some(model.haveNino)

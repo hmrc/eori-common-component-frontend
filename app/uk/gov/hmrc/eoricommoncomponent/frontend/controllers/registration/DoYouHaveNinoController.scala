@@ -50,7 +50,7 @@ class DoYouHaveNinoController @Inject() (
 
   def submit(service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
-      implicit request => loggedInUser: LoggedInUserWithEnrolments =>
+      implicit request => _: LoggedInUserWithEnrolments =>
         haveRowIndividualsNinoForm.bindFromRequest.fold(
           formWithErrors => Future.successful(BadRequest(matchNinoRowIndividualView(formWithErrors, service, journey))),
           formData =>
@@ -60,19 +60,18 @@ class DoYouHaveNinoController @Inject() (
                   .cacheNinoMatch(Some(formData))
                   .map(_ => Redirect(GetNinoController.displayForm(service, journey)))
               case Some(false) =>
-                subscriptionDetailsService.updateSubscriptionDetails
-                noNinoRedirect(service, journey)
+                subscriptionDetailsService.updateSubscriptionDetails.map { _ =>
+                  noNinoRedirect(service, journey)
+                }
               case _ => throw new IllegalArgumentException("Have NINO should be Some(true) or Some(false) but was None")
             }
         )
     }
 
-  private def noNinoRedirect(service: Service, journey: Journey.Value)(implicit
-    request: Request[AnyContent]
-  ): Future[Result] =
+  private def noNinoRedirect(service: Service, journey: Journey.Value)(implicit request: Request[AnyContent]): Result =
     requestSessionData.userSelectedOrganisationType match {
       case Some(cdsOrgType) =>
-        Future.successful(Redirect(SixLineAddressController.showForm(false, cdsOrgType.id, service, journey)))
+        Redirect(SixLineAddressController.showForm(false, cdsOrgType.id, service, journey))
       case _ => throw new IllegalStateException("No userSelectedOrganisationType details in session.")
     }
 
