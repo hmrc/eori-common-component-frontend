@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.Configuration
 import play.api.i18n.Lang
 import play.api.mvc.{Call, ControllerComponents}
 import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}

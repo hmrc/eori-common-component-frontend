@@ -45,7 +45,11 @@ class DoYouHaveNinoController @Inject() (
 
   def displayForm(service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      Future.successful(Ok(matchNinoRowIndividualView(haveRowIndividualsNinoForm, service, journey)))
+      subscriptionDetailsService.cachedNinoMatch.map { cachedNinoOpt =>
+        val form = cachedNinoOpt.fold(haveRowIndividualsNinoForm)(haveRowIndividualsNinoForm.fill(_))
+
+        Ok(matchNinoRowIndividualView(form, service, journey))
+      }
     }
 
   def submit(service: Service, journey: Journey.Value): Action[AnyContent] =
@@ -54,16 +58,23 @@ class DoYouHaveNinoController @Inject() (
         haveRowIndividualsNinoForm.bindFromRequest.fold(
           formWithErrors => Future.successful(BadRequest(matchNinoRowIndividualView(formWithErrors, service, journey))),
           formData =>
-            formData.haveNino match {
-              case Some(true) =>
-                subscriptionDetailsService
-                  .cacheNinoMatch(Some(formData))
-                  .map(_ => Redirect(GetNinoController.displayForm(service, journey)))
-              case Some(false) =>
-                subscriptionDetailsService.updateSubscriptionDetails.map { _ =>
-                  noNinoRedirect(service, journey)
-                }
-              case _ => throw new IllegalArgumentException("Have NINO should be Some(true) or Some(false) but was None")
+            subscriptionDetailsService.cachedNinoMatch.flatMap { cachedNinoOpt =>
+              formData.haveNino match {
+                case Some(true) =>
+                  subscriptionDetailsService
+                    .cacheNinoMatch(Some(formData))
+                    .map(_ => Redirect(GetNinoController.displayForm(service, journey)))
+                case Some(false) if cachedNinoOpt.exists(_.haveNino.exists(_ == false)) =>
+                  Future.successful(noNinoRedirect(service, journey))
+                case Some(false) =>
+                  subscriptionDetailsService.updateSubscriptionDetails.flatMap { _ =>
+                    subscriptionDetailsService.cacheNinoMatch(Some(formData)).map { _ =>
+                      noNinoRedirect(service, journey)
+                    }
+                  }
+                case _ =>
+                  throw new IllegalArgumentException("Have NINO should be Some(true) or Some(false) but was None")
+              }
             }
         )
     }

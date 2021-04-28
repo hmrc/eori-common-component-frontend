@@ -77,6 +77,8 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
 
     "display the form" in {
 
+      when(mockSubscriptionDetailsService.cachedNinoMatch(any())).thenReturn(Future.successful(None))
+
       displayForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
@@ -86,6 +88,8 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
     }
 
     "ensure the labels are correct" in {
+
+      when(mockSubscriptionDetailsService.cachedNinoMatch(any())).thenReturn(Future.successful(None))
 
       displayForm() { result =>
         status(result) shouldBe OK
@@ -109,6 +113,7 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
       when(mockSubscriptionDetailsService.cachedNameDobDetails(any[HeaderCarrier])).thenReturn(
         Future.successful(Some(NameDobMatchModel("First name", None, "Last name", new LocalDate(2015, 10, 15))))
       )
+      when(mockSubscriptionDetailsService.cachedNinoMatch(any())).thenReturn(Future.successful(None))
 
       submitForm(yesNinoSubmitData) { result =>
         await(result)
@@ -121,6 +126,8 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
 
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(Some(CdsOrganisationType.ThirdCountrySoleTrader))
+      when(mockSubscriptionDetailsService.cachedNinoMatch(any())).thenReturn(Future.successful(None))
+      when(mockSubscriptionDetailsService.cacheNinoMatch(any())(any())).thenReturn(Future.successful((): Unit))
 
       submitForm(noNinoSubmitData) { result =>
         await(result)
@@ -138,10 +145,12 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
       }
     }
 
-    "throw exeption when N is selected and no org cached" in {
+    "throw exception when N is selected and no org cached" in {
 
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(None)
+      when(mockSubscriptionDetailsService.cachedNinoMatch(any())).thenReturn(Future.successful(None))
+      when(mockSubscriptionDetailsService.cacheNinoMatch(any())(any())).thenReturn(Future.successful((): Unit))
 
       intercept[IllegalStateException] {
         submitForm(form = noNinoSubmitData) { result =>
