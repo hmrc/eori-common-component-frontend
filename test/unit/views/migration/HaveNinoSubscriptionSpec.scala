@@ -22,7 +22,7 @@ import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NinoMatchModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.rowIndividualsNinoForm
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.haveRowIndividualsNinoForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_nino_subscription
 import util.ViewSpec
@@ -31,8 +31,8 @@ class HaveNinoSubscriptionSpec extends ViewSpec {
 
   implicit val request = withFakeCSRF(FakeRequest())
 
-  private val standardForm: Form[NinoMatchModel] = rowIndividualsNinoForm
-  private val noOptionSelectedForm               = rowIndividualsNinoForm.bind(Map.empty[String, String])
+  private val standardForm: Form[NinoMatchModel] = haveRowIndividualsNinoForm
+  private val noOptionSelectedForm               = haveRowIndividualsNinoForm.bind(Map.empty[String, String])
 
   private val view = instanceOf[match_nino_subscription]
 

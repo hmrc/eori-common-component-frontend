@@ -207,7 +207,8 @@ class SubscriptionDetailsService @Inject() (
       sessionCache.saveSubscriptionDetails(
         SubscriptionDetails(
           nameOrganisationDetails = subDetails.nameOrganisationDetails,
-          nameDobDetails = subDetails.nameDobDetails
+          nameDobDetails = subDetails.nameDobDetails,
+          formData = subDetails.formData
         )
       )
     }

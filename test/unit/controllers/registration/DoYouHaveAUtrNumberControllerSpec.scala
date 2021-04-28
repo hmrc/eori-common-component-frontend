@@ -58,8 +58,11 @@ class DoYouHaveAUtrNumberControllerSpec
   private val controller =
     new DoYouHaveAUtrNumberController(mockAuthAction, mcc, matchOrganisationUtrView, mockSubscriptionDetailsService)
 
-  override def beforeEach: Unit =
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+
     when(mockSubscriptionDetailsService.cacheUtrMatch(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
+  }
 
   "Viewing the Utr Organisation Matching form" should {
 
@@ -69,6 +72,9 @@ class DoYouHaveAUtrNumberControllerSpec
     )
 
     "display the form" in {
+
+      when(mockSubscriptionDetailsService.cachedUtrMatch(any())).thenReturn(Future.successful(None))
+
       showForm(CdsOrganisationType.CharityPublicBodyNotForProfitId) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
@@ -90,6 +96,7 @@ class DoYouHaveAUtrNumberControllerSpec
   "submitting an invalid form" should {
 
     "display error when form empty" in {
+
       submitForm(Map("have-utr" -> ""), CdsOrganisationType.ThirdCountryOrganisationId) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
@@ -98,6 +105,11 @@ class DoYouHaveAUtrNumberControllerSpec
     }
 
     "display 'use different service' when org type is not valid page based on NO answer" in {
+
+      when(mockSubscriptionDetailsService.updateSubscriptionDetails(any())).thenReturn(Future.successful(true))
+      when(mockSubscriptionDetailsService.cachedUtrMatch(any())).thenReturn(Future.successful(None))
+      when(mockSubscriptionDetailsService.cacheUtrMatch(any())(any())).thenReturn(Future.successful((): Unit))
+
       submitForm(form = NoUtrRequest, CdsOrganisationType.CompanyId) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers("Location") should endWith("register/you-need-a-different-service")
@@ -108,6 +120,9 @@ class DoYouHaveAUtrNumberControllerSpec
   "display the form for ROW organisation" should {
 
     "when ThirdCountryOrganisationId is passed" in {
+
+      when(mockSubscriptionDetailsService.cachedUtrMatch(any())).thenReturn(Future.successful(None))
+
       showForm(CdsOrganisationType.ThirdCountryOrganisationId) { result =>
         val page = CdsPage(contentAsString(result))
         page.title should startWith(
@@ -123,7 +138,10 @@ class DoYouHaveAUtrNumberControllerSpec
   }
 
   "submitting the form for ROW organisation" should {
+
     "redirect to Get UTR page based on YES answer" in {
+
+      when(mockSubscriptionDetailsService.cachedUtrMatch(any())).thenReturn(Future.successful(None))
       when(mockSubscriptionDetailsService.cachedNameDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(NameOrganisationMatchModel("orgName"))))
 
@@ -135,6 +153,11 @@ class DoYouHaveAUtrNumberControllerSpec
     }
 
     "redirect to Confirm Details page based on NO answer" in {
+
+      when(mockSubscriptionDetailsService.updateSubscriptionDetails(any())).thenReturn(Future.successful(true))
+      when(mockSubscriptionDetailsService.cachedUtrMatch(any())).thenReturn(Future.successful(None))
+      when(mockSubscriptionDetailsService.cacheUtrMatch(any())(any())).thenReturn(Future.successful((): Unit))
+
       submitForm(form = NoUtrRequest, CdsOrganisationType.ThirdCountryOrganisationId) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers("Location") should endWith(
@@ -144,6 +167,11 @@ class DoYouHaveAUtrNumberControllerSpec
     }
 
     "redirect to Review page while on review mode" in {
+
+      when(mockSubscriptionDetailsService.updateSubscriptionDetails(any())).thenReturn(Future.successful(true))
+      when(mockSubscriptionDetailsService.cachedUtrMatch(any())).thenReturn(Future.successful(None))
+      when(mockSubscriptionDetailsService.cacheUtrMatch(any())(any())).thenReturn(Future.successful((): Unit))
+
       submitForm(form = NoUtrRequest, CdsOrganisationType.ThirdCountryOrganisationId, isInReviewMode = true) { result =>
         status(await(result)) shouldBe SEE_OTHER
         result.header.headers("Location") should endWith("register/matching/review-determine")
@@ -152,7 +180,11 @@ class DoYouHaveAUtrNumberControllerSpec
   }
 
   "display the form for ROW" should {
+
     "contain a proper content for sole traders" in {
+
+      when(mockSubscriptionDetailsService.cachedUtrMatch(any())).thenReturn(Future.successful(None))
+
       showForm(CdsOrganisationType.ThirdCountrySoleTraderId, defaultUserId) { result =>
         val page = CdsPage(contentAsString(result))
         page.title should startWith(
@@ -165,6 +197,9 @@ class DoYouHaveAUtrNumberControllerSpec
       }
     }
     "contain a proper content for individuals" in {
+
+      when(mockSubscriptionDetailsService.cachedUtrMatch(any())).thenReturn(Future.successful(None))
+
       showForm(CdsOrganisationType.ThirdCountryIndividualId, defaultUserId) { result =>
         val page = CdsPage(contentAsString(result))
         page.title should startWith(
@@ -179,11 +214,14 @@ class DoYouHaveAUtrNumberControllerSpec
   }
 
   "submitting the form for ROW" should {
+
     "redirect to Get UTR page based on YES answer and organisation type sole trader" in {
+
       when(mockSubscriptionDetailsService.cachedNameDobDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(NameDobMatchModel("", None, "", LocalDate.now()))))
       when(mockMatchingConnector.lookup(mockMatchingRequestHolder))
         .thenReturn(Future.successful(Option(mockMatchingResponse)))
+      when(mockSubscriptionDetailsService.cachedUtrMatch(any())).thenReturn(Future.successful(None))
       submitForm(form = ValidUtrRequest, CdsOrganisationType.ThirdCountrySoleTraderId) { result =>
         await(result)
         status(result) shouldBe SEE_OTHER
@@ -192,6 +230,11 @@ class DoYouHaveAUtrNumberControllerSpec
     }
 
     "redirect to Nino page based on NO answer" in {
+
+      when(mockSubscriptionDetailsService.updateSubscriptionDetails(any())).thenReturn(Future.successful(true))
+      when(mockSubscriptionDetailsService.cachedUtrMatch(any())).thenReturn(Future.successful(None))
+      when(mockSubscriptionDetailsService.cacheUtrMatch(any())(any())).thenReturn(Future.successful((): Unit))
+
       submitForm(form = NoUtrRequest, CdsOrganisationType.ThirdCountrySoleTraderId) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers("Location") should endWith("register/matching/row/nino")

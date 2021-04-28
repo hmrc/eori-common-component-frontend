@@ -19,14 +19,13 @@ package unit.controllers.registration
 import common.pages.matching.DoYouHaveNinoPage._
 import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.DoYouHaveNinoController
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, NameDobMatchModel, Nino, NinoMatchModel}
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.haveRowIndividualsNinoForm
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, NameDobMatchModel}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
@@ -35,7 +34,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.matching.NinoFormBuilder
 import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -58,17 +56,29 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
     mockSubscriptionDetailsService
   )
 
-  override def beforeEach: Unit =
-    when(mockSubscriptionDetailsService.cacheNinoMatch(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
 
-  val validNino                           = Nino(NinoFormBuilder.Nino)
-  val yesNinoSubmitData                   = Map("have-nino" -> "true")
-  val noNinoSubmitData                    = Map("have-nino" -> "false")
-  val mandatoryNinoFields: NinoMatchModel = haveRowIndividualsNinoForm.bind(yesNinoSubmitData).value.get
+    withAuthorisedUser(defaultUserId, mockAuthConnector)
+    when(mockSubscriptionDetailsService.cacheNinoMatch(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
+    when(mockSubscriptionDetailsService.updateSubscriptionDetails(any())).thenReturn(Future.successful(true))
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(mockAuthConnector, mockRequestSessionData, mockSubscriptionDetailsService)
+
+    super.afterEach()
+  }
+
+  val yesNinoSubmitData = Map("have-nino" -> "true")
+  val noNinoSubmitData  = Map("have-nino" -> "false")
 
   "Viewing the NINO Individual/Sole trader Rest of World Matching form" should {
 
     "display the form" in {
+
+      when(mockSubscriptionDetailsService.cachedNinoMatch(any())).thenReturn(Future.successful(None))
+
       displayForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
@@ -78,6 +88,9 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
     }
 
     "ensure the labels are correct" in {
+
+      when(mockSubscriptionDetailsService.cachedNinoMatch(any())).thenReturn(Future.successful(None))
+
       displayForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
@@ -94,10 +107,13 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
   }
 
   "Submitting the form" should {
+
     "redirect to 'Get Nino' page when Y is selected" in {
+
       when(mockSubscriptionDetailsService.cachedNameDobDetails(any[HeaderCarrier])).thenReturn(
         Future.successful(Some(NameDobMatchModel("First name", None, "Last name", new LocalDate(2015, 10, 15))))
       )
+      when(mockSubscriptionDetailsService.cachedNinoMatch(any())).thenReturn(Future.successful(None))
 
       submitForm(yesNinoSubmitData) { result =>
         await(result)
@@ -107,8 +123,11 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
     }
 
     "redirect to 'Enter your address' page when N is selected" in {
+
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(Some(CdsOrganisationType.ThirdCountrySoleTrader))
+      when(mockSubscriptionDetailsService.cachedNinoMatch(any())).thenReturn(Future.successful(None))
+      when(mockSubscriptionDetailsService.cacheNinoMatch(any())(any())).thenReturn(Future.successful((): Unit))
 
       submitForm(noNinoSubmitData) { result =>
         await(result)
@@ -118,6 +137,7 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
     }
 
     "display error when form empty" in {
+
       submitForm(Map("have-nino" -> "")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
@@ -125,9 +145,12 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
       }
     }
 
-    "throw exeption when N is selected and no org cached" in {
+    "throw exception when N is selected and no org cached" in {
+
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(None)
+      when(mockSubscriptionDetailsService.cachedNinoMatch(any())).thenReturn(Future.successful(None))
+      when(mockSubscriptionDetailsService.cacheNinoMatch(any())(any())).thenReturn(Future.successful((): Unit))
 
       intercept[IllegalStateException] {
         submitForm(form = noNinoSubmitData) { result =>
@@ -135,20 +158,16 @@ class DoYouHaveNinoControllerSpec extends ControllerSpec with BeforeAndAfterEach
         }
       }.getMessage should include("No userSelectedOrganisationType details in session")
     }
-
   }
 
-  private def displayForm()(test: Future[Result] => Any): Unit = {
-    withAuthorisedUser(defaultUserId, mockAuthConnector)
+  private def displayForm()(test: Future[Result] => Any): Unit =
     test(
       doYouHaveNinoController
         .displayForm(atarService, Journey.Register)
         .apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     )
-  }
 
   private def submitForm(form: Map[String, String])(test: Future[Result] => Any) {
-    withAuthorisedUser(defaultUserId, mockAuthConnector)
     test(
       doYouHaveNinoController
         .submit(atarService, Journey.Register)

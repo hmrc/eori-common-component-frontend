@@ -50,11 +50,11 @@ class DoYouHaveAUtrNumberController @Inject() (
     isInReviewMode: Boolean = false
   ): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      Future.successful(
-        Ok(
-          matchOrganisationUtrView(haveUtrForm, organisationType, OrganisationModeDM, service, journey, isInReviewMode)
-        )
-      )
+      subscriptionDetailsService.cachedUtrMatch.map { cachedUtrOpt =>
+        val form = cachedUtrOpt.fold(haveUtrForm)(haveUtrForm.fill(_))
+
+        Ok(matchOrganisationUtrView(form, organisationType, OrganisationModeDM, service, journey, isInReviewMode))
+      }
     }
 
   def submit(
@@ -63,7 +63,7 @@ class DoYouHaveAUtrNumberController @Inject() (
     journey: Journey.Value,
     isInReviewMode: Boolean = false
   ): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => loggedInUser: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       haveUtrForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(organisationType, formWithErrors, service, journey))),
         formData => destinationsByAnswer(formData, organisationType, service, journey, isInReviewMode)
@@ -77,17 +77,24 @@ class DoYouHaveAUtrNumberController @Inject() (
     journey: Journey.Value,
     isInReviewMode: Boolean
   )(implicit request: Request[AnyContent]): Future[Result] =
-    formData.haveUtr match {
-      case Some(true) =>
-        subscriptionDetailsService.cacheUtrMatch(Some(formData)).map {
-          _ =>
-            Redirect(GetUtrNumberController.form(organisationType, service, journey, isInReviewMode))
-        }
-      case Some(false) =>
-        subscriptionDetailsService.updateSubscriptionDetails
-        noUtrDestination(organisationType, service, journey, isInReviewMode)
-      case _ =>
-        throw new IllegalArgumentException("Have UTR should be Some(true) or Some(false) but was None")
+    subscriptionDetailsService.cachedUtrMatch.flatMap { cachedUtrOpt =>
+      formData.haveUtr match {
+        case Some(true) =>
+          subscriptionDetailsService.cacheUtrMatch(Some(formData)).map {
+            _ =>
+              Redirect(GetUtrNumberController.form(organisationType, service, journey, isInReviewMode))
+          }
+        case Some(false) if cachedUtrOpt.exists(_.haveUtr.exists(_ == false)) =>
+          Future.successful(noUtrDestination(organisationType, service, journey, isInReviewMode))
+        case Some(false) =>
+          subscriptionDetailsService.updateSubscriptionDetails.flatMap { _ =>
+            subscriptionDetailsService.cacheUtrMatch(Some(formData)).map { _ =>
+              noUtrDestination(organisationType, service, journey, isInReviewMode)
+            }
+          }
+        case _ =>
+          throw new IllegalArgumentException("Have UTR should be Some(true) or Some(false) but was None")
+      }
     }
 
   private def noUtrDestination(
@@ -95,16 +102,16 @@ class DoYouHaveAUtrNumberController @Inject() (
     service: Service,
     journey: Journey.Value,
     isInReviewMode: Boolean
-  ): Future[Result] =
+  ): Result =
     organisationType match {
       case CdsOrganisationType.CharityPublicBodyNotForProfitId =>
-        Future.successful(Redirect(VatRegisteredUkController.form(service)))
+        Redirect(VatRegisteredUkController.form(service))
       case CdsOrganisationType.ThirdCountryOrganisationId =>
         noUtrThirdCountryOrganisationRedirect(isInReviewMode, organisationType, service, journey)
       case CdsOrganisationType.ThirdCountrySoleTraderId | CdsOrganisationType.ThirdCountryIndividualId =>
         noUtrThirdCountryIndividualsRedirect(service, journey)
       case _ =>
-        Future.successful(Redirect(YouNeedADifferentServiceController.form(journey)))
+        Redirect(YouNeedADifferentServiceController.form(journey))
     }
 
   private def noUtrThirdCountryOrganisationRedirect(
@@ -112,19 +119,17 @@ class DoYouHaveAUtrNumberController @Inject() (
     organisationType: String,
     service: Service,
     journey: Journey.Value
-  ): Future[Result] =
+  ): Result =
     if (isInReviewMode)
-      Future.successful(Redirect(DetermineReviewPageController.determineRoute(service, journey)))
+      Redirect(DetermineReviewPageController.determineRoute(service, journey))
     else
-      Future.successful(
-        Redirect(
-          SixLineAddressController
-            .showForm(isInReviewMode = false, organisationType, service, journey)
-        )
+      Redirect(
+        SixLineAddressController
+          .showForm(isInReviewMode = false, organisationType, service, journey)
       )
 
-  private def noUtrThirdCountryIndividualsRedirect(service: Service, journey: Journey.Value): Future[Result] =
-    Future.successful(Redirect(DoYouHaveNinoController.displayForm(service, journey)))
+  private def noUtrThirdCountryIndividualsRedirect(service: Service, journey: Journey.Value): Result =
+    Redirect(DoYouHaveNinoController.displayForm(service, journey))
 
   private def view(organisationType: String, form: Form[UtrMatchModel], service: Service, journey: Journey.Value)(
     implicit request: Request[AnyContent]
