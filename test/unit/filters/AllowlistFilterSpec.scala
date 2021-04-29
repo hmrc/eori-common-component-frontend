@@ -16,13 +16,14 @@
 
 package unit.filters
 
+import akka.stream.testkit.NoMaterializer
 import base.UnitSpec
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.mvc.{Cookie, RequestHeader, Result, Results, SessionCookieBaker}
-import play.api.test.{FakeRequest, NoMaterializer}
+import play.api.mvc.{Cookie, CookieHeaderEncoding, RequestHeader, Result, Results, SessionCookieBaker}
+import play.api.test.FakeRequest
 import play.mvc.Http.HeaderNames
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.filters.AllowlistFilter
@@ -35,9 +36,11 @@ class AllowlistFilterSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
   private val config = mock[AppConfig]
   private val next   = mock[RequestHeader => Future[Result]]
 
-  private val mockSessionCookieBaker = mock[SessionCookieBaker]
+  private val mockSessionCookieBaker   = mock[SessionCookieBaker]
+  private val mockCookieHeaderEncoding = mock[CookieHeaderEncoding]
 
-  private def filter: AllowlistFilter = new AllowlistFilter(config, mockSessionCookieBaker)(NoMaterializer, global)
+  private def filter: AllowlistFilter =
+    new AllowlistFilter(config, mockSessionCookieBaker, mockCookieHeaderEncoding)(NoMaterializer, global)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

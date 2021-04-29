@@ -24,10 +24,12 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AllowlistFilter @Inject() (appConfig: AppConfig, sessionCookieBaker: SessionCookieBaker)(implicit
-  val mat: Materializer,
-  ec: ExecutionContext
-) extends Filter {
+class AllowlistFilter @Inject() (
+  appConfig: AppConfig,
+  sessionCookieBaker: SessionCookieBaker,
+  cookieHeaderEncoding: CookieHeaderEncoding
+)(implicit val mat: Materializer, ec: ExecutionContext)
+    extends Filter {
 
   override def apply(next: RequestHeader => Future[Result])(rh: RequestHeader): Future[Result] = {
     val permittedReferer = rh.headers
@@ -37,7 +39,7 @@ class AllowlistFilter @Inject() (appConfig: AppConfig, sessionCookieBaker: Sessi
     if (permittedReferer) {
       val allowlistedSession: Session = rh.session + ("allowlisted" -> "true")
       val cookies: Seq[Cookie]        = (rh.cookies ++ Seq(sessionCookieBaker.encodeAsCookie(allowlistedSession))).toSeq
-      val headers                     = rh.headers.add(HeaderNames.COOKIE -> Cookies.encodeCookieHeader(cookies))
+      val headers                     = rh.headers.add(HeaderNames.COOKIE -> cookieHeaderEncoding.encodeCookieHeader(cookies))
       next(rh.withHeaders(headers)) // Ensures the allowlisted param is added to the remainder of THIS request
         .map(
           _.addingToSession("allowlisted" -> "true")(rh)
