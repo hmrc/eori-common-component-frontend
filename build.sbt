@@ -22,8 +22,6 @@ majorVersion := 0
 
 PlayKeys.devSettings := Seq("play.server.http.port" -> "6750")
 
-resolvers += Resolver.bintrayRepo("hmrc", "releases")
-
 lazy val allResolvers = resolvers ++= Seq(Resolver.jcenterRepo)
 
 lazy val IntegrationTest = config("it") extend Test
