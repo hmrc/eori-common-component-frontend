@@ -39,9 +39,7 @@ class MessagesSpec extends PlaySpec with Injector {
     "cds.subscription-details.tab.title.data"
   )
 
-  // TODO remove ecc.business-short-name when translations will be available
-  def ignoreKey(key: String): Boolean =
-    key.startsWith("cds.country.") || key.startsWith("ecc.business-short-name") || sameTranslation.contains(key)
+  def ignoreKey(key: String): Boolean = key.startsWith("cds.country.") || sameTranslation.contains(key)
 
   "Messages" should {
 
