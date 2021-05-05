@@ -160,11 +160,11 @@ cds.subscription.date-of-establishment.company.title-and-heading=Pryd y cafodd y
 
 cds.subscription.address-details.postcode.row.label=Cod post
 
-cds.matching.row-organisation.utr.title-and-heading=Does your organisation have a Corporation Tax Unique Taxpayer Reference (UTR) issued in the UK?
-cds.matching.row-organisation.utr.paragraph=You will have a UTR number if your organisation pays corporation tax in the UK. It is 10 numbers, for example 1234567890, which may be followed by a K. It will be on tax returns and other letters about Corporation Tax. It may be called ‘reference’, ‘UTR’ or ‘official use’.
+cds.matching.row-organisation.utr.title-and-heading=A oes Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth a gyhoeddwyd yn y DU gan eich sefydliad?
+cds.matching.row-organisation.utr.paragraph=Bydd gennych rif UTR os yw’ch sefydliad yn talu Treth Gorfforaeth yn y DU. Rhif 10 digid yw hwn, er enghraifft, 1234567890, a all gael ei ddilyn gan ‘K’. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill am Dreth Gorfforaeth. Efallai y cyfeirir ato gan ddefnyddio’r geiriau ‘cyfeirnod’, ‘UTR’ neu ‘defnydd swyddogol’.
 cds.matching.row-sole-trader-individual.utr.title-and-heading=A oes gennych Gyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad a gyhoeddwyd yn y DU?
-ecc.matching.row-sole-trader-individual.utr.title-and-heading=Do you have a Self Assessment Unique Taxpayer Reference (UTR) number issued in the UK?
-ecc.matching.row-sole-trader-individual.utr.paragraph=You will have a UTR number if you pay tax in the UK.
+ecc.matching.row-sole-trader-individual.utr.title-and-heading=A oes gennych rif Cyfeirnod Unigryw y Trethdalwr (UTR) Hunanasesiad a gyhoeddwyd yn y DU?
+ecc.matching.row-sole-trader-individual.utr.paragraph=Bydd gennych rif UTR os ydych yn talu treth yn y DU.
 
 cds.form.declaration=Datganiad
 cds.form.send=Cadarnhau ac anfon
