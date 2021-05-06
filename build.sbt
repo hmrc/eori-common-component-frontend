@@ -29,7 +29,7 @@ lazy val IntegrationTest = config("it") extend Test
 val testConfig = Seq(IntegrationTest, Test)
 
 lazy val microservice = (project in file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
+  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
   .configs(testConfig: _*)
   .settings(
