@@ -204,6 +204,8 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
 
     "display xi eori guidance" in {
 
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
+
       val result = subscriptionController.xiEoriGuidance()(getRequest)
 
       status(result) shouldBe OK

@@ -95,8 +95,9 @@ class Sub02Controller @Inject() (
       }
     }
 
-  def xiEoriGuidance: Action[AnyContent] = Action { implicit request =>
-    Ok(xiEoriGuidancePage())
+  def xiEoriGuidance: Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
+    implicit request => _: LoggedInUserWithEnrolments =>
+      Future.successful(Ok(xiEoriGuidancePage()))
   }
 
   def end(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
