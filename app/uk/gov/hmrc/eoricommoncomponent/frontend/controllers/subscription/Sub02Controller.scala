@@ -30,6 +30,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionDa
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.migration_success
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.xi_eori_guidance
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -49,6 +50,7 @@ class Sub02Controller @Inject() (
   sub02EoriAlreadyExists: sub02_eori_already_exists,
   sub01OutcomeRejected: sub01_outcome_rejected,
   subscriptionOutcomeView: subscription_outcome,
+  xiEoriGuidancePage: xi_eori_guidance,
   cdsSubscriber: CdsSubscriber
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) with EnrolmentExtractor {
@@ -92,6 +94,10 @@ class Sub02Controller @Inject() (
           Future.failed(new RuntimeException("Subscription Error. ", e))
       }
     }
+
+  def xiEoriGuidance: Action[AnyContent] = Action { implicit request =>
+    Ok(xiEoriGuidancePage())
+  }
 
   def end(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>

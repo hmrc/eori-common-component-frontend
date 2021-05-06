@@ -23,6 +23,7 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, EnrolmentIdentifier}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.PdfGeneratorConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller
@@ -33,6 +34,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionDa
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.migration_success
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.xi_eori_guidance
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
@@ -60,6 +62,7 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
   private val sub02EoriAlreadyExists          = instanceOf[sub02_eori_already_exists]
   private val sub01OutcomeRejected            = instanceOf[sub01_outcome_rejected]
   private val subscriptionOutcomeView         = instanceOf[subscription_outcome]
+  private val xiEoriGuidanceView              = mock[xi_eori_guidance]
 
   private val subscriptionController = new Sub02Controller(
     mockAuthAction,
@@ -75,6 +78,7 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
     sub02EoriAlreadyExists,
     sub01OutcomeRejected,
     subscriptionOutcomeView,
+    xiEoriGuidanceView,
     mockCdsSubscriber
   )(global)
 
@@ -88,8 +92,17 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
 
   val emulatedFailure = new UnsupportedOperationException("Emulated service call failure.")
 
-  override def beforeEach: Unit =
-    reset(mockAuthConnector, mockCdsSubscriber, mockPdfGeneratorService, mockSessionCache)
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(xiEoriGuidanceView.apply()(any(), any())).thenReturn(HtmlFormat.empty)
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(mockAuthConnector, mockCdsSubscriber, mockPdfGeneratorService, mockSessionCache, xiEoriGuidanceView)
+
+    super.afterEach()
+  }
 
   private def stubRegisterWithEoriAndIdResponse(outcomeType: String = "PASS"): RegisterWithEoriAndIdResponse = {
     val processingDate = DateTime.now.withTimeAtStartOfDay()
@@ -187,6 +200,14 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/completed-enrolment"
       }
+    }
+
+    "display xi eori guidance" in {
+
+      val result = subscriptionController.xiEoriGuidance()(getRequest)
+
+      status(result) shouldBe OK
+      verify(xiEoriGuidanceView).apply()(any(), any())
     }
   }
 

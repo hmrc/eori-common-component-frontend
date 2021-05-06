@@ -34,6 +34,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.migration_success
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.xi_eori_guidance
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
@@ -65,6 +66,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
   private val sub02EoriAlreadyExists          = instanceOf[sub02_eori_already_exists]
   private val sub01OutcomeRejected            = instanceOf[sub01_outcome_rejected]
   private val subscriptionOutcomeView         = instanceOf[subscription_outcome]
+  private val xiEoriGuidanceView              = instanceOf[xi_eori_guidance]
   private val EORI                            = "ZZZ1ZZZZ23ZZZZZZZ"
 
   private val subscriptionController = new Sub02Controller(
@@ -81,6 +83,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
     sub02EoriAlreadyExists,
     sub01OutcomeRejected,
     subscriptionOutcomeView,
+    xiEoriGuidanceView,
     mockCdsSubscriber
   )(global)
 

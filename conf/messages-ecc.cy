@@ -339,9 +339,20 @@ ecc.subscription.outcomes.success.xi.date.info=bydd angen rhif EORI sy’n dechr
 ecc.subscription.outcomes.success.xi.info.bullet1=symud nwyddau rhwng Gogledd Iwerddon a gwledydd nad ydynt yn rhan o’r UE
 ecc.subscription.outcomes.success.xi.info.bullet2=gwneud datganiad yng Ngogledd Iwerddon
 ecc.subscription.outcomes.success.xi.info.bullet3=cael penderfyniad tollau yng Ngogledd Iwerddon
-ecc.subscription.outcomes.success.xi.info.href=<a href="/customs/register-for-cds/xi-eori-guidance" target="_blank" rel="noopener noreferrer">Gwnewch gais am rif EORI sy’n dechrau gyda XI.</a>
+ecc.subscription.outcomes.success.xi.info.href=<a href="/customs-enrolment-services/register/xi-eori-guidance" target="_blank" rel="noopener noreferrer">Gwnewch gais am rif EORI sy’n dechrau gyda XI.</a>
 ecc.subscription.outcomes.success.xi.info2=Os oes gennych rif EORI a gyhoeddwyd gan wlad yn yr UE, nid oes angen i chi gael EORI sy’n dechrau gyda XI.
 
 ecc.subscription.status.gg.h1=Eich rhif EORI a’ch cyfrif Porth y Llywodraeth
 ecc.subscription.status.gg.p1=TRANSLATE Your EORI number is linked to the Government Gateway account you have used for this application and you will have access to {0} within two hours.
 ecc.subscription.status.gg.p2=Ni allwch wneud cais am rif EORI arall gan ddefnyddio’r cyfrif Porth y Llywodraeth hwn.
+
+ecc.subscription.outcomes.guidance.title=Cael rhif EORI
+ecc.subscription.outcomes.guidance.heading=Sut i gael rhif EORI
+ecc.subscription.outcomes.guidance.gb.eori.heading=Os mai dim ond rhif EORI sy’n dechrau gyda GB sydd ei angen arnoch
+ecc.subscription.outcomes.guidance.gb.eori.information=Mae angen i chi ddefnyddio’r gwasanaeth <a class="govuk-link" href="https://www.gov.uk/eori/">cael rhif EORI</a>.
+ecc.subscription.outcomes.guidance.xi.eori.heading=Os oes angen rhif EORI arnoch sy’n dechrau gyda XI
+ecc.subscription.outcomes.guidance.xi.eori.information=Bydd yn rhaid i chi lenwi ffurflen gais. I lenwi’ch cais yn gywir, a sicrhau eich bod yn cael eich rhif EORI cyn gynted â phosibl, mae’n rhaid i chi ateb ‘Ydw’ i’r cwestiynau:
+ecc.subscription.outcomes.guidance.xi.eori.bullet1=A ydych, neu a fyddwch, yn masnachu gyda Gogledd Iwerddon neu a ydych yn fusnes sydd wedi’i sefydlu yng Ngogledd Iwerddon?
+ecc.subscription.outcomes.guidance.xi.eori.bullet2=Ymholiad ynghylch cais presennol am rif EORI
+ecc.subscription.outcomes.guidance.xi.eori.warning.info=Peidiwch â thicio’r blwch "Ymholiad ynghylch rhif EORI a gyhoeddwyd eisoes" neu "Rhif EORI i gofrestru ar gyfer mynediad i’r system dollau".
+ecc.subscription.outcomes.guidance.xi.eori.href=<a href="https://www.tax.service.gov.uk/shortforms/form/EORIContact" target="_blank" rel="noopener noreferrer">Gwnewch gais am rif EORI XI.</a>

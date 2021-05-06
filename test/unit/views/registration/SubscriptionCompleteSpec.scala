@@ -32,6 +32,8 @@ class SubscriptionCompleteSpec extends ViewSpec {
 
   private val view = instanceOf[subscription_outcome]
 
+  private val doc: Document = Jsoup.parse(contentAsString(view(eori, orgName, issuedDate)))
+
   "'Subscription Rejected' Page with name" should {
 
     "display correct heading" in {
@@ -81,6 +83,4 @@ class SubscriptionCompleteSpec extends ViewSpec {
       ).text() mustBe "You can't apply for another EORI number using this Government Gateway."
     }
   }
-
-  lazy val doc: Document = Jsoup.parse(contentAsString(view(eori, orgName, issuedDate)))
 }
