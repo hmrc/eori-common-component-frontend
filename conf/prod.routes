@@ -317,6 +317,8 @@ GET         /customs-enrolment-services/:service/subscribe/address-postcode/unav
 GET         /customs-enrolment-services/:service/subscribe/address-postcode/no-results                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.AddressLookupErrorController.displayNoResultsPage(service: Service)
 GET         /customs-enrolment-services/:service/subscribe/address-postcode/no-results/review          @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.AddressLookupErrorController.reviewNoResultsPage(service: Service)
 
+GET         /customs-enrolment-services/register/xi-eori-guidance                                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller.xiEoriGuidance
+
 GET         /customs-enrolment-services/:service/:journey/logout                                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.logout(service: Service, journey: Journey.Value)
 
 GET         /admin/metrics                                                         @com.kenshoo.play.metrics.MetricsController.metrics

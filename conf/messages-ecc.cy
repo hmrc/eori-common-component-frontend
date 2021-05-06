@@ -311,25 +311,46 @@ ecc.address-lookup.postcode.results.not-found = Heb ei ddarganfod
 
 cds.matching.organisation-address.postcode-optional=Cod post (dewisol)
 
-ecc.business-short-name-yes-no.company.title = Does your company use a shortened name?
+ecc.business-short-name-yes-no.company.title = TRANSLATE Does your company use a shortened name?
 ecc.business-short-name-yes-no.partnership.title = A yw’ch partneriaeth yn defnyddio enw byrrach?
-ecc.business-short-name-yes-no.charity.title = Does you charity use a shortened name?
-ecc.business-short-name-yes-no.organisation.title = Does you organisation use a shortened name?
+ecc.business-short-name-yes-no.charity.title = TRANSLATE Does you charity use a shortened name?
+ecc.business-short-name-yes-no.organisation.title = TRANSLATE Does you organisation use a shortened name?
 ecc.business-short-name-yes-no.hint = Er enghraifft, mae Cyllid a Thollau Ei Mawrhydi hefyd yn cael ei alw’n CThEM.
-ecc.business-short-name-yes-no.company.empty = Tell us if your company uses a shortened name
+ecc.business-short-name-yes-no.company.empty = TRANSLATE Tell us if your company uses a shortened name
 ecc.business-short-name-yes-no.partnership.empty = Rhowch wybod i ni a yw eich partneriaeth yn defnyddio enw byrrach
-ecc.business-short-name-yes-no.organisation.empty = Tell us if your organisation uses a shortened name
-ecc.business-short-name-yes-no.charity.empty = Tell us if your charity uses a shortened name
+ecc.business-short-name-yes-no.organisation.empty = TRANSLATE Tell us if your organisation uses a shortened name
+ecc.business-short-name-yes-no.charity.empty = TRANSLATE Tell us if your charity uses a shortened name
 
-ecc.business-short-name.company.title = What is your company''s short name?
-ecc.business-short-name.partnership.title = What is your partnership''s short name?
-ecc.business-short-name.charity.title = What is your charity''s short name?
-ecc.business-short-name.organisation.title = What is your organisation''s short name?
+ecc.business-short-name.company.title = TRANSLATE What is your company''s short name?
+ecc.business-short-name.partnership.title = TRANSLATE What is your partnership''s short name?
+ecc.business-short-name.charity.title = TRANSLATE What is your charity''s short name?
+ecc.business-short-name.organisation.title = TRANSLATE What is your organisation''s short name?
 
-ecc.business-short-name.short-name = Short name
+ecc.business-short-name.short-name = TRANSLATE Short name
 
-ecc.business-short-name.company.empty = Enter your company''s shortened name
-ecc.business-short-name.partnership.empty = Enter your partnership''s shortened name
-ecc.business-short-name.charity.empty = Enter your charity''s shortened name
-ecc.business-short-name.organisation.empty = Enter your organisation''s shortened name
+ecc.business-short-name.company.empty = TRANSLATE Enter your company''s shortened name
+ecc.business-short-name.partnership.empty = TRANSLATE Enter your partnership''s shortened name
+ecc.business-short-name.charity.empty = TRANSLATE Enter your charity''s shortened name
+ecc.business-short-name.organisation.empty = TRANSLATE Enter your organisation''s shortened name
 ecc.business-short-name.error = Rhaid i’r enw byrrach fod yn 30 o gymeriadau neu lai
+
+ecc.subscription.outcomes.success.xi=Os ydych yn symud nwyddau i Ogledd Iwerddon neu oddi yno
+ecc.subscription.outcomes.success.xi.date.info=bydd angen rhif EORI sy’n dechrau gyda XI arnoch os ydych yn:
+ecc.subscription.outcomes.success.xi.info.bullet1=symud nwyddau rhwng Gogledd Iwerddon a gwledydd nad ydynt yn rhan o’r UE
+ecc.subscription.outcomes.success.xi.info.bullet2=gwneud datganiad yng Ngogledd Iwerddon
+ecc.subscription.outcomes.success.xi.info.bullet3=cael penderfyniad tollau yng Ngogledd Iwerddon
+ecc.subscription.outcomes.success.xi.info.href=<a href="/customs-enrolment-services/register/xi-eori-guidance" target="_blank" rel="noopener noreferrer">Gwnewch gais am rif EORI sy’n dechrau gyda XI.</a>
+ecc.subscription.outcomes.success.xi.info2=Os oes gennych rif EORI a gyhoeddwyd gan wlad yn yr UE, nid oes angen i chi gael EORI sy’n dechrau gyda XI.
+
+ecc.subscription.status.gg.h1=Eich rhif EORI a’ch cyfrif Porth y Llywodraeth
+ecc.subscription.status.gg.p1=TRANSLATE Your EORI number is linked to the Government Gateway account you have used for this application and you will have access to {0} within two hours.
+ecc.subscription.status.gg.p2=Ni allwch wneud cais am rif EORI arall gan ddefnyddio’r cyfrif Porth y Llywodraeth hwn.
+
+ecc.subscription.outcomes.guidance.title=TRANSLATE Get an XI EORI number
+ecc.subscription.outcomes.guidance.heading=TRANSLATE How to get an XI EORI number
+ecc.subscription.outcomes.guidance.xi.eori.heading=Os oes angen rhif EORI arnoch sy’n dechrau gyda XI
+ecc.subscription.outcomes.guidance.xi.eori.information=Bydd yn rhaid i chi lenwi ffurflen gais. I lenwi’ch cais yn gywir, a sicrhau eich bod yn cael eich rhif EORI cyn gynted â phosibl, mae’n rhaid i chi ateb ‘Ydw’ i’r cwestiynau:
+ecc.subscription.outcomes.guidance.xi.eori.bullet1=A ydych, neu a fyddwch, yn masnachu gyda Gogledd Iwerddon neu a ydych yn fusnes sydd wedi’i sefydlu yng Ngogledd Iwerddon?
+ecc.subscription.outcomes.guidance.xi.eori.bullet2=Ymholiad ynghylch cais presennol am rif EORI
+ecc.subscription.outcomes.guidance.xi.eori.warning.info=Peidiwch â thicio’r blwch "Ymholiad ynghylch rhif EORI a gyhoeddwyd eisoes" neu "Rhif EORI i gofrestru ar gyfer mynediad i’r system dollau".
+ecc.subscription.outcomes.guidance.xi.eori.href=<a href="https://www.tax.service.gov.uk/shortforms/form/EORIContact" target="_blank" rel="noopener noreferrer">Gwnewch gais am rif EORI XI.</a>

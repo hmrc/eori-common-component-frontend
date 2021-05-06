@@ -18,20 +18,21 @@ package unit.views.registration
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.subscription_outcome
 import util.ViewSpec
 
 class SubscriptionCompleteSpec extends ViewSpec {
 
-  implicit val request = withFakeCSRF(FakeRequest())
+  implicit val request = withFakeCSRF(fakeAtarSubscribeRequest)
 
   val eori       = "GB123445562"
   val orgName    = "Test Organisation Name"
   val issuedDate = "01 Jan 2019"
 
   private val view = instanceOf[subscription_outcome]
+
+  private val doc: Document = Jsoup.parse(contentAsString(view(eori, orgName, issuedDate)))
 
   "'Subscription Rejected' Page with name" should {
 
@@ -46,5 +47,40 @@ class SubscriptionCompleteSpec extends ViewSpec {
     }
   }
 
-  lazy val doc: Document = Jsoup.parse(contentAsString(view(eori, orgName, issuedDate)))
+  "Subscription outcome page" should {
+
+    "display XI EORI paragraph" in {
+
+      val xiParagraph = doc.body().getElementById("xi-eori")
+
+      xiParagraph.getElementsByTag("h2").get(0).text() mustBe "If you move goods to or from Northern Ireland"
+      xiParagraph.getElementsByTag("p").get(0).text() mustBe "you will need an EORI number starting with XI if you:"
+
+      val xiBulletList = xiParagraph.getElementsByTag("ul").get(0)
+
+      xiBulletList.getElementsByTag("li").get(
+        0
+      ).text() mustBe "move goods between Northern Ireland and non-EU countries"
+      xiBulletList.getElementsByTag("li").get(1).text() mustBe "make a declaration in Northern Ireland"
+      xiBulletList.getElementsByTag("li").get(2).text() mustBe "get a customs decision in Northern Ireland"
+
+      xiParagraph.getElementsByTag("p").get(1).text() mustBe "Apply for an EORI number that starts with XI."
+      xiParagraph.getElementsByTag("p").get(
+        2
+      ).text() mustBe "If you have an EORI number issued by an EU country, you do not need to obtain an EORI starting with XI."
+    }
+
+    "display GG paragraph" in {
+
+      val ggParagraph = doc.body().getElementById("eori-gg")
+
+      ggParagraph.getElementsByTag("h2").get(0).text() mustBe "Your EORI number and Government Gateway"
+      ggParagraph.getElementsByTag("p").get(
+        0
+      ).text() mustBe "Your EORI number is linked to the Government Gateway account you have used for this application and you will have access to Advance Tariff Rulings within two hours."
+      ggParagraph.getElementsByTag("p").get(
+        1
+      ).text() mustBe "You can't apply for another EORI number using this Government Gateway."
+    }
+  }
 }
