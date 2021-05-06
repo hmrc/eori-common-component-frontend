@@ -346,10 +346,8 @@ ecc.subscription.status.gg.h1=Eich rhif EORI a’ch cyfrif Porth y Llywodraeth
 ecc.subscription.status.gg.p1=TRANSLATE Your EORI number is linked to the Government Gateway account you have used for this application and you will have access to {0} within two hours.
 ecc.subscription.status.gg.p2=Ni allwch wneud cais am rif EORI arall gan ddefnyddio’r cyfrif Porth y Llywodraeth hwn.
 
-ecc.subscription.outcomes.guidance.title=Cael rhif EORI
-ecc.subscription.outcomes.guidance.heading=Sut i gael rhif EORI
-ecc.subscription.outcomes.guidance.gb.eori.heading=Os mai dim ond rhif EORI sy’n dechrau gyda GB sydd ei angen arnoch
-ecc.subscription.outcomes.guidance.gb.eori.information=Mae angen i chi ddefnyddio’r gwasanaeth <a class="govuk-link" href="https://www.gov.uk/eori/">cael rhif EORI</a>.
+ecc.subscription.outcomes.guidance.title=TRANSLATE Get an XI EORI number
+ecc.subscription.outcomes.guidance.heading=TRANSLATE How to get an XI EORI number
 ecc.subscription.outcomes.guidance.xi.eori.heading=Os oes angen rhif EORI arnoch sy’n dechrau gyda XI
 ecc.subscription.outcomes.guidance.xi.eori.information=Bydd yn rhaid i chi lenwi ffurflen gais. I lenwi’ch cais yn gywir, a sicrhau eich bod yn cael eich rhif EORI cyn gynted â phosibl, mae’n rhaid i chi ateb ‘Ydw’ i’r cwestiynau:
 ecc.subscription.outcomes.guidance.xi.eori.bullet1=A ydych, neu a fyddwch, yn masnachu gyda Gogledd Iwerddon neu a ydych yn fusnes sydd wedi’i sefydlu yng Ngogledd Iwerddon?

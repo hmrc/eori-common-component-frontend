@@ -348,10 +348,8 @@ ecc.subscription.status.gg.h1=Your EORI number and Government Gateway
 ecc.subscription.status.gg.p1=Your EORI number is linked to the Government Gateway account you have used for this application and you will have access to {0} within two hours.
 ecc.subscription.status.gg.p2=You can''t apply for another EORI number using this Government Gateway.
 
-ecc.subscription.outcomes.guidance.title=Get an EORI number
-ecc.subscription.outcomes.guidance.heading=How to get an EORI number
-ecc.subscription.outcomes.guidance.gb.eori.heading=If you only need a EORI starting with GB
-ecc.subscription.outcomes.guidance.gb.eori.information=You need to use the <a class="govuk-link" href="https://www.gov.uk/eori/">get an EORI number</a> service.
+ecc.subscription.outcomes.guidance.title=Get an XI EORI number
+ecc.subscription.outcomes.guidance.heading=How to get an XI EORI number
 ecc.subscription.outcomes.guidance.xi.eori.heading=If you need an EORI starting with XI
 ecc.subscription.outcomes.guidance.xi.eori.information=You need to fill in an application form. To fill in your application correctly and ensure you get your EORI number as soon as possible you must answer ''Yes'' to the questions:
 ecc.subscription.outcomes.guidance.xi.eori.bullet1=Are you, or will you be, trading with Northern Ireland or are you a business established in Northern Ireland?

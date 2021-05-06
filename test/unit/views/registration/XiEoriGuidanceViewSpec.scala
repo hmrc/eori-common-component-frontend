@@ -35,18 +35,12 @@ class XiEoriGuidanceViewSpec extends ViewSpec {
 
     "display title" in {
 
-      doc.title() must startWith("Get an EORI number")
+      doc.title() must startWith("Get an XI EORI number")
     }
 
     "display header" in {
 
-      doc.body().getElementsByTag("h1").text() mustBe "How to get an EORI number"
-    }
-
-    "display GB eori paragraph" in {
-
-      doc.body().getElementById("how-to-register").text() mustBe "If you only need a EORI starting with GB"
-      doc.body().getElementById("how-to-register-text").text() mustBe "You need to use the get an EORI number service."
+      doc.body().getElementsByTag("h1").text() mustBe "How to get an XI EORI number"
     }
 
     "display XI eori paragraph" in {
