@@ -56,7 +56,7 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig, 
     logger.debug(s"[Enrol: $url, body: $request and hc: $hc")
     // $COVERAGE-ON
 
-    http.doPut[TaxEnrolmentsRequest](url, request) map { response: HttpResponse =>
+    http.PUT[TaxEnrolmentsRequest, HttpResponse](url, request) map { response: HttpResponse =>
       logResponse("Enrol", response)
       auditCall(url, request, response)
       response.status
@@ -72,7 +72,7 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClient, appConfig: AppConfig, 
     logger.debug(s"[EnrolAndActivate: $url, body: $request and hc: $hc")
     // $COVERAGE-ON
 
-    http.PUT[GovernmentGatewayEnrolmentRequest, HttpResponse](url = url, body = request) map { response: HttpResponse =>
+    http.PUT[GovernmentGatewayEnrolmentRequest, HttpResponse](url = url, body = request) map { response =>
       logResponse("EnrolAndActivate", response)
       response
     }
