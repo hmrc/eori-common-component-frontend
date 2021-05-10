@@ -228,14 +228,14 @@ cds.languageSelect.select.hint=Change the language to English
 
 cds.pdf.outcomes.eori.number=Rhif EORI: {0}
 
-confirm-business-details.title-and-heading=TRANSLATE Is this your registered address?
-confirm-business-details.partnership.title-and-heading=TRANSLATE Is this your registered address?
-confirm-business-details.individual.title-and-heading=TRANSLATE Is this your address?
+confirm-business-details.title-and-heading=Ai dyma’ch cyfeiriad cofrestredig?
+confirm-business-details.partnership.title-and-heading=Ai dyma’ch cyfeiriad cofrestredig?
+confirm-business-details.individual.title-and-heading= Ai dyma’ch cyfeiriad?
 confirm-business-details.yes=Iawn
-confirm-business-details.yes-wrong-address=TRANSLATE No, I want to change the address
-confirm-business-details.partnership.yes-wrong-address=TRANSLATE No, I want to change the address
-confirm-business-details.individual.yes-wrong-address=TRANSLATE No, I want to change my address
-yes-no-wrong-address.error=TRANSLATE Select yes if this is your address
+confirm-business-details.yes-wrong-address=Na, hoffwn newid y cyfeiriad
+confirm-business-details.partnership.yes-wrong-address=Na, hoffwn newid y cyfeiriad
+confirm-business-details.individual.yes-wrong-address= Na, hoffwn newid fy nghyfeiriad
+yes-no-wrong-address.error=Dewiswch ‘Iawn’ os mai dyma’ch cyfeiriad
 
 cds.existing.reg.eori-already-exists.title=Mae gennych EORI eisoes
 cds.existing.reg.eori.number=Rhif EORI:
@@ -311,27 +311,27 @@ ecc.address-lookup.postcode.results.not-found = Heb ei ddarganfod
 
 cds.matching.organisation-address.postcode-optional=Cod post (dewisol)
 
-ecc.business-short-name-yes-no.company.title = TRANSLATE Does your company use a shortened name?
+ecc.business-short-name-yes-no.company.title = A yw’ch cwmni’n defnyddio enw byrrach?
 ecc.business-short-name-yes-no.partnership.title = A yw’ch partneriaeth yn defnyddio enw byrrach?
-ecc.business-short-name-yes-no.charity.title = TRANSLATE Does you charity use a shortened name?
-ecc.business-short-name-yes-no.organisation.title = TRANSLATE Does you organisation use a shortened name?
+ecc.business-short-name-yes-no.charity.title = A yw’ch elusen yn defnyddio enw byrrach?
+ecc.business-short-name-yes-no.organisation.title = A yw’ch sefydliad yn defnyddio enw byrrach?
 ecc.business-short-name-yes-no.hint = Er enghraifft, mae Cyllid a Thollau Ei Mawrhydi hefyd yn cael ei alw’n CThEM.
-ecc.business-short-name-yes-no.company.empty = TRANSLATE Tell us if your company uses a shortened name
+ecc.business-short-name-yes-no.company.empty = Rhowch wybod i ni a yw’ch cwmni’n defnyddio enw byrrach
 ecc.business-short-name-yes-no.partnership.empty = Rhowch wybod i ni a yw eich partneriaeth yn defnyddio enw byrrach
-ecc.business-short-name-yes-no.organisation.empty = TRANSLATE Tell us if your organisation uses a shortened name
-ecc.business-short-name-yes-no.charity.empty = TRANSLATE Tell us if your charity uses a shortened name
+ecc.business-short-name-yes-no.organisation.empty = Rhowch wybod i ni a yw’ch sefydliad yn defnyddio enw byrrach
+ecc.business-short-name-yes-no.charity.empty = Rhowch wybod i ni a yw’ch elusen yn defnyddio enw byrrach
 
-ecc.business-short-name.company.title = TRANSLATE What is your company''s short name?
-ecc.business-short-name.partnership.title = TRANSLATE What is your partnership''s short name?
-ecc.business-short-name.charity.title = TRANSLATE What is your charity''s short name?
-ecc.business-short-name.organisation.title = TRANSLATE What is your organisation''s short name?
+ecc.business-short-name.company.title = Beth yw enw byr eich cwmni?
+ecc.business-short-name.partnership.title = Beth yw enw byr eich partneriaeth?
+ecc.business-short-name.charity.title = Beth yw enw byr eich elusen?
+ecc.business-short-name.organisation.title = Beth yw enw byr eich sefydliad?
 
-ecc.business-short-name.short-name = TRANSLATE Short name
+ecc.business-short-name.short-name = Enw byr
 
-ecc.business-short-name.company.empty = TRANSLATE Enter your company''s shortened name
-ecc.business-short-name.partnership.empty = TRANSLATE Enter your partnership''s shortened name
-ecc.business-short-name.charity.empty = TRANSLATE Enter your charity''s shortened name
-ecc.business-short-name.organisation.empty = TRANSLATE Enter your organisation''s shortened name
+ecc.business-short-name.company.empty = Nodwch enw byrrach eich cwmni
+ecc.business-short-name.partnership.empty = Nodwch enw byrrach eich partneriaeth
+ecc.business-short-name.charity.empty = Nodwch enw byrrach eich elusen
+ecc.business-short-name.organisation.empty = Nodwch enw byrrach eich sefydliad
 ecc.business-short-name.error = Rhaid i’r enw byrrach fod yn 30 o gymeriadau neu lai
 
 ecc.subscription.outcomes.success.xi=Os ydych yn symud nwyddau i Ogledd Iwerddon neu oddi yno
