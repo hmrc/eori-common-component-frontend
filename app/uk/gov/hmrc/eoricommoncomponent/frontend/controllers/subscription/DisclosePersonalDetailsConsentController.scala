@@ -25,6 +25,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.EoriConsentS
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{LoggedInUserWithEnrolments, YesNo}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, RequestSessionDataKeys}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
   SubscriptionDetailsService
@@ -38,6 +40,7 @@ class DisclosePersonalDetailsConsentController @Inject() (
   authAction: AuthAction,
   subscriptionDetailsService: SubscriptionDetailsService,
   subscriptionBusinessService: SubscriptionBusinessService,
+  requestSessionData: RequestSessionData,
   mcc: MessagesControllerComponents,
   disclosePersonalDetailsConsentView: disclose_personal_details_consent,
   subscriptionFlowManager: SubscriptionFlowManager
@@ -52,6 +55,7 @@ class DisclosePersonalDetailsConsentController @Inject() (
             disclosePersonalDetailsConsentView(
               isInReviewMode = false,
               disclosePersonalDetailsYesNoAnswerForm,
+              requestSessionData,
               service,
               journey
             )
@@ -62,17 +66,17 @@ class DisclosePersonalDetailsConsentController @Inject() (
   def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
-        for {
-          isConsentDisclosed <- subscriptionBusinessService.getCachedPersonalDataDisclosureConsent
-          yesNo: YesNo = YesNo(isConsentDisclosed)
-        } yield Ok(
-          disclosePersonalDetailsConsentView(
-            isInReviewMode = true,
-            disclosePersonalDetailsYesNoAnswerForm.fill(yesNo),
-            service,
-            journey
+        subscriptionBusinessService.getCachedPersonalDataDisclosureConsent.map { isConsentDisclosed =>
+          Ok(
+            disclosePersonalDetailsConsentView(
+              isInReviewMode = true,
+              disclosePersonalDetailsYesNoAnswerForm.fill(YesNo(isConsentDisclosed)),
+              requestSessionData,
+              service,
+              journey
+            )
           )
-        )
+        }
     }
 
   def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
@@ -82,7 +86,9 @@ class DisclosePersonalDetailsConsentController @Inject() (
         .fold(
           formWithErrors =>
             Future.successful(
-              BadRequest(disclosePersonalDetailsConsentView(isInReviewMode, formWithErrors, service, journey))
+              BadRequest(
+                disclosePersonalDetailsConsentView(isInReviewMode, formWithErrors, requestSessionData, service, journey)
+              )
             ),
           yesNoAnswer =>
             subscriptionDetailsService.cacheConsentToDisclosePersonalDetails(yesNoAnswer).flatMap { _ =>

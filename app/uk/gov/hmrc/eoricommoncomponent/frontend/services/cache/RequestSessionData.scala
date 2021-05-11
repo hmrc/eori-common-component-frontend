@@ -21,7 +21,10 @@ import play.api.mvc.{AnyContent, Request, Session}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   IndividualFlow,
+  IndividualSubscriptionFlow,
   OrganisationFlow,
+  OrganisationSubscriptionFlow,
+  PartnershipSubscriptionFlow,
   SoleTraderFlow,
   SubscriptionFlow
 }
@@ -94,6 +97,9 @@ class RequestSessionData {
       oType == CdsOrganisationType.Partnership || oType == CdsOrganisationType.LimitedLiabilityPartnership
   }
 
+  def isCharity(implicit request: Request[AnyContent]): Boolean =
+    userSelectedOrganisationType.fold(false)(oType => oType == CdsOrganisationType.CharityPublicBodyNotForProfit)
+
   def isCompany(implicit request: Request[AnyContent]): Boolean = userSelectedOrganisationType.fold(false) { oType =>
     oType == CdsOrganisationType.Company
   }
@@ -111,6 +117,15 @@ class RequestSessionData {
   def isUKJourney(implicit request: Request[AnyContent]): Boolean =
     request.session.data.get(RequestSessionDataKeys.subscriptionFlow) match {
       case Some(flowName) => ukSubscriptionFlows.contains(SubscriptionFlow(flowName))
+      case None           => false
+    }
+
+  private val registrationUkSubscriptionFlows =
+    Seq(OrganisationSubscriptionFlow, PartnershipSubscriptionFlow, IndividualSubscriptionFlow)
+
+  def isRegistrationUKJourney(implicit request: Request[AnyContent]): Boolean =
+    request.session.data.get(RequestSessionDataKeys.subscriptionFlow) match {
+      case Some(flowName) => registrationUkSubscriptionFlows.contains(SubscriptionFlow(flowName))
       case None           => false
     }
 
