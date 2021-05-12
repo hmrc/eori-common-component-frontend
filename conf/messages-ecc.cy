@@ -354,3 +354,11 @@ ecc.subscription.outcomes.guidance.xi.eori.bullet1=A ydych, neu a fyddwch, yn ma
 ecc.subscription.outcomes.guidance.xi.eori.bullet2=Ymholiad ynghylch cais presennol am rif EORI
 ecc.subscription.outcomes.guidance.xi.eori.warning.info=Peidiwch â thicio’r blwch "Ymholiad ynghylch rhif EORI a gyhoeddwyd eisoes" neu "Rhif EORI i gofrestru ar gyfer mynediad i’r system dollau".
 ecc.subscription.outcomes.guidance.xi.eori.href=<a href="https://www.tax.service.gov.uk/shortforms/form/EORIContact" target="_blank" rel="noopener noreferrer">Gwnewch gais am rif EORI XI.</a>
+
+ecc.subscription.organisation-disclose-personal-details-consent.title = TRANSLATE Do you want to include the company name and address on the EORI checker?
+ecc.subscription.organisation-disclose-personal-details-consent.hint = TRANSLATE HMRC will add your GB EORI number to a <a href="https://www.tax.service.gov.uk/check-eori-number" target="_blank">public checker</a>. You can also include you or your organisation''s name and address. This will help customs and freight agents identify you and process your shipments.
+ecc.subscription.organisation-disclose-personal-details-consent.individual.title = TRANSLATE Do you want to include your name and address on the EORI checker?
+ecc.subscription.organisation-disclose-personal-details-consent.individual.hint = TRANSLATE HMRC will add your EORI number to a <a href="https://ec.europa.eu/taxation_customs/dds2/eos/eori_validation.jsp" target="_blank">public checker kept by the European Commission</a>. You can also agree to include your name and address. This can help customs and freight agents identify you and process your shipments.
+ecc.subscription.organisation-disclose-personal-details-consent.partnership.title = TRANSLATE Do you want to include the partnership name and address on the EORI checker?
+ecc.subscription.organisation-disclose-personal-details-consent.charity.title = TRANSLATE Do you want to include the charity name and address on the EORI checker?
+ecc.subscription.organisation-disclose-personal-details-consent.organisation.title = TRANSLATE Do you want to include the organisation name and address on the EORI checker?

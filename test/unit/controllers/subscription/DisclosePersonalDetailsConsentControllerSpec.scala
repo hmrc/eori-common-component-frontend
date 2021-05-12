@@ -31,6 +31,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Disclos
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.YesNo
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.disclose_personal_details_consent
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
@@ -62,75 +63,195 @@ class DisclosePersonalDetailsConsentControllerSpec
   private val problemWithSelectionError = "Tell us if you want to include your name and address on the EORI checker"
   private val yesNoInputName            = "yes-no-answer"
 
+  private val mockRequestSessionData = mock[RequestSessionData]
+
   private val controller = new DisclosePersonalDetailsConsentController(
     mockAuthAction,
     mockSubscriptionDetailsHolderService,
     mockSubscriptionBusinessService,
+    mockRequestSessionData,
     mcc,
     disclosePersonalDetailsConsentView,
     mockSubscriptionFlowManager
   )
 
-  private val subscriptionFlows = Table[SubscriptionFlow, String, String, String](
-    ("Flow name", "Consent Info", "Yes Label", "No Label"),
-    (
-      IndividualSubscriptionFlow,
-      "HMRC will add your GB EORI number to a public checker. You can also include you or your organisation’s name and address. This will help customs and freight agents identify you and process your shipments.",
-      "Yes - I want the name and address on the EORI checker",
-      "No - Just show my EORI number"
-    ),
-    (
-      OrganisationSubscriptionFlow,
-      "HMRC will add your GB EORI number to a public checker. You can also include you or your organisation’s name and address. This will help customs and freight agents identify you and process your shipments.",
-      "Yes - I want the name and address on the EORI checker",
-      "No - Just show my EORI number"
-    ),
-    (
-      SoleTraderSubscriptionFlow,
-      "HMRC will add your GB EORI number to a public checker. You can also include you or your organisation’s name and address. This will help customs and freight agents identify you and process your shipments.",
-      "Yes - I want the name and address on the EORI checker",
-      "No - Just show my EORI number"
+  private val subscriptionFlows =
+    Table[SubscriptionFlow, String, String, String, String, Boolean, Boolean, Boolean, Boolean](
+      (
+        "Flow name",
+        "Title",
+        "Consent Info",
+        "Yes Label",
+        "No Label",
+        "is UK journey",
+        "is individual",
+        "is partnership",
+        "is charity"
+      ),
+      (
+        ThirdCountryIndividualSubscriptionFlow,
+        "Do you want to include your name and address on the EORI checker?",
+        "HMRC will add your EORI number to a public checker kept by the European Commission. You can also agree to include your name and address. This can help customs and freight agents identify you and process your shipments.",
+        "Yes - I want the name and address on the EORI checker",
+        "No - Just show my EORI number",
+        false,
+        true,
+        false,
+        false
+      ),
+      (
+        ThirdCountryOrganisationSubscriptionFlow,
+        "Do you want to include the organisation name and address on the EORI checker?",
+        "HMRC will add your GB EORI number to a public checker. You can also include you or your organisation's name and address. This will help customs and freight agents identify you and process your shipments.",
+        "Yes - I want the name and address on the EORI checker",
+        "No - Just show my EORI number",
+        false,
+        false,
+        false,
+        false
+      ),
+      (
+        PartnershipSubscriptionFlow,
+        "Do you want to include the partnership name and address on the EORI checker?",
+        "HMRC will add your GB EORI number to a public checker. You can also include you or your organisation's name and address. This will help customs and freight agents identify you and process your shipments.",
+        "Yes - I want the name and address on the EORI checker",
+        "No - Just show my EORI number",
+        true,
+        false,
+        true,
+        false
+      ),
+      (
+        OrganisationSubscriptionFlow,
+        "Do you want to include the charity name and address on the EORI checker?",
+        "HMRC will add your GB EORI number to a public checker. You can also include you or your organisation's name and address. This will help customs and freight agents identify you and process your shipments.",
+        "Yes - I want the name and address on the EORI checker",
+        "No - Just show my EORI number",
+        true,
+        false,
+        false,
+        true
+      ),
+      (
+        OrganisationFlow, // Flow cannot be duplicated in this table and we do not have enough flows, using this to progress with tests
+        "Do you want to include the company name and address on the EORI checker?",
+        "HMRC will add your GB EORI number to a public checker. You can also include you or your organisation's name and address. This will help customs and freight agents identify you and process your shipments.",
+        "Yes - I want the name and address on the EORI checker",
+        "No - Just show my EORI number",
+        true,
+        false,
+        false,
+        false
+      )
     )
-  )
 
-  override def beforeEach() {
-    reset(mockSubscriptionDetailsHolderService, mockSubscriptionFlowManager, mockAuthConnector)
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+
     when(mockSubscriptionDetailsHolderService.cacheConsentToDisclosePersonalDetails(any[YesNo])(any[HeaderCarrier]))
       .thenReturn(Future.successful {})
     setupMockSubscriptionFlowManager(EoriConsentSubscriptionFlowPage)
   }
 
-  val formModes = Table(
-    ("formMode", "showFormFunction"),
-    ("create", (flow: SubscriptionFlow) => showCreateForm(flow)(_)),
-    ("review", (flow: SubscriptionFlow) => showReviewForm(flow)(_))
-  )
+  override protected def afterEach(): Unit = {
+    reset(mockSubscriptionDetailsHolderService, mockSubscriptionFlowManager, mockAuthConnector, mockRequestSessionData)
 
-  forAll(formModes) { (formMode, showFormFunction) =>
-    s"Loading the page in $formMode mode" should {
+    super.afterEach()
+  }
 
-      forAll(subscriptionFlows) {
-        case (subscriptionFlow, consentInfo, yesLabel, noLabel) =>
-          s"display the form for subscription flow $subscriptionFlow" in {
-            showFormFunction(subscriptionFlow) { result =>
-              status(result) shouldBe OK
-              val html: String = contentAsString(result)
-              html should include("id=\"yes-no-answer-true\"")
-              html should include("id=\"yes-no-answer-false\"")
-              html should include("Do you want to include your name and address on the EORI checker?")
-            }
+  s"Loading the page in Create mode" should {
+
+    forAll(subscriptionFlows) {
+      case (
+            subscriptionFlow,
+            title,
+            consentInfo,
+            yesLabel,
+            noLabel,
+            isUkJourney,
+            isIndividual,
+            isPartnership,
+            isCharity
+          ) =>
+        s"display the form for subscription flow $subscriptionFlow" in {
+          showCreateForm(
+            subscriptionFlow = subscriptionFlow,
+            isUkJourney = isUkJourney,
+            isIndividual = isIndividual,
+            isPartnership = isPartnership,
+            isCharity = isCharity
+          ) { result =>
+            status(result) shouldBe OK
+            val html: String = contentAsString(result)
+            html should include("id=\"yes-no-answer-true\"")
+            html should include("id=\"yes-no-answer-false\"")
+            html should include(title)
           }
+        }
 
-          s"display proper labels for subscription flow $subscriptionFlow" in {
-            showFormFunction(subscriptionFlow) { result =>
-              status(result) shouldBe OK
-              val page = CdsPage(contentAsString(result))
-              page.getElementsText(DisclosePersonalDetailsConsentPage.consentInfoXpath) shouldBe consentInfo
-              page.getElementsText(DisclosePersonalDetailsConsentPage.yesToDiscloseXpath) shouldBe yesLabel
-              page.getElementsText(DisclosePersonalDetailsConsentPage.noToDiscloseXpath) shouldBe noLabel
-            }
+        s"display proper labels for subscription flow $subscriptionFlow" in {
+          showCreateForm(
+            subscriptionFlow = subscriptionFlow,
+            isUkJourney = isUkJourney,
+            isIndividual = isIndividual,
+            isPartnership = isPartnership,
+            isCharity = isCharity
+          ) { result =>
+            status(result) shouldBe OK
+            val page = CdsPage(contentAsString(result))
+            page.getElementsText(DisclosePersonalDetailsConsentPage.consentInfoXpath) shouldBe consentInfo
+            page.getElementsText(DisclosePersonalDetailsConsentPage.yesToDiscloseXpath) shouldBe yesLabel
+            page.getElementsText(DisclosePersonalDetailsConsentPage.noToDiscloseXpath) shouldBe noLabel
           }
-      }
+        }
+    }
+  }
+
+  s"Loading the page in Review mode" should {
+
+    forAll(subscriptionFlows) {
+      case (
+            subscriptionFlow,
+            title,
+            consentInfo,
+            yesLabel,
+            noLabel,
+            isUkJourney,
+            isIndividual,
+            isPartnership,
+            isCharity
+          ) =>
+        s"display the form for subscription flow $subscriptionFlow" in {
+          showReviewForm(
+            subscriptionFlow = subscriptionFlow,
+            isUkJourney = isUkJourney,
+            isIndividual = isIndividual,
+            isPartnership = isPartnership,
+            isCharity = isCharity
+          ) { result =>
+            status(result) shouldBe OK
+            val html: String = contentAsString(result)
+            html should include("id=\"yes-no-answer-true\"")
+            html should include("id=\"yes-no-answer-false\"")
+            html should include(title)
+          }
+        }
+
+        s"display proper labels for subscription flow $subscriptionFlow" in {
+          showReviewForm(
+            subscriptionFlow = subscriptionFlow,
+            isUkJourney = isUkJourney,
+            isIndividual = isIndividual,
+            isPartnership = isPartnership,
+            isCharity = isCharity
+          ) { result =>
+            status(result) shouldBe OK
+            val page = CdsPage(contentAsString(result))
+            page.getElementsText(DisclosePersonalDetailsConsentPage.consentInfoXpath) shouldBe consentInfo
+            page.getElementsText(DisclosePersonalDetailsConsentPage.yesToDiscloseXpath) shouldBe yesLabel
+            page.getElementsText(DisclosePersonalDetailsConsentPage.noToDiscloseXpath) shouldBe noLabel
+          }
+        }
     }
   }
 
@@ -250,11 +371,19 @@ class DisclosePersonalDetailsConsentControllerSpec
   private def showCreateForm(
     subscriptionFlow: SubscriptionFlow = OrganisationSubscriptionFlow,
     userId: String = defaultUserId,
-    journey: Journey.Value = Journey.Register
+    journey: Journey.Value = Journey.Register,
+    isUkJourney: Boolean = true,
+    isIndividual: Boolean = false,
+    isPartnership: Boolean = false,
+    isCharity: Boolean = false
   )(test: (Future[Result]) => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
 
     when(mockSubscriptionFlowManager.currentSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
+    when(mockRequestSessionData.isRegistrationUKJourney(any())).thenReturn(isUkJourney)
+    when(mockRequestSessionData.isIndividualOrSoleTrader(any())).thenReturn(isIndividual)
+    when(mockRequestSessionData.isPartnership(any())).thenReturn(isPartnership)
+    when(mockRequestSessionData.isCharity(any())).thenReturn(isCharity)
 
     test(controller.createForm(atarService, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
@@ -263,12 +392,20 @@ class DisclosePersonalDetailsConsentControllerSpec
     subscriptionFlow: SubscriptionFlow = OrganisationSubscriptionFlow,
     previouslyAnswered: Boolean = true,
     userId: String = defaultUserId,
-    journey: Journey.Value = Journey.Register
+    journey: Journey.Value = Journey.Register,
+    isUkJourney: Boolean = true,
+    isIndividual: Boolean = false,
+    isPartnership: Boolean = false,
+    isCharity: Boolean = false
   )(test: (Future[Result]) => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
 
     when(mockSubscriptionBusinessService.getCachedPersonalDataDisclosureConsent(any[HeaderCarrier]))
       .thenReturn(previouslyAnswered)
+    when(mockRequestSessionData.isRegistrationUKJourney(any())).thenReturn(isUkJourney)
+    when(mockRequestSessionData.isIndividualOrSoleTrader(any())).thenReturn(isIndividual)
+    when(mockRequestSessionData.isPartnership(any())).thenReturn(isPartnership)
+    when(mockRequestSessionData.isCharity(any())).thenReturn(isCharity)
 
     when(mockSubscriptionFlowManager.currentSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
 

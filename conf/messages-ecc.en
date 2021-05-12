@@ -356,3 +356,11 @@ ecc.subscription.outcomes.guidance.xi.eori.bullet1=Are you, or will you be, trad
 ecc.subscription.outcomes.guidance.xi.eori.bullet2=Query regarding a current EORI number application
 ecc.subscription.outcomes.guidance.xi.eori.warning.info=Do not tick the box "Query regarding an EORI number already issued" or "EORI number to register for customs system access".
 ecc.subscription.outcomes.guidance.xi.eori.href=<a href="https://www.tax.service.gov.uk/shortforms/form/EORIContact" target="_blank" rel="noopener noreferrer">Apply for an XI EORI.</a>
+
+ecc.subscription.organisation-disclose-personal-details-consent.title = Do you want to include the company name and address on the EORI checker?
+ecc.subscription.organisation-disclose-personal-details-consent.hint = HMRC will add your GB EORI number to a <a href="https://www.tax.service.gov.uk/check-eori-number" target="_blank">public checker</a>. You can also include you or your organisation''s name and address. This will help customs and freight agents identify you and process your shipments.
+ecc.subscription.organisation-disclose-personal-details-consent.individual.title = Do you want to include your name and address on the EORI checker?
+ecc.subscription.organisation-disclose-personal-details-consent.individual.hint = HMRC will add your EORI number to a <a href="https://ec.europa.eu/taxation_customs/dds2/eos/eori_validation.jsp" target="_blank">public checker kept by the European Commission</a>. You can also agree to include your name and address. This can help customs and freight agents identify you and process your shipments.
+ecc.subscription.organisation-disclose-personal-details-consent.partnership.title = Do you want to include the partnership name and address on the EORI checker?
+ecc.subscription.organisation-disclose-personal-details-consent.charity.title = Do you want to include the charity name and address on the EORI checker?
+ecc.subscription.organisation-disclose-personal-details-consent.organisation.title = Do you want to include the organisation name and address on the EORI checker?
