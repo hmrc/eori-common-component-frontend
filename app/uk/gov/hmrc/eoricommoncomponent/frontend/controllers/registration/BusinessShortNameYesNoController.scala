@@ -67,7 +67,7 @@ class BusinessShortNameYesNoController @Inject() (
   ): Future[Result] =
     subscriptionDetailsService.cachedCompanyShortName.flatMap { companyShortName =>
       orgTypeLookup.etmpOrgType.map { orgType =>
-        val isRow = !requestSessionData.isUKJourney
+        val isRow = !requestSessionData.isRegistrationUKJourney
 
         val form = companyShortName.fold(businessShortNameYesNoForm(emptyErrorMessage(orgType, isRow)))(
           shortName =>
@@ -83,7 +83,7 @@ class BusinessShortNameYesNoController @Inject() (
   def submit(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       orgTypeLookup.etmpOrgType.flatMap { orgType =>
-        val isRow = !requestSessionData.isUKJourney
+        val isRow = !requestSessionData.isRegistrationUKJourney
 
         businessShortNameYesNoForm(emptyErrorMessage(orgType, isRow)).bindFromRequest.fold(
           formWithErrors =>
