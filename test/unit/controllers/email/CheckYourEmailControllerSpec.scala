@@ -25,7 +25,7 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.InternalId
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, InternalId}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
@@ -83,7 +83,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   val unit       = ()
 
   override def beforeEach: Unit = {
-    when(mockSave4LaterService.fetchEmail(any[InternalId])(any[HeaderCarrier]))
+    when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
       .thenReturn(Future.successful(Some(emailStatus)))
 
     when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
@@ -120,11 +120,11 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     }
 
     "redirect to Are You based in UK for Already verified email" in {
-      when(mockSave4LaterService.fetchEmail(any[InternalId])(any[HeaderCarrier]))
+      when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(emailStatus.copy(isVerified = true))))
       when(
         mockSave4LaterService
-          .saveEmail(any[InternalId], any[EmailStatus])(any[HeaderCarrier])
+          .saveEmail(any[GroupId], any[EmailStatus])(any[HeaderCarrier])
       ).thenReturn(Future.successful(unit))
       when(mockSessionCache.saveEmail(any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(true))

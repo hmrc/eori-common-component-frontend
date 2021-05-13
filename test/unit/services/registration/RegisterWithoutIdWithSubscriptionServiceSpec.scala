@@ -103,7 +103,7 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
         anyString(),
         any[Address],
         any[Option[ContactDetailsModel]],
-        any[LoggedInUser],
+        any[LoggedInUserWithEnrolments],
         any[Option[CdsOrganisationType]]
       )(any[HeaderCarrier])
     ).thenReturn(Future.successful(okResponse), Nil: _*)
@@ -117,7 +117,7 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
         anyString(),
         any[Address],
         any[Option[ContactDetailsModel]],
-        any[LoggedInUser],
+        any[LoggedInUserWithEnrolments],
         any[Option[CdsOrganisationType]]
       )(any[HeaderCarrier])
     ).thenReturn(Future.successful(notOKResponse), Nil: _*)
@@ -131,7 +131,7 @@ class RegisterWithoutIdWithSubscriptionServiceSpec
         anyString(),
         any[Address],
         any[Option[ContactDetailsModel]],
-        any[LoggedInUser],
+        any[LoggedInUserWithEnrolments],
         any[Option[CdsOrganisationType]]
       )(any[HeaderCarrier])
     ).thenReturn(Future.failed(emulatedFailure))

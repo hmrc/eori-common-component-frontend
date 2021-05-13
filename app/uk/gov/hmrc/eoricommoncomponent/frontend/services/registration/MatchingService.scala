@@ -54,7 +54,7 @@ class MatchingService @Inject() (
 
   def sendOrganisationRequestForMatchingService(implicit
     request: Request[AnyContent],
-    loggedInUser: LoggedInUser,
+    loggedInUser: LoggedInUserWithEnrolments,
     headerCarrier: HeaderCarrier
   ): Future[Boolean] =
     for {
@@ -67,16 +67,11 @@ class MatchingService @Inject() (
       eori = subscriptionDetailsHolder.eoriNumber.getOrElse(
         throw new IllegalStateException("EORI number missing from subscription")
       )
-      result <- matchBusiness(
-        Eori(eori),
-        org,
-        subscriptionDetailsHolder.dateEstablished,
-        InternalId(loggedInUser.internalId)
-      )
+      result <- matchBusiness(Eori(eori), org, subscriptionDetailsHolder.dateEstablished, GroupId(loggedInUser.groupId))
     } yield result
 
   def sendIndividualRequestForMatchingService(implicit
-    loggedInUser: LoggedInUser,
+    loggedInUser: LoggedInUserWithEnrolments,
     headerCarrier: HeaderCarrier
   ): Future[Boolean] =
     for {
@@ -86,37 +81,37 @@ class MatchingService @Inject() (
       )
       eori       = subscription.eoriNumber.getOrElse(throw new IllegalStateException("EORI number missing from subscription"))
       individual = Individual(nameDob.firstName, None, nameDob.lastName, nameDob.dateOfBirth.toString)
-      result <- matchIndividualWithId(Eori(eori), individual, InternalId(loggedInUser.internalId))
+      result <- matchIndividualWithId(Eori(eori), individual, GroupId(loggedInUser.groupId))
     } yield result
 
-  def matchBusinessWithIdOnly(customsId: CustomsId, loggedInUser: LoggedInUser)(implicit
+  def matchBusinessWithIdOnly(customsId: CustomsId, loggedInUser: LoggedInUserWithEnrolments)(implicit
     hc: HeaderCarrier
   ): Future[Boolean] =
     for {
       maybeMatchFound <- matchingConnector.lookup(idOnlyMatchRequest(customsId, loggedInUser.isAgent))
-      foundAndStored <- storeInCacheIfFound(
-        convert(customsId, capturedDate = None),
-        InternalId(loggedInUser.internalId)
-      )(maybeMatchFound)
+      foundAndStored <- storeInCacheIfFound(convert(customsId, capturedDate = None), GroupId(loggedInUser.groupId))(
+        maybeMatchFound
+      )
     } yield foundAndStored
 
-  def matchBusinessWithIdOnly(customsId: CustomsId, loggedInUser: LoggedInUser, capturedDate: Option[LocalDate] = None)(
-    implicit hc: HeaderCarrier
-  ): Future[Boolean] =
+  def matchBusinessWithIdOnly(
+    customsId: CustomsId,
+    loggedInUser: LoggedInUserWithEnrolments,
+    capturedDate: Option[LocalDate] = None
+  )(implicit hc: HeaderCarrier): Future[Boolean] =
     for {
       maybeMatchFound <- matchingConnector.lookup(idOnlyMatchRequest(customsId, loggedInUser.isAgent))
       foundAndStored <- storeInCacheIfFound(
         convert(customsId, capturedDate = capturedDate),
-        InternalId(loggedInUser.internalId)
+        GroupId(loggedInUser.groupId)
       )(maybeMatchFound)
     } yield foundAndStored
 
-  def matchBusiness(
-    customsId: CustomsId,
-    org: Organisation,
-    establishmentDate: Option[LocalDate],
-    internalId: InternalId
-  )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Boolean] = {
+  def matchBusiness(customsId: CustomsId, org: Organisation, establishmentDate: Option[LocalDate], groupId: GroupId)(
+    implicit
+    request: Request[AnyContent],
+    hc: HeaderCarrier
+  ): Future[Boolean] = {
     def stripKFromUtr: CustomsId => CustomsId = {
       case Utr(id) => Utr(id.stripSuffix("k").stripSuffix("K"))
       case other   => other
@@ -129,20 +124,20 @@ class MatchingService @Inject() (
       .flatMap(
         storeInCacheIfFound(
           convert(customsId, establishmentDate),
-          internalId,
+          groupId,
           requestSessionData.userSelectedOrganisationType
         )
       )
   }
 
-  def matchIndividualWithId(customsId: CustomsId, individual: Individual, internalId: InternalId)(implicit
+  def matchIndividualWithId(customsId: CustomsId, individual: Individual, groupId: GroupId)(implicit
     hc: HeaderCarrier
   ): Future[Boolean] =
     matchingConnector
       .lookup(individualIdMatchRequest(customsId, individual))
-      .flatMap(storeInCacheIfFound(convert(customsId, toLocalDate(individual.dateOfBirth)), internalId))
+      .flatMap(storeInCacheIfFound(convert(customsId, toLocalDate(individual.dateOfBirth)), groupId))
 
-  def matchIndividualWithNino(nino: String, individual: Individual, internalId: InternalId)(implicit
+  def matchIndividualWithNino(nino: String, individual: Individual, groupId: GroupId)(implicit
     hc: HeaderCarrier
   ): Future[Boolean] =
     matchingConnector
@@ -150,17 +145,17 @@ class MatchingService @Inject() (
       .flatMap(
         storeInCacheIfFound(
           convert(customsId = Nino(nino), capturedDate = toLocalDate(individual.dateOfBirth)),
-          internalId
+          groupId
         )
       )
 
   private def storeInCacheIfFound(
     convert: MatchingResponse => RegistrationDetails,
-    internalId: InternalId,
+    groupId: GroupId,
     orgType: Option[CdsOrganisationType] = None
   )(mayBeMatchSuccess: Option[MatchingResponse])(implicit hc: HeaderCarrier): Future[Boolean] =
     mayBeMatchSuccess.map(convert).fold(Future.successful(false)) { details =>
-      cache.saveRegistrationDetails(details, internalId, orgType)
+      cache.saveRegistrationDetails(details, groupId, orgType)
     }
 
   private def idOnlyMatchRequest(customsId: CustomsId, isAnAgent: Boolean): MatchingRequestHolder =

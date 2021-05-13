@@ -350,7 +350,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Future.successful(individualRegistrationDetails))
       when(
         mockMatchingService
-          .sendIndividualRequestForMatchingService(any[LoggedInUser], any[HeaderCarrier])
+          .sendIndividualRequestForMatchingService(any[LoggedInUserWithEnrolments], any[HeaderCarrier])
       ).thenReturn(Future.successful(true))
       when(
         mockSubscriptionStatusService
@@ -591,7 +591,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
     "redirect to fail when REG01 fails to match for ROW Journey type" in {
       when(
         mockMatchingService
-          .sendOrganisationRequestForMatchingService(any[Request[AnyContent]], any[LoggedInUser], any[HeaderCarrier])
+          .sendOrganisationRequestForMatchingService(
+            any[Request[AnyContent]],
+            any[LoggedInUserWithEnrolments],
+            any[HeaderCarrier]
+          )
       ).thenReturn(Future.successful(false))
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))

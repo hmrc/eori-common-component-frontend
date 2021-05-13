@@ -105,7 +105,7 @@ class NameIdOrganisationController @Inject() (
         invalidOrganisationType(organisationType)
       )
       val configuration = OrganisationTypeConfigurations(organisationType)
-      bind(organisationType, configuration, service, journey, InternalId(loggedInUser.internalId))
+      bind(organisationType, configuration, service, journey, GroupId(loggedInUser.groupId))
     }
 
   private def bind[M <: NameIdOrganisationMatch](
@@ -113,19 +113,13 @@ class NameIdOrganisationController @Inject() (
     conf: Configuration[M],
     service: Service,
     journey: Journey.Value,
-    internalId: InternalId
+    groupId: GroupId
   )(implicit request: Request[AnyContent]): Future[Result] =
     conf.form.bindFromRequest
       .fold(
         formWithErrors => Future.successful(BadRequest(view(organisationType, conf, formWithErrors, service, journey))),
         formData =>
-          matchBusiness(
-            conf.createCustomsId(formData.id),
-            formData.name,
-            None,
-            conf.matchingServiceType,
-            internalId
-          ).map {
+          matchBusiness(conf.createCustomsId(formData.id), formData.name, None, conf.matchingServiceType, groupId).map {
             case true =>
               journey match {
                 case Journey.Subscribe =>
@@ -152,9 +146,9 @@ class NameIdOrganisationController @Inject() (
     name: String,
     dateEstablished: Option[LocalDate],
     matchingServiceType: String,
-    internalId: InternalId
+    groupId: GroupId
   )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Boolean] =
-    matchingService.matchBusiness(id, Organisation(name, matchingServiceType), dateEstablished, internalId)
+    matchingService.matchBusiness(id, Organisation(name, matchingServiceType), dateEstablished, groupId)
 
   private def matchNotFoundBadRequest[M <: NameIdOrganisationMatch](
     organisationType: String,

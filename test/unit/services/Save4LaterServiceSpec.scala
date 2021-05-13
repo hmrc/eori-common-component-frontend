@@ -26,7 +26,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.time.{Millis, Span}
 import play.api.libs.json.Reads
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, InternalId, SafeId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, GroupId, SafeId}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -38,7 +38,7 @@ class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAft
 
   private implicit val hc: HeaderCarrier = mock[HeaderCarrier]
   private val safeId                     = SafeId("safeId")
-  private val internalId                 = InternalId("internalId-123")
+  private val groupId                    = GroupId("groupId-123")
 
   private val organisationType: CdsOrganisationType =
     CdsOrganisationType.Company
@@ -62,14 +62,14 @@ class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAft
     "save the safeId against the users InternalId" in {
       when(
         mockSave4LaterConnector.put[SafeId](
-          ArgumentMatchers.eq(internalId.id),
+          ArgumentMatchers.eq(groupId.id),
           ArgumentMatchers.eq(safeIdKey),
           ArgumentMatchers.eq(safeId)
         )(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
 
       val result: Unit = service
-        .saveSafeId(internalId, safeId)
+        .saveSafeId(groupId, safeId)
         .futureValue
       result shouldBe ((): Unit)
     }
@@ -77,14 +77,14 @@ class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAft
     "save the CdsOrganisationType against the users InternalId" in {
       when(
         mockSave4LaterConnector.put[CdsOrganisationType](
-          ArgumentMatchers.eq(internalId.id),
+          ArgumentMatchers.eq(groupId.id),
           ArgumentMatchers.eq(orgTypeKey),
           ArgumentMatchers.eq(Some(organisationType))
         )(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
 
       val result: Unit = service
-        .saveOrgType(internalId, Some(organisationType))
+        .saveOrgType(groupId, Some(organisationType))
         .futureValue
       result shouldBe ((): Unit)
     }
@@ -92,28 +92,28 @@ class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAft
     "save the email against the users InternalId" in {
       when(
         mockSave4LaterConnector.put[EmailStatus](
-          ArgumentMatchers.eq(internalId.id),
+          ArgumentMatchers.eq(groupId.id),
           ArgumentMatchers.eq(emailKey),
           ArgumentMatchers.eq(emailStatus)
         )(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
 
       val result: Unit = service
-        .saveEmail(internalId, emailStatus)
+        .saveEmail(groupId, emailStatus)
         .futureValue
       result shouldBe ((): Unit)
     }
 
     "fetch the SafeId for the users InternalId" in {
       when(
-        mockSave4LaterConnector.get[SafeId](ArgumentMatchers.eq(internalId.id), ArgumentMatchers.eq(safeIdKey))(
+        mockSave4LaterConnector.get[SafeId](ArgumentMatchers.eq(groupId.id), ArgumentMatchers.eq(safeIdKey))(
           any[HeaderCarrier],
           any[Reads[SafeId]]
         )
       ).thenReturn(Future.successful(Some(safeId)))
 
       val result = service
-        .fetchSafeId(internalId)
+        .fetchSafeId(groupId)
         .futureValue
       result shouldBe Some(safeId)
     }
@@ -121,27 +121,27 @@ class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAft
     "fetch the Organisation Type for the users InternalId" in {
       when(
         mockSave4LaterConnector.get[CdsOrganisationType](
-          ArgumentMatchers.eq(internalId.id),
+          ArgumentMatchers.eq(groupId.id),
           ArgumentMatchers.eq(orgTypeKey)
         )(any[HeaderCarrier], any[Reads[CdsOrganisationType]])
       ).thenReturn(Future.successful(Some(organisationType)))
 
       val result = service
-        .fetchOrgType(internalId)
+        .fetchOrgType(groupId)
         .futureValue
       result shouldBe Some(organisationType)
     }
 
     "fetch the email for the users InternalId" in {
       when(
-        mockSave4LaterConnector.get[EmailStatus](ArgumentMatchers.eq(internalId.id), ArgumentMatchers.eq(emailKey))(
+        mockSave4LaterConnector.get[EmailStatus](ArgumentMatchers.eq(groupId.id), ArgumentMatchers.eq(emailKey))(
           any[HeaderCarrier],
           any[Reads[EmailStatus]]
         )
       ).thenReturn(Future.successful(Some(emailStatus)))
 
       val result = service
-        .fetchEmail(internalId)
+        .fetchEmail(groupId)
         .futureValue
       result shouldBe Some(emailStatus)
     }

@@ -20,7 +20,6 @@ import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.libs.json._
 import play.mvc.Http.Status._
-import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.http.{BadRequestException, _}
 import uk.gov.hmrc.http.HttpClient
@@ -29,9 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
 @Singleton
-class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
-  ec: ExecutionContext
-) {
+class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig)(implicit ec: ExecutionContext) {
 
   private val logger = Logger(this.getClass)
 

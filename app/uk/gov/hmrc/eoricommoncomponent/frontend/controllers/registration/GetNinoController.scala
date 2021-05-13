@@ -60,8 +60,7 @@ class GetNinoController @Inject() (
                 matchNinoRowIndividualView(formWithErrors, false, routes.GetNinoController.submit(service, journey))
               )
             ),
-          formData =>
-            matchIndividual(Nino(formData.id), service, journey, formData, InternalId(loggedInUser.internalId))
+          formData => matchIndividual(Nino(formData.id), service, journey, formData, GroupId(loggedInUser.groupId))
         )
     }
 
@@ -70,7 +69,7 @@ class GetNinoController @Inject() (
     service: Service,
     journey: Journey.Value,
     formData: IdMatchModel,
-    internalId: InternalId
+    groupId: GroupId
   )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] =
     subscriptionDetailsService.cachedNameDobDetails flatMap {
       case Some(details) =>
@@ -78,7 +77,7 @@ class GetNinoController @Inject() (
           .matchIndividualWithId(
             id,
             Individual.withLocalDate(details.firstName, details.middleName, details.lastName, details.dateOfBirth),
-            internalId
+            groupId
           )
           .map { matched =>
             if (matched)

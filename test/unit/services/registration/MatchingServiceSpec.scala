@@ -54,8 +54,8 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
   private val mockHeaderCarrier          = mock[HeaderCarrier]
   private val mockRequestCommonGenerator = mock[RequestCommonGenerator]
   private val mockCache                  = mock[SessionCache]
-  private val loggedInCtUser             = mock[LoggedInUser]
-  private val mockInternalId             = mock[InternalId]
+  private val loggedInCtUser             = mock[LoggedInUserWithEnrolments]
+  private val mockGroupId                = mock[GroupId]
 
   private val service = new MatchingService(
     mockMatchingServiceConnector,
@@ -67,8 +67,8 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
 
   override def beforeEach() {
     Mockito.reset(mockMatchingServiceConnector, mockDetailsCreator, mockCache, loggedInCtUser)
-    when(mockInternalId.id).thenReturn("mockedInternalId")
-    when(loggedInCtUser.internalId).thenReturn(Some("mockedInternalId"))
+    when(mockGroupId.id).thenReturn("mockedGroupId")
+    when(loggedInCtUser.groupId).thenReturn(Some("mockedGroupId"))
 
     when(mockRequestCommonGenerator.generate())
       .thenReturn(ExpectedRequestCommon)
@@ -76,7 +76,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
     when(
       mockCache.saveRegistrationDetails(
         ArgumentMatchers.any[RegistrationDetails],
-        ArgumentMatchers.any[InternalId],
+        ArgumentMatchers.any[GroupId],
         ArgumentMatchers.any[Option[CdsOrganisationType]]
       )(ArgumentMatchers.any[HeaderCarrier])
     ).thenReturn(true)
@@ -199,7 +199,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
       when(
         mockCache.saveRegistrationDetails(
           ArgumentMatchers.any[RegistrationDetails],
-          ArgumentMatchers.any[InternalId],
+          ArgumentMatchers.any[GroupId],
           ArgumentMatchers.any[Option[CdsOrganisationType]]
         )(ArgumentMatchers.any[HeaderCarrier])
       ).thenReturn(Future.failed(exception))
@@ -229,7 +229,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
             Utr("some-utr"),
             Organisation("name", CorporateBody),
             establishmentDate = None,
-            mockInternalId
+            mockGroupId
           )(mockRequest, mockHeaderCarrier)
         )
       }
@@ -244,7 +244,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
       ).thenReturn(Future.successful(Some(matchSuccessResponse)))
 
       await(
-        service.matchBusiness(utr, Organisation("someOrg", Partnership), establishmentDate = None, mockInternalId)(
+        service.matchBusiness(utr, Organisation("someOrg", Partnership), establishmentDate = None, mockGroupId)(
           mockRequest,
           mockHeaderCarrier
         )
@@ -268,7 +268,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
           Utr(utrId + "K"),
           Organisation("someOrg", Partnership),
           establishmentDate = None,
-          mockInternalId
+          mockGroupId
         )(mockRequest, mockHeaderCarrier)
       ) shouldBe true
 
@@ -290,7 +290,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
           Utr(utrId + "k"),
           Organisation("someOrg", Partnership),
           establishmentDate = None,
-          mockInternalId
+          mockGroupId
         )(mockRequest, mockHeaderCarrier)
       ) shouldBe true
 
@@ -308,7 +308,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
       ).thenReturn(Future.successful(Some(matchSuccessResponse)))
 
       await(
-        service.matchBusiness(eori, Organisation("someOrg", UnincorporatedBody), someEstablishmentDate, mockInternalId)(
+        service.matchBusiness(eori, Organisation("someOrg", UnincorporatedBody), someEstablishmentDate, mockGroupId)(
           mockRequest,
           mockHeaderCarrier
         )
@@ -335,7 +335,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
       ).thenReturn(mockDetails)
 
       await(
-        service.matchBusiness(utr, Organisation("someOrg", Partnership), establishmentDate = None, mockInternalId)(
+        service.matchBusiness(utr, Organisation("someOrg", Partnership), establishmentDate = None, mockGroupId)(
           mockRequest,
           mockHeaderCarrier
         )
@@ -343,7 +343,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
 
       verify(mockCache).saveRegistrationDetails(
         ArgumentMatchers.eq(mockDetails),
-        ArgumentMatchers.eq(mockInternalId),
+        ArgumentMatchers.eq(mockGroupId),
         ArgumentMatchers.any()
       )(ArgumentMatchers.eq(mockHeaderCarrier))
     }
@@ -359,7 +359,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
     ).thenReturn(Future.successful(connectorResponse))
 
     await(
-      service.matchIndividualWithId(utr, individual, mockInternalId)(mockHeaderCarrier)
+      service.matchIndividualWithId(utr, individual, mockGroupId)(mockHeaderCarrier)
     ) shouldBe expectedServiceCallResult
 
     val matchBusinessDataCaptor =
@@ -396,7 +396,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
       )
       verify(mockCache).saveRegistrationDetails(
         ArgumentMatchers.eq(mockDetails),
-        ArgumentMatchers.eq(mockInternalId),
+        ArgumentMatchers.eq(mockGroupId),
         ArgumentMatchers.any()
       )(ArgumentMatchers.eq(mockHeaderCarrier))
 
@@ -415,7 +415,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
     ).thenReturn(Future.successful(connectorResponse))
 
     await(
-      service.matchIndividualWithId(eori, individual, mockInternalId)(mockHeaderCarrier)
+      service.matchIndividualWithId(eori, individual, mockGroupId)(mockHeaderCarrier)
     ) shouldBe expectedServiceCallResult
 
     val matchBusinessDataCaptor =
@@ -452,7 +452,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
       )
       verify(mockCache).saveRegistrationDetails(
         ArgumentMatchers.eq(mockDetails),
-        ArgumentMatchers.eq(mockInternalId),
+        ArgumentMatchers.eq(mockGroupId),
         ArgumentMatchers.any()
       )(ArgumentMatchers.eq(mockHeaderCarrier))
 
@@ -470,7 +470,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
     ).thenReturn(Future.successful(connectorResponse))
 
     await(
-      service.matchIndividualWithNino(ninoId, NinoFormBuilder.asIndividual, mockInternalId)(mockHeaderCarrier)
+      service.matchIndividualWithNino(ninoId, NinoFormBuilder.asIndividual, mockGroupId)(mockHeaderCarrier)
     ) shouldBe serviceCallResult
 
     val matchBusinessDataCaptor =
@@ -505,11 +505,11 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
       ).thenReturn(mockDetails)
 
       await(
-        service.matchIndividualWithNino(ninoId, NinoFormBuilder.asIndividual, mockInternalId)(mockHeaderCarrier)
+        service.matchIndividualWithNino(ninoId, NinoFormBuilder.asIndividual, mockGroupId)(mockHeaderCarrier)
       ) shouldBe true
       verify(mockCache).saveRegistrationDetails(
         ArgumentMatchers.eq(mockDetails),
-        ArgumentMatchers.eq(mockInternalId),
+        ArgumentMatchers.eq(mockGroupId),
         ArgumentMatchers.any()
       )(ArgumentMatchers.eq(mockHeaderCarrier))
 

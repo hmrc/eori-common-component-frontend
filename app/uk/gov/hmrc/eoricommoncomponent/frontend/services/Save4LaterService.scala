@@ -36,40 +36,40 @@ class Save4LaterService @Inject() (save4LaterConnector: Save4LaterConnector) {
   private val orgTypeKey = "orgType"
   private val emailKey   = "email"
 
-  def saveSafeId(internalId: InternalId, safeId: SafeId)(implicit hc: HeaderCarrier): Future[Unit] = {
-    logger.debug(s"saving SafeId $safeId for internalId $internalId")
-    save4LaterConnector.put[SafeId](internalId.id, safeIdKey, safeId)
+  def saveSafeId(groupId: GroupId, safeId: SafeId)(implicit hc: HeaderCarrier): Future[Unit] = {
+    logger.debug(s"saving SafeId $safeId for internalId $groupId")
+    save4LaterConnector.put[SafeId](groupId.id, safeIdKey, safeId)
   }
 
-  def saveOrgType(internalId: InternalId, mayBeOrgType: Option[CdsOrganisationType])(implicit
+  def saveOrgType(groupId: GroupId, mayBeOrgType: Option[CdsOrganisationType])(implicit
     hc: HeaderCarrier
   ): Future[Unit] = {
-    logger.debug(s"saving OrganisationType $mayBeOrgType for internalId $internalId")
+    logger.debug(s"saving OrganisationType $mayBeOrgType for internalId $groupId")
     save4LaterConnector
-      .put[CdsOrganisationType](internalId.id, orgTypeKey, mayBeOrgType)
+      .put[CdsOrganisationType](groupId.id, orgTypeKey, mayBeOrgType)
   }
 
-  def saveEmail(internalId: InternalId, emailStatus: EmailStatus)(implicit hc: HeaderCarrier): Future[Unit] = {
-    logger.debug(s"saving email address $emailStatus for internalId $internalId")
-    save4LaterConnector.put[EmailStatus](internalId.id, emailKey, emailStatus)
+  def saveEmail(groupId: GroupId, emailStatus: EmailStatus)(implicit hc: HeaderCarrier): Future[Unit] = {
+    logger.debug(s"saving email address $emailStatus for internalId $groupId")
+    save4LaterConnector.put[EmailStatus](groupId.id, emailKey, emailStatus)
   }
 
-  def fetchOrgType(internalId: InternalId)(implicit hc: HeaderCarrier): Future[Option[CdsOrganisationType]] = {
-    logger.debug(s"fetching OrganisationType for internalId $internalId")
+  def fetchOrgType(groupId: GroupId)(implicit hc: HeaderCarrier): Future[Option[CdsOrganisationType]] = {
+    logger.debug(s"fetching OrganisationType for internalId $groupId")
     save4LaterConnector
-      .get[CdsOrganisationType](internalId.id, orgTypeKey)
+      .get[CdsOrganisationType](groupId.id, orgTypeKey)
   }
 
-  def fetchSafeId(internalId: InternalId)(implicit hc: HeaderCarrier): Future[Option[SafeId]] = {
-    logger.debug(s"fetching SafeId for internalId $internalId")
+  def fetchSafeId(groupId: GroupId)(implicit hc: HeaderCarrier): Future[Option[SafeId]] = {
+    logger.debug(s"fetching SafeId for internalId $groupId")
     save4LaterConnector
-      .get[SafeId](internalId.id, safeIdKey)
+      .get[SafeId](groupId.id, safeIdKey)
   }
 
-  def fetchEmail(internalId: InternalId)(implicit hc: HeaderCarrier): Future[Option[EmailStatus]] = {
-    logger.debug(s"fetching EmailStatus internalId $internalId")
+  def fetchEmail(groupId: GroupId)(implicit hc: HeaderCarrier): Future[Option[EmailStatus]] = {
+    logger.debug(s"fetching EmailStatus internalId $groupId")
     save4LaterConnector
-      .get[EmailStatus](internalId.id, emailKey)
+      .get[EmailStatus](groupId.id, emailKey)
   }
 
   def fetchCacheIds(groupId: GroupId)(implicit hc: HeaderCarrier): Future[Option[CacheIds]] = {
