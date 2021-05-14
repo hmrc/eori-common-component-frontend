@@ -37,37 +37,37 @@ class Save4LaterService @Inject() (save4LaterConnector: Save4LaterConnector) {
   private val emailKey   = "email"
 
   def saveSafeId(groupId: GroupId, safeId: SafeId)(implicit hc: HeaderCarrier): Future[Unit] = {
-    logger.debug(s"saving SafeId $safeId for internalId $groupId")
+    logger.debug(s"saving SafeId $safeId for groupId $groupId")
     save4LaterConnector.put[SafeId](groupId.id, safeIdKey, safeId)
   }
 
   def saveOrgType(groupId: GroupId, mayBeOrgType: Option[CdsOrganisationType])(implicit
     hc: HeaderCarrier
   ): Future[Unit] = {
-    logger.debug(s"saving OrganisationType $mayBeOrgType for internalId $groupId")
+    logger.debug(s"saving OrganisationType $mayBeOrgType for groupId $groupId")
     save4LaterConnector
       .put[CdsOrganisationType](groupId.id, orgTypeKey, mayBeOrgType)
   }
 
   def saveEmail(groupId: GroupId, emailStatus: EmailStatus)(implicit hc: HeaderCarrier): Future[Unit] = {
-    logger.debug(s"saving email address $emailStatus for internalId $groupId")
+    logger.debug(s"saving email address $emailStatus for groupId $groupId")
     save4LaterConnector.put[EmailStatus](groupId.id, emailKey, emailStatus)
   }
 
   def fetchOrgType(groupId: GroupId)(implicit hc: HeaderCarrier): Future[Option[CdsOrganisationType]] = {
-    logger.debug(s"fetching OrganisationType for internalId $groupId")
+    logger.debug(s"fetching OrganisationType for groupId $groupId")
     save4LaterConnector
       .get[CdsOrganisationType](groupId.id, orgTypeKey)
   }
 
   def fetchSafeId(groupId: GroupId)(implicit hc: HeaderCarrier): Future[Option[SafeId]] = {
-    logger.debug(s"fetching SafeId for internalId $groupId")
+    logger.debug(s"fetching SafeId for groupId $groupId")
     save4LaterConnector
       .get[SafeId](groupId.id, safeIdKey)
   }
 
   def fetchEmail(groupId: GroupId)(implicit hc: HeaderCarrier): Future[Option[EmailStatus]] = {
-    logger.debug(s"fetching EmailStatus internalId $groupId")
+    logger.debug(s"fetching EmailStatus groupId $groupId")
     save4LaterConnector
       .get[EmailStatus](groupId.id, emailKey)
   }
