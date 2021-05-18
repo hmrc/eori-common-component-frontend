@@ -92,8 +92,20 @@ class Save4LaterConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
       save4LaterConnector.delete[HttpResponse](id).futureValue mustBe ((): Unit)
     }
 
-    "return  BadRequestException with response status NOT FOUND status for unknown entry" in {
+    "return BadRequestException with response status NOT FOUND status for unknown entry" in {
       stubSave4LaterNotFoundDELETE()
+      intercept[BadRequestException] {
+        await(save4LaterConnector.delete[String](id))
+      }
+    }
+
+    "return successful response with NoContent status for delete key" in {
+      stubSave4LaterDELETEKey()
+      save4LaterConnector.deleteKey[HttpResponse](id, emailKey).futureValue mustBe ((): Unit)
+    }
+
+    "return BadRequestException with response status NOT FOUND status for unknown key entry" in {
+      stubSave4LaterNotFoundDELETEKey()
       intercept[BadRequestException] {
         await(save4LaterConnector.delete[String](id))
       }

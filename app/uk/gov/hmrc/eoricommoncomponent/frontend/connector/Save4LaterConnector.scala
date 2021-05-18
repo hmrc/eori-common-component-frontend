@@ -102,4 +102,24 @@ class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig)(imp
     }
   }
 
+  def deleteKey[T](id: String, key: String)(implicit hc: HeaderCarrier): Future[Unit] = {
+    val url = s"${appConfig.handleSubscriptionBaseUrl}/save4later/$id/$key"
+
+    // $COVERAGE-OFF$Loggers
+    logger.debug(s"DELETE Key: $url")
+    // $COVERAGE-ON
+
+    http.DELETE[HttpResponse](url) map { response =>
+      logSuccess("Delete key", url)
+      response.status match {
+        case NO_CONTENT => ()
+        case _          => throw new BadRequestException(s"Status:${response.status}")
+      }
+    } recoverWith {
+      case NonFatal(e) =>
+        logFailure("Delete key", url, e)
+        Future.failed(e)
+    }
+  }
+
 }

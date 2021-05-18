@@ -74,9 +74,11 @@ class Save4LaterService @Inject() (save4LaterConnector: Save4LaterConnector) {
 
   def fetchCacheIds(groupId: GroupId)(implicit hc: HeaderCarrier): Future[Option[CacheIds]] = {
     logger.debug(s"fetching CacheIds groupId $groupId")
-    save4LaterConnector
-      .get[CacheIds](groupId.id, CachedData.groupIdKey)
+    save4LaterConnector.get[CacheIds](groupId.id, CachedData.groupIdKey)
   }
+
+  def deleteCachedGroupId(groupId: GroupId)(implicit hc: HeaderCarrier) =
+    save4LaterConnector.deleteKey[CacheIds](groupId.id, CachedData.groupIdKey)
 
   def deleteCacheIds(groupId: GroupId)(implicit hc: HeaderCarrier): Future[Unit] = {
     logger.debug(s"deleting CachIds for groupId $groupId")

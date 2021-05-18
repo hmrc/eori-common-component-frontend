@@ -46,11 +46,10 @@ class UserGroupIdSubscriptionStatusCheckService @Inject() (
             .getStatus(idType, cacheIds.safeId.id)
             .flatMap { status =>
               if (status != SubscriptionProcessing)
-                for {
-                  _ <- if (!sameService) save4Later.saveEmail(groupId, EmailStatus(None))
-                  else Future.successful((): Unit)
-                  res <- save4Later.deleteCacheIds(groupId).flatMap(_ => continue)
-                } yield res
+                if (sameService)
+                  save4Later.deleteCachedGroupId(groupId).flatMap(_ => continue)
+                else
+                  save4Later.deleteCacheIds(groupId).flatMap(_ => continue)
               else
                 (sameUser, sameService) match {
                   case (true, true)  => continue

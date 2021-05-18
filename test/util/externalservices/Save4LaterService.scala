@@ -37,29 +37,27 @@ object Save4LaterService {
     implicit val jsonFormat = Json.format[User]
   }
 
-  val expectedUrl       = s"/save4later/$id/$emailKey"
-  val expectedDeleteUrl = s"/save4later/$id"
+  val expectedUrl          = s"/save4later/$id/$emailKey"
+  val expectedDeleteUrl    = s"/save4later/$id"
+  val expectedDeleteKeyUrl = s"/save4later/$id/$emailKey"
 
-  def stubSave4LaterGET_OK() =
-    stubSave4LaterGETResponse(expectedUrl, body, OK)
+  def stubSave4LaterGET_OK() = stubSave4LaterGETResponse(expectedUrl, body, OK)
 
-  def stubSave4LaterGET_NOTFOUND() =
-    stubSave4LaterGETResponse(expectedUrl, body, NOT_FOUND)
+  def stubSave4LaterGET_NOTFOUND() = stubSave4LaterGETResponse(expectedUrl, body, NOT_FOUND)
 
-  def stubSave4LaterGET_BAD_REQUEST() =
-    stubSave4LaterGETResponse(expectedUrl, body, BAD_REQUEST)
+  def stubSave4LaterGET_BAD_REQUEST() = stubSave4LaterGETResponse(expectedUrl, body, BAD_REQUEST)
 
-  def stubSave4LaterPUT() =
-    stubSave4LaterPUTResponse(expectedUrl, body, CREATED)
+  def stubSave4LaterPUT() = stubSave4LaterPUTResponse(expectedUrl, body, CREATED)
 
-  def stubSave4LaterPUT_BAD_REQUEST() =
-    stubSave4LaterPUTResponse(expectedUrl, body, BAD_REQUEST)
+  def stubSave4LaterPUT_BAD_REQUEST() = stubSave4LaterPUTResponse(expectedUrl, body, BAD_REQUEST)
 
-  def stubSave4LaterDELETE() =
-    stubSave4LaterDeleteResponse(expectedDeleteUrl, NO_CONTENT)
+  def stubSave4LaterDELETE() = stubSave4LaterDeleteResponse(expectedDeleteUrl, NO_CONTENT)
 
-  def stubSave4LaterNotFoundDELETE() =
-    stubSave4LaterDeleteResponse(expectedDeleteUrl, NOT_FOUND)
+  def stubSave4LaterNotFoundDELETE() = stubSave4LaterDeleteResponse(expectedDeleteUrl, NOT_FOUND)
+
+  def stubSave4LaterDELETEKey() = stubSave4LaterDeleteResponse(expectedDeleteKeyUrl, NO_CONTENT)
+
+  def stubSave4LaterNotFoundDELETEKey() = stubSave4LaterDeleteResponse(expectedDeleteKeyUrl, NOT_FOUND)
 
   def stubSave4LaterGETResponse(url: String, response: String, status: Int): Unit =
     stubFor(

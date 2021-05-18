@@ -17,8 +17,7 @@
 package unit.services
 
 import base.UnitSpec
-import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
@@ -28,7 +27,6 @@ import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
 import play.api.test.Helpers.LOCATION
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CacheIds, GroupId, InternalId, SafeId}
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.{Save4LaterService, UserGroupIdSubscriptionStatusCheckService}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -131,7 +129,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
       allowUserWhenGroupIdCachedAndSubscriptionStatusIs(SubscriptionExists)
     }
 
-    "Delete email for user when starting a second subscription" in {
+    "Delete cache for user when starting a second subscription" in {
 
       when(
         mockSave4LaterService
@@ -140,7 +138,6 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
       when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(NewSubscription))
       when(mockSave4LaterService.deleteCacheIds(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
-      when(mockSave4LaterService.saveEmail(any(), any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
 
       val result: Result = service
         .checksToProceed(groupId, internalId, atarService)(continue)(userIsInProcess)(
@@ -148,8 +145,6 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
         ).futureValue
 
       result.header.headers(LOCATION) shouldBe "/continue"
-
-      Mockito.verify(mockSave4LaterService).saveEmail(any(), meq(EmailStatus(None)))(any[HeaderCarrier])
     }
 
     "Allow the user if groupID is not cached" in {
@@ -175,7 +170,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
     ).thenReturn(Future.successful(Some(cacheIds)))
     when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier]))
       .thenReturn(Future.successful(status))
-    when(mockSave4LaterService.deleteCacheIds(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
+    when(mockSave4LaterService.deleteCachedGroupId(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
 
     val result: Result = service
       .checksToProceed(groupId, internalId, atarService)(continue)(userIsInProcess)(
