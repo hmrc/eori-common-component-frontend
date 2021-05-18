@@ -23,7 +23,7 @@ import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.mvc.Http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR, OK}
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import util.externalservices.ExternalServicesConfig.{Host, Port}
 import util.externalservices.{AuditService, MatchService}
 
@@ -271,9 +271,11 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
         match400ErrorResponse.toString(),
         BAD_REQUEST
       )
-      intercept[BadRequestException] {
+      val caught = intercept[UpstreamErrorResponse] {
         await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder]))
       }
+
+      caught.statusCode mustBe 400
       AuditService.verifyXAuditWrite(0)
     }
 

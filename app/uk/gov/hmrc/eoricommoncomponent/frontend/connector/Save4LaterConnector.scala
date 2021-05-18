@@ -20,7 +20,6 @@ import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.libs.json._
 import play.mvc.Http.Status._
-import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.http.{BadRequestException, _}
 import uk.gov.hmrc.http.HttpClient
@@ -29,16 +28,14 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
 @Singleton
-class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
-  ec: ExecutionContext
-) {
+class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig)(implicit ec: ExecutionContext) {
 
   private val logger = Logger(this.getClass)
 
-  private def logSuccess(method: String, url: String)(implicit hc: HeaderCarrier) =
+  private def logSuccess(method: String, url: String) =
     logger.debug(s"$method complete for call to $url")
 
-  private def logFailure(method: String, url: String, e: Throwable)(implicit hc: HeaderCarrier) =
+  private def logFailure(method: String, url: String, e: Throwable) =
     logger.warn(s"$method request failed for call to $url: ${e.getMessage}", e)
 
   def get[T](id: String, key: String)(implicit hc: HeaderCarrier, reads: Reads[T]): Future[Option[T]] = {

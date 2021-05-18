@@ -28,7 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.connector.RegisterWithoutIdConne
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import util.externalservices.ExternalServicesConfig._
 import util.externalservices.{AuditService, RegisterWithoutIdMessagingService}
 
@@ -217,10 +217,11 @@ class RegisterWithoutIdConnectorSpec extends IntegrationTestsSpec with ScalaFutu
           BAD_REQUEST
         )
 
-        val caught: BadRequestException = intercept[BadRequestException] {
+        val caught: UpstreamErrorResponse = intercept[UpstreamErrorResponse] {
           await(registerWithoutIdConnector.register(registerWithoutIdRequest))
         }
 
+        caught.statusCode mustBe 400
         caught.getMessage must startWith("POST of ")
       }
 
@@ -276,10 +277,11 @@ class RegisterWithoutIdConnectorSpec extends IntegrationTestsSpec with ScalaFutu
           BAD_REQUEST
         )
 
-        intercept[BadRequestException] {
+        val caught = intercept[UpstreamErrorResponse] {
           await(registerWithoutIdConnector.register(registerWithoutIdRequest))
         }
 
+        caught.statusCode mustBe 400
         AuditService.verifyXAuditWrite(0)
       }
     }

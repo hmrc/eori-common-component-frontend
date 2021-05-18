@@ -95,6 +95,8 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
     knownFactsQuery: KnownFactsQuery
   )(implicit hc: HeaderCarrier): Future[Option[KnownFacts]] = {
 
+    import uk.gov.hmrc.http.HttpReads.Implicits._
+
     val url = s"$baseUrl/$serviceContext/enrolment-store/enrolments"
 
     // $COVERAGE-OFF$Loggers

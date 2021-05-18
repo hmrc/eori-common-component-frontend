@@ -19,7 +19,9 @@ package util.builders
 import base.Injector
 import org.scalatest.WordSpec
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.mvc.{AnyContentAsEmpty, DefaultActionBuilder}
 import play.api.{Configuration, Environment}
+import play.api.test.Helpers.stubBodyParser
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 
@@ -30,5 +32,9 @@ trait AuthActionMock extends WordSpec with MockitoSugar with Injector {
   val configuration = instanceOf[Configuration]
   val environment   = Environment.simple()
 
-  def authAction(authConnector: AuthConnector) = new AuthAction(configuration, environment, authConnector)(global)
+  val actionBuilder = DefaultActionBuilder(stubBodyParser(AnyContentAsEmpty))(global)
+
+  def authAction(authConnector: AuthConnector) =
+    new AuthAction(configuration, environment, authConnector, actionBuilder)(global)
+
 }

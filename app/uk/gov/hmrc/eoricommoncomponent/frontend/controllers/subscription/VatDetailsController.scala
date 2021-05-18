@@ -20,6 +20,7 @@ import javax.inject.{Inject, Singleton}
 import org.joda.time.LocalDate
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{
+  InternalServerErrorResponse,
   InvalidResponse,
   NotFoundResponse,
   ServiceUnavailableResponse,
@@ -125,7 +126,8 @@ class VatDetailsController @Inject() (
             Future.successful(Redirect(VatDetailsController.vatDetailsNotMatched(isInReviewMode, service, journey)))
           case InvalidResponse =>
             Future.successful(Redirect(VatDetailsController.vatDetailsNotMatched(isInReviewMode, service, journey)))
-          case ServiceUnavailableResponse => Future.successful(Results.ServiceUnavailable(errorTemplate()))
+          case ServiceUnavailableResponse  => Future.successful(Results.ServiceUnavailable(errorTemplate()))
+          case InternalServerErrorResponse => Future.successful(Results.InternalServerError(errorTemplate()))
         }
     }
   }

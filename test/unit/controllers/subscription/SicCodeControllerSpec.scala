@@ -438,23 +438,22 @@ class SicCodeControllerSpec
     s"display correct description for $orgType (NA) org type and when user-location is NON-UK: $userLocation" in {
       showCreateForm(userSelectedOrgType = userSelectedOrgType, userLocation = Some(userLocation)) { result =>
         val page = CdsPage(contentAsString(result))
-        userSelectedOrgType match {
-          case SoleTrader =>
-            page.getElementsText(
-              sicDescriptionLabelXpath
-            ) shouldBe "A SIC code is a 5 digit number that helps HMRC identify what your business does. In some countries it is also known as a trade number. If you do not have one, you can search for a relevant SIC code on Companies House (opens in a new window or tab)."
-            page.getElementText(
-              SicCodePage.headingXpath
-            ) shouldBe "Enter a Standard Industrial Classification (SIC) code that describes what your business does"
-            page.getElementsHref("//*[@id='description']/a") shouldBe "https://resources.companieshouse.gov.uk/sic/"
-          case ThirdCountryOrganisation =>
-            page.getElementsText(
-              sicDescriptionLabelXpath
-            ) shouldBe "A SIC code is a 5 digit number that helps HMRC identify what your organisation does. In some countries it is also known as a trade number. If you do not have one, you can search for a relevant SIC code on Companies House (opens in a new window or tab)."
-            page.getElementText(
-              SicCodePage.headingXpath
-            ) shouldBe "What is the Standard Industrial Classification (SIC) code for your organisation?"
-            page.getElementsHref("//*[@id='description']/a") shouldBe "https://resources.companieshouse.gov.uk/sic/"
+        if (userSelectedOrgType == SoleTrader) {
+          page.getElementsText(
+            sicDescriptionLabelXpath
+          ) shouldBe "A SIC code is a 5 digit number that helps HMRC identify what your business does. In some countries it is also known as a trade number. If you do not have one, you can search for a relevant SIC code on Companies House (opens in a new window or tab)."
+          page.getElementText(
+            SicCodePage.headingXpath
+          ) shouldBe "Enter a Standard Industrial Classification (SIC) code that describes what your business does"
+          page.getElementsHref("//*[@id='description']/a") shouldBe "https://resources.companieshouse.gov.uk/sic/"
+        } else {
+          page.getElementsText(
+            sicDescriptionLabelXpath
+          ) shouldBe "A SIC code is a 5 digit number that helps HMRC identify what your organisation does. In some countries it is also known as a trade number. If you do not have one, you can search for a relevant SIC code on Companies House (opens in a new window or tab)."
+          page.getElementText(
+            SicCodePage.headingXpath
+          ) shouldBe "What is the Standard Industrial Classification (SIC) code for your organisation?"
+          page.getElementsHref("//*[@id='description']/a") shouldBe "https://resources.companieshouse.gov.uk/sic/"
         }
       }
     }

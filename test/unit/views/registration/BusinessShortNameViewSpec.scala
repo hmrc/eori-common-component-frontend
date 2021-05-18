@@ -38,13 +38,10 @@ class BusinessShortNameViewSpec extends ViewSpec {
 
   implicit val request: Request[Any] = withFakeCSRF(fakeAtarSubscribeRequest)
 
-  private def form(orgType: EtmpOrganisationType = CorporateBody, isRow: Boolean = false): Form[BusinessShortName] =
+  private def form(orgType: EtmpOrganisationType, isRow: Boolean): Form[BusinessShortName] =
     BusinessShortNameForm.form(orgType, isRow)
 
-  private def formWithError(
-    orgType: EtmpOrganisationType = CorporateBody,
-    isRow: Boolean = false
-  ): Form[BusinessShortName] =
+  private def formWithError(orgType: EtmpOrganisationType, isRow: Boolean): Form[BusinessShortName] =
     form(orgType, isRow).bind(Map("short-name" -> ""))
 
   private def doc(orgType: EtmpOrganisationType = CorporateBody, isRow: Boolean = false): Document =

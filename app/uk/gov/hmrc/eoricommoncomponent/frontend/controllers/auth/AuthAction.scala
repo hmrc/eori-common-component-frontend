@@ -25,14 +25,15 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.{affinityGroup, allEnrolment
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class AuthAction @Inject() (
   override val config: Configuration,
   override val env: Environment,
-  override val authConnector: AuthConnector
+  override val authConnector: AuthConnector,
+  action: DefaultActionBuilder
 )(implicit ec: ExecutionContext)
     extends AuthRedirectSupport with AuthorisedFunctions with AccessController {
 
@@ -49,7 +50,7 @@ class AuthAction @Inject() (
     * Allows Gov Gateway user with correct user type, affinity group and no enrolment to service
     */
   def ggAuthorisedUserWithEnrolmentsAction(requestProcessor: RequestProcessorSimple) =
-    Action.async { implicit request =>
+    action.async { implicit request =>
       authorise(requestProcessor)
     }
 
@@ -57,7 +58,7 @@ class AuthAction @Inject() (
     * Allows Gov Gateway user with correct user type and affinity group but no check for enrolment to service
     */
   def ggAuthorisedUserWithServiceAction(requestProcessor: RequestProcessorSimple) =
-    Action.async { implicit request =>
+    action.async { implicit request =>
       authorise(requestProcessor, checkServiceEnrolment = false)
     }
 
@@ -65,7 +66,7 @@ class AuthAction @Inject() (
     * Allows Gov Gateway user without checks for user type, affinity group or enrolment to service
     */
   def ggAuthorisedUserAction(requestProcessor: RequestProcessorSimple) =
-    Action.async { implicit request =>
+    action.async { implicit request =>
       authorise(requestProcessor, checkPermittedAccess = false)
     }
 
@@ -74,8 +75,7 @@ class AuthAction @Inject() (
     checkPermittedAccess: Boolean = true,
     checkServiceEnrolment: Boolean = true
   )(implicit request: Request[AnyContent]) = {
-    implicit val hc: HeaderCarrier =
-      HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     authorised(AuthProviders(GovernmentGateway))
       .retrieve(extendedRetrievals) {

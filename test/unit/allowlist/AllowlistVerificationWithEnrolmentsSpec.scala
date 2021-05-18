@@ -43,7 +43,7 @@ class AllowlistVerificationWithEnrolmentsSpec extends ControllerSpec with Before
   private val mockAuthConnector = mock[AuthConnector]
 
   private val mockAuthAction =
-    new AuthAction(Configuration(customConfiguration), Environment.simple(), mockAuthConnector)(global)
+    new AuthAction(Configuration(customConfiguration), Environment.simple(), mockAuthConnector, actionBuilder)(global)
 
   private val youNeedDifferentServiceView = mock[you_need_different_service]
 

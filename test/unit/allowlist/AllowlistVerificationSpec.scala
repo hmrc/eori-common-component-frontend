@@ -46,7 +46,7 @@ class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach w
   private val mockAuthConnector = mock[AuthConnector]
 
   private val mockAuthAction =
-    new AuthAction(Configuration(customConfiguration), Environment.simple(), mockAuthConnector)(global)
+    new AuthAction(Configuration(customConfiguration), Environment.simple(), mockAuthConnector, actionBuilder)(global)
 
   private val mockCache = mock[SessionCache]
 

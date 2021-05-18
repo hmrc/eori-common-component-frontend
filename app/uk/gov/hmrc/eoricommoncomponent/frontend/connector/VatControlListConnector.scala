@@ -18,9 +18,10 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
+import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, SERVICE_UNAVAILABLE}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{VatControlListRequest, VatControlListResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,26 +35,30 @@ class VatControlListConnector @Inject() (http: HttpClient, appConfig: AppConfig)
   def vatControlList(
     request: VatControlListRequest
   )(implicit hc: HeaderCarrier): Future[Either[EoriHttpResponse, VatControlListResponse]] =
-    http.GET[VatControlListResponse](url, request.queryParams) map { resp =>
+    http.GET[HttpResponse](url, request.queryParams) map { response =>
       // $COVERAGE-OFF$Loggers
       logger.debug(s"vat-known-facts-control-list successful. url: $url")
       // $COVERAGE-ON
-      Right(resp)
-    } recover {
-      case _: NotFoundException =>
-        logFailed _
-        Left(NotFoundResponse)
-      case _: BadRequestException =>
-        logFailed _
-        Left(InvalidResponse)
-      case _: ServiceUnavailableException =>
-        logFailed _
-        Left(ServiceUnavailableResponse)
-      case e: Throwable =>
-        logFailed(e)
-        throw e
+      response.status match {
+        case OK => Right(response.json.as[VatControlListResponse])
+        case NOT_FOUND =>
+          logger.warn(
+            s"VatControlList failed. url: $url. Reason: The back end has indicated that vat known facts cannot be returned."
+          )
+          Left(NotFoundResponse)
+        case BAD_REQUEST =>
+          logger.warn(s"VatControlList failed. url: $url. Reason: Request has not passed validation. Invalid vrn.")
+          Left(InvalidResponse)
+        case INTERNAL_SERVER_ERROR =>
+          logger.warn(
+            s"VatControlList failed. url: $url. Reason: DES is currently experiencing problems that require live service intervention"
+          )
+          Left(InternalServerErrorResponse)
+        case SERVICE_UNAVAILABLE =>
+          logger.warn(s"VatControlList failed. url: $url. Reason: Dependent systems are currently not responding")
+          Left(ServiceUnavailableResponse)
+        case _ => throw new Exception("Incorrect VAT Known facts response")
+      }
     }
-
-  def logFailed(e: Throwable) = logger.warn(s"VatControlList failed. url: $url, error: $e", e)
 
 }
