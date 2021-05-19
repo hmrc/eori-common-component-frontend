@@ -73,17 +73,17 @@ class UserLocationController @Inject() (
       continue(service, journey)
     }
 
-  private def forRow(service: Service, journey: Journey.Value, internalId: InternalId, location: String)(implicit
+  private def forRow(service: Service, journey: Journey.Value, groupId: GroupId, location: String)(implicit
     request: Request[AnyContent],
     hc: HeaderCarrier
   ) =
-    subscriptionStatusBasedOnSafeId(internalId).map {
+    subscriptionStatusBasedOnSafeId(groupId).map {
       case (NewSubscription | SubscriptionRejected, Some(safeId)) =>
         registrationDisplayService
           .requestDetails(safeId)
           .flatMap(cacheAndRedirect(service, journey, location))
       case (status, _) =>
-        subscriptionStatus(status, internalId, service, journey, Some(location))
+        subscriptionStatus(status, groupId, service, journey, Some(location))
     }.flatMap(identity)
 
   def submit(service: Service, journey: Journey.Value): Action[AnyContent] =
@@ -96,11 +96,11 @@ class UserLocationController @Inject() (
             )
           ),
         details =>
-          (journey, details.location, loggedInUser.internalId) match {
+          (journey, details.location, loggedInUser.groupId) match {
             case (_, Some(UserLocation.Iom), Some(_)) =>
               Future.successful(Redirect(YouNeedADifferentServiceIomController.form(service, journey)))
             case (Journey.Register, Some(location), Some(id)) if UserLocation.isRow(location) =>
-              forRow(service, journey, InternalId(id), location)
+              forRow(service, journey, GroupId(id), location)
             case _ =>
               Future.successful(
                 Redirect(OrganisationTypeController.form(service, journey))
@@ -130,9 +130,9 @@ class UserLocationController @Inject() (
 
     }
 
-  private def subscriptionStatusBasedOnSafeId(internalId: InternalId)(implicit hc: HeaderCarrier) =
+  private def subscriptionStatusBasedOnSafeId(groupId: GroupId)(implicit hc: HeaderCarrier) =
     for {
-      mayBeSafeId <- save4LaterService.fetchSafeId(internalId)
+      mayBeSafeId <- save4LaterService.fetchSafeId(groupId)
       preSubscriptionStatus <- mayBeSafeId match {
         case Some(safeId) =>
           subscriptionStatusService.getStatus("SAFE", safeId.id)
@@ -140,11 +140,11 @@ class UserLocationController @Inject() (
       }
     } yield (preSubscriptionStatus, mayBeSafeId)
 
-  private def handleExistingSubscription(internalId: InternalId, service: Service)(implicit
+  private def handleExistingSubscription(groupId: GroupId, service: Service)(implicit
     hc: HeaderCarrier
   ): Future[Result] =
     save4LaterService
-      .fetchSafeId(internalId)
+      .fetchSafeId(groupId)
       .flatMap(
         safeId =>
           sessionCache
@@ -154,7 +154,7 @@ class UserLocationController @Inject() (
 
   def subscriptionStatus(
     preSubStatus: PreSubscriptionStatus,
-    internalId: InternalId,
+    groupId: GroupId,
     service: Service,
     journey: Journey.Value,
     location: Option[String]
@@ -162,7 +162,7 @@ class UserLocationController @Inject() (
     preSubStatus match {
       case SubscriptionProcessing =>
         Future.successful(Redirect(UserLocationController.processing(service)))
-      case SubscriptionExists => handleExistingSubscription(internalId, service)
+      case SubscriptionExists => handleExistingSubscription(groupId, service)
       case NewSubscription | SubscriptionRejected =>
         Future.successful(
           Redirect(OrganisationTypeController.form(service, journey))

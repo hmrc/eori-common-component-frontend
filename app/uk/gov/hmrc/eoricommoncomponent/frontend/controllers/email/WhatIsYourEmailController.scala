@@ -20,7 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{InternalId, LoggedInUserWithEnrolments}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, InternalId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.emailForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.{EmailStatus, EmailViewModel}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
@@ -59,18 +59,15 @@ class WhatIsYourEmailController @Inject() (
         emailForm.bindFromRequest.fold(
           formWithErrors =>
             Future.successful(BadRequest(whatIsYourEmailView(emailForm = formWithErrors, service, journey))),
-          formData => submitNewDetails(InternalId(userWithEnrolments.internalId), formData, service, journey)
+          formData => submitNewDetails(GroupId(userWithEnrolments.groupId), formData, service, journey)
         )
     }
 
-  private def submitNewDetails(
-    internalId: InternalId,
-    formData: EmailViewModel,
-    service: Service,
-    journey: Journey.Value
-  )(implicit hc: HeaderCarrier): Future[Result] =
+  private def submitNewDetails(groupId: GroupId, formData: EmailViewModel, service: Service, journey: Journey.Value)(
+    implicit hc: HeaderCarrier
+  ): Future[Result] =
     save4LaterService
-      .saveEmail(internalId, EmailStatus(Some(formData.email)))
+      .saveEmail(groupId, EmailStatus(Some(formData.email)))
       .flatMap(_ => Future.successful(Redirect(routes.CheckYourEmailController.createForm(service, journey))))
 
 }

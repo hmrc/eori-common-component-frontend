@@ -70,7 +70,7 @@ class GYEHowCanWeIdentifyYouNinoController @Inject() (
             )
           ),
         formData =>
-          matchOnId(formData, InternalId(loggedInUser.internalId)).map {
+          matchOnId(formData, GroupId(loggedInUser.groupId)).map {
             case true =>
               Redirect(ConfirmContactDetailsController.form(service, journey))
             case false =>
@@ -79,8 +79,8 @@ class GYEHowCanWeIdentifyYouNinoController @Inject() (
       )
     }
 
-  private def matchOnId(formData: IdMatchModel, internalId: InternalId)(implicit hc: HeaderCarrier): Future[Boolean] =
-    retrieveNameDobFromCache().flatMap(ind => matchingService.matchIndividualWithNino(formData.id, ind, internalId))
+  private def matchOnId(formData: IdMatchModel, groupId: GroupId)(implicit hc: HeaderCarrier): Future[Boolean] =
+    retrieveNameDobFromCache().flatMap(ind => matchingService.matchIndividualWithNino(formData.id, ind, groupId))
 
   private def matchNotFoundBadRequest(individualFormData: IdMatchModel, service: Service, journey: Journey.Value)(
     implicit request: Request[AnyContent]

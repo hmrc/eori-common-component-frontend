@@ -20,7 +20,6 @@ import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.libs.json._
 import play.mvc.Http.Status._
-import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.http.{BadRequestException, _}
 import uk.gov.hmrc.http.HttpClient
@@ -29,9 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
 @Singleton
-class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
-  ec: ExecutionContext
-) {
+class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig)(implicit ec: ExecutionContext) {
 
   private val logger = Logger(this.getClass)
 
@@ -101,6 +98,26 @@ class Save4LaterConnector @Inject() (http: HttpClient, appConfig: AppConfig, aud
     } recoverWith {
       case NonFatal(e) =>
         logFailure("Delete", url, e)
+        Future.failed(e)
+    }
+  }
+
+  def deleteKey[T](id: String, key: String)(implicit hc: HeaderCarrier): Future[Unit] = {
+    val url = s"${appConfig.handleSubscriptionBaseUrl}/save4later/$id/$key"
+
+    // $COVERAGE-OFF$Loggers
+    logger.debug(s"DELETE Key: $url")
+    // $COVERAGE-ON
+
+    http.DELETE[HttpResponse](url) map { response =>
+      logSuccess("Delete key", url)
+      response.status match {
+        case NO_CONTENT => ()
+        case _          => throw new BadRequestException(s"Status:${response.status}")
+      }
+    } recoverWith {
+      case NonFatal(e) =>
+        logFailure("Delete key", url, e)
         Future.failed(e)
     }
   }

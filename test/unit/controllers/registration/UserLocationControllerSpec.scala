@@ -127,7 +127,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
     when(mockRequestSessionData.existingSessionWithUserLocationAdded(any[Session], any[String])).thenReturn(Session())
     when(mockRegistrationDisplayService.cacheDetails(any())(any()))
       .thenReturn(Future.successful(true))
-    when(mockSave4LaterService.fetchSafeId(any[InternalId]())(any[HeaderCarrier]())).thenReturn(Future.successful(None))
+    when(mockSave4LaterService.fetchSafeId(any[GroupId]())(any[HeaderCarrier]())).thenReturn(Future.successful(None))
     when(
       mockEnrolmentStoreProxyService
         .enrolmentForGroup(any(), any())(any())
@@ -179,7 +179,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
     }
 
     "redirect to uk vat registered page  when 'iom' is selected" in {
-      when(mockSave4LaterService.fetchSafeId(any[InternalId])(any[HeaderCarrier])).thenReturn(Future.successful(None))
+      when(mockSave4LaterService.fetchSafeId(any[GroupId])(any[HeaderCarrier])).thenReturn(Future.successful(None))
 
       submitForm(Map(locationFieldName -> UserLocation.Iom)) { result =>
         status(result) shouldBe SEE_OTHER
@@ -360,7 +360,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
     implicit val hc: HeaderCarrier       = mock[HeaderCarrier]
     implicit val rq: Request[AnyContent] = mock[Request[AnyContent]]
 
-    test(controller.subscriptionStatus(subStatus, InternalId("InternalID"), atarService, journey, location)(rq, hc))
+    test(controller.subscriptionStatus(subStatus, GroupId("GroupId"), atarService, journey, location)(rq, hc))
   }
 
   private def assertCorrectSessionDataAndRedirect(selectedOptionValue: String): Unit = {
@@ -373,7 +373,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         case UserLocation.Islands      => "islands"
       }
 
-      when(mockSave4LaterService.fetchSafeId(any[InternalId])(any[HeaderCarrier])).thenReturn(Future.successful(None))
+      when(mockSave4LaterService.fetchSafeId(any[GroupId])(any[HeaderCarrier])).thenReturn(Future.successful(None))
 
       submitForm(Map(locationFieldName -> selectedOptionValue)) { result =>
         status(result)
@@ -386,7 +386,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
     if (selectedOptionValue != UserLocation.Uk) {
 
       s"redirect to SubscriptionProcessing page when '$selectedOptionValue' is selected" in {
-        when(mockSave4LaterService.fetchSafeId(any[InternalId])(any[HeaderCarrier]))
+        when(mockSave4LaterService.fetchSafeId(any[GroupId])(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(SafeId("safeid"))))
         when(
           mockSubscriptionStatusService
@@ -400,7 +400,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
       }
 
       s"redirect to CompleteEnrolmentAfterSubscriptionTimeoutController when SubscriptionExists status and enrolment exists is false and when '$selectedOptionValue' is selected" in {
-        when(mockSave4LaterService.fetchSafeId(any[InternalId])(any[HeaderCarrier]))
+        when(mockSave4LaterService.fetchSafeId(any[GroupId])(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(SafeId("safeid"))))
         when(
           mockSubscriptionStatusService
@@ -423,7 +423,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         val mockFlowStart =
           (ContactDetailsSubscriptionFlowPageGetEori, mockSession)
 
-        when(mockSave4LaterService.fetchSafeId(any[InternalId])(any[HeaderCarrier]))
+        when(mockSave4LaterService.fetchSafeId(any[GroupId])(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(SafeId("safeid"))))
         when(
           mockSubscriptionStatusService
@@ -478,7 +478,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         val mockFlowStart =
           (ContactDetailsSubscriptionFlowPageGetEori, mockSession)
 
-        when(mockSave4LaterService.fetchSafeId(any[InternalId])(any[HeaderCarrier]))
+        when(mockSave4LaterService.fetchSafeId(any[GroupId])(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(SafeId("safeid"))))
         when(
           mockSubscriptionStatusService
@@ -528,7 +528,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
 
     } else if (selectedOptionValue == UserLocation.Uk)
       s"redirect to organisation type page  when '$selectedOptionValue' is selected" in {
-        when(mockSave4LaterService.fetchSafeId(any[InternalId])(any[HeaderCarrier])).thenReturn(Future.successful(None))
+        when(mockSave4LaterService.fetchSafeId(any[GroupId])(any[HeaderCarrier])).thenReturn(Future.successful(None))
 
         submitForm(Map(locationFieldName -> selectedOptionValue)) { result =>
           status(result) shouldBe SEE_OTHER

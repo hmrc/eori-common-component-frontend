@@ -82,7 +82,7 @@ class EmailController @Inject() (
     request: Request[AnyContent],
     user: LoggedInUserWithEnrolments
   ): Future[Result] =
-    save4LaterService.fetchEmail(InternalId(user.internalId)) flatMap {
+    save4LaterService.fetchEmail(GroupId(user.groupId)) flatMap {
       _.fold {
         logger.info(s"emailStatus cache none ${user.internalId}")
         Future.successful(Redirect(WhatIsYourEmailController.createForm(service, journey)))
@@ -150,7 +150,7 @@ class EmailController @Inject() (
         for {
           _ <- {
             logger.warn("updated verified email status true to save4later")
-            save4LaterService.saveEmail(InternalId(userWithEnrolments.internalId), emailStatus.copy(isVerified = true))
+            save4LaterService.saveEmail(GroupId(userWithEnrolments.groupId), emailStatus.copy(isVerified = true))
           }
           _ <- {
             logger.warn("saved verified email address true to cache")

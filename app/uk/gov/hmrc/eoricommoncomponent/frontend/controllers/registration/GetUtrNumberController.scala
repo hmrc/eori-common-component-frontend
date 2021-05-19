@@ -74,7 +74,7 @@ class GetUtrNumberController @Inject() (
             service,
             journey,
             organisationType,
-            InternalId(loggedInUser.internalId)
+            GroupId(loggedInUser.groupId)
           )
       )
     }
@@ -84,17 +84,17 @@ class GetUtrNumberController @Inject() (
     name: String,
     dateEstablished: Option[LocalDate],
     matchingServiceType: String,
-    internalId: InternalId
+    groupId: GroupId
   )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Boolean] =
-    matchingService.matchBusiness(id, Organisation(name, matchingServiceType), dateEstablished, internalId)
+    matchingService.matchBusiness(id, Organisation(name, matchingServiceType), dateEstablished, groupId)
 
-  private def matchIndividual(id: CustomsId, internalId: InternalId)(implicit hc: HeaderCarrier): Future[Boolean] =
+  private def matchIndividual(id: CustomsId, groupId: GroupId)(implicit hc: HeaderCarrier): Future[Boolean] =
     subscriptionDetailsService.cachedNameDobDetails flatMap {
       case Some(details) =>
         matchingService.matchIndividualWithId(
           id,
           Individual.withLocalDate(details.firstName, details.middleName, details.lastName, details.dateOfBirth),
-          internalId
+          groupId
         )
       case None => Future.successful(false)
     }
@@ -118,11 +118,11 @@ class GetUtrNumberController @Inject() (
     service: Service,
     journey: Journey.Value,
     organisationType: String,
-    internalId: InternalId
+    groupId: GroupId
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
     (organisationType match {
       case CdsOrganisationType.ThirdCountrySoleTraderId | CdsOrganisationType.ThirdCountryIndividualId =>
-        matchIndividual(Utr(formData.id), internalId)
+        matchIndividual(Utr(formData.id), groupId)
       case orgType =>
         subscriptionDetailsService.cachedNameDetails.flatMap {
           case Some(NameOrganisationMatchModel(name)) =>
@@ -131,7 +131,7 @@ class GetUtrNumberController @Inject() (
               name,
               None,
               EtmpOrganisationType(CdsOrganisationType(orgType)).toString,
-              internalId
+              groupId
             )
           case None => Future.successful(false)
         }

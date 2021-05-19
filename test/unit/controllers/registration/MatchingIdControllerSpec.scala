@@ -77,7 +77,11 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
     "for Journey GetAnEori redirect to Confirm page when a match found with CT UTR only" in {
       withAuthorisedUser(userId, mockAuthConnector, ctUtrId = Some(ctUtrId))
 
-      when(mockMatchingService.matchBusinessWithIdOnly(meq(Utr(ctUtrId)), any[LoggedInUser])(any[HeaderCarrier]))
+      when(
+        mockMatchingService.matchBusinessWithIdOnly(meq(Utr(ctUtrId)), any[LoggedInUserWithEnrolments])(
+          any[HeaderCarrier]
+        )
+      )
         .thenReturn(Future.successful(true))
 
       val result = controller.matchWithIdOnly(atarService).apply(SessionBuilder.buildRequestWithSession(userId))
@@ -93,7 +97,11 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
     "for Journey GetAnEori redirect to Select user location page when no match found for SA UTR" in {
       withAuthorisedUser(userId, mockAuthConnector, saUtrId = Some(saUtrId))
 
-      when(mockMatchingService.matchBusinessWithIdOnly(meq(Utr(saUtrId)), any[LoggedInUser])(any[HeaderCarrier]))
+      when(
+        mockMatchingService.matchBusinessWithIdOnly(meq(Utr(saUtrId)), any[LoggedInUserWithEnrolments])(
+          any[HeaderCarrier]
+        )
+      )
         .thenReturn(Future.successful(false))
 
       val controller =
@@ -107,7 +115,11 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
     "for Journey GetAnEori redirect to Confirm page when a match found with SA UTR only" in {
       withAuthorisedUser(userId, mockAuthConnector, saUtrId = Some(saUtrId))
 
-      when(mockMatchingService.matchBusinessWithIdOnly(meq(Utr(saUtrId)), any[LoggedInUser])(any[HeaderCarrier]))
+      when(
+        mockMatchingService.matchBusinessWithIdOnly(meq(Utr(saUtrId)), any[LoggedInUserWithEnrolments])(
+          any[HeaderCarrier]
+        )
+      )
         .thenReturn(Future.successful(true))
 
       val result = controller.matchWithIdOnly(atarService).apply(SessionBuilder.buildRequestWithSession(userId))
@@ -123,7 +135,11 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
     "for Journey GetAnEori redirect to Confirm page when a match found with a valid PAYE Nino" in {
       withAuthorisedUser(userId, mockAuthConnector, payeNinoId = Some(payeNinoId))
 
-      when(mockMatchingService.matchBusinessWithIdOnly(meq(Nino(payeNinoId)), any[LoggedInUser])(any[HeaderCarrier]))
+      when(
+        mockMatchingService.matchBusinessWithIdOnly(meq(Nino(payeNinoId)), any[LoggedInUserWithEnrolments])(
+          any[HeaderCarrier]
+        )
+      )
         .thenReturn(Future.successful(true))
 
       val result = controller.matchWithIdOnly(atarService).apply(SessionBuilder.buildRequestWithSession(userId))
@@ -139,7 +155,11 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
     "for Journey GetAnEori use CT UTR when user is registered for CT and SA" in {
       withAuthorisedUser(userId, mockAuthConnector, ctUtrId = Some(ctUtrId), saUtrId = Some(saUtrId))
 
-      when(mockMatchingService.matchBusinessWithIdOnly(meq(Utr(ctUtrId)), any[LoggedInUser])(any[HeaderCarrier]))
+      when(
+        mockMatchingService.matchBusinessWithIdOnly(meq(Utr(ctUtrId)), any[LoggedInUserWithEnrolments])(
+          any[HeaderCarrier]
+        )
+      )
         .thenReturn(Future.successful(true))
 
       val result = controller.matchWithIdOnly(atarService).apply(SessionBuilder.buildRequestWithSession(userId))
@@ -190,7 +210,11 @@ class MatchingIdControllerSpec extends ControllerSpec with BeforeAndAfterEach wi
     "redirect to Select Location Type page for selected journey type Subscribe " in {
       withAuthorisedUser(userId, mockAuthConnector, ctUtrId = Some(ctUtrId))
 
-      when(mockMatchingService.matchBusinessWithIdOnly(meq(Utr(ctUtrId)), any[LoggedInUser])(any[HeaderCarrier]))
+      when(
+        mockMatchingService.matchBusinessWithIdOnly(meq(Utr(ctUtrId)), any[LoggedInUserWithEnrolments])(
+          any[HeaderCarrier]
+        )
+      )
         .thenReturn(Future.successful(false))
 
       val controller =

@@ -41,7 +41,7 @@ class RegisterWithoutIdService @Inject() (
     orgName: String,
     address: Address,
     contactDetail: Option[ContactDetailsModel],
-    loggedInUser: LoggedInUser,
+    loggedInUser: LoggedInUserWithEnrolments,
     orgType: Option[CdsOrganisationType] = None
   )(implicit hc: HeaderCarrier): Future[RegisterWithoutIDResponse] = {
 
@@ -65,7 +65,7 @@ class RegisterWithoutIdService @Inject() (
     individualNameAndDateOfBirth: IndividualNameAndDateOfBirth,
     address: Address,
     contactDetail: Option[ContactDetailsModel],
-    loggedInUser: LoggedInUser,
+    loggedInUser: LoggedInUserWithEnrolments,
     orgType: Option[CdsOrganisationType] = None
   )(implicit hc: HeaderCarrier): Future[RegisterWithoutIDResponse] = {
     import individualNameAndDateOfBirth._
@@ -93,13 +93,13 @@ class RegisterWithoutIdService @Inject() (
 
   private def save(
     registrationDetails: RegistrationDetails,
-    loggedInUser: LoggedInUser,
+    loggedInUser: LoggedInUserWithEnrolments,
     orgType: Option[CdsOrganisationType]
   )(implicit hc: HeaderCarrier) =
     if (registrationDetails.safeId.id.nonEmpty)
       sessionCache.saveRegistrationDetailsWithoutId(
         registrationDetails: RegistrationDetails,
-        InternalId(loggedInUser.internalId),
+        GroupId(loggedInUser.groupId),
         orgType
       )
     else

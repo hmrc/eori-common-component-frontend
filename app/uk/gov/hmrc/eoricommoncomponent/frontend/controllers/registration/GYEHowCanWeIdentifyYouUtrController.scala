@@ -70,7 +70,7 @@ class GYEHowCanWeIdentifyYouUtrController @Inject() (
             )
           ),
         formData =>
-          matchOnId(formData, InternalId(loggedInUser.internalId)).map {
+          matchOnId(formData, GroupId(loggedInUser.groupId)).map {
             case true =>
               Redirect(ConfirmContactDetailsController.form(service, journey))
             case false =>
@@ -79,8 +79,8 @@ class GYEHowCanWeIdentifyYouUtrController @Inject() (
       )
     }
 
-  private def matchOnId(formData: IdMatchModel, internalId: InternalId)(implicit hc: HeaderCarrier): Future[Boolean] =
-    retrieveNameDobFromCache().flatMap(ind => matchingService.matchIndividualWithId(Utr(formData.id), ind, internalId))
+  private def matchOnId(formData: IdMatchModel, groupId: GroupId)(implicit hc: HeaderCarrier): Future[Boolean] =
+    retrieveNameDobFromCache().flatMap(ind => matchingService.matchIndividualWithId(Utr(formData.id), ind, groupId))
 
   private def matchNotFoundBadRequest(individualFormData: IdMatchModel, service: Service, journey: Journey.Value)(
     implicit request: Request[AnyContent]

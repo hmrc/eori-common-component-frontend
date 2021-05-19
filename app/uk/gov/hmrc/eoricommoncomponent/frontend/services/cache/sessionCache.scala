@@ -126,24 +126,22 @@ class SessionCache @Inject() (
   def saveRegistrationDetails(rd: RegistrationDetails)(implicit hc: HeaderCarrier): Future[Boolean] =
     createOrUpdate(sessionId, regDetailsKey, Json.toJson(rd)) map (_ => true)
 
-  def saveRegistrationDetails(
-    rd: RegistrationDetails,
-    internalId: InternalId,
-    orgType: Option[CdsOrganisationType] = None
-  )(implicit hc: HeaderCarrier): Future[Boolean] =
+  def saveRegistrationDetails(rd: RegistrationDetails, groupId: GroupId, orgType: Option[CdsOrganisationType] = None)(
+    implicit hc: HeaderCarrier
+  ): Future[Boolean] =
     for {
-      _                <- save4LaterService.saveOrgType(internalId, orgType)
+      _                <- save4LaterService.saveOrgType(groupId, orgType)
       createdOrUpdated <- createOrUpdate(sessionId, regDetailsKey, Json.toJson(rd)) map (_ => true)
     } yield createdOrUpdated
 
   def saveRegistrationDetailsWithoutId(
     rd: RegistrationDetails,
-    internalId: InternalId,
+    groupId: GroupId,
     orgType: Option[CdsOrganisationType] = None
   )(implicit hc: HeaderCarrier): Future[Boolean] =
     for {
-      _                <- save4LaterService.saveSafeId(internalId, rd.safeId)
-      _                <- save4LaterService.saveOrgType(internalId, orgType)
+      _                <- save4LaterService.saveSafeId(groupId, rd.safeId)
+      _                <- save4LaterService.saveOrgType(groupId, orgType)
       createdOrUpdated <- createOrUpdate(sessionId, regDetailsKey, Json.toJson(rd)) map (_ => true)
     } yield createdOrUpdated
 

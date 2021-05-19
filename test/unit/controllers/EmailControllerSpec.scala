@@ -81,7 +81,7 @@ class EmailControllerSpec
   private val emailStatus = EmailStatus(Some("test@example.com"))
 
   override def beforeEach: Unit = {
-    when(mockSave4LaterService.fetchEmail(any[InternalId])(any[HeaderCarrier]))
+    when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
       .thenReturn(Future.successful(Some(emailStatus)))
     when(
       mockEmailVerificationService
@@ -111,7 +111,7 @@ class EmailControllerSpec
     }
 
     "redirect when cache has no email status" in {
-      when(mockSave4LaterService.fetchEmail(any[InternalId])(any[HeaderCarrier]))
+      when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
         .thenReturn(Future.successful(None))
       showFormSubscription() { result =>
         status(result) shouldBe SEE_OTHER
@@ -120,7 +120,7 @@ class EmailControllerSpec
     }
 
     "redirect when email not verified" in {
-      when(mockSave4LaterService.fetchEmail(any[InternalId])(any[HeaderCarrier]))
+      when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(emailStatus.copy(isVerified = false))))
       when(
         mockEmailVerificationService
@@ -133,7 +133,7 @@ class EmailControllerSpec
     }
 
     "redirect when email verified" in {
-      when(mockSave4LaterService.fetchEmail(any[InternalId])(any[HeaderCarrier]))
+      when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(emailStatus.copy(isVerified = true))))
       showFormSubscription() { result =>
         status(result) shouldBe SEE_OTHER
@@ -225,7 +225,7 @@ class EmailControllerSpec
     }
 
     "redirect when cache has no email status" in {
-      when(mockSave4LaterService.fetchEmail(any[InternalId])(any[HeaderCarrier]))
+      when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
         .thenReturn(Future.successful(None))
       showFormRegister() { result =>
         status(result) shouldBe SEE_OTHER
@@ -234,7 +234,7 @@ class EmailControllerSpec
     }
 
     "redirect when email not verified" in {
-      when(mockSave4LaterService.fetchEmail(any[InternalId])(any[HeaderCarrier]))
+      when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(emailStatus.copy(isVerified = false))))
       when(
         mockEmailVerificationService
@@ -247,7 +247,7 @@ class EmailControllerSpec
     }
 
     "redirect when email verified" in {
-      when(mockSave4LaterService.fetchEmail(any[InternalId])(any[HeaderCarrier]))
+      when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(emailStatus.copy(isVerified = true))))
       showFormRegister() { result =>
         status(result) shouldBe SEE_OTHER

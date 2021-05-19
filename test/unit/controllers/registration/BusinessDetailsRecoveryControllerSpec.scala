@@ -139,7 +139,7 @@ class BusinessDetailsRecoveryControllerSpec extends ControllerSpec with BeforeAn
       ).thenReturn(Future.successful(mockFlowStart))
       mockCacheWithRegistrationDetails(individualDetails)
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(s"$location"))
-      when(mockSave4LaterService.fetchOrgType(any[InternalId])(any[HeaderCarrier]))
+      when(mockSave4LaterService.fetchOrgType(any[GroupId])(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(CdsOrganisationType("third-country-individual"))))
 
       invokeContinue() { result =>
@@ -169,7 +169,7 @@ class BusinessDetailsRecoveryControllerSpec extends ControllerSpec with BeforeAn
       ).thenReturn(Future.successful(mockFlowStart))
       mockCacheWithRegistrationDetails(organisationDetails)
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(s"$location"))
-      when(mockSave4LaterService.fetchOrgType(any[InternalId])(any[HeaderCarrier])).thenReturn(
+      when(mockSave4LaterService.fetchOrgType(any[GroupId])(any[HeaderCarrier])).thenReturn(
         Future
           .successful(Some(CdsOrganisationType("third-country-organisation")))
       )

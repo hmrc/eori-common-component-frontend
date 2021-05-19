@@ -64,7 +64,7 @@ class BusinessDetailsRecoveryController @Inject() (
       {
         for {
           regDetails <- sessionCache.registrationDetails
-          orgType    <- save4LaterService.fetchOrgType(InternalId(userId.internalId))
+          orgType    <- save4LaterService.fetchOrgType(GroupId(userId.groupId))
         } yield {
           val location =
             requestSessionData.selectedUserLocation.getOrElse(throw new IllegalStateException("Location not set"))

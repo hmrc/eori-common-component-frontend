@@ -125,7 +125,7 @@ class RegisterWithoutIdServiceSpec
     when(mockDetailsOrganisation.safeId).thenReturn(SafeId(""))
     when(
       mockSessionCache
-        .saveRegistrationDetails(any[RegistrationDetails], any[InternalId], any[Option[CdsOrganisationType]])(
+        .saveRegistrationDetails(any[RegistrationDetails], any[GroupId], any[Option[CdsOrganisationType]])(
           any[HeaderCarrier]
         )
     ).thenReturn(Future.successful(true))
@@ -268,7 +268,7 @@ class RegisterWithoutIdServiceSpec
       mockIndividualRegistrationSuccess()
       when(
         mockSessionCache
-          .saveRegistrationDetails(any[RegistrationDetails], any[InternalId], any[Option[CdsOrganisationType]])(
+          .saveRegistrationDetails(any[RegistrationDetails], any[GroupId], any[Option[CdsOrganisationType]])(
             any[HeaderCarrier]
           )
       ).thenReturn(Future.successful(true))
