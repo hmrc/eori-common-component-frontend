@@ -21,7 +21,7 @@ import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.mvc.{RequestHeader, Result, Results}
+import play.api.mvc.{Cookie, RequestHeader, Result, Results, SessionCookieBaker}
 import play.api.test.{FakeRequest, NoMaterializer}
 import play.mvc.Http.HeaderNames
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
@@ -35,10 +35,18 @@ class AllowlistFilterSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
   private val config = mock[AppConfig]
   private val next   = mock[RequestHeader => Future[Result]]
 
-  private def filter: AllowlistFilter = new AllowlistFilter(config)(NoMaterializer, global)
+  private val mockSessionCookieBaker = mock[SessionCookieBaker]
+
+  private def filter: AllowlistFilter = new AllowlistFilter(config, mockSessionCookieBaker)(NoMaterializer, global)
+
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(mockSessionCookieBaker.encodeAsCookie(any())).thenReturn(Cookie("cookie", "value"))
+  }
 
   override protected def afterEach(): Unit = {
-    reset(next, config)
+    reset(next, config, mockSessionCookieBaker)
 
     super.afterEach()
   }

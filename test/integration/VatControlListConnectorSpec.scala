@@ -20,8 +20,13 @@ import org.scalatest.concurrent.ScalaFutures
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
-import play.mvc.Http.Status.{FORBIDDEN, INTERNAL_SERVER_ERROR}
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{NotFoundResponse, VatControlListConnector}
+import play.api.test.Helpers._
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{
+  InvalidResponse,
+  NotFoundResponse,
+  ServiceUnavailableResponse,
+  VatControlListConnector
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{VatControlListRequest, VatControlListResponse}
 import uk.gov.hmrc.http._
 import util.externalservices.ExternalServicesConfig._
@@ -90,6 +95,24 @@ class VatControlListConnectorSpec extends IntegrationTestsSpec with ScalaFutures
       await(vatControlListConnector.vatControlList(request)) must be(Left(NotFoundResponse))
     }
 
+    "fail when Not Found" in {
+      VatControlListMessagingService.stubTheVatControlListResponse(expectedGetUrl, responseWithOk.toString, NOT_FOUND)
+
+      val result = vatControlListConnector.vatControlList(request)
+
+      result.futureValue.isLeft mustBe true
+      result.left.get mustBe NotFoundResponse
+    }
+
+    "fail when Bad Request" in {
+      VatControlListMessagingService.stubTheVatControlListResponse(expectedGetUrl, responseWithOk.toString, BAD_REQUEST)
+
+      val result = vatControlListConnector.vatControlList(request)
+
+      result.futureValue.isLeft mustBe true
+      result.left.get mustBe InvalidResponse
+    }
+
     "fail when Internal Server Error" in {
       VatControlListMessagingService.stubTheVatControlListResponse(
         expectedGetUrl,
@@ -97,23 +120,33 @@ class VatControlListConnectorSpec extends IntegrationTestsSpec with ScalaFutures
         INTERNAL_SERVER_ERROR
       )
 
-      val caught: UpstreamErrorResponse = intercept[UpstreamErrorResponse] {
+      intercept[Exception] {
         await(vatControlListConnector.vatControlList(request))
       }
-
-      caught.statusCode mustBe 500
-      caught.getMessage must startWith("GET of ")
     }
 
-    "http exception when 4xx status code is received" in {
+    "fail when Service Unavailable" in {
+      VatControlListMessagingService.stubTheVatControlListResponse(
+        expectedGetUrl,
+        responseWithOk.toString,
+        SERVICE_UNAVAILABLE
+      )
+
+      val result = vatControlListConnector.vatControlList(request)
+
+      result.futureValue.isLeft mustBe true
+      result.left.get mustBe ServiceUnavailableResponse
+    }
+
+    "throw an exception when different status" in {
+
       VatControlListMessagingService.stubTheVatControlListResponse(expectedGetUrl, responseWithOk.toString, FORBIDDEN)
 
-      val caught: UpstreamErrorResponse = intercept[UpstreamErrorResponse] {
+      val caught = intercept[Exception] {
         await(vatControlListConnector.vatControlList(request))
       }
 
-      caught.statusCode mustBe 403
-      caught.getMessage must startWith("GET of ")
+      caught.getMessage mustBe "Incorrect VAT Known facts response"
     }
   }
 }

@@ -25,7 +25,7 @@ import play.mvc.Http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.RegisterWithEoriAndIdConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Individual, RequestCommon, ResponseCommon}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EstablishmentAddress, _}
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import util.externalservices.ExternalServicesConfig._
 import util.externalservices.{AuditService, RegisterWithEoriAndIdMessagingService}
 
@@ -339,10 +339,11 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
         BAD_REQUEST
       )
 
-      val caught: BadRequestException = intercept[BadRequestException] {
+      val caught: UpstreamErrorResponse = intercept[UpstreamErrorResponse] {
         await(RegisterWithEoriAndIdConnector.register(individualNinoRequest))
       }
 
+      caught.statusCode mustBe 400
       caught.getMessage must startWith("POST of ")
     }
 
@@ -397,9 +398,11 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
         BAD_REQUEST
       )
 
-      intercept[BadRequestException] {
+      val caught = intercept[UpstreamErrorResponse] {
         await(RegisterWithEoriAndIdConnector.register(individualNinoRequest))
       }
+
+      caught.statusCode mustBe 400
 
       eventually(AuditService.verifyXAuditWrite(0))
     }

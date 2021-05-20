@@ -26,7 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
   SubscriptionRequest,
   SubscriptionResponse
 }
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import util.externalservices.ExternalServicesConfig.{etmpFormBundleId, Host, Port}
 import util.externalservices.{AuditService, SubscriptionService}
 
@@ -299,10 +299,11 @@ class SubscriptionServiceConnectorSpec extends IntegrationTestsSpec with ScalaFu
         subscribe400ErrorResponse.toString(),
         BAD_REQUEST
       )
-      val caught = intercept[BadRequestException] {
+      val caught = intercept[UpstreamErrorResponse] {
         await(subscriptionServiceConnector.subscribe(serviceRequestJson.as[SubscriptionRequest]))
       }
-      caught.message must include(s"Response body '$subscribe400ErrorResponse'")
+      caught.statusCode mustBe 400
+      caught.message must include(s"Response body: '$subscribe400ErrorResponse'")
       eventually(AuditService.verifyXAuditWrite(0))
     }
 

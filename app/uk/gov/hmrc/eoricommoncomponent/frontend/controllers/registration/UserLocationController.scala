@@ -176,7 +176,7 @@ class UserLocationController @Inject() (
   ): Either[_, RegistrationDisplayResponse] => Future[Result] = {
 
     case rResponse @ Right(RegistrationDisplayResponse(_, Some(_))) =>
-      registrationDisplayService.cacheDetails(rResponse.b).flatMap { _ =>
+      registrationDisplayService.cacheDetails(rResponse.value).flatMap { _ =>
         Future.successful(
           Redirect(BusinessDetailsRecoveryController.form(service, journey)).withSession(
             requestSessionData.sessionWithUserLocationAdded(sessionInfoBasedOnJourney(journey, Some(location)))

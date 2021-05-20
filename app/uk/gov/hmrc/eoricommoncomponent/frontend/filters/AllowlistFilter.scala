@@ -25,8 +25,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.JourneyType
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AllowlistFilter @Inject() (appConfig: AppConfig)(implicit val mat: Materializer, ec: ExecutionContext)
-    extends Filter {
+class AllowlistFilter @Inject() (appConfig: AppConfig, sessionCookieBaker: SessionCookieBaker)(implicit
+  val mat: Materializer,
+  ec: ExecutionContext
+) extends Filter {
 
   val allowlistJourneys: Set[String] = Set(JourneyType.Subscribe)
 
@@ -38,7 +40,7 @@ class AllowlistFilter @Inject() (appConfig: AppConfig)(implicit val mat: Materia
 
     if (journey.exists(allowlistJourneys.contains) && permittedReferer) {
       val allowlistedSession: Session = rh.session + ("allowlisted" -> "true")
-      val cookies: Seq[Cookie]        = (rh.cookies ++ Seq(Session.encodeAsCookie(allowlistedSession))).toSeq
+      val cookies: Seq[Cookie]        = (rh.cookies ++ Seq(sessionCookieBaker.encodeAsCookie(allowlistedSession))).toSeq
       val headers                     = rh.headers.add(HeaderNames.COOKIE -> Cookies.encodeCookieHeader(cookies))
       next(rh.withHeaders(headers)) // Ensures the allowlisted param is added to the remainder of THIS request
         .map(

@@ -19,6 +19,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.libs.json.Json
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
@@ -26,11 +27,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
   SubscriptionResponse
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{Subscription, SubscriptionResult, SubscriptionSubmitted}
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.control.NonFatal
 
 @Singleton
 class SubscriptionServiceConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
@@ -56,12 +56,7 @@ class SubscriptionServiceConnector @Inject() (http: HttpClient, appConfig: AppCo
       auditCall(url, request, response)
       response
     } recoverWith {
-      case e: BadRequestException =>
-        logger.warn(
-          s"Subscribe SUB02 request failed for acknowledgementReference : ${request.subscriptionCreateRequest.requestCommon.acknowledgementReference}. Reason: $e"
-        )
-        Future.failed(e)
-      case NonFatal(e) =>
+      case e: Throwable =>
         logger.warn(
           s"Subscribe SUB02 request failed for acknowledgementReference : ${request.subscriptionCreateRequest.requestCommon.acknowledgementReference}. Reason: $e"
         )

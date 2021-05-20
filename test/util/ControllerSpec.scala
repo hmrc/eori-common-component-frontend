@@ -28,7 +28,7 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesImpl}
 import play.api.mvc._
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import unit.controllers.CdsPage
 import util.builders.{AuthBuilder, SessionBuilder}
 import play.api.i18n.Lang._
