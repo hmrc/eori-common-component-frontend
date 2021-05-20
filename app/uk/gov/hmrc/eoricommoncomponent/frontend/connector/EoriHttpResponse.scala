@@ -23,5 +23,3 @@ case object NotFoundResponse extends EoriHttpResponse
 case object InvalidResponse extends EoriHttpResponse
 
 case object ServiceUnavailableResponse extends EoriHttpResponse
-
-case object InternalServerErrorResponse extends EoriHttpResponse

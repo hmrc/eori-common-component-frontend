@@ -18,7 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
-import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, SERVICE_UNAVAILABLE}
+import play.api.http.Status.{BAD_REQUEST, NOT_FOUND, OK, SERVICE_UNAVAILABLE}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{VatControlListRequest, VatControlListResponse}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -49,11 +49,6 @@ class VatControlListConnector @Inject() (http: HttpClient, appConfig: AppConfig)
         case BAD_REQUEST =>
           logger.warn(s"VatControlList failed. url: $url. Reason: Request has not passed validation. Invalid vrn.")
           Left(InvalidResponse)
-        case INTERNAL_SERVER_ERROR =>
-          logger.warn(
-            s"VatControlList failed. url: $url. Reason: DES is currently experiencing problems that require live service intervention"
-          )
-          Left(InternalServerErrorResponse)
         case SERVICE_UNAVAILABLE =>
           logger.warn(s"VatControlList failed. url: $url. Reason: Dependent systems are currently not responding")
           Left(ServiceUnavailableResponse)

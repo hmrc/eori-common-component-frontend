@@ -22,7 +22,6 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{
-  InternalServerErrorResponse,
   InvalidResponse,
   NotFoundResponse,
   ServiceUnavailableResponse,
@@ -121,10 +120,9 @@ class VatControlListConnectorSpec extends IntegrationTestsSpec with ScalaFutures
         INTERNAL_SERVER_ERROR
       )
 
-      val result = vatControlListConnector.vatControlList(request)
-
-      result.futureValue.isLeft mustBe true
-      result.left.get mustBe InternalServerErrorResponse
+      intercept[Exception] {
+        await(vatControlListConnector.vatControlList(request))
+      }
     }
 
     "fail when Service Unavailable" in {
