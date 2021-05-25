@@ -42,10 +42,10 @@ class AppConfig @Inject() (
 
   private val contactBaseUrl = servicesConfig.baseUrl("contact-frontend")
 
-  private val serviceIdentifierRegister =
+  val serviceIdentifierRegister =
     config.get[String]("microservice.services.contact-frontend.serviceIdentifierRegister")
 
-  private val serviceIdentifierSubscribe =
+  val serviceIdentifierSubscribe =
     config.get[String]("microservice.services.contact-frontend.serviceIdentifierSubscribe")
 
   private val feedbackLink          = config.get[String]("external-url.feedback-survey")
