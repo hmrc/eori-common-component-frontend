@@ -15,7 +15,8 @@
  *@
 
 @this()
-@(id: String, label: String, answer: Html, call: Option[Call], changeMessage: String = "")(implicit request: Request[_], messages: Messages)
+
+@(id: String, label: String, answer: String, call: Option[Call], changeMessage: String = "")(implicit request: Request[_], messages: Messages)
 <div id="@{s"review-tbl__${id}_row"}">
     <dt id="@{
         s"review-tbl__${id}_heading"

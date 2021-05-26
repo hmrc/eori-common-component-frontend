@@ -144,8 +144,8 @@
         }
     }
 
-    @countryLocation(country: CompanyRegisteredCountry) = {
-        @labelForEUCountry(country.country)
+    @countryLocation(country: CompanyRegisteredCountry) = @{
+        labelForEUCountry(country.country)
     }
 
     @shouldCountryLocationBeDisplayed() = @{
@@ -178,6 +178,11 @@
 
     @isAddressLookup = @{addressLookupParams.exists(_.nonEmpty())}
 
+    @addressChangeLink = @{
+        if(isAddressLookup) uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.AddressLookupPostcodeController.reviewPage(service)
+        else uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.reviewForm(service, journey)
+    }
+
     @isUtrAndNinoEmpty = @{
         utr.forall(_.id == "Not entered") && nino.forall(_.id == "Not entered") && nameIdOrganisationDetails.forall(_.id.isEmpty)
     }
@@ -191,13 +196,13 @@
                 @summaryRow_di(
                     "email",
                     messages("subscription.enter-email.label"),
-                    Html.apply(email.getOrElse("")),
+                    email.getOrElse(""),
                     None
                 )
                 @summaryRow_di(
                     "eori-number",
                     messages("cds.subscription.enter-eori-number.eori-number.label"),
-                    Html.apply(eoriNumber.getOrElse("")),
+                    eoriNumber.getOrElse(""),
                     if(existingEori.isEmpty) Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.reviewForm(service)) else None,
                     messages("cds.subscription.enter-eori-number.eori-number.label")
                 )
@@ -206,7 +211,7 @@
                         @summaryRow_di(
                             "org_name",
                             nameLabel,
-                            Html.apply(d.name),
+                            d.name,
                             Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameOrgController.reviewForm(service, journey)),
                             nameLabel
                         )
@@ -217,14 +222,14 @@
                         @summaryRow_di(
                             "full-name",
                             messages("subscription.check-your-details.full-name.label"),
-                            Html.apply(s"${nd.firstName} ${nd.lastName}"),
+                            s"${nd.firstName} ${nd.lastName}",
                             Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.reviewForm(service, journey)),
                             messages("subscription.check-your-details.full-name.label")
                         )
                         @summaryRow_di(
                             "date-of-birth",
                             messages("subscription.check-your-details.date-of-birth.label"),
-                            Html.apply(formatDate(nd.dateOfBirth)),
+                            formatDate(nd.dateOfBirth),
                             Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.reviewForm(service, journey)),
                             messages("subscription.check-your-details.date-of-birth.label")
                         )
@@ -234,7 +239,7 @@
                     @summaryRow_di(
                         "utr",
                         messages("cds.utr.label"),
-                        Html.apply(u.id),
+                        u.id,
                         if(!isThirdCountrySubscription)
                             Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController.reviewForm(service, journey))
                         else
@@ -247,7 +252,7 @@
                         @summaryRow_di(
                             "nino",
                             messages("cds.nino.label"),
-                            Html.apply(n.id),
+                            n.id,
                             if(!isThirdCountrySubscription)
                                 Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController.reviewForm(service, journey))
                             else
@@ -261,7 +266,7 @@
                         @summaryRow_di(
                             "orgname",
                             nameLabel,
-                            Html.apply(n.name),
+                            n.name,
                             Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController.reviewForm(service, journey)),
                             nameLabel
                         )
@@ -270,7 +275,7 @@
                         @summaryRow_di(
                             "utr",
                             utrLabel,
-                            Html.apply(n.id),
+                            n.id,
                             if(!isThirdCountrySubscription)
                                 Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController.reviewForm(service, journey))
                             else
@@ -281,14 +286,22 @@
                 }
                 @addressDetails.map { ad =>
                     @if(!shouldCountryLocationBeDisplayed) {
-                        @summaryRow_di(
-                            "name-and-address",
-                            businessDetailsLabel,
-                            addressHtml(ad),
-                            if(isAddressLookup) Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.AddressLookupPostcodeController.reviewPage(service))
-                            else Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.reviewForm(service, journey)),
-                            businessDetailsLabel
-                        )
+                        <div id="review-tbl__name-and-address_row">
+                            <dt id="review-tbl__name-and-address_heading" class="cya-question">
+                                @businessDetailsLabel
+                            </dt>
+                            <dd id="review-tbl__name-and-address" class="cya-answer">
+                                <p class="mt-0 mb-0">@helpers.noMarginParagraph(ad.street)</p>
+                                <p class="mt-0 mb-0">@helpers.noMarginParagraph(ad.city)</p>
+                                @ad.postcode.map{postcode => <p class="mt-0 mb-0">@helpers.noMarginParagraph(postcode)</p>}
+                                <p class="mt-0 mb-0">@helpers.noMarginParagraph(transformCountryCodeToLabel(ad.countryCode))</p>
+                            </dd>
+                            <dd class="cya-change">
+                                <a id="review-tbl__name-and-address_change" href="@addressChangeLink">
+                                    <span aria-hidden="true">Change</span><span class="visually-hidden">@messages("cds.form.change") @businessDetailsLabel</span>
+                                </a>
+                            </dd>
+                        </div>
                     }
                 }
                 @registeredCountry.map { country =>
@@ -304,13 +317,20 @@
                 }
                 @contactDetails.map { cd =>
                     @if(isThirdCountrySubscription && isUtrAndNinoEmpty) {
-                        @summaryRow_di(
-                            "contact-details",
-                            messages("cds.form.customs-contact"),
-                            contactDetailsHtml(cd),
-                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactDetailsController.reviewForm(service)),
-                            messages("cds.form.customs-contact")
-                        )
+                        <div id="review-tbl__contact-details_row">
+                            <dt id="review-tbl__contact-details_heading" class="cya-question">
+                                @messages("cds.form.customs-contact")
+                            </dt>
+                            <dd id="review-tbl__contact-details" class="cya-answer">
+                                <p class="mt-0 mb-0">@helpers.noMarginParagraph(cd.fullName)</p>
+                                <p class="mt-0 mb-0">@helpers.noMarginParagraph(cd.telephone)</p>
+                            </dd>
+                            <dd class="cya-change">
+                                <a id="review-tbl__contact-details_change" href="@uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactDetailsController.reviewForm(service)">
+                                    <span aria-hidden="true">Change</span><span class="visually-hidden">@messages("cds.form.change") @messages("cds.form.customs-contact")</span>
+                                </a>
+                            </dd>
+                        </div>
                     }
                 }
                 @dateEstablished.map { de =>
@@ -318,7 +338,7 @@
                         @summaryRow_di(
                             "date-established",
                             messages("cds.date-established.label"),
-                            Html.apply(formatDate(de)),
+                            formatDate(de),
                             Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController.reviewForm(service, journey)),
                             messages("cds.date-established.label")
                         )
