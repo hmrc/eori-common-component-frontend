@@ -73,7 +73,7 @@
                 @summaryRow_di(
                     "postcode",
                     messages("ecc.address-lookup.postcode.summary.label"),
-                    Html.apply(addressLookupParams.postcode),
+                    addressLookupParams.postcode,
                     Some(changeParamsLink),
                     messages("ecc.address-lookup.postcode.summary.label")
                 )
@@ -81,7 +81,7 @@
                     @summaryRow_di(
                         "line1",
                         messages("ecc.address-lookup.postcode.line1.summary.label"),
-                        Html.apply(messages("ecc.address-lookup.postcode.results.not-found")),
+                        messages("ecc.address-lookup.postcode.results.not-found"),
                         Some(changeParamsLink),
                         messages("ecc.address-lookup.postcode.line1.summary.label")
                     )
@@ -90,7 +90,7 @@
                         @summaryRow_di(
                             "line1",
                             messages("ecc.address-lookup.postcode.line1.summary.label"),
-                            Html.apply(line1),
+                            line1,
                             Some(changeParamsLink),
                             messages("ecc.address-lookup.postcode.line1.summary.label")
                         )
