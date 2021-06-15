@@ -28,7 +28,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
   AddressViewModel,
   CompanyRegisteredCountry
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.check_your_details
 import uk.gov.hmrc.play.language.LanguageUtils
 import util.ViewSpec
@@ -708,8 +707,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       customsId,
       companyRegisteredCountry,
       addressLookupParams,
-      atarService,
-      Journey.Subscribe
+      atarService
     )
     Jsoup.parse(contentAsString(result))
   }

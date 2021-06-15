@@ -50,8 +50,8 @@
 }
 
 @manualAddressLink = @{
-  if(isInReviewMode) uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.reviewForm(service, Journey.Subscribe)
-  else uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.createForm(service, Journey.Subscribe)
+  if(isInReviewMode) uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.reviewForm(service)
+  else uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.createForm(service)
 }
 
 @layout_di(pageTitle, form = Some(addressResultsForm)) {

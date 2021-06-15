@@ -25,7 +25,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.MessagingServic
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionCreateResponse._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,25 +39,15 @@ class SubscriptionService @Inject() (connector: SubscriptionServiceConnector, fe
 
   private def maybe(service: Service): Option[Service] = if (featureFlags.sub02UseServiceName) Some(service) else None
 
-  def subscribe(
-    registration: RegistrationDetails,
-    subscription: SubscriptionDetails,
-    cdsOrganisationType: Option[CdsOrganisationType],
-    journey: Journey.Value,
-    service: Service
-  )(implicit hc: HeaderCarrier): Future[SubscriptionResult] =
-    subscribeWithConnector(createRequest(registration, subscription, cdsOrganisationType, service))
-
   def subscribeWithMandatoryOnly(
     registration: RegistrationDetails,
     subscription: SubscriptionDetails,
-    journey: Journey.Value,
     service: Service,
     cachedEmail: Option[String]
   )(implicit hc: HeaderCarrier): Future[SubscriptionResult] = {
-    val email =
-      if (journey == Journey.Register) subscription.contactDetails.map(_.emailAddress) else cachedEmail
-    val request = SubscriptionRequest(SubscriptionCreateRequest(registration, subscription, email, maybe(service)))
+    val request = SubscriptionRequest(
+      SubscriptionCreateRequest(registration, subscription, cachedEmail, maybe(service))
+    )
     subscribeWithConnector(request)
   }
 

@@ -19,8 +19,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.config
 import javax.inject.{Inject, Named, Singleton}
 import play.api.Configuration
 import play.api.i18n.Messages
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.ApplicationController
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.duration.Duration
@@ -48,13 +47,18 @@ class AppConfig @Inject() (
   private val serviceIdentifierSubscribe =
     config.get[String]("microservice.services.contact-frontend.serviceIdentifierSubscribe")
 
-  private val feedbackLink          = config.get[String]("external-url.feedback-survey")
   private val feedbackLinkSubscribe = config.get[String]("external-url.feedback-survey-subscribe")
 
-  def feedbackUrl(service: Service, journey: Journey.Value) = journey match {
-    case Journey.Register  => s"$feedbackLink-${service.code}"
-    case Journey.Subscribe => s"$feedbackLinkSubscribe-${service.code}"
-  }
+  def feedbackUrl(service: Service) = s"$feedbackLinkSubscribe-${service.code}"
+
+  private val eoriCommonComponentRegistrationFrontendBaseUrl: String =
+    config.get[String]("external-url.eori-common-component-registration-frontend.url")
+
+  private val eoriCommonComponentRegistrationFrontendStartEndpoint: String =
+    config.get[String]("external-url.eori-common-component-registration-frontend.start-endpoint")
+
+  def eoriCommonComponentRegistrationFrontend(serviceName: String): String =
+    eoriCommonComponentRegistrationFrontendBaseUrl + serviceName + eoriCommonComponentRegistrationFrontendStartEndpoint
 
   def externalGetEORILink(service: Service): String = {
     def registerBlocked = blockedRoutesRegex.exists(_.findFirstIn("register").isDefined)
@@ -62,7 +66,7 @@ class AppConfig @Inject() (
     if (registerBlocked)
       config.get[String]("external-url.get-cds-eori")
     else
-      ApplicationController.startRegister(service).url
+      eoriCommonComponentRegistrationFrontend(service.code)
   }
 
   private def languageKey(implicit messages: Messages) = messages.lang.language match {

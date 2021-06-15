@@ -25,7 +25,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetai
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{LoggedInUserWithEnrolments, NA}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactDetailsSubscribeModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.ContactDetailsForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
@@ -114,7 +114,7 @@ class ContactDetailsController @Inject() (
       .cacheContactDetails(formData.toContactDetailsModel(email), isInReviewMode = inReviewMode)
       .map(
         _ =>
-          if (inReviewMode) Redirect(DetermineReviewPageController.determineRoute(service, Journey.Subscribe))
+          if (inReviewMode) Redirect(DetermineReviewPageController.determineRoute(service))
           else
             Redirect(
               subscriptionFlowManager

@@ -22,13 +22,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Request, Session}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
-  IndividualFlow,
-  OrganisationFlow,
-  OrganisationSubscriptionFlow,
-  SoleTraderFlow,
-  ThirdCountryIndividualSubscriptionFlow
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 
 class RequestSessionDataSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
@@ -53,15 +47,15 @@ class RequestSessionDataSpec extends UnitSpec with MockitoSugar with BeforeAndAf
 
   "RequestSessionData" should {
     "add correct flow name in request cache" in {
-      val newSession = requestSessionData.storeUserSubscriptionFlow(OrganisationSubscriptionFlow, "")
+      val newSession = requestSessionData.storeUserSubscriptionFlow(OrganisationFlow, "")
       newSession shouldBe Session(
-        existingSessionValues + ("subscription-flow" -> OrganisationSubscriptionFlow.name, "uri-before-subscription-flow" -> "")
+        existingSessionValues + ("subscription-flow" -> OrganisationFlow.name, "uri-before-subscription-flow" -> "")
       )
     }
 
     "return correct flow cached" in {
-      when(mockRequest.session).thenReturn(Session(Map("subscription-flow" -> OrganisationSubscriptionFlow.name)))
-      requestSessionData.userSubscriptionFlow shouldBe OrganisationSubscriptionFlow
+      when(mockRequest.session).thenReturn(Session(Map("subscription-flow" -> OrganisationFlow.name)))
+      requestSessionData.userSubscriptionFlow shouldBe OrganisationFlow
     }
 
     "throw exception when flow is not cached" in {
@@ -145,9 +139,7 @@ class RequestSessionDataSpec extends UnitSpec with MockitoSugar with BeforeAndAf
 
       "user is on different journey" in {
 
-        when(mockRequest.session).thenReturn(
-          Session(Map("subscription-flow" -> ThirdCountryIndividualSubscriptionFlow.name))
-        )
+        when(mockRequest.session).thenReturn(Session(Map("subscription-flow" -> RowOrganisationFlow.name)))
 
         requestSessionData.isUKJourney shouldBe false
       }

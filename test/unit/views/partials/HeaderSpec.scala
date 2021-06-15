@@ -16,20 +16,26 @@
 
 package unit.views.partials
 
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{reset, when}
+import org.scalatest.BeforeAndAfterEach
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{start, start_subscribe}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.start_subscribe
 import unit.controllers.CdsPage
 import util.ControllerSpec
+import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, AuthBuilder, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
-class HeaderSpec extends ControllerSpec with AuthActionMock {
+class HeaderSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterEach {
 
   private val mockAuthConnector    = mock[AuthConnector]
   private val mockAuthAction       = authAction(mockAuthConnector)
@@ -37,7 +43,6 @@ class HeaderSpec extends ControllerSpec with AuthActionMock {
 
   private val mockEnrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
 
-  private val viewStartRegister       = instanceOf[start]
   private val viewStartSubscribe      = instanceOf[start_subscribe]
   private val groupEnrolmentExtractor = mock[GroupEnrolmentExtractor]
 
@@ -45,19 +50,34 @@ class HeaderSpec extends ControllerSpec with AuthActionMock {
     mockAuthAction,
     mcc,
     viewStartSubscribe,
-    viewStartRegister,
     mockCdsFrontendCache,
     groupEnrolmentExtractor,
     mockEnrolmentStoreProxyService,
     appConfig
   )
 
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+
+    withAuthorisedUser(defaultUserId, mockAuthConnector)
+    when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any())).thenReturn(Future.successful(false))
+    when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(Future.successful(List.empty))
+    when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), any())(any())).thenReturn(Future.successful(None))
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(groupEnrolmentExtractor)
+
+    super.afterEach()
+  }
+
   "Header Sign in link" should {
 
     "be present when the user is logged in" in {
       AuthBuilder.withAuthorisedUser("user-1236213", mockAuthConnector)
 
-      val result = controller.startRegister(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+      val result =
+        controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       val page = CdsPage(contentAsString(result))
       page.elementIsPresent("//a[@id='sign-out']") shouldBe true
@@ -66,7 +86,7 @@ class HeaderSpec extends ControllerSpec with AuthActionMock {
     "not be present when a user isn't logged in" in {
       AuthBuilder.withNotLoggedInUser(mockAuthConnector)
 
-      val result = controller.startRegister(atarService).apply(SessionBuilder.buildRequestWithSessionNoUser)
+      val result = controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSessionNoUser)
 
       val page = CdsPage(contentAsString(result))
       page.elementIsPresent("//a[@id='sign-out']") shouldBe false
@@ -76,13 +96,8 @@ class HeaderSpec extends ControllerSpec with AuthActionMock {
   "Feedback URL" should {
     "be present with service param equal to 'eori-common-component-subscribe''" in {
       val result = controller
-        .startRegister(atarService)
-        .apply(
-          SessionBuilder.buildRequestWithSessionAndPathNoUser(
-            method = "GET",
-            path = "/customs-enrolment-services/atar/subscribe/"
-          )
-        )
+        .startSubscription(atarService)
+        .apply(FakeRequest("GET", "/customs-enrolment-services/atar/subscribe"))
 
       val page = CdsPage(contentAsString(result))
 
@@ -98,7 +113,8 @@ class HeaderSpec extends ControllerSpec with AuthActionMock {
 
       AuthBuilder.withAuthorisedUser("user-1236213", mockAuthConnector)
 
-      val result = controller.startRegister(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+      val result =
+        controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       val page = CdsPage(contentAsString(result))
       page.elementIsPresent("//nav[@class='hmrc-language-select']") shouldBe true

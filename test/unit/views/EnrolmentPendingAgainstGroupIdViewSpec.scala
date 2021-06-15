@@ -21,7 +21,7 @@ import org.jsoup.nodes.Document
 import play.api.mvc.Request
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.enrolment_pending_against_group_id
 import util.ViewSpec
 
@@ -32,22 +32,15 @@ class EnrolmentPendingAgainstGroupIdViewSpec extends ViewSpec {
 
   "Enrolment Pending against group id page" should {
     "display correct title" in {
-      gyeDoc.title() must startWith("There is a problem")
+      migrateDoc(atarService).title() must startWith("There is a problem")
     }
 
     "display correct heading" in {
-      gyeDoc.body().getElementsByTag("h1").text() mustBe "There is a problem"
+      migrateDoc(atarService).body().getElementsByTag("h1").text() mustBe "There is a problem"
     }
 
     "have the correct class on the h1" in {
-      gyeDoc.body().getElementsByTag("h1").hasClass("heading-large") mustBe true
-    }
-
-    "display the correct text for Gye" in {
-      gyeDoc
-        .body()
-        .getElementById("info")
-        .text mustBe "The Government Gateway ID you used to sign in is part of a team that has already applied for an EORI number. This application is being processed."
+      migrateDoc(atarService).body().getElementsByTag("h1").hasClass("heading-large") mustBe true
     }
 
     "display the correct text for Subscribe to same service" in {
@@ -65,10 +58,7 @@ class EnrolmentPendingAgainstGroupIdViewSpec extends ViewSpec {
     }
   }
 
-  private lazy val gyeDoc: Document =
-    Jsoup.parse(contentAsString(view(atarService, Journey.Register, Some(otherService))))
-
   private def migrateDoc(otherService: Service): Document =
-    Jsoup.parse(contentAsString(view(atarService, Journey.Subscribe, Some(otherService))))
+    Jsoup.parse(contentAsString(view(atarService, Some(otherService))))
 
 }

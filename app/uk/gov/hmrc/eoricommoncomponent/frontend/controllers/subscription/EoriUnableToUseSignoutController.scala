@@ -22,7 +22,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.eoriSignoutYesNoForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.eori_signout
 
 import scala.concurrent.Future
@@ -46,10 +46,7 @@ class EoriUnableToUseSignoutController @Inject() (
           if (answer.isYes)
             Future.successful(
               Redirect(
-                uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.ApplicationController.logout(
-                  service,
-                  Journey.Subscribe
-                )
+                uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.ApplicationController.logout(service)
               )
             )
           else Future.successful(Redirect(routes.EoriUnableToUseController.displayPage(service)))

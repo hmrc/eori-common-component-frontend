@@ -28,7 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, Miss
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegisterWithEoriAndIdResponse._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{MatchingService, Reg06Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
@@ -64,19 +64,17 @@ class RegisterWithEoriAndIdController @Inject() (
 
   private val logger = Logger(this.getClass)
 
-  def registerWithEoriAndId(service: Service, journey: Journey.Value): Action[AnyContent] =
+  def registerWithEoriAndId(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser =>
       groupEnrolment.hasGroupIdEnrolmentTo(loggedInUser.groupId.getOrElse(throw MissingGroupId()), service).flatMap {
         groupIdEnrolmentExists =>
           if (groupIdEnrolmentExists)
-            Future.successful(
-              Redirect(EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service, journey))
-            )
+            Future.successful(Redirect(EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service)))
           else
             subscriptionDetailsService.cachedCustomsId.flatMap { cachedCustomsId =>
               sendRequest(cachedCustomsId).flatMap {
-                case true if isRow && cachedCustomsId.isEmpty => handleREG01Response(service, journey)
-                case true                                     => handleREG06Response(service, journey)
+                case true if isRow && cachedCustomsId.isEmpty => handleREG01Response(service)
+                case true                                     => handleREG06Response(service)
                 case false =>
                   logger.error("Reg01 BadRequest ROW")
                   val formattedDate = languageUtils.Dates.formatDate(LocalDate.now())
@@ -105,25 +103,23 @@ class RegisterWithEoriAndIdController @Inject() (
       }
     }
 
-  private def handleREG01Response(service: Service, journey: Journey.Value)(implicit
-    request: Request[AnyContent],
-    loggedInUser: LoggedInUserWithEnrolments
-  ) =
+  private def handleREG01Response(
+    service: Service
+  )(implicit request: Request[AnyContent], loggedInUser: LoggedInUserWithEnrolments) =
     cache.registrationDetails.flatMap { regDetails =>
-      onRegistrationPassCheckSubscriptionStatus(service, journey, "taxPayerID", regDetails.sapNumber.mdgTaxPayerId)
+      onRegistrationPassCheckSubscriptionStatus(service, "taxPayerID", regDetails.sapNumber.mdgTaxPayerId)
     }
 
-  private def handleREG06Response(service: Service, journey: Journey.Value)(implicit
-    request: Request[AnyContent],
-    loggedInUser: LoggedInUserWithEnrolments
-  ) =
+  private def handleREG06Response(
+    service: Service
+  )(implicit request: Request[AnyContent], loggedInUser: LoggedInUserWithEnrolments) =
     cache.registerWithEoriAndIdResponse.flatMap { resp =>
       resp.responseDetail.flatMap(_.outcome) match {
         case Some("PASS") =>
           val safeId = resp.responseDetail
             .flatMap(_.responseData.map(x => x.SAFEID))
             .getOrElse(throw new IllegalStateException("SafeId can't be none"))
-          onRegistrationPassCheckSubscriptionStatus(service, journey, idType = "SAFE", id = safeId)
+          onRegistrationPassCheckSubscriptionStatus(service, idType = "SAFE", id = safeId)
         case Some("DEFERRED") =>
           notifyRcmService.notifyRcm(service).map { _ =>
             val formattedDate = languageUtils.Dates.formatDate(resp.responseCommon.processingDate.toLocalDate)
@@ -227,16 +223,6 @@ class RegisterWithEoriAndIdController @Inject() (
   ): Future[Result] = {
     val statusText = response.responseCommon.statusText
 
-    val (hasUtr, isIndividual) = response.additionalInformation match {
-      case Some(info) =>
-        (info.id, info.isIndividual) match {
-          case (_: Utr, true) => (true, true)
-          case (_, true)      => (false, true)
-          case (_, _)         => (false, false)
-        }
-      case _ => (false, false)
-    }
-
     statusText match {
       case _ if statusText.exists(_.equalsIgnoreCase(EoriAlreadyLinked)) =>
         logger.warn("Reg06 EoriAlreadyLinked")
@@ -255,7 +241,7 @@ class RegisterWithEoriAndIdController @Inject() (
     }
   }
 
-  private def onSuccessfulSubscriptionStatusSubscribe(service: Service, journey: Journey.Value)(implicit
+  private def onSuccessfulSubscriptionStatusSubscribe(service: Service)(implicit
     request: Request[AnyContent],
     loggedInUser: LoggedInUserWithEnrolments,
     hc: HeaderCarrier
@@ -263,7 +249,7 @@ class RegisterWithEoriAndIdController @Inject() (
     val internalId = InternalId(loggedInUser.internalId)
     val groupId    = GroupId(loggedInUser.groupId)
     cdsSubscriber
-      .subscribeWithCachedDetails(requestSessionData.userSelectedOrganisationType, service, journey)
+      .subscribeWithCachedDetails(service)
       .flatMap {
         case _: SubscriptionSuccessful =>
           subscriptionDetailsService
@@ -280,18 +266,17 @@ class RegisterWithEoriAndIdController @Inject() (
       }
   }
 
-  private def onRegistrationPassCheckSubscriptionStatus(
-    service: Service,
-    journey: Journey.Value,
-    idType: String,
-    id: String
-  )(implicit request: Request[AnyContent], loggedInUser: LoggedInUserWithEnrolments, hc: HeaderCarrier) =
+  private def onRegistrationPassCheckSubscriptionStatus(service: Service, idType: String, id: String)(implicit
+    request: Request[AnyContent],
+    loggedInUser: LoggedInUserWithEnrolments,
+    hc: HeaderCarrier
+  ) =
     subscriptionStatusService.getStatus(idType, id).flatMap {
       case NewSubscription | SubscriptionRejected =>
-        onSuccessfulSubscriptionStatusSubscribe(service, journey)
+        onSuccessfulSubscriptionStatusSubscribe(service)
       case SubscriptionProcessing =>
         Future.successful(Redirect(RegisterWithEoriAndIdController.processing(service)))
-      case SubscriptionExists => Future.successful(Redirect(SubscriptionRecoveryController.complete(service, journey)))
+      case SubscriptionExists => Future.successful(Redirect(SubscriptionRecoveryController.complete(service)))
     }
 
   private def cachedName(implicit request: Request[AnyContent]) =

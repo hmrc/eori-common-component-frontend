@@ -23,8 +23,6 @@ import org.mockito.Mockito.{spy, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.Configuration
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.ApplicationController
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import util.ControllerSpec
 
@@ -98,18 +96,8 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
       appConfig.enrolmentStoreProxyServiceContext shouldBe "enrolment-store-proxy"
     }
 
-    "have feedbackLink defined for register" in {
-      appConfig.feedbackUrl(
-        atarService,
-        Journey.Register
-      ) shouldBe "http://localhost:9514/feedback/eori-common-component-register-atar"
-    }
-
     "have feedbackLink defined for subscribe" in {
-      appConfig.feedbackUrl(
-        atarService,
-        Journey.Subscribe
-      ) shouldBe "http://localhost:9514/feedback/eori-common-component-subscribe-atar"
+      appConfig.feedbackUrl(atarService) shouldBe "http://localhost:9514/feedback/eori-common-component-subscribe-atar"
     }
 
     "have reportAProblemPartialUrl defined for register" in {
@@ -186,7 +174,9 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
 
         val testAppConfig = new AppConfig(mockConfig, mockServiceConfig, "appName")
 
-        testAppConfig.externalGetEORILink(atarService) shouldBe ApplicationController.startRegister(atarService).url
+        testAppConfig.externalGetEORILink(
+          atarService
+        ) shouldBe "http://localhost:6751/customs-registration-services/atar/register"
       }
     }
   }

@@ -22,7 +22,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.UserLocationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration._
 
@@ -50,7 +50,7 @@ class UseThisEoriController @Inject() (
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       detailsService.cachedExistingEoriNumber.flatMap { eori =>
         detailsService.cacheEoriNumber(eori.getOrElse(throw MissingExistingEori()).id).map { _ =>
-          Redirect(UserLocationController.form(service, Journey.Subscribe))
+          Redirect(UserLocationController.form(service))
         }
       }
     }

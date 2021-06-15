@@ -48,14 +48,12 @@ trait AccessController extends JourneyTypeFromUrl with AllowlistVerification {
         case _                  => true
       }
 
-    if (!isPermittedEmail(email))
-      Future.successful(Redirect(routes.YouCannotUseServiceController.unauthorisedPage(service, journeyFromUrl)))
+    if (!isPermittedEmail(email)) // TODO Check if we would like to keep email allowlisting
+      Future.successful(Redirect(routes.YouCannotUseServiceController.unauthorisedPage(service)))
     else if (!isPermittedUserType)
-      Future.successful(Redirect(routes.YouCannotUseServiceController.page(service, journeyFromUrl)))
+      Future.successful(Redirect(routes.YouCannotUseServiceController.page(service)))
     else if (hasEnrolment)
-      Future.successful(
-        Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service, journeyFromUrl))
-      )
+      Future.successful(Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service)))
     else
       action
   }

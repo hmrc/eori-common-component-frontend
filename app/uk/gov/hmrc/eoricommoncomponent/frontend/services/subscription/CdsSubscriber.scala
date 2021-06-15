@@ -22,11 +22,7 @@ import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
-  ContactDetails,
-  RecipientDetails,
-  SubscriptionDetails
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{RecipientDetails, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -43,23 +39,18 @@ class CdsSubscriber @Inject() (
 )(implicit ec: ExecutionContext) {
 
   def subscribeWithCachedDetails(
-    cdsOrganisationType: Option[CdsOrganisationType],
-    service: Service,
-    journey: Journey.Value
+    service: Service
   )(implicit hc: HeaderCarrier, request: Request[AnyContent], messages: Messages): Future[SubscriptionResult] = {
     val isRowF           = Future.successful(UserLocation.isRow(requestSessionData))
-    val journeyF         = Future.successful(journey)
     val cachedCustomsIdF = subscriptionDetailsService.cachedCustomsId
 
     val result = for {
       isRow    <- isRowF
-      journey  <- journeyF
       customId <- if (isRow) cachedCustomsIdF else Future.successful(None)
-    } yield (journey, isRow, customId) match {
-      case (Journey.Subscribe, true, Some(_)) => migrationEoriUK(service)                             //Has NINO/UTR as identifier UK journey
-      case (Journey.Subscribe, true, None)    => migrationEoriROW(journey, service)                   //ROW
-      case (Journey.Subscribe, false, _)      => migrationEoriUK(service)                             //UK Journey
-      case _                                  => subscribeEori(cdsOrganisationType, journey, service) //Journey Get An EORI
+    } yield (isRow, customId) match {
+      case (true, Some(_)) => migrationEoriUK(service)  //Has NINO/UTR as identifier UK journey
+      case (true, None)    => migrationEoriROW(service) //ROW
+      case (false, _)      => migrationEoriUK(service)  //UK Journey
     }
     result.flatMap(identity)
   }
@@ -86,26 +77,9 @@ class CdsSubscriber @Inject() (
       )
     } yield subscriptionResult
 
-  private def subscribeEori(
-    cdsOrganisationType: Option[CdsOrganisationType],
-    journey: Journey.Value,
+  private def migrationEoriROW(
     service: Service
   )(implicit hc: HeaderCarrier, messages: Messages): Future[SubscriptionResult] =
-    for {
-      registrationDetails <- sessionCache.registrationDetails
-      (subscriptionResult, maybeSubscriptionDetails) <- fetchOtherDetailsFromCacheAndSubscribe(
-        registrationDetails,
-        cdsOrganisationType,
-        journey,
-        service
-      )
-      _ <- onSubscriptionResult(subscriptionResult, registrationDetails, maybeSubscriptionDetails, service)
-    } yield subscriptionResult
-
-  private def migrationEoriROW(journey: Journey.Value, service: Service)(implicit
-    hc: HeaderCarrier,
-    messages: Messages
-  ): Future[SubscriptionResult] =
     for {
       registrationDetails <- sessionCache.registrationDetails
       subscriptionDetails <- sessionCache.subscriptionDetails
@@ -113,7 +87,6 @@ class CdsSubscriber @Inject() (
       subscriptionResult <- subscriptionService.subscribeWithMandatoryOnly(
         registrationDetails,
         subscriptionDetails,
-        journey,
         service,
         Some(email)
       )
@@ -125,79 +98,6 @@ class CdsSubscriber @Inject() (
         service
       )
     } yield subscriptionResult
-
-  private def fetchOtherDetailsFromCacheAndSubscribe(
-    registrationDetails: RegistrationDetails,
-    mayBeCdsOrganisationType: Option[CdsOrganisationType],
-    journey: Journey.Value,
-    service: Service
-  )(implicit hc: HeaderCarrier): Future[(SubscriptionResult, Option[SubscriptionDetails])] =
-    for {
-      subscriptionDetailsHolder <- sessionCache.subscriptionDetails
-      subscriptionResult <- subscriptionService.subscribe(
-        registrationDetails,
-        subscriptionDetailsHolder,
-        mayBeCdsOrganisationType,
-        journey,
-        service
-      )
-    } yield (subscriptionResult, Some(subscriptionDetailsHolder))
-
-  private def onSubscriptionResult(
-    subscriptionResult: SubscriptionResult,
-    regDetails: RegistrationDetails,
-    subscriptionDetails: Option[SubscriptionDetails],
-    service: Service
-  )(implicit hc: HeaderCarrier, messages: Messages): Future[Unit] =
-    subscriptionResult match {
-      case success: SubscriptionSuccessful =>
-        val safeId = regDetails.safeId
-        val contactDetails: Option[ContactDetails] = subscriptionDetails
-          .flatMap(_.contactDetails.map(_.contactDetails))
-        val contactName = contactDetails.map(_.fullName)
-        val cdsFullName = Some(regDetails.name)
-        val email       = contactDetails.map(_.emailAddress).getOrElse(throw new IllegalStateException("Email required"))
-        val mayBeEori   = Some(success.eori)
-
-        completeSubscription(
-          service,
-          Journey.Register,
-          regDetails.name,
-          mayBeEori,
-          email,
-          safeId,
-          contactName,
-          cdsFullName,
-          success.processingDate,
-          success.formBundleId,
-          success.emailVerificationTimestamp
-        )
-
-      case pending: SubscriptionPending =>
-        val safeId = regDetails.safeId
-        val contactDetails: Option[ContactDetails] = subscriptionDetails
-          .flatMap(_.contactDetails.map(_.contactDetails))
-        val contactName = contactDetails.map(_.fullName)
-        val cdsFullName = Some(regDetails.name)
-        val email       = contactDetails.map(_.emailAddress).getOrElse(throw new IllegalStateException("Email required"))
-        val mayBeEori   = None
-        completeSubscription(
-          service,
-          Journey.Register,
-          regDetails.name,
-          mayBeEori,
-          email,
-          safeId,
-          contactName,
-          cdsFullName,
-          pending.processingDate,
-          pending.formBundleId,
-          pending.emailVerificationTimestamp
-        )
-
-      case failed: SubscriptionFailed =>
-        sessionCache.saveSub02Outcome(Sub02Outcome(failed.processingDate, regDetails.name)).map(_ => (): Unit)
-    }
 
   private def onSubscriptionResultForRowSubscribe(
     subscriptionResult: SubscriptionResult,

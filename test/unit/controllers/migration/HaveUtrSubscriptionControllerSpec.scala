@@ -32,7 +32,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   SubscriptionPage
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{NameOrganisationMatchModel, UtrMatchModel}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_utr_subscription
@@ -87,7 +86,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
     "return OK and display correct page when orgType is Company" in {
 
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
-      createForm(Journey.Subscribe) { result =>
+      createForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
         page.title should include(SubscriptionRowCompanyUtr.title)
@@ -97,7 +96,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
     "return OK and display correct page when orgType is Sole Trader" in {
 
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(SoleTrader))
-      createForm(Journey.Subscribe) { result =>
+      createForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
         page.title should include(SubscriptionRowIndividualsUtr.title)
@@ -108,7 +107,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
     "return OK and display correct page when orgType is Individual" in {
 
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Individual))
-      createForm(Journey.Subscribe) { result =>
+      createForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
         page.title should include(SubscriptionRowIndividualsUtr.title)
@@ -118,7 +117,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
     "throws an exception if orgType is not found" in {
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
       intercept[IllegalStateException] {
-        createForm(Journey.Subscribe)(result => status(result))
+        createForm()(result => status(result))
       }.getMessage shouldBe "No organisation type selected by user"
     }
   }
@@ -127,20 +126,20 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
     "throws an exception if orgType is not found" in {
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
       intercept[IllegalStateException] {
-        submit(Journey.Subscribe, ValidUtrRequest)(result => status(result))
+        submit(ValidUtrRequest)(result => status(result))
       }.getMessage shouldBe "No organisation type selected by user"
     }
 
     "return BadRequest when no option selected" in {
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
-      submit(Journey.Subscribe, Map.empty[String, String]) { result =>
+      submit(Map.empty[String, String]) { result =>
         status(result) shouldBe BAD_REQUEST
       }
     }
 
     "return BadRequest when invalid option provided" in {
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
-      submit(Journey.Subscribe, Map("have-utr" -> "non")) { result =>
+      submit(Map("have-utr" -> "non")) { result =>
         status(result) shouldBe BAD_REQUEST
       }
     }
@@ -152,7 +151,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       when(mockSubscriptionDetailsService.cachedNameDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(nameOrganisationMatchModel)))
       when(mockSubscriptionDetailsService.cacheUtrMatch(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
-      submit(Journey.Subscribe, Map("have-utr" -> "true", "utr" -> "11 11 111111k")) { result =>
+      submit(Map("have-utr" -> "true", "utr" -> "11 11 111111k")) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-get-utr"
       }
@@ -169,7 +168,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
         .thenReturn(Future.successful(()))
       when(mockSubscriptionDetailsService.cachedNameDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(nameOrganisationMatchModel)))
-      submit(Journey.Subscribe, ValidUtrRequest) { result =>
+      submit(ValidUtrRequest) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-get-utr"
       }
@@ -183,7 +182,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       when(mockSubscriptionDetailsService.cacheUtrMatchForNoAnswer(any[Option[UtrMatchModel]])(any[HeaderCarrier]))
         .thenReturn(Future.successful(()))
       mockSubscriptionFlow(nextPageFlowUrl)
-      submit(Journey.Subscribe, NoUtrRequest) { result =>
+      submit(NoUtrRequest) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe nextPageFlowUrl
       }
@@ -197,7 +196,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
         when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowOrganisationFlow)
         when(mockSubscriptionDetailsService.cacheUtrMatchForNoAnswer(any[Option[UtrMatchModel]])(any[HeaderCarrier]))
           .thenReturn(Future.successful(()))
-        submit(Journey.Subscribe, NoUtrRequest) { result =>
+        submit(NoUtrRequest) { result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-country"
         }
@@ -205,20 +204,16 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
     }
   }
 
-  private def createForm(journey: Journey.Value)(test: Future[Result] => Any) = {
+  private def createForm()(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(
-      test(controller.createForm(atarService, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
-    )
+    await(test(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
-  private def submit(journey: Journey.Value, form: Map[String, String], isInReviewMode: Boolean = false)(
-    test: Future[Result] => Any
-  ) = {
+  private def submit(form: Map[String, String], isInReviewMode: Boolean = false)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     await(
       test(
-        controller.submit(isInReviewMode, atarService, journey).apply(
+        controller.submit(isInReviewMode, atarService).apply(
           SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form)
         )
       )

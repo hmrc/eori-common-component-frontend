@@ -33,9 +33,9 @@
 
 @enterManuallyAddressLink = {
     @if(isInReviewMode) {
-        <a href="@AddressController.reviewForm(service, Journey.Subscribe)" id="enter-manually-button">@messages("ecc.address-lookup.postcode.no-results.manual")</a>
+        <a href="@AddressController.reviewForm(service)" id="enter-manually-button">@messages("ecc.address-lookup.postcode.no-results.manual")</a>
     } else {
-        <a href="@AddressController.createForm(service, Journey.Subscribe)" id="enter-manually-button">@messages("ecc.address-lookup.postcode.no-results.manual")</a>
+        <a href="@AddressController.createForm(service)" id="enter-manually-button">@messages("ecc.address-lookup.postcode.no-results.manual")</a>
     }
 }
 

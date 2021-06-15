@@ -22,35 +22,36 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.organisation_type
 import util.ViewSpec
 
 class OrganisationTypePageSpec extends ViewSpec {
   private val form: Form[CdsOrganisationType] = organisationTypeDetailsForm
-  private val thirdCountryOrganisationLabel   = "label[for=organisation-type-third-country-organisation]"
-  private val thirdCountrySoleTraderLabel     = "label[for=organisation-type-third-country-sole-trader]"
-  private val thirdCountryIndividualLabel     = "label[for=organisation-type-third-country-individual]"
+  private val thirdCountryOrganisationLabel   = "label[for=organisation-type-company]"
+  private val thirdCountrySoleTraderLabel     = "label[for=organisation-type-sole-trader]"
+  private val thirdCountryIndividualLabel     = "label[for=organisation-type-individual]"
 
   private val view = instanceOf[organisation_type]
 
   "Rest of World (ROW) What do you want to apply as? page" should {
     "display 'an organisation' as an option" in {
-      doc.select(thirdCountryOrganisationLabel).text() mustBe "Organisation"
+
+      println(doc)
+      doc.select(thirdCountryOrganisationLabel).text() must include("Organisation")
     }
 
     "display 'a sole trader' as an option" in {
-      doc.select(thirdCountrySoleTraderLabel).text() mustBe "Sole trader"
+      doc.select(thirdCountrySoleTraderLabel).text() must include("Sole trader")
     }
 
     "display 'an individual' as an option" in {
-      doc.select(thirdCountryIndividualLabel).text() mustBe "Individual"
+      doc.select(thirdCountryIndividualLabel).text() must include("Individual")
     }
   }
 
   private lazy val doc = {
     implicit val request = withFakeCSRF(FakeRequest().withSession(("selected-user-location", "third-country")))
-    val result           = view(form, Some("third-country"), atarService, Journey.Register)
+    val result           = view(form, Some("third-country"), atarService)
     Jsoup.parse(contentAsString(result))
   }
 

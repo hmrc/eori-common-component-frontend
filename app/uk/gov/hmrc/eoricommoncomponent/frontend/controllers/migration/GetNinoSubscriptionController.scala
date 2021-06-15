@@ -25,7 +25,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Subscri
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{NinoSubscriptionFlowPage, RowIndividualFlow}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.subscriptionNinoForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you_nino
@@ -44,19 +44,19 @@ class GetNinoSubscriptionController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+  def createForm(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
-        populateView(false, service, journey)
+        populateView(false, service)
     }
 
-  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+  def reviewForm(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
-        populateView(true, service, journey)
+        populateView(true, service)
     }
 
-  private def populateView(isInReviewMode: Boolean, service: Service, journey: Journey.Value)(implicit
+  private def populateView(isInReviewMode: Boolean, service: Service)(implicit
     hc: HeaderCarrier,
     request: Request[AnyContent]
   ) =
@@ -66,7 +66,7 @@ class GetNinoSubscriptionController @Inject() (
           getNinoSubscriptionView(
             subscriptionNinoForm.fill(IdMatchModel(id)),
             isInReviewMode,
-            routes.GetNinoSubscriptionController.submit(isInReviewMode, service, journey)
+            routes.GetNinoSubscriptionController.submit(isInReviewMode, service)
           )
         )
 
@@ -75,12 +75,12 @@ class GetNinoSubscriptionController @Inject() (
           getNinoSubscriptionView(
             subscriptionNinoForm,
             isInReviewMode,
-            routes.GetNinoSubscriptionController.submit(isInReviewMode, service, journey)
+            routes.GetNinoSubscriptionController.submit(isInReviewMode, service)
           )
         )
     }
 
-  def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
+  def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
         subscriptionNinoForm.bindFromRequest.fold(
@@ -90,23 +90,22 @@ class GetNinoSubscriptionController @Inject() (
                 getNinoSubscriptionView(
                   formWithErrors,
                   isInReviewMode,
-                  routes.GetNinoSubscriptionController.submit(isInReviewMode, service, journey)
+                  routes.GetNinoSubscriptionController.submit(isInReviewMode, service)
                 )
               )
             ),
-          formData => cacheAndContinue(isInReviewMode, formData, service, journey)
+          formData => cacheAndContinue(isInReviewMode, formData, service)
         )
     }
 
-  private def cacheAndContinue(isInReviewMode: Boolean, form: IdMatchModel, service: Service, journey: Journey.Value)(
-    implicit
+  private def cacheAndContinue(isInReviewMode: Boolean, form: IdMatchModel, service: Service)(implicit
     hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] =
     subscriptionDetailsHolderService.cacheCustomsId(Nino(form.id)).map(
       _ =>
         if (isInReviewMode && !isItRowJourney)
-          Redirect(DetermineReviewPageController.determineRoute(service, journey))
+          Redirect(DetermineReviewPageController.determineRoute(service))
         else
           Redirect(subscriptionFlowManager.stepInformation(NinoSubscriptionFlowPage).nextPage.url(service))
     )

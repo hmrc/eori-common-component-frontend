@@ -30,7 +30,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{ExistingEori, LoggedInUs
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriNumberViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm.eoriNumberForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   EnrolmentStoreProxyService,
@@ -118,8 +118,8 @@ class WhatIsYourEoriController @Inject() (
             )
           )
         case _ =>
-          if (isInReviewMode) Redirect(DetermineReviewPageController.determineRoute(service, Journey.Subscribe))
-          else Redirect(UserLocationController.form(service, Journey.Subscribe))
+          if (isInReviewMode) Redirect(DetermineReviewPageController.determineRoute(service))
+          else Redirect(UserLocationController.form(service))
       }
     }
   }

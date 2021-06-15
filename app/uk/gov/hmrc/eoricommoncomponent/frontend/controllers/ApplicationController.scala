@@ -26,10 +26,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
   GroupEnrolmentExtractor
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Eori, ExistingEori, LoggedInUserWithEnrolments}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{start, start_subscribe}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.start_subscribe
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,7 +39,6 @@ class ApplicationController @Inject() (
   authorise: AuthAction,
   mcc: MessagesControllerComponents,
   viewStartSubscribe: start_subscribe,
-  viewStartRegister: start,
   cache: SessionCache,
   groupEnrolment: GroupEnrolmentExtractor,
   enrolmentStoreProxyService: EnrolmentStoreProxyService,
@@ -47,18 +46,12 @@ class ApplicationController @Inject() (
 )(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
     extends CdsController(mcc) with EnrolmentExtractor {
 
-  def startRegister(service: Service): Action[AnyContent] = Action { implicit request =>
-    Ok(viewStartRegister(service, Journey.Register))
-  }
-
   def startSubscription(service: Service): Action[AnyContent] = authorise.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
       val groupId = loggedInUser.groupId.getOrElse(throw MissingGroupId())
       groupEnrolment.hasGroupIdEnrolmentTo(groupId, service).flatMap { groupIdEnrolmentExists =>
         if (groupIdEnrolmentExists)
-          Future.successful(
-            Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service, Journey.Subscribe))
-          )
+          Future.successful(Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service)))
         else
           cdsEnrolmentCheck(loggedInUser, groupId, service)
       }
@@ -104,15 +97,15 @@ class ApplicationController @Inject() (
           }
     }
 
-  def logout(service: Service, journey: Journey.Value): Action[AnyContent] =
+  def logout(service: Service): Action[AnyContent] =
     authorise.ggAuthorisedUserAction {
       implicit request => _: LoggedInUserWithEnrolments =>
         cache.remove map { _ =>
-          Redirect(appConfig.feedbackUrl(service, journey)).withNewSession
+          Redirect(appConfig.feedbackUrl(service)).withNewSession
         }
     }
 
-  def keepAlive(service: Service, journey: Journey.Value): Action[AnyContent] = Action.async { implicit request =>
+  def keepAlive(service: Service): Action[AnyContent] = Action.async { implicit request =>
     cache.keepAlive map { _ =>
       Ok("Ok")
     }

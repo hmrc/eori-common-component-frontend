@@ -17,97 +17,11 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription
 
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 object SubscriptionFlows {
 
-  private val individualFlowConfig =
-    createFlowConfig(Journey.Register, List(ContactDetailsSubscriptionFlowPageGetEori, EoriConsentSubscriptionFlowPage))
-
-  private val soleTraderFlowConfig = createFlowConfig(
-    Journey.Register,
-    List(
-      ContactDetailsSubscriptionFlowPageGetEori,
-      SicCodeSubscriptionFlowPage,
-      VatRegisteredUkSubscriptionFlowPage,
-      VatDetailsSubscriptionFlowPage,
-      VatRegisteredEuSubscriptionFlowPage,
-      VatEUIdsSubscriptionFlowPage,
-      VatEUConfirmSubscriptionFlowPage,
-      EoriConsentSubscriptionFlowPage
-    )
-  )
-
-  private val corporateFlowConfig = createFlowConfig(
-    Journey.Register,
-    List(
-      DateOfEstablishmentSubscriptionFlowPage,
-      ContactDetailsSubscriptionFlowPageGetEori,
-      BusinessShortNameSubscriptionFlowPage,
-      SicCodeSubscriptionFlowPage,
-      VatRegisteredUkSubscriptionFlowPage,
-      //VatGroupFlowPage,
-      VatDetailsSubscriptionFlowPage,
-      VatRegisteredEuSubscriptionFlowPage,
-      VatEUIdsSubscriptionFlowPage,
-      VatEUConfirmSubscriptionFlowPage,
-      EoriConsentSubscriptionFlowPage
-    )
-  )
-
-  private val partnershipFlowConfig = createFlowConfig(
-    Journey.Register,
-    List(
-      DateOfEstablishmentSubscriptionFlowPage,
-      ContactDetailsSubscriptionFlowPageGetEori,
-      BusinessShortNameSubscriptionFlowPage,
-      SicCodeSubscriptionFlowPage,
-      VatRegisteredUkSubscriptionFlowPage,
-      VatDetailsSubscriptionFlowPage,
-      VatRegisteredEuSubscriptionFlowPage,
-      VatEUIdsSubscriptionFlowPage,
-      VatEUConfirmSubscriptionFlowPage,
-      EoriConsentSubscriptionFlowPage
-    )
-  )
-
-  private val thirdCountryIndividualFlowConfig =
-    createFlowConfig(Journey.Register, List(ContactDetailsSubscriptionFlowPageGetEori, EoriConsentSubscriptionFlowPage))
-
-  private val thirdCountrySoleTraderFlowConfig = createFlowConfig(
-    Journey.Register,
-    List(
-      ContactDetailsSubscriptionFlowPageGetEori,
-      SicCodeSubscriptionFlowPage,
-      VatRegisteredUkSubscriptionFlowPage,
-      VatDetailsSubscriptionFlowPage,
-      VatRegisteredEuSubscriptionFlowPage,
-      VatEUIdsSubscriptionFlowPage,
-      VatEUConfirmSubscriptionFlowPage,
-      EoriConsentSubscriptionFlowPage
-    )
-  )
-
-  private val thirdCountryCorporateFlowConfig = createFlowConfig(
-    Journey.Register,
-    List(
-      DateOfEstablishmentSubscriptionFlowPage,
-      ContactDetailsSubscriptionFlowPageGetEori,
-      BusinessShortNameSubscriptionFlowPage,
-      SicCodeSubscriptionFlowPage,
-      VatRegisteredUkSubscriptionFlowPage,
-      //VatGroupFlowPage,
-      VatDetailsSubscriptionFlowPage,
-      VatRegisteredEuSubscriptionFlowPage,
-      VatEUIdsSubscriptionFlowPage,
-      VatEUConfirmSubscriptionFlowPage,
-      EoriConsentSubscriptionFlowPage
-    )
-  )
-
   private val soleTraderRegExistingEoriFlowConfig = createFlowConfig(
-    Journey.Subscribe,
     List(
       NameDobDetailsSubscriptionFlowPage,
       HowCanWeIdentifyYouSubscriptionFlowPage,
@@ -116,7 +30,6 @@ object SubscriptionFlows {
   )
 
   private val corporateRegExistingEoriFlowConfig = createFlowConfig(
-    Journey.Subscribe,
     List(
       NameUtrDetailsSubscriptionFlowPage,
       DateOfEstablishmentSubscriptionFlowPageMigrate,
@@ -125,7 +38,6 @@ object SubscriptionFlows {
   )
 
   private val rowIndividualFlowConfig = createFlowConfig(
-    Journey.Subscribe,
     List(
       NameDobDetailsSubscriptionFlowPage,
       UtrSubscriptionFlowPage,
@@ -136,7 +48,6 @@ object SubscriptionFlows {
   )
 
   private val rowOrganisationFlowConfig = createFlowConfig(
-    Journey.Subscribe,
     List(
       NameDetailsSubscriptionFlowPage,
       UtrSubscriptionFlowPage,
@@ -147,35 +58,19 @@ object SubscriptionFlows {
   )
 
   val flows: Map[SubscriptionFlow, SubscriptionFlowConfig] = Map(
-    OrganisationSubscriptionFlow             -> corporateFlowConfig,
-    PartnershipSubscriptionFlow              -> partnershipFlowConfig,
-    SoleTraderSubscriptionFlow               -> soleTraderFlowConfig,
-    IndividualSubscriptionFlow               -> individualFlowConfig,
-    ThirdCountryOrganisationSubscriptionFlow -> thirdCountryCorporateFlowConfig,
-    ThirdCountrySoleTraderSubscriptionFlow   -> thirdCountrySoleTraderFlowConfig,
-    ThirdCountryIndividualSubscriptionFlow   -> thirdCountryIndividualFlowConfig,
-    OrganisationFlow                         -> corporateRegExistingEoriFlowConfig,
-    SoleTraderFlow                           -> soleTraderRegExistingEoriFlowConfig,
-    IndividualFlow                           -> soleTraderRegExistingEoriFlowConfig,
-    RowOrganisationFlow                      -> rowOrganisationFlowConfig,
-    RowIndividualFlow                        -> rowIndividualFlowConfig
+    OrganisationFlow    -> corporateRegExistingEoriFlowConfig,
+    SoleTraderFlow      -> soleTraderRegExistingEoriFlowConfig,
+    IndividualFlow      -> soleTraderRegExistingEoriFlowConfig,
+    RowOrganisationFlow -> rowOrganisationFlowConfig,
+    RowIndividualFlow   -> rowIndividualFlowConfig
   )
 
-  private def createFlowConfig(journey: Journey.Value, flowStepList: List[SubscriptionPage]): SubscriptionFlowConfig =
-    journey match {
-      case Journey.Subscribe =>
-        SubscriptionFlowConfig(
-          pageBeforeFirstFlowPage = RegistrationConfirmPage,
-          flowStepList,
-          pageAfterLastFlowPage = ReviewDetailsPageSubscription
-        )
-      case _ =>
-        SubscriptionFlowConfig(
-          pageBeforeFirstFlowPage = RegistrationConfirmPage,
-          flowStepList,
-          pageAfterLastFlowPage = ReviewDetailsPageGetYourEORI
-        )
-    }
+  private def createFlowConfig(flowStepList: List[SubscriptionPage]): SubscriptionFlowConfig =
+    SubscriptionFlowConfig(
+      pageBeforeFirstFlowPage = UserLocationPage,
+      flowStepList,
+      pageAfterLastFlowPage = ReviewDetailsPageSubscription
+    )
 
   def apply(subscriptionFlow: SubscriptionFlow): SubscriptionFlowConfig = flows(subscriptionFlow)
 }
@@ -183,23 +78,6 @@ object SubscriptionFlows {
 case class SubscriptionFlowInfo(stepNumber: Int, totalSteps: Int, nextPage: SubscriptionPage)
 
 sealed abstract class SubscriptionFlow(val name: String, val isIndividualFlow: Boolean)
-
-case object OrganisationSubscriptionFlow extends SubscriptionFlow("Organisation", isIndividualFlow = false)
-
-case object PartnershipSubscriptionFlow extends SubscriptionFlow("Partnership", isIndividualFlow = false)
-
-case object IndividualSubscriptionFlow extends SubscriptionFlow("Individual", isIndividualFlow = true)
-
-case object ThirdCountryOrganisationSubscriptionFlow
-    extends SubscriptionFlow(ThirdCountryOrganisation.id, isIndividualFlow = false)
-
-case object ThirdCountrySoleTraderSubscriptionFlow
-    extends SubscriptionFlow(ThirdCountrySoleTrader.id, isIndividualFlow = true)
-
-case object ThirdCountryIndividualSubscriptionFlow
-    extends SubscriptionFlow(ThirdCountryIndividual.id, isIndividualFlow = true)
-
-case object SoleTraderSubscriptionFlow extends SubscriptionFlow(SoleTrader.id, isIndividualFlow = true)
 
 case object OrganisationFlow extends SubscriptionFlow("migration-eori-Organisation", isIndividualFlow = false)
 
@@ -226,15 +104,6 @@ sealed abstract class SubscriptionPage() {
   def url(service: Service): String
 }
 
-case object ContactDetailsSubscriptionFlowPageGetEori extends SubscriptionPage {
-
-  override def url(service: Service): String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.ContactDetailsController
-      .createForm(service)
-      .url
-
-}
-
 case object ContactDetailsSubscriptionFlowPageMigrate extends SubscriptionPage {
 
   override def url(service: Service): String =
@@ -248,7 +117,7 @@ case object UtrSubscriptionFlowPage extends SubscriptionPage {
 
   override def url(service: Service): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.HaveUtrSubscriptionController
-      .createForm(service, Journey.Subscribe)
+      .createForm(service)
       .url
 
 }
@@ -257,7 +126,7 @@ case object NinoSubscriptionFlowPage extends SubscriptionPage {
 
   override def url(service: Service): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.HaveNinoSubscriptionController
-      .createForm(service, Journey.Subscribe)
+      .createForm(service)
       .url
 
 }
@@ -265,10 +134,7 @@ case object NinoSubscriptionFlowPage extends SubscriptionPage {
 case object AddressDetailsSubscriptionFlowPage extends SubscriptionPage {
 
   override def url(service: Service): String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.createForm(
-      service,
-      Journey.Subscribe
-    ).url
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.createForm(service).url
 
 }
 
@@ -276,7 +142,7 @@ case object NameUtrDetailsSubscriptionFlowPage extends SubscriptionPage {
 
   override def url(service: Service): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController
-      .createForm(service, Journey.Subscribe)
+      .createForm(service)
       .url
 
 }
@@ -285,7 +151,7 @@ case object NameDetailsSubscriptionFlowPage extends SubscriptionPage {
 
   override def url(service: Service): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameOrgController
-      .createForm(service, Journey.Subscribe)
+      .createForm(service)
       .url
 
 }
@@ -294,7 +160,7 @@ case object NameDobDetailsSubscriptionFlowPage extends SubscriptionPage {
 
   override def url(service: Service): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController
-      .createForm(service, Journey.Subscribe)
+      .createForm(service)
       .url
 
 }
@@ -303,7 +169,7 @@ case object HowCanWeIdentifyYouSubscriptionFlowPage extends SubscriptionPage {
 
   override def url(service: Service): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController
-      .createForm(service, Journey.Subscribe)
+      .createForm(service)
       .url
 
 }
@@ -312,16 +178,7 @@ case object RowDateOfEstablishmentSubscriptionFlowPage extends SubscriptionPage 
 
   override def url(service: Service): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController
-      .createForm(service, Journey.Subscribe)
-      .url
-
-}
-
-case object DateOfEstablishmentSubscriptionFlowPage extends SubscriptionPage {
-
-  override def url(service: Service): String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController
-      .createForm(service, Journey.Register)
+      .createForm(service)
       .url
 
 }
@@ -330,79 +187,7 @@ case object DateOfEstablishmentSubscriptionFlowPageMigrate extends SubscriptionP
 
   override def url(service: Service): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController
-      .createForm(service, Journey.Subscribe)
-      .url
-
-}
-
-case object VatRegisteredUkSubscriptionFlowPage extends SubscriptionPage {
-
-  override def url(service: Service): String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatRegisteredUkController
-      .createForm(service, Journey.Register)
-      .url
-
-}
-
-case object BusinessShortNameSubscriptionFlowPage extends SubscriptionPage {
-
-  override def url(service: Service): String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.BusinessShortNameYesNoController
-      .displayPage(service)
-      .url
-
-}
-
-case object VatDetailsSubscriptionFlowPage extends SubscriptionPage {
-
-  override def url(service: Service): String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatDetailsController
-      .createForm(service, Journey.Register)
-      .url
-
-}
-
-case object VatRegisteredEuSubscriptionFlowPage extends SubscriptionPage {
-
-  override def url(service: Service): String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatRegisteredEuController
-      .createForm(service, Journey.Register)
-      .url
-
-}
-
-case object VatEUIdsSubscriptionFlowPage extends SubscriptionPage {
-
-  override def url(service: Service): String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatDetailsEuController
-      .createForm(service, Journey.Register)
-      .url
-
-}
-
-case object VatEUConfirmSubscriptionFlowPage extends SubscriptionPage {
-
-  override def url(service: Service): String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.VatDetailsEuConfirmController
-      .createForm(service, Journey.Register)
-      .url
-
-}
-
-case object EoriConsentSubscriptionFlowPage extends SubscriptionPage {
-
-  override def url(service: Service): String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DisclosePersonalDetailsConsentController
-      .createForm(service, Journey.Register)
-      .url
-
-}
-
-case object SicCodeSubscriptionFlowPage extends SubscriptionPage {
-
-  override def url(service: Service): String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.SicCodeController
-      .createForm(service, Journey.Register)
+      .createForm(service)
       .url
 
 }
@@ -411,7 +196,7 @@ case object EmailSubscriptionFlowPage extends SubscriptionPage {
 
   override def url(service: Service): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.WhatIsYourEmailController
-      .createForm(service, Journey.Subscribe)
+      .createForm(service)
       .url
 
 }
@@ -420,16 +205,7 @@ case object CheckYourEmailSubscriptionFlowPage extends SubscriptionPage {
 
   override def url(service: Service): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.CheckYourEmailController
-      .createForm(service, Journey.Subscribe)
-      .url
-
-}
-
-case object ReviewDetailsPageGetYourEORI extends SubscriptionPage {
-
-  override def url(service: Service): String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
-      .determineRoute(service, Journey.Register)
+      .createForm(service)
       .url
 
 }
@@ -438,25 +214,7 @@ case object ReviewDetailsPageSubscription extends SubscriptionPage {
 
   override def url(service: Service): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
-      .determineRoute(service, Journey.Subscribe)
-      .url
-
-}
-
-case object RegistrationConfirmPage extends SubscriptionPage {
-
-  override def url(service: Service): String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.ConfirmContactDetailsController
-      .form(service, Journey.Register)
-      .url
-
-}
-
-case object ConfirmIndividualTypePage extends SubscriptionPage {
-
-  override def url(service: Service): String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ConfirmIndividualTypeController
-      .form(service, Journey.Register)
+      .determineRoute(service)
       .url
 
 }
@@ -465,16 +223,16 @@ case object UserLocationPage extends SubscriptionPage {
 
   override def url(service: Service): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.UserLocationController
-      .form(service, Journey.Subscribe)
+      .form(service)
       .url
 
 }
 
-case object BusinessDetailsRecoveryPage extends SubscriptionPage {
+case object SicCodeSubscriptionFlowPage extends SubscriptionPage {
 
   override def url(service: Service): String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.BusinessDetailsRecoveryController
-      .form(service, Journey.Register)
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.SicCodeController
+      .createForm(service)
       .url
 
 }

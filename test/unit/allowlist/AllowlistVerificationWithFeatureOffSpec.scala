@@ -27,7 +27,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameDobSol
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NameDobDetailsSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, NameDobMatchModel, RegistrationDetails}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.enter_your_details
 import uk.gov.hmrc.http.HeaderCarrier
@@ -45,12 +44,12 @@ class AllowlistVerificationWithFeatureOffSpec
 
   protected override val submitInCreateModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController
-      .submit(isInReviewMode = false, atarService, Journey.Subscribe)
+      .submit(isInReviewMode = false, atarService)
       .url
 
   protected override val submitInReviewModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController
-      .submit(isInReviewMode = true, atarService, Journey.Subscribe)
+      .submit(isInReviewMode = true, atarService)
       .url
 
   private val mockRequestSessionData   = mock[RequestSessionData]
@@ -91,9 +90,7 @@ class AllowlistVerificationWithFeatureOffSpec
     "return OK (200) when a non-allowlisted user attempts to access a route and the feature is OFF" in {
       AuthBuilder.withAuthorisedUser("user-1236213", mockAuthConnector, userEmail = Some("not@example.com"))
 
-      val result = controller.createForm(atarService, Journey.Subscribe).apply(
-        SessionBuilder.buildRequestWithSession(defaultUserId)
-      )
+      val result = controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       status(result) shouldBe OK
     }
@@ -101,9 +98,7 @@ class AllowlistVerificationWithFeatureOffSpec
     "return OK (200) when a allowlisted user attempts to access a route and the feature is OFF" in {
       AuthBuilder.withAuthorisedUser("user-2300121", mockAuthConnector, userEmail = Some("mister_allow@example.com"))
 
-      val result = controller.createForm(atarService, Journey.Subscribe).apply(
-        SessionBuilder.buildRequestWithSession(defaultUserId)
-      )
+      val result = controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       status(result) shouldBe OK
     }
@@ -111,9 +106,7 @@ class AllowlistVerificationWithFeatureOffSpec
     "return OK (200) when a user with no email address attempts to access a route and the feature is OFF" in {
       AuthBuilder.withAuthorisedUser("user-2300121", mockAuthConnector, userEmail = None)
 
-      val result = controller.createForm(atarService, Journey.Subscribe).apply(
-        SessionBuilder.buildRequestWithSession(defaultUserId)
-      )
+      val result = controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       status(result) shouldBe OK
     }

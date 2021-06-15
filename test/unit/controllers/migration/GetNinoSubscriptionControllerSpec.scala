@@ -24,14 +24,8 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.GetNinoSubscriptionController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
-  IndividualSubscriptionFlow,
-  RowIndividualFlow,
-  SubscriptionFlowInfo,
-  SubscriptionPage
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CustomsId, Nino}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you_nino
@@ -76,7 +70,7 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
 
   "HaveNinoSubscriptionController createForm" should {
     "return OK and display correct page" in {
-      createForm(Journey.Subscribe) { result =>
+      createForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
         page.title should include("Enter your National Insurance number")
@@ -86,14 +80,14 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
 
   "HaveNinoSubscriptionController submit" should {
     "return BadRequest when no option selected" in {
-      submit(Journey.Subscribe, Map.empty[String, String]) { result =>
+      submit(Map.empty[String, String]) { result =>
         status(result) shouldBe BAD_REQUEST
       }
     }
 
     "return BadRequest when invalidUtr provided" in {
       val invalidNino = "01234567890123"
-      submit(Journey.Subscribe, Map("nino" -> invalidNino)) { result =>
+      submit(Map("nino" -> invalidNino)) { result =>
         status(result) shouldBe BAD_REQUEST
       }
     }
@@ -102,7 +96,7 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
       when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
         .thenReturn(Future.successful(()))
       mockSubscriptionFlow(nextPageFlowUrl)
-      submit(Journey.Subscribe, Map("nino" -> "ab 12 34 56 c")) { result =>
+      submit(Map("nino" -> "ab 12 34 56 c")) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
       }
@@ -117,7 +111,7 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
         when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
           .thenReturn(Future.successful(()))
         mockSubscriptionFlow(nextPageFlowUrl)
-        submit(Journey.Subscribe, Map("nino" -> "ab 12 34 56 c"), true) { result =>
+        submit(Map("nino" -> "ab 12 34 56 c"), true) { result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
         }
@@ -128,11 +122,11 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
     "determine the route for the user" when {
 
       "user is in review mode and UK journey" in {
-        when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(IndividualSubscriptionFlow)
+        when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(IndividualFlow)
         when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
           .thenReturn(Future.successful(()))
         mockSubscriptionFlow(nextPageFlowUrl)
-        submit(Journey.Subscribe, Map("nino" -> "ab 12 34 56 c"), true) { result =>
+        submit(Map("nino" -> "ab 12 34 56 c"), true) { result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers(
             LOCATION
@@ -143,20 +137,16 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
     }
   }
 
-  private def createForm(journey: Journey.Value)(test: Future[Result] => Any) = {
+  private def createForm()(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(
-      test(controller.createForm(atarService, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
-    )
+    await(test(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
-  private def submit(journey: Journey.Value, form: Map[String, String], isInReviewMode: Boolean = false)(
-    test: Future[Result] => Any
-  ) = {
+  private def submit(form: Map[String, String], isInReviewMode: Boolean = false)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     await(
       test(
-        controller.submit(isInReviewMode, atarService, journey).apply(
+        controller.submit(isInReviewMode, atarService).apply(
           SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form)
         )
       )

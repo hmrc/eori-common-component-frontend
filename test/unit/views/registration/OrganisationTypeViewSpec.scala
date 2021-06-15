@@ -19,8 +19,6 @@ package unit.views.registration
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
-import org.scalatest.prop.TableDrivenPropertyChecks.forAll
-import org.scalatest.prop.Tables.Table
 import org.scalatest.{BeforeAndAfter, BeforeAndAfterEach}
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
@@ -29,7 +27,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.Organis
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
@@ -83,30 +80,19 @@ class OrganisationTypeViewSpec
       }
     }
 
-    val userLocations =
-      Table("userLocation", Some(UserLocation.Uk), Some(UserLocation.Eu), Some(UserLocation.ThirdCountry))
+    s"have all the required input fields while on main screen for user location ${UserLocation.Uk}" in {
+      invokeOrganisationTypeWithAuthenticatedUser(userLocation = Some(UserLocation.Uk)) { result =>
+        val html: String = contentAsString(result)
 
-    forAll(userLocations) { userLocation =>
-      val forUk           = userLocation.fold(true)(_ == UserLocation.Uk)
-      val forEu           = userLocation.fold(true)(_ == UserLocation.Eu)
-      val forThirdCountry = userLocation.fold(true)(_ == UserLocation.ThirdCountry)
+        println(contentAsString(result))
 
-      s"have all the required input fields while on main screen for user location ${userLocation.getOrElse("None")}" in {
-        invokeOrganisationTypeWithAuthenticatedUser(userLocation = userLocation) { result =>
-          val html: String = contentAsString(result)
-          html.contains("id=\"organisation-type-field\"") shouldBe true
-          html.contains("id=\"organisation-type-company\"") shouldBe forUk
-          html.contains("id=\"organisation-type-sole-trader\"") shouldBe forUk
-          html.contains("id=\"organisation-type-individual\"") shouldBe forUk
-          html.contains("id=\"organisation-type-partnership\"") shouldBe forUk
-          html.contains("id=\"organisation-type-limited-liability-partnership\"") shouldBe forUk
-          html.contains("id=\"organisation-type-charity-public-body-not-for-profit\"") shouldBe forUk
-          html.contains("id=\"organisation-type-eu-organisation\"") shouldBe forEu
-          html.contains("id=\"organisation-type-eu-individual\"") shouldBe forEu
-          html.contains("id=\"organisation-type-third-country-organisation\"") shouldBe forThirdCountry
-          html.contains("id=\"organisation-type-third-country-sole-trader\"") shouldBe forThirdCountry
-          html.contains("id=\"organisation-type-third-country-individual\"") shouldBe forThirdCountry
-        }
+        html.contains("id=\"organisation-type-field\"") shouldBe true
+        html.contains("id=\"organisation-type-company\"") shouldBe true
+        html.contains("id=\"organisation-type-sole-trader\"") shouldBe true
+        html.contains("id=\"organisation-type-individual\"") shouldBe true
+        html.contains("id=\"organisation-type-partnership\"") shouldBe true
+        html.contains("id=\"organisation-type-limited-liability-partnership\"") shouldBe true
+        html.contains("id=\"organisation-type-charity-public-body-not-for-profit\"") shouldBe true
       }
     }
 
@@ -129,7 +115,7 @@ class OrganisationTypeViewSpec
     val request = maybeOrgType.map { orgType =>
       SessionBuilder.buildRequestWithSessionAndOrgType(userId, orgType.id)
     }.getOrElse(SessionBuilder.buildRequestWithSession(userId))
-    test(organisationTypeController.form(atarService, Journey.Register).apply(request))
+    test(organisationTypeController.form(atarService).apply(request))
   }
 
 }

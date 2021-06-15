@@ -32,7 +32,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   HowCanWeIdentifyYouSubscriptionFlowPage,
   SubscriptionFlowInfo
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
@@ -88,10 +87,7 @@ class HowCanWeIdentifyYouUtrControllerSpec extends ControllerSpec with BeforeAnd
 
   "Loading the page" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
-      mockAuthConnector,
-      controller.createForm(atarService, Journey.Subscribe)
-    )
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(atarService))
 
     "show the form without errors" in {
       showForm(Map.empty) { result =>
@@ -106,7 +102,7 @@ class HowCanWeIdentifyYouUtrControllerSpec extends ControllerSpec with BeforeAnd
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
-      controller.submit(isInReviewMode = false, atarService, Journey.Subscribe)
+      controller.submit(isInReviewMode = false, atarService)
     )
 
     "give a page level error when utr not provided" in {
@@ -186,11 +182,7 @@ class HowCanWeIdentifyYouUtrControllerSpec extends ControllerSpec with BeforeAnd
 
   def showForm(form: Map[String, String], userId: String = defaultUserId)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
-    test(
-      controller.createForm(atarService, Journey.Subscribe).apply(
-        SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
-      )
-    )
+    test(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)))
   }
 
   def submitForm(form: Map[String, String], userId: String = defaultUserId, isInReviewMode: Boolean = false)(
@@ -199,7 +191,7 @@ class HowCanWeIdentifyYouUtrControllerSpec extends ControllerSpec with BeforeAnd
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller
-        .submit(isInReviewMode, atarService, Journey.Subscribe)
+        .submit(isInReviewMode, atarService)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }
@@ -210,7 +202,7 @@ class HowCanWeIdentifyYouUtrControllerSpec extends ControllerSpec with BeforeAnd
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller
-        .submit(isInReviewMode, atarService, Journey.Subscribe)
+        .submit(isInReviewMode, atarService)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }
@@ -222,11 +214,7 @@ class HowCanWeIdentifyYouUtrControllerSpec extends ControllerSpec with BeforeAnd
     when(mockSubscriptionBusinessService.getCachedCustomsId(any[HeaderCarrier]))
       .thenReturn(Future.successful(Some(customsId)))
 
-    test(
-      controller.reviewForm(atarService, Journey.Subscribe).apply(
-        SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
-      )
-    )
+    test(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)))
   }
 
 }

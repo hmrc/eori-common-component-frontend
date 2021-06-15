@@ -289,7 +289,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   }
 
   private def showCreateForm(
-    subscriptionFlow: SubscriptionFlow = OrganisationSubscriptionFlow,
+    subscriptionFlow: SubscriptionFlow = OrganisationFlow,
     orgType: EtmpOrganisationType = CorporateBody
   )(test: Future[Result] => Any) {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
@@ -301,7 +301,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   }
 
   private def showReviewForm(
-    subscriptionFlow: SubscriptionFlow = OrganisationSubscriptionFlow,
+    subscriptionFlow: SubscriptionFlow = OrganisationFlow,
     contactDetailsModel: ContactDetailsModel = contactDetailsModel
   )(test: Future[Result] => Any) {
     withAuthorisedUser(defaultUserId, mockAuthConnector)

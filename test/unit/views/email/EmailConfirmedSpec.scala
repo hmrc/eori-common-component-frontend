@@ -20,7 +20,6 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.email_confirmed
 import util.ViewSpec
 
@@ -44,14 +43,5 @@ class EmailConfirmedSpec extends ViewSpec {
     }
   }
 
-  lazy val migrateDoc: Document = {
-    val result = view(Journey.Subscribe)
-    Jsoup.parse(contentAsString(result))
-  }
-
-  lazy val getEoriDoc: Document = {
-    val result = view(Journey.Register)
-    Jsoup.parse(contentAsString(result))
-  }
-
+  val migrateDoc: Document = Jsoup.parse(contentAsString(view()))
 }

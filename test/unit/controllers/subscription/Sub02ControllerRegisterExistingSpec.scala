@@ -23,7 +23,6 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, EnrolmentIdentifier}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.PdfGeneratorConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller
@@ -33,8 +32,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.migration_success
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription._
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.xi_eori_guidance
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
@@ -50,19 +47,10 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
   private val mockAuthAction                 = authAction(mockAuthConnector)
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSessionCache               = mock[SessionCache]
-  private val mockCdsSubscriber              = mock[CdsSubscriber]
   private val mockPdfGeneratorService        = mock[PdfGeneratorConnector]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
 
-  private val migrationSuccessView            = instanceOf[migration_success]
-  private val sub01OutcomeView                = instanceOf[sub01_outcome_processing]
-  private val sub02RequestNotProcessed        = instanceOf[sub02_request_not_processed]
-  private val sub02SubscriptionInProgressView = instanceOf[sub02_subscription_in_progress]
-  private val sub02EoriAlreadyAssociatedView  = instanceOf[sub02_eori_already_associated]
-  private val sub02EoriAlreadyExists          = instanceOf[sub02_eori_already_exists]
-  private val sub01OutcomeRejected            = instanceOf[sub01_outcome_rejected]
-  private val subscriptionOutcomeView         = instanceOf[subscription_outcome]
-  private val xiEoriGuidanceView              = mock[xi_eori_guidance]
+  private val migrationSuccessView = instanceOf[migration_success]
 
   private val subscriptionController = new Sub02Controller(
     mockAuthAction,
@@ -70,16 +58,7 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
     mockSessionCache,
     mockSubscriptionDetailsService,
     mcc,
-    migrationSuccessView,
-    sub01OutcomeView,
-    sub02RequestNotProcessed,
-    sub02SubscriptionInProgressView,
-    sub02EoriAlreadyAssociatedView,
-    sub02EoriAlreadyExists,
-    sub01OutcomeRejected,
-    subscriptionOutcomeView,
-    xiEoriGuidanceView,
-    mockCdsSubscriber
+    migrationSuccessView
   )(global)
 
   val eoriNumberResponse: String     = "EORI-Number"
@@ -92,14 +71,8 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
 
   val emulatedFailure = new UnsupportedOperationException("Emulated service call failure.")
 
-  override protected def beforeEach(): Unit = {
-    super.beforeEach()
-
-    when(xiEoriGuidanceView.apply()(any(), any())).thenReturn(HtmlFormat.empty)
-  }
-
   override protected def afterEach(): Unit = {
-    reset(mockAuthConnector, mockCdsSubscriber, mockPdfGeneratorService, mockSessionCache, xiEoriGuidanceView)
+    reset(mockAuthConnector, mockPdfGeneratorService, mockSessionCache)
 
     super.afterEach()
   }
@@ -200,16 +173,6 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/completed-enrolment"
       }
-    }
-
-    "display xi eori guidance" in {
-
-      withAuthorisedUser(defaultUserId, mockAuthConnector)
-
-      val result = subscriptionController.xiEoriGuidance()(getRequest)
-
-      status(result) shouldBe OK
-      verify(xiEoriGuidanceView).apply()(any(), any())
     }
   }
 

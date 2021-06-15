@@ -19,7 +19,6 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.ApplicationController._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.partials.{footer, header, styles}
-@import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.JourneyName._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.JourneyExtractor.journey
 @import uk.gov.hmrc.play.views.html.helpers.ReportAProblemLink
@@ -36,7 +35,7 @@ suppressTelephoneNumberDetection: Boolean = true
 @isLoggedIn = @{!request.session.isEmpty && request.session.get("authToken").isDefined}
 
 @titleWithEnding = @{
-    title + " - " + journeyName + " - " + messages("cds.end-of-title")
+    title + " - " + messages("cds.banner.subscription", longName) + " - " + messages("cds.end-of-title")
 }
 
 @titleErr = @{

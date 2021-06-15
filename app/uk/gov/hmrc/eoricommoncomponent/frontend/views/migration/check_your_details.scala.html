@@ -17,7 +17,6 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, ExistingEori, NameIdOrganisationMatchModel}
 @import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, CompanyRegisteredCountry}
 @import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-@import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 @import org.joda.time.LocalDate
 @import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 @import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressLookupParams
@@ -46,8 +45,7 @@
         customsId: Option[CustomsId],
         registeredCountry: Option[CompanyRegisteredCountry],
         addressLookupParams: Option[AddressLookupParams],
-        service: Service,
-        journey: Journey.Value)(implicit request: Request[_], messages: Messages)
+        service: Service)(implicit request: Request[_], messages: Messages)
 
 
     @labelForEUCountry(countryCode: String) = @{
@@ -180,7 +178,7 @@
 
     @addressChangeLink = @{
         if(isAddressLookup) uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.AddressLookupPostcodeController.reviewPage(service)
-        else uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.reviewForm(service, journey)
+        else uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.reviewForm(service)
     }
 
     @isUtrAndNinoEmpty = @{
@@ -212,7 +210,7 @@
                             "org_name",
                             nameLabel,
                             d.name,
-                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameOrgController.reviewForm(service, journey)),
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameOrgController.reviewForm(service)),
                             nameLabel
                         )
                     }
@@ -223,14 +221,14 @@
                             "full-name",
                             messages("subscription.check-your-details.full-name.label"),
                             s"${nd.firstName} ${nd.lastName}",
-                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.reviewForm(service, journey)),
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.reviewForm(service)),
                             messages("subscription.check-your-details.full-name.label")
                         )
                         @summaryRow_di(
                             "date-of-birth",
                             messages("subscription.check-your-details.date-of-birth.label"),
                             formatDate(nd.dateOfBirth),
-                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.reviewForm(service, journey)),
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.reviewForm(service)),
                             messages("subscription.check-your-details.date-of-birth.label")
                         )
                     }
@@ -241,9 +239,9 @@
                         messages("cds.utr.label"),
                         u.id,
                         if(!isThirdCountrySubscription)
-                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController.reviewForm(service, journey))
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController.reviewForm(service))
                         else
-                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.HaveUtrSubscriptionController.reviewForm(service, journey)),
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.HaveUtrSubscriptionController.reviewForm(service)),
                         messages("cds.utr.label")
                     )
                 }
@@ -254,9 +252,9 @@
                             messages("cds.nino.label"),
                             n.id,
                             if(!isThirdCountrySubscription)
-                                Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController.reviewForm(service, journey))
+                                Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController.reviewForm(service))
                             else
-                                Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.HaveNinoSubscriptionController.reviewForm(service, journey)),
+                                Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.HaveNinoSubscriptionController.reviewForm(service)),
                             messages("cds.nino.label")
                         )
                     }
@@ -267,7 +265,7 @@
                             "orgname",
                             nameLabel,
                             n.name,
-                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController.reviewForm(service, journey)),
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController.reviewForm(service)),
                             nameLabel
                         )
                     }
@@ -277,9 +275,9 @@
                             utrLabel,
                             n.id,
                             if(!isThirdCountrySubscription)
-                                Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController.reviewForm(service, journey))
+                                Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController.reviewForm(service))
                             else
-                                Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.HaveUtrSubscriptionController.reviewForm(service, journey)),
+                                Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.HaveUtrSubscriptionController.reviewForm(service)),
                             utrLabel
                         )
                     }
@@ -339,7 +337,7 @@
                             "date-established",
                             messages("cds.date-established.label"),
                             formatDate(de),
-                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController.reviewForm(service, journey)),
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController.reviewForm(service)),
                             messages("cds.date-established.label")
                         )
                     }
@@ -351,7 +349,7 @@
             <p class="govuk-body" id="disclaimer">@messages("cds.form.disclaimer")</p>
 
             <div class="form-group">
-                @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.RegisterWithEoriAndIdController.registerWithEoriAndId(service, journey)) {
+                @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.RegisterWithEoriAndIdController.registerWithEoriAndId(service)) {
                     @CSRF.formField
 
                     <p><input id="continue" class="button" type="submit" value="@messages("cds.form.send")"></p>

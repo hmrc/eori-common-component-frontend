@@ -18,14 +18,11 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
 import org.joda.time.{DateTime, LocalDate}
-import play.api.Logger
 import play.api.i18n.Messages
 import play.api.mvc.{Action, _}
-import uk.gov.hmrc.emailaddress.EmailAddress
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SUB09SubscriptionDisplayConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionDisplayResponse
@@ -40,7 +37,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   TaxEnrolmentsService
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.recovery_registration_exists
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -56,83 +52,26 @@ class SubscriptionRecoveryController @Inject() (
   errorTemplateView: error_template,
   uuidGenerator: RandomUUIDGenerator,
   requestSessionData: RequestSessionData,
-  subscriptionDetailsService: SubscriptionDetailsService,
-  alreadyHaveEori: recovery_registration_exists
+  subscriptionDetailsService: SubscriptionDetailsService
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  private val logger: Logger = Logger(this.getClass)
-
   // End of subscription recovery journey
-  def complete(service: Service, journey: Journey.Value): Action[AnyContent] =
+  def complete(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithServiceAction {
       implicit request => _: LoggedInUserWithEnrolments =>
         val isRowF           = Future.successful(UserLocation.isRow(requestSessionData))
-        val journeyF         = Future.successful(journey)
         val cachedCustomsIdF = subscriptionDetailsService.cachedCustomsId
         val result = for {
           isRow    <- isRowF
-          journey  <- journeyF
           customId <- if (isRow) cachedCustomsIdF else Future.successful(None)
-        } yield (journey, isRow, customId) match {
-          case (Journey.Subscribe, true, Some(_)) => subscribeForCDS(service)    // UK journey
-          case (Journey.Subscribe, true, None)    => subscribeForCDSROW(service) // subscribeForCDSROW //ROW
-          case (Journey.Subscribe, false, _)      => subscribeForCDS(service)    // UK Journey
-          case _                                  => subscribeGetAnEori(service) // Journey Get An EORI
+        } yield (isRow, customId) match {
+          case (true, Some(_)) => subscribeForCDS(service)    // UK journey
+          case (true, None)    => subscribeForCDSROW(service) // subscribeForCDSROW //ROW
+          case (false, _)      => subscribeForCDS(service)    // UK Journey
         }
         result.flatMap(identity)
     }
-
-  def eoriExist(service: Service, journey: Journey.Value): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithServiceAction {
-      implicit request => _: LoggedInUserWithEnrolments =>
-        for {
-          eori <- sessionCache.eori
-        } yield Ok(alreadyHaveEori(eori))
-    }
-
-  private def subscribeGetAnEori(
-    service: Service
-  )(implicit ec: ExecutionContext, request: Request[AnyContent]): Future[Result] = {
-    val result = for {
-      registrationDetails <- sessionCache.registrationDetails
-      safeId          = registrationDetails.safeId.id
-      queryParameters = ("taxPayerID" -> safeId) :: buildQueryParams
-      sub09Result  <- SUB09Connector.subscriptionDisplay(queryParameters)
-      sub01Outcome <- sessionCache.sub01Outcome
-    } yield sub09Result match {
-      case Right(subscriptionDisplayResponse) =>
-        val eori = subscriptionDisplayResponse.responseDetail.EORINo
-          .getOrElse(throw new IllegalStateException("no eori found in the response"))
-
-        sessionCache.saveEori(Eori(eori)).flatMap { _ =>
-          val mayBeEmail = subscriptionDisplayResponse.responseDetail.contactInformation
-            .flatMap(c => c.emailAddress.filter(EmailAddress.isValid(_) && c.emailVerificationTimestamp.isDefined))
-          mayBeEmail.map { email =>
-            onSUB09Success(
-              sub01Outcome.processedDate,
-              email,
-              safeId,
-              Eori(eori),
-              subscriptionDisplayResponse,
-              getDateOfBirthOrDateOfEstablishment(
-                subscriptionDisplayResponse,
-                registrationDetails.dateOfEstablishmentOption,
-                registrationDetails.dateOfBirthOption
-              ),
-              service,
-              Journey.Register
-            )(Redirect(Sub02Controller.end(service)))
-          }.getOrElse {
-            logger.info("Email Missing")
-            Future.successful(Redirect(SubscriptionRecoveryController.eoriExist(service, Journey.Register)))
-          }
-        }
-      case Left(_) =>
-        Future.successful(InternalServerError(errorTemplateView()))
-    }
-    result.flatMap(identity)
-  }
 
   private def subscribeForCDS(
     service: Service

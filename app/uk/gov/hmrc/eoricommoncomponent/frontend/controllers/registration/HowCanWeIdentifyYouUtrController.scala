@@ -26,7 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.HowCanWeIdentifyYouSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.subscriptionUtrForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
@@ -49,29 +49,26 @@ class HowCanWeIdentifyYouUtrController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+  def createForm(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
-        populateView(service, journey, isInReviewMode = false)
+        populateView(service, isInReviewMode = false)
     }
 
-  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+  def reviewForm(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
-        populateView(service, journey, isInReviewMode = true)
+        populateView(service, isInReviewMode = true)
     }
 
-  private def populateView(service: Service, journey: Journey.Value, isInReviewMode: Boolean)(implicit
-    hc: HeaderCarrier,
-    request: Request[_]
-  ) =
+  private def populateView(service: Service, isInReviewMode: Boolean)(implicit hc: HeaderCarrier, request: Request[_]) =
     subscriptionBusinessService.getCachedCustomsId.map {
       case Some(Utr(id)) =>
         Ok(
           howCanWeIdentifyYouView(
             subscriptionUtrForm.fill(IdMatchModel(id)),
             isInReviewMode,
-            routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service, journey)
+            routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service)
           )
         )
       case _ =>
@@ -79,12 +76,12 @@ class HowCanWeIdentifyYouUtrController @Inject() (
           howCanWeIdentifyYouView(
             subscriptionUtrForm,
             isInReviewMode,
-            routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service, journey)
+            routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service)
           )
         )
     }
 
-  def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
+  def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionUtrForm
         .bindFromRequest()
@@ -95,15 +92,15 @@ class HowCanWeIdentifyYouUtrController @Inject() (
                 howCanWeIdentifyYouView(
                   invalidForm,
                   isInReviewMode,
-                  routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service, journey)
+                  routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service)
                 )
               )
             ),
-          form => storeId(form, isInReviewMode, service, journey)
+          form => storeId(form, isInReviewMode, service)
         )
     }
 
-  private def storeId(formData: IdMatchModel, inReviewMode: Boolean, service: Service, journey: Journey.Value)(implicit
+  private def storeId(formData: IdMatchModel, inReviewMode: Boolean, service: Service)(implicit
     hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] =
@@ -112,7 +109,7 @@ class HowCanWeIdentifyYouUtrController @Inject() (
       .map(
         _ =>
           if (inReviewMode)
-            Redirect(DetermineReviewPageController.determineRoute(service, journey))
+            Redirect(DetermineReviewPageController.determineRoute(service))
           else if (requestSessionData.isUKJourney)
             Redirect(AddressLookupPostcodeController.displayPage(service))
           else

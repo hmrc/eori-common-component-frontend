@@ -34,7 +34,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameDobSol
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.enter_your_details
 import uk.gov.hmrc.http.HeaderCarrier
@@ -53,12 +52,12 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
   protected override val submitInCreateModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController
-      .submit(isInReviewMode = false, atarService, Journey.Subscribe)
+      .submit(isInReviewMode = false, atarService)
       .url
 
   protected override val submitInReviewModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController
-      .submit(isInReviewMode = true, atarService, Journey.Subscribe)
+      .submit(isInReviewMode = true, atarService)
       .url
 
   private val mockRequestSessionData   = mock[RequestSessionData]
@@ -144,10 +143,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
   "Viewing the create form " should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
-      mockAuthConnector,
-      controller.createForm(atarService, Journey.Subscribe)
-    )
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(atarService))
 
     "display back link correctly" in {
       showCreateForm()(verifyBackLinkInCreateModeRegister)
@@ -189,10 +185,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
   "Viewing the review form " should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
-      mockAuthConnector,
-      controller.reviewForm(atarService, Journey.Subscribe)
-    )
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.reviewForm(atarService))
 
     "display relevant data in form fields when subscription details exist in the cache" in {
       when(mockSubscriptionBusinessService.getCachedSubscriptionNameDobViewModel(any()))
@@ -226,7 +219,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
-      controller.submit(isInReviewMode = false, atarService, Journey.Subscribe)
+      controller.submit(isInReviewMode = false, atarService)
     )
 
     "save the details" in {
@@ -468,7 +461,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
-      controller.submit(isInReviewMode = true, atarService, Journey.Subscribe)
+      controller.submit(isInReviewMode = true, atarService)
     )
 
     "allow resubmission in review mode when details are invalid" in {
@@ -476,7 +469,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     }
 
     "redirect to the review page when details are valid" in {
-      submitFormInReviewMode(createFormAllFieldsNameDobMap)(verifyRedirectToReviewPage(Journey.Subscribe))
+      submitFormInReviewMode(createFormAllFieldsNameDobMap)(verifyRedirectToReviewPage())
     }
   }
 
@@ -542,7 +535,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     withAuthorisedUser(userId, mockAuthConnector)
     when(mockRequestSessionData.selectedUserLocation(any())).thenReturn(Some(location))
 
-    val result = controller.submit(isInReviewMode = false, atarService, Journey.Subscribe)(
+    val result = controller.submit(isInReviewMode = false, atarService)(
       SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
     )
     test(result)
@@ -553,7 +546,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
   ) {
     withAuthorisedUser(userId, mockAuthConnector)
 
-    val result = controller.submit(isInReviewMode = true, atarService, Journey.Subscribe)(
+    val result = controller.submit(isInReviewMode = true, atarService)(
       SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
     )
     test(result)
@@ -565,7 +558,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
 
     val result =
-      controller.createForm(atarService, Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+      controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     test(result)
   }
 
@@ -577,7 +570,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
       .thenReturn(Future.successful(NameDobSoleTraderPage.filledValues))
 
     val result =
-      controller.reviewForm(atarService, Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+      controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     test(result)
   }
 
