@@ -21,11 +21,7 @@ import org.joda.time.LocalDate
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
-  AddressViewModel,
-  VatDetails,
-  VatEUDetailsModel
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, VatEUDetailsModel}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -33,14 +29,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SubscriptionBusinessService @Inject() (cdsFrontendDataCache: SessionCache)(implicit ec: ExecutionContext) {
-
-  def getCachedCompanyShortName(implicit hc: HeaderCarrier): Future[BusinessShortName] =
-    cdsFrontendDataCache.subscriptionDetails map {
-      _.businessShortName.getOrElse(throw new IllegalStateException("No Short Name Cached"))
-    }
-
-  def companyShortName(implicit hc: HeaderCarrier): Future[Option[BusinessShortName]] =
-    cdsFrontendDataCache.subscriptionDetails map (_.businessShortName)
 
   def cachedContactDetailsModel(implicit hc: HeaderCarrier): Future[Option[ContactDetailsModel]] =
     cdsFrontendDataCache.subscriptionDetails map (_.contactDetails)
@@ -62,27 +50,6 @@ class SubscriptionBusinessService @Inject() (cdsFrontendDataCache: SessionCache)
 
   def cachedEoriNumber(implicit hc: HeaderCarrier): Future[Option[String]] =
     cdsFrontendDataCache.subscriptionDetails map (_.eoriNumber)
-
-  def getCachedPersonalDataDisclosureConsent(implicit hc: HeaderCarrier): Future[Boolean] =
-    cdsFrontendDataCache.subscriptionDetails map {
-      _.personalDataDisclosureConsent.getOrElse(
-        throw new IllegalStateException("No Personal Data Disclosure Consent Cached")
-      )
-    }
-
-  def getCachedVatRegisteredUk(implicit hc: HeaderCarrier): Future[Boolean] =
-    cdsFrontendDataCache.subscriptionDetails map {
-      _.vatRegisteredUk.getOrElse(
-        throw new IllegalStateException("Whether the business is VAT registered in the UK has not been Cached")
-      )
-    }
-
-  def getCachedVatRegisteredEu(implicit hc: HeaderCarrier): Future[Boolean] =
-    cdsFrontendDataCache.subscriptionDetails map {
-      _.vatRegisteredEu.getOrElse(
-        throw new IllegalStateException("Whether the business is VAT registered in the EU has not been Cached")
-      )
-    }
 
   def addressOrException(implicit hc: HeaderCarrier): Future[AddressViewModel] =
     cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
@@ -134,21 +101,6 @@ class SubscriptionBusinessService @Inject() (cdsFrontendDataCache: SessionCache)
   def getCachedNinoOrUtrChoice(implicit hc: HeaderCarrier): Future[Option[String]] =
     cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
       subscriptionDetails.formData.ninoOrUtrChoice
-    }
-
-  def getCachedSubscriptionIdViewModel(implicit hc: HeaderCarrier): Future[IdMatchModel] =
-    cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
-      subscriptionDetails.idDetails.getOrElse(throw new IllegalStateException("No Nino/Id Details Cached"))
-    }
-
-  def maybeCachedSubscriptionIdViewModel(implicit hc: HeaderCarrier): Future[Option[IdMatchModel]] =
-    cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
-      subscriptionDetails.idDetails
-    }
-
-  def getCachedUkVatDetails(implicit hc: HeaderCarrier): Future[Option[VatDetails]] =
-    cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
-      subscriptionDetails.ukVatDetails
     }
 
   def getCachedVatEuDetailsModel(implicit hc: HeaderCarrier): Future[Seq[VatEUDetailsModel]] =

@@ -84,8 +84,6 @@ class OrganisationTypeViewSpec
       invokeOrganisationTypeWithAuthenticatedUser(userLocation = Some(UserLocation.Uk)) { result =>
         val html: String = contentAsString(result)
 
-        println(contentAsString(result))
-
         html.contains("id=\"organisation-type-field\"") shouldBe true
         html.contains("id=\"organisation-type-company\"") shouldBe true
         html.contains("id=\"organisation-type-sole-trader\"") shouldBe true

@@ -106,7 +106,6 @@ class AddressControllerSpec
     when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(organisationRegistrationDetails)
     when(mockCdsFrontendDataCache.saveRegistrationDetails(any[RegistrationDetails])(any[HeaderCarrier]))
       .thenReturn(Future.successful(true))
-    when(mockRequestSessionData.mayBeUnMatchedUser(any[Request[AnyContent]])).thenReturn(None)
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]]))
       .thenReturn(Some(mockOrganisationType))
     registerSaveDetailsMockSuccess()
@@ -127,7 +126,7 @@ class AddressControllerSpec
 
   "Subscription Address Controller form in create mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(atarService))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(atarService))
 
     "display title as 'Enter your business address'" in {
       showCreateForm() { result =>
@@ -230,7 +229,7 @@ class AddressControllerSpec
 
   "submitting the form with all mandatory fields filled when in create mode for organisation type" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
       controller.submit(isInReviewMode = false, atarService)
     )

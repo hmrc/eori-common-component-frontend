@@ -119,15 +119,5 @@ class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach w
 
       status(result) shouldBe OK
     }
-
-    "not apply to Get Your EORI journey" in {
-      AuthBuilder.withAuthorisedUser("user-1236213", mockAuthConnector, userEmail = Some("not@example.com"))
-
-      val result = controller
-        .download()
-        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/register/", defaultUserId))
-
-      status(result) shouldBe OK
-    }
   }
 }

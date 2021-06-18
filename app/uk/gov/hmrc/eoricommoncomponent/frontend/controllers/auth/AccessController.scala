@@ -20,13 +20,13 @@ import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Request, Result}
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Organisation}
 import uk.gov.hmrc.auth.core.{AffinityGroup, CredentialRole, Enrolment, User}
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{routes, JourneyTypeFromUrl}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName.service
 
 import scala.concurrent.Future
 
-trait AccessController extends JourneyTypeFromUrl with AllowlistVerification {
+trait AccessController extends AllowlistVerification {
 
   def permitUserOrRedirect(
     affinityGroup: Option[AffinityGroup],
@@ -38,8 +38,7 @@ trait AccessController extends JourneyTypeFromUrl with AllowlistVerification {
     def hasEnrolment(implicit request: Request[AnyContent]): Boolean =
       Service.serviceFromRequest.exists(service => enrolments.exists(_.key.equalsIgnoreCase(service.enrolmentKey)))
 
-    def isPermittedEmail(email: Option[String])(implicit request: Request[AnyContent]): Boolean =
-      journeyFromUrl == Journey.Register || isAllowlisted(email)
+    def isPermittedEmail(email: Option[String])(implicit request: Request[AnyContent]): Boolean = isAllowlisted(email)
 
     def isPermittedUserType: Boolean =
       affinityGroup match {

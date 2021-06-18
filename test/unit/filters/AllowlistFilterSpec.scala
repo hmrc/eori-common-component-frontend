@@ -51,22 +51,6 @@ class AllowlistFilterSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
     super.afterEach()
   }
 
-  "AllowlistFilter on restricted route" should {
-
-    "Do nothing" in {
-
-      when(next.apply(any[RequestHeader])).thenReturn(Future.successful(Results.Ok))
-      when(config.allowlistReferrers).thenReturn(Seq("123"))
-
-      val request =
-        FakeRequest("GET", "/customs-enrolment-services/register").withHeaders(HeaderNames.REFERER -> "123")
-
-      val result = await(filter.apply(next)(request))
-
-      result.session(request).get("allowlisted") shouldBe None
-    }
-  }
-
   "AllowlistFilter on permitted route" should {
 
     val requestOnPermittedRoute = FakeRequest("GET", "/customs-enrolment-services/subscribe")

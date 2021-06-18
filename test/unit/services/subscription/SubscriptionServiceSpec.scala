@@ -30,8 +30,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
   SubscriptionRequest,
   SubscriptionResponse
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.EtmpTypeOfPerson
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -184,111 +182,6 @@ class SubscriptionServiceSpec
         subscriptionSuccessResult,
         result.actualConnectorRequest
       )
-    }
-  }
-
-  "Create request" should {
-
-    "truncate sic code to 4 numbers by removing the rightmost number" in {
-      val service = constructService(_ => None)
-      val holder  = fullyPopulatedSubscriptionDetails.copy(sicCode = Some("12750"))
-      val req     = service.createRequest(organisationRegistrationDetails, holder, None, atarService)
-
-      req.subscriptionCreateRequest.requestDetail.principalEconomicActivity shouldBe Some("1275")
-    }
-
-    "replace empty city with a dash" in {
-      val service = constructService(_ => None)
-      val holder = fullyPopulatedSubscriptionDetails.copy(addressDetails =
-        Some(AddressViewModel("some street", "", Some("AB99 3DW"), "GB"))
-      )
-      val req = service.createRequest(organisationRegistrationDetails, holder, None, atarService)
-
-      req.subscriptionCreateRequest.requestDetail.CDSEstablishmentAddress.city shouldBe "-"
-    }
-
-    "replace empty postcode with a None" in {
-      val service = constructService(_ => None)
-      val holder = fullyPopulatedSubscriptionDetails.copy(addressDetails =
-        Some(AddressViewModel("some street", "", Some(""), "GB"))
-      )
-      val req = service.createRequest(organisationRegistrationDetails, holder, None, atarService)
-
-      req.subscriptionCreateRequest.requestDetail.CDSEstablishmentAddress.postalCode shouldBe None
-    }
-
-    "have correct person type for Individual Subscription" in {
-      val service = constructService(_ => None)
-      val holder  = fullyPopulatedSubscriptionDetails.copy(sicCode = Some("12750"))
-      val req     = service.createRequest(individualRegistrationDetails, holder, None, atarService)
-
-      req.subscriptionCreateRequest.requestDetail.typeOfPerson shouldBe Some(EtmpTypeOfPerson.NaturalPerson)
-    }
-
-    "throw an exception when unexpected registration details received" in {
-      val service = constructService(_ => None)
-      val holder  = fullyPopulatedSubscriptionDetails.copy(sicCode = Some("12750"))
-      val thrown = intercept[IllegalStateException] {
-        service.createRequest(RegistrationDetails.rdSafeId(SafeId("safeid")), holder, None, atarService)
-      }
-      thrown.getMessage shouldBe "Incomplete cache cannot complete journey"
-    }
-
-    "throw an exception when date of Establishment is None" in {
-      val service = constructService(_ => None)
-      val holder  = fullyPopulatedSubscriptionDetails.copy(dateEstablished = None)
-      val thrown = intercept[IllegalStateException] {
-        service.createRequest(
-          organisationRegistrationDetails,
-          holder,
-          Some(CdsOrganisationType("third-country-organisation")),
-          atarService
-        )
-      }
-      thrown.getMessage shouldBe "Date Established must be present for an organisation subscription"
-    }
-
-    "populate the SubscriptionCreate Request when there is a plus (+) sign in the request on telephone number" in {
-      val service = constructService(_ => None)
-      val holder  = fullyPopulatedSubscriptionDetailsWithPlusSignInTelephone
-      val req = service.createRequest(
-        organisationRegistrationDetails,
-        holder,
-        Some(CdsOrganisationType("company")),
-        atarService
-      )
-      req.subscriptionCreateRequest.requestDetail.contactInformation.flatMap(_.telephoneNumber) shouldBe Some(
-        "+01632961234"
-      )
-
-    }
-
-    "populate the SubscriptionCreate Request when there is a plus (+) sign in the request on fax number" in {
-      val service = constructService(_ => None)
-      val holder  = fullyPopulatedSubscriptionDetailsWithPlusSignInFaxNumber
-      val req = service.createRequest(
-        organisationRegistrationDetails,
-        holder,
-        Some(CdsOrganisationType("company")),
-        atarService
-      )
-      req.subscriptionCreateRequest.requestDetail.contactInformation.flatMap(_.faxNumber) shouldBe Some("+01632961234")
-    }
-
-    "populate the SubscriptionCreate Request when there is a plus (+) sign in the request on telephone and fax number" in {
-      val service = constructService(_ => None)
-      val holder  = fullyPopulatedSubscriptionDetailsWithPlusSignInTelAndFaxNumber
-      val req = service.createRequest(
-        organisationRegistrationDetails,
-        holder,
-        Some(CdsOrganisationType("company")),
-        atarService
-      )
-      req.subscriptionCreateRequest.requestDetail.contactInformation.flatMap(_.faxNumber) shouldBe Some("+01632961235")
-      req.subscriptionCreateRequest.requestDetail.contactInformation.flatMap(_.telephoneNumber) shouldBe Some(
-        "+01632961234"
-      )
-
     }
   }
 

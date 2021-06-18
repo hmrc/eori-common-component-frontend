@@ -111,7 +111,7 @@ class DateOfEstablishmentControllerSpec
 
   "Loading the page in create mode for subscription rest of the world" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(atarService))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(atarService))
 
     "display the form" in {
       val helpAndSupportLabelXpath: String = "//*[@id='helpAndSupport']"
@@ -129,7 +129,7 @@ class DateOfEstablishmentControllerSpec
 
   "Loading the page in create mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(atarService))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(atarService))
 
     "display the form" in {
       showCreateForm() { result =>
@@ -224,7 +224,7 @@ class DateOfEstablishmentControllerSpec
 
   "Loading the page in review mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.reviewForm(atarService))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.reviewForm(atarService))
 
     "display the form" in {
       showReviewForm() { result =>
@@ -341,7 +341,7 @@ class DateOfEstablishmentControllerSpec
 
   "Submitting the valid form in create mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
       controller.submit(isInReviewMode = false, atarService)
     )

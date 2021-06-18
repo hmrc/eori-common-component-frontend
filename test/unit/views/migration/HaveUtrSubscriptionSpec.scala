@@ -22,7 +22,7 @@ import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, UtrMatchModel}
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.utrForm
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.haveUtrForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_utr_subscription
 import util.ViewSpec
 
@@ -30,8 +30,8 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
 
   implicit val request = withFakeCSRF(FakeRequest())
 
-  private val standardForm: Form[UtrMatchModel] = utrForm
-  private val noOptionSelectedForm              = utrForm.bind(Map.empty[String, String])
+  private val standardForm: Form[UtrMatchModel] = haveUtrForm
+  private val noOptionSelectedForm              = haveUtrForm.bind(Map.empty[String, String])
 
   private val view = instanceOf[match_utr_subscription]
 

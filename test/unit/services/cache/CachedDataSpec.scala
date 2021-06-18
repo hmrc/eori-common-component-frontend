@@ -59,12 +59,6 @@ class CachedDataSpec extends UnitSpec with MockitoSugar {
         )
       }
 
-      "registrationInfo missing " in {
-        intercept[Exception](CachedData().registrationInfo(sessionId)).getMessage shouldBe errorMsg(
-          CachedData.regInfoKey
-        )
-      }
-
       "email missing " in {
         intercept[Exception](CachedData().email(sessionId)).getMessage shouldBe errorMsg(CachedData.emailKey)
       }

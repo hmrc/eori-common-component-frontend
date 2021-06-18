@@ -27,7 +27,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.{
   RegisterWithIDResponse
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.registration.RegistrationDisplayResponse
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 
 @Singleton
 class RegistrationDetailsCreator {
@@ -139,26 +138,6 @@ class RegistrationDetailsCreator {
     )
   }
 
-  def registrationAddress(orgAddress: SixLineAddressMatchModel): Address =
-    Address(
-      orgAddress.lineOne,
-      orgAddress.lineTwo,
-      Some(orgAddress.lineThree),
-      orgAddress.lineFour,
-      orgAddress.postcode,
-      orgAddress.country
-    )
-
-  def registrationAddressFromAddressViewModel(addressViewModel: AddressViewModel): Address =
-    Address(
-      addressViewModel.street,
-      None,
-      Some(addressViewModel.city),
-      None,
-      addressViewModel.postcode,
-      addressViewModel.countryCode
-    )
-
   def registrationDetails(
     response: RegisterWithoutIDResponse,
     ind: IndividualNameAndDateOfBirth,
@@ -181,58 +160,6 @@ class RegistrationDetailsCreator {
       customsId = None
     )
   }
-
-  def registrationDetails(customsId: Option[CustomsId] = None)(response: RegistrationInfo): RegistrationDetails = {
-    val address = Address(
-      response.lineOne,
-      response.lineTwo,
-      response.lineThree,
-      response.lineFour,
-      response.postcode,
-      response.country
-    )
-
-    response match {
-      case i: IndividualRegistrationInfo =>
-        createRegistrationDetailsIndividual(i, address, customsId)
-      case o: OrgRegistrationInfo =>
-        createRegistrationDetailsOrganisation(o, address, customsId)
-    }
-  }
-
-  private def createRegistrationDetailsIndividual(
-    individualResponse: IndividualRegistrationInfo,
-    address: Address,
-    customsId: Option[CustomsId]
-  ): RegistrationDetailsIndividual = {
-    val name = List(
-      Some(individualResponse.firstName),
-      individualResponse.middleName,
-      Some(individualResponse.lastName)
-    ).flatten mkString " "
-    individualResponse.dateOfBirth.fold(ifEmpty =
-      throw new IllegalArgumentException("Date of Birth is not provided in registration info response")
-    )(
-      dateOfBirth =>
-        RegistrationDetails
-          .individual(individualResponse.taxPayerId.id, SafeId(""), name, address, dateOfBirth, customsId = customsId)
-    )
-  }
-
-  private def createRegistrationDetailsOrganisation(
-    organisationResponse: OrgRegistrationInfo,
-    address: Address,
-    maybeCustomsId: Option[CustomsId]
-  ): RegistrationDetailsOrganisation =
-    RegistrationDetails.organisation(
-      organisationResponse.taxPayerId.id,
-      SafeId(""),
-      organisationResponse.name,
-      address,
-      customsId = maybeCustomsId,
-      dateEstablished = None,
-      organisationResponse.organisationType.map(EtmpOrganisationType.apply)
-    )
 
   def registrationDetails(response: RegistrationDisplayResponse): RegistrationDetails = {
     val RegistrationDisplayResponse(responseCommon, Some(responseDetail)) =

@@ -21,7 +21,6 @@ import javax.inject.Inject
 import play.api.mvc._
 import play.mvc.Http.HeaderNames
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.JourneyType
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,15 +29,12 @@ class AllowlistFilter @Inject() (appConfig: AppConfig, sessionCookieBaker: Sessi
   ec: ExecutionContext
 ) extends Filter {
 
-  val allowlistJourneys: Set[String] = Set(JourneyType.Subscribe)
-
   override def apply(next: RequestHeader => Future[Result])(rh: RequestHeader): Future[Result] = {
     val permittedReferer = rh.headers
       .get(HeaderNames.REFERER)
       .exists(referer => appConfig.allowlistReferrers.exists(allowed => referer.contains(allowed)))
-    val journey = journeyType(rh)
 
-    if (journey.exists(allowlistJourneys.contains) && permittedReferer) {
+    if (permittedReferer) {
       val allowlistedSession: Session = rh.session + ("allowlisted" -> "true")
       val cookies: Seq[Cookie]        = (rh.cookies ++ Seq(sessionCookieBaker.encodeAsCookie(allowlistedSession))).toSeq
       val headers                     = rh.headers.add(HeaderNames.COOKIE -> Cookies.encodeCookieHeader(cookies))
@@ -49,8 +45,5 @@ class AllowlistFilter @Inject() (appConfig: AppConfig, sessionCookieBaker: Sessi
     } else
       next(rh)
   }
-
-  private def journeyType(request: RequestHeader): Option[String] =
-    "(?<=/customs-enrolment-services/)([^\\/]*)".r.findFirstIn(request.path)
 
 }

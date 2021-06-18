@@ -19,15 +19,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging
 import org.joda.time.format.ISODateTimeFormat
 import org.joda.time.{DateTime, LocalDate}
 import play.api.libs.json._
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation.{postCodeMandatoryCountryCodes, postcodeRegex}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
-
-case class Header(originatingSystem: String, requestTimeStamp: String, correlationId: String)
-
-object Header {
-  implicit val jsonFormat = Json.format[Header]
-}
 
 case class Address(
   addressLine1: String,
@@ -36,18 +28,7 @@ case class Address(
   addressLine4: Option[String],
   postalCode: Option[String],
   countryCode: String
-) {
-
-  private def isValidCountry: Boolean     = Countries.all.exists(_.countryCode == countryCode)
-  private def hasValidPostcode: Boolean   = this.postalCode.exists(_.matches(postcodeRegex.regex))
-  private def isPostcodeRequired: Boolean = postCodeMandatoryCountryCodes.contains(countryCode)
-
-  def isValidAddress(): Boolean =
-    if (isValidCountry)
-      if (isPostcodeRequired) hasValidPostcode else true
-    else false
-
-}
+)
 
 object Address {
   implicit val jsonFormat = Json.format[Address]

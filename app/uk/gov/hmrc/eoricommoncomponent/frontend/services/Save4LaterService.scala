@@ -54,18 +54,6 @@ class Save4LaterService @Inject() (save4LaterConnector: Save4LaterConnector) {
     save4LaterConnector.put[EmailStatus](groupId.id, emailKey, emailStatus)
   }
 
-  def fetchOrgType(groupId: GroupId)(implicit hc: HeaderCarrier): Future[Option[CdsOrganisationType]] = {
-    logger.debug(s"fetching OrganisationType for groupId $groupId")
-    save4LaterConnector
-      .get[CdsOrganisationType](groupId.id, orgTypeKey)
-  }
-
-  def fetchSafeId(groupId: GroupId)(implicit hc: HeaderCarrier): Future[Option[SafeId]] = {
-    logger.debug(s"fetching SafeId for groupId $groupId")
-    save4LaterConnector
-      .get[SafeId](groupId.id, safeIdKey)
-  }
-
   def fetchEmail(groupId: GroupId)(implicit hc: HeaderCarrier): Future[Option[EmailStatus]] = {
     logger.debug(s"fetching EmailStatus groupId $groupId")
     save4LaterConnector
@@ -95,7 +83,6 @@ class Save4LaterService @Inject() (save4LaterConnector: Save4LaterConnector) {
         case Some(cacheIds) => cacheIds.serviceCode.flatMap(Service.withName)
         case _              => None
       }
-
   }
 
 }

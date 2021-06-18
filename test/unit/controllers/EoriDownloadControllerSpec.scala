@@ -57,7 +57,7 @@ class EoriDownloadControllerSpec extends ControllerSpec with AuthActionMock {
 
   "Download" should {
 
-    assertNotLoggedInUserShouldBeRedirectedToLoginPage(mockAuthConnector, "EORI download", controller.download())
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.download())
 
     "download EORI PDF for an authenticated user" in {
       val mockSubscribeOutcome = mock[Sub02Outcome]

@@ -22,7 +22,6 @@ import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.IndividualName
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.formatInput
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 sealed trait CustomsId {
   def id: String
@@ -73,15 +72,6 @@ object GroupId {
 case class CacheIds(internalId: InternalId, safeId: SafeId, serviceCode: Option[String])
 
 object CacheIds {
-
-  def apply(mayBeInternalId: Option[String], mayBeSafeId: Option[String], mayBeService: Option[Service]): CacheIds = {
-    val internalId = InternalId(mayBeInternalId.getOrElse(throw new IllegalArgumentException("InternalId missing")))
-    val safeId     = SafeId(mayBeSafeId.getOrElse(throw new IllegalArgumentException("SafeId missing")))
-    val service    = mayBeService.map(_.code)
-
-    new CacheIds(internalId, safeId, service)
-  }
-
   implicit val jsonFormat                                = Json.format[CacheIds]
   implicit def toJsonFormat(cacheIds: CacheIds): JsValue = Json.toJson(cacheIds)
 }
@@ -131,8 +121,6 @@ object CustomsId {
 
 case class UserLocationDetails(location: Option[String])
 
-case class JourneyTypeDetails(journeyType: String)
-
 trait NameIdOrganisationMatch {
   def name: String
   def id: String
@@ -158,28 +146,8 @@ object NameOrganisationMatchModel {
   implicit val jsonFormat = Json.format[NameOrganisationMatchModel]
 }
 
-case class EuNameIdOrganisationMatchModel(name: String, id: String, dateEstablished: LocalDate)
-    extends NameIdOrganisationMatch
-
-case class EuIndividualMatch(
-  firstName: String,
-  middleName: Option[String],
-  lastName: String,
-  dateOfBirth: LocalDate,
-  matchingId: String
-)
-
 case class YesNo(isYes: Boolean) {
   def isNo: Boolean = !isYes
-}
-
-case class NinoMatch(firstName: String, lastName: String, dateOfBirth: LocalDate, nino: String)
-
-object NinoMatch {
-
-  def apply(firstName: String, lastName: String, dateOfBirth: LocalDate, nino: String): NinoMatch =
-    new NinoMatch(firstName, lastName, dateOfBirth, formatInput(nino))
-
 }
 
 trait NameDobMatch {
@@ -199,15 +167,6 @@ case class NameDobMatchModel(firstName: String, middleName: Option[String], last
 
 object NameDobMatchModel {
   implicit val jsonFormat = Json.format[NameDobMatchModel]
-}
-
-case class NinoOrUtr(nino: Option[String], utr: Option[String], ninoOrUtrRadio: Option[String])
-
-object NinoOrUtr {
-
-  def apply(nino: Option[String], utr: Option[String], ninoOrUtrRadio: Option[String]): NinoOrUtr =
-    new NinoOrUtr(formatInput(nino), formatInput(utr), ninoOrUtrRadio)
-
 }
 
 case class NinoOrUtrChoice(ninoOrUtrRadio: Option[String])

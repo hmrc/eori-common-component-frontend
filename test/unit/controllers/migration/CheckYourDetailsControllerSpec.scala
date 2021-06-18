@@ -83,7 +83,7 @@ class CheckYourDetailsControllerSpec
 
   "Reviewing the details" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.reviewDetails(atarService))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.reviewDetails(atarService))
 
     "return ok when data has been provided" in {
       when(mockCdsDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(existingOrganisationRegistrationDetails)

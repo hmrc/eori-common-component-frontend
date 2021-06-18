@@ -29,9 +29,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
 @Singleton
 class RequestSessionData {
 
-  def uriBeforeSubscriptionFlow(implicit request: Request[AnyContent]): Option[String] =
-    request.session.data.get(RequestSessionDataKeys.uriBeforeSubscriptionFlow)
-
   def storeUserSubscriptionFlow(subscriptionFlow: SubscriptionFlow, uriBeforeSubscriptionFlow: String)(implicit
     request: Request[AnyContent]
   ): Session =
@@ -47,25 +44,8 @@ class RequestSessionData {
   def userSelectedOrganisationType(implicit request: Request[AnyContent]): Option[CdsOrganisationType] =
     request.session.data.get(RequestSessionDataKeys.selectedOrganisationType).map(CdsOrganisationType.forId)
 
-  def mayBeUnMatchedUser(implicit request: Request[AnyContent]): Option[String] =
-    request.session.data.get(RequestSessionDataKeys.unmatchedUser)
-
   def sessionWithOrganisationTypeAdded(existingSession: Session, organisationType: CdsOrganisationType): Session =
     existingSession + (RequestSessionDataKeys.selectedOrganisationType -> organisationType.id)
-
-  def sessionWithOrganisationTypeAdded(
-    organisationType: CdsOrganisationType
-  )(implicit request: Request[AnyContent]): Session =
-    sessionWithOrganisationTypeAdded(request.session, organisationType)
-
-  def sessionWithoutOrganisationType(implicit request: Request[AnyContent]): Session =
-    request.session - RequestSessionDataKeys.selectedOrganisationType
-
-  def sessionForStartAgain(implicit request: Request[AnyContent]): Session =
-    request.session -
-      RequestSessionDataKeys.subscriptionFlow -
-      RequestSessionDataKeys.selectedOrganisationType -
-      RequestSessionDataKeys.uriBeforeSubscriptionFlow
 
   def selectedUserLocation(implicit request: Request[AnyContent]): Option[String] = {
     val userLocation = request.session.data.get(RequestSessionDataKeys.selectedUserLocation)
@@ -83,19 +63,10 @@ class RequestSessionData {
   def sessionWithUserLocationAdded(userLocation: String)(implicit request: Request[AnyContent]): Session =
     request.session + (RequestSessionDataKeys.selectedUserLocation -> userLocation)
 
-  def existingSessionWithUserLocationAdded(existingSession: Session, userLocation: String): Session =
-    existingSession + (RequestSessionDataKeys.selectedUserLocation -> userLocation)
-
-  def sessionWithUnMatchedUser(unmatched: Boolean = false)(implicit request: Request[AnyContent]): Session =
-    request.session + (RequestSessionDataKeys.unmatchedUser -> unmatched.toString)
-
   def isPartnership(implicit request: Request[AnyContent]): Boolean = userSelectedOrganisationType.fold(false) {
     oType =>
       oType == CdsOrganisationType.Partnership || oType == CdsOrganisationType.LimitedLiabilityPartnership
   }
-
-  def isCharity(implicit request: Request[AnyContent]): Boolean =
-    userSelectedOrganisationType.fold(false)(oType => oType == CdsOrganisationType.CharityPublicBodyNotForProfit)
 
   def isCompany(implicit request: Request[AnyContent]): Boolean = userSelectedOrganisationType.fold(false) { oType =>
     oType == CdsOrganisationType.Company
@@ -124,5 +95,4 @@ object RequestSessionDataKeys {
   val selectedUserLocation      = "selected-user-location"
   val subscriptionFlow          = "subscription-flow"
   val uriBeforeSubscriptionFlow = "uri-before-subscription-flow"
-  val unmatchedUser             = "unmatched-user"
 }

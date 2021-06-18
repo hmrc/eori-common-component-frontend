@@ -17,51 +17,12 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription
 
 import org.joda.time.LocalDate
-import play.api.data.Form
-import play.api.data.Forms._
 import play.api.libs.json.JodaWrites._
 import play.api.libs.json.JodaReads._
-import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.libs.json.{Format, Json}
-import uk.gov.hmrc.eoricommoncomponent.frontend.DateConverter
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.VatIdentification
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils._
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation._
 
-case class VatDetails(postcode: String, number: String, effectiveDate: LocalDate) {
-  def getVatId = VatIdentification(Some("GB"), Some(number))
-}
+case class VatDetails(postcode: String, number: String, effectiveDate: LocalDate)
 
 object VatDetails {
   implicit val format: Format[VatDetails] = Json.format[VatDetails]
-}
-
-object VatDetailsForm {
-
-  def validPostcode: Constraint[String] =
-    Constraint({
-      case s if s.matches(postcodeRegex.regex) => Valid
-      case _                                   => Invalid(ValidationError("cds.subscription.vat-details.postcode.required.error"))
-    })
-
-  def validVatNumber: Constraint[String] =
-    Constraint({
-      case s if s.trim.isEmpty             => Invalid(ValidationError("cds.subscription.vat-uk.required.error"))
-      case s if !s.matches("^([0-9]{9})$") => Invalid(ValidationError("cds.subscription.vat-uk.length.error"))
-      case _                               => Valid
-    })
-
-  val vatDetailsForm = Form(
-    mapping(
-      "postcode"   -> text.verifying(validPostcode),
-      "vat-number" -> text.verifying(validVatNumber),
-      "vat-effective-date" -> mandatoryDateTodayOrBefore(
-        onEmptyError = "vat.error.empty-date",
-        onInvalidDateError = "vat.error.invalid-date",
-        onDateInFutureError = "vat.error.future-date",
-        minYear = DateConverter.earliestYearEffectiveVatDate
-      )
-    )(VatDetails.apply)(VatDetails.unapply)
-  )
-
 }

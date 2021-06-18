@@ -43,7 +43,7 @@ class DetermineReviewPageControllerSpec extends ControllerSpec with BeforeAndAft
 
   "Determine Review controller" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.determineRoute(atarService))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.determineRoute(atarService))
 
     "redirect to to correct page when session data is set with the key journeyType.Subscribe" in {
       determinRouteSubscription { result =>

@@ -101,9 +101,8 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
 
   "clicking on the register button" should {
 
-    assertNotLoggedInUserShouldBeRedirectedToLoginPage(
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
-      "Accessing the regExistingEnd page",
       subscriptionController.migrationEnd(atarService)
     )
 

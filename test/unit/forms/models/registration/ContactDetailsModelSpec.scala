@@ -19,62 +19,9 @@ package unit.forms.models.registration
 import base.UnitSpec
 import org.joda.time.DateTime
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.ContactInformation
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.{ContactDetailsModel, ContactDetailsViewModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 
 class ContactDetailsModelSpec extends UnitSpec {
-
-  private val contactDetailsModel = ContactDetailsModel(
-    "name",
-    "a@b.com",
-    "1234566",
-    Some("1234556"),
-    false,
-    Some("street"),
-    Some("city"),
-    Some("postCode"),
-    Some("GB")
-  )
-
-  private val contactDetailsViewModel = ContactDetailsViewModel(
-    "name",
-    Some("a@b.com"),
-    "1234566",
-    Some("1234556"),
-    false,
-    Some("street"),
-    Some("city"),
-    Some("postCode"),
-    Some("GB")
-  )
-
-  private def pad(line: String) = s" $line "
-
-  "ContactDetailsModel" should {
-    "trim address" in {
-
-      val withSpaces = contactDetailsModel.copy(
-        street = Some(pad("street")),
-        city = Some(pad("city")),
-        postcode = Some(pad("postCode"))
-      )
-
-      withSpaces.contactDetails shouldBe contactDetailsModel.contactDetails
-      withSpaces.toContactDetailsViewModel shouldBe contactDetailsModel.toContactDetailsViewModel
-    }
-  }
-
-  "ContactDetailsViewModel" should {
-    "trim address" in {
-
-      val withSpaces = contactDetailsViewModel.copy(
-        street = Some(pad("street")),
-        city = Some(pad("city")),
-        postcode = Some(pad("postCode"))
-      )
-
-      withSpaces.toContactDetailsModel shouldBe contactDetailsModel
-    }
-  }
 
   "Contact Details model" should {
 

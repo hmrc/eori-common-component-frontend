@@ -19,7 +19,6 @@ package unit.services.mapping
 import org.scalacheck.Gen
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
 import util.scalacheck.TestDataGenerators.Implicits._
 
@@ -77,63 +76,6 @@ class RegistrationDetailsCreatorWithoutIdSpec extends RegistrationDetailsCreator
         ),
         dateOfEstablishment = None,
         etmpOrganisationType = None
-      )
-  }
-
-  private val addressFromOrganisationAddressTestCases: Gen[(SixLineAddressMatchModel, Address)] = {
-    val organisationAddressGen = for {
-      addressLine1 <- Gen.alphaStr
-      addressLine2 <- Gen.alphaStr.asOption
-      addressLine3 <- Gen.alphaStr
-      addressLine4 <- Gen.alphaStr.asOption
-      postcode     <- Gen.alphaStr.asOption
-      country      <- Gen.alphaStr
-    } yield SixLineAddressMatchModel(
-      lineOne = addressLine1,
-      lineTwo = addressLine2,
-      lineThree = addressLine3,
-      lineFour = addressLine4,
-      postcode = postcode,
-      country = country
-    )
-
-    for {
-      organisationAddress <- organisationAddressGen
-    } yield organisationAddress ->
-      Address(
-        addressLine1 = organisationAddress.lineOne,
-        addressLine2 = organisationAddress.lineTwo,
-        addressLine3 = Some(organisationAddress.lineThree),
-        addressLine4 = organisationAddress.lineFour,
-        postalCode = organisationAddress.postcode,
-        countryCode = organisationAddress.country
-      )
-  }
-
-  private val addressFromAddressViewModelTestCases: Gen[(AddressViewModel, Address)] = {
-    val addressViewModelGen = for {
-      addressLine1 <- Gen.alphaStr
-      addressLine2 <- Gen.alphaStr.asOption
-      addressLine3 <- Gen.alphaStr
-      postcode     <- Gen.alphaStr.asOption
-      country      <- Gen.alphaStr
-    } yield AddressViewModel(
-      street = addressLine1 + " " + addressLine2,
-      city = addressLine3,
-      postcode = postcode,
-      countryCode = country
-    )
-
-    for {
-      addressViewModel <- addressViewModelGen
-    } yield addressViewModel ->
-      Address(
-        addressLine1 = addressViewModel.street,
-        addressLine2 = None,
-        addressLine3 = Some(addressViewModel.city),
-        addressLine4 = None,
-        postalCode = addressViewModel.postcode,
-        countryCode = addressViewModel.countryCode
       )
   }
 
@@ -199,16 +141,6 @@ class RegistrationDetailsCreatorWithoutIdSpec extends RegistrationDetailsCreator
           organisationName,
           organisationAddress
         ) shouldBe expectedOrganisationDetails
-    }
-
-    "create Address from OrganisationAddress" in testWithGen(addressFromOrganisationAddressTestCases) {
-      case (organisationAddress, expectedAddress) =>
-        registrationDetailsCreator.registrationAddress(organisationAddress) shouldBe expectedAddress
-    }
-
-    "create Address from AddressViewModel" in testWithGen(addressFromAddressViewModelTestCases) {
-      case (addressViewModel, expectedAddress) =>
-        registrationDetailsCreator.registrationAddressFromAddressViewModel(addressViewModel) shouldBe expectedAddress
     }
 
     "create individual registration details" in testWithGen(individualWithoutIdTestCases) {

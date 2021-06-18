@@ -16,16 +16,17 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain
 
-import play.api.libs.json.Json
+import play.api.libs.json._
 
-case class RegistrationIdentification(userId: String, safeId: String, sapNumber: String)
+abstract case class VatIdentification private[VatIdentification] (countryCode: Option[String], number: Option[String])
 
-object RegistrationIdentification {
-  implicit val format = Json.format[RegistrationIdentification]
-}
+object VatIdentification {
+  implicit val jsonFormat = Json.format[VatIdentification]
 
-case class RegistrationIdentificationOutcome(userId: String, safeId: Option[String])
+  def apply(countryCode: Option[String], number: Option[String]): VatIdentification =
+    new VatIdentification(countryCode.map(_.toUpperCase), number) {}
 
-object RegistrationIdentificationOutcome {
-  implicit val format = Json.format[RegistrationIdentificationOutcome]
+  def apply(countryCode: String, number: String): VatIdentification =
+    new VatIdentification(Option(countryCode.toUpperCase), Option(number)) {}
+
 }

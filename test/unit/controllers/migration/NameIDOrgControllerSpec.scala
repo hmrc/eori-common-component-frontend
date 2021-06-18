@@ -138,7 +138,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
   "Viewing the create form " should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(atarService))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(atarService))
 
     "display back link correctly" in {
       showCreateForm()(verifyBackLinkInCreateModeRegister)
@@ -176,7 +176,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
   "Viewing the review form " should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.reviewForm(atarService))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.reviewForm(atarService))
 
     "display relevant data in form fields when subscription details exist in the cache" in {
       when(mockSubscriptionBusinessService.getCachedNameIdViewModel(any())).thenReturn(NameIdDetailsPage.filledValues)
@@ -205,7 +205,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
   "submitting the form in Create mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
       controller.submit(isInReviewMode = false, atarService)
     )
@@ -290,7 +290,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
   "submitting the form in review mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
       controller.submit(isInReviewMode = true, atarService)
     )

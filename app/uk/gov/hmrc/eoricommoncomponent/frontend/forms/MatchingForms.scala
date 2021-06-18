@@ -23,17 +23,13 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.eoricommoncomponent.frontend.DateConverter
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.{JourneyType, UserLocation}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.{mandatoryDateTodayOrBefore, _}
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation._
-import uk.gov.voa.play.form.ConditionalMappings._
 
 object MatchingForms {
 
   val Length35          = 35
   val Length34          = 34
-  private val Length2   = 2
   private val nameRegex = "[a-zA-Z0-9-' ]*"
 
   private def validUtrFormat(utr: Option[String]): Boolean = {
@@ -84,12 +80,6 @@ object MatchingForms {
     }
   }
 
-  val journeyTypeForm: Form[JourneyTypeDetails] = Form(
-    mapping("journeytype" -> text.verifying("cds.error.option.invalid", oneOf(JourneyType.validJourneys)))(
-      JourneyTypeDetails.apply
-    )(JourneyTypeDetails.unapply)
-  )
-
   val organisationTypeDetailsForm: Form[CdsOrganisationType] = Form(
     "organisation-type" -> optional(text)
       .verifying(
@@ -120,59 +110,16 @@ object MatchingForms {
 
   private val validYesNoAnswerOptions = Set("true", "false")
 
-  def yesNoAnswerForm(implicit messages: Messages): Form[YesNo] = createYesNoAnswerForm()
-
-  def disclosePersonalDetailsYesNoAnswerForm()(implicit messages: Messages): Form[YesNo] =
-    createYesNoAnswerForm("cds.subscription.organisation-disclose-personal-details-consent.error.yes-no-answer")
-
-  def isleOfManYesNoAnswerForm()(implicit messages: Messages): Form[YesNo] =
-    createYesNoAnswerForm("cds.registration.isle-of-man.error.yes-no-answer")
-
-  def vatRegisteredUkYesNoAnswerForm(isPartnership: Boolean = false)(implicit messages: Messages): Form[YesNo] =
-    if (isPartnership) createYesNoAnswerForm("cds.registration.vat-registered-uk.partnership.error.yes-no-answer")
-    else createYesNoAnswerForm("cds.registration.vat-registered-uk.error.yes-no-answer")
-
-  def vatRegisteredEuYesNoAnswerForm(isPartnership: Boolean = false)(implicit messages: Messages): Form[YesNo] =
-    if (isPartnership) createYesNoAnswerForm("cds.subscription.vat-registered-eu.partnership.page-error.yes-no-answer")
-    else createYesNoAnswerForm("cds.subscription.vat-registered-eu.page-error.yes-no-answer")
-
-  def vatGroupYesNoAnswerForm()(implicit messages: Messages): Form[YesNo] =
-    createYesNoAnswerForm("cds.subscription.vat-group.page-error.yes-no-answer")
-
-  def euVatLimitNotReachedYesNoAnswerForm()(implicit messages: Messages): Form[YesNo] =
-    createOptionalVatYesNoAnswerForm("cds.subscription.vat-details-eu-confirm.select-one-error.yes-no-answer", "false")
-
-  def euVatLimitReachedYesNoAnswerForm()(implicit messages: Messages): Form[YesNo] =
-    createOptionalVatYesNoAnswerForm("cds.subscription.vat-details-eu-confirm.select-one-error.yes-no-answer", "true")
-
-  def removeVatYesNoAnswer()(implicit messages: Messages): Form[YesNo] =
-    createYesNoAnswerForm("cds.subscription.vat-details-eu.page-error.yes-no-answer")
-
   def eoriSignoutYesNoForm()(implicit messages: Messages): Form[YesNo] =
-    createYesNoAnswerForm("ecc.unable-to-use.signout.empty")
-
-  def businessShortNameYesNoForm(emptyErrorMessage: String)(implicit messages: Messages): Form[YesNo] =
-    createYesNoAnswerForm(emptyErrorMessage)
-
-  private def createYesNoAnswerForm(
-    invalidErrorMsgKey: String = messageKeyOptionInvalid
-  )(implicit messages: Messages): Form[YesNo] = Form(
-    mapping(
-      "yes-no-answer" -> optional(text.verifying(messages(invalidErrorMsgKey), oneOf(validYesNoAnswerOptions)))
-        .verifying(messages(invalidErrorMsgKey), _.isDefined)
-        .transform[Boolean](str => str.get.toBoolean, bool => Option(String.valueOf(bool)))
-    )(YesNo.apply)(YesNo.unapply)
-  )
-
-  private def createOptionalVatYesNoAnswerForm(invalidErrorMsgKey: String, vatLimitReached: String)(implicit
-    messages: Messages
-  ): Form[YesNo] = Form(
-    mapping(
-      "yes-no-answer" -> optional(text)
-        .verifying(messages(invalidErrorMsgKey), x => x.fold(vatLimitReached.toBoolean)(oneOf(validYesNoAnswerOptions)))
-        .transform[Boolean](str => str.getOrElse(vatLimitReached).toBoolean, bool => Option(String.valueOf(bool)))
-    )(YesNo.apply)(YesNo.unapply)
-  )
+    Form(
+      mapping(
+        "yes-no-answer" -> optional(
+          text.verifying(messages("ecc.unable-to-use.signout.empty"), oneOf(validYesNoAnswerOptions))
+        )
+          .verifying(messages("ecc.unable-to-use.signout.empty"), _.isDefined)
+          .transform[Boolean](str => str.get.toBoolean, bool => Option(String.valueOf(bool)))
+      )(YesNo.apply)(YesNo.unapply)
+    )
 
   private def validBusinessName: Constraint[String] =
     Constraint({
@@ -193,13 +140,6 @@ object MatchingForms {
     Constraint({
       case s if s.isEmpty      => Invalid(ValidationError("cds.matching-error.business-details.company-name.isEmpty"))
       case s if s.length > 105 => Invalid(ValidationError("cds.matching-error.business-details.company-name.too-long"))
-      case _                   => Valid
-    })
-
-  private def validOrganisationName: Constraint[String] =
-    Constraint({
-      case s if s.isEmpty      => Invalid(ValidationError("cds.matching.organisation-name.error.name"))
-      case s if s.length > 105 => Invalid(ValidationError("cds.matching-error.business-details.business-name.too-long"))
       case _                   => Valid
     })
 
@@ -237,20 +177,6 @@ object MatchingForms {
     mapping("name" -> text.verifying(validBusinessName))(NameOrganisationMatchModel.apply)(
       NameOrganisationMatchModel.unapply
     )
-  )
-
-  val ninoForm: Form[NinoMatch] = Form(
-    mapping(
-      "first-name" -> text.verifying(validFirstName),
-      "last-name"  -> text.verifying(validLastName),
-      "date-of-birth" -> mandatoryDateTodayOrBefore(
-        onEmptyError = "dob.error.empty-date",
-        onInvalidDateError = "dob.error.invalid-date",
-        onDateInFutureError = "dob.error.future-date",
-        minYear = DateConverter.earliestYearDateOfBirth
-      ),
-      "nino" -> text.verifying(validNino)
-    )(NinoMatch.apply)(NinoMatch.unapply)
   )
 
   val enterNameDobForm: Form[NameDobMatchModel] = Form(
@@ -349,108 +275,11 @@ object MatchingForms {
     )(NinoOrUtrChoice.apply)(NinoOrUtrChoice.unapply)
   )
 
-  private val countryCodeGB = "GB"
-  private val countryCodeGG = "GG"
-  private val countryCodeJE = "JE"
-
-  private val rejectGB: Constraint[String] = Constraint {
-    case `countryCodeGB` => Invalid("cds.matching-error.country.unacceptable")
-    case _               => Valid
-  }
-
-  private val acceptOnlyIslands: Constraint[String] = Constraint {
-    case `countryCodeGG` | `countryCodeJE` => Valid
-    case _                                 => Invalid("cds.matching-error.country.unacceptable")
-  }
-
-  val thirdCountrySixLineAddressForm: Form[SixLineAddressMatchModel] = sixLineAddressFormFactory(rejectGB)
-
-  val islandsSixLineAddressForm: Form[SixLineAddressMatchModel] = sixLineAddressFormFactory(acceptOnlyIslands)
-
-  private def sixLineAddressFormFactory(countryConstraints: Constraint[String]*): Form[SixLineAddressMatchModel] =
-    Form(
-      mapping(
-        "line-1"   -> text.verifying(validLine1),
-        "line-2"   -> optional(text.verifying(validLine2)),
-        "line-3"   -> text.verifying(validLine3),
-        "line-4"   -> optional(text.verifying(validLine4)),
-        "postcode" -> postcodeMapping,
-        "countryCode" -> mandatoryString("cds.matching-error.country.invalid")(s => s.length == Length2)
-          .verifying(countryConstraints: _*)
-      )(SixLineAddressMatchModel.apply)(SixLineAddressMatchModel.unapply)
-    )
-
-  def validLine1: Constraint[String] =
-    Constraint({
-      case s if s.trim.isEmpty => Invalid(ValidationError("cds.matching.organisation-address.line-1.error.empty"))
-      case s if s.trim.length > 35 =>
-        Invalid(ValidationError("cds.matching.organisation-address.line-1.error.too-long"))
-      case _ => Valid
-    })
-
-  def validLine2: Constraint[String] =
-    Constraint({
-      case s if s.trim.length > 34 =>
-        Invalid(ValidationError("cds.matching.organisation-address.line-2.error.too-long"))
-      case _ => Valid
-    })
-
-  def validLine3: Constraint[String] =
-    Constraint({
-      case s if s.trim.isEmpty => Invalid(ValidationError("cds.matching.organisation-address.line-3.error.empty"))
-      case s if s.trim.length > 34 =>
-        Invalid(ValidationError("cds.matching.organisation-address.line-3.error.too-long"))
-      case _ => Valid
-    })
-
-  def validLine4: Constraint[String] =
-    Constraint({
-      case s if s.trim.length > 35 =>
-        Invalid(ValidationError("cds.matching.organisation-address.line-4.error.too-long"))
-      case _ => Valid
-    })
-
-  def createSixLineAddress(value: Address): SixLineAddressMatchModel =
-    SixLineAddressMatchModel(
-      value.addressLine1,
-      value.addressLine2,
-      value.addressLine3.getOrElse(""),
-      value.addressLine4,
-      value.postalCode,
-      value.countryCode
-    )
-
-  val thirdCountryIndividualNameDateOfBirthForm: Form[IndividualNameAndDateOfBirth] =
-    Form(
-      mapping(
-        "given-name"  -> text.verifying(validGivenName),
-        "middle-name" -> optional(text.verifying(validMiddleName)),
-        "family-name" -> text.verifying(validFamilyName),
-        "date-of-birth" -> mandatoryDateTodayOrBefore(
-          onEmptyError = "dob.error.empty-date",
-          onInvalidDateError = "dob.error.invalid-date",
-          onDateInFutureError = "dob.error.future-date",
-          minYear = DateConverter.earliestYearDateOfBirth
-        )
-      )(IndividualNameAndDateOfBirth.apply)(IndividualNameAndDateOfBirth.unapply)
-    )
-
-  val organisationNameForm: Form[NameMatchModel] = Form(
-    mapping("name" -> text.verifying(validOrganisationName))(NameMatchModel.apply)(NameMatchModel.unapply)
-  )
-
   def validHaveUtr: Constraint[Option[Boolean]] =
     Constraint({
       case None => Invalid(ValidationError("cds.matching.organisation-utr.field-error.have-utr"))
       case _    => Valid
     })
-
-  val utrForm: Form[UtrMatchModel] = Form(
-    mapping(
-      "have-utr" -> optional(boolean).verifying(validHaveUtr),
-      "utr"      -> mandatoryIfTrue("have-utr", text.verifying(validUtr))
-    )(UtrMatchModel.apply)(UtrMatchModel.unapply)
-  )
 
   val haveUtrForm: Form[UtrMatchModel] = Form(
     mapping("have-utr" -> optional(boolean).verifying(validHaveUtr))(UtrMatchModel.apply)(model => Some(model.haveUtr))

@@ -64,7 +64,6 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
       mockRequestSessionData
         .sessionWithUserLocationAdded(any[String])(any[Request[AnyContent]])
     ).thenReturn(Session())
-    when(mockRequestSessionData.existingSessionWithUserLocationAdded(any[Session], any[String])).thenReturn(Session())
     when(
       mockEnrolmentStoreProxyService
         .enrolmentForGroup(any(), any())(any())
@@ -79,7 +78,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
 
   "Viewing the user location form" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.form(atarService))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.form(atarService))
     "display the form with no errors" in {
       showForm() { result =>
         status(result) shouldBe OK
@@ -91,7 +90,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
 
   "Submitting the form" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.submit(atarService))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.submit(atarService))
 
     "ensure a location option has been selected" in {
       submitForm(Map.empty) { result =>

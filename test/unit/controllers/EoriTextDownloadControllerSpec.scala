@@ -53,7 +53,7 @@ class EoriTextDownloadControllerSpec extends ControllerSpec with BeforeAndAfterE
 
   "download" should {
 
-    assertNotLoggedInUserShouldBeRedirectedToLoginPage(mockAuthConnector, "EORI download", controller.download())
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.download())
 
     "download eori text file for authenticated user" in {
 

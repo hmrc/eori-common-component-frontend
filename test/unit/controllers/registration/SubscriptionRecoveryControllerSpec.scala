@@ -112,7 +112,7 @@ class SubscriptionRecoveryControllerSpec
 
   "Viewing the Organisation Name Matching form" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.complete(atarService))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.complete(atarService))
 
     def setupMockCommon() = {
       when(mockSessionCache.subscriptionDetails(any[HeaderCarrier]))

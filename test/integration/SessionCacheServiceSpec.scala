@@ -18,7 +18,6 @@ package integration
 
 import java.util.UUID
 
-import common.support.testdata.registration.RegistrationInfoGenerator._
 import org.joda.time.DateTime
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -172,58 +171,6 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
         await(sessionCache.registrationDetails(hc))
       }
       caught.getMessage mustBe s"regDetails is not cached in data for the sessionId: ${s.value}"
-    }
-
-    "store, fetch and update Registration Info correctly" in {
-      val sessionId: SessionId = setupSession
-
-      await(sessionCache.saveRegistrationInfo(organisationRegistrationInfoWithAllOptionalValues)(hc))
-
-      val cache = await(sessionCache.findById(Id(sessionId.value)))
-
-      val expectedJson                     = toJson(CachedData(regInfo = Some(organisationRegistrationInfoWithAllOptionalValues)))
-      val Some(Cache(_, Some(json), _, _)) = cache
-      json mustBe expectedJson
-
-      await(sessionCache.registrationInfo(hc)) mustBe organisationRegistrationInfoWithAllOptionalValues
-      await(sessionCache.saveRegistrationInfo(individualRegistrationInfoWithAllOptionalValues)(hc))
-
-      val updatedCache = await(sessionCache.findById(Id(sessionId.value)))
-
-      val expectedUpdatedJson                     = toJson(CachedData(regInfo = Some(individualRegistrationInfoWithAllOptionalValues)))
-      val Some(Cache(_, Some(updatedJson), _, _)) = updatedCache
-      updatedJson mustBe expectedUpdatedJson
-    }
-
-    "throw exception when registration info requested and not available in cache" in {
-      val s = setupSession
-      await(sessionCache.insert(Cache(Id(s.value), data = Some(toJson(CachedData())))))
-
-      val caught = intercept[IllegalStateException] {
-        await(sessionCache.registrationInfo(hc))
-      }
-      caught.getMessage mustBe s"regInfo is not cached in data for the sessionId: ${s.value}"
-    }
-
-    "store Registration Details, Info and Subscription Details Holder correctly" in {
-      val sessionId: SessionId = setupSession
-
-      await(sessionCache.saveRegistrationDetails(organisationRegistrationDetails)(hc))
-      val holder = SubscriptionDetails()
-      await(sessionCache.saveSubscriptionDetails(holder)(hc))
-      await(sessionCache.saveRegistrationInfo(organisationRegistrationInfoWithAllOptionalValues)(hc))
-      val cache = await(sessionCache.findById(Id(sessionId.value)))
-
-      val expectedJson = toJson(
-        CachedData(
-          Some(organisationRegistrationDetails),
-          Some(holder),
-          Some(organisationRegistrationInfoWithAllOptionalValues)
-        )
-      )
-
-      val Some(Cache(_, Some(json), _, _)) = cache
-      json mustBe expectedJson
     }
 
     "store Address Lookup Params correctly" in {

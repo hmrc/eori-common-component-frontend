@@ -37,7 +37,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{RecipientDe
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationConfirmService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -51,7 +50,6 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
 
   private val mockSubscriptionService                      = mock[SubscriptionService]
   private val mockCdsFrontendDataCache                     = mock[SessionCache]
-  private val mockRegistrationConfirmService               = mock[RegistrationConfirmService]
   private val mockSubscriptionFlowManager                  = mock[SubscriptionFlowManager]
   private val mockHandleSubscriptionService                = mock[HandleSubscriptionService]
   private val mockRegistrationDetails: RegistrationDetails = mock[RegistrationDetails]
@@ -87,20 +85,26 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
     mockRequestSessionData
   )(global)
 
-  override def beforeEach: Unit = {
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(mockRegistrationDetails.sapNumber).thenReturn(TaxPayerId("some-SAP-number"))
+    when(mockContactDetailsModel.contactDetails).thenReturn(contactDetails)
+    when(mockSubscriptionDetailsService.cachedCustomsId).thenReturn(Future.successful(None))
+  }
+
+  override protected def afterEach(): Unit = {
     reset(
       mockCdsFrontendDataCache,
       mockSubscriptionService,
       mockCdsFrontendDataCache,
-      mockRegistrationConfirmService,
       mockSubscriptionFlowManager,
       mockHandleSubscriptionService,
       mockRequestSessionData,
       mockRegistrationDetails
     )
-    when(mockRegistrationDetails.sapNumber).thenReturn(TaxPayerId("some-SAP-number"))
-    when(mockContactDetailsModel.contactDetails).thenReturn(contactDetails)
-    when(mockSubscriptionDetailsService.cachedCustomsId).thenReturn(Future.successful(None))
+
+    super.afterEach()
   }
 
   "CdsSubscriber" should {

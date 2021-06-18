@@ -34,12 +34,6 @@ class RequestSessionDataSpec extends UnitSpec with MockitoSugar with BeforeAndAf
   private val mockOrganisationType     = mock[CdsOrganisationType]
   private val testOrganisationTypeId   = "arbitrary_organisation_type"
 
-  private val existingSessionBeforeStartAgain = Map(
-    "selected-organisation-type"   -> "Org Type",
-    "subscription-flow"            -> "sub-flow",
-    "uri-before-subscription-flow" -> "uri-before-sub-flow"
-  )
-
   override def beforeEach(): Unit = {
     when(mockRequest.session).thenReturn(existingSession)
     when(mockOrganisationType.id).thenReturn(testOrganisationTypeId)
@@ -64,51 +58,14 @@ class RequestSessionDataSpec extends UnitSpec with MockitoSugar with BeforeAndAf
       caught.getMessage shouldBe "Subscription flow is not cached"
     }
 
-    "add organisation type to request cache" in {
-      val newSession = requestSessionData.sessionWithOrganisationTypeAdded(mockOrganisationType)
-      newSession shouldBe Session(existingSessionValues + ("selected-organisation-type" -> testOrganisationTypeId))
-    }
-
     "add organisation type to session" in {
       val newSession = requestSessionData.sessionWithOrganisationTypeAdded(existingSession, mockOrganisationType)
       newSession shouldBe Session(existingSessionValues + ("selected-organisation-type" -> testOrganisationTypeId))
     }
 
-    "return session with organisation type removed when organisation type was present in session" in {
-      when(mockRequest.session).thenReturn(Session(Map("selected-organisation-type" -> testOrganisationTypeId)))
-      val newSession = requestSessionData.sessionWithoutOrganisationType
-      newSession.data should not contain ("selected-organisation-type" -> testOrganisationTypeId)
-    }
-
-    "return session with organisation type missing when organisation type was not already present in session" in {
-      when(mockRequest.session).thenReturn(Session())
-      val newSession = requestSessionData.sessionWithoutOrganisationType
-      newSession.data should not contain ("selected-organisation-type" -> testOrganisationTypeId)
-    }
-
-    "return session with unmatched user missing when unmatchedUser was not already present in session" in {
-      when(mockRequest.session).thenReturn(Session())
-      val newSession = requestSessionData.sessionWithUnMatchedUser(false)
-      newSession.data should contain("unmatched-user" -> "false")
-
-      requestSessionData.mayBeUnMatchedUser shouldBe None
-    }
-    "return session with unmatched user missing when unmatchedUser type was set  in session" in {
-      when(mockRequest.session).thenReturn(Session())
-      val newSession = requestSessionData.sessionWithUnMatchedUser(true)
-      newSession.data should contain("unmatched-user" -> "true")
-    }
     "return session third country" in {
       when(mockRequest.session).thenReturn(Session(Map("selected-user-location" -> "iom")))
       requestSessionData.selectedUserLocationWithIslands shouldBe Some("iom")
-    }
-    "return session without organisation-type, subscription-flow and uri-before-sub-flow" in {
-      when(mockRequest.session).thenReturn(Session(existingSessionBeforeStartAgain))
-      requestSessionData.sessionForStartAgain.data should contain noneOf (
-        "selected-organisation-type",
-        "subscription-flow",
-        "uri-before-subscription-flow"
-      )
     }
 
     "return true for isUKJourney method" when {

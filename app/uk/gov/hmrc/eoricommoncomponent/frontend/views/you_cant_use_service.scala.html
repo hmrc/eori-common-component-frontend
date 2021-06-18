@@ -17,7 +17,6 @@
 @import uk.gov.hmrc.auth.core.AffinityGroup
 @import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 @import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.ApplicationController.logout
-@import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName._
 
@@ -36,8 +35,6 @@
     case _ => messages("cds.you-cant-use-service-standard-organisation.para2")
     }
 }
-
-@journey = @{if(request.path.contains("register")) Journey.Register else Journey.Subscribe}
 
 @layout_di(messages("cds.you-cant-use-service.heading")) {
 <div class="column-two-thirds">

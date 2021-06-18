@@ -66,10 +66,10 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
     mockSubscriptionDetailsService
   )
 
-  private val ProblemWithSelectionError     = "Select what you want to apply as"
-  private val companyXpath                  = "//*[@id='organisation-type-company']"
-  private val soleTraderXpath               = "//*[@id='organisation-type-sole-trader']"
-  private val individualXpath               = "//*[@id='organisation-type-individual']"
+  private val ProblemWithSelectionError = "Select what you want to apply as"
+  private val companyXpath              = "//*[@id='organisation-type-company']"
+  private val soleTraderXpath           = "//*[@id='organisation-type-sole-trader']"
+  private val individualXpath           = "//*[@id='organisation-type-individual']"
 
   override protected def beforeEach(): Unit = {
     reset(mockRequestSessionData, mockRegistrationDetailsService, mockSubscriptionDetailsService)
@@ -83,7 +83,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
 
   "Displaying the form" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, organisationTypeController.form(atarService))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, organisationTypeController.form(atarService))
 
     s"show correct options when user has selected location of ${UserLocation.Uk}" in {
       showFormWithAuthenticatedUser(userLocation = Some(UserLocation.Uk)) { result =>
@@ -104,7 +104,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
 
   "Submitting the form" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
       organisationTypeController.submit(atarService)
     )
@@ -140,7 +140,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
       (CdsOrganisationType.ThirdCountryIndividual, NameDobDetailsSubscriptionFlowPage)
     )
 
-    forAll(urlParameters) { (cdsOrganisationType, urlParameter) =>
+    forAll(urlParameters) { (cdsOrganisationType, _) =>
       val option: String = cdsOrganisationType.id
       val page           = subscriptionPage(cdsOrganisationType)
 
@@ -154,7 +154,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
             .startSubscriptionFlow(any(), any(), any())(any(), any())
         ).thenReturn(Future.successful((page, updatedMockSession)))
 
-        submitForm(Map("organisation-type" -> option), organisationType = Some(cdsOrganisationType)) { result =>
+        submitForm(Map("organisation-type" -> option)) { result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers(LOCATION) shouldBe page.url(atarService)
         }
@@ -172,7 +172,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
             .startSubscriptionFlow(any(), any(), any())(any[HeaderCarrier](), any[Request[AnyContent]]())
         ).thenReturn(Future.successful((page, updatedMockSession)))
 
-        submitForm(Map("organisation-type" -> option), organisationType = Some(cdsOrganisationType)) { result =>
+        submitForm(Map("organisation-type" -> option)) { result =>
           await(result) //this is needed to ensure the future is completed before the verify is called
           verify(mockRequestSessionData)
             .sessionWithOrganisationTypeAdded(ArgumentMatchers.any[Session], ArgumentMatchers.any[CdsOrganisationType])
@@ -201,15 +201,10 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
   def submitForm(
     form: Map[String, String],
     userId: String = defaultUserId,
-    organisationType: Option[CdsOrganisationType] = None,
     userLocation: Option[String] = Some(UserLocation.Uk)
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
 
-    organisationType foreach { o =>
-      when(mockRequestSessionData.sessionWithOrganisationTypeAdded(ArgumentMatchers.eq(o))(any[Request[AnyContent]]))
-        .thenReturn(Session())
-    }
     when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(userLocation)
 
     test(

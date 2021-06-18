@@ -110,7 +110,7 @@ class SicCodeControllerSpec
 
   "Subscription Sic Code form in create mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(atarService))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(atarService))
 
     "display title as 'What is the Standard Industrial Classification (SIC) code for your organisation?' for non-partnership org type" in {
       showCreateForm(orgType = CorporateBody, userSelectedOrgType = Company) { result =>
@@ -295,7 +295,7 @@ class SicCodeControllerSpec
 
   "submitting the form with all mandatory fields filled when in create mode for all organisation types" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
       controller.submit(isInReviewMode = false, atarService)
     )

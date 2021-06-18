@@ -35,8 +35,6 @@ class OrganisationTypePageSpec extends ViewSpec {
 
   "Rest of World (ROW) What do you want to apply as? page" should {
     "display 'an organisation' as an option" in {
-
-      println(doc)
       doc.select(thirdCountryOrganisationLabel).text() must include("Organisation")
     }
 

@@ -72,6 +72,7 @@ class EmailController @Inject() (
   )(implicit request: Request[AnyContent], user: LoggedInUserWithEnrolments): Future[Result] =
     save4LaterService.fetchEmail(GroupId(user.groupId)) flatMap {
       _.fold {
+        // $COVERAGE-OFF$Loggers
         logger.info(s"emailStatus cache none ${user.internalId}")
         Future.successful(Redirect(WhatIsYourEmailController.createForm(service)))
       } { cachedEmailStatus =>
@@ -103,19 +104,27 @@ class EmailController @Inject() (
       case Some(true) =>
         for {
           _ <- {
+            // $COVERAGE-OFF$Loggers
             logger.warn("updated verified email status true to save4later")
+            // $COVERAGE-ON
             save4LaterService.saveEmail(GroupId(userWithEnrolments.groupId), emailStatus.copy(isVerified = true))
           }
           _ <- {
+            // $COVERAGE-OFF$Loggers
             logger.warn("saved verified email address true to cache")
+            // $COVERAGE-ON
             sessionCache.saveEmail(email)
           }
         } yield Redirect(CheckYourEmailController.emailConfirmed(service))
       case Some(false) =>
+        // $COVERAGE-OFF$Loggers
         logger.warn("verified email address false")
+        // $COVERAGE-ON
         Future.successful(Redirect(CheckYourEmailController.verifyEmailView(service)))
       case _ =>
+        // $COVERAGE-OFF$Loggers
         logger.error("Couldn't verify email address")
+        // $COVERAGE-ON
         Future.successful(Redirect(CheckYourEmailController.verifyEmailView(service)))
     }
 

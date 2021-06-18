@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eoricommoncomponent.frontend.views
+package uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription
 
-import play.api.mvc.Request
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import play.api.libs.json.Json
 
-object JourneyExtractor {
+case class BusinessShortName(shortNameProvided: Boolean, shortName: Option[String])
 
-  def journey(implicit request: Request[_]): Journey.Value = Journey.journeyFromRequest
+object BusinessShortName {
+  implicit val jsonFormat = Json.format[BusinessShortName]
 
+  def apply(shortName: String): BusinessShortName = BusinessShortName(true, Some(shortName))
 }

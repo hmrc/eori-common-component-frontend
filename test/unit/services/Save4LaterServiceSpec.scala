@@ -104,34 +104,6 @@ class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAft
       result shouldBe ((): Unit)
     }
 
-    "fetch the SafeId for the users InternalId" in {
-      when(
-        mockSave4LaterConnector.get[SafeId](ArgumentMatchers.eq(groupId.id), ArgumentMatchers.eq(safeIdKey))(
-          any[HeaderCarrier],
-          any[Reads[SafeId]]
-        )
-      ).thenReturn(Future.successful(Some(safeId)))
-
-      val result = service
-        .fetchSafeId(groupId)
-        .futureValue
-      result shouldBe Some(safeId)
-    }
-
-    "fetch the Organisation Type for the users InternalId" in {
-      when(
-        mockSave4LaterConnector.get[CdsOrganisationType](
-          ArgumentMatchers.eq(groupId.id),
-          ArgumentMatchers.eq(orgTypeKey)
-        )(any[HeaderCarrier], any[Reads[CdsOrganisationType]])
-      ).thenReturn(Future.successful(Some(organisationType)))
-
-      val result = service
-        .fetchOrgType(groupId)
-        .futureValue
-      result shouldBe Some(organisationType)
-    }
-
     "fetch the email for the users InternalId" in {
       when(
         mockSave4LaterConnector.get[EmailStatus](ArgumentMatchers.eq(groupId.id), ArgumentMatchers.eq(emailKey))(
