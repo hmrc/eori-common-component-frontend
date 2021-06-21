@@ -109,21 +109,6 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
     }
   }
 
-  "Calling maybeCachedSicCode" should {
-    "retrieve cached data if already stored in cdsFrontendCache" in {
-      when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)
-      when(mockSubscriptionDetailsHolder.sicCode).thenReturn(sicCode)
-      await(subscriptionBusinessService.cachedSicCode) shouldBe sicCode
-      verify(mockCdsFrontendDataCache).subscriptionDetails
-    }
-
-    "return None if no data has been found in the cache" in {
-      when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)
-      when(mockSubscriptionDetailsHolder.sicCode).thenReturn(None)
-      await(subscriptionBusinessService.cachedSicCode) shouldBe None
-    }
-  }
-
   "Calling retrieveSubscriptionDetailsHolder" should {
     "fail when cache fails accessing current SubscriptionDetailsHolder" in {
       when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(Future.failed(emulatedFailure))
@@ -165,24 +150,6 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
       when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)
       when(mockSubscriptionDetailsHolder.dateEstablished).thenReturn(None)
       await(subscriptionBusinessService.maybeCachedDateEstablished) shouldBe None
-    }
-  }
-
-  "Calling getCachedSicCode" should {
-    "retrieve any previously cached Sic Code from the cdsFrontendCache" in {
-      when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)
-      when(mockSubscriptionDetailsHolder.sicCode).thenReturn(sicCode)
-      await(subscriptionBusinessService.getCachedSicCode) shouldBe "someSicCode"
-
-    }
-
-    "throw exception when there are no SIC Code details in the cdsFrontendCache" in {
-      when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)
-      when(mockSubscriptionDetailsHolder.sicCode).thenReturn(None)
-      val thrown = intercept[IllegalStateException] {
-        await(subscriptionBusinessService.getCachedSicCode)
-      }
-      thrown.getMessage shouldBe "No SIC Code Cached"
     }
   }
 

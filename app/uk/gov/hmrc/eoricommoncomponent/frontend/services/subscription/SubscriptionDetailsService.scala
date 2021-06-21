@@ -101,9 +101,6 @@ class SubscriptionDetailsService @Inject() (
   def cachedOrganisationType(implicit hc: HeaderCarrier): Future[Option[CdsOrganisationType]] =
     sessionCache.subscriptionDetails map (_.formData.organisationType)
 
-  def cacheSicCode(sicCode: String)(implicit hc: HeaderCarrier): Future[Unit] =
-    saveSubscriptionDetails(sd => sd.copy(sicCode = Some(sicCode)))
-
   def cacheEoriNumber(eoriNumber: String)(implicit hc: HeaderCarrier): Future[Unit] =
     saveSubscriptionDetails(sd => sd.copy(eoriNumber = Some(eoriNumber)))
 

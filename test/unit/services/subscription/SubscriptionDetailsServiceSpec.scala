@@ -54,7 +54,6 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
   private val mockpersonalDataDisclosureConsent = mock[Option[Boolean]]
 
   private val expectedDate = LocalDate.now()
-  private val sicCode      = "someSicCode"
 
   private val addressDetails =
     AddressViewModel(street = "street", city = "city", postcode = Some("postcode"), countryCode = "GB")
@@ -179,18 +178,6 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
       verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
       val holder: SubscriptionDetails = requestCaptor.getValue
       holder.formData.utrMatch shouldBe Some(utrMatch)
-    }
-  }
-
-  "Calling cache SIC Code" should {
-    "save SIC Code in frontend cache" in {
-
-      await(subscriptionDetailsHolderService.cacheSicCode(sicCode))
-      val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
-
-      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
-      val holder = requestCaptor.getValue
-      holder.sicCode shouldBe Some(sicCode)
     }
   }
 

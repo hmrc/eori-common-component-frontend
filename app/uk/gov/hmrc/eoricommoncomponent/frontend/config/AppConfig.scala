@@ -54,11 +54,8 @@ class AppConfig @Inject() (
   private val eoriCommonComponentRegistrationFrontendBaseUrl: String =
     config.get[String]("external-url.eori-common-component-registration-frontend.url")
 
-  private val eoriCommonComponentRegistrationFrontendStartEndpoint: String =
-    config.get[String]("external-url.eori-common-component-registration-frontend.start-endpoint")
-
   def eoriCommonComponentRegistrationFrontend(serviceName: String): String =
-    eoriCommonComponentRegistrationFrontendBaseUrl + serviceName + eoriCommonComponentRegistrationFrontendStartEndpoint
+    eoriCommonComponentRegistrationFrontendBaseUrl + serviceName + "/register"
 
   def externalGetEORILink(service: Service): String = {
     def registerBlocked = blockedRoutesRegex.exists(_.findFirstIn("register").isDefined)

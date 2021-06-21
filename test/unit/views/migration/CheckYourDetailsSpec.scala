@@ -55,7 +55,6 @@ class CheckYourDetailsSpec extends ViewSpec {
   )
 
   private val address           = Some(AddressViewModel("Street", "City", Some("Postcode"), "GB"))
-  private val sicCode           = Some("00001")
   private val eori              = Some("ZZ123456789112")
   private val email             = Some("email@example.com")
   private val utr               = Some(Utr("UTRXXXXX"))
@@ -695,7 +694,6 @@ class CheckYourDetailsSpec extends ViewSpec {
       orgType,
       contactDetails,
       address,
-      sicCode,
       eori,
       existingEori,
       email,

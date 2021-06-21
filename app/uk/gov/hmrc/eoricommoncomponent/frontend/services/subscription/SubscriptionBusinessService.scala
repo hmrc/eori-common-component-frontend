@@ -21,7 +21,7 @@ import org.joda.time.LocalDate
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, VatEUDetailsModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -40,13 +40,6 @@ class SubscriptionBusinessService @Inject() (cdsFrontendDataCache: SessionCache)
 
   def maybeCachedDateEstablished(implicit hc: HeaderCarrier): Future[Option[LocalDate]] =
     cdsFrontendDataCache.subscriptionDetails map (_.dateEstablished)
-
-  def getCachedSicCode(implicit hc: HeaderCarrier): Future[String] = cdsFrontendDataCache.subscriptionDetails map {
-    _.sicCode.getOrElse(throw new IllegalStateException("No SIC Code Cached"))
-  }
-
-  def cachedSicCode(implicit hc: HeaderCarrier): Future[Option[String]] =
-    cdsFrontendDataCache.subscriptionDetails map (_.sicCode)
 
   def cachedEoriNumber(implicit hc: HeaderCarrier): Future[Option[String]] =
     cdsFrontendDataCache.subscriptionDetails map (_.eoriNumber)
@@ -102,9 +95,6 @@ class SubscriptionBusinessService @Inject() (cdsFrontendDataCache: SessionCache)
     cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
       subscriptionDetails.formData.ninoOrUtrChoice
     }
-
-  def getCachedVatEuDetailsModel(implicit hc: HeaderCarrier): Future[Seq[VatEUDetailsModel]] =
-    cdsFrontendDataCache.subscriptionDetails map (_.vatEUDetails)
 
   def retrieveSubscriptionDetailsHolder(implicit hc: HeaderCarrier): Future[SubscriptionDetails] =
     cdsFrontendDataCache.subscriptionDetails

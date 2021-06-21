@@ -228,15 +228,6 @@ case object UserLocationPage extends SubscriptionPage {
 
 }
 
-case object SicCodeSubscriptionFlowPage extends SubscriptionPage {
-
-  override def url(service: Service): String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.SicCodeController
-      .createForm(service)
-      .url
-
-}
-
 case class PreviousPage(someUrl: String) extends SubscriptionPage() {
   override def url(service: Service): String = someUrl
 }

@@ -35,19 +35,6 @@ object SubscriptionForm {
     )
   )
 
-  val sicCodeform = Form(
-    Forms.mapping("sic" -> text.verifying(validSicCode))(SicCodeViewModel.apply)(SicCodeViewModel.unapply)
-  )
-
-  private def validSicCode: Constraint[String] =
-    Constraint("constraints.sic")({
-      case s if s.trim.isEmpty       => Invalid(ValidationError("cds.subscription.sic.error.empty"))
-      case s if !s.matches("[0-9]*") => Invalid(ValidationError("cds.subscription.sic.error.wrong-format"))
-      case s if s.length < 4         => Invalid(ValidationError("cds.subscription.sic.error.too-short"))
-      case s if s.length > 5         => Invalid(ValidationError("cds.subscription.sic.error.too-long"))
-      case _                         => Valid
-    })
-
   def validEoriWithOrWithoutGB: Constraint[String] =
     Constraint({
       case e if formatInput(e).isEmpty =>

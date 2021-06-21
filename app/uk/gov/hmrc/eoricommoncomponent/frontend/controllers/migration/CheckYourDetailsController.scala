@@ -52,7 +52,6 @@ class CheckYourDetailsController @Inject() (
             organisationType = requestSessionData.userSelectedOrganisationType,
             addressDetails = subscriptionDetailsHolder.addressDetails,
             contactDetails = subscriptionDetailsHolder.contactDetails,
-            principalEconomicActivity = subscriptionDetailsHolder.sicCode,
             eoriNumber = subscriptionDetailsHolder.eoriNumber,
             existingEori = subscriptionDetailsHolder.existingEoriNumber,
             email = Some(email),
