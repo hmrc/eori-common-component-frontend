@@ -110,8 +110,8 @@ val compileDependencies = Seq(
   "uk.gov.hmrc" %% "logback-json-logger" % "5.1.0",
   "com.typesafe.play" %% "play-json-joda" % "2.7.3",
   "uk.gov.hmrc" %% "play-language" % "4.12.0-play-27",
-  "uk.gov.hmrc" %% "play-ui" % "9.1.0-play-27",
-  "org.webjars.npm" % "accessible-autocomplete" % "2.0.3"
+  "org.webjars.npm" % "accessible-autocomplete" % "2.0.3",
+  "uk.gov.hmrc" %% "play-frontend-hmrc" % "0.65.0-play-27"
 )
 
 
@@ -141,3 +141,10 @@ lazy val silencerSettings: Seq[Setting[_]] = {
     scalacOptions += s"-P:silencer:sourceRoots=${baseDirectory.value.getCanonicalPath}"
   )
 }
+
+TwirlKeys.templateImports ++= Seq(
+  "uk.gov.hmrc.govukfrontend.views.html.components._",
+  "uk.gov.hmrc.govukfrontend.views.html.helpers._",
+  "uk.gov.hmrc.hmrcfrontend.views.html.components._",
+  "uk.gov.hmrc.hmrcfrontend.views.html.helpers._"
+)
