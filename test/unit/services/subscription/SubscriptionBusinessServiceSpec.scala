@@ -40,13 +40,12 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
 
   implicit val hc: HeaderCarrier = mock[HeaderCarrier]
 
-  private val mockCdsFrontendDataCache          = mock[SessionCache]
-  private val mockRegistrationDetailsCreator    = mock[RegistrationDetailsCreator]
-  private val mockRegistrationDetails           = mock[RegistrationDetails]
-  private val mockContactDetailsAdaptor         = mock[ContactDetailsAdaptor]
-  private val mockSubscriptionDetailsHolder     = mock[SubscriptionDetails]
-  private val mockpersonalDataDisclosureConsent = mock[Option[Boolean]]
-  private val mockContactDetailsModel           = mock[ContactDetailsModel]
+  private val mockCdsFrontendDataCache       = mock[SessionCache]
+  private val mockRegistrationDetailsCreator = mock[RegistrationDetailsCreator]
+  private val mockRegistrationDetails        = mock[RegistrationDetails]
+  private val mockContactDetailsAdaptor      = mock[ContactDetailsAdaptor]
+  private val mockSubscriptionDetailsHolder  = mock[SubscriptionDetails]
+  private val mockContactDetailsModel        = mock[ContactDetailsModel]
 
   private val expectedDate      = LocalDate.now()
   private val maybeExpectedDate = Some(expectedDate)
@@ -89,7 +88,6 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
     val existingHolder = SubscriptionDetails(contactDetails = Some(mock[ContactDetailsModel]))
 
     when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(existingHolder)
-    when(mockSubscriptionDetailsHolder.personalDataDisclosureConsent).thenReturn(mockpersonalDataDisclosureConsent)
   }
 
   "Calling maybeCachedContactDetailsModel" should {

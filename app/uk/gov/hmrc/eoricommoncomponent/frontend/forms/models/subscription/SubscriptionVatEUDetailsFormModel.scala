@@ -16,8 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription
 
-import akka.routing.MurmurHash
-import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.VatIdentification
 
 case class SubscriptionVatEUDetailsFormModel(hasOtherVats: Boolean, vatIds: Option[List[VatIdentification]])
@@ -37,12 +35,4 @@ object SubscriptionVatEUDetailsFormModel {
         Some(countryCodes -> numbers)
     }
 
-}
-
-case class VatEUDetailsModel(vatCountry: String, vatNumber: String) {
-  val index = MurmurHash.stringHash(s"$vatNumber:$vatCountry").abs
-}
-
-object VatEUDetailsModel {
-  implicit val format: Format[VatEUDetailsModel] = Json.format[VatEUDetailsModel]
 }

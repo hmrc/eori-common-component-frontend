@@ -62,7 +62,6 @@ class CheckYourDetailsControllerSpec
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(mockSubscriptionFlow)
 
     val subscriptionDetailsHolderForCompany = SubscriptionDetails(
-      personalDataDisclosureConsent = Some(true),
       contactDetails = Some(contactUkDetailsModelWithMandatoryValuesOnly),
       nameDobDetails = Some(NameDobMatchModel("John", None, "Doe", LocalDate.parse("2003-04-08"))),
       idDetails = Some(IdMatchModel(id = "AB123456C")),

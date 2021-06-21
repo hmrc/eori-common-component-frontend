@@ -27,7 +27,7 @@ import uk.gov.hmrc.cache.model.{Cache, Id}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.ResponseCommon
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{BusinessShortName, SubscriptionDetails}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressLookupParams
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{CachedData, SessionCache, SessionTimeOutException}
@@ -53,33 +53,6 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
   val hc = mock[HeaderCarrier]
 
   "Session cache" should {
-
-    "store, fetch and update Subscription details handler correctly" in {
-      val sessionId: SessionId = setupSession
-
-      val holder = SubscriptionDetails(businessShortName = Some(BusinessShortName("some business name")))
-
-      await(sessionCache.saveSubscriptionDetails(holder)(hc))
-
-      val expectedJson                     = toJson(CachedData(subDetails = Some(holder)))
-      val cache                            = await(sessionCache.findById(Id(sessionId.value)))
-      val Some(Cache(_, Some(json), _, _)) = cache
-      json mustBe expectedJson
-
-      await(sessionCache.subscriptionDetails(hc)) mustBe holder
-
-      val updatedHolder = SubscriptionDetails(
-        businessShortName = Some(BusinessShortName("different business name")),
-        sicCode = Some("sic")
-      )
-
-      await(sessionCache.saveSubscriptionDetails(updatedHolder)(hc))
-
-      val expectedUpdatedJson                     = toJson(CachedData(subDetails = Some(updatedHolder)))
-      val updatedCache                            = await(sessionCache.findById(Id(sessionId.value)))
-      val Some(Cache(_, Some(updatedJson), _, _)) = updatedCache
-      updatedJson mustBe expectedUpdatedJson
-    }
 
     "provide default when subscription details holder not in cache" in {
       when(hc.sessionId).thenReturn(Some(SessionId("does-not-exist")))
