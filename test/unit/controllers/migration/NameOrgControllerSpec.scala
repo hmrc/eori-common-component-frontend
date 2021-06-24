@@ -32,7 +32,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   NameOrganisationMatchModel,
   RegistrationDetailsOrganisation
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
@@ -146,23 +145,15 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
   }
 
   private def createForm()(test: Future[Result] => Assertion) =
-    test(
-      nameOrgController.createForm(atarService, Journey.Subscribe).apply(
-        SessionBuilder.buildRequestWithSession(defaultUserId)
-      )
-    )
+    test(nameOrgController.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
 
   private def reviewForm()(test: Future[Result] => Assertion) =
-    test(
-      nameOrgController.reviewForm(atarService, Journey.Subscribe).apply(
-        SessionBuilder.buildRequestWithSession(defaultUserId)
-      )
-    )
+    test(nameOrgController.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
 
   private def submit(isInReviewMode: Boolean, form: Map[String, String])(test: Future[Result] => Assertion) =
     test(
       nameOrgController
-        .submit(isInReviewMode, atarService, Journey.Subscribe)
+        .submit(isInReviewMode, atarService)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form))
     )
 

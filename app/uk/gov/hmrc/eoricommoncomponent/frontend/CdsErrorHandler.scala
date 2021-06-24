@@ -24,7 +24,6 @@ import play.api.mvc._
 import play.mvc.Http.Status._
 import play.twirl.api.Html
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionTimeOutException
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.{Constants, InvalidUrlValueException}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName._
@@ -49,7 +48,9 @@ class CdsErrorHandler @Inject() (
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
 
+    // $COVERAGE-OFF$Loggers
     logger.error(s"Error with status code: $statusCode and message: $message")
+    // $COVERAGE-ON
     implicit val req: Request[_] = Request(request, "")
 
     statusCode match {
@@ -65,13 +66,19 @@ class CdsErrorHandler @Inject() (
 
     exception match {
       case sessionTimeOut: SessionTimeOutException =>
+        // $COVERAGE-OFF$Loggers
         logger.info("Session time out: " + sessionTimeOut.errorMessage, exception)
-        Future.successful(Redirect(SecuritySignOutController.displayPage(service, journeyFromRequest)).withNewSession)
+        // $COVERAGE-ON
+        Future.successful(Redirect(SecuritySignOutController.displayPage(service)).withNewSession)
       case invalidRequirement: InvalidUrlValueException =>
+        // $COVERAGE-OFF$Loggers
         logger.warn(invalidRequirement.message)
+        // $COVERAGE-ON
         Future.successful(Results.NotFound(notFoundView()))
       case _ =>
+        // $COVERAGE-OFF$Loggers
         logger.error("Internal server error: " + exception.getMessage, exception)
+        // $COVERAGE-ON
         Future.successful(Results.InternalServerError(errorTemplateView()))
     }
   }

@@ -31,7 +31,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   SubscriptionFlowInfo,
   SubscriptionPage
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_nino_subscription
@@ -84,7 +83,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
 
   "HaveNinoSubscriptionController createForm" should {
     "return OK and display correct page" in {
-      createForm(Journey.Subscribe) { result =>
+      createForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
         page.title should include(SubscriptionNinoPage.title)
@@ -94,13 +93,13 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
 
   "HaveNinoSubscriptionController submit" should {
     "return BadRequest when no option selected" in {
-      submit(Journey.Subscribe, Map.empty[String, String]) { result =>
+      submit(Map.empty[String, String]) { result =>
         status(result) shouldBe BAD_REQUEST
       }
     }
 
     "return BadRequest when invalid option" in {
-      submit(Journey.Subscribe, Map("have-nino" -> "yes")) { result =>
+      submit(Map("have-nino" -> "yes")) { result =>
         status(result) shouldBe BAD_REQUEST
       }
     }
@@ -110,7 +109,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
         .thenReturn(Future.successful(()))
       when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowIndividualFlow)
       mockSubscriptionFlow(nextPageFlowUrl)
-      submit(Journey.Subscribe, Map("have-nino" -> "true")) { result =>
+      submit(Map("have-nino" -> "true")) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-get-nino"
       }
@@ -124,7 +123,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
         mockSubscriptionDetailsService.cacheNinoMatchForNoAnswer(any[Option[NinoMatchModel]])(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
       when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowIndividualFlow)
-      submit(Journey.Subscribe, ValidNinoNoRequest) { result =>
+      submit(ValidNinoNoRequest) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-country"
       }
@@ -134,20 +133,16 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
     }
   }
 
-  private def createForm(journey: Journey.Value)(test: Future[Result] => Any) = {
+  private def createForm()(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(
-      test(controller.createForm(atarService, journey).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
-    )
+    await(test(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
-  private def submit(journey: Journey.Value, form: Map[String, String], isInReviewMode: Boolean = false)(
-    test: Future[Result] => Any
-  ) = {
+  private def submit(form: Map[String, String], isInReviewMode: Boolean = false)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     await(
       test(
-        controller.submit(isInReviewMode, atarService, journey).apply(
+        controller.submit(isInReviewMode, atarService).apply(
           SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form)
         )
       )

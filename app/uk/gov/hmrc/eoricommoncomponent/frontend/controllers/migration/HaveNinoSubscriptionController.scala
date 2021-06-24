@@ -26,7 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{NinoSubscriptionFlowPage, RowIndividualFlow}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.haveRowIndividualsNinoForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_nino_subscription
@@ -45,45 +45,43 @@ class HaveNinoSubscriptionController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+  def createForm(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
-        populateView(false, service, journey)
+        populateView(false, service)
     }
 
-  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+  def reviewForm(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
-        populateView(true, service, journey)
+        populateView(true, service)
     }
 
-  private def populateView(isInReviewMode: Boolean, service: Service, journey: Journey.Value)(implicit
+  private def populateView(isInReviewMode: Boolean, service: Service)(implicit
     hc: HeaderCarrier,
     request: Request[AnyContent]
   ) =
     subscriptionDetailsHolderService.cachedNinoMatch.map {
       case Some(formData) =>
-        Ok(matchNinoSubscriptionView(haveRowIndividualsNinoForm.fill(formData), isInReviewMode, service, journey))
+        Ok(matchNinoSubscriptionView(haveRowIndividualsNinoForm.fill(formData), isInReviewMode, service))
 
-      case _ => Ok(matchNinoSubscriptionView(haveRowIndividualsNinoForm, isInReviewMode, service, journey))
+      case _ => Ok(matchNinoSubscriptionView(haveRowIndividualsNinoForm, isInReviewMode, service))
     }
 
-  def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
+  def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
         haveRowIndividualsNinoForm.bindFromRequest.fold(
           formWithErrors =>
-            Future.successful(BadRequest(matchNinoSubscriptionView(formWithErrors, isInReviewMode, service, journey))),
-          formData => destinationsByAnswer(isInReviewMode, formData, service, journey)
+            Future.successful(BadRequest(matchNinoSubscriptionView(formWithErrors, isInReviewMode, service))),
+          formData => destinationsByAnswer(isInReviewMode, formData, service)
         )
     }
 
-  private def destinationsByAnswer(
-    isInReviewMode: Boolean,
-    form: NinoMatchModel,
-    service: Service,
-    journey: Journey.Value
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
+  private def destinationsByAnswer(isInReviewMode: Boolean, form: NinoMatchModel, service: Service)(implicit
+    hc: HeaderCarrier,
+    request: Request[AnyContent]
+  ): Future[Result] =
     form.haveNino match {
       case Some(true) =>
         subscriptionDetailsHolderService
@@ -91,8 +89,8 @@ class HaveNinoSubscriptionController @Inject() (
           .map(
             _ =>
               Redirect(
-                if (isInReviewMode) GetNinoSubscriptionController.reviewForm(service, journey)
-                else GetNinoSubscriptionController.createForm(service, journey)
+                if (isInReviewMode) GetNinoSubscriptionController.reviewForm(service)
+                else GetNinoSubscriptionController.createForm(service)
               )
           )
       case Some(false) =>

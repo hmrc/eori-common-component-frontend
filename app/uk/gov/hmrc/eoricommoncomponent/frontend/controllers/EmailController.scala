@@ -19,22 +19,14 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.mvc._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
-  AuthAction,
-  EnrolmentExtractor,
-  GroupEnrolmentExtractor
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, EnrolmentExtractor}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.{
   CheckYourEmailController,
   WhatIsYourEmailController
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.{
-  EnrolmentAlreadyExistsController,
-  YouAlreadyHaveEoriController
-}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, InternalId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.{Save4LaterService, UserGroupIdSubscriptionStatusCheckService}
@@ -54,7 +46,6 @@ class EmailController @Inject() (
   mcc: MessagesControllerComponents,
   save4LaterService: Save4LaterService,
   userGroupIdSubscriptionStatusCheckService: UserGroupIdSubscriptionStatusCheckService,
-  groupEnrolment: GroupEnrolmentExtractor,
   enrolmentPendingForUser: enrolment_pending_for_user,
   enrolmentPendingAgainstGroupId: enrolment_pending_against_group_id
 )(implicit ec: ExecutionContext)
@@ -62,86 +53,50 @@ class EmailController @Inject() (
 
   private val logger = Logger(this.getClass)
 
-  private def userIsInProcess(service: Service, journey: Journey.Value)(implicit
-    request: Request[AnyContent],
-    user: LoggedInUserWithEnrolments
-  ): Future[Result] =
+  private def userIsInProcess(
+    service: Service
+  )(implicit request: Request[AnyContent], user: LoggedInUserWithEnrolments): Future[Result] =
     save4LaterService
       .fetchProcessingService(GroupId(user.groupId))
       .map(processingService => Ok(enrolmentPendingForUser(service, processingService)))
 
-  private def otherUserWithinGroupIsInProcess(service: Service, journey: Journey.Value)(implicit
-    request: Request[AnyContent],
-    user: LoggedInUserWithEnrolments
-  ): Future[Result] =
+  private def otherUserWithinGroupIsInProcess(
+    service: Service
+  )(implicit request: Request[AnyContent], user: LoggedInUserWithEnrolments): Future[Result] =
     save4LaterService
       .fetchProcessingService(GroupId(user.groupId))
-      .map(processingService => Ok(enrolmentPendingAgainstGroupId(service, journey, processingService)))
+      .map(processingService => Ok(enrolmentPendingAgainstGroupId(service, processingService)))
 
-  private def continue(service: Service, journey: Journey.Value)(implicit
-    request: Request[AnyContent],
-    user: LoggedInUserWithEnrolments
-  ): Future[Result] =
+  private def continue(
+    service: Service
+  )(implicit request: Request[AnyContent], user: LoggedInUserWithEnrolments): Future[Result] =
     save4LaterService.fetchEmail(GroupId(user.groupId)) flatMap {
       _.fold {
+        // $COVERAGE-OFF$Loggers
         logger.info(s"emailStatus cache none ${user.internalId}")
-        Future.successful(Redirect(WhatIsYourEmailController.createForm(service, journey)))
+        Future.successful(Redirect(WhatIsYourEmailController.createForm(service)))
       } { cachedEmailStatus =>
         cachedEmailStatus.email match {
           case Some(email) =>
             if (cachedEmailStatus.isVerified)
               sessionCache.saveEmail(email) map { _ =>
-                Redirect(CheckYourEmailController.emailConfirmed(service, journey))
+                Redirect(CheckYourEmailController.emailConfirmed(service))
               }
-            else checkWithEmailService(email, cachedEmailStatus, service, journey)
-          case _ => Future.successful(Redirect(WhatIsYourEmailController.createForm(service, journey)))
+            else checkWithEmailService(email, cachedEmailStatus, service)
+          case _ => Future.successful(Redirect(WhatIsYourEmailController.createForm(service)))
         }
       }
     }
 
-  def form(service: Service, journey: Journey.Value): Action[AnyContent] =
+  def form(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
-      journey match {
-        case Journey.Subscribe => startSubscribeJourney(service)
-        case Journey.Register  => startRegisterJourney(service)
-      }
+      userGroupIdSubscriptionStatusCheckService
+        .checksToProceed(GroupId(user.groupId), InternalId(user.internalId), service)(continue(service))(
+          userIsInProcess(service)
+        )(otherUserWithinGroupIsInProcess(service))
     }
 
-  private def startSubscribeJourney(
-    service: Service
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent], user: LoggedInUserWithEnrolments) =
-    userGroupIdSubscriptionStatusCheckService
-      .checksToProceed(GroupId(user.groupId), InternalId(user.internalId), service)(
-        continue(service, Journey.Subscribe)
-      )(userIsInProcess(service, Journey.Subscribe))(otherUserWithinGroupIsInProcess(service, Journey.Subscribe))
-
-  private def startRegisterJourney(
-    service: Service
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent], user: LoggedInUserWithEnrolments) =
-    groupEnrolment.groupIdEnrolments(user.groupId.getOrElse(throw MissingGroupId())).flatMap {
-      groupEnrolments =>
-        if (groupEnrolments.exists(_.service == service.enrolmentKey))
-          // user has specified service
-          Future.successful(
-            Redirect(EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service, Journey.Register))
-          )
-        else
-          existingEoriForUserOrGroup(user, groupEnrolments) match {
-            case Some(_) =>
-              // user already has EORI
-              Future.successful(Redirect(YouAlreadyHaveEoriController.display(service)))
-            case None =>
-              userGroupIdSubscriptionStatusCheckService
-                .checksToProceed(GroupId(user.groupId), InternalId(user.internalId), service)(
-                  continue(service, Journey.Register)
-                )(userIsInProcess(service, Journey.Register))(
-                  otherUserWithinGroupIsInProcess(service, Journey.Register)
-                )
-          }
-    }
-
-  private def checkWithEmailService(email: String, emailStatus: EmailStatus, service: Service, journey: Journey.Value)(
-    implicit
+  private def checkWithEmailService(email: String, emailStatus: EmailStatus, service: Service)(implicit
     hc: HeaderCarrier,
     userWithEnrolments: LoggedInUserWithEnrolments
   ): Future[Result] =
@@ -149,20 +104,28 @@ class EmailController @Inject() (
       case Some(true) =>
         for {
           _ <- {
+            // $COVERAGE-OFF$Loggers
             logger.warn("updated verified email status true to save4later")
+            // $COVERAGE-ON
             save4LaterService.saveEmail(GroupId(userWithEnrolments.groupId), emailStatus.copy(isVerified = true))
           }
           _ <- {
+            // $COVERAGE-OFF$Loggers
             logger.warn("saved verified email address true to cache")
+            // $COVERAGE-ON
             sessionCache.saveEmail(email)
           }
-        } yield Redirect(CheckYourEmailController.emailConfirmed(service, journey))
+        } yield Redirect(CheckYourEmailController.emailConfirmed(service))
       case Some(false) =>
+        // $COVERAGE-OFF$Loggers
         logger.warn("verified email address false")
-        Future.successful(Redirect(CheckYourEmailController.verifyEmailView(service, journey)))
+        // $COVERAGE-ON
+        Future.successful(Redirect(CheckYourEmailController.verifyEmailView(service)))
       case _ =>
+        // $COVERAGE-OFF$Loggers
         logger.error("Couldn't verify email address")
-        Future.successful(Redirect(CheckYourEmailController.verifyEmailView(service, journey)))
+        // $COVERAGE-ON
+        Future.successful(Redirect(CheckYourEmailController.verifyEmailView(service)))
     }
 
 }

@@ -37,7 +37,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, ResponseCommon}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{MatchingService, Reg06Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
@@ -46,14 +46,15 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.language.LanguageUtils
 import unit.controllers.CdsPage
-import util.ControllerSpec
+import util.{CSRFTest, ControllerSpec}
 import util.builders.AuthBuilder._
-import util.builders.{AuthActionMock, SessionBuilder}
+import util.builders.AuthActionMock
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
+class RegisterWithEoriAndIdControllerSpec
+    extends ControllerSpec with BeforeAndAfterEach with AuthActionMock with CSRFTest {
 
   private val mockAuthConnector              = mock[AuthConnector]
   private val mockAuthAction                 = authAction(mockAuthConnector)
@@ -191,10 +192,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
   "Register with existing eori" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
-      mockAuthConnector,
-      controller.registerWithEoriAndId(atarService, Journey.Subscribe)
-    )
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.registerWithEoriAndId(atarService))
     val processingDateResponse: String = "19 April 2018"
     val emailVerificationTimestamp     = TestData.emailVerificationTimestamp
 
@@ -204,18 +202,18 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe EnrolmentAlreadyExistsController
-          .enrolmentAlreadyExistsForGroup(atarService, Journey.Subscribe)
+          .enrolmentAlreadyExistsForGroup(atarService)
           .url
       }
     }
 
     "create a subscription for organisation" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(
-          any[Option[CdsOrganisationType]],
-          any[Service],
-          any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+        mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
+          any[HeaderCarrier],
+          any[Request[AnyContent]],
+          any[Messages]
+        )
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -269,11 +267,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(()))
 
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(
-          meq(Some(CdsOrganisationType.SoleTrader)),
-          any[Service],
-          any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+        mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
+          any[HeaderCarrier],
+          any[Request[AnyContent]],
+          any[Messages]
+        )
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -314,11 +312,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(()))
 
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(
-          meq(Some(CdsOrganisationType.SoleTrader)),
-          any[Service],
-          any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+        mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
+          any[HeaderCarrier],
+          any[Request[AnyContent]],
+          any[Messages]
+        )
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -364,11 +362,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(()))
 
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(
-          meq(Some(CdsOrganisationType.Individual)),
-          any[Service],
-          any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+        mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
+          any[HeaderCarrier],
+          any[Request[AnyContent]],
+          any[Messages]
+        )
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -391,11 +389,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     "create a subscription for organisation ROW when cachedCustomsId is present" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(
-          any[Option[CdsOrganisationType]],
-          any[Service],
-          any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+        mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
+          any[HeaderCarrier],
+          any[Request[AnyContent]],
+          any[Messages]
+        )
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -452,11 +450,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       ).thenReturn(Future.successful(()))
 
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(
-          meq(Some(CdsOrganisationType.SoleTrader)),
-          any[Service],
-          any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+        mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
+          any[HeaderCarrier],
+          any[Request[AnyContent]],
+          any[Messages]
+        )
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -481,11 +479,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     "redirect to pending when subscription for organisation returns status as WORKLIST within SubscriptionPending" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(
-          any[Option[CdsOrganisationType]],
-          any[Service],
-          any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+        mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
+          any[HeaderCarrier],
+          any[Request[AnyContent]],
+          any[Messages]
+        )
       ).thenReturn(
         Future.successful(
           SubscriptionPending(formBundleIdResponse, processingDateResponse, Some(emailVerificationTimestamp))
@@ -525,7 +523,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponseFail))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
-      regExistingEori(Journey.Register) { result =>
+      regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
@@ -546,11 +544,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockNotifyRcmService.notifyRcm(meq(atarService))(any(), any()))
         .thenReturn(Future.successful(()))
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(
-          any[Option[CdsOrganisationType]],
-          any[Service],
-          any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+        mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
+          any[HeaderCarrier],
+          any[Request[AnyContent]],
+          any[Messages]
+        )
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -562,7 +560,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         )
       )
 
-      regExistingEori(Journey.Register) { result =>
+      regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
@@ -581,7 +579,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponseExceptionCase))
 
-      regExistingEori(Journey.Register) { result =>
+      regExistingEori() { result =>
         the[IllegalStateException] thrownBy {
           status(result) shouldBe SEE_OTHER
         } should have message "Unknown RegistrationDetailsOutCome"
@@ -603,7 +601,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
         .thenReturn(Future.successful(None))
 
-      regExistingEori(Journey.Register) { result =>
+      regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
@@ -614,11 +612,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     "redirect to processing when Subscription Status (SUB01) response is SubscriptionProcessing" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(
-          any[Option[CdsOrganisationType]],
-          any[Service],
-          any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+        mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
+          any[HeaderCarrier],
+          any[Request[AnyContent]],
+          any[Messages]
+        )
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -655,11 +653,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     "redirect to CompleteEnrolment when Subscription Status (SUB01) response is SubscriptionExists and enrolment service returns false" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(
-          any[Option[CdsOrganisationType]],
-          any[Service],
-          any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+        mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
+          any[HeaderCarrier],
+          any[Request[AnyContent]],
+          any[Messages]
+        )
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -685,9 +683,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe SubscriptionRecoveryController
-          .complete(atarService, Journey.Subscribe)
-          .url
+        result.header.headers(LOCATION) shouldBe SubscriptionRecoveryController.complete(atarService).url
         verify(mockReg06Service).sendOrganisationRequest(any(), any())
         verify(mockSubscriptionStatusService)
           .getStatus(meq("SAFE"), meq("SomeSafeId"))(any[HeaderCarrier])
@@ -696,11 +692,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     "redirect to Application unsuccessful page when Subscription (SUB02) is failed" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(
-          any[Option[CdsOrganisationType]],
-          any[Service],
-          any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+        mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
+          any[HeaderCarrier],
+          any[Request[AnyContent]],
+          any[Messages]
+        )
       ).thenReturn(
         Future.successful(
           SubscriptionFailed(
@@ -736,11 +732,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     "return success with error code as 'EORI already linked to a different ID'" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(
-          any[Option[CdsOrganisationType]],
-          any[Service],
-          any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+        mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
+          any[HeaderCarrier],
+          any[Request[AnyContent]],
+          any[Messages]
+        )
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -770,11 +766,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     "return success with error code as 'EORI already linked to a different ID' ignoring letter case" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(
-          any[Option[CdsOrganisationType]],
-          any[Service],
-          any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+        mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
+          any[HeaderCarrier],
+          any[Request[AnyContent]],
+          any[Messages]
+        )
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -804,11 +800,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     "return success with error code as 'ID already linked to a different EORI'" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(
-          any[Option[CdsOrganisationType]],
-          any[Service],
-          any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+        mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
+          any[HeaderCarrier],
+          any[Request[AnyContent]],
+          any[Messages]
+        )
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -838,11 +834,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     "return success with error code as 'ID already linked to a different EORI' ignoring letter case" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(
-          any[Option[CdsOrganisationType]],
-          any[Service],
-          any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+        mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
+          any[HeaderCarrier],
+          any[Request[AnyContent]],
+          any[Messages]
+        )
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -872,11 +868,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     "return success with error code as 'Rejected previously'" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(
-          any[Option[CdsOrganisationType]],
-          any[Service],
-          any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+        mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
+          any[HeaderCarrier],
+          any[Request[AnyContent]],
+          any[Messages]
+        )
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -909,11 +905,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     "return success with error code as 'Rejected previously' ignoring letter case" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(
-          any[Option[CdsOrganisationType]],
-          any[Service],
-          any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+        mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
+          any[HeaderCarrier],
+          any[Request[AnyContent]],
+          any[Messages]
+        )
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -946,11 +942,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     "return success with error code as 'Request could not be processed'" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(
-          any[Option[CdsOrganisationType]],
-          any[Service],
-          any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+        mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
+          any[HeaderCarrier],
+          any[Request[AnyContent]],
+          any[Messages]
+        )
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -983,11 +979,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     "return success with error code as 'Request could not be processed' ignoring letter case" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(
-          any[Option[CdsOrganisationType]],
-          any[Service],
-          any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+        mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
+          any[HeaderCarrier],
+          any[Request[AnyContent]],
+          any[Messages]
+        )
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -1020,11 +1016,11 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
 
     "return unexpected status text" in {
       when(
-        mockCdsSubscriber.subscribeWithCachedDetails(
-          any[Option[CdsOrganisationType]],
-          any[Service],
-          any[Journey.Value]
-        )(any[HeaderCarrier], any[Request[AnyContent]], any[Messages])
+        mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
+          any[HeaderCarrier],
+          any[Request[AnyContent]],
+          any[Messages]
+        )
       ).thenReturn(
         Future.successful(
           SubscriptionSuccessful(
@@ -1043,7 +1039,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Future.successful(stubHandleErrorCodeResponse("")))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
-      regExistingEori(Journey.Register) { result =>
+      regExistingEori() { result =>
         status(result) shouldBe INTERNAL_SERVER_ERROR
       }
     }
@@ -1119,7 +1115,7 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         .thenReturn(Future.successful(mockSub01Outcome))
       when(mockSub01Outcome.processedDate).thenReturn("11 January 2015")
 
-      invokeRejected(Journey.Subscribe) { result =>
+      invokeRejected() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
         page.title() should startWith(RegistrationRejectedPage.title)
@@ -1129,15 +1125,6 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
         page.getElementsText(
           RegistrationRejectedPage.processedDateXpath
         ) shouldBe "Application received by HMRC on 11 January 2015"
-      }
-
-      invokeRejected(Journey.Register) { result =>
-        status(result) shouldBe OK
-        val page = CdsPage(contentAsString(result))
-        page.title() should startWith(RegistrationRejectedPage.titleRegistration)
-        page.getElementsText(
-          RegistrationRejectedPage.pageHeadingXpath
-        ) shouldBe RegistrationRejectedPage.individualHeadingRegistration
       }
     }
 
@@ -1200,16 +1187,10 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
       when(mockCache.remove(any[HeaderCarrier]))
         .thenReturn(Future.successful(true))
 
-      invokeRejectedPreviously(journey = Journey.Subscribe) { result =>
+      invokeRejectedPreviously() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
         page.title() should startWith("The Advance Tariff Rulings subscription request has been unsuccessful")
-      }
-
-      invokeRejectedPreviously(journey = Journey.Register) { result =>
-        status(result) shouldBe OK
-        val page = CdsPage(contentAsString(result))
-        page.title() should startWith("The Advance Tariff Rulings registration request has been unsuccessful")
       }
     }
 
@@ -1228,61 +1209,26 @@ class RegisterWithEoriAndIdControllerSpec extends ControllerSpec with BeforeAndA
     }
   }
 
-  private def regExistingEori(journey: Journey.Value = Journey.Subscribe)(test: Future[Result] => Any) {
-    test(controller.registerWithEoriAndId(atarService, Journey.Subscribe)(requestWithPath(journey)))
-  }
+  private def regExistingEori()(test: Future[Result] => Any) =
+    test(controller.registerWithEoriAndId(atarService)(withFakeCSRF(fakeAtarSubscribeRequest)))
 
-  private def invokeProcessing(journey: Journey.Value = Journey.Subscribe)(test: Future[Result] => Any) {
-    test(
-      controller.processing(atarService)
-        .apply(requestWithPath(journey))
-    )
-  }
+  private def invokeProcessing()(test: Future[Result] => Any) =
+    test(controller.processing(atarService).apply(withFakeCSRF(fakeAtarSubscribeRequest)))
 
-  private def invokeRejected(journey: Journey.Value)(test: Future[Result] => Any) {
-    test(
-      controller.rejected(atarService)
-        .apply(requestWithPath(journey))
-    )
-  }
+  private def invokeRejected()(test: Future[Result] => Any) = test(
+    controller.rejected(atarService).apply(withFakeCSRF(fakeAtarSubscribeRequest))
+  )
 
-  private def invokePending(date: String = "11 August 2015", journey: Journey.Value = Journey.Subscribe)(
-    test: Future[Result] => Any
-  ) {
-    test(
-      controller
-        .pending(atarService, date)
-        .apply(requestWithPath(journey))
-    )
-  }
+  private def invokePending()(test: Future[Result] => Any) =
+    test(controller.pending(atarService, "11 August 2015").apply(withFakeCSRF(fakeAtarSubscribeRequest)))
 
-  private def invokeFail(date: String = "11 September 2015", journey: Journey.Value = Journey.Subscribe)(
-    test: Future[Result] => Any
-  ) {
-    test(
-      controller
-        .fail(atarService, date)
-        .apply(requestWithPath(journey))
-    )
-  }
+  private def invokeFail()(test: Future[Result] => Any) =
+    test(controller.fail(atarService, "11 September 2015").apply(withFakeCSRF(fakeAtarSubscribeRequest)))
 
-  private def invokeEoriAlreadyLinked(
-    journey: Journey.Value = Journey.Subscribe
-  )(test: Future[Result] => Assertion): Unit =
-    test(
-      controller
-        .eoriAlreadyLinked(atarService)
-        .apply(requestWithPath(journey))
-    )
+  private def invokeEoriAlreadyLinked()(test: Future[Result] => Assertion): Unit =
+    test(controller.eoriAlreadyLinked(atarService).apply(withFakeCSRF(fakeAtarSubscribeRequest)))
 
-  private def invokeRejectedPreviously(journey: Journey.Value)(test: Future[Result] => Assertion): Unit =
-    test(
-      controller
-        .rejectedPreviously(atarService)
-        .apply(requestWithPath(journey))
-    )
-
-  private def requestWithPath(journey: Journey.Value) =
-    SessionBuilder.buildRequestWithSessionAndPath(s"/atar/${journey.toString.toLowerCase}", defaultUserId)
+  private def invokeRejectedPreviously()(test: Future[Result] => Assertion): Unit =
+    test(controller.rejectedPreviously(atarService).apply(withFakeCSRF(fakeAtarSubscribeRequest)))
 
 }

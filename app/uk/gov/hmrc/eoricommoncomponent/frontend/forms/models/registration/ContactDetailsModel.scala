@@ -20,7 +20,6 @@ import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.ContactInformation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel.trim
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionTimeOutException
 
 case class ContactDetailsModel(
   fullName: String,
@@ -45,18 +44,6 @@ case class ContactDetailsModel(
     countryCode.getOrElse("")
   )
 
-  def toContactDetailsViewModel: ContactDetailsViewModel = ContactDetailsViewModel(
-    fullName,
-    Some(emailAddress),
-    telephone,
-    fax,
-    useAddressFromRegistrationDetails,
-    trim(street),
-    trim(city),
-    trim(postcode),
-    countryCode
-  )
-
   def toRowContactInformation(): ContactInformation = ContactInformation(
     personOfContact = Some(fullName),
     sepCorrAddrIndicator = Some(false),
@@ -75,35 +62,4 @@ object ContactDetailsModel {
   implicit val jsonFormat: OFormat[ContactDetailsModel] = Json.format[ContactDetailsModel]
 
   def trim(value: Option[String]): Option[String] = value.map(_.trim)
-}
-
-//TODO remove email address read from cache and populate the contact details
-case class ContactDetailsViewModel(
-  fullName: String,
-  emailAddress: Option[String],
-  telephone: String,
-  fax: Option[String],
-  useAddressFromRegistrationDetails: Boolean = true,
-  street: Option[String],
-  city: Option[String],
-  postcode: Option[String],
-  countryCode: Option[String]
-) {
-
-  def toContactDetailsModel: ContactDetailsModel = ContactDetailsModel(
-    fullName,
-    emailAddress.getOrElse(throw SessionTimeOutException("Email is required")),
-    telephone,
-    fax,
-    useAddressFromRegistrationDetails,
-    trim(street),
-    trim(city),
-    trim(postcode),
-    countryCode
-  )
-
-}
-
-object ContactDetailsViewModel {
-  implicit val jsonFormat: OFormat[ContactDetailsViewModel] = Json.format[ContactDetailsViewModel]
 }

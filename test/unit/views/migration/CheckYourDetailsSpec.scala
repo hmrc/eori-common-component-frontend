@@ -28,7 +28,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
   AddressViewModel,
   CompanyRegisteredCountry
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.check_your_details
 import uk.gov.hmrc.play.language.LanguageUtils
 import util.ViewSpec
@@ -56,7 +55,6 @@ class CheckYourDetailsSpec extends ViewSpec {
   )
 
   private val address           = Some(AddressViewModel("Street", "City", Some("Postcode"), "GB"))
-  private val sicCode           = Some("00001")
   private val eori              = Some("ZZ123456789112")
   private val email             = Some("email@example.com")
   private val utr               = Some(Utr("UTRXXXXX"))
@@ -696,7 +694,6 @@ class CheckYourDetailsSpec extends ViewSpec {
       orgType,
       contactDetails,
       address,
-      sicCode,
       eori,
       existingEori,
       email,
@@ -708,8 +705,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       customsId,
       companyRegisteredCountry,
       addressLookupParams,
-      atarService,
-      Journey.Subscribe
+      atarService
     )
     Jsoup.parse(contentAsString(result))
   }

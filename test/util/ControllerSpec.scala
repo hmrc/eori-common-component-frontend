@@ -73,48 +73,6 @@ trait ControllerSpec extends UnitSpec with MockitoSugar with I18nSupport with In
   def postRequest(data: (String, String)*): FakeRequest[AnyContentAsFormUrlEncoded] =
     FakeRequest("POST", "").withFormUrlEncodedBody(data: _*)
 
-  protected def assertNotLoggedInUserShouldBeRedirectedToLoginPage(
-    mockAuthConnector: AuthConnector,
-    actionDescription: String,
-    action: Action[AnyContent]
-  ): Unit =
-    actionDescription should {
-      "redirect to GG login when request is not authenticated" in {
-        AuthBuilder.withNotLoggedInUser(mockAuthConnector)
-
-        val result = action.apply(
-          SessionBuilder.buildRequestWithSessionAndPathNoUser(
-            method = "GET",
-            path = s"/customs-enrolment-services/atar/register/"
-          )
-        )
-        status(result) shouldBe SEE_OTHER
-        header(LOCATION, result).get should include(
-          "/bas-gateway/sign-in?continue_url=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fregister&origin=eori-common-component-frontend"
-        )
-      }
-    }
-
-  protected def assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
-    mockAuthConnector: AuthConnector,
-    action: Action[AnyContent],
-    additionalLabel: String = ""
-  ): Unit =
-    s"redirect to GG login when request is not authenticated when the Journey is for a Get An EORI Journey $additionalLabel" in {
-      AuthBuilder.withNotLoggedInUser(mockAuthConnector)
-
-      val result: Future[Result] = action.apply(
-        SessionBuilder.buildRequestWithSessionAndPathNoUser(
-          method = "GET",
-          path = s"/customs-enrolment-services/atar/register/"
-        )
-      )
-      status(result) shouldBe SEE_OTHER
-      header(LOCATION, result).get should include(
-        "/bas-gateway/sign-in?continue_url=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fregister&origin=eori-common-component-frontend"
-      )
-    }
-
   protected def assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
     mockAuthConnector: AuthConnector,
     action: Action[AnyContent]

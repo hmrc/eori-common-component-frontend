@@ -84,29 +84,6 @@ class MatchingService @Inject() (
       result <- matchIndividualWithId(Eori(eori), individual, GroupId(loggedInUser.groupId))
     } yield result
 
-  def matchBusinessWithIdOnly(customsId: CustomsId, loggedInUser: LoggedInUserWithEnrolments)(implicit
-    hc: HeaderCarrier
-  ): Future[Boolean] =
-    for {
-      maybeMatchFound <- matchingConnector.lookup(idOnlyMatchRequest(customsId, loggedInUser.isAgent))
-      foundAndStored <- storeInCacheIfFound(convert(customsId, capturedDate = None), GroupId(loggedInUser.groupId))(
-        maybeMatchFound
-      )
-    } yield foundAndStored
-
-  def matchBusinessWithIdOnly(
-    customsId: CustomsId,
-    loggedInUser: LoggedInUserWithEnrolments,
-    capturedDate: Option[LocalDate] = None
-  )(implicit hc: HeaderCarrier): Future[Boolean] =
-    for {
-      maybeMatchFound <- matchingConnector.lookup(idOnlyMatchRequest(customsId, loggedInUser.isAgent))
-      foundAndStored <- storeInCacheIfFound(
-        convert(customsId, capturedDate = capturedDate),
-        GroupId(loggedInUser.groupId)
-      )(maybeMatchFound)
-    } yield foundAndStored
-
   def matchBusiness(customsId: CustomsId, org: Organisation, establishmentDate: Option[LocalDate], groupId: GroupId)(
     implicit
     request: Request[AnyContent],
@@ -137,18 +114,6 @@ class MatchingService @Inject() (
       .lookup(individualIdMatchRequest(customsId, individual))
       .flatMap(storeInCacheIfFound(convert(customsId, toLocalDate(individual.dateOfBirth)), groupId))
 
-  def matchIndividualWithNino(nino: String, individual: Individual, groupId: GroupId)(implicit
-    hc: HeaderCarrier
-  ): Future[Boolean] =
-    matchingConnector
-      .lookup(individualNinoMatchRequest(nino, individual))
-      .flatMap(
-        storeInCacheIfFound(
-          convert(customsId = Nino(nino), capturedDate = toLocalDate(individual.dateOfBirth)),
-          groupId
-        )
-      )
-
   private def storeInCacheIfFound(
     convert: MatchingResponse => RegistrationDetails,
     groupId: GroupId,
@@ -157,14 +122,6 @@ class MatchingService @Inject() (
     mayBeMatchSuccess.map(convert).fold(Future.successful(false)) { details =>
       cache.saveRegistrationDetails(details, groupId, orgType)
     }
-
-  private def idOnlyMatchRequest(customsId: CustomsId, isAnAgent: Boolean): MatchingRequestHolder =
-    MatchingRequestHolder(
-      MatchingRequest(
-        requestCommonGenerator.generate(),
-        RequestDetail(nameOfCustomsIdType(customsId), customsId.id, requiresNameMatch = false, isAnAgent)
-      )
-    )
 
   private def idAndNameMatchRequest(customsId: CustomsId, org: Organisation): MatchingRequestHolder =
     MatchingRequestHolder(
@@ -194,14 +151,6 @@ class MatchingService @Inject() (
           isAnAgent = false,
           individual = Some(individual)
         )
-      )
-    )
-
-  private def individualNinoMatchRequest(nino: String, individual: Individual): MatchingRequestHolder =
-    MatchingRequestHolder(
-      MatchingRequest(
-        requestCommonGenerator.generate(),
-        RequestDetail(NINO, nino, requiresNameMatch = true, isAnAgent = false, individual = Some(individual))
       )
     )
 

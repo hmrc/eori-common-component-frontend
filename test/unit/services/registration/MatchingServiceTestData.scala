@@ -21,10 +21,9 @@ import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.MatchingResponse
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, Individual, RequestCommon}
-import util.builders.matching.NinoFormBuilder
 
 trait MatchingServiceTestData {
-  val ninoId: String                        = NinoFormBuilder.Nino
+  val ninoId: String                        = "AB123456C"
   val establishmentDate: LocalDate          = LocalDate.parse("1961-04-12")
   val CorporateBody                         = "Corporate Body"
   val Partnership                           = "Partnership"

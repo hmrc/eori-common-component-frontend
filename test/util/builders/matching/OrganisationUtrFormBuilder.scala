@@ -16,9 +16,7 @@
 
 package util.builders.matching
 
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.Organisation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.Utr
-import util.builders.matching.OrganisationNameFormBuilder.ValidName
 
 object OrganisationUtrFormBuilder {
 
@@ -27,7 +25,4 @@ object OrganisationUtrFormBuilder {
   val ValidUtr        = Utr(ValidUtrId)
   val ValidUtrRequest = Map("have-utr" -> "true", "utr" -> ValidUtrId)
   val NoUtrRequest    = Map("have-utr" -> "false")
-
-  val charityPublicBodyNotForProfitOrganisation = Organisation(ValidName, "Unincorporated Body")
-  val thirdCountryOrganisation                  = Organisation(ValidName, "Corporate Body")
 }

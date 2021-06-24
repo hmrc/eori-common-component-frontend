@@ -24,7 +24,7 @@ import org.scalatest.BeforeAndAfter
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.TaxEnrolmentsConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Eori, SafeId, TaxEnrolmentsRequest, TaxEnrolmentsResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Eori, SafeId, TaxEnrolmentsRequest}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.TaxEnrolmentsService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -42,12 +42,11 @@ class TaxEnrolmentsServiceSpec extends UnitSpec with MockitoSugar with BeforeAnd
     reset(mockTaxEnrolmentsConnector)
   }
 
-  val testService          = Service.cds
-  val safeId               = SafeId("safeid")
-  val eori                 = Eori("GB99999999")
-  val formBundleId         = "formBundleId"
-  val date                 = LocalDate.parse("2010-04-28")
-  val taxEnrolmentResponse = TaxEnrolmentsResponse(serviceName = testService.enrolmentKey)
+  val testService  = Service.cds
+  val safeId       = SafeId("safeid")
+  val eori         = Eori("GB99999999")
+  val formBundleId = "formBundleId"
+  val date         = LocalDate.parse("2010-04-28")
 
   "TaxEnrolmentsService" should {
 

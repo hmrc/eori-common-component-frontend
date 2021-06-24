@@ -22,7 +22,7 @@ import play.api.mvc.{AnyContent, Request, Session}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubscriptionFlow, SubscriptionPage, _}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.Constants.ONE
 import uk.gov.hmrc.http.HeaderCarrier
@@ -65,35 +65,14 @@ class SubscriptionFlowManager @Inject() (requestSessionData: RequestSessionData,
     SubscriptionFlows(currentSubscriptionFlow)
       .stepInformation(currentPage)
 
-  def startSubscriptionFlow(service: Service, journey: Journey.Value)(implicit
-    hc: HeaderCarrier,
-    request: Request[AnyContent]
-  ): Future[(SubscriptionPage, Session)] =
-    startSubscriptionFlow(None, requestSessionData.userSelectedOrganisationType, service, journey)
-
   def startSubscriptionFlow(
     previousPage: Option[SubscriptionPage] = None,
     cdsOrganisationType: CdsOrganisationType,
-    service: Service,
-    journey: Journey.Value
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[(SubscriptionPage, Session)] =
-    startSubscriptionFlow(previousPage, Some(cdsOrganisationType), service, journey)
-
-  def startSubscriptionFlow(previousPage: Option[SubscriptionPage], service: Service, journey: Journey.Value)(implicit
-    hc: HeaderCarrier,
-    request: Request[AnyContent]
-  ): Future[(SubscriptionPage, Session)] =
-    startSubscriptionFlow(previousPage, requestSessionData.userSelectedOrganisationType, service, journey)
-
-  private def startSubscriptionFlow(
-    previousPage: Option[SubscriptionPage],
-    orgType: => Option[CdsOrganisationType],
-    service: Service,
-    journey: Journey.Value
+    service: Service
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[(SubscriptionPage, Session)] = {
     val maybePreviousPageUrl = previousPage.map(page => page.url(service))
     cdsFrontendDataCache.registrationDetails map { registrationDetails =>
-      val flow = selectFlow(registrationDetails, orgType, journey)
+      val flow = selectFlow(registrationDetails, cdsOrganisationType)
 
       logger.info(s"select Subscription flow: ${flow.name}")
       (
@@ -106,34 +85,27 @@ class SubscriptionFlowManager @Inject() (requestSessionData: RequestSessionData,
     }
   }
 
-  private def selectFlow(
-    registrationDetails: RegistrationDetails,
-    maybeOrgType: => Option[CdsOrganisationType],
-    journey: Journey.Value
-  )(implicit request: Request[AnyContent]): SubscriptionFlow = {
+  private def selectFlow(registrationDetails: RegistrationDetails, orgType: CdsOrganisationType)(implicit
+    request: Request[AnyContent]
+  ): SubscriptionFlow = {
     val isRow = UserLocation.isRow(requestSessionData)
 
-    val subscribePrefix = (isRow, journey, registrationDetails.customsId) match {
-      case (true, Journey.Subscribe, None) =>
-        "migration-eori-row-utrNino-enabled-"
-      case (true, Journey.Subscribe, _) =>
-        "migration-eori-row-"
-      case (_, Journey.Subscribe, _) => "migration-eori-" // This means UK
-      case _                         => ""
+    val subscribePrefix = (isRow, registrationDetails.customsId) match {
+      case (true, None) => "migration-eori-row-utrNino-enabled-"
+      case (true, _)    => "migration-eori-row-"
+      case _            => "migration-eori-"
     }
 
     val selectedFlow: SubscriptionFlow =
       registrationDetails match {
         case _: RegistrationDetailsOrganisation =>
-          SubscriptionFlow(subscribePrefix + OrganisationSubscriptionFlow.name)
+          SubscriptionFlow(subscribePrefix + "Organisation")
         case _: RegistrationDetailsIndividual =>
-          SubscriptionFlow(subscribePrefix + IndividualSubscriptionFlow.name)
+          SubscriptionFlow(subscribePrefix + "Individual")
         case _ => throw new IllegalStateException("Incomplete cache cannot complete journey")
       }
 
-    maybeOrgType.fold(selectedFlow)(
-      orgType => SubscriptionFlows.flows.keys.find(_.name == (subscribePrefix + orgType.id)).getOrElse(selectedFlow)
-    )
+    SubscriptionFlows.flows.keys.find(_.name == (subscribePrefix + orgType.id)).getOrElse(selectedFlow)
   }
 
 }

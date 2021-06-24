@@ -29,7 +29,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.{
   MatchingResponse,
   Organisation
 }
-import util.builders.matching.NinoFormBuilder
 import play.api.libs.json._
 import play.api.mvc.{AnyContent, Request}
 import play.mvc.Http.Status.INTERNAL_SERVER_ERROR
@@ -65,8 +64,9 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
     mockRequestSessionData
   )(global)
 
-  override def beforeEach() {
-    Mockito.reset(mockMatchingServiceConnector, mockDetailsCreator, mockCache, loggedInCtUser)
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+
     when(mockGroupId.id).thenReturn("mockedGroupId")
     when(loggedInCtUser.groupId).thenReturn(Some("mockedGroupId"))
 
@@ -84,135 +84,12 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
     when(
       mockCache.saveRegistrationDetails(ArgumentMatchers.any[RegistrationDetails])(ArgumentMatchers.any[HeaderCarrier])
     ).thenReturn(true)
-    when(loggedInCtUser.isAgent).thenReturn(false)
   }
 
-  "MatchingService" should {
+  override protected def afterEach(): Unit = {
+    Mockito.reset(mockMatchingServiceConnector, mockDetailsCreator, mockCache, loggedInCtUser)
 
-    "return failed future for matchBusinessWithIdOnly when connector fails to return result for any User" in {
-      when(
-        mockMatchingServiceConnector
-          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
-      ).thenReturn(Future.failed(UpstreamErrorResponse("failure", INTERNAL_SERVER_ERROR, 1)))
-
-      val caught = intercept[UpstreamErrorResponse] {
-        await(
-          service
-            .matchBusinessWithIdOnly(utr, loggedInCtUser)(mockHeaderCarrier)
-        )
-      }
-      caught.statusCode shouldBe 500
-      caught.getMessage shouldBe "failure"
-    }
-
-    "return false for matchBusinessWithIdOnly when no match found" in {
-      when(
-        mockMatchingServiceConnector
-          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
-      ).thenReturn(Future.successful(None))
-
-      await(service.matchBusinessWithIdOnly(utr, loggedInCtUser)(mockHeaderCarrier)) shouldBe false
-
-    }
-
-    "call Matching api with correct values when not an agent" in {
-      when(loggedInCtUser.isAgent).thenReturn(false)
-
-      when(
-        mockMatchingServiceConnector
-          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
-      ).thenReturn(Future.successful(Some(matchSuccessResponse)))
-
-      await(service.matchBusinessWithIdOnly(utr, loggedInCtUser)(mockHeaderCarrier)) shouldBe true
-
-      val matchBusinessDataCaptor =
-        ArgumentCaptor.forClass(classOf[MatchingRequestHolder])
-      verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(ArgumentMatchers.any())
-
-      Json.toJson(matchBusinessDataCaptor.getValue) shouldBe utrOnlyRequestJson(utrId, isAnAgent = false)
-    }
-
-    "call Matching api with correct values when is an Agent" in {
-      when(loggedInCtUser.isAgent).thenReturn(true)
-
-      when(
-        mockMatchingServiceConnector
-          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
-      ).thenReturn(Future.successful(Some(matchSuccessResponse)))
-
-      await(service.matchBusinessWithIdOnly(utr, loggedInCtUser)(mockHeaderCarrier)) shouldBe true
-
-      val matchBusinessDataCaptor =
-        ArgumentCaptor.forClass(classOf[MatchingRequestHolder])
-      verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(ArgumentMatchers.any())
-
-      Json.toJson(matchBusinessDataCaptor.getValue) shouldBe utrOnlyRequestJson(utrId, isAnAgent = true)
-    }
-
-    "call business Matching api with correct nino" in {
-      when(loggedInCtUser.isAgent).thenReturn(false)
-
-      when(
-        mockMatchingServiceConnector
-          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
-      ).thenReturn(Future.successful(Some(matchSuccessResponse)))
-
-      await(service.matchBusinessWithIdOnly(nino, loggedInCtUser)(mockHeaderCarrier)) shouldBe true
-
-      val matchBusinessDataCaptor =
-        ArgumentCaptor.forClass(classOf[MatchingRequestHolder])
-      verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(ArgumentMatchers.any())
-
-      Json.toJson(matchBusinessDataCaptor.getValue) shouldBe ninoRequestJson
-    }
-
-    "store registration details in cache when found a match" in {
-      when(
-        mockMatchingServiceConnector
-          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
-      ).thenReturn(Future.successful(Some(matchSuccessResponse)))
-      when(
-        mockDetailsCreator.registrationDetails(
-          ArgumentMatchers.eq(matchSuccessResponse.registerWithIDResponse),
-          ArgumentMatchers.eq(utr),
-          ArgumentMatchers.eq(None)
-        )
-      ).thenReturn(mockDetails)
-
-      await(service.matchBusinessWithIdOnly(utr, loggedInCtUser)(mockHeaderCarrier)) shouldBe true
-
-      verify(mockCache).saveRegistrationDetails(
-        ArgumentMatchers.eq(mockDetails),
-        ArgumentMatchers.any(),
-        ArgumentMatchers.any()
-      )(ArgumentMatchers.eq(mockHeaderCarrier))
-    }
-
-    "not proceed/return until details are saved in cache" in {
-      when(
-        mockMatchingServiceConnector
-          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
-      ).thenReturn(Future.successful(Some(matchSuccessResponse)))
-
-      val exception =
-        new UnsupportedOperationException("Emulation of service call failure")
-      when(
-        mockCache.saveRegistrationDetails(
-          ArgumentMatchers.any[RegistrationDetails],
-          ArgumentMatchers.any[GroupId],
-          ArgumentMatchers.any[Option[CdsOrganisationType]]
-        )(ArgumentMatchers.any[HeaderCarrier])
-      ).thenReturn(Future.failed(exception))
-
-      val caught = intercept[UnsupportedOperationException] {
-        await(
-          service
-            .matchBusinessWithIdOnly(utr, loggedInCtUser)(mockHeaderCarrier)
-        )
-      }
-      caught shouldBe exception
-    }
-
+    super.afterEach()
   }
 
   "matching an organisation with id and name" should {
@@ -450,63 +327,6 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
         connectorResponse = Some(matchIndividualSuccessResponse),
         expectedServiceCallResult = true
       )
-      verify(mockCache).saveRegistrationDetails(
-        ArgumentMatchers.eq(mockDetails),
-        ArgumentMatchers.eq(mockGroupId),
-        ArgumentMatchers.any()
-      )(ArgumentMatchers.eq(mockHeaderCarrier))
-
-    }
-
-  }
-
-  private def assertMatchIndividualWithNino(
-    connectorResponse: Option[MatchingResponse],
-    serviceCallResult: Boolean
-  ): Unit = {
-    when(
-      mockMatchingServiceConnector
-        .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
-    ).thenReturn(Future.successful(connectorResponse))
-
-    await(
-      service.matchIndividualWithNino(ninoId, NinoFormBuilder.asIndividual, mockGroupId)(mockHeaderCarrier)
-    ) shouldBe serviceCallResult
-
-    val matchBusinessDataCaptor =
-      ArgumentCaptor.forClass(classOf[MatchingRequestHolder])
-    verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(ArgumentMatchers.any())
-
-    Json.toJson(matchBusinessDataCaptor.getValue) shouldBe ninoIndividualRequestJson
-  }
-
-  "matching an individual with a nino" should {
-
-    "call matching api with matched values" in {
-      assertMatchIndividualWithNino(connectorResponse = Some(matchIndividualSuccessResponse), serviceCallResult = true)
-    }
-
-    "call matching api with unmatched values" in {
-      assertMatchIndividualWithNino(connectorResponse = None, serviceCallResult = false)
-    }
-
-    "store match details in cache" in {
-      when(
-        mockMatchingServiceConnector
-          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
-      ).thenReturn(Future.successful(Some(matchIndividualSuccessResponse)))
-      when(
-        mockDetailsCreator.registrationDetails(
-          ArgumentMatchers
-            .eq(matchIndividualSuccessResponse.registerWithIDResponse),
-          ArgumentMatchers.eq(nino),
-          ArgumentMatchers.eq(Some(NinoFormBuilder.DateOfBirth))
-        )
-      ).thenReturn(mockDetails)
-
-      await(
-        service.matchIndividualWithNino(ninoId, NinoFormBuilder.asIndividual, mockGroupId)(mockHeaderCarrier)
-      ) shouldBe true
       verify(mockCache).saveRegistrationDetails(
         ArgumentMatchers.eq(mockDetails),
         ArgumentMatchers.eq(mockGroupId),

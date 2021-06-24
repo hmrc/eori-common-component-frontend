@@ -25,14 +25,14 @@ import org.scalatest.prop.Tables.Table
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import play.api.mvc.{AnyContent, Request, Session}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType.{Company, Individual, SoleTrader}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{IndividualSubscriptionFlow, _}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   CdsOrganisationType,
   RegistrationDetailsIndividual,
   RegistrationDetailsOrganisation
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
@@ -60,12 +60,19 @@ class SubscriptionFlowManagerSpec
 
   val noSubscriptionFlowInSessionException = new IllegalStateException("No subscription flow in session.")
 
-  override def beforeEach(): Unit = {
-    reset(mockRequestSessionData, mockSession, mockCdsFrontendDataCache)
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+
     when(mockRequestSessionData.storeUserSubscriptionFlow(any[SubscriptionFlow], any[String])(any[Request[AnyContent]]))
       .thenReturn(mockSession)
     when(mockCdsFrontendDataCache.saveSubscriptionDetails(any[SubscriptionDetails])(any[HeaderCarrier]))
       .thenReturn(Future.successful(true))
+  }
+
+  override protected def afterEach(): Unit = {
+    reset(mockRequestSessionData, mockSession, mockCdsFrontendDataCache)
+
+    super.afterEach()
   }
 
   "Getting current subscription flow" should {
@@ -88,152 +95,6 @@ class SubscriptionFlowManagerSpec
   "Flow already started" should {
     val values = Table(
       ("flow", "currentPage", "expectedStepNumber", "expectedTotalSteps", "expectedNextPage"),
-      (
-        OrganisationSubscriptionFlow,
-        DateOfEstablishmentSubscriptionFlowPage,
-        1,
-        10,
-        ContactDetailsSubscriptionFlowPageGetEori
-      ),
-      (
-        OrganisationSubscriptionFlow,
-        ContactDetailsSubscriptionFlowPageGetEori,
-        2,
-        10,
-        BusinessShortNameSubscriptionFlowPage
-      ),
-      (OrganisationSubscriptionFlow, BusinessShortNameSubscriptionFlowPage, 3, 10, SicCodeSubscriptionFlowPage),
-      (OrganisationSubscriptionFlow, SicCodeSubscriptionFlowPage, 4, 10, VatRegisteredUkSubscriptionFlowPage),
-      (OrganisationSubscriptionFlow, VatRegisteredUkSubscriptionFlowPage, 5, 10, VatDetailsSubscriptionFlowPage),
-      (OrganisationSubscriptionFlow, VatDetailsSubscriptionFlowPage, 6, 10, VatRegisteredEuSubscriptionFlowPage),
-      (OrganisationSubscriptionFlow, VatRegisteredEuSubscriptionFlowPage, 7, 10, VatEUIdsSubscriptionFlowPage),
-      (OrganisationSubscriptionFlow, VatEUIdsSubscriptionFlowPage, 8, 10, VatEUConfirmSubscriptionFlowPage),
-      (OrganisationSubscriptionFlow, VatEUConfirmSubscriptionFlowPage, 9, 10, EoriConsentSubscriptionFlowPage),
-      (OrganisationSubscriptionFlow, EoriConsentSubscriptionFlowPage, 10, 10, ReviewDetailsPageGetYourEORI),
-      (
-        PartnershipSubscriptionFlow,
-        DateOfEstablishmentSubscriptionFlowPage,
-        1,
-        10,
-        ContactDetailsSubscriptionFlowPageGetEori
-      ),
-      (
-        PartnershipSubscriptionFlow,
-        ContactDetailsSubscriptionFlowPageGetEori,
-        2,
-        10,
-        BusinessShortNameSubscriptionFlowPage
-      ),
-      (PartnershipSubscriptionFlow, BusinessShortNameSubscriptionFlowPage, 3, 10, SicCodeSubscriptionFlowPage),
-      (PartnershipSubscriptionFlow, SicCodeSubscriptionFlowPage, 4, 10, VatRegisteredUkSubscriptionFlowPage),
-      (PartnershipSubscriptionFlow, VatRegisteredUkSubscriptionFlowPage, 5, 10, VatDetailsSubscriptionFlowPage),
-      (PartnershipSubscriptionFlow, VatDetailsSubscriptionFlowPage, 6, 10, VatRegisteredEuSubscriptionFlowPage),
-      (PartnershipSubscriptionFlow, VatRegisteredEuSubscriptionFlowPage, 7, 10, VatEUIdsSubscriptionFlowPage),
-      (PartnershipSubscriptionFlow, VatEUIdsSubscriptionFlowPage, 8, 10, VatEUConfirmSubscriptionFlowPage),
-      (PartnershipSubscriptionFlow, VatEUConfirmSubscriptionFlowPage, 9, 10, EoriConsentSubscriptionFlowPage),
-      (PartnershipSubscriptionFlow, EoriConsentSubscriptionFlowPage, 10, 10, ReviewDetailsPageGetYourEORI),
-      (SoleTraderSubscriptionFlow, ContactDetailsSubscriptionFlowPageGetEori, 1, 8, SicCodeSubscriptionFlowPage),
-      (SoleTraderSubscriptionFlow, SicCodeSubscriptionFlowPage, 2, 8, VatRegisteredUkSubscriptionFlowPage),
-      (SoleTraderSubscriptionFlow, VatRegisteredUkSubscriptionFlowPage, 3, 8, VatDetailsSubscriptionFlowPage),
-      (SoleTraderSubscriptionFlow, VatDetailsSubscriptionFlowPage, 4, 8, VatRegisteredEuSubscriptionFlowPage),
-      (SoleTraderSubscriptionFlow, VatRegisteredEuSubscriptionFlowPage, 5, 8, VatEUIdsSubscriptionFlowPage),
-      (SoleTraderSubscriptionFlow, VatEUIdsSubscriptionFlowPage, 6, 8, VatEUConfirmSubscriptionFlowPage),
-      (SoleTraderSubscriptionFlow, VatEUConfirmSubscriptionFlowPage, 7, 8, EoriConsentSubscriptionFlowPage),
-      (SoleTraderSubscriptionFlow, EoriConsentSubscriptionFlowPage, 8, 8, ReviewDetailsPageGetYourEORI),
-      (IndividualSubscriptionFlow, ContactDetailsSubscriptionFlowPageGetEori, 1, 2, EoriConsentSubscriptionFlowPage),
-      (IndividualSubscriptionFlow, EoriConsentSubscriptionFlowPage, 2, 2, ReviewDetailsPageGetYourEORI),
-      (
-        ThirdCountryOrganisationSubscriptionFlow,
-        DateOfEstablishmentSubscriptionFlowPage,
-        1,
-        10,
-        ContactDetailsSubscriptionFlowPageGetEori
-      ),
-      (
-        ThirdCountryOrganisationSubscriptionFlow,
-        ContactDetailsSubscriptionFlowPageGetEori,
-        2,
-        10,
-        BusinessShortNameSubscriptionFlowPage
-      ),
-      (
-        ThirdCountryOrganisationSubscriptionFlow,
-        BusinessShortNameSubscriptionFlowPage,
-        3,
-        10,
-        SicCodeSubscriptionFlowPage
-      ),
-      (
-        ThirdCountryOrganisationSubscriptionFlow,
-        SicCodeSubscriptionFlowPage,
-        4,
-        10,
-        VatRegisteredUkSubscriptionFlowPage
-      ),
-      (
-        ThirdCountryOrganisationSubscriptionFlow,
-        VatRegisteredUkSubscriptionFlowPage,
-        5,
-        10,
-        VatDetailsSubscriptionFlowPage
-      ),
-      (
-        ThirdCountryOrganisationSubscriptionFlow,
-        VatDetailsSubscriptionFlowPage,
-        6,
-        10,
-        VatRegisteredEuSubscriptionFlowPage
-      ),
-      (
-        ThirdCountryOrganisationSubscriptionFlow,
-        VatRegisteredEuSubscriptionFlowPage,
-        7,
-        10,
-        VatEUIdsSubscriptionFlowPage
-      ),
-      (ThirdCountryOrganisationSubscriptionFlow, VatEUIdsSubscriptionFlowPage, 8, 10, VatEUConfirmSubscriptionFlowPage),
-      (
-        ThirdCountryOrganisationSubscriptionFlow,
-        VatEUConfirmSubscriptionFlowPage,
-        9,
-        10,
-        EoriConsentSubscriptionFlowPage
-      ),
-      (ThirdCountryOrganisationSubscriptionFlow, EoriConsentSubscriptionFlowPage, 10, 10, ReviewDetailsPageGetYourEORI),
-      (
-        ThirdCountryIndividualSubscriptionFlow,
-        ContactDetailsSubscriptionFlowPageGetEori,
-        1,
-        2,
-        EoriConsentSubscriptionFlowPage
-      ),
-      (ThirdCountryIndividualSubscriptionFlow, EoriConsentSubscriptionFlowPage, 2, 2, ReviewDetailsPageGetYourEORI),
-      (
-        ThirdCountrySoleTraderSubscriptionFlow,
-        ContactDetailsSubscriptionFlowPageGetEori,
-        1,
-        8,
-        SicCodeSubscriptionFlowPage
-      ),
-      (ThirdCountrySoleTraderSubscriptionFlow, SicCodeSubscriptionFlowPage, 2, 8, VatRegisteredUkSubscriptionFlowPage),
-      (
-        ThirdCountrySoleTraderSubscriptionFlow,
-        VatRegisteredUkSubscriptionFlowPage,
-        3,
-        8,
-        VatDetailsSubscriptionFlowPage
-      ),
-      (
-        ThirdCountrySoleTraderSubscriptionFlow,
-        VatDetailsSubscriptionFlowPage,
-        4,
-        8,
-        VatRegisteredEuSubscriptionFlowPage
-      ),
-      (ThirdCountrySoleTraderSubscriptionFlow, VatRegisteredEuSubscriptionFlowPage, 5, 8, VatEUIdsSubscriptionFlowPage),
-      (ThirdCountrySoleTraderSubscriptionFlow, VatEUIdsSubscriptionFlowPage, 6, 8, VatEUConfirmSubscriptionFlowPage),
-      (ThirdCountrySoleTraderSubscriptionFlow, VatEUConfirmSubscriptionFlowPage, 7, 8, EoriConsentSubscriptionFlowPage),
-      (ThirdCountrySoleTraderSubscriptionFlow, EoriConsentSubscriptionFlowPage, 8, 8, ReviewDetailsPageGetYourEORI),
       (OrganisationFlow, NameUtrDetailsSubscriptionFlowPage, 1, 3, DateOfEstablishmentSubscriptionFlowPageMigrate),
       (OrganisationFlow, DateOfEstablishmentSubscriptionFlowPageMigrate, 2, 3, AddressDetailsSubscriptionFlowPage),
       (OrganisationFlow, AddressDetailsSubscriptionFlowPage, 3, 3, ReviewDetailsPageSubscription),
@@ -251,7 +112,6 @@ class SubscriptionFlowManagerSpec
         expectedNextPage: SubscriptionPage
       ) =>
         when(mockRequestSessionData.userSubscriptionFlow(mockRequest)).thenReturn(flow)
-        when(mockRequestSessionData.uriBeforeSubscriptionFlow(mockRequest)).thenReturn(None)
         val actual = controller.stepInformation(currentPage)(mockRequest)
 
         s"${flow.name} flow: current step is $expectedStepNumber when currentPage is $currentPage" in {
@@ -276,18 +136,13 @@ class SubscriptionFlowManagerSpec
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(mockIndividualRegistrationDetails))
       val (subscriptionPage, session) =
-        await(
-          controller.startSubscriptionFlow(Some(ConfirmIndividualTypePage), atarService, Journey.Register)(
-            mockHC,
-            mockRequest
-          )
-        )
+        await(controller.startSubscriptionFlow(Some(UserLocationPage), Individual, atarService)(mockHC, mockRequest))
 
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
 
       verify(mockRequestSessionData)
-        .storeUserSubscriptionFlow(IndividualSubscriptionFlow, ConfirmIndividualTypePage.url(atarService))(mockRequest)
+        .storeUserSubscriptionFlow(IndividualFlow, UserLocationPage.url(atarService))(mockRequest)
     }
 
     "start Corporate Subscription Flow when cached registration details are for an Organisation" in {
@@ -296,13 +151,13 @@ class SubscriptionFlowManagerSpec
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(mockOrgRegistrationDetails))
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(atarService, Journey.Register)(mockHC, mockRequest))
+        await(controller.startSubscriptionFlow(None, Company, atarService)(mockHC, mockRequest))
 
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
 
       verify(mockRequestSessionData)
-        .storeUserSubscriptionFlow(OrganisationSubscriptionFlow, RegistrationConfirmPage.url(atarService))(mockRequest)
+        .storeUserSubscriptionFlow(OrganisationFlow, UserLocationPage.url(atarService))(mockRequest)
     }
 
     "start Corporate Subscription Flow when selected organisation type is Sole Trader" in {
@@ -312,14 +167,13 @@ class SubscriptionFlowManagerSpec
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(mockIndividualRegistrationDetails))
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(atarService, Journey.Register)(mockHC, mockRequest))
+        await(controller.startSubscriptionFlow(None, SoleTrader, atarService)(mockHC, mockRequest))
 
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
-      verify(mockRequestSessionData).storeUserSubscriptionFlow(
-        SoleTraderSubscriptionFlow,
-        RegistrationConfirmPage.url(atarService)
-      )(mockRequest)
+      verify(mockRequestSessionData).storeUserSubscriptionFlow(SoleTraderFlow, UserLocationPage.url(atarService))(
+        mockRequest
+      )
     }
 
     "start Corporate Subscription Flow when cached registration details are for an Organisation Reg-existing (a.k.a migration)" in {
@@ -327,13 +181,13 @@ class SubscriptionFlowManagerSpec
       when(mockCdsFrontendDataCache.registrationDetails(mockHC))
         .thenReturn(Future.successful(mockOrgRegistrationDetails))
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(atarService, Journey.Subscribe)(mockHC, mockRequest))
+        await(controller.startSubscriptionFlow(None, Company, atarService)(mockHC, mockRequest))
 
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
 
       verify(mockRequestSessionData)
-        .storeUserSubscriptionFlow(OrganisationFlow, RegistrationConfirmPage.url(atarService))(mockRequest)
+        .storeUserSubscriptionFlow(OrganisationFlow, UserLocationPage.url(atarService))(mockRequest)
     }
   }
 }
@@ -372,13 +226,12 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
         .thenReturn(Future.successful(RegistrationDetailsIndividual()))
 
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(atarService, Journey.Subscribe)(mockHC, mockRequest))
+        await(controller.startSubscriptionFlow(None, SoleTrader, atarService)(mockHC, mockRequest))
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
-      verify(mockRequestSessionData).storeUserSubscriptionFlow(
-        RowIndividualFlow,
-        RegistrationConfirmPage.url(atarService)
-      )(mockRequest)
+      verify(mockRequestSessionData).storeUserSubscriptionFlow(RowIndividualFlow, UserLocationPage.url(atarService))(
+        mockRequest
+      )
     }
 
     "start Corporate Subscription Flow when selected organisation type is Individual" in {
@@ -389,13 +242,12 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
         .thenReturn(Future.successful(RegistrationDetailsIndividual()))
 
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(atarService, Journey.Subscribe)(mockHC, mockRequest))
+        await(controller.startSubscriptionFlow(None, Individual, atarService)(mockHC, mockRequest))
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
-      verify(mockRequestSessionData).storeUserSubscriptionFlow(
-        RowIndividualFlow,
-        RegistrationConfirmPage.url(atarService)
-      )(mockRequest)
+      verify(mockRequestSessionData).storeUserSubscriptionFlow(RowIndividualFlow, UserLocationPage.url(atarService))(
+        mockRequest
+      )
     }
 
     "start Corporate Subscription Flow when cached registration details are for an Organisation" in {
@@ -405,13 +257,12 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
         .thenReturn(Future.successful(RegistrationDetailsOrganisation()))
 
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(atarService, Journey.Subscribe)(mockHC, mockRequest))
+        await(controller.startSubscriptionFlow(None, Company, atarService)(mockHC, mockRequest))
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
-      verify(mockRequestSessionData).storeUserSubscriptionFlow(
-        RowOrganisationFlow,
-        RegistrationConfirmPage.url(atarService)
-      )(mockRequest)
+      verify(mockRequestSessionData).storeUserSubscriptionFlow(RowOrganisationFlow, UserLocationPage.url(atarService))(
+        mockRequest
+      )
     }
   }
 }

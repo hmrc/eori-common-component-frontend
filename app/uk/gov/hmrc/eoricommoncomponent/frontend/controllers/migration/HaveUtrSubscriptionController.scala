@@ -26,7 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Subscri
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{RowOrganisationFlow, UtrSubscriptionFlowPage}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.haveUtrForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_utr_subscription
@@ -45,19 +45,19 @@ class HaveUtrSubscriptionController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+  def createForm(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
-        populateView(false, service, journey)
+        populateView(false, service)
     }
 
-  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+  def reviewForm(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
-        populateView(true, service, journey)
+        populateView(true, service)
     }
 
-  private def populateView(inReviewMode: Boolean, service: Service, journey: Journey.Value)(implicit
+  private def populateView(inReviewMode: Boolean, service: Service)(implicit
     hc: HeaderCarrier,
     request: Request[AnyContent]
   ) =
@@ -65,14 +65,14 @@ class HaveUtrSubscriptionController @Inject() (
       case Some(orgType) =>
         subscriptionDetailsService.cachedUtrMatch.map {
           case Some(formData) =>
-            Ok(matchUtrSubscriptionView(haveUtrForm.fill(formData), orgType.id, inReviewMode, service, journey))
+            Ok(matchUtrSubscriptionView(haveUtrForm.fill(formData), orgType.id, inReviewMode, service))
 
-          case _ => Ok(matchUtrSubscriptionView(haveUtrForm, orgType.id, inReviewMode, service, journey))
+          case _ => Ok(matchUtrSubscriptionView(haveUtrForm, orgType.id, inReviewMode, service))
         }
       case None => noOrgTypeSelected
     }
 
-  def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
+  def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
         requestSessionData.userSelectedOrganisationType match {
@@ -80,27 +80,25 @@ class HaveUtrSubscriptionController @Inject() (
             haveUtrForm.bindFromRequest.fold(
               formWithErrors =>
                 Future.successful(
-                  BadRequest(matchUtrSubscriptionView(formWithErrors, orgType.id, isInReviewMode, service, journey))
+                  BadRequest(matchUtrSubscriptionView(formWithErrors, orgType.id, isInReviewMode, service))
                 ),
-              formData => destinationsByAnswer(isInReviewMode, formData, service, journey)
+              formData => destinationsByAnswer(isInReviewMode, formData, service)
             )
           case None => noOrgTypeSelected
         }
     }
 
-  private def destinationsByAnswer(
-    isInReviewMode: Boolean,
-    form: UtrMatchModel,
-    service: Service,
-    journey: Journey.Value
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
+  private def destinationsByAnswer(isInReviewMode: Boolean, form: UtrMatchModel, service: Service)(implicit
+    hc: HeaderCarrier,
+    request: Request[AnyContent]
+  ): Future[Result] =
     form.haveUtr match {
       case Some(true) =>
         subscriptionDetailsService.cacheUtrMatch(Some(form)).map {
           _ =>
             Redirect(
-              if (isInReviewMode) GetUtrSubscriptionController.reviewForm(service, journey)
-              else GetUtrSubscriptionController.createForm(service, journey)
+              if (isInReviewMode) GetUtrSubscriptionController.reviewForm(service)
+              else GetUtrSubscriptionController.createForm(service)
             )
         }
       case Some(false) =>

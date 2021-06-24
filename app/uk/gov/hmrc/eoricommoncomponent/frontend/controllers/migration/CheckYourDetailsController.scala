@@ -22,7 +22,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.check_your_details
 
@@ -38,7 +38,7 @@ class CheckYourDetailsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def reviewDetails(service: Service, journey: Journey.Value): Action[AnyContent] =
+  def reviewDetails(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
         for {
@@ -52,7 +52,6 @@ class CheckYourDetailsController @Inject() (
             organisationType = requestSessionData.userSelectedOrganisationType,
             addressDetails = subscriptionDetailsHolder.addressDetails,
             contactDetails = subscriptionDetailsHolder.contactDetails,
-            principalEconomicActivity = subscriptionDetailsHolder.sicCode,
             eoriNumber = subscriptionDetailsHolder.eoriNumber,
             existingEori = subscriptionDetailsHolder.existingEoriNumber,
             email = Some(email),
@@ -64,8 +63,7 @@ class CheckYourDetailsController @Inject() (
             customsId = subscriptionDetailsHolder.customsId,
             registeredCountry = subscriptionDetailsHolder.registeredCompany,
             addressLookupParams = addressLookupParams,
-            service = service,
-            journey = journey
+            service = service
           )
         )
     }

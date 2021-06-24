@@ -26,7 +26,6 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.HowCanWeIdentifyYouController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
   SubscriptionDetailsService
@@ -73,10 +72,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
 
   "Loading the page" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
-      mockAuthConnector,
-      controller.createForm(atarService, Journey.Subscribe)
-    )
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(atarService))
 
     "show the form without errors" in {
       showForm(Map.empty) { result =>
@@ -91,7 +87,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
-      controller.submit(isInReviewMode = false, atarService, Journey.Subscribe)
+      controller.submit(atarService, isInReviewMode = false)
     )
 
     "give a page level error when neither radio button is selected" in {
@@ -152,11 +148,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
     withAuthorisedUser(userId, mockAuthConnector)
     when(mockSubscriptionBusinessService.getCachedCustomsId(any[HeaderCarrier]))
       .thenReturn(Future.successful(Some(Utr("id"))))
-    test(
-      controller.createForm(atarService, Journey.Subscribe).apply(
-        SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
-      )
-    )
+    test(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)))
   }
 
   def submitForm(form: Map[String, String], userId: String = defaultUserId, isInReviewMode: Boolean = false)(
@@ -165,7 +157,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller
-        .submit(isInReviewMode, atarService, Journey.Subscribe)
+        .submit(atarService, isInReviewMode)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }
@@ -176,18 +168,14 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller
-        .submit(isInReviewMode, atarService, Journey.Subscribe)
+        .submit(atarService, isInReviewMode)
         .apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }
 
   def reviewForm(form: Map[String, String], userId: String = defaultUserId)(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
-    test(
-      controller.reviewForm(atarService, Journey.Subscribe).apply(
-        SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
-      )
-    )
+    test(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)))
   }
 
 }

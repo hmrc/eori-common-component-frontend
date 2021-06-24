@@ -31,7 +31,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.contact_details
@@ -82,8 +81,6 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     when(mockSubscriptionBusinessService.cachedContactDetailsModel(any[HeaderCarrier])).thenReturn(None)
     when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(mockSubscriptionDetails)
     registerSaveContactDetailsMockSuccess()
-    when(mockSubscriptionDetailsHolderService.cachedAddressDetails(any()))
-      .thenReturn(Future.successful(Some(AddressViewModel("street", "city", None, "code"))))
     mockFunctionWithRegistrationDetails(mockRegistrationDetails)
     setupMockSubscriptionFlowManager(ContactDetailsSubscriptionFlowPageMigrate)
     when(mockCdsFrontendDataCache.email(any[HeaderCarrier])).thenReturn(Future.successful(Email))
@@ -104,7 +101,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
   "Viewing the create form " should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.createForm(atarService))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(atarService))
 
     "display back link correctly" in {
       showCreateForm()(verifyBackLinkInCreateModeRegister)
@@ -137,7 +134,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
   "Viewing the review form " should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(mockAuthConnector, controller.reviewForm(atarService))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.reviewForm(atarService))
 
     "display relevant data in form fields when subscription details exist in the cache" in {
 
@@ -163,7 +160,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
   "submitting the form in Create mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
       controller.submit(isInReviewMode = false, atarService)
     )
@@ -289,7 +286,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   }
 
   private def showCreateForm(
-    subscriptionFlow: SubscriptionFlow = OrganisationSubscriptionFlow,
+    subscriptionFlow: SubscriptionFlow = OrganisationFlow,
     orgType: EtmpOrganisationType = CorporateBody
   )(test: Future[Result] => Any) {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
@@ -301,7 +298,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   }
 
   private def showReviewForm(
-    subscriptionFlow: SubscriptionFlow = OrganisationSubscriptionFlow,
+    subscriptionFlow: SubscriptionFlow = OrganisationFlow,
     contactDetailsModel: ContactDetailsModel = contactDetailsModel
   )(test: Future[Result] => Any) {
     withAuthorisedUser(defaultUserId, mockAuthConnector)

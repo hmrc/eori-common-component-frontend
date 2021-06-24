@@ -49,10 +49,14 @@ class NotifyRcmConnector @Inject() (http: HttpClient, appConfig: AppConfig, audi
       }
     } recoverWith {
       case e: BadRequestException =>
+        // $COVERAGE-OFF$Loggers
         logger.warn(s"request failed with BAD_REQUEST status for call to $url: ${e.getMessage}", e)
+        // $COVERAGE-ON
         Future.failed(e)
       case NonFatal(e) =>
+        // $COVERAGE-OFF$Loggers
         logger.warn(s"request failed for call to $url: ${e.getMessage}", e)
+        // $COVERAGE-ON
         Future.failed(e)
     }
   }

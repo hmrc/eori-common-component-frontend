@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.forms
 
 import org.joda.time.LocalDate
-import play.api.data.Forms.{optional, text}
 import play.api.data.Mapping
 import play.api.data.validation._
 import uk.gov.hmrc.eoricommoncomponent.frontend.playext.mappers.DateTuple._
@@ -27,8 +26,6 @@ object FormUtils {
   val messageKeyMandatoryField    = "cds.error.mandatory.field"
   val messageKeyInvalidDateFormat = "cds.error.invalid.date.format"
   val messageKeyFutureDate        = "cds.error.future-date"
-
-  val messageKeyOptionInvalid = "cds.error.option.invalid"
 
   def formatInput(value: String): String                      = value.replaceAll(" ", "").toUpperCase
   def formatInput(maybeValue: Option[String]): Option[String] = maybeValue.map(value => formatInput(value))
@@ -41,18 +38,6 @@ object FormUtils {
     dateTuple(onInvalidDateError, minYear)
       .verifying(onEmptyError, d => d.isDefined)
       .transform(_.get, Option(_))
-
-  def mandatoryString(
-    onEmptyError: String
-  )(constraintFunction: String => Boolean, error: => String = onEmptyError): Mapping[String] = {
-    val constraint = Constraint((s: String) => if (constraintFunction.apply(s)) Valid else Invalid(error))
-    mandatoryString(onEmptyError, Seq(constraint))
-  }
-
-  def mandatoryString(onEmptyError: String, constraints: Seq[Constraint[String]]): Mapping[String] =
-    optional(text.verifying(nonEmptyString(onEmptyError)).verifying(constraints: _*))
-      .verifying(onEmptyError, _.isDefined)
-      .transform[String](o => o.get, s => Some(s))
 
   def mandatoryDateTodayOrBefore(
     onEmptyError: String = messageKeyMandatoryField,
@@ -68,10 +53,6 @@ object FormUtils {
           d.isEqual(today) || d.isBefore(today)
         }
       )
-
-  def nonEmptyString(error: => String = messageKeyMandatoryField): Constraint[String] = Constraint { s =>
-    Option(s).filter(_.trim.nonEmpty).fold[ValidationResult](ifEmpty = Invalid(error))(_ => Valid)
-  }
 
   def oneOf[T](validValues: Set[T]): T => Boolean = validValues.contains
 

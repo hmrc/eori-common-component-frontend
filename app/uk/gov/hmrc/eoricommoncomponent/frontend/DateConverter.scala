@@ -36,7 +36,9 @@ object DateConverter {
   def toLocalDate(dateStr: String): Option[LocalDate] =
     Try(LocalDate.parse(dateStr)).recoverWith {
       case NonFatal(e) =>
+        // $COVERAGE-OFF$Loggers
         logger.warn(s"Could not parse the LocalDate '$dateStr': ${e.getMessage}", e)
+        // $COVERAGE-ON
         Failure(e)
     }.toOption
 
@@ -45,9 +47,6 @@ object DateConverter {
 
   def updateDateOfEstablishmentErrors(errors: Seq[FormError]): Seq[FormError] =
     updateYearErrors(errors, earliestYearDateOfEstablishment)
-
-  def updateEffectiveVatDateErrors(errors: Seq[FormError]): Seq[FormError] =
-    updateYearErrors(errors, earliestYearEffectiveVatDate)
 
   private def updateYearErrors(errors: Seq[FormError], minYear: Int): Seq[FormError] = errors.map(
     err =>

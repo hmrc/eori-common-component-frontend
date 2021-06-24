@@ -17,16 +17,10 @@
 package util.builders
 
 import org.joda.time.LocalDate
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{BusinessShortName, SubscriptionDetails}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{VatDetails, VatEUDetailsModel}
 
 object SubscriptionFormBuilder {
-
-  val gbVatDetails: Option[VatDetails] =
-    Some(VatDetails("SE28 1AA", "123456789", LocalDate.parse("2017-01-01")))
-
-  val euVats: List[VatEUDetailsModel] = List(VatEUDetailsModel("FR", "VAT-2"), VatEUDetailsModel("PL", "VAT-3"))
 
   val LegalStatus     = "corporate-body-uk"
   val ShortName       = "Short Name"
@@ -78,14 +72,7 @@ object SubscriptionFormBuilder {
   val vatSubscriptionOptionalInvalidMap: Map[String, Seq[String]] =
     vatSubscriptionInvalidSeq.groupBy(_._1).mapValues(tuples => tuples.map(_._2))
 
-  val detailsHolderWithAllFields = SubscriptionDetails(
-    personalDataDisclosureConsent = Some(true),
-    contactDetails = Some(contactDetailsModel),
-    businessShortName = Some(BusinessShortName(ShortName)),
-    dateEstablished = Some(DateEstablished),
-    sicCode = Some(sic),
-    ukVatDetails = gbVatDetails,
-    vatEUDetails = euVats
-  )
+  val detailsHolderWithAllFields =
+    SubscriptionDetails(contactDetails = Some(contactDetailsModel), dateEstablished = Some(DateEstablished))
 
 }

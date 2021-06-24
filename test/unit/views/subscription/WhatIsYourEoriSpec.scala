@@ -21,7 +21,6 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriNumberViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.what_is_your_eori
@@ -65,10 +64,9 @@ class WhatIsYourEoriSpec extends ViewSpec {
     }
 
     "have a link to 'Get EORI'" in {
-
       doc().body.getElementsByAttributeValue(
         "href",
-        routes.ApplicationController.startRegister(atarService).url
+        "http://localhost:6751/customs-registration-services/atar/register"
       ).text() mustBe "get an EORI number"
     }
 

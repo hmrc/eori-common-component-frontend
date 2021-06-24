@@ -22,9 +22,9 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 @import uk.gov.hmrc.eoricommoncomponent.frontend.DateConverter
 
-
 @this(inputDate_di: inputDate, layout_di: layout)
-@(dateForm: Form[LocalDate], isInReviewMode: Boolean, orgType: EtmpOrganisationType, isRestOfWorldJourney: Boolean, service: Service, journey: Journey.Value)(implicit request: Request[_], messages: Messages)
+
+@(dateForm: Form[LocalDate], isInReviewMode: Boolean, orgType: EtmpOrganisationType, isRestOfWorldJourney: Boolean, service: Service)(implicit request: Request[_], messages: Messages)
 
 
 @introText = @{
@@ -56,7 +56,7 @@
         @helpers.errorSummary(updateFormErrors,
             focusOverrides = Map("date-of-establishment" -> "date-of-establishment.day"))
 
-        @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController.submit(isInReviewMode, service, journey), "date-of-birth-form") {
+        @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController.submit(isInReviewMode, service), "date-of-birth-form") {
 
         @CSRF.formField
 

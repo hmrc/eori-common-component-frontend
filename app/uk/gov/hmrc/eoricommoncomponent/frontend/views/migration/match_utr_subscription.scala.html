@@ -23,7 +23,7 @@
 
 
 @this(layout_di: layout, appConfig: AppConfig)
-@(matchOrgIdForm: Form[UtrMatchModel], organisationType: String, isInReviewMode: Boolean, service: Service, journey: Journey.Value)(implicit request: Request[_], messages: Messages)
+@(matchOrgIdForm: Form[UtrMatchModel], organisationType: String, isInReviewMode: Boolean, service: Service)(implicit request: Request[_], messages: Messages)
 
 
 @inputRadioGroup(field: String, options: Seq[(String, String)]) = {
@@ -71,7 +71,7 @@
 
     @helpers.errorSummary(matchOrgIdForm, focusOverrides = Map("have-utr" -> "have-utr-true"))
 
-    @helpers.form(HaveUtrSubscriptionController.submit(isInReviewMode, service, journey), "subscriptionUtrForm") {
+    @helpers.form(HaveUtrSubscriptionController.submit(isInReviewMode, service), "subscriptionUtrForm") {
     @CSRF.formField
     <div class="form-group">
 

@@ -30,7 +30,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineRevi
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.RowOrganisationFlow
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.CompanyRegisteredCountry
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
@@ -100,7 +100,7 @@ class CompanyRegisteredCountryController @Inject() (
           country =>
             subscriptionDetailsService.cacheRegisteredCountry(country).map { _ =>
               if (isInReviewMode)
-                Redirect(DetermineReviewPageController.determineRoute(service, Journey.Subscribe))
+                Redirect(DetermineReviewPageController.determineRoute(service))
               else
                 redirectBasedOnTheJourney(service)
             }
@@ -109,7 +109,7 @@ class CompanyRegisteredCountryController @Inject() (
 
   private def redirectBasedOnTheJourney(service: Service)(implicit request: Request[AnyContent]): Result =
     if (requestSessionData.userSubscriptionFlow == RowOrganisationFlow)
-      Redirect(DateOfEstablishmentController.createForm(service, Journey.Subscribe))
+      Redirect(DateOfEstablishmentController.createForm(service))
     else
       Redirect(ContactDetailsController.createForm(service))
 

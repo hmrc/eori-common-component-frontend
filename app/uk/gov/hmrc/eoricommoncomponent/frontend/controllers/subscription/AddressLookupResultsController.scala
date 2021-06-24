@@ -28,7 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.AddressDetailsSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressLookupParams, AddressResultsForm}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.address.{
   AddressLookup,
   AddressLookupFailure,
@@ -156,7 +156,7 @@ class AddressLookupResultsController @Inject() (
 
                     subscriptionDetailsService.cacheAddressDetails(address).map { _ =>
                       if (isInReviewMode)
-                        Redirect(DetermineReviewPageController.determineRoute(service, Journey.Subscribe))
+                        Redirect(DetermineReviewPageController.determineRoute(service))
                       else
                         Redirect(
                           subscriptionFlowManager

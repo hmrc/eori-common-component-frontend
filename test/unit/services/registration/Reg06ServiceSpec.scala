@@ -54,9 +54,6 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
   private val validDateTime          = DateTime.parse(validDate)
   implicit val hc: HeaderCarrier     = mock[HeaderCarrier]
 
-  private val loggedInUserId   = java.util.UUID.randomUUID.toString
-  private val mockLoggedInUser = mock[LoggedInUserWithEnrolments]
-
   val service =
     new Reg06Service(mockConnector, mockReqCommonGen, mockDataCache, mockRequestSessionData)(global)
 
@@ -548,7 +545,6 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
 
   override protected def beforeEach(): Unit = {
     reset(mockConnector, mockDetailsCreator, mockDataCache)
-    when(mockLoggedInUser.userId()).thenReturn(loggedInUserId)
     when(mockReqCommonGen.generate()).thenReturn(mockRequestCommon)
     when(mockDataCache.saveRegisterWithEoriAndIdResponse(any[RegisterWithEoriAndIdResponse])(any[HeaderCarrier]))
       .thenReturn(Future.successful(true))

@@ -22,8 +22,7 @@ import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, UtrMatchModel}
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.utrForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.haveUtrForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_utr_subscription
 import util.ViewSpec
 
@@ -31,8 +30,8 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
 
   implicit val request = withFakeCSRF(FakeRequest())
 
-  private val standardForm: Form[UtrMatchModel] = utrForm
-  private val noOptionSelectedForm              = utrForm.bind(Map.empty[String, String])
+  private val standardForm: Form[UtrMatchModel] = haveUtrForm
+  private val noOptionSelectedForm              = haveUtrForm.bind(Map.empty[String, String])
 
   private val view = instanceOf[match_utr_subscription]
 
@@ -116,43 +115,21 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
   }
 
   lazy val companyDoc: Document =
-    Jsoup.parse(
-      contentAsString(
-        view(standardForm, CdsOrganisationType.CompanyId, isInReviewMode = false, atarService, Journey.Subscribe)
-      )
-    )
+    Jsoup.parse(contentAsString(view(standardForm, CdsOrganisationType.CompanyId, isInReviewMode = false, atarService)))
 
   lazy val notSelectedCompanyDoc: Document =
     Jsoup.parse(
-      contentAsString(
-        view(
-          noOptionSelectedForm,
-          CdsOrganisationType.CompanyId,
-          isInReviewMode = false,
-          atarService,
-          Journey.Subscribe
-        )
-      )
+      contentAsString(view(noOptionSelectedForm, CdsOrganisationType.CompanyId, isInReviewMode = false, atarService))
     )
 
   lazy val individualDoc: Document =
     Jsoup.parse(
-      contentAsString(
-        view(standardForm, CdsOrganisationType.SoleTraderId, isInReviewMode = false, atarService, Journey.Subscribe)
-      )
+      contentAsString(view(standardForm, CdsOrganisationType.SoleTraderId, isInReviewMode = false, atarService))
     )
 
   lazy val notSelectedIndividualDoc: Document =
     Jsoup.parse(
-      contentAsString(
-        view(
-          noOptionSelectedForm,
-          CdsOrganisationType.SoleTraderId,
-          isInReviewMode = false,
-          atarService,
-          Journey.Subscribe
-        )
-      )
+      contentAsString(view(noOptionSelectedForm, CdsOrganisationType.SoleTraderId, isInReviewMode = false, atarService))
     )
 
 }

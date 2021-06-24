@@ -26,7 +26,6 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.EstablishmentAddress.createEstablishmentAddress
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.ContactInformation.createContactInformation
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionRequest.principalEconomicActivityLength
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{RequestCommon, RequestParameter}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
@@ -168,54 +167,8 @@ object SubscriptionCreateRequest {
     )
   }
 
-  // Registration journey
-  def apply(
-    reg: RegistrationDetails,
-    sub: SubscriptionDetails,
-    cdsOrgType: Option[CdsOrganisationType],
-    dateEstablished: LocalDate,
-    service: Option[Service]
-  ): SubscriptionRequest = {
-    val org                                = CdsToEtmpOrganisationType(cdsOrgType) orElse CdsToEtmpOrganisationType(reg)
-    val ukVatId: Option[VatIdentification] = sub.ukVatDetails.map(vd => VatIdentification(Some("GB"), Some(vd.number)))
-    val euVatIds                           = sub.vatIdentificationList
-
-    SubscriptionRequest(
-      SubscriptionCreateRequest(
-        generateWithOriginatingSystem(),
-        RequestDetail(
-          SAFE = reg.safeId.id,
-          EORINo = None,
-          CDSFullName = reg.name,
-          CDSEstablishmentAddress = fourFieldAddress(sub, reg),
-          establishmentInTheCustomsTerritoryOfTheUnion = None,
-          typeOfLegalEntity = org.map(_.legalStatus),
-          contactInformation = sub.contactDetails.map(c => createContactInformation(c.contactDetails)),
-          vatIDs = createVatIds(Some(ukVatId ++: euVatIds)),
-          consentToDisclosureOfPersonalData = sub.personalDataDisclosureConsent.map(bool => if (bool) "1" else "0"),
-          shortName = sub.businessShortName flatMap (_.shortName),
-          dateOfEstablishment = Some(dateEstablished),
-          typeOfPerson = org.map(_.typeOfPerson),
-          principalEconomicActivity = sub.sicCode.map(_.take(principalEconomicActivityLength)),
-          serviceName = service.map(_.enrolmentKey)
-        )
-      )
-    )
-  }
-
   private def dashForEmpty(s: String): String =
     if (s.isEmpty) "-" else s
-
-  private def fourFieldAddress(subscription: SubscriptionDetails, registration: RegistrationDetails) = {
-
-    val address = subscription.addressDetails match {
-      case Some(a) =>
-        EstablishmentAddress(streetAndNumber = a.street, city = a.city, a.postcode.filter(_.nonEmpty), a.countryCode)
-      case _ => createEstablishmentAddress(registration.address)
-    }
-
-    address.copy(city = dashForEmpty(address.city))
-  }
 
   private def generateWithOriginatingSystem(requestParameters: Option[Seq[RequestParameter]] = None): RequestCommon =
     RequestCommon(
@@ -231,20 +184,6 @@ object SubscriptionCreateRequest {
     case None =>
       logger.warn("No establishment date returned from REG06")
       None
-  }
-
-  private def createVatIds(vis: Option[List[VatIdentification]]): Option[List[VatId]] = {
-    def removeEmpty: List[VatIdentification] => List[VatId] = _.flatMap {
-      case VatIdentification(None, None) => None
-      case VatIdentification(cc, n)      => Some(VatId(cc, n))
-    }
-
-    def removeEmptyList: List[VatId] => Option[List[VatId]] = {
-      case Nil => None
-      case vs  => Some(vs)
-    }
-
-    vis map removeEmpty flatMap removeEmptyList
   }
 
 }

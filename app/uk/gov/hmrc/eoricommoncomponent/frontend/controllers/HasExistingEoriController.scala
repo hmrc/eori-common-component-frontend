@@ -25,7 +25,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
   GroupEnrolmentExtractor
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{EnrolmentService, MissingEnrolmentException}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{eori_enrol_success, has_existing_eori}
@@ -59,11 +59,7 @@ class HasExistingEoriController @Inject() (
       groupEnrolment.hasGroupIdEnrolmentTo(user.groupId.getOrElse(throw MissingGroupId()), service).flatMap {
         groupIdEnrolmentExists =>
           if (groupIdEnrolmentExists)
-            Future.successful(
-              Redirect(
-                routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service, Journey.Subscribe)
-              )
-            )
+            Future.successful(Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service)))
           else
             existingEoriToUse.flatMap { eori =>
               enrolmentService.enrolWithExistingCDSEnrolment(eori, service).map {
@@ -72,7 +68,7 @@ class HasExistingEoriController @Inject() (
               } recover {
                 case e: MissingEnrolmentException =>
                   logger.info(s"EnrolWithExistingCDSEnrolment : ${e.getMessage}")
-                  Redirect(routes.EmailController.form(service, Journey.Subscribe))
+                  Redirect(routes.EmailController.form(service))
               }
             }
       }

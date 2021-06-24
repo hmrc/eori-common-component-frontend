@@ -33,7 +33,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Subscri
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{RegistrationDetails, _}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.nameUtrOrganisationForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.nameId
 import uk.gov.hmrc.http.HeaderCarrier
@@ -52,12 +51,12 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
   protected override val submitInCreateModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController
-      .submit(isInReviewMode = false, atarService, Journey.Register)
+      .submit(isInReviewMode = false, atarService)
       .url
 
   protected override val submitInReviewModeUrl: String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController
-      .submit(isInReviewMode = true, atarService, Journey.Register)
+      .submit(isInReviewMode = true, atarService)
       .url
 
   private val mockRequestSessionData   = mock[RequestSessionData]
@@ -139,10 +138,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
   "Viewing the create form " should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
-      mockAuthConnector,
-      controller.createForm(atarService, Journey.Register)
-    )
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(atarService))
 
     "display back link correctly" in {
       showCreateForm()(verifyBackLinkInCreateModeRegister)
@@ -180,10 +176,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
   "Viewing the review form " should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
-      mockAuthConnector,
-      controller.reviewForm(atarService, Journey.Register)
-    )
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.reviewForm(atarService))
 
     "display relevant data in form fields when subscription details exist in the cache" in {
       when(mockSubscriptionBusinessService.getCachedNameIdViewModel(any())).thenReturn(NameIdDetailsPage.filledValues)
@@ -212,9 +205,9 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
   "submitting the form in Create mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
-      controller.submit(isInReviewMode = false, atarService, Journey.Register)
+      controller.submit(isInReviewMode = false, atarService)
     )
 
     "save the details" in {
@@ -297,9 +290,9 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
   "submitting the form in review mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
-      controller.submit(isInReviewMode = true, atarService, Journey.Register)
+      controller.submit(isInReviewMode = true, atarService)
     )
 
     "allow resubmission in review mode when details are invalid" in {
@@ -307,7 +300,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     }
 
     "redirect to the review page when details are valid" in {
-      submitFormInReviewMode(createFormAllFieldsUtrMap)(verifyRedirectToReviewPage(Journey.Register))
+      submitFormInReviewMode(createFormAllFieldsUtrMap)(verifyRedirectToReviewPage())
     }
   }
 
@@ -352,7 +345,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
   ) {
     withAuthorisedUser(userId, mockAuthConnector)
 
-    val result = controller.submit(isInReviewMode = false, atarService, Journey.Register)(
+    val result = controller.submit(isInReviewMode = false, atarService)(
       SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
     )
     test(result)
@@ -363,7 +356,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
   ) {
     withAuthorisedUser(userId, mockAuthConnector)
 
-    val result = controller.submit(isInReviewMode = true, atarService, Journey.Register)(
+    val result = controller.submit(isInReviewMode = true, atarService)(
       SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
     )
     test(result)
@@ -375,7 +368,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
 
     val result =
-      controller.createForm(atarService, Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+      controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     test(result)
   }
 
@@ -387,7 +380,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       .thenReturn(Future.successful(NameIdDetailsPage.filledValues))
 
     val result =
-      controller.reviewForm(atarService, Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+      controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
     test(result)
   }
 

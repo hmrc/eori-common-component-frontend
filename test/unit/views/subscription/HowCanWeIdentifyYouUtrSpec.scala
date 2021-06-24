@@ -24,7 +24,6 @@ import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.IdMatchModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you_utr
 import util.ViewSpec
 
@@ -63,11 +62,7 @@ class HowCanWeIdentifyYouUtrSpec extends ViewSpec {
 
   lazy val doc: Document = Jsoup.parse(
     contentAsString(
-      view(
-        form,
-        isInReviewMode,
-        routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, atarService, Journey.Subscribe)
-      )
+      view(form, isInReviewMode, routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, atarService))
     )
   )
 
@@ -77,7 +72,7 @@ class HowCanWeIdentifyYouUtrSpec extends ViewSpec {
         view(
           formWithNothingEntered,
           isInReviewMode,
-          routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, atarService, Journey.Subscribe)
+          routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, atarService)
         )
       )
     )

@@ -38,7 +38,6 @@ import scala.util.control.NoStackTrace
 sealed case class CachedData(
   regDetails: Option[RegistrationDetails] = None,
   subDetails: Option[SubscriptionDetails] = None,
-  regInfo: Option[RegistrationInfo] = None,
   sub02Outcome: Option[Sub02Outcome] = None,
   sub01Outcome: Option[Sub01Outcome] = None,
   registerWithEoriAndIdResponse: Option[RegisterWithEoriAndIdResponse] = None,
@@ -60,9 +59,6 @@ sealed case class CachedData(
 
   def sub02Outcome(sessionId: Id): Sub02Outcome =
     sub02Outcome.getOrElse(throwException(sub02OutcomeKey, sessionId))
-
-  def registrationInfo(sessionId: Id): RegistrationInfo =
-    regInfo.getOrElse(throwException(regInfoKey, sessionId))
 
   def groupEnrolment(sessionId: Id): EnrolmentResponse =
     groupEnrolment.getOrElse(throwException(groupEnrolmentKey, sessionId))
@@ -156,9 +152,6 @@ class SessionCache @Inject() (
   def saveSub01Outcome(sub01Outcome: Sub01Outcome)(implicit hc: HeaderCarrier): Future[Boolean] =
     createOrUpdate(sessionId, sub01OutcomeKey, Json.toJson(sub01Outcome)) map (_ => true)
 
-  def saveRegistrationInfo(rd: RegistrationInfo)(implicit hc: HeaderCarrier): Future[Boolean] =
-    createOrUpdate(sessionId, regInfoKey, Json.toJson(rd)) map (_ => true)
-
   def saveSubscriptionDetails(rdh: SubscriptionDetails)(implicit hc: HeaderCarrier): Future[Boolean] =
     createOrUpdate(sessionId, subDetailsKey, Json.toJson(rdh)) map (_ => true)
 
@@ -219,9 +212,6 @@ class SessionCache @Inject() (
 
   def sub02Outcome(implicit hc: HeaderCarrier): Future[Sub02Outcome] =
     getCached[Sub02Outcome](sessionId, (cachedData, id) => cachedData.sub02Outcome(id))
-
-  def registrationInfo(implicit hc: HeaderCarrier): Future[RegistrationInfo] =
-    getCached[RegistrationInfo](sessionId, (cachedData, id) => cachedData.registrationInfo(id))
 
   def groupEnrolment(implicit hc: HeaderCarrier): Future[EnrolmentResponse] =
     getCached[EnrolmentResponse](sessionId, (cachedData, id) => cachedData.groupEnrolment(id))

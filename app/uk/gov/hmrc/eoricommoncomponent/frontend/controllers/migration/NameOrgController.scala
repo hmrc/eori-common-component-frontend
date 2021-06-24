@@ -25,7 +25,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Subscri
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NameDetailsSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.nameOrganisationForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
@@ -48,51 +48,48 @@ class NameOrgController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def createForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+  def createForm(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.cachedNameOrganisationViewModel flatMap { maybeCachedNameViewModel =>
-        populateOkView(maybeCachedNameViewModel, isInReviewMode = false, service, journey)
+        populateOkView(maybeCachedNameViewModel, isInReviewMode = false, service)
       }
     }
 
-  def reviewForm(service: Service, journey: Journey.Value): Action[AnyContent] =
+  def reviewForm(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.getCachedNameViewModel flatMap { nameOrgMatchModel =>
-        populateOkView(Some(nameOrgMatchModel), isInReviewMode = true, service, journey)
+        populateOkView(Some(nameOrgMatchModel), isInReviewMode = true, service)
       }
     }
 
-  def submit(isInReviewMode: Boolean, service: Service, journey: Journey.Value): Action[AnyContent] =
+  def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       nameOrganisationForm.bindFromRequest.fold(
         formWithErrors =>
           sessionCache.registrationDetails map { registrationDetails =>
-            BadRequest(nameOrgView(formWithErrors, registrationDetails, isInReviewMode, service, journey))
+            BadRequest(nameOrgView(formWithErrors, registrationDetails, isInReviewMode, service))
           },
-        formData => storeNameDetails(formData, isInReviewMode, service, journey)
+        formData => storeNameDetails(formData, isInReviewMode, service)
       )
     }
 
   private def populateOkView(
     maybeNameViewModel: Option[NameOrganisationMatchModel],
     isInReviewMode: Boolean,
-    service: Service,
-    journey: Journey.Value
+    service: Service
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
     lazy val form =
       maybeNameViewModel.fold(nameOrganisationForm)(nameOrganisationForm.fill)
 
     sessionCache.registrationDetails map { registrationDetails =>
-      Ok(nameOrgView(form, registrationDetails, isInReviewMode, service, journey))
+      Ok(nameOrgView(form, registrationDetails, isInReviewMode, service))
     }
   }
 
-  private def storeNameDetails(
-    formData: NameOrganisationMatchModel,
-    inReviewMode: Boolean,
-    service: Service,
-    journey: Journey.Value
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
+  private def storeNameDetails(formData: NameOrganisationMatchModel, inReviewMode: Boolean, service: Service)(implicit
+    hc: HeaderCarrier,
+    request: Request[AnyContent]
+  ): Future[Result] = {
     for {
       _             <- subscriptionDetailsService.cacheNameDetails(formData)
       nameIdDetails <- subscriptionDetailsService.cachedNameIdDetails
@@ -101,7 +98,7 @@ class NameOrgController @Inject() (
         subscriptionDetailsService
           .cacheNameIdDetails(NameIdOrganisationMatchModel(formData.name, details.id))
           .map { _ =>
-            Redirect(DetermineReviewPageController.determineRoute(service, journey))
+            Redirect(DetermineReviewPageController.determineRoute(service))
           }
       case (_, _) =>
         Future.successful(

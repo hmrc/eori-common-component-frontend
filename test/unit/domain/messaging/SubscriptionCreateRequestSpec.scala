@@ -20,14 +20,13 @@ import base.UnitSpec
 import com.github.nscala_time.time.Imports.LocalDate
 import org.joda.time.DateTime
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{BusinessShortName, SubscriptionDetails}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
   ContactInformation,
   SubscriptionCreateRequest,
   VatId
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
-  CdsOrganisationType,
   ContactDetail,
   CorporateBody,
   Eori,
@@ -41,11 +40,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   VatIds
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
-  AddressViewModel,
-  VatDetails,
-  VatEUDetailsModel
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 class SubscriptionCreateRequestSpec extends UnitSpec {
@@ -125,19 +120,6 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
     Some("city"),
     Some("postcode"),
     Some("GB"),
-    Some("01234123123"),
-    None,
-    Some(email),
-    Some(timeStamp)
-  )
-
-  private def registrationExpectedContactInformation(timeStamp: DateTime) = ContactInformation(
-    Some(fullName),
-    Some(true),
-    Some(""),
-    Some("-"),
-    None,
-    Some(""),
     Some("01234123123"),
     None,
     Some(email),
@@ -263,58 +245,6 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
       requestDetails.dateOfEstablishment shouldBe Some(dateOfBirthOrEstablishment)
       requestDetails.typeOfPerson shouldBe Some("1")
       requestDetails.principalEconomicActivity shouldBe Some("principal economic activity")
-      requestDetails.serviceName shouldBe Some(atarService.enrolmentKey)
-    }
-
-    "correctly build request during registration journey" in {
-
-      val registrationDetails = RegistrationDetailsOrganisation(
-        customsId = None,
-        sapNumber = taxPayerId,
-        safeId = safeId,
-        name = fullName,
-        address = address,
-        dateOfEstablishment = Some(dateOfBirthOrEstablishment),
-        etmpOrganisationType = Some(CorporateBody)
-      )
-      val subscriptionDetails = SubscriptionDetails(
-        ukVatDetails = Some(VatDetails("AA11 1AA", "123456", LocalDate.now())),
-        vatEUDetails = Seq(VatEUDetailsModel("FR", "654321")),
-        addressDetails = Some(addressViewModel),
-        contactDetails = Some(contactDetails),
-        personalDataDisclosureConsent = Some(true),
-        businessShortName = Some(BusinessShortName("short name")),
-        sicCode = Some("12345")
-      )
-      val cdsOrgType = CdsOrganisationType.Company
-
-      val request = SubscriptionCreateRequest(
-        registrationDetails,
-        subscriptionDetails,
-        Some(cdsOrgType),
-        dateOfBirthOrEstablishment,
-        Some(atarService)
-      )
-
-      val requestCommon  = request.subscriptionCreateRequest.requestCommon
-      val requestDetails = request.subscriptionCreateRequest.requestDetail
-
-      requestCommon.regime shouldBe "CDS"
-      requestDetails.SAFE shouldBe safeId.id
-      requestDetails.EORINo shouldBe None
-      requestDetails.CDSFullName shouldBe fullName
-      requestDetails.CDSEstablishmentAddress shouldBe establishmentAddress
-      requestDetails.establishmentInTheCustomsTerritoryOfTheUnion shouldBe None
-      requestDetails.typeOfLegalEntity shouldBe Some("Corporate Body")
-      requestDetails.contactInformation shouldBe Some(
-        registrationExpectedContactInformation(requestDetails.contactInformation.get.emailVerificationTimestamp.get)
-      )
-      requestDetails.vatIDs shouldBe Some(Seq(VatId(Some("GB"), Some("123456")), VatId(Some("FR"), Some("654321"))))
-      requestDetails.consentToDisclosureOfPersonalData shouldBe Some("1")
-      requestDetails.shortName shouldBe Some("short name")
-      requestDetails.dateOfEstablishment shouldBe Some(dateOfBirthOrEstablishment)
-      requestDetails.typeOfPerson shouldBe Some("2")
-      requestDetails.principalEconomicActivity shouldBe Some("1234")
       requestDetails.serviceName shouldBe Some(atarService.enrolmentKey)
     }
 

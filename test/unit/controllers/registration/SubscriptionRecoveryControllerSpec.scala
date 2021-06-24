@@ -24,15 +24,12 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{
-  SUB09SubscriptionDisplayConnector,
-  ServiceUnavailableResponse
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SUB09SubscriptionDisplayConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.SubscriptionRecoveryController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{RecipientDetails, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RandomUUIDGenerator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
@@ -41,9 +38,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   TaxEnrolmentsService
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.recovery_registration_exists
 import uk.gov.hmrc.http.HeaderCarrier
-import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.SubscriptionInfoBuilder._
@@ -71,7 +66,6 @@ class SubscriptionRecoveryControllerSpec
   private val mockRequestSessionData                = mock[RequestSessionData]
 
   private val errorTemplateView = instanceOf[error_template]
-  private val alreadyHaveEori   = instanceOf[recovery_registration_exists]
 
   private val controller = new SubscriptionRecoveryController(
     mockAuthAction,
@@ -83,8 +77,7 @@ class SubscriptionRecoveryControllerSpec
     errorTemplateView,
     mockRandomUUIDGenerator,
     mockRequestSessionData,
-    mockSubscriptionDetailsService,
-    alreadyHaveEori
+    mockSubscriptionDetailsService
   )(global)
 
   def registerWithEoriAndIdResponseDetail: Option[RegisterWithEoriAndIdResponseDetail] = {
@@ -119,10 +112,8 @@ class SubscriptionRecoveryControllerSpec
 
   "Viewing the Organisation Name Matching form" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForGetAnEori(
-      mockAuthConnector,
-      controller.complete(atarService, Journey.Register)
-    )
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.complete(atarService))
+
     def setupMockCommon() = {
       when(mockSessionCache.subscriptionDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(mockSubscriptionDetailsHolder))
@@ -152,24 +143,6 @@ class SubscriptionRecoveryControllerSpec
         .thenReturn(Some(NameDobMatchModel("fname", Some("mName"), "lname", LocalDate.parse("2019-01-01"))))
     }
 
-    "call Enrolment Complete with successful SUB09 call for Get Your EORI journey" in {
-
-      setupMockCommon()
-      when(mockSessionCache.registrationDetails(any[HeaderCarrier]))
-        .thenReturn(Future.successful(mockOrgRegistrationDetails))
-      when(mockOrgRegistrationDetails.safeId).thenReturn(SafeId("testsafeId"))
-      when(mockSessionCache.saveEori(any[Eori])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(true))
-
-      callEnrolmentComplete(journey = Journey.Register) { result =>
-        status(result) shouldBe SEE_OTHER
-        header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/register/complete")
-      }
-      verify(mockTaxEnrolmentsService, times(0))
-        .issuerCall(anyString, any[Eori], any[Option[LocalDate]], any[Service])(any[HeaderCarrier])
-
-    }
-
     "call Enrolment Complete with successful SUB09 call for Subscription UK journey" in {
       setupMockCommon()
 
@@ -187,7 +160,7 @@ class SubscriptionRecoveryControllerSpec
       val expectedFormBundleId = fullyPopulatedResponse.responseCommon.returnParameters
         .flatMap(_.find(_.paramName.equals("ETMPFORMBUNDLENUMBER")).map(_.paramValue)).get + "atar"
 
-      callEnrolmentComplete(journey = Journey.Subscribe) { result =>
+      callEnrolmentComplete() { result =>
         status(result) shouldBe SEE_OTHER
         header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/subscribe/complete")
       }
@@ -228,7 +201,7 @@ class SubscriptionRecoveryControllerSpec
       val expectedFormBundleId = fullyPopulatedResponse.responseCommon.returnParameters
         .flatMap(_.find(_.paramName.equals("ETMPFORMBUNDLENUMBER")).map(_.paramValue)).get + "atar"
 
-      callEnrolmentComplete(journey = Journey.Subscribe) { result =>
+      callEnrolmentComplete() { result =>
         status(result) shouldBe SEE_OTHER
         header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/subscribe/complete")
       }
@@ -267,7 +240,7 @@ class SubscriptionRecoveryControllerSpec
       val expectedFormBundleId = fullyPopulatedResponse.responseCommon.returnParameters
         .flatMap(_.find(_.paramName.equals("ETMPFORMBUNDLENUMBER")).map(_.paramValue)).get + "atar"
 
-      callEnrolmentComplete(journey = Journey.Subscribe) { result =>
+      callEnrolmentComplete() { result =>
         status(result) shouldBe SEE_OTHER
         header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/subscribe/complete")
       }
@@ -287,173 +260,11 @@ class SubscriptionRecoveryControllerSpec
         any()
       )(any())
     }
-
-    "call Enrolment Complete with unsuccessful SUB09 call" in {
-      when(mockSessionCache.registrationDetails(any[HeaderCarrier]))
-        .thenReturn(Future.successful(mockOrgRegistrationDetails))
-      when(mockOrgRegistrationDetails.safeId).thenReturn(SafeId("testSapNumber"))
-
-      when(mockSUB09SubscriptionDisplayConnector.subscriptionDisplay(any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Left(ServiceUnavailableResponse)))
-
-      when(mockSessionCache.sub01Outcome(any[HeaderCarrier])).thenReturn(Future.successful(mockSub01Outcome))
-      when(mockSessionCache.saveSub02Outcome(any[Sub02Outcome])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(true))
-      when(
-        mockHandleSubscriptionService.handleSubscription(
-          anyString,
-          any[RecipientDetails],
-          any[TaxPayerId],
-          any[Option[Eori]],
-          any[Option[DateTime]],
-          any[SafeId]
-        )(any[HeaderCarrier])
-      ).thenReturn(Future.successful(result = ()))
-
-      callEnrolmentComplete(journey = Journey.Register) { result =>
-        status(result) shouldBe INTERNAL_SERVER_ERROR
-      }
-    }
   }
 
-  "call Enrolment Complete with successful SUB09 call with empty ResponseCommon should throw IllegalArgumentException" in {
-    when(mockSessionCache.registrationDetails(any[HeaderCarrier]))
-      .thenReturn(Future.successful(mockOrgRegistrationDetails))
-    when(mockOrgRegistrationDetails.safeId).thenReturn(SafeId("testSapNumber"))
-    when(mockSessionCache.saveEori(any[Eori])(any[HeaderCarrier]))
-      .thenReturn(Future.successful(true))
-
-    when(mockSUB09SubscriptionDisplayConnector.subscriptionDisplay(any())(any[HeaderCarrier]))
-      .thenReturn(Future.successful(Right(fullyPopulatedResponseWithBlankReturnParameters)))
-    when(mockSessionCache.sub01Outcome(any[HeaderCarrier])).thenReturn(Future.successful(mockSub01Outcome))
-
-    the[IllegalStateException] thrownBy {
-      callEnrolmentComplete(journey = Journey.Register) { result =>
-        await(result)
-      }
-    } should have message "NO ETMPFORMBUNDLENUMBER specified"
-  }
-
-  "call Enrolment Complete with successful SUB09 call with ResponseCommon with no ETMPFORMBUNDLENUMBER should throw IllegalStateException" in {
-    when(mockSessionCache.registrationDetails(any[HeaderCarrier]))
-      .thenReturn(Future.successful(mockOrgRegistrationDetails))
-    when(mockOrgRegistrationDetails.safeId).thenReturn(SafeId("testSapNumber"))
-    when(mockSessionCache.saveEori(any[Eori])(any[HeaderCarrier]))
-      .thenReturn(Future.successful(true))
-
-    when(mockSUB09SubscriptionDisplayConnector.subscriptionDisplay(any())(any[HeaderCarrier]))
-      .thenReturn(Future.successful(Right(fullyPopulatedResponseWithNoETMPFORMBUNDLENUMBER)))
-    when(mockSessionCache.sub01Outcome(any[HeaderCarrier])).thenReturn(Future.successful(mockSub01Outcome))
-
-    the[IllegalStateException] thrownBy {
-      callEnrolmentComplete(journey = Journey.Register) { result =>
-        await(result)
-      }
-    } should have message "NO ETMPFORMBUNDLENUMBER specified"
-  }
-
-  "call Enrolment Complete with successful SUB09 call with empty ContactDetails should show existing EORI" in {
-    when(mockSessionCache.registrationDetails(any[HeaderCarrier]))
-      .thenReturn(Future.successful(mockOrgRegistrationDetails))
-    when(mockOrgRegistrationDetails.safeId).thenReturn(SafeId("testSapNumber"))
-    when(mockSessionCache.saveEori(any[Eori])(any[HeaderCarrier]))
-      .thenReturn(Future.successful(true))
-
-    when(mockSUB09SubscriptionDisplayConnector.subscriptionDisplay(any())(any[HeaderCarrier]))
-      .thenReturn(Future.successful(Right(responseWithoutContactDetails)))
-    when(mockSessionCache.sub01Outcome(any[HeaderCarrier])).thenReturn(Future.successful(mockSub01Outcome))
-
-    callEnrolmentComplete(journey = Journey.Register) { result =>
-      status(result) shouldBe SEE_OTHER
-      header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/register/eori-exist")
-    }
-  }
-
-  "call Enrolment Complete with successful SUB09 call without EmailAddress should show existing EORI" in {
-    when(mockSessionCache.registrationDetails(any[HeaderCarrier]))
-      .thenReturn(Future.successful(mockOrgRegistrationDetails))
-    when(mockOrgRegistrationDetails.safeId).thenReturn(SafeId("testSapNumber"))
-    when(mockSessionCache.saveEori(any[Eori])(any[HeaderCarrier]))
-      .thenReturn(Future.successful(true))
-
-    when(mockSUB09SubscriptionDisplayConnector.subscriptionDisplay(any())(any[HeaderCarrier]))
-      .thenReturn(Future.successful(Right(responseWithoutEmailAddress)))
-    when(mockSessionCache.sub01Outcome(any[HeaderCarrier])).thenReturn(Future.successful(mockSub01Outcome))
-
-    callEnrolmentComplete(journey = Journey.Register) { result =>
-      status(result) shouldBe SEE_OTHER
-      header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/register/eori-exist")
-    }
-  }
-
-  "call Enrolment Complete with successful SUB09 call with un-verified EmailAddress should show existing EORI" in {
-    when(mockSessionCache.registrationDetails(any[HeaderCarrier]))
-      .thenReturn(Future.successful(mockOrgRegistrationDetails))
-    when(mockOrgRegistrationDetails.safeId).thenReturn(SafeId("testSapNumber"))
-    when(mockSessionCache.saveEori(any[Eori])(any[HeaderCarrier]))
-      .thenReturn(Future.successful(true))
-
-    when(mockSUB09SubscriptionDisplayConnector.subscriptionDisplay(any())(any[HeaderCarrier]))
-      .thenReturn(Future.successful(Right(responseWithUnverifiedEmailAddress)))
-    when(mockSessionCache.sub01Outcome(any[HeaderCarrier])).thenReturn(Future.successful(mockSub01Outcome))
-
-    callEnrolmentComplete(journey = Journey.Register) { result =>
-      status(result) shouldBe SEE_OTHER
-      header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/register/eori-exist")
-    }
-  }
-
-  "should show existing EORI" in {
-    when(mockSessionCache.eori(any[HeaderCarrier]))
-      .thenReturn(Future.successful(Some("GB132123231223")))
-
-    callExistingEori(journey = Journey.Register) { result =>
-      status(result) shouldBe OK
-      val page = CdsPage(contentAsString(result))
-      page.getElementsText("//*[@id='page-heading']") shouldBe "You already have an EORI"
-      page.getElementsText("//*[@id='eori-number']") shouldBe "EORI number: GB132123231223"
-    }
-  }
-
-  "call Enrolment Complete with successful SUB09 call without personOfContact should not throw exception" in {
-    when(mockSessionCache.registrationDetails(any[HeaderCarrier]))
-      .thenReturn(Future.successful(mockOrgRegistrationDetails))
-    when(mockOrgRegistrationDetails.safeId).thenReturn(SafeId("testSapNumber"))
-    when(mockSessionCache.saveEori(any[Eori])(any[HeaderCarrier]))
-      .thenReturn(Future.successful(true))
-
-    when(mockSUB09SubscriptionDisplayConnector.subscriptionDisplay(any())(any[HeaderCarrier]))
-      .thenReturn(Future.successful(Right(responseWithoutPersonOfContact)))
-    when(mockSessionCache.sub01Outcome(any[HeaderCarrier])).thenReturn(Future.successful(mockSub01Outcome))
-    when(mockSessionCache.saveSub02Outcome(any[Sub02Outcome])(any[HeaderCarrier]))
-      .thenReturn(Future.successful(true))
-    when(
-      mockHandleSubscriptionService.handleSubscription(
-        anyString,
-        any[RecipientDetails],
-        any[TaxPayerId],
-        any[Option[Eori]],
-        any[Option[DateTime]],
-        any[SafeId]
-      )(any[HeaderCarrier])
-    ).thenReturn(Future.successful(result = ()))
-
-    callEnrolmentComplete(journey = Journey.Register) { result =>
-      status(result) shouldBe SEE_OTHER
-      header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/register/complete")
-    }
-  }
-
-  def callEnrolmentComplete(userId: String = defaultUserId, journey: Journey.Value)(test: Future[Result] => Any) {
-
+  def callEnrolmentComplete(userId: String = defaultUserId)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
-    test(controller.complete(atarService, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
-  }
-
-  def callExistingEori(userId: String = defaultUserId, journey: Journey.Value)(test: Future[Result] => Any) {
-
-    withAuthorisedUser(userId, mockAuthConnector)
-    test(controller.eoriExist(atarService, journey).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.complete(atarService).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
 }

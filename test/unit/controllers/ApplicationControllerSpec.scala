@@ -25,10 +25,10 @@ import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{ApplicationController, MissingGroupId}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, ExistingEori, KeyValue}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{start, start_subscribe}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.start_subscribe
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -45,7 +45,6 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
   private val mockEnrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
 
-  private val startRegisterView       = instanceOf[start]
   private val startSubscribeView      = instanceOf[start_subscribe]
   private val groupEnrolmentExtractor = mock[GroupEnrolmentExtractor]
 
@@ -53,7 +52,6 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
     mockAuthAction,
     mcc,
     startSubscribeView,
-    startRegisterView,
     mockSessionCache,
     groupEnrolmentExtractor,
     mockEnrolmentStoreProxyService,
@@ -78,14 +76,6 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
   )
 
   "Navigating to start" should {
-
-    "allow unauthenticated users to access the start page" in {
-
-      val result = controller.startRegister(atarService).apply(SessionBuilder.buildRequestWithSessionNoUser)
-
-      status(result) shouldBe OK
-      CdsPage(contentAsString(result)).title should startWith("Get a GB EORI number")
-    }
 
     "direct authenticated users to start subscription" in {
       withAuthorisedUser(defaultUserId, mockAuthConnector)
@@ -259,23 +249,13 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
   }
 
   "Navigating to logout" should {
-    "logout an authenticated user for register" in {
-      withAuthorisedUser(defaultUserId, mockAuthConnector)
-      when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
-
-      val result =
-        controller.logout(atarService, Journey.Register).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
-
-      session(result).isEmpty shouldBe true
-      await(result).header.headers("Location") should endWith("feedback/eori-common-component-register-atar")
-    }
 
     "logout an authenticated user for subscribe" in {
       withAuthorisedUser(defaultUserId, mockAuthConnector)
       when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
 
       val result =
-        controller.logout(atarService, Journey.Subscribe).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+        controller.logout(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       session(result).isEmpty shouldBe true
       await(result).header.headers("Location") should endWith("feedback/eori-common-component-subscribe-atar")
@@ -289,7 +269,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       when(mockSessionCache.keepAlive(any())).thenReturn(Future.successful(true))
 
       val result =
-        controller.keepAlive(atarService, Journey.Register).apply(SessionBuilder.buildRequestWithSessionNoUser)
+        controller.keepAlive(atarService).apply(SessionBuilder.buildRequestWithSessionNoUser)
 
       status(result) shouldBe OK
 

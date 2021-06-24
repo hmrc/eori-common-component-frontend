@@ -19,18 +19,6 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.domain
 import org.joda.time.format.DateTimeFormat
 import play.api.libs.json.{Json, OFormat}
 
-case class Identifier(key: String, value: String)
-
-object Identifier {
-  implicit val jsonFormat = Json.format[Identifier]
-}
-
-case class TaxEnrolmentsResponse(serviceName: String)
-
-object TaxEnrolmentsResponse {
-  implicit val jsonFormat = Json.format[TaxEnrolmentsResponse]
-}
-
 case class KeyValue(key: String, value: String)
 
 object KeyValue {
