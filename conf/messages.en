@@ -470,33 +470,6 @@ ecc.matching-error.eori.not-gb=Enter an EORI number that starts with GB
 ecc.what-is-your-eori.page-error.eori-number=Enter your EORI number
 
 #Get An EORI Journey
-# Start Page
-cds.start-page.title=Get an EORI number
-cds-start-page.intro1=Before you move goods in or out of the EU, or carry out other customs activities, you may need an Economic Operator and Registration Identification (EORI) number. HMRC use this to identify you and collect duty on your goods.
-cds-start-page.intro2=If you do not get an EORI number you may experience increased costs and delays. For example, if HMRC cannot clear your goods you may have to pay storage fees.
-cds-start-page.how-to-register=How to get access
-cds-start-page.how-to-get-an-eori=How to get an EORI number
-cds.start-page.bullet1=for your business or organisation
-cds.start-page.bullet2=for yourself, if you are applying as an individual
-cds.start-page.if-company=If you are registering for a company or partnership you should sign in with the Government Gateway user ID and password for your organisation.
-cds.start-page.if-individual=If you are registering as an individual, are self employed or a sole trader you should sign in with your own Government Gateway user ID and password.
-cds.start-page.how-to-register.intro=You will need the Government Gateway user ID and password that you use:
-cds.start-page.before-you-start=You might need to tell us
-cds.start-page.before-you-start.bullet1=VAT number and effective date - this is on your VAT registration certificate
-cds.start-page.before-you-start.bullet2=National Insurance number (if you are an individual or sole trader)
-cds.start-page.before-you-start.bullet3=your Unique Taxpayer Reference (UTR)
-cds.start-page.cannot-use-outside-uk=You cannot currently use this service if you are based outside the UK.
-cds.start-page.find-information=You can find the following information on the <a href="https://www.gov.uk/get-information-about-a-company">Companies House register</a>
-cds.start-page.before-you-start.bullet4=the date you started your business
-cds.start-page.before-you-start.bullet5=the Standard Industrial Classification (SIC) code for your business
-cds.start-page.it-takes=It takes around 5 to 10 minutes to apply for an EORI number. You should get it immediately, but it may take up to 2 working days if we need to make more checks.
-cds.start-page.start-now=Start now
-cds.start-page.find-details=You can also find details about an application you have already made.
-cds.start-page.related-content=Related content
-cds.start-page.application-details=Find details about an application you have already made
-cds.start-page.duty-deferment=The Duty Deferment Scheme
-cds.start-page.vat-refunds=VAT refunds on imported goods
-cds.start-page.tariff-data=Tariff data
 #journey-type
 cds.registration.journey-type.heading=What would you like to do?
 cds.registration.journey-type.journeytype=Select your Journey Type
