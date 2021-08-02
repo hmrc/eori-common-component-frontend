@@ -19,7 +19,9 @@ package unit.forms
 import java.time.Year
 
 import base.UnitSpec
-import org.joda.time.LocalDate
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 import play.api.data.{Form, FormError}
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NameDobMatchModel
@@ -116,10 +118,11 @@ class FormValidationSpec extends UnitSpec {
     }
     "fail when a date of birth in future" in {
       val todayPlusOneDay = LocalDate.now().plusDays(1)
-      val data = formData.updated("date-of-birth.day", todayPlusOneDay.toString("dd")).updated(
-        "date-of-birth.month",
-        todayPlusOneDay.toString("MM")
-      ).updated("date-of-birth.year", todayPlusOneDay.toString("YYYY"))
+      val data =
+        formData.updated("date-of-birth.day", DateTimeFormatter.ofPattern("dd").format(todayPlusOneDay)).updated(
+          "date-of-birth.month",
+          DateTimeFormatter.ofPattern("MM").format(todayPlusOneDay)
+        ).updated("date-of-birth.year", DateTimeFormatter.ofPattern("YYYY").format(todayPlusOneDay))
       val res = nameDobForm.bind(data)
       res.errors shouldBe Seq(FormError("date-of-birth", Seq("dob.error.future-date")))
     }
@@ -148,10 +151,13 @@ class FormValidationSpec extends UnitSpec {
     }
     "fail when date of establishment in future" in {
       val todayPlusOneDay = LocalDate.now().plusDays(1)
-      val data = formDataDoE.updated("date-of-establishment.day", todayPlusOneDay.toString("dd")).updated(
-        "date-of-establishment.month",
-        todayPlusOneDay.toString("MM")
-      ).updated("date-of-establishment.year", todayPlusOneDay.toString("YYYY"))
+      val data = formDataDoE.updated(
+        "date-of-establishment.day",
+        DateTimeFormatter.ofPattern("dd").format(todayPlusOneDay)
+      ).updated("date-of-establishment.month", DateTimeFormatter.ofPattern("MM").format(todayPlusOneDay)).updated(
+        "date-of-establishment.year",
+        DateTimeFormatter.ofPattern("YYYY").format(todayPlusOneDay)
+      )
       val res = dateOfEstablishmentForm.bind(data)
       res.errors shouldBe Seq(FormError("date-of-establishment", Seq("doe.error.future-date")))
     }

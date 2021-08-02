@@ -17,7 +17,7 @@
 package unit.services.registration
 
 import base.UnitSpec
-import org.joda.time.{DateTime, LocalDate}
+import java.time.{LocalDate, ZonedDateTime}
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.mockito._
@@ -51,7 +51,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
   private val mockDataCache          = mock[SessionCache]
   private val mockRequestSessionData = mock[RequestSessionData]
   private val validDate              = "2016-07-08T08:35:13Z"
-  private val validDateTime          = DateTime.parse(validDate)
+  private val validDateTime          = ZonedDateTime.parse(validDate)
   implicit val hc: HeaderCarrier     = mock[HeaderCarrier]
 
   val service =

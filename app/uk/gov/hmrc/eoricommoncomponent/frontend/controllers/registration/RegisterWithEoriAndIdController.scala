@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
-import com.github.nscala_time.time.Imports.LocalDate
+import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.mvc._

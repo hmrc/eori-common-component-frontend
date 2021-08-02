@@ -17,7 +17,7 @@
 package unit.domain
 
 import base.UnitSpec
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.TaxEnrolmentsRequest._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{KeyValue, TaxEnrolmentsRequest}
@@ -57,7 +57,7 @@ class TaxEnrolmentsRequestSpec extends UnitSpec {
     "transform to valid format Json" in {
       val date        = LocalDate.parse("2010-04-28")
       val identifiers = List(KeyValue(key = "EORINUMBER", value = "GB9999999999"))
-      val verifiers   = List(KeyValue(key = "DATEOFESTABLISHMENT", value = date.toString(pattern)))
+      val verifiers   = List(KeyValue(key = "DATEOFESTABLISHMENT", value = pattern.format(date)))
       val taxEnrolmentsRequest =
         TaxEnrolmentsRequest("HMRC-CUS-ORG", identifiers = identifiers, verifiers = Some(verifiers))
       val taxEnrolmentsRequestJson = Json.toJson[TaxEnrolmentsRequest](taxEnrolmentsRequest)

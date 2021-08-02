@@ -16,19 +16,19 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription
 
-import org.joda.time.DateTime
-import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 case class NotifyRcmRequest(timestamp: String, eori: String, name: String, email: String, serviceName: String)
 
 object NotifyRcmRequest {
-  val dateTimeFormat: DateTimeFormatter = DateTimeFormat.forPattern("d-MMM-yyyy HH:mm:ss")
+  val dateTimeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("d-MMM-yyyy HH:mm:ss")
 
   implicit val jsonFormat: OFormat[NotifyRcmRequest] = Json.format[NotifyRcmRequest]
 
   def apply(eori: String, name: String, email: String, service: Service): NotifyRcmRequest =
-    new NotifyRcmRequest(dateTimeFormat.print(DateTime.now()), eori, name, email, service.friendlyName)
+    new NotifyRcmRequest(dateTimeFormat.format(ZonedDateTime.now()), eori, name, email, service.friendlyName)
 
 }

@@ -17,7 +17,7 @@
 package unit.services.subscription
 
 import base.UnitSpec
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
@@ -328,12 +328,12 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
     "save nameDobDetails in frontend cache" in {
       await(
         subscriptionDetailsHolderService
-          .cacheNameDobDetails(NameDobMatchModel("fname", Some("mname"), "lname", new LocalDate(2019, 1, 1)))
+          .cacheNameDobDetails(NameDobMatchModel("fname", Some("mname"), "lname", LocalDate.of(2019, 1, 1)))
       )
       val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
       verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
       val holder = requestCaptor.getValue
-      holder.nameDobDetails shouldBe Some(NameDobMatchModel("fname", Some("mname"), "lname", new LocalDate(2019, 1, 1)))
+      holder.nameDobDetails shouldBe Some(NameDobMatchModel("fname", Some("mname"), "lname", LocalDate.of(2019, 1, 1)))
     }
   }
 

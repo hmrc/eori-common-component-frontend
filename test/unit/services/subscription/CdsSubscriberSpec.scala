@@ -19,7 +19,8 @@ package unit.services.subscription
 import base.{Injector, UnitSpec}
 import common.support.testdata.TestData
 import common.support.testdata.subscription.SubscriptionContactDetailsBuilder
-import org.joda.time.DateTime
+import java.time.{ZoneOffset, ZonedDateTime}
+
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{when, _}
 import org.scalatest.BeforeAndAfterEach
@@ -126,7 +127,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
           any[RecipientDetails],
           any[TaxPayerId],
           any[Option[Eori]],
-          any[Option[DateTime]],
+          any[Option[ZonedDateTime]],
           any[SafeId]
         )(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
@@ -202,7 +203,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
           any[RecipientDetails],
           any[TaxPayerId],
           any[Option[Eori]],
-          any[Option[DateTime]],
+          any[Option[ZonedDateTime]],
           any[SafeId]
         )(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
@@ -321,7 +322,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
   private def stubRegisterWithEoriAndIdResponseWithContactDetails: RegisterWithEoriAndIdResponse = stubRegister(true)
 
   private def stubRegister(useContactDetail: Boolean): RegisterWithEoriAndIdResponse = {
-    val processingDate = DateTime.now.withTimeAtStartOfDay()
+    val processingDate = ZonedDateTime.now().withNano(0).withZoneSameLocal(ZoneOffset.UTC)
     val responseCommon = ResponseCommon(status = "OK", processingDate = processingDate)
     val trader         = Trader(fullName = "New trading", shortName = "nt")
     val establishmentAddress =
@@ -369,7 +370,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
         any[RecipientDetails],
         any[TaxPayerId],
         any[Option[Eori]],
-        any[Option[DateTime]],
+        any[Option[ZonedDateTime]],
         any[SafeId]
       )(any[HeaderCarrier])
     ).thenReturn(Future.successful(()))

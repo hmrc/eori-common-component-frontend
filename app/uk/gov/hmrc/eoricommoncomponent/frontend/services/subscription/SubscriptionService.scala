@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
+import java.time.format.DateTimeFormatter
+
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SubscriptionServiceConnector
@@ -74,7 +76,7 @@ class SubscriptionService @Inject() (connector: SubscriptionServiceConnector, fe
   )(implicit hc: HeaderCarrier): Future[SubscriptionResult] =
     connector.subscribe(request) map { response =>
       val responseCommon = response.subscriptionCreateResponse.responseCommon
-      val processingDate = responseCommon.processingDate.toString("d MMM y")
+      val processingDate = DateTimeFormatter.ofPattern("d MMM y").format(responseCommon.processingDate)
       val emailVerificationTimestamp =
         request.subscriptionCreateRequest.requestDetail.contactInformation.flatMap(_.emailVerificationTimestamp)
 

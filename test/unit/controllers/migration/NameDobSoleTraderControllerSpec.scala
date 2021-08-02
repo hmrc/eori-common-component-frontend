@@ -21,7 +21,9 @@ import java.time.Year
 import common.pages.migration.NameDobSoleTraderPage
 import common.pages.migration.NameDobSoleTraderPage._
 import common.pages.registration.DoYouHaveAnEoriPage.pageLevelErrorSummaryListXPath
-import org.joda.time.LocalDate
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -507,7 +509,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
       lastNameFieldName  -> "Test Last Name",
       dobDayFieldName    -> "03",
       dobMonthFieldName  -> "09",
-      dobYearFieldName   -> todayPlusOneYear.toString("YYYY")
+      dobYearFieldName   -> DateTimeFormatter.ofPattern("YYYY").format(todayPlusOneYear)
     )
   }
 
@@ -516,9 +518,9 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     Map(
       firstNameFieldName -> "Test First Name",
       lastNameFieldName  -> "Test Last Name",
-      dobDayFieldName    -> todayPlusOneDay.toString("dd"),
-      dobMonthFieldName  -> todayPlusOneDay.toString("MM"),
-      dobYearFieldName   -> todayPlusOneDay.toString("YYYY")
+      dobDayFieldName    -> DateTimeFormatter.ofPattern("dd").format(todayPlusOneDay),
+      dobMonthFieldName  -> DateTimeFormatter.ofPattern("MM").format(todayPlusOneDay),
+      dobYearFieldName   -> DateTimeFormatter.ofPattern("YYYY").format(todayPlusOneDay)
     )
   }
 
