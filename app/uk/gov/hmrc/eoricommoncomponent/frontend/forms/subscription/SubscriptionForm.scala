@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription
 
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import play.api.data.Forms._
 import play.api.data.validation._
 import play.api.data.{Form, Forms}

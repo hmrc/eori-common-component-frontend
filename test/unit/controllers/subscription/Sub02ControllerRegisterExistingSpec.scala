@@ -17,7 +17,7 @@
 package unit.controllers.subscription
 
 import common.pages.RegistrationCompletePage
-import org.joda.time.DateTime
+import java.time.ZonedDateTime
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -78,7 +78,7 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
   }
 
   private def stubRegisterWithEoriAndIdResponse(outcomeType: String = "PASS"): RegisterWithEoriAndIdResponse = {
-    val processingDate = DateTime.now.withTimeAtStartOfDay()
+    val processingDate = ZonedDateTime.now()
     val responseCommon = ResponseCommon(status = "OK", processingDate = processingDate)
     val trader         = Trader(fullName = "Name", shortName = "nt")
     val establishmentAddress =

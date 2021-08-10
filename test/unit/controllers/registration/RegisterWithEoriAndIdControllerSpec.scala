@@ -16,10 +16,13 @@
 
 package unit.controllers.registration
 
+import java.time.format.DateTimeFormatter
+
 import common.pages.subscription.{ApplicationPendingPage, ApplicationUnsuccessfulPage}
 import common.pages.{RegistrationProcessingPage, RegistrationRejectedPage}
 import common.support.testdata.TestData
-import org.joda.time.{DateTime, LocalDate}
+import java.time.{LocalDate, ZonedDateTime}
+
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.{Assertion, BeforeAndAfterEach}
@@ -129,7 +132,7 @@ class RegisterWithEoriAndIdControllerSpec
     )
 
   private def stubRegisterWithEoriAndIdResponse(outcomeType: String = "PASS"): RegisterWithEoriAndIdResponse = {
-    val processingDate = DateTime.now.withTimeAtStartOfDay()
+    val processingDate = ZonedDateTime.now()
     val responseCommon =
       ResponseCommon(status = "OK", processingDate = processingDate)
     val trader               = Trader(fullName = "New trading", shortName = "nt")
@@ -151,7 +154,7 @@ class RegisterWithEoriAndIdControllerSpec
   }
 
   private def stubHandleErrorCodeResponse(statusText: String): RegisterWithEoriAndIdResponse = {
-    val processingDate = DateTime.now.withTimeAtStartOfDay()
+    val processingDate = ZonedDateTime.now()
     val responseCommon = ResponseCommon(status = "OK", statusText = Some(statusText), processingDate = processingDate)
     RegisterWithEoriAndIdResponse(responseCommon, None)
   }
@@ -527,7 +530,7 @@ class RegisterWithEoriAndIdControllerSpec
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .fail(atarService, DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
+          .fail(atarService, DateTimeFormatter.ofPattern("d MMMM yyyy").format(ZonedDateTime.now()))
           .url
       }
     }
@@ -564,7 +567,7 @@ class RegisterWithEoriAndIdControllerSpec
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .pending(atarService, DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
+          .pending(atarService, DateTimeFormatter.ofPattern("d MMMM yyyy").format(ZonedDateTime.now()))
           .url
         verify(mockNotifyRcmService)
           .notifyRcm(meq(atarService))(any[HeaderCarrier], any[ExecutionContext])
@@ -605,7 +608,7 @@ class RegisterWithEoriAndIdControllerSpec
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .fail(atarService, DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
+          .fail(atarService, DateTimeFormatter.ofPattern("d MMMM yyyy").format(ZonedDateTime.now()))
           .url
       }
     }
@@ -972,7 +975,7 @@ class RegisterWithEoriAndIdControllerSpec
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .fail(atarService, DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
+          .fail(atarService, DateTimeFormatter.ofPattern("d MMMM yyyy").format(ZonedDateTime.now()))
           .url
       }
     }
@@ -1009,7 +1012,7 @@ class RegisterWithEoriAndIdControllerSpec
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .fail(atarService, DateTime.now.withTimeAtStartOfDay().toString("d MMMM yyyy"))
+          .fail(atarService, DateTimeFormatter.ofPattern("d MMMM yyyy").format(ZonedDateTime.now()))
           .url
       }
     }

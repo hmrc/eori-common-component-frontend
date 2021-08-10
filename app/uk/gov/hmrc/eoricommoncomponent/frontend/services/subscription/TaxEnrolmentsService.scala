@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
 import javax.inject.{Inject, Singleton}
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.TaxEnrolmentsConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.TaxEnrolmentsRequest._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Eori, KeyValue, TaxEnrolmentsRequest}
@@ -34,7 +34,7 @@ class TaxEnrolmentsService @Inject() (taxEnrolmentsConnector: TaxEnrolmentsConne
   ): Future[Int] = {
     val identifiers = List(KeyValue(key = "EORINUMBER", value = eori.id))
     val verifiers =
-      dateOfEstablishment.map(doe => List(KeyValue(key = "DATEOFESTABLISHMENT", value = doe.toString(pattern))))
+      dateOfEstablishment.map(doe => List(KeyValue(key = "DATEOFESTABLISHMENT", value = pattern.format(doe))))
     val taxEnrolmentsRequest =
       TaxEnrolmentsRequest(serviceName = service.enrolmentKey, identifiers = identifiers, verifiers = verifiers)
     taxEnrolmentsConnector.enrol(taxEnrolmentsRequest, formBundleId)

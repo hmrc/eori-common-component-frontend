@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.forms
 
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import play.api.data.Mapping
 import play.api.data.validation._
 import uk.gov.hmrc.eoricommoncomponent.frontend.playext.mappers.DateTuple._

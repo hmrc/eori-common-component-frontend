@@ -16,7 +16,8 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain
 
-import org.joda.time.format.DateTimeFormat
+import java.time.format.DateTimeFormatter
+
 import play.api.libs.json.{Json, OFormat}
 
 case class KeyValue(key: String, value: String)
@@ -33,7 +34,7 @@ case class TaxEnrolmentsRequest(
 )
 
 object TaxEnrolmentsRequest {
-  val pattern = DateTimeFormat.forPattern("dd/MM/yyyy")
+  val pattern = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
   implicit val jsonKeyValueFormat: OFormat[KeyValue] = Json.format[KeyValue]
 

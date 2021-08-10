@@ -16,7 +16,7 @@
 
 package unit.views.subscription
 
-import org.joda.time.DateTime
+import java.time.ZonedDateTime
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
@@ -31,7 +31,7 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
 
   private val name              = "John Doe"
   private val eori              = "GB123456789012"
-  private val processedDate     = DateTime.now()
+  private val processedDate     = ZonedDateTime.now()
   private val expectedPageTitle = "The Advance Tariff Rulings subscription request has been unsuccessful"
   private val languageUtils     = instanceOf[LanguageUtils]
 

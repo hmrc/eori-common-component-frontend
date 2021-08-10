@@ -16,10 +16,9 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
-import java.time.Clock
+import java.time.{Clock, ZoneOffset, ZonedDateTime}
 
 import javax.inject.{Inject, Singleton}
-import org.joda.time.{DateTime, DateTimeZone}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.HandleSubscriptionConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.HandleSubscriptionRequest
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.RecipientDetails
@@ -36,11 +35,11 @@ class HandleSubscriptionService @Inject() (handleSubscriptionConnector: HandleSu
     recipientDetails: RecipientDetails,
     sapNumber: TaxPayerId,
     eori: Option[Eori],
-    emailVerificationTimestamp: Option[DateTime],
+    emailVerificationTimestamp: Option[ZonedDateTime],
     safeId: SafeId
   )(implicit hc: HeaderCarrier): Future[Unit] = {
     val timestampValue =
-      emailVerificationTimestamp.getOrElse(new DateTime(Clock.systemUTC().instant.toEpochMilli, DateTimeZone.UTC))
+      emailVerificationTimestamp.getOrElse(ZonedDateTime.ofInstant(Clock.systemUTC().instant, ZoneOffset.UTC))
     handleSubscriptionConnector.call(
       HandleSubscriptionRequest(
         recipientDetails,

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain
 
-import org.joda.time.DateTime
+import java.time.ZonedDateTime
 import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
@@ -28,7 +28,7 @@ object GovGatewayCredentials {
 }
 
 case class RegisterWithEoriAndIdRequestCommon(
-  receiptDate: DateTime,
+  receiptDate: ZonedDateTime,
   acknowledgementReference: String,
   requestParameters: Option[Seq[RequestParameter]] = None
 )

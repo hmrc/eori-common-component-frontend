@@ -17,7 +17,7 @@
 package unit.services.subscription
 
 import base.UnitSpec
-import org.joda.time.LocalDate
+import java.time.LocalDate
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfter
