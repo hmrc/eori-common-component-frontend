@@ -190,10 +190,6 @@ cds.enrolment.pending.group.otherService.paragraph1=We are currently processing 
 cds.enrolment.pending.group.otherService.paragraph2=This process must be completed before you can apply for another service.
 cds.enrolment.pending.group.sameService.paragraph1=Our records show that someone in your organisation has already applied for this service.
 
-cds.languageSelect.current.label=English
-cds.languageSelect.select.label=Cymraeg
-cds.languageSelect.select.hint=Newid yr iaith ir Gymraeg
-
 cds.pdf.outcomes.eori.number=EORI number: {0}
 
 confirm-business-details.title-and-heading=Is this your registered address?

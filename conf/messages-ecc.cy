@@ -190,10 +190,6 @@ cds.enrolment.pending.group.otherService.paragraph1=Rydym wrthi’n prosesu cais
 cds.enrolment.pending.group.otherService.paragraph2=Mae’n rhaid i’r broses hon gael ei chwblhau cyn i chi allu gwneud cais am wasanaeth arall.
 cds.enrolment.pending.group.sameService.paragraph1=Yn ôl ein cofnodion, mae rhywun yn eich sefydliad eisoes wedi gwneud cais am y gwasanaeth hwn.
 
-cds.languageSelect.current.label=Cymraeg
-cds.languageSelect.select.label=English
-cds.languageSelect.select.hint=Change the language to English
-
 cds.pdf.outcomes.eori.number=Rhif EORI: {0}
 
 confirm-business-details.title-and-heading=Ai dyma’ch cyfeiriad cofrestredig?
