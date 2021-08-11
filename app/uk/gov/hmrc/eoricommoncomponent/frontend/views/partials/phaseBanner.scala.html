@@ -1,0 +1,33 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ *@
+
+@import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+@import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.JourneyExtractor.journey
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName._
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukPhaseBanner
+@import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
+@import uk.gov.hmrc.govukfrontend.views.Aliases.PhaseBanner
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Tag
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
+@import play.twirl.api.HtmlFormat
+@this(betaBanner_di: StandardBetaBanner,govukPhaseBanner: GovukPhaseBanner, appConfig: AppConfig)
+@(phase: String)(implicit request: Request[_], messages: Messages)
+
+
+@betaFeedbackHeaderUrl = @{
+    if(journey == Journey.Register) appConfig.betaFeedBackRegister(service)
+    else appConfig.betaFeedBackSubscribe(service)
+}
+
+@govukPhaseBanner(PhaseBanner(
+    tag = Some(Tag(content = Text(phase))),
+    content = HtmlContent(
+        s"""${messages("phase.banner.before")} <a id=\"feedback-link\" class=\"govuk-link\" href=\"${HtmlFormat.escape(betaFeedbackHeaderUrl)}\">${messages(
+            "phase.banner.link"
+        )}</a> ${messages("phase.banner.after")}"""
+    )
+))
