@@ -25,14 +25,18 @@
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcLayout
 @import views.html.helper.CSPNonce
-
-@this(hmrcLayout: HmrcLayout, standardBetaBanner: StandardBetaBanner, trackingConsentSnippet: HmrcTrackingConsentSnippet, appConfig: AppConfig, reportAProblemLink: HmrcReportTechnicalIssue, hmrcTimeoutDialog: HmrcTimeoutDialog)
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukBackLink
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.backlink.BackLink
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers
+@this(hmrcLayout: HmrcLayout, standardBetaBanner: StandardBetaBanner, govukBackLink: GovukBackLink, trackingConsentSnippet: HmrcTrackingConsentSnippet, appConfig: AppConfig, reportAProblemLink: HmrcReportTechnicalIssue, hmrcTimeoutDialog: HmrcTimeoutDialog)
 
 @(
     title: String,
     countriesInCountryPicker: CountriesInCountryPicker = NoCountriesInCountryPicker,
     form: Option[Form[_]] = None,
-    suppressTelephoneNumberDetection: Boolean = true
+    suppressTelephoneNumberDetection: Boolean = true,
+        backLink: Option[String] = None
 )(content: Html)(implicit messages: Messages, request: Request[_])
 
 @isLoggedIn = @{!request.session.isEmpty && request.session.get("authToken").isDefined}
@@ -84,6 +88,7 @@
 }
 
 @mainContent = {
+@govukBackLink(BackLink(href = "javascript:history.back()", content = Text(messages("cds.navigation.back")), attributes = Map("id" -> "back-link")))
     @content
     @getHelpForm
 }
@@ -104,6 +109,7 @@
         </script>
     }
 }
+
 
 @hmrcLayout(
     pageTitle = Some(titleErr),

@@ -24,13 +24,9 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import views.html.helper._
 
-@this(layout_di: layout)
+@this(layout_di: layout, inputText: helpers.inputText)
 
 @(addressPostcodeForm: Form[AddressLookupParams], isInReviewMode: Boolean, selectedOrganisationType: CdsOrganisationType, service: Service)(implicit request: Request[_], messages: Messages)
-
-@inputText(field: String, label: String, args: (Symbol, Any)*) = {
-    @helpers.inputText(addressPostcodeForm)(field, label, args: _*)
-}
 
 @pageTitle = @{
     if(selectedOrganisationType.id == CompanyId) {
@@ -76,9 +72,21 @@
 
                 @formHint
 
-                @inputText("postcode", "ecc.address-lookup.postcode.label", '_plainLabel -> true)
-                @inputText("line1", "ecc.address-lookup.postcode.line1.label", '_plainLabel -> true, '_hintText -> messages("ecc.address-lookup.postcode.line1.hint"))
-
+                @inputText(
+                    form = addressPostcodeForm,
+                    id = "postcode",
+                    name = "postcode",
+                    label = "ecc.address-lookup.postcode.label",
+                    isPageHeading = false,
+                )
+                @inputText(
+                    form = addressPostcodeForm,
+                    id = "line1",
+                    name = "line1",
+                    label = "ecc.address-lookup.postcode.line1.label",
+                    hint = Some(messages("ecc.address-lookup.postcode.line1.hint")),
+                    isPageHeading = false,
+                )
                 <input class="button" type="submit" id="find-address-button" value='@messages("ecc.address-lookup.postcode.find-address")'>
             </fieldset>
 
