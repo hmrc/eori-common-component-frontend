@@ -51,7 +51,6 @@
 
 @layout_di(title, form = Some(userLocationForm)) {
     <div class="column-two-thirds">
-        <a href="javascript:history.back()" id="back" class="link-back js-visible">@messages("cds.navigation.back")</a>
 
         @helpers.errorSummary(userLocationForm, focusOverrides = Map("location" -> s"location-${validOptions.head._1}"))
 

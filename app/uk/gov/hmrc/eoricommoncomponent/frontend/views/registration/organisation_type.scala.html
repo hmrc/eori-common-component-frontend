@@ -67,7 +67,6 @@
 
 @layout_di(messages("cds.matching.organisation-type.user.header"), form = Some(OrganisationTypeForm)) {
     <div class="column-two-thirds">
-        <a href="javascript:history.back()" id="back" class="link-back js-visible">@messages("cds.navigation.back")</a>
 
         @helpers.errorSummary(OrganisationTypeForm, focusOverrides = Map("organisation-type" -> s"organisation-type-${validOptions.head._1}"))
 

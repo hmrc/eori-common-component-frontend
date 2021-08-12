@@ -51,8 +51,7 @@
 
 @layout_di(messages(headerAndTitle), form = Some(dateForm)) {
     <div class="column-two-thirds">
-        <a href="javascript:history.back()" id="back" class="link-back js-visible">@messages("cds.navigation.back")</a>
-    
+
         @helpers.errorSummary(updateFormErrors,
             focusOverrides = Map("date-of-establishment" -> "date-of-establishment.day"))
 

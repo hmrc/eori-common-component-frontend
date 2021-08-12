@@ -42,7 +42,6 @@
 
 @layout_di(messages("cds.matching.nino.row.header"), form = Some(matchNinoIdForm)) {
     <div class="column-two-thirds">
-        <a href="javascript:history.back()" id="back" class="link-back js-visible">@messages("cds.navigation.back")</a>
 
     @helpers.errorSummary(matchNinoIdForm, focusOverrides = Map("have-nino" -> "have-nino-true"))
 

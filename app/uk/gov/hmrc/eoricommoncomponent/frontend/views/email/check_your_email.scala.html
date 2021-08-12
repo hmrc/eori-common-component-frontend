@@ -48,7 +48,6 @@
 @layout_di(messages("subscription.check-your-email.confirm.question"), form = Some(confirmEmailYesNoAnswerForm)) {
 
 <div class="column-two-thirds">
-    <a href="javascript:history.back()" id="back" class="link-back js-visible">@messages("cds.navigation.back")</a>
 
     @helpers.errorSummary(confirmEmailYesNoAnswerForm, focusOverrides = Map("yes-no-answer" -> "yes-no-answer-true"))
 

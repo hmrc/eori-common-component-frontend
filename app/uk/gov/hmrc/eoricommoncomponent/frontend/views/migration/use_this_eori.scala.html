@@ -31,7 +31,6 @@ service: Service)(implicit request: Request[_], messages: Messages)
 @layout_di(messages("cds.subscribe.use-this-eori.heading"), form = None) {
 
     <div class="column-two-thirds">
-        <a href="javascript:history.back()" id="back" class="link-back js-visible">@messages("cds.navigation.back")</a>
 
         @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.UseThisEoriController.submit(service), "eoriNumberForm") {
             @CSRF.formField
