@@ -23,7 +23,7 @@
 @this(layout_di: layout)
 @(service: Service, eoriNumber: String)(implicit request: Request[_], messages: Messages)
 
-@layout_di(messages("cds.has-existing-eori.title")) {
+@layout_di(messages("cds.has-existing-eori.title"), displayBackLink = false) {
 <div class="column-two-thirds">
 
     <h1 class="heading-large">@messages("cds.has-existing-eori.heading")</h1>

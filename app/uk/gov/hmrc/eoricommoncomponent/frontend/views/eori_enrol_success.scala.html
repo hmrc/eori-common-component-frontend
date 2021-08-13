@@ -23,7 +23,7 @@
 @this(layout_di: layout, appConfig: AppConfig, feedback_di: helpers.feedback)
 @(eori: String, service: Service)(implicit messages: Messages, request: Request[_])
 
-@layout_di(messages("eds.existing-eori.enrolment.confirmation.title")) {
+@layout_di(messages("eds.existing-eori.enrolment.confirmation.title"), displayBackLink = false) {
     <div class="column-two-thirds">
         <div class="govuk-box-highlight">
             <h1 id="page-heading" class="heading-xlarge">@messages("eds.existing-eori.enrolment.confirmation.title")</h1>

@@ -30,7 +30,7 @@
   languageUtils.Dates.formatDate(LocalDate.from(dateTime))
 }
 
-@layout_di(messages("cds.reg06.outcome.eori-already-linked.title", longName), suppressTelephoneNumberDetection = false) {
+@layout_di(messages("cds.reg06.outcome.eori-already-linked.title", longName), suppressTelephoneNumberDetection = false, displayBackLink = false) {
     <div class="column-two-thirds">
         <div>
             <h1 id="page-heading" class="heading-xlarge" >@messages("cds.reg06.outcome.eori-already-linked.heading", longName, orgName)</h1>

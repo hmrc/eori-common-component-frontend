@@ -20,7 +20,7 @@
 
 @()(implicit messages: Messages, request: Request[_])
 
-@layout_di(messages("cds.email-confirmed.title-and-heading")) {
+@layout_di(messages("cds.email-confirmed.title-and-heading"), displayBackLink = false) {
 
     <div class="column-two-thirds start_page">
         <h1 class="heading-large">@messages("cds.email-confirmed.title-and-heading")</h1>

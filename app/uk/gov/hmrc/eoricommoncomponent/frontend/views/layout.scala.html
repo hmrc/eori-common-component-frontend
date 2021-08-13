@@ -36,7 +36,7 @@
     countriesInCountryPicker: CountriesInCountryPicker = NoCountriesInCountryPicker,
     form: Option[Form[_]] = None,
     suppressTelephoneNumberDetection: Boolean = true,
-        backLink: Option[String] = None
+        displayBackLink: Boolean = true
 )(content: Html)(implicit messages: Messages, request: Request[_])
 
 @isLoggedIn = @{!request.session.isEmpty && request.session.get("authToken").isDefined}
@@ -88,7 +88,11 @@
 }
 
 @mainContent = {
-@govukBackLink(BackLink(href = "javascript:history.back()", content = Text(messages("cds.navigation.back")), attributes = Map("id" -> "back-link")))
+
+    @if(displayBackLink) {
+        @govukBackLink(BackLink(href = "javascript:history.back()", content = Text(messages("cds.navigation.back")), attributes = Map("id" -> "back-link")))
+    }
+
     @content
     @getHelpForm
 }

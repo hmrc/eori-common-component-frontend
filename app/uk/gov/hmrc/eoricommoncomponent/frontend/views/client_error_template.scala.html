@@ -21,7 +21,7 @@
 
 @(message: String)(implicit messages: Messages, request: Request[_])
 
-@layout_di("Something went wrong. Please try again later.") {
+@layout_di("Something went wrong. Please try again later.", displayBackLink = false) {
 <p>@message</p>
 
 }
