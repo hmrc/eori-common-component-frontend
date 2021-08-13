@@ -119,5 +119,6 @@
     phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedBackSubscribe(service))),
     additionalHeadBlock = Some(theHead),
     nonce = CSPNonce.get,
-    serviceName = Some(messages("cds.banner.subscription", longName))
+    serviceName = Some(messages("cds.banner.subscription", longName)),
+    accessibilityStatementUrl = Some(service.accessibilityUrl)
 )(mainContent)
