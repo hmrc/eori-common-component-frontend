@@ -21,7 +21,7 @@ import org.scalatest.MustMatchers
 
 trait WebPage extends MustMatchers {
 
-  val backLinkXPath: String          = "//*[@id='back']"
+  val backLinkXPath: String          = "//*[@id='back-link']"
   val pageLevelErrorSummaryListXPath = "//ul[@class='error-summary-list']"
   val countryCodeCss                 = By.xpath("//*[@id='countryCode']")
   val countrySuggestion              = By.xpath("//*[@id='countryCode__option--0']")

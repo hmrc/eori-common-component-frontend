@@ -274,3 +274,8 @@ ecc.address-lookup.postcode.no-results.manual = Hoffwn nodi fy nghyfeiriad â ll
 ecc.address-lookup.postcode.results.not-found = Heb ei ddarganfod
 
 cds.matching.organisation-address.postcode-optional=Cod post (dewisol)
+
+date.fields.day = Diwrnod
+date.fields.month = Mis
+date.fields.year = Blwyddyn
+
