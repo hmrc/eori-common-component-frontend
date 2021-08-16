@@ -18,16 +18,25 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Button
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
-@this(layout_di: layout)
+@this(layout_di: layout, govukButton: GovukButton)
 
 @(service: Service, isInReviewMode: Boolean)(implicit request: Request[_], messages: Messages)
 
 @reenterPostcodeLink = {
     @if(isInReviewMode) {
-        <a href="@AddressLookupPostcodeController.reviewPage(service)" class="button" role="button" id="reenter-postcode-button">@messages("ecc.address-lookup.postcode.error.re-enter")</a>
+        @govukButton(Button(
+            href = Some(AddressLookupPostcodeController.reviewPage(service).url),
+            content = Text(messages("ecc.address-lookup.postcode.error.re-enter"))
+        ))
     } else {
-        <a href="@AddressLookupPostcodeController.displayPage(service)" class="button" role="button" id="reenter-postcode-button">@messages("ecc.address-lookup.postcode.error.re-enter")</a>
+        @govukButton(Button(
+            href = Some(AddressLookupPostcodeController.displayPage(service).url),
+            content = Text(messages("ecc.address-lookup.postcode.error.re-enter"))
+        ))
     }
 }
 

@@ -20,8 +20,11 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.button.Button
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
-@this(layout_di: layout, inputText: helpers.inputText)
+@this(layout_di: layout, inputText: helpers.inputText, govukButton: GovukButton)
 
 @(emailForm: Form[EmailViewModel], service: Service)(implicit request: Request[_], messages: Messages)
 
@@ -49,7 +52,9 @@
             labelClasses = Some("govuk-label govuk-label--l")
         )
 
-        <p><input class="button" type="submit" value='@ViewHelper.continueButtonText(false)'></p>
+        @govukButton(Button(
+            content = Text(ViewHelper.continueButtonText(false))
+        ))
     }
 
     @helpers.helpAndSupport()

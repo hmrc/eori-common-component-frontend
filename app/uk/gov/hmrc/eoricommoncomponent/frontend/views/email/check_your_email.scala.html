@@ -20,14 +20,18 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 
-@this(layout_di: layout)
+@this(layout_di: layout, govukButton: GovukButton)
 
 @(email:Option[String],
     confirmEmailYesNoAnswerForm: Form[YesNo],
     isInReviewMode: Boolean,
     service: Service
 )(implicit request: Request[_], messages: Messages)
+
 
 @inputRadioGroup(field: String, options: Seq[(String, String)]) = {
 
@@ -59,7 +63,9 @@
     Seq("true" -> messages("subscription.check-your-email.yes"),
     "false" -> messages("subscription.check-your-email.no")))
 
-    <p><input class="button" type="submit" value='@ViewHelper.continueButtonText(isInReviewMode)'></p>
+        @govukButton(Button(
+            content = Text(ViewHelper.continueButtonText(isInReviewMode))
+        ))
     }
 
     @helpers.helpAndSupport()

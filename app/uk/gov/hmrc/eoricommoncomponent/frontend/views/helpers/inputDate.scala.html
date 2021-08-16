@@ -11,6 +11,8 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.errormessage.ErrorMessage
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+@import uk.gov.hmrc.hmrcfrontend.views.Implicits.RichDateInput
+
 @this(govukDateInput: GovukDateInput)
 
 @(
@@ -20,6 +22,11 @@
   id: String = "value",
   hintText: Option[String] = None,
   legendAsPageHeading: Boolean = true)(implicit messages: Messages)
+
+@errors = @{
+  val formErrors = form(id).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+}
+
 
 @govukDateInput(DateInput(
     fieldset = Some(Fieldset(
@@ -59,4 +66,4 @@
     ),
     hint = hintText.map(hint => Hint(content = Text(messages(hint)))),
     errorMessage = form(id).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
-))
+).withFormField(form(id)))
