@@ -101,9 +101,10 @@ class HeaderSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterE
 
       val page = CdsPage(contentAsString(result))
 
-      page.getElementAttribute("//span[@class='govuk-phase-banner__text']//a[@class='govuk-link']", "href") should endWith(
-        "/contact/beta-feedback?service=eori-common-component-subscribe-atar"
-      )
+      page.getElementAttribute(
+        "//span[@class='govuk-phase-banner__text']//a[@class='govuk-link']",
+        "href"
+      ) should endWith("/contact/beta-feedback?service=eori-common-component-subscribe-atar")
     }
   }
 

@@ -62,7 +62,7 @@ class ContactDetailsSpec extends ViewSpec {
 
     "display full name input" in {
 
-      doc.body().getElementsByClass("govuk-label full-name").text() mustBe  "Full name"
+      doc.body().getElementsByClass("govuk-label full-name").text() mustBe "Full name"
     }
 
     "display telephone input" in {
