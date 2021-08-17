@@ -26,23 +26,23 @@ trait NameDobSoleTraderPage extends WebPage {
 
   val formId = "subscriptionNameDobForm"
 
-  val pageTitleXPath = "//*[@id=\"content\"]/div/div/h1"
+  val pageTitleXPath = "//*[@class=\"govuk-heading-l\"]"
 
   val firstNameFieldXPath           = "//*[@id='first-name']"
-  val firstNameFieldLevelErrorXPath = "//*[@id='first-name-outer']//span[@class='error-message']"
+  val firstNameFieldLevelErrorXPath = "//span[@id='first-name-error'][@class='govuk-error-message']"
   val firstNameFieldLabel           = "First name"
   val firstNameFieldId              = "first-name"
   val firstNameFieldName            = "first-name"
 
   val lastNameFieldXPath           = "//*[@id='last-name']"
-  val lastNameFieldLevelErrorXPath = "//*[@id='last-name-outer']//span[@class='error-message']"
+  val lastNameFieldLevelErrorXPath = "//span[@id='last-name-error'][@class='govuk-error-message']"
   val lastNameFieldLabel           = "Last name"
   val lastNameFieldId              = "last-name"
   val lastNameFieldName            = "last-name"
 
   val middleNameFieldName = "middle-name"
 
-  val dobFieldLevelErrorXPath    = "//*[@id='date-of-birth-fieldset']//span[@class='error-message']"
+  val dobFieldLevelErrorXPath    = "//span[@id='date-of-birth-error'][@class='govuk-error-message']"
   val dateOfBirthDayFieldXPath   = "//*[@id='date-of-birth.day']"
   val dateOfBirthMonthFieldXPath = "//*[@id='date-of-birth.month']"
   val dateOfBirthYearFieldXPath  = "//*[@id='date-of-birth.year']"
@@ -52,7 +52,7 @@ trait NameDobSoleTraderPage extends WebPage {
   val dobMonthFieldName = "date-of-birth.month"
   val dobYearFieldName  = "date-of-birth.year"
 
-  val continueButtonXpath = "//*[@class='button']"
+  val continueButtonXpath = "//*[@class='govuk-button']"
 
   val filledValues = NameDobMatchModel(
     firstName = "Test First Name",

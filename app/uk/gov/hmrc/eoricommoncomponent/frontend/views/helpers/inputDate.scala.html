@@ -13,19 +13,16 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 @import uk.gov.hmrc.hmrcfrontend.views.Implicits.RichDateInput
 
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @this(govukDateInput: GovukDateInput)
 
 @(
   form: Form[_],
   legendContent: String,
-  legendClasses: String = "govuk-fieldset__legend--xl",
+  legendClasses: Option[String] = None,
   id: String = "value",
-  hintText: Option[String] = None,
+  hintText: Option[Html] = None,
   legendAsPageHeading: Boolean = true)(implicit messages: Messages)
-
-@errors = @{
-  val formErrors = form(id).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
-}
 
 
 @govukDateInput(DateInput(
@@ -34,7 +31,7 @@
             Legend(
                 content = Text(messages(legendContent)),
                 isPageHeading = legendAsPageHeading,
-                classes = legendClasses
+                classes = ( if(legendAsPageHeading){"govuk-fieldset__legend--xl "} else "") + legendClasses.getOrElse("")
             )
         )
     )),
@@ -64,6 +61,8 @@
 
 
     ),
-    hint = hintText.map(hint => Hint(content = Text(messages(hint)))),
+    hint = hintText.map(hintHtml => Hint(
+        content = HtmlContent(hintHtml)
+    )),
     errorMessage = form(id).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
 ).withFormField(form(id)))

@@ -56,7 +56,7 @@ class HowCanWeIdentifyYouNinoSpec extends ViewSpec {
 
     "display an field level error if no nino entered" in {
       docWithNoNinoError.body().getElementsByClass(
-        "error-message"
+        "govuk-error-message"
       ).text() mustBe "Error: Enter your National Insurance number"
     }
 

@@ -22,7 +22,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-
+@import views.html.helper.CSRF
 @this(layout_di: layout,inputText: helpers.inputText, govukButton: GovukButton)
 
 @(addressForm: Form[AddressViewModel],
@@ -35,7 +35,6 @@ isPartnership:Boolean,
 isCompany:Boolean,
 isRow: Boolean = false)(implicit request: Request[_], messages: Messages)
 
-@import views.html.helper.CSRF
 
 @labelForEUCountry(countryCode: String) = @{ messages(messageKeyForEUCountryCode(countryCode)) }
 

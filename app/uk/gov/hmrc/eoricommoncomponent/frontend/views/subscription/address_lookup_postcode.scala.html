@@ -80,6 +80,7 @@
                     name = "postcode",
                     label = "ecc.address-lookup.postcode.label",
                     isPageHeading = false,
+                    labelClasses = Some("postcode")
                 )
                 @inputText(
                     form = addressPostcodeForm,
@@ -88,6 +89,7 @@
                     label = "ecc.address-lookup.postcode.line1.label",
                     hint = Some(messages("ecc.address-lookup.postcode.line1.hint")),
                     isPageHeading = false,
+                    labelClasses = Some("line1")
                 )
 
                 @govukButton(Button(

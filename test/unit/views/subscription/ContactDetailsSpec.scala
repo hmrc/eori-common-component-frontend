@@ -62,24 +62,19 @@ class ContactDetailsSpec extends ViewSpec {
 
     "display full name input" in {
 
-      val fullNameDiv = doc.body().getElementById("full-name-outer")
-
-      fullNameDiv.getElementsByTag("label").get(0).text() must startWith("Full name")
+      doc.body().getElementsByClass("govuk-label full-name").text() mustBe  "Full name"
     }
 
     "display telephone input" in {
 
-      val telephoneDiv = doc.body().getElementById("telephone-outer")
-
-      telephoneDiv.getElementsByTag("label").get(0).text() must startWith("Telephone")
-      telephoneDiv.getElementById("telephone-hint").text() mustBe "Only enter numbers, for example 01632 960 001"
+      doc.body().getElementsByClass("govuk-label telephone").text() mustBe "Telephone"
+      doc.body().getElementById("telephone-hint").text() mustBe "Only enter numbers, for example 01632 960 001"
     }
 
     "display continue button" in {
 
-      val continueButton = doc.body().getElementById("continue-button")
+      doc.body().getElementsByClass("govuk-button").text() mustBe "Continue"
 
-      continueButton.attr("value") mustBe "Continue"
     }
 
     "display error summary" in {

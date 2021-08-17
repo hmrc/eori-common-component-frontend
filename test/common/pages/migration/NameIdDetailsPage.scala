@@ -28,18 +28,18 @@ trait NameIdDetailsPage extends WebPage {
   val pageTitleXPath = "//h1"
 
   val nameFieldXPath           = "//*[@id='name']"
-  val nameFieldLevelErrorXPath = "//*[@id='name-outer']//span[@class='error-message']"
+  val nameFieldLevelErrorXPath = "//span[@id='name-error'][@class='govuk-error-message']"
   val nameFieldLabel           = "Registered business name"
   val nameFieldId              = "name"
   val nameFieldName            = "name"
 
   val utrFieldXPath           = "//*[@id='utr']"
-  val utrFieldLevelErrorXPath = "//*[@id='utr-outer']//span[@class='error-message']"
+  val utrFieldLevelErrorXPath = "//span[@id='utr-error'][@class='govuk-error-message']"
   val utrFieldLabel           = "Company Unique Taxpayer Reference (UTR) number"
   val utrFieldId              = "utr"
   val utrFieldName            = "utr"
 
-  val continueButtonXpath = "//*[@class='button']"
+  val continueButtonXpath = "//*[@class='govuk-button']"
 
   val filledValues = NameIdOrganisationMatchModel(name = "Test Business Name", id = "2108834503")
 

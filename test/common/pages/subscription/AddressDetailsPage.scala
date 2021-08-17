@@ -25,20 +25,20 @@ sealed trait AddressDetailsPage extends WebPage {
 
   val formId: String = "addressDetailsForm"
 
-  val continueButtonXpath = "//*[@class='button']"
+  val continueButtonXpath = "//*[@class='govuk-button']"
 
   val streetFieldXPath           = "//*[@id='street']"
-  val streetFieldLevelErrorXPath = "//*[@id='street-outer']//span[@class='error-message']"
+  val streetFieldLevelErrorXPath = "//span[@id='street-error'][@class='govuk-error-message']"
 
   val cityFieldXPath           = "//*[@id='city']"
-  val cityFieldLevelErrorXPath = "//*[@id='city-outer']//span[@class='error-message']"
+  val cityFieldLevelErrorXPath = "//span[@id='city-error'][@class='govuk-error-message']"
 
-  val countryFieldLevelErrorXPath = "//*[@id='country-outer']//span[@class='error-message']"
+  val countryFieldLevelErrorXPath = "//span[@id='country-error'][@class='govuk-error-message']"
 
   val countryCodeFieldXPath = "//*[@id='countryCode']"
 
   val postcodeFieldXPath           = "//*[@id='postcode']"
-  val postcodeFieldLevelErrorXPath = "//*[@id='postcode-outer']//span[@class='error-message']"
+  val postcodeFieldLevelErrorXPath = "//span[@id='postcode-error'][@class='govuk-error-message']"
 
   val filledValues =
     AddressViewModel(street = "Line 1", city = "city name", postcode = Some("SE28 1AA"), countryCode = "ZZ")

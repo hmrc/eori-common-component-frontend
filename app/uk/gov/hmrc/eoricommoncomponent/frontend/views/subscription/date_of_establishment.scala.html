@@ -36,8 +36,9 @@
 
 @introHtml = {
     @if(orgType != LLP && orgType != Partnership && !isRestOfWorldJourney){
-      <p id="date-of-establishment-label">@Html(messages(introText))</p>
+      <p id="date-of-establishment-label" class="govuk-body">@Html(messages(introText))</p>
     }
+    <span id="date-of-establishment-hint-text" class="govuk-hint">@Html(messages("cds.date-established.hint"))</span>
 }
 
 @headerAndTitle = @{
@@ -60,7 +61,7 @@
 
             @CSRF.formField
 
-            @inputDate(dateForm,headerAndTitle, hintText = Some(messages("cds.date-established.hint")), id = "date-of-establishment")
+        @inputDate(dateForm,headerAndTitle, hintText = Some(introHtml), id = "date-of-establishment",legendClasses = Some("date-of-establishment-field"))
 
             @govukButton(Button(
                 content = Text(ViewHelper.continueButtonText(isInReviewMode))

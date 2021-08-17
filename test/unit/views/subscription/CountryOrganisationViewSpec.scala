@@ -63,9 +63,7 @@ class CountryOrganisationViewSpec extends ViewSpec {
 
     "display continue button" in {
 
-      val continueButton = doc.body().getElementById("continue-button")
-
-      continueButton.attr("value") mustBe "Continue"
+      doc.body().getElementsByClass("govuk-button").text() mustBe "Continue"
     }
 
     "display error summary" in {

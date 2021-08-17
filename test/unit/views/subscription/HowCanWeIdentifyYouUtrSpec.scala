@@ -55,7 +55,7 @@ class HowCanWeIdentifyYouUtrSpec extends ViewSpec {
     }
 
     "display an field level error if no nino entered" in {
-      docWithNoUtrError.body().getElementsByClass("error-message").text() mustBe "Error: Enter your UTR number"
+      docWithNoUtrError.body().getElementsByClass("govuk-error-message").text() mustBe "Error: Enter your UTR number"
     }
 
   }

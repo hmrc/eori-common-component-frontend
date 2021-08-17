@@ -38,7 +38,7 @@ class WhatIsYourEmailSpec extends ViewSpec {
       MigrateDoc.title() must startWith("What is your email address?")
     }
     "have the correct h1 text" in {
-      MigrateDoc.body().getElementsByClass("heading-large").text() mustBe "What is your email address?"
+      MigrateDoc.body().getElementsByClass("govuk-label--l").text() mustBe "What is your email address?"
     }
     "have the correct hint text" in {
       MigrateDoc.body().getElementById(
@@ -59,8 +59,8 @@ class WhatIsYourEmailSpec extends ViewSpec {
     "display a field level error message" in {
       docWithErrors
         .body()
-        .getElementById("email-outer")
-        .getElementsByClass("error-message")
+        .getElementById("email-error")
+        .getElementsByClass("govuk-error-message")
         .text() mustBe "Error: Enter a valid email address"
     }
 

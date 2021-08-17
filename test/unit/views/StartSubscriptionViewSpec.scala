@@ -131,9 +131,9 @@ class StartSubscriptionViewSpec extends ViewSpec {
 
     "display 'Continue' button which links to check-user url" in {
 
-      val continueButton = doc.body().getElementById("continue")
+      val continueButton = doc.body().getElementsByClass("govuk-button")
 
-      continueButton.text() mustBe "Continue"
+      continueButton.text() mustBe "Sign in"
       continueButton.attr("href") mustBe "/customs-enrolment-services/atar/subscribe/check-user"
     }
   }
