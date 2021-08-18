@@ -22,7 +22,7 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NameDobMatchModel
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper
 
-@this(govukDateInput : GovukDateInput, layout_di: layout, h1: helpers.h1,inputText: helpers.inputText, inputDate: helpers.inputDate, govukButton: GovukButton)
+@this(govukDateInput : GovukDateInput,  errorSummary: helpers.errorSummary, layout_di: layout, h1: helpers.h1,inputText: helpers.inputText, inputDate: helpers.inputDate, govukButton: GovukButton)
 
 @(subscriptionNameDobForm: Form[NameDobMatchModel],isInReviewMode: Boolean, service: Service, selectedUserLocationWithIslands: Option[String])(implicit request: Request[_], messages: Messages)
 
@@ -43,8 +43,8 @@
 @layout_di(messages("cds.matching.individual.title"), form = Some(subscriptionNameDobForm)) {
     <div class="column-two-thirds">
 
-        @helpers.errorSummary(updateFormErrors,
-        focusOverrides = Map("date-of-birth" -> "date-of-birth.day"))
+        @errorSummary(DateConverter.updateDateOfBirthErrors(subscriptionNameDobForm.errors),
+            focusOverrides = Map("date-of-birth" -> "date-of-birth.day"))
 
         @h1(messages("cds.matching.individual.header"))
 
@@ -73,7 +73,7 @@
                 labelClasses = Some("last-name")
             )
 
-            @inputDate(subscriptionNameDobForm,"cds.matching.individual.what-is-your-date-of-birth", hintText = Some(Html(messages("cds.date-of-birth.hint"))), id = "date-of-birth", legendAsPageHeading= false)
+            @inputDate(updateFormErrors,"cds.matching.individual.what-is-your-date-of-birth", hintText = Some(Html(messages("cds.date-of-birth.hint"))), id = "date-of-birth", legendAsPageHeading= false)
 
             @govukButton(Button(
                 content = Text(ViewHelper.continueButtonText(isInReviewMode))

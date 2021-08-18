@@ -69,7 +69,7 @@ class HowCanWeIdentifyYouSpec extends ViewSpec {
     "display an page level error if no radio button is selected" in {
       docWithRadioButtonsError
         .body()
-        .getElementsByClass("error-summary-list")
+        .getElementsByClass("govuk-error-summary__list")
         .text() mustBe "Select how we can identify you"
     }
 

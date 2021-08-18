@@ -24,7 +24,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 
-@this(layout_di: layout, appConfig: AppConfig, govukButton: GovukButton)
+@this(layout_di: layout,  errorSummary: helpers.errorSummary, appConfig: AppConfig, govukButton: GovukButton)
 
 @(userLocationForm: Form[UserLocationDetails], service: Service, isAffinityOrganisation: Boolean)(implicit request: Request[_], messages: Messages)
 
@@ -55,7 +55,7 @@
 @layout_di(title, form = Some(userLocationForm)) {
     <div class="column-two-thirds">
 
-        @helpers.errorSummary(userLocationForm, focusOverrides = Map("location" -> s"location-${validOptions.head._1}"))
+        @errorSummary(userLocationForm.errors, focusOverrides = Map("location" -> s"location-${validOptions.head._1}"))
 
         @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.UserLocationController.submit(service), "user-location-form") {
             @CSRF.formField

@@ -23,14 +23,14 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 
-@this(layout_di: layout, feedback_di: helpers.feedback, help_di: partials.if_you_need_help, govukButton: GovukButton)
+@this(layout_di: layout,  errorSummary: helpers.errorSummary, feedback_di: helpers.feedback, help_di: partials.if_you_need_help, govukButton: GovukButton)
 
 @(service: Service, eori: String, form: Form[EoriUnableToUse])(implicit messages: Messages, request: Request[_])
 
 @layout_di(messages("ecc.what-is-your-eori.unable-to-use.title"), suppressTelephoneNumberDetection = false, displayBackLink = false) {
     <div class="column-two-thirds">
 
-        @helpers.errorSummary(form, focusOverrides = Map("answer" -> s"answer-change"))
+        @errorSummary(form.errors, focusOverrides = Map("answer" -> s"answer-change"))
 
         <h1 id="page-heading" class="heading-large" >@messages("ecc.what-is-your-eori.unable-to-use.title")</h1>
 

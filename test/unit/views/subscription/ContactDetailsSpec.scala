@@ -79,9 +79,13 @@ class ContactDetailsSpec extends ViewSpec {
 
     "display error summary" in {
 
-      docWithErrorSummary.getElementById("form-error-heading").text() mustBe "There is a problem"
-      docWithErrorSummary.getElementsByClass("error-list").get(0).text() mustBe "Enter your contact name"
-      docWithErrorSummary.getElementsByClass("error-list").get(1).text() mustBe "Enter your contact telephone number"
+
+      val errorSummaryDiv = docWithErrorSummary.getElementsByClass("govuk-error-summary__list").first
+      val errorList = errorSummaryDiv.getElementsByTag("li")
+
+      docWithErrorSummary.getElementById("error-summary-title").text() mustBe "There is a problem"
+      errorList.get(0).text() mustBe "Enter your contact name"
+      errorList.get(1).text()mustBe "Enter your contact telephone number"
     }
   }
 }

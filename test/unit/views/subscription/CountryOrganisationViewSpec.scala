@@ -68,10 +68,8 @@ class CountryOrganisationViewSpec extends ViewSpec {
 
     "display error summary" in {
 
-      docWithErrorSummary.getElementById("form-error-heading").text() mustBe "There is a problem"
-      docWithErrorSummary.getElementsByClass("error-list").get(
-        0
-      ).text() mustBe "Enter the country in which your organisation is registered"
+      docWithErrorSummary.getElementById("error-summary-title").text() mustBe "There is a problem"
+      docWithErrorSummary.getElementsByClass("govuk-error-summary__list").text() mustBe "Enter the country in which your organisation is registered"
     }
   }
 }

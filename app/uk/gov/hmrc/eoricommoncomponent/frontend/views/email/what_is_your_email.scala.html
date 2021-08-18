@@ -24,7 +24,7 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.button.Button
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
-@this(layout_di: layout, inputText: helpers.inputText, govukButton: GovukButton)
+@this(layout_di: layout, inputText: helpers.inputText, errorSummary: helpers.errorSummary, govukButton: GovukButton)
 
 @(emailForm: Form[EmailViewModel], service: Service)(implicit request: Request[_], messages: Messages)
 
@@ -32,7 +32,7 @@
 
 <div class="column-two-thirds">
 
-    @helpers.errorSummary(emailForm)
+    @errorSummary(emailForm.errors)
 
     @helpers.form(WhatIsYourEmailController.submit(service),"emailForm") {
 

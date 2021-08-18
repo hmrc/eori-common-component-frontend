@@ -23,7 +23,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 
-@this(layout_di: layout, feedback_di: helpers.feedback, help_di: partials.if_you_need_help, govukButton: GovukButton)
+@this(layout_di: layout,  errorSummary: helpers.errorSummary, feedback_di: helpers.feedback, help_di: partials.if_you_need_help, govukButton: GovukButton)
 
 @(service: Service, form: Form[YesNo])(implicit messages: Messages, request: Request[_])
 
@@ -33,7 +33,8 @@
             <h1 id="page-heading" class="heading-large" >@messages("ecc.unable-to-use.signout.title")</h1>
         </div>
 
-        @helpers.errorSummary(form, focusOverrides = Map("yes-no-answer" -> s"yes-no-answer-true"))
+        @errorSummary(form.errors),
+            focusOverrides = Map("yes-no-answer" -> s"yes-no-answer-true"))
 
         @helpers.form(routes.EoriUnableToUseSignoutController.submit(service), "signout-form") {
             @CSRF.formField

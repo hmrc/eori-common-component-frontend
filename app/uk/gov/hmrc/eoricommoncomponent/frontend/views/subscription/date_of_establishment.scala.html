@@ -23,7 +23,7 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.DateConverter
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper
 
-@this(govukDateInput : GovukDateInput, layout_di: layout, inputDate: helpers.inputDate, govukButton: GovukButton)
+@this(govukDateInput : GovukDateInput, errorSummary: helpers.errorSummary, layout_di: layout, inputDate: helpers.inputDate, govukButton: GovukButton)
 
 @(dateForm: Form[LocalDate],  isInReviewMode: Boolean, orgType: EtmpOrganisationType, isRestOfWorldJourney: Boolean, service: Service)(implicit request: Request[_], messages: Messages)
 
@@ -54,7 +54,7 @@
 @layout_di(messages(headerAndTitle), form = Some(dateForm)) {
     <div class="column-two-thirds">
 
-        @helpers.errorSummary(updateFormErrors,
+        @errorSummary(DateConverter.updateDateOfEstablishmentErrors(dateForm.errors),
             focusOverrides = Map("date-of-establishment" -> "date-of-establishment.day"))
 
         @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController.submit(isInReviewMode, service), "date-of-birth-form") {

@@ -29,7 +29,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 
-@this(layout_di: layout, summaryRow_di: summaryRow, govukButton: GovukButton)
+@this(layout_di: layout, errorSummary: helpers.errorSummary, summaryRow_di: summaryRow, govukButton: GovukButton)
 
 @(addressResultsForm: Form[AddressResultsForm], addressLookupParams: AddressLookupParams, addresses: Seq[AddressLookup], isInReviewMode: Boolean, selectedOrganisationType: CdsOrganisationType, service: Service)(implicit request: Request[_], messages: Messages)
 
@@ -60,7 +60,7 @@
 @layout_di(pageTitle, form = Some(addressResultsForm)) {
     <div class="column-two-thirds">
 
-        @helpers.errorSummary(addressResultsForm)
+        @errorSummary(addressResultsForm.errors)
 
         @helpers.form(AddressLookupResultsController.submit(service, isInReviewMode), "addressLookupPostcodeResultsForm") {
 

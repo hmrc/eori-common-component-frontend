@@ -24,7 +24,7 @@
 @import views.html.helper.CSRF
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 
-@this(layout_di: layout, inputText: helpers.inputText, govukButton: GovukButton)
+@this(layout_di: layout, inputText: helpers.inputText,  errorSummary: helpers.errorSummary, govukButton: GovukButton)
 
 @(nameUtrForm: Form[NameIdOrganisationMatchModel],
     registrationDetails: RegistrationDetails,       
@@ -53,7 +53,7 @@
 
 <div class="column-two-thirds">
 
-    @helpers.errorSummary(nameUtrForm)
+    @errorSummary(nameUtrForm.errors)
 
     <h1 class="heading-large">@headerAndTitle</h1>
 

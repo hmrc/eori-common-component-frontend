@@ -25,7 +25,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 
-@this(layout_di: layout, appConfig: AppConfig, govukButton: GovukButton)
+@this(layout_di: layout, errorSummary: helpers.errorSummary, appConfig: AppConfig, govukButton: GovukButton)
 
 @(matchOrgIdForm: Form[UtrMatchModel], organisationType: String, isInReviewMode: Boolean, service: Service)(implicit request: Request[_], messages: Messages)
 
@@ -71,7 +71,7 @@
 @layout_di(headerAndTitle, form = Some(matchOrgIdForm)) {
 <div class="column-two-thirds">
 
-    @helpers.errorSummary(matchOrgIdForm, focusOverrides = Map("have-utr" -> "have-utr-true"))
+    @errorSummary(matchOrgIdForm.errors, focusOverrides = Map("have-utr" -> "have-utr-true"))
 
     @helpers.form(HaveUtrSubscriptionController.submit(isInReviewMode, service), "subscriptionUtrForm") {
     @CSRF.formField

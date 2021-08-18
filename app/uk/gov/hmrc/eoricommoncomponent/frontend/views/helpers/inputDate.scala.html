@@ -12,6 +12,7 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.errormessage.ErrorMessage
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 @import uk.gov.hmrc.hmrcfrontend.views.Implicits.RichDateInput
+@import uk.gov.hmrc.hmrcfrontend.views.Implicits.RichErrorSummary
 
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 @this(govukDateInput: GovukDateInput)
@@ -22,7 +23,8 @@
   legendClasses: Option[String] = None,
   id: String = "value",
   hintText: Option[Html] = None,
-  legendAsPageHeading: Boolean = true)(implicit messages: Messages)
+  legendAsPageHeading: Boolean = true,
+)(implicit messages: Messages)
 
 
 @govukDateInput(DateInput(
@@ -66,3 +68,5 @@
     )),
     errorMessage = form(id).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
 ).withFormField(form(id)))
+
+

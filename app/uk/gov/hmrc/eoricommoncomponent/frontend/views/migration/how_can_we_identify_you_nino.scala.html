@@ -25,14 +25,14 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
-@this(layout_di: layout, inputText: helpers.inputText, govukButton: GovukButton)
+@this(layout_di: layout, errorSummary: helpers.errorSummary, inputText: helpers.inputText, govukButton: GovukButton)
 
 @(ninoForm: Form[IdMatchModel], isInReviewMode: Boolean, submit: Call)(implicit request: Request[_], messages: Messages)
 
 @layout_di(messages("subscription-journey.how-confirm-identity.nino.heading"), form = Some(ninoForm)) {
     <div class="column-two-thirds">
 
-        @helpers.errorSummary(ninoForm)
+        @errorSummary(ninoForm.errors)
 
         @helpers.form(submit, "ninoForm") {
             @CSRF.formField

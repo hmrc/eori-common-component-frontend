@@ -22,11 +22,11 @@ import org.scalatest.MustMatchers
 trait WebPage extends MustMatchers {
 
   val backLinkXPath: String          = "//*[@id='back-link']"
-  val pageLevelErrorSummaryListXPath = "//ul[@class='error-summary-list']"
+  val pageLevelErrorSummaryListXPath = "//ul[@class='govuk-error-summary__list']"
   val countryCodeCss                 = By.xpath("//*[@id='countryCode']")
   val countrySuggestion              = By.xpath("//*[@id='countryCode__option--0']")
 
-  protected def fieldLevelErrorXpath(fieldName: String) = s"//*[@id='$fieldName-outer']//span[@class='error-message']"
+  protected def fieldLevelErrorXpath(fieldName: String) = s"//span[@id='$fieldName-error'][@class='error-message']"
 
   val title: String
 

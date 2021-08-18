@@ -27,7 +27,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 
-@this(layout_di: layout, inputText: helpers.inputText, govukButton: GovukButton)
+@this(layout_di: layout, inputText: helpers.inputText, errorSummary: helpers.errorSummary, govukButton: GovukButton)
 
 @(addressPostcodeForm: Form[AddressLookupParams], isInReviewMode: Boolean, selectedOrganisationType: CdsOrganisationType, service: Service)(implicit request: Request[_], messages: Messages)
 
@@ -61,7 +61,7 @@
 @layout_di(pageTitle, form = Some(addressPostcodeForm)) {
     <div class="column-two-thirds">
 
-        @helpers.errorSummary(addressPostcodeForm)
+        @errorSummary(addressPostcodeForm.errors)
 
         @helpers.form(AddressLookupPostcodeController.submit(service, isInReviewMode), "addressLookupPostcodeForm") {
 
