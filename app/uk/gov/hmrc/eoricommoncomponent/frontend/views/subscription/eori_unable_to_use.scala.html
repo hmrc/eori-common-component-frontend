@@ -23,7 +23,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 
-@this(layout_di: layout,  errorSummary: helpers.errorSummary, feedback_di: helpers.feedback, help_di: partials.if_you_need_help, govukButton: GovukButton)
+@this(layout_di: layout,  errorSummary: helpers.errorSummary, feedback_di: helpers.feedback, help_di: partials.if_you_need_help, govukButton: GovukButton, inputRadioGroup: helpers.inputRadioGroup)
 
 @(service: Service, eori: String, form: Form[EoriUnableToUse])(implicit messages: Messages, request: Request[_])
 
@@ -41,7 +41,7 @@
         @helpers.form(routes.EoriUnableToUseController.submit(service), "eori-unable-to-use-form") {
             @CSRF.formField
 
-            @helpers.inputRadioGroup(
+            @inputRadioGroup(
                 form("answer"),
                 Seq(
                     (EoriUnableToUse.changeEori, messages("ecc.what-is-your-eori.unable-to-use.changeEori")),

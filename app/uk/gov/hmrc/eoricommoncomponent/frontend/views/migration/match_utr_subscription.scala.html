@@ -25,21 +25,9 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 
-@this(layout_di: layout, errorSummary: helpers.errorSummary, appConfig: AppConfig, govukButton: GovukButton)
+@this(layout_di: layout, errorSummary: helpers.errorSummary, appConfig: AppConfig, govukButton: GovukButton, inputRadioGroup: helpers.inputRadioGroup)
 
 @(matchOrgIdForm: Form[UtrMatchModel], organisationType: String, isInReviewMode: Boolean, service: Service)(implicit request: Request[_], messages: Messages)
-
-@inputRadioGroup(field: String, options: Seq[(String, String)]) = {
-    @helpers.inputRadioGroup(
-        matchOrgIdForm(field),
-        options,
-        Map.empty,
-        Some(hint),
-        '_divClass -> "form-group inline",
-        '_legend -> headerAndTitle,
-        '_isLegendH1 -> true
-    )
-}
 
 @headerAndTitle = @{
     organisationType match {
@@ -77,9 +65,15 @@
     @CSRF.formField
     <div class="form-group">
 
-    @inputRadioGroup("have-utr",
-        Seq("true" -> messages("cds.yes"),
-            "false" -> messages("cds.no")))
+    @inputRadioGroup(
+        matchOrgIdForm("have-utr"),
+        Seq("true" -> messages("cds.yes"), "false" -> messages("cds.no")),
+        Map.empty,
+        Some(hint),
+        '_divClass -> "form-group inline",
+        '_legend -> headerAndTitle,
+        '_isLegendH1 -> true
+    )
     </div>
         @govukButton(Button(
             content = Text(ViewHelper.continueButtonText(isInReviewMode))

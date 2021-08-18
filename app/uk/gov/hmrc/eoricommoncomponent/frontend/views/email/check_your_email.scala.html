@@ -24,25 +24,14 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 
-@this(layout_di: layout, errorSummary: helpers.errorSummary, govukButton: GovukButton)
+@this(layout_di: layout, errorSummary: helpers.errorSummary, govukButton: GovukButton, inputRadioGroup: helpers.inputRadioGroup
+)
 
 @(email:Option[String],
     confirmEmailYesNoAnswerForm: Form[YesNo],
     isInReviewMode: Boolean,
     service: Service
 )(implicit request: Request[_], messages: Messages)
-
-
-@inputRadioGroup(field: String, options: Seq[(String, String)]) = {
-
-@helpers.inputRadioGroup(
-    confirmEmailYesNoAnswerForm(field),
-    options,
-    Map.empty,
-    Some(hintHtml),
-    '_legend -> messages("subscription.check-your-email.confirm.question"),
-    '_isLegendH1 -> true)
-}
 
 @hintHtml = {
     <p id="email" class="heading-small">@email</p>
@@ -57,11 +46,15 @@
 
 
     @helpers.form(CheckYourEmailController.submit(service), "confirmEmailYesNoAnswerForm") {
-    @CSRF.formField
+        @CSRF.formField
 
-    @inputRadioGroup("yes-no-answer",
-    Seq("true" -> messages("subscription.check-your-email.yes"),
-    "false" -> messages("subscription.check-your-email.no")))
+        @inputRadioGroup(
+            confirmEmailYesNoAnswerForm("yes-no-answer"),
+            Seq("true" -> messages("subscription.check-your-email.yes"), "false" -> messages("subscription.check-your-email.no")),
+            Map.empty,
+            Some(hintHtml),
+            '_legend -> messages("subscription.check-your-email.confirm.question"),
+            '_isLegendH1 -> true)
 
         @govukButton(Button(
             content = Text(ViewHelper.continueButtonText(isInReviewMode))

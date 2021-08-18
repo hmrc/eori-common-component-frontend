@@ -23,7 +23,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 
-@this(layout_di: layout,  errorSummary: helpers.errorSummary, feedback_di: helpers.feedback, help_di: partials.if_you_need_help, govukButton: GovukButton)
+@this(layout_di: layout,  errorSummary: helpers.errorSummary, feedback_di: helpers.feedback, help_di: partials.if_you_need_help, govukButton: GovukButton, inputRadioGroup: helpers.inputRadioGroup)
 
 @(service: Service, form: Form[YesNo])(implicit messages: Messages, request: Request[_])
 
@@ -39,7 +39,7 @@
         @helpers.form(routes.EoriUnableToUseSignoutController.submit(service), "signout-form") {
             @CSRF.formField
 
-            @helpers.inputRadioGroup(
+            @inputRadioGroup(
                 form("yes-no-answer"),
                 Seq(
                     ("true", messages("cds.yes")),

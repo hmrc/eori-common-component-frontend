@@ -21,24 +21,12 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import views.html.helper.CSRF
 
-@this(layout_di: layout, errorSummary: helpers.errorSummary, govukButton: GovukButton)
+@this(layout_di: layout, errorSummary: helpers.errorSummary, govukButton: GovukButton, inputRadioGroup: helpers.inputRadioGroup)
 
 @(matchNinoIdForm: Form[NinoMatchModel], isInReviewMode: Boolean, service: Service)(implicit request: Request[_], messages: Messages)
 
-@import views.html.helper._
-
-@inputRadioGroup(field: String, options: Seq[(String, String)]) = {
-    @helpers.inputRadioGroup(
-        matchNinoIdForm(field),
-        options,
-        Map.empty,
-        Some(hint),
-        '_divClass -> "form-group inline",
-        '_legend -> messages("cds.matching.nino.row.header"),
-        '_isLegendH1 -> true
-    )
-}
 @hint = {
     <span>@messages("cds.matching.nino.row.description")</span> <br><br>
     <span>@Html(messages("cds.matching.nino.nino.hint"))</span>
@@ -52,9 +40,15 @@
     @helpers.form(HaveNinoSubscriptionController.submit(isInReviewMode, service), "subscriptionNinoForm") {
     @CSRF.formField
     <div class="form-group">
-        @inputRadioGroup("have-nino",
-            Seq("true" -> messages("cds.yes"),
-                "false" -> messages("cds.no")))
+        @inputRadioGroup(
+            matchNinoIdForm("have-nino"),
+            Seq("true" -> messages("cds.yes"), "false" -> messages("cds.no")),
+            Map.empty,
+            Some(hint),
+            '_divClass -> "form-group inline",
+            '_legend -> messages("cds.matching.nino.row.header"),
+            '_isLegendH1 -> true
+        )
 
     </div>
         @govukButton(Button(
