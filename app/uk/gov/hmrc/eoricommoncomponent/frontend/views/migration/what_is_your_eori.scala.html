@@ -24,21 +24,18 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Button
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukInput
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Label
+@import uk.gov.hmrc.govukfrontend.views.Aliases.PrefixOrSuffix
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Input
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Hint
 
-@this(layout_di: layout, errorSummary: helpers.errorSummary, appConfig: AppConfig, govukButton: GovukButton)
+@this(layout_di: layout, errorSummary: helpers.errorSummary, appConfig: AppConfig, govukButton: GovukButton, govukInput : GovukInput)
 
 @(  eoriNumberForm: Form[EoriNumberViewModel],
 isInReviewMode: Boolean,
 isRestOfWorldJourney: Boolean,
 service: Service)(implicit request: Request[_], messages: Messages)
-
-@inputWithPrefix(field: String, args: (Symbol, Any)*) = {
-    @defining(Seq(
-        '_label -> Html(messages("ecc.subscription.enter-eori-number.heading")),
-        '_isLabelH1 -> true) ++ args) { args =>
-        @helpers.inputWithPrefix(eoriNumberForm(field), args: _*)
-    }
-}
 
 @getEoriLink = {
     <a href=@appConfig.externalGetEORILink(service)>
@@ -55,11 +52,23 @@ service: Service)(implicit request: Request[_], messages: Messages)
     @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.submit(isInReviewMode, service), "eoriNumberForm") {
         @CSRF.formField
 
-        @inputWithPrefix(
-            "eori-number",
-            '_hintText -> messages("ecc.subscription.enter-eori-number.hint"),
-            '_prefix -> "GB"
-        )
+        @govukInput(Input(
+            id = "eori-number",
+            name = "eori-number",
+            label = Label(
+                isPageHeading = true,
+                classes = "govuk-label--l",
+                content = Text(messages("ecc.subscription.enter-eori-number.heading"))
+            ),
+            hint = Some(Hint(
+                content = Text(messages("ecc.subscription.enter-eori-number.hint"))
+            )),
+            classes = "govuk-input--width-10",
+            spellcheck = Some(false),
+            prefix = Some(PrefixOrSuffix(
+                content = Text("GB")
+            ))
+        ))
 
         @govukButton(Button(
             content = Text(ViewHelper.continueButtonText(isInReviewMode))
