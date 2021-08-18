@@ -75,7 +75,9 @@ class EoriUnableToUseViewSpec extends ViewSpec {
     "display error summary" in {
 
       docWithErrorSummary.getElementById("error-summary-title").text() mustBe "There is a problem"
-      docWithErrorSummary.getElementsByClass("govuk-error-summary__list").text() mustBe "Select what you would like to do"
+      docWithErrorSummary.getElementsByClass(
+        "govuk-error-summary__list"
+      ).text() mustBe "Select what you would like to do"
     }
   }
 }

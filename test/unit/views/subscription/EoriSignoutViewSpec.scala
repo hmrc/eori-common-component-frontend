@@ -67,7 +67,9 @@ class EoriSignoutViewSpec extends ViewSpec {
     "display error summary" in {
 
       docWithErrorSummary.getElementById("error-summary-title").text() mustBe "There is a problem"
-      docWithErrorSummary.getElementsByClass("govuk-error-summary__list").get(0).text() mustBe "Select what you would like to do"
+      docWithErrorSummary.getElementsByClass("govuk-error-summary__list").get(
+        0
+      ).text() mustBe "Select what you would like to do"
     }
   }
 
