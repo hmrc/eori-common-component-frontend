@@ -28,18 +28,6 @@
     field.value getOrElse ""
 }
 
-@*<div id="@(fieldNameWithoutSpaces)-container" class="form-group govuk-input--width-full">
-<label for="@field.name" class="form-label">
-@label
-</label>
-<select class="form-group" id="@(fieldNameWithoutSpaces)" name="@field.name" value="@field.value.getOrElse("")" data-gov-select-autocomplete="true">
-<option value="">*@@*Select address*@@*</option>
-@addresses.map { address =>
-<option value="@address.dropDownView" @if(selectedValue == address.dropDownView) {selected="selected"}>@address.dropDownView</option>
-}
-</select>
-</div>*@
-
 @inputSelect(
     form = form,
     id = fieldNameWithoutSpaces,

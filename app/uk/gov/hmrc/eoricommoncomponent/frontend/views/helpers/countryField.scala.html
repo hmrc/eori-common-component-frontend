@@ -49,26 +49,6 @@
     <span class="govuk-visually-hidden">@Html(messages("cds.country-picker.hint.screen-reader"))</span>
 }
 
-@*<div id="country-outer" class="form-group @if(allErrors.nonEmpty) {form-group-error}">
-<label for="@field" class="@if(isPlainLabel) {form-label} else {form-label-bold}">
-@messages(label)
-
-<span class="visually-hidden">. @messages("cds.country-picker.hint.screen-reader")</span>
-
-@if(allErrors.nonEmpty) {
-@allErrors.map { error => <span class="error-message"><span class="visually-hidden">@messages("cds.error.field.hint")</span> @messages(key = error.toString)</span> }
-}
-</label>
-<select id="@field" name="@field" class="form-control @if(allErrors.nonEmpty) {form-control-error}">
-<option value="">@messages("cds.subscription.address-details.country.emptyValueText")</option>
-@for(option <- countries.map(c => (c.countryCode, c.countryName))) {
-<option id="@field-@option._1"
-value="@option._1"
-@if(selectedValue==option._1){selected="selected"}>@option._2</option>
-}
-</select>
-</div>*@
-
 @inputSelect(
     form = form,
     id = field,

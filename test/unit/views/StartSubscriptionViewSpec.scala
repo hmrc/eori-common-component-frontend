@@ -70,7 +70,7 @@ class StartSubscriptionViewSpec extends ViewSpec {
       warningMark.attr("aria-hidden") mustBe "true"
       warningMark.text() mustBe "!"
 
-      warningText.text() mustBe "The GB EORI number must be the one linked to the Government Gateway ID you used to sign in. Check EORI (opens in new window or tab)."
+      warningText.text() mustBe "Warning The GB EORI number must be the one linked to the Government Gateway ID you used to sign in. Check EORI (opens in new window or tab)."
 
       doc.body().getElementById(
         "gb-eori-list-heading"
