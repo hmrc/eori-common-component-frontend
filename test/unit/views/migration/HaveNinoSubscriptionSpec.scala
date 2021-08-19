@@ -54,15 +54,15 @@ class HaveNinoSubscriptionSpec extends ViewSpec {
 
     "have description with proper content" in {
       doc.body
-        .getElementById("have-nino-hintHtml")
+        .getElementById("have-nino-hint")
         .text must include("You will have a National Insurance number if you have worked in the UK.")
     }
 
     "Have correct hint for nino field" in {
-      doc.body.getElementById("have-nino-hintHtml").text must include(
+      doc.body.getElementById("have-nino-hint").text must include(
         "It’s on your National Insurance card, benefit letter, payslip or P60."
       )
-      doc.body.getElementById("have-nino-hintHtml").text must include("For example, 'QQ123456C'")
+      doc.body.getElementById("have-nino-hint").text must include("For example, 'QQ123456C'")
     }
 
   }

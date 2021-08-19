@@ -56,9 +56,7 @@ class CountryIndividualViewSpec extends ViewSpec {
 
     "display input with Country label" in {
 
-      val inputDiv = doc.body().getElementById("country-outer")
-
-      inputDiv.getElementsByTag("label").get(0).text() must startWith("Country")
+      doc.body().getElementsByTag("label").text() must startWith("Country")
     }
 
     "display continue button" in {

@@ -51,12 +51,12 @@ class EoriSignoutViewSpec extends ViewSpec {
 
     "display question with two radio buttons" in {
 
-      val questionElement = doc.body().getElementById("yes-no-answer-fieldset")
+      val questionElement = doc.body().getElementsByClass("govuk-label")
 
-      questionElement.getElementsByClass("heading-medium").text() mustBe "Is this what you want to do?"
+      doc.body().getElementsByTag("legend").text() mustBe "Is this what you want to do?"
 
-      questionElement.getElementsByTag("label").get(0).text() mustBe "Yes"
-      questionElement.getElementsByTag("label").get(1).text() mustBe "No"
+      questionElement.get(0).text() mustBe "Yes"
+      questionElement.get(1).text() mustBe "No"
     }
 
     "display continue button" in {

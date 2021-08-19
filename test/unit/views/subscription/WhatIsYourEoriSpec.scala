@@ -47,7 +47,7 @@ class WhatIsYourEoriSpec extends ViewSpec {
     "have the correct heading text" in {
 
       doc().body.getElementsByClass(
-        "heading-large"
+        "govuk-label--l"
       ).text() mustBe "What is your GB Economic Operator Registration and Identification (EORI) number?"
     }
 
@@ -78,9 +78,9 @@ class WhatIsYourEoriSpec extends ViewSpec {
           SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> ""))
 
         doc(formWithEmptyFieldError).body
-          .getElementById("eori-number-outer")
-          .getElementsByClass("error-message")
+          .getElementById("eori-number-error")
           .text mustBe "Error: Enter your EORI number"
+
       }
 
       "EORI field has only numbers and less than 12 digits" in {
@@ -89,8 +89,7 @@ class WhatIsYourEoriSpec extends ViewSpec {
           SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> "123456"))
 
         doc(formWithTooShortNumberEori).body
-          .getElementById("eori-number-outer")
-          .getElementsByClass("error-message")
+          .getElementById("eori-number-error")
           .text mustBe "Error: The EORI number must be more than 11 digits"
       }
 
@@ -100,8 +99,7 @@ class WhatIsYourEoriSpec extends ViewSpec {
           SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> "GB123456"))
 
         doc(formWithTooShortEori).body
-          .getElementById("eori-number-outer")
-          .getElementsByClass("error-message")
+          .getElementById("eori-number-error")
           .text mustBe "Error: The EORI number must be more than 13 characters"
       }
 
@@ -111,8 +109,7 @@ class WhatIsYourEoriSpec extends ViewSpec {
           SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> "1234567890123456"))
 
         doc(formWithTooShortEori).body
-          .getElementById("eori-number-outer")
-          .getElementsByClass("error-message")
+          .getElementById("eori-number-error")
           .text mustBe "Error: The EORI number must be 15 digits or less"
       }
 
@@ -122,8 +119,7 @@ class WhatIsYourEoriSpec extends ViewSpec {
           SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> "GB1234567890123456"))
 
         doc(formWithTooShortEori).body
-          .getElementById("eori-number-outer")
-          .getElementsByClass("error-message")
+          .getElementById("eori-number-error")
           .text mustBe "Error: The EORI number must be 17 characters or less"
       }
 
@@ -133,8 +129,7 @@ class WhatIsYourEoriSpec extends ViewSpec {
           SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> "FR123456789012"))
 
         doc(formWithTooShortEori).body
-          .getElementById("eori-number-outer")
-          .getElementsByClass("error-message")
+          .getElementById("eori-number-error")
           .text mustBe "Error: Enter an EORI number that starts with GB"
       }
 
@@ -144,8 +139,7 @@ class WhatIsYourEoriSpec extends ViewSpec {
           SubscriptionForm.eoriNumberForm.bind(Map("eori-number" -> "GB123asd789012"))
 
         doc(formWithTooShortEori).body
-          .getElementById("eori-number-outer")
-          .getElementsByClass("error-message")
+          .getElementById("eori-number-error")
           .text mustBe "Error: Enter an EORI number in the right format"
       }
     }

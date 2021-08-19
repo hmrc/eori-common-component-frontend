@@ -18,7 +18,7 @@ package common.pages
 
 trait OrgOrIndividualPage extends WebPage {
 
-  val fieldLevelErrorOrganisationType: String = "//*[@id='organisation-type-field']//span[@class='error-message']"
+  val fieldLevelErrorOrganisationType: String = "//span[@id='organisation-type-error'][@class='govuk-error-message']"
 
   override val title = "What do you want to apply as?"
 

@@ -65,7 +65,7 @@
             id = "name",
             name = "name",
             label = messages(s"cds.matching.name-id-organisation.$displayMode.name"),
-            hint = Some(nameHintText),
+            hint = Some(Html(nameHintText)),
             isPageHeading =  false
         )
 
@@ -75,7 +75,7 @@
             name = "utr",
             label = messages(s"cds.matching.name-id-organisation.$displayMode.utr"),
             isPageHeading =  false,
-            hint = Some(utrHintText)
+            hint = Some(Html(utrHintText))
         )
 
         @govukButton(Button(

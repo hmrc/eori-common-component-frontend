@@ -57,14 +57,12 @@ class EoriUnableToUseViewSpec extends ViewSpec {
 
     "display question with two radio buttons" in {
 
-      val questionElement = doc.body().getElementById("answer-fieldset")
+      val questionElement = doc.body().getElementsByClass("govuk-label")
 
-      questionElement.getElementsByClass("heading-medium").text() mustBe "What would you like to do?"
+      doc.body().getElementsByClass("govuk-fieldset__legend--m").text() mustBe "What would you like to do?"
 
-      questionElement.getElementsByTag("label").get(0).text() mustBe "Change the EORI number"
-      questionElement.getElementsByTag("label").get(
-        1
-      ).text() mustBe "Sign out and sign in again with a different Government Gateway ID"
+      questionElement.get(0).text() mustBe "Change the EORI number"
+      questionElement.get(1).text() mustBe "Sign out and sign in again with a different Government Gateway ID"
     }
 
     "display continue button" in {

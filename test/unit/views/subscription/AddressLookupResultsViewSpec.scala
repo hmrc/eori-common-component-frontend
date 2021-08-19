@@ -140,15 +140,12 @@ class AddressLookupResultsViewSpec extends ViewSpec {
 
     "display dropdown with label" in {
 
-      val addressContainer = doc().body().getElementById("address-container")
+      doc().body().getElementsByTag("label").text() mustBe "Select your address"
 
-      addressContainer.getElementsByTag("label").get(0).text() mustBe "Select your address"
+      val dropdown = doc().body().getElementsByTag("select").get(0)
 
-      val dropdown = addressContainer.getElementById("address")
-      val options  = dropdown.getElementsByTag("option")
-
-      options.get(0).text() mustBe empty
-      options.get(1).text() mustBe "Line 1, City, BB11 1BB"
+      dropdown.getElementsByTag("option").get(0).text() mustBe empty
+      dropdown.getElementsByTag("option").get(1).text() mustBe "Line 1, City, BB11 1BB"
     }
 
     "display manual address link" in {

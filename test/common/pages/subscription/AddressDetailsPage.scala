@@ -33,7 +33,7 @@ sealed trait AddressDetailsPage extends WebPage {
   val cityFieldXPath           = "//*[@id='city']"
   val cityFieldLevelErrorXPath = "//span[@id='city-error'][@class='govuk-error-message']"
 
-  val countryFieldLevelErrorXPath = "//span[@id='country-error'][@class='govuk-error-message']"
+  val countryFieldLevelErrorXPath = "//span[@id='countryCode-error'][@class='govuk-error-message']"
 
   val countryCodeFieldXPath = "//*[@id='countryCode']"
 
