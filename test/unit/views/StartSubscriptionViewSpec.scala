@@ -133,7 +133,7 @@ class StartSubscriptionViewSpec extends ViewSpec {
 
       val continueButton = doc.body().getElementsByClass("govuk-button")
 
-      continueButton.text() mustBe "Sign in"
+      continueButton.text() mustBe "Continue"
       continueButton.attr("href") mustBe "/customs-enrolment-services/atar/subscribe/check-user"
     }
   }

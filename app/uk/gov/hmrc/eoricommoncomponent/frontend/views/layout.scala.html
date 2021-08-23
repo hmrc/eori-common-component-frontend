@@ -1,26 +1,24 @@
 @*
- * Copyright 2021 HM Revenue & Customs
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *@
-
+* Copyright 2021 HM Revenue & Customs
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 @import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcReportTechnicalIssue
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcTimeoutDialog
 @import uk.gov.hmrc.hmrcfrontend.views.Aliases.TimeoutDialog
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcTrackingConsentSnippet
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.reporttechnicalissue.ReportTechnicalIssue
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcLayout
@@ -28,18 +26,22 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.backlink.BackLink
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.Cy
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.En
+@this(hmrcLayout: HmrcLayout, standardBetaBanner: StandardBetaBanner, govukBackLink: GovukBackLink, appConfig: AppConfig, reportAProblemLink: HmrcReportTechnicalIssue, hmrcTimeoutDialog: HmrcTimeoutDialog)
 
-@this(hmrcLayout: HmrcLayout, standardBetaBanner: StandardBetaBanner, govukBackLink: GovukBackLink, trackingConsentSnippet: HmrcTrackingConsentSnippet, appConfig: AppConfig, reportAProblemLink: HmrcReportTechnicalIssue, hmrcTimeoutDialog: HmrcTimeoutDialog)
 
 @(
-    title: String,
-    countriesInCountryPicker: CountriesInCountryPicker = NoCountriesInCountryPicker,
-    form: Option[Form[_]] = None,
-    suppressTelephoneNumberDetection: Boolean = true,
+        title: String,
+        countriesInCountryPicker: CountriesInCountryPicker = NoCountriesInCountryPicker,
+        form: Option[Form[_]] = None,
+        suppressTelephoneNumberDetection: Boolean = true,
         displayBackLink: Boolean = true
 )(content: Html)(implicit messages: Messages, request: Request[_])
 
-@isLoggedIn = @{!request.session.isEmpty && request.session.get("authToken").isDefined}
+@isLoggedIn = @{
+    !request.session.isEmpty && request.session.get("authToken").isDefined
+}
 
 @titleWithEnding = @{
     title + " - " + messages("cds.banner.subscription", longName) + " - " + messages("cds.end-of-title")
@@ -56,62 +58,68 @@
     s"/customs-enrolment-services/${service.code}/subscribe/sign-out"
 }
 
-@keepAliveUrl=  @{
+@logOutUrl = @{
+    s"/customs-enrolment-services/${service.code}/subscribe/logout"
+}
+
+@keepAliveUrl = @{
     s"/customs-enrolment-services/${service.code}/subscribe/keep-alive"
 }
 
 @getHelpForm = @{
-    reportAProblemLink(ReportTechnicalIssue(serviceCode = appConfig.serviceIdentifierSubscribe + "-" + service.code))
+    reportAProblemLink(ReportTechnicalIssue(serviceCode = appConfig.serviceIdentifierSubscribe + "-" + service.code,
+        language = if(messages.lang.code == "cy") Cy else En))
 }
 
 @theHead = {
-    @if(suppressTelephoneNumberDetection) {
-        <meta name="format-detection" content="telephone=no" />
-    }
-    <!-- Tracking Consent Snippet -->
-    @trackingConsentSnippet()
-    <!-- End Tracking Consent Snippet -->
-
-    @partials.countrypickerscript(countriesInCountryPicker)
-
-    @if(isLoggedIn){
-        @hmrcTimeoutDialog(TimeoutDialog(
-            title = Some(messages("cds.timeout.message")),
-            timeout = Some(1200),
-            countdown = Some(300),
-            keepAliveUrl = Some(keepAliveUrl),
-            signOutUrl = Some(signOutUrl),
-            keepAliveButtonText = Some(messages("cds.timeout.keep-alive-button")),
-            signOutButtonText = Some(messages("cds.timeout.sign-out-button"))
-        ))
-    }
+@if(suppressTelephoneNumberDetection) {
+    <meta name="format-detection" content="telephone=no" />
 }
+
+@if(isLoggedIn) {
+
+
+    @hmrcTimeoutDialog(TimeoutDialog(
+        title = Some(" "),
+        timeout = Some(1200),
+        countdown = Some(300),
+        keepAliveUrl = Some(keepAliveUrl),
+        signOutUrl = Some(logOutUrl),
+        timeoutUrl = Some(signOutUrl),
+        keepAliveButtonText = Some(messages("cds.timeout.keep-alive-button")),
+        signOutButtonText = Some(messages("cds.timeout.sign-out-button")),
+        message = Some(messages("cds.timeout.message"))
+    ))
+}
+@partials.countrypickerscript(countriesInCountryPicker)
+
+}
+@bodyEndBlockWrapper = {
+@if(countriesInCountryPicker != NoCountriesInCountryPicker) {
+    <script type="text/javascript">
+            var countryPickerInputElements = document.getElementsByClassName('autocomplete__input');
+            var form = document.getElementsByTagName('form')[0];
+
+            form.addEventListener('submit', function () {
+                for (var i = 0; i < countryPickerInputElements.length; i++) {
+                    var input = countryPickerInputElements[i];
+                    var select = countryPickerInputElements[i].parentNode.parentNode.parentNode.querySelector('select');
+                    if (input.value.trim() == "") select.selectedIndex = 0
+                }
+            });
+    </script>
+}
+}
+
 
 @mainContent = {
 
-    @if(displayBackLink) {
-        @govukBackLink(BackLink(href = "javascript:history.back()", content = Text(messages("cds.navigation.back")), attributes = Map("id" -> "back-link")))
-    }
-
-    @content
-    @getHelpForm
+@if(displayBackLink) {
+    @govukBackLink(BackLink(href = "javascript:history.back()", content = Text(messages("cds.navigation.back")), attributes = Map("id" -> "back-link")))
 }
 
-@bodyEndBlockWrapper = {
-    @if(countriesInCountryPicker != NoCountriesInCountryPicker) {
-        <script type="text/javascript">
-                var countryPickerInputElements = document.getElementsByClassName('autocomplete__input');
-                var form = document.getElementsByTagName('form')[0];
-
-                form.addEventListener('submit', function () {
-                    for (var i = 0; i < countryPickerInputElements.length; i++) {
-                        var input = countryPickerInputElements[i];
-                        var select = countryPickerInputElements[i].parentNode.parentNode.parentNode.querySelector('select');
-                        if (input.value.trim() == "") select.selectedIndex = 0
-                    }
-                });
-        </script>
-    }
+@content
+@getHelpForm
 }
 
 
@@ -119,7 +127,7 @@
     pageTitle = Some(titleErr),
     isWelshTranslationAvailable = true, /* or false if your service has not been translated */
     serviceUrl = None,
-    signOutUrl = Some(signOutUrl),
+    signOutUrl = Some(logOutUrl),
     phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedBackSubscribe(service))),
     additionalHeadBlock = Some(theHead),
     nonce = CSPNonce.get,
