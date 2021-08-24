@@ -67,7 +67,9 @@
 }
 
 @getHelpForm = @{
-    reportAProblemLink(ReportTechnicalIssue(serviceCode = appConfig.serviceIdentifierSubscribe + "-" + service.code,
+    reportAProblemLink(ReportTechnicalIssue(baseUrl = Some(appConfig.contactBaseUrl),
+        serviceId = appConfig.serviceIdentifierSubscribe + "-" + service.code,
+        referrerUrl = Some(request.uri),
         language = if(messages.lang.code == "cy") Cy else En))
 }
 

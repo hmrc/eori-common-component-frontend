@@ -39,7 +39,7 @@ class AppConfig @Inject() (
   val allowlistReferrers: Seq[String] =
     config.get[String]("allowlist-referrers").split(',').map(_.trim).filter(_.nonEmpty)
 
-  private val contactBaseUrl = servicesConfig.baseUrl("contact-frontend")
+  val contactBaseUrl = servicesConfig.baseUrl("contact-frontend")
 
   private val serviceIdentifierRegister =
     config.get[String]("microservice.services.contact-frontend.serviceIdentifierRegister")
