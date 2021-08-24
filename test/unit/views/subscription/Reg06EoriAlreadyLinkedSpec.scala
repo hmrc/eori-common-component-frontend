@@ -16,7 +16,8 @@
 
 package unit.views.subscription
 
-import java.time.ZonedDateTime
+import java.time.LocalDateTime
+
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
@@ -31,7 +32,7 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
 
   private val name              = "John Doe"
   private val eori              = "GB123456789012"
-  private val processedDate     = ZonedDateTime.now()
+  private val processedDate     = LocalDateTime.now()
   private val expectedPageTitle = "The Advance Tariff Rulings subscription request has been unsuccessful"
   private val languageUtils     = instanceOf[LanguageUtils]
 

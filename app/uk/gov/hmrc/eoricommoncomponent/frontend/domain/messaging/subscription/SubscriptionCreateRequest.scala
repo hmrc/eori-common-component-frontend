@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription
 
-import java.time.{Clock, LocalDate, ZoneOffset, ZonedDateTime}
+import java.time.{Clock, LocalDate, LocalDateTime, ZoneId}
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 
@@ -172,7 +172,7 @@ object SubscriptionCreateRequest {
   private def generateWithOriginatingSystem(requestParameters: Option[Seq[RequestParameter]] = None): RequestCommon =
     RequestCommon(
       regime = "CDS",
-      receiptDate = ZonedDateTime.ofInstant(Clock.systemUTC().instant, ZoneOffset.UTC),
+      receiptDate = LocalDateTime.ofInstant(Clock.systemUTC().instant, ZoneId.of("Europe/London")),
       acknowledgementReference = UUID.randomUUID().toString.replace("-", ""),
       originatingSystem = Some("MDTP"),
       requestParameters = requestParameters

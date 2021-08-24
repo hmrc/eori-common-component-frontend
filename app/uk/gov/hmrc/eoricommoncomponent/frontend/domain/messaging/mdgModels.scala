@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging
 
-import java.time.{LocalDate, LocalDateTime, ZoneOffset, ZonedDateTime}
+import java.time.{LocalDate, LocalDateTime, ZoneId, ZoneOffset, ZonedDateTime}
 import java.time.format.DateTimeFormatter
 
 import play.api.libs.json._
@@ -90,16 +90,24 @@ object Individual {
 
 trait CommonHeader {
 
-  private def dateTimeWritesIsoUtc: Writes[ZonedDateTime] = new Writes[ZonedDateTime] {
+  private def dateTimeWritesIsoUtc: Writes[LocalDateTime] = new Writes[LocalDateTime] {
 
-    def writes(d: ZonedDateTime): JsValue = JsString(d.withNano(0).format(DateTimeFormatter.ISO_DATE_TIME))
+    def writes(d: LocalDateTime): JsValue =
+      JsString(
+        ZonedDateTime.of(d, ZoneId.of("Europe/London")).withNano(0).withZoneSameInstant(ZoneOffset.UTC).format(
+          DateTimeFormatter.ISO_DATE_TIME
+        )
+      )
+
   }
 
-  private def dateTimeReadsIso: Reads[ZonedDateTime] = new Reads[ZonedDateTime] {
+  private def dateTimeReadsIso: Reads[LocalDateTime] = new Reads[LocalDateTime] {
 
-    def reads(value: JsValue): JsResult[ZonedDateTime] =
+    def reads(value: JsValue): JsResult[LocalDateTime] =
       try JsSuccess(
-        ZonedDateTime.of(LocalDateTime.parse(value.as[String], DateTimeFormatter.ISO_DATE_TIME), ZoneOffset.UTC)
+        ZonedDateTime.parse(value.as[String], DateTimeFormatter.ISO_DATE_TIME).withZoneSameInstant(
+          ZoneId.of("Europe/London")
+        ).toLocalDateTime
       )
       catch {
         case e: Exception => JsError(s"Could not parse '${value.toString()}' as an ISO date. Reason: $e")
@@ -133,7 +141,7 @@ object RequestParameter {
 
 case class RequestCommon(
   regime: String,
-  receiptDate: ZonedDateTime,
+  receiptDate: LocalDateTime,
   acknowledgementReference: String,
   originatingSystem: Option[String] = None,
   requestParameters: Option[Seq[RequestParameter]] = None
@@ -147,7 +155,7 @@ object RequestCommon extends CommonHeader {
 case class ResponseCommon(
   status: String,
   statusText: Option[String] = None,
-  processingDate: ZonedDateTime,
+  processingDate: LocalDateTime,
   returnParameters: Option[List[MessagingServiceParam]] = None
 )
 

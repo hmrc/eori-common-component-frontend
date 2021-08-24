@@ -16,7 +16,7 @@
 
 package integration
 
-import java.time.{ZoneOffset, ZonedDateTime}
+import java.time.LocalDateTime
 
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Application
@@ -61,7 +61,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
   override def afterAll: Unit =
     stopMockServer()
 
-  private val requestDateInd = ZonedDateTime.of(2001, 12, 17, 9, 30, 47, 0, ZoneOffset.UTC)
+  private val requestDateInd = LocalDateTime.of(2001, 12, 17, 9, 30, 47, 0)
 
   val individualNinoRequest: RegisterWithEoriAndIdRequest = RegisterWithEoriAndIdRequest(
     RequestCommon("CDS", requestDateInd, "012345678901234"),
@@ -158,7 +158,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
     )
   )
 
-  private val requestDateOrg = ZonedDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC)
+  private val requestDateOrg = LocalDateTime.of(2000, 1, 1, 0, 0, 0, 0)
 
   val organisationUtrRequest: RegisterWithEoriAndIdRequest = RegisterWithEoriAndIdRequest(
     RequestCommon("CDS", requestDateOrg, "2438490385338590358"),
@@ -216,7 +216,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
         |}
       """.stripMargin).toString
 
-  private val responseTime = ZonedDateTime.of(2018, 1, 16, 9, 0, 0, 0, ZoneOffset.UTC)
+  private val responseTime = LocalDateTime.of(2018, 1, 16, 9, 0, 0, 0)
 
   val organisationUtrResponse: RegisterWithEoriAndIdResponseHolder = RegisterWithEoriAndIdResponseHolder(
     RegisterWithEoriAndIdResponse(

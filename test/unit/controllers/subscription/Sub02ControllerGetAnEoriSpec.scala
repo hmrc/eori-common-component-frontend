@@ -17,7 +17,8 @@
 package unit.controllers.subscription
 
 import common.support.testdata.TestData
-import java.time.ZonedDateTime
+import java.time.LocalDateTime
+
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -61,7 +62,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
 
   val eoriNumberResponse: String                = "EORI-Number"
   val formBundleIdResponse: String              = "Form-Bundle-Id"
-  val emailVerificationTimestamp: ZonedDateTime = TestData.emailVerificationTimestamp
+  val emailVerificationTimestamp: LocalDateTime = TestData.emailVerificationTimestamp
   val emulatedFailure                           = new UnsupportedOperationException("Emulated service call failure.")
 
   override protected def beforeEach(): Unit = {
