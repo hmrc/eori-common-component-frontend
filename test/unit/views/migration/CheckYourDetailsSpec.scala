@@ -169,9 +169,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         val ninoRow = page.body.getElementsByClass("review-tbl__nino").get(0)
         ninoRow.getElementsByClass("govuk-summary-list__key").text mustBe "National Insurance number"
         ninoRow.getElementsByClass("govuk-summary-list__value").text mustBe "AB123456C"
-        ninoRow.getElementsByTag("a").attr(
-          "href"
-        ) mustBe "/customs-enrolment-services/atar/subscribe/chooseid/review"
+        ninoRow.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/chooseid/review"
 
         val address = page.body.getElementsByClass("review-tbl__name-and-address").get(0)
         address.getElementsByClass("govuk-summary-list__key").text mustBe "Your address"
@@ -202,10 +200,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         val nameOrg = page.body.getElementsByClass("review-tbl__org_name").get(0)
         nameOrg.getElementsByClass("govuk-summary-list__key").text mustBe "Organisation name"
         nameOrg.getElementsByClass("govuk-summary-list__value").text mustBe "Org name"
-        nameOrg.getElementsByTag("a").attr(
-          "href"
-        ) mustBe "/customs-enrolment-services/atar/subscribe/name/review"
-
+        nameOrg.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/name/review"
 
         val utrRow = page.body.getElementsByClass("review-tbl__utr").get(0)
         utrRow.getElementsByClass("govuk-summary-list__key").text mustBe "UTR number"
@@ -215,17 +210,25 @@ class CheckYourDetailsSpec extends ViewSpec {
         val countryLocation = page.body.getElementsByClass("review-tbl__country-location").get(0)
         countryLocation.getElementsByClass("govuk-summary-list__key").text mustBe "Country location"
         countryLocation.getElementsByClass("govuk-summary-list__value").text mustBe "United Kingdom"
-        countryLocation.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-country/review"
+        countryLocation.getElementsByTag("a").attr(
+          "href"
+        ) mustBe "/customs-enrolment-services/atar/subscribe/row-country/review"
 
         val contactDetails = page.body.getElementsByClass("review-tbl__contact-details").get(0)
         contactDetails.getElementsByClass("govuk-summary-list__key").text mustBe "Contact"
         contactDetails.getElementsByClass("govuk-summary-list__value").text mustBe "John Doe 11111111111"
-        contactDetails.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/contact-details/review"
+        contactDetails.getElementsByTag("a").attr(
+          "href"
+        ) mustBe "/customs-enrolment-services/atar/subscribe/contact-details/review"
 
         val dateEstablished = page.body.getElementsByClass("review-tbl__date-established").get(0)
         dateEstablished.getElementsByClass("govuk-summary-list__key").text mustBe "Date of establishment"
-        dateEstablished.getElementsByClass("govuk-summary-list__value").text mustBe languageUtils.Dates.formatDate(dateTime.get)
-        dateEstablished.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/date-established/review"
+        dateEstablished.getElementsByClass("govuk-summary-list__value").text mustBe languageUtils.Dates.formatDate(
+          dateTime.get
+        )
+        dateEstablished.getElementsByTag("a").attr(
+          "href"
+        ) mustBe "/customs-enrolment-services/atar/subscribe/date-established/review"
 
       }
 
@@ -247,9 +250,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         val nameOrg = page.body.getElementsByClass("review-tbl__org_name").get(0)
         nameOrg.getElementsByClass("govuk-summary-list__key").text mustBe "Organisation name"
         nameOrg.getElementsByClass("govuk-summary-list__value").text mustBe "Org name"
-        nameOrg.getElementsByTag("a").attr(
-          "href"
-        ) mustBe "/customs-enrolment-services/atar/subscribe/name/review"
+        nameOrg.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/name/review"
 
         val utrRow = page.body.getElementsByClass("review-tbl__utr").get(0)
         utrRow.getElementsByClass("govuk-summary-list__key").text mustBe "Corporation Tax UTR number"
@@ -263,8 +264,12 @@ class CheckYourDetailsSpec extends ViewSpec {
 
         val dateEstablished = page.body.getElementsByClass("review-tbl__date-established").get(0)
         dateEstablished.getElementsByClass("govuk-summary-list__key").text mustBe "Date of establishment"
-        dateEstablished.getElementsByClass("govuk-summary-list__value").text mustBe languageUtils.Dates.formatDate(dateTime.get)
-        dateEstablished.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/date-established/review"
+        dateEstablished.getElementsByClass("govuk-summary-list__value").text mustBe languageUtils.Dates.formatDate(
+          dateTime.get
+        )
+        dateEstablished.getElementsByTag("a").attr(
+          "href"
+        ) mustBe "/customs-enrolment-services/atar/subscribe/date-established/review"
       }
 
       "user is during ROW Individual journey without UTR and NINo" in {
@@ -306,23 +311,21 @@ class CheckYourDetailsSpec extends ViewSpec {
         val nino = page.body.getElementsByClass("review-tbl__nino").get(0)
         nino.getElementsByClass("govuk-summary-list__key").text mustBe "National Insurance number"
         nino.getElementsByClass("govuk-summary-list__value").text mustBe "Not entered"
-        nino.getElementsByTag("a").attr(
-          "href"
-        ) mustBe "/customs-enrolment-services/atar/subscribe/row-nino/review"
-
+        nino.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-nino/review"
 
         val countryLocation = page.body.getElementsByClass("review-tbl__country-location").get(0)
         countryLocation.getElementsByClass("govuk-summary-list__key").text mustBe "Country location"
         countryLocation.getElementsByClass("govuk-summary-list__value").text mustBe "United Kingdom"
-        countryLocation.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-country/review"
-
-
+        countryLocation.getElementsByTag("a").attr(
+          "href"
+        ) mustBe "/customs-enrolment-services/atar/subscribe/row-country/review"
 
         val contactDetails = page.body.getElementsByClass("review-tbl__contact-details").get(0)
         contactDetails.getElementsByClass("govuk-summary-list__key").text mustBe "Contact"
         contactDetails.getElementsByClass("govuk-summary-list__value").text mustBe "John Doe 11111111111"
-        contactDetails.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/contact-details/review"
-
+        contactDetails.getElementsByTag("a").attr(
+          "href"
+        ) mustBe "/customs-enrolment-services/atar/subscribe/contact-details/review"
 
       }
 
@@ -356,7 +359,6 @@ class CheckYourDetailsSpec extends ViewSpec {
         utrRow.getElementsByClass("govuk-summary-list__key").text mustBe "UTR number"
         utrRow.getElementsByClass("govuk-summary-list__value").text mustBe "UTRXXXXX"
         utrRow.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-utr/review"
-
 
         val address = page.body.getElementsByClass("review-tbl__name-and-address").get(0)
         address.getElementsByClass("govuk-summary-list__key").text mustBe "Your address"
@@ -403,20 +405,17 @@ class CheckYourDetailsSpec extends ViewSpec {
         val ninoRow = page.body.getElementsByClass("review-tbl__nino").get(0)
         ninoRow.getElementsByClass("govuk-summary-list__key").text mustBe "National Insurance number"
         ninoRow.getElementsByClass("govuk-summary-list__value").text mustBe "AB123456C"
-        ninoRow.getElementsByTag("a").attr(
-          "href"
-        ) mustBe "/customs-enrolment-services/atar/subscribe/row-nino/review"
+        ninoRow.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-nino/review"
 
         val address = page.body.getElementsByClass("review-tbl__name-and-address").get(0)
         address.getElementsByClass("govuk-summary-list__key").text mustBe "Your address"
         address.getElementsByClass("govuk-summary-list__value").text mustBe "Street City Postcode United Kingdom"
         address.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
 
-
       }
     }
 
-      "not display address" when {
+    "not display address" when {
 
       "user is during organisation ROW journey without UTR" in {
 
@@ -430,11 +429,11 @@ class CheckYourDetailsSpec extends ViewSpec {
         val countryLocation = page.body.getElementsByClass("review-tbl__country-location").get(0)
         countryLocation.getElementsByClass("govuk-summary-list__key").text mustBe "Country location"
         countryLocation.getElementsByClass("govuk-summary-list__value").text mustBe "United Kingdom"
-        countryLocation.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-country/review"
+        countryLocation.getElementsByTag("a").attr(
+          "href"
+        ) mustBe "/customs-enrolment-services/atar/subscribe/row-country/review"
 
         page.body.getElementsByClass("review-tbl__name-and-address") mustBe empty
-
-
 
       }
 
@@ -448,11 +447,12 @@ class CheckYourDetailsSpec extends ViewSpec {
           companyRegisteredCountry = registeredCountry
         )
 
-
         val countryLocation = page.body.getElementsByClass("review-tbl__country-location").get(0)
         countryLocation.getElementsByClass("govuk-summary-list__key").text mustBe "Country location"
         countryLocation.getElementsByClass("govuk-summary-list__value").text mustBe "United Kingdom"
-        countryLocation.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-country/review"
+        countryLocation.getElementsByTag("a").attr(
+          "href"
+        ) mustBe "/customs-enrolment-services/atar/subscribe/row-country/review"
 
         page.body.getElementsByClass("review-tbl__name-and-address") mustBe empty
       }
@@ -464,7 +464,7 @@ class CheckYourDetailsSpec extends ViewSpec {
 
         val page = doc(isThirdCountrySubscription = true)
 
-       page.body.getElementsByClass("review-tbl__country-location") mustBe empty
+        page.body.getElementsByClass("review-tbl__country-location") mustBe empty
 
         val address = page.body.getElementsByClass("review-tbl__name-and-address").get(0)
         address.getElementsByClass("govuk-summary-list__key").text mustBe "Organisation address"
@@ -485,7 +485,6 @@ class CheckYourDetailsSpec extends ViewSpec {
         address.getElementsByClass("govuk-summary-list__value").text mustBe "Street City Postcode United Kingdom"
         address.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
 
-
       }
 
       "user is during individual ROW journey with NINo" in {
@@ -503,7 +502,6 @@ class CheckYourDetailsSpec extends ViewSpec {
         address.getElementsByClass("govuk-summary-list__key").text mustBe "Your address"
         address.getElementsByClass("govuk-summary-list__value").text mustBe "Street City Postcode United Kingdom"
         address.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address/review"
-
 
       }
     }
@@ -525,7 +523,7 @@ class CheckYourDetailsSpec extends ViewSpec {
 
         page.body.getElementsByClass("review-tbl__full-name") mustBe empty
 
-       page.body.getElementsByClass("review-tbl__date-of-birth") mustBe empty
+        page.body.getElementsByClass("review-tbl__date-of-birth") mustBe empty
 
         page.body.getElementsByClass("review-tbl__nino") mustBe empty
       }
@@ -537,9 +535,7 @@ class CheckYourDetailsSpec extends ViewSpec {
 
         val page = doc(true, nameIdOrganisationDetails = None)
 
-       page.body.getElementsByClass("review-tbl__orgname") mustBe empty
-
-
+        page.body.getElementsByClass("review-tbl__orgname") mustBe empty
 
         page.body.getElementsByClass("review-tbl__date-established") mustBe empty
 
@@ -554,7 +550,7 @@ class CheckYourDetailsSpec extends ViewSpec {
           isThirdCountrySubscription = true
         )
 
-       page.body.getElementsByClass("review-tbl__orgname") mustBe empty
+        page.body.getElementsByClass("review-tbl__orgname") mustBe empty
 
         page.body.getElementsByClass("review-tbl__date-established") mustBe empty
 
@@ -576,7 +572,6 @@ class CheckYourDetailsSpec extends ViewSpec {
 
         page.body.getElementsByClass("review-tbl__nino") mustBe empty
 
-
       }
     }
 
@@ -587,7 +582,6 @@ class CheckYourDetailsSpec extends ViewSpec {
         val page = doc(isThirdCountrySubscription = true)
 
         page.body.getElementsByClass("review-tbl__contact-details") mustBe empty
-
 
       }
 

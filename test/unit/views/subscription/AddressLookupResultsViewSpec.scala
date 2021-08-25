@@ -100,7 +100,6 @@ class AddressLookupResultsViewSpec extends ViewSpec {
       postcode.getElementsByClass("govuk-summary-list__key").text mustBe "Postcode"
       postcode.getElementsByClass("govuk-summary-list__value").text mustBe "AA11 1AA"
 
-
       val line1 = doc().body().getElementsByClass("review-tbl__line1").get(0)
       line1.getElementsByClass("govuk-summary-list__key").text mustBe "Property name or number"
       line1.getElementsByClass("govuk-summary-list__value").text mustBe "Flat 1"
@@ -124,10 +123,14 @@ class AddressLookupResultsViewSpec extends ViewSpec {
       val line1ChangeLink    = doc().body().getElementsByClass("review-tbl__line1_change").get(0)
 
       postcodeChangeLink.getElementsByTag("a").text() must startWith("Change")
-      postcodeChangeLink.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address-postcode"
+      postcodeChangeLink.getElementsByTag("a").attr(
+        "href"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/address-postcode"
 
       line1ChangeLink.getElementsByTag("a").text() must startWith("Change")
-      line1ChangeLink.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address-postcode"
+      line1ChangeLink.getElementsByTag("a").attr(
+        "href"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/address-postcode"
     }
 
     "display change link to params page - review mode" in {
@@ -136,10 +139,14 @@ class AddressLookupResultsViewSpec extends ViewSpec {
       val line1ChangeLink    = reviewDoc.body().getElementsByClass("review-tbl__line1_change").get(0)
 
       postcodeChangeLink.getElementsByTag("a").text() must startWith("Change")
-      postcodeChangeLink.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address-postcode/review"
+      postcodeChangeLink.getElementsByTag("a").attr(
+        "href"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/address-postcode/review"
 
       line1ChangeLink.getElementsByTag("a").text() must startWith("Change")
-      line1ChangeLink.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address-postcode/review"
+      line1ChangeLink.getElementsByTag("a").attr(
+        "href"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/address-postcode/review"
     }
 
     "display dropdown with label" in {
