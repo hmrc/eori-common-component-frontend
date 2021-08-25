@@ -26,8 +26,11 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukFieldset
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Fieldset
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Legend
 
-@this(layout_di: layout, inputText: helpers.inputText, errorSummary: helpers.errorSummary, govukButton: GovukButton)
+@this(layout_di: layout, inputText: helpers.inputText, errorSummary: helpers.errorSummary, govukButton: GovukButton, govukFieldset : GovukFieldset)
 
 @(addressPostcodeForm: Form[AddressLookupParams], isInReviewMode: Boolean, selectedOrganisationType: CdsOrganisationType, service: Service)(implicit request: Request[_], messages: Messages)
 
@@ -47,15 +50,36 @@
 
 @formHint = {
     @if(selectedOrganisationType.id == CompanyId) {
-        <p class="form-hint" id="hint">@Html(messages("ecc.address-lookup.postcode.organisation.hint"))</p>
+        <p class="govuk-hint" id="hint">@Html(messages("ecc.address-lookup.postcode.organisation.hint"))</p>
     } else {
-        <p class="form-hint" id="hint">@Html(messages("ecc.address-lookup.postcode.default.hint"))</p>
+        <p class="govuk-hint" id="hint">@Html(messages("ecc.address-lookup.postcode.default.hint"))</p>
     }
 }
 
 @manualAddressLink = @{
     if(isInReviewMode) uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.reviewForm(service)
     else uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.createForm(service)
+}
+
+@fieldsetBody = {
+    @formHint
+    @inputText(
+        form = addressPostcodeForm,
+        id = "postcode",
+        name = "postcode",
+        label = "ecc.address-lookup.postcode.label",
+        isPageHeading = false,
+        labelClasses = Some("postcode")
+    )
+    @inputText(
+        form = addressPostcodeForm,
+        id = "line1",
+        name = "line1",
+        label = "ecc.address-lookup.postcode.line1.label",
+        hint = Some(Html(messages("ecc.address-lookup.postcode.line1.hint"))),
+        isPageHeading = false,
+        labelClasses = Some("line1")
+    )
 }
 
 @layout_di(pageTitle, form = Some(addressPostcodeForm)) {
@@ -67,37 +91,20 @@
 
             @CSRF.formField
 
-            <legend>
-                <h1 class="heading-large">@pageTitle</h1>
-            </legend>
-            <fieldset>
-
-                @formHint
-
-                @inputText(
-                    form = addressPostcodeForm,
-                    id = "postcode",
-                    name = "postcode",
-                    label = "ecc.address-lookup.postcode.label",
-                    isPageHeading = false,
-                    labelClasses = Some("postcode")
-                )
-                @inputText(
-                    form = addressPostcodeForm,
-                    id = "line1",
-                    name = "line1",
-                    label = "ecc.address-lookup.postcode.line1.label",
-                    hint = Some(Html(messages("ecc.address-lookup.postcode.line1.hint"))),
-                    isPageHeading = false,
-                    labelClasses = Some("line1")
-                )
+            @govukFieldset(Fieldset(
+                legend = Some(Legend(
+                    content = Text(pageTitle),
+                    classes = "govuk-fieldset__legend--l",
+                    isPageHeading = true
+                )),
+                html = fieldsetBody
+            ))
 
                 @govukButton(Button(
                     content = Text(messages("ecc.address-lookup.postcode.find-address"))
                 ))
-            </fieldset>
 
-            <div class="mt-2 mb-2">
+            <div class="govuk-body mt-2 mb-2">
                 <a href="@manualAddressLink" id="cannot-find-address">@messages("ecc.address-lookup.postcode.find-address.manual")</a>
             </div>
         }
