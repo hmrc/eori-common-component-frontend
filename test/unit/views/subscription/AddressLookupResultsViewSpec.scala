@@ -96,11 +96,14 @@ class AddressLookupResultsViewSpec extends ViewSpec {
 
     "display summary of params" in {
 
-      doc().body().getElementById("review-tbl__postcode_heading").text mustBe "Postcode"
-      doc().body().getElementById("review-tbl__postcode").text mustBe "AA11 1AA"
+      val postcode = doc().body().getElementsByClass("review-tbl__postcode").get(0)
+      postcode.getElementsByClass("govuk-summary-list__key").text mustBe "Postcode"
+      postcode.getElementsByClass("govuk-summary-list__value").text mustBe "AA11 1AA"
 
-      doc().body().getElementById("review-tbl__line1_heading").text mustBe "Property name or number"
-      doc().body().getElementById("review-tbl__line1").text mustBe "Flat 1"
+
+      val line1 = doc().body().getElementsByClass("review-tbl__line1").get(0)
+      line1.getElementsByClass("govuk-summary-list__key").text mustBe "Property name or number"
+      line1.getElementsByClass("govuk-summary-list__value").text mustBe "Flat 1"
     }
 
     "display summary of params with 'Not found' for property name or number" in {
@@ -110,32 +113,33 @@ class AddressLookupResultsViewSpec extends ViewSpec {
           contentAsString(view(form, params.copy(skippedLine1 = true), allowedAddress, false, Company, atarService))
         )
 
-      docWithNotFound.body().getElementById("review-tbl__line1_heading").text mustBe "Property name or number"
-      docWithNotFound.body().getElementById("review-tbl__line1").text mustBe "Not found"
+      val line1 = docWithNotFound.body().getElementsByClass("review-tbl__line1").get(0)
+      line1.getElementsByClass("govuk-summary-list__key").text mustBe "Property name or number"
+      line1.getElementsByClass("govuk-summary-list__value").text mustBe "Not found"
     }
 
     "display change link to params page" in {
 
-      val postcodeChangeLink = doc().body().getElementById("review-tbl__postcode_change")
-      val line1ChangeLink    = doc().body().getElementById("review-tbl__line1_change")
+      val postcodeChangeLink = doc().body().getElementsByClass("review-tbl__postcode_change").get(0)
+      val line1ChangeLink    = doc().body().getElementsByClass("review-tbl__line1_change").get(0)
 
-      postcodeChangeLink.text() must startWith("Change")
-      postcodeChangeLink.attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address-postcode"
+      postcodeChangeLink.getElementsByTag("a").text() must startWith("Change")
+      postcodeChangeLink.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address-postcode"
 
-      line1ChangeLink.text() must startWith("Change")
-      line1ChangeLink.attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address-postcode"
+      line1ChangeLink.getElementsByTag("a").text() must startWith("Change")
+      line1ChangeLink.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address-postcode"
     }
 
     "display change link to params page - review mode" in {
 
-      val postcodeChangeLink = reviewDoc.body().getElementById("review-tbl__postcode_change")
-      val line1ChangeLink    = reviewDoc.body().getElementById("review-tbl__line1_change")
+      val postcodeChangeLink = reviewDoc.body().getElementsByClass("review-tbl__postcode_change").get(0)
+      val line1ChangeLink    = reviewDoc.body().getElementsByClass("review-tbl__line1_change").get(0)
 
-      postcodeChangeLink.text() must startWith("Change")
-      postcodeChangeLink.attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address-postcode/review"
+      postcodeChangeLink.getElementsByTag("a").text() must startWith("Change")
+      postcodeChangeLink.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address-postcode/review"
 
-      line1ChangeLink.text() must startWith("Change")
-      line1ChangeLink.attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address-postcode/review"
+      line1ChangeLink.getElementsByTag("a").text() must startWith("Change")
+      line1ChangeLink.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address-postcode/review"
     }
 
     "display dropdown with label" in {
