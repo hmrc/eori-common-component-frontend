@@ -33,13 +33,13 @@
 @layout_di(messages("cds.reg06.outcome.eori-already-linked.title", longName), suppressTelephoneNumberDetection = false, displayBackLink = false) {
     <div class="column-two-thirds">
         <div>
-            <h1 id="page-heading" class="heading-xlarge" >@messages("cds.reg06.outcome.eori-already-linked.heading", longName, orgName)</h1>
+            <h1 id="page-heading" class="govuk-heading-xl" >@messages("cds.reg06.outcome.eori-already-linked.heading", longName, orgName)</h1>
             <p id="processed-date">@messages("cds.reg06.outcome.eori-already-linked.received", formatDate(processedDate))</p>
             <p id="eori-number">@messages("ecc.reg06.outcome.eori", eori)</p>
         </div>
 
         <div id="why-unsuccessful">
-            <h2 class="heading-medium" id="why-heading">@messages("ecc.reg06.outcome.why-heading")</h2>
+            <h2 class="govuk-heading-m" id="why-heading">@messages("ecc.reg06.outcome.why-heading")</h2>
             @if(isIndividual){
                 <p id="individual">@messages("ecc.reg06.outcome.why.individual")</p>
             }else {

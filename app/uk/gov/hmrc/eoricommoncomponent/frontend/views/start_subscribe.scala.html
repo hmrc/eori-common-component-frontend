@@ -36,14 +36,14 @@
 @layout_di(messages("ecc.subscription.information.heading", ServiceName.longName), displayBackLink = false) {
 
     <div class="column-two-thirds start_page">
-        <h1 class="heading-large">@messages("ecc.subscription.information.heading", ServiceName.longName)</h1>
+        <h1 class="govuk-heading-l">@messages("ecc.subscription.information.heading", ServiceName.longName)</h1>
 
         <p class="mt-2" id="information-only-once">@messages("ecc.subscription.information.only.once")</p>
 
-        <h2 class="heading-medium" id="what-you-will-need">@messages("ecc.subscription.information.para1.heading")</h2>
+        <h2 class="govuk-heading-m" id="what-you-will-need">@messages("ecc.subscription.information.para1.heading")</h2>
         <p id="what-you-will-need-text">@messages("ecc.subscription.information.para1", ServiceName.longName)</p>
 
-        <h3 class="heading-small" id="gb-eori">@messages("ecc.subscription.information.para2.heading")</h3>
+        <h3 class="govuk-heading-s" id="gb-eori">@messages("ecc.subscription.information.para2.heading")</h3>
         <p id="gb-eori-text">@messages("ecc.subscription.information.para2")</p>
 
         @govukWarningText(WarningText(
@@ -64,7 +64,7 @@
             <li>@Html(messages("ecc.subscription.information.para2.list.second"))</li>
         </ul>
 
-        <h3 class="heading-small" id="organisation">@messages("ecc.subscription.information.section.organisation.subheading")</h3>
+        <h3 class="govuk-heading-s" id="organisation">@messages("ecc.subscription.information.section.organisation.subheading")</h3>
         <p id="organisation-text">@messages("ecc.subscription.information.section.organisation.list.heading")</p>
 
         <ul class="bullets list">
@@ -74,7 +74,7 @@
             <li>@messages("ecc.subscription.information.section.organisation.list.fourth")</li>
         </ul>
 
-        <h3 class="heading-small mt-2" id="individual">@messages("ecc.subscription.information.section.individual.subheading")</h3>
+        <h3 class="govuk-heading-s mt-2" id="individual">@messages("ecc.subscription.information.section.individual.subheading")</h3>
         <p id="individual-text">@messages("ecc.subscription.information.section.individual.para")</p>
 
         <ul class="bullets list">

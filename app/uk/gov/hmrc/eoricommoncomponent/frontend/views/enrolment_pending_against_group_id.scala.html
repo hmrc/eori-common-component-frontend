@@ -27,7 +27,7 @@
 
 @layout_di(messages("cds.enrolment.pending.title"), suppressTelephoneNumberDetection = false, displayBackLink = false) {
 <div class="column-two-thirds">
-        <h1 id="page-heading" class="heading-large">@messages("cds.enrolment.pending.title")</h1>
+        <h1 id="page-heading" class="govuk-heading-l">@messages("cds.enrolment.pending.title")</h1>
 
         @if(otherService == Some(service)){
             <p id="info">@messages("cds.enrolment.pending.group.sameService.paragraph1")</p>

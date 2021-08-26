@@ -55,7 +55,7 @@
 
     @errorSummary(nameUtrForm.errors)
 
-    <h1 class="heading-large">@headerAndTitle</h1>
+    <h1 class="govuk-heading-l">@headerAndTitle</h1>
 
     @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController.submit(isInReviewMode, service), "nameUtrOrganisationForm") {
         @CSRF.formField
@@ -66,7 +66,8 @@
             name = "name",
             label = messages(s"cds.matching.name-id-organisation.$displayMode.name"),
             hint = Some(Html(nameHintText)),
-            isPageHeading =  false
+            isPageHeading =  false,
+            labelClasses = Some("govuk-!-font-weight-bold")
         )
 
         @inputText(
@@ -75,7 +76,8 @@
             name = "utr",
             label = messages(s"cds.matching.name-id-organisation.$displayMode.utr"),
             isPageHeading =  false,
-            hint = Some(Html(utrHintText))
+            hint = Some(Html(utrHintText)),
+            labelClasses = Some("govuk-!-font-weight-bold")
         )
 
         @govukButton(Button(

@@ -98,7 +98,7 @@ SummaryListRow(
 
 
             <legend>
-                <h1 class="heading-large">@pageTitle</h1>
+                <h1 class="govuk-heading-l">@pageTitle</h1>
             </legend>
 
             @govukSummaryList(SummaryList(
@@ -117,9 +117,9 @@ SummaryListRow(
             )
             </div>
 
-            <div class="mb-2">
-                <a href="@manualAddressLink" id="cannot-find-address">@messages("ecc.address-lookup.postcode.cannot-find-address")</a>
-            </div>
+            <p class="govuk-body">
+                <a href="@manualAddressLink" id="cannot-find-address" class="govuk-link">@messages("ecc.address-lookup.postcode.cannot-find-address")</a>
+            </p>
 
             @govukButton(Button(
                 content = Text(ViewHelper.continueButtonText(isInReviewMode))

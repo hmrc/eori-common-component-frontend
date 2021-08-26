@@ -26,12 +26,12 @@
 @layout_di(messages("eds.existing-eori.enrolment.confirmation.title"), displayBackLink = false) {
     <div class="column-two-thirds">
         <div class="govuk-box-highlight">
-            <h1 id="page-heading" class="heading-xlarge">@messages("eds.existing-eori.enrolment.confirmation.title")</h1>
-            <p class="heading-large mb-0">@messages("cds.reg.existing.outcomes.success.eori.number")</p>
-            <p id="eori-number" class="heading-large mt-0">@eori</p>
+            <h1 id="page-heading" class="govuk-heading-xl">@messages("eds.existing-eori.enrolment.confirmation.title")</h1>
+            <p class="govuk-heading-l mb-0">@messages("cds.reg.existing.outcomes.success.eori.number")</p>
+            <p id="eori-number" class="govuk-heading-l mt-0">@eori</p>
         </div>
         <div id='additional-information'>
-            <h2 class="heading-medium">@messages("cds.subscription.outcomes.steps.next")</h2>
+            <h2 class="govuk-heading-m">@messages("cds.subscription.outcomes.steps.next")</h2>
             <p id="para1">@messages("eds.existing-eori.enrolment.confirmation.para1", messages(longName))</p>
 
         </div>
