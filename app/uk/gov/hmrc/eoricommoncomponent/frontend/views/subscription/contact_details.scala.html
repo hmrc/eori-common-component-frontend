@@ -23,7 +23,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 
-@this(layout_di: layout, inputText: helpers.inputText, errorSummary: helpers.errorSummary, govukButton: GovukButton)
+@this(layout_di: layout, inputText: helpers.inputText, errorSummary: helpers.errorSummary, govukButton: GovukButton, fieldset: helpers.fieldset)
 
 @(contactForm: Form[ContactDetailsSubscribeModel], email: String, isInReviewMode: Boolean, service: Service)(implicit request: Request[_], messages: Messages)
 
@@ -37,16 +37,15 @@
 
         @CSRF.formField
 
-        <fieldset>
-            <legend>
-                <h1 class="heading-large">@messages("cds.subscription.contact-details.heading")</h1>
-            </legend>
-            <p class="form-hint">@Html(messages("cds.subscription.contact-details.intro"))</p>
+        @fieldset(messages("cds.subscription.contact-details.heading")) {
+            <p class="govuk-hint">@Html(messages("cds.subscription.contact-details.intro"))</p>
 
-            <div id="email-outer" class="form-group ">
-                <label for="email" class="form-label-bold">@messages("subscription.check-your-email.label")</label>
-                <div id="email">@email</div>
-            </div>
+          <div>
+              <p id="email-outer" class="govuk-body">
+                  <label for="email" class="govuk-label"><strong>@messages("subscription.check-your-email.label")</strong><br><span id="email">@email</span></label>
+
+              </p>
+          </div>
 
             @inputText(
                 form = contactForm,
@@ -55,7 +54,7 @@
                 label = "cds.subscription.contact-details.full-name.label",
                 isPageHeading = false,
                 classes = Some("govuk-!-width-two-thirds"),
-                labelClasses = Some("full-name")
+                labelClasses = Some("full-name govuk-!-font-weight-bold")
             )
 
             @inputText(
@@ -66,13 +65,15 @@
                 isPageHeading = false,
                 classes = Some("govuk-!-width-two-thirds"),
                 hint = Some(Html(messages("cds.subscription.contact-details.telephone.hint"))),
-                labelClasses = Some("telephone")
+                labelClasses = Some("telephone govuk-!-font-weight-bold")
             )
 
             @govukButton(Button(
                 content = Text(ViewHelper.continueButtonText(isInReviewMode))
             ))
-        </fieldset>
+        }
+
+
     }
     @helpers.helpAndSupport()
 </div>

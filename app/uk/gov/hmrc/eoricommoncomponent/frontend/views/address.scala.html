@@ -22,7 +22,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import views.html.helper.CSRF
-@this(layout_di: layout, countryField: helpers.countryField, inputText: helpers.inputText, errorSummary: helpers.errorSummary, govukButton: GovukButton)
+@this(layout_di: layout, countryField: helpers.countryField, inputText: helpers.inputText, errorSummary: helpers.errorSummary, govukButton: GovukButton, fieldset: helpers.fieldset)
 
 @(addressForm: Form[AddressViewModel],
         countries: List[Country],
@@ -79,11 +79,7 @@
         @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.submit(isInReviewMode, service), "addressDetailsForm") {
 
             @CSRF.formField
-            <fieldset>
-                <legend>
-                    <h1 class="heading-large">@titleAndHeading</h1>
-                </legend>
-
+            @fieldset(titleAndHeading) {
 
                 @inputText(
                     form = addressForm,
@@ -110,7 +106,11 @@
                     autocomplete = Some("postal-code"),
                 )
                 @displayCountryField
-            </fieldset>
+            }
+
+
+
+
             @govukButton(Button(
                 content = Text(ViewHelper.continueButtonText(isInReviewMode))
             ))

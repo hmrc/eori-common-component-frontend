@@ -62,12 +62,12 @@ class ContactDetailsSpec extends ViewSpec {
 
     "display full name input" in {
 
-      doc.body().getElementsByClass("govuk-label full-name").text() mustBe "Full name"
+      doc.body().getElementsByClass("full-name").text() mustBe "Full name"
     }
 
     "display telephone input" in {
 
-      doc.body().getElementsByClass("govuk-label telephone").text() mustBe "Telephone"
+      doc.body().getElementsByClass("telephone").text() mustBe "Telephone"
       doc.body().getElementById("telephone-hint").text() mustBe "Only enter numbers, for example 01632 960 001"
     }
 
