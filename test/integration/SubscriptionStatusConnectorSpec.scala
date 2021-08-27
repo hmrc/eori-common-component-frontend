@@ -16,7 +16,7 @@
 
 package integration
 
-import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
+import java.time.LocalDateTime
 
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Application
@@ -51,14 +51,13 @@ class SubscriptionStatusConnectorSpec extends IntegrationTestsSpec with ScalaFut
   private val taxPayerId                  = TaxPayerId(AValidTaxPayerID).mdgTaxPayerId
   private val Regime                      = "CDS"
   private val receiptDate                 = LocalDateTime.of(2016, 3, 17, 9, 30, 47, 114)
-  private val zonedReceiptDate            = ZonedDateTime.of(receiptDate, ZoneId.of("Europe/London"))
   private val colon: String               = "%3A"
 
   private val expectedGetUrl =
     s"/subscription-status?receiptDate=2016-03-17T09${colon}30${colon}47Z&regime=$Regime&taxPayerID=$taxPayerId"
 
   private val request =
-    SubscriptionStatusQueryParams(zonedReceiptDate, Regime, "taxPayerID", TaxPayerId(AValidTaxPayerID).mdgTaxPayerId)
+    SubscriptionStatusQueryParams(receiptDate, Regime, "taxPayerID", TaxPayerId(AValidTaxPayerID).mdgTaxPayerId)
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
