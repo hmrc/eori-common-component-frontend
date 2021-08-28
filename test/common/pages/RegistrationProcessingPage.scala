@@ -21,5 +21,5 @@ object RegistrationProcessingPage extends WebPage {
   override val title     = "The ATaR application is being processed"
   val heading            = "The ATaR application for orgName is being processed"
   val individualHeading  = "The ATaR application for Name is being processed"
-  val pageHeadingXpath   = "//*[@id='page-heading']"
+  val pageHeadingXpath   = "//*[@class='govuk-panel__title']"
 }

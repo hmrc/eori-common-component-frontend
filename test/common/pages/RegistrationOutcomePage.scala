@@ -19,10 +19,11 @@ package common.pages
 import common.support.Env
 
 trait XPathRegistrationOutcomePage {
-  val pageHeadingXpath = "//*[@id='page-heading']"
-  val activeFromXpath  = "//*[@id='active-from']"
-  val issuedDateXpath  = "//*[@id='issued-date']"
-  val eoriNumberXpath  = "//*[@id='eori-number']"
+  val pageHeadingXpath          = "//*[@class='govuk-panel__title']"
+  val regExistsPageHeadingXpath = "//*[@class='govuk-heading-l']"
+  val activeFromXpath           = "//*[@id='active-from']"
+  val issuedDateXpath           = "//*[@id='issued-date']"
+  val eoriNumberXpath           = "//*[@id='eori-number']"
 
   val additionalInformationXpath = "//*[@id='additional-information']"
   val whatHappensNextXpath       = "//*[@id='what-happens-next']"
