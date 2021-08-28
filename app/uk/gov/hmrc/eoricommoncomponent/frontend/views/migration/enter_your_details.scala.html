@@ -59,6 +59,7 @@
                 isPageHeading = false,
                 autocomplete = Some("given-name"),
                 spellcheck =  Some(false),
+                classes = Some("govuk-!-width-one-half"),
                 labelClasses = Some("first-name")
             )
 
@@ -70,10 +71,11 @@
                 isPageHeading = false,
                 autocomplete = Some("family-name"),
                 spellcheck =  Some(false),
+                classes = Some("govuk-!-width-one-half"),
                 labelClasses = Some("last-name")
             )
 
-            @inputDate(updateFormErrors,"cds.matching.individual.what-is-your-date-of-birth", hintText = Some(Html(messages("cds.date-of-birth.hint"))), id = "date-of-birth", legendAsPageHeading= false)
+            @inputDate(updateFormErrors,"cds.matching.individual.what-is-your-date-of-birth", hintText = Some(Html(messages("cds.date-of-birth.hint"))), id = "date-of-birth", legendAsPageHeading= false,legendClasses = Some("govuk-!-font-weight-bold"))
 
             @govukButton(Button(
                 content = Text(ViewHelper.continueButtonText(isInReviewMode))

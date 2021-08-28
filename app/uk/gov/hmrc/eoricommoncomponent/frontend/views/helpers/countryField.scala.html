@@ -48,7 +48,7 @@
 @hintHtml = {
     <span class="govuk-visually-hidden">@Html(messages("cds.country-picker.hint.screen-reader"))</span>
 }
-
+<div class ="govuk-!-width-one-half">
 @inputSelect(
     form = form,
     id = field,
@@ -60,8 +60,10 @@
     )),
     label = messages(label),
     hint = Some(hintHtml),
+    classes = Some("govuk-!-width-one-half"),
     isPageHeading = false
 )
+</div>
 
 
 <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("css/location-autocomplete.min.css")" type="text/css">
