@@ -21,12 +21,29 @@
 @import views.html.helper._
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Button
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(layout_di: layout,  errorSummary: helpers.errorSummary, feedback_di: helpers.feedback, help_di: partials.if_you_need_help, govukButton: GovukButton, inputRadioGroup: helpers.inputRadioGroup)
 
 @(service: Service, eori: String, form: Form[EoriUnableToUse])(implicit messages: Messages, request: Request[_])
 
+@values = @{
+    Seq(
+        (EoriUnableToUse.changeEori, messages("ecc.what-is-your-eori.unable-to-use.changeEori")),
+        (EoriUnableToUse.signout, messages("ecc.what-is-your-eori.unable-to-use.signout"))
+    )
+}
+
+@options = @{
+    values.map { case (value, label) =>
+        RadioItem(
+            content = Text(label),
+            value = Some(value),
+            id = Some(s"${form("answer").name}-${value.toLowerCase.replace(" ", "_")}"),
+            checked = form("answer").value.contains(value)
+        )
+    }
+}
 @layout_di(messages("ecc.what-is-your-eori.unable-to-use.title"), suppressTelephoneNumberDetection = false, displayBackLink = false) {
     <div class="column-two-thirds">
 
@@ -43,15 +60,10 @@
 
             @inputRadioGroup(
                 form("answer"),
-                Seq(
-                    (EoriUnableToUse.changeEori, messages("ecc.what-is-your-eori.unable-to-use.changeEori")),
-                    (EoriUnableToUse.signout, messages("ecc.what-is-your-eori.unable-to-use.signout"))
-                ),
-                Map.empty,
-                None,
-                '_divClass -> "form-group",
-                '_legend -> messages("ecc.what-is-your-eori.unable-to-use.question"),
-                '_isLegendH1 -> false
+                legend = messages("ecc.what-is-your-eori.unable-to-use.question"),
+                items = options,
+                legendAsHeading = false,
+                classes = "govuk-fieldset__legend--m"
             )
 
             @govukButton(Button(

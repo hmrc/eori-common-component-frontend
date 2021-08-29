@@ -21,7 +21,7 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Button
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(layout_di: layout, errorSummary: helpers.errorSummary, govukButton: GovukButton, inputRadioGroup: helpers.inputRadioGroup)
 
@@ -56,6 +56,18 @@
     if (selectedUserLocation == Some(UserLocation.Uk)) Seq.empty else nonUkOptionHints
 }
 
+@options = @{
+    validOptions.map { case (value, label) =>
+        RadioItem(
+            content = Text(label),
+            value = Some(value),
+            id = Some(s"${OrganisationTypeForm("organisation-type").name}-${value.toLowerCase.replace(" ", "_")}"),
+            checked = OrganisationTypeForm("organisation-type").value.contains(value),
+            hint = hintTextOptions.toMap.get(value).map(hint => Hint(content = HtmlContent(hint)))
+        )
+    }
+}
+
 @layout_di(messages("cds.matching.organisation-type.user.header"), form = Some(OrganisationTypeForm)) {
     <div class="column-two-thirds">
 
@@ -64,14 +76,13 @@
         @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.OrganisationTypeController.submit(service), "OrganisationTypeForm") {
             @CSRF.formField
 
+
+
             @inputRadioGroup(
                 OrganisationTypeForm("organisation-type"),
-                validOptions,
-                hintTextOptions.toMap,
-                None,
-                '_divClass -> "form-group",
-                '_legend -> messages("cds.matching.organisation-type.user.header"),
-                '_isLegendH1 -> true)
+                legend = messages("cds.matching.organisation-type.user.header"),
+                items = options
+            )
 
                 @govukButton(Button(
                     content = Text(messages("cds.navigation.continue"))

@@ -20,7 +20,7 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 
@@ -37,6 +37,20 @@
     <p id="email" class="govuk-!-font-weight-bold">@email</p>
     <p class="mt-2">@messages("subscription.check-your-email.confirm.label")</p>
 }
+@values = @{
+        Seq("true" -> messages("subscription.check-your-email.yes"), "false" -> messages("subscription.check-your-email.no"))
+    }
+
+@options = @{
+    values.map { case (value, label) =>
+        RadioItem(
+            content = Text(label),
+            value = Some(value),
+            id = Some(s"${confirmEmailYesNoAnswerForm("yes-no-answer").name}-${value.toLowerCase.replace(" ", "_")}"),
+            checked =confirmEmailYesNoAnswerForm("yes-no-answer").value.contains(value)
+        )
+    }
+}
 
 @layout_di(messages("subscription.check-your-email.confirm.question"), form = Some(confirmEmailYesNoAnswerForm)) {
 
@@ -50,11 +64,11 @@
 
         @inputRadioGroup(
             confirmEmailYesNoAnswerForm("yes-no-answer"),
-            Seq("true" -> messages("subscription.check-your-email.yes"), "false" -> messages("subscription.check-your-email.no")),
-            Map.empty,
-            Some(hintHtml),
-            '_legend -> messages("subscription.check-your-email.confirm.question"),
-            '_isLegendH1 -> true)
+            legend = messages("subscription.check-your-email.confirm.question"),
+            items = options,
+            hint = Some(Hint(content = HtmlContent(hintHtml), classes = "govuk-body-s")),
+            classes = "govuk-fieldset__legend--l"
+        )
 
         @govukButton(Button(
             content = Text(ViewHelper.continueButtonText(isInReviewMode))
