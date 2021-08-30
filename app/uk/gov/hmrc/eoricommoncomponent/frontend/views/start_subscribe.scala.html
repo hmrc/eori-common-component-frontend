@@ -38,24 +38,24 @@
     <div class="column-two-thirds start_page">
         <h1 class="govuk-heading-l">@messages("ecc.subscription.information.heading", ServiceName.longName)</h1>
 
-        <p class="mt-2" id="information-only-once">@messages("ecc.subscription.information.only.once")</p>
+        <p id="information-only-once" class="govuk-!-font-size-16 govuk-body">@messages("ecc.subscription.information.only.once")</p>
 
         <h2 class="govuk-heading-m" id="what-you-will-need">@messages("ecc.subscription.information.para1.heading")</h2>
-        <p id="what-you-will-need-text">@messages("ecc.subscription.information.para1", ServiceName.longName)</p>
+        <p id="what-you-will-need-text" class="govuk-!-font-size-16 govuk-body">@messages("ecc.subscription.information.para1", ServiceName.longName)</p>
 
         <h3 class="govuk-heading-s" id="gb-eori">@messages("ecc.subscription.information.para2.heading")</h3>
-        <p id="gb-eori-text">@messages("ecc.subscription.information.para2")</p>
+        <p id="gb-eori-text" class="govuk-!-font-size-16 govuk-body">@messages("ecc.subscription.information.para2")</p>
 
         @govukWarningText(WarningText(
             iconFallbackText = "Warning",
             content = HtmlContent(warningContent)
         ))
 
-        <p id="gb-eori-list-heading">@messages("ecc.subscription.information.para2.text", ServiceName.longName)</p>
+        <p id="gb-eori-list-heading" class="govuk-!-font-size-16 govuk-body">@messages("ecc.subscription.information.para2.text", ServiceName.longName)</p>
 
-        <ul class="numbered-list list">
+        <ul class="govuk-list govuk-list--number govuk-!-font-size-16">
             <li>@messages("ecc.subscription.information.para2.list.first")
-                <ul class="bullets list">
+                <ul class="govuk-list govuk-list--bullet govuk-!-font-size-16">
                     <li>@messages("ecc.subscription.information.para2.list.bullet.first")</li>
                     <li>@messages("ecc.subscription.information.para2.list.bullet.second")</li>
                     <li>@messages("ecc.subscription.information.para2.list.bullet.third")</li>
@@ -65,9 +65,9 @@
         </ul>
 
         <h3 class="govuk-heading-s" id="organisation">@messages("ecc.subscription.information.section.organisation.subheading")</h3>
-        <p id="organisation-text">@messages("ecc.subscription.information.section.organisation.list.heading")</p>
+        <p id="organisation-text" class="govuk-!-font-size-16 govuk-body">@messages("ecc.subscription.information.section.organisation.list.heading")</p>
 
-        <ul class="bullets list">
+        <ul class="govuk-list govuk-list--bullet govuk-!-font-size-16">
             <li>@Html(messages("ecc.subscription.information.section.organisation.list.first"))</li>
             <li>@messages("ecc.subscription.information.section.organisation.list.second")</li>
             <li>@messages("ecc.subscription.information.section.organisation.list.third")</li>
@@ -75,14 +75,14 @@
         </ul>
 
         <h3 class="govuk-heading-s mt-2" id="individual">@messages("ecc.subscription.information.section.individual.subheading")</h3>
-        <p id="individual-text">@messages("ecc.subscription.information.section.individual.para")</p>
+        <p id="individual-text" class="govuk-!-font-size-16 govuk-body">@messages("ecc.subscription.information.section.individual.para")</p>
 
-        <ul class="bullets list">
+        <ul class="govuk-list govuk-list--bullet govuk-!-font-size-16">
             <li>@messages("ecc.subscription.information.section.individual.nino")</li>
             <li>@Html(messages("ecc.subscription.information.section.individual.utr"))</li>
         </ul>
 
-        <p class="mt-2 mb-2" id="email-confirmation">@messages("ecc.subscription.information.email.confirm")</p>
+        <p class="govuk-!-font-size-16 govuk-body" id="email-confirmation">@messages("ecc.subscription.information.email.confirm")</p>
 
         @govukButton(Button(
             href = Some(EmailController.form(service).url),

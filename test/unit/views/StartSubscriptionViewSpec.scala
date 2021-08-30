@@ -76,7 +76,7 @@ class StartSubscriptionViewSpec extends ViewSpec {
         "gb-eori-list-heading"
       ).text() mustBe "If you do not have an EORI, you will get one with your Advance Tariff Rulings subscription. You will need to provide:"
 
-      val eoriList           = doc.body().getElementsByClass("numbered-list").get(0)
+      val eoriList           = doc.body().getElementsByClass("govuk-list--number").get(0)
       val eoriListFirstElem  = eoriList.getElementsByTag("li").get(0)
       val eoriBulletList     = eoriList.getElementsByTag("ul").get(1)
       val eoriListSecondElem = eoriList.getElementsByTag("li").get(4)
@@ -97,7 +97,7 @@ class StartSubscriptionViewSpec extends ViewSpec {
         "organisation-text"
       ).text() mustBe "If you are a limited company, partnership or charity, you will need:"
 
-      val bulletList = doc.body().getElementsByClass("bullets").get(1)
+      val bulletList = doc.body().getElementsByClass("govuk-list--bullet").get(1)
 
       bulletList.getElementsByTag("li").get(
         0
@@ -114,7 +114,7 @@ class StartSubscriptionViewSpec extends ViewSpec {
         "individual-text"
       ).text() mustBe "If you have worked in the UK or registered for self-assessment, you will need one of the following:"
 
-      val bulletList = doc.body().getElementsByClass("bullets").get(2)
+      val bulletList = doc.body().getElementsByClass("govuk-list--bullet").get(2)
 
       bulletList.getElementsByTag("li").get(0).text() mustBe "National Insurance number"
       bulletList.getElementsByTag("li").get(

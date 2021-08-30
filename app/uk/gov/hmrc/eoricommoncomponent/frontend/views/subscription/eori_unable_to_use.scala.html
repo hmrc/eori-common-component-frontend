@@ -23,7 +23,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@this(layout_di: layout,  errorSummary: helpers.errorSummary, feedback_di: helpers.feedback, help_di: partials.if_you_need_help, govukButton: GovukButton, inputRadioGroup: helpers.inputRadioGroup)
+@this(layout_di: layout,  errorSummary: helpers.errorSummary, feedback_di: helpers.feedback, help_di: partials.if_you_need_help, govukButton: GovukButton, inputRadioGroup: helpers.inputRadioGroup, govukInsetText : GovukInsetText)
 
 @(service: Service, eori: String, form: Form[EoriUnableToUse])(implicit messages: Messages, request: Request[_])
 
@@ -51,9 +51,10 @@
 
         <h1 id="page-heading" class="govuk-heading-l" >@messages("ecc.what-is-your-eori.unable-to-use.title")</h1>
 
-        <div class="panel-indent panel-indent--thick">
-            <p id="eori-number">@eori</p>
-        </div>
+        @govukInsetText(InsetText(
+            id = Some("eori-number"),
+            content = Text(eori)
+        ))
 
         @helpers.form(routes.EoriUnableToUseController.submit(service), "eori-unable-to-use-form") {
             @CSRF.formField
