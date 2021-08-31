@@ -32,14 +32,14 @@
             <h1 id="page-heading" class="govuk-heading-xl" >@messages("ecc.unable-to-use.title", longName, "")</h1>
         </div>
 
-        <p id="eori-number-text">@messages("ecc.unable-to-use.this-eori-number")</p>
+        <p id="eori-number-text" class="govuk-body">@messages("ecc.unable-to-use.this-eori-number")</p>
 
         <div class="panel-indent panel-indent--thick mt-2 mb-2">
-            <p class="eori-number" id="eori-number">@eori</p>
+            <p class="eori-number govuk-body" id="eori-number">@eori</p>
         </div>
 
-        <p id="para1">@messages("ecc.unable-to-use.para1", longName)</p>
-        <p id="para2">@messages("ecc.unable-to-use.para2")</p>
+        <p id="para1" class="govuk-body">@messages("ecc.unable-to-use.para1", longName)</p>
+        <p id="para2" class="govuk-body">@messages("ecc.unable-to-use.para2")</p>
 
         @govukButton(Button(
             href = Some(routes.ApplicationController.logout(service).url),

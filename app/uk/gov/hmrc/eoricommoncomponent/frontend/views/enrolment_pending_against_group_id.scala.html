@@ -30,10 +30,10 @@
         <h1 id="page-heading" class="govuk-heading-l">@messages("cds.enrolment.pending.title")</h1>
 
         @if(otherService == Some(service)){
-            <p id="info">@messages("cds.enrolment.pending.group.sameService.paragraph1")</p>
+            <p id="info" class="govuk-body">@messages("cds.enrolment.pending.group.sameService.paragraph1")</p>
         } else {
-            <p id="info">@messages("cds.enrolment.pending.group.otherService.paragraph1", otherServiceName)</p>
-            <p>@messages("cds.enrolment.pending.group.otherService.paragraph2")</p>
+            <p id="info" class="govuk-body">@messages("cds.enrolment.pending.group.otherService.paragraph1", otherServiceName)</p>
+            <p class="govuk-body">@messages("cds.enrolment.pending.group.otherService.paragraph2")</p>
         }
 
         @help_di()

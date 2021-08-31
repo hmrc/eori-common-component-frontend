@@ -30,7 +30,7 @@
 }
 
 @confirmationHtml = {
-    <p id="processed-date" class="govuk-!-font-size-36"><strong>@messages("cds.subscription.outcomes.in-processing.received", dateFormatter.format(processedDate))</strong></p>
+    <p id="processed-date" class="govuk-!-font-size-36 govuk-body"><strong>@messages("cds.subscription.outcomes.in-processing.received", dateFormatter.format(processedDate))</strong></p>
 }
 @layout_di(messages("cds.sub01.outcome.processing.title", shortName), displayBackLink = false) {
 
@@ -42,7 +42,7 @@
 
         <div id="what-happens-next">
             <h2>@messages("cds.subscription.outcomes.steps.next")</h2>
-            <p>
+            <p class="govuk-body">
                 @messages("cds.sub01.outcome.processing.we-are-processing", shortName)
             </p>
         </div>

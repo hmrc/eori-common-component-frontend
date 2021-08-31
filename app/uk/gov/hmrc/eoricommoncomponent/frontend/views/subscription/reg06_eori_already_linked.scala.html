@@ -34,16 +34,16 @@
     <div class="column-two-thirds">
         <div>
             <h1 id="page-heading" class="govuk-heading-xl" >@messages("cds.reg06.outcome.eori-already-linked.heading", longName, orgName)</h1>
-            <p id="processed-date">@messages("cds.reg06.outcome.eori-already-linked.received", formatDate(processedDate))</p>
-            <p id="eori-number">@messages("ecc.reg06.outcome.eori", eori)</p>
+            <p id="processed-date" class="govuk-body">@messages("cds.reg06.outcome.eori-already-linked.received", formatDate(processedDate))</p>
+            <p id="eori-number" class="govuk-body">@messages("ecc.reg06.outcome.eori", eori)</p>
         </div>
 
         <div id="why-unsuccessful">
             <h2 class="govuk-heading-m" id="why-heading">@messages("ecc.reg06.outcome.why-heading")</h2>
             @if(isIndividual){
-                <p id="individual">@messages("ecc.reg06.outcome.why.individual")</p>
+                <p id="individual" class="govuk-body">@messages("ecc.reg06.outcome.why.individual")</p>
             }else {
-                <p id="organisation">@messages("ecc.reg06.outcome.why.org")</p>
+                <p id="organisation" class="govuk-body">@messages("ecc.reg06.outcome.why.org")</p>
             }
             <ul class="bullets list">
                 @if(isIndividual && hasUtr){
@@ -55,10 +55,10 @@
                 }
                 <li id="eori">@messages("ecc.reg06.outcome.why.eori")</li>
             </ul>
-            <p id="again-link">@Html(messages("ecc.reg06.outcome.apply.again", ApplicationController.startSubscription(service).url))</p>
+            <p id="again-link" class="govuk-body">@Html(messages("ecc.reg06.outcome.apply.again", ApplicationController.startSubscription(service).url))</p>
         </div>
 
-        <p id="use-cds-para">@messages("cds.subscription.outcomes.you-will-not-be-able-to-use-service", longName)</p>
+        <p id="use-cds-para" class="govuk-body">@messages("cds.subscription.outcomes.you-will-not-be-able-to-use-service", longName)</p>
 
         @helpers.feedbackBackContinue(service, JourneyStatus.Failed)
 

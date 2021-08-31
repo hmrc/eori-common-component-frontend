@@ -42,8 +42,8 @@
 @layout_di(messages("cds.you-cant-use-service.heading"), displayBackLink = false) {
 <div class="column-two-thirds">
     <h1 class="govuk-heading-l">@messages("cds.you-cant-use-service.heading")</h1>
-    <p id="para-1">@para1</p>
-    <p id="para-2">@para2</p>
+    <p id="para-1" class="govuk-body">@para1</p>
+    <p id="para-2" class="govuk-body">@para2</p>
     @govukButton(Button(
         href = Some(logout(service).url),
         content = Text(messages("cds.sign.out"))
