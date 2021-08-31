@@ -16,8 +16,9 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription
 
-import java.time.ZonedDateTime
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
@@ -29,6 +30,6 @@ object NotifyRcmRequest {
   implicit val jsonFormat: OFormat[NotifyRcmRequest] = Json.format[NotifyRcmRequest]
 
   def apply(eori: String, name: String, email: String, service: Service): NotifyRcmRequest =
-    new NotifyRcmRequest(dateTimeFormat.format(ZonedDateTime.now()), eori, name, email, service.friendlyName)
+    new NotifyRcmRequest(dateTimeFormat.format(LocalDateTime.now()), eori, name, email, service.friendlyName)
 
 }

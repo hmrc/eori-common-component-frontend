@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain
 
-import java.time.{LocalDateTime, ZoneId, ZoneOffset, ZonedDateTime}
+import java.time.{LocalDateTime, ZoneId, ZoneOffset}
 
 import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.CommonHeader
@@ -32,7 +32,7 @@ case class SubscriptionStatusQueryParams(receiptDate: LocalDateTime, regime: Str
 
 }
 
-case class SubscriptionStatusResponseCommon(status: String, processingDate: ZonedDateTime)
+case class SubscriptionStatusResponseCommon(status: String, processingDate: LocalDateTime)
 
 object SubscriptionStatusResponseCommon extends CommonHeader {
   implicit val jsonFormat = Json.format[SubscriptionStatusResponseCommon]
