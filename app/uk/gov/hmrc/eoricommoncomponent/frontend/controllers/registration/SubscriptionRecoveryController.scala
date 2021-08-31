@@ -41,6 +41,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Random
 
 @Singleton
 class SubscriptionRecoveryController @Inject() (
@@ -101,8 +102,7 @@ class SubscriptionRecoveryController @Inject() (
             subscriptionDetails.dateEstablished,
             subscriptionDetails.nameDobDetails.map(_.dateOfBirth)
           ),
-          service,
-          Journey.Subscribe
+          service
         )(Redirect(Sub02Controller.migrationEnd(service)))
       case Left(_) =>
         Future.successful(InternalServerError(errorTemplateView()))
@@ -135,8 +135,7 @@ class SubscriptionRecoveryController @Inject() (
             subscriptionDetails.dateEstablished,
             subscriptionDetails.nameDobDetails.map(_.dateOfBirth)
           ),
-          service,
-          Journey.Subscribe
+          service
         )(Redirect(Sub02Controller.migrationEnd(service)))
       case Left(_) =>
         Future.successful(InternalServerError(errorTemplateView()))
@@ -166,8 +165,7 @@ class SubscriptionRecoveryController @Inject() (
     eori: Eori,
     subscriptionDisplayResponse: SubscriptionDisplayResponse,
     dateOfEstablishment: Option[LocalDate],
-    service: Service,
-    journey: Journey.Value
+    service: Service
   )(redirect: => Result)(implicit headerCarrier: HeaderCarrier, messages: Messages): Future[Result] = {
     val formBundleId =
       subscriptionDisplayResponse.responseCommon.returnParameters
@@ -185,7 +183,7 @@ class SubscriptionRecoveryController @Inject() (
       processedDate,
       email,
       emailVerificationTimestamp,
-      if (journey == Journey.Subscribe) formBundleId + service.code else formBundleId,
+      formBundleId + service.code + (100000 + Random.nextInt(900000)).toString,
       recipientFullName,
       name,
       eori,
@@ -193,23 +191,21 @@ class SubscriptionRecoveryController @Inject() (
       dateOfEstablishment
     )
 
-    completeEnrolment(service, journey, subscriptionInformation)(redirect)
+    completeEnrolment(service, subscriptionInformation)(redirect)
   }
 
-  private def completeEnrolment(
-    service: Service,
-    journey: Journey.Value,
-    subscriptionInformation: SubscriptionInformation
-  )(redirect: => Result)(implicit hc: HeaderCarrier, messages: Messages): Future[Result] =
+  private def completeEnrolment(service: Service, subscriptionInformation: SubscriptionInformation)(
+    redirect: => Result
+  )(implicit hc: HeaderCarrier, messages: Messages): Future[Result] =
     for {
       // Update Recovered Subscription Information
       _ <- updateSubscription(subscriptionInformation)
       // Update Email
 //      _ <- updateEmail(journey, subscriptionInformation)  // TODO - ECC-307
       // Subscribe Call for enrolment
-      _ <- subscribe(service, journey, subscriptionInformation)
+      _ <- subscribe(service, subscriptionInformation)
       // Issuer Call for enrolment
-      res <- issue(service, journey, subscriptionInformation)
+      res <- issue(service, subscriptionInformation)
     } yield res match {
       case NO_CONTENT => redirect
       case _          => throw new IllegalArgumentException("Tax Enrolment issuer call failed")
@@ -224,17 +220,16 @@ class SubscriptionRecoveryController @Inject() (
       )
     )
 
-  private def subscribe(
-    service: Service,
-    journey: Journey.Value,
-    subscriptionInformation: SubscriptionInformation
-  )(implicit hc: HeaderCarrier, messages: Messages): Future[Unit] =
+  private def subscribe(service: Service, subscriptionInformation: SubscriptionInformation)(implicit
+    hc: HeaderCarrier,
+    messages: Messages
+  ): Future[Unit] =
     handleSubscriptionService
       .handleSubscription(
         subscriptionInformation.formBundleId,
         RecipientDetails(
           service,
-          journey,
+          Journey.Subscribe,
           subscriptionInformation.email,
           subscriptionInformation.recipientFullName,
           Some(subscriptionInformation.name),
@@ -246,18 +241,15 @@ class SubscriptionRecoveryController @Inject() (
         subscriptionInformation.safeId
       )
 
-  private def issue(service: Service, journey: Journey.Value, subscriptionInformation: SubscriptionInformation)(implicit
+  private def issue(service: Service, subscriptionInformation: SubscriptionInformation)(implicit
     hc: HeaderCarrier
   ): Future[Int] =
-    if (journey == Journey.Subscribe)
-      taxEnrolmentService.issuerCall(
-        subscriptionInformation.formBundleId,
-        subscriptionInformation.eori,
-        subscriptionInformation.dateOfEstablishment,
-        service
-      )
-    else
-      Future.successful(NO_CONTENT)
+    taxEnrolmentService.issuerCall(
+      subscriptionInformation.formBundleId,
+      subscriptionInformation.eori,
+      subscriptionInformation.dateOfEstablishment,
+      service
+    )
 
   private def getDateOfBirthOrDateOfEstablishment(
     response: SubscriptionDisplayResponse,
