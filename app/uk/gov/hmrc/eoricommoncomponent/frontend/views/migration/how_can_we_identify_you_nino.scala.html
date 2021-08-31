@@ -30,7 +30,7 @@
 @(ninoForm: Form[IdMatchModel], isInReviewMode: Boolean, submit: Call)(implicit request: Request[_], messages: Messages)
 
 @layout_di(messages("subscription-journey.how-confirm-identity.nino.heading"), form = Some(ninoForm)) {
-    <div class="column-two-thirds">
+    <div>
 
         @errorSummary(ninoForm.errors)
 

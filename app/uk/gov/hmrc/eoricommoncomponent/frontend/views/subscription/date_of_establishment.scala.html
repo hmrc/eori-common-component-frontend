@@ -52,7 +52,7 @@
 }
 
 @layout_di(messages(headerAndTitle), form = Some(dateForm)) {
-    <div class="column-two-thirds">
+    <div>
 
         @errorSummary(DateConverter.updateDateOfEstablishmentErrors(dateForm.errors),
             focusOverrides = Map("date-of-establishment" -> "date-of-establishment.day"))

@@ -27,11 +27,11 @@
 @confirmationHtml = {
         <div class="govuk-!-font-size-27">
         <strong><span id="active-from">@messages("subscription.subscription-results.active-from") @dateFormatter.format(processedDate)</span></strong>
-            <p  class="govuk-!-font-size-19 govuk-body"><strong>@messages("cds.reg.existing.outcomes.success.eori.number")<br><span id="eori-number">@eori</span></strong></p>
+            <p  class="govuk-!-font-size-19"><strong>@messages("cds.reg.existing.outcomes.success.eori.number")<br><span id="eori-number">@eori</span></strong></p>
         </div>
 }
 @layout_di(messages("cds.mig.existing.outcomes.application-received.title"), displayBackLink = false) {
-    <div class="column-two-thirds">
+    <div>
         @govukPanel(Panel(
             title = Text(s"${messages("cds.reg.existing.outcomes.success.heading.part1")} $name"),
             content = HtmlContent(confirmationHtml)

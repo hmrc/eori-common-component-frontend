@@ -30,7 +30,7 @@
 @(utrForm: Form[IdMatchModel], isInReviewMode: Boolean, submit: Call)(implicit request: Request[_], messages: Messages)
 
 @layout_di(messages("subscription-journey.how-confirm-identity.utr.heading"), form = Some(utrForm)) {
-    <div class="column-two-thirds">
+    <div>
 
         @errorSummary(utrForm.errors)
 

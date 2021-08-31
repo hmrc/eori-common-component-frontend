@@ -31,7 +31,7 @@
 }
 
 @layout_di(messages("cds.reg06.outcome.eori-already-linked.title", longName), suppressTelephoneNumberDetection = false, displayBackLink = false) {
-    <div class="column-two-thirds">
+    <div>
         <div>
             <h1 id="page-heading" class="govuk-heading-xl" >@messages("cds.reg06.outcome.eori-already-linked.heading", longName, orgName)</h1>
             <p id="processed-date" class="govuk-body">@messages("cds.reg06.outcome.eori-already-linked.received", formatDate(processedDate))</p>

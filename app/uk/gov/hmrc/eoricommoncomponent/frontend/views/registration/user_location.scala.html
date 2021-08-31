@@ -53,7 +53,7 @@
 }
 
 @layout_di(title, form = Some(userLocationForm)) {
-    <div class="column-two-thirds">
+    <div>
 
         @errorSummary(userLocationForm.errors, focusOverrides = Map("location" -> s"location-${validOptions.head._1}"))
 

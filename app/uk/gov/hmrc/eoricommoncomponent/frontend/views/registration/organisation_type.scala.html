@@ -69,7 +69,7 @@
 }
 
 @layout_di(messages("cds.matching.organisation-type.user.header"), form = Some(OrganisationTypeForm)) {
-    <div class="column-two-thirds">
+    <div>
 
         @errorSummary(OrganisationTypeForm.errors, focusOverrides = Map("organisation-type" -> s"organisation-type-${validOptions.head._1}"))
 

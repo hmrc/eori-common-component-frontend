@@ -45,7 +45,7 @@
     }
 }
 @layout_di(messages("ecc.what-is-your-eori.unable-to-use.title"), suppressTelephoneNumberDetection = false, displayBackLink = false) {
-    <div class="column-two-thirds">
+    <div>
 
         @errorSummary(form.errors, focusOverrides = Map("answer" -> s"answer-change"))
 
