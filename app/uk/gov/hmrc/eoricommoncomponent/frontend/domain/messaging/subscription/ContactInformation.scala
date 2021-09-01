@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription
 
-import java.time.{Clock, LocalDateTime, ZoneOffset}
+import java.time.{Clock, LocalDateTime, ZoneId}
 
 import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.CommonHeader
@@ -34,7 +34,7 @@ case class ContactInformation(
   faxNumber: Option[String] = None,
   emailAddress: Option[String] = None,
   emailVerificationTimestamp: Option[LocalDateTime] = Some(
-    LocalDateTime.ofInstant(Clock.systemUTC().instant, ZoneOffset.UTC)
+    LocalDateTime.ofInstant(Clock.systemUTC().instant, ZoneId.of("Europe/London"))
   )
 ) {
 

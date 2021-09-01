@@ -60,7 +60,7 @@ class HandleSubscriptionServiceSpec extends UnitSpec with MockitoSugar with Befo
     formBundleId,
     sapNumber.id,
     Some("eori"),
-    s"${emailVerificationTimestamp.get}",
+    s"${TestData.zonedEmailVerificationTimestamp.toString}",
     safeId.id
   )
 
