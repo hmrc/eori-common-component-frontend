@@ -20,7 +20,7 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.ApplicationController
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@this(layout_di: layout, govukButton: GovukButton)
+@this(layout_di: layout, govukButton: GovukButton, govukInsetText : GovukInsetText)
 
 @(eoriNumber: String,
 service: Service)(implicit request: Request[_], messages: Messages)
@@ -42,7 +42,9 @@ service: Service)(implicit request: Request[_], messages: Messages)
 
             <p class="govuk-body">@messages("cds.subscribe.use-this-eori.paragraph1")</p>
 
-            <p class="panel-indent govuk-body">@Html(messages("cds.subscribe.use-this-eori.paragraph2", signoutLink))</p>
+            @govukInsetText(InsetText(
+                content = HtmlContent(Html(messages("cds.subscribe.use-this-eori.paragraph2", signoutLink)))
+            ))
 
             <p class="govuk-body">@messages("cds.subscribe.use-this-eori.paragraph3")</p>
 

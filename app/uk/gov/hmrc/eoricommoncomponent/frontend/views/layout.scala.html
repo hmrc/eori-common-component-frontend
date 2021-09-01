@@ -28,8 +28,14 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.backlink.BackLink
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.Cy
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.En
-@this(hmrcLayout: HmrcLayout, standardBetaBanner: StandardBetaBanner, govukBackLink: GovukBackLink, appConfig: AppConfig, reportAProblemLink: HmrcReportTechnicalIssue, hmrcTimeoutDialog: HmrcTimeoutDialog)
-
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcLanguageSelectHelper
+@this(hmrcLayout: HmrcLayout,
+        standardBetaBanner: StandardBetaBanner,
+        govukBackLink: GovukBackLink,
+        appConfig: AppConfig,
+        reportAProblemLink: HmrcReportTechnicalIssue,
+        hmrcTimeoutDialog: HmrcTimeoutDialog,
+        hmrcLanguageSelectHelper: HmrcLanguageSelectHelper)
 
 @(
         title: String,
@@ -113,16 +119,18 @@
 }
 }
 
+@beforeContent = {
+    @hmrcLanguageSelectHelper()
+    @if(displayBackLink) {
+        @govukBackLink(BackLink(href = "javascript:history.back()", content = Text(messages("cds.navigation.back")), attributes = Map("id" -> "back-link")))
+    }
+}
 
 @mainContent = {
-
-@if(displayBackLink) {
-    @govukBackLink(BackLink(href = "javascript:history.back()", content = Text(messages("cds.navigation.back")), attributes = Map("id" -> "back-link")))
+    @content
+    @getHelpForm
 }
 
-@content
-@getHelpForm
-}
 
 
 @hmrcLayout(
@@ -134,5 +142,6 @@
     additionalHeadBlock = Some(theHead),
     nonce = CSPNonce.get,
     serviceName = Some(messages("cds.banner.subscription", longName)),
-    accessibilityStatementUrl = Some(service.accessibilityUrl)
+    accessibilityStatementUrl = Some(service.accessibilityUrl),
+    beforeContentBlock = Some(beforeContent)
 )(mainContent)
