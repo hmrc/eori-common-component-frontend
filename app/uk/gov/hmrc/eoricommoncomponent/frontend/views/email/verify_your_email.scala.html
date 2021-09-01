@@ -44,7 +44,7 @@
         <p id="p1" class="govuk-body">  @email.map(e => messages("cds.subscription.verify-email.para1", e)) </p>
         <p id="p2" class="govuk-body">  @messages("cds.subscription.verify-email.para2") </p>
 
-        <div class="form-group">
+        <div class="govuk-form-group">
             @govukDetails(Details(
                 summary = Text(messages("cds.subscription.verify-email.progressive-disclosure.heading")),
                 content = HtmlContent(detailsContent)

@@ -18,9 +18,7 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 @import views.html.helper.CSRF
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
-@import uk.gov.hmrc.govukfrontend.views.Aliases.Button
-@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper
 
 @this(layout_di: layout,  errorSummary: helpers.errorSummary, inputText: helpers.inputText, govukButton: GovukButton)
@@ -38,7 +36,7 @@ service: Service,
 
     @errorSummary(nameOrganisationForm.errors)
 
-    <div class="form-group">
+    <div class="govuk-form-group">
         @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameOrgController.submit(isInReviewMode, service), "nameUtrOrganisationForm") {
 
         @CSRF.formField
