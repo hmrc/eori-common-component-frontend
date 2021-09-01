@@ -30,7 +30,7 @@
     <header class="page-header">
         <h1 class="govuk-heading-l">@messages("cds.security-sign-out.heading")</h1>
     </header>
-    <p class="form-hint" id="hint">@messages("cds.security-sign-out.note")</p>
+    <p class="govuk-hint" id="hint">@messages("cds.security-sign-out.note")</p>
 
     @govukButton(Button(
         href = Some(ApplicationController.startSubscription(service).url),
