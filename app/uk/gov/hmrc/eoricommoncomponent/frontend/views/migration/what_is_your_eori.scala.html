@@ -31,7 +31,7 @@
         service: Service)(implicit request: Request[_], messages: Messages)
 
 @getEoriLink = {
-    <a href=@appConfig.externalGetEORILink(service)>
+    <a class="govuk-link" href=@appConfig.externalGetEORILink(service)>
     @messages("cds.subscription.enter-eori-number.no-eori.link")
     </a>
 }

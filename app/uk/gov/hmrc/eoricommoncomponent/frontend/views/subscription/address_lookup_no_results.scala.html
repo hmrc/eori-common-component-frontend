@@ -25,17 +25,17 @@
 
 @changeLink = {
     @if(isInReviewMode) {
-        <a href="@AddressLookupPostcodeController.reviewPage(service)" id="reenter-postcode-button">@messages("cds.form.change")</a>
+        <a href="@AddressLookupPostcodeController.reviewPage(service)" class="govuk-link" id="reenter-postcode-button">@messages("cds.form.change")</a>
     } else {
-        <a href="@AddressLookupPostcodeController.displayPage(service)" id="reenter-postcode-button">@messages("cds.form.change")</a>
+        <a href="@AddressLookupPostcodeController.displayPage(service)" class="govuk-link" id="reenter-postcode-button">@messages("cds.form.change")</a>
     }
 }
 
 @enterManuallyAddressLink = {
     @if(isInReviewMode) {
-        <a href="@AddressController.reviewForm(service)" id="enter-manually-button">@messages("ecc.address-lookup.postcode.no-results.manual")</a>
+        <a href="@AddressController.reviewForm(service)" class="govuk-link" id="enter-manually-button">@messages("ecc.address-lookup.postcode.no-results.manual")</a>
     } else {
-        <a href="@AddressController.createForm(service)" id="enter-manually-button">@messages("ecc.address-lookup.postcode.no-results.manual")</a>
+        <a href="@AddressController.createForm(service)" class="govuk-link" id="enter-manually-button">@messages("ecc.address-lookup.postcode.no-results.manual")</a>
     }
 }
 
@@ -47,10 +47,12 @@
 
         <p id="hint" class="govuk-body">@messages("ecc.address-lookup.postcode.no-results.hint")</p>
 
-        <div class="mt-2 mb-2">
-            <p class="postcode-address-value govuk-body">@postcode</p> <p class="postcode-address-change">@changeLink</p>
+        <div class="govuk-!-margin-top-2 govuk-!-margin-bottom-2">
+            <p class="govuk-!-display-inline govuk-!-font-weight-bold govuk-body">@postcode</p> <p class="govuk-!-display-inline govuk-!-margin-left-2 govuk-!-font-weight-bold govuk-body">@changeLink</p>
         </div>
 
-        @enterManuallyAddressLink
+        <div class="govuk-!-margin-bottom-4 govuk-!-margin-top-4">
+            @enterManuallyAddressLink
+        </div>
     </div>
 }

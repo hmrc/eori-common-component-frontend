@@ -21,8 +21,8 @@
 
 @()(implicit messages: Messages, request: Request[_])
 
-<div id="what-you-think" class="mt-2">
+<div id="what-you-think" class="govuk-!-margin-top-2">
     <p class="govuk-body">
-     <a id="feedback_link" href="@{appConfig.feedbackUrl(service)}" target="_blank" rel="noopener noreferrer">@messages("cds.subscription.outcomes.feedback")</a>
+     <a id="feedback_link" href="@{appConfig.feedbackUrl(service)}" class="govuk-link" target="_blank" rel="noopener noreferrer">@messages("cds.subscription.outcomes.feedback")</a>
     </p>
 </div>

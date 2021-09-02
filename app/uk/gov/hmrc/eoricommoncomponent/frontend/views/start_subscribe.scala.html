@@ -26,7 +26,7 @@
 @(service: Service)(implicit messages: Messages, request: Request[_])
 
 @link(text: String, url: String, target: String) = {
-    <a href="@url" target="@target">@messages(text)</a>
+    <a href="@url" class="govuk-link" target="@target">@messages(text)</a>
 }
 
 @warningContent = {
@@ -74,7 +74,7 @@
             <li>@messages("ecc.subscription.information.section.organisation.list.fourth")</li>
         </ul>
 
-        <h3 class="govuk-heading-s mt-2" id="individual">@messages("ecc.subscription.information.section.individual.subheading")</h3>
+        <h3 class="govuk-heading-s govuk-!-margin-top-2" id="individual">@messages("ecc.subscription.information.section.individual.subheading")</h3>
         <p id="individual-text" class="govuk-!-font-size-16 govuk-body">@messages("ecc.subscription.information.section.individual.para")</p>
 
         <ul class="govuk-list govuk-list--bullet govuk-!-font-size-16">

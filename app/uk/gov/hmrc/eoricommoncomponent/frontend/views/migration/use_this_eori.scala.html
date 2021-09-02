@@ -26,7 +26,7 @@
 service: Service)(implicit request: Request[_], messages: Messages)
 
 @signoutLink = {
-    <a href="@ApplicationController.logout(service)">@messages("cds.subscribe.use-this-eori.signout")</a>
+    <a class="govuk-link" href="@ApplicationController.logout(service)">@messages("cds.subscribe.use-this-eori.signout")</a>
 }
 
 @layout_di(messages("cds.subscribe.use-this-eori.heading"), form = None) {
