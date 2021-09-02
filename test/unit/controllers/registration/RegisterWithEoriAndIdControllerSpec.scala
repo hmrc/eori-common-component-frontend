@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter
 import common.pages.subscription.{ApplicationPendingPage, ApplicationUnsuccessfulPage}
 import common.pages.{RegistrationProcessingPage, RegistrationRejectedPage}
 import common.support.testdata.TestData
-import java.time.{LocalDate, ZonedDateTime}
+import java.time.{LocalDate, LocalDateTime, ZonedDateTime}
 
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
@@ -132,7 +132,7 @@ class RegisterWithEoriAndIdControllerSpec
     )
 
   private def stubRegisterWithEoriAndIdResponse(outcomeType: String = "PASS"): RegisterWithEoriAndIdResponse = {
-    val processingDate = ZonedDateTime.now()
+    val processingDate = LocalDateTime.now()
     val responseCommon =
       ResponseCommon(status = "OK", processingDate = processingDate)
     val trader               = Trader(fullName = "New trading", shortName = "nt")
@@ -154,7 +154,7 @@ class RegisterWithEoriAndIdControllerSpec
   }
 
   private def stubHandleErrorCodeResponse(statusText: String): RegisterWithEoriAndIdResponse = {
-    val processingDate = ZonedDateTime.now()
+    val processingDate = LocalDateTime.now()
     val responseCommon = ResponseCommon(status = "OK", statusText = Some(statusText), processingDate = processingDate)
     RegisterWithEoriAndIdResponse(responseCommon, None)
   }

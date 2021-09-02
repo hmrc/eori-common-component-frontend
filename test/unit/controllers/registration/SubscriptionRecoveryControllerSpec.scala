@@ -16,7 +16,8 @@
 
 package unit.controllers.registration
 
-import java.time.{LocalDate, ZonedDateTime}
+import java.time.{LocalDate, LocalDateTime}
+
 import org.mockito.ArgumentMatchers.{any, anyString, eq => meq}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -135,7 +136,7 @@ class SubscriptionRecoveryControllerSpec
           any[RecipientDetails],
           any[TaxPayerId],
           any[Option[Eori]],
-          any[Option[ZonedDateTime]],
+          any[Option[LocalDateTime]],
           any[SafeId]
         )(any[HeaderCarrier])
       ).thenReturn(Future.successful(result = ()))

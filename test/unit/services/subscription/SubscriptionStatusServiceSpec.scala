@@ -24,7 +24,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   SubscriptionStatusResponseHolder,
   TaxPayerId
 }
-import java.time.{ZoneOffset, ZonedDateTime}
+import java.time.LocalDateTime
 
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
@@ -50,7 +50,7 @@ class SubscriptionStatusServiceSpec extends UnitSpec with MockitoSugar with Befo
   private val mockConfig                                         = mock[Configuration]
   private val AValidTaxPayerID                                   = "123456789"
   private val MDGZeroPaddedTaxPayerId                            = AValidTaxPayerID + "000000000000000000000000000000000"
-  private val receiptDate                                        = ZonedDateTime.of(2016, 3, 17, 9, 30, 47, 0, ZoneOffset.UTC)
+  private val receiptDate                                        = LocalDateTime.of(2016, 3, 17, 9, 30, 47, 0)
 
   private val request =
     SubscriptionStatusQueryParams(receiptDate = receiptDate, regime = "CDS", "taxPayerID", MDGZeroPaddedTaxPayerId)

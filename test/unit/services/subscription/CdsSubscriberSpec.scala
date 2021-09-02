@@ -19,7 +19,7 @@ package unit.services.subscription
 import base.{Injector, UnitSpec}
 import common.support.testdata.TestData
 import common.support.testdata.subscription.SubscriptionContactDetailsBuilder
-import java.time.{ZoneOffset, ZonedDateTime}
+import java.time.LocalDateTime
 
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{when, _}
@@ -127,7 +127,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
           any[RecipientDetails],
           any[TaxPayerId],
           any[Option[Eori]],
-          any[Option[ZonedDateTime]],
+          any[Option[LocalDateTime]],
           any[SafeId]
         )(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
@@ -203,7 +203,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
           any[RecipientDetails],
           any[TaxPayerId],
           any[Option[Eori]],
-          any[Option[ZonedDateTime]],
+          any[Option[LocalDateTime]],
           any[SafeId]
         )(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
@@ -322,7 +322,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
   private def stubRegisterWithEoriAndIdResponseWithContactDetails: RegisterWithEoriAndIdResponse = stubRegister(true)
 
   private def stubRegister(useContactDetail: Boolean): RegisterWithEoriAndIdResponse = {
-    val processingDate = ZonedDateTime.now().withNano(0).withZoneSameLocal(ZoneOffset.UTC)
+    val processingDate = LocalDateTime.now().withNano(0)
     val responseCommon = ResponseCommon(status = "OK", processingDate = processingDate)
     val trader         = Trader(fullName = "New trading", shortName = "nt")
     val establishmentAddress =
@@ -370,7 +370,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
         any[RecipientDetails],
         any[TaxPayerId],
         any[Option[Eori]],
-        any[Option[ZonedDateTime]],
+        any[Option[LocalDateTime]],
         any[SafeId]
       )(any[HeaderCarrier])
     ).thenReturn(Future.successful(()))

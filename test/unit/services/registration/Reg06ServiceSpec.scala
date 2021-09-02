@@ -51,7 +51,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
   private val mockDataCache          = mock[SessionCache]
   private val mockRequestSessionData = mock[RequestSessionData]
   private val validDate              = "2016-07-08T08:35:13Z"
-  private val validDateTime          = ZonedDateTime.parse(validDate)
+  private val validDateTime          = ZonedDateTime.parse(validDate).toLocalDateTime
   implicit val hc: HeaderCarrier     = mock[HeaderCarrier]
 
   val service =
