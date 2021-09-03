@@ -202,7 +202,8 @@
             content = Text(messages(key))
         ),
         value = Value(
-            content = HtmlContent(value.getOrElse("").toString)
+            content = HtmlContent(value.getOrElse("").toString),
+            classes = "govuk-!-width-two-thirds"
         ),
         actions = call.flatMap(c => Some(Actions(
             items = Seq(
@@ -327,10 +328,11 @@
                     } else None
                 }
                 }
-            ).flatten
+            ).flatten,
+            "govuk-!-margin-bottom-9 govuk-summary-list--wide "
         ))
 
-        <h2 id="declaration">@messages("cds.form.declaration")</h2>
+        <h2 id="declaration" class="govuk-heading-m">@messages("cds.form.declaration")</h2>
         <p class="govuk-body" id="disclaimer">@messages("cds.form.disclaimer")</p>
 
         <div class="govuk-form-group">

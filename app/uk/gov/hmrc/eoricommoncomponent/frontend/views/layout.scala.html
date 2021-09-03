@@ -102,7 +102,13 @@
 @partials.countrypickerscript(countriesInCountryPicker)
 
 }
-@bodyEndBlockWrapper = {
+
+@beforeContent = {
+@hmrcLanguageSelectHelper()
+@if(displayBackLink) {
+    @govukBackLink(BackLink(href = "javascript:history.back()", content = Text(messages("cds.navigation.back")), attributes = Map("id" -> "back-link")))
+}
+
 @if(countriesInCountryPicker != NoCountriesInCountryPicker) {
     <script type="text/javascript">
             var countryPickerInputElements = document.getElementsByClassName('autocomplete__input');
@@ -117,13 +123,6 @@
             });
     </script>
 }
-}
-
-@beforeContent = {
-    @hmrcLanguageSelectHelper()
-    @if(displayBackLink) {
-        @govukBackLink(BackLink(href = "javascript:history.back()", content = Text(messages("cds.navigation.back")), attributes = Map("id" -> "back-link")))
-    }
 }
 
 @mainContent = {

@@ -81,7 +81,8 @@
             @inputRadioGroup(
                 OrganisationTypeForm("organisation-type"),
                 legend = messages("cds.matching.organisation-type.user.header"),
-                items = options
+                items = options,
+                classes = "govuk-fieldset__legend--l"
             )
 
                 @govukButton(Button(

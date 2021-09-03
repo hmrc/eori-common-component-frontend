@@ -61,7 +61,7 @@
 
             @CSRF.formField
 
-            @inputDate(updateFormErrors,headerAndTitle, hintText = Some(introHtml), id = "date-of-establishment",legendClasses = Some("date-of-establishment-field"))
+            @inputDate(updateFormErrors,headerAndTitle, hintText = Some(introHtml), id = "date-of-establishment",legendClasses = Some("date-of-establishment-field govuk-fieldset__legend--l"))
 
             @govukButton(Button(
                 content = Text(ViewHelper.continueButtonText(isInReviewMode))
