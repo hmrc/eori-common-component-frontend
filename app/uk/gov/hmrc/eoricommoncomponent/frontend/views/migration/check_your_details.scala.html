@@ -196,7 +196,7 @@
 }
 
 
-@row(key: String, value: Option[Html], call: Option[Call] = None, classes: String = "") = @{
+@row(key: String, value: Option[Html], call: Option[Call] = None, fieldName: String = "") = @{
     SummaryListRow(
         key = Key(
             content = Text(messages(key))
@@ -212,9 +212,10 @@
                     content = Text(messages("cds.form.change")),
                     visuallyHiddenText = Some(messages("cds.form.change") + " " + messages(key))
                 )
-            )
+            ),
+            classes = fieldName+"_change"
         ))),
-        classes = classes
+        classes = fieldName
     )
 }
 
@@ -329,7 +330,8 @@
                 }
                 }
             ).flatten,
-            "govuk-!-margin-bottom-9 govuk-summary-list--wide "
+            attributes = Map("id"->"review-tbl"),
+            classes = "govuk-!-margin-bottom-9 govuk-summary-list--wide "
         ))
 
         <h2 id="declaration" class="govuk-heading-m">@messages("cds.form.declaration")</h2>
