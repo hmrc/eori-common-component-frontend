@@ -67,17 +67,23 @@
 
 
 <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("css/location-autocomplete.min.css")" type="text/css">
-<script src="/customs-enrolment-services/assets/lib/accessible-autocomplete/dist/accessible-autocomplete.min.js" type="text/javascript"></script>
+<script src="/customs-enrolment-services/assets/lib/accessible-autocomplete/dist/location-autocomplete.min.js" type="text/javascript"></script>
 
 <script type="text/javascript">
-        var selectedElement = document.querySelector("#@(field)")
-        accessibleAutocomplete.enhanceSelectElement({
-            confirmOnBlur: true,
-            defaultValue: '',
-            selectElement: selectedElement,
-            showAllValues: true,
-            displayMenu: 'overlay',
-            autoselect: false,
-            preserveNullOptions: true
-        })
+        (function () {
+            var selectElements = document.getElementsByTagName('select');
+            var selectElement = selectElements[selectElements.length - 1]
+
+            openregisterLocationPicker({
+                defaultValue: '',
+                selectElement: selectElement,
+                tNoResults: () => '@messages("cds.country-picker.no-results")',
+                url: '@routes.Assets.versioned("javascripts/location-autocomplete-graph.json")'
+            })
+
+
+            inputElement.addEventListener('blur', function () {
+                if (this.value === "") selectElement.selectedIndex = 0;
+            });
+        }())
 </script>
