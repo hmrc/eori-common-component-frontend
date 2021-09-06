@@ -44,6 +44,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.recovery
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Random
 
 @Singleton
 class SubscriptionRecoveryController @Inject() (
@@ -245,7 +246,7 @@ class SubscriptionRecoveryController @Inject() (
       processedDate,
       email,
       emailVerificationTimestamp,
-      if (journey == Journey.Subscribe) formBundleId + service.code else formBundleId,
+      formBundleId + service.code + (100000 + Random.nextInt(900000)).toString,
       recipientFullName,
       name,
       eori,
