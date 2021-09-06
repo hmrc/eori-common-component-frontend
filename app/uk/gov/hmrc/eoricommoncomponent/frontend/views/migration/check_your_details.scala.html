@@ -226,7 +226,7 @@
 
         @govukSummaryList(SummaryList(
             rows = Seq(
-                Some(row("subscription.enter-email.label", Some(Html(email.get)), None,classes ="review-tbl__email")),
+                Some(row("subscription.enter-email.label", Some(Html(email.get)), None,"review-tbl__email")),
                 Some(row("cds.subscription.enter-eori-number.eori-number.label",
                     Some(Html(eoriNumber.get)),
                     if(existingEori.isEmpty) Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.reviewForm(service)) else None,
