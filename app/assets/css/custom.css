@@ -51,7 +51,7 @@
   list-style-type: none;
 }
 
-.form-group-error .error-message {
+.govuk-form-group--error .error-message {
     display: block;
 }
 
