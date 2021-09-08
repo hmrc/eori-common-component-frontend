@@ -67,10 +67,7 @@
     hint = hintText.map(hintHtml => Hint(
         content = HtmlContent(hintHtml)
     )),
-    errorMessage = form.hasErrors match {
-        case true => Some(ErrorMessage(classes = "govuk-!-margin-bottom-1", content = HtmlContent(formatedErrors)))
-        case _ => None
-    }
+    errorMessage = form(id).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
 ).withFormField(form(id)))
 
 

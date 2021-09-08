@@ -72,6 +72,10 @@
     s"/customs-enrolment-services/${service.code}/subscribe/keep-alive"
 }
 
+@serviceUrl = @{
+    s"/customs-enrolment-services/${service.code}/subscribe"
+}
+
 @getHelpForm = @{
     reportAProblemLink(ReportTechnicalIssue(baseUrl = Some(appConfig.contactBaseUrl),
         serviceId = appConfig.serviceIdentifierSubscribe + "-" + service.code,
@@ -135,7 +139,7 @@
 @hmrcLayout(
     pageTitle = Some(titleErr),
     isWelshTranslationAvailable = true, /* or false if your service has not been translated */
-    serviceUrl = None,
+    serviceUrl = Some(serviceUrl),
     signOutUrl = Some(logOutUrl),
     phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedBackSubscribe(service))),
     additionalHeadBlock = Some(theHead),
