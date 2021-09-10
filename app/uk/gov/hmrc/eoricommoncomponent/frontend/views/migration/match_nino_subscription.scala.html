@@ -26,8 +26,8 @@
 @(matchNinoIdForm: Form[NinoMatchModel], isInReviewMode: Boolean, service: Service)(implicit request: Request[_], messages: Messages)
 
 @hint = {
-    <span class="govuk-hint">@messages("cds.matching.nino.row.description")</span> <br><br>
-    <span class="govuk-hint">@Html(messages("cds.matching.nino.nino.hint"))</span>
+    <span>@messages("cds.matching.nino.row.description")</span> <br><br>
+    <span>@Html(messages("cds.matching.nino.nino.hint"))</span>
 }
 
 @values = @{

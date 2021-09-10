@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
+
 @this(inputSelect: helpers.inputSelect)
 
 @(form: Form[_], field: String, label: String, countries: List[Country], args: (Symbol, Any)*)(implicit messages: Messages)
@@ -40,7 +41,7 @@
 @selectedValue = @{ form(field).value match { case Some(x) => x case None => "" case x => x }}
 
 @hintHtml = {
-    <span class="govuk-visually-hidden">@Html(messages("cds.country-picker.hint.screen-reader"))</span>
+    <span class="govuk-visually-hidden">@Html(s". ${messages("cds.country-picker.hint.screen-reader")}")</span>
 }
 <div class ="govuk-!-width-one-half">
 @inputSelect(
