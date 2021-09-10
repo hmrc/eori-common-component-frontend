@@ -45,7 +45,7 @@
             }else {
                 <p id="organisation" class="govuk-body">@messages("ecc.reg06.outcome.why.org")</p>
             }
-            <ul class="bullets list">
+            <ul class="govuk-list govuk-list--bullet">
                 @if(isIndividual && hasUtr){
                     <li id="individual-utr">@messages("ecc.reg06.outcome.why.individual.utr")</li>
                 }else if(isIndividual && !hasUtr){

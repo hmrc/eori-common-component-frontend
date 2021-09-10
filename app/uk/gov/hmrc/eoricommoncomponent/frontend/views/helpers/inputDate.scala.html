@@ -18,19 +18,25 @@
   legendAsPageHeading: Boolean = true,
 )(implicit messages: Messages)
 
-@dateErrors = @{form(id).errors ++ form(s"$id.day").errors ++ form(s"$id.month").errors ++ form(s"$id.year").errors}
-@errorHtml = @{
-    s"""</span>
-       |<span id=${'"'}$id-error${'"'} class=${'"'}govuk-error-message govuk-!-margin-bottom-1${'"'}>
-       |    <span class=${'"'}govuk-visually-hidden${'"'}>Error: </span>""".stripMargin
+@formErrors = @{
+    form(id).errors ++ form(s"$id.day").errors ++ form(s"$id.month").errors ++ form(s"$id.year").errors
 }
-@formatedErrors = @{
-    if(dateErrors.nonEmpty) {
-        s"${messages(dateErrors.head.message, dateErrors.head.args: _*)}" +
-                dateErrors.tail.map(err => s"$errorHtml${messages(err.message, err.args: _*)}").mkString
-    } else {""}
+@errorContent(error: FormError) = {
+    <span id="@id-error" class="govuk-error-message govuk-!-margin-bottom-1">
+        <span class="govuk-visually-hidden">Error: </span>
+        @messages(error.message, error.args: _*)
+    </span>
 }
 
+@formattedErrors = {
+  @if(formErrors.nonEmpty){
+      @formErrors.headOption.map(err => messages(err.message, err.args: _*))
+      </span>
+      @if(formErrors.tail.nonEmpty) {
+          @formErrors.tail.map(err => errorContent(err))
+      }
+  }
+}
 
 
 @govukDateInput(DateInput(
@@ -73,7 +79,7 @@
         content = HtmlContent(hintHtml)
     )),
     errorMessage = form.hasErrors match {
-        case true => Some(ErrorMessage(classes = "govuk-!-margin-bottom-1", content = HtmlContent(formatedErrors)))
+        case true => Some(ErrorMessage(classes = "govuk-!-margin-bottom-1", content = HtmlContent(formattedErrors)))
         case _ => None
     }
 ).withFormField(form(id)))
