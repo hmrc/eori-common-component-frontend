@@ -246,7 +246,7 @@ class SubscriptionRecoveryController @Inject() (
       processedDate,
       email,
       emailVerificationTimestamp,
-      formBundleId + service.code + (100000 + Random.nextInt(900000)).toString,
+      formBundleId + service.code + "-" + (100000 + Random.nextInt(900000)).toString,
       recipientFullName,
       name,
       eori,
