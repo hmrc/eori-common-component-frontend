@@ -101,23 +101,17 @@ class AddressLookupPostcodeViewSpec extends ViewSpec {
 
     "display postcode input with label" in {
 
-      val postcodeInputDiv = doc().body().getElementById("postcode-outer")
-
-      postcodeInputDiv.getElementsByTag("label").get(0).text() must startWith("Postcode")
+      doc().body().getElementsByClass("govuk-label postcode").text() mustBe "Postcode"
     }
 
     "display line 1 input with label" in {
 
-      val line1InputDiv = doc().body().getElementById("line1-outer")
-
-      line1InputDiv.getElementsByTag("label").get(0).text() must startWith("Property name or number (optional)")
+      doc().body().getElementsByClass("govuk-label line1").text() mustBe "Property name or number (optional)"
     }
 
     "display Find Address button" in {
 
-      val continueButton = doc().body().getElementById("find-address-button")
-
-      continueButton.attr("value") mustBe "Find address"
+      doc().body().getElementsByClass("govuk-button").text() mustBe "Find address"
     }
 
     "display address is outside UK link" in {
@@ -138,8 +132,8 @@ class AddressLookupPostcodeViewSpec extends ViewSpec {
 
     "display error summary" in {
 
-      docWithErrorSummary.getElementById("form-error-heading").text() mustBe "There is a problem"
-      docWithErrorSummary.getElementsByClass("error-list").get(0).text() mustBe "Enter a valid postcode"
+      docWithErrorSummary.getElementById("error-summary-title").text() mustBe "There is a problem"
+      docWithErrorSummary.getElementsByClass("govuk-error-summary__list").get(0).text() mustBe "Enter a valid postcode"
     }
   }
 }

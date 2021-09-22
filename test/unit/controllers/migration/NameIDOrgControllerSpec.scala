@@ -147,7 +147,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     "display the correct text for the continue button" in {
       showCreateForm() { result =>
         val page = CdsPage(contentAsString(result))
-        page.getElementValue(continueButtonXpath) shouldBe ContinueButtonTextInCreateMode
+        page.getElementsText(continueButtonXpath) shouldBe ContinueButtonTextInCreateMode
       }
     }
 
@@ -198,7 +198,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     "display the correct text for the continue button" in {
       showReviewForm() { result =>
         val page = CdsPage(contentAsString(result))
-        page.getElementValue(continueButtonXpath) shouldBe ContinueButtonTextInReviewMode
+        page.getElementsText(continueButtonXpath) shouldBe ContinueButtonTextInReviewMode
       }
     }
   }

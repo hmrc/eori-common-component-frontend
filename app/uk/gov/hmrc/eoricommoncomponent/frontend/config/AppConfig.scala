@@ -39,12 +39,12 @@ class AppConfig @Inject() (
   val allowlistReferrers: Seq[String] =
     config.get[String]("allowlist-referrers").split(',').map(_.trim).filter(_.nonEmpty)
 
-  private val contactBaseUrl = servicesConfig.baseUrl("contact-frontend")
+  val contactBaseUrl = servicesConfig.baseUrl("contact-frontend")
 
   private val serviceIdentifierRegister =
     config.get[String]("microservice.services.contact-frontend.serviceIdentifierRegister")
 
-  private val serviceIdentifierSubscribe =
+  val serviceIdentifierSubscribe =
     config.get[String]("microservice.services.contact-frontend.serviceIdentifierSubscribe")
 
   private val feedbackLinkSubscribe = config.get[String]("external-url.feedback-survey-subscribe")
@@ -85,13 +85,6 @@ class AppConfig @Inject() (
       case Some(routes) if routes.nonEmpty => routes.split(',').map(_.r).toSeq
       case _                               => Seq.empty
     }
-
-  //get help link feedback for Register journey
-  def reportAProblemPartialUrlRegister(service: Service): String =
-    s"$contactBaseUrl/contact/problem_reports_ajax?service=$serviceIdentifierRegister-${service.code}"
-
-  def reportAProblemNonJSUrlRegister(service: Service): String =
-    s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifierRegister-${service.code}"
 
   //get help link feedback for Subscribe journey
   def reportAProblemPartialUrlSubscribe(service: Service): String =

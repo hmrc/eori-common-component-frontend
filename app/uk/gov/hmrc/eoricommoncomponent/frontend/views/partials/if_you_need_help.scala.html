@@ -20,13 +20,13 @@
 @(additionalContent: Option[Html] = None)(implicit messages: Messages, request: Request[_])
 
 <div id='additional-information-help'>
-    <h2 class="heading-medium">@messages("cds.if.you.need.help.heading")</h2>
+    <h2 class="govuk-heading-m">@messages("cds.if.you.need.help.heading")</h2>
 
-    <p>
+    <p class="govuk-body">
         @additionalContent
     </p>
 
-    <p>
+    <p class="govuk-body">
         @helpers.noMarginParagraph(messages("cds.if.you.need.help.telephone1"))
         @helpers.noMarginParagraph(messages("cds.if.you.need.help.telephone2"))
     </p>

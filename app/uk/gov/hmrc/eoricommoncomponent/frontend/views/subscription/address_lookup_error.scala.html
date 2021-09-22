@@ -18,41 +18,51 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Button
+@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 
-@this(layout_di: layout)
+@this(layout_di: layout, govukButton: GovukButton)
 
 @(service: Service, isInReviewMode: Boolean)(implicit request: Request[_], messages: Messages)
 
 @reenterPostcodeLink = {
     @if(isInReviewMode) {
-        <a href="@AddressLookupPostcodeController.reviewPage(service)" class="button" role="button" id="reenter-postcode-button">@messages("ecc.address-lookup.postcode.error.re-enter")</a>
+        @govukButton(Button(
+            href = Some(AddressLookupPostcodeController.reviewPage(service).url),
+            content = Text(messages("ecc.address-lookup.postcode.error.re-enter")),
+            classes = "reenter-postcode-button"
+        ))
     } else {
-        <a href="@AddressLookupPostcodeController.displayPage(service)" class="button" role="button" id="reenter-postcode-button">@messages("ecc.address-lookup.postcode.error.re-enter")</a>
+        @govukButton(Button(
+            href = Some(AddressLookupPostcodeController.displayPage(service).url),
+            content = Text(messages("ecc.address-lookup.postcode.error.re-enter")),
+            classes = "reenter-postcode-button"
+        ))
     }
 }
 
 @enterManuallyAddressLink = {
-    @if(isInReviewMode) {
-        <a href="@AddressController.reviewForm(service)" id="enter-manually-button">@messages("ecc.address-lookup.postcode.error.manual")</a>
-    } else {
-        <a href="@AddressController.createForm(service)" id="enter-manually-button">@messages("ecc.address-lookup.postcode.error.manual")</a>
-    }
+@if(isInReviewMode) {
+    <a href="@AddressController.reviewForm(service)" class="govuk-link" id="enter-manually-button">@messages("ecc.address-lookup.postcode.error.manual")</a>
+} else {
+    <a href="@AddressController.createForm(service)" class="govuk-link"  id="enter-manually-button">@messages("ecc.address-lookup.postcode.error.manual")</a>
+}
 }
 
 @layout_di(messages("ecc.address-lookup.postcode.error")) {
-    <div class="column-two-thirds">
-        <a href="javascript:history.back()" id="back" class="link-back js-visible">@messages("cds.navigation.back")</a>
+    <div>
         <legend>
-            <h1 class="heading-large">@messages("ecc.address-lookup.postcode.error")</h1>
+            <h1 class="govuk-heading-l">@messages("ecc.address-lookup.postcode.error")</h1>
         </legend>
 
-        <p id="hint">@messages("ecc.address-lookup.postcode.error.hint")</p>
+        <p id="hint" class="govuk-body">@messages("ecc.address-lookup.postcode.error.hint")</p>
 
-        <div id="re-enter-postcode" class="mt-2 mb-2">
+        <div id="re-enter-postcode" class="govuk-!-margin-top-2 govuk-!-margin-bottom-2">
             @reenterPostcodeLink
         </div>
 
-        <div id="manual-address">
+        <div id="manual-address" class="govuk-!-margin-bottom-4">
             @enterManuallyAddressLink
         </div>
     </div>

@@ -51,25 +51,25 @@ class EoriSignoutViewSpec extends ViewSpec {
 
     "display question with two radio buttons" in {
 
-      val questionElement = doc.body().getElementById("yes-no-answer-fieldset")
+      val questionElement = doc.body().getElementsByClass("govuk-label")
 
-      questionElement.getElementsByClass("heading-medium").text() mustBe "Is this what you want to do?"
+      doc.body().getElementsByTag("legend").text() mustBe "Is this what you want to do?"
 
-      questionElement.getElementsByTag("label").get(0).text() mustBe "Yes"
-      questionElement.getElementsByTag("label").get(1).text() mustBe "No"
+      questionElement.get(0).text() mustBe "Yes"
+      questionElement.get(1).text() mustBe "No"
     }
 
     "display continue button" in {
 
-      val continueButton = doc.body().getElementById("continue-button")
-
-      continueButton.attr("value") mustBe "Continue"
+      doc.body().getElementsByClass("govuk-button").text() mustBe "Continue"
     }
 
     "display error summary" in {
 
-      docWithErrorSummary.getElementById("form-error-heading").text() mustBe "There is a problem"
-      docWithErrorSummary.getElementsByClass("error-list").get(0).text() mustBe "Select what you would like to do"
+      docWithErrorSummary.getElementById("error-summary-title").text() mustBe "There is a problem"
+      docWithErrorSummary.getElementsByClass("govuk-error-summary__list").get(
+        0
+      ).text() mustBe "Select what you would like to do"
     }
   }
 

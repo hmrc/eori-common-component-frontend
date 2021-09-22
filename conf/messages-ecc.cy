@@ -75,17 +75,17 @@ ecc.subscription.information.para1=Er mwyn eich tanysgrifio i’r gwasanaeth {0}
 
 ecc.subscription.information.para2.heading=Rhif EORI GB
 ecc.subscription.information.para2=Bydd angen rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (rhif EORI) GB arnoch.
-ecc.subscription.information.para2.warning=!RhybuddMae’n rhaid i’r rhif EORI GB fod yr un sy’n gysylltiedig â’r Dynodydd Defnyddiwr (ID) Porth y Llywodraeth a ddefnyddiwyd gennych i fewngofnodi. <a href="https://www.tax.service.gov.uk/check-eori-number" target="_blank">Gwiriwch y rhif EORI GB (yn agor ffenestr neu dab newydd)</a>.
+ecc.subscription.information.para2.warning=!RhybuddMae’n rhaid i’r rhif EORI GB fod yr un sy’n gysylltiedig â’r Dynodydd Defnyddiwr (ID) Porth y Llywodraeth a ddefnyddiwyd gennych i fewngofnodi. <a href="https://www.tax.service.gov.uk/check-eori-number" class="govuk-link" target="_blank">Gwiriwch y rhif EORI GB (yn agor ffenestr neu dab newydd)</a>.
 ecc.subscription.information.para2.text=Os nad oes gennych rif EORI, byddwch yn cael un gyda’ch tanysgrifiad i’r gwasanaeth {0}. Bydd angen i chi ddarparu’r canlynol:
 ecc.subscription.information.para2.list.first=manylion TAW os ydych wedi’ch cofrestru yn y DU
 ecc.subscription.information.para2.list.bullet.first=rhif TAW
 ecc.subscription.information.para2.list.bullet.second=cod post y cyfeiriad a gofrestrwyd ar gyfer TAW
 ecc.subscription.information.para2.list.bullet.third=dyddiad y daw TAW i rym
-ecc.subscription.information.para2.list.second=Cod Dosbarthiad Diwydiannol Safonol (SIC). <a href="https://resources.companieshouse.gov.uk/sic/">Dewch o hyd i’ch cod SIC (yn agor ffenestr neu dab newydd)</a>.
+ecc.subscription.information.para2.list.second=Cod Dosbarthiad Diwydiannol Safonol (SIC). <a href="https://resources.companieshouse.gov.uk/sic/" class="govuk-link">Dewch o hyd i’ch cod SIC (yn agor ffenestr neu dab newydd)</a>.
 
 ecc.subscription.information.section.organisation.subheading=Manylion y cwmni neu sefydliad arall
 ecc.subscription.information.section.organisation.list.heading=Os ydych yn gwmni cyfyngedig, partneriaeth neu elusen, bydd angen y canlynol arnoch:
-ecc.subscription.information.section.organisation.list.first=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth os ydych yn talu treth gorfforaeth yn y DU. Gallwch ddod o hyd i <a href="https://www.tax.service.gov.uk/ask-for-copy-of-your-corporation-tax-utr" target="_blank" rel="noopener noreferrer">UTR coll (yn agor ffenestr neu dab newydd)</a>.
+ecc.subscription.information.section.organisation.list.first=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth os ydych yn talu treth gorfforaeth yn y DU. Gallwch ddod o hyd i <a href="https://www.tax.service.gov.uk/ask-for-copy-of-your-corporation-tax-utr" class="govuk-link" target="_blank" rel="noopener noreferrer">UTR coll (yn agor ffenestr neu dab newydd)</a>.
 ecc.subscription.information.section.organisation.list.second=Enw’r cwmni cofrestredig
 ecc.subscription.information.section.organisation.list.third=Cyfeiriad cofrestredig y cwmni
 ecc.subscription.information.section.organisation.list.fourth=Dyddiad sefydlu
@@ -93,7 +93,7 @@ ecc.subscription.information.section.organisation.list.fourth=Dyddiad sefydlu
 ecc.subscription.information.section.individual.subheading=Manylion yr unig fasnachwr neu unigolyn
 ecc.subscription.information.section.individual.para=Os ydych wedi gweithio yn y DU neu wedi cofrestru ar gyfer Hunanasesiad, bydd angen un o’r canlynol arnoch:
 ecc.subscription.information.section.individual.nino=Rhif Yswiriant Gwladol
-ecc.subscription.information.section.individual.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad. Gallwch ddod o hyd i <a href="https://www.gov.uk/find-lost-utr-number" target="_blank" rel="noopener noreferrer">UTR coll (yn agor ffenestr neu dab newydd)</a>.
+ecc.subscription.information.section.individual.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad. Gallwch ddod o hyd i <a href="https://www.gov.uk/find-lost-utr-number" class="govuk-link" target="_blank" rel="noopener noreferrer">UTR coll (yn agor ffenestr neu dab newydd)</a>.
 
 ecc.subscription.information.only.once=Dim ond unwaith y mae angen gwneud hyn.
 ecc.subscription.information.email.confirm=Byddwn yn prosesu’ch cais ac yn anfon e-bost atoch gyda’r canlyniad cyn pen 2 awr.
@@ -190,10 +190,6 @@ cds.enrolment.pending.group.otherService.paragraph1=Rydym wrthi’n prosesu cais
 cds.enrolment.pending.group.otherService.paragraph2=Mae’n rhaid i’r broses hon gael ei chwblhau cyn i chi allu gwneud cais am wasanaeth arall.
 cds.enrolment.pending.group.sameService.paragraph1=Yn ôl ein cofnodion, mae rhywun yn eich sefydliad eisoes wedi gwneud cais am y gwasanaeth hwn.
 
-cds.languageSelect.current.label=Cymraeg
-cds.languageSelect.select.label=English
-cds.languageSelect.select.hint=Change the language to English
-
 cds.pdf.outcomes.eori.number=Rhif EORI: {0}
 
 confirm-business-details.title-and-heading=Ai dyma’ch cyfeiriad cofrestredig?
@@ -225,7 +221,7 @@ ecc.reg06.outcome.why.individual.utr = Cyfeirnod Unigryw y Trethdalwr (UTR) ar g
 ecc.reg06.outcome.why.individual.nino = rhif Yswiriant Gwladol
 ecc.reg06.outcome.why.org.utr = Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)
 ecc.reg06.outcome.why.eori = Rhif EORI
-ecc.reg06.outcome.apply.again = Ewch dros y manylion hyn a <a href="{0}">chyflwynwch gais eto</a>.
+ecc.reg06.outcome.apply.again = Ewch dros y manylion hyn a <a href="{0} class="govuk-link"">chyflwynwch gais eto</a>.
 
 ecc.unable-to-use.title = Ni allwch gael mynediad at {0} gyda chyfrif Porth y Llywodraeth hwn
 ecc.unable-to-use.this-eori-number = Mae’r rhif EORI:
@@ -278,3 +274,8 @@ ecc.address-lookup.postcode.no-results.manual = Hoffwn nodi fy nghyfeiriad â ll
 ecc.address-lookup.postcode.results.not-found = Heb ei ddarganfod
 
 cds.matching.organisation-address.postcode-optional=Cod post (dewisol)
+
+date.fields.day = Diwrnod
+date.fields.month = Mis
+date.fields.year = Blwyddyn
+

@@ -51,14 +51,14 @@ class NameOrganisationSpec extends ViewSpec {
     "display a field level error message" in {
       docWithErrors
         .body()
-        .getElementById("name-outer")
-        .getElementsByClass("error-message")
+        .getElementById("name-error")
+        .getElementsByClass("govuk-error-message")
         .text() mustBe "Error: Enter your registered organisation name"
     }
     "display a page level error message" in {
       docWithErrors
         .body()
-        .getElementsByClass("error-summary-list")
+        .getElementsByClass("govuk-error-summary__list")
         .text() mustBe "Enter your registered organisation name"
     }
   }

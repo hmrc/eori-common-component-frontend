@@ -42,16 +42,15 @@ class EnterYourDetailsSpec extends ViewSpec {
       doc.body().getElementsByTag("h1").text() mustBe "Enter your details"
     }
     "have the correct class on the h1" in {
-      doc.body().getElementsByTag("h1").hasClass("heading-large") mustBe true
+      doc.body().getElementsByTag("h1").hasClass("govuk-heading-l") mustBe true
     }
     "have a correct label for First name for UK" in {
-      doc.body().getElementById("first-name-outer").getElementsByClass("form-label").text() mustBe "First name"
+      doc.body().getElementsByClass("govuk-label first-name").text() mustBe "First name"
     }
     "have a correct label for given name for Row" in {
       docRestOfWorld
         .body()
-        .getElementById("first-name-outer")
-        .getElementsByClass("form-label")
+        .getElementsByClass("govuk-label first-name")
         .text() mustBe "Given name"
     }
     "have an input of type 'text' for given name" in {
@@ -64,13 +63,12 @@ class EnterYourDetailsSpec extends ViewSpec {
       doc.body().getElementById("first-name").attr("spellcheck") mustBe "false"
     }
     "have a correct label for Last name for UK" in {
-      doc.body().getElementById("last-name-outer").getElementsByClass("form-label").text() mustBe "Last name"
+      doc.body().getElementsByClass("govuk-label last-name").text() mustBe "Last name"
     }
     "have a correct label for family name for Row" in {
       docRestOfWorld
         .body()
-        .getElementById("last-name-outer")
-        .getElementsByClass("form-label")
+        .getElementsByClass("govuk-label last-name")
         .text() mustBe "Family name"
     }
     "have an input of type 'text' for family name" in {

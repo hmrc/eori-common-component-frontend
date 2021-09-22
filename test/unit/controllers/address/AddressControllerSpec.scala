@@ -162,7 +162,7 @@ class AddressControllerSpec
     "display the correct text for the continue button" in {
       showCreateForm() { result =>
         val page = CdsPage(contentAsString(result))
-        page.getElementValue(AddressPage.continueButtonXpath) shouldBe ContinueButtonTextInCreateMode
+        page.getElementsText(AddressPage.continueButtonXpath) shouldBe ContinueButtonTextInCreateMode
       }
     }
 
@@ -222,7 +222,7 @@ class AddressControllerSpec
     "display the correct text for the continue button" in {
       showReviewForm() { result =>
         val page = CdsPage(contentAsString(result))
-        page.getElementValue(AddressPage.continueButtonXpath) shouldBe ContinueButtonTextInReviewMode
+        page.getElementsText(AddressPage.continueButtonXpath) shouldBe ContinueButtonTextInReviewMode
       }
     }
   }

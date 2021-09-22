@@ -50,13 +50,13 @@ class HowCanWeIdentifyYouNinoSpec extends ViewSpec {
     "display an page level error if no nino entered" in {
       docWithNoNinoError
         .body()
-        .getElementsByClass("error-summary-list")
+        .getElementsByClass("govuk-error-summary__list")
         .text() mustBe "Enter your National Insurance number"
     }
 
     "display an field level error if no nino entered" in {
       docWithNoNinoError.body().getElementsByClass(
-        "error-message"
+        "govuk-error-message"
       ).text() mustBe "Error: Enter your National Insurance number"
     }
 

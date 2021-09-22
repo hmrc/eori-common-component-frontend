@@ -62,31 +62,29 @@ class ContactDetailsSpec extends ViewSpec {
 
     "display full name input" in {
 
-      val fullNameDiv = doc.body().getElementById("full-name-outer")
-
-      fullNameDiv.getElementsByTag("label").get(0).text() must startWith("Full name")
+      doc.body().getElementsByClass("full-name").text() mustBe "Full name"
     }
 
     "display telephone input" in {
 
-      val telephoneDiv = doc.body().getElementById("telephone-outer")
-
-      telephoneDiv.getElementsByTag("label").get(0).text() must startWith("Telephone")
-      telephoneDiv.getElementById("telephone-hint").text() mustBe "Only enter numbers, for example 01632 960 001"
+      doc.body().getElementsByClass("telephone").text() mustBe "Telephone"
+      doc.body().getElementById("telephone-hint").text() mustBe "Only enter numbers, for example 01632 960 001"
     }
 
     "display continue button" in {
 
-      val continueButton = doc.body().getElementById("continue-button")
+      doc.body().getElementsByClass("govuk-button").text() mustBe "Continue"
 
-      continueButton.attr("value") mustBe "Continue"
     }
 
     "display error summary" in {
 
-      docWithErrorSummary.getElementById("form-error-heading").text() mustBe "There is a problem"
-      docWithErrorSummary.getElementsByClass("error-list").get(0).text() mustBe "Enter your contact name"
-      docWithErrorSummary.getElementsByClass("error-list").get(1).text() mustBe "Enter your contact telephone number"
+      val errorSummaryDiv = docWithErrorSummary.getElementsByClass("govuk-error-summary__list").first
+      val errorList       = errorSummaryDiv.getElementsByTag("li")
+
+      docWithErrorSummary.getElementById("error-summary-title").text() mustBe "There is a problem"
+      errorList.get(0).text() mustBe "Enter your contact name"
+      errorList.get(1).text() mustBe "Enter your contact telephone number"
     }
   }
 }

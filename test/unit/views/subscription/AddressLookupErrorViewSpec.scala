@@ -54,7 +54,7 @@ class AddressLookupErrorViewSpec extends ViewSpec {
 
     "display change postcode link" in {
 
-      val reenterPostcodeButton = doc.body().getElementById("reenter-postcode-button")
+      val reenterPostcodeButton = doc.body().getElementsByClass("reenter-postcode-button")
 
       reenterPostcodeButton.text() mustBe "Re-enter postcode"
       reenterPostcodeButton.attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address-postcode"
@@ -73,7 +73,7 @@ class AddressLookupErrorViewSpec extends ViewSpec {
 
     "display review change postcode link" in {
 
-      val reenterPostcodeButton = reviewDoc.body().getElementById("reenter-postcode-button")
+      val reenterPostcodeButton = reviewDoc.body().getElementsByClass("reenter-postcode-button")
 
       reenterPostcodeButton.text() mustBe "Re-enter postcode"
       reenterPostcodeButton.attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address-postcode/review"

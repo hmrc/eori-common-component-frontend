@@ -64,7 +64,7 @@ class UnableToUseIdViewSpec extends ViewSpec {
 
     "display signout button" in {
 
-      val signoutButton = doc.body().getElementById("signout-button")
+      val signoutButton = doc.body().getElementsByClass("govuk-button")
 
       signoutButton.text() mustBe "Sign out"
       signoutButton.attr("href") mustBe "/customs-enrolment-services/atar/subscribe/logout"

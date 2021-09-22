@@ -13,104 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *@
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@this(govukRadios: GovukRadios)
 
-@(field: Field, radioOptions: Seq[(String, String)], hints: Map[String, String], hintHtml: Option[Html],  args: (Symbol, Any)*)(implicit messages: Messages, formInstance: Option[Form[_]] = None)
+@(      field: Field,
+        legend: String,
+        items: Seq[RadioItem],
+        legendAsHeading: Boolean = true,
+        hint: Option[Hint] = None,
+        classes: String = "govuk-fieldset__legend--xl",
+        inline: Boolean = false
+)(implicit messages: Messages)
 
-@import play.api.i18n._
-@import views.html.helper._
-
-@elements = @{
-    FieldElements(field.id, field, Html(""), args.toMap, messages)
-}
-@isLegendH1 = @{
-    elements.args.getOrElse('_isLegendH1, false).asInstanceOf[Boolean]
-}
-@legend = @{
-    elements.args.getOrElse('_legend, "").asInstanceOf[String]
-}
-@hasHint = @{
-    elements.args.contains('_hintText)
-}
-@hintId = @{
-    if(hasHint) s"${field.id}-hint" else ""
-}
-@hasHintHtml = @{
-    hintHtml.isDefined
-}
-@hintHtmlId = @{
-    if(hasHintHtml) s"${field.id}-hintHtml" else ""
-}
-
-@hasErrors = @{
-    elements.hasErrors
-}
-@errorId = @{
-    if(hasErrors) s"${field.id}-error" else ""
-}
-@describedBy = @{
-  Seq(hintId, hintHtmlId, errorId).filterNot(_.isEmpty).mkString(" ")
-}
-
-<div id="@field.id-field" class="form-group">
-    <fieldset
-        id="@field.id-fieldset"
-        @if(hasHint || hasHintHtml || hasErrors){
-            aria-describedby="@describedBy"
-        } >
-
-        <legend>
-        @if(isLegendH1){
-            <h1 class="heading-large">
-            @legend
-            </h1>
-        } else {
-            <span class="heading-medium">
-            @legend
-            </span>
-        }
-        </legend>
-
-        @if(hasErrors) {
-            <div class="form-group-error">
-        }
-
-        @if(hasHint) {
-            <p class="form-hint" id="@hintId">@elements.args.get('_hintText)</p>
-        }
-
-        @hintHtml.map{ hint =>
-            <p class="form-hint" id="@hintHtmlId">@hint</p>
-        }
-
-        @if(hasErrors) {
-            @elements.errors.map { error => <span class="error-message" id="@errorId"><span class="visually-hidden">@messages("cds.error.field.hint")</span> @messages(key = error.toString)</span> }
-            </div>
-        }
-
-        @if(hasErrors) {
-            <div class="form-group-error">
-        }
-        @radioOptions.map { case (value, label) =>
-            @defining(s"${elements.field.name}-${value.toLowerCase.replace(" ", "_")}") { inputId =>
-                <div class="multiple-choice">
-                    <input
-                    type="radio"
-                    id="@inputId"
-                    name="@elements.field.name"
-                    value="@value"
-                    @field.value.filter(_ == value).map { _ => checked="checked" }>
-                    <label for="@inputId">
-                        @label&nbsp;
-                        @hints.get(value).map { hint =>
-                            <span class="form-hint">@{Html(hint)}</span>
-                        }
-                    </label>
-                </div>
-            }
-
-        }
-        @if(hasErrors) {
-            </div>
-        }
-    </fieldset>
-</div>
+@govukRadios(Radios(
+    classes = s"${if(inline){"govuk-radios--inline"}}",
+    idPrefix = Some(field.id),
+    name = field.name,
+    fieldset = Some(Fieldset(
+        legend = Some(Legend(
+            content = Text(messages(legend)),
+            isPageHeading = legendAsHeading,
+            classes = classes
+        ))
+    )),
+    hint = hint,
+    items = items,
+    errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+))

@@ -20,43 +20,39 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@this(layout_di: layout)
+@this(layout_di: layout, inputText: helpers.inputText, errorSummary: helpers.errorSummary, govukButton: GovukButton)
 
-@(emailForm: Form[EmailViewModel],service: Service)(implicit request: Request[_], messages: Messages)
-
-@inputText(field: String, label: String, args: (Symbol, Any)*) = {
-
-@defining(Seq(
-    '_label -> label,
-    '_isLabelH1 -> true) ++ args) { args =>
-
-    @helpers.input(
-        emailForm(field),
-        args: _*
-    )
-    }
-}
+@(emailForm: Form[EmailViewModel], service: Service)(implicit request: Request[_], messages: Messages)
 
 @layout_di(messages("cds.subscription.enter-email.page.title"), form = Some(emailForm)) {
 
-<div class="column-two-thirds">
-    <a href="javascript:history.back()" id="back" class="link-back js-visible">@messages("cds.navigation.back")</a>
+<div>
 
-    @helpers.errorSummary(emailForm)
+    @errorSummary(emailForm.errors)
 
     @helpers.form(WhatIsYourEmailController.submit(service),"emailForm") {
 
         @CSRF.formField
 
-        @inputText("email",
-            messages("subscription.enter-email.heading"),
-            '_hintText ->  messages("enter-email-body-text"),
-            '_type ->  "email",
-            '_autocomplete ->  "email"
+
+        @inputText(
+            form = emailForm,
+            id = "email",
+            name = "email",
+            inputType = "email",
+            label = "subscription.enter-email.heading",
+            isPageHeading = true,
+            hint = Some(Html(messages("enter-email-body-text"))),
+            autocomplete = Some("email"),
+            classes = Some("govuk-!-width-one-half"),
+            labelClasses = Some("govuk-label--l")
         )
 
-        <p><input class="button" type="submit" value='@ViewHelper.continueButtonText(false)'></p>
+        @govukButton(Button(
+            content = Text(ViewHelper.continueButtonText(false))
+        ))
     }
 
     @helpers.helpAndSupport()

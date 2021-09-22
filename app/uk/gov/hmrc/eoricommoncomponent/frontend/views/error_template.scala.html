@@ -21,11 +21,11 @@
 @this(layout_di: layout)
 @()(implicit messages: Messages, request: Request[_])
 
-@layout_di(messages("cds.error.title")) {
+@layout_di(messages("cds.error.title"), displayBackLink = false) {
 
-<div class="column-two-thirds">
-    <h1 class="heading-xlarge">@messages("cds.error.title")</h1>
-    <p>@messages("cds.error.message.part1")</p>
-    <p>@messages("cds.error.message.part2")</p>
+<div>
+    <h1 class="govuk-heading-xl">@messages("cds.error.title")</h1>
+    <p class="govuk-body">@messages("cds.error.message.part1")</p>
+    <p class="govuk-body">@messages("cds.error.message.part2")</p>
 </div>
 }

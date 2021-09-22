@@ -18,8 +18,11 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NameIdOrganisationMatch
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper
+@import views.html.helper.CSRF
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@this(layout_di: layout)
+@this(layout_di: layout, inputText: helpers.inputText,  errorSummary: helpers.errorSummary, govukButton: GovukButton)
 
 @(nameUtrForm: Form[NameIdOrganisationMatchModel],
     registrationDetails: RegistrationDetails,       
@@ -27,12 +30,6 @@
     displayMode: String,
     service: Service,
 )(implicit request: Request[_], messages: Messages)
-
-@import views.html.helper._
-
-@inputText(field: String, label: String, args: (Symbol, Any)*) = {
-    @helpers.inputText(nameUtrForm)(field, label, args: _*)
-}
 
 @headerAndTitle = @{
     if(displayMode=="partnership") messages("cds.matching.header.partnership")
@@ -46,35 +43,46 @@
 }
 
 @utrHintText = @{
-    if(displayMode=="partnership") Html(messages("cds.matching.partnership.utr.hint"))
-    else Html(messages("cds.matching.utr.hint"))
+    if(displayMode=="partnership") messages("cds.matching.partnership.utr.hint")
+    else messages("cds.matching.utr.hint")
 }
 
 @layout_di(headerAndTitle, form = Some(nameUtrForm)) {
 
-<div class="column-two-thirds">
-    <a href="javascript:history.back()" id="back" class="link-back js-visible">@messages("cds.navigation.back")</a>
+<div>
 
-    @helpers.errorSummary(nameUtrForm)
+    @errorSummary(nameUtrForm.errors)
 
-    <h1 class="heading-large">@headerAndTitle</h1>
+    <h1 class="govuk-heading-l">@headerAndTitle</h1>
 
     @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController.submit(isInReviewMode, service), "nameUtrOrganisationForm") {
         @CSRF.formField
 
         @inputText(
-            "name",
-            messages(s"cds.matching.name-id-organisation.$displayMode.name"),
-            '_hintText -> nameHintText
+            form = nameUtrForm,
+            id = "name",
+            name = "name",
+            label = messages(s"cds.matching.name-id-organisation.$displayMode.name"),
+            hint = Some(Html(nameHintText)),
+            isPageHeading =  false,
+            classes = Some("govuk-!-width-one-half"),
+            labelClasses = Some("govuk-!-font-weight-bold")
         )
 
         @inputText(
-            "utr",
-            messages(s"cds.matching.name-id-organisation.$displayMode.utr"),
-            '_hintText -> utrHintText
+            form = nameUtrForm,
+            id = "utr",
+            name = "utr",
+            label = messages(s"cds.matching.name-id-organisation.$displayMode.utr"),
+            isPageHeading =  false,
+            hint = Some(Html(utrHintText)),
+            classes = Some("govuk-!-width-one-half"),
+            labelClasses = Some("govuk-!-font-weight-bold")
         )
 
-        <input class="button" type="submit" value='@uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper.continueButtonText(isInReviewMode)'>
+        @govukButton(Button(
+            content = Text(ViewHelper.continueButtonText(isInReviewMode))
+        ))
     }
 </div>
 }

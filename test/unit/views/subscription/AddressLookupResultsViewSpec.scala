@@ -96,11 +96,13 @@ class AddressLookupResultsViewSpec extends ViewSpec {
 
     "display summary of params" in {
 
-      doc().body().getElementById("review-tbl__postcode_heading").text mustBe "Postcode"
-      doc().body().getElementById("review-tbl__postcode").text mustBe "AA11 1AA"
+      val postcode = doc().body().getElementsByClass("review-tbl__postcode").get(0)
+      postcode.getElementsByClass("govuk-summary-list__key").text mustBe "Postcode"
+      postcode.getElementsByClass("govuk-summary-list__value").text mustBe "AA11 1AA"
 
-      doc().body().getElementById("review-tbl__line1_heading").text mustBe "Property name or number"
-      doc().body().getElementById("review-tbl__line1").text mustBe "Flat 1"
+      val line1 = doc().body().getElementsByClass("review-tbl__line1").get(0)
+      line1.getElementsByClass("govuk-summary-list__key").text mustBe "Property name or number"
+      line1.getElementsByClass("govuk-summary-list__value").text mustBe "Flat 1"
     }
 
     "display summary of params with 'Not found' for property name or number" in {
@@ -110,45 +112,51 @@ class AddressLookupResultsViewSpec extends ViewSpec {
           contentAsString(view(form, params.copy(skippedLine1 = true), allowedAddress, false, Company, atarService))
         )
 
-      docWithNotFound.body().getElementById("review-tbl__line1_heading").text mustBe "Property name or number"
-      docWithNotFound.body().getElementById("review-tbl__line1").text mustBe "Not found"
+      val line1 = docWithNotFound.body().getElementsByClass("review-tbl__line1").get(0)
+      line1.getElementsByClass("govuk-summary-list__key").text mustBe "Property name or number"
+      line1.getElementsByClass("govuk-summary-list__value").text mustBe "Not found"
     }
 
     "display change link to params page" in {
 
-      val postcodeChangeLink = doc().body().getElementById("review-tbl__postcode_change")
-      val line1ChangeLink    = doc().body().getElementById("review-tbl__line1_change")
+      val postcodeChangeLink = doc().body().getElementsByClass("review-tbl__postcode_change").get(0)
+      val line1ChangeLink    = doc().body().getElementsByClass("review-tbl__line1_change").get(0)
 
-      postcodeChangeLink.text() must startWith("Change")
-      postcodeChangeLink.attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address-postcode"
+      postcodeChangeLink.getElementsByTag("a").text() must startWith("Change")
+      postcodeChangeLink.getElementsByTag("a").attr(
+        "href"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/address-postcode"
 
-      line1ChangeLink.text() must startWith("Change")
-      line1ChangeLink.attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address-postcode"
+      line1ChangeLink.getElementsByTag("a").text() must startWith("Change")
+      line1ChangeLink.getElementsByTag("a").attr(
+        "href"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/address-postcode"
     }
 
     "display change link to params page - review mode" in {
 
-      val postcodeChangeLink = reviewDoc.body().getElementById("review-tbl__postcode_change")
-      val line1ChangeLink    = reviewDoc.body().getElementById("review-tbl__line1_change")
+      val postcodeChangeLink = reviewDoc.body().getElementsByClass("review-tbl__postcode_change").get(0)
+      val line1ChangeLink    = reviewDoc.body().getElementsByClass("review-tbl__line1_change").get(0)
 
-      postcodeChangeLink.text() must startWith("Change")
-      postcodeChangeLink.attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address-postcode/review"
+      postcodeChangeLink.getElementsByTag("a").text() must startWith("Change")
+      postcodeChangeLink.getElementsByTag("a").attr(
+        "href"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/address-postcode/review"
 
-      line1ChangeLink.text() must startWith("Change")
-      line1ChangeLink.attr("href") mustBe "/customs-enrolment-services/atar/subscribe/address-postcode/review"
+      line1ChangeLink.getElementsByTag("a").text() must startWith("Change")
+      line1ChangeLink.getElementsByTag("a").attr(
+        "href"
+      ) mustBe "/customs-enrolment-services/atar/subscribe/address-postcode/review"
     }
 
     "display dropdown with label" in {
 
-      val addressContainer = doc().body().getElementById("address-container")
+      doc().body().getElementsByTag("label").text() mustBe "Select your address"
 
-      addressContainer.getElementsByTag("label").get(0).text() mustBe "Select your address"
+      val dropdown = doc().body().getElementsByTag("select").get(0)
 
-      val dropdown = addressContainer.getElementById("address")
-      val options  = dropdown.getElementsByTag("option")
-
-      options.get(0).text() mustBe empty
-      options.get(1).text() mustBe "Line 1, City, BB11 1BB"
+      dropdown.getElementsByTag("option").get(0).text() mustBe empty
+      dropdown.getElementsByTag("option").get(1).text() mustBe "Line 1, City, BB11 1BB"
     }
 
     "display manual address link" in {
@@ -169,15 +177,15 @@ class AddressLookupResultsViewSpec extends ViewSpec {
 
     "display Continue button" in {
 
-      val continueButton = doc().body().getElementById("continue-button")
-
-      continueButton.attr("value") mustBe "Continue"
+      doc().body().getElementsByClass("govuk-button").text() mustBe "Continue"
     }
 
     "display error summary" in {
 
-      docWithErrorSummary.getElementById("form-error-heading").text() mustBe "There is a problem"
-      docWithErrorSummary.getElementsByClass("error-list").get(0).text() mustBe "Please select address from the list"
+      docWithErrorSummary.getElementById("error-summary-title").text() mustBe "There is a problem"
+      docWithErrorSummary.getElementsByClass(
+        "govuk-error-summary__list"
+      ).text() mustBe "Please select address from the list"
     }
   }
 }

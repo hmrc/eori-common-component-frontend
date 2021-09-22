@@ -56,23 +56,19 @@ class CountryOrganisationViewSpec extends ViewSpec {
 
     "display input with Country label" in {
 
-      val inputDiv = doc.body().getElementById("country-outer")
-
-      inputDiv.getElementsByTag("label").get(0).text() must startWith("Country")
+      doc.body().getElementsByTag("label").text() must startWith("Country")
     }
 
     "display continue button" in {
 
-      val continueButton = doc.body().getElementById("continue-button")
-
-      continueButton.attr("value") mustBe "Continue"
+      doc.body().getElementsByClass("govuk-button").text() mustBe "Continue"
     }
 
     "display error summary" in {
 
-      docWithErrorSummary.getElementById("form-error-heading").text() mustBe "There is a problem"
-      docWithErrorSummary.getElementsByClass("error-list").get(
-        0
+      docWithErrorSummary.getElementById("error-summary-title").text() mustBe "There is a problem"
+      docWithErrorSummary.getElementsByClass(
+        "govuk-error-summary__list"
       ).text() mustBe "Enter the country in which your organisation is registered"
     }
   }

@@ -54,22 +54,22 @@ class HaveNinoSubscriptionSpec extends ViewSpec {
 
     "have description with proper content" in {
       doc.body
-        .getElementById("have-nino-hintHtml")
+        .getElementById("have-nino-hint")
         .text must include("You will have a National Insurance number if you have worked in the UK.")
     }
 
     "Have correct hint for nino field" in {
-      doc.body.getElementById("have-nino-hintHtml").text must include(
+      doc.body.getElementById("have-nino-hint").text must include(
         "It’s on your National Insurance card, benefit letter, payslip or P60."
       )
-      doc.body.getElementById("have-nino-hintHtml").text must include("For example, 'QQ123456C'")
+      doc.body.getElementById("have-nino-hint").text must include("For example, 'QQ123456C'")
     }
 
   }
 
   "No option selected Subscription Have Nino Page" should {
     "have page level error with correct message" in {
-      docWithNoOptionSelected.body.getElementById("form-error-heading").text mustBe "There is a problem"
+      docWithNoOptionSelected.body.getElementById("error-summary-title").text mustBe "There is a problem"
       docWithNoOptionSelected.body
         .getElementsByAttributeValue("href", "#have-nino-true")
         .text mustBe "Select yes if you have a National Insurance number"

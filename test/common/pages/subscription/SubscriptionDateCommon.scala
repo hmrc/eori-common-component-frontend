@@ -24,9 +24,9 @@ trait SubscriptionDateCommon extends WebPage {
 
   protected def dateFieldName: String
 
-  def dateOfEstablishmentErrorXpath: String = s"//*[@id='date-of-establishment-fieldset']//span[@class='error-message']"
+  def dateOfEstablishmentErrorXpath: String = s"//span[@id='date-of-establishment-error'][@class='govuk-error-message']"
 
-  def dateOfBirthFieldLevelErrorXpath: String = s"//*[@id='date-of-birth-fieldset']//span[@class='error-message']"
+  def dateOfBirthFieldLevelErrorXpath: String = s"//span[@id='date-of-birth-error']//span[@class='govuk-error-message']"
 
   def dayOfDateFieldXpath: String = s"//*[@id='$dateFieldName.day']"
 
