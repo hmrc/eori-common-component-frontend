@@ -17,8 +17,7 @@
 package unit.controllers.registration
 
 import java.time.{LocalDate, LocalDateTime}
-
-import org.mockito.ArgumentMatchers.{any, anyString, eq => meq}
+import org.mockito.ArgumentMatchers.{any, anyString, eq => meq, contains}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
@@ -167,14 +166,14 @@ class SubscriptionRecoveryControllerSpec
       }
 
       verify(mockTaxEnrolmentsService).issuerCall(
-        meq(expectedFormBundleId),
+        contains(expectedFormBundleId),
         meq(Eori("testEORInumber")),
         any[Option[LocalDate]],
         meq(atarService)
       )(any[HeaderCarrier])
 
       verify(mockHandleSubscriptionService).handleSubscription(
-        meq(expectedFormBundleId),
+        contains(expectedFormBundleId),
         any(),
         any(),
         meq(Some(Eori("testEORInumber"))),
@@ -207,14 +206,14 @@ class SubscriptionRecoveryControllerSpec
         header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/subscribe/complete")
       }
       verify(mockTaxEnrolmentsService).issuerCall(
-        meq(expectedFormBundleId),
+        contains(expectedFormBundleId),
         meq(Eori("testEORInumber2")),
         any[Option[LocalDate]],
         meq(atarService)
       )(any[HeaderCarrier])
 
       verify(mockHandleSubscriptionService).handleSubscription(
-        meq(expectedFormBundleId),
+        contains(expectedFormBundleId),
         any(),
         any(),
         meq(Some(Eori("testEORInumber"))),
@@ -246,14 +245,14 @@ class SubscriptionRecoveryControllerSpec
         header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/subscribe/complete")
       }
       verify(mockTaxEnrolmentsService).issuerCall(
-        meq(expectedFormBundleId),
+        contains(expectedFormBundleId),
         meq(Eori("testEORInumber3")),
         any[Option[LocalDate]],
         meq(atarService)
       )(any[HeaderCarrier])
 
       verify(mockHandleSubscriptionService).handleSubscription(
-        meq(expectedFormBundleId),
+        contains(expectedFormBundleId),
         any(),
         any(),
         meq(Some(Eori("testEORInumber"))),
