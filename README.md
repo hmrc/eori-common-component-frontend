@@ -18,7 +18,6 @@ For information on adding support for a new service -
 [How to add a new service](https://github.com/hmrc/eori-common-component-frontend/wiki/How-to-add-a-new-service).
 
 # License
-
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
 
 
