@@ -24,7 +24,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.address.{
   AddressLookup,
   AddressLookupFailure,
   AddressLookupResponse,
-  AddressLookupSuccess
+  AddressLookupSuccess,
+  AddressRequestBody
 }
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
@@ -39,20 +40,15 @@ class AddressLookupConnector @Inject() (http: HttpClient, appConfig: AppConfig)(
     hc: HeaderCarrier
   ): Future[AddressLookupResponse] = {
 
-    val postcodeQueryParam: String = s"postcode=${postcode.replaceAll(" ", "+")}"
-    val firstLineQueryParam: String = firstLineOpt match {
-      case Some(line) if line.nonEmpty => s"&line1=${line.replaceAll(" ", "+")}"
-      case None                        => ""
-    }
+    val body = AddressRequestBody(postcode, firstLineOpt)
 
-    val queryParams: String = s"?$postcodeQueryParam$firstLineQueryParam"
-    val url                 = appConfig.addressLookup + queryParams
+    val url = appConfig.addressLookup //+ queryParams
 
     // $COVERAGE-OFF$Loggers
-    logger.debug(s"Address lookup url: $url")
+    logger.debug(s"Address lookup url: $url, body: $body")
     // $COVERAGE-ON
 
-    http.GET[HttpResponse](url).map { response =>
+    http.POST[AddressRequestBody, HttpResponse](url, body) map { response =>
       response.status match {
         case OK => AddressLookupSuccess(response.json.as[Seq[AddressLookup]]).sorted()
         case _ =>
