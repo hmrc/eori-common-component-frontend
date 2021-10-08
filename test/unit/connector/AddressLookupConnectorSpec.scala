@@ -29,7 +29,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.address.{
   AddressLookup,
   AddressLookupFailure,
-  AddressLookupSuccess
+  AddressLookupSuccess,
+  AddressRequestBody
 }
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import unit.connector.AddressLookupConnectorSpec.{jsonResponseWithOneResult, jsonResponseWithTwoResults}
@@ -50,7 +51,7 @@ class AddressLookupConnectorSpec
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
-    when(appConfig.addressLookup).thenReturn("http://localhost:6754/v2/uk/addresses")
+    when(appConfig.addressLookup).thenReturn("http://localhost:6754/lookup")
   }
 
   override protected def afterEach(): Unit = {
@@ -61,50 +62,30 @@ class AddressLookupConnectorSpec
 
   "Address Lookup Connector" should {
 
-    "build a correct url with replacing space with plus" when {
+    "build a correct url" in {
 
-      "there is only postcode" in {
+      when(httpClient.POST[AddressRequestBody, HttpResponse](any(), any(), any())(any(), any(), any(), any()))
+        .thenReturn(Future.successful(HttpResponse(200, "[]")))
 
-        when(httpClient.GET[HttpResponse](any(), any(), any())(any(), any(), any()))
-          .thenReturn(Future.successful(HttpResponse(200, "[]")))
+      val postcode = "AA11 1AA"
 
-        val postcode = "AA11 1AA"
+      val expectedResponse = AddressLookupSuccess(Seq.empty)
+      val expectedUrl      = "http://localhost:6754/lookup"
 
-        val expectedResponse = AddressLookupSuccess(Seq.empty)
-        val expectedUrl      = "http://localhost:6754/v2/uk/addresses?postcode=AA11+1AA"
+      val urlCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
-        val urlCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val result = connector.lookup(postcode, None)(hc)
 
-        val result = connector.lookup(postcode, None)(hc)
+      result.futureValue shouldBe expectedResponse
 
-        result.futureValue shouldBe expectedResponse
+      verify(httpClient).POST[AddressRequestBody, HttpResponse](urlCaptor.capture(), any(), any())(
+        any(),
+        any(),
+        any(),
+        any()
+      )
 
-        verify(httpClient).GET[HttpResponse](urlCaptor.capture(), any(), any())(any(), any(), any())
-
-        urlCaptor.getValue shouldBe expectedUrl
-      }
-
-      "postcode and line 1 is specified" in {
-
-        when(httpClient.GET[HttpResponse](any(), any(), any())(any(), any(), any()))
-          .thenReturn(Future.successful(HttpResponse(200, "[]")))
-
-        val postcode = "AA11 1AA"
-        val line1    = "Address Line 1"
-
-        val expectedResponse = AddressLookupSuccess(Seq.empty)
-        val expectedUrl      = "http://localhost:6754/v2/uk/addresses?postcode=AA11+1AA&line1=Address+Line+1"
-
-        val urlCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-
-        val result = connector.lookup(postcode, Some(line1))(hc)
-
-        result.futureValue shouldBe expectedResponse
-
-        verify(httpClient).GET[HttpResponse](urlCaptor.capture(), any(), any())(any(), any(), any())
-
-        urlCaptor.getValue shouldBe expectedUrl
-      }
+      urlCaptor.getValue shouldBe expectedUrl
     }
 
     "return Address Lookup Success" when {
@@ -113,7 +94,7 @@ class AddressLookupConnectorSpec
 
         val addressLookupResponse = HttpResponse(status = 200, json = jsonResponseWithTwoResults, headers = Map.empty)
 
-        when(httpClient.GET[HttpResponse](any(), any(), any())(any(), any(), any()))
+        when(httpClient.POST[AddressRequestBody, HttpResponse](any(), any(), any())(any(), any(), any(), any()))
           .thenReturn(Future.successful(addressLookupResponse))
 
         val postcode = "AA11 1AA"
@@ -133,7 +114,7 @@ class AddressLookupConnectorSpec
 
         val addressLookupResponse = HttpResponse(status = 200, json = jsonResponseWithOneResult, headers = Map.empty)
 
-        when(httpClient.GET[HttpResponse](any(), any(), any())(any(), any(), any()))
+        when(httpClient.POST[AddressRequestBody, HttpResponse](any(), any(), any())(any(), any(), any(), any()))
           .thenReturn(Future.successful(addressLookupResponse))
 
         val postcode = "AA11 1AA"
@@ -148,7 +129,7 @@ class AddressLookupConnectorSpec
 
       "address lookup didn't return any addresses" in {
 
-        when(httpClient.GET[HttpResponse](any(), any(), any())(any(), any(), any()))
+        when(httpClient.POST[AddressRequestBody, HttpResponse](any(), any(), any())(any(), any(), any(), any()))
           .thenReturn(Future.successful(HttpResponse(200, "[]")))
 
         val postcode = "AA11 1AA"
@@ -165,7 +146,7 @@ class AddressLookupConnectorSpec
 
       "address lookup return different status than OK (200)" in {
 
-        when(httpClient.GET[HttpResponse](any(), any(), any())(any(), any(), any()))
+        when(httpClient.POST[AddressRequestBody, HttpResponse](any(), any(), any())(any(), any(), any(), any()))
           .thenReturn(Future.successful(HttpResponse(500, "Internal Server Error")))
 
         val postcode = "AA11 1AA"
