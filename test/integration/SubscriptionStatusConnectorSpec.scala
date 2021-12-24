@@ -51,13 +51,25 @@ class SubscriptionStatusConnectorSpec extends IntegrationTestsSpec with ScalaFut
   private val taxPayerId                  = TaxPayerId(AValidTaxPayerID).mdgTaxPayerId
   private val Regime                      = "CDS"
   private val receiptDate                 = LocalDateTime.of(2016, 3, 17, 9, 30, 47, 114)
+  private val receiptDateWithZeroSeconds  = LocalDateTime.of(2016, 3, 17, 9, 30, 0, 114)
   private val colon: String               = "%3A"
 
   private val expectedGetUrl =
     s"/subscription-status?receiptDate=2016-03-17T09${colon}30${colon}47Z&regime=$Regime&taxPayerID=$taxPayerId"
 
+  private val expectedGetUrlForReceiptDateZeroSeconds =
+    s"/subscription-status?receiptDate=2016-03-17T09${colon}30${colon}00Z&regime=$Regime&taxPayerID=$taxPayerId"
+
   private val request =
     SubscriptionStatusQueryParams(receiptDate, Regime, "taxPayerID", TaxPayerId(AValidTaxPayerID).mdgTaxPayerId)
+
+  private val requestWithReceiptDateZeroSeconds =
+    SubscriptionStatusQueryParams(
+      receiptDateWithZeroSeconds,
+      Regime,
+      "taxPayerID",
+      TaxPayerId(AValidTaxPayerID).mdgTaxPayerId
+    )
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -95,6 +107,17 @@ class SubscriptionStatusConnectorSpec extends IntegrationTestsSpec with ScalaFut
         responseWithOk.toString
       )
       await(subscriptionStatusConnector.status(request)) must be(
+        responseWithOk.as[SubscriptionStatusResponseHolder].subscriptionStatusResponse
+      )
+    }
+
+    "format receiptDate having zero seconds correctly and return successful response with OK status" in {
+
+      SubscriptionStatusMessagingService.returnTheSubscriptionResponseWhenReceiveRequest(
+        expectedGetUrlForReceiptDateZeroSeconds,
+        responseWithOk.toString
+      )
+      await(subscriptionStatusConnector.status(requestWithReceiptDateZeroSeconds)) must be(
         responseWithOk.as[SubscriptionStatusResponseHolder].subscriptionStatusResponse
       )
     }
