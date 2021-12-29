@@ -509,7 +509,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
       lastNameFieldName  -> "Test Last Name",
       dobDayFieldName    -> "03",
       dobMonthFieldName  -> "09",
-      dobYearFieldName   -> DateTimeFormatter.ofPattern("YYYY").format(todayPlusOneYear)
+      dobYearFieldName   -> DateTimeFormatter.ofPattern("yyyy").format(todayPlusOneYear)
     )
   }
 
@@ -520,7 +520,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
       lastNameFieldName  -> "Test Last Name",
       dobDayFieldName    -> DateTimeFormatter.ofPattern("dd").format(todayPlusOneDay),
       dobMonthFieldName  -> DateTimeFormatter.ofPattern("MM").format(todayPlusOneDay),
-      dobYearFieldName   -> DateTimeFormatter.ofPattern("YYYY").format(todayPlusOneDay)
+      dobYearFieldName   -> DateTimeFormatter.ofPattern("yyyy").format(todayPlusOneDay)
     )
   }
 

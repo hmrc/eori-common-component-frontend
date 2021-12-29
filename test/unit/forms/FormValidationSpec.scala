@@ -122,7 +122,7 @@ class FormValidationSpec extends UnitSpec {
         formData.updated("date-of-birth.day", DateTimeFormatter.ofPattern("dd").format(todayPlusOneDay)).updated(
           "date-of-birth.month",
           DateTimeFormatter.ofPattern("MM").format(todayPlusOneDay)
-        ).updated("date-of-birth.year", DateTimeFormatter.ofPattern("YYYY").format(todayPlusOneDay))
+        ).updated("date-of-birth.year", DateTimeFormatter.ofPattern("yyyy").format(todayPlusOneDay))
       val res = nameDobForm.bind(data)
       res.errors shouldBe Seq(FormError("date-of-birth", Seq("dob.error.future-date")))
     }
@@ -156,7 +156,7 @@ class FormValidationSpec extends UnitSpec {
         DateTimeFormatter.ofPattern("dd").format(todayPlusOneDay)
       ).updated("date-of-establishment.month", DateTimeFormatter.ofPattern("MM").format(todayPlusOneDay)).updated(
         "date-of-establishment.year",
-        DateTimeFormatter.ofPattern("YYYY").format(todayPlusOneDay)
+        DateTimeFormatter.ofPattern("yyyy").format(todayPlusOneDay)
       )
       val res = dateOfEstablishmentForm.bind(data)
       res.errors shouldBe Seq(FormError("date-of-establishment", Seq("doe.error.future-date")))
