@@ -19,16 +19,16 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactAddressModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ConfirmContactAddressSubscriptionFlowPage
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.{YesNo, confirmContactAddressYesNoAnswerForm}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionBusinessService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.confirm_contact_address
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.{confirmContactAddressYesNoAnswerForm, YesNo}
+
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ConfirmContactAddressSubscriptionFlowPage
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
 
 @Singleton
 class ConfirmContactAddressController @Inject()(
@@ -46,7 +46,7 @@ class ConfirmContactAddressController @Inject()(
           address match {
             case Some(address) =>
               Future.successful(Ok(contactAddressView(confirmContactAddressYesNoAnswerForm, service, address.toContactAddressViewModel)))
-            case None => ???
+            case None => Future.successful(Redirect(ContactAddressController.displayPage(service)))
           }
         }
 
@@ -62,7 +62,7 @@ class ConfirmContactAddressController @Inject()(
                 formWithErrors => Future.successful(BadRequest(contactAddressView(formWithErrors, service, address.toContactAddressViewModel))),
                 answer => locationByAnswer(answer, service)
               )
-          case None => ???
+          case None => Future.successful(Redirect(ContactAddressController.displayPage(service)))
         }
       }
 
@@ -71,13 +71,15 @@ class ConfirmContactAddressController @Inject()(
   private def locationByAnswer(answer:YesNo, service: Service)(implicit
                                                                                        request: Request[AnyContent]
   ): Future[Result] = answer match {
-    case theAnswer if theAnswer.isYes => Future.successful(Redirect(
+    case theAnswer if theAnswer.isYes =>
+
+      Future.successful(Redirect(
       subscriptionFlowManager
         .stepInformation(ConfirmContactAddressSubscriptionFlowPage)
         .nextPage
         .url(service)
     ))
-    case _                            => Future(Redirect(ContactAddressController.displayPage(service)))
+    case _                            => Future.successful(Redirect(ContactAddressController.displayPage(service)))
   }
 
 }
