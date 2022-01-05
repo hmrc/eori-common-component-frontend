@@ -28,6 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.{co
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ConfirmContactAddressSubscriptionFlowPage
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
 
 @Singleton
 class ConfirmContactAddressController @Inject()(
@@ -59,17 +60,24 @@ class ConfirmContactAddressController @Inject()(
             confirmContactAddressYesNoAnswerForm.bindFromRequest
               .fold(
                 formWithErrors => Future.successful(BadRequest(contactAddressView(formWithErrors, service, address.toContactAddressViewModel))),
-                address =>
-                  Future.successful(Redirect(
-                    subscriptionFlowManager
-                      .stepInformation(ConfirmContactAddressSubscriptionFlowPage)
-                      .nextPage
-                      .url(service)
-                  )))
+                answer => locationByAnswer(answer, service)
+              )
           case None => ???
         }
       }
 
     }
+
+  private def locationByAnswer(answer:YesNo, service: Service)(implicit
+                                                                                       request: Request[AnyContent]
+  ): Future[Result] = answer match {
+    case theAnswer if theAnswer.isYes => Future.successful(Redirect(
+      subscriptionFlowManager
+        .stepInformation(ConfirmContactAddressSubscriptionFlowPage)
+        .nextPage
+        .url(service)
+    ))
+    case _                            => Future(Redirect(ContactAddressController.displayPage(service)))
+  }
 
 }
