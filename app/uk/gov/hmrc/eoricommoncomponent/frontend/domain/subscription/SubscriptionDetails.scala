@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import java.time.LocalDate
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, CompanyRegisteredCountry}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, CompanyRegisteredCountry, ContactAddressModel}
 
 case class SubscriptionDetails(
   dateEstablished: Option[LocalDate] = None,
@@ -36,7 +36,8 @@ case class SubscriptionDetails(
   idDetails: Option[IdMatchModel] = None,
   customsId: Option[CustomsId] = None,
   formData: FormData = FormData(),
-  registeredCompany: Option[CompanyRegisteredCountry] = None
+  registeredCompany: Option[CompanyRegisteredCountry] = None,
+  contactAddress: Option[ContactAddressModel] = None
 ) {
 
   def name: String =

@@ -1357,3 +1357,18 @@ business-details-recovery.organisation-address=Registered organisation address
 business-details-recovery.individual-address=Address
 business-details-recovery.problem=There was a problem with the service when you last signed in. To try your application again, you need to answer a few more questions.
 
+contact-address.title=What is your contact address?
+contact-address.heading=What is your contact address?
+contact-address.line-1=Address line 1
+contact-address.line-2=Address line 2 (optional)
+contact-address.line-3=Town or city
+contact-address.line-4=Region or state (optional)
+contact-address.postcode-optional=Postcode (optional)
+contact-address.country=Country
+
+confirm-contact-details.page.title=Is this your contact address?
+confirm-contact-details.page.heading=Is this your contact address?
+confirm-contact-address.address.hint=This is the address we use to contact you about your application
+confirm-contact-details.address-text=Is this address correct?
+confirm-contact-details.yes=Yes, this address is correct
+confirm-contact-details.no=No, I want to change the address
