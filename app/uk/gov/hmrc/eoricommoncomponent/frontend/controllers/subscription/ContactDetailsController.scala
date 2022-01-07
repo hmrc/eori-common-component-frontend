@@ -21,7 +21,10 @@ import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetailsSubscriptionFlowPageMigrate
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  ConfirmContactAddressSubscriptionFlowPage,
+  ContactDetailsSubscriptionFlowPageMigrate
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{LoggedInUserWithEnrolments, NA}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactDetailsSubscribeModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.ContactDetailsForm
@@ -65,7 +68,7 @@ class ContactDetailsController @Inject() (
           Future.successful(
             Redirect(
               subscriptionFlowManager
-                .stepInformation(ContactDetailsSubscriptionFlowPageMigrate)
+                .stepInformation(ConfirmContactAddressSubscriptionFlowPage)
                 .nextPage
                 .url(service)
             )
