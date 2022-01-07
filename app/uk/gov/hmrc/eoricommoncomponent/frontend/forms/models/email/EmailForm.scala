@@ -49,7 +49,7 @@ object EmailForm {
 
   def eoriSignoutForm()(implicit messages: Messages): Form[YesNo] = yesNoAnswerForm()
 
-  def confirmContactAddressYesNoAnswerForm()(implicit messages: Messages): Form[YesNo] = yesNoAnswerForm()
+  def confirmContactAddressYesNoAnswerForm()(implicit messages: Messages): Form[YesNo] = confirmContactAddressForm()
 
   private def yesNoAnswerForm()(implicit messages: Messages): Form[YesNo] = Form(
     mapping(
@@ -59,6 +59,15 @@ object EmailForm {
           oneOf(validYesNoAnswerOptions)
         )
       ).verifying(messages("cds.subscription.check-your-email.page-error.yes-no-answer"), _.isDefined)
+        .transform[Boolean](str => str.get.toBoolean, bool => Option(String.valueOf(bool)))
+    )(YesNo.apply)(YesNo.unapply)
+  )
+
+  private def confirmContactAddressForm()(implicit messages: Messages): Form[YesNo] = Form(
+    mapping(
+      "yes-no-answer" -> optional(
+        text.verifying(messages("confirm-contact-details.page-error.yes-no-answer"), oneOf(validYesNoAnswerOptions))
+      ).verifying(messages("confirm-contact-details.page-error.yes-no-answer"), _.isDefined)
         .transform[Boolean](str => str.get.toBoolean, bool => Option(String.valueOf(bool)))
     )(YesNo.apply)(YesNo.unapply)
   )

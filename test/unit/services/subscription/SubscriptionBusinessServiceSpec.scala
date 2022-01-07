@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package unit.services.subscription
 
 import base.UnitSpec
+
 import java.time.LocalDate
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers._
@@ -26,7 +27,11 @@ import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
+  AddressViewModel,
+  ContactAddressModel,
+  ContactAddressViewModel
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{ContactDetailsAdaptor, RegistrationDetailsCreator}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionBusinessService
@@ -59,8 +64,13 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
   private val eoriId              = "GB" + Random.nextString(eoriNumericLength)
   val maybeEoriId                 = Some(eoriId)
   val mayBeCachedAddressViewModel = Some(AddressViewModel("Address Line 1", "city", Some("postcode"), "GB"))
-  val nameIdOrganisationDetails   = Some(NameIdOrganisationMatchModel("OrgName", "ID"))
-  val customsIDUTR                = Some(Utr("ID"))
+
+  val mayBeCachedContactAddressModel = Some(
+    ContactAddressModel("Line 1", Some("Line 2"), "Town", Some("Region"), Some("SE28 1AA"), "GB")
+  )
+
+  val nameIdOrganisationDetails = Some(NameIdOrganisationMatchModel("OrgName", "ID"))
+  val customsIDUTR              = Some(Utr("ID"))
 
   val email = Some("OrgName@example.com")
 
@@ -281,6 +291,18 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
         await(subscriptionBusinessService.getCachedSubscriptionNameDobViewModel)
       }
       thrown.getMessage shouldBe "No Name/Dob Details Cached"
+    }
+  }
+
+  "Calling contactAddress" should {
+    "retrieve any previously cached Address Details from the cdsFrontendCache" in {
+      when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)
+      when(mockSubscriptionDetailsHolder.contactAddress).thenReturn(mayBeCachedContactAddressModel)
+    }
+
+    "throw exception when cache address details is not saved in cdsFrontendCache" in {
+      when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)
+      when(mockSubscriptionDetailsHolder.contactAddress).thenReturn(None)
     }
   }
 }

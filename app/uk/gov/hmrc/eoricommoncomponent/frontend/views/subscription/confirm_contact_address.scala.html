@@ -73,14 +73,27 @@ inputRadioGroup: helpers.inputRadioGroup
         )
     }
 }
+  @addressLine2 = {
+      <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-0">@model.lineTwo</p>
+  }
+    @addressLine4 = {
+        <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-0">@model.lineFour</p>
+    }
+    @postcode = {
+    <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-0">@model.postcode</p>
+    }
+    @country = @{
+        countryCodeToLabel(model.country)
+    }
+
 @addressHtml = {
     <div id="address" class="govuk-body">
         <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-0">@model.lineOne</p>
-        @model.lineTwo.map(lineTwo => <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-0">lineTwo</p>)
-        <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-0">@model.lineOne</p>
-        @model.lineTwo.map(lineFour => <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-0">lineFour</p>)
-        @model.postcode.map(postCode => <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-0">postCode</p>)
-        <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-0">@model.country</p>
+        @model.lineTwo.map(lineTwo => addressLine2)
+        <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-0">@model.lineThree</p>
+        @model.lineFour.map(lineTwo => addressLine4)
+        @model.postcode.map(lineTwo => postcode)
+        <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-0">@country</p>
     </div>
 }
 
@@ -95,7 +108,7 @@ inputRadioGroup: helpers.inputRadioGroup
 
 
         <h1 class="govuk-heading-l govuk-!-margin-bottom-3">@messages("confirm-contact-details.page.heading")</h1>
-        @govukHint(Hint(content = Text(messages("confirm-contact-address.address.hint")), classes = "govuk-!-margin-top-0 govuk-!-margin-bottom-5"))
+        @govukHint(Hint(id= Some("address-hint"), content = Text(messages("confirm-contact-address.address.hint")), classes = "govuk-!-margin-top-0 govuk-!-margin-bottom-5"))
         @govukInsetText(InsetText(
             content = HtmlContent(addressHtml)
         ))
@@ -104,7 +117,8 @@ inputRadioGroup: helpers.inputRadioGroup
             contactForm("yes-no-answer"),
             legend = messages("confirm-contact-details.address-text"),
             items = options,
-            classes = "govuk-fieldset__legend--l"
+            classes = "govuk-fieldset__legend--m",
+            legendAsHeading =  false
         )
 
         @govukButton(Button(

@@ -1192,3 +1192,20 @@ business-details-recovery.individual-name=Enw
 business-details-recovery.organisation-address=Cyfeiriad y sefydliad cofrestredig
 business-details-recovery.individual-address=Cyfeiriad
 business-details-recovery.problem=Roedd problem gyda’r gwasanaeth pan wnaethoch fewngofnodi y tro diwethaf. Er mwyn rhoi cynnig arall ar eich cais, mae angen i chi ateb ychydig o gwestiynau eraill.
+
+contact-address.title=TRANSLATE What is your contact address?
+contact-address.heading=TRANSLATE What is your contact address?
+contact-address.line-1=TRANSLATE Address line 1
+contact-address.line-2=TRANSLATE Address line 2 (optional)
+contact-address.line-3=TRANSLATE Town or city
+contact-address.line-4=TRANSLATE Region or state (optional)
+contact-address.postcode-optional=TRANSLATE Postcode (optional)
+contact-address.country=TRANSLATE Country
+
+confirm-contact-details.page.title=TRANSLATE Is this your contact address?
+confirm-contact-details.page.heading=TRANSLATE Is this your contact address?
+confirm-contact-address.address.hint=TRANSLATE This is the address we use to contact you about your application
+confirm-contact-details.address-text=TRANSLATE Is this address correct?
+confirm-contact-details.yes=TRANSLATE Yes, this address is correct
+confirm-contact-details.no=TRANSLATE No, I want to change the address
+confirm-contact-details.page-error.yes-no-answer=TRANSLATE Confirm your address details

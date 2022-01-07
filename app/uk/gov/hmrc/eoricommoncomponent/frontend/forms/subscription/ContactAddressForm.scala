@@ -25,15 +25,16 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactAddressModel
 
 object ContactAddressForm {
-  private val Length2   = 2
-  def contactAddressCreateForm():  Form[ContactAddressModel] =
+  private val Length2 = 2
+
+  def contactAddressCreateForm(): Form[ContactAddressModel] =
     Form(
       mapping(
-        "line-1"   -> text.verifying(validLine1),
-        "line-2"   -> optional(text.verifying(validLine2)),
-        "line-3"   -> text.verifying(validLine3),
-        "line-4"   -> optional(text.verifying(validLine4)),
-        "postcode" -> postcodeMapping,
+        "line-1"      -> text.verifying(validLine1),
+        "line-2"      -> optional(text.verifying(validLine2)),
+        "line-3"      -> text.verifying(validLine3),
+        "line-4"      -> optional(text.verifying(validLine4)),
+        "postcode"    -> postcodeMapping,
         "countryCode" -> mandatoryString("cds.matching-error.country.invalid")(s => s.length == Length2)
       )(ContactAddressModel.apply)(ContactAddressModel.unapply)
     )
@@ -45,7 +46,6 @@ object ContactAddressForm {
         Invalid(ValidationError("cds.matching.organisation-address.line-1.error.too-long"))
       case _ => Valid
     })
-
 
   def validLine2: Constraint[String] =
     Constraint({
@@ -70,8 +70,8 @@ object ContactAddressForm {
     })
 
   def mandatoryString(
-                       onEmptyError: String
-                     )(constraintFunction: String => Boolean, error: => String = onEmptyError): Mapping[String] = {
+    onEmptyError: String
+  )(constraintFunction: String => Boolean, error: => String = onEmptyError): Mapping[String] = {
     val constraint = Constraint((s: String) => if (constraintFunction.apply(s)) Valid else Invalid(error))
     mandatoryString(onEmptyError, Seq(constraint))
   }
@@ -84,4 +84,5 @@ object ContactAddressForm {
   def nonEmptyString(error: => String = messageKeyMandatoryField): Constraint[String] = Constraint { s =>
     Option(s).filter(_.trim.nonEmpty).fold[ValidationResult](ifEmpty = Invalid(error))(_ => Valid)
   }
+
 }

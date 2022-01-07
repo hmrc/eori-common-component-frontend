@@ -25,20 +25,25 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactAddre
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactAddressModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.ContactAddressForm.contactAddressCreateForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionBusinessService,
+  SubscriptionDetailsService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.contact_address
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ContactAddressController @Inject()(
+class ContactAddressController @Inject() (
   authAction: AuthAction,
   mcc: MessagesControllerComponents,
   subscriptionDetailsService: SubscriptionDetailsService,
   subscriptionBusinessService: SubscriptionBusinessService,
   subscriptionFlowManager: SubscriptionFlowManager,
+  requestSessionData: RequestSessionData,
   contactAddressView: contact_address
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
@@ -51,28 +56,18 @@ class ContactAddressController @Inject()(
     }
 
   private def populateOkView(contactAddress: Option[ContactAddressModel], service: Service)(implicit
-                                                                                                           request: Request[AnyContent]
+    request: Request[AnyContent]
   ): Future[Result] = {
     lazy val form = contactAddress.fold(contactAddressCreateForm())(contactAddressCreateForm().fill(_))
     populateCountriesToInclude(service, form, Ok)
   }
 
-  private def populateCountriesToInclude(
-                                          service: Service,
-                                          form: Form[ContactAddressModel],
-                                          status: Status
-                                        )(implicit request: Request[AnyContent]) = {
-    val (countriesToInclude, countriesInCountryPicker) = Countries.getCountryParametersForAllCountries()
-    Future.successful(
-      status(
-        contactAddressView(
-          form,
-          countriesToInclude,
-          countriesInCountryPicker,
-          service
-        )
-      )
-    )
+  private def populateCountriesToInclude(service: Service, form: Form[ContactAddressModel], status: Status)(implicit
+    request: Request[AnyContent]
+  ) = {
+    val (countriesToInclude, countriesInCountryPicker) =
+      Countries.getCountryParameters(requestSessionData.selectedUserLocationWithIslands)
+    Future.successful(status(contactAddressView(form, countriesToInclude, countriesInCountryPicker, service)))
   }
 
   def submit(service: Service): Action[AnyContent] =
@@ -82,12 +77,14 @@ class ContactAddressController @Inject()(
           formWithErrors => populateCountriesToInclude(service, formWithErrors, BadRequest),
           address =>
             subscriptionDetailsService.cacheContactAddressDetails(address).map { _ =>
-                      Redirect(
-                        subscriptionFlowManager
-                          .stepInformation(ContactAddressSubscriptionFlowPage)
-                          .nextPage
-                          .url(service)
-                      )
-                  })
-                }
+              Redirect(
+                subscriptionFlowManager
+                  .stepInformation(ContactAddressSubscriptionFlowPage)
+                  .nextPage
+                  .url(service)
+              )
+            }
+        )
+    }
+
 }

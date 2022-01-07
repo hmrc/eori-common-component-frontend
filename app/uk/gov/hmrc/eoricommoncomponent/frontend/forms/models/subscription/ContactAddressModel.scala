@@ -33,14 +33,9 @@ case class ContactAddressModel(
 
   private def postCodeMandatoryForCountryCode = List("GG", "JE").contains(country)
 
-  def toContactAddressViewModel: ContactAddressViewModel = ContactAddressViewModel(
-    lineOne,
-    lineTwo,
-    lineThree,
-    lineFour,
-    postcode,
-    country
-  )
+  def toContactAddressViewModel: ContactAddressViewModel =
+    ContactAddressViewModel(lineOne, lineTwo, lineThree, lineFour, postcode, country)
+
 }
 
 object ContactAddressModel {
@@ -61,27 +56,22 @@ object ContactAddressModel {
     postcode.map(_.trim),
     country
   )
+
   def trim(value: Option[String]): Option[String] = value.map(_.trim)
 
 }
 
 case class ContactAddressViewModel(
-                                    lineOne: String,
-                                    lineTwo: Option[String],
-                                    lineThree: String,
-                                    lineFour: Option[String],
-                                    postcode: Option[String],
-                                    country: String
-                                  ) {
+  lineOne: String,
+  lineTwo: Option[String],
+  lineThree: String,
+  lineFour: Option[String],
+  postcode: Option[String],
+  country: String
+) {
 
-  def toContactAddressModel: ContactAddressModel = ContactAddressModel(
-    lineOne,
-    lineTwo,
-    lineThree,
-    lineFour,
-    postcode,
-    country
-  )
+  def toContactAddressModel: ContactAddressModel =
+    ContactAddressModel(lineOne, lineTwo, lineThree, lineFour, postcode, country)
 
 }
 
