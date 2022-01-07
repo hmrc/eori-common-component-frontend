@@ -17,21 +17,28 @@
 package unit.domain
 
 import base.UnitSpec
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactAddressModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{ContactAddressModel, ContactAddressViewModel}
 
 class ContactAddressModelSpec extends UnitSpec {
 
   "ContactAddressModel" should {
 
+    val address =
+      ContactAddressModel(" line 1 ", Some(" line 2 "), " line 3 ", Some(" line 4 "), Some(" HJ2 3HJ "), "FR")
     "trim lines 1 to 4" in {
-      val address =
-        ContactAddressModel(" line 1 ", Some(" line 2 "), " line 3 ", Some(" line 4 "), Some(" HJ2 3HJ "), "FR")
+
       address.lineOne shouldBe "line 1"
       address.lineTwo shouldBe Some("line 2")
       address.lineThree shouldBe "line 3"
       address.lineFour shouldBe Some("line 4")
       address.postcode shouldBe Some("HJ2 3HJ")
       address.country shouldBe "FR"
+    }
+
+    "convert ContactAddressViewModel" in {
+      val expectedViewModel =
+        ContactAddressViewModel("line 1", Some("line 2"), "line 3", Some("line 4"), Some("HJ2 3HJ"), "FR")
+      address.toContactAddressViewModel shouldBe expectedViewModel
     }
   }
 }

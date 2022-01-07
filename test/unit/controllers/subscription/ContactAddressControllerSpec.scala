@@ -287,6 +287,17 @@ class ContactAddressControllerSpec
 
       }
     }
+    "be restricted to 35 character for region validation only" in {
+      val city = stringOfLengthXGen(35)
+      submitForm(addressFields ++ Map("line-4" -> city.sample.get)) { result =>
+        status(result) shouldBe BAD_REQUEST
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(
+          ContactAddressPage.fieldLevelErrorAddressLineFour
+        ) shouldBe "Error: The Region or state must be 35 characters or less"
+
+      }
+    }
 
     "be validating postcode length to 8 when country is a channel island" in {
       submitForm(

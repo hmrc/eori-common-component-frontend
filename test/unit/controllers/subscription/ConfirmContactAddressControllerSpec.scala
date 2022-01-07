@@ -121,7 +121,7 @@ class ConfirmContactAddressControllerSpec
 
     "redirect to contact address page" when {
 
-      "contact address cache returns None" in {
+      "contact address cache returns None during page load" in {
 
         when(mockSubscriptionBusinessService.contactAddress(any[HeaderCarrier]))
           .thenReturn(Future.successful(None))
@@ -132,6 +132,16 @@ class ConfirmContactAddressControllerSpec
         }
       }
 
+      "contact address cache returns None during submit" in {
+
+        when(mockSubscriptionBusinessService.contactAddress(any[HeaderCarrier]))
+          .thenReturn(Future.successful(None))
+
+        submitForm(yesForm) { result =>
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some("/customs-enrolment-services/atar/subscribe/contact-address")
+        }
+      }
     }
 
     "display the back link" in {

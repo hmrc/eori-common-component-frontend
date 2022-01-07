@@ -68,12 +68,7 @@ case class ContactAddressViewModel(
   lineFour: Option[String],
   postcode: Option[String],
   country: String
-) {
-
-  def toContactAddressModel: ContactAddressModel =
-    ContactAddressModel(lineOne, lineTwo, lineThree, lineFour, postcode, country)
-
-}
+)
 
 object ContactAddressViewModel {
   implicit val jsonFormat: OFormat[ContactAddressViewModel] = Json.format[ContactAddressViewModel]
