@@ -66,7 +66,7 @@ class ContactAddressController @Inject() (
     request: Request[AnyContent]
   ) = {
     val (countriesToInclude, countriesInCountryPicker) =
-      Countries.getCountryParameters(requestSessionData.selectedUserLocationWithIslands)
+      Countries.getCountryParametersForAllCountries()
     Future.successful(status(contactAddressView(form, countriesToInclude, countriesInCountryPicker, service)))
   }
 

@@ -47,10 +47,10 @@ case class ContactDetailsModel(
   def toRowContactInformation(): ContactInformation = ContactInformation(
     personOfContact = Some(fullName),
     sepCorrAddrIndicator = Some(false),
-    streetAndNumber = None,
-    city = None,
-    postalCode = None,
-    countryCode = None,
+    streetAndNumber = street,
+    city = city,
+    postalCode = postcode,
+    countryCode = countryCode,
     telephoneNumber = Some(telephone),
     faxNumber = None,
     emailAddress = Some(emailAddress)

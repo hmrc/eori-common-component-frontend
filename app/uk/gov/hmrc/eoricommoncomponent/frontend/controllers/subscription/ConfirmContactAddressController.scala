@@ -27,7 +27,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.{
   YesNo
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionBusinessService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionBusinessService,
+  SubscriptionDetailsService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.confirm_contact_address
 
 import javax.inject.{Inject, Singleton}
@@ -38,6 +41,7 @@ class ConfirmContactAddressController @Inject() (
   authAction: AuthAction,
   mcc: MessagesControllerComponents,
   subscriptionBusinessService: SubscriptionBusinessService,
+  subscriptionDetailsService: SubscriptionDetailsService,
   subscriptionFlowManager: SubscriptionFlowManager,
   contactAddressView: confirm_contact_address
 )(implicit ec: ExecutionContext)
@@ -68,7 +72,12 @@ class ConfirmContactAddressController @Inject() (
                   Future.successful(
                     BadRequest(contactAddressView(formWithErrors, service, address.toContactAddressViewModel))
                   ),
-                answer => locationByAnswer(answer, service)
+                answer =>
+                  subscriptionBusinessService.cachedContactDetailsModel flatMap {
+                    subscriptionDetailsService.cacheContactDetailsForROW(_, address).flatMap(
+                      _ => locationByAnswer(answer, service)
+                    )
+                  }
               )
           case None => Future.successful(Redirect(ContactAddressController.displayPage(service)))
         }

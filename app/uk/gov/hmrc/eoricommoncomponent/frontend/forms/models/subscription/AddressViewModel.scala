@@ -45,4 +45,15 @@ object AddressViewModel {
     AddressViewModel(line1, townCity, postCode, countryCode)
   }
 
+  def apply(sixLineAddress: ContactAddressModel): AddressViewModel = {
+    val line1 = (sixLineAddress.lineOne.trim.take(sixLineAddressLine1MaxLength) + " " + sixLineAddress.lineTwo
+      .getOrElse("")
+      .trim
+      .take(sixLineAddressLine2MaxLength)).trim
+    val townCity    = sixLineAddress.lineThree.trim.take(townCityMaxLength)
+    val postCode    = sixLineAddress.postcode.map(_.trim)
+    val countryCode = sixLineAddress.country
+    AddressViewModel(line1, townCity, postCode, countryCode)
+  }
+
 }

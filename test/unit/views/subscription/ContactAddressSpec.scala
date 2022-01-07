@@ -33,7 +33,7 @@ class ContactAddressSpec extends ViewSpec {
 
   private val form = ContactAddressForm.contactAddressCreateForm()
 
-  val (countries, picker) = Countries.getCountryParameters(Some("uk"))
+  val (countries, picker) = Countries.getCountryParametersForAllCountries()
 
   private val formWithError = form.bind(Map("line-1" -> "", "line-3" -> "", "countryCode" -> ""))
 

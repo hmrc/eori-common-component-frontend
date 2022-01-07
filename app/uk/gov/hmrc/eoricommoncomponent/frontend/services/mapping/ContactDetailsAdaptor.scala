@@ -42,4 +42,22 @@ class ContactDetailsAdaptor {
     )
   }
 
+  def toContactDetailsModelWithRowAddress(
+    view: ContactDetailsModel,
+    address: ContactAddressModel
+  ): ContactDetailsModel = {
+    val fourLineAddress = AddressViewModel(address)
+    ContactDetailsModel(
+      fullName = view.fullName,
+      emailAddress = view.emailAddress,
+      telephone = view.telephone,
+      fax = view.fax,
+      street = Some(fourLineAddress.street),
+      city = Some(fourLineAddress.city),
+      postcode = address.postcode.filterNot(p => p.isEmpty),
+      countryCode = Some(address.country),
+      useAddressFromRegistrationDetails = view.useAddressFromRegistrationDetails
+    )
+  }
+
 }

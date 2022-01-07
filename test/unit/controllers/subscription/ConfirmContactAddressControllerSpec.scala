@@ -21,23 +21,21 @@ import common.support.testdata.subscription.BusinessDatesOrganisationTypeTables
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.{BeforeAndAfterEach, mock => _}
-import play.api.libs.json.{JsObject, JsString}
 import play.api.mvc._
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ConfirmContactAddressController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ConfirmContactAddressController.submit
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
-  ConfirmContactAddressSubscriptionFlowPage,
-  ContactAddressSubscriptionFlowPage
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ConfirmContactAddressSubscriptionFlowPage
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactAddressModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.confirm_contact_address
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.SessionBuilder
-import util.builders.YesNoFormBuilder.ValidRequest
+import util.builders.SubscriptionContactDetailsFormBuilder.contactDetailsModel
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -50,13 +48,15 @@ class ConfirmContactAddressControllerSpec
   protected override def submitInCreateModeUrl: String =
     submit(atarService).url
 
-  private val mockRequestSessionData    = mock[RequestSessionData]
-  private val confirmContactDetailsView = instanceOf[confirm_contact_address]
+  private val mockRequestSessionData         = mock[RequestSessionData]
+  private val confirmContactDetailsView      = instanceOf[confirm_contact_address]
+  private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
 
   private val controller = new ConfirmContactAddressController(
     mockAuthAction,
     mcc,
     mockSubscriptionBusinessService,
+    mockSubscriptionDetailsService,
     mockSubscriptionFlowManager,
     confirmContactDetailsView
   )
@@ -67,7 +67,16 @@ class ConfirmContactAddressControllerSpec
 
   override def beforeEach: Unit = {
     super.beforeEach()
-
+    when(
+      mockSubscriptionBusinessService
+        .cachedContactDetailsModel(any[HeaderCarrier])
+    ).thenReturn(Future.successful(Some(contactDetailsModel)))
+    when(
+      mockSubscriptionDetailsService.cacheContactDetailsForROW(
+        Some(any[ContactDetailsModel]),
+        any[ContactAddressModel]
+      )(any[HeaderCarrier])
+    ).thenReturn(Future.successful(()))
     when(mockSubscriptionBusinessService.contactAddress(any[HeaderCarrier]))
       .thenReturn(Future.successful(Some(ConfirmContactAddressPage.filledValues)))
     setupMockSubscriptionFlowManager(ConfirmContactAddressSubscriptionFlowPage)
@@ -139,6 +148,22 @@ class ConfirmContactAddressControllerSpec
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some("next-page-url")
       }
+    }
+
+    "fail when system fails to create contact details" in {
+      val unsupportedException = new UnsupportedOperationException("Emulation of service call failure")
+
+      when(
+        mockSubscriptionDetailsService
+          .cacheContactDetailsForROW(Some(any[ContactDetailsModel]), any[ContactAddressModel])(any[HeaderCarrier])
+      ).thenReturn(Future.failed(unsupportedException))
+
+      val caught = intercept[RuntimeException] {
+        submitForm(yesForm) { result =>
+          await(result)
+        }
+      }
+      caught shouldBe unsupportedException
     }
   }
 

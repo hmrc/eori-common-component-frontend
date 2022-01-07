@@ -36,9 +36,9 @@ class ContactDetailsModelSpec extends UnitSpec {
           None,
           false,
           Some("street"),
-          Some(""),
-          Some(""),
-          Some("")
+          Some("city"),
+          Some("postCode"),
+          Some("countryCode")
         )
 
       def expectedContactInformation(emailVerificationTimestamp: Option[LocalDateTime]) = ContactInformation(
@@ -46,6 +46,10 @@ class ContactDetailsModelSpec extends UnitSpec {
         sepCorrAddrIndicator = Some(false),
         telephoneNumber = Some("01234123123"),
         emailAddress = Some("email"),
+        streetAndNumber = Some("street"),
+        city = Some("city"),
+        postalCode = Some("postCode"),
+        countryCode = Some("countryCode"),
         emailVerificationTimestamp = emailVerificationTimestamp
       )
 
