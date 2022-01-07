@@ -26,7 +26,6 @@ class ContactAddressModelSpec extends UnitSpec {
     val address =
       ContactAddressModel(" line 1 ", Some(" line 2 "), " line 3 ", Some(" line 4 "), Some(" HJ2 3HJ "), "FR")
     "trim lines 1 to 4" in {
-
       address.lineOne shouldBe "line 1"
       address.lineTwo shouldBe Some("line 2")
       address.lineThree shouldBe "line 3"

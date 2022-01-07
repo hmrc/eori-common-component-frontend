@@ -298,11 +298,14 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
     "retrieve any previously cached Address Details from the cdsFrontendCache" in {
       when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)
       when(mockSubscriptionDetailsHolder.contactAddress).thenReturn(mayBeCachedContactAddressModel)
+      await(subscriptionBusinessService.contactAddress) shouldBe mayBeCachedContactAddressModel
+      verify(mockCdsFrontendDataCache).subscriptionDetails
     }
 
     "throw exception when cache address details is not saved in cdsFrontendCache" in {
       when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)
       when(mockSubscriptionDetailsHolder.contactAddress).thenReturn(None)
+      await(subscriptionBusinessService.contactAddress) shouldBe None
     }
   }
 }

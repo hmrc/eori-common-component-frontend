@@ -60,5 +60,35 @@ class ContactDetailsAdaptorSpec extends UnitSpec with GenTestRunner {
           actual.postcode shouldBe None
       }
     }
+
+    "convert user inputs from Subscription Contact Details page and contact address" in {
+      testWithGen(contactDetailsCreateViewModelAndContactAddressGenerator) {
+        case (getContactDetailsModel, genAddress) =>
+          val actual =
+            contactDetailsAdaptor.toContactDetailsModelWithRowAddress(getContactDetailsModel, genAddress)
+          actual.fullName shouldBe getContactDetailsModel.fullName
+          actual.emailAddress shouldBe getContactDetailsModel.emailAddress
+          actual.telephone shouldBe getContactDetailsModel.telephone
+          actual.fax shouldBe getContactDetailsModel.fax
+          actual.street shouldBe Some(
+            (genAddress.lineOne.trim.take(sixLineAddressLine1MaxLength) + " " + genAddress.lineTwo
+              .getOrElse("")
+              .trim
+              .take(sixLineAddressLine2MaxLength)).trim
+          )
+          actual.city shouldBe Some(genAddress.lineThree.trim.take(townCityMaxLength))
+          actual.postcode shouldBe genAddress.postcode
+          actual.countryCode shouldBe Some(genAddress.country)
+      }
+    }
+
+    "convert user inputs from Subscription Contact Details page and contact address with empty postcode" in {
+      testWithGen(contactDetailsCreateViewModelAndContactAddressWithEmptyPostcodeGenerator) {
+        case (createViewModel, addressOverride) =>
+          val actual =
+            contactDetailsAdaptor.toContactDetailsModelWithRowAddress(createViewModel, addressOverride)
+          actual.postcode shouldBe None
+      }
+    }
   }
 }
