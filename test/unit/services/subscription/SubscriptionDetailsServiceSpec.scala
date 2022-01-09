@@ -25,6 +25,7 @@ import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{FormData, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{NameOrganisationMatchModel, _}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
@@ -65,6 +66,9 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
   private val contactAddressDetails =
     ContactAddressModel("Line 1", Some("Line 2"), "Town", Some("Region"), Some("SE28 1AA"), "GB")
 
+  private val defaultContactAddress =
+    ContactAddressModel("Line 1", Some("line 2"), "line 3", Some("line 4"), Some("SE28 1AA"), "GB")
+
   private val nameId       = NameIdOrganisationMatchModel(name = "orgname", id = "ID")
   private val customsIdUTR = Utr("utrxxxxx")
   private val utrMatch     = UtrMatchModel(Some(true), Some("utrxxxxx"))
@@ -81,6 +85,12 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
 
   private val contactDetailsViewModelWhenUsingRegisteredAddress =
     SubscriptionContactDetailsFormBuilder.createContactDetailsViewModelWhenUseRegAddress
+
+  private val contactDetailsViewModelWhenNotUsingRowAddress =
+    SubscriptionContactDetailsFormBuilder.createContactDetailsViewModelWhenNotUsingRowAddress
+
+  private val contactDetailsViewModelWhenUsingRowAddress =
+    SubscriptionContactDetailsFormBuilder.createContactDetailsViewModelWhenUseRowAddress
 
   override def beforeEach {
     reset(
@@ -249,6 +259,44 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
       val holder = requestCaptor.getValue
       holder.contactDetails shouldBe Some(contactDetailsViewModelWhenUsingRegisteredAddress)
       holder.dateEstablished shouldBe Some(dateOfEstablishment)
+    }
+  }
+
+  "Calling createContactDetailsForROW" should {
+    "Update ContactDetails with contact address from ROW" in {
+
+      when(
+        mockContactDetailsAdaptor.toContactDetailsModelWithRowAddress(
+          contactDetailsViewModelWhenNotUsingRowAddress,
+          defaultContactAddress
+        )
+      ).thenReturn(contactDetailsViewModelWhenUsingRowAddress)
+
+      when(mockSessionCache.subscriptionDetails).thenReturn(SubscriptionDetails())
+      when(mockSessionCache.subscriptionDetails).thenReturn(
+        SubscriptionDetails(dateEstablished = Some(dateOfEstablishment))
+      )
+
+      await(
+        subscriptionDetailsHolderService.cacheContactDetailsForROW(
+          Some(contactDetailsViewModelWhenNotUsingRowAddress),
+          defaultContactAddress
+        )
+      )
+
+      val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
+
+      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
+      val holder = requestCaptor.getValue
+      holder.contactDetails shouldBe Some(contactDetailsViewModelWhenUsingRowAddress)
+      holder.dateEstablished shouldBe Some(dateOfEstablishment)
+    }
+
+    "throw exception when contact details are not retrieved from cdsFrontendCache" in {
+      val thrown = intercept[IllegalStateException] {
+        await(subscriptionDetailsHolderService.cacheContactDetailsForROW(None, defaultContactAddress))
+      }
+      thrown.getMessage shouldBe "No Contact Details Cached"
     }
   }
 
