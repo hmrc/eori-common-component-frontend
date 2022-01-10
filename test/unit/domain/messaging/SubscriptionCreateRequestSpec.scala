@@ -17,8 +17,8 @@
 package unit.domain.messaging
 
 import base.UnitSpec
-import java.time.{LocalDate, LocalDateTime}
 
+import java.time.{LocalDate, LocalDateTime}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
@@ -40,7 +40,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   VatIds
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactAddressModel}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 class SubscriptionCreateRequestSpec extends UnitSpec {
@@ -112,6 +112,12 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
     Some(email),
     Some(timeStamp)
   )
+
+  val contactAddress =
+    ContactAddressModel("flat 20", Some("street line 2"), "city", Some("region"), Some("HJ2 3HJ"), "FR")
+
+  private def reg01ExpectedContactInformationWithAddress(timeStamp: LocalDateTime) =
+    ContactInformation(contactDetails, Some(contactAddress))
 
   private def reg06ExpectedContactInformation(timeStamp: LocalDateTime) = ContactInformation(
     Some(fullName),
@@ -193,6 +199,85 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
       requestDetails.typeOfLegalEntity shouldBe Some("Corporate Body")
       requestDetails.contactInformation shouldBe Some(
         reg01ExpectedContactInformation(requestDetails.contactInformation.get.emailVerificationTimestamp.get)
+      )
+      requestDetails.vatIDs shouldBe None
+      requestDetails.consentToDisclosureOfPersonalData shouldBe None
+      requestDetails.shortName shouldBe None
+      requestDetails.dateOfEstablishment shouldBe Some(dateOfBirthOrEstablishment)
+      requestDetails.typeOfPerson shouldBe Some("2")
+      requestDetails.principalEconomicActivity shouldBe None
+      requestDetails.serviceName shouldBe Some(atarService.enrolmentKey)
+    }
+
+    "correctly build request for individual ROW with Contact Address for users  without UTR  based on the REG01 response" in {
+
+      val registrationDetails = RegistrationDetailsIndividual(
+        customsId = Some(eori),
+        sapNumber = taxPayerId,
+        safeId = safeId,
+        name = fullName,
+        address = address,
+        dateOfBirth = dateOfBirthOrEstablishment
+      )
+
+      val service = Some(atarService)
+
+      val subscriptionDetails =
+        SubscriptionDetails(contactDetails = Some(contactDetails), contactAddress = Some(contactAddress))
+
+      val request = SubscriptionCreateRequest(registrationDetails, subscriptionDetails, emailAddress, service)
+
+      val requestCommon  = request.requestCommon
+      val requestDetails = request.requestDetail
+
+      requestCommon.regime shouldBe "CDS"
+      requestDetails.SAFE shouldBe safeId.id
+      requestDetails.EORINo shouldBe Some(eori.id)
+      requestDetails.CDSFullName shouldBe fullName
+      requestDetails.CDSEstablishmentAddress shouldBe establishmentAddress
+      requestDetails.establishmentInTheCustomsTerritoryOfTheUnion shouldBe None
+      requestDetails.typeOfLegalEntity shouldBe Some("Unincorporated Body")
+      requestDetails.contactInformation shouldBe Some(
+        reg01ExpectedContactInformationWithAddress(requestDetails.contactInformation.get.emailVerificationTimestamp.get)
+      )
+      requestDetails.vatIDs shouldBe None
+      requestDetails.consentToDisclosureOfPersonalData shouldBe None
+      requestDetails.shortName shouldBe None
+      requestDetails.dateOfEstablishment shouldBe Some(dateOfBirthOrEstablishment)
+      requestDetails.typeOfPerson shouldBe Some("1")
+      requestDetails.principalEconomicActivity shouldBe None
+      requestDetails.serviceName shouldBe Some(atarService.enrolmentKey)
+    }
+
+    "correctly build request for organisation ROW with Contact Address for users  without UTR  based on the REG01 response" in {
+
+      val service = Some(atarService)
+      val registrationDetails = RegistrationDetailsOrganisation(
+        customsId = Some(eori),
+        sapNumber = taxPayerId,
+        safeId = safeId,
+        name = fullName,
+        address = address,
+        dateOfEstablishment = Some(dateOfBirthOrEstablishment),
+        etmpOrganisationType = Some(CorporateBody)
+      )
+      val subscriptionDetails =
+        SubscriptionDetails(contactDetails = Some(contactDetails), contactAddress = Some(contactAddress))
+
+      val request = SubscriptionCreateRequest(registrationDetails, subscriptionDetails, emailAddress, service)
+
+      val requestCommon  = request.requestCommon
+      val requestDetails = request.requestDetail
+
+      requestCommon.regime shouldBe "CDS"
+      requestDetails.SAFE shouldBe safeId.id
+      requestDetails.EORINo shouldBe Some(eori.id)
+      requestDetails.CDSFullName shouldBe fullName
+      requestDetails.CDSEstablishmentAddress shouldBe establishmentAddress
+      requestDetails.establishmentInTheCustomsTerritoryOfTheUnion shouldBe None
+      requestDetails.typeOfLegalEntity shouldBe Some("Corporate Body")
+      requestDetails.contactInformation shouldBe Some(
+        reg01ExpectedContactInformationWithAddress(requestDetails.contactInformation.get.emailVerificationTimestamp.get)
       )
       requestDetails.vatIDs shouldBe None
       requestDetails.consentToDisclosureOfPersonalData shouldBe None
