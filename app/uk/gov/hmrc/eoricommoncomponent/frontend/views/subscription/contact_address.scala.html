@@ -41,7 +41,7 @@
 
         <h1 class="govuk-heading-l">@messages("contact-address.heading")</h1>
 
-        @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactAddressController.submit(service), "contactAddressForm") {
+        @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactAddressController.submit(service, false), "contactAddressForm") {
         @CSRF.formField
 
             @inputText(

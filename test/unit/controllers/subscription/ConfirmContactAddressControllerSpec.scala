@@ -71,12 +71,6 @@ class ConfirmContactAddressControllerSpec
       mockSubscriptionBusinessService
         .cachedContactDetailsModel(any[HeaderCarrier])
     ).thenReturn(Future.successful(Some(contactDetailsModel)))
-    when(
-      mockSubscriptionDetailsService.cacheContactDetailsForROW(
-        Some(any[ContactDetailsModel]),
-        any[ContactAddressModel]
-      )(any[HeaderCarrier])
-    ).thenReturn(Future.successful(()))
     when(mockSubscriptionBusinessService.contactAddress(any[HeaderCarrier]))
       .thenReturn(Future.successful(Some(ConfirmContactAddressPage.filledValues)))
     setupMockSubscriptionFlowManager(ConfirmContactAddressSubscriptionFlowPage)
@@ -105,7 +99,7 @@ class ConfirmContactAddressControllerSpec
         val page = CdsPage(contentAsString(result))
         page.getElementsText(
           ConfirmContactAddressPage.hintTextXpath
-        ) shouldBe "This is the address we use to contact you about your application"
+        ) shouldBe "This is the address we will use to contact you about your application"
       }
     }
 
@@ -158,22 +152,6 @@ class ConfirmContactAddressControllerSpec
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some("next-page-url")
       }
-    }
-
-    "fail when system fails to create contact details" in {
-      val unsupportedException = new UnsupportedOperationException("Emulation of service call failure")
-
-      when(
-        mockSubscriptionDetailsService
-          .cacheContactDetailsForROW(Some(any[ContactDetailsModel]), any[ContactAddressModel])(any[HeaderCarrier])
-      ).thenReturn(Future.failed(unsupportedException))
-
-      val caught = intercept[RuntimeException] {
-        submitForm(yesForm) { result =>
-          await(result)
-        }
-      }
-      caught shouldBe unsupportedException
     }
   }
 

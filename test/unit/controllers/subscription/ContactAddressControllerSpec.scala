@@ -48,7 +48,7 @@ class ContactAddressControllerSpec
   protected override val formId: String = ContactAddressPage.formId
 
   protected override def submitInCreateModeUrl: String =
-    submit(atarService).url
+    submit(atarService, false).url
 
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockCdsFrontendDataCache       = mock[SessionCache]
@@ -63,7 +63,6 @@ class ContactAddressControllerSpec
     mockSubscriptionDetailsService,
     mockSubscriptionBusinessService,
     mockSubscriptionFlowManager,
-    mockRequestSessionData,
     viewAddress
   )
 
@@ -161,7 +160,7 @@ class ContactAddressControllerSpec
 
   "submitting the form with all mandatory fields filled when in create mode for organisation type" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.submit(atarService))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.submit(atarService, false))
 
     "wait until the saveSubscriptionDetailsHolder is completed before progressing" in {
       registerSaveDetailsMockFailure(emulatedFailure)
@@ -343,7 +342,7 @@ class ContactAddressControllerSpec
   private def submitForm(form: Map[String, String], userId: String = defaultUserId)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
 
-    test(controller.submit(atarService)(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)))
+    test(controller.submit(atarService, false)(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)))
   }
 
   private def registerSaveDetailsMockSuccess() {

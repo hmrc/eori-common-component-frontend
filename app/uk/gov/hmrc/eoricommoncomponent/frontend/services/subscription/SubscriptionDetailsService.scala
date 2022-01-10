@@ -65,16 +65,6 @@ class SubscriptionDetailsService @Inject() (
       saveSubscriptionDetails(sd => sd.copy(contactDetails = Some(contactDetails)))
     }
 
-  def cacheContactDetailsForROW(contactDetailsModel: Option[ContactDetailsModel], address: ContactAddressModel)(implicit
-    hc: HeaderCarrier
-  ): Future[Unit] =
-    contactDetailsModel match {
-      case Some(contactDetails) =>
-        val rowContactDetails = contactDetailsForROW(contactDetails, address)
-        saveSubscriptionDetails(sd => sd.copy(contactDetails = Some(rowContactDetails)))
-      case None => throw new IllegalStateException("No Contact Details Cached")
-    }
-
   def cacheAddressDetails(address: AddressViewModel)(implicit hc: HeaderCarrier): Future[Unit] = {
     def noneForEmptyPostcode(a: AddressViewModel) = a.copy(postcode = a.postcode.filter(_.nonEmpty))
     saveSubscriptionDetails(sd => sd.copy(addressDetails = Some(noneForEmptyPostcode(address))))
@@ -160,11 +150,6 @@ class SubscriptionDetailsService @Inject() (
         contactDetailsAdaptor.toContactDetailsModelWithRegistrationAddress(view, registrationDetails.address)
       }
     else Future.successful(view)
-
-  private def contactDetailsForROW(view: ContactDetailsModel, address: ContactAddressModel)(implicit
-    hc: HeaderCarrier
-  ): ContactDetailsModel =
-    contactDetailsAdaptor.toContactDetailsModelWithRowAddress(view, address)
 
   def cachedCustomsId(implicit hc: HeaderCarrier): Future[Option[CustomsId]] =
     sessionCache.subscriptionDetails map (_.customsId)

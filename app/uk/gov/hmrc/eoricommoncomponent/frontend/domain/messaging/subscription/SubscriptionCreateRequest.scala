@@ -115,7 +115,7 @@ object SubscriptionCreateRequest {
         CDSEstablishmentAddress = establishmentAddress,
         establishmentInTheCustomsTerritoryOfTheUnion = None,
         typeOfLegalEntity = etmpTypeOfPerson.map(_.legalStatus),
-        contactInformation = sub.contactDetails.map(_.toRowContactInformation()),
+        contactInformation = sub.contactDetails.map(ContactInformation(_, sub.contactAddress)),
         vatIDs = None,
         consentToDisclosureOfPersonalData = None,
         shortName = None,

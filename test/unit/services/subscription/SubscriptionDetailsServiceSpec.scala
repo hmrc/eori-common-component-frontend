@@ -262,44 +262,6 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
     }
   }
 
-  "Calling createContactDetailsForROW" should {
-    "Update ContactDetails with contact address from ROW" in {
-
-      when(
-        mockContactDetailsAdaptor.toContactDetailsModelWithRowAddress(
-          contactDetailsViewModelWhenNotUsingRowAddress,
-          defaultContactAddress
-        )
-      ).thenReturn(contactDetailsViewModelWhenUsingRowAddress)
-
-      when(mockSessionCache.subscriptionDetails).thenReturn(SubscriptionDetails())
-      when(mockSessionCache.subscriptionDetails).thenReturn(
-        SubscriptionDetails(dateEstablished = Some(dateOfEstablishment))
-      )
-
-      await(
-        subscriptionDetailsHolderService.cacheContactDetailsForROW(
-          Some(contactDetailsViewModelWhenNotUsingRowAddress),
-          defaultContactAddress
-        )
-      )
-
-      val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
-
-      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
-      val holder = requestCaptor.getValue
-      holder.contactDetails shouldBe Some(contactDetailsViewModelWhenUsingRowAddress)
-      holder.dateEstablished shouldBe Some(dateOfEstablishment)
-    }
-
-    "throw exception when contact details are not retrieved from cdsFrontendCache" in {
-      val thrown = intercept[IllegalStateException] {
-        await(subscriptionDetailsHolderService.cacheContactDetailsForROW(None, defaultContactAddress))
-      }
-      thrown.getMessage shouldBe "No Contact Details Cached"
-    }
-  }
-
   "Calling cache CustomsId" should {
     "save CustomsId in frontend cache" in {
       await(subscriptionDetailsHolderService.cacheCustomsId(customsIdUTR))

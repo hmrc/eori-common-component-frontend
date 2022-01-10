@@ -72,12 +72,7 @@ class ConfirmContactAddressController @Inject() (
                   Future.successful(
                     BadRequest(contactAddressView(formWithErrors, service, address.toContactAddressViewModel))
                   ),
-                answer =>
-                  subscriptionBusinessService.cachedContactDetailsModel flatMap {
-                    subscriptionDetailsService.cacheContactDetailsForROW(_, address).flatMap(
-                      _ => locationByAnswer(answer, service)
-                    )
-                  }
+                answer => locationByAnswer(answer, service)
               )
           case None => Future.successful(Redirect(ContactAddressController.displayPage(service)))
         }

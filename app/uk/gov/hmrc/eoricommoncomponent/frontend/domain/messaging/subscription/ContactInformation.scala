@@ -17,11 +17,12 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription
 
 import java.time.{Clock, LocalDateTime, ZoneId}
-
 import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.CommonHeader
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.ContactDetail
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactAddressModel}
 
 case class ContactInformation(
   personOfContact: Option[String] = None,
@@ -74,5 +75,36 @@ object ContactInformation extends CommonHeader {
       faxNumber = contactDetails.fax,
       emailAddress = Some(contactDetails.emailAddress)
     )
+
+  def apply(contactDetails: ContactDetailsModel, contactAddress: Option[ContactAddressModel]): ContactInformation =
+    (contactDetails, contactAddress) match {
+      case (contactDetails, Some(contactAddress)) =>
+        val fourLineAddress = AddressViewModel(contactAddress)
+        ContactInformation(
+          personOfContact = Some(contactDetails.fullName),
+          sepCorrAddrIndicator = Some(false),
+          streetAndNumber = Some(fourLineAddress.street),
+          city = Some(fourLineAddress.city),
+          postalCode = fourLineAddress.postcode,
+          countryCode = Some(fourLineAddress.countryCode),
+          telephoneNumber = Some(contactDetails.telephone),
+          faxNumber = None,
+          emailAddress = Some(contactDetails.emailAddress)
+        )
+
+      case (contactDetails, None) =>
+        ContactInformation(
+          personOfContact = Some(contactDetails.fullName),
+          sepCorrAddrIndicator = Some(false),
+          streetAndNumber = None,
+          city = None,
+          postalCode = None,
+          countryCode = None,
+          telephoneNumber = Some(contactDetails.telephone),
+          faxNumber = None,
+          emailAddress = Some(contactDetails.emailAddress)
+        )
+
+    }
 
 }

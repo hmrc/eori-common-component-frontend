@@ -1368,7 +1368,7 @@ contact-address.country=Country
 
 confirm-contact-details.page.title=Is this your contact address?
 confirm-contact-details.page.heading=Is this your contact address?
-confirm-contact-address.address.hint=This is the address we use to contact you about your application
+confirm-contact-address.address.hint=This is the address we will use to contact you about your application
 confirm-contact-details.address-text=Is this address correct?
 confirm-contact-details.yes=Yes, this address is correct
 confirm-contact-details.no=No, I want to change the address

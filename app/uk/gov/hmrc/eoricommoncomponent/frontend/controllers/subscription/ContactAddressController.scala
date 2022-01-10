@@ -32,7 +32,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionDetailsService
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.contact_address
-
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -43,7 +42,6 @@ class ContactAddressController @Inject() (
   subscriptionDetailsService: SubscriptionDetailsService,
   subscriptionBusinessService: SubscriptionBusinessService,
   subscriptionFlowManager: SubscriptionFlowManager,
-  requestSessionData: RequestSessionData,
   contactAddressView: contact_address
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
@@ -70,7 +68,7 @@ class ContactAddressController @Inject() (
     Future.successful(status(contactAddressView(form, countriesToInclude, countriesInCountryPicker, service)))
   }
 
-  def submit(service: Service): Action[AnyContent] =
+  def submit(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       contactAddressCreateForm().bindFromRequest
         .fold(

@@ -1204,7 +1204,7 @@ contact-address.country=TRANSLATE Country
 
 confirm-contact-details.page.title=TRANSLATE Is this your contact address?
 confirm-contact-details.page.heading=TRANSLATE Is this your contact address?
-confirm-contact-address.address.hint=TRANSLATE This is the address we use to contact you about your application
+confirm-contact-address.address.hint=TRANSLATE This is the address we will use to contact you about your application
 confirm-contact-details.address-text=TRANSLATE Is this address correct?
 confirm-contact-details.yes=TRANSLATE Yes, this address is correct
 confirm-contact-details.no=TRANSLATE No, I want to change the address
