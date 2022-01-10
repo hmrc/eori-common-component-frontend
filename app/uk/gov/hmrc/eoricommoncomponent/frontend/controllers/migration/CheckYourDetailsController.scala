@@ -71,6 +71,7 @@ class CheckYourDetailsController @Inject() (
             customsId = subscriptionDetailsHolder.customsId,
             registeredCountry = subscriptionDetailsHolder.registeredCompany,
             addressLookupParams = addressLookupParams,
+            contactAddress = subscriptionDetailsHolder.contactAddress,
             service = service
           )
         )

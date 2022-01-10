@@ -26,7 +26,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.Contac
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
   AddressLookupParams,
   AddressViewModel,
-  CompanyRegisteredCountry
+  CompanyRegisteredCountry,
+  ContactAddressModel
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.check_your_details
 import uk.gov.hmrc.play.language.LanguageUtils
@@ -52,6 +53,10 @@ class CheckYourDetailsSpec extends ViewSpec {
       None,
       None
     )
+  )
+
+  private val contactAddressDetail = Some(
+    ContactAddressModel("flat 20", Some("street line 2"), "city", Some("region"), Some("HJ2 3HJ"), "FR")
   )
 
   private val address           = Some(AddressViewModel("Street", "City", Some("Postcode"), "GB"))
@@ -221,6 +226,13 @@ class CheckYourDetailsSpec extends ViewSpec {
           "href"
         ) mustBe "/customs-enrolment-services/atar/subscribe/contact-details/review"
 
+        val contactAddress = page.body.getElementsByClass("review-tbl__contact-address").get(0)
+        contactAddress.getElementsByClass("govuk-summary-list__key").text mustBe "Contact Address"
+        contactAddress.getElementsByClass("govuk-summary-list__value").text mustBe "flat 20 street line 2 city region HJ2 3HJ France"
+        contactAddress.getElementsByTag("a").attr(
+          "href"
+        ) mustBe "/customs-enrolment-services/atar/subscribe/contact-address/review"
+
         val dateEstablished = page.body.getElementsByClass("review-tbl__date-established").get(0)
         dateEstablished.getElementsByClass("govuk-summary-list__key").text mustBe "Date of establishment"
         dateEstablished.getElementsByClass("govuk-summary-list__value").text mustBe languageUtils.Dates.formatDate(
@@ -327,6 +339,13 @@ class CheckYourDetailsSpec extends ViewSpec {
           "href"
         ) mustBe "/customs-enrolment-services/atar/subscribe/contact-details/review"
 
+
+        val contactAddress = page.body.getElementsByClass("review-tbl__contact-address").get(0)
+        contactAddress.getElementsByClass("govuk-summary-list__key").text mustBe "Contact Address"
+        contactAddress.getElementsByClass("govuk-summary-list__value").text mustBe "flat 20 street line 2 city region HJ2 3HJ France"
+        contactAddress.getElementsByTag("a").attr(
+          "href"
+        ) mustBe "/customs-enrolment-services/atar/subscribe/contact-address/review"
       }
 
       "user is during ROW Individual journey with UTR" in {
@@ -606,6 +625,37 @@ class CheckYourDetailsSpec extends ViewSpec {
         page.body.getElementsByClass("review-tbl__contact-details") mustBe empty
       }
     }
+    "not display contact address for ROW journeys" when {
+
+      "user is organisation with UTR" in {
+
+        val page = doc(isThirdCountrySubscription = true)
+
+        page.body.getElementsByClass("review-tbl__contact-address") mustBe empty
+
+      }
+
+      "user is individual with UTR" in {
+
+        val page =
+          doc(isIndividualSubscriptionFlow = true, nameIdOrganisationDetails = None, isThirdCountrySubscription = true)
+
+        page.body.getElementsByClass("review-tbl__contact-address") mustBe empty
+
+      }
+
+      "user is individual with NINo" in {
+
+        val page = doc(
+          isIndividualSubscriptionFlow = true,
+          customsId = nino,
+          nameIdOrganisationDetails = None,
+          isThirdCountrySubscription = true
+        )
+
+        page.body.getElementsByClass("review-tbl__contact-address") mustBe empty
+      }
+    }
 
     "display note on the bottom of the page with 'Confirm and send' button" in {
 
@@ -648,7 +698,8 @@ class CheckYourDetailsSpec extends ViewSpec {
     nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg,
     existingEori: Option[ExistingEori] = None,
     companyRegisteredCountry: Option[CompanyRegisteredCountry] = None,
-    addressLookupParams: Option[AddressLookupParams] = None
+    addressLookupParams: Option[AddressLookupParams] = None,
+    contactAddress: Option[ContactAddressModel] = None
   ): Document = {
 
     implicit val request = withFakeCSRF(FakeRequest().withSession(("selected-user-location", "third-country")))
@@ -669,6 +720,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       customsId,
       companyRegisteredCountry,
       addressLookupParams,
+      contactAddressDetail,
       atarService
     )
     Jsoup.parse(contentAsString(result))

@@ -79,7 +79,7 @@ object ContactInformation extends CommonHeader {
   def apply(contactDetails: ContactDetailsModel, contactAddress: Option[ContactAddressModel]): ContactInformation =
     (contactDetails, contactAddress) match {
       case (contactDetails, Some(contactAddress)) =>
-        val fourLineAddress = AddressViewModel(contactAddress)
+        val fourLineAddress = ContactAddressModel.toAddressViewModel(contactAddress)
         ContactInformation(
           personOfContact = Some(contactDetails.fullName),
           sepCorrAddrIndicator = Some(false),

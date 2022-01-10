@@ -57,6 +57,8 @@ object ContactAddressModel {
     country
   )
 
+  def toAddressViewModel(contactAddress: ContactAddressModel) = AddressViewModel(contactAddress)
+
   def trim(value: Option[String]): Option[String] = value.map(_.trim)
 
 }

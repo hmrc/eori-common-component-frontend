@@ -117,7 +117,18 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
     ContactAddressModel("flat 20", Some("street line 2"), "city", Some("region"), Some("HJ2 3HJ"), "FR")
 
   private def reg01ExpectedContactInformationWithAddress(timeStamp: LocalDateTime) =
-    ContactInformation(contactDetails, Some(contactAddress))
+    ContactInformation(
+      Some(fullName),
+      Some(false),
+      Some("flat 20 street line 2"),
+      Some("city"),
+      Some("HJ2 3HJ"),
+      Some("FR"),
+      Some("01234123123"),
+      None,
+      Some(email),
+      Some(timeStamp)
+    )
 
   private def reg06ExpectedContactInformation(timeStamp: LocalDateTime) = ContactInformation(
     Some(fullName),

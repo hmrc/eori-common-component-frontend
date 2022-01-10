@@ -1094,6 +1094,7 @@ cds.form.third-country=Third country unique identifier number
 cds.form.union=Establishment in the customs territory of the Union
 cds.form.check-answers=Check your answers
 cds.form.date-of-birth.label=Date of birth
+cds.form.contact-address.label=Contact Address
 cds.check-answers.error-heading=We are unable to process your application. To continue:
 cds.form.disclaimer=By sending this application you confirm that the information you are providing is correct and complete.
 

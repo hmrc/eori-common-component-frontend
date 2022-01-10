@@ -953,6 +953,7 @@ cds.form.third-country=Rhif adnabod unigryw trydedd wlad
 cds.form.union=Wedi’i sefydlu yn nhiriogaeth tollau’r Undeb
 cds.form.check-answers=Gwiriwch eich atebion
 cds.form.date-of-birth.label=Dyddiad geni
+cds.form.contact-address.label=TRANSLATE Contact Address
 cds.check-answers.error-heading=Ni allwn brosesu’ch cais. I fynd yn eich blaen:
 cds.form.disclaimer=Drwy anfon y cais hwn rydych yn cadarnhau bod yr wybodaeth yr ydych yn ei rhoi yn gywir ac yn gyflawn.
 cds.subscription.organisation-disclose-personal-details-consent.heading=A ydych am gynnwys enw a chyfeiriad eich sefydliad ar y gwiriwr EORI?

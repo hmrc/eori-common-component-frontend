@@ -26,6 +26,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactAddressModel
 
 @this(layout_di: layout, languageUtils: LanguageUtils, govukSummaryList: GovukSummaryList, govukButton: GovukButton)
 
@@ -45,6 +46,7 @@
         customsId: Option[CustomsId],
         registeredCountry: Option[CompanyRegisteredCountry],
         addressLookupParams: Option[AddressLookupParams],
+        contactAddress: Option[ContactAddressModel],
         service: Service)(implicit request: Request[_], messages: Messages)
 
 @labelForEUCountry(countryCode: String) = @{
@@ -178,6 +180,15 @@
     @helpers.noMarginParagraph(cd.telephone)
 }
 
+@contactAddressHtml(cd: ContactAddressModel) = {
+    @helpers.noMarginParagraph(cd.lineOne)
+    @cd.lineTwo.map(lineTwo => helpers.noMarginParagraph(lineTwo))
+    @helpers.noMarginParagraph(cd.lineThree)
+    @cd.lineFour.map(lineFour => helpers.noMarginParagraph(lineFour))
+    @cd.postcode.map(postcode => helpers.noMarginParagraph(postcode))
+    @helpers.noMarginParagraph(transformCountryCodeToLabel(cd.country))
+}
+
 @isAddressLookup = @{
     addressLookupParams.exists(_.nonEmpty())
 }
@@ -308,11 +319,21 @@
                 },
                 contactDetails.flatMap { cd => {
                     if(isThirdCountrySubscription && isUtrAndNinoEmpty) {
-
                         Some(row(
                             "cds.form.customs-contact",
                             Some(contactDetailHtml(cd)),
                             Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactDetailsController.reviewForm(service)),"review-tbl__contact-details"
+                        ))
+
+                    } else None
+                }
+                },
+                contactAddress.flatMap { cd => {
+                    if(isThirdCountrySubscription && isUtrAndNinoEmpty) {
+                        Some(row(
+                            "cds.form.contact-address.label",
+                            Some(contactAddressHtml(cd)),
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactAddressController.displayPage(service)),"review-tbl__contact-address"
                         ))
 
                     } else None
