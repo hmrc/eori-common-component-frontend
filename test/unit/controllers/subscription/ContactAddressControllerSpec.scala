@@ -43,12 +43,15 @@ import scala.concurrent.Future
 
 class ContactAddressControllerSpec
     extends SubscriptionFlowTestSupport with BusinessDatesOrganisationTypeTables with BeforeAndAfterEach
-    with SubscriptionFlowCreateModeTestSupport {
+    with SubscriptionFlowCreateModeTestSupport with SubscriptionFlowReviewModeTestSupport {
 
   protected override val formId: String = ContactAddressPage.formId
 
   protected override def submitInCreateModeUrl: String =
     submit(atarService, false).url
+
+  protected override def submitInReviewModeUrl: String =
+    submit(atarService, true).url
 
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockCdsFrontendDataCache       = mock[SessionCache]
@@ -114,7 +117,7 @@ class ContactAddressControllerSpec
     super.afterEach()
   }
 
-  "Subscription Address Controller form in create mode" should {
+  "Contact Address Controller form in create mode" should {
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.displayPage(atarService))
 
@@ -158,9 +161,76 @@ class ContactAddressControllerSpec
 
   }
 
-  "submitting the form with all mandatory fields filled when in create mode for organisation type" should {
+  "Contact Address Controller form in review mode" should {
+
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.reviewForm(atarService))
+
+    "display title as 'What is your contact address?'" in {
+      showReviewForm() { result =>
+        val page = CdsPage(contentAsString(result))
+        page.title() should startWith("What is your contact address?")
+      }
+    }
+
+    "submit in review mode" in {
+      showReviewForm()(verifyFormSubmitsInReviewMode)
+    }
+
+    "display the back link" in {
+      showReviewForm()(verifyBackLinkInReviewMode)
+    }
+
+    "have Address input field without data if not cached previously" in {
+      showCreateForm() { result =>
+        val page = CdsPage(contentAsString(result))
+        verifyAddressFieldExistsWithNoData(page)
+      }
+    }
+
+    "have Address input field prepopulated if cached previously" in {
+      when(mockSubscriptionBusinessService.contactAddress(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(ContactAddressPage.filledValues)))
+      showCreateForm() { result =>
+        val page = CdsPage(contentAsString(result))
+        verifyAddressFieldExistsAndPopulatedCorrectly(page)
+      }
+    }
+
+    "display the correct text for the continue button" in {
+      showCreateForm() { result =>
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(AddressPage.continueButtonXpath) shouldBe ContinueButtonTextInCreateMode
+      }
+    }
+  }
+
+  "submitting the form with all mandatory fields filled when in create mode" should {
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.submit(atarService, false))
+
+    "wait until the saveSubscriptionDetailsHolder is completed before progressing" in {
+      registerSaveDetailsMockFailure(emulatedFailure)
+
+      val caught = intercept[RuntimeException] {
+        submitForm(mandatoryFields) { result =>
+          await(result)
+        }
+      }
+
+      caught shouldEqual emulatedFailure
+    }
+
+    "redirect to next screen" in {
+      submitForm(mandatoryFields) { result =>
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) shouldBe Some("next-page-url")
+      }
+    }
+  }
+
+  "submitting the form with all mandatory fields filled when in review mode" should {
+
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.submit(atarService, true))
 
     "wait until the saveSubscriptionDetailsHolder is completed before progressing" in {
       registerSaveDetailsMockFailure(emulatedFailure)
@@ -359,6 +429,12 @@ class ContactAddressControllerSpec
     withAuthorisedUser(userId, mockAuthConnector)
 
     test(controller.displayPage(atarService).apply(SessionBuilder.buildRequestWithSession(userId)))
+  }
+
+  private def showReviewForm(userId: String = defaultUserId)(test: Future[Result] => Any) {
+    withAuthorisedUser(userId, mockAuthConnector)
+
+    test(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
   private def verifyAddressFieldExistsAndPopulatedCorrectly(page: CdsPage): Unit = {
