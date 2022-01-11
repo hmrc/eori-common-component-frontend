@@ -203,7 +203,7 @@
 }
 
 @isUtrAndNinoEmpty = @{
-    utr.forall(_.id == "Not entered") && nino.forall(_.id == "Not entered") && nameIdOrganisationDetails.forall(_.id.isEmpty)
+    utr.forall(_.id == messages("cds.not-entered.label")) && nino.forall(_.id == messages("cds.not-entered.label")) && nameIdOrganisationDetails.forall(_.id.isEmpty)
 }
 
 

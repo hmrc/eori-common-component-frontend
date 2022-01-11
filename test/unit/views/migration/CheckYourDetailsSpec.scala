@@ -79,7 +79,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         email.getElementsByClass("govuk-summary-list__value").text mustBe "email@example.com"
 
         val eori = doc().body.getElementsByClass("review-tbl__eori-number").get(0)
-        eori.getElementsByClass("govuk-summary-list__key").text mustBe "EORI number"
+        eori.getElementsByClass("govuk-summary-list__key").text mustBe "GB EORI number"
         eori.getElementsByClass("govuk-summary-list__value").text mustBe "ZZ123456789112"
         eori.getElementsByTag("a").attr(
           "href"
@@ -120,7 +120,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         email.getElementsByClass("govuk-summary-list__value").text mustBe "email@example.com"
 
         val eori = page.body.getElementsByClass("review-tbl__eori-number").get(0)
-        eori.getElementsByClass("govuk-summary-list__key").text mustBe "EORI number"
+        eori.getElementsByClass("govuk-summary-list__key").text mustBe "GB EORI number"
         eori.getElementsByClass("govuk-summary-list__value").text mustBe "ZZ123456789112"
         eori.getElementsByTag("a").attr(
           "href"
@@ -155,7 +155,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         email.getElementsByClass("govuk-summary-list__value").text mustBe "email@example.com"
 
         val eori = page.body.getElementsByClass("review-tbl__eori-number").get(0)
-        eori.getElementsByClass("govuk-summary-list__key").text mustBe "EORI number"
+        eori.getElementsByClass("govuk-summary-list__key").text mustBe "GB EORI number"
         eori.getElementsByClass("govuk-summary-list__value").text mustBe "ZZ123456789112"
         eori.getElementsByTag("a").attr(
           "href"
@@ -196,7 +196,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         email.getElementsByClass("govuk-summary-list__value").text mustBe "email@example.com"
 
         val eori = page.body.getElementsByClass("review-tbl__eori-number").get(0)
-        eori.getElementsByClass("govuk-summary-list__key").text mustBe "EORI number"
+        eori.getElementsByClass("govuk-summary-list__key").text mustBe "GB EORI number"
         eori.getElementsByClass("govuk-summary-list__value").text mustBe "ZZ123456789112"
         eori.getElementsByTag("a").attr(
           "href"
@@ -220,15 +220,17 @@ class CheckYourDetailsSpec extends ViewSpec {
         ) mustBe "/customs-enrolment-services/atar/subscribe/row-country/review"
 
         val contactDetails = page.body.getElementsByClass("review-tbl__contact-details").get(0)
-        contactDetails.getElementsByClass("govuk-summary-list__key").text mustBe "Contact"
+        contactDetails.getElementsByClass("govuk-summary-list__key").text mustBe "Contact details"
         contactDetails.getElementsByClass("govuk-summary-list__value").text mustBe "John Doe 11111111111"
         contactDetails.getElementsByTag("a").attr(
           "href"
         ) mustBe "/customs-enrolment-services/atar/subscribe/contact-details/review"
 
         val contactAddress = page.body.getElementsByClass("review-tbl__contact-address").get(0)
-        contactAddress.getElementsByClass("govuk-summary-list__key").text mustBe "Contact Address"
-        contactAddress.getElementsByClass("govuk-summary-list__value").text mustBe "flat 20 street line 2 city region HJ2 3HJ France"
+        contactAddress.getElementsByClass("govuk-summary-list__key").text mustBe "Contact address"
+        contactAddress.getElementsByClass(
+          "govuk-summary-list__value"
+        ).text mustBe "flat 20 street line 2 city region HJ2 3HJ France"
         contactAddress.getElementsByTag("a").attr(
           "href"
         ) mustBe "/customs-enrolment-services/atar/subscribe/contact-address/review"
@@ -253,7 +255,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         email.getElementsByClass("govuk-summary-list__value").text mustBe "email@example.com"
 
         val eori = page.body.getElementsByClass("review-tbl__eori-number").get(0)
-        eori.getElementsByClass("govuk-summary-list__key").text mustBe "EORI number"
+        eori.getElementsByClass("govuk-summary-list__key").text mustBe "GB EORI number"
         eori.getElementsByClass("govuk-summary-list__value").text mustBe "ZZ123456789112"
         eori.getElementsByTag("a").attr(
           "href"
@@ -299,7 +301,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         email.getElementsByClass("govuk-summary-list__value").text mustBe "email@example.com"
 
         val eori = page.body.getElementsByClass("review-tbl__eori-number").get(0)
-        eori.getElementsByClass("govuk-summary-list__key").text mustBe "EORI number"
+        eori.getElementsByClass("govuk-summary-list__key").text mustBe "GB EORI number"
         eori.getElementsByClass("govuk-summary-list__value").text mustBe "ZZ123456789112"
         eori.getElementsByTag("a").attr(
           "href"
@@ -333,16 +335,17 @@ class CheckYourDetailsSpec extends ViewSpec {
         ) mustBe "/customs-enrolment-services/atar/subscribe/row-country/review"
 
         val contactDetails = page.body.getElementsByClass("review-tbl__contact-details").get(0)
-        contactDetails.getElementsByClass("govuk-summary-list__key").text mustBe "Contact"
+        contactDetails.getElementsByClass("govuk-summary-list__key").text mustBe "Contact details"
         contactDetails.getElementsByClass("govuk-summary-list__value").text mustBe "John Doe 11111111111"
         contactDetails.getElementsByTag("a").attr(
           "href"
         ) mustBe "/customs-enrolment-services/atar/subscribe/contact-details/review"
 
-
         val contactAddress = page.body.getElementsByClass("review-tbl__contact-address").get(0)
-        contactAddress.getElementsByClass("govuk-summary-list__key").text mustBe "Contact Address"
-        contactAddress.getElementsByClass("govuk-summary-list__value").text mustBe "flat 20 street line 2 city region HJ2 3HJ France"
+        contactAddress.getElementsByClass("govuk-summary-list__key").text mustBe "Contact address"
+        contactAddress.getElementsByClass(
+          "govuk-summary-list__value"
+        ).text mustBe "flat 20 street line 2 city region HJ2 3HJ France"
         contactAddress.getElementsByTag("a").attr(
           "href"
         ) mustBe "/customs-enrolment-services/atar/subscribe/contact-address/review"
@@ -358,7 +361,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         email.getElementsByClass("govuk-summary-list__value").text mustBe "email@example.com"
 
         val eori = page.body.getElementsByClass("review-tbl__eori-number").get(0)
-        eori.getElementsByClass("govuk-summary-list__key").text mustBe "EORI number"
+        eori.getElementsByClass("govuk-summary-list__key").text mustBe "GB EORI number"
         eori.getElementsByClass("govuk-summary-list__value").text mustBe "ZZ123456789112"
         eori.getElementsByTag("a").attr(
           "href"
@@ -400,7 +403,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         email.getElementsByClass("govuk-summary-list__value").text mustBe "email@example.com"
 
         val eori = page.body.getElementsByClass("review-tbl__eori-number").get(0)
-        eori.getElementsByClass("govuk-summary-list__key").text mustBe "EORI number"
+        eori.getElementsByClass("govuk-summary-list__key").text mustBe "GB EORI number"
         eori.getElementsByClass("govuk-summary-list__value").text mustBe "ZZ123456789112"
         eori.getElementsByTag("a").attr(
           "href"

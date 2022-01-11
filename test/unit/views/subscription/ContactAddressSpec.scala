@@ -37,10 +37,10 @@ class ContactAddressSpec extends ViewSpec {
 
   private val formWithError = form.bind(Map("line-1" -> "", "line-3" -> "", "countryCode" -> ""))
 
-  private val doc: Document = Jsoup.parse(contentAsString(view(form, countries, picker, atarService)))
+  private val doc: Document = Jsoup.parse(contentAsString(view(form, countries, picker, false, atarService)))
 
   private val docWithErrorSummary: Document =
-    Jsoup.parse(contentAsString(view(formWithError, countries, picker, atarService)))
+    Jsoup.parse(contentAsString(view(formWithError, countries, picker, false, atarService)))
 
   "Contact address view" should {
 

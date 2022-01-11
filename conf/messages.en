@@ -380,7 +380,7 @@ enter-email-hint-text-2=financial notifications, including new statements and di
 enter-email-hint-text-3=exports notifications
 
 subscription.enter-email.label=Email address
-cds.subscription.enter-eori-number.eori-number.label=EORI number
+cds.subscription.enter-eori-number.eori-number.label=GB EORI number
 subscription.subscription-results.subscription-complete=Subscription complete
 subscription.subscription-results.active-from=on
 cds.subscription.enter-email.page-error.email=Enter your email address
