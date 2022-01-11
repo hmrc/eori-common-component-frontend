@@ -25,7 +25,7 @@
 
 @this(layout_di: layout, govukButton: GovukButton, inputText: helpers.inputText, errorSummary: helpers.errorSummary, countryField: helpers.countryField)
 
-@(addressForm: Form[ContactAddressModel], countries: List[Country], countriesInCountryPicker: CountriesInCountryPicker, service: Service)(implicit request: Request[AnyContent], messages: Messages)
+@(addressForm: Form[ContactAddressModel], countries: List[Country], countriesInCountryPicker: CountriesInCountryPicker, isInReviewMode: Boolean, service: Service)(implicit request: Request[AnyContent], messages: Messages)
 
 @postCodeLabel = @{
     countriesInCountryPicker match {
@@ -41,7 +41,7 @@
 
         <h1 class="govuk-heading-l">@messages("contact-address.heading")</h1>
 
-        @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactAddressController.submit(service, false), "contactAddressForm") {
+        @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactAddressController.submit(service, isInReviewMode), "contactAddressForm") {
         @CSRF.formField
 
             @inputText(

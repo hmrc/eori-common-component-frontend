@@ -173,7 +173,7 @@ GET         /customs-enrolment-services/:service/subscribe/logout               
 
 GET         /customs-enrolment-services/:service/subscribe/contact-address                             @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ContactAddressController.displayPage(service: Service)
 POST        /customs-enrolment-services/:service/subscribe/contact-address                             @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ContactAddressController.submit(service: Service,isInReviewMode:Boolean = false)
-GET         /customs-enrolment-services/:service/subscribe/contact-address/review                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ContactAddressController.displayPage(service: Service)
+GET         /customs-enrolment-services/:service/subscribe/contact-address/review                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ContactAddressController.reviewForm(service: Service)
 POST        /customs-enrolment-services/:service/subscribe/contact-address/review                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ContactAddressController.submit(service: Service,isInReviewMode:Boolean = true)
 
 GET         /customs-enrolment-services/:service/subscribe/confirm-contact-address                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ConfirmContactAddressController.displayPage(service: Service)

@@ -210,7 +210,8 @@
 @row(key: String, value: Option[Html], call: Option[Call] = None, fieldName: String = "") = @{
     SummaryListRow(
         key = Key(
-            content = Text(messages(key))
+            content = Text(messages(key)),
+            classes = "govuk-!-width-one-third"
         ),
         value = Value(
             content = HtmlContent(value.getOrElse("").toString),
@@ -333,7 +334,7 @@
                         Some(row(
                             "cds.form.contact-address.label",
                             Some(contactAddressHtml(cd)),
-                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactAddressController.displayPage(service)),"review-tbl__contact-address"
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactAddressController.reviewForm(service)),"review-tbl__contact-address"
                         ))
 
                     } else None

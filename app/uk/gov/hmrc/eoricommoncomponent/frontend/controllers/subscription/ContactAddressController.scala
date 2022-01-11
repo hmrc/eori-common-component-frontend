@@ -20,6 +20,7 @@ import play.api.data.Form
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactAddressSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactAddressModel
@@ -27,11 +28,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.ContactAddres
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  SubscriptionBusinessService,
-  SubscriptionDetailsService
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionBusinessService, SubscriptionDetailsService}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.contact_address
+
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -49,39 +48,49 @@ class ContactAddressController @Inject() (
   def displayPage(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.contactAddress.flatMap {
-        populateOkView(_, service)
+        populateOkView(_, isInReviewMode = false, service)
       }
     }
 
-  private def populateOkView(contactAddress: Option[ContactAddressModel], service: Service)(implicit
+  def reviewForm(service: Service): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+      subscriptionBusinessService.contactAddress.flatMap {
+        populateOkView(_,isInReviewMode = true, service)
+      }
+    }
+
+  private def populateOkView(contactAddress: Option[ContactAddressModel],isInReviewMode: Boolean, service: Service)(implicit
     request: Request[AnyContent]
   ): Future[Result] = {
     lazy val form = contactAddress.fold(contactAddressCreateForm())(contactAddressCreateForm().fill(_))
-    populateCountriesToInclude(service, form, Ok)
+    populateCountriesToInclude(service, isInReviewMode, form, Ok)
   }
 
-  private def populateCountriesToInclude(service: Service, form: Form[ContactAddressModel], status: Status)(implicit
+  private def populateCountriesToInclude(service: Service, isInReviewMode: Boolean, form: Form[ContactAddressModel], status: Status)(implicit
     request: Request[AnyContent]
   ) = {
     val (countriesToInclude, countriesInCountryPicker) =
       Countries.getCountryParametersForAllCountries()
-    Future.successful(status(contactAddressView(form, countriesToInclude, countriesInCountryPicker, service)))
+    Future.successful(status(contactAddressView(form, countriesToInclude, countriesInCountryPicker,isInReviewMode,service)))
   }
 
   def submit(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       contactAddressCreateForm().bindFromRequest
         .fold(
-          formWithErrors => populateCountriesToInclude(service, formWithErrors, BadRequest),
+          formWithErrors => populateCountriesToInclude(service, isInReviewMode,formWithErrors, BadRequest),
           address =>
             subscriptionDetailsService.cacheContactAddressDetails(address).map { _ =>
-              Redirect(
-                subscriptionFlowManager
-                  .stepInformation(ContactAddressSubscriptionFlowPage)
-                  .nextPage
-                  .url(service)
-              )
-            }
+              if (isInReviewMode)
+                Redirect(DetermineReviewPageController.determineRoute(service))
+              else
+                Redirect(
+                  subscriptionFlowManager
+                    .stepInformation(ContactAddressSubscriptionFlowPage)
+                    .nextPage
+                    .url(service)
+                )
+           }
         )
     }
 
