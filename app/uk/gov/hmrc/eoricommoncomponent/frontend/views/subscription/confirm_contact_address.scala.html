@@ -107,7 +107,7 @@ inputRadioGroup: helpers.inputRadioGroup
         @CSRF.formField
 
 
-        <h1 class="govuk-heading-l govuk-!-margin-bottom-3">@messages("confirm-contact-details.page.heading")</h1>
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-3" aria-describedby="address-hint">@messages("confirm-contact-details.page.heading")</h1>
         @govukHint(Hint(id= Some("address-hint"), content = Text(messages("confirm-contact-address.address.hint")), classes = "govuk-!-margin-top-0 govuk-!-margin-bottom-5"))
         @govukInsetText(InsetText(
             content = HtmlContent(addressHtml)
