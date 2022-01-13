@@ -17,17 +17,14 @@
 package unit.services.subscription
 
 import base.UnitSpec
-
-import java.time.LocalDate
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{FormData, SubscriptionDetails}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{NameOrganisationMatchModel, _}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
   AddressViewModel,
@@ -42,6 +39,7 @@ import util.builders.RegistrationDetailsBuilder._
 import util.builders.SubscriptionInfoBuilder._
 import util.builders.{RegistrationDetailsBuilder, SubscriptionContactDetailsFormBuilder}
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 import scala.util.Random
@@ -66,9 +64,6 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
   private val contactAddressDetails =
     ContactAddressModel("Line 1", Some("Line 2"), "Town", Some("Region"), Some("SE28 1AA"), "GB")
 
-  private val defaultContactAddress =
-    ContactAddressModel("Line 1", Some("line 2"), "line 3", Some("line 4"), Some("SE28 1AA"), "GB")
-
   private val nameId       = NameIdOrganisationMatchModel(name = "orgname", id = "ID")
   private val customsIdUTR = Utr("utrxxxxx")
   private val utrMatch     = UtrMatchModel(Some(true), Some("utrxxxxx"))
@@ -86,13 +81,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
   private val contactDetailsViewModelWhenUsingRegisteredAddress =
     SubscriptionContactDetailsFormBuilder.createContactDetailsViewModelWhenUseRegAddress
 
-  private val contactDetailsViewModelWhenNotUsingRowAddress =
-    SubscriptionContactDetailsFormBuilder.createContactDetailsViewModelWhenNotUsingRowAddress
-
-  private val contactDetailsViewModelWhenUsingRowAddress =
-    SubscriptionContactDetailsFormBuilder.createContactDetailsViewModelWhenUseRowAddress
-
-  override def beforeEach {
+  override def beforeEach: Unit = {
     reset(
       mockSessionCache,
       mockRegistrationDetailsCreator,
@@ -131,7 +120,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
           ArgumentMatchers.eq(cacheIds)
         )(any())
       ).thenReturn(Future.successful(()))
-      val expected = await(subscriptionDetailsHolderService.saveKeyIdentifiers(groupId, internalId, atarService))
+      val expected: Unit = await(subscriptionDetailsHolderService.saveKeyIdentifiers(groupId, internalId, atarService))
       expected shouldBe ((): Unit)
     }
   }

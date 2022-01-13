@@ -19,7 +19,7 @@ package unit.domain
 import base.UnitSpec
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.ContactInformation
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{ContactAddressModel, ContactAddressViewModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactAddressModel
 
 class ContactInformationSpec extends UnitSpec {
 
@@ -31,7 +31,7 @@ class ContactInformationSpec extends UnitSpec {
       "email",
       "01234123123",
       None,
-      false,
+      useAddressFromRegistrationDetails = false,
       Some("street"),
       Some("city"),
       Some("postCode"),

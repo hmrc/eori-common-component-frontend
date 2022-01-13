@@ -39,7 +39,7 @@ case class ContactAddressModel(
 }
 
 object ContactAddressModel {
-  implicit val jsonFormat = Json.format[ContactAddressModel]
+  implicit val jsonFormat: OFormat[ContactAddressModel] = Json.format[ContactAddressModel]
 
   def apply(
     lineOne: String,
@@ -57,7 +57,7 @@ object ContactAddressModel {
     country
   )
 
-  def toAddressViewModel(contactAddress: ContactAddressModel) = AddressViewModel(contactAddress)
+  def toAddressViewModel(contactAddress: ContactAddressModel): AddressViewModel = AddressViewModel(contactAddress)
 
   def trim(value: Option[String]): Option[String] = value.map(_.trim)
 

@@ -63,7 +63,7 @@ class ContactDetailsController @Inject() (
         cachedNameIdDetails <- if (orgType == Some(NA)) Future.successful(None)
         else subscriptionDetailsService.cachedNameIdDetails
       } yield (cachedCustomsId, cachedNameIdDetails) match {
-        case (None, None) => populateForm(service)(false)
+        case (None, None) => populateForm(service)(isInReviewMode = false)
         case _ =>
           Future.successful(
             Redirect(
@@ -79,7 +79,7 @@ class ContactDetailsController @Inject() (
 
   def reviewForm(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      populateForm(service)(true)
+      populateForm(service)(isInReviewMode = true)
     }
 
   private def populateForm(

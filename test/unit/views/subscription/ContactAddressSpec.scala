@@ -20,9 +20,9 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.{ContactAddressForm, ContactDetailsForm}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.ContactAddressForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{contact_address, contact_details}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.contact_address
 import util.ViewSpec
 
 class ContactAddressSpec extends ViewSpec {
@@ -37,10 +37,11 @@ class ContactAddressSpec extends ViewSpec {
 
   private val formWithError = form.bind(Map("line-1" -> "", "line-3" -> "", "countryCode" -> ""))
 
-  private val doc: Document = Jsoup.parse(contentAsString(view(form, countries, picker, false, atarService)))
+  private val doc: Document =
+    Jsoup.parse(contentAsString(view(form, countries, picker, isInReviewMode = false, atarService)))
 
   private val docWithErrorSummary: Document =
-    Jsoup.parse(contentAsString(view(formWithError, countries, picker, false, atarService)))
+    Jsoup.parse(contentAsString(view(formWithError, countries, picker, isInReviewMode = false, atarService)))
 
   "Contact address view" should {
 

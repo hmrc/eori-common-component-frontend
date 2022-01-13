@@ -16,13 +16,14 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription
 
-import java.time.{Clock, LocalDateTime, ZoneId}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.ContactDetail
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.CommonHeader
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetails
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.ContactDetail
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactAddressModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactAddressModel
+
+import java.time.{Clock, LocalDateTime, ZoneId}
 
 case class ContactInformation(
   personOfContact: Option[String] = None,
@@ -45,7 +46,7 @@ case class ContactInformation(
 }
 
 object ContactInformation extends CommonHeader {
-  implicit val jsonFormat = Json.format[ContactInformation]
+  implicit val jsonFormat: OFormat[ContactInformation] = Json.format[ContactInformation]
 
   private def dashForEmpty(s: String): String =
     if (s.isEmpty) "-" else s

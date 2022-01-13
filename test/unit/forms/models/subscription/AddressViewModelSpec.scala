@@ -29,15 +29,16 @@ class AddressViewModelSpec extends UnitSpec {
   val postCode     = "PC55 5AA"
   val countryCode  = "EN"
 
-  val actualAddress =
+  val actualAddress: Address =
     Address(addressLine1, Some(addressLine2), Some(addressLine3), Some(addressLine4), Some(postCode), countryCode)
 
-  val expectedAddress = AddressViewModel(addressLine1 + " " + addressLine2, addressLine3, Some(postCode), countryCode)
+  val expectedAddress: AddressViewModel =
+    AddressViewModel(addressLine1 + " " + addressLine2, addressLine3, Some(postCode), countryCode)
 
-  val actualContactAddress =
+  val actualContactAddress: ContactAddressModel =
     ContactAddressModel(addressLine1, Some(addressLine2), addressLine3, Some(addressLine4), Some(postCode), countryCode)
 
-  val expectedContactAddress =
+  val expectedContactAddress: AddressViewModel =
     AddressViewModel(addressLine1 + " " + addressLine2, addressLine3, Some(postCode), countryCode)
 
   "AddressViewModel" should {

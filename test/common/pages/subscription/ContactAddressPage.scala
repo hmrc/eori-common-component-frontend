@@ -17,7 +17,7 @@
 package common.pages.subscription
 
 import common.pages.WebPage
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactAddressModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactAddressModel
 
 sealed trait ContactAddressPage extends WebPage {
 
@@ -41,7 +41,7 @@ sealed trait ContactAddressPage extends WebPage {
   val countryFieldXPath               = "//*[@id='countryCode']"
   val fieldLevelErrorCountry          = "//span[@id='countryCode-error' and @class='govuk-error-message']"
 
-  val filledValues =
+  val filledValues: ContactAddressModel =
     ContactAddressModel(
       lineOne = "Line 1",
       lineTwo = Some("Line 2"),

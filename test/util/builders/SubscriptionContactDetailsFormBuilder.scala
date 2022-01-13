@@ -70,7 +70,7 @@ object SubscriptionContactDetailsFormBuilder {
     countryCodeFieldName -> CountryCode
   )
 
-  val contactDetails = ContactDetails(
+  val contactDetails: ContactDetails = ContactDetails(
     fullName = FullName,
     emailAddress = Email,
     telephone = Telephone,
@@ -81,7 +81,7 @@ object SubscriptionContactDetailsFormBuilder {
     countryCode = CountryCode
   )
 
-  val revisedContactDetailsModel = ContactDetailsModel(
+  val revisedContactDetailsModel: ContactDetailsModel = ContactDetailsModel(
     fullName = FullName,
     emailAddress = Email,
     telephone = Telephone,
@@ -93,7 +93,7 @@ object SubscriptionContactDetailsFormBuilder {
     useAddressFromRegistrationDetails = false
   )
 
-  val contactDetailsModel = ContactDetailsModel(
+  val contactDetailsModel: ContactDetailsModel = ContactDetailsModel(
     fullName = FullName,
     emailAddress = Email,
     telephone = Telephone,
@@ -105,7 +105,7 @@ object SubscriptionContactDetailsFormBuilder {
     useAddressFromRegistrationDetails = false
   )
 
-  val contactAddress = ContactAddressModel(
+  val contactAddress: ContactAddressModel = ContactAddressModel(
     "Address Line 1",
     Some("Address Line 1 2"),
     "Address Line 1 3",
@@ -139,7 +139,7 @@ object SubscriptionContactDetailsFormBuilder {
       countryFieldName     -> Country
     )
 
-  val createContactDetailsViewModelWhenNotUsingRegAddress = ContactDetailsModel(
+  val createContactDetailsViewModelWhenNotUsingRegAddress: ContactDetailsModel = ContactDetailsModel(
     fullName = FullName,
     emailAddress = Email,
     telephone = Telephone,
@@ -151,7 +151,7 @@ object SubscriptionContactDetailsFormBuilder {
     useAddressFromRegistrationDetails = false
   )
 
-  val createContactDetailsViewModelWhenNotUsingRowAddress = ContactDetailsModel(
+  val createContactDetailsViewModelWhenNotUsingRowAddress: ContactDetailsModel = ContactDetailsModel(
     fullName = FullName,
     emailAddress = Email,
     telephone = Telephone,
@@ -171,7 +171,7 @@ object SubscriptionContactDetailsFormBuilder {
     useRegisteredAddressFlagFieldName -> "true"
   )
 
-  val createContactDetailsViewModelWhenUseRegAddress = ContactDetailsModel(
+  val createContactDetailsViewModelWhenUseRegAddress: ContactDetailsModel = ContactDetailsModel(
     fullName = FullName,
     emailAddress = Email,
     telephone = Telephone,
@@ -179,11 +179,10 @@ object SubscriptionContactDetailsFormBuilder {
     street = None,
     city = None,
     postcode = None,
-    countryCode = None,
-    useAddressFromRegistrationDetails = true
+    countryCode = None
   )
 
-  val createContactDetailsViewModelWhenUseRowAddress = ContactDetailsModel(
+  val createContactDetailsViewModelWhenUseRowAddress: ContactDetailsModel = ContactDetailsModel(
     fullName = FullName,
     emailAddress = Email,
     telephone = Telephone,

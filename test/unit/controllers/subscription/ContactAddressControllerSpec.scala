@@ -26,7 +26,6 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ContactAddressController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactAddressController.submit
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactAddressSubscriptionFlowPage
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Country
@@ -48,10 +47,10 @@ class ContactAddressControllerSpec
   protected override val formId: String = ContactAddressPage.formId
 
   protected override def submitInCreateModeUrl: String =
-    submit(atarService, false).url
+    submit(atarService, isInReviewMode = false).url
 
   protected override def submitInReviewModeUrl: String =
-    submit(atarService, true).url
+    submit(atarService, isInReviewMode = true).url
 
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockCdsFrontendDataCache       = mock[SessionCache]
@@ -206,7 +205,10 @@ class ContactAddressControllerSpec
 
   "submitting the form with all mandatory fields filled when in create mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.submit(atarService, false))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
+      mockAuthConnector,
+      controller.submit(atarService, isInReviewMode = false)
+    )
 
     "wait until the saveSubscriptionDetailsHolder is completed before progressing" in {
       registerSaveDetailsMockFailure(emulatedFailure)
@@ -230,7 +232,10 @@ class ContactAddressControllerSpec
 
   "submitting the form with all mandatory fields filled when in review mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.submit(atarService, true))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
+      mockAuthConnector,
+      controller.submit(atarService, isInReviewMode = true)
+    )
 
     "wait until the saveSubscriptionDetailsHolder is completed before progressing" in {
       registerSaveDetailsMockFailure(emulatedFailure)
@@ -409,29 +414,33 @@ class ContactAddressControllerSpec
     }
   }
 
-  private def submitForm(form: Map[String, String], userId: String = defaultUserId)(test: Future[Result] => Any) {
+  private def submitForm(form: Map[String, String], userId: String = defaultUserId)(
+    test: Future[Result] => Any
+  ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
 
-    test(controller.submit(atarService, false)(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)))
+    test(
+      controller.submit(atarService, isInReviewMode = false)(
+        SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
+      )
+    )
   }
 
-  private def registerSaveDetailsMockSuccess() {
+  private def registerSaveDetailsMockSuccess(): Unit =
     when(mockSubscriptionDetailsService.cacheContactAddressDetails(any())(any[HeaderCarrier]))
       .thenReturn(Future.successful(()))
-  }
 
-  private def registerSaveDetailsMockFailure(exception: Throwable) {
+  private def registerSaveDetailsMockFailure(exception: Throwable): Unit =
     when(mockSubscriptionDetailsService.cacheContactAddressDetails(any())(any[HeaderCarrier]))
       .thenReturn(Future.failed(exception))
-  }
 
-  private def showCreateForm(userId: String = defaultUserId)(test: Future[Result] => Any) {
+  private def showCreateForm(userId: String = defaultUserId)(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
 
     test(controller.displayPage(atarService).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
-  private def showReviewForm(userId: String = defaultUserId)(test: Future[Result] => Any) {
+  private def showReviewForm(userId: String = defaultUserId)(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
 
     test(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(userId)))
@@ -451,8 +460,5 @@ class ContactAddressControllerSpec
     page.getElementValue(ContactAddressPage.postcodeFieldXPath) shouldBe empty
     page.getElementValue(ContactAddressPage.countryFieldXPath) shouldBe empty
   }
-
-  private def isIndividual(userSelectedOrganisationType: Option[CdsOrganisationType]) =
-    userSelectedOrganisationType.contains(CdsOrganisationType.Individual)
 
 }

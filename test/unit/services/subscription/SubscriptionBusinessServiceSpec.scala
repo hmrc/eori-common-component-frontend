@@ -17,8 +17,6 @@
 package unit.services.subscription
 
 import base.UnitSpec
-
-import java.time.LocalDate
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
@@ -27,16 +25,13 @@ import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
-  AddressViewModel,
-  ContactAddressModel,
-  ContactAddressViewModel
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactAddressModel}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{ContactDetailsAdaptor, RegistrationDetailsCreator}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionBusinessService
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 import scala.util.Random
@@ -55,28 +50,34 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
   private val expectedDate      = LocalDate.now()
   private val maybeExpectedDate = Some(expectedDate)
 
-  val sicCode = Some("someSicCode")
+  val sicCode: Option[String] = Some("someSicCode")
 
   private val subscriptionBusinessService =
     new SubscriptionBusinessService(mockCdsFrontendDataCache)(global)
 
   private val eoriNumericLength   = 15
   private val eoriId              = "GB" + Random.nextString(eoriNumericLength)
-  val maybeEoriId                 = Some(eoriId)
-  val mayBeCachedAddressViewModel = Some(AddressViewModel("Address Line 1", "city", Some("postcode"), "GB"))
+  val maybeEoriId: Option[String] = Some(eoriId)
 
-  val mayBeCachedContactAddressModel = Some(
+  val mayBeCachedAddressViewModel: Option[AddressViewModel] = Some(
+    AddressViewModel("Address Line 1", "city", Some("postcode"), "GB")
+  )
+
+  val mayBeCachedContactAddressModel: Option[ContactAddressModel] = Some(
     ContactAddressModel("Line 1", Some("Line 2"), "Town", Some("Region"), Some("SE28 1AA"), "GB")
   )
 
-  val nameIdOrganisationDetails = Some(NameIdOrganisationMatchModel("OrgName", "ID"))
-  val customsIDUTR              = Some(Utr("ID"))
+  val nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = Some(
+    NameIdOrganisationMatchModel("OrgName", "ID")
+  )
 
-  val email = Some("OrgName@example.com")
+  val customsIDUTR: Option[Utr] = Some(Utr("ID"))
+
+  val email: Option[String] = Some("OrgName@example.com")
 
   val emulatedFailure = new UnsupportedOperationException("Emulation of failure")
 
-  override def beforeEach {
+  override def beforeEach: Unit = {
     reset(
       mockCdsFrontendDataCache,
       mockRegistrationDetailsCreator,

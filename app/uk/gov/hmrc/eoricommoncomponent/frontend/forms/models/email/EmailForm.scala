@@ -37,7 +37,7 @@ object EmailForm {
       case _ => Valid
     })
 
-  val emailForm = Form(
+  val emailForm: Form[EmailViewModel] = Form(
     Forms.mapping("email" -> text.verifying(validEmail))(EmailViewModel.apply)(EmailViewModel.unapply)
   )
 

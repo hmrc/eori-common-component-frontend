@@ -16,9 +16,9 @@
 
 package unit.views.migration
 
-import java.time.LocalDate
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -29,9 +29,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
   CompanyRegisteredCountry,
   ContactAddressModel
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.check_your_details
 import uk.gov.hmrc.play.language.LanguageUtils
 import util.ViewSpec
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.check_your_details
+import java.time.LocalDate
 
 class CheckYourDetailsSpec extends ViewSpec {
 
@@ -113,7 +114,7 @@ class CheckYourDetailsSpec extends ViewSpec {
 
       "user is during UK Sole Trader UTR journey" in {
 
-        val page = doc(true, nameIdOrganisationDetails = None)
+        val page = doc(isIndividualSubscriptionFlow = true, nameIdOrganisationDetails = None)
 
         val email = page.body.getElementsByClass("review-tbl__email").get(0)
         email.getElementsByClass("govuk-summary-list__key").text mustBe "Email address"
@@ -148,7 +149,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       }
       "user is during UK Sole Trader NINo journey" in {
 
-        val page = doc(true, customsId = nino, nameIdOrganisationDetails = None)
+        val page = doc(isIndividualSubscriptionFlow = true, customsId = nino, nameIdOrganisationDetails = None)
 
         val email = page.body.getElementsByClass("review-tbl__email").get(0)
         email.getElementsByClass("govuk-summary-list__key").text mustBe "Email address"
@@ -555,7 +556,7 @@ class CheckYourDetailsSpec extends ViewSpec {
 
       "user is during UK individual journey" in {
 
-        val page = doc(true, nameIdOrganisationDetails = None)
+        val page = doc(isIndividualSubscriptionFlow = true, nameIdOrganisationDetails = None)
 
         page.body.getElementsByClass("review-tbl__orgname") mustBe empty
 
@@ -583,7 +584,7 @@ class CheckYourDetailsSpec extends ViewSpec {
 
       "UTR exists and user is during UK individual journey" in {
 
-        val page = doc(true, nameIdOrganisationDetails = None)
+        val page = doc(isIndividualSubscriptionFlow = true, nameIdOrganisationDetails = None)
 
         page.body.getElementsByClass("review-tbl__nino") mustBe empty
       }
@@ -701,11 +702,12 @@ class CheckYourDetailsSpec extends ViewSpec {
     nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg,
     existingEori: Option[ExistingEori] = None,
     companyRegisteredCountry: Option[CompanyRegisteredCountry] = None,
-    addressLookupParams: Option[AddressLookupParams] = None,
-    contactAddress: Option[ContactAddressModel] = None
+    addressLookupParams: Option[AddressLookupParams] = None
   ): Document = {
 
-    implicit val request = withFakeCSRF(FakeRequest().withSession(("selected-user-location", "third-country")))
+    implicit val request: Request[AnyContentAsEmpty.type] = withFakeCSRF(
+      FakeRequest().withSession(("selected-user-location", "third-country"))
+    )
     val result = view(
       isThirdCountrySubscription,
       isIndividualSubscriptionFlow,

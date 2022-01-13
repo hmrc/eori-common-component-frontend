@@ -30,7 +30,7 @@ sealed trait ConfirmContactAddressPage extends WebPage {
   val fieldLevelErrorYesNoAnswer: String = "//span[@id='yes-no-answer-error'][@class='govuk-error-message']"
   val PageLevelErrorSummaryListXPath     = "//ul[@class='govuk-list govuk-error-summary__list']"
 
-  val filledValues =
+  val filledValues: ContactAddressModel =
     ContactAddressModel(
       lineOne = "Line 1",
       lineTwo = Some("Line 2"),

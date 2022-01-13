@@ -26,10 +26,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ConfirmContactAddressController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ConfirmContactAddressController.submit
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ConfirmContactAddressSubscriptionFlowPage
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactAddressModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.confirm_contact_address
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
@@ -48,15 +45,13 @@ class ConfirmContactAddressControllerSpec
   protected override def submitInCreateModeUrl: String =
     submit(atarService).url
 
-  private val mockRequestSessionData         = mock[RequestSessionData]
-  private val confirmContactDetailsView      = instanceOf[confirm_contact_address]
-  private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
+  private val mockRequestSessionData    = mock[RequestSessionData]
+  private val confirmContactDetailsView = instanceOf[confirm_contact_address]
 
   private val controller = new ConfirmContactAddressController(
     mockAuthAction,
     mcc,
     mockSubscriptionBusinessService,
-    mockSubscriptionDetailsService,
     mockSubscriptionFlowManager,
     confirmContactDetailsView
   )
@@ -181,13 +176,15 @@ class ConfirmContactAddressControllerSpec
     }
   }
 
-  private def showCreateForm(userId: String = defaultUserId)(test: Future[Result] => Any) {
+  private def showCreateForm(userId: String = defaultUserId)(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
 
     test(controller.displayPage(atarService).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
-  private def submitForm(form: Map[String, String], userId: String = defaultUserId)(test: Future[Result] => Any) {
+  private def submitForm(form: Map[String, String], userId: String = defaultUserId)(
+    test: Future[Result] => Any
+  ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
 
     test(controller.submit(atarService)(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)))

@@ -19,12 +19,12 @@ package unit.views.subscription
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.Form
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.YesNo
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{ContactAddressModel, ContactAddressViewModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactAddressViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.confirm_contact_address
 import util.ViewSpec
 
@@ -39,8 +39,8 @@ class ConfirmContactAddressViewSpec extends ViewSpec {
     country = "GB"
   )
 
-  private val form: Form[YesNo] = EmailForm.confirmContactAddressYesNoAnswerForm()
-  private implicit val request  = withFakeCSRF(FakeRequest())
+  private val form: Form[YesNo]                                 = EmailForm.confirmContactAddressYesNoAnswerForm()
+  private implicit val request: Request[AnyContentAsEmpty.type] = withFakeCSRF(FakeRequest())
 
   private val view = instanceOf[confirm_contact_address]
 

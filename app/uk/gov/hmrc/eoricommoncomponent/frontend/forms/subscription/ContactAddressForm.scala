@@ -19,7 +19,6 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription
 import play.api.data.Forms.{text, _}
 import play.api.data.validation._
 import play.api.data.{Form, Mapping}
-import play.api.i18n.Messages
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.messageKeyMandatoryField
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactAddressModel

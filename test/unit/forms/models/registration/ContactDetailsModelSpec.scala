@@ -34,7 +34,7 @@ class ContactDetailsModelSpec extends UnitSpec {
           "email",
           "01234123123",
           None,
-          false,
+          useAddressFromRegistrationDetails = false,
           Some("street"),
           Some("city"),
           Some("postCode"),

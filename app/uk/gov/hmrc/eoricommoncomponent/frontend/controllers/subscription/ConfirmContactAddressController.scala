@@ -22,15 +22,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ConfirmContactAddressSubscriptionFlowPage
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.{
-  confirmContactAddressYesNoAnswerForm,
-  YesNo
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.{YesNo, confirmContactAddressYesNoAnswerForm}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  SubscriptionBusinessService,
-  SubscriptionDetailsService
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionBusinessService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.confirm_contact_address
 
 import javax.inject.{Inject, Singleton}
@@ -41,7 +35,6 @@ class ConfirmContactAddressController @Inject() (
   authAction: AuthAction,
   mcc: MessagesControllerComponents,
   subscriptionBusinessService: SubscriptionBusinessService,
-  subscriptionDetailsService: SubscriptionDetailsService,
   subscriptionFlowManager: SubscriptionFlowManager,
   contactAddressView: confirm_contact_address
 )(implicit ec: ExecutionContext)
@@ -49,33 +42,29 @@ class ConfirmContactAddressController @Inject() (
 
   def displayPage(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      subscriptionBusinessService.contactAddress.flatMap { address =>
-        address match {
-          case Some(address) =>
-            Future.successful(
-              Ok(contactAddressView(confirmContactAddressYesNoAnswerForm, service, address.toContactAddressViewModel))
-            )
-          case None => Future.successful(Redirect(ContactAddressController.displayPage(service)))
-        }
+      subscriptionBusinessService.contactAddress.flatMap {
+        case Some(address) =>
+          Future.successful(
+            Ok(contactAddressView(confirmContactAddressYesNoAnswerForm, service, address.toContactAddressViewModel))
+          )
+        case None => Future.successful(Redirect(ContactAddressController.displayPage(service)))
       }
 
     }
 
   def submit(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      subscriptionBusinessService.contactAddress.flatMap { address =>
-        address match {
-          case Some(address) =>
-            confirmContactAddressYesNoAnswerForm.bindFromRequest
-              .fold(
-                formWithErrors =>
-                  Future.successful(
-                    BadRequest(contactAddressView(formWithErrors, service, address.toContactAddressViewModel))
-                  ),
-                answer => locationByAnswer(answer, service)
-              )
-          case None => Future.successful(Redirect(ContactAddressController.displayPage(service)))
-        }
+      subscriptionBusinessService.contactAddress.flatMap {
+        case Some(address) =>
+          confirmContactAddressYesNoAnswerForm.bindFromRequest
+            .fold(
+              formWithErrors =>
+                Future.successful(
+                  BadRequest(contactAddressView(formWithErrors, service, address.toContactAddressViewModel))
+                ),
+              answer => locationByAnswer(answer, service)
+            )
+        case None => Future.successful(Redirect(ContactAddressController.displayPage(service)))
       }
 
     }
