@@ -18,6 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
 import javax.inject.{Inject, Singleton}
 import play.api.mvc._
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
@@ -49,7 +50,8 @@ class ContactDetailsController @Inject() (
   subscriptionDetailsService: SubscriptionDetailsService,
   orgTypeLookup: OrgTypeLookup,
   mcc: MessagesControllerComponents,
-  contactDetailsView: contact_details
+  contactDetailsView: contact_details,
+  appConfig: AppConfig
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
@@ -118,10 +120,17 @@ class ContactDetailsController @Inject() (
       .map(
         _ =>
           if (inReviewMode) Redirect(DetermineReviewPageController.determineRoute(service))
-          else
+          else if (appConfig.contactAddress && service.enrolmentKey.equalsIgnoreCase("HMRC-CUS-ORG"))
             Redirect(
               subscriptionFlowManager
                 .stepInformation(ContactDetailsSubscriptionFlowPageMigrate)
+                .nextPage
+                .url(service)
+            )
+          else
+            Redirect(
+              subscriptionFlowManager
+                .stepInformation(ConfirmContactAddressSubscriptionFlowPage)
                 .nextPage
                 .url(service)
             )

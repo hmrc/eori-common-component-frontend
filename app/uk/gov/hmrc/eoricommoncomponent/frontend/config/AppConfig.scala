@@ -142,5 +142,5 @@ class AppConfig @Inject() (
   private val addressLookupContext: String = config.get[String]("microservice.services.address-lookup.context")
 
   val addressLookup: String = addressLookupBaseUrl + addressLookupContext
-
+  lazy val contactAddress   = config.getOptional[Boolean]("features.contact-address").getOrElse(false)
 }
