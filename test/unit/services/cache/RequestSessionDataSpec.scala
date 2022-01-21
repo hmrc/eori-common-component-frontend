@@ -23,7 +23,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Request, Session}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData}
 
 class RequestSessionDataSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
 
@@ -54,7 +54,7 @@ class RequestSessionDataSpec extends UnitSpec with MockitoSugar with BeforeAndAf
 
     "throw exception when flow is not cached" in {
       when(mockRequest.session).thenReturn(Session())
-      val caught = intercept[IllegalStateException](requestSessionData.userSubscriptionFlow)
+      val caught = intercept[DataUnavailableException](requestSessionData.userSubscriptionFlow)
       caught.getMessage shouldBe "Subscription flow is not cached"
     }
 

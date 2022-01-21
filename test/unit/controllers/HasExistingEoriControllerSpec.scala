@@ -26,7 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentE
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{FailedEnrolmentException, HasExistingEoriController}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, KeyValue}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{EnrolmentService, MissingEnrolmentException}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{eori_enrol_success, has_existing_eori}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -77,7 +77,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     "throw exception when user does not have existing CDS enrolment" in {
       userDoesNotHaveGroupEnrolmentToCds
 
-      intercept[IllegalStateException](displayPage(atarService)(result => status(result))).getMessage should startWith(
+      intercept[DataUnavailableException](displayPage(atarService)(result => status(result))).getMessage should startWith(
         "No EORI found"
       )
     }
@@ -147,7 +147,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     "throw exception when user does not have existing CDS enrolment" in {
       userDoesNotHaveGroupEnrolmentToCds
 
-      intercept[IllegalStateException](enrolSuccess(atarService)(result => status(result))).getMessage should startWith(
+      intercept[DataUnavailableException](enrolSuccess(atarService)(result => status(result))).getMessage should startWith(
         "No EORI found"
       )
     }
