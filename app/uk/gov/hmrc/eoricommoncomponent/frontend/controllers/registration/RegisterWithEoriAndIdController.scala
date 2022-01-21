@@ -36,6 +36,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.language.LanguageUtils
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -156,7 +157,7 @@ class RegisterWithEoriAndIdController @Inject() (
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         eori <- cache.subscriptionDetails.map(
-          _.eoriNumber.getOrElse(throw new IllegalStateException("No EORI found in cache"))
+          _.eoriNumber.getOrElse(throw DataUnavailableException("No EORI found in cache"))
         )
         name <- cache.subscriptionDetails.map(_.name)
         _    <- cache.remove

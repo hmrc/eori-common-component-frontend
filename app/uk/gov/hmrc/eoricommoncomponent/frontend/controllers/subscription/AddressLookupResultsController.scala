@@ -38,6 +38,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionDa
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.address_lookup_results
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -103,7 +104,7 @@ class AddressLookupResultsController @Inject() (
     service: Service
   )(implicit request: Request[AnyContent]): HtmlFormat.Appendable = {
     val selectedOrganisationType = requestSessionData.userSelectedOrganisationType.getOrElse(
-      throw new IllegalStateException("Organisation type is not cached")
+      throw DataUnavailableException("Organisation type is not cached")
     )
 
     addressLookupResultsPage(form, addressLookupParams, addresses, isInReviewMode, selectedOrganisationType, service)

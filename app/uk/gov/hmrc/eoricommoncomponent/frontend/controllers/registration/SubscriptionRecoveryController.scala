@@ -39,6 +39,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Random
@@ -80,7 +81,7 @@ class SubscriptionRecoveryController @Inject() (
   )(implicit ec: ExecutionContext, request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     val result = for {
       subscriptionDetails <- sessionCache.subscriptionDetails
-      eori = subscriptionDetails.eoriNumber.getOrElse(throw new IllegalStateException("no eori found in the cache"))
+      eori = subscriptionDetails.eoriNumber.getOrElse(throw DataUnavailableException("no eori found in the cache"))
       registerWithEoriAndIdResponse <- sessionCache.registerWithEoriAndIdResponse
       safeId = registerWithEoriAndIdResponse.responseDetail
         .flatMap(_.responseData.map(_.SAFEID))
@@ -116,7 +117,7 @@ class SubscriptionRecoveryController @Inject() (
     val result = for {
       subscriptionDetails <- sessionCache.subscriptionDetails
       registrationDetails <- sessionCache.registrationDetails
-      eori            = subscriptionDetails.eoriNumber.getOrElse(throw new IllegalStateException("no eori found in the cache"))
+      eori            = subscriptionDetails.eoriNumber.getOrElse(throw DataUnavailableException("no eori found in the cache"))
       safeId          = registrationDetails.safeId.id
       queryParameters = ("EORI" -> eori) :: buildQueryParams
       sub09Result  <- SUB09Connector.subscriptionDisplay(queryParameters)

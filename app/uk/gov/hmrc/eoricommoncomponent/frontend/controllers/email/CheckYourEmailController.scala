@@ -32,6 +32,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.{check_your_email, email_confirmed, verify_your_email}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -163,10 +164,10 @@ class CheckYourEmailController @Inject() (
         // $COVERAGE-OFF$Loggers
         logger.warn("[CheckYourEmailController][submitNewDetails] -  emailStatus cache none")
         // $COVERAGE-ON
-        throw new IllegalStateException("[CheckYourEmailController][submitNewDetails] - emailStatus cache none")
+        throw DataUnavailableException("[CheckYourEmailController][submitNewDetails] - emailStatus cache none")
       } { emailStatus =>
         val email: String = emailStatus.email.getOrElse(
-          throw new IllegalStateException("[CheckYourEmailController][submitNewDetails] - emailStatus.email none")
+          throw DataUnavailableException("[CheckYourEmailController][submitNewDetails] - emailStatus.email none")
         )
         emailVerificationService.createEmailVerificationRequest(email, EmailController.form(service).url) flatMap {
           case Some(true) =>

@@ -26,6 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.Constants.ONE
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -102,7 +103,7 @@ class SubscriptionFlowManager @Inject() (requestSessionData: RequestSessionData,
           SubscriptionFlow(subscribePrefix + "Organisation")
         case _: RegistrationDetailsIndividual =>
           SubscriptionFlow(subscribePrefix + "Individual")
-        case _ => throw new IllegalStateException("Incomplete cache cannot complete journey")
+        case _ => throw DataUnavailableException("Incomplete cache cannot complete journey")
       }
 
     SubscriptionFlows.flows.keys.find(_.name == (subscribePrefix + orgType.id)).getOrElse(selectedFlow)

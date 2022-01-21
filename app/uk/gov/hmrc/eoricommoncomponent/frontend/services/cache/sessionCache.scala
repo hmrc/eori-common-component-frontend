@@ -31,6 +31,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.Addres
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.CachedData._
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NoStackTrace
@@ -80,7 +81,7 @@ sealed case class CachedData(
   }
 
   private def throwException(name: String, sessionId: Id) =
-    throw new IllegalStateException(s"$name is not cached in data for the sessionId: ${sessionId.id}")
+    throw DataUnavailableException(s"$name is not cached in data for the sessionId: ${sessionId.id}")
 
   private val initialEmptySubscriptionDetails = SubscriptionDetails()
 }
