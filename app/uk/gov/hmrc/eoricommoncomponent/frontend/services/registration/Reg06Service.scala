@@ -28,6 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{CdsToEtmpOrganisationType, OrganisationTypeConfiguration}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -66,17 +67,17 @@ class Reg06Service @Inject() (
 
     dataCache.subscriptionDetails.flatMap { subscription =>
       val organisationType = requestSessionData.userSelectedOrganisationType.getOrElse(
-        throw new IllegalStateException("Org type missing from cache")
+        throw DataUnavailableException("Org type missing from cache")
       )
       val maybeOrganisationTypeConfiguration: Option[OrganisationTypeConfiguration] =
         CdsToEtmpOrganisationType(Some(organisationType))
       val address =
-        subscription.addressDetails.getOrElse(throw new IllegalStateException("Address missing from subscription"))
+        subscription.addressDetails.getOrElse(throw DataUnavailableException("Address missing from subscription"))
       val nameDob =
-        subscription.nameDobDetails.getOrElse(throw new IllegalStateException("Name / DOB missing from subscription"))
+        subscription.nameDobDetails.getOrElse(throw DataUnavailableException("Name / DOB missing from subscription"))
       val eori =
-        subscription.eoriNumber.getOrElse(throw new IllegalStateException("EORI number missing from subscription"))
-      val id = subscription.customsId.getOrElse(throw new IllegalStateException("Customs ID missing from subscription"))
+        subscription.eoriNumber.getOrElse(throw DataUnavailableException("EORI number missing from subscription"))
+      val id = subscription.customsId.getOrElse(throw DataUnavailableException("Customs ID missing from subscription"))
       registerWithEoriAndId(
         createRegDetail(address, nameDob, eori, id),
         subscription,
@@ -108,13 +109,13 @@ class Reg06Service @Inject() (
     for {
       subscriptionDetails <- dataCache.subscriptionDetails
       organisationType = requestSessionData.userSelectedOrganisationType.getOrElse(
-        throw new IllegalStateException("Org type missing from cache")
+        throw DataUnavailableException("Org type missing from cache")
       )
       maybeOrganisationTypeConfiguration: Option[OrganisationTypeConfiguration] = CdsToEtmpOrganisationType(
         Some(organisationType)
       )
       address = subscriptionDetails.addressDetails.getOrElse(
-        throw new IllegalStateException("Address missing from subscription")
+        throw DataUnavailableException("Address missing from subscription")
       )
       eori = subscriptionDetails.eoriNumber.getOrElse(
         throw DataUnavailableException("EORI number missing from subscription")
