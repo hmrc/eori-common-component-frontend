@@ -16,17 +16,15 @@
 
 package unit.domain.subscription
 
-import base.UnitSpec
-import java.time.LocalDate
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
-  NameDobMatchModel,
-  NameIdOrganisationMatchModel,
-  NameMatchModel,
-  NameOrganisationMatchModel
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{NameDobMatchModel, NameIdOrganisationMatchModel, NameMatchModel, NameOrganisationMatchModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
+import util.ControllerSpec
 
-class SubscriptionDetailsSpec extends UnitSpec {
+import java.time.LocalDate
+
+class SubscriptionDetailsSpec extends ControllerSpec {
+
 
   "Subscription details" should {
 
@@ -61,7 +59,7 @@ class SubscriptionDetailsSpec extends UnitSpec {
 
     "throw exception when no name is present" in {
       val sd = SubscriptionDetails()
-      the[IllegalArgumentException] thrownBy {
+      the[DataUnavailableException] thrownBy {
         sd.name
       } should have message "Name is missing"
     }
