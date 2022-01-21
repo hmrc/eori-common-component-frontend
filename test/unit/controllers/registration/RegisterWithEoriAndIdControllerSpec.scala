@@ -55,6 +55,7 @@ import util.builders.AuthActionMock
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 class RegisterWithEoriAndIdControllerSpec
     extends ControllerSpec with BeforeAndAfterEach with AuthActionMock with CSRFTest {
@@ -583,7 +584,7 @@ class RegisterWithEoriAndIdControllerSpec
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponseExceptionCase))
 
       regExistingEori() { result =>
-        the[IllegalStateException] thrownBy {
+        the[DataUnavailableException] thrownBy {
           status(result) shouldBe SEE_OTHER
         } should have message "Unknown RegistrationDetailsOutCome"
       }
@@ -1061,7 +1062,7 @@ class RegisterWithEoriAndIdControllerSpec
         .thenReturn(Some(RegisterWithEoriAndIdResponseDetail(Some("PASS"), None)))
 
       regExistingEori() { result =>
-        the[IllegalStateException] thrownBy {
+        the[DataUnavailableException] thrownBy {
           status(result) shouldBe OK
         } should have message "SafeId can't be none"
       }
@@ -1156,7 +1157,7 @@ class RegisterWithEoriAndIdControllerSpec
         .thenReturn(Future.successful(true))
 
       invokePending() { result =>
-        the[IllegalStateException] thrownBy {
+        the[DataUnavailableException] thrownBy {
           status(result) shouldBe OK
         } should have message "No EORI found in cache"
       }

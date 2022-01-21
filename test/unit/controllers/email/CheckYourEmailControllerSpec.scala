@@ -41,6 +41,7 @@ import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
@@ -136,11 +137,11 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       }
     }
 
-    "throw  IllegalStateException when downstream CreateEmailVerificationRequest Fails" in {
+    "throw  DataUnavailableException when downstream CreateEmailVerificationRequest Fails" in {
       when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(None))
 
-      the[IllegalStateException] thrownBy {
+      the[DataUnavailableException] thrownBy {
         submitForm(ValidRequest + (yesNoInputName -> answerYes), service = atarService) {
           result =>
             status(result) shouldBe SEE_OTHER

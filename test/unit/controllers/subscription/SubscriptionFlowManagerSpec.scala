@@ -39,6 +39,7 @@ import util.ControllerSpec
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 class SubscriptionFlowManagerSpec
     extends UnitSpec with MockitoSugar with BeforeAndAfterAll with BeforeAndAfterEach with ControllerSpec {
@@ -58,7 +59,7 @@ class SubscriptionFlowManagerSpec
 
   private val mockSubscriptionFlow = mock[SubscriptionFlow]
 
-  val noSubscriptionFlowInSessionException = new IllegalStateException("No subscription flow in session.")
+  val noSubscriptionFlowInSessionException = DataUnavailableException("No subscription flow in session.")
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -86,7 +87,7 @@ class SubscriptionFlowManagerSpec
       when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]]))
         .thenThrow(noSubscriptionFlowInSessionException)
 
-      intercept[IllegalStateException](
+      intercept[DataUnavailableException](
         controller.currentSubscriptionFlow(mockRequest)
       ) shouldBe noSubscriptionFlowInSessionException
     }
@@ -206,7 +207,7 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
   private val mockHC      = mock[HeaderCarrier]
   private val mockRequest = mock[Request[AnyContent]]
 
-  val noSubscriptionFlowInSessionException = new IllegalStateException("No subscription flow in session.")
+  val noSubscriptionFlowInSessionException = DataUnavailableException("No subscription flow in session.")
 
   override def beforeEach(): Unit = {
     reset(mockRequestSessionData, mockSession, mockCdsFrontendDataCache)

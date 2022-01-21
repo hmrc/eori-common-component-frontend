@@ -25,7 +25,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   SoleTraderFlow,
   SubscriptionFlow
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 @Singleton
 class RequestSessionData {
