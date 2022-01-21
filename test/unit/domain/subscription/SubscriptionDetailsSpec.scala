@@ -59,9 +59,9 @@ class SubscriptionDetailsSpec extends ControllerSpec {
 
     "throw exception when no name is present" in {
       val sd = SubscriptionDetails()
-      the[DataUnavailableException] thrownBy {
+      intercept[DataUnavailableException] {
         sd.name
-      } should have message "Name is missing"
+      }.getMessage shouldBe "Name is missing"
     }
   }
 

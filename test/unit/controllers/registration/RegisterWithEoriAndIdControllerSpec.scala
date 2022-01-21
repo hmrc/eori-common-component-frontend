@@ -16,13 +16,9 @@
 
 package unit.controllers.registration
 
-import java.time.format.DateTimeFormatter
-
 import common.pages.subscription.{ApplicationPendingPage, ApplicationUnsuccessfulPage}
 import common.pages.{RegistrationProcessingPage, RegistrationRejectedPage}
 import common.support.testdata.TestData
-import java.time.{LocalDate, LocalDateTime, ZonedDateTime}
-
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.{Assertion, BeforeAndAfterEach}
@@ -41,7 +37,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, Respo
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{MatchingService, Reg06Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
@@ -49,13 +45,14 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.language.LanguageUtils
 import unit.controllers.CdsPage
-import util.{CSRFTest, ControllerSpec}
-import util.builders.AuthBuilder._
 import util.builders.AuthActionMock
+import util.builders.AuthBuilder._
+import util.{CSRFTest, ControllerSpec}
 
+import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, LocalDateTime, ZonedDateTime}
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 class RegisterWithEoriAndIdControllerSpec
     extends ControllerSpec with BeforeAndAfterEach with AuthActionMock with CSRFTest {
@@ -584,7 +581,7 @@ class RegisterWithEoriAndIdControllerSpec
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponseExceptionCase))
 
       regExistingEori() { result =>
-        the[DataUnavailableException] thrownBy {
+        the[IllegalStateException] thrownBy {
           status(result) shouldBe SEE_OTHER
         } should have message "Unknown RegistrationDetailsOutCome"
       }
@@ -1062,7 +1059,7 @@ class RegisterWithEoriAndIdControllerSpec
         .thenReturn(Some(RegisterWithEoriAndIdResponseDetail(Some("PASS"), None)))
 
       regExistingEori() { result =>
-        the[DataUnavailableException] thrownBy {
+        the[IllegalStateException] thrownBy {
           status(result) shouldBe OK
         } should have message "SafeId can't be none"
       }
@@ -1156,11 +1153,9 @@ class RegisterWithEoriAndIdControllerSpec
       when(mockCache.remove(any[HeaderCarrier]))
         .thenReturn(Future.successful(true))
 
-      invokePending() { result =>
-        the[DataUnavailableException] thrownBy {
-          status(result) shouldBe OK
-        } should have message "No EORI found in cache"
-      }
+      intercept[DataUnavailableException] {
+        invokePending() { result => status(result) }
+      }.getMessage shouldBe "No EORI found in cache"
     }
 
     "Call the eoriAlreadyLinked function" in {
