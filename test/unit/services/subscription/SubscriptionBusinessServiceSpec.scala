@@ -17,6 +17,7 @@
 package unit.services.subscription
 
 import base.UnitSpec
+
 import java.time.LocalDate
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers._
@@ -27,7 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{ContactDetailsAdaptor, RegistrationDetailsCreator}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionBusinessService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -129,7 +130,7 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
     "throw exception when there are no Date Of Establishment details in the cdsFrontendCache" in {
       when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)
       when(mockSubscriptionDetailsHolder.dateEstablished).thenReturn(None)
-      val thrown = intercept[IllegalStateException] {
+      val thrown = intercept[DataUnavailableException] {
         await(subscriptionBusinessService.getCachedDateEstablished)
       }
       thrown.getMessage shouldBe "No Date Of Establishment Cached"
@@ -206,7 +207,7 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
     "throw exception when cache address details is not saved in cdsFrontendCache" in {
       when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)
       when(mockSubscriptionDetailsHolder.addressDetails).thenReturn(None)
-      val thrown = intercept[IllegalStateException] {
+      val thrown = intercept[DataUnavailableException] {
         await(subscriptionBusinessService.addressOrException)
       }
       thrown.getMessage shouldBe "No Address Details Cached"
@@ -223,7 +224,7 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
     "throw exception when cache Name Id is not saved in cdsFrontendCache" in {
       when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)
       when(mockSubscriptionDetailsHolder.nameIdOrganisationDetails).thenReturn(None)
-      val thrown = intercept[IllegalStateException] {
+      val thrown = intercept[DataUnavailableException] {
         await(subscriptionBusinessService.getCachedNameIdViewModel)
       }
       thrown.getMessage shouldBe "No Name/Utr/Id Details Cached"
@@ -254,7 +255,7 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
     "throw exception when there is no organisation details in the cdsFrontendCache" in {
       when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)
       when(mockSubscriptionDetailsHolder.nameOrganisationDetails).thenReturn(None)
-      val thrown = intercept[IllegalStateException] {
+      val thrown = intercept[DataUnavailableException] {
         await(subscriptionBusinessService.getCachedNameViewModel)
       }
       thrown.getMessage shouldBe "No Name Cached"
@@ -277,7 +278,7 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
     "throw exception when there is no dob details in the cdsFrontendCache" in {
       when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)
       when(mockSubscriptionDetailsHolder.nameDobDetails).thenReturn(None)
-      val thrown = intercept[IllegalStateException] {
+      val thrown = intercept[DataUnavailableException] {
         await(subscriptionBusinessService.getCachedSubscriptionNameDobViewModel)
       }
       thrown.getMessage shouldBe "No Name/Dob Details Cached"

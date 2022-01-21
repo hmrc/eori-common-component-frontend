@@ -16,8 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.cache
 
-import javax.inject.{Inject, Singleton}
-import java.time.LocalDateTime
 import play.api.Logger
 import play.api.libs.json.{JsSuccess, Json}
 import play.modules.reactivemongo.ReactiveMongoComponent
@@ -31,8 +29,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.Addres
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.CachedData._
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
+import java.time.LocalDateTime
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NoStackTrace
 
