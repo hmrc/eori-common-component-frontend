@@ -81,5 +81,3 @@ class CdsErrorHandler @Inject() (
   }
 
 }
-
-case class MissingValueException(message: String) extends Exception(message)

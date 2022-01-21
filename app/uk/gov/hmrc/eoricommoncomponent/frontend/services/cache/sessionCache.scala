@@ -228,3 +228,4 @@ class SessionCache @Inject() (
 }
 
 case class SessionTimeOutException(errorMessage: String) extends NoStackTrace
+case class DataUnavailableException(message: String) extends Exception(message)
