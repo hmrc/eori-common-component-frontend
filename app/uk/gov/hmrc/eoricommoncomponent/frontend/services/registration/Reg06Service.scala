@@ -25,11 +25,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.RegistrationInf
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
-  CdsToEtmpOrganisationType,
-  OrganisationTypeConfiguration
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{CdsToEtmpOrganisationType, OrganisationTypeConfiguration}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -120,10 +117,10 @@ class Reg06Service @Inject() (
         throw new IllegalStateException("Address missing from subscription")
       )
       eori = subscriptionDetails.eoriNumber.getOrElse(
-        throw new IllegalStateException("EORI number missing from subscription")
+        throw DataUnavailableException("EORI number missing from subscription")
       )
       orgDetails = subscriptionDetails.nameIdOrganisationDetails.getOrElse(
-        throw new IllegalStateException("Organisation details missing from subscription")
+        throw DataUnavailableException("Organisation details missing from subscription")
       )
       regEoriAndId = RegisterWithEoriAndIdDetail(
         regModeEORI(address, eori, orgDetails.name),
