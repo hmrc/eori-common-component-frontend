@@ -36,6 +36,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
   SubscriptionDetailsService
 }
+import uk.gov.hmrc.eoricommoncomponent.frontend.util.InvalidUrlValueException
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.Require.requireThatUrlValue
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.nameId
 import uk.gov.hmrc.http.HeaderCarrier
@@ -65,13 +66,18 @@ class NameIDOrgController @Inject() (
       subscriptionBusinessService.cachedNameIdOrganisationViewModel flatMap { cachedNameUtrViewModel =>
         val selectedOrganisationType =
           requestSessionData.userSelectedOrganisationType.map(_.id)
-        populateOkView(
-          cachedNameUtrViewModel,
-          selectedOrganisationType.getOrElse(""),
-          OrganisationTypeConfigurations(selectedOrganisationType.getOrElse("")),
-          isInReviewMode = false,
-          service
-        )
+        selectedOrganisationType match {
+          case Some(orgType) =>
+            populateOkView(
+              cachedNameUtrViewModel,
+              orgType,
+              OrganisationTypeConfigurations(orgType),
+              isInReviewMode = false,
+              service
+            )
+          case None => throw InvalidUrlValueException(s"Invalid organisation type '$selectedOrganisationType'.")
+        }
+
       }
     }
 
@@ -80,13 +86,12 @@ class NameIDOrgController @Inject() (
       subscriptionBusinessService.getCachedNameIdViewModel flatMap { cdm =>
         val selectedOrganisationType =
           requestSessionData.userSelectedOrganisationType.map(_.id)
-        populateOkView(
-          Some(cdm),
-          selectedOrganisationType.getOrElse(""),
-          OrganisationTypeConfigurations(selectedOrganisationType.getOrElse("")),
-          isInReviewMode = true,
-          service
-        )
+        selectedOrganisationType match {
+          case Some(orgType) =>
+            populateOkView(Some(cdm), orgType, OrganisationTypeConfigurations(orgType), isInReviewMode = true, service)
+          case None => throw InvalidUrlValueException(s"Invalid organisation type '$selectedOrganisationType'.")
+        }
+
       }
     }
 
@@ -98,15 +103,19 @@ class NameIDOrgController @Inject() (
             cdsFrontendDataCache.registrationDetails map { registrationDetails =>
               val selectedOrganisationType =
                 requestSessionData.userSelectedOrganisationType.map(_.id)
-              BadRequest(
-                nameIdView(
-                  formWithErrors,
-                  registrationDetails,
-                  isInReviewMode,
-                  OrganisationTypeConfigurations(selectedOrganisationType.getOrElse("")).displayMode,
-                  service
-                )
-              )
+              selectedOrganisationType match {
+                case Some(orgType) =>
+                  BadRequest(
+                    nameIdView(
+                      formWithErrors,
+                      registrationDetails,
+                      isInReviewMode,
+                      OrganisationTypeConfigurations(orgType).displayMode,
+                      service
+                    )
+                  )
+                case None => throw InvalidUrlValueException(s"Invalid organisation type '$selectedOrganisationType'.")
+              }
             },
           formData => storeNameUtrDetails(formData, isInReviewMode, service)
         )

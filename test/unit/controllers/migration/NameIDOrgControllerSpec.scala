@@ -34,6 +34,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{RegistrationDetails, _}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.nameUtrOrganisationForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.util.InvalidUrlValueException
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.nameId
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
@@ -76,7 +77,8 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     mockSubscriptionDetailsHolderService
   )
 
-  private val emulatedFailure = new UnsupportedOperationException("Emulation of service call failure")
+  private val emulatedFailure           = new UnsupportedOperationException("Emulation of service call failure")
+  private val emulatedInvalidURLFailure = InvalidUrlValueException("Invalid organisation type 'None'.")
 
   override def beforeEach: Unit = {
     reset(
@@ -151,6 +153,16 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       }
     }
 
+    "display page not found if there is no session data for organisation type" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(None)
+      val caught = intercept[InvalidUrlValueException] {
+        showCreateForm() { result =>
+          await(result)
+        }
+      }
+      caught shouldBe emulatedInvalidURLFailure
+    }
+
     "fill fields with details if stored in cache" in {
       when(mockSubscriptionBusinessService.cachedNameIdOrganisationViewModel(any[HeaderCarrier]))
         .thenReturn(Some(NameIdDetailsPage.filledValues))
@@ -200,6 +212,16 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
         val page = CdsPage(contentAsString(result))
         page.getElementsText(continueButtonXpath) shouldBe ContinueButtonTextInReviewMode
       }
+    }
+
+    "display page not found if there is no session data for organisation type" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(None)
+      val caught = intercept[InvalidUrlValueException] {
+        showReviewForm() { result =>
+          await(result)
+        }
+      }
+      caught shouldBe emulatedInvalidURLFailure
     }
   }
 
@@ -277,6 +299,16 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       }
 
       caught shouldBe emulatedFailure
+    }
+
+    "display page not found if there is no session data for organisation type" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(None)
+      val caught = intercept[InvalidUrlValueException] {
+        submitFormInCreateMode(createEmptyFormUtrMap) { result =>
+          await(result)
+        }
+      }
+      caught shouldBe emulatedInvalidURLFailure
     }
 
     "allow resubmission in create mode when details are invalid" in {
