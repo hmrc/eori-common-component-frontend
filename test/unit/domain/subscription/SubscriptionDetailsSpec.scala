@@ -17,14 +17,18 @@
 package unit.domain.subscription
 
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{NameDobMatchModel, NameIdOrganisationMatchModel, NameMatchModel, NameOrganisationMatchModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
+  NameDobMatchModel,
+  NameIdOrganisationMatchModel,
+  NameMatchModel,
+  NameOrganisationMatchModel
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 import util.ControllerSpec
 
 import java.time.LocalDate
 
 class SubscriptionDetailsSpec extends ControllerSpec {
-
 
   "Subscription details" should {
 

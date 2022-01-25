@@ -66,6 +66,7 @@ class CdsErrorHandler @Inject() (
 
     exception match {
       case sessionTimeOut: SessionTimeOutException =>
+        logger.warn("SessionTimeout with message - " + sessionTimeOut.getMessage)
         Future.successful(Redirect(SecuritySignOutController.displayPage(service)).withNewSession)
       case invalidRequirement: InvalidUrlValueException =>
         // $COVERAGE-OFF$Loggers
@@ -74,7 +75,7 @@ class CdsErrorHandler @Inject() (
         Future.successful(Results.NotFound(notFoundView()))
       case dataUnavailableException: DataUnavailableException =>
         // $COVERAGE-OFF$Loggers
-        logger.info(dataUnavailableException.message)
+        logger.warn("DataUnavailableException with message - " + dataUnavailableException.message)
         // $COVERAGE-ON
         Future.successful(Results.InternalServerError(errorTemplateView()))
       case _ =>

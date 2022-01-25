@@ -25,7 +25,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  DataUnavailableException,
+  RequestSessionData,
+  SessionCache
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
 import uk.gov.hmrc.http.HeaderCarrier
 

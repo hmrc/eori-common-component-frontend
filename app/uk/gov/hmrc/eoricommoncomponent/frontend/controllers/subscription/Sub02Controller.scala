@@ -30,8 +30,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.migration_s
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
-
-
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

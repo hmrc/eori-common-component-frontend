@@ -37,7 +37,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, Respo
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  DataUnavailableException,
+  RequestSessionData,
+  SessionCache
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{MatchingService, Reg06Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
@@ -1154,7 +1158,7 @@ class RegisterWithEoriAndIdControllerSpec
         .thenReturn(Future.successful(true))
 
       intercept[DataUnavailableException] {
-        invokePending() { result => status(result) }
+        invokePending()(result => status(result))
       }.getMessage shouldBe "No EORI found in cache"
     }
 

@@ -27,7 +27,11 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.AddressLookupPostcodeController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressLookupParams
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  DataUnavailableException,
+  RequestSessionData,
+  SessionCache
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.address_lookup_postcode
 import util.ControllerSpec
 import util.builders.AuthActionMock

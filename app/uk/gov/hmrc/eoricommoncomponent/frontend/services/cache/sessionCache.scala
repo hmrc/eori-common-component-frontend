@@ -52,7 +52,11 @@ sealed case class CachedData(
     regDetails.getOrElse(throwException(regDetailsKey, sessionId))
 
   def registerWithEoriAndIdResponse(sessionId: Id): RegisterWithEoriAndIdResponse =
-    registerWithEoriAndIdResponse.getOrElse(throwException(registerWithEoriAndIdResponseKey, sessionId))
+    registerWithEoriAndIdResponse.getOrElse(
+      throw new IllegalStateException(
+        s"$registerWithEoriAndIdResponseKey is not cached in data for the sessionId: ${sessionId.id}"
+      )
+    )
 
   def sub01Outcome(sessionId: Id): Sub01Outcome =
     sub01Outcome.getOrElse(throwException(sub01OutcomeKey, sessionId))
@@ -228,4 +232,4 @@ class SessionCache @Inject() (
 }
 
 case class SessionTimeOutException(errorMessage: String) extends NoStackTrace
-case class DataUnavailableException(message: String) extends RuntimeException(message)
+case class DataUnavailableException(message: String)     extends RuntimeException(message)

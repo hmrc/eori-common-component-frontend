@@ -25,8 +25,15 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.RegistrationInf
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{CdsToEtmpOrganisationType, OrganisationTypeConfiguration}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  DataUnavailableException,
+  RequestSessionData,
+  SessionCache
+}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
+  CdsToEtmpOrganisationType,
+  OrganisationTypeConfiguration
+}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 

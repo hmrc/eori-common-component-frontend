@@ -77,9 +77,9 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     "throw exception when user does not have existing CDS enrolment" in {
       userDoesNotHaveGroupEnrolmentToCds
 
-      intercept[DataUnavailableException](displayPage(atarService)(result => status(result))).getMessage should startWith(
-        "No EORI found"
-      )
+      intercept[DataUnavailableException](
+        displayPage(atarService)(result => status(result))
+      ).getMessage should startWith("No EORI found")
     }
 
     "redirect if user already has the requested service" in {
@@ -147,9 +147,9 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     "throw exception when user does not have existing CDS enrolment" in {
       userDoesNotHaveGroupEnrolmentToCds
 
-      intercept[DataUnavailableException](enrolSuccess(atarService)(result => status(result))).getMessage should startWith(
-        "No EORI found"
-      )
+      intercept[DataUnavailableException](
+        enrolSuccess(atarService)(result => status(result))
+      ).getMessage should startWith("No EORI found")
     }
 
     "return Ok 200 when enrol confirmation page is requested" in {
