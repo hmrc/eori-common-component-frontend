@@ -80,7 +80,10 @@ sealed case class CachedData(
       .map(SafeId(_))
     lazy val mayBeRegistration: Option[SafeId] =
       regDetails.flatMap(s => if (s.safeId.id.nonEmpty) Some(s.safeId) else None)
-    mayBeRegistration orElse mayBeMigration getOrElse (throwException(safeIdKey, sessionId))
+    mayBeRegistration orElse mayBeMigration getOrElse (throw new IllegalStateException(
+      s"$safeIdKey is not cached in data for the sessionId: ${sessionId.id}"
+    ))
+
   }
 
   private def throwException(name: String, sessionId: Id) =
