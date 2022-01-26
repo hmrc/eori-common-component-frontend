@@ -31,7 +31,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.{
   nameUtrPartnershipForm
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  DataUnavailableException,
+  RequestSessionData,
+  SessionCache
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
   SubscriptionDetailsService
@@ -68,6 +72,7 @@ class NameIDOrgController @Inject() (
           requestSessionData.userSelectedOrganisationType.map(_.id)
         selectedOrganisationType match {
           case Some(orgType) =>
+            validateOrganisationType(orgType)
             populateOkView(
               cachedNameUtrViewModel,
               orgType,
@@ -75,11 +80,14 @@ class NameIDOrgController @Inject() (
               isInReviewMode = false,
               service
             )
-          case None => throw InvalidUrlValueException(s"Invalid organisation type '$selectedOrganisationType'.")
+          case None => throw DataUnavailableException("Organisation type is not available in cache")
         }
 
       }
     }
+
+  private def validateOrganisationType(orgType: String) =
+    requireThatUrlValue(OrganisationTypeConfigurations.contains(orgType), invalidOrganisationType(orgType))
 
   def reviewForm(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
@@ -88,8 +96,9 @@ class NameIDOrgController @Inject() (
           requestSessionData.userSelectedOrganisationType.map(_.id)
         selectedOrganisationType match {
           case Some(orgType) =>
+            validateOrganisationType(orgType)
             populateOkView(Some(cdm), orgType, OrganisationTypeConfigurations(orgType), isInReviewMode = true, service)
-          case None => throw InvalidUrlValueException(s"Invalid organisation type '$selectedOrganisationType'.")
+          case None => throw DataUnavailableException("Organisation type is not available in cache")
         }
 
       }
@@ -105,6 +114,7 @@ class NameIDOrgController @Inject() (
                 requestSessionData.userSelectedOrganisationType.map(_.id)
               selectedOrganisationType match {
                 case Some(orgType) =>
+                  validateOrganisationType(orgType)
                   BadRequest(
                     nameIdView(
                       formWithErrors,
@@ -114,7 +124,7 @@ class NameIDOrgController @Inject() (
                       service
                     )
                   )
-                case None => throw InvalidUrlValueException(s"Invalid organisation type '$selectedOrganisationType'.")
+                case None => throw DataUnavailableException("Organisation type is not available in cache")
               }
             },
           formData => storeNameUtrDetails(formData, isInReviewMode, service)
@@ -130,12 +140,6 @@ class NameIDOrgController @Inject() (
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
 
     lazy val nameUtrForm = nameUtrViewModel.fold(form)(form.fill)
-
-    requireThatUrlValue(
-      OrganisationTypeConfigurations.contains(organisationType),
-      invalidOrganisationType(organisationType)
-    )
-
     cdsFrontendDataCache.registrationDetails map { registrationDetails =>
       Ok(nameIdView(nameUtrForm, registrationDetails, isInReviewMode, conf.displayMode, service))
     }

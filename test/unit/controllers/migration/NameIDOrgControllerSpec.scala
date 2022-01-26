@@ -33,7 +33,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Subscri
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{RegistrationDetails, _}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.nameUtrOrganisationForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  DataUnavailableException,
+  RequestSessionData,
+  SessionCache
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.InvalidUrlValueException
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.nameId
 import uk.gov.hmrc.http.HeaderCarrier
@@ -78,7 +82,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
   )
 
   private val emulatedFailure           = new UnsupportedOperationException("Emulation of service call failure")
-  private val emulatedInvalidURLFailure = InvalidUrlValueException("Invalid organisation type 'None'.")
+  private val emulatedInvalidURLFailure = DataUnavailableException("Organisation type is not available in cache")
 
   override def beforeEach: Unit = {
     reset(
@@ -153,9 +157,9 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       }
     }
 
-    "display page not found if there is no session data for organisation type" in {
+    "throw DataUnavailableException if there is no session data for organisation type" in {
       when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(None)
-      val caught = intercept[InvalidUrlValueException] {
+      val caught = intercept[DataUnavailableException] {
         showCreateForm() { result =>
           await(result)
         }
@@ -214,9 +218,9 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       }
     }
 
-    "display page not found if there is no session data for organisation type" in {
+    "throw DataUnavailableException if there is no session data for organisation type" in {
       when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(None)
-      val caught = intercept[InvalidUrlValueException] {
+      val caught = intercept[DataUnavailableException] {
         showReviewForm() { result =>
           await(result)
         }
@@ -301,9 +305,9 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       caught shouldBe emulatedFailure
     }
 
-    "display page not found if there is no session data for organisation type" in {
+    "throw DataUnavailableException if there is no session data for organisation type" in {
       when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(None)
-      val caught = intercept[InvalidUrlValueException] {
+      val caught = intercept[DataUnavailableException] {
         submitFormInCreateMode(createEmptyFormUtrMap) { result =>
           await(result)
         }
