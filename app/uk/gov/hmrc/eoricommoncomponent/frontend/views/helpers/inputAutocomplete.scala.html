@@ -24,15 +24,12 @@
     field.name.replace(" ", "-")
 }
 
-@selectedValue = @{
-    field.value getOrElse ""
-}
 
 @inputSelect(
     form = form,
     id = fieldNameWithoutSpaces,
     name = field.name,
-    items = addresses.map(c => SelectItem(
+    items = SelectItem(value = Some(""), text = "",attributes= Map("label" -> " ")) +:addresses.map(c => SelectItem(
         value = Some(c.dropDownView),
         text = messages(c.dropDownView),
         selected = form(field.id).value.contains(c.dropDownView)
@@ -57,4 +54,7 @@
             autoselect: false,
             preserveNullOptions: true
         })
+        var selectElements = document.getElementsByTagName('select');
+        var selectElement = selectElements[selectElements.length - 1]
+        selectElement.remove(0)
 </script>

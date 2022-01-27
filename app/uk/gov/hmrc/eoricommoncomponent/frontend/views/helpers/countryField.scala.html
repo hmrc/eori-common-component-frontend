@@ -48,7 +48,7 @@
     form = form,
     id = field,
     name = field,
-    items = countries.map(c => SelectItem(
+    items = SelectItem(value = Some(""), text = "",attributes= Map("label" -> " ")) +: countries.map(c => SelectItem(
         value = Some(c.countryCode),
         text = messages(c.countryName),
         selected = form(field).value.contains(c.countryCode)
@@ -83,5 +83,6 @@
     inputElement.addEventListener('blur', function(){
         if(this.value === "") selectElement.selectedIndex=0;
     });
+    selectElement.remove(0)
 }())
 </script>
