@@ -35,7 +35,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
   OrganisationTypeConfiguration
 }
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 import scala.concurrent.{ExecutionContext, Future}
 
