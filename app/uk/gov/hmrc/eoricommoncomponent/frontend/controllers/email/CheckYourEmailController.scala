@@ -161,9 +161,6 @@ class CheckYourEmailController @Inject() (
   private def submitNewDetails(groupId: GroupId, service: Service)(implicit hc: HeaderCarrier): Future[Result] =
     save4LaterService.fetchEmail(groupId) flatMap {
       _.fold {
-        // $COVERAGE-OFF$Loggers
-        logger.warn("[CheckYourEmailController][submitNewDetails] -  emailStatus cache none")
-        // $COVERAGE-ON
         throw DataUnavailableException("[CheckYourEmailController][submitNewDetails] - emailStatus cache none")
       } { emailStatus =>
         val email: String = emailStatus.email.getOrElse(
