@@ -30,7 +30,7 @@ class SubscriptionFlowSpec extends UnitSpec {
       val thrown = intercept[DataUnavailableException] {
         SubscriptionFlow("DOES_NOT_EXISTS") shouldBe OrganisationFlow
       }
-      thrown.getMessage shouldBe s"Incorrect Subscription flowname DOES_NOT_EXISTS"
+      thrown.getMessage shouldBe s"Unknown Subscription flowname DOES_NOT_EXISTS"
     }
   }
 

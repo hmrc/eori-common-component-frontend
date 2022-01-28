@@ -79,7 +79,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
       intercept[DataUnavailableException](
         displayPage(atarService)(result => status(result))
-      ).getMessage should startWith("No EORI found")
+      ).getMessage shouldBe "No EORI found"
     }
 
     "redirect if user already has the requested service" in {
@@ -149,7 +149,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
       intercept[DataUnavailableException](
         enrolSuccess(atarService)(result => status(result))
-      ).getMessage should startWith("No EORI found")
+      ).getMessage shouldBe "No EORI found"
     }
 
     "return Ok 200 when enrol confirmation page is requested" in {

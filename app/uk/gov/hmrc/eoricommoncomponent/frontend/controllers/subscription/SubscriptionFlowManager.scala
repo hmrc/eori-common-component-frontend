@@ -103,7 +103,7 @@ class SubscriptionFlowManager @Inject() (requestSessionData: RequestSessionData,
           SubscriptionFlow(subscribePrefix + "Organisation")
         case _: RegistrationDetailsIndividual =>
           SubscriptionFlow(subscribePrefix + "Individual")
-        case _ => throw DataUnavailableException("Incomplete cache cannot complete journey")
+        case _ => throw DataUnavailableException("RegistrationDetails is not available in cache")
       }
 
     SubscriptionFlows.flows.keys.find(_.name == (subscribePrefix + orgType.id)).getOrElse(selectedFlow)

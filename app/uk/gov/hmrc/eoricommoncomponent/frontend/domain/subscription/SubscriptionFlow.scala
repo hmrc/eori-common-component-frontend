@@ -97,7 +97,7 @@ object SubscriptionFlow {
   def apply(flowName: String): SubscriptionFlow =
     SubscriptionFlows.flows.keys
       .find(_.name == flowName)
-      .fold(throw DataUnavailableException(s"Incorrect Subscription flowname $flowName"))(identity)
+      .fold(throw DataUnavailableException(s"Unknown Subscription flowname $flowName"))(identity)
 
 }
 

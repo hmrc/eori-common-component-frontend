@@ -207,8 +207,6 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
   private val mockHC      = mock[HeaderCarrier]
   private val mockRequest = mock[Request[AnyContent]]
 
-  private val noSubscriptionFlowInSessionException = mock[DataUnavailableException]
-
   override def beforeEach(): Unit = {
     reset(mockRequestSessionData, mockSession, mockCdsFrontendDataCache)
     when(mockRequestSessionData.storeUserSubscriptionFlow(any[SubscriptionFlow], any[String])(any[Request[AnyContent]]))
