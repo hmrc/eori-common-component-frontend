@@ -96,10 +96,7 @@ SummaryListRow(
 
             @CSRF.formField
 
-
-            <legend>
-                <h1 class="govuk-heading-l">@pageTitle</h1>
-            </legend>
+            <h1 class="govuk-heading-l">@pageTitle</h1>
 
             @govukSummaryList(SummaryList(
                 rows = Seq(
