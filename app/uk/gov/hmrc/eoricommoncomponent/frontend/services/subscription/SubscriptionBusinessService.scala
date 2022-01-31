@@ -22,7 +22,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,7 +35,7 @@ class SubscriptionBusinessService @Inject() (cdsFrontendDataCache: SessionCache)
 
   def getCachedDateEstablished(implicit hc: HeaderCarrier): Future[LocalDate] =
     cdsFrontendDataCache.subscriptionDetails map {
-      _.dateEstablished.getOrElse(throw new IllegalStateException("No Date Of Establishment Cached"))
+      _.dateEstablished.getOrElse(throw DataUnavailableException("No Date Of Establishment Cached"))
     }
 
   def maybeCachedDateEstablished(implicit hc: HeaderCarrier): Future[Option[LocalDate]] =
@@ -46,7 +46,7 @@ class SubscriptionBusinessService @Inject() (cdsFrontendDataCache: SessionCache)
 
   def addressOrException(implicit hc: HeaderCarrier): Future[AddressViewModel] =
     cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
-      subscriptionDetails.addressDetails.getOrElse(throw new IllegalStateException("No Address Details Cached"))
+      subscriptionDetails.addressDetails.getOrElse(throw DataUnavailableException("No Address Details Cached"))
     }
 
   def address(implicit hc: HeaderCarrier): Future[Option[AddressViewModel]] =
@@ -57,13 +57,13 @@ class SubscriptionBusinessService @Inject() (cdsFrontendDataCache: SessionCache)
   def getCachedNameIdViewModel(implicit hc: HeaderCarrier): Future[NameIdOrganisationMatchModel] =
     cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
       subscriptionDetails.nameIdOrganisationDetails.getOrElse(
-        throw new IllegalStateException("No Name/Utr/Id Details Cached")
+        throw DataUnavailableException("No Name/Utr/Id Details Cached")
       )
     }
 
   def getCachedNameViewModel(implicit hc: HeaderCarrier): Future[NameOrganisationMatchModel] =
     cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
-      subscriptionDetails.nameOrganisationDetails.getOrElse(throw new IllegalStateException("No Name Cached"))
+      subscriptionDetails.nameOrganisationDetails.getOrElse(throw DataUnavailableException("No Name Cached"))
     }
 
   def cachedNameIdOrganisationViewModel(implicit hc: HeaderCarrier): Future[Option[NameIdOrganisationMatchModel]] =
@@ -78,7 +78,7 @@ class SubscriptionBusinessService @Inject() (cdsFrontendDataCache: SessionCache)
 
   def getCachedSubscriptionNameDobViewModel(implicit hc: HeaderCarrier): Future[NameDobMatchModel] =
     cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
-      subscriptionDetails.nameDobDetails.getOrElse(throw new IllegalStateException("No Name/Dob Details Cached"))
+      subscriptionDetails.nameDobDetails.getOrElse(throw DataUnavailableException("No Name/Dob Details Cached"))
     }
 
   def cachedSubscriptionNameDobViewModel(implicit hc: HeaderCarrier): Future[Option[NameDobMatchModel]] =

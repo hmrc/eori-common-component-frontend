@@ -22,6 +22,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NotifyRcmReq
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -34,7 +35,7 @@ class NotifyRcmService @Inject() (sessionCache: SessionCache, notifyRcmConnector
       email <- sessionCache.email
     } yield {
       val name       = sd.name
-      val eori       = sd.eoriNumber.getOrElse(throw new IllegalArgumentException("Eori not found"))
+      val eori       = sd.eoriNumber.getOrElse(throw DataUnavailableException("Eori not found"))
       val rcmRequest = NotifyRcmRequest(eori, name, email, service)
       notifyRcmConnector.notifyRCM(rcmRequest)
     }

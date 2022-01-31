@@ -18,7 +18,6 @@ package integration
 
 import java.util.UUID
 import java.time.LocalDateTime
-
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json.toJson
@@ -30,7 +29,12 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.ResponseCommon
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressLookupParams
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{CachedData, SessionCache, SessionTimeOutException}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  CachedData,
+  DataUnavailableException,
+  SessionCache,
+  SessionTimeOutException
+}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.SessionId
 import uk.gov.hmrc.mongo.{MongoConnector, MongoSpecSupport}
@@ -140,7 +144,7 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       val s = setupSession
       await(sessionCache.insert(Cache(Id(s.value), data = Some(toJson(CachedData())))))
 
-      val caught = intercept[IllegalStateException] {
+      val caught = intercept[DataUnavailableException] {
         await(sessionCache.registrationDetails(hc))
       }
       caught.getMessage mustBe s"regDetails is not cached in data for the sessionId: ${s.value}"

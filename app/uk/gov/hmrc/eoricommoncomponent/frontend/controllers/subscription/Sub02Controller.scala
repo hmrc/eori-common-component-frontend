@@ -28,6 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionDa
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.migration_success
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -69,7 +70,7 @@ class Sub02Controller @Inject() (
     } yield Ok(
       migrationSuccessView(
         sub02Outcome.eori,
-        name.getOrElse(throw new IllegalStateException("Name not populated from reg06")),
+        name.getOrElse(throw DataUnavailableException("Name not populated from reg06")),
         sub02Outcome.processedDate,
         service
       )
