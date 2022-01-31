@@ -30,10 +30,14 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameIDOrgController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameIdOrganisationDisplayMode.RegisteredCompanyDM
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{RegistrationDetails, _}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.nameUtrOrganisationForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  DataUnavailableException,
+  RequestSessionData,
+  SessionCache
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.nameId
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
@@ -41,8 +45,8 @@ import unit.controllers.subscription.SubscriptionFlowSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.SessionBuilder
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEach {
 
@@ -76,7 +80,8 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     mockSubscriptionDetailsHolderService
   )
 
-  private val emulatedFailure = new UnsupportedOperationException("Emulation of service call failure")
+  private val emulatedFailure           = new UnsupportedOperationException("Emulation of service call failure")
+  private val emulatedInvalidURLFailure = DataUnavailableException("Organisation type is not available in cache")
 
   override def beforeEach: Unit = {
     reset(
@@ -151,6 +156,16 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       }
     }
 
+    "throw DataUnavailableException if there is no session data for organisation type" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(None)
+      val caught = intercept[DataUnavailableException] {
+        showCreateForm() { result =>
+          await(result)
+        }
+      }
+      caught shouldBe emulatedInvalidURLFailure
+    }
+
     "fill fields with details if stored in cache" in {
       when(mockSubscriptionBusinessService.cachedNameIdOrganisationViewModel(any[HeaderCarrier]))
         .thenReturn(Some(NameIdDetailsPage.filledValues))
@@ -200,6 +215,16 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
         val page = CdsPage(contentAsString(result))
         page.getElementsText(continueButtonXpath) shouldBe ContinueButtonTextInReviewMode
       }
+    }
+
+    "throw DataUnavailableException if there is no session data for organisation type" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(None)
+      val caught = intercept[DataUnavailableException] {
+        showReviewForm() { result =>
+          await(result)
+        }
+      }
+      caught shouldBe emulatedInvalidURLFailure
     }
   }
 
@@ -277,6 +302,16 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       }
 
       caught shouldBe emulatedFailure
+    }
+
+    "throw DataUnavailableException if there is no session data for organisation type" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(None)
+      val caught = intercept[DataUnavailableException] {
+        submitFormInCreateMode(createEmptyFormUtrMap) { result =>
+          await(result)
+        }
+      }
+      caught shouldBe emulatedInvalidURLFailure
     }
 
     "allow resubmission in create mode when details are invalid" in {

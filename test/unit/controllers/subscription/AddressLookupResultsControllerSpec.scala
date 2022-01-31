@@ -48,6 +48,7 @@ import util.builders.AuthBuilder.withAuthorisedUser
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterEach {
 
@@ -163,7 +164,7 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
           .thenReturn(Future.successful(AddressLookupSuccess(Seq(addressLookup))))
         when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(None)
 
-        intercept[IllegalStateException] {
+        intercept[DataUnavailableException] {
           await(controller.displayPage(atarService)(getRequest))
         }
 

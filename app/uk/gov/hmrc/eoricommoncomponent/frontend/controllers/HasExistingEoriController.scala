@@ -30,6 +30,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{EnrolmentService, MissingEnrolmentException}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{eori_enrol_success, has_existing_eori}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -86,7 +87,7 @@ class HasExistingEoriController @Inject() (
     enrolledForService(loggedInUser, Service.cds) match {
       case Some(eori) => Future.successful(eori.id)
       case _ =>
-        cache.groupEnrolment.map(_.eori.getOrElse(throw new IllegalStateException("No EORI found")))
+        cache.groupEnrolment.map(_.eori.getOrElse(throw DataUnavailableException("No EORI found")))
     }
 
 }
