@@ -16,8 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.cache
 
-import javax.inject.{Inject, Singleton}
-import java.time.LocalDateTime
 import play.api.Logger
 import play.api.libs.json.{JsSuccess, Json}
 import play.modules.reactivemongo.ReactiveMongoComponent
@@ -32,6 +30,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.CachedData._
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDateTime
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NoStackTrace
 
@@ -52,7 +52,11 @@ sealed case class CachedData(
     regDetails.getOrElse(throwException(regDetailsKey, sessionId))
 
   def registerWithEoriAndIdResponse(sessionId: Id): RegisterWithEoriAndIdResponse =
-    registerWithEoriAndIdResponse.getOrElse(throwException(registerWithEoriAndIdResponseKey, sessionId))
+    registerWithEoriAndIdResponse.getOrElse(
+      throw new IllegalStateException(
+        s"$registerWithEoriAndIdResponseKey is not cached in data for the sessionId: ${sessionId.id}"
+      )
+    )
 
   def sub01Outcome(sessionId: Id): Sub01Outcome =
     sub01Outcome.getOrElse(throwException(sub01OutcomeKey, sessionId))
@@ -76,11 +80,14 @@ sealed case class CachedData(
       .map(SafeId(_))
     lazy val mayBeRegistration: Option[SafeId] =
       regDetails.flatMap(s => if (s.safeId.id.nonEmpty) Some(s.safeId) else None)
-    mayBeRegistration orElse mayBeMigration getOrElse (throwException(safeIdKey, sessionId))
+    mayBeRegistration orElse mayBeMigration getOrElse (throw new IllegalStateException(
+      s"$safeIdKey is not cached in data for the sessionId: ${sessionId.id}"
+    ))
+
   }
 
   private def throwException(name: String, sessionId: Id) =
-    throw new IllegalStateException(s"$name is not cached in data for the sessionId: ${sessionId.id}")
+    throw DataUnavailableException(s"$name is not cached in data for the sessionId: ${sessionId.id}")
 
   private val initialEmptySubscriptionDetails = SubscriptionDetails()
 }
@@ -228,3 +235,4 @@ class SessionCache @Inject() (
 }
 
 case class SessionTimeOutException(errorMessage: String) extends NoStackTrace
+case class DataUnavailableException(message: String)     extends RuntimeException(message)

@@ -31,6 +31,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionDat
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_utr_subscription
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -112,6 +113,6 @@ class HaveUtrSubscriptionController @Inject() (
       case _ => throw new IllegalStateException("No Data from the form")
     }
 
-  private lazy val noOrgTypeSelected = throw new IllegalStateException("No organisation type selected by user")
+  private lazy val noOrgTypeSelected = throw DataUnavailableException("No organisation type selected by user")
 
 }

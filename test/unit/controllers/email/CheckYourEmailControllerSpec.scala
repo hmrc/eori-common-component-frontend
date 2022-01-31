@@ -146,6 +146,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
             status(result) shouldBe SEE_OTHER
         }
       } should have message "CreateEmailVerificationRequest Failed"
+
     }
 
     "redirect to What is Your Email Address Page on selecting No radio button" in {

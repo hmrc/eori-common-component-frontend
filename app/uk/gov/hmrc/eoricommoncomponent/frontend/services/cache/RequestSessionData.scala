@@ -38,7 +38,7 @@ class RequestSessionData {
   def userSubscriptionFlow(implicit request: Request[AnyContent]): SubscriptionFlow =
     request.session.data.get(RequestSessionDataKeys.subscriptionFlow) match {
       case Some(flowName) => SubscriptionFlow(flowName)
-      case None           => throw new IllegalStateException("Subscription flow is not cached")
+      case None           => throw DataUnavailableException("Subscription flow is not cached")
     }
 
   def userSelectedOrganisationType(implicit request: Request[AnyContent]): Option[CdsOrganisationType] =
