@@ -24,9 +24,6 @@
     field.name.replace(" ", "-")
 }
 
-@selectedValue = @{
-    field.value getOrElse ""
-}
 
 @inputSelect(
     form = form,
@@ -57,4 +54,5 @@
             autoselect: false,
             preserveNullOptions: true
         })
+
 </script>
