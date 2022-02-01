@@ -30,6 +30,7 @@ import util.builders.RegistrationDetailsBuilder
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 class OrgTypeLookupSpec extends UnitSpec with BeforeAndAfterEach with MockitoSugar {
 
@@ -70,7 +71,7 @@ class OrgTypeLookupSpec extends UnitSpec with BeforeAndAfterEach with MockitoSug
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(RegistrationDetailsBuilder.emptyETMPOrgTypeRegistrationDetails))
 
-      val thrown = intercept[IllegalStateException] {
+      val thrown = intercept[DataUnavailableException] {
         await(lookup.etmpOrgType(req, hc))
       }
 
@@ -82,7 +83,7 @@ class OrgTypeLookupSpec extends UnitSpec with BeforeAndAfterEach with MockitoSug
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(RegistrationDetailsBuilder.individualRegistrationDetails))
 
-      val thrown = intercept[IllegalStateException] {
+      val thrown = intercept[DataUnavailableException] {
         await(lookup.etmpOrgType(req, hc))
       }
 

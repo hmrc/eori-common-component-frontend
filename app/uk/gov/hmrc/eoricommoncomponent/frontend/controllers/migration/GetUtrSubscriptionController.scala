@@ -29,6 +29,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionDat
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you_utr
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -132,7 +133,7 @@ class GetUtrSubscriptionController @Inject() (
       }
     else subscriptionDetailsService.cacheCustomsId(Utr(form.id))
 
-  private lazy val noOrgTypeSelected = throw new IllegalStateException("No organisation type selected by user")
-  private lazy val noBusinessName    = throw new IllegalStateException("No business name cached")
+  private lazy val noOrgTypeSelected = throw DataUnavailableException("No organisation type selected by user")
+  private lazy val noBusinessName    = throw DataUnavailableException("No business name cached")
 
 }

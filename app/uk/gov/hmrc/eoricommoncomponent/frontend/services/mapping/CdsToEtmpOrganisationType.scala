@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping
 
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{RegistrationDetailsIndividual, _}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 object EtmpTypeOfPerson {
   val NaturalPerson       = "1"
@@ -113,7 +114,7 @@ object CdsToEtmpOrganisationType {
     case org: RegistrationDetailsOrganisation => org.etmpOrganisationType.map(etmpTypeOfPersonMap)
     case _: RegistrationDetailsIndividual =>
       Some(OrganisationTypeConfiguration(EtmpTypeOfPerson.NaturalPerson, EtmpLegalStatus.UnincorporatedBody))
-    case _ => throw new IllegalStateException("Incomplete cache cannot complete journey")
+    case _ => throw DataUnavailableException("Incomplete cache cannot complete journey")
   }
 
 }

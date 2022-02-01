@@ -27,7 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Subscri
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CustomsId, NameOrganisationMatchModel, Utr}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you_utr
 import uk.gov.hmrc.http.HeaderCarrier
@@ -113,7 +113,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
 
     "throws an exception if orgType is not found" in {
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
-      intercept[IllegalStateException] {
+      intercept[DataUnavailableException] {
         createForm()(result => status(result))
       }.getMessage shouldBe "No organisation type selected by user"
     }
@@ -122,7 +122,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
   "HaveUtrSubscriptionController Submit" should {
     "throws an exception if orgType is not found" in {
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
-      intercept[IllegalStateException] {
+      intercept[DataUnavailableException] {
         submit(ValidUtrRequest)(result => status(result))
       }.getMessage shouldBe "No organisation type selected by user"
     }
@@ -183,7 +183,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
       when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
         .thenReturn(Future.successful(()))
       when(mockSubscriptionDetailsService.cachedNameDetails(any[HeaderCarrier])).thenReturn(Future.successful(None))
-      intercept[IllegalStateException] {
+      intercept[DataUnavailableException] {
         submit(ValidUtrRequest)(result => status(result))
       }.getMessage shouldBe "No business name cached"
     }

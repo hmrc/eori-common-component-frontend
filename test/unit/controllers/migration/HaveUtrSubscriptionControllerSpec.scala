@@ -44,6 +44,7 @@ import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterEach {
 
@@ -116,7 +117,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
 
     "throws an exception if orgType is not found" in {
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
-      intercept[IllegalStateException] {
+      intercept[DataUnavailableException] {
         createForm()(result => status(result))
       }.getMessage shouldBe "No organisation type selected by user"
     }
@@ -125,7 +126,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
   "HaveUtrSubscriptionController Submit" should {
     "throws an exception if orgType is not found" in {
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
-      intercept[IllegalStateException] {
+      intercept[DataUnavailableException] {
         submit(ValidUtrRequest)(result => status(result))
       }.getMessage shouldBe "No organisation type selected by user"
     }
