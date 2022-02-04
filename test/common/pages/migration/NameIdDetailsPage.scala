@@ -28,13 +28,13 @@ trait NameIdDetailsPage extends WebPage {
   val pageTitleXPath = "//h1"
 
   val nameFieldXPath           = "//*[@id='name']"
-  val nameFieldLevelErrorXPath = "//span[@id='name-error'][@class='govuk-error-message']"
+  val nameFieldLevelErrorXPath = "//p[@id='name-error'][@class='govuk-error-message']"
   val nameFieldLabel           = "Registered business name"
   val nameFieldId              = "name"
   val nameFieldName            = "name"
 
   val utrFieldXPath           = "//*[@id='utr']"
-  val utrFieldLevelErrorXPath = "//span[@id='utr-error'][@class='govuk-error-message']"
+  val utrFieldLevelErrorXPath = "//p[@id='utr-error'][@class='govuk-error-message']"
   val utrFieldLabel           = "Company Unique Taxpayer Reference (UTR) number"
   val utrFieldId              = "utr"
   val utrFieldName            = "utr"
