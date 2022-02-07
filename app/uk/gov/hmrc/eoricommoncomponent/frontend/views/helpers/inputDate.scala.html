@@ -31,7 +31,7 @@
 @formattedErrors = {
   @if(formErrors.nonEmpty){
       @formErrors.headOption.map(err => messages(err.message, err.args: _*))
-      </p>
+      </span>
       @if(formErrors.tail.nonEmpty) {
           @formErrors.tail.map(err => errorContent(err))
       }
