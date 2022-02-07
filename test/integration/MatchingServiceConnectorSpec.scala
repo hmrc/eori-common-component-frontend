@@ -76,6 +76,42 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
         |}
       """.stripMargin)
 
+  private val serviceRequestWithEORIJson =
+    Json.parse("""{
+                 |  "registerWithIDRequest": {
+                 |    "requestCommon": {
+                 |      "regime": "CDS",
+                 |      "receiptDate": "2016-07-08T08:35:13Z",
+                 |      "acknowledgementReference": "fce07075-2e2e-4b12-840e-a63bff6ab1bd"
+                 |    },
+                 |    "requestDetail": {
+                 |      "IDType": "UTR",
+                 |      "IDNumber": "2108834503",
+                 |      "requiresNameMatch": false,
+                 |      "isAnAgent": false
+                 |    }
+                 |  }
+                 |}
+      """.stripMargin)
+
+  private val serviceRequestWithNINOJson =
+    Json.parse("""{
+                 |  "registerWithIDRequest": {
+                 |    "requestCommon": {
+                 |      "regime": "CDS",
+                 |      "receiptDate": "2016-07-08T08:35:13Z",
+                 |      "acknowledgementReference": "fce07075-2e2e-4b12-840e-a63bff6ab1bd"
+                 |    },
+                 |    "requestDetail": {
+                 |      "IDType": "UTR",
+                 |      "IDNumber": "2108834503",
+                 |      "requiresNameMatch": false,
+                 |      "isAnAgent": false
+                 |    }
+                 |  }
+                 |}
+      """.stripMargin)
+
   private def requestJsonFragment(isAnIndividual: Boolean): String =
     if (isAnIndividual)
       """
@@ -257,6 +293,28 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
       MatchService.returnTheMatchResponseWhenReceiveRequest(
         expectedPostUrl,
         serviceRequestJson.toString,
+        serviceResponseJsonOrganisationWithOptionalParams.toString
+      )
+      await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder]))
+
+      eventually(AuditService.verifyXAuditWrite(1))
+    }
+
+    "audit a successful request with EORI as customsID" in {
+      MatchService.returnTheMatchResponseWhenReceiveRequest(
+        expectedPostUrl,
+        serviceRequestWithEORIJson.toString,
+        serviceResponseJsonOrganisationWithOptionalParams.toString
+      )
+      await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder]))
+
+      eventually(AuditService.verifyXAuditWrite(1))
+    }
+
+    "audit a successful request with UTR" in {
+      MatchService.returnTheMatchResponseWhenReceiveRequest(
+        expectedPostUrl,
+        serviceRequestWithNINOJson.toString,
         serviceResponseJsonOrganisationWithOptionalParams.toString
       )
       await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder]))

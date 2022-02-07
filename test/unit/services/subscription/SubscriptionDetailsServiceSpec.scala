@@ -17,6 +17,7 @@
 package unit.services.subscription
 
 import base.UnitSpec
+
 import java.time.LocalDate
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -24,6 +25,7 @@ import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.RegistrationInfoRequest.EORI
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{FormData, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{NameOrganisationMatchModel, _}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
@@ -151,6 +153,19 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
       val holder: SubscriptionDetails = requestCaptor.getValue
       holder.nameIdOrganisationDetails shouldBe Some(nameId)
 
+    }
+  }
+
+  "Calling cacheNameAndCustomsId" should {
+    "save Name and customs Id Details in frontend cache" in {
+
+      await(subscriptionDetailsHolderService.cacheNameAndCustomsId("orgname", customsIdUTR))
+      val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
+
+      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
+      val holder: SubscriptionDetails = requestCaptor.getValue
+      holder.nameIdOrganisationDetails shouldBe Some(NameIdOrganisationMatchModel("orgname", "UTRXXXXX"))
+      holder.customsId shouldBe Some(Utr("utrxxxxx"))
     }
   }
 
@@ -324,6 +339,42 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
     }
   }
 
+  "Calling cachedNameIdDetails" should {
+    "return Some name Id details when found in subscription Details" in {
+      when(mockSessionCache.subscriptionDetails(any[HeaderCarrier]))
+        .thenReturn(SubscriptionDetails(nameIdOrganisationDetails = Some(nameId)))
+      await(subscriptionDetailsHolderService.cachedNameIdDetails) shouldBe Some(nameId)
+    }
+
+    "return None for Name Id details when no value found in subscription Details" in {
+      when(mockSessionCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(SubscriptionDetails())
+      await(subscriptionDetailsHolderService.cachedNameIdDetails(hc)) shouldBe None
+    }
+  }
+  "Calling cache Existing EORI number" should {
+    "save ExistingEori in frontend cache" in {
+      await(subscriptionDetailsHolderService.cacheExistingEoriNumber(ExistingEori("GB123456789123", "HMRC-CUS-ORG")))
+      val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
+      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
+      val holder = requestCaptor.getValue
+      holder.existingEoriNumber shouldBe Some(ExistingEori("GB123456789123", "HMRC-CUS-ORG"))
+    }
+  }
+  "Calling cachedExistingEoriNumber" should {
+    "return Some company when found in subscription Details" in {
+      when(mockSessionCache.subscriptionDetails(any[HeaderCarrier]))
+        .thenReturn(SubscriptionDetails(existingEoriNumber = Some(ExistingEori("GB123456789123", "HMRC-CUS-ORG"))))
+      await(subscriptionDetailsHolderService.cachedExistingEoriNumber(hc)) shouldBe Some(
+        ExistingEori("GB123456789123", "HMRC-CUS-ORG")
+      )
+    }
+
+    "return None for utrMatch when no value found for subscription Details" in {
+      when(mockSessionCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(SubscriptionDetails())
+      await(subscriptionDetailsHolderService.cachedExistingEoriNumber(hc)) shouldBe None
+    }
+  }
+
   "Calling cache nameDobDetails" should {
     "save nameDobDetails in frontend cache" in {
       await(
@@ -346,4 +397,20 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
       details.registeredCompany shouldBe Some(CompanyRegisteredCountry("United Kingdom"))
     }
   }
+
+  "Calling cachedRegisteredCountry" should {
+    "return Some company when found in subscription Details" in {
+      when(mockSessionCache.subscriptionDetails(any[HeaderCarrier]))
+        .thenReturn(SubscriptionDetails(registeredCompany = Some(CompanyRegisteredCountry("United Kingdom"))))
+      await(subscriptionDetailsHolderService.cachedRegisteredCountry) shouldBe Some(
+        CompanyRegisteredCountry("United Kingdom")
+      )
+    }
+
+    "return None for registered country when no value found for subscription Details" in {
+      when(mockSessionCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(SubscriptionDetails())
+      await(subscriptionDetailsHolderService.cachedRegisteredCountry()) shouldBe None
+    }
+  }
+
 }
