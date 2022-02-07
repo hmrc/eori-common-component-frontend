@@ -100,6 +100,13 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
         status(result) shouldBe OK
       }
     }
+
+    "throw IllegalArgumentException when session cache holds invalid Organisation type" in {
+      showFormWithAuthenticatedUser(userLocation = None) { result =>
+        status(result) shouldBe OK
+      }
+    }
+
   }
 
   "Submitting the form" should {

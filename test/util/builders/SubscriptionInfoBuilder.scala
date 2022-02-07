@@ -167,12 +167,22 @@ object SubscriptionInfoBuilder {
     )
   )
 
+  val sampleResponseCommonWithoutFormBundleNumber = ResponseCommon(
+    "OK",
+    Some("Status text"),
+    LocalDateTime.now(),
+    Some(List(MessagingServiceParam("POSITION", "GENERATE")))
+  )
+
   val sampleResponseCommonWithBlankReturnParameters = sampleResponseCommon.copy(returnParameters = None)
 
   val sampleResponseCommonWithNoETMPFORMBUNDLENUMBER =
     sampleResponseCommon.copy(returnParameters = Some(List(MessagingServiceParam("POSITION", "GENERATE"))))
 
   val fullyPopulatedResponse = SubscriptionDisplayResponse(sampleResponseCommon, fullyPopulatedResponseDetail)
+
+  val fullyPopulatedResponseWithoutFormBundle =
+    SubscriptionDisplayResponse(sampleResponseCommonWithoutFormBundleNumber, fullyPopulatedResponseDetail)
 
   val onlyMandatoryPopulatedResponse =
     SubscriptionDisplayResponse(sampleResponseCommon, onlyMandatoryPopulatedResponseDetail)

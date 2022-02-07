@@ -63,15 +63,45 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
   private val organisationNameAndAddressNonePostcode =
     EoriAndIdNameAndAddress("Full Name", EstablishmentAddress("25 Some Street", "Testville", None, "GB"))
 
-  private val organisationDetails = RegisterWithEoriAndIdDetail(
+  private val registerWithUTR = RegisterModeId(
+    "UTR",
+    "45646757",
+    isNameMatched = false,
+    individual = None,
+    Some(RegisterWithEoriAndIdOrganisation("OrgName", "OrgTypeCode"))
+  )
+
+  private val registerWithNINO = RegisterModeId(
+    "NINO",
+    "45646757",
+    isNameMatched = false,
+    individual = None,
+    Some(RegisterWithEoriAndIdOrganisation("OrgName", "OrgTypeCode"))
+  )
+
+  private val registerWithInvalidID = RegisterModeId(
+    "InvalidID",
+    "45646757",
+    isNameMatched = false,
+    individual = None,
+    Some(RegisterWithEoriAndIdOrganisation("OrgName", "OrgTypeCode"))
+  )
+
+  private val organisationDetailsWithUTR = RegisterWithEoriAndIdDetail(
     RegisterModeEori("ZZ123456789112", "Full Name", organisationNameAndAddress.address),
-    RegisterModeId(
-      "UTR",
-      "45646757",
-      isNameMatched = false,
-      individual = None,
-      Some(RegisterWithEoriAndIdOrganisation("OrgName", "OrgTypeCode"))
-    ),
+    registerWithUTR,
+    Some(GovGatewayCredentials("some@example.com"))
+  )
+
+  private val organisationDetailsWithNINO = RegisterWithEoriAndIdDetail(
+    RegisterModeEori("ZZ123456789112", "Full Name", organisationNameAndAddress.address),
+    registerWithNINO,
+    Some(GovGatewayCredentials("some@example.com"))
+  )
+
+  private val organisationDetailsWithInvalidID = RegisterWithEoriAndIdDetail(
+    RegisterModeEori("ZZ123456789112", "Full Name", organisationNameAndAddress.address),
+    registerWithInvalidID,
     Some(GovGatewayCredentials("some@example.com"))
   )
 
@@ -566,11 +596,11 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
 
   "RegisterWithEoriAndIdService" should {
 
-    "send correct request for an organisation" in {
+    "send correct request for an organisation with UTR" in {
       mockRegistrationSuccess()
 
       service
-        .registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc)
+        .registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)(hc)
         .futureValue shouldBe true
 
       val captor =
@@ -589,6 +619,38 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         "GB"
       )
       registrationRequest.requestDetail.registerModeID.IDType shouldBe "UTR"
+      registrationRequest.requestDetail.registerModeID.IDNumber shouldBe "45646757"
+      registrationRequest.requestDetail.registerModeID.isNameMatched shouldBe false
+      registrationRequest.requestDetail.registerModeID.individual shouldBe None
+      registrationRequest.requestDetail.registerModeID.organisation shouldBe Some(
+        RegisterWithEoriAndIdOrganisation("OrgName", "OrgTypeCode")
+      )
+      registrationRequest.requestDetail.govGatewayCredentials shouldBe Some(GovGatewayCredentials("some@example.com"))
+    }
+
+    "send correct request for an organisation with NINO" in {
+      mockRegistrationSuccess()
+
+      service
+        .registerWithEoriAndId(organisationDetailsWithNINO, subscriptionDetails, personTypeCompany)(hc)
+        .futureValue shouldBe true
+
+      val captor =
+        ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
+      verify(mockConnector).register(captor.capture())(meq(hc))
+
+      val registrationRequest: RegisterWithEoriAndIdRequest = captor.getValue
+
+      registrationRequest.requestCommon shouldBe mockRequestCommon
+      registrationRequest.requestDetail.registerModeEORI.EORI shouldBe "ZZ123456789112"
+      registrationRequest.requestDetail.registerModeEORI.fullName shouldBe "Full Name"
+      registrationRequest.requestDetail.registerModeEORI.address shouldBe EstablishmentAddress(
+        "25 Some Street",
+        "Testville",
+        Some("AB99 3XZ"),
+        "GB"
+      )
+      registrationRequest.requestDetail.registerModeID.IDType shouldBe "NINO"
       registrationRequest.requestDetail.registerModeID.IDNumber shouldBe "45646757"
       registrationRequest.requestDetail.registerModeID.isNameMatched shouldBe false
       registrationRequest.requestDetail.registerModeID.individual shouldBe None
@@ -698,7 +760,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       val caught = intercept[RuntimeException](
         await(
           service
-            .registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc)
+            .registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)(hc)
         )
       )
 
@@ -709,7 +771,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       mockRegistrationSuccess()
 
       await(
-        service.registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc)
+        service.registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)(hc)
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(meq(registrationResponse.registerWithEORIAndIDResponse))(
@@ -724,7 +786,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       ) thenReturn Future.successful(registrationResponseNoSafeId.registerWithEORIAndIDResponse)
 
       await(
-        service.registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc)
+        service.registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)(hc)
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
@@ -738,7 +800,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
           .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier])
       ) thenReturn Future.successful(registrationWithNoDoeAndNoPersonType.registerWithEORIAndIDResponse)
       await(
-        service.registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc)
+        service.registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)(hc)
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
@@ -752,7 +814,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
           .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier])
       ) thenReturn Future.successful(registrationWithDoe.registerWithEORIAndIDResponse)
       await(
-        service.registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc)
+        service.registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)(hc)
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
@@ -766,7 +828,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
           .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier])
       ) thenReturn Future.successful(registrationWithNoRespData.registerWithEORIAndIDResponse)
       await(
-        service.registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc)
+        service.registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)(hc)
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
@@ -816,7 +878,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
           .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier])
       ) thenReturn Future.successful(registrationWithNoDoeAndPT.registerWithEORIAndIDResponse)
       await(
-        service.registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc)
+        service.registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)(hc)
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
@@ -851,7 +913,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       val caught = intercept[RuntimeException] {
         await(
           service
-            .registerWithEoriAndId(organisationDetails, subscriptionDetails, personTypeCompany)(hc)
+            .registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)(hc)
         )
       }
       caught shouldBe expectedException

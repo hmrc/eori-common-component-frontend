@@ -181,7 +181,6 @@ class SubscriptionRecoveryControllerSpec
         any()
       )(any())
     }
-
     "call Enrolment Complete with successful SUB09 call for Subscription ROW journey" in {
       setupMockCommon()
 
@@ -259,6 +258,45 @@ class SubscriptionRecoveryControllerSpec
         any(),
         any()
       )(any())
+    }
+
+    "throw IllegalStateException when SUB09 call returns response without Form Bundle for Subscription UK journey" in {
+      setupMockCommon()
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
+      when(mockSUB09SubscriptionDisplayConnector.subscriptionDisplay(any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(fullyPopulatedResponseWithoutFormBundle)))
+      when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(Some("testEORInumber"))
+
+      when(mockSessionCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+        .thenReturn(Future.successful(mockRegisterWithEoriAndIdResponse))
+      when(mockRegisterWithEoriAndIdResponse.responseDetail).thenReturn(registerWithEoriAndIdResponseDetail)
+
+      when(
+        mockTaxEnrolmentsService
+          .issuerCall(anyString, any[Eori], any[Option[LocalDate]], any[Service])(any[HeaderCarrier])
+      ).thenReturn(Future.successful(NO_CONTENT))
+
+      intercept[IllegalStateException] {
+        await(controller.complete(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+      }
+    }
+    "throw IllegalStateException when Tax Enrolment Issuer call returns invalid response for Subscription UK journey" in {
+      setupMockCommon()
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
+      when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(Some("testEORInumber"))
+
+      when(mockSessionCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+        .thenReturn(Future.successful(mockRegisterWithEoriAndIdResponse))
+      when(mockRegisterWithEoriAndIdResponse.responseDetail).thenReturn(registerWithEoriAndIdResponseDetail)
+
+      when(
+        mockTaxEnrolmentsService
+          .issuerCall(anyString, any[Eori], any[Option[LocalDate]], any[Service])(any[HeaderCarrier])
+      ).thenReturn(Future.successful(INTERNAL_SERVER_ERROR))
+
+      intercept[IllegalArgumentException] {
+        await(controller.complete(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+      }
     }
   }
 

@@ -16,18 +16,23 @@
 
 package integration
 
+import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
+
 import java.util.UUID
-import java.time.LocalDateTime
+import java.time.{LocalDate, LocalDateTime}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json.toJson
 import play.modules.reactivemongo.ReactiveMongoComponent
 import uk.gov.hmrc.cache.model.{Cache, Id}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.ResponseCommon
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressLookupParams
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.address.AddressRequestBody
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
   CachedData,
@@ -35,22 +40,24 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
   SessionCache,
   SessionTimeOutException
 }
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.SessionId
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, SessionId}
 import uk.gov.hmrc.mongo.{MongoConnector, MongoSpecSupport}
 import util.builders.RegistrationDetailsBuilder._
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with MongoSpecSupport {
 
-  lazy val appConfig = app.injector.instanceOf[AppConfig]
+  lazy val appConfig      = app.injector.instanceOf[AppConfig]
+  lazy val mockHttpClient = mock[HttpClient]
 
   private val reactiveMongoComponent = new ReactiveMongoComponent {
     override def mongoConnector: MongoConnector = mongoConnectorForTest
   }
 
-  private val save4LaterService = app.injector.instanceOf[Save4LaterService]
+  implicit private val save4LaterConnector = new Save4LaterConnector(mockHttpClient, appConfig)
+  private val save4LaterService            = new Save4LaterService(save4LaterConnector)
 
   val sessionCache = new SessionCache(appConfig, reactiveMongoComponent, save4LaterService)
 
@@ -138,6 +145,7 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       json mustBe expectedJson
 
       await(sessionCache.registerWithEoriAndIdResponse(hc)) mustBe rd
+
     }
 
     "throw exception when registration Details requested and not available in cache" in {
@@ -199,6 +207,17 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       val cached = await(sessionCache.findById(Id(sessionId.value)))
       cached mustBe None
     }
+
+    "throw IllegalStateException when sessionId is not available" in {
+      val sessionId: SessionId = setupSession
+      when(hc.sessionId).thenReturn(None)
+      val addressLookupParams = AddressLookupParams("AA11 1AA", None)
+      intercept[IllegalStateException] {
+        await(sessionCache.saveAddressLookupParams(addressLookupParams)(hc))
+      }
+
+    }
+
   }
 
   private def setupSession: SessionId = {
