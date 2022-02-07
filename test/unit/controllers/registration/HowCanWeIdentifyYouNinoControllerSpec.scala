@@ -96,6 +96,29 @@ class HowCanWeIdentifyYouNinoControllerSpec extends ControllerSpec with BeforeAn
         page.getElementsText(SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath) shouldBe empty
       }
     }
+
+    "populate the form values when session cache is having Nino details" in {
+      reviewForm(Map.empty, customsId = Nino("123456789")) { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath) shouldBe empty
+        page.getElementValue("//*[@id='nino']") shouldBe "123456789"
+      }
+    }
+  }
+
+  "Loading the page on review mode" should {
+
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(atarService))
+
+    "show the form without errors" in {
+      showForm(Map.empty) { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath) shouldBe empty
+      }
+    }
+
   }
 
   "Submitting the form" should {

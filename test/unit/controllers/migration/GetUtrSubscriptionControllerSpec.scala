@@ -26,7 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.GetUtrSubs
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CustomsId, NameOrganisationMatchModel, Utr}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CustomsId, NameOrganisationMatchModel, Nino, Utr}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you_utr
@@ -115,6 +115,59 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
       intercept[DataUnavailableException] {
         createForm()(result => status(result))
+      }.getMessage shouldBe "No organisation type selected by user"
+    }
+
+    "populate the field values when Session cache hold Nino details" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
+      when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(Utr("1111111111K"))))
+      createForm() { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should include("Enter your Unique Tax Reference number")
+        page.getElementValue("//*[@id='utr']") shouldBe "1111111111K"
+      }
+    }
+  }
+
+  "HaveUtrSubscriptionController reviewForm" should {
+    when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
+      .thenReturn(Future.successful(Some(Utr("utr"))))
+    "return OK and display correct page when orgType is Company" in {
+
+      when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
+      reviewForm() { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should include("Enter your Unique Tax Reference number")
+      }
+    }
+
+    "return OK and display correct page when orgType is Sole Trader" in {
+
+      when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(SoleTrader))
+      reviewForm() { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should include("Enter your Unique Tax Reference number")
+      }
+    }
+
+    "return OK and display correct page when orgType is Individual" in {
+
+      when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Individual))
+      reviewForm() { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should include("Enter your Unique Tax Reference number")
+      }
+    }
+
+    "throws an exception if orgType is not found" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
+      intercept[DataUnavailableException] {
+        reviewForm()(result => status(result))
       }.getMessage shouldBe "No organisation type selected by user"
     }
   }
@@ -246,6 +299,11 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
   private def createForm()(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     await(test(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+  }
+
+  private def reviewForm()(test: Future[Result] => Any) = {
+    withAuthorisedUser(defaultUserId, mockAuthConnector)
+    await(test(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
   private def submit(form: Map[String, String], isInReviewMode: Boolean = false)(test: Future[Result] => Any) = {
