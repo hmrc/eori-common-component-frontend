@@ -199,10 +199,12 @@
 @row(key: String, value: Option[Html], call: Option[Call] = None, fieldName: String = "") = @{
     SummaryListRow(
         key = Key(
-            content = Text(messages(key))
+            content = Text(messages(key)),
+            classes = "govuk-!-width-one-quarter"
         ),
         value = Value(
-            content = HtmlContent(value.getOrElse("").toString)
+            content = HtmlContent(value.getOrElse("").toString),
+            classes = "govuk-!-width-one-half"
         ),
         actions = call.flatMap(c => Some(Actions(
             items = Seq(
@@ -212,7 +214,7 @@
                     visuallyHiddenText = Some(messages("cds.form.change") + " " + messages(key))
                 )
             ),
-            classes = fieldName+"_change"
+            classes = fieldName+"_change  govuk-!-width-one-quarter"
         ))),
         classes = fieldName
     )
