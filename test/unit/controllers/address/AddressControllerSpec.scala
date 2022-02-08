@@ -18,7 +18,6 @@ package unit.controllers.address
 
 import common.pages.subscription.AddressPage
 import common.support.testdata.subscription.BusinessDatesOrganisationTypeTables
-import java.time.LocalDate
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalacheck.Gen
@@ -46,6 +45,7 @@ import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.RegistrationDetailsBuilder._
 import util.builders.SessionBuilder
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -314,7 +314,6 @@ class AddressControllerSpec
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(AddressPage.pageLevelErrorSummaryListXPath) shouldBe "Enter a valid postcode"
-
         page.getElementsText(AddressPage.postcodeFieldLevelErrorXPath) shouldBe "Error: Enter a valid postcode"
       }
     }

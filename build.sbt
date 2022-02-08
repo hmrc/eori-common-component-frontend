@@ -110,7 +110,7 @@ val compileDependencies = Seq(
   "uk.gov.hmrc" %% "logback-json-logger" % "5.1.0",
   "uk.gov.hmrc" %% "play-language" % "5.0.0-play-28",
   "org.webjars.npm" % "accessible-autocomplete" % "2.0.3",
-  "uk.gov.hmrc" %% "play-frontend-hmrc" % "0.93.0-play-28"
+  "uk.gov.hmrc" %% "play-frontend-hmrc" % "3.2.0-play-28"
 )
 
 
@@ -143,7 +143,6 @@ lazy val silencerSettings: Seq[Setting[_]] = {
 
 TwirlKeys.templateImports ++= Seq(
   "uk.gov.hmrc.govukfrontend.views.html.components._",
-  "uk.gov.hmrc.govukfrontend.views.html.helpers._",
   "uk.gov.hmrc.hmrcfrontend.views.html.components._",
   "uk.gov.hmrc.hmrcfrontend.views.html.helpers._"
 )
