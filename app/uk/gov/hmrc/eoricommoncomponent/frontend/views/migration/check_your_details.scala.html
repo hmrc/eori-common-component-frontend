@@ -202,8 +202,7 @@
             content = Text(messages(key))
         ),
         value = Value(
-            content = HtmlContent(value.getOrElse("").toString),
-            classes = "govuk-!-width-one-thirds"
+            content = HtmlContent(value.getOrElse("").toString)
         ),
         actions = call.flatMap(c => Some(Actions(
             items = Seq(
@@ -213,7 +212,7 @@
                     visuallyHiddenText = Some(messages("cds.form.change") + " " + messages(key))
                 )
             ),
-            classes = fieldName+"_change govuk-!-width-one-quarter"
+            classes = fieldName+"_change"
         ))),
         classes = fieldName
     )
