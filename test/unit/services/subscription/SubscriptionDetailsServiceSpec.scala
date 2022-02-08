@@ -194,6 +194,45 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
     }
   }
 
+  "Calling cache Utr match" should {
+    "save Utr match in frontend cache" in {
+
+      await(subscriptionDetailsHolderService.cacheUtrMatch(Some(utrMatch)))
+      val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
+
+      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
+      val holder = requestCaptor.getValue
+      holder.formData.utrMatch shouldBe Some(utrMatch)
+
+    }
+  }
+
+  "Calling cache Nino match" should {
+    "save Nino match in frontend cache" in {
+
+      await(subscriptionDetailsHolderService.cacheNinoMatch(Some(ninoMatch)))
+      val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
+
+      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
+      val holder = requestCaptor.getValue
+      holder.formData.ninoMatch shouldBe Some(ninoMatch)
+
+    }
+  }
+
+  "Calling cache UtrOrNino match" should {
+    "save UtrOrNino match in frontend cache" in {
+
+      await(subscriptionDetailsHolderService.cacheNinoOrUtrChoice(NinoOrUtrChoice(Some("Utr"))))
+      val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
+
+      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
+      val holder = requestCaptor.getValue
+      holder.formData.ninoOrUtrChoice shouldBe Some("Utr")
+
+    }
+  }
+
   "Calling cache EORI number" should {
     "save EORI number in frontend cache" in {
 

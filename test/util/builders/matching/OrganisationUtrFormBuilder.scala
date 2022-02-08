@@ -25,4 +25,5 @@ object OrganisationUtrFormBuilder {
   val ValidUtr        = Utr(ValidUtrId)
   val ValidUtrRequest = Map("have-utr" -> "true", "utr" -> ValidUtrId)
   val NoUtrRequest    = Map("have-utr" -> "false")
+  val InvalidUtrRequest  = Map("" -> "")
 }

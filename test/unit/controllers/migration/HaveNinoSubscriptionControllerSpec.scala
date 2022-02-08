@@ -91,6 +91,16 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
     }
   }
 
+  "HaveNinoSubscriptionController reviewForm" should {
+    "return OK and display correct page" in {
+      reviewForm() { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should include(SubscriptionNinoPage.title)
+      }
+    }
+  }
+
   "HaveNinoSubscriptionController submit" should {
     "return BadRequest when no option selected" in {
       submit(Map.empty[String, String]) { result =>
@@ -136,6 +146,11 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
   private def createForm()(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     await(test(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+  }
+
+  private def reviewForm()(test: Future[Result] => Any) = {
+    withAuthorisedUser(defaultUserId, mockAuthConnector)
+    await(test(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
   private def submit(form: Map[String, String], isInReviewMode: Boolean = false)(test: Future[Result] => Any) = {
