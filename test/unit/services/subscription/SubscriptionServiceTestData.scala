@@ -17,12 +17,18 @@
 package unit.services.subscription
 
 import common.support.testdata.TestData
-import java.time.{LocalDate, LocalDateTime}
 
+import java.time.{LocalDate, LocalDateTime}
 import org.scalacheck.Gen
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionCreateResponse.{
+  EoriAlreadyAssociated,
+  EoriAlreadyExists,
+  RequestNotProcessed,
+  SubscriptionInProgress
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionResponse
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, MessagingServiceParam, ResponseCommon}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
@@ -33,7 +39,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
   EtmpTypeOfPerson,
   OrganisationTypeConfiguration
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionSuccessful
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionFailed, SubscriptionSuccessful}
 import util.TestData
 
 trait SubscriptionServiceTestData extends TestData {
@@ -94,6 +100,18 @@ trait SubscriptionServiceTestData extends TestData {
 
   val subscriptionSuccessResult =
     SubscriptionSuccessful(eori, responseFormBundleId, processingDateResponse, Some(emailVerificationTimestamp))
+
+  val subscriptionFailureResult                      = SubscriptionFailed(EoriAlreadyExists, processingDateResponse)
+  val subscriptionFailureResultRequestNotProcessed   = SubscriptionFailed(RequestNotProcessed, processingDateResponse)
+  val subscriptionFailureResultEoriAlreadyAssociated = SubscriptionFailed(EoriAlreadyAssociated, processingDateResponse)
+
+  val subscriptionFailureResultSubscriptionInProgress =
+    SubscriptionFailed(SubscriptionInProgress, processingDateResponse)
+
+  val subscriptionFailureResultSubscriptionFailed = SubscriptionFailed(
+    "Response status of FAIL returned for a SUB02: Create Subscription. subscription failed",
+    processingDateResponse
+  )
 
   val cdsOrganisationTypeToTypeOfPersonMap: Map[CdsOrganisationType, OrganisationTypeConfiguration] = Map(
     CdsOrganisationType("company")                       -> OrganisationTypeConfiguration.Company,
@@ -196,6 +214,33 @@ trait SubscriptionServiceTestData extends TestData {
       outcome = Some(outcomeType),
       caseNumber = Some("case no 1"),
       responseData = Some(responseData)
+    )
+    RegisterWithEoriAndIdResponse(
+      ResponseCommon(status = "OK", processingDate = LocalDateTime.now),
+      Some(responseDetail)
+    )
+  }
+
+  def stubRegisterWithoutResponseData(outcomeType: String = "PASS"): RegisterWithEoriAndIdResponse = {
+    val establishmentAddress =
+      EstablishmentAddress(
+        streetAndNumber = "Line 1 line 2",
+        city = "city name",
+        postalCode = Some("SE28 1AA"),
+        countryCode = "GB"
+      )
+    val responseData = ResponseData(
+      SAFEID = "SafeID123",
+      trader = Trader(fullName = "Name", shortName = "nt"),
+      establishmentAddress = establishmentAddress,
+      hasInternetPublication = true,
+      startDate = "2018-01-01",
+      dateOfEstablishmentBirth = Some(dateEstablishedString)
+    )
+    val responseDetail = RegisterWithEoriAndIdResponseDetail(
+      outcome = Some(outcomeType),
+      caseNumber = Some("case no 1"),
+      responseData = None
     )
     RegisterWithEoriAndIdResponse(
       ResponseCommon(status = "OK", processingDate = LocalDateTime.now),
@@ -776,6 +821,25 @@ trait SubscriptionServiceTestData extends TestData {
       """.stripMargin)
 
   val subscriptionGenerateResponse: SubscriptionResponse = subscriptionGenerateResponseJson.as[SubscriptionResponse]
+
+  val subscriptionFailedResponseForEnrolmentAlreadyExists: SubscriptionResponse = subscriptionFailedResponseJson(
+    EoriAlreadyExists
+  ).as[SubscriptionResponse]
+
+  val subscriptionFailedResponseForRequestNotProcessed: SubscriptionResponse = subscriptionFailedResponseJson(
+    RequestNotProcessed
+  ).as[SubscriptionResponse]
+
+  val subscriptionFailedResponseForEoriAlreadyAssociated: SubscriptionResponse = subscriptionFailedResponseJson(
+    EoriAlreadyAssociated
+  ).as[SubscriptionResponse]
+
+  val subscriptionFailedResponseForSubscriptionInProgress: SubscriptionResponse = subscriptionFailedResponseJson(
+    SubscriptionInProgress
+  ).as[SubscriptionResponse]
+
+  val subscriptionFailedResponse: SubscriptionResponse =
+    subscriptionFailedResponseJson("subscription failed").as[SubscriptionResponse]
 
   val subscriptionResponseWithoutPosition: SubscriptionResponse =
     subscriptionResponseWithoutPositionJson.as[SubscriptionResponse]

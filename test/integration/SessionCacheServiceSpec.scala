@@ -194,7 +194,7 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       await(sessionCache.groupEnrolment(hc)) mustBe groupEnrolmentResponse
     }
 
-    "store Eori correctly" in {
+    "store and fetch Eori correctly" in {
 
       val sessionId: SessionId = setupSession
 
@@ -209,9 +209,11 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       val Some(Cache(_, Some(json), _, _)) = cache
 
       json mustBe expectedJson
+
+      await(sessionCache.eori(hc)) mustBe Some(eori.id)
     }
 
-    "store email correctly" in {
+    "store and fetch email correctly" in {
 
       val sessionId: SessionId = setupSession
 
@@ -226,6 +228,8 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       val Some(Cache(_, Some(json), _, _)) = cache
 
       json mustBe expectedJson
+      await(sessionCache.email(hc)) mustBe email
+
     }
 
     "store subscription details correctly" in {
@@ -266,13 +270,13 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
 
       val sessionId: SessionId = setupSession
 
-      val sub01Outcome = Sub01Outcome(LocalDate.of(1961, 4, 12).toString)
+      val sub02Outcome = Sub02Outcome(LocalDate.of(1961, 4, 12).toString, "fullName", Some("GB123456789123"))
 
-      await(sessionCache.saveSub01Outcome(sub01Outcome)(hc))
+      await(sessionCache.saveSub02Outcome(sub02Outcome)(hc))
 
       val cache = await(sessionCache.findById(Id(sessionId.value)))
 
-      val expectedJson = toJson(CachedData(sub01Outcome = Some(sub01Outcome)))
+      val expectedJson = toJson(CachedData(sub02Outcome = Some(sub02Outcome)))
 
       val Some(Cache(_, Some(json), _, _)) = cache
 
