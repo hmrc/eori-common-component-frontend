@@ -32,6 +32,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.ResponseCommon
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressLookupParams
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.address.AddressRequestBody
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
@@ -169,6 +170,109 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       val cache = await(sessionCache.findById(Id(sessionId.value)))
 
       val expectedJson = toJson(CachedData(addressLookupParams = Some(addressLookupParams)))
+
+      val Some(Cache(_, Some(json), _, _)) = cache
+
+      json mustBe expectedJson
+    }
+    "store and fetch group enrolment correctly" in {
+
+      val sessionId: SessionId = setupSession
+
+      val groupEnrolmentResponse = EnrolmentResponse(Service.cds.enrolmentKey, "Activated", List.empty)
+
+      await(sessionCache.saveGroupEnrolment(groupEnrolmentResponse)(hc))
+
+      val cache = await(sessionCache.findById(Id(sessionId.value)))
+
+      val expectedJson = toJson(CachedData(groupEnrolment = Some(groupEnrolmentResponse)))
+
+      val Some(Cache(_, Some(json), _, _)) = cache
+
+      json mustBe expectedJson
+
+      await(sessionCache.groupEnrolment(hc)) mustBe groupEnrolmentResponse
+    }
+
+    "store Eori correctly" in {
+
+      val sessionId: SessionId = setupSession
+
+      val eori = Eori("GB123456789123")
+
+      await(sessionCache.saveEori(eori)(hc))
+
+      val cache = await(sessionCache.findById(Id(sessionId.value)))
+
+      val expectedJson = toJson(CachedData(eori = Some(eori.id)))
+
+      val Some(Cache(_, Some(json), _, _)) = cache
+
+      json mustBe expectedJson
+    }
+
+    "store email correctly" in {
+
+      val sessionId: SessionId = setupSession
+
+      val email = "email@email.com"
+
+      await(sessionCache.saveEmail(email)(hc))
+
+      val cache = await(sessionCache.findById(Id(sessionId.value)))
+
+      val expectedJson = toJson(CachedData(email = Some(email)))
+
+      val Some(Cache(_, Some(json), _, _)) = cache
+
+      json mustBe expectedJson
+    }
+
+    "store subscription details correctly" in {
+
+      val sessionId: SessionId = setupSession
+
+      val subscriptionDetails = SubscriptionDetails(email = Some("email@email.com"))
+
+      await(sessionCache.saveSubscriptionDetails(subscriptionDetails)(hc))
+
+      val cache = await(sessionCache.findById(Id(sessionId.value)))
+
+      val expectedJson = toJson(CachedData(subDetails = Some(subscriptionDetails)))
+
+      val Some(Cache(_, Some(json), _, _)) = cache
+
+      json mustBe expectedJson
+    }
+
+    "store sub01Outcome details correctly" in {
+
+      val sessionId: SessionId = setupSession
+
+      val sub01Outcome = Sub01Outcome(LocalDate.of(1961, 4, 12).toString)
+
+      await(sessionCache.saveSub01Outcome(sub01Outcome)(hc))
+
+      val cache = await(sessionCache.findById(Id(sessionId.value)))
+
+      val expectedJson = toJson(CachedData(sub01Outcome = Some(sub01Outcome)))
+
+      val Some(Cache(_, Some(json), _, _)) = cache
+
+      json mustBe expectedJson
+    }
+
+    "store sub02Outcome details correctly" in {
+
+      val sessionId: SessionId = setupSession
+
+      val sub01Outcome = Sub01Outcome(LocalDate.of(1961, 4, 12).toString)
+
+      await(sessionCache.saveSub01Outcome(sub01Outcome)(hc))
+
+      val cache = await(sessionCache.findById(Id(sessionId.value)))
+
+      val expectedJson = toJson(CachedData(sub01Outcome = Some(sub01Outcome)))
 
       val Some(Cache(_, Some(json), _, _)) = cache
 

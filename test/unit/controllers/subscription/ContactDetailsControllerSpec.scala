@@ -259,6 +259,10 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       submitFormInCreateMode(createFormMandatoryFieldsMapSubscribe)(verifyRedirectToNextPageInCreateMode)
     }
 
+    "redirect to next page when details are valid in review mode" in {
+      submitFormInReviewMode(createFormMandatoryFieldsMapSubscribe)(verifyRedirectToNextPageInReviewMode)
+    }
+
     "redirect to next page without validating contact address when 'Is this the right contact address' is Yes and country code is GB" in {
       val params = Map(
         fullNameFieldName                 -> FullName,
@@ -282,6 +286,16 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     test(
       controller
         .submit(isInReviewMode = false, atarService)(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
+    )
+  }
+
+  private def submitFormInReviewMode(form: Map[String, String], userId: String = defaultUserId)(
+    test: Future[Result] => Any
+  ) {
+    withAuthorisedUser(userId, mockAuthConnector)
+    test(
+      controller
+        .submit(isInReviewMode = true, atarService)(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     )
   }
 

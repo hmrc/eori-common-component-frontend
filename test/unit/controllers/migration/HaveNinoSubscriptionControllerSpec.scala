@@ -89,6 +89,16 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
         page.title should include(SubscriptionNinoPage.title)
       }
     }
+
+    "populate the formData when the cache is having UtrMatch details" in {
+      when(mockSubscriptionDetailsService.cachedNinoMatch(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(NinoMatchModel(Some(true), Some("Nino")))))
+      createForm() { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should include(SubscriptionNinoPage.title)
+      }
+    }
   }
 
   "HaveNinoSubscriptionController reviewForm" should {
