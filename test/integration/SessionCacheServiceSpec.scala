@@ -249,7 +249,7 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       json mustBe expectedJson
     }
 
-    "store sub01Outcome details correctly" in {
+    "store and fetch sub01Outcome details correctly" in {
 
       val sessionId: SessionId = setupSession
 
@@ -264,9 +264,10 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       val Some(Cache(_, Some(json), _, _)) = cache
 
       json mustBe expectedJson
+      await(sessionCache.sub01Outcome(hc)) mustBe sub01Outcome
     }
 
-    "store sub02Outcome details correctly" in {
+    "store and fetch sub02Outcome details correctly" in {
 
       val sessionId: SessionId = setupSession
 
@@ -281,8 +282,12 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       val Some(Cache(_, Some(json), _, _)) = cache
 
       json mustBe expectedJson
+      await(sessionCache.sub02Outcome(hc)) mustBe sub02Outcome
     }
 
+    "store keepAlive details correctly" in {
+      await(sessionCache.keepAlive(hc)) mustBe true
+    }
     "clear Address Lookup Params" in {
 
       val sessionId: SessionId = setupSession
@@ -291,12 +296,6 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
 
       await(sessionCache.saveAddressLookupParams(addressLookupParams)(hc))
 
-      val Some(Cache(_, Some(jsonBefore), _, _)) = await(sessionCache.findById(Id(sessionId.value)))
-
-      val expectedJsonBefore = toJson(CachedData(addressLookupParams = Some(addressLookupParams)))
-
-      jsonBefore mustBe expectedJsonBefore
-
       await(sessionCache.clearAddressLookupParams(hc))
 
       val Some(Cache(_, Some(jsonAfter), _, _)) = await(sessionCache.findById(Id(sessionId.value)))
@@ -304,6 +303,7 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       val expectedJsonAfter = toJson(CachedData(addressLookupParams = Some(AddressLookupParams("", None))))
 
       jsonAfter mustBe expectedJsonAfter
+      await(sessionCache.addressLookupParams(hc)) mustBe Some(AddressLookupParams("", None))
     }
 
     "remove from the cache" in {
@@ -325,7 +325,6 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       }
 
     }
-
   }
 
   private def setupSession: SessionId = {

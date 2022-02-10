@@ -47,10 +47,14 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  DataUnavailableException,
+  RequestSessionData,
+  SessionCache
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.MatchingService
-import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UpstreamErrorResponse}
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
@@ -180,6 +184,20 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
       verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(ArgumentMatchers.any())
 
       Json.toJson(matchBusinessDataCaptor.getValue) shouldBe eoriAndNameRequestJson
+    }
+
+    "throw DataUnavailableExpection when eori number is not present in cache" in {
+      when(mockCache.subscriptionDetails(any[HeaderCarrier]))
+        .thenReturn(
+          Future.successful(
+            SubscriptionDetails(nameIdOrganisationDetails = Some(NameIdOrganisationMatchModel("someOrg", "some-utr")))
+          )
+        )
+      intercept[DataUnavailableException] {
+        await(
+          service.sendOrganisationRequestForMatchingService(mockRequest, mockLoggedInUserEnrolments, mockHeaderCarrier)
+        )
+      }
     }
 
     "for UTR with a K, call matching api without the K" in {
@@ -355,6 +373,25 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
       verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(ArgumentMatchers.any())
 
       Json.toJson(matchBusinessDataCaptor.getValue) shouldBe eoriIndividualRequestJson
+    }
+
+    "throw DataUnavailableException when sendIndividualRequest is invoked without nameDobDetails details in cache" in {
+      when(mockCache.subscriptionDetails(any[HeaderCarrier]))
+        .thenReturn(
+          Future.successful(
+            SubscriptionDetails(nameIdOrganisationDetails = Some(NameIdOrganisationMatchModel("someOrg", "some-utr")))
+          )
+        )
+      intercept[DataUnavailableException] {
+        await(service.sendIndividualRequestForMatchingService(mockLoggedInUserEnrolments, mockHeaderCarrier))
+      }
+    }
+    "throw DataUnavailableException when sendIndividualRequest is invoked without eori details in cache" in {
+      when(mockCache.subscriptionDetails(any[HeaderCarrier]))
+        .thenReturn(Future.successful(SubscriptionDetails(eoriNumber = Some("eor-123"))))
+      intercept[DataUnavailableException] {
+        await(service.sendIndividualRequestForMatchingService(mockLoggedInUserEnrolments, mockHeaderCarrier))
+      }
     }
 
     "call matching api with unmatched values" in
