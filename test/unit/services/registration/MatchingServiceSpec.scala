@@ -17,6 +17,7 @@
 package unit.services.registration
 
 import base.UnitSpec
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers, Mockito}
 import org.scalatest.BeforeAndAfterEach
@@ -32,6 +33,19 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.{
 import play.api.libs.json._
 import play.api.mvc.{AnyContent, Request}
 import play.mvc.Http.Status.INTERNAL_SERVER_ERROR
+import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType.{
+  CharityPublicBodyNotForProfitId,
+  Company,
+  CompanyId,
+  EUOrganisationId,
+  IndividualId,
+  LimitedLiabilityPartnershipId,
+  PartnershipId,
+  SoleTraderId,
+  ThirdCountryOrganisationId
+}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
@@ -64,6 +78,11 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
     mockRequestSessionData
   )(global)
 
+  val atarEnrolment = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", eori.id)
+
+  private val mockLoggedInUserEnrolments =
+    LoggedInUserWithEnrolments(None, None, Enrolments(Set(atarEnrolment)), None, Some("groupId"))
+
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
@@ -84,6 +103,20 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
     when(
       mockCache.saveRegistrationDetails(ArgumentMatchers.any[RegistrationDetails])(ArgumentMatchers.any[HeaderCarrier])
     ).thenReturn(true)
+
+    when(mockCache.subscriptionDetails(any[HeaderCarrier]))
+      .thenReturn(
+        Future.successful(
+          SubscriptionDetails(
+            nameIdOrganisationDetails = Some(NameIdOrganisationMatchModel("someOrg", "some-utr")),
+            eoriNumber = Some("eor-123")
+          )
+        )
+      )
+    when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(
+      Some(CdsOrganisationType(CharityPublicBodyNotForProfitId))
+    )
+
   }
 
   override protected def afterEach(): Unit = {
@@ -102,12 +135,10 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
 
       val caught = intercept[UpstreamErrorResponse] {
         await(
-          service.matchBusiness(
-            Utr("some-utr"),
-            Organisation("name", CorporateBody),
-            establishmentDate = None,
-            mockGroupId
-          )(mockRequest, mockHeaderCarrier)
+          service.matchBusiness(Eori(""), Organisation("name", CorporateBody), establishmentDate = None, mockGroupId)(
+            mockRequest,
+            mockHeaderCarrier
+          )
         )
       }
       caught.statusCode shouldBe 500
@@ -132,6 +163,23 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
       verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(ArgumentMatchers.any())
 
       Json.toJson(matchBusinessDataCaptor.getValue) shouldBe utrAndNameRequestJson
+    }
+
+    "call send Organisation request should invoke matching api with correct values" in {
+      when(
+        mockMatchingServiceConnector
+          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
+      ).thenReturn(Future.successful(Some(matchSuccessResponse)))
+
+      await(
+        service.sendOrganisationRequestForMatchingService(mockRequest, mockLoggedInUserEnrolments, mockHeaderCarrier)
+      ) shouldBe true
+
+      val matchBusinessDataCaptor =
+        ArgumentCaptor.forClass(classOf[MatchingRequestHolder])
+      verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(ArgumentMatchers.any())
+
+      Json.toJson(matchBusinessDataCaptor.getValue) shouldBe eoriAndNameRequestJson
     }
 
     "for UTR with a K, call matching api without the K" in {
@@ -253,6 +301,61 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
         connectorResponse = Some(matchIndividualSuccessResponse),
         expectedServiceCallResult = true
       )
+
+    "call sendIndividualRequestForMatchingService should all matching api with matched values" in {
+      val eoriIndividualRequestJson: JsValue =
+        Json.parse(s"""{
+                      |  "registerWithIDRequest": {
+                      |    "requestCommon": {
+                      |      "regime": "CDS",
+                      |      "receiptDate": "2016-07-08T08:35:13Z",
+                      |      "acknowledgementReference": "4482baa8-1c84-4d23-a8db-3fc180325e7a"
+                      |    },
+                      |    "requestDetail": {
+                      |      "IDType": "EORI",
+                      |      "IDNumber": "$eoriId",
+                      |      "requiresNameMatch": true,
+                      |      "isAnAgent": false,
+                      |      "individual": {
+                      |        "firstName": "$individualFirstName",
+                      |        "lastName": "$individualLastName",
+                      |        "dateOfBirth": "$individualDateOfBirth"
+                      |      }
+                      |    }
+                      |  }
+                      |}
+        """.stripMargin)
+      when(mockCache.subscriptionDetails(any[HeaderCarrier]))
+        .thenReturn(
+          Future.successful(
+            SubscriptionDetails(
+              nameDobDetails = Some(
+                NameDobMatchModel(
+                  individualFirstName,
+                  Some(individualMiddleName),
+                  individualLastName,
+                  individualLocalDateOfBirth
+                )
+              ),
+              eoriNumber = Some("eor-123")
+            )
+          )
+        )
+      when(
+        mockMatchingServiceConnector
+          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
+      ).thenReturn(Future.successful(Some(matchIndividualSuccessResponse)))
+
+      await(
+        service.sendIndividualRequestForMatchingService(mockLoggedInUserEnrolments, mockHeaderCarrier)
+      ) shouldBe true
+
+      val matchBusinessDataCaptor =
+        ArgumentCaptor.forClass(classOf[MatchingRequestHolder])
+      verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(ArgumentMatchers.any())
+
+      Json.toJson(matchBusinessDataCaptor.getValue) shouldBe eoriIndividualRequestJson
+    }
 
     "call matching api with unmatched values" in
       assertMatchIndividualWithUtr(connectorResponse = None, expectedServiceCallResult = false)

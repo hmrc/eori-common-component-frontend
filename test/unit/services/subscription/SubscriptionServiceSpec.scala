@@ -56,10 +56,13 @@ class SubscriptionServiceSpec
     expected.copy(emailVerificationTimestamp = timestamp)
   }
 
-  private def subscriptionFailed(expected: SubscriptionFailed, request: SubscriptionRequest): SubscriptionResult = {
+  private def subscriptionPendingResultIgnoreTimestamp(
+    expected: SubscriptionPending,
+    request: SubscriptionRequest
+  ): SubscriptionResult = {
     val timestamp =
       request.subscriptionCreateRequest.requestDetail.contactInformation.flatMap(_.emailVerificationTimestamp)
-    expected
+    expected.copy(emailVerificationTimestamp = timestamp)
   }
 
   "Calling Subscribe" should {
@@ -329,6 +332,36 @@ class SubscriptionServiceSpec
         organisationAutomaticSubscriptionRequestWithoutServiceNameJson
       )
       result.actualServiceCallResult shouldEqual subscriptionFailureResultSubscriptionFailed
+    }
+  }
+
+  "Calling Subscribe with service name returns Subscription Pending response if the subscription is pending" should {
+
+    "call connector with without service name" in {
+
+      when(mockConfig.sub02UseServiceName).thenReturn(false)
+
+      val result = makeSubscribeWhenAutoAllowed(
+        RegistrationDetailsOrganisation(
+          Some(eori),
+          TaxPayerId(sapNumber),
+          safeId = SafeId("safe-id"),
+          businessName,
+          address,
+          Some(dateOfEstablishment),
+          Some(CorporateBody)
+        ),
+        subscriptionPendingResponse
+      )
+
+      assertSameJson(
+        Json.toJson(result.actualConnectorRequest),
+        organisationAutomaticSubscriptionRequestWithoutServiceNameJson
+      )
+      result.actualServiceCallResult shouldEqual subscriptionPendingResultIgnoreTimestamp(
+        subscriptionPendingResult,
+        result.actualConnectorRequest
+      )
     }
   }
 

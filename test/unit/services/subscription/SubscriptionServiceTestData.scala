@@ -39,7 +39,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
   EtmpTypeOfPerson,
   OrganisationTypeConfiguration
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{SubscriptionFailed, SubscriptionSuccessful}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  SubscriptionFailed,
+  SubscriptionPending,
+  SubscriptionSuccessful
+}
 import util.TestData
 
 trait SubscriptionServiceTestData extends TestData {
@@ -112,6 +116,9 @@ trait SubscriptionServiceTestData extends TestData {
     "Response status of FAIL returned for a SUB02: Create Subscription. subscription failed",
     processingDateResponse
   )
+
+  val subscriptionPendingResult =
+    SubscriptionPending(responseFormBundleId, processingDateResponse, Some(emailVerificationTimestamp))
 
   val cdsOrganisationTypeToTypeOfPersonMap: Map[CdsOrganisationType, OrganisationTypeConfiguration] = Map(
     CdsOrganisationType("company")                       -> OrganisationTypeConfiguration.Company,
@@ -840,6 +847,9 @@ trait SubscriptionServiceTestData extends TestData {
 
   val subscriptionFailedResponse: SubscriptionResponse =
     subscriptionFailedResponseJson("subscription failed").as[SubscriptionResponse]
+
+  val subscriptionPendingResponse: SubscriptionResponse =
+    subscriptionPendingResponseJson.as[SubscriptionResponse]
 
   val subscriptionResponseWithoutPosition: SubscriptionResponse =
     subscriptionResponseWithoutPositionJson.as[SubscriptionResponse]
