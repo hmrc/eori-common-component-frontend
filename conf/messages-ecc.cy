@@ -75,12 +75,8 @@ ecc.subscription.information.para1=Er mwyn eich tanysgrifio i’r gwasanaeth {0}
 
 ecc.subscription.information.para2.heading=Rhif EORI GB
 ecc.subscription.information.para2=Bydd angen rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (rhif EORI) GB arnoch.
+ecc.subscription.information.para2.link=tbc
 ecc.subscription.information.para2.warning=!RhybuddMae’n rhaid i’r rhif EORI GB fod yr un sy’n gysylltiedig â’r Dynodydd Defnyddiwr (ID) Porth y Llywodraeth a ddefnyddiwyd gennych i fewngofnodi. <a href="https://www.tax.service.gov.uk/check-eori-number" class="govuk-link" target="_blank" rel="noopener noreferrer">Gwiriwch y rhif EORI GB (yn agor ffenestr neu dab newydd)</a>.
-ecc.subscription.information.para2.text=Os nad oes gennych rif EORI, byddwch yn cael un gyda’ch tanysgrifiad i’r gwasanaeth {0}. Bydd angen i chi ddarparu’r canlynol:
-ecc.subscription.information.para2.list.first=manylion TAW os ydych wedi’ch cofrestru yn y DU
-ecc.subscription.information.para2.list.bullet.first=rhif TAW
-ecc.subscription.information.para2.list.bullet.second=cod post y cyfeiriad a gofrestrwyd ar gyfer TAW
-ecc.subscription.information.para2.list.bullet.third=dyddiad y daw TAW i rym
 ecc.subscription.information.para2.list.second=Cod Dosbarthiad Diwydiannol Safonol (SIC). <a href="https://resources.companieshouse.gov.uk/sic/" class="govuk-link">Dewch o hyd i’ch cod SIC (yn agor ffenestr neu dab newydd)</a>.
 
 ecc.subscription.information.section.organisation.subheading=Manylion y cwmni neu sefydliad arall
