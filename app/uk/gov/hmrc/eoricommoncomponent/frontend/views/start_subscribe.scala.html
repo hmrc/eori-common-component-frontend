@@ -26,10 +26,15 @@
 @(service: Service)(implicit messages: Messages, request: Request[_])
 
 @getEoriLink = {
-<a class="govuk-link" href=@appConfig.externalGetEORILink(service)>
-    @messages("ecc.subscription.information.para2.link")
-</a>
+<a class="govuk-link" href=@appConfig.externalGetEORILink(service)>@messages("ecc.subscription.information.para2.link")</a>
 }
+
+@detailsContent = {
+<p id="gb-eori-text" class="govuk-body">
+    @Html(messages("ecc.subscription.information.para2", getEoriLink, ServiceName.longName))
+</p>
+}
+
 
 @warningContent = {
         @Html(messages("ecc.subscription.information.para2.warning"))
@@ -46,14 +51,15 @@
         <p id="what-you-will-need-text" class=" govuk-body">@messages("ecc.subscription.information.para1", ServiceName.longName)</p>
 
         <h3 class="govuk-heading-s" id="gb-eori">@messages("ecc.subscription.information.para2.heading")</h3>
-        <p id="gb-eori-text" class=" govuk-body">@messages("ecc.subscription.information.para2", getEoriLink, ServiceName.longName)</p>
+
+        @detailsContent
+
 
         @govukWarningText(WarningText(
             iconFallbackText = "Warning",
             content = HtmlContent(warningContent)
         ))
 
-        <p id="gb-eori-list-heading" class=" govuk-body">@messages("ecc.subscription.information.para2.text", ServiceName.longName)</p>
 
         <h3 class="govuk-heading-s" id="organisation">@messages("ecc.subscription.information.section.organisation.subheading")</h3>
         <p id="organisation-text" class=" govuk-body">@messages("ecc.subscription.information.section.organisation.list.heading")</p>
