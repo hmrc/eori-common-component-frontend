@@ -22,16 +22,14 @@
     form(id).errors ++ form(s"$id.day").errors ++ form(s"$id.month").errors ++ form(s"$id.year").errors
 }
 @errorContent(error: FormError) = {
-    <span id="@id-error" class="govuk-error-message govuk-!-margin-bottom-1">
+        <br>
         <span class="govuk-visually-hidden">Error: </span>
         @messages(error.message, error.args: _*)
-    </span>
 }
 
 @formattedErrors = {
   @if(formErrors.nonEmpty){
       @formErrors.headOption.map(err => messages(err.message, err.args: _*))
-      </span>
       @if(formErrors.tail.nonEmpty) {
           @formErrors.tail.map(err => errorContent(err))
       }

@@ -19,8 +19,8 @@ package common.pages
 trait HowCanWeIdentifyYouPage extends WebPage {
   override val title = "What information can we use to confirm your identity?"
 
-  val fieldLevelErrorNino = "//span[@id='nino-error'][@class='govuk-error-message']"
-  val fieldLevelErrorUtr  = "//span[@id='utr-error'][@class='govuk-error-message']"
+  val fieldLevelErrorNino = "//p[@id='nino-error'][@class='govuk-error-message']"
+  val fieldLevelErrorUtr  = "//p[@id='utr-error'][@class='govuk-error-message']"
 
 }
 

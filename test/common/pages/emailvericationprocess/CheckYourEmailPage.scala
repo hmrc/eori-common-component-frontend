@@ -22,7 +22,7 @@ trait CheckYourEmailPage extends WebPage {
 
   override val title: String = "Check your email address"
 
-  val fieldLevelErrorYesNoAnswer: String = "//span[@id='yes-no-answer-error'][@class='govuk-error-message']"
+  val fieldLevelErrorYesNoAnswer: String = "//p[@id='yes-no-answer-error'][@class='govuk-error-message']"
 
 }
 
