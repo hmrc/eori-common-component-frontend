@@ -104,12 +104,6 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
     Some(GovGatewayCredentials("some@example.com"))
   )
 
-  private val organisationDetailsWithInvalidID = RegisterWithEoriAndIdDetail(
-    RegisterModeEori("ZZ123456789112", "Full Name", organisationNameAndAddress.address),
-    registerWithInvalidID,
-    Some(GovGatewayCredentials("some@example.com"))
-  )
-
   private val individualDetailsWithNoDob = RegisterWithEoriAndIdDetail(
     RegisterModeEori("GB0234500002423", "Full Name", organisationNameAndAddress.address),
     RegisterModeId(
@@ -126,8 +120,6 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
   private val subscriptionDetailsForIndividual = SubscriptionDetails(nameDobDetails =
     Some(NameDobMatchModel("FirstName", None, "LastName", LocalDate.parse("1999-02-11")))
   )
-
-  private val emptySubscriptionDetails = SubscriptionDetails()
 
   private val personTypeCompany    = Some(OrganisationTypeConfiguration.Company)
   private val personTypeIndividual = Some(OrganisationTypeConfiguration.Individual)
@@ -1133,10 +1125,6 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
     }
 
     "throw DataUnavailableException when OrgType is missing from request session while calling sendIndividualRequest" in {
-      val address =
-        Some(AddressViewModel("Address Line 1", "city", Some("postcode"), "GB"))
-      val eori = Some("EORINUMBERXXXXXXX")
-      val nino = Some(Nino("NINO1234"))
 
       val mockSubscription = mock[SubscriptionDetails]
       when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
@@ -1148,8 +1136,6 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       }
     }
     "throw DataUnavailableException when Address is missing from cache while calling sendIndividualRequest" in {
-      val address =
-        Some(AddressViewModel("Address Line 1", "city", Some("postcode"), "GB"))
 
       val mockSubscription = mock[SubscriptionDetails]
       when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))

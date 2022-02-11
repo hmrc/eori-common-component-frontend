@@ -144,7 +144,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
         .thenReturn(Future.successful(()))
       when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowIndividualFlow)
       mockSubscriptionFlow(nextPageFlowUrl)
-      submit(Map("have-nino" -> "true"), true) { result =>
+      submit(Map("have-nino" -> "true"), isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-get-nino/review"
       }

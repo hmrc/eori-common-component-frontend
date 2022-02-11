@@ -18,19 +18,17 @@ package unit.views.email
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.data.Form
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.{EmailForm, EmailViewModel}
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.what_is_your_email
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.use_this_eori
 import util.ViewSpec
 
 class UseThisEoriSpec extends ViewSpec {
-  val previousPageUrl  = "/"
-  implicit val request = withFakeCSRF(FakeRequest())
+  val previousPageUrl                                   = "/"
+  implicit val request: Request[AnyContentAsEmpty.type] = withFakeCSRF(FakeRequest())
 
-  val view = instanceOf[use_this_eori]
+  val view: use_this_eori = instanceOf[use_this_eori]
 
   "Use this Eori page for CDS access" should {
     "display correct title" in {

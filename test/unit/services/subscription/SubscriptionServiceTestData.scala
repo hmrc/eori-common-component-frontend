@@ -21,6 +21,7 @@ import common.support.testdata.TestData
 import java.time.{LocalDate, LocalDateTime}
 import org.scalacheck.Gen
 import org.scalatest.prop.TableDrivenPropertyChecks._
+import org.scalatest.prop.TableFor1
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionCreateResponse.{
@@ -72,7 +73,7 @@ trait SubscriptionServiceTestData extends TestData {
 
   val EmptyVatIds: List[VatIdentification] = Nil
 
-  val subscriptionContactDetailsModel = ContactDetailsModel(
+  val subscriptionContactDetailsModel: ContactDetailsModel = ContactDetailsModel(
     contactName,
     contactEmail,
     contactTelephone,
@@ -84,7 +85,7 @@ trait SubscriptionServiceTestData extends TestData {
     Some(contactCountryCode)
   )
 
-  val subscriptionContactDetailsWithPlusSignInTelAndFaxModel = ContactDetailsModel(
+  val subscriptionContactDetailsWithPlusSignInTelAndFaxModel: ContactDetailsModel = ContactDetailsModel(
     contactName,
     contactEmail,
     "+01632961234",
@@ -100,24 +101,28 @@ trait SubscriptionServiceTestData extends TestData {
   val responseFormBundleId: String              = "Form-Bundle-Id"
   val processingDateResponse: String            = "18 Aug 2016"
   val emailVerificationTimestamp: LocalDateTime = TestData.emailVerificationTimestamp
-  val eori                                      = Eori(responseEoriNumber)
+  val eori: Eori                                = Eori(responseEoriNumber)
 
-  val subscriptionSuccessResult =
+  val subscriptionSuccessResult: SubscriptionSuccessful =
     SubscriptionSuccessful(eori, responseFormBundleId, processingDateResponse, Some(emailVerificationTimestamp))
 
-  val subscriptionFailureResult                      = SubscriptionFailed(EoriAlreadyExists, processingDateResponse)
-  val subscriptionFailureResultRequestNotProcessed   = SubscriptionFailed(RequestNotProcessed, processingDateResponse)
-  val subscriptionFailureResultEoriAlreadyAssociated = SubscriptionFailed(EoriAlreadyAssociated, processingDateResponse)
+  val subscriptionFailureResult: SubscriptionFailed = SubscriptionFailed(EoriAlreadyExists, processingDateResponse)
 
-  val subscriptionFailureResultSubscriptionInProgress =
+  val subscriptionFailureResultRequestNotProcessed: SubscriptionFailed =
+    SubscriptionFailed(RequestNotProcessed, processingDateResponse)
+
+  val subscriptionFailureResultEoriAlreadyAssociated: SubscriptionFailed =
+    SubscriptionFailed(EoriAlreadyAssociated, processingDateResponse)
+
+  val subscriptionFailureResultSubscriptionInProgress: SubscriptionFailed =
     SubscriptionFailed(SubscriptionInProgress, processingDateResponse)
 
-  val subscriptionFailureResultSubscriptionFailed = SubscriptionFailed(
+  val subscriptionFailureResultSubscriptionFailed: SubscriptionFailed = SubscriptionFailed(
     "Response status of FAIL returned for a SUB02: Create Subscription. subscription failed",
     processingDateResponse
   )
 
-  val subscriptionPendingResult =
+  val subscriptionPendingResult: SubscriptionPending =
     SubscriptionPending(responseFormBundleId, processingDateResponse, Some(emailVerificationTimestamp))
 
   val cdsOrganisationTypeToTypeOfPersonMap: Map[CdsOrganisationType, OrganisationTypeConfiguration] = Map(
@@ -157,7 +162,7 @@ trait SubscriptionServiceTestData extends TestData {
     dateOfBirth = dateOfBirth
   )
 
-  val fullyPopulatedSubscriptionDetails = SubscriptionDetails(
+  val fullyPopulatedSubscriptionDetails: SubscriptionDetails = SubscriptionDetails(
     contactDetails = Some(subscriptionContactDetailsModel),
     dateEstablished = Some(dateOfEstablishment),
     email = Some(capturedEmail),
@@ -236,14 +241,6 @@ trait SubscriptionServiceTestData extends TestData {
         postalCode = Some("SE28 1AA"),
         countryCode = "GB"
       )
-    val responseData = ResponseData(
-      SAFEID = "SafeID123",
-      trader = Trader(fullName = "Name", shortName = "nt"),
-      establishmentAddress = establishmentAddress,
-      hasInternetPublication = true,
-      startDate = "2018-01-01",
-      dateOfEstablishmentBirth = Some(dateEstablishedString)
-    )
     val responseDetail = RegisterWithEoriAndIdResponseDetail(
       outcome = Some(outcomeType),
       caseNumber = Some("case no 1"),
@@ -559,9 +556,15 @@ trait SubscriptionServiceTestData extends TestData {
   ): JsValue = {
 
     val typeOfPersonJson: String =
-      determineTypeOfPersonJson(organisationType.map(x => EtmpOrganisationType.apply(x)), false)
+      determineTypeOfPersonJson(
+        organisationType.map(x => EtmpOrganisationType.apply(x)),
+        isOrganisationEvenIfOrganisationTypeIsNone = false
+      )
     val typeOfLegalStatusJson: String =
-      determineLegalStatus(organisationType.map(x => EtmpOrganisationType.apply(x)), false)
+      determineLegalStatus(
+        organisationType.map(x => EtmpOrganisationType.apply(x)),
+        isOrganisationEvenIfOrganisationTypeIsNone = false
+      )
 
     Json.parse(s"""
          | {
@@ -879,5 +882,5 @@ trait SubscriptionServiceTestData extends TestData {
   val subscriptionResponseWithoutPosition: SubscriptionResponse =
     subscriptionResponseWithoutPositionJson.as[SubscriptionResponse]
 
-  val successfulPositionValues = Table("positionValue", "GENERATE", "LINK", "WORKLIST")
+  val successfulPositionValues: TableFor1[String] = Table("positionValue", "GENERATE", "LINK", "WORKLIST")
 }

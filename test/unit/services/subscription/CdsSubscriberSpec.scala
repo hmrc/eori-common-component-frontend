@@ -47,7 +47,7 @@ import scala.concurrent.Future
 
 class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures with BeforeAndAfterEach with Injector {
 
-  implicit override val patienceConfig =
+  implicit override val patienceConfig: PatienceConfig =
     PatienceConfig(timeout = scaled(Span(10, Seconds)), interval = scaled(Span(15, Millis)))
 
   private val mockSubscriptionService                      = mock[SubscriptionService]

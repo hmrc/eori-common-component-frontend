@@ -26,12 +26,12 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetai
 
 object SubscriptionInfoBuilder {
 
-  val eori           = Some("12345")
-  val CDSOrgName     = "orgName"
-  val orgStreetName  = "Line 1"
-  val orgCity        = "line 2"
-  val orgPostalCode  = Some("SE28 1AA")
-  val orgCountryCode = "ZZ"
+  val eori: Option[String] = Some("12345")
+  val CDSOrgName           = "orgName"
+  val orgStreetName        = "Line 1"
+  val orgCity              = "line 2"
+  val orgPostalCode        = Some("SE28 1AA")
+  val orgCountryCode       = "ZZ"
 
   val contactName                  = "John Doe"
   val contactStreet                = "Line 1"

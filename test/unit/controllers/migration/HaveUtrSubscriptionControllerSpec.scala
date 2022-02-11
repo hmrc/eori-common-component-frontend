@@ -32,7 +32,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   SubscriptionPage
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{NameOrganisationMatchModel, UtrMatchModel}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_utr_subscription
 import uk.gov.hmrc.http.HeaderCarrier
@@ -41,10 +41,9 @@ import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.matching.OrganisationUtrFormBuilder._
 import util.builders.{AuthActionMock, SessionBuilder}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.UtrMatchModel
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterEach {
 
@@ -220,7 +219,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       when(mockSubscriptionDetailsService.cachedNameDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(nameOrganisationMatchModel)))
       when(mockSubscriptionDetailsService.cacheUtrMatch(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
-      submit(Map("have-utr" -> "true", "utr" -> "11 11 111111k"), true) { result =>
+      submit(Map("have-utr" -> "true", "utr" -> "11 11 111111k"), isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-get-utr/review"
       }

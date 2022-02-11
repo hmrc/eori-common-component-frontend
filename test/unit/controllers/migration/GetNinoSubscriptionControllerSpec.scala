@@ -130,7 +130,7 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
         when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
           .thenReturn(Future.successful(()))
         mockSubscriptionFlow(nextPageFlowUrl)
-        submit(Map("nino" -> "ab 12 34 56 c"), true) { result =>
+        submit(Map("nino" -> "ab 12 34 56 c"), isInReviewMode = true) { result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
         }
@@ -145,7 +145,7 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
         when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
           .thenReturn(Future.successful(()))
         mockSubscriptionFlow(nextPageFlowUrl)
-        submit(Map("nino" -> "ab 12 34 56 c"), true) { result =>
+        submit(Map("nino" -> "ab 12 34 56 c"), isInReviewMode = true) { result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers(
             LOCATION

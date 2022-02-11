@@ -17,17 +17,14 @@
 package unit.services.subscription
 
 import base.UnitSpec
-
-import java.time.LocalDate
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.RegistrationInfoRequest.EORI
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{FormData, SubscriptionDetails}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{NameOrganisationMatchModel, _}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, CompanyRegisteredCountry}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
@@ -38,6 +35,7 @@ import util.builders.RegistrationDetailsBuilder._
 import util.builders.SubscriptionInfoBuilder._
 import util.builders.{RegistrationDetailsBuilder, SubscriptionContactDetailsFormBuilder}
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 import scala.util.Random
@@ -77,7 +75,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
   private val contactDetailsViewModelWhenUsingRegisteredAddress =
     SubscriptionContactDetailsFormBuilder.createContactDetailsViewModelWhenUseRegAddress
 
-  override def beforeEach {
+  override def beforeEach: Unit = {
     reset(
       mockSessionCache,
       mockRegistrationDetailsCreator,
@@ -116,7 +114,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
           ArgumentMatchers.eq(cacheIds)
         )(any())
       ).thenReturn(Future.successful(()))
-      val expected = await(subscriptionDetailsHolderService.saveKeyIdentifiers(groupId, internalId, atarService))
+      val expected: Unit = await(subscriptionDetailsHolderService.saveKeyIdentifiers(groupId, internalId, atarService))
       expected shouldBe ((): Unit)
     }
     "throw IllegalArgumentException if InternalId  are invalid  in mongo" in {

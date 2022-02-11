@@ -22,18 +22,18 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.time.{Millis, Span}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Reads
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CacheIds, CdsOrganisationType, GroupId, InternalId, SafeId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach with ScalaFutures {
   private val mockSave4LaterConnector = mock[Save4LaterConnector]

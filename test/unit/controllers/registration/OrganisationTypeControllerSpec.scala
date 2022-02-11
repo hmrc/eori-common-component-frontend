@@ -191,7 +191,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
   def showFormWithAuthenticatedUser(
     userId: String = defaultUserId,
     userLocation: Option[String] = Some(UserLocation.Uk)
-  )(test: Future[Result] => Any) {
+  )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
 
     when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(userLocation)
@@ -199,7 +199,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
     test(organisationTypeController.form(atarService).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
-  def showFormWithUnauthenticatedUser(test: Future[Result] => Any) {
+  def showFormWithUnauthenticatedUser(test: Future[Result] => Any): Unit = {
     withNotLoggedInUser(mockAuthConnector)
 
     test(organisationTypeController.form(atarService).apply(SessionBuilder.buildRequestWithSessionNoUser))
@@ -209,7 +209,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
     form: Map[String, String],
     userId: String = defaultUserId,
     userLocation: Option[String] = Some(UserLocation.Uk)
-  )(test: Future[Result] => Any) {
+  )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
 
     when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(userLocation)

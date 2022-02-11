@@ -17,27 +17,19 @@
 package unit.services.subscription
 
 import base.UnitSpec
-import common.support.testdata.TestData
-import org.mockito.ArgumentMatchers.{eq => meq, _}
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.ArgumentMatchers._
+import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfter
 import org.scalatestplus.mockito.MockitoSugar
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{HandleSubscriptionConnector, NotifyRcmConnector}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.HandleSubscriptionRequest
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
-  NotifyRcmRequest,
-  RecipientDetails,
-  SubscriptionDetails
-}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Eori, NameIdOrganisationMatchModel, SafeId, TaxPayerId}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.NotifyRcmConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NameIdOrganisationMatchModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{NotifyRcmRequest, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{HandleSubscriptionService, NotifyRcmService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.NotifyRcmService
 import uk.gov.hmrc.http.HeaderCarrier
 
-import java.time.LocalDateTime
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class NotifyRcmServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter {
 

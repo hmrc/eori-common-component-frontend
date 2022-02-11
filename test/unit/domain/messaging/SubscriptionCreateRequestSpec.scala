@@ -17,33 +17,19 @@
 package unit.domain.messaging
 
 import base.UnitSpec
-
-import java.time.{LocalDate, LocalDateTime}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
   ContactInformation,
   SubscriptionCreateRequest,
   VatId
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
-  ContactDetail,
-  CorporateBody,
-  CustomsId,
-  Eori,
-  EstablishmentAddress,
-  RegistrationDetailsIndividual,
-  RegistrationDetailsOrganisation,
-  RegistrationDetailsSafeId,
-  ResponseData,
-  SafeId,
-  TaxPayerId,
-  Trader,
-  VatIds
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, CompanyRegisteredCountry}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+
+import java.time.{LocalDate, LocalDateTime}
 
 class SubscriptionCreateRequestSpec extends UnitSpec {
 
@@ -319,6 +305,24 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
       requestDetails.typeOfPerson shouldBe Some("2")
       requestDetails.principalEconomicActivity shouldBe None
       requestDetails.serviceName shouldBe Some(atarService.enrolmentKey)
+    }
+
+    "throw exception when  establishment address details are incorrect  in Reg06 response for organisation ROW without UTR user based on the REG01 response" in {
+
+      val service = Some(atarService)
+      val registrationDetails = RegistrationDetailsOrganisation(
+        customsId = Some(eori),
+        sapNumber = taxPayerId,
+        safeId = safeId,
+        name = fullName,
+        address = invalidAddress,
+        dateOfEstablishment = Some(dateOfBirthOrEstablishment),
+        etmpOrganisationType = Some(CorporateBody)
+      )
+      val subscriptionDetails = SubscriptionDetails(contactDetails = Some(contactDetails))
+      intercept[Exception] {
+        SubscriptionCreateRequest(registrationDetails, subscriptionDetails, emailAddress, service)
+      }
     }
 
     "throw IllegalArgumentException if registrationDetails is invalid " in {

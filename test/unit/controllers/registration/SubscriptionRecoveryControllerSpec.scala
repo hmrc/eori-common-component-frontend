@@ -300,7 +300,7 @@ class SubscriptionRecoveryControllerSpec
     }
   }
 
-  def callEnrolmentComplete(userId: String = defaultUserId)(test: Future[Result] => Any) {
+  def callEnrolmentComplete(userId: String = defaultUserId)(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     test(controller.complete(atarService).apply(SessionBuilder.buildRequestWithSession(userId)))
   }

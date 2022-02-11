@@ -30,7 +30,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
   SubscriptionRequest,
   SubscriptionResponse
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -42,7 +41,7 @@ class SubscriptionServiceSpec
   private val mockHeaderCarrier = mock[HeaderCarrier]
   private val mockConfig        = mock[FeatureFlags]
 
-  override def beforeAll() = {
+  override def beforeAll(): Unit = {
     super.beforeAll()
     when(mockConfig.sub02UseServiceName).thenReturn(true)
   }

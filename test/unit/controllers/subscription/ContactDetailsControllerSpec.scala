@@ -294,13 +294,12 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
   }
 
-  private def mockFunctionWithRegistrationDetails(registrationDetails: RegistrationDetails) {
+  private def mockFunctionWithRegistrationDetails(registrationDetails: RegistrationDetails): Unit =
     when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(registrationDetails)
-  }
 
   private def submitFormInCreateMode(form: Map[String, String], userId: String = defaultUserId)(
     test: Future[Result] => Any
-  ) {
+  ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller
@@ -310,7 +309,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
   private def submitFormInReviewMode(form: Map[String, String], userId: String = defaultUserId)(
     test: Future[Result] => Any
-  ) {
+  ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller
@@ -321,7 +320,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   private def showCreateForm(
     subscriptionFlow: SubscriptionFlow = OrganisationFlow,
     orgType: EtmpOrganisationType = CorporateBody
-  )(test: Future[Result] => Any) {
+  )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
     when(mockOrgTypeLookup.etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(orgType))
@@ -334,7 +333,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   private def showReviewForm(
     subscriptionFlow: SubscriptionFlow = OrganisationFlow,
     contactDetailsModel: ContactDetailsModel = contactDetailsModel
-  )(test: Future[Result] => Any) {
+  )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
@@ -344,18 +343,16 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     test(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }
 
-  private def registerSaveContactDetailsMockSuccess() {
+  private def registerSaveContactDetailsMockSuccess(): Unit =
     when(
       mockSubscriptionDetailsHolderService
         .cacheContactDetails(any[ContactDetailsModel], any[Boolean])(any[HeaderCarrier])
     ).thenReturn(Future.successful(()))
-  }
 
-  private def registerSaveContactDetailsMockFailure(exception: Throwable) {
+  private def registerSaveContactDetailsMockFailure(exception: Throwable): Unit =
     when(
       mockSubscriptionDetailsHolderService
         .cacheContactDetails(any[ContactDetailsModel], any[Boolean])(any[HeaderCarrier])
     ).thenReturn(Future.failed(exception))
-  }
 
 }

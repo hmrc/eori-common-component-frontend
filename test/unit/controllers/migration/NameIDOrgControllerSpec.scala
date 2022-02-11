@@ -31,8 +31,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameIDOrgC
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameIdOrganisationDisplayMode.RegisteredCompanyDM
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType.PartnershipId
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.nameUtrOrganisationForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
   DataUnavailableException,
@@ -106,7 +106,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
   val subscriptionFlows: TableFor2[SubscriptionFlow, String] =
     Table[SubscriptionFlow, String](("Flow name", "Label"), (OrganisationFlow, "What are your company details?"))
 
-  val formModes = Table(
+  val formModes: TableFor2[String, SubscriptionFlow => (Future[Result] => Any) => Unit] = Table(
     ("formMode", "showFormFunction"),
     ("create", (flow: SubscriptionFlow) => showCreateForm(flow)(_)),
     ("review", (flow: SubscriptionFlow) => showReviewForm(flow)(_))
@@ -382,14 +382,13 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
   val createEmptyFormUtrMap: Map[String, String] = Map(nameFieldName -> "", utrFieldName -> "")
 
-  private def mockFunctionWithRegistrationDetails(registrationDetails: RegistrationDetails) {
+  private def mockFunctionWithRegistrationDetails(registrationDetails: RegistrationDetails): Unit =
     when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier]))
       .thenReturn(registrationDetails)
-  }
 
   private def submitFormInCreateMode(form: Map[String, String], userId: String = defaultUserId)(
     test: Future[Result] => Any
-  ) {
+  ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
 
     val result = controller.submit(isInReviewMode = false, atarService)(
@@ -400,7 +399,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
   private def submitFormInReviewMode(form: Map[String, String], userId: String = defaultUserId)(
     test: Future[Result] => Any
-  ) {
+  ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
 
     val result = controller.submit(isInReviewMode = true, atarService)(
@@ -409,7 +408,9 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     test(result)
   }
 
-  private def showCreateForm(subscriptionFlow: SubscriptionFlow = OrganisationFlow)(test: Future[Result] => Any) {
+  private def showCreateForm(
+    subscriptionFlow: SubscriptionFlow = OrganisationFlow
+  )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
@@ -419,7 +420,9 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     test(result)
   }
 
-  private def showReviewForm(subscriptionFlow: SubscriptionFlow = OrganisationFlow)(test: Future[Result] => Any) {
+  private def showReviewForm(
+    subscriptionFlow: SubscriptionFlow = OrganisationFlow
+  )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
@@ -431,14 +434,12 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     test(result)
   }
 
-  private def registerSaveNameIdDetailsMockSuccess() {
+  private def registerSaveNameIdDetailsMockSuccess(): Unit =
     when(mockSubscriptionDetailsHolderService.cacheNameIdDetails(any[NameIdOrganisationMatchModel])(any[HeaderCarrier]))
       .thenReturn(Future.successful(()))
-  }
 
-  private def registerSaveNameIdDetailsMockFailure(exception: Throwable) {
+  private def registerSaveNameIdDetailsMockFailure(exception: Throwable): Unit =
     when(mockSubscriptionDetailsHolderService.cacheNameIdDetails(any[NameIdOrganisationMatchModel])(any[HeaderCarrier]))
       .thenReturn(Future.failed(exception))
-  }
 
 }

@@ -62,7 +62,9 @@ class SubscriptionFlowManagerSpec
 
   private val mockSubscriptionFlow = mock[SubscriptionFlow]
 
-  val noSubscriptionFlowInSessionException = DataUnavailableException("No subscription flow in session.")
+  val noSubscriptionFlowInSessionException: DataUnavailableException = DataUnavailableException(
+    "No subscription flow in session."
+  )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

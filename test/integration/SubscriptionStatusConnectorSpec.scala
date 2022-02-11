@@ -16,7 +16,6 @@
 
 package integration
 
-import java.time.LocalDateTime
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -24,7 +23,6 @@ import play.api.libs.json.{JsValue, Json}
 import play.mvc.Http.Status.{FORBIDDEN, INTERNAL_SERVER_ERROR}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SubscriptionStatusConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
-  SafeId,
   SubscriptionStatusQueryParams,
   SubscriptionStatusResponseHolder,
   TaxPayerId
@@ -32,6 +30,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import util.externalservices.ExternalServicesConfig._
 import util.externalservices.{AuditService, SubscriptionStatusMessagingService}
+
+import java.time.LocalDateTime
 
 class SubscriptionStatusConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
 

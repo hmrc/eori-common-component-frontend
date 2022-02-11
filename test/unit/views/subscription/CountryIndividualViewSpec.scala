@@ -42,25 +42,28 @@ class CountryIndividualViewSpec extends ViewSpec {
   val (islands, islandsPicker)                   = Countries.getCountryParameters(Some("islands"))
   val (uk, ukPicker)                             = Countries.getCountryParameters(Some("uk"))
 
-  private val doc: Document = Jsoup.parse(contentAsString(view(form, countries, picker, atarService, false)))
+  private val doc: Document =
+    Jsoup.parse(contentAsString(view(form, countries, picker, atarService, isInReviewMode = false)))
 
   private val docWithEUCountries: Document =
-    Jsoup.parse(contentAsString(view(form, countries, picker, atarService, false)))
+    Jsoup.parse(contentAsString(view(form, countries, picker, atarService, isInReviewMode = false)))
 
   private val docWithThirdCountry: Document =
-    Jsoup.parse(contentAsString(view(form, thirdCountry, thirdCountryPicker, atarService, false)))
+    Jsoup.parse(contentAsString(view(form, thirdCountry, thirdCountryPicker, atarService, isInReviewMode = false)))
 
   private val docWiththirdCountryIncEU: Document =
-    Jsoup.parse(contentAsString(view(form, thirdCountryIncEU, thirdCountryIncPicker, atarService, false)))
+    Jsoup.parse(
+      contentAsString(view(form, thirdCountryIncEU, thirdCountryIncPicker, atarService, isInReviewMode = false))
+    )
 
   private val docWithIslands: Document =
-    Jsoup.parse(contentAsString(view(form, islands, islandsPicker, atarService, false)))
+    Jsoup.parse(contentAsString(view(form, islands, islandsPicker, atarService, isInReviewMode = false)))
 
   private val docWithUKCountries: Document =
-    Jsoup.parse(contentAsString(view(form, uk, ukPicker, atarService, false)))
+    Jsoup.parse(contentAsString(view(form, uk, ukPicker, atarService, isInReviewMode = false)))
 
   private val docWithErrorSummary: Document =
-    Jsoup.parse(contentAsString(view(formWithError, countries, picker, atarService, false)))
+    Jsoup.parse(contentAsString(view(formWithError, countries, picker, atarService, isInReviewMode = false)))
 
   "Country view" should {
 

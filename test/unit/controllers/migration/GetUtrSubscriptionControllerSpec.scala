@@ -26,7 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.GetUtrSubs
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CustomsId, NameOrganisationMatchModel, Nino, Utr}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CustomsId, NameOrganisationMatchModel, Utr}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you_utr
@@ -252,7 +252,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
           .thenReturn(Future.successful((): Unit))
         when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowOrganisationFlow)
 
-        submit(ValidUtrRequest, true) { result =>
+        submit(ValidUtrRequest, isInReviewMode = true) { result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/address"
         }
@@ -266,7 +266,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
           .thenReturn(Future.successful(()))
         when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowIndividualFlow)
 
-        submit(ValidUtrRequest, true) { result =>
+        submit(ValidUtrRequest, isInReviewMode = true) { result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/address"
         }
@@ -285,7 +285,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
           .thenReturn(Future.successful((): Unit))
         when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(OrganisationFlow)
 
-        submit(ValidUtrRequest, true) { result =>
+        submit(ValidUtrRequest, isInReviewMode = true) { result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers(
             LOCATION

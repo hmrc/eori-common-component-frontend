@@ -22,28 +22,18 @@ import org.mockito.Mockito.{verify, when}
 import org.mockito.{ArgumentCaptor, ArgumentMatchers, Mockito}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.libs.json._
+import play.api.mvc.{AnyContent, Request}
+import play.mvc.Http.Status.INTERNAL_SERVER_ERROR
+import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.MatchingServiceConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType.CharityPublicBodyNotForProfitId
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.{
   MatchingRequestHolder,
   MatchingResponse,
   Organisation
-}
-import play.api.libs.json._
-import play.api.mvc.{AnyContent, Request}
-import play.mvc.Http.Status.INTERNAL_SERVER_ERROR
-import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType.{
-  CharityPublicBodyNotForProfitId,
-  Company,
-  CompanyId,
-  EUOrganisationId,
-  IndividualId,
-  LimitedLiabilityPartnershipId,
-  PartnershipId,
-  SoleTraderId,
-  ThirdCountryOrganisationId
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
@@ -54,7 +44,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.MatchingService
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
@@ -82,7 +72,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
     mockRequestSessionData
   )(global)
 
-  val atarEnrolment = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", eori.id)
+  val atarEnrolment: Enrolment = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", eori.id)
 
   private val mockLoggedInUserEnrolments =
     LoggedInUserWithEnrolments(None, None, Enrolments(Set(atarEnrolment)), None, Some("groupId"))
