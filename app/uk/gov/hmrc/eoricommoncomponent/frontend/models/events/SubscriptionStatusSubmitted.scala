@@ -31,7 +31,7 @@ object SubscriptionStatusSubmitted {
 
   def apply(request: SubscriptionStatusQueryParams): SubscriptionStatusSubmitted =
     SubscriptionStatusSubmitted(
-      taxPayerId = if (request.idType == "taxPayerId") Some(request.id) else None,
+      taxPayerId = if (request.idType == "taxPayerID") Some(request.id) else None,
       safeId = if (request.idType == "SAFE") Some(request.id) else None,
       receiptDate = request.receiptDate.toString,
       regime = request.regime

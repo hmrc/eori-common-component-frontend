@@ -50,15 +50,16 @@ import scala.concurrent.Future
 
 class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with MongoSpecSupport {
 
-  lazy val appConfig      = app.injector.instanceOf[AppConfig]
-  lazy val mockHttpClient = mock[HttpClient]
+  lazy val appConfig             = app.injector.instanceOf[AppConfig]
+  lazy val mockHttpClient        = mock[HttpClient]
+  lazy val mockSave4LaterService = mock[Save4LaterService]
 
   private val reactiveMongoComponent = new ReactiveMongoComponent {
     override def mongoConnector: MongoConnector = mongoConnectorForTest
   }
 
-  implicit private val save4LaterConnector = new Save4LaterConnector(mockHttpClient, appConfig)
-  private val save4LaterService            = new Save4LaterService(save4LaterConnector)
+  private val save4LaterConnector = mock[Save4LaterConnector]
+  private val save4LaterService   = new Save4LaterService(save4LaterConnector)
 
   val sessionCache = new SessionCache(appConfig, reactiveMongoComponent, save4LaterService)
 
@@ -112,6 +113,31 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       updatedJson mustBe expectedUpdatedJson
     }
 
+    /*  "store, fetch and update Registration details when group ID and orgType are privided correctly" in {
+      val sessionId: SessionId = setupSession
+      val orgTypeKey           = "orgType"
+      await(sessionCache.saveRegistrationDetails(organisationRegistrationDetails, GroupId("groupId"))(hc))
+
+      when(
+        save4LaterConnector.put[CdsOrganisationType](any(), ArgumentMatchers.eq(orgTypeKey), any())(any[HeaderCarrier])
+      ).thenReturn(Future.successful(()))
+
+      val cache = await(sessionCache.findById(Id(sessionId.value)))
+
+      val expectedJson                     = toJson(CachedData(regDetails = Some(organisationRegistrationDetails)))
+      val Some(Cache(_, Some(json), _, _)) = cache
+      json mustBe expectedJson
+
+      await(sessionCache.registrationDetails(hc)) mustBe organisationRegistrationDetails
+      await(sessionCache.saveRegistrationDetails(individualRegistrationDetails)(hc))
+
+      val updatedCache = await(sessionCache.findById(Id(sessionId.value)))
+
+      val expectedUpdatedJson                     = toJson(CachedData(regDetails = Some(individualRegistrationDetails)))
+      val Some(Cache(_, Some(updatedJson), _, _)) = updatedCache
+      updatedJson mustBe expectedUpdatedJson
+    }
+     */
     "store and fetch RegisterWith EORI And Id Response correctly for Reg06 response" in {
       val sessionId: SessionId = setupSession
 

@@ -127,6 +127,8 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
     Some(NameDobMatchModel("FirstName", None, "LastName", LocalDate.parse("1999-02-11")))
   )
 
+  private val emptySubscriptionDetails = SubscriptionDetails()
+
   private val personTypeCompany    = Some(OrganisationTypeConfiguration.Company)
   private val personTypeIndividual = Some(OrganisationTypeConfiguration.Individual)
 
@@ -1045,6 +1047,61 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
 
       //TODO What is the point of this captor????  Copy / Paste job???
     }
+    "throw DataUnavailableException when orgType is missing from Cache while calling  RegistrationDetailsOrganisation" in {
+      val mockSubscriptionDetailsHolder = mock[SubscriptionDetails]
+      when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+        .thenReturn(Future.successful(mockSubscriptionDetailsHolder))
+      when(mockRequestSessionData.userSelectedOrganisationType(any()))
+        .thenReturn(None)
+      intercept[DataUnavailableException] {
+        await(service.sendOrganisationRequest(any(), hc))
+      }
+    }
+    "throw DataUnavailableException when Address is missing from Cache while calling  RegistrationDetailsOrganisation" in {
+      val mockSubscriptionDetailsHolder = mock[SubscriptionDetails]
+      when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+        .thenReturn(Future.successful(mockSubscriptionDetailsHolder))
+      when(mockRequestSessionData.userSelectedOrganisationType(any()))
+        .thenReturn(Some(CdsOrganisationType.Company))
+      when(mockSubscriptionDetailsHolder.addressDetails)
+        .thenReturn(None)
+      intercept[DataUnavailableException] {
+        await(service.sendOrganisationRequest(any(), hc))
+      }
+    }
+    "throw DataUnavailableException when Eori is missing from Cache while calling  RegistrationDetailsOrganisation" in {
+      val mayBeCachedAddressViewModel =
+        Some(AddressViewModel("Address Line 1", "city", Some("postcode"), "GB"))
+      val mockSubscriptionDetailsHolder = mock[SubscriptionDetails]
+      when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+        .thenReturn(Future.successful(mockSubscriptionDetailsHolder))
+      when(mockRequestSessionData.userSelectedOrganisationType(any()))
+        .thenReturn(Some(CdsOrganisationType.Company))
+      when(mockSubscriptionDetailsHolder.addressDetails)
+        .thenReturn(mayBeCachedAddressViewModel)
+      when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(None)
+      intercept[DataUnavailableException] {
+        await(service.sendOrganisationRequest(any(), hc))
+      }
+    }
+    "throw DataUnavailableException when Name ID Org details are  missing from Cache while calling  RegistrationDetailsOrganisation" in {
+      val mayBeCachedAddressViewModel =
+        Some(AddressViewModel("Address Line 1", "city", Some("postcode"), "GB"))
+      val mayBeEori                     = Some("EORINUMBERXXXXXXX")
+      val mockSubscriptionDetailsHolder = mock[SubscriptionDetails]
+      when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+        .thenReturn(Future.successful(mockSubscriptionDetailsHolder))
+      when(mockRequestSessionData.userSelectedOrganisationType(any()))
+        .thenReturn(Some(CdsOrganisationType.Company))
+      when(mockSubscriptionDetailsHolder.addressDetails)
+        .thenReturn(mayBeCachedAddressViewModel)
+      when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(mayBeEori)
+      when(mockSubscriptionDetailsHolder.nameIdOrganisationDetails)
+        .thenReturn(None)
+      intercept[DataUnavailableException] {
+        await(service.sendOrganisationRequest(any(), hc))
+      }
+    }
 
     "send correct request for IndividualRequest" in {
       val address =
@@ -1073,6 +1130,85 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       verify(mockConnector).register(captor.capture())(meq(hc))
 
       //TODO What is the point of this captor????  Copy / Paste job???
+    }
+
+    "throw DataUnavailableException when OrgType is missing from request session while calling sendIndividualRequest" in {
+      val address =
+        Some(AddressViewModel("Address Line 1", "city", Some("postcode"), "GB"))
+      val eori = Some("EORINUMBERXXXXXXX")
+      val nino = Some(Nino("NINO1234"))
+
+      val mockSubscription = mock[SubscriptionDetails]
+      when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+        .thenReturn(Future.successful(mockSubscription))
+      when(mockRequestSessionData.userSelectedOrganisationType(any()))
+        .thenReturn(None)
+      intercept[DataUnavailableException] {
+        await(service.sendIndividualRequest(any(), hc)) shouldBe true
+      }
+    }
+    "throw DataUnavailableException when Address is missing from cache while calling sendIndividualRequest" in {
+      val address =
+        Some(AddressViewModel("Address Line 1", "city", Some("postcode"), "GB"))
+
+      val mockSubscription = mock[SubscriptionDetails]
+      when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+        .thenReturn(Future.successful(mockSubscription))
+      when(mockRequestSessionData.userSelectedOrganisationType(any()))
+        .thenReturn(Some(CdsOrganisationType.Company))
+      when(mockSubscription.addressDetails).thenReturn(None)
+      intercept[DataUnavailableException] {
+        await(service.sendIndividualRequest(any(), hc)) shouldBe true
+      }
+    }
+    "throw DataUnavailableException when Name DOB is missing from cache while calling sendIndividualRequest" in {
+      val address =
+        Some(AddressViewModel("Address Line 1", "city", Some("postcode"), "GB"))
+      val mockSubscription = mock[SubscriptionDetails]
+      when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+        .thenReturn(Future.successful(mockSubscription))
+      when(mockRequestSessionData.userSelectedOrganisationType(any()))
+        .thenReturn(Some(CdsOrganisationType.Company))
+      when(mockSubscription.addressDetails).thenReturn(address)
+      when(mockSubscription.nameDobDetails)
+        .thenReturn(None)
+      intercept[DataUnavailableException] {
+        await(service.sendIndividualRequest(any(), hc)) shouldBe true
+      }
+    }
+    "throw DataUnavailableException when EORI is missing from cache while calling sendIndividualRequest" in {
+      val address =
+        Some(AddressViewModel("Address Line 1", "city", Some("postcode"), "GB"))
+      val mockSubscription = mock[SubscriptionDetails]
+      when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+        .thenReturn(Future.successful(mockSubscription))
+      when(mockRequestSessionData.userSelectedOrganisationType(any()))
+        .thenReturn(Some(CdsOrganisationType.Company))
+      when(mockSubscription.addressDetails).thenReturn(address)
+      when(mockSubscription.nameDobDetails)
+        .thenReturn(Some(NameDobMatchModel("Fname", None, "Lname", LocalDate.parse("1978-02-10"))))
+      when(mockSubscription.eoriNumber).thenReturn(None)
+      intercept[DataUnavailableException] {
+        await(service.sendIndividualRequest(any(), hc)) shouldBe true
+      }
+    }
+    "throw DataUnavailableException when CustomsID is missing from cache while calling sendIndividualRequest" in {
+      val address =
+        Some(AddressViewModel("Address Line 1", "city", Some("postcode"), "GB"))
+      val eori             = Some("EORINUMBERXXXXXXX")
+      val mockSubscription = mock[SubscriptionDetails]
+      when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+        .thenReturn(Future.successful(mockSubscription))
+      when(mockRequestSessionData.userSelectedOrganisationType(any()))
+        .thenReturn(Some(CdsOrganisationType.Company))
+      when(mockSubscription.addressDetails).thenReturn(address)
+      when(mockSubscription.nameDobDetails)
+        .thenReturn(Some(NameDobMatchModel("Fname", None, "Lname", LocalDate.parse("1978-02-10"))))
+      when(mockSubscription.eoriNumber).thenReturn(eori)
+      when(mockSubscription.customsId).thenReturn(None)
+      intercept[DataUnavailableException] {
+        await(service.sendIndividualRequest(any(), hc)) shouldBe true
+      }
     }
 
     "correctly trim address street to 70 characters for organisation" when {

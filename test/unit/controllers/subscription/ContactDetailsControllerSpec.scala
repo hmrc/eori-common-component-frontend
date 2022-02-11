@@ -107,16 +107,22 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       showCreateForm()(verifyBackLinkInCreateModeRegister)
     }
 
-    /*   "redirect to next page when ContactDetails is present " in {
+    "redirect to next page when ContactDetails is present " in {
       withAuthorisedUser(defaultUserId, mockAuthConnector)
 
-      when(mockOrgTypeLookup.etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Future.successful(Some(NA)))
-
+      when(mockOrgTypeLookup.etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(
+        Future.successful(Some(NA))
+      )
+      when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]]))
+        .thenReturn(Some(CdsOrganisationType("invalid")))
       when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(OrganisationFlow)
-
-      val result = await(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+      when(mockSubscriptionDetailsHolderService.cachedCustomsId(any())).thenReturn(
+        Future.successful(Some(Utr("1111111111k")))
+      )
+      val result =
+        await(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
       status(result) shouldBe SEE_OTHER
-    }*/
+    }
 
     "display the correct text in the heading and intro" in {
       showCreateForm() { result =>

@@ -59,10 +59,11 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
   private val addressDetails =
     AddressViewModel(street = "street", city = "city", postcode = Some("postcode"), countryCode = "GB")
 
-  private val nameId       = NameIdOrganisationMatchModel(name = "orgname", id = "ID")
-  private val customsIdUTR = Utr("utrxxxxx")
-  private val utrMatch     = UtrMatchModel(Some(true), Some("utrxxxxx"))
-  private val ninoMatch    = NinoMatchModel(Some(true), Some("ninoxxxxx"))
+  private val nameId        = NameIdOrganisationMatchModel(name = "orgname", id = "ID")
+  private val customsIdUTR  = Utr("utrxxxxx")
+  private val customsIdEori = Eori("GB123456789123")
+  private val utrMatch      = UtrMatchModel(Some(true), Some("utrxxxxx"))
+  private val ninoMatch     = NinoMatchModel(Some(true), Some("ninoxxxxx"))
 
   private val subscriptionDetailsHolderService =
     new SubscriptionDetailsService(mockSessionCache, mockContactDetailsAdaptor, mockSave4LaterConnector)(global)
@@ -118,6 +119,18 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
       val expected = await(subscriptionDetailsHolderService.saveKeyIdentifiers(groupId, internalId, atarService))
       expected shouldBe ((): Unit)
     }
+    "throw IllegalArgumentException if InternalId  are invalid  in mongo" in {
+      intercept[IllegalArgumentException] {
+        InternalId(None)
+      }
+    }
+
+    "throw IllegalArgumentException if groupId  are invalid  in mongo" in {
+      intercept[IllegalArgumentException] {
+        GroupId(None)
+      }
+    }
+
   }
 
   "Calling cacheAddressDetails" should {
@@ -299,12 +312,20 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
   }
 
   "Calling cache CustomsId" should {
-    "save CustomsId in frontend cache" in {
+    "save UTR CustomsId in frontend cache" in {
       await(subscriptionDetailsHolderService.cacheCustomsId(customsIdUTR))
       val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
       verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
       val holder = requestCaptor.getValue
       holder.customsId shouldBe Some(customsIdUTR)
+    }
+
+    "save EORI CustomsId in frontend cache" in {
+      await(subscriptionDetailsHolderService.cacheCustomsId(customsIdEori))
+      val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
+      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
+      val holder = requestCaptor.getValue
+      holder.customsId shouldBe Some(customsIdEori)
     }
   }
 
@@ -397,6 +418,12 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
       verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
       val holder = requestCaptor.getValue
       holder.existingEoriNumber shouldBe Some(ExistingEori("GB123456789123", "HMRC-CUS-ORG"))
+    }
+    "throw IllegalArgumentException when eori Number is missing in ExistingEori" in {
+      intercept[IllegalArgumentException] {
+        await(subscriptionDetailsHolderService.cacheExistingEoriNumber(ExistingEori(None, "HMRC-CUS-ORG")))
+      }
+
     }
   }
   "Calling cachedExistingEoriNumber" should {
