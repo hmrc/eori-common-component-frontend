@@ -85,8 +85,8 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
                  |      "acknowledgementReference": "fce07075-2e2e-4b12-840e-a63bff6ab1bd"
                  |    },
                  |    "requestDetail": {
-                 |      "IDType": "UTR",
-                 |      "IDNumber": "2108834503",
+                 |      "IDType": "EORI",
+                 |      "IDNumber": "GB123456789123",
                  |      "requiresNameMatch": false,
                  |      "isAnAgent": false
                  |    }
@@ -103,8 +103,8 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
                  |      "acknowledgementReference": "fce07075-2e2e-4b12-840e-a63bff6ab1bd"
                  |    },
                  |    "requestDetail": {
-                 |      "IDType": "UTR",
-                 |      "IDNumber": "2108834503",
+                 |      "IDType": "NINO",
+                 |      "IDNumber": "123456789",
                  |      "requiresNameMatch": false,
                  |      "isAnAgent": false
                  |    }
@@ -306,18 +306,18 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
         serviceRequestWithEORIJson.toString,
         serviceResponseJsonOrganisationWithOptionalParams.toString
       )
-      await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder]))
+      await(matchingServiceConnector.lookup(serviceRequestWithEORIJson.as[MatchingRequestHolder]))
 
       eventually(AuditService.verifyXAuditWrite(1))
     }
 
-    "audit a successful request with UTR" in {
+    "audit a successful request with NINO" in {
       MatchService.returnTheMatchResponseWhenReceiveRequest(
         expectedPostUrl,
         serviceRequestWithNINOJson.toString,
         serviceResponseJsonOrganisationWithOptionalParams.toString
       )
-      await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder]))
+      await(matchingServiceConnector.lookup(serviceRequestWithNINOJson.as[MatchingRequestHolder]))
 
       eventually(AuditService.verifyXAuditWrite(1))
     }

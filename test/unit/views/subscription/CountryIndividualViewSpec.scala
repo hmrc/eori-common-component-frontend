@@ -35,9 +35,29 @@ class CountryIndividualViewSpec extends ViewSpec {
 
   private val formWithError = form.bind(Map("countryCode" -> ""))
 
-  val (countries, picker) = Countries.getCountryParametersForAllCountries()
+  val (countries, picker)                        = Countries.getCountryParametersForAllCountries()
+  val (euCountries, euPicker)                    = Countries.getCountryParameters(Some("eu"))
+  val (thirdCountry, thirdCountryPicker)         = Countries.getCountryParameters(Some("third-country"))
+  val (thirdCountryIncEU, thirdCountryIncPicker) = Countries.getCountryParameters(Some("third-country-inc-eu"))
+  val (islands, islandsPicker)                   = Countries.getCountryParameters(Some("islands"))
+  val (uk, ukPicker)                             = Countries.getCountryParameters(Some("uk"))
 
   private val doc: Document = Jsoup.parse(contentAsString(view(form, countries, picker, atarService, false)))
+
+  private val docWithEUCountries: Document =
+    Jsoup.parse(contentAsString(view(form, countries, picker, atarService, false)))
+
+  private val docWithThirdCountry: Document =
+    Jsoup.parse(contentAsString(view(form, thirdCountry, thirdCountryPicker, atarService, false)))
+
+  private val docWiththirdCountryIncEU: Document =
+    Jsoup.parse(contentAsString(view(form, thirdCountryIncEU, thirdCountryIncPicker, atarService, false)))
+
+  private val docWithIslands: Document =
+    Jsoup.parse(contentAsString(view(form, islands, islandsPicker, atarService, false)))
+
+  private val docWithUKCountries: Document =
+    Jsoup.parse(contentAsString(view(form, uk, ukPicker, atarService, false)))
 
   private val docWithErrorSummary: Document =
     Jsoup.parse(contentAsString(view(formWithError, countries, picker, atarService, false)))
@@ -57,6 +77,28 @@ class CountryIndividualViewSpec extends ViewSpec {
     "display input with Country label" in {
 
       doc.body().getElementsByTag("label").text() must startWith("Country")
+    }
+
+    "load page correctly while loading eu countries" in {
+
+      docWithEUCountries.body().getElementsByTag("label").text() must startWith("Country")
+    }
+
+    "load page correctly while loading third country" in {
+
+      docWithThirdCountry.body().getElementsByTag("label").text() must startWith("Country")
+    }
+    "load page correctly while loading third country Inc EU" in {
+
+      docWiththirdCountryIncEU.body().getElementsByTag("label").text() must startWith("Country")
+    }
+    "load page correctly while loading Islands" in {
+
+      docWithIslands.body().getElementsByTag("label").text() must startWith("Country")
+    }
+    "load page correctly while loading UK countries" in {
+
+      docWithUKCountries.body().getElementsByTag("label").text() must startWith("Country")
     }
 
     "display continue button" in {

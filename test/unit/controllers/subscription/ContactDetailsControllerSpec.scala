@@ -107,6 +107,17 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       showCreateForm()(verifyBackLinkInCreateModeRegister)
     }
 
+    /*   "redirect to next page when ContactDetails is present " in {
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
+
+      when(mockOrgTypeLookup.etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Future.successful(Some(NA)))
+
+      when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(OrganisationFlow)
+
+      val result = await(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+      status(result) shouldBe SEE_OTHER
+    }*/
+
     "display the correct text in the heading and intro" in {
       showCreateForm() { result =>
         val page = CdsPage(contentAsString(result))
@@ -259,10 +270,6 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       submitFormInCreateMode(createFormMandatoryFieldsMapSubscribe)(verifyRedirectToNextPageInCreateMode)
     }
 
-    "redirect to next page when details are valid in review mode" in {
-      submitFormInReviewMode(createFormMandatoryFieldsMapSubscribe)(verifyRedirectToNextPageInReviewMode)
-    }
-
     "redirect to next page without validating contact address when 'Is this the right contact address' is Yes and country code is GB" in {
       val params = Map(
         fullNameFieldName                 -> FullName,
@@ -273,6 +280,12 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       )
       submitFormInCreateMode(params)(verifyRedirectToNextPageInCreateMode)
     }
+  }
+  "submitting the form in Review mode" should {
+    "redirect to next page when details are valid in review mode" in {
+      submitFormInReviewMode(createFormMandatoryFieldsMapSubscribe)(verifyRedirectToNextPageInReviewMode)
+    }
+
   }
 
   private def mockFunctionWithRegistrationDetails(registrationDetails: RegistrationDetails) {
@@ -306,6 +319,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
     when(mockOrgTypeLookup.etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(orgType))
+
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
 
     test(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))

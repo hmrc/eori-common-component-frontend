@@ -101,6 +101,22 @@ class SubscriptionServiceSpec
       assertSameJson(Json.toJson(result.actualConnectorRequest), individualAutomaticSubscriptionRequestJson)
     }
 
+    "throw IllegalStateException if connector returns invalid response" in {
+      intercept[IllegalStateException] {
+        makeSubscribeWhenAutoAllowed(
+          RegistrationDetailsIndividual(
+            Some(eori),
+            TaxPayerId(sapNumber),
+            SafeId("safe-id"),
+            individualName,
+            address,
+            dateOfBirth
+          ),
+          subscriptionGenerateInvalidResponse
+        )
+      }
+    }
+
     "call connector with correct values when only organisation matching details with EORI and date of establishment are given" in {
       val result = makeSubscribeWhenAutoAllowed(
         RegistrationDetailsOrganisation(

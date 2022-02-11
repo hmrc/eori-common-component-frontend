@@ -32,6 +32,7 @@ import play.api.i18n.{Messages, MessagesApi, MessagesImpl}
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionCreateResponse.EoriAlreadyExists
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, ResponseCommon}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{RecipientDetails, SubscriptionDetails}
@@ -667,6 +668,99 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
             meq(Some(emailVerificationTimestamp)),
             any[SafeId]
           )(any[HeaderCarrier])
+    }
+  }
+
+  "When Subscription Status returns  Subscription Failed for UK journey" in {
+    val expectedEmail = "email@address.fromCache"
+    when(mockRequestSessionData.selectedUserLocation(any())).thenReturn(Some(UserLocation.ThirdCountry))
+    when(mockCdsFrontendDataCache.email(any[HeaderCarrier])).thenReturn(Future.successful(expectedEmail))
+    when(mockCdsFrontendDataCache.saveSub02Outcome(any[Sub02Outcome])(any[HeaderCarrier]))
+      .thenReturn(Future.successful(true))
+    when(mockSubscriptionDetailsService.cachedCustomsId).thenReturn(Future.successful(Some(Nino("123456789"))))
+    mockSuccessfulExistingRegistration(
+      stubRegisterWithEoriAndIdResponse,
+      subscriptionDetails.copy(email = Some(expectedEmail))
+    )
+    when(
+      mockSubscriptionService
+        .existingReg(any[RegisterWithEoriAndIdResponse], any[SubscriptionDetails], any[String], any[Service])(
+          any[HeaderCarrier]
+        )
+    ).thenReturn(
+      Future
+        .successful(SubscriptionFailed(EoriAlreadyExists, processingDate))
+    )
+    when(
+      mockHandleSubscriptionService.handleSubscription(
+        anyString,
+        any[RecipientDetails],
+        any[TaxPayerId],
+        any[Option[Eori]],
+        any[Option[LocalDateTime]],
+        any[SafeId]
+      )(any[HeaderCarrier])
+    ).thenReturn(Future.successful(()))
+    val inOrder =
+      org.mockito.Mockito.inOrder(
+        mockCdsFrontendDataCache,
+        mockSubscriptionService,
+        mockCdsFrontendDataCache,
+        mockHandleSubscriptionService
+      )
+
+    whenReady(cdsSubscriber.subscribeWithCachedDetails(atarService)) {
+      subscriptionResult =>
+        subscriptionResult shouldBe SubscriptionFailed(EoriAlreadyExists, processingDate)
+        inOrder.verify(mockCdsFrontendDataCache).registerWithEoriAndIdResponse(any[HeaderCarrier])
+        inOrder.verify(mockCdsFrontendDataCache).saveSub02Outcome(any())(any())
+
+    }
+  }
+
+  "When Subscription Status returns  Subscription Failed for ROW Journey" in {
+    val expectedEmail = "email@address.fromCache"
+    when(mockRequestSessionData.selectedUserLocation(any())).thenReturn(Some(UserLocation.ThirdCountry))
+    when(mockCdsFrontendDataCache.email(any[HeaderCarrier])).thenReturn(Future.successful(expectedEmail))
+    when(mockCdsFrontendDataCache.saveSub02Outcome(any[Sub02Outcome])(any[HeaderCarrier]))
+      .thenReturn(Future.successful(true))
+    when(mockSubscriptionDetailsService.cachedCustomsId).thenReturn(Future.successful(None))
+    mockSuccessfulWithMandatoryOnly(subscriptionDetails.copy(email = Some(expectedEmail)))
+    when(
+      mockSubscriptionService
+        .subscribeWithMandatoryOnly(
+          any[RegistrationDetails],
+          any[SubscriptionDetails],
+          any[Service],
+          Some(any[String])
+        )(any[HeaderCarrier])
+    ).thenReturn(
+      Future
+        .successful(SubscriptionFailed(EoriAlreadyExists, processingDate))
+    )
+    when(
+      mockHandleSubscriptionService.handleSubscription(
+        anyString,
+        any[RecipientDetails],
+        any[TaxPayerId],
+        any[Option[Eori]],
+        any[Option[LocalDateTime]],
+        any[SafeId]
+      )(any[HeaderCarrier])
+    ).thenReturn(Future.successful(()))
+
+    whenReady(cdsSubscriber.subscribeWithCachedDetails(atarService)) {
+      subscriptionResult =>
+        subscriptionResult shouldBe SubscriptionFailed(EoriAlreadyExists, processingDate)
+
+        verify(mockSubscriptionService)
+          .subscribeWithMandatoryOnly(
+            any[RegistrationDetails],
+            any[SubscriptionDetails],
+            meq(atarService),
+            meq(Some(expectedEmail))
+          )(any[HeaderCarrier])
+
     }
   }
 

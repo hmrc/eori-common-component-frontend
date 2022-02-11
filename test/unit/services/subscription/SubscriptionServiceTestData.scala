@@ -721,6 +721,28 @@ trait SubscriptionServiceTestData extends TestData {
         }
         """.stripMargin)
 
+  val invalidResponseWithoutFormBundleIDJson: JsValue =
+    Json.parse(s"""
+                  | {
+                  | "subscriptionCreateResponse": {
+                  | "responseCommon": {
+                  | "status": "OK",
+                  | "processingDate": "2016-08-18T14:01:05Z",
+                  | "returnParameters": [
+                  | {
+                  | "paramName": "POSITION",
+                  | "paramValue": "GENERATE"
+                  |}
+                  |]
+                  |},
+                  | "responseDetail": {
+                  | "EORINo": "$responseEoriNumber"
+                  |}
+                  |}
+                  |
+        }
+        """.stripMargin)
+
   val subscriptionLinkedResponseJson: JsValue =
     Json.parse(s"""
          | {
@@ -828,6 +850,9 @@ trait SubscriptionServiceTestData extends TestData {
       """.stripMargin)
 
   val subscriptionGenerateResponse: SubscriptionResponse = subscriptionGenerateResponseJson.as[SubscriptionResponse]
+
+  val subscriptionGenerateInvalidResponse: SubscriptionResponse =
+    invalidResponseWithoutFormBundleIDJson.as[SubscriptionResponse]
 
   val subscriptionFailedResponseForEnrolmentAlreadyExists: SubscriptionResponse = subscriptionFailedResponseJson(
     EoriAlreadyExists

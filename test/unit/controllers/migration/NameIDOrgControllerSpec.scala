@@ -30,6 +30,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameIDOrgController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameIdOrganisationDisplayMode.RegisteredCompanyDM
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType.PartnershipId
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.nameUtrOrganisationForm
@@ -150,6 +151,17 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     }
 
     "display the correct text for the continue button" in {
+      showCreateForm() { result =>
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(continueButtonXpath) shouldBe ContinueButtonTextInCreateMode
+      }
+    }
+
+    "display the form when the organisation type is partnership" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(
+        Some(CdsOrganisationType(PartnershipId))
+      )
+
       showCreateForm() { result =>
         val page = CdsPage(contentAsString(result))
         page.getElementsText(continueButtonXpath) shouldBe ContinueButtonTextInCreateMode

@@ -388,7 +388,20 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
     }
     "throw DataUnavailableException when sendIndividualRequest is invoked without eori details in cache" in {
       when(mockCache.subscriptionDetails(any[HeaderCarrier]))
-        .thenReturn(Future.successful(SubscriptionDetails(eoriNumber = Some("eor-123"))))
+        .thenReturn(
+          Future.successful(
+            SubscriptionDetails(nameDobDetails =
+              Some(
+                NameDobMatchModel(
+                  individualFirstName,
+                  Some(individualMiddleName),
+                  individualLastName,
+                  individualLocalDateOfBirth
+                )
+              )
+            )
+          )
+        )
       intercept[DataUnavailableException] {
         await(service.sendIndividualRequestForMatchingService(mockLoggedInUserEnrolments, mockHeaderCarrier))
       }

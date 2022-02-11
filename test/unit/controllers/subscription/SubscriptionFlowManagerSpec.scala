@@ -31,7 +31,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   CdsOrganisationType,
   RegistrationDetailsIndividual,
-  RegistrationDetailsOrganisation
+  RegistrationDetailsOrganisation,
+  RegistrationDetailsSafeId,
+  Utr
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -52,6 +54,7 @@ class SubscriptionFlowManagerSpec
 
   private val mockOrgRegistrationDetails        = mock[RegistrationDetailsOrganisation]
   private val mockIndividualRegistrationDetails = mock[RegistrationDetailsIndividual]
+  private val mockRegistrationDetails           = mock[RegistrationDetailsSafeId]
   private val mockSession                       = mock[Session]
 
   private val mockHC      = mock[HeaderCarrier]
@@ -146,6 +149,46 @@ class SubscriptionFlowManagerSpec
         .storeUserSubscriptionFlow(IndividualFlow, UserLocationPage.url(atarService))(mockRequest)
     }
 
+    "start Individual Subscription Flow for individual for ROW journey" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
+      when(mockIndividualRegistrationDetails.customsId).thenReturn(Some(Utr("1111111111k")))
+      when(mockCdsFrontendDataCache.registrationDetails(mockHC))
+        .thenReturn(Future.successful(mockIndividualRegistrationDetails))
+      val (subscriptionPage, session) =
+        await(controller.startSubscriptionFlow(Some(UserLocationPage), Individual, atarService)(mockHC, mockRequest))
+
+      subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
+      session shouldBe mockSession
+
+      verify(mockRequestSessionData)
+        .storeUserSubscriptionFlow(IndividualFlow, UserLocationPage.url(atarService))(mockRequest)
+    }
+    /*"start Individual Subscription Flow for individual for ROW journey with CustomsID" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
+      when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Eu))
+      when(mockIndividualRegistrationDetails.customsId).thenReturn(Some(Utr("1111111111k")))
+      when(mockCdsFrontendDataCache.registrationDetails(mockHC))
+        .thenReturn(Future.successful(mockIndividualRegistrationDetails))
+      val (subscriptionPage, session) =
+        await(controller.startSubscriptionFlow(Some(UserLocationPage), Individual, atarService)(mockHC, mockRequest))
+
+      subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
+      session shouldBe mockSession
+
+      verify(mockRequestSessionData)
+        .storeUserSubscriptionFlow(IndividualFlow, UserLocationPage.url(atarService))(mockRequest)
+    }*/
+
+    "throw DataUnavailableException when registration details is not available in cache" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
+
+      when(mockCdsFrontendDataCache.registrationDetails(mockHC))
+        .thenReturn(Future.successful(mockRegistrationDetails))
+      intercept[DataUnavailableException] {
+        await(controller.startSubscriptionFlow(Some(UserLocationPage), Individual, atarService)(mockHC, mockRequest))
+      }
+
+    }
     "start Corporate Subscription Flow when cached registration details are for an Organisation" in {
       when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
 
