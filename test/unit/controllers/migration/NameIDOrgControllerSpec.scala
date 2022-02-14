@@ -30,7 +30,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameIDOrgController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameIdOrganisationDisplayMode.RegisteredCompanyDM
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType.PartnershipId
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType.{CompanyId, PartnershipId}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.nameUtrOrganisationForm
@@ -333,6 +333,65 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     "redirect to next page when details are valid" in {
       submitFormInCreateMode(createFormAllFieldsUtrMap)(verifyRedirectToNextPageInCreateMode)
     }
+    "validation error when full name is not submitted for Company" in {
+
+      when(mockRequestSessionData.isCompany(any())).thenReturn(Future.successful(true))
+      submitFormInCreateMode(createFormAllFieldsUtrMap + (nameFieldName -> "")) { result =>
+        status(result) shouldBe BAD_REQUEST
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your registered company name"
+        page.getElementsText(nameFieldLevelErrorXPath) shouldBe "Error: Enter your registered company name"
+        page.getElementsText("title") should startWith("Error: ")
+        verifyZeroInteractions(mockSubscriptionBusinessService)
+      }
+    }
+
+    "validation error when full name more than 105 characters for Company" in {
+
+      when(mockRequestSessionData.isCompany(any())).thenReturn(Future.successful(true))
+      submitFormInCreateMode(createFormAllFieldsUtrMap + (nameFieldName -> List.fill(106)("D").mkString)) { result =>
+        status(result) shouldBe BAD_REQUEST
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The company name must be 105 characters or less"
+        page.getElementsText(nameFieldLevelErrorXPath) shouldBe "Error: The company name must be 105 characters or less"
+        page.getElementsText("title") should startWith("Error: ")
+        verifyZeroInteractions(mockSubscriptionBusinessService)
+      }
+    }
+    "validation error when full name is not submitted for Partnership" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(
+        Some(CdsOrganisationType(PartnershipId))
+      )
+      when(mockRequestSessionData.isPartnership(any())).thenReturn(Future.successful(true))
+      submitFormInCreateMode(createFormAllFieldsUtrMap + (nameFieldName -> "")) { result =>
+        status(result) shouldBe BAD_REQUEST
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your registered partnership name"
+        page.getElementsText(nameFieldLevelErrorXPath) shouldBe "Error: Enter your registered partnership name"
+        page.getElementsText("title") should startWith("Error: ")
+        verifyZeroInteractions(mockSubscriptionBusinessService)
+      }
+    }
+
+    "validation error when full name more than 105 characters for Partnership" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(
+        Some(CdsOrganisationType(PartnershipId))
+      )
+      when(mockRequestSessionData.isPartnership(any())).thenReturn(Future.successful(true))
+      submitFormInCreateMode(createFormAllFieldsUtrMap + (nameFieldName -> List.fill(106)("D").mkString)) { result =>
+        status(result) shouldBe BAD_REQUEST
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(
+          pageLevelErrorSummaryListXPath
+        ) shouldBe "The partnership name must be 105 characters or less"
+        page.getElementsText(
+          nameFieldLevelErrorXPath
+        ) shouldBe "Error: The partnership name must be 105 characters or less"
+        page.getElementsText("title") should startWith("Error: ")
+        verifyZeroInteractions(mockSubscriptionBusinessService)
+      }
+    }
+
   }
 
   "submitting the form in review mode" should {
