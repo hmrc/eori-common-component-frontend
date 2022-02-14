@@ -71,13 +71,12 @@ cds.registration.you-already-have-eori.para1=Rydym wedi canfod bod gennych EORI 
 
 ecc.subscription.information.heading=Mae’n rhaid i chi danysgrifio i ddefnyddio’r gwasanaeth {0}
 ecc.subscription.information.para1.heading=Yr hyn y bydd ei angen arnoch
-ecc.subscription.information.para1=Er mwyn eich tanysgrifio i’r gwasanaeth {0}, bydd arnom angen ychydig o wybodaeth gennych. Sicrhewch fod gennych yr holl fanylion cywir cyn i chi ddechrau, fel arall mae’n bosibl y caiff eich cais ei oedi.
+ecc.subscription.information.para1=Er mwyn eich tanysgrifio i’r gwasanaeth ar gyfer {0}, mae angen gwybodaeth arnom oddi wrthych. Sicrhewch fod gennych yr holl fanylion cywir cyn i chi ddechrau, fel arall mae’n bosibl y caiff eich cais ei oedi.
 
-ecc.subscription.information.para2.heading=Rhif EORI GB
-ecc.subscription.information.para2=Bydd angen rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (rhif EORI) GB arnoch.
-ecc.subscription.information.para2.link=tbc
-ecc.subscription.information.para2.warning=!RhybuddMae’n rhaid i’r rhif EORI GB fod yr un sy’n gysylltiedig â’r Dynodydd Defnyddiwr (ID) Porth y Llywodraeth a ddefnyddiwyd gennych i fewngofnodi. <a href="https://www.tax.service.gov.uk/check-eori-number" class="govuk-link" target="_blank" rel="noopener noreferrer">Gwiriwch y rhif EORI GB (yn agor ffenestr neu dab newydd)</a>.
-ecc.subscription.information.para2.list.second=Cod Dosbarthiad Diwydiannol Safonol (SIC). <a href="https://resources.companieshouse.gov.uk/sic/" class="govuk-link">Dewch o hyd i’ch cod SIC (yn agor ffenestr neu dab newydd)</a>.
+ecc.subscription.information.para2.heading=Rhif EORI sy’n dechrau gyda GB
+ecc.subscription.information.para2=Mae’n rhaid i chi {0} cyn i chi allu gwneud cais am {0}. Fel arfer, mae angen aros oddeutu 30 munud ar ôl gwneud cais am rif EORI cyn i chi allu mynd ati gyda’ch cais am Ddyfarniad Tariffau Uwch, ond gall gymryd hyd at 48 awr.
+ecc.subscription.information.para2.link=gael rhif EORI (yn agor ffenestr neu dab newydd)
+ecc.subscription.information.para2.warning=!Mae’n rhaid i’r rhif EORI sy’n dechrau gyda GB fod yr un sy’n gysylltiedig â’r Dynodydd Defnyddiwr (ID) Porth y Llywodraeth a ddefnyddiwyd gennych pan gawsoch rif EORI.
 
 ecc.subscription.information.section.organisation.subheading=Manylion y cwmni neu sefydliad arall
 ecc.subscription.information.section.organisation.list.heading=Os ydych yn gwmni cyfyngedig, partneriaeth neu elusen, bydd angen y canlynol arnoch:
