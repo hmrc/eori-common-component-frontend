@@ -26,12 +26,12 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetai
 
 object SubscriptionInfoBuilder {
 
-  val eori           = Some("12345")
-  val CDSOrgName     = "orgName"
-  val orgStreetName  = "Line 1"
-  val orgCity        = "line 2"
-  val orgPostalCode  = Some("SE28 1AA")
-  val orgCountryCode = "ZZ"
+  val eori: Option[String] = Some("12345")
+  val CDSOrgName           = "orgName"
+  val orgStreetName        = "Line 1"
+  val orgCity              = "line 2"
+  val orgPostalCode        = Some("SE28 1AA")
+  val orgCountryCode       = "ZZ"
 
   val contactName                  = "John Doe"
   val contactStreet                = "Line 1"
@@ -167,12 +167,22 @@ object SubscriptionInfoBuilder {
     )
   )
 
+  val sampleResponseCommonWithoutFormBundleNumber = ResponseCommon(
+    "OK",
+    Some("Status text"),
+    LocalDateTime.now(),
+    Some(List(MessagingServiceParam("POSITION", "GENERATE")))
+  )
+
   val sampleResponseCommonWithBlankReturnParameters = sampleResponseCommon.copy(returnParameters = None)
 
   val sampleResponseCommonWithNoETMPFORMBUNDLENUMBER =
     sampleResponseCommon.copy(returnParameters = Some(List(MessagingServiceParam("POSITION", "GENERATE"))))
 
   val fullyPopulatedResponse = SubscriptionDisplayResponse(sampleResponseCommon, fullyPopulatedResponseDetail)
+
+  val fullyPopulatedResponseWithoutFormBundle =
+    SubscriptionDisplayResponse(sampleResponseCommonWithoutFormBundleNumber, fullyPopulatedResponseDetail)
 
   val onlyMandatoryPopulatedResponse =
     SubscriptionDisplayResponse(sampleResponseCommon, onlyMandatoryPopulatedResponseDetail)

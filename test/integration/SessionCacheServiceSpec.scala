@@ -16,8 +16,7 @@
 
 package integration
 
-import java.util.UUID
-import java.time.LocalDateTime
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json.toJson
@@ -28,6 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.ResponseCommon
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressLookupParams
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
   CachedData,
@@ -35,26 +35,31 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
   SessionCache,
   SessionTimeOutException
 }
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.SessionId
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, SessionId}
 import uk.gov.hmrc.mongo.{MongoConnector, MongoSpecSupport}
 import util.builders.RegistrationDetailsBuilder._
 
+import java.time.{LocalDate, LocalDateTime}
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with MongoSpecSupport {
 
-  lazy val appConfig = app.injector.instanceOf[AppConfig]
+  lazy val appConfig: AppConfig                     = app.injector.instanceOf[AppConfig]
+  lazy val mockHttpClient: HttpClient               = mock[HttpClient]
+  lazy val mockSave4LaterService: Save4LaterService = mock[Save4LaterService]
 
   private val reactiveMongoComponent = new ReactiveMongoComponent {
     override def mongoConnector: MongoConnector = mongoConnectorForTest
   }
 
-  private val save4LaterService = app.injector.instanceOf[Save4LaterService]
-
+  private val save4LaterService = mock[Save4LaterService]
+  when(save4LaterService.saveOrgType(any(), any())(any())).thenReturn(Future.successful(()))
+  when(save4LaterService.saveSafeId(any(), any())(any())).thenReturn(Future.successful(()))
   val sessionCache = new SessionCache(appConfig, reactiveMongoComponent, save4LaterService)
 
-  val hc = mock[HeaderCarrier]
+  val hc: HeaderCarrier = mock[HeaderCarrier]
 
   "Session cache" should {
 
@@ -87,6 +92,46 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       val sessionId: SessionId = setupSession
 
       await(sessionCache.saveRegistrationDetails(organisationRegistrationDetails)(hc))
+
+      val cache = await(sessionCache.findById(Id(sessionId.value)))
+
+      val expectedJson                     = toJson(CachedData(regDetails = Some(organisationRegistrationDetails)))
+      val Some(Cache(_, Some(json), _, _)) = cache
+      json mustBe expectedJson
+
+      await(sessionCache.registrationDetails(hc)) mustBe organisationRegistrationDetails
+      await(sessionCache.saveRegistrationDetails(individualRegistrationDetails)(hc))
+
+      val updatedCache = await(sessionCache.findById(Id(sessionId.value)))
+
+      val expectedUpdatedJson                     = toJson(CachedData(regDetails = Some(individualRegistrationDetails)))
+      val Some(Cache(_, Some(updatedJson), _, _)) = updatedCache
+      updatedJson mustBe expectedUpdatedJson
+    }
+
+    "store, fetch and update Registration details when group ID and orgType are privided correctly" in {
+      val sessionId: SessionId = setupSession
+      await(sessionCache.saveRegistrationDetails(organisationRegistrationDetails, GroupId("groupId"))(hc))
+
+      val cache = await(sessionCache.findById(Id(sessionId.value)))
+
+      val expectedJson                     = toJson(CachedData(regDetails = Some(organisationRegistrationDetails)))
+      val Some(Cache(_, Some(json), _, _)) = cache
+      json mustBe expectedJson
+
+      await(sessionCache.registrationDetails(hc)) mustBe organisationRegistrationDetails
+      await(sessionCache.saveRegistrationDetails(individualRegistrationDetails)(hc))
+
+      val updatedCache = await(sessionCache.findById(Id(sessionId.value)))
+
+      val expectedUpdatedJson                     = toJson(CachedData(regDetails = Some(individualRegistrationDetails)))
+      val Some(Cache(_, Some(updatedJson), _, _)) = updatedCache
+      updatedJson mustBe expectedUpdatedJson
+    }
+
+    "calling saveRegistrationDetailsWithoutId should store, fetch and update Registration details when group ID and orgType are privided correctly" in {
+      val sessionId: SessionId = setupSession
+      await(sessionCache.saveRegistrationDetailsWithoutId(organisationRegistrationDetails, GroupId("groupId"))(hc))
 
       val cache = await(sessionCache.findById(Id(sessionId.value)))
 
@@ -138,6 +183,7 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       json mustBe expectedJson
 
       await(sessionCache.registerWithEoriAndIdResponse(hc)) mustBe rd
+
     }
 
     "throw exception when registration Details requested and not available in cache" in {
@@ -166,7 +212,144 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
 
       json mustBe expectedJson
     }
+    "store and fetch group enrolment correctly" in {
 
+      val sessionId: SessionId = setupSession
+
+      val groupEnrolmentResponse = EnrolmentResponse(Service.cds.enrolmentKey, "Activated", List.empty)
+
+      await(sessionCache.saveGroupEnrolment(groupEnrolmentResponse)(hc))
+
+      val cache = await(sessionCache.findById(Id(sessionId.value)))
+
+      val expectedJson = toJson(CachedData(groupEnrolment = Some(groupEnrolmentResponse)))
+
+      val Some(Cache(_, Some(json), _, _)) = cache
+
+      json mustBe expectedJson
+
+      await(sessionCache.groupEnrolment(hc)) mustBe groupEnrolmentResponse
+    }
+
+    "throw DataUnavailableException when groupEnrolment is not present in cache" in {
+      val sessionId: SessionId = setupSession
+      await(sessionCache.insert(Cache(Id(sessionId.value), data = Some(toJson(CachedData())))))
+      intercept[DataUnavailableException] {
+        await(sessionCache.groupEnrolment(hc))
+      }
+    }
+    "fetch safeId correctly" in {
+      val sessionId: SessionId = setupSession
+      val registrationDetails = RegistrationDetails.individual(
+        sapNumber = "0123456789",
+        safeId = SafeId("safe-id"),
+        name = "John Doe",
+        address = defaultAddress,
+        dateOfBirth = LocalDate.parse("1980-07-23"),
+        customsId = Some(Utr("123UTRNO"))
+      )
+      await(
+        sessionCache.insert(
+          Cache(Id(sessionId.value), data = Some(toJson(CachedData(regDetails = Some(registrationDetails)))))
+        )
+      )
+      await(sessionCache.safeId(hc)) mustBe SafeId("safe-id")
+    }
+
+    "store and fetch Eori correctly" in {
+
+      val sessionId: SessionId = setupSession
+
+      val eori = Eori("GB123456789123")
+
+      await(sessionCache.saveEori(eori)(hc))
+
+      val cache = await(sessionCache.findById(Id(sessionId.value)))
+
+      val expectedJson = toJson(CachedData(eori = Some(eori.id)))
+
+      val Some(Cache(_, Some(json), _, _)) = cache
+
+      json mustBe expectedJson
+
+      await(sessionCache.eori(hc)) mustBe Some(eori.id)
+    }
+
+    "store and fetch email correctly" in {
+
+      val sessionId: SessionId = setupSession
+
+      val email = "email@email.com"
+
+      await(sessionCache.saveEmail(email)(hc))
+
+      val cache = await(sessionCache.findById(Id(sessionId.value)))
+
+      val expectedJson = toJson(CachedData(email = Some(email)))
+
+      val Some(Cache(_, Some(json), _, _)) = cache
+
+      json mustBe expectedJson
+      await(sessionCache.email(hc)) mustBe email
+
+    }
+
+    "store subscription details correctly" in {
+
+      val sessionId: SessionId = setupSession
+
+      val subscriptionDetails = SubscriptionDetails(email = Some("email@email.com"))
+
+      await(sessionCache.saveSubscriptionDetails(subscriptionDetails)(hc))
+
+      val cache = await(sessionCache.findById(Id(sessionId.value)))
+
+      val expectedJson = toJson(CachedData(subDetails = Some(subscriptionDetails)))
+
+      val Some(Cache(_, Some(json), _, _)) = cache
+
+      json mustBe expectedJson
+    }
+
+    "store and fetch sub01Outcome details correctly" in {
+
+      val sessionId: SessionId = setupSession
+
+      val sub01Outcome = Sub01Outcome(LocalDate.of(1961, 4, 12).toString)
+
+      await(sessionCache.saveSub01Outcome(sub01Outcome)(hc))
+
+      val cache = await(sessionCache.findById(Id(sessionId.value)))
+
+      val expectedJson = toJson(CachedData(sub01Outcome = Some(sub01Outcome)))
+
+      val Some(Cache(_, Some(json), _, _)) = cache
+
+      json mustBe expectedJson
+      await(sessionCache.sub01Outcome(hc)) mustBe sub01Outcome
+    }
+
+    "store and fetch sub02Outcome details correctly" in {
+
+      val sessionId: SessionId = setupSession
+
+      val sub02Outcome = Sub02Outcome(LocalDate.of(1961, 4, 12).toString, "fullName", Some("GB123456789123"))
+
+      await(sessionCache.saveSub02Outcome(sub02Outcome)(hc))
+
+      val cache = await(sessionCache.findById(Id(sessionId.value)))
+
+      val expectedJson = toJson(CachedData(sub02Outcome = Some(sub02Outcome)))
+
+      val Some(Cache(_, Some(json), _, _)) = cache
+
+      json mustBe expectedJson
+      await(sessionCache.sub02Outcome(hc)) mustBe sub02Outcome
+    }
+
+    "store keepAlive details correctly" in {
+      await(sessionCache.keepAlive(hc)) mustBe true
+    }
     "clear Address Lookup Params" in {
 
       val sessionId: SessionId = setupSession
@@ -175,12 +358,6 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
 
       await(sessionCache.saveAddressLookupParams(addressLookupParams)(hc))
 
-      val Some(Cache(_, Some(jsonBefore), _, _)) = await(sessionCache.findById(Id(sessionId.value)))
-
-      val expectedJsonBefore = toJson(CachedData(addressLookupParams = Some(addressLookupParams)))
-
-      jsonBefore mustBe expectedJsonBefore
-
       await(sessionCache.clearAddressLookupParams(hc))
 
       val Some(Cache(_, Some(jsonAfter), _, _)) = await(sessionCache.findById(Id(sessionId.value)))
@@ -188,6 +365,7 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       val expectedJsonAfter = toJson(CachedData(addressLookupParams = Some(AddressLookupParams("", None))))
 
       jsonAfter mustBe expectedJsonAfter
+      await(sessionCache.addressLookupParams(hc)) mustBe Some(AddressLookupParams("", None))
     }
 
     "remove from the cache" in {
@@ -198,6 +376,15 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
 
       val cached = await(sessionCache.findById(Id(sessionId.value)))
       cached mustBe None
+    }
+
+    "throw IllegalStateException when sessionId is not available" in {
+      when(hc.sessionId).thenReturn(None)
+      val addressLookupParams = AddressLookupParams("AA11 1AA", None)
+      intercept[IllegalStateException] {
+        await(sessionCache.saveAddressLookupParams(addressLookupParams)(hc))
+      }
+
     }
   }
 

@@ -117,6 +117,59 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
         createForm()(result => status(result))
       }.getMessage shouldBe "No organisation type selected by user"
     }
+
+    "populate the field values when Session cache hold Nino details" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
+      when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(Utr("1111111111K"))))
+      createForm() { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should include("Enter your Unique Tax Reference number")
+        page.getElementValue("//*[@id='utr']") shouldBe "1111111111K"
+      }
+    }
+  }
+
+  "HaveUtrSubscriptionController reviewForm" should {
+    when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
+      .thenReturn(Future.successful(Some(Utr("utr"))))
+    "return OK and display correct page when orgType is Company" in {
+
+      when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
+      reviewForm() { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should include("Enter your Unique Tax Reference number")
+      }
+    }
+
+    "return OK and display correct page when orgType is Sole Trader" in {
+
+      when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(SoleTrader))
+      reviewForm() { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should include("Enter your Unique Tax Reference number")
+      }
+    }
+
+    "return OK and display correct page when orgType is Individual" in {
+
+      when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Individual))
+      reviewForm() { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should include("Enter your Unique Tax Reference number")
+      }
+    }
+
+    "throws an exception if orgType is not found" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
+      intercept[DataUnavailableException] {
+        reviewForm()(result => status(result))
+      }.getMessage shouldBe "No organisation type selected by user"
+    }
   }
 
   "HaveUtrSubscriptionController Submit" should {
@@ -199,7 +252,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
           .thenReturn(Future.successful((): Unit))
         when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowOrganisationFlow)
 
-        submit(ValidUtrRequest, true) { result =>
+        submit(ValidUtrRequest, isInReviewMode = true) { result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/address"
         }
@@ -213,7 +266,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
           .thenReturn(Future.successful(()))
         when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowIndividualFlow)
 
-        submit(ValidUtrRequest, true) { result =>
+        submit(ValidUtrRequest, isInReviewMode = true) { result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/address"
         }
@@ -232,7 +285,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
           .thenReturn(Future.successful((): Unit))
         when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(OrganisationFlow)
 
-        submit(ValidUtrRequest, true) { result =>
+        submit(ValidUtrRequest, isInReviewMode = true) { result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers(
             LOCATION
@@ -246,6 +299,11 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
   private def createForm()(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     await(test(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+  }
+
+  private def reviewForm()(test: Future[Result] => Any) = {
+    withAuthorisedUser(defaultUserId, mockAuthConnector)
+    await(test(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
   private def submit(form: Map[String, String], isInReviewMode: Boolean = false)(test: Future[Result] => Any) = {

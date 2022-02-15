@@ -68,7 +68,7 @@ class HowCanWeIdentifyYouUtrControllerSpec extends ControllerSpec with BeforeAnd
     mockSubscriptionDetailsHolderService
   )
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     super.beforeEach()
 
     Mockito.reset(mockSubscriptionDetailsHolderService)
@@ -96,6 +96,27 @@ class HowCanWeIdentifyYouUtrControllerSpec extends ControllerSpec with BeforeAnd
         page.getElementsText(SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath) shouldBe empty
       }
     }
+
+    "populate the form values when session cache is having Nino details" in {
+      reviewForm(Map.empty, customsId = Utr("1111111111k")) { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.getElementValue("//*[@id='utr']") shouldBe "1111111111K"
+      }
+    }
+  }
+  "Loading the page on review mode" should {
+
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(atarService))
+
+    "show the form without errors" in {
+      reviewForm(Map.empty, customsId = Utr("1111111111K")) { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath) shouldBe empty
+      }
+    }
+
   }
 
   "Submitting the form" should {
@@ -180,14 +201,14 @@ class HowCanWeIdentifyYouUtrControllerSpec extends ControllerSpec with BeforeAnd
     }
   }
 
-  def showForm(form: Map[String, String], userId: String = defaultUserId)(test: Future[Result] => Any) {
+  def showForm(form: Map[String, String], userId: String = defaultUserId)(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     test(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)))
   }
 
   def submitForm(form: Map[String, String], userId: String = defaultUserId, isInReviewMode: Boolean = false)(
     test: Future[Result] => Any
-  ) {
+  ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller

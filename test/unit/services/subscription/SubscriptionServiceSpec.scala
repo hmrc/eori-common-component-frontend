@@ -41,13 +41,22 @@ class SubscriptionServiceSpec
   private val mockHeaderCarrier = mock[HeaderCarrier]
   private val mockConfig        = mock[FeatureFlags]
 
-  override def beforeAll() = {
+  override def beforeAll(): Unit = {
     super.beforeAll()
     when(mockConfig.sub02UseServiceName).thenReturn(true)
   }
 
   private def subscriptionSuccessResultIgnoreTimestamp(
     expected: SubscriptionSuccessful,
+    request: SubscriptionRequest
+  ): SubscriptionResult = {
+    val timestamp =
+      request.subscriptionCreateRequest.requestDetail.contactInformation.flatMap(_.emailVerificationTimestamp)
+    expected.copy(emailVerificationTimestamp = timestamp)
+  }
+
+  private def subscriptionPendingResultIgnoreTimestamp(
+    expected: SubscriptionPending,
     request: SubscriptionRequest
   ): SubscriptionResult = {
     val timestamp =
@@ -91,6 +100,22 @@ class SubscriptionServiceSpec
       assertSameJson(Json.toJson(result.actualConnectorRequest), individualAutomaticSubscriptionRequestJson)
     }
 
+    "throw IllegalStateException if connector returns invalid response" in {
+      intercept[IllegalStateException] {
+        makeSubscribeWhenAutoAllowed(
+          RegistrationDetailsIndividual(
+            Some(eori),
+            TaxPayerId(sapNumber),
+            SafeId("safe-id"),
+            individualName,
+            address,
+            dateOfBirth
+          ),
+          subscriptionGenerateInvalidResponse
+        )
+      }
+    }
+
     "call connector with correct values when only organisation matching details with EORI and date of establishment are given" in {
       val result = makeSubscribeWhenAutoAllowed(
         RegistrationDetailsOrganisation(
@@ -125,6 +150,11 @@ class SubscriptionServiceSpec
         subscriptionSuccessResult,
         result.actualConnectorRequest
       )
+    }
+    "send a request without and captured email address" in {
+      intercept[IllegalStateException] {
+        makeExistingRegistrationRequest(stubRegisterWithoutResponseData(), subscriptionGenerateResponse, contactEmail)
+      }.getMessage shouldBe "REGO6 ResponseData is non existent. This is required to populate subscription request"
     }
 
     "send a request using a complete REG06 response and captured email address" in {
@@ -180,6 +210,171 @@ class SubscriptionServiceSpec
       )
       result.actualServiceCallResult shouldEqual subscriptionSuccessResultIgnoreTimestamp(
         subscriptionSuccessResult,
+        result.actualConnectorRequest
+      )
+    }
+  }
+
+  "Calling Subscribe with service name returns Subscription failed if enrolment already exists" should {
+
+    "call connector with without service name" in {
+
+      when(mockConfig.sub02UseServiceName).thenReturn(false)
+
+      val result = makeSubscribeWhenAutoAllowed(
+        RegistrationDetailsOrganisation(
+          Some(eori),
+          TaxPayerId(sapNumber),
+          safeId = SafeId("safe-id"),
+          businessName,
+          address,
+          Some(dateOfEstablishment),
+          Some(CorporateBody)
+        ),
+        subscriptionFailedResponseForEnrolmentAlreadyExists
+      )
+
+      assertSameJson(
+        Json.toJson(result.actualConnectorRequest),
+        organisationAutomaticSubscriptionRequestWithoutServiceNameJson
+      )
+      result.actualServiceCallResult shouldEqual subscriptionFailureResult
+    }
+  }
+
+  "Calling Subscribe with service name returns Subscription failed if request not processed" should {
+
+    "call connector with without service name" in {
+
+      when(mockConfig.sub02UseServiceName).thenReturn(false)
+
+      val result = makeSubscribeWhenAutoAllowed(
+        RegistrationDetailsOrganisation(
+          Some(eori),
+          TaxPayerId(sapNumber),
+          safeId = SafeId("safe-id"),
+          businessName,
+          address,
+          Some(dateOfEstablishment),
+          Some(CorporateBody)
+        ),
+        subscriptionFailedResponseForRequestNotProcessed
+      )
+
+      assertSameJson(
+        Json.toJson(result.actualConnectorRequest),
+        organisationAutomaticSubscriptionRequestWithoutServiceNameJson
+      )
+      result.actualServiceCallResult shouldEqual subscriptionFailureResultRequestNotProcessed
+    }
+  }
+
+  "Calling Subscribe with service name returns Subscription failed if eori already associated" should {
+
+    "call connector with without service name" in {
+
+      when(mockConfig.sub02UseServiceName).thenReturn(false)
+
+      val result = makeSubscribeWhenAutoAllowed(
+        RegistrationDetailsOrganisation(
+          Some(eori),
+          TaxPayerId(sapNumber),
+          safeId = SafeId("safe-id"),
+          businessName,
+          address,
+          Some(dateOfEstablishment),
+          Some(CorporateBody)
+        ),
+        subscriptionFailedResponseForEoriAlreadyAssociated
+      )
+
+      assertSameJson(
+        Json.toJson(result.actualConnectorRequest),
+        organisationAutomaticSubscriptionRequestWithoutServiceNameJson
+      )
+      result.actualServiceCallResult shouldEqual subscriptionFailureResultEoriAlreadyAssociated
+    }
+  }
+
+  "Calling Subscribe with service name returns Subscription failed if subscription in progress" should {
+
+    "call connector with without service name" in {
+
+      when(mockConfig.sub02UseServiceName).thenReturn(false)
+
+      val result = makeSubscribeWhenAutoAllowed(
+        RegistrationDetailsOrganisation(
+          Some(eori),
+          TaxPayerId(sapNumber),
+          safeId = SafeId("safe-id"),
+          businessName,
+          address,
+          Some(dateOfEstablishment),
+          Some(CorporateBody)
+        ),
+        subscriptionFailedResponseForSubscriptionInProgress
+      )
+
+      assertSameJson(
+        Json.toJson(result.actualConnectorRequest),
+        organisationAutomaticSubscriptionRequestWithoutServiceNameJson
+      )
+      result.actualServiceCallResult shouldEqual subscriptionFailureResultSubscriptionInProgress
+    }
+  }
+
+  "Calling Subscribe with service name returns Subscription failed if the enrolment failed" should {
+
+    "call connector with without service name" in {
+
+      when(mockConfig.sub02UseServiceName).thenReturn(false)
+
+      val result = makeSubscribeWhenAutoAllowed(
+        RegistrationDetailsOrganisation(
+          Some(eori),
+          TaxPayerId(sapNumber),
+          safeId = SafeId("safe-id"),
+          businessName,
+          address,
+          Some(dateOfEstablishment),
+          Some(CorporateBody)
+        ),
+        subscriptionFailedResponse
+      )
+
+      assertSameJson(
+        Json.toJson(result.actualConnectorRequest),
+        organisationAutomaticSubscriptionRequestWithoutServiceNameJson
+      )
+      result.actualServiceCallResult shouldEqual subscriptionFailureResultSubscriptionFailed
+    }
+  }
+
+  "Calling Subscribe with service name returns Subscription Pending response if the subscription is pending" should {
+
+    "call connector with without service name" in {
+
+      when(mockConfig.sub02UseServiceName).thenReturn(false)
+
+      val result = makeSubscribeWhenAutoAllowed(
+        RegistrationDetailsOrganisation(
+          Some(eori),
+          TaxPayerId(sapNumber),
+          safeId = SafeId("safe-id"),
+          businessName,
+          address,
+          Some(dateOfEstablishment),
+          Some(CorporateBody)
+        ),
+        subscriptionPendingResponse
+      )
+
+      assertSameJson(
+        Json.toJson(result.actualConnectorRequest),
+        organisationAutomaticSubscriptionRequestWithoutServiceNameJson
+      )
+      result.actualServiceCallResult shouldEqual subscriptionPendingResultIgnoreTimestamp(
+        subscriptionPendingResult,
         result.actualConnectorRequest
       )
     }

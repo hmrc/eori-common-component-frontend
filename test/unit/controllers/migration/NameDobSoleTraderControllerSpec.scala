@@ -253,6 +253,21 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
       }
     }
 
+    "validation error when given name is having invalid characters for Row" in {
+      submitFormInCreateMode(
+        createFormAllFieldsNameDobMap + (firstNameFieldId -> stringContainingInvalidCharacters),
+        location = "eu"
+      ) { result =>
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter a given name without invalid characters"
+        page.getElementsText(
+          firstNameFieldLevelErrorXPath
+        ) shouldBe "Error: Enter a given name without invalid characters"
+        page.getElementsText("title") should startWith("Error: ")
+        verifyZeroInteractions(mockSubscriptionBusinessService)
+      }
+    }
+
     "validation error when first name more than 35 characters" in {
       submitFormInCreateMode(createFormAllFieldsNameDobMap + (firstNameFieldName -> stringContaining36Characters)) {
         result =>
@@ -312,6 +327,21 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
         val page = CdsPage(contentAsString(result))
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your family name"
         page.getElementsText(lastNameFieldLevelErrorXPath) shouldBe "Error: Enter your family name"
+        page.getElementsText("title") should startWith("Error: ")
+        verifyZeroInteractions(mockSubscriptionBusinessService)
+      }
+    }
+
+    "validation error when last name more than 35 characters for Row" in {
+      submitFormInCreateMode(
+        createFormAllFieldsNameDobMap + (lastNameFieldName -> stringContaining36Characters),
+        location = "eu"
+      ) { result =>
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The family name must be 35 characters or less"
+        page.getElementsText(
+          lastNameFieldLevelErrorXPath
+        ) shouldBe "Error: The family name must be 35 characters or less"
         page.getElementsText("title") should startWith("Error: ")
         verifyZeroInteractions(mockSubscriptionBusinessService)
       }

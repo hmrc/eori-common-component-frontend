@@ -98,6 +98,17 @@ class YouCannotUseServiceControllerSpec extends ControllerSpec with AuthActionMo
 
       verify(unableToUseIdPage).apply(any(), any())(any(), any())
     }
+
+    "redirect to What is Your email page " in {
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
+      when(mockSessionCache.eori(any())).thenReturn(Future.successful(None))
+      val result =
+        controller.unableToUseIdPage(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some("/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori")
+
+    }
   }
 
   private def page()(test: Future[Result] => Any) = {

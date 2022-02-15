@@ -100,6 +100,13 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
         status(result) shouldBe OK
       }
     }
+
+    "throw IllegalArgumentException when session cache holds invalid Organisation type" in {
+      showFormWithAuthenticatedUser(userLocation = None) { result =>
+        status(result) shouldBe OK
+      }
+    }
+
   }
 
   "Submitting the form" should {
@@ -184,7 +191,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
   def showFormWithAuthenticatedUser(
     userId: String = defaultUserId,
     userLocation: Option[String] = Some(UserLocation.Uk)
-  )(test: Future[Result] => Any) {
+  )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
 
     when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(userLocation)
@@ -192,7 +199,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
     test(organisationTypeController.form(atarService).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
-  def showFormWithUnauthenticatedUser(test: Future[Result] => Any) {
+  def showFormWithUnauthenticatedUser(test: Future[Result] => Any): Unit = {
     withNotLoggedInUser(mockAuthConnector)
 
     test(organisationTypeController.form(atarService).apply(SessionBuilder.buildRequestWithSessionNoUser))
@@ -202,7 +209,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
     form: Map[String, String],
     userId: String = defaultUserId,
     userLocation: Option[String] = Some(UserLocation.Uk)
-  )(test: Future[Result] => Any) {
+  )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
 
     when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(userLocation)
