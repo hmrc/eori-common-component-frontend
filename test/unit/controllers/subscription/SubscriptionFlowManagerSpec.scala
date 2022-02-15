@@ -165,21 +165,6 @@ class SubscriptionFlowManagerSpec
       verify(mockRequestSessionData)
         .storeUserSubscriptionFlow(IndividualFlow, UserLocationPage.url(atarService))(mockRequest)
     }
-    /*"start Individual Subscription Flow for individual for ROW journey with CustomsID" in {
-      when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
-      when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Eu))
-      when(mockIndividualRegistrationDetails.customsId).thenReturn(Some(Utr("1111111111k")))
-      when(mockCdsFrontendDataCache.registrationDetails(mockHC))
-        .thenReturn(Future.successful(mockIndividualRegistrationDetails))
-      val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(Some(UserLocationPage), Individual, atarService)(mockHC, mockRequest))
-
-      subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
-      session shouldBe mockSession
-
-      verify(mockRequestSessionData)
-        .storeUserSubscriptionFlow(IndividualFlow, UserLocationPage.url(atarService))(mockRequest)
-    }*/
 
     "throw DataUnavailableException when registration details is not available in cache" in {
       when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
