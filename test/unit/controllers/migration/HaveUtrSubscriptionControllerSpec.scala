@@ -271,15 +271,6 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       }
     }
 
-    /*  "throws an exception if invalidUtrRequest is submitted" in {
-      when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(SoleTrader))
-      when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowOrganisationFlow)
-      when(mockSubscriptionDetailsService.cacheUtrMatchForNoAnswer(any[Option[UtrMatchModel]])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(()))
-      intercept[IllegalStateException] {
-        submit(InvalidUtrRequest)(result => status(result))
-      }.getMessage shouldBe "No Data from the form"
-    }*/
   }
 
   private def createForm()(test: Future[Result] => Any) = {
