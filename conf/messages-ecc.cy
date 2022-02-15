@@ -76,7 +76,7 @@ ecc.subscription.information.para1=Er mwyn eich tanysgrifio i’r gwasanaeth ar 
 ecc.subscription.information.para2.heading=Rhif EORI sy’n dechrau gyda GB
 ecc.subscription.information.para2=Mae’n rhaid i chi {0} cyn i chi allu gwneud cais am {1}. Fel arfer, mae angen aros oddeutu 30 munud ar ôl gwneud cais am rif EORI cyn i chi allu mynd ati gyda’ch cais am Ddyfarniad Tariffau Uwch, ond gall gymryd hyd at 48 awr.
 ecc.subscription.information.para2.link=gael rhif EORI (yn agor ffenestr neu dab newydd)
-ecc.subscription.information.para2.warning=!Mae’n rhaid i’r rhif EORI sy’n dechrau gyda GB fod yr un sy’n gysylltiedig â’r Dynodydd Defnyddiwr (ID) Porth y Llywodraeth a ddefnyddiwyd gennych pan gawsoch rif EORI.
+ecc.subscription.information.para2.warning=Mae’n rhaid i’r rhif EORI sy’n dechrau gyda GB fod yr un sy’n gysylltiedig â’r Dynodydd Defnyddiwr (ID) Porth y Llywodraeth a ddefnyddiwyd gennych pan gawsoch rif EORI.
 
 ecc.subscription.information.section.organisation.subheading=Manylion y cwmni neu sefydliad arall
 ecc.subscription.information.section.organisation.list.heading=Os ydych yn gwmni cyfyngedig, partneriaeth neu elusen, bydd angen y canlynol arnoch:
