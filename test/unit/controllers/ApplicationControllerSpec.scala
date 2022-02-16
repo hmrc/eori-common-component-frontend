@@ -63,6 +63,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       .thenReturn(Future.successful(None))
     when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any()))
       .thenReturn(Future.successful(false))
+    when(groupEnrolmentExtractor.checkAllServiceEnrolments(any())(any())).thenReturn(Future.successful(None))
   }
 
   override protected def afterEach(): Unit = {
@@ -105,6 +106,26 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       status(result) shouldBe SEE_OTHER
       await(result).header.headers("Location") should endWith("check-existing-eori")
       verifyZeroInteractions(mockSessionCache)
+    }
+
+    "direct authenticated users to start short-cut subscription if they have got any service enrolment" in {
+      when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(gvmsService))(any()))
+        .thenReturn(Future.successful(groupEnrolment(atarService)))
+      when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(Future.successful(List.empty))
+      when(groupEnrolmentExtractor.checkAllServiceEnrolments(any())(any())).thenReturn(
+        Future.successful(groupEnrolment(atarService))
+      )
+      when(mockEnrolmentStoreProxyService.isEnrolmentInUse(any(), any())(any())).thenReturn(Future.successful(None))
+      when(mockSessionCache.saveGroupEnrolment(any[EnrolmentResponse])(any())).thenReturn(Future.successful(true))
+      val atarEnrolment   = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", "GB134123")
+      val route1Enrolment = Enrolment("HMRC-CTS-ORG").withIdentifier("EORINumber", "GB134123")
+      withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set(atarEnrolment, route1Enrolment))
+
+      val result =
+        controller.startSubscription(gvmsService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+
+      status(result) shouldBe SEE_OTHER
+      await(result).header.headers("Location") should endWith("check-existing-eori")
     }
 
     "direct authenticated users where group id has CDS enrolment to start short-cut subscription" in {

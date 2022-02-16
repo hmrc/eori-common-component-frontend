@@ -32,6 +32,18 @@ trait TestData {
       Some("/test-atar/feedback")
     )
 
+  val gvmsService: Service =
+    Service(
+      "gagmr",
+      "HMRC-GVMS-ORG",
+      "GaGMR",
+      "/test-gagmr/callback",
+      "/test-gagmr/accessibility",
+      "GVMS Service",
+      "",
+      Some("/test-gvms/feedback")
+    )
+
   val otherService: Service =
     Service(
       "other",

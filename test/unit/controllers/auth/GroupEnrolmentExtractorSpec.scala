@@ -35,7 +35,8 @@ class GroupEnrolmentExtractorSpec extends UnitSpec with MockitoSugar with Before
 
   private val enrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
 
-  private val enrolmentResponse = EnrolmentResponse("HMRC-CUS-ORG", "ACTIVATED", List.empty)
+  private val enrolmentResponse     = EnrolmentResponse("HMRC-CUS-ORG", "ACTIVATED", List.empty)
+  private val atarEnrolmentResponse = EnrolmentResponse("HMRC-ATAR-ORG", "ACTIVATED", List.empty)
 
   private val hc = HeaderCarrier()
 
@@ -98,6 +99,32 @@ class GroupEnrolmentExtractorSpec extends UnitSpec with MockitoSugar with Before
         val result = groupEnrolmentExtractor.groupIdEnrolmentTo("groupId", Service.cds)(hc)
 
         result.futureValue shouldBe None
+      }
+    }
+
+    "calling checkAllEnrollments should return enrolmentResponse while" when {
+
+      "groupId has any Enrolment" in {
+
+        when(enrolmentStoreProxyService.checkAllEnrolmentsForGroup(any(), any())(any()))
+          .thenReturn(Future.successful(Some(atarEnrolmentResponse)))
+
+        val result = groupEnrolmentExtractor.checkAllServiceEnrolments("groupId")(hc)
+
+        result.futureValue shouldBe Some(atarEnrolmentResponse)
+      }
+
+      "return None" when {
+
+        "groupId doesn't have any enrolment" in {
+
+          when(enrolmentStoreProxyService.checkAllEnrolmentsForGroup(any(), any())(any()))
+            .thenReturn(Future.successful(None))
+
+          val result = groupEnrolmentExtractor.checkAllServiceEnrolments("groupId")(hc)
+
+          result.futureValue shouldBe None
+        }
       }
     }
 

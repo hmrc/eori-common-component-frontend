@@ -40,8 +40,8 @@ class EnrolmentStoreProxyService @Inject() (enrolmentStoreProxyConnector: Enrolm
       .map(_.enrolments)
       .map(enrolment => enrolment.find(x => x.state == activatedState && x.service == service.enrolmentKey))
 
-  def checkAllEnrolmentsForGroup(groupId: GroupId,serviceList: List[Service])(implicit
-                                                            hc: HeaderCarrier
+  def checkAllEnrolmentsForGroup(groupId: GroupId, serviceList: List[Service])(implicit
+    hc: HeaderCarrier
   ): Future[Option[EnrolmentResponse]] = {
     val serviceEnrolments = serviceList.map(_.enrolmentKey)
     enrolmentStoreProxyConnector

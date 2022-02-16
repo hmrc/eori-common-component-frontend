@@ -20,7 +20,11 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.{AppConfig, ServiceConfig}
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, EnrolmentExtractor, GroupEnrolmentExtractor}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
+  AuthAction,
+  EnrolmentExtractor,
+  GroupEnrolmentExtractor
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Eori, ExistingEori, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
@@ -73,7 +77,7 @@ class ApplicationController @Inject() (
   private def cdsEnrolmentCheck(loggedInUser: LoggedInUserWithEnrolments, groupId: String, service: Service)(implicit
     hc: HeaderCarrier,
     request: Request[_]
-  ): Future[Result] = {
+  ): Future[Result] =
     isEnrolmentInUse(service, loggedInUser).flatMap {
       eoriFromUsedEnrolmentOpt =>
         if (eoriFromUsedEnrolmentOpt.isEmpty)
@@ -85,7 +89,7 @@ class ApplicationController @Inject() (
                 cache.saveGroupEnrolment(groupEnrolment).map { _ =>
                   Redirect(routes.HasExistingEoriController.displayPage(service)) // AutoEnrolment
                 }
-              case _ => checkAllServiceEnrolments(groupId,service)
+              case _ => checkAllServiceEnrolments(groupId, service)
 
             }
         else
@@ -93,7 +97,6 @@ class ApplicationController @Inject() (
             Redirect(routes.YouCannotUseServiceController.unableToUseIdPage(service))
           }
     }
-  }
 
   def logout(service: Service): Action[AnyContent] =
     authorise.ggAuthorisedUserAction {
@@ -109,10 +112,10 @@ class ApplicationController @Inject() (
     }
   }
 
-  private def checkAllServiceEnrolments(groupId: String,service:Service)(implicit
-                                                         hc: HeaderCarrier,
-                                                         request: Request[_]
-  ): Future[Result] = {
+  private def checkAllServiceEnrolments(groupId: String, service: Service)(implicit
+    hc: HeaderCarrier,
+    request: Request[_]
+  ): Future[Result] =
     groupEnrolment.checkAllServiceEnrolments(groupId).flatMap {
       case Some(groupEnrolment) if groupEnrolment.eori.isDefined =>
         cache.saveGroupEnrolment(groupEnrolment).map { _ =>
@@ -121,7 +124,6 @@ class ApplicationController @Inject() (
       case _ =>
         Future.successful(Ok(viewStartSubscribe(service))) // Display information page
     }
-  }
 
 }
 
