@@ -86,10 +86,17 @@ class HasExistingEoriController @Inject() (
   private def existingEoriToUse(implicit loggedInUser: LoggedInUserWithEnrolments, hc: HeaderCarrier): Future[String] =
     enrolledForService(loggedInUser, Service.cds) match {
       case Some(eori) => Future.successful(eori.id)
-      case _ =>
-        cache.groupEnrolment.map(_.eori.getOrElse(throw DataUnavailableException("No EORI found")))
+      case _ => checkOtherEnrollments
+
     }
 
+  private def checkOtherEnrollments(implicit loggedInUser: LoggedInUserWithEnrolments,hc: HeaderCarrier) = {
+    enrolledForOtherServices(loggedInUser) match {
+      case Some(eori) => Future.successful(eori.id)
+      case _ => cache.groupEnrolment.map(_.eori.getOrElse(throw DataUnavailableException("No EORI found")))
+    }
+  }
 }
+
 
 case class FailedEnrolmentException(status: Int) extends Exception(s"Enrolment failed with status $status")

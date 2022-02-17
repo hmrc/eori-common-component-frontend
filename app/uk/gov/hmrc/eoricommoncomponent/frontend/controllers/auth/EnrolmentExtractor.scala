@@ -37,8 +37,29 @@ trait EnrolmentExtractor {
             .map(identifier => identifier.value)
       )
 
+  private def identifierForOtherEnrollments(
+                             identifierName: String,
+                             loggedInUser: LoggedInUserWithEnrolments
+                           ): Option[String] ={
+
+    val activatedState = "Activated"
+    val serviceList = Service.supportedServicesMap.map(_._2).toList
+    val serviceEnrolments = serviceList.map(_.enrolmentKey)
+    loggedInUser.enrolments.enrolments.find(x => x.state == activatedState && serviceEnrolments.contains(x.key))
+      .flatMap(
+        enrolment =>
+          enrolment
+            .getIdentifier(identifierName)
+            .map(identifier => identifier.value)
+      )
+  }
+
   def enrolledForService(loggedInUser: LoggedInUserWithEnrolments, service: Service): Option[Eori] =
     identifierFor(service.enrolmentKey, EoriIdentifier, loggedInUser).map(Eori)
+
+
+  def enrolledForOtherServices(loggedInUser: LoggedInUserWithEnrolments): Option[Eori] =
+    identifierForOtherEnrollments(EoriIdentifier, loggedInUser).map(Eori)
 
   def activatedEnrolmentForService(loggedInUser: LoggedInUserWithEnrolments, service: Service): Option[Eori] =
     loggedInUser.enrolments
