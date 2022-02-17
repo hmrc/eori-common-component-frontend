@@ -92,7 +92,7 @@ class ApplicationController @Inject() (
                 cache.saveGroupEnrolment(groupEnrolment).map { _ =>
                   Redirect(routes.HasExistingEoriController.displayPage(service)) // AutoEnrolment
                 }
-              case _ => checkAllServiceEnrolments(loggedInUser,groupId, service)
+              case _ => checkAllServiceEnrolments(loggedInUser, groupId, service)
 
             }
         else
@@ -115,21 +115,22 @@ class ApplicationController @Inject() (
     }
   }
 
-  private def checkAllServiceEnrolments(loggedInUser:LoggedInUserWithEnrolments, groupId: String, service: Service)(implicit
-    hc: HeaderCarrier,
-    request: Request[_]
-  ): Future[Result] =
+  private def checkAllServiceEnrolments(
+    loggedInUser: LoggedInUserWithEnrolments,
+    groupId: String,
+    service: Service
+  )(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] =
     if (isUserEnrolledForOtherServices(loggedInUser))
       Future.successful(Redirect(routes.HasExistingEoriController.displayPage(service)))
     else
-    groupEnrolment.checkAllServiceEnrolments(groupId).flatMap {
-      case Some(groupEnrolment) if groupEnrolment.eori.isDefined =>
-        cache.saveGroupEnrolment(groupEnrolment).map { _ =>
-          Redirect(routes.HasExistingEoriController.displayPage(service)) // AutoEnrolment
-        }
-      case _ =>
-        Future.successful(Ok(viewStartSubscribe(service))) // Display information page
-    }
+      groupEnrolment.checkAllServiceEnrolments(groupId).flatMap {
+        case Some(groupEnrolment) if groupEnrolment.eori.isDefined =>
+          cache.saveGroupEnrolment(groupEnrolment).map { _ =>
+            Redirect(routes.HasExistingEoriController.displayPage(service)) // AutoEnrolment
+          }
+        case _ =>
+          Future.successful(Ok(viewStartSubscribe(service))) // Display information page
+      }
 
 }
 

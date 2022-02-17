@@ -147,6 +147,25 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       verify(mockSessionCache).saveGroupEnrolment(any[EnrolmentResponse])(any())
     }
 
+    "direct authenticated users where group id has other than  enrolment to start short-cut subscription" in {
+      when(groupEnrolmentExtractor.checkAllServiceEnrolments(any())(any()))
+        .thenReturn(Future.successful(groupEnrolment(atarService)))
+      when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(Service.cds))(any()))
+        .thenReturn(Future.successful(None))
+      when(mockSessionCache.saveGroupEnrolment(any[EnrolmentResponse])(any())).thenReturn(Future.successful(true))
+      when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(Future.successful(List.empty))
+      when(mockEnrolmentStoreProxyService.isEnrolmentInUse(any(), any())(any())).thenReturn(Future.successful(None))
+
+      withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set.empty)
+
+      val result =
+        controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+
+      status(result) shouldBe SEE_OTHER
+      await(result).header.headers("Location") should endWith("check-existing-eori")
+      verify(mockSessionCache).saveGroupEnrolment(any[EnrolmentResponse])(any())
+    }
+
     "inform authenticated users with ATAR enrolment that subscription exists" in {
       val atarEnrolment = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", "GB134123")
 
