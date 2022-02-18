@@ -43,7 +43,7 @@ trait EnrolmentExtractor {
   ): Option[String] = {
 
     val activatedState    = "Activated"
-    val serviceList       = Service.supportedServicesMap.map(_._2).toList
+    val serviceList       = Service.supportedServicesMap.values.toList
     val serviceEnrolments = serviceList.map(_.enrolmentKey)
     loggedInUser.enrolments.enrolments.find(x => x.state == activatedState && serviceEnrolments.contains(x.key))
       .flatMap(

@@ -52,7 +52,9 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
   private val userEORI  = "GB123456463324"
   private val groupEORI = "GB435474553564"
 
-  private val atarEnrolment = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", "GB134123")
+  private val atarEnrolment   = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", "GB134123")
+  private val gvmsEnrolment   = Enrolment("HMRC-GVMS-ORG").withIdentifier("EORINumber", "GB13412345")
+  private val route1Enrolment = Enrolment("HMRC-CTS-ORG").withIdentifier("EORINumber", "GB13412346")
 
   private val controller =
     new HasExistingEoriController(
@@ -96,6 +98,26 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
         page.title should startWith("Your Government Gateway user ID is linked to an EORI")
 
         page.getElementText(eoriElement) shouldBe userEORI
+      }
+    }
+
+    "pick the first enrollment apart from CDS and display correct EORI if the user has other enrollments and no CDS enrolment" in {
+      displayPage(atarService, cdsEnrolmentId = None, otherEnrolments = Set(gvmsEnrolment, route1Enrolment)) { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should startWith("Your Government Gateway user ID is linked to an EORI")
+
+        page.getElementText(eoriElement) shouldBe "GB13412345"
+      }
+    }
+
+    "pick the CDS and display correct EORI if the user has CDS enrolment along with other enrollments" in {
+      displayPage(atarService, Some(userEORI), otherEnrolments = Set(gvmsEnrolment, route1Enrolment)) { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should startWith("Your Government Gateway user ID is linked to an EORI")
+
+        page.getElementText(eoriElement) shouldBe "GB123456463324"
       }
     }
 

@@ -17,7 +17,7 @@
 package unit.controllers
 
 import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
@@ -108,7 +108,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       verifyZeroInteractions(mockSessionCache)
     }
 
-    "direct authenticated users to start short-cut subscription if they have got any service enrolment" in {
+    "direct authenticated users to start short-cut subscription and pick first enrollment of any service enrolment apart from CDS" in {
       when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(gvmsService))(any()))
         .thenReturn(Future.successful(groupEnrolment(atarService)))
       when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(Future.successful(List.empty))
@@ -147,7 +147,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       verify(mockSessionCache).saveGroupEnrolment(any[EnrolmentResponse])(any())
     }
 
-    "direct authenticated users where group id has other than  enrolment to start short-cut subscription" in {
+    "direct authenticated users where group id has other than  enrolment to start short-cut subscription apart from CDS" in {
       when(groupEnrolmentExtractor.checkAllServiceEnrolments(any())(any()))
         .thenReturn(Future.successful(groupEnrolment(atarService)))
       when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(Service.cds))(any()))
@@ -160,10 +160,10 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
       val result =
         controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
-
+      val atarEnrollmentResponse =
+        EnrolmentResponse("HMRC-ATAR-ORG", "Activated", List(KeyValue("EORINumber", "GB134123")))
       status(result) shouldBe SEE_OTHER
       await(result).header.headers("Location") should endWith("check-existing-eori")
-      verify(mockSessionCache).saveGroupEnrolment(any[EnrolmentResponse])(any())
     }
 
     "inform authenticated users with ATAR enrolment that subscription exists" in {
