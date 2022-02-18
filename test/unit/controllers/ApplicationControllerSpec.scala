@@ -17,7 +17,7 @@
 package unit.controllers
 
 import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.{any, eq => meq}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
@@ -108,7 +108,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       verifyZeroInteractions(mockSessionCache)
     }
 
-    "direct authenticated users to start short-cut subscription and pick first enrollment of any service enrolment apart from CDS" in {
+    "direct authenticated users to start short-cut subscription and pick other enrolment apart from CDS" in {
       when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(gvmsService))(any()))
         .thenReturn(Future.successful(groupEnrolment(atarService)))
       when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(Future.successful(List.empty))
@@ -160,8 +160,6 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
       val result =
         controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
-      val atarEnrollmentResponse =
-        EnrolmentResponse("HMRC-ATAR-ORG", "Activated", List(KeyValue("EORINumber", "GB134123")))
       status(result) shouldBe SEE_OTHER
       await(result).header.headers("Location") should endWith("check-existing-eori")
     }
