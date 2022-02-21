@@ -32,7 +32,7 @@ class EnrolmentService @Inject() (
 )(implicit ec: ExecutionContext)
     extends EnrolmentExtractor {
 
-  def enrolWithExistingCDSEnrolment(eori: String, service: Service)(implicit hc: HeaderCarrier): Future[Int] =
+  def enrolWithExistingEnrolment(eori: String, service: Service)(implicit hc: HeaderCarrier): Future[Int] =
     enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(KnownFactsQuery(eori)).flatMap {
       case Some(knownFacts) =>
         val doeVerifier: KeyValuePair =

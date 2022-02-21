@@ -24,9 +24,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 class EnrolmentExtractorSpec extends UnitSpec {
 
-  private val eori = Eori("GB123456789012")
-  private val utr  = Utr("1111111111K")
-  private val nino = Nino("NINO")
+  private val eori     = Eori("GB123456789012")
+  private val gvmseori = Eori("GB123456789013")
+  private val utr      = Utr("1111111111K")
+  private val nino     = Nino("NINO")
 
   private def loggedInUser(enrolments: Set[Enrolment]) =
     LoggedInUserWithEnrolments(None, None, Enrolments(enrolments), None, None)
@@ -67,6 +68,28 @@ class EnrolmentExtractorSpec extends UnitSpec {
 
         enrolmentExtractor.enrolledForService(loggedInUser(Set.empty), Service.cds) shouldBe None
       }
+    }
+
+    "return EORI correctly while calling enrolledForOtherServices" when {
+
+      "user is enrolled for ATaR ang gvms" in {
+
+        val atarEnrolment = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", eori.id)
+        val gvmsEnrolment = Enrolment("HMRC-GVMS-ORG").withIdentifier("EORINumber", gvmseori.id)
+
+        val result = enrolmentExtractor.enrolledForService(loggedInUser(Set(atarEnrolment, gvmsEnrolment)), atarService)
+
+        result shouldBe Some(eori)
+      }
+    }
+
+    "doesn't return EORI if there are no enrollments while calling enrolledForOtherServices" when {
+
+      "user is not enrolled for any supported services" in {
+
+        enrolmentExtractor.enrolledForOtherServices(loggedInUser(Set.empty)) shouldBe None
+      }
+
     }
 
     "return EORI" when {

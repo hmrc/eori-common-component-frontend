@@ -17,13 +17,11 @@
 package unit.models
 
 import org.scalatest.{EitherValues, MustMatchers, OptionValues, WordSpec}
-import play.api.mvc.PathBindable
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 class ServiceSpec extends WordSpec with MustMatchers with EitherValues with OptionValues {
 
   "Service" must {
-    val pathBindable = implicitly[PathBindable[String]]
 
     "unbind the values correctly" in {
 

@@ -52,7 +52,9 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
   private val userEORI  = "GB123456463324"
   private val groupEORI = "GB435474553564"
 
-  private val atarEnrolment = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", "GB134123")
+  private val atarEnrolment   = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", "GB134123")
+  private val gvmsEnrolment   = Enrolment("HMRC-GVMS-ORG").withIdentifier("EORINumber", "GB13412345")
+  private val route1Enrolment = Enrolment("HMRC-CTS-ORG").withIdentifier("EORINumber", "GB13412346")
 
   private val controller =
     new HasExistingEoriController(
@@ -99,8 +101,39 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
       }
     }
 
+    "pick the first enrollment apart from CDS and display correct EORI if the user has other enrollments and no CDS enrolment" in {
+      displayPage(atarService, cdsEnrolmentId = None, otherEnrolments = Set(gvmsEnrolment, route1Enrolment)) { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should startWith("Your Government Gateway user ID is linked to an EORI")
+
+        page.getElementText(eoriElement) shouldBe "GB13412345"
+      }
+    }
+
+    "pick the CDS and display correct EORI if the user has CDS enrolment along with other enrollments" in {
+      displayPage(atarService, Some(userEORI), otherEnrolments = Set(gvmsEnrolment, route1Enrolment)) { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should startWith("Your Government Gateway user ID is linked to an EORI")
+
+        page.getElementText(eoriElement) shouldBe "GB123456463324"
+      }
+    }
+
     "display page with group eori" in {
       displayPage(atarService, None) { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should startWith("Your Government Gateway user ID is linked to an EORI")
+
+        page.getElementText(eoriElement) shouldBe groupEORI
+      }
+    }
+
+    "display page with group eori having atar enrolment" in {
+      userHasGroupEnrolmentToATAR
+      displayPage(gvmsService, None) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
         page.title should startWith("Your Government Gateway user ID is linked to an EORI")
@@ -119,10 +152,33 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
       }
     }
 
-    "redirect to check email page when enrolWithExistingCDSEnrolment fails" in {
+    "redirect to email page when enrolWithExistingEnrolment fails for group having CDS enrolment with missing known facts" in {
       enrolMissingEnrolment(atarService) { result =>
         status(result) shouldBe SEE_OTHER
         await(result).header.headers("Location") should endWith("/atar/subscribe/check-user")
+      }
+    }
+
+    "redirect to email page when enrolWithExistingEnrolment fails for user having CDS enrolment with missing known facts" in {
+      enrolMissingEnrolmentForUser(atarService) { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("/atar/subscribe/check-user")
+      }
+    }
+
+    "redirect to email page when enrolWithExistingEnrolment fails for group having ATAR enrolment with missing known facts" in {
+      userHasGroupEnrolmentToATAR
+      enrolMissingEnrolment(gvmsService) { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("/gagmr/subscribe/check-user")
+      }
+    }
+
+    "redirect to email page when enrolWithExistingEnrolment fails for user having ATAR enrolment with missing known facts" in {
+      userDoesNotHaveGroupEnrolmentToService
+      enrolMissingEnrolmentForUser(gvmsService) { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("/gagmr/subscribe/check-user")
       }
     }
 
@@ -183,7 +239,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   private def enrol(service: Service, responseStatus: Int)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    when(mockEnrolmentService.enrolWithExistingCDSEnrolment(any[String], any[Service])(any())).thenReturn(
+    when(mockEnrolmentService.enrolWithExistingEnrolment(any[String], any[Service])(any())).thenReturn(
       Future(responseStatus)
     )
     await(test(controller.enrol(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
@@ -191,7 +247,15 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   private def enrolMissingEnrolment(service: Service)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    when(mockEnrolmentService.enrolWithExistingCDSEnrolment(any[String], any[Service])(any())).thenReturn(
+    when(mockEnrolmentService.enrolWithExistingEnrolment(any[String], any[Service])(any())).thenReturn(
+      Future.failed(MissingEnrolmentException("EORI"))
+    )
+    await(test(controller.enrol(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+  }
+
+  private def enrolMissingEnrolmentForUser(service: Service)(test: Future[Result] => Any) = {
+    withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set(atarEnrolment))
+    when(mockEnrolmentService.enrolWithExistingEnrolment(any[String], any[Service])(any())).thenReturn(
       Future.failed(MissingEnrolmentException("EORI"))
     )
     await(test(controller.enrol(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
@@ -210,6 +274,14 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
       .thenReturn(
         Future.successful(
           EnrolmentResponse(Service.cds.enrolmentKey, "Activated", List(KeyValue("EORINumber", groupEORI)))
+        )
+      )
+
+  private def userHasGroupEnrolmentToATAR =
+    when(mockSessionCache.groupEnrolment(any[HeaderCarrier]))
+      .thenReturn(
+        Future.successful(
+          EnrolmentResponse(atarService.enrolmentKey, "Activated", List(KeyValue("EORINumber", groupEORI)))
         )
       )
 

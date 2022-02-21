@@ -17,11 +17,7 @@
 package unit.domain
 
 import base.UnitSpec
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
-  OrganisationFlow,
-  RowOrganisationFlow,
-  SubscriptionFlow
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{OrganisationFlow, SubscriptionFlow}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 class SubscriptionFlowSpec extends UnitSpec {
