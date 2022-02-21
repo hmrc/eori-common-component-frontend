@@ -130,6 +130,17 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
         page.getElementText(eoriElement) shouldBe groupEORI
       }
     }
+
+    "display page with group eori having atar enrolment" in {
+      userHasGroupEnrolmentToATAR
+      displayPage(gvmsService, None) { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should startWith("Your Government Gateway user ID is linked to an EORI")
+
+        page.getElementText(eoriElement) shouldBe groupEORI
+      }
+    }
   }
 
   "Has Existing EORI Controller enrol" should {
@@ -141,10 +152,32 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
       }
     }
 
-    "redirect to check email page when enrolWithExistingCDSEnrolment fails" in {
+    "redirect to email page when enrolWithExistingEnrolment fails for group having CDS enrolment with missing known facts" in {
       enrolMissingEnrolment(atarService) { result =>
         status(result) shouldBe SEE_OTHER
         await(result).header.headers("Location") should endWith("/atar/subscribe/check-user")
+      }
+    }
+
+    "redirect to email page when enrolWithExistingEnrolment fails for user having CDS enrolment with missing known facts" in {
+      enrolMissingEnrolmentForUser(atarService) { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("/atar/subscribe/check-user")
+      }
+    }
+
+    "redirect to email page when enrolWithExistingEnrolment fails for group having ATAR enrolment with missing known facts" in {
+      userHasGroupEnrolmentToATAR
+      enrolMissingEnrolment(gvmsService) { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("/gagmr/subscribe/check-user")
+      }
+    }
+
+    "redirect to email page when enrolWithExistingEnrolment fails for user having ATAR enrolment with missing known facts" in {
+      enrolMissingEnrolmentForUser(gvmsService) { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("/gagmr/subscribe/check-user")
       }
     }
 
@@ -205,7 +238,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   private def enrol(service: Service, responseStatus: Int)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    when(mockEnrolmentService.enrolWithExistingCDSEnrolment(any[String], any[Service])(any())).thenReturn(
+    when(mockEnrolmentService.enrolWithExistingEnrolment(any[String], any[Service])(any())).thenReturn(
       Future(responseStatus)
     )
     await(test(controller.enrol(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
@@ -213,7 +246,15 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   private def enrolMissingEnrolment(service: Service)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    when(mockEnrolmentService.enrolWithExistingCDSEnrolment(any[String], any[Service])(any())).thenReturn(
+    when(mockEnrolmentService.enrolWithExistingEnrolment(any[String], any[Service])(any())).thenReturn(
+      Future.failed(MissingEnrolmentException("EORI"))
+    )
+    await(test(controller.enrol(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+  }
+
+  private def enrolMissingEnrolmentForUser(service: Service)(test: Future[Result] => Any) = {
+    withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set(atarEnrolment))
+    when(mockEnrolmentService.enrolWithExistingEnrolment(any[String], any[Service])(any())).thenReturn(
       Future.failed(MissingEnrolmentException("EORI"))
     )
     await(test(controller.enrol(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
@@ -232,6 +273,14 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
       .thenReturn(
         Future.successful(
           EnrolmentResponse(Service.cds.enrolmentKey, "Activated", List(KeyValue("EORINumber", groupEORI)))
+        )
+      )
+
+  private def userHasGroupEnrolmentToATAR =
+    when(mockSessionCache.groupEnrolment(any[HeaderCarrier]))
+      .thenReturn(
+        Future.successful(
+          EnrolmentResponse(atarService.enrolmentKey, "Activated", List(KeyValue("EORINumber", groupEORI)))
         )
       )
 
