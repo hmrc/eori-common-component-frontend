@@ -16,8 +16,6 @@
 
 package integration
 
-import java.time.LocalDateTime
-
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -32,6 +30,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import util.externalservices.ExternalServicesConfig._
 import util.externalservices.{AuditService, SubscriptionStatusMessagingService}
+
+import java.time.LocalDateTime
 
 class SubscriptionStatusConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
 
@@ -49,6 +49,7 @@ class SubscriptionStatusConnectorSpec extends IntegrationTestsSpec with ScalaFut
   private val subscriptionStatusConnector = app.injector.instanceOf[SubscriptionStatusConnector]
   private val AValidTaxPayerID            = "1234567890"
   private val taxPayerId                  = TaxPayerId(AValidTaxPayerID).mdgTaxPayerId
+  private val safeId                      = "someSafeId"
   private val Regime                      = "CDS"
   private val receiptDate                 = LocalDateTime.of(2016, 3, 17, 9, 30, 47, 114)
   private val receiptDateWithZeroSeconds  = LocalDateTime.of(2016, 3, 17, 9, 30, 0, 114)
@@ -57,11 +58,17 @@ class SubscriptionStatusConnectorSpec extends IntegrationTestsSpec with ScalaFut
   private val expectedGetUrl =
     s"/subscription-status?receiptDate=2016-03-17T09${colon}30${colon}47Z&regime=$Regime&taxPayerID=$taxPayerId"
 
+  private val expectedGetUrlWithSafeId =
+    s"/subscription-status?receiptDate=2016-03-17T09${colon}30${colon}47Z&regime=$Regime&SAFE=$safeId"
+
   private val expectedGetUrlForReceiptDateZeroSeconds =
     s"/subscription-status?receiptDate=2016-03-17T09${colon}30${colon}00Z&regime=$Regime&taxPayerID=$taxPayerId"
 
   private val request =
     SubscriptionStatusQueryParams(receiptDate, Regime, "taxPayerID", TaxPayerId(AValidTaxPayerID).mdgTaxPayerId)
+
+  private val requestWithSafeId =
+    SubscriptionStatusQueryParams(receiptDate, Regime, "SAFE", "someSafeId")
 
   private val requestWithReceiptDateZeroSeconds =
     SubscriptionStatusQueryParams(
@@ -107,6 +114,16 @@ class SubscriptionStatusConnectorSpec extends IntegrationTestsSpec with ScalaFut
         responseWithOk.toString
       )
       await(subscriptionStatusConnector.status(request)) must be(
+        responseWithOk.as[SubscriptionStatusResponseHolder].subscriptionStatusResponse
+      )
+    }
+    "return successful response for subscriotion status request providing SAFE ID" in {
+
+      SubscriptionStatusMessagingService.returnTheSubscriptionResponseWhenReceiveRequest(
+        expectedGetUrlWithSafeId,
+        responseWithOk.toString
+      )
+      await(subscriptionStatusConnector.status(requestWithSafeId)) must be(
         responseWithOk.as[SubscriptionStatusResponseHolder].subscriptionStatusResponse
       )
     }

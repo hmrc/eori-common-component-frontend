@@ -40,7 +40,8 @@ trait NameDobSoleTraderPage extends WebPage {
   val lastNameFieldId              = "last-name"
   val lastNameFieldName            = "last-name"
 
-  val middleNameFieldName = "middle-name"
+  val middleNameFieldName            = "middle-name"
+  val middleNameFieldLevelErrorXPath = "//span[@id='middle-name-error'][@class='govuk-error-message']"
 
   val dobFieldLevelErrorXPath    = "//p[@id='date-of-birth-error'][@class='govuk-error-message']"
   val dateOfBirthDayFieldXPath   = "//*[@id='date-of-birth.day']"

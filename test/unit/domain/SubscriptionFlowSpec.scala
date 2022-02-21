@@ -17,7 +17,11 @@
 package unit.domain
 
 import base.UnitSpec
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{OrganisationFlow, SubscriptionFlow}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  OrganisationFlow,
+  RowOrganisationFlow,
+  SubscriptionFlow
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 class SubscriptionFlowSpec extends UnitSpec {
@@ -26,6 +30,7 @@ class SubscriptionFlowSpec extends UnitSpec {
     "create for valid flow name" in {
       SubscriptionFlow("migration-eori-Organisation") shouldBe OrganisationFlow
     }
+
     "throw an exception for create for invalid flow name" in {
       val thrown = intercept[DataUnavailableException] {
         SubscriptionFlow("DOES_NOT_EXISTS") shouldBe OrganisationFlow

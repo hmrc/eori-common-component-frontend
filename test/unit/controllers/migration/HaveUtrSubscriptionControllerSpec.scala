@@ -32,7 +32,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   SubscriptionPage
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{NameOrganisationMatchModel, UtrMatchModel}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_utr_subscription
 import uk.gov.hmrc.http.HeaderCarrier
@@ -44,7 +44,6 @@ import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterEach {
 
@@ -121,6 +120,58 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
         createForm()(result => status(result))
       }.getMessage shouldBe "No organisation type selected by user"
     }
+
+    "populate the formData when the cache is having UtrMatch details" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(SoleTrader))
+      when(mockSubscriptionDetailsService.cachedUtrMatch(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(UtrMatchModel(Some(true), Some("Utr")))))
+      createForm() { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should include(SubscriptionRowIndividualsUtr.title)
+      }
+    }
+  }
+
+  "HaveUtrSubscriptionController reviewForm" should {
+    "return OK and display correct page when orgType is Company" in {
+
+      when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
+      reviewForm() { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should include(SubscriptionRowCompanyUtr.title)
+      }
+    }
+
+    "return OK and display correct page when orgType is Sole Trader" in {
+
+      when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(SoleTrader))
+      reviewForm() { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should include(SubscriptionRowIndividualsUtr.title)
+
+      }
+    }
+
+    "return OK and display correct page when orgType is Individual" in {
+
+      when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Individual))
+      reviewForm() { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should include(SubscriptionRowIndividualsUtr.title)
+      }
+    }
+
+    "throws an exception if orgType is not found" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
+      intercept[DataUnavailableException] {
+        reviewForm()(result => status(result))
+      }.getMessage shouldBe "No organisation type selected by user"
+    }
+
   }
 
   "HaveUtrSubscriptionController Submit" should {
@@ -155,6 +206,22 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       submit(Map("have-utr" -> "true", "utr" -> "11 11 111111k")) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-get-utr"
+      }
+      verify(mockSubscriptionDetailsService, times(1)).cacheUtrMatch(meq(Some(UtrMatchModel(Some(true), None))))(
+        any[HeaderCarrier]
+      )
+    }
+
+    "cache UTR and redirect to Get Utr Page of the flow when rest of world and Company in review mode" in {
+      reset(mockSubscriptionDetailsService)
+      val nameOrganisationMatchModel = NameOrganisationMatchModel("orgName")
+      when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
+      when(mockSubscriptionDetailsService.cachedNameDetails(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(nameOrganisationMatchModel)))
+      when(mockSubscriptionDetailsService.cacheUtrMatch(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
+      submit(Map("have-utr" -> "true", "utr" -> "11 11 111111k"), isInReviewMode = true) { result =>
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-get-utr/review"
       }
       verify(mockSubscriptionDetailsService, times(1)).cacheUtrMatch(meq(Some(UtrMatchModel(Some(true), None))))(
         any[HeaderCarrier]
@@ -203,11 +270,17 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
         }
       }
     }
+
   }
 
   private def createForm()(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     await(test(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+  }
+
+  private def reviewForm()(test: Future[Result] => Any) = {
+    withAuthorisedUser(defaultUserId, mockAuthConnector)
+    await(test(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
   private def submit(form: Map[String, String], isInReviewMode: Boolean = false)(test: Future[Result] => Any) = {

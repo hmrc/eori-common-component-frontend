@@ -76,8 +76,27 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
         page.title should include("Enter your National Insurance number")
       }
     }
+    "populate the field values when Session cache hold Nino details" in {
+      when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(Nino("123456789"))))
+      createForm() { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should include("Enter your National Insurance number")
+        page.getElementValue("//*[@id='nino']") shouldBe "123456789"
+      }
+    }
   }
 
+  "HaveNinoSubscriptionController reviewForm" should {
+    "return OK and display correct page" in {
+      reviewForm() { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should include("Enter your National Insurance number")
+      }
+    }
+  }
   "HaveNinoSubscriptionController submit" should {
     "return BadRequest when no option selected" in {
       submit(Map.empty[String, String]) { result =>
@@ -111,7 +130,7 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
         when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
           .thenReturn(Future.successful(()))
         mockSubscriptionFlow(nextPageFlowUrl)
-        submit(Map("nino" -> "ab 12 34 56 c"), true) { result =>
+        submit(Map("nino" -> "ab 12 34 56 c"), isInReviewMode = true) { result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
         }
@@ -126,7 +145,7 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
         when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
           .thenReturn(Future.successful(()))
         mockSubscriptionFlow(nextPageFlowUrl)
-        submit(Map("nino" -> "ab 12 34 56 c"), true) { result =>
+        submit(Map("nino" -> "ab 12 34 56 c"), isInReviewMode = true) { result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers(
             LOCATION
@@ -140,6 +159,11 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
   private def createForm()(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     await(test(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+  }
+
+  private def reviewForm()(test: Future[Result] => Any) = {
+    withAuthorisedUser(defaultUserId, mockAuthConnector)
+    await(test(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
   private def submit(form: Map[String, String], isInReviewMode: Boolean = false)(test: Future[Result] => Any) = {

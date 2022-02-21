@@ -92,7 +92,7 @@ lazy val scoverageSettings = {
       "uk\\.gov\\.hmrc\\.customs\\.rosmfrontend\\.config.*",
       "logger.*\\(.*\\)",
       ".*(AuthService|BuildInfo|Routes|TestOnly).*").mkString(";"),
-    ScoverageKeys.coverageMinimum := 87,
+    ScoverageKeys.coverageMinimum := 94,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
     parallelExecution in Test := false
