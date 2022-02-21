@@ -25,9 +25,16 @@
 
 @(service: Service)(implicit messages: Messages, request: Request[_])
 
-@link(text: String, url: String, target: String) = {
-    <a href="@url" class="govuk-link" target="@target">@messages(text)</a>
+@getEoriLink = {
+<a class="govuk-link" href=@appConfig.externalGetEORILink(service) target="_blank" rel="noopener noreferrer">@messages("ecc.subscription.information.para2.link")</a>
 }
+
+@detailsContent = {
+<p id="gb-eori-text" class="govuk-body">
+    @Html(messages("ecc.subscription.information.para2", getEoriLink, ServiceName.longName))
+</p>
+}
+
 
 @warningContent = {
         @Html(messages("ecc.subscription.information.para2.warning"))
@@ -44,25 +51,15 @@
         <p id="what-you-will-need-text" class=" govuk-body">@messages("ecc.subscription.information.para1", ServiceName.longName)</p>
 
         <h3 class="govuk-heading-s" id="gb-eori">@messages("ecc.subscription.information.para2.heading")</h3>
-        <p id="gb-eori-text" class=" govuk-body">@messages("ecc.subscription.information.para2")</p>
+
+        @detailsContent
+
 
         @govukWarningText(WarningText(
             iconFallbackText = "Warning",
             content = HtmlContent(warningContent)
         ))
 
-        <p id="gb-eori-list-heading" class=" govuk-body">@messages("ecc.subscription.information.para2.text", ServiceName.longName)</p>
-
-        <ul class="govuk-list govuk-list--number ">
-            <li>@messages("ecc.subscription.information.para2.list.first")
-                <ul class="govuk-list govuk-list--bullet ">
-                    <li>@messages("ecc.subscription.information.para2.list.bullet.first")</li>
-                    <li>@messages("ecc.subscription.information.para2.list.bullet.second")</li>
-                    <li>@messages("ecc.subscription.information.para2.list.bullet.third")</li>
-                </ul>
-            </li>
-            <li>@Html(messages("ecc.subscription.information.para2.list.second"))</li>
-        </ul>
 
         <h3 class="govuk-heading-s" id="organisation">@messages("ecc.subscription.information.section.organisation.subheading")</h3>
         <p id="organisation-text" class=" govuk-body">@messages("ecc.subscription.information.section.organisation.list.heading")</p>
