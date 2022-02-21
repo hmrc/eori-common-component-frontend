@@ -76,7 +76,7 @@ ecc.subscription.information.para1=In order to subscribe you to {0}, we need som
 ecc.subscription.information.para2.heading=An EORI number starting with GB
 ecc.subscription.information.para2=You must {0} before you can apply for {1}, once you have applied for an EORI number it usually takes around 30 minutes, but may take up to 48 hours before you can proceed with your {1} application.
 ecc.subscription.information.para2.link=get an EORI number (opens in a new window or tab)
-ecc.subscription.information.para2.warning=The EORI number starting with GB must be the one linked to the Government Gateway user ID you used to sign in.
+ecc.subscription.information.para2.warning=The EORI number starting with GB must be the one linked to the Government Gateway user ID you used when you got an EORI number.
 
 ecc.subscription.information.section.organisation.subheading=Company or other organisation details
 ecc.subscription.information.section.organisation.list.heading=If you are a limited company, partnership or charity, you will need:
