@@ -37,7 +37,7 @@ object Service {
 
   val cds: Service = Service("cds", "HMRC-CUS-ORG", "", "", "", "", "", None)
 
-  private val supportedServicesMap: Map[String, Service] = new ServiceConfig(
+  val supportedServicesMap: Map[String, Service] = new ServiceConfig(
     Configuration(ConfigFactory.load())
   ).supportedServicesMap
 

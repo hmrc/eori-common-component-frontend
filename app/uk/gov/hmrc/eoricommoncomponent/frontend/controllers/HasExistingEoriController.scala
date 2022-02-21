@@ -63,12 +63,12 @@ class HasExistingEoriController @Inject() (
             Future.successful(Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service)))
           else
             existingEoriToUse.flatMap { eori =>
-              enrolmentService.enrolWithExistingCDSEnrolment(eori, service).map {
+              enrolmentService.enrolWithExistingEnrolment(eori, service).map {
                 case NO_CONTENT => Redirect(routes.HasExistingEoriController.enrolSuccess(service))
                 case status     => throw FailedEnrolmentException(status)
               } recover {
                 case e: MissingEnrolmentException =>
-                  logger.info(s"EnrolWithExistingCDSEnrolment : ${e.getMessage}")
+                  logger.info(s"EnrolWithExistingEnrolment : ${e.getMessage}")
                   Redirect(routes.EmailController.form(service))
               }
             }
@@ -86,8 +86,14 @@ class HasExistingEoriController @Inject() (
   private def existingEoriToUse(implicit loggedInUser: LoggedInUserWithEnrolments, hc: HeaderCarrier): Future[String] =
     enrolledForService(loggedInUser, Service.cds) match {
       case Some(eori) => Future.successful(eori.id)
-      case _ =>
-        cache.groupEnrolment.map(_.eori.getOrElse(throw DataUnavailableException("No EORI found")))
+      case _          => checkOtherEnrollments
+
+    }
+
+  private def checkOtherEnrollments(implicit loggedInUser: LoggedInUserWithEnrolments, hc: HeaderCarrier) =
+    enrolledForOtherServices(loggedInUser) match {
+      case Some(eori) => Future.successful(eori.id)
+      case _          => cache.groupEnrolment.map(_.eori.getOrElse(throw DataUnavailableException("No EORI found")))
     }
 
 }

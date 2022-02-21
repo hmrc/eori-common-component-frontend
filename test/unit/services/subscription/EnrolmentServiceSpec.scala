@@ -52,7 +52,7 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
       .thenReturn(Future.successful(HttpResponse(NO_CONTENT, "")))
   }
 
-  "Enrolment service on enrolWithExistingCDSEnrolment" should {
+  "Enrolment service on enrolWithExistingEnrolment" should {
 
     "return NO_CONTENT" when {
 
@@ -75,7 +75,7 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
           verifiers = List(Verifier("DATEOFESTABLISHMENT", date))
         )
 
-        val result = enrolmentService.enrolWithExistingCDSEnrolment(eori, atarService)(headerCarrier)
+        val result = enrolmentService.enrolWithExistingEnrolment(eori, atarService)(headerCarrier)
 
         result.futureValue shouldBe NO_CONTENT
 
@@ -104,7 +104,7 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
           verifiers = List(Verifier("DateOfEstablishment", date))
         )
 
-        val result = enrolmentService.enrolWithExistingCDSEnrolment(eori, atarService)(headerCarrier)
+        val result = enrolmentService.enrolWithExistingEnrolment(eori, atarService)(headerCarrier)
 
         result.futureValue shouldBe NO_CONTENT
 
@@ -123,7 +123,7 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
           .thenReturn(Future.successful(None))
 
         intercept[MissingEnrolmentException] {
-          await(enrolmentService.enrolWithExistingCDSEnrolment("GB64344234", atarService)(headerCarrier))
+          await(enrolmentService.enrolWithExistingEnrolment("GB64344234", atarService)(headerCarrier))
         }
       }
 
@@ -134,7 +134,7 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
           .thenReturn(Future.successful(Some(knownFacts)))
 
         intercept[MissingEnrolmentException] {
-          await(enrolmentService.enrolWithExistingCDSEnrolment("GB234232342", atarService)(headerCarrier))
+          await(enrolmentService.enrolWithExistingEnrolment("GB234232342", atarService)(headerCarrier))
         }
       }
 
@@ -147,7 +147,7 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
           .thenReturn(Future.successful(Some(knownFacts)))
 
         intercept[MissingEnrolmentException] {
-          await(enrolmentService.enrolWithExistingCDSEnrolment("GB234232342", atarService)(headerCarrier))
+          await(enrolmentService.enrolWithExistingEnrolment("GB234232342", atarService)(headerCarrier))
         }
       }
 
@@ -161,7 +161,7 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
           .thenReturn(Future.successful(Some(knownFacts)))
 
         intercept[MissingEnrolmentException] {
-          await(enrolmentService.enrolWithExistingCDSEnrolment("GB234232342", atarService)(headerCarrier))
+          await(enrolmentService.enrolWithExistingEnrolment("GB234232342", atarService)(headerCarrier))
         }
       }
     }

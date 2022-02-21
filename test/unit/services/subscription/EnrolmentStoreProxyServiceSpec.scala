@@ -46,23 +46,29 @@ class EnrolmentStoreProxyServiceSpec extends UnitSpec with MockitoSugar with Bef
   private val service                               = new EnrolmentStoreProxyService(mockEnrolmentStoreProxyConnector)
   private implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
 
+  val serviceList = List(atarService, gvmsService)
   before {
     reset(mockEnrolmentStoreProxyConnector)
   }
 
-  private val serviceName = "HMRC-CUS-ORG"
-  private val state       = "Activated"
-  private val identifier  = KeyValue("EORINumber", "10000000000000001")
-  private val groupId     = GroupId("groupId")
+  private val serviceName     = "HMRC-CUS-ORG"
+  private val atarServiceName = "HMRC-ATAR-ORG"
+  private val state           = "Activated"
+  private val identifier      = KeyValue("EORINumber", "10000000000000001")
+  private val groupId         = GroupId("groupId")
 
   private val enrolmentResponse =
     EnrolmentResponse(serviceName, state, List(identifier))
 
+  private val atarEnrolmentResponse =
+    EnrolmentResponse(atarServiceName, state, List(identifier))
+
   private val enrolmentResponseNotActive =
     EnrolmentResponse("SOME_SERVICE", "NotActive", List(identifier))
 
-  private val enrolmentStoreProxyResponse = EnrolmentStoreProxyResponse(List(enrolmentResponse))
-  private val serviceName1                = "HMRC-VAT-ORG"
+  private val enrolmentStoreProxyResponse     = EnrolmentStoreProxyResponse(List(enrolmentResponse))
+  private val atarEnrolmentStoreProxyResponse = EnrolmentStoreProxyResponse(List(atarEnrolmentResponse))
+  private val serviceName1                    = "HMRC-VAT-ORG"
 
   private val enrolmentResponseNoHmrcCusOrg =
     EnrolmentResponse(serviceName1, state, List(identifier))
@@ -93,6 +99,16 @@ class EnrolmentStoreProxyServiceSpec extends UnitSpec with MockitoSugar with Bef
       verify(mockEnrolmentStoreProxyConnector).getEnrolmentByGroupId(any[String])(meq(headerCarrier), any())
     }
 
+    "return any enrolment if they exist against the groupId" in {
+      when(
+        mockEnrolmentStoreProxyConnector
+          .getEnrolmentByGroupId(any[String])(meq(headerCarrier), any())
+      ).thenReturn(Future.successful(atarEnrolmentStoreProxyResponse))
+
+      await(service.checkAllEnrolmentsForGroup(groupId, serviceList)) shouldBe Some(atarEnrolmentResponse)
+
+      verify(mockEnrolmentStoreProxyConnector).getEnrolmentByGroupId(any[String])(meq(headerCarrier), any())
+    }
     "return all enrolments for the groupId" in {
       when(
         mockEnrolmentStoreProxyConnector

@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
-import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
@@ -32,6 +31,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentS
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.start_subscribe
 import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -73,6 +73,9 @@ class ApplicationController @Inject() (
   private def isUserEnrolledFor(loggedInUser: LoggedInUserWithEnrolments, service: Service): Boolean =
     enrolledForService(loggedInUser, service).isDefined
 
+  private def isUserEnrolledForOtherServices(loggedInUser: LoggedInUserWithEnrolments): Boolean =
+    enrolledForOtherServices(loggedInUser).isDefined
+
   private def cdsEnrolmentCheck(loggedInUser: LoggedInUserWithEnrolments, groupId: String, service: Service)(implicit
     hc: HeaderCarrier,
     request: Request[_]
@@ -88,8 +91,8 @@ class ApplicationController @Inject() (
                 cache.saveGroupEnrolment(groupEnrolment).map { _ =>
                   Redirect(routes.HasExistingEoriController.displayPage(service)) // AutoEnrolment
                 }
-              case _ =>
-                Future.successful(Ok(viewStartSubscribe(service))) // Display information page
+              case _ => checkAllServiceEnrolments(loggedInUser, groupId, service)
+
             }
         else
           cache.saveEori(Eori(eoriFromUsedEnrolmentOpt.get.id)).map { _ =>
@@ -110,6 +113,23 @@ class ApplicationController @Inject() (
       Ok("Ok")
     }
   }
+
+  private def checkAllServiceEnrolments(
+    loggedInUser: LoggedInUserWithEnrolments,
+    groupId: String,
+    service: Service
+  )(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] =
+    if (isUserEnrolledForOtherServices(loggedInUser))
+      Future.successful(Redirect(routes.HasExistingEoriController.displayPage(service)))
+    else
+      groupEnrolment.checkAllServiceEnrolments(groupId).flatMap {
+        case Some(groupEnrolment) if groupEnrolment.eori.isDefined =>
+          cache.saveGroupEnrolment(groupEnrolment).map { _ =>
+            Redirect(routes.HasExistingEoriController.displayPage(service)) // AutoEnrolment
+          }
+        case _ =>
+          Future.successful(Ok(viewStartSubscribe(service))) // Display information page
+      }
 
 }
 
