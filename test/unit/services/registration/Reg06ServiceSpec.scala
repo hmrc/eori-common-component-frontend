@@ -84,14 +84,6 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
     Some(RegisterWithEoriAndIdOrganisation("OrgName", "OrgTypeCode"))
   )
 
-  private val registerWithInvalidID = RegisterModeId(
-    "InvalidID",
-    "45646757",
-    isNameMatched = false,
-    individual = None,
-    Some(RegisterWithEoriAndIdOrganisation("OrgName", "OrgTypeCode"))
-  )
-
   private val organisationDetailsWithUTR = RegisterWithEoriAndIdDetail(
     RegisterModeEori("ZZ123456789112", "Full Name", organisationNameAndAddress.address),
     registerWithUTR,

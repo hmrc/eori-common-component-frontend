@@ -234,13 +234,6 @@ trait SubscriptionServiceTestData extends TestData {
   }
 
   def stubRegisterWithoutResponseData(outcomeType: String = "PASS"): RegisterWithEoriAndIdResponse = {
-    val establishmentAddress =
-      EstablishmentAddress(
-        streetAndNumber = "Line 1 line 2",
-        city = "city name",
-        postalCode = Some("SE28 1AA"),
-        countryCode = "GB"
-      )
     val responseDetail = RegisterWithEoriAndIdResponseDetail(
       outcome = Some(outcomeType),
       caseNumber = Some("case no 1"),

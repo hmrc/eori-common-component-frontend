@@ -175,6 +175,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "redirect to email page when enrolWithExistingEnrolment fails for user having ATAR enrolment with missing known facts" in {
+      userDoesNotHaveGroupEnrolmentToService
       enrolMissingEnrolmentForUser(gvmsService) { result =>
         status(result) shouldBe SEE_OTHER
         await(result).header.headers("Location") should endWith("/gagmr/subscribe/check-user")
