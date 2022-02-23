@@ -3,8 +3,8 @@ cds.banner.subscription=Subscribe to {0}
 
 ecc.subscription.enter-eori-number.heading=What is your GB Economic Operator Registration and Identification (EORI) number?
 cds.subscription.enter-eori-number.no-eori.summary=I do not have an EORI number
-cds.subscription.enter-eori-number.no-eori=You must {0} before you can apply for {1}.
-cds.subscription.enter-eori-number.no-eori.link=get an EORI number
+cds.subscription.enter-eori-number.no-eori=You must {0} before you can apply for {1}, once you have applied for an EORI number it usually takes around 30 minutes, but may take up to 48 hours before you can proceed with your {1} application.
+cds.subscription.enter-eori-number.no-eori.link=get an EORI number (opens in a new window or tab)
 
 cds.has-existing-eori.title=Your Government Gateway user ID is linked to an EORI
 cds.has-existing-eori.heading=Your Government Gateway user ID is linked to an EORI
