@@ -694,7 +694,7 @@ cds.matching.nino.row.header=Do you have a National Insurance number issued in t
 cds.matching.nino.row.description=You will have a National Insurance number if you have worked in the UK.
 cds.matching.nino.row.error.have-nino=Tell us if you have a National Insurance number
 
-cds.matching.nino.nino.hint=It’s on your National Insurance card, benefit letter, payslip or P60.<br>For example, ''QQ123456C''
+cds.matching.nino.nino.hint=It’s on your National Insurance card, benefit letter, payslip or P60. For example, ''QQ123456C''
 cds.matching.nino.date-of-birth=Date of birth
 
 #Nino Or UTR

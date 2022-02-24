@@ -309,22 +309,22 @@
                     } else None
                 }
                 },
-                dateEstablished.flatMap { de => {
-                    if(isThirdCountrySubscription  && !isIndividualSubscriptionFlow) {
-                        Some(row(
-                            "cds.date-established.label",
-                            Some(Html(formatDate(de))),
-                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController.reviewForm(service)),"review-tbl__date-established"
-                        ))
-                    } else None
-                }
-                },
                 registeredCountry.flatMap { country => {
                     if(shouldCountryLocationBeDisplayed) {
                         Some(row(
                             "ecc.registered-company-country.summary",
                             Some(Html(countryLocation(country))),
                             Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.CompanyRegisteredCountryController.reviewPage(service)),"review-tbl__country-location"
+                        ))
+                    } else None
+                }
+                },
+                dateEstablished.flatMap { de => {
+                    if(isThirdCountrySubscription  && !isIndividualSubscriptionFlow) {
+                        Some(row(
+                            "cds.date-established.label",
+                            Some(Html(formatDate(de))),
+                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController.reviewForm(service)),"review-tbl__date-established"
                         ))
                     } else None
                 }
