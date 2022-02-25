@@ -47,6 +47,13 @@ class HowCanWeIdentifyYouUtrSpec extends ViewSpec {
       doc.title() must startWith(doc.body().getElementsByTag("h1").text())
     }
 
+    "have the correct text in the hint" in {
+
+      doc.body()
+        .getElementById("utr-hint")
+        .text() mustBe "This is 10 numbers, for example 1234567890, which may be followed by a K."
+    }
+
     "display an page level error if no nino entered" in {
       docWithNoUtrError
         .body()

@@ -206,7 +206,9 @@ cds.subscription.organisation-disclose-personal-details-consent.yes=Iawn - Rwyf 
 cds.subscription.organisation-disclose-personal-details-consent.no=Na - Dangoswch fy rhif EORI yn unig
 
 subscription-journey.how-confirm-identity.nino.heading=Nodwch eich rhif Yswiriant Gwladol
+subscription-journey.how-confirm-identity.nino.hint=Mae’r rhif ar eich cerdyn Yswiriant Gwladol, llythyr budd-daliadau, slip cyflog neu P60. Er enghraifft, ''QQ123456C''.
 subscription-journey.how-confirm-identity.utr.heading=Nodwch eich Cyfeirnod Unigryw y Trethdalwr
+subscription-journey.how-confirm-identity.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890, a gellir ei ddilyn gan K.
 
 ecc.reg06.outcome.why-heading = Pam nad oedd y cais yn llwyddiannus
 ecc.reg06.outcome.eori = Rhif EORI {0}
