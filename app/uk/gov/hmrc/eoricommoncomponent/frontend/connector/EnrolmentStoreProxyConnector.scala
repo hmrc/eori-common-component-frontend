@@ -106,9 +106,11 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
         logger.debug(s"QueryKnownFactsByIdentifiers response $response")
         // $COVERAGE-ON
         response.status match {
-          case Status.OK         => Some(response.json.as[KnownFacts])
+          case Status.OK => Some(response.json.as[KnownFacts])
           case Status.NO_CONTENT | Status.NOT_FOUND =>
-            logger.warn(s"ES20 known facts Query returned no results- Response status: ${response.status} with body ${response.body}")
+            logger.warn(
+              s"ES20 known facts Query returned no results- Response status: ${response.status} with body ${response.body}"
+            )
             None
           case _ =>
             // $COVERAGE-OFF$Loggers

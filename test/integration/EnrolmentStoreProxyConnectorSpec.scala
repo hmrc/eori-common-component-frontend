@@ -149,7 +149,7 @@ class EnrolmentStoreProxyConnectorSpec extends IntegrationTestsSpec with ScalaFu
       caught.getMessage must startWith("Enrolment Store Proxy Status : 400")
     }
 
-    "return known facts" in {
+    "return known facts for CDS" in {
 
       val date       = LocalDate.now().toString
       val verifiers  = List(KeyValuePair(key = "DATEOFESTABLISHMENT", value = date))
@@ -191,6 +191,113 @@ class EnrolmentStoreProxyConnectorSpec extends IntegrationTestsSpec with ScalaFu
       enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(request).futureValue mustBe Some(
         KnownFacts("HMRC-ATAR-ORG", List(knownFact))
       )
+    }
+
+    "return NO_CONTENT if search did not match results for CDS " in {
+
+      val expectedKnownFactsUrl = "/enrolment-store-proxy/enrolment-store/enrolments"
+
+      EnrolmentStoreProxyService.stubTheEnrolmentStoreProxyPostResponse(expectedKnownFactsUrl, "", NO_CONTENT)
+
+      val request = KnownFactsQuery("GB123456789012", "HMRC-CUS-ORG")
+
+      enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(request).futureValue mustBe None
+    }
+
+    "return NO_CONTENT if search did not match results for ATAR" in {
+
+      val expectedKnownFactsUrl = "/enrolment-store-proxy/enrolment-store/enrolments"
+
+      EnrolmentStoreProxyService.stubTheEnrolmentStoreProxyPostResponse(expectedKnownFactsUrl, "", NO_CONTENT)
+
+      val request = KnownFactsQuery("GB123456789012", "HMRC-ATAR-ORG")
+
+      enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(request).futureValue mustBe None
+    }
+
+    "return NOT_FOUND if search did not match results for CDS " in {
+
+      val expectedKnownFactsUrl = "/enrolment-store-proxy/enrolment-store/enrolments"
+
+      EnrolmentStoreProxyService.stubTheEnrolmentStoreProxyPostResponse(expectedKnownFactsUrl, "", NOT_FOUND)
+
+      val request = KnownFactsQuery("GB123456789012", "HMRC-CUS-ORG")
+
+      enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(request).futureValue mustBe None
+    }
+
+    "return NOT_FOUND if search did not match results for ATAR" in {
+
+      val expectedKnownFactsUrl = "/enrolment-store-proxy/enrolment-store/enrolments"
+
+      EnrolmentStoreProxyService.stubTheEnrolmentStoreProxyPostResponse(expectedKnownFactsUrl, "", NOT_FOUND)
+
+      val request = KnownFactsQuery("GB123456789012", "HMRC-ATAR-ORG")
+
+      enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(request).futureValue mustBe None
+    }
+
+    "throw an exception" when {
+
+      "status is 400 (BAD_REQUEST) for ATAR" in {
+
+        val expectedKnownFactsUrl = "/enrolment-store-proxy/enrolment-store/enrolments"
+
+        EnrolmentStoreProxyService.stubTheEnrolmentStoreProxyPostResponse(expectedKnownFactsUrl, "", BAD_REQUEST)
+
+        val request = KnownFactsQuery("GB123456789012", "HMRC-ATAR-ORG")
+
+        intercept[Exception] {
+          await(enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(request))
+        }
+      }
+
+      "status is 500 (INTERNAL_SERVER_ERROR) for ATAR" in {
+
+        val expectedKnownFactsUrl = "/enrolment-store-proxy/enrolment-store/enrolments"
+
+        EnrolmentStoreProxyService.stubTheEnrolmentStoreProxyPostResponse(
+          expectedKnownFactsUrl,
+          "",
+          INTERNAL_SERVER_ERROR
+        )
+
+        val request = KnownFactsQuery("GB123456789012", "HMRC-ATAR-ORG")
+
+        intercept[Exception] {
+          await(enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(request))
+        }
+      }
+
+      "status is 400 (BAD_REQUEST) for CDS" in {
+
+        val expectedKnownFactsUrl = "/enrolment-store-proxy/enrolment-store/enrolments"
+
+        EnrolmentStoreProxyService.stubTheEnrolmentStoreProxyPostResponse(expectedKnownFactsUrl, "", BAD_REQUEST)
+
+        val request = KnownFactsQuery("GB123456789012", "HMRC-CUS-ORG")
+
+        intercept[Exception] {
+          await(enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(request))
+        }
+      }
+
+      "status is 500 (INTERNAL_SERVER_ERROR) for CDS" in {
+
+        val expectedKnownFactsUrl = "/enrolment-store-proxy/enrolment-store/enrolments"
+
+        EnrolmentStoreProxyService.stubTheEnrolmentStoreProxyPostResponse(
+          expectedKnownFactsUrl,
+          "",
+          INTERNAL_SERVER_ERROR
+        )
+
+        val request = KnownFactsQuery("GB123456789012", "HMRC-CUS-ORG")
+
+        intercept[Exception] {
+          await(enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(request))
+        }
+      }
     }
 
     "return ES1 response" when {
