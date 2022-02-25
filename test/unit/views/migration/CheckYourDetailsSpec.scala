@@ -103,7 +103,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         dateEstablished.getElementsByTag("a").attr(
           "href"
         ) mustBe "/customs-enrolment-services/atar/subscribe/date-established/review"
-
+        doc().body.getElementsByClass("review-tbl__date-established").size() mustBe 1
       }
 
       "user is during UK Sole Trader UTR journey" in {
@@ -130,6 +130,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         dob.getElementsByClass("govuk-summary-list__key").text mustBe "Date of birth"
         dob.getElementsByClass("govuk-summary-list__value").text mustBe "8 April 2003"
         dob.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
+        page.body.getElementsByClass("review-tbl__date-of-birth").size() mustBe 1
 
         val utrRow = page.body.getElementsByClass("review-tbl__utr").get(0)
         utrRow.getElementsByClass("govuk-summary-list__key").text mustBe "UTR number"
@@ -165,6 +166,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         dob.getElementsByClass("govuk-summary-list__key").text mustBe "Date of birth"
         dob.getElementsByClass("govuk-summary-list__value").text mustBe "8 April 2003"
         dob.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
+        page.body.getElementsByClass("review-tbl__date-of-birth").size() mustBe 1
 
         val ninoRow = page.body.getElementsByClass("review-tbl__nino").get(0)
         ninoRow.getElementsByClass("govuk-summary-list__key").text mustBe "National Insurance number"
@@ -229,7 +231,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         dateEstablished.getElementsByTag("a").attr(
           "href"
         ) mustBe "/customs-enrolment-services/atar/subscribe/date-established/review"
-
+        page.body.getElementsByClass("review-tbl__date-established").size() mustBe 1
       }
 
       "user is during ROW Organisation journey with UTR" in {
@@ -270,6 +272,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         dateEstablished.getElementsByTag("a").attr(
           "href"
         ) mustBe "/customs-enrolment-services/atar/subscribe/date-established/review"
+        page.body.getElementsByClass("review-tbl__date-established").size() mustBe 1
       }
 
       "user is during ROW Individual journey without UTR and NINo" in {
@@ -302,6 +305,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         dob.getElementsByClass("govuk-summary-list__key").text mustBe "Date of birth"
         dob.getElementsByClass("govuk-summary-list__value").text mustBe "8 April 2003"
         dob.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
+        page.body.getElementsByClass("review-tbl__date-of-birth").size() mustBe 1
 
         val utrRow = page.body.getElementsByClass("review-tbl__utr").get(0)
         utrRow.getElementsByClass("govuk-summary-list__key").text mustBe "UTR number"
@@ -354,6 +358,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         dob.getElementsByClass("govuk-summary-list__key").text mustBe "Date of birth"
         dob.getElementsByClass("govuk-summary-list__value").text mustBe "8 April 2003"
         dob.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
+        page.body.getElementsByClass("review-tbl__date-of-birth").size() mustBe 1
 
         val utrRow = page.body.getElementsByClass("review-tbl__utr").get(0)
         utrRow.getElementsByClass("govuk-summary-list__key").text mustBe "UTR number"
@@ -396,6 +401,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         dob.getElementsByClass("govuk-summary-list__key").text mustBe "Date of birth"
         dob.getElementsByClass("govuk-summary-list__value").text mustBe "8 April 2003"
         dob.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/namedob/review"
+        page.body.getElementsByClass("review-tbl__date-of-birth").size() mustBe 1
 
         val utrRow = page.body.getElementsByClass("review-tbl__utr").get(0)
         utrRow.getElementsByClass("govuk-summary-list__key").text mustBe "UTR number"
