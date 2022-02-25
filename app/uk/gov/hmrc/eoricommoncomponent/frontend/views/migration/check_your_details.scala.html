@@ -196,7 +196,13 @@
     utr.forall(_.id == "Not entered") && nino.forall(_.id == "Not entered") && nameIdOrganisationDetails.forall(_.id.isEmpty)
 }
 
-
+@doeRow(de: LocalDate) = @{
+    Some(row(
+        "cds.date-established.label",
+        Some(Html(formatDate(de))),
+        Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController.reviewForm(service)),"review-tbl__date-established"
+    ))
+}
 @row(key: String, value: Option[Html], call: Option[Call] = None, fieldName: String = "") = @{
     SummaryListRow(
         key = Key(
@@ -292,6 +298,12 @@
                     } else None
                 }
                 },
+                dateEstablished.flatMap { de => {
+                    if(!isThirdCountrySubscription && !isIndividualSubscriptionFlow)
+                        doeRow(de)
+                    else None
+                }
+                },
                 addressDetails.flatMap { ad => {
                     if(!shouldCountryLocationBeDisplayed) {
                         Some(row(businessDetailsLabel, Some(addressHtml(ad)), Some(addressChangeLink),"review-tbl__name-and-address"))
@@ -308,6 +320,12 @@
                     } else None
                 }
                 },
+                dateEstablished.flatMap { de => {
+                    if(isThirdCountrySubscription  && !isIndividualSubscriptionFlow)
+                        doeRow(de)
+                    else None
+                }
+                },
                 contactDetails.flatMap { cd => {
                     if(isThirdCountrySubscription && isUtrAndNinoEmpty) {
 
@@ -315,17 +333,6 @@
                             "cds.form.customs-contact",
                             Some(contactDetailHtml(cd)),
                             Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactDetailsController.reviewForm(service)),"review-tbl__contact-details"
-                        ))
-
-                    } else None
-                }
-                },
-                dateEstablished.flatMap { de => {
-                    if(!isIndividualSubscriptionFlow) {
-                        Some(row(
-                            "cds.date-established.label",
-                            Some(Html(formatDate(de))),
-                            Some(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController.reviewForm(service)),"review-tbl__date-established"
                         ))
 
                     } else None
