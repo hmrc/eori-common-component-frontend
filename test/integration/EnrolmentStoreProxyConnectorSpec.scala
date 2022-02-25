@@ -164,9 +164,33 @@ class EnrolmentStoreProxyConnectorSpec extends IntegrationTestsSpec with ScalaFu
         OK
       )
 
-      val request = KnownFactsQuery("GB123456789012")
+      val request = KnownFactsQuery("GB123456789012", "HMRC-CUS-ORG")
 
-      enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(request).futureValue mustBe Some(knownFacts)
+      enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(request).futureValue mustBe Some(
+        KnownFacts("HMRC-CUS-ORG", List(knownFact))
+      )
+    }
+
+    "return known facts for ATAR" in {
+
+      val date       = LocalDate.now().toString
+      val verifiers  = List(KeyValuePair(key = "DATEOFESTABLISHMENT", value = date))
+      val knownFact  = KnownFact(List.empty, verifiers)
+      val knownFacts = KnownFacts("HMRC-ATAR-ORG", List(knownFact))
+
+      val expectedKnownFactsUrl = "/enrolment-store-proxy/enrolment-store/enrolments"
+
+      EnrolmentStoreProxyService.stubTheEnrolmentStoreProxyPostResponse(
+        expectedKnownFactsUrl,
+        Json.toJson(knownFacts).toString(),
+        OK
+      )
+
+      val request = KnownFactsQuery("GB123456789012", "HMRC-ATAR-ORG")
+
+      enrolmentStoreProxyConnector.queryKnownFactsByIdentifiers(request).futureValue mustBe Some(
+        KnownFacts("HMRC-ATAR-ORG", List(knownFact))
+      )
     }
 
     "return ES1 response" when {

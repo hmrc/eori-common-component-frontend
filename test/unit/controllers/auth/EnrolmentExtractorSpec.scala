@@ -44,7 +44,7 @@ class EnrolmentExtractorSpec extends UnitSpec {
 
         val result = enrolmentExtractor.enrolledForService(loggedInUser(Set(atarEnrolment)), atarService)
 
-        result shouldBe Some(eori)
+        result shouldBe Some(ExistingEori("GB123456789012", "HMRC-ATAR-ORG"))
       }
 
       "user is enrolled for CDS" in {
@@ -53,7 +53,7 @@ class EnrolmentExtractorSpec extends UnitSpec {
 
         val result = enrolmentExtractor.enrolledForService(loggedInUser(Set(cdsEnrolment)), Service.cds)
 
-        result shouldBe Some(eori)
+        result shouldBe Some(ExistingEori("GB123456789012", "HMRC-CUS-ORG"))
       }
     }
 
@@ -79,7 +79,7 @@ class EnrolmentExtractorSpec extends UnitSpec {
 
         val result = enrolmentExtractor.enrolledForService(loggedInUser(Set(atarEnrolment, gvmsEnrolment)), atarService)
 
-        result shouldBe Some(eori)
+        result shouldBe Some(ExistingEori("GB123456789012", "HMRC-ATAR-ORG"))
       }
     }
 
