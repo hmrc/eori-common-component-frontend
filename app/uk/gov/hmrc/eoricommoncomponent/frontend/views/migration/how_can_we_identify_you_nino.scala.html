@@ -28,10 +28,6 @@
 
 @(ninoForm: Form[IdMatchModel], isInReviewMode: Boolean, submit: Call)(implicit request: Request[_], messages: Messages)
 
-@hintNino = {
-<p>@messages("subscription-journey.how-confirm-identity.nino.hint1")</p>
-<p>@messages("subscription-journey.how-confirm-identity.nino.hint2")</p>
-}
 
 @layout_di(messages("subscription-journey.how-confirm-identity.nino.heading"), form = Some(ninoForm)) {
     <div>
