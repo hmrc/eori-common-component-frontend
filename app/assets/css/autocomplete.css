@@ -1,5 +1,6 @@
 .autocomplete__wrapper {
     position: relative;
+    font-family : GDS Transport;
 }
 
 .autocomplete__wrapper input[type="text"] {
@@ -93,6 +94,7 @@
     cursor: pointer;
     display: block;
     position: relative;
+    font-family : GDS Transport;
 }
 
 .autocomplete__option > * {
@@ -113,6 +115,7 @@
 
 .autocomplete__option--odd {
     background-color: #FAFAFA;
+    font-family : GDS Transport;
 }
 
 .autocomplete__option--focused,
@@ -121,6 +124,7 @@
     border-color: #1d70b8;
     color: white;
     outline: none;
+    font-family : GDS Transport;
 }
 
 .autocomplete__option--no-results {
@@ -134,6 +138,7 @@
 .autocomplete__option {
     font-size: 16px;
     line-height: 1.25;
+    font-family : GDS Transport;
 }
 
 .autocomplete__hint,
@@ -147,5 +152,6 @@
     .autocomplete__option {
         font-size: 19px;
         line-height: 1.31579;
+        font-family : GDS Transport;
     }
 }
