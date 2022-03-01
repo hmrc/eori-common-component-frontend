@@ -33,6 +33,7 @@
 
 .autocomplete__input--default {
     padding: 5px;
+    font-family: GDS Transport,arial,sans-serif;
 }
 .autocomplete__input--focused {
     outline: 3px solid #fd0;
@@ -94,7 +95,6 @@
     cursor: pointer;
     display: block;
     position: relative;
-    font-family: GDS Transport,arial,sans-serif;
 }
 
 .autocomplete__option > * {
@@ -115,7 +115,6 @@
 
 .autocomplete__option--odd {
     background-color: #FAFAFA;
-    font-family: GDS Transport,arial,sans-serif;
 }
 
 .autocomplete__option--focused,
@@ -124,7 +123,6 @@
     border-color: #1d70b8;
     color: white;
     outline: none;
-    font-family: GDS Transport,arial,sans-serif;
 }
 
 .autocomplete__option--no-results {
@@ -138,7 +136,6 @@
 .autocomplete__option {
     font-size: 16px;
     line-height: 1.25;
-    font-family: GDS Transport,arial,sans-serif;
 }
 
 .autocomplete__hint,
@@ -152,6 +149,5 @@
     .autocomplete__option {
         font-size: 19px;
         line-height: 1.31579;
-        font-family: GDS Transport,arial,sans-serif;
     }
 }
