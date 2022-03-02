@@ -23,7 +23,6 @@
 .autocomplete__input {
     background-color: transparent;
     position: relative;
-    font-family: GDS Transport,arial,sans-serif;
 }
 
 .autocomplete__hint {
@@ -33,13 +32,11 @@
 
 .autocomplete__input--default {
     padding: 5px;
-    font-family: GDS Transport,arial,sans-serif;
 }
 .autocomplete__input--focused {
     outline: 3px solid #fd0;
     outline-offset: 0;
     box-shadow: inset 0 0 0 2px;
-    font-family: GDS Transport,arial,sans-serif;
 }
 
 .autocomplete__input--show-all-values {
@@ -96,7 +93,6 @@
     cursor: pointer;
     display: block;
     position: relative;
-    font-family: GDS Transport,arial,sans-serif;
 }
 
 .autocomplete__option > * {
