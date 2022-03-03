@@ -77,7 +77,7 @@ class HowCanWeIdentifyYouController @Inject() (
         formData.ninoOrUtrRadio match {
           case Some("nino") =>
             Redirect(continueNino(inReviewMode, service))
-          case Some("utr") =>
+          case _ =>
             Redirect(continueUtr(inReviewMode, service))
         }
       }
