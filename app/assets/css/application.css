@@ -5,3 +5,7 @@
 .js-enabled  .govuk-back-link{
  display: inline-block;
 }
+
+.autocomplete__input {
+    font-family: inherit;
+}
