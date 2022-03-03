@@ -17,7 +17,7 @@
 package unit.controllers
 
 import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
@@ -110,7 +110,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
     "direct authenticated users to start short-cut subscription and pick other enrolment apart from CDS" in {
       when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(gvmsService))(any()))
-        .thenReturn(Future.successful(groupEnrolment(atarService)))
+        .thenReturn(Future.successful(None))
       when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(Future.successful(List.empty))
       when(groupEnrolmentExtractor.checkAllServiceEnrolments(any())(any())).thenReturn(
         Future.successful(groupEnrolment(atarService))
@@ -162,6 +162,9 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
         controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
       status(result) shouldBe SEE_OTHER
       await(result).header.headers("Location") should endWith("check-existing-eori")
+      verify(mockSessionCache).saveGroupEnrolment(
+        meq(EnrolmentResponse("HMRC-ATAR-ORG", "Activated", List(KeyValue("EORINumber", "GB123456463324"))))
+      )(any())
     }
 
     "inform authenticated users with ATAR enrolment that subscription exists" in {

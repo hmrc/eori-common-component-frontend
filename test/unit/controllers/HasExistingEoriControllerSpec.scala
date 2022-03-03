@@ -24,7 +24,7 @@ import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, _}
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{FailedEnrolmentException, HasExistingEoriController}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, KeyValue}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, ExistingEori, KeyValue}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{EnrolmentService, MissingEnrolmentException}
@@ -239,7 +239,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   private def enrol(service: Service, responseStatus: Int)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    when(mockEnrolmentService.enrolWithExistingEnrolment(any[String], any[Service])(any())).thenReturn(
+    when(mockEnrolmentService.enrolWithExistingEnrolment(any[ExistingEori], any[Service])(any())).thenReturn(
       Future(responseStatus)
     )
     await(test(controller.enrol(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
@@ -247,7 +247,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   private def enrolMissingEnrolment(service: Service)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    when(mockEnrolmentService.enrolWithExistingEnrolment(any[String], any[Service])(any())).thenReturn(
+    when(mockEnrolmentService.enrolWithExistingEnrolment(any[ExistingEori], any[Service])(any())).thenReturn(
       Future.failed(MissingEnrolmentException("EORI"))
     )
     await(test(controller.enrol(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
@@ -255,7 +255,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   private def enrolMissingEnrolmentForUser(service: Service)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set(atarEnrolment))
-    when(mockEnrolmentService.enrolWithExistingEnrolment(any[String], any[Service])(any())).thenReturn(
+    when(mockEnrolmentService.enrolWithExistingEnrolment(any[ExistingEori], any[Service])(any())).thenReturn(
       Future.failed(MissingEnrolmentException("EORI"))
     )
     await(test(controller.enrol(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))

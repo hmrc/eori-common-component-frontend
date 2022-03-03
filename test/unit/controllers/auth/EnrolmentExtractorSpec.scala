@@ -44,7 +44,7 @@ class EnrolmentExtractorSpec extends UnitSpec {
 
         val result = enrolmentExtractor.enrolledForService(loggedInUser(Set(atarEnrolment)), atarService)
 
-        result shouldBe Some(eori)
+        result shouldBe Some(ExistingEori("GB123456789012", "HMRC-ATAR-ORG"))
       }
 
       "user is enrolled for CDS" in {
@@ -53,7 +53,7 @@ class EnrolmentExtractorSpec extends UnitSpec {
 
         val result = enrolmentExtractor.enrolledForService(loggedInUser(Set(cdsEnrolment)), Service.cds)
 
-        result shouldBe Some(eori)
+        result shouldBe Some(ExistingEori("GB123456789012", "HMRC-CUS-ORG"))
       }
     }
 
@@ -70,16 +70,30 @@ class EnrolmentExtractorSpec extends UnitSpec {
       }
     }
 
-    "return EORI correctly while calling enrolledForOtherServices" when {
+    "return first activated EORI correctly while calling enrolledForOtherServices" when {
 
-      "user is enrolled for ATaR ang gvms" in {
+      "user is enrolled for ATaR(pending) ang gvms" in {
 
-        val atarEnrolment = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", eori.id)
-        val gvmsEnrolment = Enrolment("HMRC-GVMS-ORG").withIdentifier("EORINumber", gvmseori.id)
+        val atarEnrolment = Enrolment("HMRC-ATAR-ORG", Seq(), "Pending", None).withIdentifier("EORINumber", eori.id)
+        val gvmsEnrolment =
+          Enrolment("HMRC-GVMS-ORG", Seq(), "Activated", None).withIdentifier("EORINumber", gvmseori.id)
 
-        val result = enrolmentExtractor.enrolledForService(loggedInUser(Set(atarEnrolment, gvmsEnrolment)), atarService)
+        val result = enrolmentExtractor.enrolledForOtherServices(loggedInUser(Set(atarEnrolment, gvmsEnrolment)))
 
-        result shouldBe Some(eori)
+        result shouldBe Some(ExistingEori("GB123456789013", "HMRC-GVMS-ORG"))
+      }
+    }
+
+    "return None  EORI correctly while calling enrolledForOtherServices" when {
+
+      "user is enrolled for ATaR(pending) ang gvms" in {
+
+        val atarEnrolment = Enrolment("HMRC-ATAR-ORG", Seq(), "Pending", None).withIdentifier("EORINumber", eori.id)
+        val gvmsEnrolment = Enrolment("HMRC-GVMS-ORG", Seq(), "Pending", None).withIdentifier("EORINumber", gvmseori.id)
+
+        val result = enrolmentExtractor.enrolledForOtherServices(loggedInUser(Set(atarEnrolment, gvmsEnrolment)))
+
+        result shouldBe None
       }
     }
 
