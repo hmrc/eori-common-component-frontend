@@ -23,10 +23,7 @@ case class KnownFactsQuery(service: String, knownFacts: List[KeyValuePair])
 object KnownFactsQuery {
   implicit val format: OFormat[KnownFactsQuery] = Json.format[KnownFactsQuery]
 
-  def apply(eoriNumber: String): KnownFactsQuery =
-    new KnownFactsQuery(
-      service = "HMRC-CUS-ORG",
-      knownFacts = List(KeyValuePair(key = "EORINumber", value = eoriNumber))
-    )
+  def apply(eoriNumber: String, enrolmentKey: String): KnownFactsQuery =
+    new KnownFactsQuery(service = enrolmentKey, knownFacts = List(KeyValuePair(key = "EORINumber", value = eoriNumber)))
 
 }
