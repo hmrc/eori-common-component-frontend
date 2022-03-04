@@ -18,6 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth
 
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.ExistingEori
 
 trait EnrolmentExtractor {
 
@@ -27,38 +28,45 @@ trait EnrolmentExtractor {
     enrolmentKey: String,
     identifierName: String,
     loggedInUser: LoggedInUserWithEnrolments
-  ): Option[String] =
+  ): Option[ExistingEori] =
     loggedInUser.enrolments
       .getEnrolment(enrolmentKey)
-      .flatMap(
+      .map(
         enrolment =>
-          enrolment
-            .getIdentifier(identifierName)
-            .map(identifier => identifier.value)
+          ExistingEori(
+            enrolment
+              .getIdentifier(identifierName)
+              .map(identifier => identifier.value),
+            enrolment.key
+          )
       )
 
   private def identifierForOtherEnrollments(
     identifierName: String,
     loggedInUser: LoggedInUserWithEnrolments
-  ): Option[String] = {
+  ): Option[ExistingEori] = {
 
     val activatedState    = "Activated"
     val serviceList       = Service.supportedServicesMap.values.toList
     val serviceEnrolments = serviceList.map(_.enrolmentKey)
     loggedInUser.enrolments.enrolments.find(x => x.state == activatedState && serviceEnrolments.contains(x.key))
-      .flatMap(
+      .map(
         enrolment =>
-          enrolment
-            .getIdentifier(identifierName)
-            .map(identifier => identifier.value)
+          ExistingEori(
+            enrolment
+              .getIdentifier(identifierName)
+              .map(identifier => identifier.value),
+            enrolment.key
+          )
       )
+
   }
 
-  def enrolledForService(loggedInUser: LoggedInUserWithEnrolments, service: Service): Option[Eori] =
-    identifierFor(service.enrolmentKey, EoriIdentifier, loggedInUser).map(Eori)
+  def enrolledForService(loggedInUser: LoggedInUserWithEnrolments, service: Service): Option[ExistingEori] =
+    identifierFor(service.enrolmentKey, EoriIdentifier, loggedInUser)
 
-  def enrolledForOtherServices(loggedInUser: LoggedInUserWithEnrolments): Option[Eori] =
-    identifierForOtherEnrollments(EoriIdentifier, loggedInUser).map(Eori)
+  def enrolledForOtherServices(loggedInUser: LoggedInUserWithEnrolments): Option[ExistingEori] =
+    identifierForOtherEnrollments(EoriIdentifier, loggedInUser)
 
   def activatedEnrolmentForService(loggedInUser: LoggedInUserWithEnrolments, service: Service): Option[Eori] =
     loggedInUser.enrolments
@@ -70,13 +78,13 @@ trait EnrolmentExtractor {
       }
 
   def enrolledCtUtr(loggedInUser: LoggedInUserWithEnrolments): Option[Utr] =
-    identifierFor("IR-CT", "UTR", loggedInUser).map(Utr)
+    identifierFor("IR-CT", "UTR", loggedInUser).map(existingEori => Utr(existingEori.id))
 
   def enrolledSaUtr(loggedInUser: LoggedInUserWithEnrolments): Option[Utr] =
-    identifierFor("IR-SA", "UTR", loggedInUser).map(Utr)
+    identifierFor("IR-SA", "UTR", loggedInUser).map(existingEori => Utr(existingEori.id))
 
   def enrolledNino(loggedInUser: LoggedInUserWithEnrolments): Option[Nino] =
-    identifierFor("HMRC-NI", "NINO", loggedInUser).map(Nino)
+    identifierFor("HMRC-NI", "NINO", loggedInUser).map(existingEori => Nino(existingEori.id))
 
   def existingEoriForUserOrGroup(
     loggedInUser: LoggedInUserWithEnrolments,

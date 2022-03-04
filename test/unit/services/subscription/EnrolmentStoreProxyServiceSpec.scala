@@ -60,14 +60,20 @@ class EnrolmentStoreProxyServiceSpec extends UnitSpec with MockitoSugar with Bef
   private val enrolmentResponse =
     EnrolmentResponse(serviceName, state, List(identifier))
 
-  private val atarEnrolmentResponse =
+  private val atarPendingEnrolmentResponse =
+    EnrolmentResponse(atarServiceName, "Pending", List(identifier))
+
+  private val atarActiveEnrolmentResponse =
+    EnrolmentResponse(atarServiceName, "Activated", List(identifier))
+
+  private val gvmsEnrolmentResponse =
     EnrolmentResponse(atarServiceName, state, List(identifier))
 
   private val enrolmentResponseNotActive =
     EnrolmentResponse("SOME_SERVICE", "NotActive", List(identifier))
 
   private val enrolmentStoreProxyResponse     = EnrolmentStoreProxyResponse(List(enrolmentResponse))
-  private val atarEnrolmentStoreProxyResponse = EnrolmentStoreProxyResponse(List(atarEnrolmentResponse))
+  private val atarEnrolmentStoreProxyResponse = EnrolmentStoreProxyResponse(List(atarActiveEnrolmentResponse))
   private val serviceName1                    = "HMRC-VAT-ORG"
 
   private val enrolmentResponseNoHmrcCusOrg =
@@ -105,10 +111,37 @@ class EnrolmentStoreProxyServiceSpec extends UnitSpec with MockitoSugar with Bef
           .getEnrolmentByGroupId(any[String])(meq(headerCarrier), any())
       ).thenReturn(Future.successful(atarEnrolmentStoreProxyResponse))
 
-      await(service.checkAllEnrolmentsForGroup(groupId, serviceList)) shouldBe Some(atarEnrolmentResponse)
+      await(service.checkAllEnrolmentsForGroup(groupId, serviceList)) shouldBe Some(atarActiveEnrolmentResponse)
 
       verify(mockEnrolmentStoreProxyConnector).getEnrolmentByGroupId(any[String])(meq(headerCarrier), any())
     }
+
+    "return first active enrolment if they exist against the groupId" in {
+      when(
+        mockEnrolmentStoreProxyConnector
+          .getEnrolmentByGroupId(any[String])(meq(headerCarrier), any())
+      ).thenReturn(
+        Future.successful(EnrolmentStoreProxyResponse(List(atarPendingEnrolmentResponse, gvmsEnrolmentResponse)))
+      )
+
+      await(service.checkAllEnrolmentsForGroup(groupId, serviceList)) shouldBe Some(gvmsEnrolmentResponse)
+
+      verify(mockEnrolmentStoreProxyConnector).getEnrolmentByGroupId(any[String])(meq(headerCarrier), any())
+    }
+
+    "return None if no active enrolment exist against the groupId" in {
+      when(
+        mockEnrolmentStoreProxyConnector
+          .getEnrolmentByGroupId(any[String])(meq(headerCarrier), any())
+      ).thenReturn(
+        Future.successful(EnrolmentStoreProxyResponse(List(atarPendingEnrolmentResponse, enrolmentResponseNotActive)))
+      )
+
+      await(service.checkAllEnrolmentsForGroup(groupId, serviceList)) shouldBe None
+
+      verify(mockEnrolmentStoreProxyConnector).getEnrolmentByGroupId(any[String])(meq(headerCarrier), any())
+    }
+
     "return all enrolments for the groupId" in {
       when(
         mockEnrolmentStoreProxyConnector
