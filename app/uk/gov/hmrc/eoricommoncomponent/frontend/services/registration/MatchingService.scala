@@ -24,12 +24,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.connector.MatchingServiceConnect
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching._
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
-  DataUnavailableException,
-  RequestSessionData,
-  SessionCache
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -59,7 +56,8 @@ class MatchingService @Inject() (
   def sendOrganisationRequestForMatchingService(implicit
     request: Request[AnyContent],
     loggedInUser: LoggedInUserWithEnrolments,
-    headerCarrier: HeaderCarrier
+    headerCarrier: HeaderCarrier,
+    originatingService: Service
   ): Future[Boolean] =
     for {
       subscriptionDetailsHolder <- cache.subscriptionDetails
@@ -76,7 +74,8 @@ class MatchingService @Inject() (
 
   def sendIndividualRequestForMatchingService(implicit
     loggedInUser: LoggedInUserWithEnrolments,
-    headerCarrier: HeaderCarrier
+    headerCarrier: HeaderCarrier,
+    originatingService: Service
   ): Future[Boolean] =
     for {
       subscription <- cache.subscriptionDetails
@@ -91,7 +90,8 @@ class MatchingService @Inject() (
   def matchBusiness(customsId: CustomsId, org: Organisation, establishmentDate: Option[LocalDate], groupId: GroupId)(
     implicit
     request: Request[AnyContent],
-    hc: HeaderCarrier
+    hc: HeaderCarrier,
+    originatingService: Service
   ): Future[Boolean] = {
     def stripKFromUtr: CustomsId => CustomsId = {
       case Utr(id) => Utr(id.stripSuffix("k").stripSuffix("K"))
@@ -112,7 +112,8 @@ class MatchingService @Inject() (
   }
 
   def matchIndividualWithId(customsId: CustomsId, individual: Individual, groupId: GroupId)(implicit
-    hc: HeaderCarrier
+    hc: HeaderCarrier,
+    originatingService: Service
   ): Future[Boolean] =
     matchingConnector
       .lookup(individualIdMatchRequest(customsId, individual))

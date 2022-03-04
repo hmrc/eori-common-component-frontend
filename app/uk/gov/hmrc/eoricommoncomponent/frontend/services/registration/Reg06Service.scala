@@ -24,16 +24,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.RegistrationInfoRequest.{NINO, UTR}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
-  DataUnavailableException,
-  RequestSessionData,
-  SessionCache
-}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
-  CdsToEtmpOrganisationType,
-  OrganisationTypeConfiguration
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{CdsToEtmpOrganisationType, OrganisationTypeConfiguration}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,7 +40,7 @@ class Reg06Service @Inject() (
   requestSessionData: RequestSessionData
 )(implicit ec: ExecutionContext) {
 
-  def sendIndividualRequest(implicit request: Request[AnyContent], headerCarrier: HeaderCarrier): Future[Boolean] = {
+  def sendIndividualRequest(implicit request: Request[AnyContent], headerCarrier: HeaderCarrier, orginatingService: Service): Future[Boolean] = {
     def ninoOrUtr(id: CustomsId): String = id match {
       case _: Nino => NINO
       case _: Utr  => UTR
@@ -92,7 +86,7 @@ class Reg06Service @Inject() (
     }
   }
 
-  def sendOrganisationRequest(implicit request: Request[AnyContent], headerCarrier: HeaderCarrier): Future[Boolean] = {
+  def sendOrganisationRequest(implicit request: Request[AnyContent], headerCarrier: HeaderCarrier, originatingService: Service): Future[Boolean] = {
     def regModeId(idType: String, id: String, organisationType: CdsOrganisationType, orgName: String) =
       RegisterModeId(
         idType,
@@ -142,7 +136,7 @@ class Reg06Service @Inject() (
     value: RegisterWithEoriAndIdDetail,
     subscriptionDetails: SubscriptionDetails,
     maybeOrganisationTypeConfiguration: Option[OrganisationTypeConfiguration]
-  )(implicit hc: HeaderCarrier): Future[Boolean] = {
+  )(implicit hc: HeaderCarrier, originatingService: Service): Future[Boolean] = {
 
     def stripKFromUtr: RegisterWithEoriAndIdDetail => RegisterWithEoriAndIdDetail = {
       case r @ RegisterWithEoriAndIdDetail(_, id, _) if id.IDType == UTR =>

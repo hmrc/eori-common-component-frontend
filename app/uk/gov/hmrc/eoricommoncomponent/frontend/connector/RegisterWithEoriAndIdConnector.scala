@@ -22,12 +22,8 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
-  RegisterWithEoriAndIdRequest,
-  RegisterWithEoriAndIdRequestHolder,
-  RegisterWithEoriAndIdResponse,
-  RegisterWithEoriAndIdResponseHolder
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{RegisterWithEoriAndIdRequest, RegisterWithEoriAndIdRequestHolder, RegisterWithEoriAndIdResponse, RegisterWithEoriAndIdResponseHolder}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{Registration, RegistrationResult, RegistrationSubmitted}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
@@ -44,7 +40,7 @@ class RegisterWithEoriAndIdConnector @Inject() (http: HttpClient, appConfig: App
 
   def register(
     request: RegisterWithEoriAndIdRequest
-  )(implicit hc: HeaderCarrier): Future[RegisterWithEoriAndIdResponse] = {
+  )(implicit hc: HeaderCarrier, originatingService: Service): Future[RegisterWithEoriAndIdResponse] = {
 
     // $COVERAGE-OFF$Loggers
     logger.debug(s"REG06 Register: $url, requestCommon: ${request.requestCommon} and hc: $hc")
@@ -73,8 +69,8 @@ class RegisterWithEoriAndIdConnector @Inject() (http: HttpClient, appConfig: App
     url: String,
     request: RegisterWithEoriAndIdRequest,
     response: RegisterWithEoriAndIdResponseHolder
-  )(implicit hc: HeaderCarrier): Unit = {
-    val registrationSubmitted = RegistrationSubmitted(request)
+  )(implicit hc: HeaderCarrier, originatingService: Service): Unit = {
+    val registrationSubmitted = RegistrationSubmitted(request,originatingService.code)
     val registrationResult    = RegistrationResult(response)
 
     audit.sendExtendedDataEvent(

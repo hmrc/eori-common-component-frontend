@@ -35,13 +35,14 @@ case class RegistrationSubmitted(
   individual: Option[Individual],
   organisation: Option[RegisterWithEoriAndIdOrganisation],
   receiptDate: String,
-  regime: String
+  regime: String,
+  originatingService: String
 )
 
 object RegistrationSubmitted {
   implicit val format = Json.format[RegistrationSubmitted]
 
-  def apply(request: RegisterWithEoriAndIdRequest): RegistrationSubmitted = {
+  def apply(request: RegisterWithEoriAndIdRequest, serviceName: String): RegistrationSubmitted = {
 
     val idType = request.requestDetail.registerModeID.IDType
 
@@ -56,7 +57,8 @@ object RegistrationSubmitted {
       individual = request.requestDetail.registerModeID.individual,
       organisation = request.requestDetail.registerModeID.organisation,
       receiptDate = request.requestCommon.receiptDate.toString(),
-      regime = request.requestCommon.regime
+      regime = request.requestCommon.regime,
+      originatingService = serviceName
     )
   }
 

@@ -22,7 +22,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.CommonHeader
 
 import java.time.format.DateTimeFormatter
 
-case class SubscriptionStatusQueryParams(receiptDate: LocalDateTime, regime: String, idType: String, id: String) {
+case class SubscriptionStatusQueryParams(receiptDate: LocalDateTime, regime: String, idType: String, id: String, originatingService: String) {
 
   def queryParams: Seq[(String, String)] = {
     val receiptDateAsString =

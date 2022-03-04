@@ -18,10 +18,10 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SubscriptionStatusConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Sub01Outcome, SubscriptionStatusQueryParams}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.http.HeaderCarrier
@@ -37,10 +37,10 @@ class SubscriptionStatusService @Inject() (
 
   private val dateFormat = DateTimeFormatter.ofPattern("d MMM yyyy")
 
-  def getStatus(idType: String, id: String)(implicit hc: HeaderCarrier): Future[PreSubscriptionStatus] = {
+  def getStatus(idType: String, id: String)(implicit hc: HeaderCarrier, originatingService: Service): Future[PreSubscriptionStatus] = {
 
     def createRequest =
-      SubscriptionStatusQueryParams(requestCommonGenerator.receiptDate, "CDS", idType, id)
+      SubscriptionStatusQueryParams(requestCommonGenerator.receiptDate, "CDS", idType, id, originatingService.code)
 
     def saveToCache(processingDate: LocalDateTime) =
       cache.saveSub01Outcome(Sub01Outcome(dateFormat.format(processingDate)))
