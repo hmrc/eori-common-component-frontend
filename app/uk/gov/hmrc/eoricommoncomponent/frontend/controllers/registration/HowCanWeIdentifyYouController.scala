@@ -28,6 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
   SubscriptionDetailsService
 }
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -79,6 +80,8 @@ class HowCanWeIdentifyYouController @Inject() (
             Redirect(continueNino(inReviewMode, service))
           case Some("utr") =>
             Redirect(continueUtr(inReviewMode, service))
+          case _ =>
+            throw DataUnavailableException("HowCanWeIdentifyYouController Missing form data values")
         }
       }
 
