@@ -85,7 +85,7 @@ class SUB09SubscriptionDisplayConnectorSpec extends IntegrationTestsSpec with Sc
         requestAcknowledgementReference,
         Journey.Subscribe
       )
-      await(connector.subscriptionDisplay(reqEori)) mustBe Right(expectedResponse)
+      await(connector.subscriptionDisplay(reqEori,"atar")) mustBe Right(expectedResponse)
     }
 
     "return Service Unavailable Response when subscription display service returns an exception" in {
@@ -96,7 +96,7 @@ class SUB09SubscriptionDisplayConnectorSpec extends IntegrationTestsSpec with Sc
         Journey.Subscribe,
         returnedStatus = SERVICE_UNAVAILABLE
       )
-      await(connector.subscriptionDisplay(reqTaxPayerId)) mustBe Left(ServiceUnavailableResponse)
+      await(connector.subscriptionDisplay(reqTaxPayerId,"atar")) mustBe Left(ServiceUnavailableResponse)
     }
   }
 }

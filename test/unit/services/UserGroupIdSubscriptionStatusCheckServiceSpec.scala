@@ -34,6 +34,8 @@ import util.TestData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import org.mockito.ArgumentMatchers.{eq => meq, _}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 class UserGroupIdSubscriptionStatusCheckServiceSpec
     extends UnitSpec with MockitoSugar with BeforeAndAfterEach with ScalaFutures with TestData {
@@ -61,6 +63,8 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
   override def beforeEach() =
     reset(mockSubscriptionStatusService, mockSave4LaterService)
 
+  implicit val originatingService: Service = atarService
+
   "UserGroupIdSubscriptionStatusCheckService" should {
 
     "block the user for the groupID is cache for different service and subscription status is SubscriptionProcessing" in {
@@ -69,11 +73,11 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
         mockSave4LaterService
           .fetchCacheIds(any())(any[HeaderCarrier])
       ).thenReturn(Future.successful(Some(cacheIds.copy(serviceCode = Some("otherService")))))
-      when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier]))
+      when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier], any[Service]))
         .thenReturn(Future.successful(SubscriptionProcessing))
 
       val result: Result = service
-        .checksToProceed(groupId, internalId, atarService)(continue)(userIsInProcess)(
+        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(
           otherUserWithinGroupIsInProcess
         ).futureValue
 
@@ -86,11 +90,11 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
         mockSave4LaterService
           .fetchCacheIds(any())(any[HeaderCarrier])
       ).thenReturn(Future.successful(Some(cacheIds.copy(internalId = InternalId("otherUserInternalId")))))
-      when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier]))
+      when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier], any[Service]))
         .thenReturn(Future.successful(SubscriptionProcessing))
 
       val result: Result = service
-        .checksToProceed(groupId, internalId, atarService)(continue)(userIsInProcess)(
+        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(
           otherUserWithinGroupIsInProcess
         ).futureValue
 
@@ -103,11 +107,11 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
         mockSave4LaterService
           .fetchCacheIds(any())(any[HeaderCarrier])
       ).thenReturn(Future.successful(Some(cacheIds.copy(serviceCode = Some(atarService.code)))))
-      when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier]))
+      when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier], any[Service]))
         .thenReturn(Future.successful(SubscriptionProcessing))
 
       val result: Result = service
-        .checksToProceed(groupId, internalId, atarService)(continue)(userIsInProcess)(
+        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(
           otherUserWithinGroupIsInProcess
         ).futureValue
 
@@ -135,12 +139,12 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
         mockSave4LaterService
           .fetchCacheIds(any())(any[HeaderCarrier])
       ).thenReturn(Future.successful(Some(cacheIds.copy(serviceCode = Some("other")))))
-      when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier]))
+      when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier], any[Service]))
         .thenReturn(Future.successful(NewSubscription))
       when(mockSave4LaterService.deleteCacheIds(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
 
       val result: Result = service
-        .checksToProceed(groupId, internalId, atarService)(continue)(userIsInProcess)(
+        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(
           otherUserWithinGroupIsInProcess
         ).futureValue
 
@@ -155,9 +159,9 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
       ).thenReturn(Future.successful(None))
 
       val result: Result = service
-        .checksToProceed(groupId, internalId, atarService)(continue)(userIsInProcess)(
+        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(
           otherUserWithinGroupIsInProcess
-        ).futureValue
+        )(any(), meq(atarService)).futureValue
 
       result.header.headers(LOCATION) shouldBe "/continue"
     }
@@ -168,12 +172,12 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
       mockSave4LaterService
         .fetchCacheIds(any())(any[HeaderCarrier])
     ).thenReturn(Future.successful(Some(cacheIds)))
-    when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier]))
+    when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier], any[Service]))
       .thenReturn(Future.successful(status))
     when(mockSave4LaterService.deleteCachedGroupId(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
 
     val result: Result = service
-      .checksToProceed(groupId, internalId, atarService)(continue)(userIsInProcess)(
+      .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(
         otherUserWithinGroupIsInProcess
       ).futureValue
 

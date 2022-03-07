@@ -16,8 +16,8 @@
 
 package integration
 
+import org.mockito.ArgumentMatchers.any
 import java.time.LocalDateTime
-
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -314,7 +314,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
         serviceResponsePassJsonString
       )
 
-      await(RegisterWithEoriAndIdConnector.register(individualNinoRequest)) must be(
+      await(RegisterWithEoriAndIdConnector.register(individualNinoRequest)(any(),any())) must be(
         individualNinoResponse.registerWithEORIAndIDResponse
       )
     }
@@ -327,7 +327,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
         serviceResponseDeferredJsonString
       )
 
-      await(RegisterWithEoriAndIdConnector.register(organisationUtrRequest)) must be(
+      await(RegisterWithEoriAndIdConnector.register(organisationUtrRequest)(any(),any())) must be(
         organisationUtrResponse.registerWithEORIAndIDResponse
       )
     }
@@ -341,7 +341,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
       )
 
       val caught: UpstreamErrorResponse = intercept[UpstreamErrorResponse] {
-        await(RegisterWithEoriAndIdConnector.register(individualNinoRequest))
+        await(RegisterWithEoriAndIdConnector.register(individualNinoRequest)(any(),any()))
       }
 
       caught.statusCode mustBe 400
@@ -357,7 +357,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
       )
 
       val caught: UpstreamErrorResponse = intercept[UpstreamErrorResponse] {
-        await(RegisterWithEoriAndIdConnector.register(individualNinoRequest))
+        await(RegisterWithEoriAndIdConnector.register(individualNinoRequest)(any(),any()))
       }
 
       caught.statusCode mustBe 500
@@ -373,7 +373,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
       )
 
       val caught: UpstreamErrorResponse = intercept[UpstreamErrorResponse] {
-        await(RegisterWithEoriAndIdConnector.register(individualNinoRequest))
+        await(RegisterWithEoriAndIdConnector.register(individualNinoRequest)(any(),any()))
       }
 
       caught.statusCode mustBe 403
@@ -387,7 +387,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
         serviceResponsePassJsonString
       )
 
-      await(RegisterWithEoriAndIdConnector.register(individualNinoRequest))
+      await(RegisterWithEoriAndIdConnector.register(individualNinoRequest)(any(),any()))
 
       eventually(AuditService.verifyXAuditWrite(1))
     }
@@ -400,7 +400,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
       )
 
       val caught = intercept[UpstreamErrorResponse] {
-        await(RegisterWithEoriAndIdConnector.register(individualNinoRequest))
+        await(RegisterWithEoriAndIdConnector.register(individualNinoRequest)(any(),any()))
       }
 
       caught.statusCode mustBe 400

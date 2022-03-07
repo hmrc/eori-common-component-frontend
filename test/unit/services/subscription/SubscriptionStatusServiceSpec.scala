@@ -17,15 +17,11 @@
 package unit.services.subscription
 
 import base.UnitSpec
+import org.mockito.ArgumentMatchers
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SubscriptionStatusConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
-  Sub01Outcome,
-  SubscriptionStatusQueryParams,
-  SubscriptionStatusResponseHolder,
-  TaxPayerId
-}
-import java.time.LocalDateTime
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Sub01Outcome, SubscriptionStatusQueryParams, SubscriptionStatusResponseHolder, TaxPayerId}
 
+import java.time.LocalDateTime
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -35,6 +31,7 @@ import org.scalatest.prop.Tables.Table
 import play.api.Configuration
 import play.api.libs.json.Json
 import play.mvc.Http.Status._
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
@@ -53,12 +50,13 @@ class SubscriptionStatusServiceSpec extends UnitSpec with MockitoSugar with Befo
   private val receiptDate                                        = LocalDateTime.of(2016, 3, 17, 9, 30, 47, 0)
 
   private val request =
-    SubscriptionStatusQueryParams(receiptDate = receiptDate, regime = "CDS", "taxPayerID", MDGZeroPaddedTaxPayerId)
+    SubscriptionStatusQueryParams(receiptDate = receiptDate, regime = "CDS", "taxPayerID", MDGZeroPaddedTaxPayerId, "atar")
 
   lazy val service =
     new SubscriptionStatusService(mockConnector, mockRequestCommonGenerator, mockSessionCache)(global)
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit val originatingService: Service = atarService
 
   override protected def beforeEach() {
     reset(mockConfig)

@@ -26,6 +26,7 @@ import play.mvc.Http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR, OK}
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import util.externalservices.ExternalServicesConfig.{Host, Port}
 import util.externalservices.{AuditService, MatchService}
+import org.mockito.ArgumentMatchers._
 
 class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
 
@@ -233,7 +234,7 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
         serviceRequestJson.toString,
         serviceResponseJsonOrganisationWithOptionalParams.toString
       )
-      await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder])).get must be(
+      await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder])(any(),any())).get must be(
         serviceResponseJsonOrganisationWithOptionalParams.as[MatchingResponse]
       )
     }
@@ -244,7 +245,7 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
         serviceRequestJson.toString,
         serviceResponseJsonIndividualWithOptionalParams.toString
       )
-      await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder])).get must be(
+      await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder])(any(),any())).get must be(
         serviceResponseJsonIndividualWithOptionalParams.as[MatchingResponse]
       )
     }
@@ -256,7 +257,7 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
         matchFailureResponse.toString(),
         OK
       )
-      await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder])) must be(None)
+      await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder])(any(),any())) must be(None)
     }
 
     "return Exception when matching service returns a downstream 500 response (Internal Service Error)" in {
@@ -267,7 +268,7 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
         INTERNAL_SERVER_ERROR
       )
       val caught = intercept[UpstreamErrorResponse] {
-        await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder]))
+        await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder])(any(),any()))
       }
 
       caught.statusCode mustBe 500
@@ -282,7 +283,7 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
         FORBIDDEN
       )
       val caught = intercept[UpstreamErrorResponse] {
-        await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder]))
+        await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder])(any(),any()))
       }
 
       caught.statusCode mustBe 403
@@ -295,7 +296,7 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
         serviceRequestJson.toString,
         serviceResponseJsonOrganisationWithOptionalParams.toString
       )
-      await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder]))
+      await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder])(any(),any()))
 
       eventually(AuditService.verifyXAuditWrite(1))
     }
@@ -306,7 +307,7 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
         serviceRequestWithEORIJson.toString,
         serviceResponseJsonOrganisationWithOptionalParams.toString
       )
-      await(matchingServiceConnector.lookup(serviceRequestWithEORIJson.as[MatchingRequestHolder]))
+      await(matchingServiceConnector.lookup(serviceRequestWithEORIJson.as[MatchingRequestHolder])(any(),any()))
 
       eventually(AuditService.verifyXAuditWrite(1))
     }
@@ -317,7 +318,7 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
         serviceRequestWithNINOJson.toString,
         serviceResponseJsonOrganisationWithOptionalParams.toString
       )
-      await(matchingServiceConnector.lookup(serviceRequestWithNINOJson.as[MatchingRequestHolder]))
+      await(matchingServiceConnector.lookup(serviceRequestWithNINOJson.as[MatchingRequestHolder])(any(),any()))
 
       eventually(AuditService.verifyXAuditWrite(1))
     }
@@ -330,7 +331,7 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
         BAD_REQUEST
       )
       val caught = intercept[UpstreamErrorResponse] {
-        await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder]))
+        await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder])(any(),any()))
       }
 
       caught.statusCode mustBe 400

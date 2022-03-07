@@ -31,16 +31,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
-  DataUnavailableException,
-  RequestSessionData,
-  SessionCache
-}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
-  OrganisationTypeConfiguration,
-  RegistrationDetailsCreator
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{OrganisationTypeConfiguration, RegistrationDetailsCreator}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.Reg06Service
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -58,7 +52,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
   private val validDate              = "2016-07-08T08:35:13Z"
   private val validDateTime          = ZonedDateTime.parse(validDate).toLocalDateTime
   implicit val hc: HeaderCarrier     = mock[HeaderCarrier]
-
+  implicit val originatingService:Service = atarService
   val service =
     new Reg06Service(mockConnector, mockReqCommonGen, mockDataCache, mockRequestSessionData)(global)
 
@@ -576,13 +570,13 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
   private def mockRegistrationFailure() =
     when(
       mockConnector
-        .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier])
+        .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier], any[Service])
     ) thenReturn Future.failed(expectedException)
 
   private def mockRegistrationSuccess() =
     when(
       mockConnector
-        .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier])
+        .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier], any[Service])
     ) thenReturn Future.successful(registrationResponse.registerWithEORIAndIDResponse)
 
   "RegisterWithEoriAndIdService" should {
@@ -591,12 +585,12 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       mockRegistrationSuccess()
 
       service
-        .registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)(hc)
+        .registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)
         .futureValue shouldBe true
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
-      verify(mockConnector).register(captor.capture())(meq(hc))
+      verify(mockConnector).register(captor.capture())(any[HeaderCarrier],any[Service])
 
       val registrationRequest: RegisterWithEoriAndIdRequest = captor.getValue
 
@@ -618,17 +612,16 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       )
       registrationRequest.requestDetail.govGatewayCredentials shouldBe Some(GovGatewayCredentials("some@example.com"))
     }
-
     "send correct request for an organisation with NINO" in {
       mockRegistrationSuccess()
 
       service
-        .registerWithEoriAndId(organisationDetailsWithNINO, subscriptionDetails, personTypeCompany)(hc)
+        .registerWithEoriAndId(organisationDetailsWithNINO, subscriptionDetails, personTypeCompany)
         .futureValue shouldBe true
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
-      verify(mockConnector).register(captor.capture())(meq(hc))
+      verify(mockConnector).register(captor.capture())(any[HeaderCarrier],any[Service])
 
       val registrationRequest: RegisterWithEoriAndIdRequest = captor.getValue
 
@@ -655,12 +648,12 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       mockRegistrationSuccess()
 
       await(
-        service.registerWithEoriAndId(organisationUtrDetailsNonePostCode, subscriptionDetails, personTypeCompany)(hc)
+        service.registerWithEoriAndId(organisationUtrDetailsNonePostCode, subscriptionDetails, personTypeCompany)
       ) shouldBe true
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
-      verify(mockConnector).register(captor.capture())(meq(hc))
+      verify(mockConnector).register(captor.capture())(any[HeaderCarrier],any[Service])
 
       val registrationRequest: RegisterWithEoriAndIdRequest = captor.getValue
 
@@ -682,11 +675,11 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         Some(GovGatewayCredentials("some@example.com"))
       )
 
-      await(service.registerWithEoriAndId(orgDetails, subscriptionDetails, personTypeCompany)(hc)) shouldBe true
+      await(service.registerWithEoriAndId(orgDetails, subscriptionDetails, personTypeCompany)) shouldBe true
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
-      verify(mockConnector).register(captor.capture())(meq(hc))
+      verify(mockConnector).register(captor.capture())(any[HeaderCarrier],any[Service])
 
       val registrationRequest: RegisterWithEoriAndIdRequest = captor.getValue
 
@@ -708,11 +701,11 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         Some(GovGatewayCredentials("some@example.com"))
       )
 
-      await(service.registerWithEoriAndId(orgDetails, subscriptionDetails, personTypeCompany)(hc)) shouldBe true
+      await(service.registerWithEoriAndId(orgDetails, subscriptionDetails, personTypeCompany)) shouldBe true
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
-      verify(mockConnector).register(captor.capture())(meq(hc))
+      verify(mockConnector).register(captor.capture())(any[HeaderCarrier],any[Service])
 
       val registrationRequest: RegisterWithEoriAndIdRequest = captor.getValue
 
@@ -734,11 +727,11 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         Some(GovGatewayCredentials("some@example.com"))
       )
 
-      await(service.registerWithEoriAndId(orgDetails, subscriptionDetails, personTypeCompany)(hc)) shouldBe true
+      await(service.registerWithEoriAndId(orgDetails, subscriptionDetails, personTypeCompany)) shouldBe true
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
-      verify(mockConnector).register(captor.capture())(meq(hc))
+      verify(mockConnector).register(captor.capture())(meq(hc), any())
 
       val registrationRequest: RegisterWithEoriAndIdRequest = captor.getValue
 
@@ -751,7 +744,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       val caught = intercept[RuntimeException](
         await(
           service
-            .registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)(hc)
+            .registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)
         )
       )
 
@@ -762,7 +755,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       mockRegistrationSuccess()
 
       await(
-        service.registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)(hc)
+        service.registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(meq(registrationResponse.registerWithEORIAndIDResponse))(
@@ -773,126 +766,126 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
     "store response in cache when there is no SAFEID" in {
       when(
         mockConnector
-          .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier])
+          .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier], any())
       ) thenReturn Future.successful(registrationResponseNoSafeId.registerWithEORIAndIDResponse)
 
       await(
-        service.registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)(hc)
+        service.registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
         meq(registrationResponseNoSafeId.registerWithEORIAndIDResponse)
-      )(meq(hc))
+      )(any[HeaderCarrier])
     }
 
     "Date of establishment and PersonType are not returned from Reg06 then Date of establishment and PersonType stored in cache is used" in {
       when(
         mockConnector
-          .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier])
+          .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier], any())
       ) thenReturn Future.successful(registrationWithNoDoeAndNoPersonType.registerWithEORIAndIDResponse)
       await(
-        service.registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)(hc)
+        service.registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
         meq(registrationResponseWithDoeAndPersonType.registerWithEORIAndIDResponse)
-      )(meq(hc))
+      )(any[HeaderCarrier])
     }
 
     "Date of establishment is returned from Reg06 then the returned Date of establishment is used" in {
       when(
         mockConnector
-          .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier])
+          .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier], any())
       ) thenReturn Future.successful(registrationWithDoe.registerWithEORIAndIDResponse)
       await(
-        service.registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)(hc)
+        service.registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
         meq(registrationResponseWithDate.registerWithEORIAndIDResponse)
-      )(meq(hc))
+      )(any[HeaderCarrier])
     }
 
     "Store response is cache when Response Data is returned as None " in {
       when(
         mockConnector
-          .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier])
+          .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier], any())
       ) thenReturn Future.successful(registrationWithNoRespData.registerWithEORIAndIDResponse)
       await(
-        service.registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)(hc)
+        service.registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
         meq(registrationWithNoRespData.registerWithEORIAndIDResponse)
-      )(meq(hc))
+      )(any[HeaderCarrier])
     }
 
     "Date of establishment is not returned from Reg06 then Date of Birth stored in cache is used" in {
       when(
         mockConnector
-          .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier])
+          .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier], any())
       ) thenReturn Future.successful(registrationWithNoDobRequest.registerWithEORIAndIDResponse)
       await(
         service.registerWithEoriAndId(
           individualDetailsWithNoDob,
           subscriptionDetailsForIndividual,
           personTypeIndividual
-        )(hc)
+        )
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
         meq(registrationResponseWithDob.registerWithEORIAndIDResponse)
-      )(meq(hc))
+      )(any[HeaderCarrier])
     }
 
     "Date of establishment is not returned from Reg06 but personType is returned for individual" in {
       when(
         mockConnector
-          .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier])
+          .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier], any())
       ) thenReturn Future.successful(registrationWithNoDobWithPTRequest.registerWithEORIAndIDResponse)
       await(
         service.registerWithEoriAndId(
           individualDetailsWithNoDob,
           subscriptionDetailsForIndividual,
           personTypeIndividual
-        )(hc)
+        )
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
         meq(registrationResponseWithDobAndPT.registerWithEORIAndIDResponse)
-      )(meq(hc))
+      )(any[HeaderCarrier])
     }
 
     "Date of establishment is not returned from Reg06 but personType is returned for organisation" in {
       when(
         mockConnector
-          .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier])
+          .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier], any())
       ) thenReturn Future.successful(registrationWithNoDoeAndPT.registerWithEORIAndIDResponse)
       await(
-        service.registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)(hc)
+        service.registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
         meq(registrationResponseWithDoeAndPersonType.registerWithEORIAndIDResponse)
-      )(meq(hc))
+      )(any[HeaderCarrier])
     }
 
     "Date of establishment returned from Reg06 but personType is not returned then personType stored in cache is used" in {
       when(
         mockConnector
-          .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier])
+          .register(any[RegisterWithEoriAndIdRequest])(any[HeaderCarrier], any())
       ) thenReturn Future.successful(registrationWithDobAndNoPTRequest.registerWithEORIAndIDResponse)
       await(
         service.registerWithEoriAndId(
           individualDetailsWithNoDob,
           subscriptionDetailsForIndividual,
           personTypeIndividual
-        )(hc)
+        )
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
         meq(registrationResponseWithDobAndPT.registerWithEORIAndIDResponse)
-      )(meq(hc))
+      )(any[HeaderCarrier])
     }
 
     "not proceed/return until organisation details are stored in cache" in {
@@ -904,7 +897,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       val caught = intercept[RuntimeException] {
         await(
           service
-            .registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)(hc)
+            .registerWithEoriAndId(organisationDetailsWithUTR, subscriptionDetails, personTypeCompany)
         )
       }
       caught shouldBe expectedException
@@ -915,12 +908,12 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
 
       await(
         service
-          .registerWithEoriAndId(individualDetails, subscriptionDetails, personTypeIndividual)(hc)
+          .registerWithEoriAndId(individualDetails, subscriptionDetails, personTypeIndividual)
       ) shouldBe true
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
-      verify(mockConnector).register(captor.capture())(meq(hc))
+      verify(mockConnector).register(captor.capture())(meq(hc), any())
 
       val registrationRequest: RegisterWithEoriAndIdRequest = captor.getValue
 
@@ -956,12 +949,12 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       mockRegistrationSuccess()
 
       service
-        .sendIndividualRequest(any(), hc)
-        .futureValue shouldBe true
+        .sendIndividualRequest(any(), hc, originatingService
+        )        .futureValue shouldBe true
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
-      verify(mockConnector).register(captor.capture())(meq(hc))
+      verify(mockConnector).register(captor.capture())(meq(hc), any())
       //TODO What is the point of this captor????  Copy / Paste job???
     }
 
@@ -990,12 +983,12 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       mockRegistrationSuccess()
 
       service
-        .sendOrganisationRequest(any(), hc)
+        .sendOrganisationRequest(any(), hc, originatingService)
         .futureValue shouldBe true
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
-      verify(mockConnector).register(captor.capture())(meq(hc))
+      verify(mockConnector).register(captor.capture())(meq(hc), any())
 
       //TODO What is the point of this captor????  Copy / Paste job???
 
@@ -1023,11 +1016,11 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         .thenReturn(nameIdOrganisationDetails)
       mockRegistrationSuccess()
 
-      await(service.sendOrganisationRequest(any(), hc)) shouldBe true
+      await(service.sendOrganisationRequest(any(), hc, originatingService)) shouldBe true
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
-      verify(mockConnector).register(captor.capture())(meq(hc))
+      verify(mockConnector).register(captor.capture())(meq(hc), any())
 
       //TODO What is the point of this captor????  Copy / Paste job???
     }
@@ -1038,7 +1031,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(None)
       intercept[DataUnavailableException] {
-        await(service.sendOrganisationRequest(any(), hc))
+        await(service.sendOrganisationRequest(any(), hc, originatingService))
       }
     }
     "throw DataUnavailableException when Address is missing from Cache while calling  RegistrationDetailsOrganisation" in {
@@ -1050,7 +1043,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       when(mockSubscriptionDetailsHolder.addressDetails)
         .thenReturn(None)
       intercept[DataUnavailableException] {
-        await(service.sendOrganisationRequest(any(), hc))
+        await(service.sendOrganisationRequest(any(), hc, originatingService))
       }
     }
     "throw DataUnavailableException when Eori is missing from Cache while calling  RegistrationDetailsOrganisation" in {
@@ -1065,7 +1058,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         .thenReturn(mayBeCachedAddressViewModel)
       when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(None)
       intercept[DataUnavailableException] {
-        await(service.sendOrganisationRequest(any(), hc))
+        await(service.sendOrganisationRequest(any(), hc, originatingService))
       }
     }
     "throw DataUnavailableException when Name ID Org details are  missing from Cache while calling  RegistrationDetailsOrganisation" in {
@@ -1083,7 +1076,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       when(mockSubscriptionDetailsHolder.nameIdOrganisationDetails)
         .thenReturn(None)
       intercept[DataUnavailableException] {
-        await(service.sendOrganisationRequest(any(), hc))
+        await(service.sendOrganisationRequest(any(), hc, originatingService))
       }
     }
 
@@ -1107,11 +1100,11 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         .thenReturn(Some(NameDobMatchModel("Fname", None, "Lname", LocalDate.parse("1978-02-10"))))
       mockRegistrationSuccess()
 
-      await(service.sendIndividualRequest(any(), hc)) shouldBe true
+      await(service.sendIndividualRequest(any(), hc, originatingService)) shouldBe true
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
-      verify(mockConnector).register(captor.capture())(meq(hc))
+      verify(mockConnector).register(captor.capture())(meq(hc), any())
 
       //TODO What is the point of this captor????  Copy / Paste job???
     }
@@ -1124,7 +1117,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(None)
       intercept[DataUnavailableException] {
-        await(service.sendIndividualRequest(any(), hc)) shouldBe true
+        await(service.sendIndividualRequest(any(), hc, originatingService)) shouldBe true
       }
     }
     "throw DataUnavailableException when Address is missing from cache while calling sendIndividualRequest" in {
@@ -1136,7 +1129,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         .thenReturn(Some(CdsOrganisationType.Company))
       when(mockSubscription.addressDetails).thenReturn(None)
       intercept[DataUnavailableException] {
-        await(service.sendIndividualRequest(any(), hc)) shouldBe true
+        await(service.sendIndividualRequest(any(), hc, originatingService)) shouldBe true
       }
     }
     "throw DataUnavailableException when Name DOB is missing from cache while calling sendIndividualRequest" in {
@@ -1151,7 +1144,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       when(mockSubscription.nameDobDetails)
         .thenReturn(None)
       intercept[DataUnavailableException] {
-        await(service.sendIndividualRequest(any(), hc)) shouldBe true
+        await(service.sendIndividualRequest(any(), hc, originatingService)) shouldBe true
       }
     }
     "throw DataUnavailableException when EORI is missing from cache while calling sendIndividualRequest" in {
@@ -1167,7 +1160,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         .thenReturn(Some(NameDobMatchModel("Fname", None, "Lname", LocalDate.parse("1978-02-10"))))
       when(mockSubscription.eoriNumber).thenReturn(None)
       intercept[DataUnavailableException] {
-        await(service.sendIndividualRequest(any(), hc)) shouldBe true
+        await(service.sendIndividualRequest(any(), hc, originatingService)) shouldBe true
       }
     }
     "throw DataUnavailableException when CustomsID is missing from cache while calling sendIndividualRequest" in {
@@ -1185,7 +1178,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       when(mockSubscription.eoriNumber).thenReturn(eori)
       when(mockSubscription.customsId).thenReturn(None)
       intercept[DataUnavailableException] {
-        await(service.sendIndividualRequest(any(), hc)) shouldBe true
+        await(service.sendIndividualRequest(any(), hc, originatingService)) shouldBe true
       }
     }
 
@@ -1216,12 +1209,12 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
           .thenReturn(nameIdOrganisationDetails)
         mockRegistrationSuccess()
 
-        service.sendOrganisationRequest(any(), hc).futureValue shouldBe true
+        service.sendOrganisationRequest(any(), hc, originatingService).futureValue shouldBe true
 
         val captor: ArgumentCaptor[RegisterWithEoriAndIdRequest] =
           ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
 
-        verify(mockConnector).register(captor.capture())(meq(hc))
+        verify(mockConnector).register(captor.capture())(meq(hc), any())
 
         val registrationRequest        = captor.getValue
         val registrationRequestAddress = registrationRequest.requestDetail.registerModeEORI.address
@@ -1256,12 +1249,12 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
           .thenReturn(Some(NameDobMatchModel("Fname", None, "Lname", LocalDate.parse("1978-02-10"))))
         mockRegistrationSuccess()
 
-        await(service.sendIndividualRequest(any(), hc)) shouldBe true
+        await(service.sendIndividualRequest(any(), hc, originatingService)) shouldBe true
 
         val captor: ArgumentCaptor[RegisterWithEoriAndIdRequest] =
           ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
 
-        verify(mockConnector).register(captor.capture())(meq(hc))
+        verify(mockConnector).register(captor.capture())(meq(hc), any())
 
         val registrationRequest        = captor.getValue
         val registrationRequestAddress = registrationRequest.requestDetail.registerModeEORI.address
