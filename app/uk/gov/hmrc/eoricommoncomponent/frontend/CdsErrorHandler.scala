@@ -56,7 +56,7 @@ class CdsErrorHandler @Inject() (
     statusCode match {
       case NOT_FOUND                                              => Future.successful(Results.NotFound(notFoundView()))
       case BAD_REQUEST if message == Constants.INVALID_PATH_PARAM => Future.successful(Results.NotFound(notFoundView()))
-      case _                                                      => Future.successful(Results.InternalServerError(clientErrorTemplateView(message)))
+      case _                                                      => Future.successful(Results.InternalServerError(errorTemplateView()))
     }
   }
 
