@@ -22,7 +22,12 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{RegisterWithEoriAndIdRequest, RegisterWithEoriAndIdRequestHolder, RegisterWithEoriAndIdResponse, RegisterWithEoriAndIdResponseHolder}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
+  RegisterWithEoriAndIdRequest,
+  RegisterWithEoriAndIdRequestHolder,
+  RegisterWithEoriAndIdResponse,
+  RegisterWithEoriAndIdResponseHolder
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{Registration, RegistrationResult, RegistrationSubmitted}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -70,7 +75,7 @@ class RegisterWithEoriAndIdConnector @Inject() (http: HttpClient, appConfig: App
     request: RegisterWithEoriAndIdRequest,
     response: RegisterWithEoriAndIdResponseHolder
   )(implicit hc: HeaderCarrier, originatingService: Service): Unit = {
-    val registrationSubmitted = RegistrationSubmitted(request,originatingService.code)
+    val registrationSubmitted = RegistrationSubmitted(request, originatingService.code)
     val registrationResult    = RegistrationResult(response)
 
     audit.sendExtendedDataEvent(

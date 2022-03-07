@@ -33,8 +33,15 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.Subscription
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{OrganisationTypeConfiguration, RegistrationDetailsCreator}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  DataUnavailableException,
+  RequestSessionData,
+  SessionCache
+}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
+  OrganisationTypeConfiguration,
+  RegistrationDetailsCreator
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.Reg06Service
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -43,16 +50,17 @@ import scala.concurrent.Future
 import scala.util.Random
 
 class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
-  private val mockConnector          = mock[RegisterWithEoriAndIdConnector]
-  private val mockReqCommonGen       = mock[RequestCommonGenerator]
-  private val mockDetailsCreator     = mock[RegistrationDetailsCreator]
-  private val mockRequestCommon      = mock[RequestCommon]
-  private val mockDataCache          = mock[SessionCache]
-  private val mockRequestSessionData = mock[RequestSessionData]
-  private val validDate              = "2016-07-08T08:35:13Z"
-  private val validDateTime          = ZonedDateTime.parse(validDate).toLocalDateTime
-  implicit val hc: HeaderCarrier     = mock[HeaderCarrier]
-  implicit val originatingService:Service = atarService
+  private val mockConnector                = mock[RegisterWithEoriAndIdConnector]
+  private val mockReqCommonGen             = mock[RequestCommonGenerator]
+  private val mockDetailsCreator           = mock[RegistrationDetailsCreator]
+  private val mockRequestCommon            = mock[RequestCommon]
+  private val mockDataCache                = mock[SessionCache]
+  private val mockRequestSessionData       = mock[RequestSessionData]
+  private val validDate                    = "2016-07-08T08:35:13Z"
+  private val validDateTime                = ZonedDateTime.parse(validDate).toLocalDateTime
+  implicit val hc: HeaderCarrier           = mock[HeaderCarrier]
+  implicit val originatingService: Service = atarService
+
   val service =
     new Reg06Service(mockConnector, mockReqCommonGen, mockDataCache, mockRequestSessionData)(global)
 
@@ -590,7 +598,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
-      verify(mockConnector).register(captor.capture())(any[HeaderCarrier],any[Service])
+      verify(mockConnector).register(captor.capture())(any[HeaderCarrier], any[Service])
 
       val registrationRequest: RegisterWithEoriAndIdRequest = captor.getValue
 
@@ -621,7 +629,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
-      verify(mockConnector).register(captor.capture())(any[HeaderCarrier],any[Service])
+      verify(mockConnector).register(captor.capture())(any[HeaderCarrier], any[Service])
 
       val registrationRequest: RegisterWithEoriAndIdRequest = captor.getValue
 
@@ -653,7 +661,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
-      verify(mockConnector).register(captor.capture())(any[HeaderCarrier],any[Service])
+      verify(mockConnector).register(captor.capture())(any[HeaderCarrier], any[Service])
 
       val registrationRequest: RegisterWithEoriAndIdRequest = captor.getValue
 
@@ -679,7 +687,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
-      verify(mockConnector).register(captor.capture())(any[HeaderCarrier],any[Service])
+      verify(mockConnector).register(captor.capture())(any[HeaderCarrier], any[Service])
 
       val registrationRequest: RegisterWithEoriAndIdRequest = captor.getValue
 
@@ -705,7 +713,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
-      verify(mockConnector).register(captor.capture())(any[HeaderCarrier],any[Service])
+      verify(mockConnector).register(captor.capture())(any[HeaderCarrier], any[Service])
 
       val registrationRequest: RegisterWithEoriAndIdRequest = captor.getValue
 
@@ -949,8 +957,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       mockRegistrationSuccess()
 
       service
-        .sendIndividualRequest(any(), hc, originatingService
-        )        .futureValue shouldBe true
+        .sendIndividualRequest(any(), hc, originatingService).futureValue shouldBe true
 
       val captor =
         ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])

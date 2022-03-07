@@ -494,7 +494,9 @@ class RegisterWithEoriAndIdControllerSpec
           SubscriptionPending(formBundleIdResponse, processingDateResponse, Some(emailVerificationTimestamp))
         )
       )
-      when(mockReg06Service.sendOrganisationRequest(any(), any[HeaderCarrier], any())).thenReturn(Future.successful(true))
+      when(mockReg06Service.sendOrganisationRequest(any(), any[HeaderCarrier], any())).thenReturn(
+        Future.successful(true)
+      )
       when(mockCache.registrationDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
       when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
@@ -642,7 +644,7 @@ class RegisterWithEoriAndIdControllerSpec
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
       when(
         mockSubscriptionStatusService
-          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any(),any())
+          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any(), any())
       ).thenReturn(Future.successful(SubscriptionProcessing))
 
       regExistingEori() { result =>
@@ -683,7 +685,7 @@ class RegisterWithEoriAndIdControllerSpec
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
       when(
         mockSubscriptionStatusService
-          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any(),any())
+          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any(), any())
       ).thenReturn(Future.successful(SubscriptionExists))
 
       regExistingEori() { result =>

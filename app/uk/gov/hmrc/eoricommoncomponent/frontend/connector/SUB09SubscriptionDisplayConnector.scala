@@ -39,16 +39,15 @@ import scala.util.control.NonFatal
 
 @Singleton
 class SUB09SubscriptionDisplayConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
-                                                                                                             ec: ExecutionContext
+  ec: ExecutionContext
 ) {
 
   private val logger = Logger(this.getClass)
   private val url    = appConfig.getServiceUrl("subscription-display")
 
-  def subscriptionDisplay(
-                           sub09Request: Seq[(String, String)],
-                           originatingService: String
-                         )(implicit hc: HeaderCarrier): Future[Either[EoriHttpResponse, SubscriptionDisplayResponse]] = {
+  def subscriptionDisplay(sub09Request: Seq[(String, String)], originatingService: String)(implicit
+    hc: HeaderCarrier
+  ): Future[Either[EoriHttpResponse, SubscriptionDisplayResponse]] = {
 
     // $COVERAGE-OFF$Loggers
     logger.debug(s"SubscriptionDisplay SUB09: $url, body: $sub09Request and hc: $hc")
@@ -68,10 +67,13 @@ class SUB09SubscriptionDisplayConnector @Inject() (http: HttpClient, appConfig: 
     }
   }
 
-  private def auditCall(url: String, request: Seq[(String, String)],serviceName: String, response: SubscriptionDisplayResponseHolder)(
-    implicit hc: HeaderCarrier
-  ): Unit = {
-    val auditRequest = request :+ ("service" -> serviceName)
+  private def auditCall(
+    url: String,
+    request: Seq[(String, String)],
+    serviceName: String,
+    response: SubscriptionDisplayResponseHolder
+  )(implicit hc: HeaderCarrier): Unit = {
+    val auditRequest                 = request :+ ("service" -> serviceName)
     val subscriptionDisplaySubmitted = SubscriptionDisplaySubmitted.applyAndAlignKeys(auditRequest.toMap)
     val subscriptionDisplayResult    = SubscriptionDisplayResult(response)
 

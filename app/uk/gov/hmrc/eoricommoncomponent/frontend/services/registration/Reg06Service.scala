@@ -26,8 +26,15 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.Subscription
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{CdsToEtmpOrganisationType, OrganisationTypeConfiguration}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  DataUnavailableException,
+  RequestSessionData,
+  SessionCache
+}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
+  CdsToEtmpOrganisationType,
+  OrganisationTypeConfiguration
+}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,7 +47,11 @@ class Reg06Service @Inject() (
   requestSessionData: RequestSessionData
 )(implicit ec: ExecutionContext) {
 
-  def sendIndividualRequest(implicit request: Request[AnyContent], headerCarrier: HeaderCarrier, orginatingService: Service): Future[Boolean] = {
+  def sendIndividualRequest(implicit
+    request: Request[AnyContent],
+    headerCarrier: HeaderCarrier,
+    orginatingService: Service
+  ): Future[Boolean] = {
     def ninoOrUtr(id: CustomsId): String = id match {
       case _: Nino => NINO
       case _: Utr  => UTR
@@ -86,7 +97,11 @@ class Reg06Service @Inject() (
     }
   }
 
-  def sendOrganisationRequest(implicit request: Request[AnyContent], headerCarrier: HeaderCarrier, originatingService: Service): Future[Boolean] = {
+  def sendOrganisationRequest(implicit
+    request: Request[AnyContent],
+    headerCarrier: HeaderCarrier,
+    originatingService: Service
+  ): Future[Boolean] = {
     def regModeId(idType: String, id: String, organisationType: CdsOrganisationType, orgName: String) =
       RegisterModeId(
         idType,

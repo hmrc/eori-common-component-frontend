@@ -71,7 +71,7 @@ class RegisterWithEoriAndIdController @Inject() (
         groupIdEnrolmentExists =>
           if (groupIdEnrolmentExists)
             Future.successful(Redirect(EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service)))
-          else {
+          else
             subscriptionDetailsService.cachedCustomsId.flatMap { cachedCustomsId =>
               sendRequest(cachedCustomsId).flatMap {
                 case true if isRow && cachedCustomsId.isEmpty => handleREG01Response
@@ -82,13 +82,14 @@ class RegisterWithEoriAndIdController @Inject() (
                   Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service, formattedDate)))
               }
             }
-          }
       }
     }
 
-  private def sendRequest(
-    cachedCustomsId: Option[CustomsId]
-  )(implicit request: Request[AnyContent], loggedInUser: LoggedInUserWithEnrolments, originatingService: Service): Future[Boolean] =
+  private def sendRequest(cachedCustomsId: Option[CustomsId])(implicit
+    request: Request[AnyContent],
+    loggedInUser: LoggedInUserWithEnrolments,
+    originatingService: Service
+  ): Future[Boolean] =
     cache.registrationDetails.flatMap { regDetails =>
       (regDetails, cachedCustomsId, isRow) match {
         case (_: RegistrationDetailsOrganisation, Some(_), true) =>
@@ -105,12 +106,20 @@ class RegisterWithEoriAndIdController @Inject() (
       }
     }
 
-  private def handleREG01Response(implicit request: Request[AnyContent], loggedInUser: LoggedInUserWithEnrolments, service: Service) =
+  private def handleREG01Response(implicit
+    request: Request[AnyContent],
+    loggedInUser: LoggedInUserWithEnrolments,
+    service: Service
+  ) =
     cache.registrationDetails.flatMap { regDetails =>
       onRegistrationPassCheckSubscriptionStatus("taxPayerID", regDetails.sapNumber.mdgTaxPayerId)
     }
 
-  private def handleREG06Response(implicit request: Request[AnyContent], loggedInUser: LoggedInUserWithEnrolments, service: Service) =
+  private def handleREG06Response(implicit
+    request: Request[AnyContent],
+    loggedInUser: LoggedInUserWithEnrolments,
+    service: Service
+  ) =
     cache.registerWithEoriAndIdResponse.flatMap { resp =>
       resp.responseDetail.flatMap(_.outcome) match {
         case Some("PASS") =>

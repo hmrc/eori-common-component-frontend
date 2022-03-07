@@ -17,6 +17,7 @@
 package integration
 
 import org.mockito.ArgumentMatchers.any
+
 import java.time.LocalDateTime
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Application
@@ -26,6 +27,7 @@ import play.mvc.Http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.RegisterWithEoriAndIdConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Individual, RequestCommon, ResponseCommon}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EstablishmentAddress, _}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import util.externalservices.ExternalServicesConfig._
 import util.externalservices.{AuditService, RegisterWithEoriAndIdMessagingService}
@@ -48,8 +50,8 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
   private lazy val RegisterWithEoriAndIdConnector = app.injector.instanceOf[RegisterWithEoriAndIdConnector]
   val expectedPostUrl: String                     = "/register-with-eori-and-id"
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
-
+  implicit val hc: HeaderCarrier           = HeaderCarrier()
+  implicit val originatingService: Service = Service.cds
   before {
     resetMockServer()
     AuditService.stubAuditService()
@@ -314,7 +316,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
         serviceResponsePassJsonString
       )
 
-      await(RegisterWithEoriAndIdConnector.register(individualNinoRequest)(any(),any())) must be(
+      await(RegisterWithEoriAndIdConnector.register(individualNinoRequest)) must be(
         individualNinoResponse.registerWithEORIAndIDResponse
       )
     }
@@ -327,7 +329,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
         serviceResponseDeferredJsonString
       )
 
-      await(RegisterWithEoriAndIdConnector.register(organisationUtrRequest)(any(),any())) must be(
+      await(RegisterWithEoriAndIdConnector.register(organisationUtrRequest)) must be(
         organisationUtrResponse.registerWithEORIAndIDResponse
       )
     }
@@ -341,7 +343,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
       )
 
       val caught: UpstreamErrorResponse = intercept[UpstreamErrorResponse] {
-        await(RegisterWithEoriAndIdConnector.register(individualNinoRequest)(any(),any()))
+        await(RegisterWithEoriAndIdConnector.register(individualNinoRequest))
       }
 
       caught.statusCode mustBe 400
@@ -357,7 +359,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
       )
 
       val caught: UpstreamErrorResponse = intercept[UpstreamErrorResponse] {
-        await(RegisterWithEoriAndIdConnector.register(individualNinoRequest)(any(),any()))
+        await(RegisterWithEoriAndIdConnector.register(individualNinoRequest))
       }
 
       caught.statusCode mustBe 500
@@ -373,7 +375,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
       )
 
       val caught: UpstreamErrorResponse = intercept[UpstreamErrorResponse] {
-        await(RegisterWithEoriAndIdConnector.register(individualNinoRequest)(any(),any()))
+        await(RegisterWithEoriAndIdConnector.register(individualNinoRequest))
       }
 
       caught.statusCode mustBe 403
@@ -387,7 +389,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
         serviceResponsePassJsonString
       )
 
-      await(RegisterWithEoriAndIdConnector.register(individualNinoRequest)(any(),any()))
+      await(RegisterWithEoriAndIdConnector.register(individualNinoRequest))
 
       eventually(AuditService.verifyXAuditWrite(1))
     }
@@ -400,7 +402,7 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
       )
 
       val caught = intercept[UpstreamErrorResponse] {
-        await(RegisterWithEoriAndIdConnector.register(individualNinoRequest)(any(),any()))
+        await(RegisterWithEoriAndIdConnector.register(individualNinoRequest))
       }
 
       caught.statusCode mustBe 400

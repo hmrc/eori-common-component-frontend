@@ -26,7 +26,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  DataUnavailableException,
+  RequestSessionData,
+  SessionCache
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -87,12 +91,12 @@ class MatchingService @Inject() (
       result <- matchIndividualWithId(Eori(eori), individual, GroupId(loggedInUser.groupId))
     } yield result
 
-  def matchBusiness(customsId: CustomsId, org: Organisation, establishmentDate: Option[LocalDate], groupId: GroupId)(
-    implicit
-    request: Request[AnyContent],
-    hc: HeaderCarrier,
-    originatingService: Service
-  ): Future[Boolean] = {
+  def matchBusiness(
+    customsId: CustomsId,
+    org: Organisation,
+    establishmentDate: Option[LocalDate],
+    groupId: GroupId
+  )(implicit request: Request[AnyContent], hc: HeaderCarrier, originatingService: Service): Future[Boolean] = {
     def stripKFromUtr: CustomsId => CustomsId = {
       case Utr(id) => Utr(id.stripSuffix("k").stripSuffix("K"))
       case other   => other

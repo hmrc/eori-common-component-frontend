@@ -77,9 +77,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
         .thenReturn(Future.successful(SubscriptionProcessing))
 
       val result: Result = service
-        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(
-          otherUserWithinGroupIsInProcess
-        ).futureValue
+        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(otherUserWithinGroupIsInProcess).futureValue
 
       result.header.headers(LOCATION) shouldBe "/blocked/userIsInProcess"
     }
@@ -94,9 +92,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
         .thenReturn(Future.successful(SubscriptionProcessing))
 
       val result: Result = service
-        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(
-          otherUserWithinGroupIsInProcess
-        ).futureValue
+        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(otherUserWithinGroupIsInProcess).futureValue
 
       result.header.headers(LOCATION) shouldBe "/blocked/otherUserWithinGroupIsInProcess"
     }
@@ -111,9 +107,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
         .thenReturn(Future.successful(SubscriptionProcessing))
 
       val result: Result = service
-        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(
-          otherUserWithinGroupIsInProcess
-        ).futureValue
+        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(otherUserWithinGroupIsInProcess).futureValue
 
       result.header.headers(LOCATION) shouldBe "/continue"
     }
@@ -144,9 +138,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
       when(mockSave4LaterService.deleteCacheIds(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
 
       val result: Result = service
-        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(
-          otherUserWithinGroupIsInProcess
-        ).futureValue
+        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(otherUserWithinGroupIsInProcess).futureValue
 
       result.header.headers(LOCATION) shouldBe "/continue"
     }
@@ -159,9 +151,10 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
       ).thenReturn(Future.successful(None))
 
       val result: Result = service
-        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(
-          otherUserWithinGroupIsInProcess
-        )(any(), meq(atarService)).futureValue
+        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(otherUserWithinGroupIsInProcess)(
+          any(),
+          meq(atarService)
+        ).futureValue
 
       result.header.headers(LOCATION) shouldBe "/continue"
     }
@@ -177,9 +170,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
     when(mockSave4LaterService.deleteCachedGroupId(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
 
     val result: Result = service
-      .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(
-        otherUserWithinGroupIsInProcess
-      ).futureValue
+      .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(otherUserWithinGroupIsInProcess).futureValue
 
     result.header.headers(LOCATION) shouldBe "/continue"
   }

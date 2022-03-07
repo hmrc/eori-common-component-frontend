@@ -65,10 +65,10 @@ class SubscriptionStatusConnectorSpec extends IntegrationTestsSpec with ScalaFut
     s"/subscription-status?receiptDate=2016-03-17T09${colon}30${colon}00Z&regime=$Regime&taxPayerID=$taxPayerId"
 
   private val request =
-    SubscriptionStatusQueryParams(receiptDate, Regime, "taxPayerID", TaxPayerId(AValidTaxPayerID).mdgTaxPayerId,"atar")
+    SubscriptionStatusQueryParams(receiptDate, Regime, "taxPayerID", TaxPayerId(AValidTaxPayerID).mdgTaxPayerId, "atar")
 
   private val requestWithSafeId =
-    SubscriptionStatusQueryParams(receiptDate, Regime, "SAFE", "someSafeId","atar")
+    SubscriptionStatusQueryParams(receiptDate, Regime, "SAFE", "someSafeId", "atar")
 
   private val requestWithReceiptDateZeroSeconds =
     SubscriptionStatusQueryParams(
