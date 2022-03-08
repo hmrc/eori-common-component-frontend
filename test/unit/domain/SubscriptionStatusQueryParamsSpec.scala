@@ -32,8 +32,7 @@ class SubscriptionStatusQueryParamsSpec extends UnitSpec {
         receiptDate = receiptDate,
         regime = "CDS",
         "taxPayerID",
-        TaxPayerId("1234567890").mdgTaxPayerId,
-        "atar"
+        TaxPayerId("1234567890").mdgTaxPayerId
       )
 
       query.queryParams shouldBe Seq(

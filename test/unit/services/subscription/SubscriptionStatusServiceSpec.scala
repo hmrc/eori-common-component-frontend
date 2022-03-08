@@ -53,13 +53,7 @@ class SubscriptionStatusServiceSpec extends UnitSpec with MockitoSugar with Befo
   private val receiptDate                                        = LocalDateTime.of(2016, 3, 17, 9, 30, 47, 0)
 
   private val request =
-    SubscriptionStatusQueryParams(
-      receiptDate = receiptDate,
-      regime = "CDS",
-      "taxPayerID",
-      MDGZeroPaddedTaxPayerId,
-      "atar"
-    )
+    SubscriptionStatusQueryParams(receiptDate = receiptDate, regime = "CDS", "taxPayerID", MDGZeroPaddedTaxPayerId)
 
   lazy val service =
     new SubscriptionStatusService(mockConnector, mockRequestCommonGenerator, mockSessionCache)(global)
