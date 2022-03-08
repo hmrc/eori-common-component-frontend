@@ -73,7 +73,7 @@ class SUB09SubscriptionDisplayConnector @Inject() (http: HttpClient, appConfig: 
     serviceName: String,
     response: SubscriptionDisplayResponseHolder
   )(implicit hc: HeaderCarrier): Unit = {
-    val auditRequest                 = request :+ ("service" -> serviceName)
+    val auditRequest                 = request :+ ("originatingService" -> serviceName)
     val subscriptionDisplaySubmitted = SubscriptionDisplaySubmitted.applyAndAlignKeys(auditRequest.toMap)
     val subscriptionDisplayResult    = SubscriptionDisplayResult(response)
 
