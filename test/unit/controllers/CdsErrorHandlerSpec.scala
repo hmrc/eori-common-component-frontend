@@ -87,6 +87,17 @@ class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {
       }
     }
 
+    "Redirect to the Signout page on 403 CSRF Token Not found in Body error with NoCSRFToken" in {
+      whenReady(
+        cdsErrorHandler.onClientError(mockRequest, statusCode = FORBIDDEN, message = Constants.NO_CSRF_FOUND_IN_BODY)
+      ) { result =>
+        val page = CdsPage(contentAsString(result))
+
+        result.header.status shouldBe NOT_FOUND
+        page.title should startWith("Page not found")
+      }
+    }
+
     "Redirect to the InternalErrorPage page on 500 error" in {
       whenReady(cdsErrorHandler.onClientError(mockRequest, statusCode = INTERNAL_SERVER_ERROR)) { result =>
         val page = CdsPage(contentAsString(result))
