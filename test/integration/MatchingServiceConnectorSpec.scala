@@ -16,18 +16,17 @@
 
 package integration
 
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.MatchingServiceConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.{MatchingRequestHolder, MatchingResponse}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.mvc.Http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR, OK}
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.MatchingServiceConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.{MatchingRequestHolder, MatchingResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import util.externalservices.ExternalServicesConfig.{Host, Port}
 import util.externalservices.{AuditService, MatchService}
-import org.mockito.ArgumentMatchers._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
 
