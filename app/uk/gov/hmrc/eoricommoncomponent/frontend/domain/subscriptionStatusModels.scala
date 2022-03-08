@@ -26,8 +26,7 @@ case class SubscriptionStatusQueryParams(
   receiptDate: LocalDateTime,
   regime: String,
   idType: String,
-  id: String,
-  originatingService: String
+  id: String
 ) {
 
   def queryParams: Seq[(String, String)] = {
