@@ -72,7 +72,7 @@ class SubscriptionStatusConnector @Inject() (http: HttpClient, appConfig: AppCon
 
     val subscriptionStatusSubmitted = SubscriptionStatusSubmitted(request, originatingService.code)
     val subscriptionStatusResult    = SubscriptionStatusResult(response)
-    println(Json.toJson(SubscriptionStatus(subscriptionStatusSubmitted, subscriptionStatusResult)))
+
     audit.sendExtendedDataEvent(
       transactionName = "ecc-subscription-status",
       path = url,

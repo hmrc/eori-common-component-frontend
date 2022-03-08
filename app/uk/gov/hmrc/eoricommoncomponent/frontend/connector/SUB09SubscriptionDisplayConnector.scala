@@ -76,7 +76,7 @@ class SUB09SubscriptionDisplayConnector @Inject() (http: HttpClient, appConfig: 
     val auditRequest                 = request :+ ("originatingService" -> serviceName)
     val subscriptionDisplaySubmitted = SubscriptionDisplaySubmitted.applyAndAlignKeys(auditRequest.toMap)
     val subscriptionDisplayResult    = SubscriptionDisplayResult(response)
-    println(Json.toJson(SubscriptionDisplay(subscriptionDisplaySubmitted, subscriptionDisplayResult)))
+
     audit.sendExtendedDataEvent(
       transactionName = "ecc-subscription-display",
       path = url,
