@@ -56,7 +56,8 @@ class CdsErrorHandler @Inject() (
     statusCode match {
       case NOT_FOUND                                              => Future.successful(Results.NotFound(notFoundView()))
       case BAD_REQUEST if message == Constants.INVALID_PATH_PARAM => Future.successful(Results.NotFound(notFoundView()))
-      case _                                                      => Future.successful(Results.InternalServerError(errorTemplateView()))
+      case FORBIDDEN if message == Constants.NO_CSRF_FOUND_IN_BODY => Future.successful(Redirect(SecuritySignOutController.displayPage(service)))
+      case _                                                      => Future.successful(Results.InternalServerError(clientErrorTemplateView(message)))
     }
   }
 

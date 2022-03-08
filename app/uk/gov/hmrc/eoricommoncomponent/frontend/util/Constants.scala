@@ -19,4 +19,5 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.util
 object Constants {
   val ONE                = 1
   val INVALID_PATH_PARAM = "invalid value"
+  val NO_CSRF_FOUND_IN_BODY = "No CSRF token found in body"
 }
