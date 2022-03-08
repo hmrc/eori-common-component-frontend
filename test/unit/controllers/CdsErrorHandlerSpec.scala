@@ -82,8 +82,7 @@ class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {
       ) { result =>
         val page = CdsPage(contentAsString(result))
 
-        result.header.status shouldBe NOT_FOUND
-        page.title should startWith("Page not found")
+        result.header.status shouldBe NO_CSRF_FOUND_IN_BODY
       }
     }
 
