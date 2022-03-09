@@ -88,10 +88,10 @@ class EmailController @Inject() (
       }
     }
 
-  def form(service: Service): Action[AnyContent] =
+  def form(implicit service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
       userGroupIdSubscriptionStatusCheckService
-        .checksToProceed(GroupId(user.groupId), InternalId(user.internalId), service)(continue(service))(
+        .checksToProceed(GroupId(user.groupId), InternalId(user.internalId))(continue(service))(
           userIsInProcess(service)
         )(otherUserWithinGroupIsInProcess(service))
     }

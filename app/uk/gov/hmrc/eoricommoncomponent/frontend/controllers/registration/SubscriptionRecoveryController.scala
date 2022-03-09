@@ -87,7 +87,7 @@ class SubscriptionRecoveryController @Inject() (
         .flatMap(_.responseData.map(_.SAFEID))
         .getOrElse(throw new IllegalStateException("no SAFEID found in the response"))
       queryParameters = ("EORI" -> eori) :: buildQueryParams
-      sub09Result  <- SUB09Connector.subscriptionDisplay(queryParameters)
+      sub09Result  <- SUB09Connector.subscriptionDisplay(queryParameters, service.code)
       sub01Outcome <- sessionCache.sub01Outcome
       email        <- sessionCache.email
     } yield sub09Result match {
@@ -120,7 +120,7 @@ class SubscriptionRecoveryController @Inject() (
       eori            = subscriptionDetails.eoriNumber.getOrElse(throw DataUnavailableException("no eori found in the cache"))
       safeId          = registrationDetails.safeId.id
       queryParameters = ("EORI" -> eori) :: buildQueryParams
-      sub09Result  <- SUB09Connector.subscriptionDisplay(queryParameters)
+      sub09Result  <- SUB09Connector.subscriptionDisplay(queryParameters, service.code)
       sub01Outcome <- sessionCache.sub01Outcome
       email        <- sessionCache.email
     } yield sub09Result match {

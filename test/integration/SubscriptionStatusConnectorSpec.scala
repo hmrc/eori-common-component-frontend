@@ -27,6 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   SubscriptionStatusResponseHolder,
   TaxPayerId
 }
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import util.externalservices.ExternalServicesConfig._
 import util.externalservices.{AuditService, SubscriptionStatusMessagingService}
@@ -78,7 +79,8 @@ class SubscriptionStatusConnectorSpec extends IntegrationTestsSpec with ScalaFut
       TaxPayerId(AValidTaxPayerID).mdgTaxPayerId
     )
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit val hc: HeaderCarrier           = HeaderCarrier()
+  implicit val originatingService: Service = Service.cds
 
   val responseWithOk: JsValue =
     Json.parse("""

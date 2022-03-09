@@ -117,7 +117,7 @@ class SubscriptionRecoveryControllerSpec
     def setupMockCommon() = {
       when(mockSessionCache.subscriptionDetails(any[HeaderCarrier]))
         .thenReturn(Future.successful(mockSubscriptionDetailsHolder))
-      when(mockSUB09SubscriptionDisplayConnector.subscriptionDisplay(any())(any[HeaderCarrier]))
+      when(mockSUB09SubscriptionDisplayConnector.subscriptionDisplay(any(), any())(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right(fullyPopulatedResponse)))
       when(mockSubscriptionDetailsHolder.contactDetails).thenReturn(Some(contactDetails))
       when(contactDetails.emailAddress).thenReturn("test@example.com")
@@ -263,7 +263,7 @@ class SubscriptionRecoveryControllerSpec
     "throw IllegalStateException when SUB09 call returns response without Form Bundle for Subscription UK journey" in {
       setupMockCommon()
       withAuthorisedUser(defaultUserId, mockAuthConnector)
-      when(mockSUB09SubscriptionDisplayConnector.subscriptionDisplay(any())(any[HeaderCarrier]))
+      when(mockSUB09SubscriptionDisplayConnector.subscriptionDisplay(any(), any())(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right(fullyPopulatedResponseWithoutFormBundle)))
       when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(Some("testEORInumber"))
 

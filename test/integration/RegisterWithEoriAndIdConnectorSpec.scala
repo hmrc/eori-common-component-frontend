@@ -16,8 +16,6 @@
 
 package integration
 
-import java.time.LocalDateTime
-
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -25,10 +23,13 @@ import play.api.libs.json.Json
 import play.mvc.Http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.RegisterWithEoriAndIdConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Individual, RequestCommon, ResponseCommon}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EstablishmentAddress, _}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import util.externalservices.ExternalServicesConfig._
 import util.externalservices.{AuditService, RegisterWithEoriAndIdMessagingService}
+
+import java.time.LocalDateTime
 
 class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
 
@@ -48,8 +49,8 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
   private lazy val RegisterWithEoriAndIdConnector = app.injector.instanceOf[RegisterWithEoriAndIdConnector]
   val expectedPostUrl: String                     = "/register-with-eori-and-id"
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
-
+  implicit val hc: HeaderCarrier           = HeaderCarrier()
+  implicit val originatingService: Service = Service.cds
   before {
     resetMockServer()
     AuditService.stubAuditService()

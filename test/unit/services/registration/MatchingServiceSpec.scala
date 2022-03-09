@@ -36,6 +36,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.{
   Organisation
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
   DataUnavailableException,
@@ -59,6 +60,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
   private val mockRequest = mock[Request[AnyContent]]
 
   private val mockHeaderCarrier          = mock[HeaderCarrier]
+  private val mockService                = mock[Service]
   private val mockRequestCommonGenerator = mock[RequestCommonGenerator]
   private val mockCache                  = mock[SessionCache]
   private val loggedInCtUser             = mock[LoggedInUserWithEnrolments]
@@ -124,14 +126,15 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
     "return failed future for matchBusinessWithOrganisationName when connector fails to return result" in {
       when(
         mockMatchingServiceConnector
-          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
+          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any())
       ).thenReturn(Future.failed(UpstreamErrorResponse("failure", INTERNAL_SERVER_ERROR, 1)))
 
       val caught = intercept[UpstreamErrorResponse] {
         await(
           service.matchBusiness(Eori(""), Organisation("name", CorporateBody), establishmentDate = None, mockGroupId)(
             mockRequest,
-            mockHeaderCarrier
+            mockHeaderCarrier,
+            mockService
           )
         )
       }
@@ -142,19 +145,23 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
     "for UTR and name match, call matching api with correct values" in {
       when(
         mockMatchingServiceConnector
-          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
+          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any())
       ).thenReturn(Future.successful(Some(matchSuccessResponse)))
 
       await(
         service.matchBusiness(utr, Organisation("someOrg", Partnership), establishmentDate = None, mockGroupId)(
           mockRequest,
-          mockHeaderCarrier
+          mockHeaderCarrier,
+          mockService
         )
       ) shouldBe true
 
       val matchBusinessDataCaptor =
         ArgumentCaptor.forClass(classOf[MatchingRequestHolder])
-      verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(ArgumentMatchers.any())
+      verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(
+        ArgumentMatchers.any(),
+        ArgumentMatchers.any()
+      )
 
       Json.toJson(matchBusinessDataCaptor.getValue) shouldBe utrAndNameRequestJson
     }
@@ -162,16 +169,24 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
     "call send Organisation request should invoke matching api with correct values" in {
       when(
         mockMatchingServiceConnector
-          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
+          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any())
       ).thenReturn(Future.successful(Some(matchSuccessResponse)))
 
       await(
-        service.sendOrganisationRequestForMatchingService(mockRequest, mockLoggedInUserEnrolments, mockHeaderCarrier)
+        service.sendOrganisationRequestForMatchingService(
+          mockRequest,
+          mockLoggedInUserEnrolments,
+          mockHeaderCarrier,
+          mockService
+        )
       ) shouldBe true
 
       val matchBusinessDataCaptor =
         ArgumentCaptor.forClass(classOf[MatchingRequestHolder])
-      verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(ArgumentMatchers.any())
+      verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(
+        ArgumentMatchers.any(),
+        ArgumentMatchers.any()
+      )
 
       Json.toJson(matchBusinessDataCaptor.getValue) shouldBe eoriAndNameRequestJson
     }
@@ -185,7 +200,12 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
         )
       intercept[DataUnavailableException] {
         await(
-          service.sendOrganisationRequestForMatchingService(mockRequest, mockLoggedInUserEnrolments, mockHeaderCarrier)
+          service.sendOrganisationRequestForMatchingService(
+            mockRequest,
+            mockLoggedInUserEnrolments,
+            mockHeaderCarrier,
+            mockService
+          )
         )
       }
     }
@@ -193,7 +213,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
     "for UTR with a K, call matching api without the K" in {
       when(
         mockMatchingServiceConnector
-          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
+          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any())
       ).thenReturn(Future.successful(Some(matchSuccessResponse)))
 
       await(
@@ -202,12 +222,15 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
           Organisation("someOrg", Partnership),
           establishmentDate = None,
           mockGroupId
-        )(mockRequest, mockHeaderCarrier)
+        )(mockRequest, mockHeaderCarrier, mockService)
       ) shouldBe true
 
       val matchBusinessDataCaptor =
         ArgumentCaptor.forClass(classOf[MatchingRequestHolder])
-      verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(ArgumentMatchers.any())
+      verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(
+        ArgumentMatchers.any(),
+        ArgumentMatchers.any()
+      )
 
       Json.toJson(matchBusinessDataCaptor.getValue) shouldBe utrAndNameRequestJson
     }
@@ -215,7 +238,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
     "for UTR with a k, call matching api without the k" in {
       when(
         mockMatchingServiceConnector
-          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
+          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any())
       ).thenReturn(Future.successful(Some(matchSuccessResponse)))
 
       await(
@@ -224,12 +247,15 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
           Organisation("someOrg", Partnership),
           establishmentDate = None,
           mockGroupId
-        )(mockRequest, mockHeaderCarrier)
+        )(mockRequest, mockHeaderCarrier, mockService)
       ) shouldBe true
 
       val matchBusinessDataCaptor =
         ArgumentCaptor.forClass(classOf[MatchingRequestHolder])
-      verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(ArgumentMatchers.any())
+      verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(
+        ArgumentMatchers.any(),
+        ArgumentMatchers.any()
+      )
 
       Json.toJson(matchBusinessDataCaptor.getValue) shouldBe utrAndNameRequestJson
     }
@@ -237,26 +263,30 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
     "for EORI and name match, call matching api with correct values" in {
       when(
         mockMatchingServiceConnector
-          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
+          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any())
       ).thenReturn(Future.successful(Some(matchSuccessResponse)))
 
       await(
         service.matchBusiness(eori, Organisation("someOrg", UnincorporatedBody), someEstablishmentDate, mockGroupId)(
           mockRequest,
-          mockHeaderCarrier
+          mockHeaderCarrier,
+          mockService
         )
       ) shouldBe true
 
       val matchBusinessDataCaptor =
         ArgumentCaptor.forClass(classOf[MatchingRequestHolder])
-      verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(ArgumentMatchers.any())
+      verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(
+        ArgumentMatchers.any(),
+        ArgumentMatchers.any()
+      )
       Json.toJson(matchBusinessDataCaptor.getValue) shouldBe eoriAndNameRequestJson
     }
 
     "store registration details in cache when found a match" in {
       when(
         mockMatchingServiceConnector
-          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
+          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any())
       ).thenReturn(Future.successful(Some(matchSuccessResponse)))
 
       when(
@@ -270,7 +300,8 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
       await(
         service.matchBusiness(utr, Organisation("someOrg", Partnership), establishmentDate = None, mockGroupId)(
           mockRequest,
-          mockHeaderCarrier
+          mockHeaderCarrier,
+          mockService
         )
       ) shouldBe true
 
@@ -288,16 +319,19 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
   ): Unit = {
     when(
       mockMatchingServiceConnector
-        .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
+        .lookup(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any())
     ).thenReturn(Future.successful(connectorResponse))
 
     await(
-      service.matchIndividualWithId(utr, individual, mockGroupId)(mockHeaderCarrier)
+      service.matchIndividualWithId(utr, individual, mockGroupId)(mockHeaderCarrier, mockService)
     ) shouldBe expectedServiceCallResult
 
     val matchBusinessDataCaptor =
       ArgumentCaptor.forClass(classOf[MatchingRequestHolder])
-    verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(ArgumentMatchers.any())
+    verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(
+      ArgumentMatchers.any(),
+      ArgumentMatchers.any()
+    )
 
     Json.toJson(matchBusinessDataCaptor.getValue) shouldBe utrIndividualRequestJson
   }
@@ -351,16 +385,19 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
         )
       when(
         mockMatchingServiceConnector
-          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
+          .lookup(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any())
       ).thenReturn(Future.successful(Some(matchIndividualSuccessResponse)))
 
       await(
-        service.sendIndividualRequestForMatchingService(mockLoggedInUserEnrolments, mockHeaderCarrier)
+        service.sendIndividualRequestForMatchingService(mockLoggedInUserEnrolments, mockHeaderCarrier, mockService)
       ) shouldBe true
 
       val matchBusinessDataCaptor =
         ArgumentCaptor.forClass(classOf[MatchingRequestHolder])
-      verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(ArgumentMatchers.any())
+      verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(
+        ArgumentMatchers.any(),
+        ArgumentMatchers.any()
+      )
 
       Json.toJson(matchBusinessDataCaptor.getValue) shouldBe eoriIndividualRequestJson
     }
@@ -373,7 +410,9 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
           )
         )
       intercept[DataUnavailableException] {
-        await(service.sendIndividualRequestForMatchingService(mockLoggedInUserEnrolments, mockHeaderCarrier))
+        await(
+          service.sendIndividualRequestForMatchingService(mockLoggedInUserEnrolments, mockHeaderCarrier, mockService)
+        )
       }
     }
     "throw DataUnavailableException when sendIndividualRequest is invoked without eori details in cache" in {
@@ -393,7 +432,9 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
           )
         )
       intercept[DataUnavailableException] {
-        await(service.sendIndividualRequestForMatchingService(mockLoggedInUserEnrolments, mockHeaderCarrier))
+        await(
+          service.sendIndividualRequestForMatchingService(mockLoggedInUserEnrolments, mockHeaderCarrier, mockService)
+        )
       }
     }
 
@@ -431,16 +472,19 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
   ): Unit = {
     when(
       mockMatchingServiceConnector
-        .lookup(ArgumentMatchers.any())(ArgumentMatchers.any())
+        .lookup(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any())
     ).thenReturn(Future.successful(connectorResponse))
 
     await(
-      service.matchIndividualWithId(eori, individual, mockGroupId)(mockHeaderCarrier)
+      service.matchIndividualWithId(eori, individual, mockGroupId)(mockHeaderCarrier, mockService)
     ) shouldBe expectedServiceCallResult
 
     val matchBusinessDataCaptor =
       ArgumentCaptor.forClass(classOf[MatchingRequestHolder])
-    verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(ArgumentMatchers.any())
+    verify(mockMatchingServiceConnector).lookup(matchBusinessDataCaptor.capture())(
+      ArgumentMatchers.any(),
+      ArgumentMatchers.any()
+    )
 
     Json.toJson(matchBusinessDataCaptor.getValue) shouldBe expectedRequestJson
   }
