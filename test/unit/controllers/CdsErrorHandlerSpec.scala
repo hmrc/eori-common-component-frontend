@@ -38,7 +38,6 @@ class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {
   val cdsErrorHandler =
     new CdsErrorHandler(messagesApi, configuration, errorTemplateView, clientErrorTemplateView, notFoundView)
 
-
   "Cds error handler" should {
     "redirect to correct page after receive 500 error" in {
       whenReady(cdsErrorHandler.onServerError(mockRequest, new Exception())) { result =>
