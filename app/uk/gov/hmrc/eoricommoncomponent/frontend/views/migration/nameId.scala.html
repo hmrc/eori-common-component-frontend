@@ -43,8 +43,8 @@
 }
 
 @utrHintText = @{
-    if(displayMode=="partnership") messages("cds.matching.partnership.utr.hint")
-    else messages("cds.matching.utr.hint")
+    if(displayMode=="partnership") messages("cds.matching.partnership.utr.hint", messages("cds.navigation.opens-in-new-tab"))
+    else messages("cds.matching.utr.hint", messages("cds.navigation.opens-in-new-tab"))
 }
 
 @layout_di(headerAndTitle, form = Some(nameUtrForm)) {

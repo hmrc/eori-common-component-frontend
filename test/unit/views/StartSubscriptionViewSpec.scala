@@ -85,7 +85,7 @@ class StartSubscriptionViewSpec extends ViewSpec {
 
       bulletList.getElementsByTag("li").get(
         0
-      ).text() mustBe "Corporation Tax Unique Taxpayer Reference (UTR) if you pay Corporation Tax in the UK. You can find a UTR number (opens in a new window or tab)."
+      ).text() mustBe "Corporation Tax Unique Taxpayer Reference (UTR) if you pay Corporation Tax in the UK. You can find a UTR number (opens in new tab)."
       bulletList.getElementsByTag("li").get(1).text() mustBe "Registered company name"
       bulletList.getElementsByTag("li").get(2).text() mustBe "Registered company address"
       bulletList.getElementsByTag("li").get(3).text() mustBe "Date of establishment"
@@ -103,7 +103,7 @@ class StartSubscriptionViewSpec extends ViewSpec {
       bulletList.getElementsByTag("li").get(0).text() mustBe "National Insurance number"
       bulletList.getElementsByTag("li").get(
         1
-      ).text() mustBe "Self Assessment Unique Taxpayer Reference (UTR). You can find a lost UTR number (opens in a new window or tab)."
+      ).text() mustBe "Self Assessment Unique Taxpayer Reference (UTR). You can find a lost UTR number (opens in new tab)."
     }
 
     "display 2 hours message" in {

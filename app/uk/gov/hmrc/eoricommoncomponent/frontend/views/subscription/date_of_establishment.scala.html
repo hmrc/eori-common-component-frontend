@@ -36,7 +36,11 @@
 
 @introHtml = {
     @if(orgType != LLP && orgType != Partnership && !isRestOfWorldJourney){
-      <p id="date-of-establishment-label" class="govuk-body">@Html(messages(introText))</p>
+      @if(orgType == UnincorporatedBody){
+          <p id="date-of-establishment-label" class="govuk-body">@Html(messages(introText))</p>
+      }else{
+          <p id="date-of-establishment-label" class="govuk-body">@Html(messages(introText,messages("cds.navigation.opens-in-new-tab")))</p>
+      }
     }
     <span id="date-of-establishment-hint-text" class="govuk-hint">@Html(messages("cds.date-established.hint"))</span>
 }

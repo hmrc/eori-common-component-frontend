@@ -4,7 +4,7 @@ cds.banner.subscription=Subscribe to {0}
 ecc.subscription.enter-eori-number.heading=What is your GB Economic Operator Registration and Identification (EORI) number?
 cds.subscription.enter-eori-number.no-eori.summary=I do not have an EORI number
 cds.subscription.enter-eori-number.no-eori=You must {0} before you can apply for {1}, once you have applied for an EORI number it usually takes around 30 minutes, but may take up to 48 hours before you can proceed with your {1} application.
-cds.subscription.enter-eori-number.no-eori.link=get an EORI number (opens in a new window or tab)
+cds.subscription.enter-eori-number.no-eori.link=get an EORI number {0}
 
 cds.has-existing-eori.title=Your Government Gateway user ID is linked to an EORI
 cds.has-existing-eori.heading=Your Government Gateway user ID is linked to an EORI
@@ -75,12 +75,12 @@ ecc.subscription.information.para1=In order to subscribe you to {0}, we need som
 
 ecc.subscription.information.para2.heading=An EORI number starting with GB
 ecc.subscription.information.para2=You must {0} before you can apply for {1}, once you have applied for an EORI number it usually takes around 30 minutes, but may take up to 48 hours before you can proceed with your {1} application.
-ecc.subscription.information.para2.link=get an EORI number (opens in a new window or tab)
+ecc.subscription.information.para2.link=get an EORI number {0}
 ecc.subscription.information.para2.warning=The EORI number starting with GB must be the one linked to the Government Gateway user ID you used when you got an EORI number.
 
 ecc.subscription.information.section.organisation.subheading=Company or other organisation details
 ecc.subscription.information.section.organisation.list.heading=If you are a limited company, partnership or charity, you will need:
-ecc.subscription.information.section.organisation.list.first=Corporation Tax Unique Taxpayer Reference (UTR) if you pay Corporation Tax in the UK. You can <a href="https://www.tax.service.gov.uk/ask-for-copy-of-your-corporation-tax-utr" class="govuk-link" target="_blank" rel="noopener noreferrer">find a UTR number (opens in a new window or tab)</a>.
+ecc.subscription.information.section.organisation.list.first=Corporation Tax Unique Taxpayer Reference (UTR) if you pay Corporation Tax in the UK. You can <a href="https://www.tax.service.gov.uk/ask-for-copy-of-your-corporation-tax-utr" class="govuk-link" target="_blank" rel="noopener noreferrer">find a UTR number {0}</a>.
 ecc.subscription.information.section.organisation.list.second=Registered company name
 ecc.subscription.information.section.organisation.list.third=Registered company address
 ecc.subscription.information.section.organisation.list.fourth=Date of establishment
@@ -88,7 +88,7 @@ ecc.subscription.information.section.organisation.list.fourth=Date of establishm
 ecc.subscription.information.section.individual.subheading=Sole trader or individual details
 ecc.subscription.information.section.individual.para=If you have worked in the UK or registered for self-assessment, you will need one of the following:
 ecc.subscription.information.section.individual.nino=National Insurance number
-ecc.subscription.information.section.individual.utr=Self Assessment Unique Taxpayer Reference (UTR). You can <a href="https://www.gov.uk/find-lost-utr-number" class="govuk-link" target="_blank" rel="noopener noreferrer">find a lost UTR number (opens in a new window or tab)</a>.
+ecc.subscription.information.section.individual.utr=Self Assessment Unique Taxpayer Reference (UTR). You can <a href="https://www.gov.uk/find-lost-utr-number" class="govuk-link" target="_blank" rel="noopener noreferrer">find a lost UTR number {0}</a>.
 
 ecc.subscription.information.only.once=This only needs to be done once.
 ecc.subscription.information.email.confirm=We’ll process your application and email you with the result within 2 hours.
@@ -124,7 +124,7 @@ cds.subscription.sign-in-with-different-details.para1-noname=You have already re
 
 cds.matching.row-organisation.utr.hint=This is 10 numbers, for example 1234567890, which may be followed by a K. It will be on tax returns and other letters about Corporation Tax. It may be called 'reference', 'UTR' or 'official use'. You can {0}.
 cds.matching.row-sole-trader-individual.utr.hint=This is 10 numbers, for example 1234567890, which may be followed by a K. It will be on tax returns and other letters about Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’. You can {0}.
-cds.matching.row-lost-urt.hint.link=find a lost UTR number (opens in a new window or tab)
+cds.matching.row-lost-urt.hint.link=find a lost UTR number (opens in new tab)
 
 cds.subscribe.use-this-eori.heading=Your GB Economic Operator Registration and Identification (EORI) number
 cds.subscribe.use-this-eori.paragraph1=This EORI is linked to the Government Gateway account you are using.

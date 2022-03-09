@@ -50,7 +50,7 @@ class DateOfEstablishmentSpec extends ViewSpec {
     "have the correct text in the intro paragraph" in {
       doc.body
         .getElementById("date-of-establishment-label")
-        .text() mustBe "Enter the date shown on the organisation’s certificate of incorporation. You can find the date your organisation was established on the Companies House register (opens in a new window or tab)"
+        .text() mustBe "Enter the date shown on the organisation’s certificate of incorporation. You can find the date your organisation was established on the Companies House register (opens in new tab)"
     }
   }
 
