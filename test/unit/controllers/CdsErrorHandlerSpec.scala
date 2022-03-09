@@ -16,14 +16,27 @@
 
 package unit.controllers
 
+import org.scalatest.concurrent.ScalaFutures
+import play.api.Configuration
+import play.api.test.FakeRequest
+import play.api.test.Helpers.LOCATION
+import play.api.test.Helpers._
+import uk.gov.hmrc.eoricommoncomponent.frontend.CdsErrorHandler
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionTimeOutException
+import uk.gov.hmrc.eoricommoncomponent.frontend.util.{Constants, InvalidUrlValueException}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{client_error_template, error_template, notFound}
+import util.ControllerSpec
+
 class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {
   val configuration = mock[Configuration]
+
   val cdsErrorHandler =
     new CdsErrorHandler(messagesApi, configuration, errorTemplateView, clientErrorTemplateView, notFoundView)
+
   private val errorTemplateView       = instanceOf[error_template]
   private val clientErrorTemplateView = instanceOf[client_error_template]
   private val notFoundView            = instanceOf[notFound]
-  private val mockRequest = FakeRequest()
+  private val mockRequest             = FakeRequest()
 
   "Cds error handler" should {
     "redirect to correct page after receive 500 error" in {
