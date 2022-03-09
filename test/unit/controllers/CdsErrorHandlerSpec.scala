@@ -87,17 +87,6 @@ class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {
       }
     }
 
-    "Redirect to the Sign in page on 403 CSRF Not Found error with InvalidPathParameter" in {
-      whenReady(
-        cdsErrorHandler.onClientError(mockRequest, statusCode = BAD_REQUEST, message = Constants.NO_CSRF_FOUND)
-      ) { result =>
-        val page = CdsPage(contentAsString(result))
-
-        result.header.status shouldBe INTERNAL_SERVER_ERROR
-      }
-    }
-
-
     "Redirect to the InternalErrorPage page on 500 error" in {
       whenReady(cdsErrorHandler.onClientError(mockRequest, statusCode = INTERNAL_SERVER_ERROR)) { result =>
         val page = CdsPage(contentAsString(result))
