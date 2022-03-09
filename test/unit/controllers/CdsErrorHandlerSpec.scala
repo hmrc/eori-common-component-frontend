@@ -30,13 +30,14 @@ import util.ControllerSpec
 class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {
   val configuration = mock[Configuration]
 
-  val cdsErrorHandler =
-    new CdsErrorHandler(messagesApi, configuration, errorTemplateView, clientErrorTemplateView, notFoundView)
-
   private val errorTemplateView       = instanceOf[error_template]
   private val clientErrorTemplateView = instanceOf[client_error_template]
   private val notFoundView            = instanceOf[notFound]
   private val mockRequest             = FakeRequest()
+
+  val cdsErrorHandler =
+    new CdsErrorHandler(messagesApi, configuration, errorTemplateView, clientErrorTemplateView, notFoundView)
+
 
   "Cds error handler" should {
     "redirect to correct page after receive 500 error" in {
