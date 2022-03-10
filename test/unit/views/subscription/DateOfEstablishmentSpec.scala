@@ -22,7 +22,7 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CorporateBody, LLP}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CorporateBody, LLP, UnincorporatedBody}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.date_of_establishment
 import util.ViewSpec
@@ -83,6 +83,26 @@ class DateOfEstablishmentSpec extends ViewSpec {
     }
   }
 
+  "On an UnincorporatedBody org type journey Date Established page" should {
+    "display correct title" in {
+      docCharity.title() must startWith("When was the organisation established?")
+    }
+    "have the correct h1 text" in {
+      docCharity.body.getElementsByTag("h1").text() mustBe "When was the organisation established?"
+    }
+    "have the correct class on the h1" in {
+      docCharity.body.getElementsByTag("h1").hasClass("govuk-fieldset__heading") mustBe true
+    }
+    "have the correct text in the hint" in {
+      docCharity.body.getElementById("date-of-establishment-hint-text").text() mustBe "For example, 31 03 1980."
+    }
+    "have the correct text in the intro paragraph" in {
+      docCharity.body
+        .getElementById("date-of-establishment-label")
+        .text() mustBe "Enter the date shown on the organisation’s certificate of incorporation or registration certificate."
+    }
+  }
+
   lazy val doc: Document = {
     val result =
       view(form, isInReviewMode, orgType = CorporateBody, isRestOfWorldJourney = false, atarService)
@@ -100,5 +120,12 @@ class DateOfEstablishmentSpec extends ViewSpec {
       view(form, isInReviewMode, orgType = LLP, isRestOfWorldJourney = false, atarService)
     Jsoup.parse(contentAsString(result))
   }
+
+  lazy val docCharity: Document = {
+    val result =
+      view(form, isInReviewMode, orgType = UnincorporatedBody, isRestOfWorldJourney = false, atarService)
+    Jsoup.parse(contentAsString(result))
+  }
+
 
 }
