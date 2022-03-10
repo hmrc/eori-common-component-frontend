@@ -28,7 +28,12 @@
 @getEoriLink = {
 <a class="govuk-link" href=@appConfig.externalGetEORILink(service) target="_blank" rel="noopener noreferrer">@messages("ecc.subscription.information.para2.link", messages("cds.navigation.opens-in-new-tab"))</a>
 }
-
+@utrLink = {
+    <a class="govuk-link" href=@appConfig.findLostUtr() target="_blank" rel="noopener noreferrer">@messages("cds.matching.utr.find-lost-utr.hint", messages("cds.navigation.opens-in-new-tab"))</a>.
+}
+@askUtrCopyLink = {
+    <a class="govuk-link" href=@appConfig.askUtrCopy target="_blank" rel="noopener noreferrer">@messages("ecc.subscription.information.section.organisation.find-utr.label", messages("cds.navigation.opens-in-new-tab"))</a>.
+}
 @detailsContent = {
 <p id="gb-eori-text" class="govuk-body">
     @Html(messages("ecc.subscription.information.para2", getEoriLink, ServiceName.longName))
@@ -65,7 +70,7 @@
         <p id="organisation-text" class=" govuk-body">@messages("ecc.subscription.information.section.organisation.list.heading")</p>
 
         <ul class="govuk-list govuk-list--bullet ">
-            <li>@Html(messages("ecc.subscription.information.section.organisation.list.first", messages("cds.navigation.opens-in-new-tab")))</li>
+            <li>@Html(messages("ecc.subscription.information.section.organisation.list.first", askUtrCopyLink))</li>
             <li>@messages("ecc.subscription.information.section.organisation.list.second")</li>
             <li>@messages("ecc.subscription.information.section.organisation.list.third")</li>
             <li>@messages("ecc.subscription.information.section.organisation.list.fourth")</li>
@@ -76,7 +81,7 @@
 
         <ul class="govuk-list govuk-list--bullet ">
             <li>@messages("ecc.subscription.information.section.individual.nino")</li>
-            <li>@Html(messages("ecc.subscription.information.section.individual.utr", messages("cds.navigation.opens-in-new-tab")))</li>
+            <li>@Html(messages("ecc.subscription.information.section.individual.utr", utrLink))</li>
         </ul>
 
         <p class="govuk-body" id="email-confirmation">@messages("ecc.subscription.information.email.confirm")</p>
