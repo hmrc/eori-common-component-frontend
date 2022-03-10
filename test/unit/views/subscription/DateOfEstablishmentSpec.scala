@@ -127,5 +127,4 @@ class DateOfEstablishmentSpec extends ViewSpec {
     Jsoup.parse(contentAsString(result))
   }
 
-
 }
