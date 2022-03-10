@@ -33,11 +33,10 @@ class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {
   private val errorTemplateView       = instanceOf[error_template]
   private val clientErrorTemplateView = instanceOf[client_error_template]
   private val notFoundView            = instanceOf[notFound]
+  private val mockRequest             = FakeRequest()
 
   val cdsErrorHandler =
     new CdsErrorHandler(messagesApi, configuration, errorTemplateView, clientErrorTemplateView, notFoundView)
-
-  private val mockRequest = FakeRequest()
 
   "Cds error handler" should {
     "redirect to correct page after receive 500 error" in {
@@ -55,6 +54,17 @@ class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {
 
         result.header.status shouldBe NOT_FOUND
         page.title should startWith("Page not found")
+      }
+    }
+
+    "redirect to subscription security sign out for NO_CSRF_FOUND" in {
+      val mockSubRequest = FakeRequest(method = "GET", "/atar/subscribe")
+
+      whenReady(
+        cdsErrorHandler.onClientError(mockSubRequest, statusCode = FORBIDDEN, message = Constants.NO_CSRF_FOUND)
+      ) { result =>
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/display-sign-out"
       }
     }
 
