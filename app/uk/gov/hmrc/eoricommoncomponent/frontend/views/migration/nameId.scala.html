@@ -42,7 +42,7 @@
     else messages(s"cds.matching.name-id-organisation.$displayMode.name.hint")
 }
 @utrLink = {
-    <a class="govuk-link" href=@appConfig.findLostUtr() target="_blank" rel="noopener noreferrer">@messages("cds.matching.utr.find-lost-utr.hint", messages("cds.navigation.opens-in-new-tab"))</a>.
+    <a class="govuk-link" href=@appConfig.findLostUtr() target="_blank" rel="noopener noreferrer">@messages("cds.matching.utr.find-lost-utr.hint", messages("cds.navigation.opens-in-new-tab"))</a>
 }
 @utrHintText = @{
     if(displayMode=="partnership") messages("cds.matching.partnership.utr.hint", utrLink)

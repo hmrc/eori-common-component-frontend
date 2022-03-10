@@ -32,7 +32,7 @@
     messages("subscription-journey.how-confirm-identity")
 }
 @utrLink = {
-    <a class="govuk-link" href=@appConfig.findLostUtr() target="_blank" rel="noopener noreferrer">@messages("cds.matching.utr.find-lost-utr.hint", messages("cds.navigation.opens-in-new-tab"))</a>.
+    <a class="govuk-link" href=@appConfig.findLostUtr() target="_blank" rel="noopener noreferrer">@messages("cds.matching.utr.find-lost-utr.hint", messages("cds.navigation.opens-in-new-tab"))</a>
 }
 @validOptions = @{
     Seq(

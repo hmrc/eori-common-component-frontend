@@ -4,7 +4,7 @@ cds.banner.subscription=Tanysgrifio i {0}
 ecc.subscription.enter-eori-number.heading=Beth yw’ch rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI)?
 cds.subscription.enter-eori-number.no-eori.summary=Nid oes gennyf rif EORI
 cds.subscription.enter-eori-number.no-eori=Mae’n rhaid i chi {0} cyn i chi allu gwneud cais am {1}. Fel arfer, mae angen aros oddeutu 30 munud ar ôl gwneud cais am rif EORI cyn i chi allu mynd ati gyda’ch cais am {1}, ond gall gymryd hyd at 48 awr.
-cds.subscription.enter-eori-number.no-eori.link=gael rhif EORI (yn agor ffenestr neu dab newydd)
+cds.subscription.enter-eori-number.no-eori.link=gael rhif EORI (yn agor tab newydd)
 
 cds.has-existing-eori.title=Mae’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth yn gysylltiedig ag EORI
 cds.has-existing-eori.heading=Mae’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth yn gysylltiedig ag EORI
