@@ -89,8 +89,7 @@ ecc.subscription.information.section.organisation.list.fourth=Dyddiad sefydlu
 ecc.subscription.information.section.individual.subheading=Manylion yr unig fasnachwr neu unigolyn
 ecc.subscription.information.section.individual.para=Os ydych wedi gweithio yn y DU neu wedi cofrestru ar gyfer Hunanasesiad, bydd angen un o’r canlynol arnoch:
 ecc.subscription.information.section.individual.nino=Rhif Yswiriant Gwladol
-ecc.subscription.information.section.individual.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad. Gallwch ddod o hyd i {0}
-
+ecc.subscription.information.section.individual.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad. Gallwch ddod o hyd i <a href="https://www.gov.uk/find-lost-utr-number" class="govuk-link" target="_blank" rel="noopener noreferrer">UTR coll {0}.</a>
 ecc.subscription.information.only.once=Dim ond unwaith y mae angen gwneud hyn.
 ecc.subscription.information.email.confirm=Byddwn yn prosesu’ch cais ac yn anfon e-bost atoch gyda’r canlyniad cyn pen 2 awr.
 

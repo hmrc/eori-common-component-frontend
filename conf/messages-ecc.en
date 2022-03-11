@@ -89,7 +89,7 @@ ecc.subscription.information.section.organisation.list.fourth=Date of establishm
 ecc.subscription.information.section.individual.subheading=Sole trader or individual details
 ecc.subscription.information.section.individual.para=If you have worked in the UK or registered for self-assessment, you will need one of the following:
 ecc.subscription.information.section.individual.nino=National Insurance number
-ecc.subscription.information.section.individual.utr=Self Assessment Unique Taxpayer Reference (UTR). You can {0}
+ecc.subscription.information.section.individual.utr=Self Assessment Unique Taxpayer Reference (UTR). You can <a href="https://www.gov.uk/find-lost-utr-number" class="govuk-link" target="_blank" rel="noopener noreferrer">find a lost UTR number {0}.</a>
 
 ecc.subscription.information.only.once=This only needs to be done once.
 ecc.subscription.information.email.confirm=We’ll process your application and email you with the result within 2 hours.

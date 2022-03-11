@@ -28,9 +28,7 @@
 @getEoriLink = {
 <a class="govuk-link" href=@appConfig.externalGetEORILink(service) target="_blank" rel="noopener noreferrer">@messages("ecc.subscription.information.para2.link", messages("cds.navigation.opens-in-new-tab"))</a>
 }
-@utrLink = {
-    <a class="govuk-link" href=@appConfig.findLostUtr() target="_blank" rel="noopener noreferrer">@messages("cds.matching.utr.find-lost-utr.hint", messages("cds.navigation.opens-in-new-tab"))</a>
-}
+
 @askUtrCopyLink = {
     <a class="govuk-link" href=@appConfig.askUtrCopy target="_blank" rel="noopener noreferrer">@messages("ecc.subscription.information.section.organisation.find-utr.label", messages("cds.navigation.opens-in-new-tab"))</a>.
 }
@@ -81,7 +79,7 @@
 
         <ul class="govuk-list govuk-list--bullet ">
             <li>@messages("ecc.subscription.information.section.individual.nino")</li>
-            <li>@Html(messages("ecc.subscription.information.section.individual.utr", utrLink))</li>
+            <li>@Html(messages("ecc.subscription.information.section.individual.utr", messages("cds.navigation.opens-in-new-tab")))</li>
         </ul>
 
         <p class="govuk-body" id="email-confirmation">@messages("ecc.subscription.information.email.confirm")</p>
