@@ -99,7 +99,7 @@ subscription.check-your-email.no=Na, mae angen i mi newid y cyfeiriad e-bost hwn
 
 cds.form.contact-details=Eich cyfeiriad
 
-cds.error.field.hint=Gwall:
+cds.error.field.hint=Gwall
 
 date.day.error=Nodwch ddiwrnod rhwng 1 a 31
 date.month.error=Nodwch fis rhwng 1 a 12

@@ -39,5 +39,5 @@
     )),
     hint = hint,
     items = items,
-    errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+    errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)), visuallyHiddenText = Some(messages("cds.error.field.hint"))))
 ))
