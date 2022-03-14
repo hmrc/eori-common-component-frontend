@@ -34,7 +34,7 @@
 }
 @errorContent(error: FormError) = {
         <br>
-        <span class="govuk-visually-hidden">@messages("cds.error.field.hint")</span>
+        <span class="govuk-visually-hidden">@messages("cds.error.field.hint"):</span>
         @messages(error.message, error.args: _*)
 }
 
