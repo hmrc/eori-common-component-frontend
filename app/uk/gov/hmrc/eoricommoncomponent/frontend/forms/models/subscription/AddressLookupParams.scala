@@ -35,11 +35,11 @@ object AddressLookupParams {
     mapping(
       "postcode" -> text.verifying(
         "cds.subscription.contact-details.error.postcode",
-        _.replaceAll(" ","").matches(postcodeRegex.regex)
+        _.replaceAll(" ", "").matches(postcodeRegex.regex)
       ),
       "line1" -> optional(text.verifying("ecc.address-lookup.postcode.line1.error", _.length < 36))
-    )((postcode, line1) => AddressLookupParams(postcode.replaceAll(" ","").toUpperCase, line1))(
-      params => Some((params.postcode.replaceAll(" ",""), params.line1))
+    )((postcode, line1) => AddressLookupParams(postcode.replaceAll(" ", "").toUpperCase, line1))(
+      params => Some((params.postcode.replaceAll(" ", ""), params.line1))
     )
   )
 

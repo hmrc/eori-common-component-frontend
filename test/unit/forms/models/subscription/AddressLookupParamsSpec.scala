@@ -107,7 +107,7 @@ class AddressLookupParamsSpec extends UnitSpec {
 
       val form = AddressLookupParams.form().bind(Map("postcode" -> "aa11 1aa"))
 
-      form.value.get.postcode shouldBe "AA11 1AA"
+      form.value.get.postcode shouldBe "AA111AA"
     }
   }
 }

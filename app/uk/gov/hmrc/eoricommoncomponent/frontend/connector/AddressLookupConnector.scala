@@ -40,7 +40,7 @@ class AddressLookupConnector @Inject() (http: HttpClient, appConfig: AppConfig)(
     hc: HeaderCarrier
   ): Future[AddressLookupResponse] = {
 
-    val postalCode = postcode.replaceAll(" ","");
+    val postalCode = postcode.replaceAll(" ", "");
 
     val body = AddressRequestBody(postalCode, firstLineOpt)
 
