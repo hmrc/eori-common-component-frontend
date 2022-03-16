@@ -77,43 +77,40 @@
 
         @errorSummary(addressForm.errors)
 
+        <h1 id="page-heading" class="govuk-heading-l" >@titleAndHeading</h1>
+
         @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.submit(isInReviewMode, service), "addressDetailsForm") {
 
             @CSRF.formField
-            @fieldset(titleAndHeading) {
 
-                @inputText(
-                    form = addressForm,
-                    id = "street",
-                    name = "street",
-                    label = "cds.subscription.address-details.street.label",
-                    isPageHeading = false,
-                    classes = Some("govuk-!-width-one-half"),
-                    autocomplete = Some("address-line1"),
-                )
-                @inputText(
-                    form = addressForm,
-                    id = "city",
-                    name = "city",
-                    label = "cds.subscription.address-details.city.label",
-                    isPageHeading = false,
-                    classes = Some("govuk-!-width-one-half"),
-                    autocomplete = Some("address-level2"),
-                )
-                @inputText(
-                    form = addressForm,
-                    id = "postcode",
-                    name = "postcode",
-                    label = postcodeKey,
-                    isPageHeading = false,
-                    classes = Some("govuk-!-width-one-half"),
-                    autocomplete = Some("postal-code"),
-                )
-                @displayCountryField
-            }
-
-
-
+            @inputText(
+                form = addressForm,
+                id = "street",
+                name = "street",
+                label = "cds.subscription.address-details.street.label",
+                isPageHeading = false,
+                classes = Some("govuk-!-width-one-half"),
+                autocomplete = Some("address-line1"),
+            )
+            @inputText(
+                form = addressForm,
+                id = "city",
+                name = "city",
+                label = "cds.subscription.address-details.city.label",
+                isPageHeading = false,
+                classes = Some("govuk-!-width-one-half"),
+                autocomplete = Some("address-level2"),
+            )
+            @inputText(
+                form = addressForm,
+                id = "postcode",
+                name = "postcode",
+                label = postcodeKey,
+                isPageHeading = false,
+                classes = Some("govuk-!-width-one-half"),
+                autocomplete = Some("postal-code"),
+            )
+            @displayCountryField
 
             @govukButton(Button(
                 content = Text(ViewHelper.continueButtonText(isInReviewMode))
