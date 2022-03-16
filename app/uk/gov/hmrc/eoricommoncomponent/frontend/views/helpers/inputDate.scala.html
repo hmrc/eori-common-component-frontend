@@ -34,7 +34,7 @@
 }
 @errorContent(error: FormError) = {
         <br>
-        <span class="govuk-visually-hidden">Error: </span>
+        <span class="govuk-visually-hidden">@messages("cds.error.field.hint"):</span>
         @messages(error.message, error.args: _*)
 }
 
@@ -88,7 +88,7 @@
         content = HtmlContent(hintHtml)
     )),
     errorMessage = form.hasErrors match {
-        case true => Some(ErrorMessage(classes = "govuk-!-margin-bottom-1", content = HtmlContent(formattedErrors)))
+        case true => Some(ErrorMessage(classes = "govuk-!-margin-bottom-1", content = HtmlContent(formattedErrors), visuallyHiddenText = Some(messages("cds.error.field.hint"))))
         case _ => None
     }
 ).withFormField(form(id)))
