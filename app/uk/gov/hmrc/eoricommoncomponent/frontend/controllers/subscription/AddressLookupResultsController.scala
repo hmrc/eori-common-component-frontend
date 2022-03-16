@@ -70,7 +70,10 @@ class AddressLookupResultsController @Inject() (
   ): Future[Result] =
     sessionCache.addressLookupParams.flatMap {
       case Some(addressLookupParams) =>
-        addressLookupConnector.lookup(addressLookupParams.postcode, addressLookupParams.line1).flatMap { response =>
+        addressLookupConnector.lookup(
+          addressLookupParams.postcode.replaceAll(" ", ""),
+          addressLookupParams.line1
+        ).flatMap { response =>
           response match {
             case AddressLookupSuccess(addresses) if addresses.nonEmpty && addresses.forall(_.nonEmpty) =>
               Future.successful(
