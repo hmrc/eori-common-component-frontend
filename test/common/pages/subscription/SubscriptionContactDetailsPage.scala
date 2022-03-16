@@ -24,9 +24,9 @@ trait SubscriptionContactDetailsPage extends WebPage {
 
   val formId = "contactDetailsForm"
 
-  val headingXPath        = "//*[@id='contactDetailsForm']/fieldset/legend/h1"
+  val headingXPath        = "//*[@id='page-heading']"
   val introXPathRegister  = "//*[@id='contactDetailsForm']/fieldset/legend/p"
-  val introXPathSubscribe = "//*[@id='contactDetailsForm']/fieldset/p"
+  val introXPathSubscribe = "//*[@id='contactDetailsForm']/p"
 
   val fullNameFieldXPath           = "//*[@id='full-name']"
   val fullNameFieldLevelErrorXPath = "//p[@id='full-name-error'][@class='govuk-error-message']"
