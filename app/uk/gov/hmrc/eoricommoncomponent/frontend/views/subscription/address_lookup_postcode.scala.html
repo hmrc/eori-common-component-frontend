@@ -64,11 +64,12 @@
 
         @errorSummary(addressPostcodeForm.errors)
 
+        <h1 id="page-heading" class="govuk-heading-l" >@pageTitle</h1>
+
         @helpers.form(AddressLookupPostcodeController.submit(service, isInReviewMode), "addressLookupPostcodeForm") {
 
             @CSRF.formField
 
-            @fieldset(pageTitle) {
             @formHint
             @inputText(
                 form = addressPostcodeForm,
@@ -89,10 +90,10 @@
                 classes = Some("govuk-!-width-one-half"),
                 labelClasses = Some("line1")
             )
-            }
-                @govukButton(Button(
-                    content = Text(messages("ecc.address-lookup.postcode.find-address"))
-                ))
+
+            @govukButton(Button(
+                content = Text(messages("ecc.address-lookup.postcode.find-address"))
+            ))
 
             <div class="govuk-body govuk-!-margin-top-2 govuk-!-margin-bottom-4">
                 <a href="@manualAddressLink" class="govuk-link" id="cannot-find-address">@messages("ecc.address-lookup.postcode.find-address.manual")</a>
