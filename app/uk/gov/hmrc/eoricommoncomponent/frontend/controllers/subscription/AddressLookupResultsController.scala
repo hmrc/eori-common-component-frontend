@@ -120,23 +120,24 @@ class AddressLookupResultsController @Inject() (
   )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     val addressLookupParamsWithoutLine1 = AddressLookupParams(addressLookupParams.postcode, None, true)
 
-    addressLookupConnector.lookup(addressLookupParamsWithoutLine1.postcode.replaceAll(" ", ""), None).flatMap { secondResponse =>
-      secondResponse match {
-        case AddressLookupSuccess(addresses) if addresses.nonEmpty && addresses.forall(_.nonEmpty) =>
-          sessionCache.saveAddressLookupParams(addressLookupParamsWithoutLine1).map { _ =>
-            Ok(
-              prepareView(
-                AddressResultsForm.form(addresses.map(_.dropDownView)),
-                addressLookupParamsWithoutLine1,
-                addresses,
-                isInReviewMode,
-                service
+    addressLookupConnector.lookup(addressLookupParamsWithoutLine1.postcode.replaceAll(" ", ""), None).flatMap {
+      secondResponse =>
+        secondResponse match {
+          case AddressLookupSuccess(addresses) if addresses.nonEmpty && addresses.forall(_.nonEmpty) =>
+            sessionCache.saveAddressLookupParams(addressLookupParamsWithoutLine1).map { _ =>
+              Ok(
+                prepareView(
+                  AddressResultsForm.form(addresses.map(_.dropDownView)),
+                  addressLookupParamsWithoutLine1,
+                  addresses,
+                  isInReviewMode,
+                  service
+                )
               )
-            )
-          }
-        case AddressLookupSuccess(_) => Future.successful(redirectToNoResultsPage(service, isInReviewMode))
-        case AddressLookupFailure    => throw AddressLookupException
-      }
+            }
+          case AddressLookupSuccess(_) => Future.successful(redirectToNoResultsPage(service, isInReviewMode))
+          case AddressLookupFailure    => throw AddressLookupException
+        }
     }
   }
 
@@ -144,7 +145,10 @@ class AddressLookupResultsController @Inject() (
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       sessionCache.addressLookupParams.flatMap {
         case Some(addressLookupParams) =>
-          addressLookupConnector.lookup(addressLookupParams.postcode.replaceAll(" ", ""), addressLookupParams.line1).flatMap { response =>
+          addressLookupConnector.lookup(
+            addressLookupParams.postcode.replaceAll(" ", ""),
+            addressLookupParams.line1
+          ).flatMap { response =>
             response match {
               case AddressLookupSuccess(addresses) if addresses.nonEmpty && addresses.forall(_.nonEmpty) =>
                 val addressesMap  = addresses.map(address => address.dropDownView -> address).toMap
