@@ -61,7 +61,7 @@ class StartSubscriptionViewSpec extends ViewSpec {
       doc.body().getElementById("gb-eori").text() mustBe "An EORI number starting with GB"
       doc.body().getElementById(
         "gb-eori-text"
-      ).text() startsWith "You must get an EORI number (opens in new window or tab) before you can apply for Advance Tariff Rulings, once you have applied for an EORI number it usually takes around 30 minutes, but may take up to 48 hours before you can proceed with your Advance Tariff Rulings application."
+      ).text() startsWith "You must get an EORI number (opens in new tab) before you can apply for Advance Tariff Rulings, once you have applied for an EORI number it usually takes around 30 minutes, but may take up to 48 hours before you can proceed with your Advance Tariff Rulings application."
 
       val warning     = doc.body().getElementsByClass("govuk-warning-text").get(0)
       val warningMark = warning.getElementsByClass("govuk-warning-text__icon").get(0)
@@ -85,7 +85,7 @@ class StartSubscriptionViewSpec extends ViewSpec {
 
       bulletList.getElementsByTag("li").get(
         0
-      ).text() mustBe "Corporation Tax Unique Taxpayer Reference (UTR) if you pay Corporation Tax in the UK. You can find a UTR number (opens in a new window or tab)."
+      ).text() mustBe "Corporation Tax Unique Taxpayer Reference (UTR) if you pay Corporation Tax in the UK. You can find a UTR number (opens in new tab)."
       bulletList.getElementsByTag("li").get(1).text() mustBe "Registered company name"
       bulletList.getElementsByTag("li").get(2).text() mustBe "Registered company address"
       bulletList.getElementsByTag("li").get(3).text() mustBe "Date of establishment"
@@ -103,7 +103,7 @@ class StartSubscriptionViewSpec extends ViewSpec {
       bulletList.getElementsByTag("li").get(0).text() mustBe "National Insurance number"
       bulletList.getElementsByTag("li").get(
         1
-      ).text() mustBe "Self Assessment Unique Taxpayer Reference (UTR). You can find a lost UTR number (opens in a new window or tab)."
+      ).text() mustBe "Self Assessment Unique Taxpayer Reference (UTR). You can find a lost UTR number (opens in new tab)."
     }
 
     "display 2 hours message" in {

@@ -4,7 +4,7 @@ cds.banner.subscription=Tanysgrifio i {0}
 ecc.subscription.enter-eori-number.heading=Beth yw’ch rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI)?
 cds.subscription.enter-eori-number.no-eori.summary=Nid oes gennyf rif EORI
 cds.subscription.enter-eori-number.no-eori=Mae’n rhaid i chi {0} cyn i chi allu gwneud cais am {1}. Fel arfer, mae angen aros oddeutu 30 munud ar ôl gwneud cais am rif EORI cyn i chi allu mynd ati gyda’ch cais am {1}, ond gall gymryd hyd at 48 awr.
-cds.subscription.enter-eori-number.no-eori.link=gael rhif EORI (yn agor ffenestr neu dab newydd)
+cds.subscription.enter-eori-number.no-eori.link=gael rhif EORI {0}
 
 cds.has-existing-eori.title=Mae’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth yn gysylltiedig ag EORI
 cds.has-existing-eori.heading=Mae’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth yn gysylltiedig ag EORI
@@ -75,12 +75,13 @@ ecc.subscription.information.para1=Er mwyn eich tanysgrifio i’r gwasanaeth ar 
 
 ecc.subscription.information.para2.heading=Rhif EORI sy’n dechrau gyda GB
 ecc.subscription.information.para2=Mae’n rhaid i chi {0} cyn i chi allu gwneud cais am {1}. Fel arfer, mae angen aros oddeutu 30 munud ar ôl gwneud cais am rif EORI cyn i chi allu mynd ati gyda’ch cais am {1}, ond gall gymryd hyd at 48 awr.
-ecc.subscription.information.para2.link=gael rhif EORI (yn agor ffenestr neu dab newydd)
+ecc.subscription.information.para2.link=gael rhif EORI {0}
 ecc.subscription.information.para2.warning=Mae’n rhaid i’r rhif EORI sy’n dechrau gyda GB fod yr un sy’n gysylltiedig â’r Dynodydd Defnyddiwr (ID) Porth y Llywodraeth a ddefnyddiwyd gennych pan gawsoch rif EORI.
 
 ecc.subscription.information.section.organisation.subheading=Manylion y cwmni neu sefydliad arall
+ecc.subscription.information.section.organisation.find-utr.label = UTR coll {0}
 ecc.subscription.information.section.organisation.list.heading=Os ydych yn gwmni cyfyngedig, partneriaeth neu elusen, bydd angen y canlynol arnoch:
-ecc.subscription.information.section.organisation.list.first=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth os ydych yn talu treth gorfforaeth yn y DU. Gallwch ddod o hyd i <a href="https://www.tax.service.gov.uk/ask-for-copy-of-your-corporation-tax-utr" class="govuk-link" target="_blank" rel="noopener noreferrer">UTR coll (yn agor ffenestr neu dab newydd)</a>.
+ecc.subscription.information.section.organisation.list.first=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth os ydych yn talu treth gorfforaeth yn y DU. Gallwch ddod o hyd i {0}
 ecc.subscription.information.section.organisation.list.second=Enw’r cwmni cofrestredig
 ecc.subscription.information.section.organisation.list.third=Cyfeiriad cofrestredig y cwmni
 ecc.subscription.information.section.organisation.list.fourth=Dyddiad sefydlu
@@ -88,8 +89,7 @@ ecc.subscription.information.section.organisation.list.fourth=Dyddiad sefydlu
 ecc.subscription.information.section.individual.subheading=Manylion yr unig fasnachwr neu unigolyn
 ecc.subscription.information.section.individual.para=Os ydych wedi gweithio yn y DU neu wedi cofrestru ar gyfer Hunanasesiad, bydd angen un o’r canlynol arnoch:
 ecc.subscription.information.section.individual.nino=Rhif Yswiriant Gwladol
-ecc.subscription.information.section.individual.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad. Gallwch ddod o hyd i <a href="https://www.gov.uk/find-lost-utr-number" class="govuk-link" target="_blank" rel="noopener noreferrer">UTR coll (yn agor ffenestr neu dab newydd)</a>.
-
+ecc.subscription.information.section.individual.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad. Gallwch ddod o hyd i <a href="https://www.gov.uk/find-lost-utr-number" class="govuk-link" target="_blank" rel="noopener noreferrer">UTR coll {0}.</a>
 ecc.subscription.information.only.once=Dim ond unwaith y mae angen gwneud hyn.
 ecc.subscription.information.email.confirm=Byddwn yn prosesu’ch cais ac yn anfon e-bost atoch gyda’r canlyniad cyn pen 2 awr.
 
@@ -123,8 +123,8 @@ cds.subscription.sign-in-with-different-details.para1=Mae {0} eisoes wedi cofres
 cds.subscription.sign-in-with-different-details.para1-noname=Rydych eisoes wedi cofrestru ar gyfer {0} gyda Phorth y Llywodraeth gwahanol.
 
 cds.matching.row-organisation.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890, a gellir ei ddilyn gan K. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Treth Gorfforaeth. Efallai y cyfeirir ato gan ddefnyddio’r geiriau ‘cyfeirnod’, ‘UTR’ neu ‘defnydd swyddogol’. Mae modd dod o hyd i UTR sydd ar goll.
-cds.matching.row-sole-trader-individual.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890, a gellir ei ddilyn gan K. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Hunanasesiad. Efallai y cyfeirir ato gan ddefnyddio’r geiriau ‘cyfeirnod’, ‘UTR’ neu ‘defnydd swyddogol’. Mae modd {0}.
-cds.matching.row-lost-urt.hint.link=dod o hyd i UTR sydd ar goll (yn agor ffenestr neu dab newydd)
+cds.matching.row-sole-trader-individual.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890, a gellir ei ddilyn gan K. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Hunanasesiad. Efallai y cyfeirir ato gan ddefnyddio’r geiriau ‘cyfeirnod’, ‘UTR’ neu ‘defnydd swyddogol’. Mae modd {0}
+cds.matching.row-lost-urt.hint.link=dod o hyd i UTR sydd ar goll {0}
 
 cds.subscribe.use-this-eori.heading=Eich rhif Cofrestru ac Adnabod Gweithredwr Economaidd (EORI)
 cds.subscribe.use-this-eori.paragraph1=Mae’r EORI hwn yn gysylltiedig â chyfrif Porth y Llywodraeth rydych yn ei ddefnyddio.
