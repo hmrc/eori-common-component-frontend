@@ -88,6 +88,13 @@ class AddressLookupParamsSpec extends UnitSpec {
         form.errors shouldBe Seq.empty
       }
 
+      "postcode is valid with spaces allowed" in {
+
+        val form = AddressLookupParams.form().bind(Map("postcode" -> " AA11 1AA "))
+
+        form.errors shouldBe Seq.empty
+      }
+
       "postcode and line1 are valid" in {
 
         val form = AddressLookupParams.form().bind(Map("postcode" -> "AA11 1AA", "line1" -> "Line 1"))
