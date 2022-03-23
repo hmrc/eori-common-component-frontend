@@ -105,7 +105,7 @@ val compileDependencies = Seq(
   "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % "5.6.0",
   "uk.gov.hmrc" %% "play-conditional-form-mapping" % "1.9.0-play-28",
   "uk.gov.hmrc" %% "domain" % "6.1.0-play-28",
-  "uk.gov.hmrc" %% "mongo-caching" % "7.0.0-play-28",
+  "uk.gov.hmrc.mongo"       %% "hmrc-mongo-play-28"           % "0.51.0",
   "uk.gov.hmrc" %% "emailaddress" % "3.5.0",
   "uk.gov.hmrc" %% "logback-json-logger" % "5.1.0",
   "uk.gov.hmrc" %% "play-language" % "5.0.0-play-28",
@@ -125,7 +125,7 @@ val testDependencies = Seq(
   "us.codecraft" % "xsoup" % "0.3.1" % "test,it",
   "org.mockito" % "mockito-core" % "3.0.0" % "test,it",
   "org.pegdown" % "pegdown" % "1.6.0",
-  "uk.gov.hmrc" %% "reactivemongo-test" % "5.0.0-play-28" % "test, it"
+  "uk.gov.hmrc.mongo" %% "hmrc-mongo-test-play-27" % "0.56.0" % "test, it"
 )
 
 libraryDependencies ++= compileDependencies ++ testDependencies

@@ -17,20 +17,19 @@
 package unit.services.cache
 
 import base.UnitSpec
-import java.time.LocalDateTime
-
 import org.scalatestplus.mockito.MockitoSugar
-import uk.gov.hmrc.cache.model.Id
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, ResponseCommon}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.CachedData
+
+import java.time.LocalDateTime
 
 class CachedDataSpec extends UnitSpec with MockitoSugar {
 
-  val sessionId: Id = Id("1234567")
+  val sessionId: String = "1234567"
 
-  def errorMsg(name: String) = s"$name is not cached in data for the sessionId: ${sessionId.id}"
+  def errorMsg(name: String) = s"$name is not cached in data for the sessionId: ${sessionId}"
 
   "CachedData" should {
 
