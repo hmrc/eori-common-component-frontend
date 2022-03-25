@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.cache
 
 import play.api.Logger
-import play.api.libs.json.{JsSuccess, Json, Writes}
+import play.api.libs.json.{JsError, JsResult, JsString, JsSuccess, JsValue, Json, OFormat, Writes}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -107,6 +107,15 @@ object CachedData {
   implicit val format                  = Json.format[CachedData]
 }
 
+case class Id(id: String) extends AnyVal
+object Id{
+  implicit val jsonFormat: OFormat[Id] = Json.format[Id]
+}
+
+object IdType extends CacheIdType[Id] {
+  def run: Id => String = _.id
+}
+
 @Singleton
 class SessionCache @Inject() (
   mongoComponent: MongoComponent,
@@ -119,18 +128,18 @@ class SessionCache @Inject() (
       collectionName = "session-cache",
       ttl = appConfig.ttl,
       timestampSupport = timestampSupport,
-      cacheIdType = CacheIdType.SimpleCacheId
+      cacheIdType = IdType
     )(ec) {
   private val eccLogger: Logger = Logger(this.getClass)
 
-  private def sessionId(implicit hc: HeaderCarrier): String =
+  private def sessionId(implicit hc: HeaderCarrier): Id =
     hc.sessionId match {
       case None =>
         throw new IllegalStateException("Session id is not available")
-      case Some(sessionId) => sessionId.value
+      case Some(sessionId) => Id(sessionId.value)
     }
 
-  def putData[A: Writes](id: String, key: String, data: A): Future[A] =
+  def putData[A: Writes](id: Id, key: String, data: A): Future[A] =
     put[A](id)(DataKey(key), data).map(_ => data)
 
   def saveRegistrationDetails(rd: RegistrationDetails)(implicit hc: HeaderCarrier): Future[Boolean] =
@@ -177,7 +186,7 @@ class SessionCache @Inject() (
 
   def keepAlive(implicit hc: HeaderCarrier): Future[Boolean] =
     hc.sessionId.map(
-      id => putData(id.value, keepAliveKey, Json.toJson(LocalDateTime.now().toString)) map (_ => true)
+      id => putData(Id(id.value), keepAliveKey, Json.toJson(LocalDateTime.now().toString)) map (_ => true)
     ).getOrElse(Future.successful(true))
 
   def saveGroupEnrolment(groupEnrolment: EnrolmentResponse)(implicit hc: HeaderCarrier): Future[Boolean] =
@@ -186,11 +195,11 @@ class SessionCache @Inject() (
   def saveAddressLookupParams(addressLookupParams: AddressLookupParams)(implicit hc: HeaderCarrier): Future[Unit] =
     putData(sessionId, addressLookupParamsKey, Json.toJson(addressLookupParams)).map(_ => ())
 
-  private def getCached[T](sessionId: String, t: (CachedData, String) => T): Future[T] =
+  private def getCached[T](sessionId: Id, t: (CachedData, String) => T): Future[T] =
     findById(sessionId).map {
       case Some(CacheItem(_, data, _, _)) =>
         Json.fromJson[CachedData](data) match {
-          case d: JsSuccess[CachedData] => t(d.value, sessionId)
+          case d: JsSuccess[CachedData] => t(d.value, sessionId.id)
           case _ =>
             eccLogger.error(s"No Session data is cached for the sessionId : ${sessionId}")
             throw SessionTimeOutException(s"No Session data is cached for the sessionId : ${sessionId}")
