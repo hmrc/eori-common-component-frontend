@@ -18,14 +18,15 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services.cache
 
 import play.api.Logger
 import play.api.libs.json.{JsError, JsResult, JsString, JsSuccess, JsValue, Json, OFormat, Writes}
+import play.api.mvc.Request
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressLookupParams
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.CachedData._
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.mongo.cache.{CacheIdType, CacheItem, DataKey, MongoCacheRepository}
+import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
+import uk.gov.hmrc.mongo.cache.{CacheIdType, CacheItem, DataKey, SessionCacheRepository}
 import uk.gov.hmrc.mongo.{MongoComponent, TimestampSupport}
 
 import java.time.LocalDateTime
@@ -44,51 +45,7 @@ sealed case class CachedData(
   keepAlive: Option[String] = None,
   eori: Option[String] = None,
   addressLookupParams: Option[AddressLookupParams] = None
-) {
-
-  def registrationDetails(sessionId: String): RegistrationDetails =
-    regDetails.getOrElse(throwException(regDetailsKey, sessionId))
-
-  def registerWithEoriAndIdResponse(sessionId: String): RegisterWithEoriAndIdResponse =
-    registerWithEoriAndIdResponse.getOrElse(
-      throw new IllegalStateException(
-        s"$registerWithEoriAndIdResponseKey is not cached in data for the sessionId: ${sessionId}"
-      )
-    )
-
-  def sub01Outcome(sessionId: String): Sub01Outcome =
-    sub01Outcome.getOrElse(throwException(sub01OutcomeKey, sessionId))
-
-  def sub02Outcome(sessionId: String): Sub02Outcome =
-    sub02Outcome.getOrElse(throwException(sub02OutcomeKey, sessionId))
-
-  def groupEnrolment(sessionId: String): EnrolmentResponse =
-    groupEnrolment.getOrElse(throwException(groupEnrolmentKey, sessionId))
-
-  // TODO Refactor this method, sessionId is not used
-  def subscriptionDetails(sessionId: String): SubscriptionDetails =
-    subDetails.getOrElse(initialEmptySubscriptionDetails)
-
-  def email(sessionId: String): String =
-    email.getOrElse(throwException(emailKey, sessionId))
-
-  def safeId(sessionId: String) = {
-    lazy val mayBeMigration: Option[SafeId] = registerWithEoriAndIdResponse
-      .flatMap(_.responseDetail.flatMap(_.responseData.map(_.SAFEID)))
-      .map(SafeId(_))
-    lazy val mayBeRegistration: Option[SafeId] =
-      regDetails.flatMap(s => if (s.safeId.id.nonEmpty) Some(s.safeId) else None)
-    mayBeRegistration orElse mayBeMigration getOrElse (throw new IllegalStateException(
-      s"$safeIdKey is not cached in data for the sessionId: ${sessionId}"
-    ))
-
-  }
-
-  private def throwException(name: String, sessionId: String) =
-    throw DataUnavailableException(s"$name is not cached in data for the sessionId: ${sessionId}")
-
-  private val initialEmptySubscriptionDetails = SubscriptionDetails()
-}
+)
 
 object CachedData {
   val regDetailsKey                    = "regDetails"
@@ -107,14 +64,7 @@ object CachedData {
   implicit val format                  = Json.format[CachedData]
 }
 
-case class Id(id: String) extends AnyVal
-object Id{
-  implicit val jsonFormat: OFormat[Id] = Json.format[Id]
-}
 
-object IdType extends CacheIdType[Id] {
-  def run: Id => String = _.id
-}
 
 @Singleton
 class SessionCache @Inject() (
@@ -123,130 +73,124 @@ class SessionCache @Inject() (
   save4LaterService: Save4LaterService,
   timestampSupport: TimestampSupport
 )(implicit ec: ExecutionContext)
-    extends MongoCacheRepository(
+    extends SessionCacheRepository(
       mongoComponent = mongoComponent,
       collectionName = "session-cache",
       ttl = appConfig.ttl,
       timestampSupport = timestampSupport,
-      cacheIdType = IdType
+      sessionIdKey = SessionKeys.sessionId
     )(ec) {
   private val eccLogger: Logger = Logger(this.getClass)
 
-  private def sessionId(implicit hc: HeaderCarrier): Id =
-    hc.sessionId match {
-      case None =>
-        throw new IllegalStateException("Session id is not available")
-      case Some(sessionId) => Id(sessionId.value)
-    }
 
-  def putData[A: Writes](id: Id, key: String, data: A): Future[A] =
-    put[A](id)(DataKey(key), data).map(_ => data)
+  def putData[A: Writes](key: String, data: A)(implicit request: Request[_]): Future[A] =
+    putSession[A](DataKey(key), data).map(_ => data)
 
-  def saveRegistrationDetails(rd: RegistrationDetails)(implicit hc: HeaderCarrier): Future[Boolean] =
-    putData(sessionId, regDetailsKey, Json.toJson(rd)) map (_ => true)
+  def saveRegistrationDetails(rd: RegistrationDetails)(implicit request: Request[_]): Future[Boolean] =
+    putData(regDetailsKey, Json.toJson(rd)) map (_ => true)
 
-  def saveRegistrationDetails(rd: RegistrationDetails, groupId: GroupId, orgType: Option[CdsOrganisationType] = None)(
-    implicit hc: HeaderCarrier
-  ): Future[Boolean] =
+  def saveRegistrationDetails(rd: RegistrationDetails, groupId: GroupId, orgType: Option[CdsOrganisationType] = None)(implicit hc: HeaderCarrier,request: Request[_]): Future[Boolean] =
     for {
       _                <- save4LaterService.saveOrgType(groupId, orgType)
-      createdOrUpdated <- putData(sessionId, regDetailsKey, Json.toJson(rd)) map (_ => true)
+      createdOrUpdated <- putData(regDetailsKey, Json.toJson(rd)) map (_ => true)
     } yield createdOrUpdated
 
   def saveRegistrationDetailsWithoutId(
     rd: RegistrationDetails,
     groupId: GroupId,
     orgType: Option[CdsOrganisationType] = None
-  )(implicit hc: HeaderCarrier): Future[Boolean] =
+  )(implicit hc: HeaderCarrier,request: Request[_]): Future[Boolean] =
     for {
       _                <- save4LaterService.saveSafeId(groupId, rd.safeId)
       _                <- save4LaterService.saveOrgType(groupId, orgType)
-      createdOrUpdated <- putData(sessionId, regDetailsKey, Json.toJson(rd)) map (_ => true)
+      createdOrUpdated <- putData(regDetailsKey, Json.toJson(rd)) map (_ => true)
     } yield createdOrUpdated
 
   def saveRegisterWithEoriAndIdResponse(
     rd: RegisterWithEoriAndIdResponse
-  )(implicit hc: HeaderCarrier): Future[Boolean] =
-    putData(sessionId, registerWithEoriAndIdResponseKey, Json.toJson(rd)) map (_ => true)
+  )(implicit request: Request[_]): Future[Boolean] =
+    putData(registerWithEoriAndIdResponseKey, Json.toJson(rd)) map (_ => true)
 
-  def saveSub02Outcome(subscribeOutcome: Sub02Outcome)(implicit hc: HeaderCarrier): Future[Boolean] =
-    putData(sessionId, sub02OutcomeKey, Json.toJson(subscribeOutcome)) map (_ => true)
+  def saveSub02Outcome(subscribeOutcome: Sub02Outcome)(implicit request: Request[_]): Future[Boolean] =
+    putData(sub02OutcomeKey, Json.toJson(subscribeOutcome)) map (_ => true)
 
-  def saveSub01Outcome(sub01Outcome: Sub01Outcome)(implicit hc: HeaderCarrier): Future[Boolean] =
-    putData(sessionId, sub01OutcomeKey, Json.toJson(sub01Outcome)) map (_ => true)
+  def saveSub01Outcome(sub01Outcome: Sub01Outcome)(implicit request: Request[_]): Future[Boolean] =
+    putData(sub01OutcomeKey, Json.toJson(sub01Outcome)) map (_ => true)
 
-  def saveSubscriptionDetails(rdh: SubscriptionDetails)(implicit hc: HeaderCarrier): Future[Boolean] =
-    putData(sessionId, subDetailsKey, Json.toJson(rdh)) map (_ => true)
+  def saveSubscriptionDetails(rdh: SubscriptionDetails)(implicit request: Request[_]): Future[Boolean] =
+    putData(subDetailsKey, Json.toJson(rdh)) map (_ => true)
 
-  def saveEmail(email: String)(implicit hc: HeaderCarrier): Future[Boolean] =
-    putData(sessionId, emailKey, Json.toJson(email)) map (_ => true)
+  def saveEmail(email: String)(implicit request: Request[_]): Future[Boolean] =
+    putData(emailKey, Json.toJson(email)) map (_ => true)
 
-  def saveEori(eori: Eori)(implicit hc: HeaderCarrier): Future[Boolean] =
-    putData(sessionId, eoriKey, Json.toJson(eori.id)) map (_ => true)
+  def saveEori(eori: Eori)(implicit request: Request[_]): Future[Boolean] =
+    putData(eoriKey, Json.toJson(eori.id)) map (_ => true)
 
-  def keepAlive(implicit hc: HeaderCarrier): Future[Boolean] =
-    hc.sessionId.map(
-      id => putData(Id(id.value), keepAliveKey, Json.toJson(LocalDateTime.now().toString)) map (_ => true)
-    ).getOrElse(Future.successful(true))
+  def keepAlive(implicit request: Request[_]): Future[Boolean] =
+   putData(keepAliveKey, Json.toJson(LocalDateTime.now().toString)) map (_ => true)
 
-  def saveGroupEnrolment(groupEnrolment: EnrolmentResponse)(implicit hc: HeaderCarrier): Future[Boolean] =
-    putData(sessionId, groupEnrolmentKey, Json.toJson(groupEnrolment)) map (_ => true)
+  def saveGroupEnrolment(groupEnrolment: EnrolmentResponse)(implicit request: Request[_]): Future[Boolean] =
+    putData(groupEnrolmentKey, Json.toJson(groupEnrolment)) map (_ => true)
 
-  def saveAddressLookupParams(addressLookupParams: AddressLookupParams)(implicit hc: HeaderCarrier): Future[Unit] =
-    putData(sessionId, addressLookupParamsKey, Json.toJson(addressLookupParams)).map(_ => ())
+  def saveAddressLookupParams(addressLookupParams: AddressLookupParams)(implicit request: Request[_]): Future[Unit] =
+    putData(addressLookupParamsKey, Json.toJson(addressLookupParams)).map(_ => ())
 
-  private def getCached[T](sessionId: Id, t: (CachedData, String) => T): Future[T] =
-    findById(sessionId).map {
-      case Some(CacheItem(_, data, _, _)) =>
-        Json.fromJson[CachedData](data) match {
-          case d: JsSuccess[CachedData] => t(d.value, sessionId.id)
-          case _ =>
-            eccLogger.error(s"No Session data is cached for the sessionId : ${sessionId}")
-            throw SessionTimeOutException(s"No Session data is cached for the sessionId : ${sessionId}")
-        }
-      case _ =>
-        eccLogger.info(s"No match session id for signed in user with session: ${sessionId}")
-        throw SessionTimeOutException(s"No match session id for signed in user with session : ${sessionId}")
-    }
+  def subscriptionDetails(implicit request: Request[_]): Future[SubscriptionDetails] =
+    getFromSession[SubscriptionDetails](DataKey(subDetailsKey)).map(_.getOrElse(SubscriptionDetails()))
 
-  def subscriptionDetails(implicit hc: HeaderCarrier): Future[SubscriptionDetails] =
-    getCached[SubscriptionDetails](sessionId, (cachedData, id) => cachedData.subscriptionDetails(id))
+  def email(implicit request: Request[_]): Future[String] =
+    getFromSession[String](DataKey(emailKey)).map(_.getOrElse(throwException(emailKey)))
 
-  def email(implicit hc: HeaderCarrier): Future[String] =
-    getCached[String](sessionId, (cachedData, id) => cachedData.email(id))
+  def eori(implicit request: Request[_]): Future[Option[String]] =
+    getFromSession[String](DataKey(eoriKey))
 
-  def eori(implicit hc: HeaderCarrier): Future[Option[String]] =
-    getCached[Option[String]](sessionId, (cachedData, _) => cachedData.eori)
+  def safeId(implicit request: Request[_]): Future[SafeId] = {
+    for{
+      reg06 <- fetchSafeIdFromReg06Response
+      regDetails <- fetchSafeIdFromRegDetails
+    }yield reg06 orElse regDetails getOrElse (throw new IllegalStateException(
+      s"$safeIdKey is not cached in data for the sessionId"))
 
-  def safeId(implicit hc: HeaderCarrier): Future[SafeId] =
-    getCached[SafeId](sessionId, (cachedData, id) => cachedData.safeId(id))
+  }
 
-  def registrationDetails(implicit hc: HeaderCarrier): Future[RegistrationDetails] =
-    getCached[RegistrationDetails](sessionId, (cachedData, id) => cachedData.registrationDetails(id))
+  def safeId(implicit request: Request[_]): Future[Option[SafeId]] = fetchSafeIdFromReg06Response.map {
+    case Some(safeId) => Some(safeId)
+    case None => registrationDetails.flatMap(response =>if (response.safeId.id.nonEmpty) Some(response.safeId) else None)
+  }
 
-  def registerWithEoriAndIdResponse(implicit hc: HeaderCarrier): Future[RegisterWithEoriAndIdResponse] =
-    getCached[RegisterWithEoriAndIdResponse](
-      sessionId,
-      (cachedData, id) => cachedData.registerWithEoriAndIdResponse(id)
-    )
+  def fetchSafeIdFromReg06Response(implicit request: Request[_]) = registerWithEoriAndIdResponse.map( response =>
+    response.responseDetail.flatMap(_.responseData.map(_.SAFEID))
+    .map(SafeId(_))
+  )
 
-  def sub01Outcome(implicit hc: HeaderCarrier): Future[Sub01Outcome] =
-    getCached[Sub01Outcome](sessionId, (cachedData, id) => cachedData.sub01Outcome(id))
+  def fetchSafeIdFromRegDetails(implicit request: Request[_]) = registrationDetails.map(_.safeId
 
-  def sub02Outcome(implicit hc: HeaderCarrier): Future[Sub02Outcome] =
-    getCached[Sub02Outcome](sessionId, (cachedData, id) => cachedData.sub02Outcome(id))
+  def registrationDetails(implicit request: Request[_]): Future[RegistrationDetails] =
+    getFromSession[RegistrationDetails](DataKey(regDetailsKey)).map(_.getOrElse(throwException(regDetailsKey)))
 
-  def groupEnrolment(implicit hc: HeaderCarrier): Future[EnrolmentResponse] =
-    getCached[EnrolmentResponse](sessionId, (cachedData, id) => cachedData.groupEnrolment(id))
+  def registerWithEoriAndIdResponse(implicit request: Request[_]): Future[RegisterWithEoriAndIdResponse] =
+    getFromSession[RegisterWithEoriAndIdResponse](DataKey(registerWithEoriAndIdResponseKey)).map(_.getOrElse(throw new IllegalStateException(s"$registerWithEoriAndIdResponseKey is not cached in data for the sessionId: "+ request.session.get("sessionId").getOrElse("Session Id is not available"))))
 
-  def addressLookupParams(implicit hc: HeaderCarrier): Future[Option[AddressLookupParams]] =
-    getCached[Option[AddressLookupParams]](sessionId, (cachedData, _) => cachedData.addressLookupParams)
+  def sub01Outcome(implicit request: Request[_]): Future[Sub01Outcome] =
+    getFromSession[Sub01Outcome](DataKey(sub01OutcomeKey)).map(_.getOrElse(throwException(sub01OutcomeKey)))
 
-  def clearAddressLookupParams(implicit hc: HeaderCarrier): Future[Unit] =
-    putData(sessionId, addressLookupParamsKey, Json.toJson(AddressLookupParams("", None))).map(_ => ())
+  def sub02Outcome(implicit request: Request[_]): Future[Sub02Outcome] =
+    getFromSession[Sub02Outcome](DataKey(sub02OutcomeKey)).map(_.getOrElse(throwException(sub02OutcomeKey)))
 
-  def remove(implicit hc: HeaderCarrier): Future[Boolean] =
-    deleteEntity(sessionId) map (_ => true)
+  def groupEnrolment(implicit request: Request[_]): Future[EnrolmentResponse] =
+    getFromSession[EnrolmentResponse](DataKey(groupEnrolmentKey)).map(_.getOrElse(throwException(groupEnrolmentKey)))
+
+  def addressLookupParams(implicit request: Request[_]): Future[Option[AddressLookupParams]] =
+    getFromSession[AddressLookupParams](DataKey(addressLookupParamsKey))
+
+  def clearAddressLookupParams(implicit request: Request[_]): Future[Unit] =
+    putData(addressLookupParamsKey, Json.toJson(AddressLookupParams("", None))).map(_ => ())
+
+  def remove(implicit request: Request[_]): Future[Boolean] =
+    cacheRepo.deleteEntity(request) map (_ => true)
+
+  private def throwException(name: String)(implicit request: Request[_])=
+    throw DataUnavailableException(s"$name is not cached in data for the sessionId: "+ request.session.get("sessionId").getOrElse("Session Id is not available"))
 
 }
 
