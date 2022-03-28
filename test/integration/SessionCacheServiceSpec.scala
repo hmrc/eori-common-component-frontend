@@ -232,12 +232,58 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
     }
 
     "throw DataUnavailableException when groupEnrolment is not present in cache" in {
-      when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-" + UUID.randomUUID()))))
+      when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-123"))))
       await(sessionCache.putSession(DataKey("sub01Outcome"), data = Json.toJson(sub01Outcome)))
-      intercept[DataUnavailableException] {
+      val caught = intercept[DataUnavailableException] {
         await(sessionCache.groupEnrolment(request))
       }
+      caught.getMessage startsWith s"sub01Outcome is not cached in data for the sessionId: sessionId-123"
     }
+
+    "throw DataUnavailableException when registrationDetails is not present in cache" in {
+      when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-123"))))
+      await(sessionCache.putSession(DataKey("sub01Outcome"), data = Json.toJson(sub01Outcome)))
+      val caught = intercept[DataUnavailableException] {
+        await(sessionCache.registrationDetails(request))
+      }
+      caught.getMessage startsWith s"regDetails is not cached in data for the sessionId: sessionId-123"
+    }
+
+    "throw IllegalStateException when registerWithEoriAndIdResponse is not present in cache" in {
+      when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-123"))))
+      await(sessionCache.putSession(DataKey("sub01Outcome"), data = Json.toJson(sub01Outcome)))
+      val caught = intercept[IllegalStateException] {
+        await(sessionCache.registerWithEoriAndIdResponse(request))
+      }
+      caught.getMessage startsWith s"registerWithEoriAndIdResponse is not cached in data for the sessionId: sessionId-123"
+    }
+
+    "return empty subscription details if the subscription details are missing" in {
+      when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-123"))))
+      await(sessionCache.putSession(DataKey("sub01Outcome"), data = Json.toJson(sub01Outcome)))
+
+      val response = await(sessionCache.subscriptionDetails(request))
+      response mustBe SubscriptionDetails()
+    }
+
+    "throw DataUnavailableException when sub02Outcome is not present in cache" in {
+      when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-123"))))
+      await(sessionCache.putSession(DataKey("sub01Outcome"), data = Json.toJson(sub01Outcome)))
+      val caught = intercept[DataUnavailableException] {
+        await(sessionCache.sub02Outcome(request))
+      }
+      caught.getMessage startsWith s"sub02Outcome is not cached in data for the sessionId: sessionId-123"
+    }
+
+    "throw DataUnavailableException when email is not present in cache" in {
+      when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-123"))))
+      await(sessionCache.putSession(DataKey("sub01Outcome"), data = Json.toJson(sub01Outcome)))
+      val caught = intercept[DataUnavailableException] {
+        await(sessionCache.email(request))
+      }
+      caught.getMessage startsWith s"email is not cached in data for the sessionId: sessionId-123"
+    }
+
     "fetch safeId correctly" in {
       when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-" + UUID.randomUUID()))))
       val registrationDetails: RegistrationDetails = RegistrationDetails.individual(
