@@ -36,6 +36,7 @@ class EnrolmentAlreadyExistsControllerSpec extends ControllerSpec with AuthActio
     new EnrolmentAlreadyExistsController(mockAuthAction, registrationExistsView, registrationExistsGroupView, mcc)
 
   val paragraphXpath = "//*[@id='para1']"
+  val buttonXpath = "//*[@class='govuk-button']"
 
   "Enrolment already exists controller" should {
 
@@ -59,6 +60,27 @@ class EnrolmentAlreadyExistsControllerSpec extends ControllerSpec with AuthActio
       page.getElementsText(paragraphXpath) should include(
         "Our records show that this Government Gateway user ID has already been used to subscribe to Advance Tariff Rulings"
       )
+      page.getElementsText(buttonXpath) should include("Continue")
+
+    }
+
+    "redirect to the enrolment already exists page without continue button" in {
+
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
+
+      val result =
+        await(
+          controller.enrolmentAlreadyExists(atarService.copy(callBack = None)).apply(
+            SessionBuilder.buildRequestWithSessionAndPath("/atar/", defaultUserId)
+          )
+        )
+
+      status(result) shouldBe OK
+
+      val page = CdsPage(contentAsString(result))
+
+      page.title should startWith("There is a problem")
+      assertThrows[IllegalStateException](page.getElementValue(buttonXpath))
 
     }
 
