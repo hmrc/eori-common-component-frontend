@@ -58,7 +58,7 @@ class CdsSubscriber @Inject() (
 
   private def migrationEoriUK(
     service: Service
-  )(implicit hc: HeaderCarrier, messages: Messages): Future[SubscriptionResult] =
+  )(implicit hc: HeaderCarrier,request: Request[_], messages: Messages): Future[SubscriptionResult] =
     for {
       subscriptionDetails           <- sessionCache.subscriptionDetails
       email                         <- sessionCache.email
@@ -80,7 +80,7 @@ class CdsSubscriber @Inject() (
 
   private def migrationEoriROW(
     service: Service
-  )(implicit hc: HeaderCarrier, messages: Messages): Future[SubscriptionResult] =
+  )(implicit hc: HeaderCarrier,request: Request[_], messages: Messages): Future[SubscriptionResult] =
     for {
       registrationDetails <- sessionCache.registrationDetails
       subscriptionDetails <- sessionCache.subscriptionDetails
@@ -106,7 +106,7 @@ class CdsSubscriber @Inject() (
     subDetails: SubscriptionDetails,
     email: String,
     service: Service
-  )(implicit hc: HeaderCarrier, messages: Messages): Future[Unit] =
+  )(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Unit] =
     subscriptionResult match {
       case success: SubscriptionSuccessful =>
         val contactName = subDetails.contactDetails.map(_.fullName)
@@ -151,7 +151,7 @@ class CdsSubscriber @Inject() (
     subDetails: SubscriptionDetails,
     email: String,
     service: Service
-  )(implicit hc: HeaderCarrier, messages: Messages): Future[Unit] = {
+  )(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Unit] = {
     val safeId = regDetails.responseDetail
       .flatMap(_.responseData.map(x => SafeId(x.SAFEID)))
       .getOrElse(throw new IllegalArgumentException("SAFEID Missing"))
@@ -207,7 +207,7 @@ class CdsSubscriber @Inject() (
     processingDate: String,
     formBundleId: String,
     emailVerificationTimestamp: Option[LocalDateTime]
-  )(implicit hc: HeaderCarrier, messages: Messages): Future[Unit] =
+  )(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Unit] =
     sessionCache.saveSub02Outcome(
       Sub02Outcome(processingDate, cdsFullName.getOrElse(name), maybeEori.map(_.id))
     ).flatMap { _ =>

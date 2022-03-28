@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email
 
-import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
@@ -25,15 +24,14 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, LoggedInUserWithEnrolments}
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.{confirmEmailYesNoAnswerForm, YesNo}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.{YesNo, confirmEmailYesNoAnswerForm}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.{check_your_email, email_confirmed, verify_your_email}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -158,7 +156,7 @@ class CheckYourEmailController @Inject() (
 
   def toResult(service: Service): Result = Redirect(WhatIsYourEoriController.createForm(service))
 
-  private def submitNewDetails(groupId: GroupId, service: Service)(implicit hc: HeaderCarrier): Future[Result] =
+  private def submitNewDetails(groupId: GroupId, service: Service)(implicit request: Request[_]): Future[Result] =
     save4LaterService.fetchEmail(groupId) flatMap {
       _.fold {
         throw DataUnavailableException("[CheckYourEmailController][submitNewDetails] - emailStatus cache none")

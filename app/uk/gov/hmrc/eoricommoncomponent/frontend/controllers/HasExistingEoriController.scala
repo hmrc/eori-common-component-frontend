@@ -16,22 +16,16 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
-import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.mvc._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
-  AuthAction,
-  EnrolmentExtractor,
-  GroupEnrolmentExtractor
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, EnrolmentExtractor, GroupEnrolmentExtractor}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{EnrolmentService, MissingEnrolmentException}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{eori_enrol_success, has_existing_eori}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -85,7 +79,7 @@ class HasExistingEoriController @Inject() (
 
   private def existingEoriToUse(implicit
     loggedInUser: LoggedInUserWithEnrolments,
-    hc: HeaderCarrier
+    request: Request[_]
   ): Future[ExistingEori] =
     enrolledForService(loggedInUser, Service.cds) match {
       case Some(eori) => Future.successful(eori)
@@ -93,7 +87,7 @@ class HasExistingEoriController @Inject() (
 
     }
 
-  private def checkOtherEnrollments(implicit loggedInUser: LoggedInUserWithEnrolments, hc: HeaderCarrier) =
+  private def checkOtherEnrollments(implicit loggedInUser: LoggedInUserWithEnrolments, request: Request[_]) =
     enrolledForOtherServices(loggedInUser) match {
       case Some(eori) => Future.successful(eori)
       case _ =>

@@ -79,6 +79,7 @@ class MatchingService @Inject() (
   def sendIndividualRequestForMatchingService(implicit
     loggedInUser: LoggedInUserWithEnrolments,
     headerCarrier: HeaderCarrier,
+    request: Request[_],
     originatingService: Service
   ): Future[Boolean] =
     for {
@@ -117,6 +118,7 @@ class MatchingService @Inject() (
 
   def matchIndividualWithId(customsId: CustomsId, individual: Individual, groupId: GroupId)(implicit
     hc: HeaderCarrier,
+    request: Request[_],
     originatingService: Service
   ): Future[Boolean] =
     matchingConnector
@@ -127,7 +129,7 @@ class MatchingService @Inject() (
     convert: MatchingResponse => RegistrationDetails,
     groupId: GroupId,
     orgType: Option[CdsOrganisationType] = None
-  )(mayBeMatchSuccess: Option[MatchingResponse])(implicit hc: HeaderCarrier): Future[Boolean] =
+  )(mayBeMatchSuccess: Option[MatchingResponse])(implicit hc: HeaderCarrier,request: Request[_]): Future[Boolean] =
     mayBeMatchSuccess.map(convert).fold(Future.successful(false)) { details =>
       cache.saveRegistrationDetails(details, groupId, orgType)
     }

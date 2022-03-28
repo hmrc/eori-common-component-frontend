@@ -167,7 +167,9 @@ class SubscriptionRecoveryController @Inject() (
     subscriptionDisplayResponse: SubscriptionDisplayResponse,
     dateOfEstablishment: Option[LocalDate],
     service: Service
-  )(redirect: => Result)(implicit headerCarrier: HeaderCarrier, messages: Messages): Future[Result] = {
+  )(
+    redirect: => Result
+  )(implicit headerCarrier: HeaderCarrier, request: Request[AnyContent], messages: Messages): Future[Result] = {
     val formBundleId =
       subscriptionDisplayResponse.responseCommon.returnParameters
         .flatMap(_.find(_.paramName.equals("ETMPFORMBUNDLENUMBER")).map(_.paramValue))
@@ -192,12 +194,12 @@ class SubscriptionRecoveryController @Inject() (
       dateOfEstablishment
     )
 
-    completeEnrolment(service, subscriptionInformation)(redirect)
+    completeEnrolment(service, subscriptionInformation)(redirect)(request, headerCarrier)
   }
 
   private def completeEnrolment(service: Service, subscriptionInformation: SubscriptionInformation)(
     redirect: => Result
-  )(implicit hc: HeaderCarrier, messages: Messages): Future[Result] =
+  )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] =
     for {
       // Update Recovered Subscription Information
       _ <- updateSubscription(subscriptionInformation)
@@ -212,7 +214,9 @@ class SubscriptionRecoveryController @Inject() (
       case _          => throw new IllegalArgumentException("Tax Enrolment issuer call failed")
     }
 
-  private def updateSubscription(subscriptionInformation: SubscriptionInformation)(implicit hc: HeaderCarrier) =
+  private def updateSubscription(
+    subscriptionInformation: SubscriptionInformation
+  )(implicit hc: HeaderCarrier, request: Request[AnyContent]) =
     sessionCache.saveSub02Outcome(
       Sub02Outcome(
         subscriptionInformation.processedDate,
@@ -243,7 +247,8 @@ class SubscriptionRecoveryController @Inject() (
       )
 
   private def issue(service: Service, subscriptionInformation: SubscriptionInformation)(implicit
-    hc: HeaderCarrier
+    hc: HeaderCarrier,
+    request: Request[AnyContent]
   ): Future[Int] =
     taxEnrolmentService.issuerCall(
       subscriptionInformation.formBundleId,

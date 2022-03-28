@@ -123,7 +123,7 @@ class GetUtrSubscriptionController @Inject() (
     requestSessionData.userSubscriptionFlow == RowOrganisationFlow ||
       requestSessionData.userSubscriptionFlow == RowIndividualFlow
 
-  private def cacheUtr(form: IdMatchModel, orgType: CdsOrganisationType)(implicit hc: HeaderCarrier): Future[Unit] =
+  private def cacheUtr(form: IdMatchModel, orgType: CdsOrganisationType)(implicit request: Request[_]): Future[Unit] =
     if (orgType == CdsOrganisationType.Company)
       subscriptionDetailsService.cachedNameDetails.flatMap {
         case Some(nameDetails) =>

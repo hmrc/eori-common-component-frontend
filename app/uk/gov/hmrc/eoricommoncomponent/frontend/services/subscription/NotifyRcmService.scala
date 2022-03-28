@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
+import play.api.mvc.Request
+
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.NotifyRcmConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NotifyRcmRequest
@@ -29,7 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class NotifyRcmService @Inject() (sessionCache: SessionCache, notifyRcmConnector: NotifyRcmConnector) {
 
-  def notifyRcm(service: Service)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
+  def notifyRcm(service: Service)(implicit hc: HeaderCarrier,request: Request[_], ec: ExecutionContext): Future[Unit] = {
     val ff = for {
       sd    <- sessionCache.subscriptionDetails
       email <- sessionCache.email

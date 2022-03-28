@@ -74,7 +74,7 @@ class WhatIsYourEoriController @Inject() (
     }
 
   private def useExistingEori(eori: ExistingEori, service: Service)(implicit
-    headerCarrier: HeaderCarrier
+   request: Request[_]
   ): Future[Result] =
     subscriptionDetailsHolderService.cacheExistingEoriNumber(eori).map { _ =>
       Redirect(
@@ -105,7 +105,7 @@ class WhatIsYourEoriController @Inject() (
     }
 
   private def submitNewDetails(formData: EoriNumberViewModel, isInReviewMode: Boolean, service: Service)(implicit
-    hc: HeaderCarrier
+    request: Request[_]
   ) = {
     val eori = eoriWithCountry(formData.eoriNumber)
 

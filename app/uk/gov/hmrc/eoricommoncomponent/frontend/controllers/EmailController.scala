@@ -16,26 +16,19 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
-import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, EnrolmentExtractor}
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.{
-  CheckYourEmailController,
-  WhatIsYourEmailController
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.{CheckYourEmailController, WhatIsYourEmailController}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, InternalId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.{Save4LaterService, UserGroupIdSubscriptionStatusCheckService}
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{
-  enrolment_pending_against_group_id,
-  enrolment_pending_for_user
-}
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{enrolment_pending_against_group_id, enrolment_pending_for_user}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -97,7 +90,7 @@ class EmailController @Inject() (
     }
 
   private def checkWithEmailService(email: String, emailStatus: EmailStatus, service: Service)(implicit
-    hc: HeaderCarrier,
+    request: Request[_],
     userWithEnrolments: LoggedInUserWithEnrolments
   ): Future[Result] =
     emailVerificationService.isEmailVerified(email).flatMap {

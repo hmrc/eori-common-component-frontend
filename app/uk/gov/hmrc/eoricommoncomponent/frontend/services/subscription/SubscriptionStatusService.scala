@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
+import play.api.mvc.Request
+
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.{Inject, Singleton}
@@ -39,6 +41,7 @@ class SubscriptionStatusService @Inject() (
 
   def getStatus(idType: String, id: String)(implicit
     hc: HeaderCarrier,
+    request: Request[_],
     originatingService: Service
   ): Future[PreSubscriptionStatus] = {
 
