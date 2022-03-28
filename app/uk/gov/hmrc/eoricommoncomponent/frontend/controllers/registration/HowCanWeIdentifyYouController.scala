@@ -69,7 +69,8 @@ class HowCanWeIdentifyYouController @Inject() (
         )
     }
 
-  private def storeChoice(formData: NinoOrUtrChoice, inReviewMode: Boolean, service: Service)(implicit request: Request[_]
+  private def storeChoice(formData: NinoOrUtrChoice, inReviewMode: Boolean, service: Service)(implicit
+    request: Request[_]
   ): Future[Result] =
     subscriptionDetailsHolderService
       .cacheNinoOrUtrChoice(formData)

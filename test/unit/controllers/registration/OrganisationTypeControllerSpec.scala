@@ -76,7 +76,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
     when(
       mockRegistrationDetailsService
-        .initialiseCacheWithRegistrationDetails(any[CdsOrganisationType]())(any[HeaderCarrier]())
+        .initialiseCacheWithRegistrationDetails(any[CdsOrganisationType]())(any[Request[AnyContent]]())
     ).thenReturn(Future.successful(true))
     when(mockSubscriptionDetailsService.cachedOrganisationType(any())).thenReturn(Future.successful(None))
   }

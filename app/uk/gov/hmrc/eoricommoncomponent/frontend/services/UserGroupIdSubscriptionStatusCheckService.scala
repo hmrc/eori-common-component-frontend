@@ -32,9 +32,11 @@ class UserGroupIdSubscriptionStatusCheckService @Inject() (
 )(implicit ec: ExecutionContext) {
   private val idType = "SAFE"
 
-  def checksToProceed(groupId: GroupId, internalId: InternalId)(continue: => Future[Result])(
-    userIsInProcess: => Future[Result]
-  )(otherUserWithinGroupIsInProcess: => Future[Result])(implicit hc: HeaderCarrier,request: Request[_], service: Service): Future[Result] =
+  def checksToProceed(groupId: GroupId, internalId: InternalId)(
+    continue: => Future[Result]
+  )(userIsInProcess: => Future[Result])(
+    otherUserWithinGroupIsInProcess: => Future[Result]
+  )(implicit hc: HeaderCarrier, request: Request[_], service: Service): Future[Result] =
     save4Later.fetchCacheIds(groupId)
       .flatMap {
         case Some(cacheIds) =>

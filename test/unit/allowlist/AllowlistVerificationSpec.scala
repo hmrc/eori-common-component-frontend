@@ -20,6 +20,7 @@ import com.typesafe.config.{Config, ConfigFactory}
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import play.api.mvc.{AnyContent, Request}
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
 import play.twirl.api.HtmlFormat
@@ -57,7 +58,7 @@ class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach w
 
   override def beforeEach(): Unit = {
     when(eoriNumberTextDownloadView.apply(any(), any(), any())(any())).thenReturn(HtmlFormat.empty)
-    when(mockCache.sub02Outcome(any[HeaderCarrier]))
+    when(mockCache.sub02Outcome(any[Request[AnyContent]]))
       .thenReturn(Future.successful(Sub02Outcome("20/01/2019", "John Doe", Some("GB123456789012"))))
   }
 

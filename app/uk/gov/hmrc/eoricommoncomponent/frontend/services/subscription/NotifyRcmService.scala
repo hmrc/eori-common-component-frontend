@@ -31,7 +31,9 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class NotifyRcmService @Inject() (sessionCache: SessionCache, notifyRcmConnector: NotifyRcmConnector) {
 
-  def notifyRcm(service: Service)(implicit hc: HeaderCarrier,request: Request[_], ec: ExecutionContext): Future[Unit] = {
+  def notifyRcm(
+    service: Service
+  )(implicit hc: HeaderCarrier, request: Request[_], ec: ExecutionContext): Future[Unit] = {
     val ff = for {
       sd    <- sessionCache.subscriptionDetails
       email <- sessionCache.email

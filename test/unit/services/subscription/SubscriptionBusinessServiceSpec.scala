@@ -24,6 +24,7 @@ import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
@@ -39,7 +40,8 @@ import scala.util.Random
 
 class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
 
-  implicit val hc: HeaderCarrier = mock[HeaderCarrier]
+  implicit val hc: HeaderCarrier            = mock[HeaderCarrier]
+  implicit val request: Request[AnyContent] = mock[Request[AnyContent]]
 
   private val mockCdsFrontendDataCache       = mock[SessionCache]
   private val mockRegistrationDetailsCreator = mock[RegistrationDetailsCreator]
@@ -78,17 +80,17 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
 
     when(
       mockCdsFrontendDataCache
-        .saveRegistrationDetails(ArgumentMatchers.any[RegistrationDetails])(ArgumentMatchers.any[HeaderCarrier])
+        .saveRegistrationDetails(ArgumentMatchers.any[RegistrationDetails])(ArgumentMatchers.any[Request[AnyContent]])
     ).thenReturn(Future.successful(true))
 
     when(
       mockCdsFrontendDataCache
-        .saveSubscriptionDetails(ArgumentMatchers.any[SubscriptionDetails])(ArgumentMatchers.any[HeaderCarrier])
+        .saveSubscriptionDetails(ArgumentMatchers.any[SubscriptionDetails])(ArgumentMatchers.any[Request[AnyContent]])
     ).thenReturn(Future.successful(true))
 
     val existingHolder = SubscriptionDetails(contactDetails = Some(mock[ContactDetailsModel]))
 
-    when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(existingHolder)
+    when(mockCdsFrontendDataCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(existingHolder)
   }
 
   "Calling maybeCachedContactDetailsModel" should {
@@ -110,7 +112,9 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
 
   "Calling retrieveSubscriptionDetailsHolder" should {
     "fail when cache fails accessing current SubscriptionDetailsHolder" in {
-      when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(Future.failed(emulatedFailure))
+      when(mockCdsFrontendDataCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(
+        Future.failed(emulatedFailure)
+      )
 
       val caught = intercept[RuntimeException] {
         await(subscriptionBusinessService.retrieveSubscriptionDetailsHolder)

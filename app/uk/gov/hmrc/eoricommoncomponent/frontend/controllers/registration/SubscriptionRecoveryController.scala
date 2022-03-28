@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
+import play.api.i18n.Messages
+import play.api.mvc._
+
 import javax.inject.{Inject, Singleton}
 import java.time.{LocalDate, LocalDateTime}
-
-import play.api.i18n.Messages
-import play.api.mvc.{Action, _}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SUB09SubscriptionDisplayConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
@@ -169,7 +169,7 @@ class SubscriptionRecoveryController @Inject() (
     service: Service
   )(
     redirect: => Result
-  )(implicit headerCarrier: HeaderCarrier, request: Request[AnyContent], messages: Messages): Future[Result] = {
+  )(implicit request: Request[AnyContent], hc: HeaderCarrier, messages: Messages): Future[Result] = {
     val formBundleId =
       subscriptionDisplayResponse.responseCommon.returnParameters
         .flatMap(_.find(_.paramName.equals("ETMPFORMBUNDLENUMBER")).map(_.paramValue))
@@ -194,7 +194,7 @@ class SubscriptionRecoveryController @Inject() (
       dateOfEstablishment
     )
 
-    completeEnrolment(service, subscriptionInformation)(redirect)(request, headerCarrier)
+    completeEnrolment(service, subscriptionInformation)(redirect)
   }
 
   private def completeEnrolment(service: Service, subscriptionInformation: SubscriptionInformation)(

@@ -73,9 +73,9 @@ class HowCanWeIdentifyYouNinoControllerSpec extends ControllerSpec with BeforeAn
 
     Mockito.reset(mockSubscriptionDetailsHolderService)
 
-    when(mockSubscriptionDetailsHolderService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
+    when(mockSubscriptionDetailsHolderService.cacheCustomsId(any[CustomsId])(any[Request[AnyContent]]))
       .thenReturn(Future.successful(()))
-    when(mockSubscriptionBusinessService.getCachedCustomsId(any[HeaderCarrier]))
+    when(mockSubscriptionBusinessService.getCachedCustomsId(any[Request[AnyContent]]))
       .thenReturn(Future.successful(None))
 
     when(
@@ -245,7 +245,7 @@ class HowCanWeIdentifyYouNinoControllerSpec extends ControllerSpec with BeforeAn
     test: Future[Result] => Any
   ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
-    when(mockSubscriptionBusinessService.getCachedCustomsId(any[HeaderCarrier]))
+    when(mockSubscriptionBusinessService.getCachedCustomsId(any[Request[AnyContent]]))
       .thenReturn(Future.successful(Some(customsId)))
 
     test(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)))

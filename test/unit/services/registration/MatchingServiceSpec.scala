@@ -93,14 +93,16 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
         ArgumentMatchers.any[RegistrationDetails],
         ArgumentMatchers.any[GroupId],
         ArgumentMatchers.any[Option[CdsOrganisationType]]
-      )(ArgumentMatchers.any[HeaderCarrier])
+      )(ArgumentMatchers.any[HeaderCarrier], ArgumentMatchers.any[Request[AnyContent]])
     ).thenReturn(true)
 
     when(
-      mockCache.saveRegistrationDetails(ArgumentMatchers.any[RegistrationDetails])(ArgumentMatchers.any[HeaderCarrier])
+      mockCache.saveRegistrationDetails(ArgumentMatchers.any[RegistrationDetails])(
+        ArgumentMatchers.any[Request[AnyContent]]
+      )
     ).thenReturn(true)
 
-    when(mockCache.subscriptionDetails(any[HeaderCarrier]))
+    when(mockCache.subscriptionDetails(any[Request[AnyContent]]))
       .thenReturn(
         Future.successful(
           SubscriptionDetails(
@@ -192,7 +194,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
     }
 
     "throw DataUnavailableExpection when eori number is not present in cache" in {
-      when(mockCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockCache.subscriptionDetails(any[Request[AnyContent]]))
         .thenReturn(
           Future.successful(
             SubscriptionDetails(nameIdOrganisationDetails = Some(NameIdOrganisationMatchModel("someOrg", "some-utr")))
@@ -309,7 +311,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
         ArgumentMatchers.eq(mockDetails),
         ArgumentMatchers.eq(mockGroupId),
         ArgumentMatchers.any()
-      )(ArgumentMatchers.eq(mockHeaderCarrier))
+      )(ArgumentMatchers.eq(mockHeaderCarrier), ArgumentMatchers.eq(mockRequest))
     }
   }
 
@@ -323,7 +325,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
     ).thenReturn(Future.successful(connectorResponse))
 
     await(
-      service.matchIndividualWithId(utr, individual, mockGroupId)(mockHeaderCarrier, mockService)
+      service.matchIndividualWithId(utr, individual, mockGroupId)(mockHeaderCarrier, mockRequest, mockService)
     ) shouldBe expectedServiceCallResult
 
     val matchBusinessDataCaptor =
@@ -367,7 +369,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
                       |  }
                       |}
         """.stripMargin)
-      when(mockCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockCache.subscriptionDetails(any[Request[AnyContent]]))
         .thenReturn(
           Future.successful(
             SubscriptionDetails(
@@ -389,7 +391,12 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
       ).thenReturn(Future.successful(Some(matchIndividualSuccessResponse)))
 
       await(
-        service.sendIndividualRequestForMatchingService(mockLoggedInUserEnrolments, mockHeaderCarrier, mockService)
+        service.sendIndividualRequestForMatchingService(
+          mockLoggedInUserEnrolments,
+          mockHeaderCarrier,
+          mockRequest,
+          mockService
+        )
       ) shouldBe true
 
       val matchBusinessDataCaptor =
@@ -403,7 +410,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
     }
 
     "throw DataUnavailableException when sendIndividualRequest is invoked without nameDobDetails details in cache" in {
-      when(mockCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockCache.subscriptionDetails(any[Request[AnyContent]]))
         .thenReturn(
           Future.successful(
             SubscriptionDetails(nameIdOrganisationDetails = Some(NameIdOrganisationMatchModel("someOrg", "some-utr")))
@@ -411,12 +418,17 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
         )
       intercept[DataUnavailableException] {
         await(
-          service.sendIndividualRequestForMatchingService(mockLoggedInUserEnrolments, mockHeaderCarrier, mockService)
+          service.sendIndividualRequestForMatchingService(
+            mockLoggedInUserEnrolments,
+            mockHeaderCarrier,
+            mockRequest,
+            mockService
+          )
         )
       }
     }
     "throw DataUnavailableException when sendIndividualRequest is invoked without eori details in cache" in {
-      when(mockCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockCache.subscriptionDetails(any[Request[AnyContent]]))
         .thenReturn(
           Future.successful(
             SubscriptionDetails(nameDobDetails =
@@ -433,7 +445,12 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
         )
       intercept[DataUnavailableException] {
         await(
-          service.sendIndividualRequestForMatchingService(mockLoggedInUserEnrolments, mockHeaderCarrier, mockService)
+          service.sendIndividualRequestForMatchingService(
+            mockLoggedInUserEnrolments,
+            mockHeaderCarrier,
+            mockRequest,
+            mockService
+          )
         )
       }
     }
@@ -459,7 +476,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
         ArgumentMatchers.eq(mockDetails),
         ArgumentMatchers.eq(mockGroupId),
         ArgumentMatchers.any()
-      )(ArgumentMatchers.eq(mockHeaderCarrier))
+      )(ArgumentMatchers.eq(mockHeaderCarrier), ArgumentMatchers.eq(mockRequest))
 
     }
   }
@@ -476,7 +493,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
     ).thenReturn(Future.successful(connectorResponse))
 
     await(
-      service.matchIndividualWithId(eori, individual, mockGroupId)(mockHeaderCarrier, mockService)
+      service.matchIndividualWithId(eori, individual, mockGroupId)(mockHeaderCarrier, mockRequest, mockService)
     ) shouldBe expectedServiceCallResult
 
     val matchBusinessDataCaptor =
@@ -518,7 +535,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
         ArgumentMatchers.eq(mockDetails),
         ArgumentMatchers.eq(mockGroupId),
         ArgumentMatchers.any()
-      )(ArgumentMatchers.eq(mockHeaderCarrier))
+      )(ArgumentMatchers.eq(mockHeaderCarrier), ArgumentMatchers.eq(mockRequest))
 
     }
   }

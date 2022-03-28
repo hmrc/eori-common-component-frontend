@@ -71,7 +71,7 @@ class SubscriptionFlowManagerSpec
 
     when(mockRequestSessionData.storeUserSubscriptionFlow(any[SubscriptionFlow], any[String])(any[Request[AnyContent]]))
       .thenReturn(mockSession)
-    when(mockCdsFrontendDataCache.saveSubscriptionDetails(any[SubscriptionDetails])(any[HeaderCarrier]))
+    when(mockCdsFrontendDataCache.saveSubscriptionDetails(any[SubscriptionDetails])(any[Request[AnyContent]]))
       .thenReturn(Future.successful(true))
   }
 
@@ -139,7 +139,7 @@ class SubscriptionFlowManagerSpec
     "start Individual Subscription Flow for individual" in {
       when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
 
-      when(mockCdsFrontendDataCache.registrationDetails(mockHC))
+      when(mockCdsFrontendDataCache.registrationDetails(mockRequest))
         .thenReturn(Future.successful(mockIndividualRegistrationDetails))
       val (subscriptionPage, session) =
         await(controller.startSubscriptionFlow(Some(UserLocationPage), Individual, atarService)(mockHC, mockRequest))
@@ -154,7 +154,7 @@ class SubscriptionFlowManagerSpec
     "start Individual Subscription Flow for individual for ROW journey" in {
       when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
       when(mockIndividualRegistrationDetails.customsId).thenReturn(Some(Utr("1111111111k")))
-      when(mockCdsFrontendDataCache.registrationDetails(mockHC))
+      when(mockCdsFrontendDataCache.registrationDetails(mockRequest))
         .thenReturn(Future.successful(mockIndividualRegistrationDetails))
       val (subscriptionPage, session) =
         await(controller.startSubscriptionFlow(Some(UserLocationPage), Individual, atarService)(mockHC, mockRequest))
@@ -169,7 +169,7 @@ class SubscriptionFlowManagerSpec
     "throw DataUnavailableException when registration details is not available in cache" in {
       when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
 
-      when(mockCdsFrontendDataCache.registrationDetails(mockHC))
+      when(mockCdsFrontendDataCache.registrationDetails(mockRequest))
         .thenReturn(Future.successful(mockRegistrationDetails))
       intercept[DataUnavailableException] {
         await(controller.startSubscriptionFlow(Some(UserLocationPage), Individual, atarService)(mockHC, mockRequest))
@@ -179,7 +179,7 @@ class SubscriptionFlowManagerSpec
     "start Corporate Subscription Flow when cached registration details are for an Organisation" in {
       when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
 
-      when(mockCdsFrontendDataCache.registrationDetails(mockHC))
+      when(mockCdsFrontendDataCache.registrationDetails(mockRequest))
         .thenReturn(Future.successful(mockOrgRegistrationDetails))
       val (subscriptionPage, session) =
         await(controller.startSubscriptionFlow(None, Company, atarService)(mockHC, mockRequest))
@@ -195,7 +195,7 @@ class SubscriptionFlowManagerSpec
       when(mockRequestSessionData.userSelectedOrganisationType(mockRequest))
         .thenReturn(Some(CdsOrganisationType.SoleTrader))
 
-      when(mockCdsFrontendDataCache.registrationDetails(mockHC))
+      when(mockCdsFrontendDataCache.registrationDetails(mockRequest))
         .thenReturn(Future.successful(mockIndividualRegistrationDetails))
       val (subscriptionPage, session) =
         await(controller.startSubscriptionFlow(None, SoleTrader, atarService)(mockHC, mockRequest))
@@ -209,7 +209,7 @@ class SubscriptionFlowManagerSpec
 
     "start Corporate Subscription Flow when cached registration details are for an Organisation Reg-existing (a.k.a migration)" in {
       when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
-      when(mockCdsFrontendDataCache.registrationDetails(mockHC))
+      when(mockCdsFrontendDataCache.registrationDetails(mockRequest))
         .thenReturn(Future.successful(mockOrgRegistrationDetails))
       val (subscriptionPage, session) =
         await(controller.startSubscriptionFlow(None, Company, atarService)(mockHC, mockRequest))
@@ -241,7 +241,7 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
     reset(mockRequestSessionData, mockSession, mockCdsFrontendDataCache)
     when(mockRequestSessionData.storeUserSubscriptionFlow(any[SubscriptionFlow], any[String])(any[Request[AnyContent]]))
       .thenReturn(mockSession)
-    when(mockCdsFrontendDataCache.saveSubscriptionDetails(any[SubscriptionDetails])(any[HeaderCarrier]))
+    when(mockCdsFrontendDataCache.saveSubscriptionDetails(any[SubscriptionDetails])(any[Request[_]]))
       .thenReturn(Future.successful(true))
   }
 
@@ -251,7 +251,7 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
       when(mockRequestSessionData.userSelectedOrganisationType(mockRequest))
         .thenReturn(Some(CdsOrganisationType.SoleTrader))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Eu))
-      when(mockCdsFrontendDataCache.registrationDetails(mockHC))
+      when(mockCdsFrontendDataCache.registrationDetails(mockRequest))
         .thenReturn(Future.successful(RegistrationDetailsIndividual()))
 
       val (subscriptionPage, session) =
@@ -267,7 +267,7 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
       when(mockRequestSessionData.userSelectedOrganisationType(mockRequest))
         .thenReturn(Some(CdsOrganisationType.Individual))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Eu))
-      when(mockCdsFrontendDataCache.registrationDetails(mockHC))
+      when(mockCdsFrontendDataCache.registrationDetails(mockRequest))
         .thenReturn(Future.successful(RegistrationDetailsIndividual()))
 
       val (subscriptionPage, session) =
@@ -282,7 +282,7 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
     "start Corporate Subscription Flow when cached registration details are for an Organisation" in {
       when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Eu))
-      when(mockCdsFrontendDataCache.registrationDetails(mockHC))
+      when(mockCdsFrontendDataCache.registrationDetails(mockRequest))
         .thenReturn(Future.successful(RegistrationDetailsOrganisation()))
 
       val (subscriptionPage, session) =

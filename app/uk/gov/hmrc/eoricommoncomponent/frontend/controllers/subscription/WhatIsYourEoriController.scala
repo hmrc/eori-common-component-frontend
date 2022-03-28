@@ -73,9 +73,7 @@ class WhatIsYourEoriController @Inject() (
 
     }
 
-  private def useExistingEori(eori: ExistingEori, service: Service)(implicit
-   request: Request[_]
-  ): Future[Result] =
+  private def useExistingEori(eori: ExistingEori, service: Service)(implicit request: Request[_]): Future[Result] =
     subscriptionDetailsHolderService.cacheExistingEoriNumber(eori).map { _ =>
       Redirect(
         uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.UseThisEoriController.display(service)

@@ -129,7 +129,7 @@ class MatchingService @Inject() (
     convert: MatchingResponse => RegistrationDetails,
     groupId: GroupId,
     orgType: Option[CdsOrganisationType] = None
-  )(mayBeMatchSuccess: Option[MatchingResponse])(implicit hc: HeaderCarrier,request: Request[_]): Future[Boolean] =
+  )(mayBeMatchSuccess: Option[MatchingResponse])(implicit hc: HeaderCarrier, request: Request[_]): Future[Boolean] =
     mayBeMatchSuccess.map(convert).fold(Future.successful(false)) { details =>
       cache.saveRegistrationDetails(details, groupId, orgType)
     }

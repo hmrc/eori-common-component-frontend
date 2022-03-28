@@ -90,8 +90,8 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
       mockSubscriptionFlowManager,
       mockSubscriptionDetailsHolderService
     )
-    when(mockSubscriptionBusinessService.cachedSubscriptionNameDobViewModel(any[HeaderCarrier])).thenReturn(None)
-    when(mockSubscriptionBusinessService.getCachedSubscriptionNameDobViewModel(any[HeaderCarrier]))
+    when(mockSubscriptionBusinessService.cachedSubscriptionNameDobViewModel(any[Request[_]])).thenReturn(None)
+    when(mockSubscriptionBusinessService.getCachedSubscriptionNameDobViewModel(any[Request[_]]))
       .thenReturn(Future.successful(NameDobSoleTraderPage.filledValues))
 
     when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(Some(CdsOrganisationType.SoleTrader))
@@ -125,7 +125,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
       }
 
       "display name / dob correctly when all fields are populated" in {
-        when(mockSubscriptionBusinessService.cachedSubscriptionNameDobViewModel(any[HeaderCarrier]))
+        when(mockSubscriptionBusinessService.cachedSubscriptionNameDobViewModel(any[Request[_]]))
           .thenReturn(Future.successful(Some(NameDobSoleTraderPage.filledValues)))
 
         showFormFunction(SoleTraderFlow) { result =>
@@ -159,7 +159,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     }
 
     "fill fields with details if stored in cache" in {
-      when(mockSubscriptionBusinessService.cachedSubscriptionNameDobViewModel(any[HeaderCarrier]))
+      when(mockSubscriptionBusinessService.cachedSubscriptionNameDobViewModel(any[Request[_]]))
         .thenReturn(Some(NameDobSoleTraderPage.filledValues))
       showCreateForm() { result =>
         val page              = CdsPage(contentAsString(result))
@@ -228,7 +228,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
       submitFormInCreateMode(createFormAllFieldsNameDobMap) { result =>
         await(result)
         verify(mockSubscriptionDetailsHolderService).cacheNameDobDetails(meq(NameDobSoleTraderPage.filledValues))(
-          any[HeaderCarrier]
+          any[Request[_]]
         )
       }
     }
@@ -555,7 +555,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
   }
 
   private def mockFunctionWithRegistrationDetails(registrationDetails: RegistrationDetails) {
-    when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier]))
+    when(mockCdsFrontendDataCache.registrationDetails(any[Request[_]]))
       .thenReturn(registrationDetails)
   }
 
@@ -598,7 +598,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
-    when(mockSubscriptionBusinessService.getCachedSubscriptionNameDobViewModel(any[HeaderCarrier]))
+    when(mockSubscriptionBusinessService.getCachedSubscriptionNameDobViewModel(any[Request[_]]))
       .thenReturn(Future.successful(NameDobSoleTraderPage.filledValues))
 
     val result =
@@ -607,12 +607,12 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
   }
 
   private def registerSaveNameDobDetailsMockSuccess() {
-    when(mockSubscriptionDetailsHolderService.cacheNameDobDetails(any[NameDobMatchModel])(any[HeaderCarrier]))
+    when(mockSubscriptionDetailsHolderService.cacheNameDobDetails(any[NameDobMatchModel])(any[Request[_]]))
       .thenReturn(Future.successful(()))
   }
 
   private def registerSaveNameDobDetailsMockFailure(exception: Throwable) {
-    when(mockSubscriptionDetailsHolderService.cacheNameDobDetails(any[NameDobMatchModel])(any[HeaderCarrier]))
+    when(mockSubscriptionDetailsHolderService.cacheNameDobDetails(any[NameDobMatchModel])(any[Request[_]]))
       .thenReturn(Future.failed(exception))
   }
 

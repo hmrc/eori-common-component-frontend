@@ -17,12 +17,12 @@
 package unit.controllers.subscription
 
 import common.pages.RegistrationCompletePage
-import java.time.LocalDateTime
 
+import java.time.LocalDateTime
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import play.api.mvc.Result
+import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, EnrolmentIdentifier}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.PdfGeneratorConnector
@@ -112,14 +112,16 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
       invokeRegExistingEndPageWithAuthenticatedUser() {
         when(mockRequestSessionData.selectedUserLocation(any())).thenReturn(Some(UserLocation.Uk))
 
-        when(mockSessionCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+        when(mockSessionCache.registerWithEoriAndIdResponse(any[Request[AnyContent]]))
           .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
-        when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
-        when(mockSessionCache.saveSub02Outcome(any[Sub02Outcome])(any[HeaderCarrier]))
+        when(mockSessionCache.remove(any[Request[AnyContent]])).thenReturn(Future.successful(true))
+        when(mockSessionCache.saveSub02Outcome(any[Sub02Outcome])(any[Request[AnyContent]]))
           .thenReturn(Future.successful(true))
 
         val mockSubscribeOutcome = mock[Sub02Outcome]
-        when(mockSessionCache.sub02Outcome(any[HeaderCarrier])).thenReturn(Future.successful(mockSubscribeOutcome))
+        when(mockSessionCache.sub02Outcome(any[Request[AnyContent]])).thenReturn(
+          Future.successful(mockSubscribeOutcome)
+        )
         when(mockSubscribeOutcome.processedDate).thenReturn("22 May 2016")
         when(mockSubscribeOutcome.eori).thenReturn(Some("ZZZ1ZZZZ23ZZZZZZZ"))
         when(mockSubscribeOutcome.fullName).thenReturn("Name")
@@ -127,7 +129,7 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
         result =>
           status(result) shouldBe OK
           val page = CdsPage(contentAsString(result))
-          verify(mockSessionCache).remove(any[HeaderCarrier])
+          verify(mockSessionCache).remove(any[Request[AnyContent]])
           page.title should startWith("Subscription request received")
           page.getElementsText(
             RegistrationCompletePage.pageHeadingXpath

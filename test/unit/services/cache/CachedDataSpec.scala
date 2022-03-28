@@ -18,6 +18,7 @@ package unit.services.cache
 
 import base.UnitSpec
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.mvc.Request
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, ResponseCommon}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
@@ -27,51 +28,16 @@ import java.time.LocalDateTime
 
 class CachedDataSpec extends UnitSpec with MockitoSugar {
 
-  val sessionId: String = "1234567"
-
+  val sessionId: String      = "1234567"
+  implicit val mockRequest   = mock[Request[_]]
   def errorMsg(name: String) = s"$name is not cached in data for the sessionId: ${sessionId}"
 
   "CachedData" should {
 
     "throw IllegalStateException" when {
 
-      "registrationDetails missing " in {
-        intercept[Exception](CachedData().registrationDetails(sessionId)).getMessage shouldBe errorMsg(
-          CachedData.regDetailsKey
-        )
-      }
-
-      "registerWithEoriAndIdResponse missing " in {
-        intercept[Exception](CachedData().registerWithEoriAndIdResponse(sessionId)).getMessage shouldBe errorMsg(
-          CachedData.registerWithEoriAndIdResponseKey
-        )
-      }
-
-      "sub01Outcome missing " in {
-        intercept[Exception](CachedData().sub01Outcome(sessionId)).getMessage shouldBe errorMsg(
-          CachedData.sub01OutcomeKey
-        )
-      }
-
-      "sub02Outcome missing " in {
-        intercept[Exception](CachedData().sub02Outcome(sessionId)).getMessage shouldBe errorMsg(
-          CachedData.sub02OutcomeKey
-        )
-      }
-
-      "email missing " in {
-        intercept[Exception](CachedData().email(sessionId)).getMessage shouldBe errorMsg(CachedData.emailKey)
-      }
-
       "safeId missing " in {
         intercept[Exception](CachedData().safeId(sessionId)).getMessage shouldBe errorMsg(CachedData.safeIdKey)
-      }
-    }
-
-    "return default" when {
-
-      "subscriptionDetails missing " in {
-        CachedData().subscriptionDetails(sessionId) shouldBe SubscriptionDetails()
       }
     }
 

@@ -58,7 +58,7 @@ class CdsSubscriber @Inject() (
 
   private def migrationEoriUK(
     service: Service
-  )(implicit hc: HeaderCarrier,request: Request[_], messages: Messages): Future[SubscriptionResult] =
+  )(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[SubscriptionResult] =
     for {
       subscriptionDetails           <- sessionCache.subscriptionDetails
       email                         <- sessionCache.email
@@ -80,7 +80,7 @@ class CdsSubscriber @Inject() (
 
   private def migrationEoriROW(
     service: Service
-  )(implicit hc: HeaderCarrier,request: Request[_], messages: Messages): Future[SubscriptionResult] =
+  )(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[SubscriptionResult] =
     for {
       registrationDetails <- sessionCache.registrationDetails
       subscriptionDetails <- sessionCache.subscriptionDetails

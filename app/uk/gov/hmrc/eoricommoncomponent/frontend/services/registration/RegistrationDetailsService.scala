@@ -20,7 +20,11 @@ import play.api.mvc.Request
 
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, RegistrationDetailsIndividual, RegistrationDetailsOrganisation}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
+  CdsOrganisationType,
+  RegistrationDetailsIndividual,
+  RegistrationDetailsOrganisation
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.http.HeaderCarrier
 

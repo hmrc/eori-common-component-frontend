@@ -22,6 +22,7 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.mvc.Request
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameDobSoleTraderController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
@@ -75,13 +76,13 @@ class AllowlistVerificationWithFeatureOffSpec
       mockSubscriptionFlowManager,
       mockSubscriptionDetailsHolderService
     )
-    when(mockSubscriptionBusinessService.cachedSubscriptionNameDobViewModel(any[HeaderCarrier])).thenReturn(None)
-    when(mockSubscriptionBusinessService.getCachedSubscriptionNameDobViewModel(any[HeaderCarrier]))
+    when(mockSubscriptionBusinessService.cachedSubscriptionNameDobViewModel(any[Request[_]])).thenReturn(None)
+    when(mockSubscriptionBusinessService.getCachedSubscriptionNameDobViewModel(any[Request[_]]))
       .thenReturn(Future.successful(NameDobSoleTraderPage.filledValues))
     when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(Some(CdsOrganisationType.SoleTrader))
-    when(mockSubscriptionDetailsHolderService.cacheNameDobDetails(any[NameDobMatchModel])(any[HeaderCarrier]))
+    when(mockSubscriptionDetailsHolderService.cacheNameDobDetails(any[NameDobMatchModel])(any[Request[_]]))
       .thenReturn(Future.successful(()))
-    when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(mockRegistrationDetails)
+    when(mockCdsFrontendDataCache.registrationDetails(any[Request[_]])).thenReturn(mockRegistrationDetails)
     setupMockSubscriptionFlowManager(NameDobDetailsSubscriptionFlowPage)
   }
 

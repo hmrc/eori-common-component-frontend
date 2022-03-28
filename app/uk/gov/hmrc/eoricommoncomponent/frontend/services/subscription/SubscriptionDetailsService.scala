@@ -40,7 +40,8 @@ class SubscriptionDetailsService @Inject() (
 )(implicit ec: ExecutionContext) {
 
   def saveKeyIdentifiers(groupId: GroupId, internalId: InternalId, service: Service)(implicit
-    hc: HeaderCarrier,request: Request[_]
+    hc: HeaderCarrier,
+    request: Request[_]
   ): Future[Unit] = {
     val key = CachedData.groupIdKey
     sessionCache.safeId.flatMap { safeId =>
@@ -57,13 +58,14 @@ class SubscriptionDetailsService @Inject() (
   }
 
   def cacheContactDetails(contactDetailsModel: ContactDetailsModel, isInReviewMode: Boolean = false)(implicit
-    hc: HeaderCarrier,request: Request[_]
+    hc: HeaderCarrier,
+    request: Request[_]
   ): Future[Unit] =
     contactDetails(contactDetailsModel, isInReviewMode) flatMap { contactDetails =>
       saveSubscriptionDetails(sd => sd.copy(contactDetails = Some(contactDetails)))
     }
 
-  def cacheAddressDetails(address: AddressViewModel)(implicit hc: HeaderCarrier,request: Request[_]): Future[Unit] = {
+  def cacheAddressDetails(address: AddressViewModel)(implicit hc: HeaderCarrier, request: Request[_]): Future[Unit] = {
     def noneForEmptyPostcode(a: AddressViewModel) = a.copy(postcode = a.postcode.filter(_.nonEmpty))
 
     saveSubscriptionDetails(sd => sd.copy(addressDetails = Some(noneForEmptyPostcode(address))))

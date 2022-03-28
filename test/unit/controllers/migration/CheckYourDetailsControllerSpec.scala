@@ -73,11 +73,11 @@ class CheckYourDetailsControllerSpec
       email = Some("john.doe@example.com"),
       registeredCompany = Some(CompanyRegisteredCountry("GB"))
     )
-    when(mockCdsDataCache.email(any[HeaderCarrier])).thenReturn(Future.successful(Email))
+    when(mockCdsDataCache.email(any[Request[_]])).thenReturn(Future.successful(Email))
 
-    when(mockCdsDataCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(subscriptionDetailsHolderForCompany)
-    when(mockCdsDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(individualRegistrationDetails)
-    when(mockCdsDataCache.addressLookupParams(any[HeaderCarrier])).thenReturn(Future.successful(None))
+    when(mockCdsDataCache.subscriptionDetails(any[Request[_]])).thenReturn(subscriptionDetailsHolderForCompany)
+    when(mockCdsDataCache.registrationDetails(any[Request[_]])).thenReturn(individualRegistrationDetails)
+    when(mockCdsDataCache.addressLookupParams(any[Request[_]])).thenReturn(Future.successful(None))
   }
 
   "Reviewing the details" should {
@@ -85,7 +85,7 @@ class CheckYourDetailsControllerSpec
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.reviewDetails(atarService))
 
     "return ok when data has been provided" in {
-      when(mockCdsDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(existingOrganisationRegistrationDetails)
+      when(mockCdsDataCache.registrationDetails(any[Request[_]])).thenReturn(existingOrganisationRegistrationDetails)
 
       showForm() { result =>
         status(result) shouldBe OK
