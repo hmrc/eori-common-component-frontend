@@ -27,9 +27,9 @@ class EoriEnrolSuccessSpec extends ViewSpec {
 
   implicit val request = withFakeCSRF(fakeAtarSubscribeRequest)
 
-  private val service = atarService
+  private val service              = atarService
   private val serviceNoCallBackUrl = atarService.copy(callBack = None)
-  private val eori = "GB234532132435"
+  private val eori                 = "GB234532132435"
 
   private val view = instanceOf[eori_enrol_success]
 
@@ -57,7 +57,7 @@ class EoriEnrolSuccessSpec extends ViewSpec {
       doc(service).body.getElementsByClass("govuk-button").first().text must startWith("Continue")
     }
 
-    "not display continue button when callBack URL exists" in {
+    "not display continue button when callBack URL doesn't exists" in {
       doc(serviceNoCallBackUrl).body.getElementsByClass("govuk-button").size() must be(0)
     }
   }

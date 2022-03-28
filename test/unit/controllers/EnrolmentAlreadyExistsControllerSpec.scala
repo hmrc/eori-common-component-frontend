@@ -36,7 +36,7 @@ class EnrolmentAlreadyExistsControllerSpec extends ControllerSpec with AuthActio
     new EnrolmentAlreadyExistsController(mockAuthAction, registrationExistsView, registrationExistsGroupView, mcc)
 
   val paragraphXpath = "//*[@id='para1']"
-  val buttonXpath = "//*[@class='govuk-button']"
+  val buttonXpath    = "//*[@class='govuk-button']"
 
   "Enrolment already exists controller" should {
 
