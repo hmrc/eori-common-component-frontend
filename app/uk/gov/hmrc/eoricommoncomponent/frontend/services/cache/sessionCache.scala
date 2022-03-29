@@ -45,21 +45,7 @@ sealed case class CachedData(
   keepAlive: Option[String] = None,
   eori: Option[String] = None,
   addressLookupParams: Option[AddressLookupParams] = None
-) {
-
-  def safeId(sessionId: String)(implicit request: Request[_]) = {
-    lazy val mayBeMigration: Option[SafeId] = registerWithEoriAndIdResponse
-      .flatMap(_.responseDetail.flatMap(_.responseData.map(_.SAFEID)))
-      .map(SafeId(_))
-    lazy val mayBeRegistration: Option[SafeId] =
-      regDetails.flatMap(s => if (s.safeId.id.nonEmpty) Some(s.safeId) else None)
-    mayBeRegistration orElse mayBeMigration getOrElse (throw new IllegalStateException(
-      s"$safeIdKey is not cached in data for the sessionId: $sessionId"
-    ))
-
-  }
-
-}
+)
 
 object CachedData {
   val regDetailsKey                    = "regDetails"
@@ -156,25 +142,8 @@ class SessionCache @Inject() (
   def subscriptionDetails(implicit request: Request[_]): Future[SubscriptionDetails] =
     getFromSession[SubscriptionDetails](DataKey(subDetailsKey)).map(_.getOrElse(SubscriptionDetails()))
 
-  private def getCached[T](t: (CachedData) => T)(implicit request: Request[_]): Future[T] =
-    cacheRepo.findById(request).map {
-      case Some(CacheItem(_, data, _, _)) =>
-        Json.fromJson[CachedData](data) match {
-          case d: JsSuccess[CachedData] => t(d.value)
-          case _ =>
-            eccLogger.error(s"No Session data is cached for the sessionId : $sessionId")
-            throw SessionTimeOutException(s"No Session data is cached for the sessionId : $sessionId")
-        }
-      case _ =>
-        eccLogger.info(s"No match session id for signed in user with session: $sessionId")
-        throw SessionTimeOutException(s"No match session id for signed in user with session : $sessionId")
-    }
-
   def eori(implicit request: Request[_]): Future[Option[String]] =
     getFromSession[String](DataKey(eoriKey))
-
-  def safeId(implicit request: Request[_]): Future[SafeId] =
-    getCached[SafeId](cachedData => cachedData.safeId(sessionId))
 
   def email(implicit request: Request[_]): Future[String] =
     getFromSession[String](DataKey(emailKey)).map(_.getOrElse(throwException(emailKey)))
@@ -190,6 +159,28 @@ class SessionCache @Inject() (
         )
       )
     )
+
+  def safeId(implicit request: Request[_]) = fetchSafeIdFromRegDetails.flatMap {
+    case Some(value) => Future(value)
+    case None =>
+      fetchSafeIdFromReg06Response.map { response =>
+        response match {
+          case Some(value) => value
+          case None =>
+            throw new IllegalStateException(s"$safeIdKey is not cached in data for the sessionId: $sessionId")
+        }
+      }
+
+  }
+
+  def fetchSafeIdFromReg06Response(implicit request: Request[_]) = registerWithEoriAndIdResponse.map(
+    response =>
+      response.responseDetail.flatMap(_.responseData.map(_.SAFEID))
+        .map(SafeId(_))
+  )
+
+  def fetchSafeIdFromRegDetails(implicit request: Request[_]) =
+    registrationDetails.map(response => if (response.safeId.id.nonEmpty) Some(response.safeId) else None)
 
   def sub01Outcome(implicit request: Request[_]): Future[Sub01Outcome] =
     getFromSession[Sub01Outcome](DataKey(sub01OutcomeKey)).map(_.getOrElse(throwException(sub01OutcomeKey)))

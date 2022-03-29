@@ -33,7 +33,7 @@ class CachedDataSpec extends UnitSpec with MockitoSugar {
   def errorMsg(name: String) = s"$name is not cached in data for the sessionId: ${sessionId}"
 
   "CachedData" should {
-
+/*
     "throw IllegalStateException" when {
 
       "safeId missing " in {
@@ -54,7 +54,7 @@ class CachedDataSpec extends UnitSpec with MockitoSugar {
         val safeId = "anotherSafeId"
         CachedData(regDetails = Some(registrationDetails(safeId))).safeId(sessionId) shouldBe SafeId(safeId)
       }
-    }
+    }*/
   }
 
   def registrationDetails(safeId: String) = RegistrationDetailsSafeId(

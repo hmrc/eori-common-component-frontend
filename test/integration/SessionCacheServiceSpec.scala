@@ -284,7 +284,7 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       caught.getMessage startsWith s"email is not cached in data for the sessionId: sessionId-123"
     }
 
-    "fetch safeId correctly" in {
+    "fetch safeId correctly from registration details" in {
       when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-" + UUID.randomUUID()))))
       val registrationDetails: RegistrationDetails = RegistrationDetails.individual(
         sapNumber = "0123456789",
@@ -298,6 +298,49 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
 
       await(sessionCache.safeId(request)) mustBe SafeId("safe-id")
     }
+
+    "fetch safeId correctly from registerWithEoriAndIdResponse details" in {
+      when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-" + UUID.randomUUID()))))
+      def registerWithEoriAndIdResponse = RegisterWithEoriAndIdResponse(
+        ResponseCommon("OK", None, LocalDateTime.now(), None),
+        Some(
+          RegisterWithEoriAndIdResponseDetail(
+            Some("PASS"),
+            Some("C001"),
+            responseData = Some(
+              ResponseData(
+                "someSafeId",
+                Trader("John Doe", "Mr D"),
+                EstablishmentAddress("Line 1", "City Name", Some("SE28 1AA"), "GB"),
+                Some(
+                  ContactDetail(
+                    EstablishmentAddress("Line 1", "City Name", Some("SE28 1AA"), "GB"),
+                    "John Contact Doe",
+                    Some("1234567"),
+                    Some("89067"),
+                    Some("john.doe@example.com")
+                  )
+                ),
+                VATIDs = Some(Seq(VatIds("AD", "1234"), VatIds("GB", "4567"))),
+                hasInternetPublication = false,
+                principalEconomicActivity = Some("P001"),
+                hasEstablishmentInCustomsTerritory = Some(true),
+                legalStatus = Some("Official"),
+                thirdCountryIDNumber = Some(Seq("1234", "67890")),
+                personType = Some(9),
+                dateOfEstablishmentBirth = Some("2018-05-16"),
+                startDate = "2018-05-15",
+                expiryDate = Some("2018-05-16")
+              )
+            )
+          )
+        )
+      )
+      await(sessionCache.putSession(DataKey("registerWithEoriAndIdResponseKey"), data = Json.toJson(registerWithEoriAndIdResponse)))
+
+      await(sessionCache.safeId(request)) mustBe "someSafeId"
+    }
+
 
     "store and fetch Eori correctly" in {
 
