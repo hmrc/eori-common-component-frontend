@@ -33,7 +33,7 @@ class CachedDataSpec extends UnitSpec with MockitoSugar {
   def errorMsg(name: String) = s"$name is not cached in data for the sessionId: ${sessionId}"
 
   "CachedData" should {
-/*
+    /*
     "throw IllegalStateException" when {
 
       "safeId missing " in {

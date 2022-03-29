@@ -20,6 +20,7 @@ import play.api.Logger
 import play.api.libs.json.{JsError, JsResult, JsString, JsSuccess, JsValue, Json, OFormat, Writes}
 import play.api.mvc.Request
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.ServiceUnavailableResponse
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressLookupParams
@@ -32,7 +33,7 @@ import uk.gov.hmrc.mongo.{MongoComponent, TimestampSupport}
 import java.time.LocalDateTime
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.control.NoStackTrace
+import scala.util.control.{NoStackTrace, NonFatal}
 
 sealed case class CachedData(
   regDetails: Option[RegistrationDetails] = None,
@@ -161,26 +162,26 @@ class SessionCache @Inject() (
     )
 
   def safeId(implicit request: Request[_]) = fetchSafeIdFromRegDetails.flatMap {
-    case Some(value) => Future(value)
+    case Some(value) => Future.successful(value)
     case None =>
-      fetchSafeIdFromReg06Response.map { response =>
-        response match {
-          case Some(value) => value
-          case None =>
-            throw new IllegalStateException(s"$safeIdKey is not cached in data for the sessionId: $sessionId")
-        }
-      }
-
+      fetchSafeIdFromReg06Response.map(
+        _.getOrElse(throw new IllegalStateException(s"$safeIdKey is not cached in data for the sessionId: $sessionId"))
+      )
   }
 
   def fetchSafeIdFromReg06Response(implicit request: Request[_]) = registerWithEoriAndIdResponse.map(
     response =>
       response.responseDetail.flatMap(_.responseData.map(_.SAFEID))
         .map(SafeId(_))
-  )
+  ).recoverWith {
+    case _ => Future.successful(None)
+  }
 
   def fetchSafeIdFromRegDetails(implicit request: Request[_]) =
     registrationDetails.map(response => if (response.safeId.id.nonEmpty) Some(response.safeId) else None)
+      .recoverWith {
+        case _ => Future.successful(None)
+      }
 
   def sub01Outcome(implicit request: Request[_]): Future[Sub01Outcome] =
     getFromSession[Sub01Outcome](DataKey(sub01OutcomeKey)).map(_.getOrElse(throwException(sub01OutcomeKey)))

@@ -336,11 +336,15 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
           )
         )
       )
-      await(sessionCache.putSession(DataKey("registerWithEoriAndIdResponseKey"), data = Json.toJson(registerWithEoriAndIdResponse)))
+      await(
+        sessionCache.putSession(
+          DataKey("registerWithEoriAndIdResponse"),
+          data = Json.toJson(registerWithEoriAndIdResponse)
+        )
+      )
 
-      await(sessionCache.safeId(request)) mustBe "someSafeId"
+      await(sessionCache.safeId(request)) mustBe SafeId("someSafeId")
     }
-
 
     "store and fetch Eori correctly" in {
 
