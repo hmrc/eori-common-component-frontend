@@ -37,6 +37,12 @@
     else "cds.subscription.business.date-established.label"
 }
 
+@hintLabel = @{
+    if (orgType == Partnership || orgType == LLP) "cds.date-established.hint.partnership.label"
+    else if(orgType == CorporateBody && !isRestOfWorldJourney) "cds.date-established.hint.company.label"
+    else "cds.date-established.hint.organisation.label"
+}
+
 @introHtml = {
     @if(orgType != LLP && orgType != Partnership && !isRestOfWorldJourney){
       @if(orgType == UnincorporatedBody){
@@ -45,6 +51,8 @@
           <p id="date-of-establishment-label" class="govuk-body">@Html(messages(introText,registerLink))</p>
       }
     }
+    <legend id="date-of-establishment-hint-label" class="govuk-fieldset__legend govuk-fieldset__legend--m">@Html(messages(hintLabel))</legend>
+
     <span id="date-of-establishment-hint-text" class="govuk-hint">@Html(messages("cds.date-established.hint"))</span>
 }
 
