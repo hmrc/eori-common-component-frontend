@@ -43,7 +43,9 @@
 
         @helpers.helpAndSupport()
 
-        @callBackContinue(service)
+        @if(service.callBack.nonEmpty){
+            @callBackContinue(service)
+        }
 
         @feedback_di()
     </div>
