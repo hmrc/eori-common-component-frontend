@@ -272,14 +272,7 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       }
       caught.getMessage startsWith s"email is not cached in data for the sessionId: sessionId-123"
     }
-    "throw IllegalStateException when safeId couldn't be retrieved from registration details or reg06 details" in {
-      when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-123"))))
-      await(sessionCache.putSession(DataKey("sub01Outcome"), data = Json.toJson(sub01Outcome)))
-      val caught = intercept[IllegalStateException] {
-        await(sessionCache.safeId(request))
-      }
-      caught.getMessage startsWith s"safeId is not cached in data for the sessionId: sessionId-123"
-    }
+
 
     "fetchSafeIdFromReg06Response returns None if reg06response is not present in cache" in {
       when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-123"))))
@@ -348,6 +341,19 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       )
 
       await(sessionCache.safeId(request)) mustBe SafeId("someSafeId")
+    }
+
+    "throw exception if  safeId couldn't be retrieved from cache" in {
+      when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-" + UUID.randomUUID()))))
+
+      val eori = Eori("GB123456789123")
+
+      await(sessionCache.saveEori(eori)(request))
+      val caught = intercept[IllegalStateException]{
+
+        await(sessionCache.safeId(request))
+      }
+      caught.getMessage must startWith("safeId is not cached in data for the sessionId")
     }
 
     "store and fetch Eori correctly" in {
