@@ -28,7 +28,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you_nino
-import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -56,10 +55,7 @@ class GetNinoSubscriptionController @Inject() (
         populateView(isInReviewMode = true, service)
     }
 
-  private def populateView(isInReviewMode: Boolean, service: Service)(implicit
-    hc: HeaderCarrier,
-    request: Request[AnyContent]
-  ) =
+  private def populateView(isInReviewMode: Boolean, service: Service)(implicit request: Request[AnyContent]) =
     subscriptionDetailsHolderService.cachedCustomsId.map {
       case Some(Nino(id)) =>
         Ok(
@@ -99,7 +95,6 @@ class GetNinoSubscriptionController @Inject() (
     }
 
   private def cacheAndContinue(isInReviewMode: Boolean, form: IdMatchModel, service: Service)(implicit
-    hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] =
     subscriptionDetailsHolderService.cacheCustomsId(Nino(form.id)).map(

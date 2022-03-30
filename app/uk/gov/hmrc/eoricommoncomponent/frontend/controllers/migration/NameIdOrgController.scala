@@ -41,7 +41,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.Require.requireThatUrlValue
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.nameId
-import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -136,7 +135,7 @@ class NameIDOrgController @Inject() (
     conf: Configuration,
     isInReviewMode: Boolean,
     service: Service
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
+  )(implicit request: Request[AnyContent]): Future[Result] = {
 
     lazy val nameUtrForm = nameUtrViewModel.fold(form)(form.fill)
     cdsFrontendDataCache.registrationDetails map { registrationDetails =>
@@ -144,11 +143,9 @@ class NameIDOrgController @Inject() (
     }
   }
 
-  private def storeNameUtrDetails(
-    formData: NameIdOrganisationMatchModel,
-    inReviewMode: Boolean,
-    service: Service
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
+  private def storeNameUtrDetails(formData: NameIdOrganisationMatchModel, inReviewMode: Boolean, service: Service)(
+    implicit request: Request[AnyContent]
+  ): Future[Result] =
     subscriptionDetailsHolderService
       .cacheNameIdDetails(formData)
       .map(

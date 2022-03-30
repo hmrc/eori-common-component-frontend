@@ -17,9 +17,6 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
 import play.api.mvc.Request
-
-import javax.inject.{Inject, Singleton}
-import java.time.LocalDate
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
@@ -30,6 +27,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{CachedData, Sess
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.ContactDetailsAdaptor
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDate
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -58,14 +57,13 @@ class SubscriptionDetailsService @Inject() (
   }
 
   def cacheContactDetails(contactDetailsModel: ContactDetailsModel, isInReviewMode: Boolean = false)(implicit
-    hc: HeaderCarrier,
     request: Request[_]
   ): Future[Unit] =
     contactDetails(contactDetailsModel, isInReviewMode) flatMap { contactDetails =>
       saveSubscriptionDetails(sd => sd.copy(contactDetails = Some(contactDetails)))
     }
 
-  def cacheAddressDetails(address: AddressViewModel)(implicit hc: HeaderCarrier, request: Request[_]): Future[Unit] = {
+  def cacheAddressDetails(address: AddressViewModel)(implicit request: Request[_]): Future[Unit] = {
     def noneForEmptyPostcode(a: AddressViewModel) = a.copy(postcode = a.postcode.filter(_.nonEmpty))
 
     saveSubscriptionDetails(sd => sd.copy(addressDetails = Some(noneForEmptyPostcode(address))))

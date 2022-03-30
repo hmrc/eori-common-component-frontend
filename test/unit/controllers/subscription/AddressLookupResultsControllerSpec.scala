@@ -464,9 +464,7 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
         when(mockAddressLookupConnector.lookup(any(), any())(any()))
           .thenReturn(Future.successful(AddressLookupSuccess(Seq(addressLookup))))
         when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(Some(CdsOrganisationType.Company))
-        when(mockSubscriptionDetailsService.cacheAddressDetails(any())(any(), any())).thenReturn(
-          Future.successful((): Unit)
-        )
+        when(mockSubscriptionDetailsService.cacheAddressDetails(any())(any())).thenReturn(Future.successful((): Unit))
 
         val result =
           controller.submit(atarService, isInReviewMode = true)(postRequest("address" -> addressLookup.dropDownView))
@@ -482,9 +480,7 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
         when(mockAddressLookupConnector.lookup(any(), any())(any()))
           .thenReturn(Future.successful(AddressLookupSuccess(Seq(addressLookup))))
         when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(Some(CdsOrganisationType.Company))
-        when(mockSubscriptionDetailsService.cacheAddressDetails(any())(any(), any())).thenReturn(
-          Future.successful((): Unit)
-        )
+        when(mockSubscriptionDetailsService.cacheAddressDetails(any())(any())).thenReturn(Future.successful((): Unit))
         when(mockSubscriptionFlowManager.stepInformation(any())(any())).thenReturn(
           SubscriptionFlowInfo(0, 0, ReviewDetailsPageSubscription)
         )

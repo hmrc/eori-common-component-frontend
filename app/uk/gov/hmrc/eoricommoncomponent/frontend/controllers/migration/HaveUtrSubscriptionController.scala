@@ -29,7 +29,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_utr_subscription
-import uk.gov.hmrc.http.HeaderCarrier
+
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -56,10 +56,7 @@ class HaveUtrSubscriptionController @Inject() (
         populateView(true, service)
     }
 
-  private def populateView(inReviewMode: Boolean, service: Service)(implicit
-    hc: HeaderCarrier,
-    request: Request[AnyContent]
-  ) =
+  private def populateView(inReviewMode: Boolean, service: Service)(implicit request: Request[AnyContent]) =
     requestSessionData.userSelectedOrganisationType match {
       case Some(orgType) =>
         subscriptionDetailsService.cachedUtrMatch.map {
@@ -88,7 +85,6 @@ class HaveUtrSubscriptionController @Inject() (
     }
 
   private def destinationsByAnswer(isInReviewMode: Boolean, form: UtrMatchModel, service: Service)(implicit
-    hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] =
     form.haveUtr match {

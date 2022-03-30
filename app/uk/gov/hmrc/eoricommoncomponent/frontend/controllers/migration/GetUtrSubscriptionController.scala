@@ -27,7 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you_utr
-import uk.gov.hmrc.http.HeaderCarrier
+
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -53,10 +53,7 @@ class GetUtrSubscriptionController @Inject() (
         populateView(isInReviewMode = true, service)
     }
 
-  private def populateView(isInReviewMode: Boolean, service: Service)(implicit
-    hc: HeaderCarrier,
-    request: Request[AnyContent]
-  ) =
+  private def populateView(isInReviewMode: Boolean, service: Service)(implicit request: Request[AnyContent]) =
     requestSessionData.userSelectedOrganisationType match {
       case Some(_) =>
         subscriptionDetailsService.cachedCustomsId.map {
@@ -108,7 +105,7 @@ class GetUtrSubscriptionController @Inject() (
     form: IdMatchModel,
     service: Service,
     orgType: CdsOrganisationType
-  )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: Request[AnyContent]): Future[Result] =
     cacheUtr(form, orgType).map(
       _ =>
         if (isInReviewMode && !isItRowJourney)

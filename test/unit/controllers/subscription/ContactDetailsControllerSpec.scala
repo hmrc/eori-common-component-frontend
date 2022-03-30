@@ -34,7 +34,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.Contac
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.contact_details
-import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.SessionBuilder
@@ -110,9 +109,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     "redirect to next page when ContactDetails is present " in {
       withAuthorisedUser(defaultUserId, mockAuthConnector)
 
-      when(mockOrgTypeLookup.etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(
-        Future.successful(Some(NA))
-      )
+      when(mockOrgTypeLookup.etmpOrgTypeOpt(any[Request[AnyContent]])).thenReturn(Future.successful(Some(NA)))
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]]))
         .thenReturn(Some(CdsOrganisationType("invalid")))
       when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(OrganisationFlow)
@@ -323,7 +320,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
-    when(mockOrgTypeLookup.etmpOrgTypeOpt(any[Request[AnyContent]], any[HeaderCarrier])).thenReturn(Some(orgType))
+    when(mockOrgTypeLookup.etmpOrgTypeOpt(any[Request[AnyContent]])).thenReturn(Some(orgType))
 
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
 
@@ -346,13 +343,13 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   private def registerSaveContactDetailsMockSuccess(): Unit =
     when(
       mockSubscriptionDetailsHolderService
-        .cacheContactDetails(any[ContactDetailsModel], any[Boolean])(any[HeaderCarrier], any[Request[AnyContent]])
+        .cacheContactDetails(any[ContactDetailsModel], any[Boolean])(any[Request[AnyContent]])
     ).thenReturn(Future.successful(()))
 
   private def registerSaveContactDetailsMockFailure(exception: Throwable): Unit =
     when(
       mockSubscriptionDetailsHolderService
-        .cacheContactDetails(any[ContactDetailsModel], any[Boolean])(any[HeaderCarrier], any[Request[AnyContent]])
+        .cacheContactDetails(any[ContactDetailsModel], any[Boolean])(any[Request[AnyContent]])
     ).thenReturn(Future.failed(exception))
 
 }

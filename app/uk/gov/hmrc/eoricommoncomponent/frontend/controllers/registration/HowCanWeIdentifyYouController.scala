@@ -29,7 +29,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionDetailsService
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you
-import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -54,7 +53,7 @@ class HowCanWeIdentifyYouController @Inject() (
       populateView(service, isInReviewMode = true)
     }
 
-  private def populateView(service: Service, isInReviewMode: Boolean)(implicit hc: HeaderCarrier, request: Request[_]) =
+  private def populateView(service: Service, isInReviewMode: Boolean)(implicit request: Request[_]) =
     subscriptionBusinessService.getCachedNinoOrUtrChoice.map { choice =>
       Ok(howCanWeIdentifyYouView(ninoOrUtrChoiceForm.fill(NinoOrUtrChoice(choice)), isInReviewMode, service))
     }

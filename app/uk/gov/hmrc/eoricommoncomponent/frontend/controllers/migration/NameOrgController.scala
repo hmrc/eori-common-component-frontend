@@ -31,7 +31,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionDetailsService
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.nameOrg
-import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -77,7 +76,7 @@ class NameOrgController @Inject() (
     maybeNameViewModel: Option[NameOrganisationMatchModel],
     isInReviewMode: Boolean,
     service: Service
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
+  )(implicit request: Request[AnyContent]): Future[Result] = {
     lazy val form =
       maybeNameViewModel.fold(nameOrganisationForm)(nameOrganisationForm.fill)
 
@@ -87,7 +86,6 @@ class NameOrgController @Inject() (
   }
 
   private def storeNameDetails(formData: NameOrganisationMatchModel, inReviewMode: Boolean, service: Service)(implicit
-    hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] = {
     for {

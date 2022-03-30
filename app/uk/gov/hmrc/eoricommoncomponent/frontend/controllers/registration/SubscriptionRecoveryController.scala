@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
-import play.api.i18n.Messages
-import play.api.mvc._
-
 import javax.inject.{Inject, Singleton}
 import java.time.{LocalDate, LocalDateTime}
+
+import play.api.i18n.Messages
+import play.api.mvc.{Action, _}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SUB09SubscriptionDisplayConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
@@ -167,9 +167,7 @@ class SubscriptionRecoveryController @Inject() (
     subscriptionDisplayResponse: SubscriptionDisplayResponse,
     dateOfEstablishment: Option[LocalDate],
     service: Service
-  )(
-    redirect: => Result
-  )(implicit request: Request[AnyContent], hc: HeaderCarrier, messages: Messages): Future[Result] = {
+  )(redirect: => Result)(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
     val formBundleId =
       subscriptionDisplayResponse.responseCommon.returnParameters
         .flatMap(_.find(_.paramName.equals("ETMPFORMBUNDLENUMBER")).map(_.paramValue))
@@ -199,12 +197,12 @@ class SubscriptionRecoveryController @Inject() (
 
   private def completeEnrolment(service: Service, subscriptionInformation: SubscriptionInformation)(
     redirect: => Result
-  )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] =
+  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
     for {
       // Update Recovered Subscription Information
       _ <- updateSubscription(subscriptionInformation)
       // Update Email
-//      _ <- updateEmail(journey, subscriptionInformation)  // TODO - ECC-307
+      //      _ <- updateEmail(journey, subscriptionInformation)  // TODO - ECC-307
       // Subscribe Call for enrolment
       _ <- subscribe(service, subscriptionInformation)
       // Issuer Call for enrolment
@@ -214,9 +212,7 @@ class SubscriptionRecoveryController @Inject() (
       case _          => throw new IllegalArgumentException("Tax Enrolment issuer call failed")
     }
 
-  private def updateSubscription(
-    subscriptionInformation: SubscriptionInformation
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]) =
+  private def updateSubscription(subscriptionInformation: SubscriptionInformation)(implicit request: Request[_]) =
     sessionCache.saveSub02Outcome(
       Sub02Outcome(
         subscriptionInformation.processedDate,
@@ -247,8 +243,7 @@ class SubscriptionRecoveryController @Inject() (
       )
 
   private def issue(service: Service, subscriptionInformation: SubscriptionInformation)(implicit
-    hc: HeaderCarrier,
-    request: Request[AnyContent]
+    hc: HeaderCarrier
   ): Future[Int] =
     taxEnrolmentService.issuerCall(
       subscriptionInformation.formBundleId,

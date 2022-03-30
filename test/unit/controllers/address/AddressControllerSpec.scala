@@ -33,7 +33,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionDa
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Country
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.address
-import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import unit.controllers.subscription.{
   SubscriptionFlowCreateModeTestSupport,
@@ -102,9 +101,7 @@ class AddressControllerSpec
 
     when(mockSubscriptionBusinessService.address(any[Request[_]])).thenReturn(None)
     when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[_]])).thenReturn(None)
-    when(mockSubscriptionDetailsService.cacheAddressDetails(any())(any(), any())).thenReturn(
-      Future.successful((): Unit)
-    )
+    when(mockSubscriptionDetailsService.cacheAddressDetails(any())(any())).thenReturn(Future.successful((): Unit))
     when(mockCdsFrontendDataCache.registrationDetails(any[Request[_]])).thenReturn(organisationRegistrationDetails)
     when(mockCdsFrontendDataCache.saveRegistrationDetails(any[RegistrationDetails])(any[Request[_]]))
       .thenReturn(Future.successful(true))
@@ -460,12 +457,12 @@ class AddressControllerSpec
   }
 
   private def registerSaveDetailsMockSuccess() {
-    when(mockSubscriptionDetailsService.cacheAddressDetails(any())(any[HeaderCarrier], any[Request[_]]))
+    when(mockSubscriptionDetailsService.cacheAddressDetails(any())(any[Request[_]]))
       .thenReturn(Future.successful(()))
   }
 
   private def registerSaveDetailsMockFailure(exception: Throwable) {
-    when(mockSubscriptionDetailsService.cacheAddressDetails(any())(any[HeaderCarrier], any[Request[_]]))
+    when(mockSubscriptionDetailsService.cacheAddressDetails(any())(any[Request[_]]))
       .thenReturn(Future.failed(exception))
   }
 

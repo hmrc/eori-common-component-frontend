@@ -160,7 +160,6 @@ class Reg06Service @Inject() (
     }
 
     def save(details: RegisterWithEoriAndIdResponse, subscriptionDetails: SubscriptionDetails)(implicit
-      hc: HeaderCarrier,
       request: Request[_]
     ): Future[Boolean] =
       if (details.isResponseData)
