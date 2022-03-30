@@ -255,6 +255,15 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       caught.getMessage startsWith s"sub02Outcome is not cached in data for the sessionId: sessionId-123"
     }
 
+    "throw DataUnavailableException when sub01Outcome is not present in cache" in {
+      when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-123"))))
+      await(sessionCache.putSession(DataKey("regDetails"), data = Json.toJson(individualRegistrationDetails)))
+      val caught = intercept[DataUnavailableException] {
+        await(sessionCache.sub02Outcome(request))
+      }
+      caught.getMessage startsWith s"sub01Outcome is not cached in data for the sessionId: sessionId-123"
+    }
+
     "throw DataUnavailableException when email is not present in cache" in {
       when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-123"))))
       await(sessionCache.putSession(DataKey("sub01Outcome"), data = Json.toJson(sub01Outcome)))
@@ -262,6 +271,21 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
         await(sessionCache.email(request))
       }
       caught.getMessage startsWith s"email is not cached in data for the sessionId: sessionId-123"
+    }
+    "throw IllegalStateException when safeId couldn't be retrieved from registration details or reg06 details" in {
+      when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-123"))))
+      await(sessionCache.putSession(DataKey("sub01Outcome"), data = Json.toJson(sub01Outcome)))
+      val caught = intercept[IllegalStateException] {
+        await(sessionCache.safeId(request))
+      }
+      caught.getMessage startsWith s"safeId is not cached in data for the sessionId: sessionId-123"
+    }
+
+    "fetchSafeIdFromReg06Response returns None if reg06response is not present in cache" in {
+      when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-123"))))
+      await(sessionCache.putSession(DataKey("sub01Outcome"), data = Json.toJson(sub01Outcome)))
+      val response = await(sessionCache.fetchSafeIdFromReg06Response(request))
+      response mustBe None
     }
 
     "fetch safeId correctly from registration details" in {
