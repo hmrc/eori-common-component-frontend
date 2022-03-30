@@ -17,16 +17,14 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
 import play.api.mvc.Request
-
-import javax.inject.{Inject, Singleton}
-import java.time.LocalDate
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
-import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDate
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

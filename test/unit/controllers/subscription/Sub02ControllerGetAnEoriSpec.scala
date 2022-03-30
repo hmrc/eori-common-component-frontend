@@ -17,8 +17,6 @@
 package unit.controllers.subscription
 
 import common.support.testdata.TestData
-import java.time.LocalDateTime
-
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -32,11 +30,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.migration_success
-import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder._
 import util.builders.{AuthActionMock, SessionBuilder}
 
+import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 

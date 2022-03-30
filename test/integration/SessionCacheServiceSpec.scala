@@ -29,13 +29,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.Subscription
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressLookupParams
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
-  CachedData,
-  DataUnavailableException,
-  SessionCache,
-  SessionTimeOutException
-}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, SessionId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{CachedData, DataUnavailableException, SessionCache}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.mongo.CurrentTimestampSupport
 import uk.gov.hmrc.mongo.cache.{CacheItem, DataKey}
 import uk.gov.hmrc.mongo.test.MongoSupport
@@ -63,21 +58,6 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
   "Session cache" should {
 
     "provide default when subscription details holder not in cache" in {
-      /*
-      when(hc.sessionId).thenReturn(Some(SessionId("does-not-exist")))
-
-      val e1 = intercept[SessionTimeOutException] {
-        await(sessionCache.subscriptionDetails(request))
-      }
-      e1.errorMessage mustBe "No match session id for signed in user with session : does-not-exist"
-
-      val s1 = setupSession
-
-      val e2 = intercept[SessionTimeOutException] {
-        await(sessionCache.subscriptionDetails(request))
-      }
-      e2.errorMessage mustBe s"No match session id for signed in user with session : ${s1.value}"
-       */
 
       when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-" + UUID.randomUUID()))))
 
@@ -468,20 +448,6 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       cached mustBe None
     }
 
-    /*  "throw IllegalStateException when sessionId is not available" in {
-      when(request.session).thenReturn(Session(Map()))
-      val addressLookupParams = AddressLookupParams("AA11 1AA", None)
-      intercept[IllegalStateException] {
-        await(sessionCache.saveAddressLookupParams(addressLookupParams)(request))
-      }
-
-    }*/
-  }
-
-  private def setupSession: SessionId = {
-    val sessionId = SessionId("sessionId-" + UUID.randomUUID())
-    when(hc.sessionId).thenReturn(Some(sessionId))
-    sessionId
   }
 
 }

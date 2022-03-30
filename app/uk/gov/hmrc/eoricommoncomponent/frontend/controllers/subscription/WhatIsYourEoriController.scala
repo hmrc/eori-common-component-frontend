@@ -56,10 +56,10 @@ class WhatIsYourEoriController @Inject() (
     extends CdsController(mcc) with EnrolmentExtractor {
 
   def createForm(service: Service): Action[AnyContent] =
-    displayForm(service, false)
+    displayForm(service, isInReviewMode = false)
 
   def reviewForm(service: Service): Action[AnyContent] =
-    displayForm(service, true)
+    displayForm(service, isInReviewMode = true)
 
   private def displayForm(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {

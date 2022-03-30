@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
 import javax.inject.{Inject, Singleton}
-import java.time.{LocalDateTime}
+import java.time.LocalDateTime
 
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Request}

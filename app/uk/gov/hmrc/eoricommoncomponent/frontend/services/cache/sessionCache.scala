@@ -16,24 +16,22 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.cache
 
-import play.api.Logger
-import play.api.libs.json.{JsError, JsResult, JsString, JsSuccess, JsValue, Json, OFormat, Writes}
+import play.api.libs.json.{Json, OFormat, Writes}
 import play.api.mvc.Request
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.ServiceUnavailableResponse
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressLookupParams
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.CachedData._
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
-import uk.gov.hmrc.mongo.cache.{CacheIdType, CacheItem, DataKey, SessionCacheRepository}
+import uk.gov.hmrc.mongo.cache.{DataKey, SessionCacheRepository}
 import uk.gov.hmrc.mongo.{MongoComponent, TimestampSupport}
 
 import java.time.LocalDateTime
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.control.{NoStackTrace, NonFatal}
+import scala.util.control.NoStackTrace
 
 sealed case class CachedData(
   regDetails: Option[RegistrationDetails] = None,
@@ -49,20 +47,20 @@ sealed case class CachedData(
 )
 
 object CachedData {
-  val regDetailsKey                    = "regDetails"
-  val regInfoKey                       = "regInfo"
-  val subDetailsKey                    = "subDetails"
-  val sub01OutcomeKey                  = "sub01Outcome"
-  val sub02OutcomeKey                  = "sub02Outcome"
-  val registerWithEoriAndIdResponseKey = "registerWithEoriAndIdResponse"
-  val emailKey                         = "email"
-  val keepAliveKey                     = "keepAlive"
-  val safeIdKey                        = "safeId"
-  val groupIdKey                       = "cachedGroupId"
-  val groupEnrolmentKey                = "groupEnrolment"
-  val eoriKey                          = "eori"
-  val addressLookupParamsKey           = "addressLookupParams"
-  implicit val format                  = Json.format[CachedData]
+  val regDetailsKey                        = "regDetails"
+  val regInfoKey                           = "regInfo"
+  val subDetailsKey                        = "subDetails"
+  val sub01OutcomeKey                      = "sub01Outcome"
+  val sub02OutcomeKey                      = "sub02Outcome"
+  val registerWithEoriAndIdResponseKey     = "registerWithEoriAndIdResponse"
+  val emailKey                             = "email"
+  val keepAliveKey                         = "keepAlive"
+  val safeIdKey                            = "safeId"
+  val groupIdKey                           = "cachedGroupId"
+  val groupEnrolmentKey                    = "groupEnrolment"
+  val eoriKey                              = "eori"
+  val addressLookupParamsKey               = "addressLookupParams"
+  implicit val format: OFormat[CachedData] = Json.format[CachedData]
 }
 
 @Singleton
@@ -79,7 +77,6 @@ class SessionCache @Inject() (
       timestampSupport = timestampSupport,
       sessionIdKey = SessionKeys.sessionId
     )(ec) {
-  private val eccLogger: Logger = Logger(this.getClass)
 
   def sessionId(implicit request: Request[_]): String =
     request.session.get("sessionId").getOrElse("Session Id is not availabale")
@@ -161,7 +158,7 @@ class SessionCache @Inject() (
       )
     )
 
-  def safeId(implicit request: Request[_]) = fetchSafeIdFromRegDetails.flatMap {
+  def safeId(implicit request: Request[_]): Future[SafeId] = fetchSafeIdFromRegDetails.flatMap {
     case Some(value) => Future.successful(value)
     case None =>
       fetchSafeIdFromReg06Response.map(
@@ -169,15 +166,16 @@ class SessionCache @Inject() (
       )
   }
 
-  def fetchSafeIdFromReg06Response(implicit request: Request[_]) = registerWithEoriAndIdResponse.map(
-    response =>
-      response.responseDetail.flatMap(_.responseData.map(_.SAFEID))
-        .map(SafeId(_))
-  ).recoverWith {
-    case _ => Future.successful(None)
-  }
+  def fetchSafeIdFromReg06Response(implicit request: Request[_]): Future[Option[SafeId]] =
+    registerWithEoriAndIdResponse.map(
+      response =>
+        response.responseDetail.flatMap(_.responseData.map(_.SAFEID))
+          .map(SafeId(_))
+    ).recoverWith {
+      case _ => Future.successful(None)
+    }
 
-  def fetchSafeIdFromRegDetails(implicit request: Request[_]) =
+  def fetchSafeIdFromRegDetails(implicit request: Request[_]): Future[Option[SafeId]] =
     registrationDetails.map(response => if (response.safeId.id.nonEmpty) Some(response.safeId) else None)
       .recoverWith {
         case _ => Future.successful(None)
@@ -199,7 +197,9 @@ class SessionCache @Inject() (
     putData(addressLookupParamsKey, Json.toJson(AddressLookupParams("", None))).map(_ => ())
 
   def remove(implicit request: Request[_]): Future[Boolean] =
-    cacheRepo.deleteEntity(request) map (_ => true)
+    cacheRepo.deleteEntity(request).map(_ => true).recoverWith {
+      case _ => Future.successful(false)
+    }
 
   private def throwException(name: String)(implicit request: Request[_]) =
     throw DataUnavailableException(s"$name is not cached in data for the sessionId: $sessionId")

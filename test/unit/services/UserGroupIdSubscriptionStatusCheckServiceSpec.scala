@@ -21,12 +21,13 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.time.{Millis, Span}
-import play.api.mvc.{Request, Result}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Results.Redirect
+import play.api.mvc.{Request, Result}
 import play.api.test.Helpers.LOCATION
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CacheIds, GroupId, InternalId, SafeId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.{Save4LaterService, UserGroupIdSubscriptionStatusCheckService}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -34,8 +35,6 @@ import util.TestData
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import org.mockito.ArgumentMatchers.{eq => meq, _}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 class UserGroupIdSubscriptionStatusCheckServiceSpec
     extends UnitSpec with MockitoSugar with BeforeAndAfterEach with ScalaFutures with TestData {

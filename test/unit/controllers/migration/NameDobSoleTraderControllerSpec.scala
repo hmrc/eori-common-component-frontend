@@ -16,14 +16,9 @@
 
 package unit.controllers.migration
 
-import java.time.Year
-
 import common.pages.migration.NameDobSoleTraderPage
 import common.pages.migration.NameDobSoleTraderPage._
 import common.pages.registration.DoYouHaveAnEoriPage.pageLevelErrorSummaryListXPath
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -38,12 +33,13 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.enter_your_details
-import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import unit.controllers.subscription.SubscriptionFlowSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.SessionBuilder
 
+import java.time.{LocalDate, Year}
+import java.time.format.DateTimeFormatter
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

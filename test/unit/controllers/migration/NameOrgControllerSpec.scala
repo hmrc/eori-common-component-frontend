@@ -38,14 +38,13 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionDetailsService
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.nameOrg
-import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
@@ -111,7 +110,7 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
     "return bad request for form with errors " in {
       when(mockSessionCache.registrationDetails(any[Request[AnyContent]])).thenReturn(registrationDetails)
 
-      submit(false, incorrectForm) { result =>
+      submit(isInReviewMode = false, incorrectForm) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.title should include(OrganisationNamePage.title)
@@ -127,7 +126,7 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
         Future.successful(None)
       )
 
-      submit(false, correcctForm) { result =>
+      submit(isInReviewMode = false, correcctForm) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
       }
@@ -145,7 +144,7 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
         )(any[Request[AnyContent]])
       ).thenReturn(Future.successful(()))
 
-      submit(true, correcctForm) { result =>
+      submit(isInReviewMode = true, correcctForm) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/matching/review-determine"
       }

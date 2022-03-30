@@ -21,7 +21,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.mvc.{AnyContent, Request, Result}
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EmailController
@@ -38,7 +38,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{
   enrolment_pending_against_group_id,
   enrolment_pending_for_user
 }
-import uk.gov.hmrc.http.{HeaderCarrier, Request}
+import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
