@@ -273,7 +273,6 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       caught.getMessage startsWith s"email is not cached in data for the sessionId: sessionId-123"
     }
 
-
     "fetchSafeIdFromReg06Response returns None if reg06response is not present in cache" in {
       when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-123"))))
       await(sessionCache.putSession(DataKey("sub01Outcome"), data = Json.toJson(sub01Outcome)))
@@ -349,7 +348,7 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       val eori = Eori("GB123456789123")
 
       await(sessionCache.saveEori(eori)(request))
-      val caught = intercept[IllegalStateException]{
+      val caught = intercept[IllegalStateException] {
 
         await(sessionCache.safeId(request))
       }
