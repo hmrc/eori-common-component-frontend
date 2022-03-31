@@ -64,7 +64,7 @@
     if(orgType == Partnership || orgType == LLP) "cds.subscription.partnership.date-of-establishment.title-and-heading"
     else if(orgType == CorporateBody && !isRestOfWorldJourney) "cds.subscription.date-of-establishment.company.title-and-heading"
     else if(orgType == UnincorporatedBody && !isRestOfWorldJourney) "cds.subscription.date-of-establishment.title-and-heading"
-    else "cds.subscription.date-of-establishment.title-and-heading.world"
+    else "cds.date-established.hint.organisation.label"
 }
 
 @updateFormErrors = @{
@@ -73,7 +73,7 @@
 
 @layout_di(messages(headerAndTitle), form = Some(dateForm)) {
     <div>
-        <title id="date-of-establishment-hint-title" class="govuk-fieldset__legend govuk-fieldset__legend--l date-of-establishment-field">@Html(messages(headerAndTitle))</title>
+        <h1 id="date-of-establishment-title" class="govuk-fieldset__legend govuk-fieldset__legend--l date-of-establishment-field">@Html(messages(headerAndTitle))</h1>
 
         @headingAndIntro
 

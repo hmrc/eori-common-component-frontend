@@ -36,13 +36,13 @@ class DateOfEstablishmentSpec extends ViewSpec {
 
   "On a UK journey the 'When was the organisation established?' page" should {
     "display correct title" in {
-      doc.title() must startWith("When was the company established?")
+      doc.title() must startWith("Date when the company was established")
     }
     "have the correct h1 text" in {
-      doc.body.getElementsByTag("h1").text() mustBe "When was the company established?"
+      doc.body.getElementsByTag("h1").text() mustBe "Date when the company was established"
     }
     "have the correct class on the h1" in {
-      doc.body.getElementsByTag("h1").hasClass("govuk-fieldset__heading") mustBe true
+      doc.body.getElementsByTag("h1").hasClass("govuk-fieldset__legend--l") mustBe true
     }
     "have the correct text in the hint" in {
       doc.body.getElementById("date-of-establishment-hint-text").text() mustBe "For example, 31 03 1980."
@@ -62,7 +62,7 @@ class DateOfEstablishmentSpec extends ViewSpec {
       docRestOfWorld.body.getElementsByTag("h1").text() mustBe "When was the organisation established?"
     }
     "have the correct class on the h1" in {
-      docRestOfWorld.body.getElementsByTag("h1").hasClass("govuk-fieldset__heading") mustBe true
+      docRestOfWorld.body.getElementsByTag("h1").hasClass("govuk-fieldset__legend--l") mustBe true
     }
     "have the correct text in the description" in {
       docRestOfWorld.body
@@ -79,19 +79,19 @@ class DateOfEstablishmentSpec extends ViewSpec {
       docLlp.body.getElementsByTag("h1").text() mustBe "When was the partnership established?"
     }
     "have the correct class on the h1" in {
-      docLlp.body.getElementsByTag("h1").hasClass("govuk-fieldset__heading") mustBe true
+      docLlp.body.getElementsByTag("h1").hasClass("govuk-fieldset__legend--l") mustBe true
     }
   }
 
   "On an UnincorporatedBody org type journey Date Established page" should {
     "display correct title" in {
-      docCharity.title() must startWith("When was the organisation established?")
+      docCharity.title() must startWith("Date when the organisation was established")
     }
     "have the correct h1 text" in {
-      docCharity.body.getElementsByTag("h1").text() mustBe "When was the organisation established?"
+      docCharity.body.getElementsByTag("h1").text() mustBe "Date when the organisation was established"
     }
     "have the correct class on the h1" in {
-      docCharity.body.getElementsByTag("h1").hasClass("govuk-fieldset__heading") mustBe true
+      docCharity.body.getElementsByTag("h1").hasClass("govuk-fieldset__legend--l") mustBe true
     }
     "have the correct text in the hint" in {
       docCharity.body.getElementById("date-of-establishment-hint-text").text() mustBe "For example, 31 03 1980."
