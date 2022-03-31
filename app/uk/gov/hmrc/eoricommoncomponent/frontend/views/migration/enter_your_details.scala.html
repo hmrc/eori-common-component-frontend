@@ -75,7 +75,7 @@
                 labelClasses = Some("last-name")
             )
 
-            @inputDate(updateFormErrors,"cds.matching.individual.what-is-your-date-of-birth", hintText = Some(Html(messages("cds.date-of-birth.hint"))), id = "date-of-birth", legendAsPageHeading= false,legendClasses = Some("govuk-!-font-weight-bold"))
+            @inputDate(updateFormErrors,Some("cds.matching.individual.what-is-your-date-of-birth"), hintText = Some(Html(messages("cds.date-of-birth.hint"))), id = "date-of-birth", legendAsPageHeading= false,legendClasses = Some("govuk-!-font-weight-bold"))
 
             @govukButton(Button(
                 content = Text(ViewHelper.continueButtonText(isInReviewMode))
