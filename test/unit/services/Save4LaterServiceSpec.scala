@@ -151,7 +151,7 @@ class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAft
         "atar",
         "HMRC-ATAR-ORG",
         "ATaR",
-        "http://localhost:9582/advance-tariff-application",
+        Some("http://localhost:9582/advance-tariff-application"),
         "http://localhost:12346/accessibility-statement/advance-tariff-application",
         "Advance Tariff Rulings",
         "Dyfarniadau Tariffau Uwch (ATaR)",

@@ -22,6 +22,6 @@
 @(service: Service)(implicit request: Request[_], messages: Messages)
 
 @govukButton(Button(
- href = Some(service.callBack),
+ href = service.callBack,
  content = Text(messages("cds.navigation.continue"))
 ))

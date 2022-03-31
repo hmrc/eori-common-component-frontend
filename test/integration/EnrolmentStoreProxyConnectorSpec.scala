@@ -399,7 +399,7 @@ class EnrolmentStoreProxyConnectorSpec extends IntegrationTestsSpec with ScalaFu
       "status is 400 (BAD_REQUEST) with message INVALID_ENROLMENT_KEY" in {
 
         val incorrectService =
-          Service("incorrect", "incorrect", "incorrect", "incorrect", "incorrect", "incorrect", "incorrect", None)
+          Service("incorrect", "incorrect", "incorrect", None, "incorrect", "incorrect", "incorrect", None)
         val es1Request = ES1Request(incorrectService, "GB123456789123")
 
         val enrolmentStoreProxyResponse =
