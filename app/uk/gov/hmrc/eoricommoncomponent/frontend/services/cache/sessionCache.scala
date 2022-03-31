@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.cache
 
-import play.api.libs.json.{Json, OFormat, Writes}
+import play.api.libs.json.{Json, OFormat, Reads, Writes}
 import play.api.mvc.Request
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -27,7 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.CachedData._
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.mongo.cache.{DataKey, SessionCacheRepository}
 import uk.gov.hmrc.mongo.{MongoComponent, TimestampSupport}
-
+import uk.gov.hmrc.play.http.logging.Mdc.preservingMdc
 import java.time.LocalDateTime
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -82,7 +82,14 @@ class SessionCache @Inject() (
     request.session.get("sessionId").getOrElse("Session Id is not availabale")
 
   def putData[A: Writes](key: String, data: A)(implicit request: Request[_]): Future[A] =
-    putSession[A](DataKey(key), data).map(_ => data)
+    preservingMdc {
+      putSession[A](DataKey(key), data).map(_ => data)
+    }
+
+  def getData[A: Reads](key: String)(implicit request: Request[_]): Future[Option[A]] =
+    preservingMdc {
+      getFromSession[A](DataKey(key))
+    }
 
   def saveRegistrationDetails(rd: RegistrationDetails)(implicit request: Request[_]): Future[Boolean] =
     putData(regDetailsKey, Json.toJson(rd)) map (_ => true)
@@ -138,19 +145,19 @@ class SessionCache @Inject() (
     putData(addressLookupParamsKey, Json.toJson(addressLookupParams)).map(_ => ())
 
   def subscriptionDetails(implicit request: Request[_]): Future[SubscriptionDetails] =
-    getFromSession[SubscriptionDetails](DataKey(subDetailsKey)).map(_.getOrElse(SubscriptionDetails()))
+    getData[SubscriptionDetails](subDetailsKey).map(_.getOrElse(SubscriptionDetails()))
 
   def eori(implicit request: Request[_]): Future[Option[String]] =
-    getFromSession[String](DataKey(eoriKey))
+    getData[String](eoriKey)
 
   def email(implicit request: Request[_]): Future[String] =
-    getFromSession[String](DataKey(emailKey)).map(_.getOrElse(throwException(emailKey)))
+    getData[String](emailKey).map(_.getOrElse(throwException(emailKey)))
 
   def registrationDetails(implicit request: Request[_]): Future[RegistrationDetails] =
-    getFromSession[RegistrationDetails](DataKey(regDetailsKey)).map(_.getOrElse(throwException(regDetailsKey)))
+    getData[RegistrationDetails](regDetailsKey).map(_.getOrElse(throwException(regDetailsKey)))
 
   def registerWithEoriAndIdResponse(implicit request: Request[_]): Future[RegisterWithEoriAndIdResponse] =
-    getFromSession[RegisterWithEoriAndIdResponse](DataKey(registerWithEoriAndIdResponseKey)).map(
+    getData[RegisterWithEoriAndIdResponse](registerWithEoriAndIdResponseKey).map(
       _.getOrElse(
         throw new IllegalStateException(
           s"$registerWithEoriAndIdResponseKey is not cached in data for the sessionId: $sessionId"
@@ -182,23 +189,25 @@ class SessionCache @Inject() (
       }
 
   def sub01Outcome(implicit request: Request[_]): Future[Sub01Outcome] =
-    getFromSession[Sub01Outcome](DataKey(sub01OutcomeKey)).map(_.getOrElse(throwException(sub01OutcomeKey)))
+    getData[Sub01Outcome](sub01OutcomeKey).map(_.getOrElse(throwException(sub01OutcomeKey)))
 
   def sub02Outcome(implicit request: Request[_]): Future[Sub02Outcome] =
-    getFromSession[Sub02Outcome](DataKey(sub02OutcomeKey)).map(_.getOrElse(throwException(sub02OutcomeKey)))
+    getData[Sub02Outcome](sub02OutcomeKey).map(_.getOrElse(throwException(sub02OutcomeKey)))
 
   def groupEnrolment(implicit request: Request[_]): Future[EnrolmentResponse] =
-    getFromSession[EnrolmentResponse](DataKey(groupEnrolmentKey)).map(_.getOrElse(throwException(groupEnrolmentKey)))
+    getData[EnrolmentResponse](groupEnrolmentKey).map(_.getOrElse(throwException(groupEnrolmentKey)))
 
   def addressLookupParams(implicit request: Request[_]): Future[Option[AddressLookupParams]] =
-    getFromSession[AddressLookupParams](DataKey(addressLookupParamsKey))
+    getData[AddressLookupParams](addressLookupParamsKey)
 
   def clearAddressLookupParams(implicit request: Request[_]): Future[Unit] =
     putData(addressLookupParamsKey, Json.toJson(AddressLookupParams("", None))).map(_ => ())
 
   def remove(implicit request: Request[_]): Future[Boolean] =
-    cacheRepo.deleteEntity(request).map(_ => true).recoverWith {
-      case _ => Future.successful(false)
+    preservingMdc {
+      cacheRepo.deleteEntity(request).map(_ => true).recoverWith {
+        case _ => Future.successful(false)
+      }
     }
 
   private def throwException(name: String)(implicit request: Request[_]) =
