@@ -151,7 +151,7 @@ cds.matching.name-id-organisation.registered-company.utr=Cyfeirnod Unigryw y Tre
 cds.matching.name-id-organisation.partnership.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad y Bartneriaeth
 cds.matching.name-id-organisation.organisation.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad y Sefydliad
 
-cds.subscription.date-of-establishment.company.title-and-heading=Pryd y cafodd y cwmni ei sefydlu?
+cds.subscription.date-of-establishment.company.title-and-heading=Dyddiad y sefydlwyd y cwmni
 
 cds.subscription.address-details.postcode.row.label=Cod post
 
