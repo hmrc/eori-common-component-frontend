@@ -54,7 +54,8 @@
 
 @introHtml = {
     @if((orgType == CorporateBody || orgType == UnincorporatedBody) && !isRestOfWorldJourney) {
-        <legend id="date-of-establishment-hint-label" class="govuk-fieldset__legend govuk-fieldset__legend--m">@Html(messages(hintLabel))</legend>
+
+        <span id="date-of-establishment-hint-label" class="govuk-fieldset__legend govuk-fieldset__legend--m">@Html(messages(hintLabel))</span>
     }
 
     <span id="date-of-establishment-hint-text" class="govuk-hint">@Html(messages("cds.date-established.hint"))</span>
