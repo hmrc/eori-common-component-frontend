@@ -49,7 +49,7 @@ class DateOfEstablishmentSpec extends ViewSpec {
     }
     "have the correct text in the intro paragraph" in {
       doc.body
-        .getElementById("date-of-establishment-label")
+        .getElementById("date-of-establishment-info")
         .text() mustBe "Enter the date shown on the organisation’s certificate of incorporation. You can find the date your organisation was established on the Companies House register (opens in new tab)"
     }
   }
@@ -98,7 +98,7 @@ class DateOfEstablishmentSpec extends ViewSpec {
     }
     "have the correct text in the intro paragraph" in {
       docCharity.body
-        .getElementById("date-of-establishment-label")
+        .getElementById("date-of-establishment-info")
         .text() mustBe "Enter the date shown on the organisation’s certificate of incorporation or registration certificate."
     }
   }

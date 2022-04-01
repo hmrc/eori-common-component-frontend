@@ -51,7 +51,7 @@ object SubscriptionDateOfEstablishmentPage extends SubscriptionDateCommon {
   override val formId: String          = "date-of-establishment-form"
   override protected val dateFieldName = "date-of-establishment"
 
-  def dateOfEstablishmentLabelXPath: String = "//*[@id='date-of-establishment-label']"
+  def dateOfEstablishmentLabelXPath: String = "//*[@id='date-of-establishment-info']"
 }
 
 object SubscriptionPartnershipDateOfEstablishmentPage extends SubscriptionDateCommon {

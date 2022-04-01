@@ -45,9 +45,9 @@
 @headingAndIntro = {
     @if(orgType != LLP && orgType != Partnership && !isRestOfWorldJourney) {
         @if(orgType == UnincorporatedBody) {
-            <p id="date-of-establishment-label" class="govuk-body">@Html(messages(introText))</p>
+            <p id="date-of-establishment-info" class="govuk-body">@Html(messages(introText))</p>
         } else {
-            <p id="date-of-establishment-label" class="govuk-body">@Html(messages(introText, registerLink))</p>
+            <p id="date-of-establishment-info" class="govuk-body">@Html(messages(introText, registerLink))</p>
         }
     }
 }
