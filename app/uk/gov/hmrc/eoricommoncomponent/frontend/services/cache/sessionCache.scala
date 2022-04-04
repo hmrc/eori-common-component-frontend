@@ -79,7 +79,7 @@ class SessionCache @Inject() (
     )(ec) {
 
   def sessionId(implicit request: Request[_]): String =
-    request.session.get("sessionId").getOrElse("Session Id is not availabale")
+    request.session.get("sessionId").getOrElse("Session Id is not available")
 
   def putData[A: Writes](key: String, data: A)(implicit request: Request[_]): Future[A] =
     preservingMdc {
