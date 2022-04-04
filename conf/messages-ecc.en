@@ -54,7 +54,7 @@ cds.sub01.outcome.processing.we-are-processing=We are processing your {0} applic
 cds.subscription.verify-email.title=Confirm your email address
 
 cds.subscription.outcomes.rejected.title=The subscription request has been unsuccessful
-cds.subscription.outcomes.rejected.heading=The subscription request for {1} has been unsuccessful
+cds.subscription.outcomes.rejected.heading=The subscription request for {0} has been unsuccessful
 
 cds.subscription.outcomes.in-processing.title=We are processing the subscription request
 cds.subscription.outcomes.in-processing.heading=We are processing the subscription request for {0}
