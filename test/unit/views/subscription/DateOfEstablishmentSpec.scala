@@ -81,6 +81,9 @@ class DateOfEstablishmentSpec extends ViewSpec {
     "have the correct class on the h1" in {
       docLlp.body.getElementsByTag("h1").hasClass("govuk-fieldset__legend--l") mustBe true
     }
+    "not have intro paragraph" in {
+      Option(docLlp.body.getElementById("date-of-establishment-info")) mustBe empty
+    }
   }
 
   "On an UnincorporatedBody org type journey Date Established page" should {

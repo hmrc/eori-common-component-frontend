@@ -37,8 +37,7 @@
 }
 
 @hintLabel = @{
-    if(orgType == Partnership || orgType == LLP) "cds.date-established.hint.partnership.label"
-    else if(orgType == CorporateBody && !isRestOfWorldJourney) "cds.date-established.hint.company.label"
+    if(orgType == CorporateBody && !isRestOfWorldJourney) "cds.date-established.hint.company.label"
     else "cds.date-established.hint.organisation.label"
 }
 
