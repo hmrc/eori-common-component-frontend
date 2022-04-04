@@ -34,7 +34,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
   RequestSessionData,
   SessionCache
 }
-import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 
 import scala.concurrent.ExecutionContext.global
@@ -54,7 +53,6 @@ class SubscriptionFlowManagerSpec
   private val mockRegistrationDetails           = mock[RegistrationDetailsSafeId]
   private val mockSession                       = mock[Session]
 
-  private val mockHC      = mock[HeaderCarrier]
   private val mockRequest = mock[Request[AnyContent]]
 
   private val mockSubscriptionFlow = mock[SubscriptionFlow]

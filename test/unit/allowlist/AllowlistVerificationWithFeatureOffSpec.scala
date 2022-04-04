@@ -30,7 +30,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NameDobDetai
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, NameDobMatchModel, RegistrationDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.enter_your_details
-import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.subscription.SubscriptionFlowSpec
 import util.builders.{AuthBuilder, SessionBuilder}
 
