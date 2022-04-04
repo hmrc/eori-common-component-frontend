@@ -25,7 +25,7 @@ class ServiceSpec extends WordSpec with MustMatchers with EitherValues with Opti
 
     "unbind the values correctly" in {
 
-      val cds: Service = Service("cds", "HMRC-CUS-ORG", "", "", "", "", "", None)
+      val cds: Service = Service("cds", "HMRC-CUS-ORG", "", None, "", "", "", None)
       cds.enrolmentKey mustEqual "HMRC-CUS-ORG"
     }
 
