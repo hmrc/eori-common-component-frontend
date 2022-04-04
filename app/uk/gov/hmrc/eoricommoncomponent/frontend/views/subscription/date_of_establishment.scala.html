@@ -1,19 +1,18 @@
 @*
- * Copyright 2022 HM Revenue & Customs
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *@
-
+* Copyright 2022 HM Revenue & Customs
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*@
 @import java.time.LocalDate
 @import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -24,37 +23,51 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper
 @import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 
-@this(govukDateInput : GovukDateInput, errorSummary: helpers.errorSummary, layout_di: layout, inputDate: helpers.inputDate, govukButton: GovukButton, appConfig: AppConfig)
+@this(govukDateInput: GovukDateInput, errorSummary: helpers.errorSummary, layout_di: layout, inputDate: helpers.inputDate, govukButton: GovukButton, appConfig: AppConfig)
 
-@(dateForm: Form[LocalDate],  isInReviewMode: Boolean, orgType: EtmpOrganisationType, isRestOfWorldJourney: Boolean, service: Service)(implicit request: Request[_], messages: Messages)
+@(dateForm: Form[LocalDate], isInReviewMode: Boolean, orgType: EtmpOrganisationType, isRestOfWorldJourney: Boolean, service: Service)(implicit request: Request[_], messages: Messages)
 
 @registerLink = {
     <a class="govuk-link" href=@appConfig.companyHouseRegister target="_blank" rel="noopener noreferrer">@messages("cds.subscription.company-house-register.hint", messages("cds.navigation.opens-in-new-tab"))</a>
 }
 @introText = @{
-    if (orgType == LLP) "cds.subscription.llp.date-established.label"
-    if (orgType == UnincorporatedBody) "cds.subscription.llp.date-established.charity-label"
+    if(orgType == LLP) "cds.subscription.llp.date-established.label"
+    if(orgType == UnincorporatedBody) "cds.subscription.llp.date-established.charity-label"
     else "cds.subscription.business.date-established.label"
 }
 
-@introHtml = {
-    @if(orgType != LLP && orgType != Partnership && !isRestOfWorldJourney){
-      @if(orgType == UnincorporatedBody){
-          <p id="date-of-establishment-label" class="govuk-body">@Html(messages(introText))</p>
-      }else{
-          <p id="date-of-establishment-label" class="govuk-body">@Html(messages(introText,registerLink))</p>
-      }
+@hintLabel = @{
+    if(orgType == CorporateBody && !isRestOfWorldJourney) "cds.date-established.hint.company.label"
+    else "cds.date-established.hint.organisation.label"
+}
+
+@headingAndIntro = {
+    @if(orgType != LLP && orgType != Partnership && !isRestOfWorldJourney) {
+        @if(orgType == UnincorporatedBody) {
+            <p id="date-of-establishment-info" class="govuk-body">@Html(messages(introText))</p>
+        } else {
+            <p id="date-of-establishment-info" class="govuk-body">@Html(messages(introText, registerLink))</p>
+        }
     }
+}
+
+@introHtml = {
+    @if((orgType == CorporateBody || orgType == UnincorporatedBody) && !isRestOfWorldJourney) {
+
+        <span id="date-of-establishment-hint-label" class="govuk-fieldset__legend govuk-fieldset__legend--m">@Html(messages(hintLabel))</span>
+    }
+
     <span id="date-of-establishment-hint-text" class="govuk-hint">@Html(messages("cds.date-established.hint"))</span>
 }
 
 @headerAndTitle = @{
-    if (orgType == Partnership || orgType == LLP) "cds.subscription.partnership.date-of-establishment.title-and-heading"
+    if(orgType == Partnership || orgType == LLP) "cds.subscription.partnership.date-of-establishment.title-and-heading"
     else if(orgType == CorporateBody && !isRestOfWorldJourney) "cds.subscription.date-of-establishment.company.title-and-heading"
-    else "cds.subscription.date-of-establishment.title-and-heading"
+    else if(orgType == UnincorporatedBody && !isRestOfWorldJourney) "cds.subscription.date-of-establishment.title-and-heading"
+    else "cds.date-established.hint.organisation.label"
 }
 
-@updateFormErrors =@{
+@updateFormErrors = @{
     dateForm.copy(errors = DateConverter.updateDateOfEstablishmentErrors(dateForm.errors))
 }
 
@@ -62,13 +75,17 @@
     <div>
 
         @errorSummary(DateConverter.updateDateOfEstablishmentErrors(dateForm.errors),
-            focusOverrides = Map("date-of-establishment" -> "date-of-establishment.day"))
+        focusOverrides = Map("date-of-establishment" -> "date-of-establishment.day"))
+
+        <h1 id="date-of-establishment-title" class="govuk-fieldset__legend govuk-fieldset__legend--l date-of-establishment-field">@Html(messages(headerAndTitle))</h1>
+
+        @headingAndIntro
 
         @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController.submit(isInReviewMode, service), "date-of-birth-form") {
 
             @CSRF.formField
 
-            @inputDate(updateFormErrors,headerAndTitle, hintText = Some(introHtml), id = "date-of-establishment",legendClasses = Some("date-of-establishment-field"))
+            @inputDate(updateFormErrors, None, hintText = Some(introHtml), id = "date-of-establishment", legendClasses = Some("date-of-establishment-field"))
 
             @govukButton(Button(
                 content = Text(ViewHelper.continueButtonText(isInReviewMode))
