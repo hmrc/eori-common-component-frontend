@@ -19,24 +19,25 @@ package unit.services.organisation
 import base.UnitSpec
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, mock => _}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, CorporateBody, Partnership}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  DataUnavailableException,
+  RequestSessionData,
+  SessionCache
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
-import uk.gov.hmrc.http.HeaderCarrier
 import util.builders.RegistrationDetailsBuilder
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 class OrgTypeLookupSpec extends UnitSpec with BeforeAndAfterEach with MockitoSugar {
 
   private val mockCache          = mock[SessionCache]
   private val mockReqSessionData = mock[RequestSessionData]
-  private val hc                 = mock[HeaderCarrier]
   private val req                = mock[Request[AnyContent]]
 
   override def beforeEach {
@@ -51,28 +52,28 @@ class OrgTypeLookupSpec extends UnitSpec with BeforeAndAfterEach with MockitoSug
       when(mockReqSessionData.userSelectedOrganisationType(any[Request[AnyContent]]))
         .thenReturn(Some(CdsOrganisationType.Company))
 
-      val orgType = await(lookup.etmpOrgType(req, hc))
+      val orgType = await(lookup.etmpOrgType(req))
 
       orgType shouldBe CorporateBody
     }
 
     "give org type from cache" in {
       when(mockReqSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[AnyContent]]))
         .thenReturn(Future.successful(RegistrationDetailsBuilder.partnershipRegistrationDetails))
 
-      val orgType = await(lookup.etmpOrgType(req, hc))
+      val orgType = await(lookup.etmpOrgType(req))
 
       orgType shouldBe Partnership
     }
 
     "throw an exception when neither the request session or cache contains the org type" in {
       when(mockReqSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[AnyContent]]))
         .thenReturn(Future.successful(RegistrationDetailsBuilder.emptyETMPOrgTypeRegistrationDetails))
 
       val thrown = intercept[DataUnavailableException] {
-        await(lookup.etmpOrgType(req, hc))
+        await(lookup.etmpOrgType(req))
       }
 
       thrown.getMessage shouldBe "Unable to retrieve Org Type from the cache"
@@ -80,11 +81,11 @@ class OrgTypeLookupSpec extends UnitSpec with BeforeAndAfterEach with MockitoSug
 
     "throw an exception when different type of registration details is retrieved" in {
       when(mockReqSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[AnyContent]]))
         .thenReturn(Future.successful(RegistrationDetailsBuilder.individualRegistrationDetails))
 
       val thrown = intercept[DataUnavailableException] {
-        await(lookup.etmpOrgType(req, hc))
+        await(lookup.etmpOrgType(req))
       }
 
       thrown.getMessage shouldBe "No Registration details in cache."

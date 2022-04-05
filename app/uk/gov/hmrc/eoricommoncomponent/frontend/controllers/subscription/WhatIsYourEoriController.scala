@@ -56,10 +56,10 @@ class WhatIsYourEoriController @Inject() (
     extends CdsController(mcc) with EnrolmentExtractor {
 
   def createForm(service: Service): Action[AnyContent] =
-    displayForm(service, false)
+    displayForm(service, isInReviewMode = false)
 
   def reviewForm(service: Service): Action[AnyContent] =
-    displayForm(service, true)
+    displayForm(service, isInReviewMode = true)
 
   private def displayForm(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
@@ -73,9 +73,7 @@ class WhatIsYourEoriController @Inject() (
 
     }
 
-  private def useExistingEori(eori: ExistingEori, service: Service)(implicit
-    headerCarrier: HeaderCarrier
-  ): Future[Result] =
+  private def useExistingEori(eori: ExistingEori, service: Service)(implicit request: Request[_]): Future[Result] =
     subscriptionDetailsHolderService.cacheExistingEoriNumber(eori).map { _ =>
       Redirect(
         uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.UseThisEoriController.display(service)
@@ -105,7 +103,7 @@ class WhatIsYourEoriController @Inject() (
     }
 
   private def submitNewDetails(formData: EoriNumberViewModel, isInReviewMode: Boolean, service: Service)(implicit
-    hc: HeaderCarrier
+    request: Request[_]
   ) = {
     val eori = eoriWithCountry(formData.eoriNumber)
 

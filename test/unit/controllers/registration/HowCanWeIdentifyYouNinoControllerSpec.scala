@@ -38,7 +38,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionDetailsService
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you_nino
-import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -73,9 +72,9 @@ class HowCanWeIdentifyYouNinoControllerSpec extends ControllerSpec with BeforeAn
 
     Mockito.reset(mockSubscriptionDetailsHolderService)
 
-    when(mockSubscriptionDetailsHolderService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
+    when(mockSubscriptionDetailsHolderService.cacheCustomsId(any[CustomsId])(any[Request[AnyContent]]))
       .thenReturn(Future.successful(()))
-    when(mockSubscriptionBusinessService.getCachedCustomsId(any[HeaderCarrier]))
+    when(mockSubscriptionBusinessService.getCachedCustomsId(any[Request[AnyContent]]))
       .thenReturn(Future.successful(None))
 
     when(
@@ -245,7 +244,7 @@ class HowCanWeIdentifyYouNinoControllerSpec extends ControllerSpec with BeforeAn
     test: Future[Result] => Any
   ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
-    when(mockSubscriptionBusinessService.getCachedCustomsId(any[HeaderCarrier]))
+    when(mockSubscriptionBusinessService.getCachedCustomsId(any[Request[AnyContent]]))
       .thenReturn(Future.successful(Some(customsId)))
 
     test(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)))

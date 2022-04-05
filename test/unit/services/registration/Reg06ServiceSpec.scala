@@ -25,6 +25,7 @@ import org.mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.RegisterWithEoriAndIdConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging._
@@ -50,16 +51,17 @@ import scala.concurrent.Future
 import scala.util.Random
 
 class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with BeforeAndAfterEach {
-  private val mockConnector                = mock[RegisterWithEoriAndIdConnector]
-  private val mockReqCommonGen             = mock[RequestCommonGenerator]
-  private val mockDetailsCreator           = mock[RegistrationDetailsCreator]
-  private val mockRequestCommon            = mock[RequestCommon]
-  private val mockDataCache                = mock[SessionCache]
-  private val mockRequestSessionData       = mock[RequestSessionData]
-  private val validDate                    = "2016-07-08T08:35:13Z"
-  private val validDateTime                = ZonedDateTime.parse(validDate).toLocalDateTime
-  implicit val hc: HeaderCarrier           = mock[HeaderCarrier]
-  implicit val originatingService: Service = atarService
+  private val mockConnector                 = mock[RegisterWithEoriAndIdConnector]
+  private val mockReqCommonGen              = mock[RequestCommonGenerator]
+  private val mockDetailsCreator            = mock[RegistrationDetailsCreator]
+  private val mockRequestCommon             = mock[RequestCommon]
+  private val mockDataCache                 = mock[SessionCache]
+  private val mockRequestSessionData        = mock[RequestSessionData]
+  private val validDate                     = "2016-07-08T08:35:13Z"
+  private val validDateTime                 = ZonedDateTime.parse(validDate).toLocalDateTime
+  implicit val hc: HeaderCarrier            = mock[HeaderCarrier]
+  implicit val request: Request[AnyContent] = mock[Request[AnyContent]]
+  implicit val originatingService: Service  = atarService
 
   val service =
     new Reg06Service(mockConnector, mockReqCommonGen, mockDataCache, mockRequestSessionData)(global)
@@ -569,7 +571,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
   override protected def beforeEach(): Unit = {
     reset(mockConnector, mockDetailsCreator, mockDataCache)
     when(mockReqCommonGen.generate()).thenReturn(mockRequestCommon)
-    when(mockDataCache.saveRegisterWithEoriAndIdResponse(any[RegisterWithEoriAndIdResponse])(any[HeaderCarrier]))
+    when(mockDataCache.saveRegisterWithEoriAndIdResponse(any[RegisterWithEoriAndIdResponse])(any[Request[AnyContent]]))
       .thenReturn(Future.successful(true))
   }
 
@@ -767,7 +769,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       ) shouldBe true
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(meq(registrationResponse.registerWithEORIAndIDResponse))(
-        meq(hc)
+        meq(request)
       )
     }
 
@@ -783,7 +785,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
         meq(registrationResponseNoSafeId.registerWithEORIAndIDResponse)
-      )(any[HeaderCarrier])
+      )(any[Request[AnyContent]])
     }
 
     "Date of establishment and PersonType are not returned from Reg06 then Date of establishment and PersonType stored in cache is used" in {
@@ -797,7 +799,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
         meq(registrationResponseWithDoeAndPersonType.registerWithEORIAndIDResponse)
-      )(any[HeaderCarrier])
+      )(any[Request[AnyContent]])
     }
 
     "Date of establishment is returned from Reg06 then the returned Date of establishment is used" in {
@@ -811,7 +813,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
         meq(registrationResponseWithDate.registerWithEORIAndIDResponse)
-      )(any[HeaderCarrier])
+      )(any[Request[AnyContent]])
     }
 
     "Store response is cache when Response Data is returned as None " in {
@@ -825,7 +827,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
         meq(registrationWithNoRespData.registerWithEORIAndIDResponse)
-      )(any[HeaderCarrier])
+      )(any[Request[AnyContent]])
     }
 
     "Date of establishment is not returned from Reg06 then Date of Birth stored in cache is used" in {
@@ -843,7 +845,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
         meq(registrationResponseWithDob.registerWithEORIAndIDResponse)
-      )(any[HeaderCarrier])
+      )(any[Request[AnyContent]])
     }
 
     "Date of establishment is not returned from Reg06 but personType is returned for individual" in {
@@ -861,7 +863,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
         meq(registrationResponseWithDobAndPT.registerWithEORIAndIDResponse)
-      )(any[HeaderCarrier])
+      )(any[Request[AnyContent]])
     }
 
     "Date of establishment is not returned from Reg06 but personType is returned for organisation" in {
@@ -875,7 +877,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
         meq(registrationResponseWithDoeAndPersonType.registerWithEORIAndIDResponse)
-      )(any[HeaderCarrier])
+      )(any[Request[AnyContent]])
     }
 
     "Date of establishment returned from Reg06 but personType is not returned then personType stored in cache is used" in {
@@ -893,13 +895,15 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
 
       verify(mockDataCache).saveRegisterWithEoriAndIdResponse(
         meq(registrationResponseWithDobAndPT.registerWithEORIAndIDResponse)
-      )(any[HeaderCarrier])
+      )(any[Request[AnyContent]])
     }
 
     "not proceed/return until organisation details are stored in cache" in {
       mockRegistrationSuccess()
 
-      when(mockDataCache.saveRegisterWithEoriAndIdResponse(any[RegisterWithEoriAndIdResponse])(any[HeaderCarrier]))
+      when(
+        mockDataCache.saveRegisterWithEoriAndIdResponse(any[RegisterWithEoriAndIdResponse])(any[Request[AnyContent]])
+      )
         .thenReturn(Future.failed(expectedException))
 
       val caught = intercept[RuntimeException] {
@@ -939,9 +943,9 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
 
       val subscriptionDetailsHolder = mock[SubscriptionDetails]
 
-      when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockDataCache.subscriptionDetails(any[Request[AnyContent]]))
         .thenReturn(Future.successful(subscriptionDetailsHolder))
-      when(mockDataCache.registrationDetails(any[HeaderCarrier]))
+      when(mockDataCache.registrationDetails(any[Request[AnyContent]]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(Some(CdsOrganisationType.Company))
@@ -974,9 +978,9 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       val nameIdOrganisationDetails =
         NameIdOrganisationMatchModel("test", "2108834503k")
       val mockSubscriptionDetailsHolder = mock[SubscriptionDetails]
-      when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockDataCache.subscriptionDetails(any[Request[AnyContent]]))
         .thenReturn(Future.successful(mockSubscriptionDetailsHolder))
-      when(mockDataCache.registrationDetails(any[HeaderCarrier]))
+      when(mockDataCache.registrationDetails(any[Request[AnyContent]]))
         .thenReturn(Future.successful(mockRegistrationDetailsOrganisation))
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(Some(CdsOrganisationType.Company))
@@ -1009,9 +1013,9 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         Some(NameIdOrganisationMatchModel("test", "2108834503k"))
 
       val mockSubscriptionDetailsHolder = mock[SubscriptionDetails]
-      when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockDataCache.subscriptionDetails(any[Request[AnyContent]]))
         .thenReturn(Future.successful(mockSubscriptionDetailsHolder))
-      when(mockDataCache.registrationDetails(any[HeaderCarrier]))
+      when(mockDataCache.registrationDetails(any[Request[AnyContent]]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(Some(CdsOrganisationType.Company))
@@ -1033,7 +1037,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
     }
     "throw DataUnavailableException when orgType is missing from Cache while calling  RegistrationDetailsOrganisation" in {
       val mockSubscriptionDetailsHolder = mock[SubscriptionDetails]
-      when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockDataCache.subscriptionDetails(any[Request[AnyContent]]))
         .thenReturn(Future.successful(mockSubscriptionDetailsHolder))
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(None)
@@ -1043,7 +1047,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
     }
     "throw DataUnavailableException when Address is missing from Cache while calling  RegistrationDetailsOrganisation" in {
       val mockSubscriptionDetailsHolder = mock[SubscriptionDetails]
-      when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockDataCache.subscriptionDetails(any[Request[AnyContent]]))
         .thenReturn(Future.successful(mockSubscriptionDetailsHolder))
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(Some(CdsOrganisationType.Company))
@@ -1057,7 +1061,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       val mayBeCachedAddressViewModel =
         Some(AddressViewModel("Address Line 1", "city", Some("postcode"), "GB"))
       val mockSubscriptionDetailsHolder = mock[SubscriptionDetails]
-      when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockDataCache.subscriptionDetails(any[Request[AnyContent]]))
         .thenReturn(Future.successful(mockSubscriptionDetailsHolder))
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(Some(CdsOrganisationType.Company))
@@ -1073,7 +1077,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         Some(AddressViewModel("Address Line 1", "city", Some("postcode"), "GB"))
       val mayBeEori                     = Some("EORINUMBERXXXXXXX")
       val mockSubscriptionDetailsHolder = mock[SubscriptionDetails]
-      when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockDataCache.subscriptionDetails(any[Request[AnyContent]]))
         .thenReturn(Future.successful(mockSubscriptionDetailsHolder))
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(Some(CdsOrganisationType.Company))
@@ -1094,9 +1098,9 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       val nino = Some(Nino("NINO1234"))
 
       val mockSubscription = mock[SubscriptionDetails]
-      when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockDataCache.subscriptionDetails(any[Request[AnyContent]]))
         .thenReturn(Future.successful(mockSubscription))
-      when(mockDataCache.registrationDetails(any[HeaderCarrier]))
+      when(mockDataCache.registrationDetails(any[Request[AnyContent]]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(Some(CdsOrganisationType.Company))
@@ -1119,7 +1123,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
     "throw DataUnavailableException when OrgType is missing from request session while calling sendIndividualRequest" in {
 
       val mockSubscription = mock[SubscriptionDetails]
-      when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockDataCache.subscriptionDetails(any[Request[AnyContent]]))
         .thenReturn(Future.successful(mockSubscription))
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(None)
@@ -1130,7 +1134,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
     "throw DataUnavailableException when Address is missing from cache while calling sendIndividualRequest" in {
 
       val mockSubscription = mock[SubscriptionDetails]
-      when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockDataCache.subscriptionDetails(any[Request[AnyContent]]))
         .thenReturn(Future.successful(mockSubscription))
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(Some(CdsOrganisationType.Company))
@@ -1143,7 +1147,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       val address =
         Some(AddressViewModel("Address Line 1", "city", Some("postcode"), "GB"))
       val mockSubscription = mock[SubscriptionDetails]
-      when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockDataCache.subscriptionDetails(any[Request[AnyContent]]))
         .thenReturn(Future.successful(mockSubscription))
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(Some(CdsOrganisationType.Company))
@@ -1158,7 +1162,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       val address =
         Some(AddressViewModel("Address Line 1", "city", Some("postcode"), "GB"))
       val mockSubscription = mock[SubscriptionDetails]
-      when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockDataCache.subscriptionDetails(any[Request[AnyContent]]))
         .thenReturn(Future.successful(mockSubscription))
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(Some(CdsOrganisationType.Company))
@@ -1175,7 +1179,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         Some(AddressViewModel("Address Line 1", "city", Some("postcode"), "GB"))
       val eori             = Some("EORINUMBERXXXXXXX")
       val mockSubscription = mock[SubscriptionDetails]
-      when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockDataCache.subscriptionDetails(any[Request[AnyContent]]))
         .thenReturn(Future.successful(mockSubscription))
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(Some(CdsOrganisationType.Company))
@@ -1202,9 +1206,9 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
           Some(NameIdOrganisationMatchModel("test", "2108834503k"))
 
         val mockSubscriptionDetailsHolder = mock[SubscriptionDetails]
-        when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+        when(mockDataCache.subscriptionDetails(any[Request[AnyContent]]))
           .thenReturn(Future.successful(mockSubscriptionDetailsHolder))
-        when(mockDataCache.registrationDetails(any[HeaderCarrier]))
+        when(mockDataCache.registrationDetails(any[Request[AnyContent]]))
           .thenReturn(Future.successful(organisationRegistrationDetails))
         when(mockRequestSessionData.userSelectedOrganisationType(any()))
           .thenReturn(Some(CdsOrganisationType.Company))
@@ -1243,9 +1247,9 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         val nino = Some(Nino("NINO1234"))
 
         val mockSubscription = mock[SubscriptionDetails]
-        when(mockDataCache.subscriptionDetails(any[HeaderCarrier]))
+        when(mockDataCache.subscriptionDetails(any[Request[AnyContent]]))
           .thenReturn(Future.successful(mockSubscription))
-        when(mockDataCache.registrationDetails(any[HeaderCarrier]))
+        when(mockDataCache.registrationDetails(any[Request[AnyContent]]))
           .thenReturn(Future.successful(organisationRegistrationDetails))
         when(mockRequestSessionData.userSelectedOrganisationType(any()))
           .thenReturn(Some(CdsOrganisationType.Company))

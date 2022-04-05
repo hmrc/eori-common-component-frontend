@@ -151,7 +151,7 @@ class Reg06Service @Inject() (
     value: RegisterWithEoriAndIdDetail,
     subscriptionDetails: SubscriptionDetails,
     maybeOrganisationTypeConfiguration: Option[OrganisationTypeConfiguration]
-  )(implicit hc: HeaderCarrier, originatingService: Service): Future[Boolean] = {
+  )(implicit hc: HeaderCarrier, request: Request[_], originatingService: Service): Future[Boolean] = {
 
     def stripKFromUtr: RegisterWithEoriAndIdDetail => RegisterWithEoriAndIdDetail = {
       case r @ RegisterWithEoriAndIdDetail(_, id, _) if id.IDType == UTR =>
@@ -160,7 +160,7 @@ class Reg06Service @Inject() (
     }
 
     def save(details: RegisterWithEoriAndIdResponse, subscriptionDetails: SubscriptionDetails)(implicit
-      hc: HeaderCarrier
+      request: Request[_]
     ): Future[Boolean] =
       if (details.isResponseData)
         (details.isDoE, details.isPersonType) match {

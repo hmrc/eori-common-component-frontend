@@ -181,7 +181,7 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
           .thenReturn(Future.successful(AddressLookupSuccess(Seq(addressLookup))))
         when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(Some(CdsOrganisationType.Company))
 
-        val result = controller.submit(atarService, false)(postRequest("address" -> ""))
+        val result = controller.submit(atarService, isInReviewMode = false)(postRequest("address" -> ""))
 
         status(result) shouldBe BAD_REQUEST
         verify(mockAddressLookupResultsPage)
@@ -241,7 +241,8 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
         when(mockAddressLookupConnector.lookup(any(), any())(any()))
           .thenReturn(Future.successful(AddressLookupSuccess(Seq.empty[AddressLookup])))
 
-        val result = controller.submit(atarService, true)(postRequest("address" -> addressLookup.dropDownView))
+        val result =
+          controller.submit(atarService, isInReviewMode = true)(postRequest("address" -> addressLookup.dropDownView))
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(
@@ -255,7 +256,8 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
         when(mockAddressLookupConnector.lookup(any(), any())(any()))
           .thenReturn(Future.successful(AddressLookupSuccess(Seq.empty[AddressLookup])))
 
-        val result = controller.submit(atarService, false)(postRequest("address" -> addressLookup.dropDownView))
+        val result =
+          controller.submit(atarService, isInReviewMode = false)(postRequest("address" -> addressLookup.dropDownView))
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/address-postcode/no-results"
@@ -281,7 +283,8 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
         when(mockAddressLookupConnector.lookup(any(), any())(any()))
           .thenReturn(Future.successful(AddressLookupSuccess(Seq(AddressLookup("", "city", "postcode", "GB")))))
 
-        val result = controller.submit(atarService, false)(postRequest("address" -> addressLookup.dropDownView))
+        val result =
+          controller.submit(atarService, isInReviewMode = false)(postRequest("address" -> addressLookup.dropDownView))
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/address-postcode/no-results"
@@ -386,7 +389,8 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
         when(mockSessionCache.addressLookupParams(any())).thenReturn(Future.successful(Some(addressLookupParams)))
         when(mockAddressLookupConnector.lookup(any(), any())(any())).thenReturn(Future.successful(AddressLookupFailure))
 
-        val result = controller.submit(atarService, true)(postRequest("address" -> addressLookup.dropDownView))
+        val result =
+          controller.submit(atarService, isInReviewMode = true)(postRequest("address" -> addressLookup.dropDownView))
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(
@@ -399,7 +403,8 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
         when(mockSessionCache.addressLookupParams(any())).thenReturn(Future.successful(Some(addressLookupParams)))
         when(mockAddressLookupConnector.lookup(any(), any())(any())).thenReturn(Future.successful(AddressLookupFailure))
 
-        val result = controller.submit(atarService, false)(postRequest("address" -> addressLookup.dropDownView))
+        val result =
+          controller.submit(atarService, isInReviewMode = false)(postRequest("address" -> addressLookup.dropDownView))
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/address-postcode/unavailable"
@@ -432,7 +437,8 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
 
         when(mockSessionCache.addressLookupParams(any())).thenReturn(Future.successful(None))
 
-        val result = controller.submit(atarService, true)(postRequest("address" -> addressLookup.dropDownView))
+        val result =
+          controller.submit(atarService, isInReviewMode = true)(postRequest("address" -> addressLookup.dropDownView))
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/address-postcode/review"
@@ -442,7 +448,8 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
 
         when(mockSessionCache.addressLookupParams(any())).thenReturn(Future.successful(None))
 
-        val result = controller.submit(atarService, false)(postRequest("address" -> addressLookup.dropDownView))
+        val result =
+          controller.submit(atarService, isInReviewMode = false)(postRequest("address" -> addressLookup.dropDownView))
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/address-postcode"
@@ -459,7 +466,8 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
         when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(Some(CdsOrganisationType.Company))
         when(mockSubscriptionDetailsService.cacheAddressDetails(any())(any())).thenReturn(Future.successful((): Unit))
 
-        val result = controller.submit(atarService, true)(postRequest("address" -> addressLookup.dropDownView))
+        val result =
+          controller.submit(atarService, isInReviewMode = true)(postRequest("address" -> addressLookup.dropDownView))
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/matching/review-determine"
@@ -477,7 +485,8 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
           SubscriptionFlowInfo(0, 0, ReviewDetailsPageSubscription)
         )
 
-        val result = controller.submit(atarService, false)(postRequest("address" -> addressLookup.dropDownView))
+        val result =
+          controller.submit(atarService, isInReviewMode = false)(postRequest("address" -> addressLookup.dropDownView))
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/matching/review-determine"

@@ -25,6 +25,7 @@ import org.scalatest.prop.Tables.Table
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Configuration
 import play.api.libs.json.Json
+import play.api.mvc.{AnyContent, Request}
 import play.mvc.Http.Status._
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SubscriptionStatusConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
@@ -58,8 +59,9 @@ class SubscriptionStatusServiceSpec extends UnitSpec with MockitoSugar with Befo
   lazy val service =
     new SubscriptionStatusService(mockConnector, mockRequestCommonGenerator, mockSessionCache)(global)
 
-  implicit val hc: HeaderCarrier           = HeaderCarrier()
-  implicit val originatingService: Service = atarService
+  implicit val hc: HeaderCarrier                = HeaderCarrier()
+  private implicit val req: Request[AnyContent] = mock[Request[AnyContent]]
+  implicit val originatingService: Service      = atarService
 
   override protected def beforeEach() {
     reset(mockConfig)

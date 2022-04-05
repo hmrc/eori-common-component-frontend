@@ -40,7 +40,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
   SessionCache
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.nameId
-import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import unit.controllers.subscription.SubscriptionFlowSpec
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -91,8 +90,8 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       mockSubscriptionFlowManager,
       mockSubscriptionDetailsHolderService
     )
-    when(mockSubscriptionBusinessService.cachedNameIdOrganisationViewModel(any[HeaderCarrier])).thenReturn(None)
-    when(mockSubscriptionBusinessService.getCachedNameIdViewModel(any[HeaderCarrier]))
+    when(mockSubscriptionBusinessService.cachedNameIdOrganisationViewModel(any[Request[_]])).thenReturn(None)
+    when(mockSubscriptionBusinessService.getCachedNameIdViewModel(any[Request[_]]))
       .thenReturn(Future.successful(NameIdDetailsPage.filledValues))
 
     when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(Some(CdsOrganisationType.Company))
@@ -126,7 +125,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       }
 
       "display name / id correctly when all fields are populated" in {
-        when(mockSubscriptionBusinessService.cachedNameIdOrganisationViewModel(any[HeaderCarrier]))
+        when(mockSubscriptionBusinessService.cachedNameIdOrganisationViewModel(any[Request[_]]))
           .thenReturn(Future.successful(Some(NameIdDetailsPage.filledValues)))
 
         showFormFunction(OrganisationFlow) { result =>
@@ -179,7 +178,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     }
 
     "fill fields with details if stored in cache" in {
-      when(mockSubscriptionBusinessService.cachedNameIdOrganisationViewModel(any[HeaderCarrier]))
+      when(mockSubscriptionBusinessService.cachedNameIdOrganisationViewModel(any[Request[_]]))
         .thenReturn(Some(NameIdDetailsPage.filledValues))
       showCreateForm() { result =>
         val page         = CdsPage(contentAsString(result))
@@ -251,7 +250,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       submitFormInCreateMode(createFormAllFieldsUtrMap) { result =>
         await(result)
         verify(mockSubscriptionDetailsHolderService).cacheNameIdDetails(meq(NameIdDetailsPage.filledValues))(
-          any[HeaderCarrier]
+          any[Request[_]]
         )
       }
     }
@@ -442,7 +441,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
   val createEmptyFormUtrMap: Map[String, String] = Map(nameFieldName -> "", utrFieldName -> "")
 
   private def mockFunctionWithRegistrationDetails(registrationDetails: RegistrationDetails): Unit =
-    when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier]))
+    when(mockCdsFrontendDataCache.registrationDetails(any[Request[_]]))
       .thenReturn(registrationDetails)
 
   private def submitFormInCreateMode(form: Map[String, String], userId: String = defaultUserId)(
@@ -485,7 +484,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
-    when(mockSubscriptionBusinessService.getCachedNameIdViewModel(any[HeaderCarrier]))
+    when(mockSubscriptionBusinessService.getCachedNameIdViewModel(any[Request[_]]))
       .thenReturn(Future.successful(NameIdDetailsPage.filledValues))
 
     val result =
@@ -494,11 +493,11 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
   }
 
   private def registerSaveNameIdDetailsMockSuccess(): Unit =
-    when(mockSubscriptionDetailsHolderService.cacheNameIdDetails(any[NameIdOrganisationMatchModel])(any[HeaderCarrier]))
+    when(mockSubscriptionDetailsHolderService.cacheNameIdDetails(any[NameIdOrganisationMatchModel])(any[Request[_]]))
       .thenReturn(Future.successful(()))
 
   private def registerSaveNameIdDetailsMockFailure(exception: Throwable): Unit =
-    when(mockSubscriptionDetailsHolderService.cacheNameIdDetails(any[NameIdOrganisationMatchModel])(any[HeaderCarrier]))
+    when(mockSubscriptionDetailsHolderService.cacheNameIdDetails(any[NameIdOrganisationMatchModel])(any[Request[_]]))
       .thenReturn(Future.failed(exception))
 
 }

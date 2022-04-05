@@ -33,7 +33,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionDa
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Country
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.address
-import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import unit.controllers.subscription.{
   SubscriptionFlowCreateModeTestSupport,
@@ -100,11 +99,11 @@ class AddressControllerSpec
   override def beforeEach: Unit = {
     super.beforeEach()
 
-    when(mockSubscriptionBusinessService.address(any[HeaderCarrier])).thenReturn(None)
-    when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier])).thenReturn(None)
+    when(mockSubscriptionBusinessService.address(any[Request[_]])).thenReturn(None)
+    when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[_]])).thenReturn(None)
     when(mockSubscriptionDetailsService.cacheAddressDetails(any())(any())).thenReturn(Future.successful((): Unit))
-    when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(organisationRegistrationDetails)
-    when(mockCdsFrontendDataCache.saveRegistrationDetails(any[RegistrationDetails])(any[HeaderCarrier]))
+    when(mockCdsFrontendDataCache.registrationDetails(any[Request[_]])).thenReturn(organisationRegistrationDetails)
+    when(mockCdsFrontendDataCache.saveRegistrationDetails(any[RegistrationDetails])(any[Request[_]]))
       .thenReturn(Future.successful(true))
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]]))
       .thenReturn(Some(mockOrganisationType))
@@ -151,7 +150,7 @@ class AddressControllerSpec
     }
 
     "have Address input field prepopulated if cached previously" in {
-      when(mockSubscriptionBusinessService.address(any[HeaderCarrier]))
+      when(mockSubscriptionBusinessService.address(any[Request[_]]))
         .thenReturn(Future.successful(Some(AddressPage.filledValues)))
       showCreateForm() { result =>
         val page = CdsPage(contentAsString(result))
@@ -208,7 +207,7 @@ class AddressControllerSpec
     "retrieve the cached data" in {
       showReviewForm() { result =>
         CdsPage(contentAsString(result))
-        verify(mockSubscriptionBusinessService).addressOrException(any[HeaderCarrier])
+        verify(mockSubscriptionBusinessService).addressOrException(any[Request[_]])
       }
     }
 
@@ -405,7 +404,7 @@ class AddressControllerSpec
   ) {
     withAuthorisedUser(userId, mockAuthConnector)
 
-    when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(organisationRegistrationDetails)
+    when(mockCdsFrontendDataCache.registrationDetails(any[Request[_]])).thenReturn(organisationRegistrationDetails)
 
     test(
       controller.submit(isInReviewMode = false, atarService)(
@@ -430,8 +429,8 @@ class AddressControllerSpec
     withAuthorisedUser(userId, mockAuthConnector)
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]]))
       .thenReturn(Some(CdsOrganisationType("individual")))
-    when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(individualRegistrationDetails)
-    when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier])).thenReturn(None)
+    when(mockCdsFrontendDataCache.registrationDetails(any[Request[_]])).thenReturn(individualRegistrationDetails)
+    when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[_]])).thenReturn(None)
 
     test(
       controller.submit(isInReviewMode = false, atarService)(
@@ -458,12 +457,12 @@ class AddressControllerSpec
   }
 
   private def registerSaveDetailsMockSuccess() {
-    when(mockSubscriptionDetailsService.cacheAddressDetails(any())(any[HeaderCarrier]))
+    when(mockSubscriptionDetailsService.cacheAddressDetails(any())(any[Request[_]]))
       .thenReturn(Future.successful(()))
   }
 
   private def registerSaveDetailsMockFailure(exception: Throwable) {
-    when(mockSubscriptionDetailsService.cacheAddressDetails(any())(any[HeaderCarrier]))
+    when(mockSubscriptionDetailsService.cacheAddressDetails(any())(any[Request[_]]))
       .thenReturn(Future.failed(exception))
   }
 
@@ -475,7 +474,7 @@ class AddressControllerSpec
 
     when(mockRequestSessionData.isIndividualOrSoleTrader(any[Request[AnyContent]]))
       .thenReturn(isIndividual(userSelectedOrganisationType))
-    when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(organisationRegistrationDetails)
+    when(mockCdsFrontendDataCache.registrationDetails(any[Request[_]])).thenReturn(organisationRegistrationDetails)
 
     test(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
@@ -489,8 +488,8 @@ class AddressControllerSpec
 
     when(mockRequestSessionData.isIndividualOrSoleTrader(any[Request[AnyContent]]))
       .thenReturn(isIndividual(userSelectedOrganisationType))
-    when(mockSubscriptionBusinessService.addressOrException(any[HeaderCarrier])).thenReturn(dataToEdit)
-    when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(individualRegistrationDetails)
+    when(mockSubscriptionBusinessService.addressOrException(any[Request[_]])).thenReturn(dataToEdit)
+    when(mockCdsFrontendDataCache.registrationDetails(any[Request[_]])).thenReturn(individualRegistrationDetails)
 
     test(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(userId)))
   }

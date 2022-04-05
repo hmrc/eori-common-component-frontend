@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration
 
-import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
@@ -30,8 +29,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_nino_subscription
-import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -57,10 +56,7 @@ class HaveNinoSubscriptionController @Inject() (
         populateView(true, service)
     }
 
-  private def populateView(isInReviewMode: Boolean, service: Service)(implicit
-    hc: HeaderCarrier,
-    request: Request[AnyContent]
-  ) =
+  private def populateView(isInReviewMode: Boolean, service: Service)(implicit request: Request[AnyContent]) =
     subscriptionDetailsHolderService.cachedNinoMatch.map {
       case Some(formData) =>
         Ok(matchNinoSubscriptionView(haveRowIndividualsNinoForm.fill(formData), isInReviewMode, service))
@@ -79,7 +75,6 @@ class HaveNinoSubscriptionController @Inject() (
     }
 
   private def destinationsByAnswer(isInReviewMode: Boolean, form: NinoMatchModel, service: Service)(implicit
-    hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] =
     form.haveNino match {

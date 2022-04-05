@@ -16,18 +16,20 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
-import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.mvc.{AnyContent, Request, Session}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubscriptionFlow, SubscriptionPage, _}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  DataUnavailableException,
+  RequestSessionData,
+  SessionCache
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.Constants.ONE
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 case class SubscriptionFlowConfig(
@@ -70,7 +72,7 @@ class SubscriptionFlowManager @Inject() (requestSessionData: RequestSessionData,
     previousPage: Option[SubscriptionPage] = None,
     cdsOrganisationType: CdsOrganisationType,
     service: Service
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[(SubscriptionPage, Session)] = {
+  )(implicit request: Request[AnyContent]): Future[(SubscriptionPage, Session)] = {
     val maybePreviousPageUrl = previousPage.map(page => page.url(service))
     cdsFrontendDataCache.registrationDetails map { registrationDetails =>
       val flow = selectFlow(registrationDetails, cdsOrganisationType)

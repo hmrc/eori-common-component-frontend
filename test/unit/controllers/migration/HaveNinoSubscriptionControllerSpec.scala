@@ -35,7 +35,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_nino_subscription
-import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -72,7 +71,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
-    when(mockSubscriptionDetailsService.cachedNinoMatch(any[HeaderCarrier]))
+    when(mockSubscriptionDetailsService.cachedNinoMatch(any[Request[_]]))
       .thenReturn(Future.successful(None))
   }
 
@@ -92,7 +91,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
     }
 
     "populate the formData when the cache is having UtrMatch details" in {
-      when(mockSubscriptionDetailsService.cachedNinoMatch(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cachedNinoMatch(any[Request[_]]))
         .thenReturn(Future.successful(Some(NinoMatchModel(Some(true), Some("Nino")))))
       createForm() { result =>
         status(result) shouldBe OK
@@ -126,7 +125,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
     }
 
     "cache NINO and redirect to Get Nino Page of the flow" in {
-      when(mockSubscriptionDetailsService.cacheNinoMatch(any[Option[NinoMatchModel]])(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cacheNinoMatch(any[Option[NinoMatchModel]])(any[Request[_]]))
         .thenReturn(Future.successful(()))
       when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowIndividualFlow)
       mockSubscriptionFlow(nextPageFlowUrl)
@@ -135,12 +134,12 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-get-nino"
       }
       verify(mockSubscriptionDetailsService).cacheNinoMatch(meq(Some(NinoMatchModel(Some(true), None))))(
-        any[HeaderCarrier]
+        any[Request[_]]
       )
     }
 
     "cache NINO and redirect to Get Nino Page of the flow in review mode" in {
-      when(mockSubscriptionDetailsService.cacheNinoMatch(any[Option[NinoMatchModel]])(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cacheNinoMatch(any[Option[NinoMatchModel]])(any[Request[_]]))
         .thenReturn(Future.successful(()))
       when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowIndividualFlow)
       mockSubscriptionFlow(nextPageFlowUrl)
@@ -149,16 +148,16 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-get-nino/review"
       }
       verify(mockSubscriptionDetailsService).cacheNinoMatch(meq(Some(NinoMatchModel(Some(true), None))))(
-        any[HeaderCarrier]
+        any[Request[_]]
       )
     }
 
     "redirect to the next page when there is no UTR for ROW journey  " in {
-      when(mockSubscriptionDetailsService.cacheNinoMatch(any[Option[NinoMatchModel]])(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cacheNinoMatch(any[Option[NinoMatchModel]])(any[Request[_]]))
         .thenReturn(Future.successful(()))
 
       when(
-        mockSubscriptionDetailsService.cacheNinoMatchForNoAnswer(any[Option[NinoMatchModel]])(any[HeaderCarrier])
+        mockSubscriptionDetailsService.cacheNinoMatchForNoAnswer(any[Option[NinoMatchModel]])(any[Request[_]])
       ).thenReturn(Future.successful(()))
       when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowOrganisationFlow)
       mockSubscriptionFlow(nextPageFlowUrl)
@@ -169,7 +168,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
     }
     "cache None for CustomsId and redirect to Country page" in {
       when(
-        mockSubscriptionDetailsService.cacheNinoMatchForNoAnswer(any[Option[NinoMatchModel]])(any[HeaderCarrier])
+        mockSubscriptionDetailsService.cacheNinoMatchForNoAnswer(any[Option[NinoMatchModel]])(any[Request[_]])
       ).thenReturn(Future.successful(()))
       when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowIndividualFlow)
       submit(ValidNinoNoRequest) { result =>
@@ -177,7 +176,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-country"
       }
       verify(mockSubscriptionDetailsService).cacheNinoMatchForNoAnswer(meq(Some(NinoMatchModel(Some(false), None))))(
-        any[HeaderCarrier]
+        any[Request[_]]
       )
     }
   }

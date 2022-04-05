@@ -35,7 +35,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{NameOrganisationMatchMod
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_utr_subscription
-import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -78,7 +77,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       mockSubscriptionFlowInfo,
       mockSubscriptionPage
     )
-    when(mockSubscriptionDetailsService.cachedUtrMatch(any[HeaderCarrier]))
+    when(mockSubscriptionDetailsService.cachedUtrMatch(any[Request[_]]))
       .thenReturn(Future.successful(None))
   }
 
@@ -123,7 +122,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
 
     "populate the formData when the cache is having UtrMatch details" in {
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(SoleTrader))
-      when(mockSubscriptionDetailsService.cachedUtrMatch(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cachedUtrMatch(any[Request[_]]))
         .thenReturn(Future.successful(Some(UtrMatchModel(Some(true), Some("Utr")))))
       createForm() { result =>
         status(result) shouldBe OK
@@ -200,15 +199,15 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       reset(mockSubscriptionDetailsService)
       val nameOrganisationMatchModel = NameOrganisationMatchModel("orgName")
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
-      when(mockSubscriptionDetailsService.cachedNameDetails(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cachedNameDetails(any[Request[_]]))
         .thenReturn(Future.successful(Some(nameOrganisationMatchModel)))
-      when(mockSubscriptionDetailsService.cacheUtrMatch(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
+      when(mockSubscriptionDetailsService.cacheUtrMatch(any())(any[Request[_]])).thenReturn(Future.successful(()))
       submit(Map("have-utr" -> "true", "utr" -> "11 11 111111k")) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-get-utr"
       }
       verify(mockSubscriptionDetailsService, times(1)).cacheUtrMatch(meq(Some(UtrMatchModel(Some(true), None))))(
-        any[HeaderCarrier]
+        any[Request[_]]
       )
     }
 
@@ -216,15 +215,15 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       reset(mockSubscriptionDetailsService)
       val nameOrganisationMatchModel = NameOrganisationMatchModel("orgName")
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
-      when(mockSubscriptionDetailsService.cachedNameDetails(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cachedNameDetails(any[Request[_]]))
         .thenReturn(Future.successful(Some(nameOrganisationMatchModel)))
-      when(mockSubscriptionDetailsService.cacheUtrMatch(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
+      when(mockSubscriptionDetailsService.cacheUtrMatch(any())(any[Request[_]])).thenReturn(Future.successful(()))
       submit(Map("have-utr" -> "true", "utr" -> "11 11 111111k"), isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-get-utr/review"
       }
       verify(mockSubscriptionDetailsService, times(1)).cacheUtrMatch(meq(Some(UtrMatchModel(Some(true), None))))(
-        any[HeaderCarrier]
+        any[Request[_]]
       )
     }
 
@@ -232,22 +231,22 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       reset(mockSubscriptionDetailsService)
       val nameOrganisationMatchModel = NameOrganisationMatchModel("orgName")
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(SoleTrader))
-      when(mockSubscriptionDetailsService.cacheUtrMatch(any[Option[UtrMatchModel]])(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cacheUtrMatch(any[Option[UtrMatchModel]])(any[Request[_]]))
         .thenReturn(Future.successful(()))
-      when(mockSubscriptionDetailsService.cachedNameDetails(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cachedNameDetails(any[Request[_]]))
         .thenReturn(Future.successful(Some(nameOrganisationMatchModel)))
       submit(ValidUtrRequest) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-get-utr"
       }
       verify(mockSubscriptionDetailsService, times(1)).cacheUtrMatch(meq(Some(UtrMatchModel(Some(true), None))))(
-        any[HeaderCarrier]
+        any[Request[_]]
       )
     }
 
     "redirect to next page in the flow when 'No' UTR selected" in {
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(SoleTrader))
-      when(mockSubscriptionDetailsService.cacheUtrMatchForNoAnswer(any[Option[UtrMatchModel]])(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cacheUtrMatchForNoAnswer(any[Option[UtrMatchModel]])(any[Request[_]]))
         .thenReturn(Future.successful(()))
       mockSubscriptionFlow(nextPageFlowUrl)
       submit(NoUtrRequest) { result =>
@@ -262,7 +261,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
 
         when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(SoleTrader))
         when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowOrganisationFlow)
-        when(mockSubscriptionDetailsService.cacheUtrMatchForNoAnswer(any[Option[UtrMatchModel]])(any[HeaderCarrier]))
+        when(mockSubscriptionDetailsService.cacheUtrMatchForNoAnswer(any[Option[UtrMatchModel]])(any[Request[_]]))
           .thenReturn(Future.successful(()))
         submit(NoUtrRequest) { result =>
           status(result) shouldBe SEE_OTHER

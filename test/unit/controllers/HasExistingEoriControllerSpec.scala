@@ -19,7 +19,7 @@ package unit.controllers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
-import play.api.mvc.Result
+import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, _}
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
@@ -29,7 +29,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{EnrolmentService, MissingEnrolmentException}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{eori_enrol_success, has_existing_eori}
-import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
@@ -266,11 +265,11 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     await(test(controller.enrolSuccess(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
-  private def userDoesNotHaveGroupEnrolmentToCds = when(mockSessionCache.groupEnrolment(any[HeaderCarrier]))
+  private def userDoesNotHaveGroupEnrolmentToCds = when(mockSessionCache.groupEnrolment(any[Request[AnyContent]]))
     .thenReturn(Future.successful(EnrolmentResponse(Service.cds.enrolmentKey, "Activated", List.empty)))
 
   private def userHasGroupEnrolmentToCds =
-    when(mockSessionCache.groupEnrolment(any[HeaderCarrier]))
+    when(mockSessionCache.groupEnrolment(any[Request[AnyContent]]))
       .thenReturn(
         Future.successful(
           EnrolmentResponse(Service.cds.enrolmentKey, "Activated", List(KeyValue("EORINumber", groupEORI)))
@@ -278,7 +277,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
       )
 
   private def userHasGroupEnrolmentToATAR =
-    when(mockSessionCache.groupEnrolment(any[HeaderCarrier]))
+    when(mockSessionCache.groupEnrolment(any[Request[AnyContent]]))
       .thenReturn(
         Future.successful(
           EnrolmentResponse(atarService.enrolmentKey, "Activated", List(KeyValue("EORINumber", groupEORI)))

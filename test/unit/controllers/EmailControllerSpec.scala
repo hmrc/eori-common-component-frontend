@@ -77,7 +77,7 @@ class EmailControllerSpec
   private val emailStatus = EmailStatus(Some("test@example.com"))
 
   override def beforeEach: Unit = {
-    when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
+    when(mockSave4LaterService.fetchEmail(any[GroupId])(any()))
       .thenReturn(Future.successful(Some(emailStatus)))
     when(
       mockEmailVerificationService
@@ -85,7 +85,7 @@ class EmailControllerSpec
     ).thenReturn(Future.successful(Some(true)))
     when(mockSave4LaterService.saveEmail(any(), any())(any[HeaderCarrier]))
       .thenReturn(Future.successful(()))
-    when(mockSessionCache.saveEmail(any())(any[HeaderCarrier]))
+    when(mockSessionCache.saveEmail(any())(any()))
       .thenReturn(Future.successful(true))
     when(mockSave4LaterService.fetchCacheIds(any())(any()))
       .thenReturn(Future.successful(None))
@@ -139,7 +139,7 @@ class EmailControllerSpec
       when(mockSave4LaterService.fetchProcessingService(any())(any(), any())).thenReturn(
         Future.successful(Some(atarService))
       )
-      when(mockSubscriptionStatusService.getStatus(any(), any())(any(), any()))
+      when(mockSubscriptionStatusService.getStatus(any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(SubscriptionProcessing))
 
       showFormSubscription() { result =>
@@ -158,7 +158,7 @@ class EmailControllerSpec
       when(mockSave4LaterService.fetchProcessingService(any())(any(), any())).thenReturn(
         Future.successful(Some(otherService))
       )
-      when(mockSubscriptionStatusService.getStatus(any(), any())(any(), any()))
+      when(mockSubscriptionStatusService.getStatus(any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(SubscriptionProcessing))
 
       showFormSubscription() { result =>
@@ -174,7 +174,7 @@ class EmailControllerSpec
     "block when different subscription is in progress for user" in {
       when(mockSave4LaterService.fetchCacheIds(any())(any()))
         .thenReturn(Future.successful(Some(CacheIds(InternalId(defaultUserId), SafeId("safe-id"), Some("other")))))
-      when(mockSubscriptionStatusService.getStatus(any(), any())(any(), any()))
+      when(mockSubscriptionStatusService.getStatus(any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(SubscriptionProcessing))
 
       showFormSubscription() { result =>
@@ -190,7 +190,7 @@ class EmailControllerSpec
     "continue when same subscription is in progress for user" in {
       when(mockSave4LaterService.fetchCacheIds(any())(any()))
         .thenReturn(Future.successful(Some(CacheIds(InternalId(defaultUserId), SafeId("safe-id"), Some("atar")))))
-      when(mockSubscriptionStatusService.getStatus(any(), any())(any(), any()))
+      when(mockSubscriptionStatusService.getStatus(any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(SubscriptionProcessing))
 
       showFormSubscription() { result =>

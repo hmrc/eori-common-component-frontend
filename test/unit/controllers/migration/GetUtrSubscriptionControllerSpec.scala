@@ -30,7 +30,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CustomsId, NameOrganisat
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you_utr
-import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -63,7 +62,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
-    when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
+    when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[_]]))
       .thenReturn(Future.successful(None))
   }
 
@@ -120,7 +119,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
 
     "populate the field values when Session cache hold Nino details" in {
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
-      when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[_]]))
         .thenReturn(Future.successful(Some(Utr("1111111111K"))))
       createForm() { result =>
         status(result) shouldBe OK
@@ -132,7 +131,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
   }
 
   "HaveUtrSubscriptionController reviewForm" should {
-    when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
+    when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[_]]))
       .thenReturn(Future.successful(Some(Utr("utr"))))
     "return OK and display correct page when orgType is Company" in {
 
@@ -199,19 +198,19 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
 
       val nameOrganisationMatchModel = NameOrganisationMatchModel("orgName")
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
-      when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[Request[_]]))
         .thenReturn(Future.successful(()))
-      when(mockSubscriptionDetailsService.cachedNameDetails(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cachedNameDetails(any[Request[_]]))
         .thenReturn(Future.successful(Some(nameOrganisationMatchModel)))
       when(
-        mockSubscriptionDetailsService.cacheNameAndCustomsId(any[String], any[CustomsId])(any[HeaderCarrier])
+        mockSubscriptionDetailsService.cacheNameAndCustomsId(any[String], any[CustomsId])(any[Request[_]])
       ).thenReturn(Future.successful(()))
       submit(Map("utr" -> "11 11 111111k")) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/address"
       }
       verify(mockSubscriptionDetailsService).cacheNameAndCustomsId(meq("orgName"), meq(Utr("1111111111K")))(
-        any[HeaderCarrier]
+        any[Request[_]]
       )
     }
 
@@ -219,23 +218,23 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
 
       val nameOrganisationMatchModel = NameOrganisationMatchModel("orgName")
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(SoleTrader))
-      when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[Request[_]]))
         .thenReturn(Future.successful(()))
-      when(mockSubscriptionDetailsService.cachedNameDetails(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cachedNameDetails(any[Request[_]]))
         .thenReturn(Future.successful(Some(nameOrganisationMatchModel)))
       submit(ValidUtrRequest) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/address"
       }
-      verify(mockSubscriptionDetailsService).cacheCustomsId(meq(ValidUtr))(any[HeaderCarrier])
+      verify(mockSubscriptionDetailsService).cacheCustomsId(meq(ValidUtr))(any[Request[_]])
     }
 
     "throws an exception with the orgType is Company and No business name or CustomsId cached" in {
 
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
-      when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[Request[_]]))
         .thenReturn(Future.successful(()))
-      when(mockSubscriptionDetailsService.cachedNameDetails(any[HeaderCarrier])).thenReturn(Future.successful(None))
+      when(mockSubscriptionDetailsService.cachedNameDetails(any[Request[_]])).thenReturn(Future.successful(None))
       intercept[DataUnavailableException] {
         submit(ValidUtrRequest)(result => status(result))
       }.getMessage shouldBe "No business name cached"
@@ -246,7 +245,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
       "user is in review mode and during ROW organisation journey" in {
 
         when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
-        when(mockSubscriptionDetailsService.cachedNameDetails(any[HeaderCarrier]))
+        when(mockSubscriptionDetailsService.cachedNameDetails(any[Request[_]]))
           .thenReturn(Future.successful(Some(NameOrganisationMatchModel("orgName"))))
         when(mockSubscriptionDetailsService.cacheNameAndCustomsId(any(), any())(any()))
           .thenReturn(Future.successful((): Unit))
@@ -256,13 +255,13 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
           status(result) shouldBe SEE_OTHER
           result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/address"
         }
-        verify(mockSubscriptionDetailsService).cacheNameAndCustomsId(any(), meq(ValidUtr))(any[HeaderCarrier])
+        verify(mockSubscriptionDetailsService).cacheNameAndCustomsId(any(), meq(ValidUtr))(any[Request[_]])
       }
 
       "user is in review mode and during ROW individual journey" in {
 
         when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(SoleTrader))
-        when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
+        when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[Request[_]]))
           .thenReturn(Future.successful(()))
         when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowIndividualFlow)
 
@@ -270,7 +269,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
           status(result) shouldBe SEE_OTHER
           result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/address"
         }
-        verify(mockSubscriptionDetailsService).cacheCustomsId(meq(ValidUtr))(any[HeaderCarrier])
+        verify(mockSubscriptionDetailsService).cacheCustomsId(meq(ValidUtr))(any[Request[_]])
       }
     }
 
@@ -279,7 +278,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
       "user is in review mode and UK journey" in {
 
         when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
-        when(mockSubscriptionDetailsService.cachedNameDetails(any[HeaderCarrier]))
+        when(mockSubscriptionDetailsService.cachedNameDetails(any[Request[_]]))
           .thenReturn(Future.successful(Some(NameOrganisationMatchModel("orgName"))))
         when(mockSubscriptionDetailsService.cacheNameAndCustomsId(any(), any())(any()))
           .thenReturn(Future.successful((): Unit))
@@ -291,7 +290,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
             LOCATION
           ) shouldBe "/customs-enrolment-services/atar/subscribe/matching/review-determine"
         }
-        verify(mockSubscriptionDetailsService).cacheNameAndCustomsId(any(), meq(ValidUtr))(any[HeaderCarrier])
+        verify(mockSubscriptionDetailsService).cacheNameAndCustomsId(any(), meq(ValidUtr))(any[Request[_]])
       }
     }
   }

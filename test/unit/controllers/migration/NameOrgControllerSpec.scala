@@ -38,14 +38,13 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionDetailsService
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.nameOrg
-import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
@@ -84,9 +83,9 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
 
   "NameOrgController" should {
     "return ok for createForm" in {
-      when(mockSubscriptionBusinessService.cachedNameOrganisationViewModel(any[HeaderCarrier]))
+      when(mockSubscriptionBusinessService.cachedNameOrganisationViewModel(any[Request[AnyContent]]))
         .thenReturn(Future.successful(None))
-      when(mockSessionCache.registrationDetails(any[HeaderCarrier])).thenReturn(registrationDetails)
+      when(mockSessionCache.registrationDetails(any[Request[AnyContent]])).thenReturn(registrationDetails)
 
       createForm() { result =>
         status(result) shouldBe OK
@@ -96,8 +95,10 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
     }
 
     "return ok for reviewForm" in {
-      when(mockSubscriptionBusinessService.getCachedNameViewModel(any[HeaderCarrier])).thenReturn(nameOrgMatchModel)
-      when(mockSessionCache.registrationDetails(any[HeaderCarrier])).thenReturn(registrationDetails)
+      when(mockSubscriptionBusinessService.getCachedNameViewModel(any[Request[AnyContent]])).thenReturn(
+        nameOrgMatchModel
+      )
+      when(mockSessionCache.registrationDetails(any[Request[AnyContent]])).thenReturn(registrationDetails)
 
       reviewForm() { result =>
         status(result) shouldBe OK
@@ -107,9 +108,9 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
     }
 
     "return bad request for form with errors " in {
-      when(mockSessionCache.registrationDetails(any[HeaderCarrier])).thenReturn(registrationDetails)
+      when(mockSessionCache.registrationDetails(any[Request[AnyContent]])).thenReturn(registrationDetails)
 
-      submit(false, incorrectForm) { result =>
+      submit(isInReviewMode = false, incorrectForm) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.title should include(OrganisationNamePage.title)
@@ -118,26 +119,32 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
 
     "return see other and redirect to address page when not in review mode" in {
       mockSubscriptionFlowNextPage()
-      when(mockSubscriptionDetailsService.cacheNameDetails(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
-      when(mockSubscriptionDetailsService.cachedNameIdDetails(any[HeaderCarrier])).thenReturn(Future.successful(None))
+      when(mockSubscriptionDetailsService.cacheNameDetails(any())(any[Request[AnyContent]])).thenReturn(
+        Future.successful(())
+      )
+      when(mockSubscriptionDetailsService.cachedNameIdDetails(any[Request[AnyContent]])).thenReturn(
+        Future.successful(None)
+      )
 
-      submit(false, correcctForm) { result =>
+      submit(isInReviewMode = false, correcctForm) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
       }
     }
 
     "return see other and redirect to when in review mode" in {
-      when(mockSubscriptionDetailsService.cacheNameDetails(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
-      when(mockSubscriptionDetailsService.cachedNameIdDetails(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cacheNameDetails(any())(any[Request[AnyContent]])).thenReturn(
+        Future.successful(())
+      )
+      when(mockSubscriptionDetailsService.cachedNameIdDetails(any[Request[AnyContent]]))
         .thenReturn(Future.successful(Some(nameIdOrganisationMatchModel)))
       when(
         mockSubscriptionDetailsService.cacheNameIdDetails(
           meq(NameIdOrganisationMatchModel(correcctForm("name"), nameIdOrganisationMatchModel.id))
-        )(any[HeaderCarrier])
+        )(any[Request[AnyContent]])
       ).thenReturn(Future.successful(()))
 
-      submit(true, correcctForm) { result =>
+      submit(isInReviewMode = true, correcctForm) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/matching/review-determine"
       }

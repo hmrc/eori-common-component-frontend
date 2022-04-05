@@ -167,7 +167,7 @@ class SubscriptionRecoveryController @Inject() (
     subscriptionDisplayResponse: SubscriptionDisplayResponse,
     dateOfEstablishment: Option[LocalDate],
     service: Service
-  )(redirect: => Result)(implicit headerCarrier: HeaderCarrier, messages: Messages): Future[Result] = {
+  )(redirect: => Result)(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
     val formBundleId =
       subscriptionDisplayResponse.responseCommon.returnParameters
         .flatMap(_.find(_.paramName.equals("ETMPFORMBUNDLENUMBER")).map(_.paramValue))
@@ -197,12 +197,12 @@ class SubscriptionRecoveryController @Inject() (
 
   private def completeEnrolment(service: Service, subscriptionInformation: SubscriptionInformation)(
     redirect: => Result
-  )(implicit hc: HeaderCarrier, messages: Messages): Future[Result] =
+  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
     for {
       // Update Recovered Subscription Information
       _ <- updateSubscription(subscriptionInformation)
       // Update Email
-//      _ <- updateEmail(journey, subscriptionInformation)  // TODO - ECC-307
+      //      _ <- updateEmail(journey, subscriptionInformation)  // TODO - ECC-307
       // Subscribe Call for enrolment
       _ <- subscribe(service, subscriptionInformation)
       // Issuer Call for enrolment
@@ -212,7 +212,7 @@ class SubscriptionRecoveryController @Inject() (
       case _          => throw new IllegalArgumentException("Tax Enrolment issuer call failed")
     }
 
-  private def updateSubscription(subscriptionInformation: SubscriptionInformation)(implicit hc: HeaderCarrier) =
+  private def updateSubscription(subscriptionInformation: SubscriptionInformation)(implicit request: Request[_]) =
     sessionCache.saveSub02Outcome(
       Sub02Outcome(
         subscriptionInformation.processedDate,

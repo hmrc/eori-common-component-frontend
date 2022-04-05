@@ -64,8 +64,8 @@ object RegistrationDetailsBuilder {
   val incorporatedRegistrationDetails =
     DefaultOrganisationRegistrationDetails.copy(etmpOrganisationType = Some(CorporateBody))
 
-  val individualRegistrationDetails                     = DefaultIndividualRegistrationDetails
-  val individualRegistrationDetailsNotIdentifiedByReg01 = DefaultIndividualRegistrationDetails.copy(safeId = SafeId(""))
+  val individualRegistrationDetails: RegistrationDetails = DefaultIndividualRegistrationDetails
+  val individualRegistrationDetailsNotIdentifiedByReg01  = DefaultIndividualRegistrationDetails.copy(safeId = SafeId(""))
 
   val existingOrganisationRegistrationDetails = DefaultOrganisationRegistrationDetails
     .copy(etmpOrganisationType = Some(Partnership))

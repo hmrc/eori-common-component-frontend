@@ -20,6 +20,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import play.api.mvc.Request
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
@@ -29,7 +30,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.start_subscribe
-import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
@@ -293,7 +293,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
     "logout an authenticated user for subscribe" in {
       withAuthorisedUser(defaultUserId, mockAuthConnector)
-      when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
+      when(mockSessionCache.remove(any[Request[_]])).thenReturn(Future.successful(true))
 
       val result =
         controller.logout(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))

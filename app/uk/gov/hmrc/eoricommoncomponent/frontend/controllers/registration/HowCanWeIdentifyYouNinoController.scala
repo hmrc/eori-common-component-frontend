@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
-import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
@@ -33,8 +32,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionDetailsService
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you_nino
-import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -61,7 +60,7 @@ class HowCanWeIdentifyYouNinoController @Inject() (
         populateView(service, isInReviewMode = true)
     }
 
-  private def populateView(service: Service, isInReviewMode: Boolean)(implicit hc: HeaderCarrier, request: Request[_]) =
+  private def populateView(service: Service, isInReviewMode: Boolean)(implicit request: Request[_]) =
     subscriptionBusinessService.getCachedCustomsId.map {
       case Some(Nino(id)) =>
         Ok(
@@ -101,7 +100,6 @@ class HowCanWeIdentifyYouNinoController @Inject() (
     }
 
   private def storeId(formData: IdMatchModel, inReviewMode: Boolean, service: Service)(implicit
-    hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] =
     subscriptionDetailsHolderService

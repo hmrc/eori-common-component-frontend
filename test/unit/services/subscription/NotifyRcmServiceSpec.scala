@@ -21,6 +21,7 @@ import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfter
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.NotifyRcmConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NameIdOrganisationMatchModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{NotifyRcmRequest, SubscriptionDetails}
@@ -33,24 +34,24 @@ import scala.concurrent.Future
 
 class NotifyRcmServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter {
 
-  private val mockNotifyRcmConnector     = mock[NotifyRcmConnector]
-  private val mockSessionCache           = mock[SessionCache]
-  private val nameId                     = NameIdOrganisationMatchModel(name = "orgname", id = "ID")
-  private val service                    = new NotifyRcmService(mockSessionCache, mockNotifyRcmConnector)
-  private implicit val hc: HeaderCarrier = HeaderCarrier()
-
+  private val mockNotifyRcmConnector            = mock[NotifyRcmConnector]
+  private val mockSessionCache                  = mock[SessionCache]
+  private val nameId                            = NameIdOrganisationMatchModel(name = "orgname", id = "ID")
+  private val service                           = new NotifyRcmService(mockSessionCache, mockNotifyRcmConnector)
+  private implicit val hc: HeaderCarrier        = HeaderCarrier()
+  private implicit val req: Request[AnyContent] = mock[Request[AnyContent]]
   before {
     reset(mockNotifyRcmConnector)
   }
 
   "NotifyRcmService" should {
     "call handle subscription connector with a valid handle subscription request" in {
-      when(mockSessionCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]]))
         .thenReturn(SubscriptionDetails(nameIdOrganisationDetails = Some(nameId)))
-      when(mockSessionCache.email(any[HeaderCarrier])).thenReturn(Future.successful("test@example.com"))
+      when(mockSessionCache.email(any[Request[AnyContent]])).thenReturn(Future.successful("test@example.com"))
       when(mockNotifyRcmConnector.notifyRCM(any[NotifyRcmRequest])(any[HeaderCarrier]))
         .thenReturn(Future.successful {})
-      service.notifyRcm(atarService)(hc, global)
+      service.notifyRcm(atarService)(hc, req, global)
     }
   }
 
