@@ -16,8 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
-import javax.inject.{Inject, Singleton}
-import java.time.LocalDate
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
@@ -34,8 +32,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionDetailsService
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.date_of_establishment
-import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDate
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -77,7 +76,7 @@ class DateOfEstablishmentController @Inject() (
       } yield populateView(Some(cachedDateModel), isInReviewMode = true, orgType, service)
     }
 
-  private def fetchDate(implicit hc: HeaderCarrier): Future[LocalDate] =
+  private def fetchDate(implicit request: Request[_]): Future[LocalDate] =
     subscriptionBusinessService.getCachedDateEstablished
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
@@ -114,7 +113,7 @@ class DateOfEstablishmentController @Inject() (
       )
     }
 
-  private def saveDateEstablished(date: LocalDate)(implicit hc: HeaderCarrier) =
+  private def saveDateEstablished(date: LocalDate)(implicit request: Request[_]) =
     subscriptionDetailsHolderService.cacheDateEstablished(date)
 
   private def getSubscriptionPage(location: Boolean) =

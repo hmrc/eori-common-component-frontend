@@ -16,13 +16,9 @@
 
 package unit.controllers.registration
 
-import java.time.format.DateTimeFormatter
-
 import common.pages.subscription.{ApplicationPendingPage, ApplicationUnsuccessfulPage}
 import common.pages.{RegistrationProcessingPage, RegistrationRejectedPage}
 import common.support.testdata.TestData
-import java.time.{LocalDate, LocalDateTime, ZonedDateTime}
-
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.{Assertion, BeforeAndAfterEach}
@@ -41,7 +37,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, Respo
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  DataUnavailableException,
+  RequestSessionData,
+  SessionCache
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{MatchingService, Reg06Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
@@ -49,10 +49,12 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.language.LanguageUtils
 import unit.controllers.CdsPage
-import util.{CSRFTest, ControllerSpec}
-import util.builders.AuthBuilder._
 import util.builders.AuthActionMock
+import util.builders.AuthBuilder._
+import util.{CSRFTest, ControllerSpec}
 
+import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, LocalDateTime, ZonedDateTime}
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -178,7 +180,7 @@ class RegisterWithEoriAndIdControllerSpec
       mockSubscriptionDetailsService
     )
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
+    when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[_]]))
       .thenReturn(Future.successful(Some(Utr(""))))
     when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any()))
       .thenReturn(Future.successful(false))
@@ -229,20 +231,20 @@ class RegisterWithEoriAndIdControllerSpec
       )
       when(
         mockReg06Service
-          .sendOrganisationRequest(any(), any[HeaderCarrier])
+          .sendOrganisationRequest(any(), any[HeaderCarrier], any())
       ).thenReturn(Future.successful(true))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
       when(
         mockSubscriptionStatusService
-          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any())
+          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any(), any(), any())
       ).thenReturn(Future.successful(NewSubscription))
       when(
         mockSubscriptionDetailsService
-          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any())
+          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any(), any())
       ).thenReturn(Future.successful(()))
 
       regExistingEori() { result =>
@@ -255,18 +257,18 @@ class RegisterWithEoriAndIdControllerSpec
 
     "create a subscription for sole trader" in {
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(individualRegistrationDetails))
-      when(mockReg06Service.sendIndividualRequest(any(), any[HeaderCarrier])).thenReturn(Future.successful(true))
+      when(mockReg06Service.sendIndividualRequest(any(), any[HeaderCarrier], any())).thenReturn(Future.successful(true))
       when(
         mockSubscriptionStatusService
-          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any())
+          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any(), any(), any())
       ).thenReturn(Future.successful(NewSubscription))
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(Some(CdsOrganisationType.SoleTrader))
       when(
         mockSubscriptionDetailsService
-          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any())
+          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any(), any())
       ).thenReturn(Future.successful(()))
 
       when(
@@ -285,7 +287,7 @@ class RegisterWithEoriAndIdControllerSpec
           )
         )
       )
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
 
       regExistingEori() { result =>
@@ -300,18 +302,18 @@ class RegisterWithEoriAndIdControllerSpec
 
     "create a subscription for sole trader with status SubscriptionRejected" in {
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(individualRegistrationDetails))
-      when(mockReg06Service.sendIndividualRequest(any(), any[HeaderCarrier])).thenReturn(Future.successful(true))
+      when(mockReg06Service.sendIndividualRequest(any(), any[HeaderCarrier], any())).thenReturn(Future.successful(true))
       when(
         mockSubscriptionStatusService
-          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any())
+          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any(), any(), any())
       ).thenReturn(Future.successful(SubscriptionRejected))
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(Some(CdsOrganisationType.SoleTrader))
       when(
         mockSubscriptionDetailsService
-          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any())
+          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any(), any())
       ).thenReturn(Future.successful(()))
 
       when(
@@ -330,7 +332,7 @@ class RegisterWithEoriAndIdControllerSpec
           )
         )
       )
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
 
       regExistingEori() { result =>
@@ -343,25 +345,25 @@ class RegisterWithEoriAndIdControllerSpec
     }
 
     "create a subscription for individual ROW" in {
-      when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[_]]))
         .thenReturn(Future.successful(None))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]]))
         .thenReturn(Some(UserLocation.ThirdCountry))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(individualRegistrationDetails))
       when(
         mockMatchingService
-          .sendIndividualRequestForMatchingService(any[LoggedInUserWithEnrolments], any[HeaderCarrier])
+          .sendIndividualRequestForMatchingService(any[LoggedInUserWithEnrolments], any[HeaderCarrier], any(), any())
       ).thenReturn(Future.successful(true))
       when(
         mockSubscriptionStatusService
-          .getStatus(meq("taxPayerID"), meq("SapNumber000000000000000000000000000000000"))(any())
+          .getStatus(meq("taxPayerID"), meq("SapNumber000000000000000000000000000000000"))(any(), any(), any())
       ).thenReturn(Future.successful(NewSubscription))
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(Some(CdsOrganisationType.Individual))
       when(
         mockSubscriptionDetailsService
-          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any())
+          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any(), any())
       ).thenReturn(Future.successful(()))
 
       when(
@@ -409,21 +411,21 @@ class RegisterWithEoriAndIdControllerSpec
       )
       when(
         mockReg06Service
-          .sendOrganisationRequest(any(), any[HeaderCarrier])
+          .sendOrganisationRequest(any(), any[HeaderCarrier], any())
       ).thenReturn(Future.successful(true))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Eu))
       when(
         mockSubscriptionDetailsService
-          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any())
+          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any(), any())
       ).thenReturn(Future.successful(()))
 
       when(
         mockSubscriptionStatusService
-          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any())
+          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any(), any(), any())
       ).thenReturn(Future.successful(NewSubscription))
 
       regExistingEori() { result =>
@@ -438,18 +440,18 @@ class RegisterWithEoriAndIdControllerSpec
     "create a subscription for sole trader ROW when cachedCustomsId is present" in {
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]]))
         .thenReturn(Some(UserLocation.ThirdCountry))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(individualRegistrationDetails))
-      when(mockReg06Service.sendIndividualRequest(any(), any[HeaderCarrier])).thenReturn(Future.successful(true))
+      when(mockReg06Service.sendIndividualRequest(any(), any[HeaderCarrier], any())).thenReturn(Future.successful(true))
       when(
         mockSubscriptionStatusService
-          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any())
+          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any(), any(), any())
       ).thenReturn(Future.successful(NewSubscription))
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(Some(CdsOrganisationType.SoleTrader))
       when(
         mockSubscriptionDetailsService
-          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any())
+          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any(), any())
       ).thenReturn(Future.successful(()))
 
       when(
@@ -468,7 +470,7 @@ class RegisterWithEoriAndIdControllerSpec
           )
         )
       )
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
 
       regExistingEori() { result =>
@@ -492,20 +494,22 @@ class RegisterWithEoriAndIdControllerSpec
           SubscriptionPending(formBundleIdResponse, processingDateResponse, Some(emailVerificationTimestamp))
         )
       )
-      when(mockReg06Service.sendOrganisationRequest(any(), any[HeaderCarrier])).thenReturn(Future.successful(true))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockReg06Service.sendOrganisationRequest(any(), any[HeaderCarrier], any())).thenReturn(
+        Future.successful(true)
+      )
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
       when(
         mockSubscriptionDetailsService
-          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any())
+          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any(), any())
       ).thenReturn(Future.successful(()))
 
       when(
         mockSubscriptionStatusService
-          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any())
+          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any(), any(), any())
       ).thenReturn(Future.successful(NewSubscription))
 
       regExistingEori() { result =>
@@ -518,11 +522,11 @@ class RegisterWithEoriAndIdControllerSpec
     }
 
     "redirect to fail when REGO6 outcome is 'FAIL'" in {
-      when(mockReg06Service.sendOrganisationRequest(any(), any[HeaderCarrier]))
+      when(mockReg06Service.sendOrganisationRequest(any(), any[HeaderCarrier], any()))
         .thenReturn(Future.successful(true))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponseFail))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
@@ -538,13 +542,13 @@ class RegisterWithEoriAndIdControllerSpec
     "redirect to pending when REGO6 outcome is 'DEFERRED'" in {
       when(
         mockReg06Service
-          .sendOrganisationRequest(any(), any[HeaderCarrier])
+          .sendOrganisationRequest(any(), any[HeaderCarrier], any())
       ).thenReturn(Future.successful(true))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponseDeferred))
-      when(mockNotifyRcmService.notifyRcm(meq(atarService))(any(), any()))
+      when(mockNotifyRcmService.notifyRcm(meq(atarService))(any(), any(), any()))
         .thenReturn(Future.successful(()))
       when(
         mockCdsSubscriber.subscribeWithCachedDetails(any[Service])(
@@ -570,16 +574,16 @@ class RegisterWithEoriAndIdControllerSpec
           .pending(atarService, DateTimeFormatter.ofPattern("d MMMM yyyy").format(ZonedDateTime.now()))
           .url
         verify(mockNotifyRcmService)
-          .notifyRcm(meq(atarService))(any[HeaderCarrier], any[ExecutionContext])
+          .notifyRcm(meq(atarService))(any[HeaderCarrier], any[Request[_]], any[ExecutionContext])
       }
     }
 
     "throw an exception when REGO6 outcome is unexpected type" in {
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
-      when(mockReg06Service.sendOrganisationRequest(any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
         .thenReturn(Future.successful(true))
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponseExceptionCase))
 
       regExistingEori() { result =>
@@ -595,13 +599,14 @@ class RegisterWithEoriAndIdControllerSpec
           .sendOrganisationRequestForMatchingService(
             any[Request[AnyContent]],
             any[LoggedInUserWithEnrolments],
-            any[HeaderCarrier]
+            any[HeaderCarrier],
+            any()
           )
       ).thenReturn(Future.successful(false))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Eu))
-      when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[_]]))
         .thenReturn(Future.successful(None))
 
       regExistingEori() { result =>
@@ -630,16 +635,16 @@ class RegisterWithEoriAndIdControllerSpec
           )
         )
       )
-      when(mockReg06Service.sendOrganisationRequest(any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
         .thenReturn(Future.successful(true))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
       when(
         mockSubscriptionStatusService
-          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any())
+          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any(), any(), any())
       ).thenReturn(Future.successful(SubscriptionProcessing))
 
       regExistingEori() { result =>
@@ -648,9 +653,9 @@ class RegisterWithEoriAndIdControllerSpec
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .processing(atarService)
           .url
-        verify(mockReg06Service).sendOrganisationRequest(any(), any())
+        verify(mockReg06Service).sendOrganisationRequest(any(), any(), any())
         verify(mockSubscriptionStatusService)
-          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any[HeaderCarrier])
+          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any[HeaderCarrier], any(), any())
       }
     }
 
@@ -671,25 +676,25 @@ class RegisterWithEoriAndIdControllerSpec
           )
         )
       )
-      when(mockReg06Service.sendOrganisationRequest(any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
         .thenReturn(Future.successful(true))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
       when(
         mockSubscriptionStatusService
-          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any())
+          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any(), any(), any())
       ).thenReturn(Future.successful(SubscriptionExists))
 
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe SubscriptionRecoveryController.complete(atarService).url
-        verify(mockReg06Service).sendOrganisationRequest(any(), any())
+        verify(mockReg06Service).sendOrganisationRequest(any(), any(), any())
         verify(mockSubscriptionStatusService)
-          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any[HeaderCarrier])
+          .getStatus(meq("SAFE"), meq("SomeSafeId"))(any[HeaderCarrier], any(), any())
       }
     }
 
@@ -710,18 +715,18 @@ class RegisterWithEoriAndIdControllerSpec
       )
       when(
         mockReg06Service
-          .sendOrganisationRequest(any(), any[HeaderCarrier])
+          .sendOrganisationRequest(any(), any[HeaderCarrier], any())
       ).thenReturn(Future.successful(true))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
-      when(mockSubscriptionStatusService.getStatus(any(), any())(any()))
+      when(mockSubscriptionStatusService.getStatus(any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(NewSubscription))
       when(
         mockSubscriptionDetailsService
-          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any())
+          .saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any(), any())
       ).thenReturn(Future.successful(()))
 
       regExistingEori() { result =>
@@ -750,11 +755,11 @@ class RegisterWithEoriAndIdControllerSpec
           )
         )
       )
-      when(mockReg06Service.sendOrganisationRequest(any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
         .thenReturn(Future.successful(true))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(Future.successful(stubHandleErrorCodeResponse(EoriAlreadyLinked)))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
@@ -784,11 +789,11 @@ class RegisterWithEoriAndIdControllerSpec
           )
         )
       )
-      when(mockReg06Service.sendOrganisationRequest(any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
         .thenReturn(Future.successful(true))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(Future.successful(stubHandleErrorCodeResponse("600 - EORI Already Linked TO a different ID")))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
@@ -818,11 +823,11 @@ class RegisterWithEoriAndIdControllerSpec
           )
         )
       )
-      when(mockReg06Service.sendOrganisationRequest(any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
         .thenReturn(Future.successful(true))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(Future.successful(stubHandleErrorCodeResponse(IDLinkedWithEori)))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
@@ -852,11 +857,11 @@ class RegisterWithEoriAndIdControllerSpec
           )
         )
       )
-      when(mockReg06Service.sendOrganisationRequest(any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
         .thenReturn(Future.successful(true))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(Future.successful(stubHandleErrorCodeResponse("602 - ID Already Linked To A Different EORI")))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
@@ -886,11 +891,11 @@ class RegisterWithEoriAndIdControllerSpec
           )
         )
       )
-      when(mockReg06Service.sendOrganisationRequest(any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
         .thenReturn(Future.successful(true))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(
           Future
             .successful(stubHandleErrorCodeResponse(RejectedPreviouslyAndRetry))
@@ -923,11 +928,11 @@ class RegisterWithEoriAndIdControllerSpec
           )
         )
       )
-      when(mockReg06Service.sendOrganisationRequest(any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
         .thenReturn(Future.successful(true))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(
           Future
             .successful(stubHandleErrorCodeResponse("601 - Rejected Previously AND Retry Failed"))
@@ -960,11 +965,11 @@ class RegisterWithEoriAndIdControllerSpec
           )
         )
       )
-      when(mockReg06Service.sendOrganisationRequest(any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
         .thenReturn(Future.successful(true))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(
           Future
             .successful(stubHandleErrorCodeResponse(RequestCouldNotBeProcessed))
@@ -997,11 +1002,11 @@ class RegisterWithEoriAndIdControllerSpec
           )
         )
       )
-      when(mockReg06Service.sendOrganisationRequest(any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
         .thenReturn(Future.successful(true))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(
           Future
             .successful(stubHandleErrorCodeResponse("003 - Request Could Not Be Processed"))
@@ -1034,11 +1039,11 @@ class RegisterWithEoriAndIdControllerSpec
           )
         )
       )
-      when(mockReg06Service.sendOrganisationRequest(any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
         .thenReturn(Future.successful(true))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(Future.successful(stubHandleErrorCodeResponse("")))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
@@ -1051,11 +1056,11 @@ class RegisterWithEoriAndIdControllerSpec
       val mockRegisterWithEoriAndIdResponse =
         mock[RegisterWithEoriAndIdResponse]
 
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(organisationRegistrationDetails))
-      when(mockReg06Service.sendOrganisationRequest(any(), any()))
+      when(mockReg06Service.sendOrganisationRequest(any(), any(), any()))
         .thenReturn(Future.successful(true))
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(Future.successful(mockRegisterWithEoriAndIdResponse))
       when(mockRegisterWithEoriAndIdResponse.responseDetail)
         .thenReturn(Some(RegisterWithEoriAndIdResponseDetail(Some("PASS"), None)))
@@ -1069,9 +1074,9 @@ class RegisterWithEoriAndIdControllerSpec
 
     "Call the processing function for ROW" in {
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Eu))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(individualRegistrationDetails))
-      when(mockCache.sub01Outcome(any[HeaderCarrier]))
+      when(mockCache.sub01Outcome(any[Request[_]]))
         .thenReturn(Future.successful(mockSub01Outcome))
       when(mockSub01Outcome.processedDate).thenReturn("11 January 2015")
 
@@ -1090,10 +1095,10 @@ class RegisterWithEoriAndIdControllerSpec
 
     "Call the processing function for UK" in {
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
-      when(mockCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockCache.subscriptionDetails(any[Request[_]]))
         .thenReturn(Future.successful(mockSubscriptionDetails))
       when(mockSubscriptionDetails.name).thenReturn("Name")
-      when(mockCache.sub01Outcome(any[HeaderCarrier]))
+      when(mockCache.sub01Outcome(any[Request[_]]))
         .thenReturn(Future.successful(mockSub01Outcome))
       when(mockSub01Outcome.processedDate).thenReturn("11 January 2015")
 
@@ -1112,9 +1117,9 @@ class RegisterWithEoriAndIdControllerSpec
 
     "Call the rejected function" in {
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Eu))
-      when(mockCache.registrationDetails(any[HeaderCarrier]))
+      when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(individualRegistrationDetails))
-      when(mockCache.sub01Outcome(any[HeaderCarrier]))
+      when(mockCache.sub01Outcome(any[Request[_]]))
         .thenReturn(Future.successful(mockSub01Outcome))
       when(mockSub01Outcome.processedDate).thenReturn("11 January 2015")
 
@@ -1132,12 +1137,12 @@ class RegisterWithEoriAndIdControllerSpec
     }
 
     "Call the pending function" in {
-      when(mockCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockCache.subscriptionDetails(any[Request[_]]))
         .thenReturn(Future.successful(mockSubscriptionDetails))
       when(mockSubscriptionDetails.eoriNumber)
         .thenReturn(Some("someEoriNumber"))
       when(mockSubscriptionDetails.name).thenReturn("name")
-      when(mockCache.remove(any[HeaderCarrier]))
+      when(mockCache.remove(any[Request[_]]))
         .thenReturn(Future.successful(true))
 
       invokePending() { result =>
@@ -1148,27 +1153,25 @@ class RegisterWithEoriAndIdControllerSpec
     }
 
     "throws exception when Eori number is not found for pending function" in {
-      when(mockCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockCache.subscriptionDetails(any[Request[_]]))
         .thenReturn(Future.successful(mockSubscriptionDetails))
       when(mockSubscriptionDetails.eoriNumber).thenReturn(None)
       when(mockSubscriptionDetails.name).thenReturn("name")
-      when(mockCache.remove(any[HeaderCarrier]))
+      when(mockCache.remove(any[Request[_]]))
         .thenReturn(Future.successful(true))
 
-      invokePending() { result =>
-        the[IllegalStateException] thrownBy {
-          status(result) shouldBe OK
-        } should have message "No EORI found in cache"
-      }
+      intercept[DataUnavailableException] {
+        invokePending()(result => status(result))
+      }.getMessage shouldBe "No EORI found in cache"
     }
 
     "Call the eoriAlreadyLinked function" in {
-      when(mockCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockCache.subscriptionDetails(any[Request[_]]))
         .thenReturn(Future.successful(mockSubscriptionDetails))
       when(mockSubscriptionDetails.name).thenReturn("reg06-Eori-Already-Linked")
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(Future.successful(stubHandleErrorCodeResponse(EoriAlreadyLinked)))
-      when(mockCache.remove(any[HeaderCarrier]))
+      when(mockCache.remove(any[Request[_]]))
         .thenReturn(Future.successful(true))
 
       invokeEoriAlreadyLinked() { result =>
@@ -1179,15 +1182,15 @@ class RegisterWithEoriAndIdControllerSpec
     }
 
     "Call the rejectedPreviously function" in {
-      when(mockCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockCache.subscriptionDetails(any[Request[_]]))
         .thenReturn(Future.successful(mockSubscriptionDetails))
       when(mockSubscriptionDetails.name).thenReturn("reg06-rejected-previously")
-      when(mockCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
         .thenReturn(
           Future
             .successful(stubHandleErrorCodeResponse(RejectedPreviouslyAndRetry))
         )
-      when(mockCache.remove(any[HeaderCarrier]))
+      when(mockCache.remove(any[Request[_]]))
         .thenReturn(Future.successful(true))
 
       invokeRejectedPreviously() { result =>
@@ -1198,10 +1201,10 @@ class RegisterWithEoriAndIdControllerSpec
     }
 
     "Call the fail function" in {
-      when(mockCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockCache.subscriptionDetails(any[Request[_]]))
         .thenReturn(Future.successful(mockSubscriptionDetails))
       when(mockSubscriptionDetails.name).thenReturn("reg06-FAIL")
-      when(mockCache.remove(any[HeaderCarrier]))
+      when(mockCache.remove(any[Request[_]]))
         .thenReturn(Future.successful(true))
 
       invokeFail() { result =>

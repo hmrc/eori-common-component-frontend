@@ -17,31 +17,20 @@
 package unit.domain.messaging
 
 import base.UnitSpec
-
-import java.time.{LocalDate, LocalDateTime}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
   ContactInformation,
   SubscriptionCreateRequest,
   VatId
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
-  ContactDetail,
-  CorporateBody,
-  Eori,
-  EstablishmentAddress,
-  RegistrationDetailsIndividual,
-  RegistrationDetailsOrganisation,
-  ResponseData,
-  SafeId,
-  TaxPayerId,
-  Trader,
-  VatIds
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactAddressModel}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, CompanyRegisteredCountry}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+
+import java.time.{LocalDate, LocalDateTime}
 
 class SubscriptionCreateRequestSpec extends UnitSpec {
 
@@ -70,14 +59,16 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
       startDate = "start date"
     )
 
-  private val eori                       = Eori("GB123456789123")
-  private val taxPayerId                 = TaxPayerId("taxPayerId")
-  private val safeId                     = SafeId("safeId")
-  private val fullName                   = "Full name"
-  private val address                    = Address("addressLine1", None, Some("city"), None, Some("postcode"), "GB")
-  private val establishmentAddress       = EstablishmentAddress("addressLine1", "city", Some("postcode"), "GB")
-  private val addressViewModel           = AddressViewModel(address)
-  private val dateOfBirthOrEstablishment = LocalDate.now()
+  private val eori                         = Eori("GB123456789123")
+  private val taxPayerId                   = TaxPayerId("taxPayerId")
+  private val safeId                       = SafeId("safeId")
+  private val fullName                     = "Full name"
+  private val address                      = Address("addressLine1", None, Some("city"), None, Some("postcode"), "GB")
+  private val invalidAddress               = Address("addressLine1", None, Some("city"), None, Some("postcode"), "OO")
+  private val establishmentAddress         = EstablishmentAddress("addressLine1", "city", Some("postcode"), "GB")
+  private val invalildEstablishmentAddress = EstablishmentAddress("addressLine1", "city", Some("postcode"), "OO")
+  private val addressViewModel             = AddressViewModel(address)
+  private val dateOfBirthOrEstablishment   = LocalDate.now()
 
   private val emailAddress = Some("john.doe@example.com")
 
@@ -371,5 +362,109 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
         sub02Request.requestDetail.CDSEstablishmentAddress shouldBe expectedEstablishmentAddress
       }
     }
+
+    "build request with invalid establishment address in Reg06 response for organisation ROW without UTR user based on the REG01 response" in {
+
+      val service = Some(atarService)
+      val registrationDetails = RegistrationDetailsOrganisation(
+        customsId = Some(eori),
+        sapNumber = taxPayerId,
+        safeId = safeId,
+        name = fullName,
+        address = invalidAddress,
+        dateOfEstablishment = Some(dateOfBirthOrEstablishment),
+        etmpOrganisationType = Some(CorporateBody)
+      )
+      val subscriptionDetails = SubscriptionDetails(
+        contactDetails = Some(contactDetails),
+        registeredCompany = Some(CompanyRegisteredCountry("GB"))
+      )
+
+      val request = SubscriptionCreateRequest(registrationDetails, subscriptionDetails, emailAddress, service)
+
+      val requestCommon  = request.requestCommon
+      val requestDetails = request.requestDetail
+
+      requestCommon.regime shouldBe "CDS"
+      requestDetails.SAFE shouldBe safeId.id
+      requestDetails.EORINo shouldBe Some(eori.id)
+      requestDetails.CDSFullName shouldBe fullName
+      requestDetails.CDSEstablishmentAddress shouldBe establishmentAddress
+      requestDetails.establishmentInTheCustomsTerritoryOfTheUnion shouldBe None
+      requestDetails.typeOfLegalEntity shouldBe Some("Corporate Body")
+      requestDetails.contactInformation shouldBe Some(
+        reg01ExpectedContactInformation(requestDetails.contactInformation.get.emailVerificationTimestamp.get)
+      )
+      requestDetails.vatIDs shouldBe None
+      requestDetails.consentToDisclosureOfPersonalData shouldBe None
+      requestDetails.shortName shouldBe None
+      requestDetails.dateOfEstablishment shouldBe Some(dateOfBirthOrEstablishment)
+      requestDetails.typeOfPerson shouldBe Some("2")
+      requestDetails.principalEconomicActivity shouldBe None
+      requestDetails.serviceName shouldBe Some(atarService.enrolmentKey)
+    }
+
+    "throw exception when  establishment address details are incorrect  in Reg06 response for organisation ROW without UTR user based on the REG01 response" in {
+
+      val service = Some(atarService)
+      val registrationDetails = RegistrationDetailsOrganisation(
+        customsId = Some(eori),
+        sapNumber = taxPayerId,
+        safeId = safeId,
+        name = fullName,
+        address = invalidAddress,
+        dateOfEstablishment = Some(dateOfBirthOrEstablishment),
+        etmpOrganisationType = Some(CorporateBody)
+      )
+      val subscriptionDetails = SubscriptionDetails(contactDetails = Some(contactDetails))
+      intercept[Exception] {
+        SubscriptionCreateRequest(registrationDetails, subscriptionDetails, emailAddress, service)
+      }
+    }
+
+    "throw IllegalArgumentException if registrationDetails is invalid " in {
+
+      val service = Some(atarService)
+      val registrationDetails = RegistrationDetailsSafeId(
+        safeId = safeId,
+        address = address,
+        sapNumber = taxPayerId,
+        customsId = Some(eori),
+        name = fullName
+      )
+      val subscriptionDetails = SubscriptionDetails(contactDetails = Some(contactDetails))
+      intercept[IllegalArgumentException] {
+
+        SubscriptionCreateRequest(registrationDetails, subscriptionDetails, emailAddress, service)
+      }
+
+    }
+    "throw IllegalStateException when invalid address is not present in subscription details" in {
+
+      val responseData = ResponseData(
+        SAFEID = safeId.id,
+        trader = Trader(fullName, "short name"),
+        establishmentAddress = invalildEstablishmentAddress,
+        contactDetail = Some(contactDetail),
+        VATIDs = Some(Seq(VatIds("GB", "123456"))),
+        hasInternetPublication = false,
+        principalEconomicActivity = Some("principal economic activity"),
+        hasEstablishmentInCustomsTerritory = Some(false),
+        legalStatus = Some("legal status"),
+        thirdCountryIDNumber = Some(Seq("idNumber")),
+        dateOfEstablishmentBirth = Some(dateOfBirthOrEstablishment.toString),
+        personType = Some(1),
+        startDate = "start date",
+        expiryDate = Some("expiry date")
+      )
+
+      val subscriptionDetails = SubscriptionDetails(eoriNumber = Some(eori.id), addressDetails = None)
+      intercept[IllegalStateException] {
+
+        SubscriptionCreateRequest(responseData, subscriptionDetails, email, Some(atarService))
+      }
+
+    }
+
   }
 }

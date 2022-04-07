@@ -115,19 +115,19 @@ class SubscriptionRecoveryControllerSpec
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.complete(atarService))
 
     def setupMockCommon() = {
-      when(mockSessionCache.subscriptionDetails(any[HeaderCarrier]))
+      when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]]))
         .thenReturn(Future.successful(mockSubscriptionDetailsHolder))
-      when(mockSUB09SubscriptionDisplayConnector.subscriptionDisplay(any())(any[HeaderCarrier]))
+      when(mockSUB09SubscriptionDisplayConnector.subscriptionDisplay(any(), any())(any[HeaderCarrier]))
         .thenReturn(Future.successful(Right(fullyPopulatedResponse)))
       when(mockSubscriptionDetailsHolder.contactDetails).thenReturn(Some(contactDetails))
       when(contactDetails.emailAddress).thenReturn("test@example.com")
       when(mockSubscriptionDetailsHolder.email).thenReturn(Some("test@example.com"))
-      when(mockSessionCache.email(any[HeaderCarrier])).thenReturn(Future.successful("test@example.com"))
+      when(mockSessionCache.email(any[Request[AnyContent]])).thenReturn(Future.successful("test@example.com"))
 
-      when(mockSessionCache.sub01Outcome(any[HeaderCarrier])).thenReturn(Future.successful(mockSub01Outcome))
+      when(mockSessionCache.sub01Outcome(any[Request[AnyContent]])).thenReturn(Future.successful(mockSub01Outcome))
       when(mockSub01Outcome.processedDate).thenReturn("01 May 2016")
 
-      when(mockSessionCache.saveSub02Outcome(any[Sub02Outcome])(any[HeaderCarrier]))
+      when(mockSessionCache.saveSub02Outcome(any[Sub02Outcome])(any[Request[AnyContent]]))
         .thenReturn(Future.successful(true))
       when(
         mockHandleSubscriptionService.handleSubscription(
@@ -148,7 +148,7 @@ class SubscriptionRecoveryControllerSpec
 
       when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(Some("testEORInumber"))
 
-      when(mockSessionCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockSessionCache.registerWithEoriAndIdResponse(any[Request[AnyContent]]))
         .thenReturn(Future.successful(mockRegisterWithEoriAndIdResponse))
       when(mockRegisterWithEoriAndIdResponse.responseDetail).thenReturn(registerWithEoriAndIdResponseDetail)
 
@@ -181,15 +181,14 @@ class SubscriptionRecoveryControllerSpec
         any()
       )(any())
     }
-
     "call Enrolment Complete with successful SUB09 call for Subscription ROW journey" in {
       setupMockCommon()
 
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some("eu"))
-      when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[AnyContent]]))
         .thenReturn(Future.successful(Some(Utr("someUtr"))))
       when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(Some("testEORInumber2"))
-      when(mockSessionCache.registerWithEoriAndIdResponse(any[HeaderCarrier]))
+      when(mockSessionCache.registerWithEoriAndIdResponse(any[Request[AnyContent]]))
         .thenReturn(Future.successful(mockRegisterWithEoriAndIdResponse))
       when(mockRegisterWithEoriAndIdResponse.responseDetail).thenReturn(registerWithEoriAndIdResponseDetail)
 
@@ -225,10 +224,10 @@ class SubscriptionRecoveryControllerSpec
       setupMockCommon()
 
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some("eu"))
-      when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[AnyContent]]))
         .thenReturn(Future.successful(None))
       when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(Some("testEORInumber3"))
-      when(mockSessionCache.registrationDetails(any[HeaderCarrier]))
+      when(mockSessionCache.registrationDetails(any[Request[AnyContent]]))
         .thenReturn(Future.successful(mockOrgRegistrationDetails))
       when(mockOrgRegistrationDetails.safeId).thenReturn(SafeId("testsafeId"))
 
@@ -260,9 +259,48 @@ class SubscriptionRecoveryControllerSpec
         any()
       )(any())
     }
+
+    "throw IllegalStateException when SUB09 call returns response without Form Bundle for Subscription UK journey" in {
+      setupMockCommon()
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
+      when(mockSUB09SubscriptionDisplayConnector.subscriptionDisplay(any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Right(fullyPopulatedResponseWithoutFormBundle)))
+      when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(Some("testEORInumber"))
+
+      when(mockSessionCache.registerWithEoriAndIdResponse(any[Request[AnyContent]]))
+        .thenReturn(Future.successful(mockRegisterWithEoriAndIdResponse))
+      when(mockRegisterWithEoriAndIdResponse.responseDetail).thenReturn(registerWithEoriAndIdResponseDetail)
+
+      when(
+        mockTaxEnrolmentsService
+          .issuerCall(anyString, any[Eori], any[Option[LocalDate]], any[Service])(any[HeaderCarrier])
+      ).thenReturn(Future.successful(NO_CONTENT))
+
+      intercept[IllegalStateException] {
+        await(controller.complete(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+      }
+    }
+    "throw IllegalStateException when Tax Enrolment Issuer call returns invalid response for Subscription UK journey" in {
+      setupMockCommon()
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
+      when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(Some("testEORInumber"))
+
+      when(mockSessionCache.registerWithEoriAndIdResponse(any[Request[AnyContent]]))
+        .thenReturn(Future.successful(mockRegisterWithEoriAndIdResponse))
+      when(mockRegisterWithEoriAndIdResponse.responseDetail).thenReturn(registerWithEoriAndIdResponseDetail)
+
+      when(
+        mockTaxEnrolmentsService
+          .issuerCall(anyString, any[Eori], any[Option[LocalDate]], any[Service])(any[HeaderCarrier])
+      ).thenReturn(Future.successful(INTERNAL_SERVER_ERROR))
+
+      intercept[IllegalArgumentException] {
+        await(controller.complete(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+      }
+    }
   }
 
-  def callEnrolmentComplete(userId: String = defaultUserId)(test: Future[Result] => Any) {
+  def callEnrolmentComplete(userId: String = defaultUserId)(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     test(controller.complete(atarService).apply(SessionBuilder.buildRequestWithSession(userId)))
   }

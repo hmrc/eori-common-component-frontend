@@ -29,7 +29,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CustomsId, Nino}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you_nino
-import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -55,7 +54,7 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
   override protected def beforeEach: Unit = {
     super.beforeEach()
     reset(mockSubscriptionDetailsService)
-    when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
+    when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[_]]))
       .thenReturn(Future.successful(None))
   }
 
@@ -76,8 +75,27 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
         page.title should include("Enter your National Insurance number")
       }
     }
+    "populate the field values when Session cache hold Nino details" in {
+      when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[_]]))
+        .thenReturn(Future.successful(Some(Nino("123456789"))))
+      createForm() { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should include("Enter your National Insurance number")
+        page.getElementValue("//*[@id='nino']") shouldBe "123456789"
+      }
+    }
   }
 
+  "HaveNinoSubscriptionController reviewForm" should {
+    "return OK and display correct page" in {
+      reviewForm() { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should include("Enter your National Insurance number")
+      }
+    }
+  }
   "HaveNinoSubscriptionController submit" should {
     "return BadRequest when no option selected" in {
       submit(Map.empty[String, String]) { result =>
@@ -93,14 +111,14 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
     }
 
     "cache NINO and redirect to Address Page of the flow" in {
-      when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[Request[_]]))
         .thenReturn(Future.successful(()))
       mockSubscriptionFlow(nextPageFlowUrl)
       submit(Map("nino" -> "ab 12 34 56 c")) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
       }
-      verify(mockSubscriptionDetailsService).cacheCustomsId(meq(Nino("AB123456C")))(any[HeaderCarrier])
+      verify(mockSubscriptionDetailsService).cacheCustomsId(meq(Nino("AB123456C")))(any[Request[_]])
     }
 
     "redirect to Address page" when {
@@ -108,14 +126,14 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
       "user is in review mode and during ROW individual journey" in {
 
         when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowIndividualFlow)
-        when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
+        when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[Request[_]]))
           .thenReturn(Future.successful(()))
         mockSubscriptionFlow(nextPageFlowUrl)
-        submit(Map("nino" -> "ab 12 34 56 c"), true) { result =>
+        submit(Map("nino" -> "ab 12 34 56 c"), isInReviewMode = true) { result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
         }
-        verify(mockSubscriptionDetailsService).cacheCustomsId(meq(Nino("AB123456C")))(any[HeaderCarrier])
+        verify(mockSubscriptionDetailsService).cacheCustomsId(meq(Nino("AB123456C")))(any[Request[_]])
       }
     }
 
@@ -123,16 +141,16 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
 
       "user is in review mode and UK journey" in {
         when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(IndividualFlow)
-        when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
+        when(mockSubscriptionDetailsService.cacheCustomsId(any[CustomsId])(any[Request[_]]))
           .thenReturn(Future.successful(()))
         mockSubscriptionFlow(nextPageFlowUrl)
-        submit(Map("nino" -> "ab 12 34 56 c"), true) { result =>
+        submit(Map("nino" -> "ab 12 34 56 c"), isInReviewMode = true) { result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers(
             LOCATION
           ) shouldBe "/customs-enrolment-services/atar/subscribe/matching/review-determine"
         }
-        verify(mockSubscriptionDetailsService).cacheCustomsId(meq(Nino("AB123456C")))(any[HeaderCarrier])
+        verify(mockSubscriptionDetailsService).cacheCustomsId(meq(Nino("AB123456C")))(any[Request[_]])
       }
     }
   }
@@ -140,6 +158,11 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
   private def createForm()(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     await(test(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+  }
+
+  private def reviewForm()(test: Future[Result] => Any) = {
+    withAuthorisedUser(defaultUserId, mockAuthConnector)
+    await(test(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
   private def submit(form: Map[String, String], isInReviewMode: Boolean = false)(test: Future[Result] => Any) = {

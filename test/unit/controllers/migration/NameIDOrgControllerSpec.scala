@@ -30,19 +30,23 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameIDOrgController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameIdOrganisationDisplayMode.RegisteredCompanyDM
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{RegistrationDetails, _}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType.PartnershipId
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.nameUtrOrganisationForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  DataUnavailableException,
+  RequestSessionData,
+  SessionCache
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.nameId
-import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import unit.controllers.subscription.SubscriptionFlowSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.SessionBuilder
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEach {
 
@@ -76,7 +80,8 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     mockSubscriptionDetailsHolderService
   )
 
-  private val emulatedFailure = new UnsupportedOperationException("Emulation of service call failure")
+  private val emulatedFailure           = new UnsupportedOperationException("Emulation of service call failure")
+  private val emulatedInvalidURLFailure = DataUnavailableException("Organisation type is not available in cache")
 
   override def beforeEach: Unit = {
     reset(
@@ -85,8 +90,8 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       mockSubscriptionFlowManager,
       mockSubscriptionDetailsHolderService
     )
-    when(mockSubscriptionBusinessService.cachedNameIdOrganisationViewModel(any[HeaderCarrier])).thenReturn(None)
-    when(mockSubscriptionBusinessService.getCachedNameIdViewModel(any[HeaderCarrier]))
+    when(mockSubscriptionBusinessService.cachedNameIdOrganisationViewModel(any[Request[_]])).thenReturn(None)
+    when(mockSubscriptionBusinessService.getCachedNameIdViewModel(any[Request[_]]))
       .thenReturn(Future.successful(NameIdDetailsPage.filledValues))
 
     when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(Some(CdsOrganisationType.Company))
@@ -100,7 +105,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
   val subscriptionFlows: TableFor2[SubscriptionFlow, String] =
     Table[SubscriptionFlow, String](("Flow name", "Label"), (OrganisationFlow, "What are your company details?"))
 
-  val formModes = Table(
+  val formModes: TableFor2[String, SubscriptionFlow => (Future[Result] => Any) => Unit] = Table(
     ("formMode", "showFormFunction"),
     ("create", (flow: SubscriptionFlow) => showCreateForm(flow)(_)),
     ("review", (flow: SubscriptionFlow) => showReviewForm(flow)(_))
@@ -120,7 +125,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       }
 
       "display name / id correctly when all fields are populated" in {
-        when(mockSubscriptionBusinessService.cachedNameIdOrganisationViewModel(any[HeaderCarrier]))
+        when(mockSubscriptionBusinessService.cachedNameIdOrganisationViewModel(any[Request[_]]))
           .thenReturn(Future.successful(Some(NameIdDetailsPage.filledValues)))
 
         showFormFunction(OrganisationFlow) { result =>
@@ -151,8 +156,29 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       }
     }
 
+    "display the form when the organisation type is partnership" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(
+        Some(CdsOrganisationType(PartnershipId))
+      )
+
+      showCreateForm() { result =>
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(continueButtonXpath) shouldBe ContinueButtonTextInCreateMode
+      }
+    }
+
+    "throw DataUnavailableException if there is no session data for organisation type" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(None)
+      val caught = intercept[DataUnavailableException] {
+        showCreateForm() { result =>
+          await(result)
+        }
+      }
+      caught shouldBe emulatedInvalidURLFailure
+    }
+
     "fill fields with details if stored in cache" in {
-      when(mockSubscriptionBusinessService.cachedNameIdOrganisationViewModel(any[HeaderCarrier]))
+      when(mockSubscriptionBusinessService.cachedNameIdOrganisationViewModel(any[Request[_]]))
         .thenReturn(Some(NameIdDetailsPage.filledValues))
       showCreateForm() { result =>
         val page         = CdsPage(contentAsString(result))
@@ -201,6 +227,16 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
         page.getElementsText(continueButtonXpath) shouldBe ContinueButtonTextInReviewMode
       }
     }
+
+    "throw DataUnavailableException if there is no session data for organisation type" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(None)
+      val caught = intercept[DataUnavailableException] {
+        showReviewForm() { result =>
+          await(result)
+        }
+      }
+      caught shouldBe emulatedInvalidURLFailure
+    }
   }
 
   "submitting the form in Create mode" should {
@@ -214,7 +250,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       submitFormInCreateMode(createFormAllFieldsUtrMap) { result =>
         await(result)
         verify(mockSubscriptionDetailsHolderService).cacheNameIdDetails(meq(NameIdDetailsPage.filledValues))(
-          any[HeaderCarrier]
+          any[Request[_]]
         )
       }
     }
@@ -279,6 +315,16 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       caught shouldBe emulatedFailure
     }
 
+    "throw DataUnavailableException if there is no session data for organisation type" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(None)
+      val caught = intercept[DataUnavailableException] {
+        submitFormInCreateMode(createEmptyFormUtrMap) { result =>
+          await(result)
+        }
+      }
+      caught shouldBe emulatedInvalidURLFailure
+    }
+
     "allow resubmission in create mode when details are invalid" in {
       submitFormInCreateMode(createFormAllFieldsUtrMap - utrFieldName)(verifyFormActionInCreateMode)
     }
@@ -286,6 +332,65 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     "redirect to next page when details are valid" in {
       submitFormInCreateMode(createFormAllFieldsUtrMap)(verifyRedirectToNextPageInCreateMode)
     }
+    "validation error when full name is not submitted for Company" in {
+
+      when(mockRequestSessionData.isCompany(any())).thenReturn(Future.successful(true))
+      submitFormInCreateMode(createFormAllFieldsUtrMap + (nameFieldName -> "")) { result =>
+        status(result) shouldBe BAD_REQUEST
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your registered company name"
+        page.getElementsText(nameFieldLevelErrorXPath) shouldBe "Error: Enter your registered company name"
+        page.getElementsText("title") should startWith("Error: ")
+        verifyZeroInteractions(mockSubscriptionBusinessService)
+      }
+    }
+
+    "validation error when full name more than 105 characters for Company" in {
+
+      when(mockRequestSessionData.isCompany(any())).thenReturn(Future.successful(true))
+      submitFormInCreateMode(createFormAllFieldsUtrMap + (nameFieldName -> List.fill(106)("D").mkString)) { result =>
+        status(result) shouldBe BAD_REQUEST
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The company name must be 105 characters or less"
+        page.getElementsText(nameFieldLevelErrorXPath) shouldBe "Error: The company name must be 105 characters or less"
+        page.getElementsText("title") should startWith("Error: ")
+        verifyZeroInteractions(mockSubscriptionBusinessService)
+      }
+    }
+    "validation error when full name is not submitted for Partnership" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(
+        Some(CdsOrganisationType(PartnershipId))
+      )
+      when(mockRequestSessionData.isPartnership(any())).thenReturn(Future.successful(true))
+      submitFormInCreateMode(createFormAllFieldsUtrMap + (nameFieldName -> "")) { result =>
+        status(result) shouldBe BAD_REQUEST
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your registered partnership name"
+        page.getElementsText(nameFieldLevelErrorXPath) shouldBe "Error: Enter your registered partnership name"
+        page.getElementsText("title") should startWith("Error: ")
+        verifyZeroInteractions(mockSubscriptionBusinessService)
+      }
+    }
+
+    "validation error when full name more than 105 characters for Partnership" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(
+        Some(CdsOrganisationType(PartnershipId))
+      )
+      when(mockRequestSessionData.isPartnership(any())).thenReturn(Future.successful(true))
+      submitFormInCreateMode(createFormAllFieldsUtrMap + (nameFieldName -> List.fill(106)("D").mkString)) { result =>
+        status(result) shouldBe BAD_REQUEST
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(
+          pageLevelErrorSummaryListXPath
+        ) shouldBe "The partnership name must be 105 characters or less"
+        page.getElementsText(
+          nameFieldLevelErrorXPath
+        ) shouldBe "Error: The partnership name must be 105 characters or less"
+        page.getElementsText("title") should startWith("Error: ")
+        verifyZeroInteractions(mockSubscriptionBusinessService)
+      }
+    }
+
   }
 
   "submitting the form in review mode" should {
@@ -335,14 +440,13 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
   val createEmptyFormUtrMap: Map[String, String] = Map(nameFieldName -> "", utrFieldName -> "")
 
-  private def mockFunctionWithRegistrationDetails(registrationDetails: RegistrationDetails) {
-    when(mockCdsFrontendDataCache.registrationDetails(any[HeaderCarrier]))
+  private def mockFunctionWithRegistrationDetails(registrationDetails: RegistrationDetails): Unit =
+    when(mockCdsFrontendDataCache.registrationDetails(any[Request[_]]))
       .thenReturn(registrationDetails)
-  }
 
   private def submitFormInCreateMode(form: Map[String, String], userId: String = defaultUserId)(
     test: Future[Result] => Any
-  ) {
+  ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
 
     val result = controller.submit(isInReviewMode = false, atarService)(
@@ -353,7 +457,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
   private def submitFormInReviewMode(form: Map[String, String], userId: String = defaultUserId)(
     test: Future[Result] => Any
-  ) {
+  ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
 
     val result = controller.submit(isInReviewMode = true, atarService)(
@@ -362,7 +466,9 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     test(result)
   }
 
-  private def showCreateForm(subscriptionFlow: SubscriptionFlow = OrganisationFlow)(test: Future[Result] => Any) {
+  private def showCreateForm(
+    subscriptionFlow: SubscriptionFlow = OrganisationFlow
+  )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
@@ -372,11 +478,13 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     test(result)
   }
 
-  private def showReviewForm(subscriptionFlow: SubscriptionFlow = OrganisationFlow)(test: Future[Result] => Any) {
+  private def showReviewForm(
+    subscriptionFlow: SubscriptionFlow = OrganisationFlow
+  )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
-    when(mockSubscriptionBusinessService.getCachedNameIdViewModel(any[HeaderCarrier]))
+    when(mockSubscriptionBusinessService.getCachedNameIdViewModel(any[Request[_]]))
       .thenReturn(Future.successful(NameIdDetailsPage.filledValues))
 
     val result =
@@ -384,14 +492,12 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     test(result)
   }
 
-  private def registerSaveNameIdDetailsMockSuccess() {
-    when(mockSubscriptionDetailsHolderService.cacheNameIdDetails(any[NameIdOrganisationMatchModel])(any[HeaderCarrier]))
+  private def registerSaveNameIdDetailsMockSuccess(): Unit =
+    when(mockSubscriptionDetailsHolderService.cacheNameIdDetails(any[NameIdOrganisationMatchModel])(any[Request[_]]))
       .thenReturn(Future.successful(()))
-  }
 
-  private def registerSaveNameIdDetailsMockFailure(exception: Throwable) {
-    when(mockSubscriptionDetailsHolderService.cacheNameIdDetails(any[NameIdOrganisationMatchModel])(any[HeaderCarrier]))
+  private def registerSaveNameIdDetailsMockFailure(exception: Throwable): Unit =
+    when(mockSubscriptionDetailsHolderService.cacheNameIdDetails(any[NameIdOrganisationMatchModel])(any[Request[_]]))
       .thenReturn(Future.failed(exception))
-  }
 
 }

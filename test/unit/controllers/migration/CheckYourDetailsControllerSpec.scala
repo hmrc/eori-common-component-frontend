@@ -18,7 +18,6 @@ package unit.controllers.migration
 
 import common.support.testdata.subscription.SubscriptionContactDetailsModelBuilder._
 import common.support.testdata.subscription.{BusinessDatesOrganisationTypeTables, ReviewPageOrganisationTypeTables}
-import java.time.LocalDate
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -26,18 +25,18 @@ import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.CheckYourDetailsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubscriptionDetails, SubscriptionFlow}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{IdMatchModel, NameDobMatchModel, _}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, CompanyRegisteredCountry}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.check_your_details
-import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.RegistrationDetailsBuilder.{existingOrganisationRegistrationDetails, individualRegistrationDetails}
-import util.builders.{AuthActionMock, SessionBuilder}
 import util.builders.SubscriptionContactDetailsFormBuilder.Email
+import util.builders.{AuthActionMock, SessionBuilder}
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -73,11 +72,11 @@ class CheckYourDetailsControllerSpec
       email = Some("john.doe@example.com"),
       registeredCompany = Some(CompanyRegisteredCountry("GB"))
     )
-    when(mockCdsDataCache.email(any[HeaderCarrier])).thenReturn(Future.successful(Email))
+    when(mockCdsDataCache.email(any[Request[_]])).thenReturn(Future.successful(Email))
 
-    when(mockCdsDataCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(subscriptionDetailsHolderForCompany)
-    when(mockCdsDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(individualRegistrationDetails)
-    when(mockCdsDataCache.addressLookupParams(any[HeaderCarrier])).thenReturn(Future.successful(None))
+    when(mockCdsDataCache.subscriptionDetails(any[Request[_]])).thenReturn(subscriptionDetailsHolderForCompany)
+    when(mockCdsDataCache.registrationDetails(any[Request[_]])).thenReturn(individualRegistrationDetails)
+    when(mockCdsDataCache.addressLookupParams(any[Request[_]])).thenReturn(Future.successful(None))
   }
 
   "Reviewing the details" should {
@@ -85,7 +84,7 @@ class CheckYourDetailsControllerSpec
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.reviewDetails(atarService))
 
     "return ok when data has been provided" in {
-      when(mockCdsDataCache.registrationDetails(any[HeaderCarrier])).thenReturn(existingOrganisationRegistrationDetails)
+      when(mockCdsDataCache.registrationDetails(any[Request[_]])).thenReturn(existingOrganisationRegistrationDetails)
 
       showForm() { result =>
         status(result) shouldBe OK

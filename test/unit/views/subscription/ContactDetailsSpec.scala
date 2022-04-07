@@ -56,7 +56,7 @@ class ContactDetailsSpec extends ViewSpec {
 
       val emailDiv = doc.body().getElementById("email-outer")
 
-      emailDiv.getElementsByTag("label").get(0).text() must startWith("Email address")
+      emailDiv.getElementsByTag("span").get(0).text() must startWith("Email address")
       emailDiv.getElementById("email").text() mustBe email
     }
 

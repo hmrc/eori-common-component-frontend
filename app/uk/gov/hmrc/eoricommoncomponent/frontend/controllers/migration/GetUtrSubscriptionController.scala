@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration
 
-import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
@@ -25,11 +24,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{RowIndividualFlow, RowOrganisationFlow}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.subscriptionUtrForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you_utr
-import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -45,19 +44,16 @@ class GetUtrSubscriptionController @Inject() (
   def createForm(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
-        populateView(false, service)
+        populateView(isInReviewMode = false, service)
     }
 
   def reviewForm(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
-        populateView(true, service)
+        populateView(isInReviewMode = true, service)
     }
 
-  private def populateView(isInReviewMode: Boolean, service: Service)(implicit
-    hc: HeaderCarrier,
-    request: Request[AnyContent]
-  ) =
+  private def populateView(isInReviewMode: Boolean, service: Service)(implicit request: Request[AnyContent]) =
     requestSessionData.userSelectedOrganisationType match {
       case Some(_) =>
         subscriptionDetailsService.cachedCustomsId.map {
@@ -109,7 +105,7 @@ class GetUtrSubscriptionController @Inject() (
     form: IdMatchModel,
     service: Service,
     orgType: CdsOrganisationType
-  )(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Result] =
+  )(implicit request: Request[AnyContent]): Future[Result] =
     cacheUtr(form, orgType).map(
       _ =>
         if (isInReviewMode && !isItRowJourney)
@@ -122,7 +118,7 @@ class GetUtrSubscriptionController @Inject() (
     requestSessionData.userSubscriptionFlow == RowOrganisationFlow ||
       requestSessionData.userSubscriptionFlow == RowIndividualFlow
 
-  private def cacheUtr(form: IdMatchModel, orgType: CdsOrganisationType)(implicit hc: HeaderCarrier): Future[Unit] =
+  private def cacheUtr(form: IdMatchModel, orgType: CdsOrganisationType)(implicit request: Request[_]): Future[Unit] =
     if (orgType == CdsOrganisationType.Company)
       subscriptionDetailsService.cachedNameDetails.flatMap {
         case Some(nameDetails) =>
@@ -132,7 +128,7 @@ class GetUtrSubscriptionController @Inject() (
       }
     else subscriptionDetailsService.cacheCustomsId(Utr(form.id))
 
-  private lazy val noOrgTypeSelected = throw new IllegalStateException("No organisation type selected by user")
-  private lazy val noBusinessName    = throw new IllegalStateException("No business name cached")
+  private lazy val noOrgTypeSelected = throw DataUnavailableException("No organisation type selected by user")
+  private lazy val noBusinessName    = throw DataUnavailableException("No business name cached")
 
 }

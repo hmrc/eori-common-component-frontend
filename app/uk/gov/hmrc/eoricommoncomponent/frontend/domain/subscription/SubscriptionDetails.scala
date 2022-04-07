@@ -25,6 +25,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
   CompanyRegisteredCountry,
   ContactAddressModel
 }
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 case class SubscriptionDetails(
   dateEstablished: Option[LocalDate] = None,
@@ -48,7 +49,7 @@ case class SubscriptionDetails(
     nameIdOrganisationDetails.map(_.name) orElse nameOrganisationDetails.map(_.name) orElse nameDobDetails.map(
       _.name
     ) orElse nameDetails
-      .map(_.name) getOrElse (throw new IllegalArgumentException("Name is missing"))
+      .map(_.name) getOrElse (throw DataUnavailableException("Name is missing"))
 
 }
 

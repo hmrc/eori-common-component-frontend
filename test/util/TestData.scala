@@ -25,11 +25,23 @@ trait TestData {
       "atar",
       "HMRC-ATAR-ORG",
       "ATaR",
-      "/test-atar/callback",
+      Some("/test-atar/callback"),
       "/test-atar/accessibility",
       "ATaR Service",
       "",
       Some("/test-atar/feedback")
+    )
+
+  val gvmsService: Service =
+    Service(
+      "gagmr",
+      "HMRC-GVMS-ORG",
+      "GaGMR",
+      Some("/test-gagmr/callback"),
+      "/test-gagmr/accessibility",
+      "GVMS Service",
+      "",
+      Some("/test-gvms/feedback")
     )
 
   val otherService: Service =
@@ -37,7 +49,7 @@ trait TestData {
       "other",
       "HMRC-OTHER-ORG",
       "Other",
-      "/other-service/callback",
+      Some("/other-service/callback"),
       "/other-service/accessibility",
       "Other Service",
       "",

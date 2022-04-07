@@ -24,7 +24,7 @@ import play.api.mvc._
 import play.mvc.Http.Status._
 import play.twirl.api.Html
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionTimeOutException
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionTimeOutException}
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.{Constants, InvalidUrlValueException}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{client_error_template, error_template, notFound}
@@ -56,7 +56,9 @@ class CdsErrorHandler @Inject() (
     statusCode match {
       case NOT_FOUND                                              => Future.successful(Results.NotFound(notFoundView()))
       case BAD_REQUEST if message == Constants.INVALID_PATH_PARAM => Future.successful(Results.NotFound(notFoundView()))
-      case _                                                      => Future.successful(Results.InternalServerError(clientErrorTemplateView(message)))
+      case FORBIDDEN if message == Constants.NO_CSRF_FOUND =>
+        Future.successful(Redirect(SecuritySignOutController.displayPage(service)).withNewSession)
+      case _ => Future.successful(Results.InternalServerError(clientErrorTemplateView(message)))
     }
   }
 
@@ -67,7 +69,7 @@ class CdsErrorHandler @Inject() (
     exception match {
       case sessionTimeOut: SessionTimeOutException =>
         // $COVERAGE-OFF$Loggers
-        logger.info("Session time out: " + sessionTimeOut.errorMessage, exception)
+        logger.warn("SessionTimeout with message - " + sessionTimeOut.errorMessage)
         // $COVERAGE-ON
         Future.successful(Redirect(SecuritySignOutController.displayPage(service)).withNewSession)
       case invalidRequirement: InvalidUrlValueException =>
@@ -75,6 +77,11 @@ class CdsErrorHandler @Inject() (
         logger.warn(invalidRequirement.message)
         // $COVERAGE-ON
         Future.successful(Results.NotFound(notFoundView()))
+      case dataUnavailableException: DataUnavailableException =>
+        // $COVERAGE-OFF$Loggers
+        logger.warn("DataUnavailableException with message - " + dataUnavailableException.message)
+        // $COVERAGE-ON
+        Future.successful(Results.InternalServerError(errorTemplateView()))
       case _ =>
         // $COVERAGE-OFF$Loggers
         logger.error("Internal server error: " + exception.getMessage, exception)

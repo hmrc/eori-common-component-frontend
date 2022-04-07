@@ -35,14 +35,13 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionDa
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.organisation_type
-import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder._
 import util.builders.{AuthActionMock, SessionBuilder}
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 // TODO Move view spec to separate test and keep here only controller logic test
 class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
@@ -76,7 +75,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
     when(
       mockRegistrationDetailsService
-        .initialiseCacheWithRegistrationDetails(any[CdsOrganisationType]())(any[HeaderCarrier]())
+        .initialiseCacheWithRegistrationDetails(any[CdsOrganisationType]())(any[Request[AnyContent]]())
     ).thenReturn(Future.successful(true))
     when(mockSubscriptionDetailsService.cachedOrganisationType(any())).thenReturn(Future.successful(None))
   }
@@ -100,6 +99,13 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
         status(result) shouldBe OK
       }
     }
+
+    "throw IllegalArgumentException when session cache holds invalid Organisation type" in {
+      showFormWithAuthenticatedUser(userLocation = None) { result =>
+        status(result) shouldBe OK
+      }
+    }
+
   }
 
   "Submitting the form" should {
@@ -151,7 +157,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
 
         when(
           mockSubscriptionFlowManager
-            .startSubscriptionFlow(any(), any(), any())(any(), any())
+            .startSubscriptionFlow(any(), any(), any())(any())
         ).thenReturn(Future.successful((page, updatedMockSession)))
 
         submitForm(Map("organisation-type" -> option)) { result =>
@@ -169,7 +175,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
         ).thenReturn(updatedMockSession)
         when(
           mockSubscriptionFlowManager
-            .startSubscriptionFlow(any(), any(), any())(any[HeaderCarrier](), any[Request[AnyContent]]())
+            .startSubscriptionFlow(any(), any(), any())(any[Request[AnyContent]]())
         ).thenReturn(Future.successful((page, updatedMockSession)))
 
         submitForm(Map("organisation-type" -> option)) { result =>
@@ -184,7 +190,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
   def showFormWithAuthenticatedUser(
     userId: String = defaultUserId,
     userLocation: Option[String] = Some(UserLocation.Uk)
-  )(test: Future[Result] => Any) {
+  )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
 
     when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(userLocation)
@@ -192,7 +198,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
     test(organisationTypeController.form(atarService).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
-  def showFormWithUnauthenticatedUser(test: Future[Result] => Any) {
+  def showFormWithUnauthenticatedUser(test: Future[Result] => Any): Unit = {
     withNotLoggedInUser(mockAuthConnector)
 
     test(organisationTypeController.form(atarService).apply(SessionBuilder.buildRequestWithSessionNoUser))
@@ -202,7 +208,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
     form: Map[String, String],
     userId: String = defaultUserId,
     userLocation: Option[String] = Some(UserLocation.Uk)
-  )(test: Future[Result] => Any) {
+  )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
 
     when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(userLocation)

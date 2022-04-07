@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
-import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, EnrolmentExtractor}
@@ -24,11 +23,15 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  DataUnavailableException,
+  RequestSessionData,
+  SessionCache
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.migration_success
-import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -56,7 +59,7 @@ class Sub02Controller @Inject() (
       }
   }
 
-  private def renderPageWithName(service: Service)(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] =
+  private def renderPageWithName(service: Service)(implicit request: Request[_]): Future[Result] =
     for {
       name <- sessionCache.registerWithEoriAndIdResponse.map(
         _.responseDetail.flatMap(_.responseData.map(_.trader.fullName))
@@ -69,13 +72,13 @@ class Sub02Controller @Inject() (
     } yield Ok(
       migrationSuccessView(
         sub02Outcome.eori,
-        name.getOrElse(throw new IllegalStateException("Name not populated from reg06")),
+        name.getOrElse(throw DataUnavailableException("Name not populated from reg06")),
         sub02Outcome.processedDate,
         service
       )
     ).withSession(newUserSession)
 
-  private def renderPageWithNameRow(service: Service)(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] =
+  private def renderPageWithNameRow(service: Service)(implicit request: Request[_]): Future[Result] =
     for {
       sub02Outcome <- sessionCache.sub02Outcome
       _            <- sessionCache.remove

@@ -22,15 +22,17 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.time.{Millis, Span}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Reads
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, GroupId, SafeId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.http.HeaderCarrier
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach with ScalaFutures {
@@ -48,6 +50,7 @@ class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAft
   private val safeIdKey  = "safeId"
   private val orgTypeKey = "orgType"
   private val emailKey   = "email"
+  private val groupIdKey = "cachedGroupId"
 
   private val service =
     new Save4LaterService(mockSave4LaterConnector)
@@ -59,7 +62,7 @@ class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAft
     reset(mockSave4LaterConnector)
 
   "Save4LaterService" should {
-    "save the safeId against the users InternalId" in {
+    "save abd fetch the safeId against the users InternalId" in {
       when(
         mockSave4LaterConnector.put[SafeId](
           ArgumentMatchers.eq(groupId.id),
@@ -117,6 +120,81 @@ class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAft
         .futureValue
       result shouldBe Some(emailStatus)
     }
+  }
+
+  "fetch the CacheIds for the users InternalId" in {
+    when(
+      mockSave4LaterConnector.get[CacheIds](ArgumentMatchers.eq(groupId.id), ArgumentMatchers.eq(groupIdKey))(
+        any[HeaderCarrier],
+        any[Reads[CacheIds]]
+      )
+    ).thenReturn(Future.successful(Some(CacheIds(InternalId("int-id"), SafeId("safe-id"), Some(atarService.code)))))
+
+    val result = service
+      .fetchCacheIds(groupId)
+      .futureValue
+    result shouldBe Some(CacheIds(InternalId("int-id"), SafeId("safe-id"), Some(atarService.code)))
+  }
+
+  "fetch the fetchProcessingService for the users InternalId" in {
+    when(
+      mockSave4LaterConnector.get[CacheIds](ArgumentMatchers.eq(groupId.id), ArgumentMatchers.eq(groupIdKey))(
+        any[HeaderCarrier],
+        any[Reads[CacheIds]]
+      )
+    ).thenReturn(Future.successful(Some(CacheIds(InternalId("int-id"), SafeId("safe-id"), Some(atarService.code)))))
+
+    val result = service
+      .fetchProcessingService(groupId).futureValue
+    result shouldBe Some(
+      Service(
+        "atar",
+        "HMRC-ATAR-ORG",
+        "ATaR",
+        Some("http://localhost:9582/advance-tariff-application"),
+        "http://localhost:12346/accessibility-statement/advance-tariff-application",
+        "Advance Tariff Rulings",
+        "Dyfarniadau Tariffau Uwch (ATaR)",
+        None
+      )
+    )
+  }
+
+  "return None when connector returns None for fetchProcessingService for the users InternalId" in {
+    when(
+      mockSave4LaterConnector.get[CacheIds](ArgumentMatchers.eq(groupId.id), ArgumentMatchers.eq(groupIdKey))(
+        any[HeaderCarrier],
+        any[Reads[CacheIds]]
+      )
+    ).thenReturn(Future.successful(None))
+
+    val result = service
+      .fetchProcessingService(groupId).futureValue
+    result shouldBe None
+  }
+
+  "deleteCachedGroupId against the users InternalId" in {
+    when(
+      mockSave4LaterConnector.deleteKey[CacheIds](ArgumentMatchers.eq(groupId.id), ArgumentMatchers.eq(groupIdKey))(
+        any[HeaderCarrier]
+      )
+    ).thenReturn(Future.successful(()))
+
+    val result: Unit = service
+      .deleteCachedGroupId(groupId)
+      .futureValue
+    result shouldBe ((): Unit)
+  }
+
+  "deleteCacheIds against the users InternalId" in {
+    when(mockSave4LaterConnector.delete[CacheIds](ArgumentMatchers.eq(groupId.id))(any[HeaderCarrier])).thenReturn(
+      Future.successful(())
+    )
+
+    val result: Unit = service
+      .deleteCacheIds(groupId)
+      .futureValue
+    result shouldBe ((): Unit)
   }
 
 }

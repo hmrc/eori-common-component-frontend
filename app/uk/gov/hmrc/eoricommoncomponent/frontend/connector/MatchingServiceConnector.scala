@@ -23,6 +23,7 @@ import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching._
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{
   RegisterWithId,
   RegisterWithIdConfirmation,
@@ -48,7 +49,9 @@ class MatchingServiceConnector @Inject() (http: HttpClient, appConfig: AppConfig
     else Some(response)
   }
 
-  def lookup(req: MatchingRequestHolder)(implicit hc: HeaderCarrier): Future[Option[MatchingResponse]] = {
+  def lookup(
+    req: MatchingRequestHolder
+  )(implicit hc: HeaderCarrier, originatingService: Service): Future[Option[MatchingResponse]] = {
 
     // $COVERAGE-OFF$Loggers
     logger.debug(s"REG01 Lookup: $url, requestCommon: ${req.registerWithIDRequest.requestCommon} and hc: $hc")
@@ -72,9 +75,10 @@ class MatchingServiceConnector @Inject() (http: HttpClient, appConfig: AppConfig
   }
 
   private def auditCall(url: String, request: MatchingRequestHolder, response: MatchingResponse)(implicit
-    hc: HeaderCarrier
+    hc: HeaderCarrier,
+    originatingService: Service
   ): Unit = {
-    val registerWithIdSubmitted    = RegisterWithIdSubmitted(request)
+    val registerWithIdSubmitted    = RegisterWithIdSubmitted(request, originatingService.code)
     val registerWithIdConfirmation = RegisterWithIdConfirmation(response)
 
     audit.sendExtendedDataEvent(

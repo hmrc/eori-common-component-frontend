@@ -20,13 +20,14 @@ import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.http.Status.OK
+import play.api.mvc.{AnyContent, Request}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EoriTextDownloadController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.eori_number_text_download
-import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
@@ -35,15 +36,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class EoriTextDownloadControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
-  val mockAuthConnector = mock[AuthConnector]
-  val mockAuthAction    = authAction(mockAuthConnector)
-  val mockCache         = mock[SessionCache]
+  val mockAuthConnector: AuthConnector = mock[AuthConnector]
+  val mockAuthAction: AuthAction       = authAction(mockAuthConnector)
+  val mockCache: SessionCache          = mock[SessionCache]
 
   private val eoriNumberTextDownloadView = instanceOf[eori_number_text_download]
 
   override def beforeEach: Unit = {
     val mockSubscribeOutcome = mock[Sub02Outcome]
-    when(mockCache.sub02Outcome(any[HeaderCarrier])).thenReturn(Future.successful(mockSubscribeOutcome))
+    when(mockCache.sub02Outcome(any[Request[AnyContent]])).thenReturn(Future.successful(mockSubscribeOutcome))
     when(mockSubscribeOutcome.processedDate).thenReturn("23 June 2018")
     when(mockSubscribeOutcome.eori).thenReturn(Some("ZZ123456789000"))
     when(mockSubscribeOutcome.fullName).thenReturn("Test Company")

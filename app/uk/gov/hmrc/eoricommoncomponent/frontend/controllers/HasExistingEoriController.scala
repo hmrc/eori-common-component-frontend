@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
-import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
@@ -26,11 +25,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{EnrolmentService, MissingEnrolmentException}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{eori_enrol_success, has_existing_eori}
-import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -50,7 +49,7 @@ class HasExistingEoriController @Inject() (
   def displayPage(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
       existingEoriToUse.map { eori =>
-        Ok(hasExistingEoriView(service, eori))
+        Ok(hasExistingEoriView(service, eori.id))
       }
   }
 
@@ -62,12 +61,12 @@ class HasExistingEoriController @Inject() (
             Future.successful(Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service)))
           else
             existingEoriToUse.flatMap { eori =>
-              enrolmentService.enrolWithExistingCDSEnrolment(eori, service).map {
+              enrolmentService.enrolWithExistingEnrolment(eori, service).map {
                 case NO_CONTENT => Redirect(routes.HasExistingEoriController.enrolSuccess(service))
                 case status     => throw FailedEnrolmentException(status)
               } recover {
                 case e: MissingEnrolmentException =>
-                  logger.info(s"EnrolWithExistingCDSEnrolment : ${e.getMessage}")
+                  logger.info(s"EnrolWithExistingEnrolment : ${e.getMessage}")
                   Redirect(routes.EmailController.form(service))
               }
             }
@@ -78,15 +77,27 @@ class HasExistingEoriController @Inject() (
   def enrolSuccess(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithServiceAction {
     implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
       existingEoriToUse.map { eori =>
-        Ok(enrolSuccessView(eori, service))
+        Ok(enrolSuccessView(eori.id, service))
       }
   }
 
-  private def existingEoriToUse(implicit loggedInUser: LoggedInUserWithEnrolments, hc: HeaderCarrier): Future[String] =
+  private def existingEoriToUse(implicit
+    loggedInUser: LoggedInUserWithEnrolments,
+    request: Request[_]
+  ): Future[ExistingEori] =
     enrolledForService(loggedInUser, Service.cds) match {
-      case Some(eori) => Future.successful(eori.id)
+      case Some(eori) => Future.successful(eori)
+      case _          => checkOtherEnrollments
+
+    }
+
+  private def checkOtherEnrollments(implicit loggedInUser: LoggedInUserWithEnrolments, request: Request[_]) =
+    enrolledForOtherServices(loggedInUser) match {
+      case Some(eori) => Future.successful(eori)
       case _ =>
-        cache.groupEnrolment.map(_.eori.getOrElse(throw new IllegalStateException("No EORI found")))
+        cache.groupEnrolment.map { enrolment =>
+          ExistingEori(enrolment.eori.getOrElse(throw DataUnavailableException("No EORI found")), enrolment.service)
+        }
     }
 
 }

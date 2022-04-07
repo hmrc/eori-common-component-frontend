@@ -17,8 +17,6 @@
 package unit.controllers.subscription
 
 import common.support.testdata.TestData
-import java.time.LocalDateTime
-
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -32,11 +30,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.migration_success
-import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder._
 import util.builders.{AuthActionMock, SessionBuilder}
 
+import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
@@ -68,7 +66,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
-    when(mockSubscriptionDetailsService.saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any()))
+    when(mockSubscriptionDetailsService.saveKeyIdentifiers(any[GroupId], any[InternalId], any[Service])(any(), any()))
       .thenReturn(Future.successful(()))
   }
 
@@ -92,12 +90,14 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
 
     "render page with name for UK location" in {
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some("uk"))
-      when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[AnyContent]]))
         .thenReturn(Future.successful(Some(Utr("someUtr"))))
       mockNameAndSub02OutcomeRetrieval
-      when(mockSessionCache.sub02Outcome(any[HeaderCarrier])).thenReturn(Future.successful(sub02Outcome))
-      when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
-      when(mockSessionCache.saveSub02Outcome(any[Sub02Outcome])(any[HeaderCarrier])).thenReturn(Future.successful(true))
+      when(mockSessionCache.sub02Outcome(any[Request[AnyContent]])).thenReturn(Future.successful(sub02Outcome))
+      when(mockSessionCache.remove(any[Request[AnyContent]])).thenReturn(Future.successful(true))
+      when(mockSessionCache.saveSub02Outcome(any[Sub02Outcome])(any[Request[AnyContent]])).thenReturn(
+        Future.successful(true)
+      )
       invokeMigrationEnd { result =>
         assertCleanedSession(result)
         status(result) shouldBe OK
@@ -106,12 +106,14 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
 
     "render page with name for ROW location when customsId exists" in {
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some("eu"))
-      when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier]))
+      when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[AnyContent]]))
         .thenReturn(Future.successful(Some(Utr("someUtr"))))
       mockNameAndSub02OutcomeRetrieval
-      when(mockSessionCache.sub02Outcome(any[HeaderCarrier])).thenReturn(Future.successful(sub02Outcome))
-      when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
-      when(mockSessionCache.saveSub02Outcome(any[Sub02Outcome])(any[HeaderCarrier])).thenReturn(Future.successful(true))
+      when(mockSessionCache.sub02Outcome(any[Request[AnyContent]])).thenReturn(Future.successful(sub02Outcome))
+      when(mockSessionCache.remove(any[Request[AnyContent]])).thenReturn(Future.successful(true))
+      when(mockSessionCache.saveSub02Outcome(any[Sub02Outcome])(any[Request[AnyContent]])).thenReturn(
+        Future.successful(true)
+      )
       invokeMigrationEnd { result =>
         assertCleanedSession(result)
         status(result) shouldBe OK
@@ -120,10 +122,12 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
 
     "render page with name for ROW location when no customsId exists" in {
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some("eu"))
-      when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier])).thenReturn(Future.successful(None))
-      when(mockSessionCache.sub02Outcome(any[HeaderCarrier])).thenReturn(Future.successful(sub02Outcome))
-      when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
-      when(mockSessionCache.saveSub02Outcome(any[Sub02Outcome])(any[HeaderCarrier])).thenReturn(Future.successful(true))
+      when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[AnyContent]])).thenReturn(Future.successful(None))
+      when(mockSessionCache.sub02Outcome(any[Request[AnyContent]])).thenReturn(Future.successful(sub02Outcome))
+      when(mockSessionCache.remove(any[Request[AnyContent]])).thenReturn(Future.successful(true))
+      when(mockSessionCache.saveSub02Outcome(any[Sub02Outcome])(any[Request[AnyContent]])).thenReturn(
+        Future.successful(true)
+      )
       invokeMigrationEnd { result =>
         assertCleanedSession(result)
         status(result) shouldBe OK
@@ -141,7 +145,9 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
     val mrweaird = mock[RegisterWithEoriAndIdResponseDetail]
     val rd       = mock[ResponseData]
     val trader   = mock[Trader]
-    when(mockSessionCache.registerWithEoriAndIdResponse(any[HeaderCarrier])).thenReturn(Future.successful(mrweair))
+    when(mockSessionCache.registerWithEoriAndIdResponse(any[Request[AnyContent]])).thenReturn(
+      Future.successful(mrweair)
+    )
     when(mrweair.responseDetail).thenReturn(Some(mrweaird))
     when(mrweaird.responseData).thenReturn(Some(rd))
     when(rd.trader).thenReturn(trader)

@@ -30,13 +30,14 @@ case class RegisterWithIdSubmitted(
   organisation: Option[Organisation] = None,
   acknowledgementReference: String,
   receiptDate: String,
-  regime: String
+  regime: String,
+  originatingService: String
 )
 
 object RegisterWithIdSubmitted {
   implicit val format = Json.format[RegisterWithIdSubmitted]
 
-  def apply(request: MatchingRequestHolder): RegisterWithIdSubmitted = {
+  def apply(request: MatchingRequestHolder, originatingService: String): RegisterWithIdSubmitted = {
 
     val requestCommon = request.registerWithIDRequest.requestCommon
     val requestDetail = request.registerWithIDRequest.requestDetail
@@ -51,7 +52,8 @@ object RegisterWithIdSubmitted {
       organisation = requestDetail.organisation,
       acknowledgementReference = requestCommon.acknowledgementReference,
       receiptDate = requestCommon.receiptDate.toString,
-      regime = requestCommon.regime
+      regime = requestCommon.regime,
+      originatingService = originatingService
     )
   }
 

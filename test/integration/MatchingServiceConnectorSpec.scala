@@ -16,13 +16,14 @@
 
 package integration
 
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.MatchingServiceConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.{MatchingRequestHolder, MatchingResponse}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.mvc.Http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR, OK}
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.MatchingServiceConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.{MatchingRequestHolder, MatchingResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import util.externalservices.ExternalServicesConfig.{Host, Port}
 import util.externalservices.{AuditService, MatchService}
@@ -45,8 +46,8 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
   private lazy val matchingServiceConnector = app.injector.instanceOf[MatchingServiceConnector]
   val expectedPostUrl                       = "/register-with-id"
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
-
+  implicit val hc: HeaderCarrier           = HeaderCarrier()
+  implicit val originatingService: Service = Service.cds
   before {
     resetMockServer()
     AuditService.stubAuditService()
@@ -74,6 +75,42 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
         |    }
         |  }
         |}
+      """.stripMargin)
+
+  private val serviceRequestWithEORIJson =
+    Json.parse("""{
+                 |  "registerWithIDRequest": {
+                 |    "requestCommon": {
+                 |      "regime": "CDS",
+                 |      "receiptDate": "2016-07-08T08:35:13Z",
+                 |      "acknowledgementReference": "fce07075-2e2e-4b12-840e-a63bff6ab1bd"
+                 |    },
+                 |    "requestDetail": {
+                 |      "IDType": "EORI",
+                 |      "IDNumber": "GB123456789123",
+                 |      "requiresNameMatch": false,
+                 |      "isAnAgent": false
+                 |    }
+                 |  }
+                 |}
+      """.stripMargin)
+
+  private val serviceRequestWithNINOJson =
+    Json.parse("""{
+                 |  "registerWithIDRequest": {
+                 |    "requestCommon": {
+                 |      "regime": "CDS",
+                 |      "receiptDate": "2016-07-08T08:35:13Z",
+                 |      "acknowledgementReference": "fce07075-2e2e-4b12-840e-a63bff6ab1bd"
+                 |    },
+                 |    "requestDetail": {
+                 |      "IDType": "NINO",
+                 |      "IDNumber": "123456789",
+                 |      "requiresNameMatch": false,
+                 |      "isAnAgent": false
+                 |    }
+                 |  }
+                 |}
       """.stripMargin)
 
   private def requestJsonFragment(isAnIndividual: Boolean): String =
@@ -260,6 +297,28 @@ class MatchingServiceConnectorSpec extends IntegrationTestsSpec with ScalaFuture
         serviceResponseJsonOrganisationWithOptionalParams.toString
       )
       await(matchingServiceConnector.lookup(serviceRequestJson.as[MatchingRequestHolder]))
+
+      eventually(AuditService.verifyXAuditWrite(1))
+    }
+
+    "audit a successful request with EORI as customsID" in {
+      MatchService.returnTheMatchResponseWhenReceiveRequest(
+        expectedPostUrl,
+        serviceRequestWithEORIJson.toString,
+        serviceResponseJsonOrganisationWithOptionalParams.toString
+      )
+      await(matchingServiceConnector.lookup(serviceRequestWithEORIJson.as[MatchingRequestHolder]))
+
+      eventually(AuditService.verifyXAuditWrite(1))
+    }
+
+    "audit a successful request with NINO" in {
+      MatchService.returnTheMatchResponseWhenReceiveRequest(
+        expectedPostUrl,
+        serviceRequestWithNINOJson.toString,
+        serviceResponseJsonOrganisationWithOptionalParams.toString
+      )
+      await(matchingServiceConnector.lookup(serviceRequestWithNINOJson.as[MatchingRequestHolder]))
 
       eventually(AuditService.verifyXAuditWrite(1))
     }

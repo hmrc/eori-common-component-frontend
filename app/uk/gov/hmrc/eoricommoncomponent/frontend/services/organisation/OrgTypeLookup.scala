@@ -16,12 +16,15 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation
 
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EtmpOrganisationType, RegistrationDetailsOrganisation}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  DataUnavailableException,
+  RequestSessionData,
+  SessionCache
+}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -29,25 +32,25 @@ class OrgTypeLookup @Inject() (requestSessionData: RequestSessionData, sessionCa
   ec: ExecutionContext
 ) {
 
-  def etmpOrgTypeOpt(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[Option[EtmpOrganisationType]] =
+  def etmpOrgTypeOpt(implicit request: Request[AnyContent]): Future[Option[EtmpOrganisationType]] =
     requestSessionData.userSelectedOrganisationType match {
       case Some(cdsOrgType) => Future.successful(Some(EtmpOrganisationType(cdsOrgType)))
       case None =>
         sessionCache.registrationDetails map {
           case RegistrationDetailsOrganisation(_, _, _, _, _, _, orgType) => orgType
-          case _                                                          => throw new IllegalStateException("No Registration details in cache.")
+          case _                                                          => throw DataUnavailableException("No Registration details in cache.")
         }
     }
 
-  def etmpOrgType(implicit request: Request[AnyContent], hc: HeaderCarrier): Future[EtmpOrganisationType] =
+  def etmpOrgType(implicit request: Request[AnyContent]): Future[EtmpOrganisationType] =
     requestSessionData.userSelectedOrganisationType match {
       case Some(cdsOrgType) => Future.successful(EtmpOrganisationType(cdsOrgType))
       case None =>
         sessionCache.registrationDetails map {
           case RegistrationDetailsOrganisation(_, _, _, _, _, _, Some(orgType)) => orgType
           case RegistrationDetailsOrganisation(_, _, _, _, _, _, _) =>
-            throw new IllegalStateException("Unable to retrieve Org Type from the cache")
-          case _ => throw new IllegalStateException("No Registration details in cache.")
+            throw DataUnavailableException("Unable to retrieve Org Type from the cache")
+          case _ => throw DataUnavailableException("No Registration details in cache.")
         }
     }
 

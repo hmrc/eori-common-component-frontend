@@ -45,9 +45,9 @@ class SUB09SubscriptionDisplayConnector @Inject() (http: HttpClient, appConfig: 
   private val logger = Logger(this.getClass)
   private val url    = appConfig.getServiceUrl("subscription-display")
 
-  def subscriptionDisplay(
-    sub09Request: Seq[(String, String)]
-  )(implicit hc: HeaderCarrier): Future[Either[EoriHttpResponse, SubscriptionDisplayResponse]] = {
+  def subscriptionDisplay(sub09Request: Seq[(String, String)], originatingService: String)(implicit
+    hc: HeaderCarrier
+  ): Future[Either[EoriHttpResponse, SubscriptionDisplayResponse]] = {
 
     // $COVERAGE-OFF$Loggers
     logger.debug(s"SubscriptionDisplay SUB09: $url, body: $sub09Request and hc: $hc")
@@ -58,7 +58,7 @@ class SUB09SubscriptionDisplayConnector @Inject() (http: HttpClient, appConfig: 
       logger.debug(s"SubscriptionDisplay SUB09: responseCommon: ${resp.subscriptionDisplayResponse.responseCommon}")
       // $COVERAGE-ON
 
-      auditCall(url, sub09Request, resp)
+      auditCall(url, sub09Request, originatingService, resp)
       Right(resp.subscriptionDisplayResponse)
     } recover {
       case NonFatal(e) =>
@@ -67,11 +67,14 @@ class SUB09SubscriptionDisplayConnector @Inject() (http: HttpClient, appConfig: 
     }
   }
 
-  private def auditCall(url: String, request: Seq[(String, String)], response: SubscriptionDisplayResponseHolder)(
-    implicit hc: HeaderCarrier
-  ): Unit = {
-
-    val subscriptionDisplaySubmitted = SubscriptionDisplaySubmitted.applyAndAlignKeys(request.toMap)
+  private def auditCall(
+    url: String,
+    request: Seq[(String, String)],
+    serviceName: String,
+    response: SubscriptionDisplayResponseHolder
+  )(implicit hc: HeaderCarrier): Unit = {
+    val auditRequest                 = request :+ ("originatingService" -> serviceName)
+    val subscriptionDisplaySubmitted = SubscriptionDisplaySubmitted.applyAndAlignKeys(auditRequest.toMap)
     val subscriptionDisplayResult    = SubscriptionDisplayResult(response)
 
     audit.sendExtendedDataEvent(

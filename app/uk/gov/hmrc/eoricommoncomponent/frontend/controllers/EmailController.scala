@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
-import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, EnrolmentExtractor}
@@ -34,8 +33,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{
   enrolment_pending_against_group_id,
   enrolment_pending_for_user
 }
-import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -88,16 +87,16 @@ class EmailController @Inject() (
       }
     }
 
-  def form(service: Service): Action[AnyContent] =
+  def form(implicit service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
       userGroupIdSubscriptionStatusCheckService
-        .checksToProceed(GroupId(user.groupId), InternalId(user.internalId), service)(continue(service))(
+        .checksToProceed(GroupId(user.groupId), InternalId(user.internalId))(continue(service))(
           userIsInProcess(service)
         )(otherUserWithinGroupIsInProcess(service))
     }
 
   private def checkWithEmailService(email: String, emailStatus: EmailStatus, service: Service)(implicit
-    hc: HeaderCarrier,
+    request: Request[_],
     userWithEnrolments: LoggedInUserWithEnrolments
   ): Future[Result] =
     emailVerificationService.isEmailVerified(email).flatMap {

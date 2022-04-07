@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
-import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
@@ -37,8 +36,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionDetailsService
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.contact_details
-import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -114,7 +113,7 @@ class ContactDetailsController @Inject() (
     email: String,
     inReviewMode: Boolean,
     service: Service
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
+  )(implicit request: Request[AnyContent]): Future[Result] =
     subscriptionDetailsService
       .cacheContactDetails(formData.toContactDetailsModel(email), isInReviewMode = inReviewMode)
       .map(

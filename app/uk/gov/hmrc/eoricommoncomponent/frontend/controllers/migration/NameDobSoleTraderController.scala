@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration
 
-import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
@@ -32,8 +31,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionDetailsService
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration._
-import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -84,11 +83,9 @@ class NameDobSoleTraderController @Inject() (
       )
     }
 
-  private def populateOkView(
-    nameDobViewModel: Option[NameDobMatchModel],
-    isInReviewMode: Boolean,
-    service: Service
-  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
+  private def populateOkView(nameDobViewModel: Option[NameDobMatchModel], isInReviewMode: Boolean, service: Service)(
+    implicit request: Request[AnyContent]
+  ): Future[Result] = {
     lazy val form = nameDobViewModel.fold(enterNameDobForm) {
       enterNameDobForm.fill
     }
@@ -99,7 +96,6 @@ class NameDobSoleTraderController @Inject() (
   }
 
   private def storeNameDobDetails(formData: NameDobMatchModel, inReviewMode: Boolean, service: Service)(implicit
-    hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] =
     subscriptionDetailsHolderService.cacheNameDobDetails(formData).map { _ =>

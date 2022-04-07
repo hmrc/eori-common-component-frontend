@@ -16,22 +16,21 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration
 
-import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.GetUtrSubscriptionController
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.CompanyRegisteredCountryController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.CompanyRegisteredCountryController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{RowOrganisationFlow, UtrSubscriptionFlowPage}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.haveUtrForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.match_utr_subscription
-import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -57,10 +56,7 @@ class HaveUtrSubscriptionController @Inject() (
         populateView(true, service)
     }
 
-  private def populateView(inReviewMode: Boolean, service: Service)(implicit
-    hc: HeaderCarrier,
-    request: Request[AnyContent]
-  ) =
+  private def populateView(inReviewMode: Boolean, service: Service)(implicit request: Request[AnyContent]) =
     requestSessionData.userSelectedOrganisationType match {
       case Some(orgType) =>
         subscriptionDetailsService.cachedUtrMatch.map {
@@ -89,7 +85,6 @@ class HaveUtrSubscriptionController @Inject() (
     }
 
   private def destinationsByAnswer(isInReviewMode: Boolean, form: UtrMatchModel, service: Service)(implicit
-    hc: HeaderCarrier,
     request: Request[AnyContent]
   ): Future[Result] =
     form.haveUtr match {
@@ -112,6 +107,6 @@ class HaveUtrSubscriptionController @Inject() (
       case _ => throw new IllegalStateException("No Data from the form")
     }
 
-  private lazy val noOrgTypeSelected = throw new IllegalStateException("No organisation type selected by user")
+  private lazy val noOrgTypeSelected = throw DataUnavailableException("No organisation type selected by user")
 
 }

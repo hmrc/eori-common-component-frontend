@@ -18,6 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription
 
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 object SubscriptionFlows {
 
@@ -100,7 +101,7 @@ object SubscriptionFlow {
   def apply(flowName: String): SubscriptionFlow =
     SubscriptionFlows.flows.keys
       .find(_.name == flowName)
-      .fold(throw new IllegalStateException(s"Incorrect Subscription flowname $flowName"))(identity)
+      .fold(throw DataUnavailableException(s"Unknown Subscription flowname $flowName"))(identity)
 
 }
 

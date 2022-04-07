@@ -24,8 +24,13 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.connector.MatchingServiceConnect
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching._
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  DataUnavailableException,
+  RequestSessionData,
+  SessionCache
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.RegistrationDetailsCreator
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -55,40 +60,44 @@ class MatchingService @Inject() (
   def sendOrganisationRequestForMatchingService(implicit
     request: Request[AnyContent],
     loggedInUser: LoggedInUserWithEnrolments,
-    headerCarrier: HeaderCarrier
+    headerCarrier: HeaderCarrier,
+    originatingService: Service
   ): Future[Boolean] =
     for {
       subscriptionDetailsHolder <- cache.subscriptionDetails
       orgType = EtmpOrganisationType(
         requestSessionData.userSelectedOrganisationType
-          .getOrElse(throw new IllegalStateException("OrganisationType number missing"))
+          .getOrElse(throw DataUnavailableException("OrganisationType number missing"))
       ).toString
       org = Organisation(subscriptionDetailsHolder.name, orgType)
       eori = subscriptionDetailsHolder.eoriNumber.getOrElse(
-        throw new IllegalStateException("EORI number missing from subscription")
+        throw DataUnavailableException("EORI number missing from subscription")
       )
       result <- matchBusiness(Eori(eori), org, subscriptionDetailsHolder.dateEstablished, GroupId(loggedInUser.groupId))
     } yield result
 
   def sendIndividualRequestForMatchingService(implicit
     loggedInUser: LoggedInUserWithEnrolments,
-    headerCarrier: HeaderCarrier
+    headerCarrier: HeaderCarrier,
+    request: Request[_],
+    originatingService: Service
   ): Future[Boolean] =
     for {
       subscription <- cache.subscriptionDetails
       nameDob = subscription.nameDobDetails.getOrElse(
-        throw new IllegalStateException("Name / DOB missing from subscription")
+        throw DataUnavailableException("Name / DOB missing from subscription")
       )
-      eori       = subscription.eoriNumber.getOrElse(throw new IllegalStateException("EORI number missing from subscription"))
+      eori       = subscription.eoriNumber.getOrElse(throw DataUnavailableException("EORI number missing from subscription"))
       individual = Individual(nameDob.firstName, None, nameDob.lastName, nameDob.dateOfBirth.toString)
       result <- matchIndividualWithId(Eori(eori), individual, GroupId(loggedInUser.groupId))
     } yield result
 
-  def matchBusiness(customsId: CustomsId, org: Organisation, establishmentDate: Option[LocalDate], groupId: GroupId)(
-    implicit
-    request: Request[AnyContent],
-    hc: HeaderCarrier
-  ): Future[Boolean] = {
+  def matchBusiness(
+    customsId: CustomsId,
+    org: Organisation,
+    establishmentDate: Option[LocalDate],
+    groupId: GroupId
+  )(implicit request: Request[AnyContent], hc: HeaderCarrier, originatingService: Service): Future[Boolean] = {
     def stripKFromUtr: CustomsId => CustomsId = {
       case Utr(id) => Utr(id.stripSuffix("k").stripSuffix("K"))
       case other   => other
@@ -108,7 +117,9 @@ class MatchingService @Inject() (
   }
 
   def matchIndividualWithId(customsId: CustomsId, individual: Individual, groupId: GroupId)(implicit
-    hc: HeaderCarrier
+    hc: HeaderCarrier,
+    request: Request[_],
+    originatingService: Service
   ): Future[Boolean] =
     matchingConnector
       .lookup(individualIdMatchRequest(customsId, individual))
@@ -118,7 +129,7 @@ class MatchingService @Inject() (
     convert: MatchingResponse => RegistrationDetails,
     groupId: GroupId,
     orgType: Option[CdsOrganisationType] = None
-  )(mayBeMatchSuccess: Option[MatchingResponse])(implicit hc: HeaderCarrier): Future[Boolean] =
+  )(mayBeMatchSuccess: Option[MatchingResponse])(implicit hc: HeaderCarrier, request: Request[_]): Future[Boolean] =
     mayBeMatchSuccess.map(convert).fold(Future.successful(false)) { details =>
       cache.saveRegistrationDetails(details, groupId, orgType)
     }

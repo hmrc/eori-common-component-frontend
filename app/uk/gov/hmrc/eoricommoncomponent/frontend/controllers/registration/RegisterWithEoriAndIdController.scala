@@ -36,6 +36,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.language.LanguageUtils
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -64,7 +65,7 @@ class RegisterWithEoriAndIdController @Inject() (
 
   private val logger = Logger(this.getClass)
 
-  def registerWithEoriAndId(service: Service): Action[AnyContent] =
+  def registerWithEoriAndId(implicit service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit loggedInUser =>
       groupEnrolment.hasGroupIdEnrolmentTo(loggedInUser.groupId.getOrElse(throw MissingGroupId()), service).flatMap {
         groupIdEnrolmentExists =>
@@ -73,8 +74,8 @@ class RegisterWithEoriAndIdController @Inject() (
           else
             subscriptionDetailsService.cachedCustomsId.flatMap { cachedCustomsId =>
               sendRequest(cachedCustomsId).flatMap {
-                case true if isRow && cachedCustomsId.isEmpty => handleREG01Response(service)
-                case true                                     => handleREG06Response(service)
+                case true if isRow && cachedCustomsId.isEmpty => handleREG01Response
+                case true                                     => handleREG06Response
                 case false =>
                   logger.error("Reg01 BadRequest ROW")
                   val formattedDate = languageUtils.Dates.formatDate(LocalDate.now())
@@ -84,9 +85,11 @@ class RegisterWithEoriAndIdController @Inject() (
       }
     }
 
-  private def sendRequest(
-    cachedCustomsId: Option[CustomsId]
-  )(implicit request: Request[AnyContent], loggedInUser: LoggedInUserWithEnrolments): Future[Boolean] =
+  private def sendRequest(cachedCustomsId: Option[CustomsId])(implicit
+    request: Request[AnyContent],
+    loggedInUser: LoggedInUserWithEnrolments,
+    originatingService: Service
+  ): Future[Boolean] =
     cache.registrationDetails.flatMap { regDetails =>
       (regDetails, cachedCustomsId, isRow) match {
         case (_: RegistrationDetailsOrganisation, Some(_), true) =>
@@ -103,23 +106,27 @@ class RegisterWithEoriAndIdController @Inject() (
       }
     }
 
-  private def handleREG01Response(
+  private def handleREG01Response(implicit
+    request: Request[AnyContent],
+    loggedInUser: LoggedInUserWithEnrolments,
     service: Service
-  )(implicit request: Request[AnyContent], loggedInUser: LoggedInUserWithEnrolments) =
+  ) =
     cache.registrationDetails.flatMap { regDetails =>
-      onRegistrationPassCheckSubscriptionStatus(service, "taxPayerID", regDetails.sapNumber.mdgTaxPayerId)
+      onRegistrationPassCheckSubscriptionStatus("taxPayerID", regDetails.sapNumber.mdgTaxPayerId)
     }
 
-  private def handleREG06Response(
+  private def handleREG06Response(implicit
+    request: Request[AnyContent],
+    loggedInUser: LoggedInUserWithEnrolments,
     service: Service
-  )(implicit request: Request[AnyContent], loggedInUser: LoggedInUserWithEnrolments) =
+  ) =
     cache.registerWithEoriAndIdResponse.flatMap { resp =>
       resp.responseDetail.flatMap(_.outcome) match {
         case Some("PASS") =>
           val safeId = resp.responseDetail
             .flatMap(_.responseData.map(x => x.SAFEID))
             .getOrElse(throw new IllegalStateException("SafeId can't be none"))
-          onRegistrationPassCheckSubscriptionStatus(service, idType = "SAFE", id = safeId)
+          onRegistrationPassCheckSubscriptionStatus(idType = "SAFE", id = safeId)
         case Some("DEFERRED") =>
           notifyRcmService.notifyRcm(service).map { _ =>
             val formattedDate = languageUtils.Dates.formatDate(resp.responseCommon.processingDate.toLocalDate)
@@ -156,7 +163,7 @@ class RegisterWithEoriAndIdController @Inject() (
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         eori <- cache.subscriptionDetails.map(
-          _.eoriNumber.getOrElse(throw new IllegalStateException("No EORI found in cache"))
+          _.eoriNumber.getOrElse(throw DataUnavailableException("No EORI found in cache"))
         )
         name <- cache.subscriptionDetails.map(_.name)
         _    <- cache.remove
@@ -266,10 +273,11 @@ class RegisterWithEoriAndIdController @Inject() (
       }
   }
 
-  private def onRegistrationPassCheckSubscriptionStatus(service: Service, idType: String, id: String)(implicit
+  private def onRegistrationPassCheckSubscriptionStatus(idType: String, id: String)(implicit
     request: Request[AnyContent],
     loggedInUser: LoggedInUserWithEnrolments,
-    hc: HeaderCarrier
+    hc: HeaderCarrier,
+    service: Service
   ) =
     subscriptionStatusService.getStatus(idType, id).flatMap {
       case NewSubscription | SubscriptionRejected =>

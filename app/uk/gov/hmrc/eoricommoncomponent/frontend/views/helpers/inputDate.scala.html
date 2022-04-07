@@ -1,8 +1,18 @@
 @*
- * Copyright 2021 HM Revenue & Customs
- *
- *@
-
+* Copyright 2022 HM Revenue & Customs
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.Implicits.RichDateInput
 
@@ -10,67 +20,69 @@
 @this(govukDateInput: GovukDateInput)
 
 @(
-  form: Form[_],
-  legendContent: String,
-  legendClasses: Option[String] = None,
-  id: String = "value",
-  hintText: Option[Html] = None,
-  legendAsPageHeading: Boolean = true,
+        form: Form[_],
+        legendContent: Option[String] = None,
+        legendClasses: Option[String] = None,
+        id: String = "value",
+        hintText: Option[Html] = None,
+        legendAsPageHeading: Boolean = true,
 )(implicit messages: Messages)
 
 @formErrors = @{
     form(id).errors ++ form(s"$id.day").errors ++ form(s"$id.month").errors ++ form(s"$id.year").errors
 }
 @errorContent(error: FormError) = {
-    <span id="@id-error" class="govuk-error-message govuk-!-margin-bottom-1">
-        <span class="govuk-visually-hidden">Error: </span>
-        @messages(error.message, error.args: _*)
-    </span>
+    <br>
+    <span class="govuk-visually-hidden">@messages("cds.error.field.hint"):</span>
+@messages(error.message, error.args: _*)
 }
 
 @formattedErrors = {
-  @if(formErrors.nonEmpty){
-      @formErrors.headOption.map(err => messages(err.message, err.args: _*))
-      </span>
-      @if(formErrors.tail.nonEmpty) {
-          @formErrors.tail.map(err => errorContent(err))
-      }
-  }
+@if(formErrors.nonEmpty) {
+    @formErrors.headOption.map(err => messages(err.message, err.args: _*))
+    @if(formErrors.tail.nonEmpty) {
+        @formErrors.tail.map(err => errorContent(err))
+    }
+}
 }
 
 
 @govukDateInput(DateInput(
     fieldset = Some(Fieldset(
-        legend = Some(
-            Legend(
-                content = Text(messages(legendContent)),
-                isPageHeading = legendAsPageHeading,
-                classes = ( if(legendAsPageHeading){"govuk-fieldset__legend--l "} else "") + legendClasses.getOrElse("")
+        legend =
+            legendContent.map(content =>
+                Legend(
+                    content = Text(messages(content)),
+                    isPageHeading = legendAsPageHeading,
+                    classes = (if(legendAsPageHeading) {
+                        "govuk-fieldset__legend--l "
+                    } else "") + legendClasses.getOrElse("")
+                )
+
             )
-        )
     )),
     id = id,
     items = Seq(
         InputItem(
             classes = "govuk-input--width-2",
-            name  =  s"$id.day",
+            name = s"$id.day",
             label = Some(messages("date.fields.day")),
             value = form(s"$id.day").value,
-            id    = s"$id.day"
+            id = s"$id.day"
         ),
         InputItem(
             classes = "govuk-input--width-2",
             name = s"$id.month",
             label = Some(messages("date.fields.month")),
             value = form(s"$id.month").value,
-            id    = s"$id.month"
+            id = s"$id.month"
         ),
         InputItem(
             classes = "govuk-input--width-4",
             name = s"$id.year",
             label = Some(messages("date.fields.year")),
             value = form(s"$id.year").value,
-            id    = s"$id.year"
+            id = s"$id.year"
         )
 
 
@@ -79,7 +91,7 @@
         content = HtmlContent(hintHtml)
     )),
     errorMessage = form.hasErrors match {
-        case true => Some(ErrorMessage(classes = "govuk-!-margin-bottom-1", content = HtmlContent(formattedErrors)))
+        case true => Some(ErrorMessage(classes = "govuk-!-margin-bottom-1", content = HtmlContent(formattedErrors), visuallyHiddenText = Some(messages("cds.error.field.hint"))))
         case _ => None
     }
 ).withFormField(form(id)))

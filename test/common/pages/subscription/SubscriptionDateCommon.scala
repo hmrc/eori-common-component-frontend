@@ -24,9 +24,9 @@ trait SubscriptionDateCommon extends WebPage {
 
   protected def dateFieldName: String
 
-  def dateOfEstablishmentErrorXpath: String = s"//span[@id='date-of-establishment-error'][@class='govuk-error-message']"
+  def dateOfEstablishmentErrorXpath: String = s"//p[@id='date-of-establishment-error'][@class='govuk-error-message']"
 
-  def dateOfBirthFieldLevelErrorXpath: String = s"//span[@id='date-of-birth-error']//span[@class='govuk-error-message']"
+  def dateOfBirthFieldLevelErrorXpath: String = s"//p[@id='date-of-birth-error']//span[@class='govuk-error-message']"
 
   def dayOfDateFieldXpath: String = s"//*[@id='$dateFieldName.day']"
 
@@ -51,7 +51,7 @@ object SubscriptionDateOfEstablishmentPage extends SubscriptionDateCommon {
   override val formId: String          = "date-of-establishment-form"
   override protected val dateFieldName = "date-of-establishment"
 
-  def dateOfEstablishmentLabelXPath: String = "//*[@id='date-of-establishment-label']"
+  def dateOfEstablishmentLabelXPath: String = "//*[@id='date-of-establishment-info']"
 }
 
 object SubscriptionPartnershipDateOfEstablishmentPage extends SubscriptionDateCommon {

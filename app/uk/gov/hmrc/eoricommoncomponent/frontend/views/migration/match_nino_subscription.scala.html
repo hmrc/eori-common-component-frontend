@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,8 @@
 @(matchNinoIdForm: Form[NinoMatchModel], isInReviewMode: Boolean, service: Service)(implicit request: Request[_], messages: Messages)
 
 @hint = {
-    <span>@messages("cds.matching.nino.row.description")</span> <br><br>
-    <span>@Html(messages("cds.matching.nino.nino.hint"))</span>
+    <p>@messages("cds.matching.nino.row.description")</p>
+    <p>@Html(messages("cds.matching.nino.nino.hint"))</p>
 }
 
 @values = @{

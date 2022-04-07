@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
-import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
@@ -24,13 +23,14 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.ninoOrUtrChoiceForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
   SubscriptionDetailsService
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you
-import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -53,7 +53,7 @@ class HowCanWeIdentifyYouController @Inject() (
       populateView(service, isInReviewMode = true)
     }
 
-  private def populateView(service: Service, isInReviewMode: Boolean)(implicit hc: HeaderCarrier, request: Request[_]) =
+  private def populateView(service: Service, isInReviewMode: Boolean)(implicit request: Request[_]) =
     subscriptionBusinessService.getCachedNinoOrUtrChoice.map { choice =>
       Ok(howCanWeIdentifyYouView(ninoOrUtrChoiceForm.fill(NinoOrUtrChoice(choice)), isInReviewMode, service))
     }
@@ -69,7 +69,7 @@ class HowCanWeIdentifyYouController @Inject() (
     }
 
   private def storeChoice(formData: NinoOrUtrChoice, inReviewMode: Boolean, service: Service)(implicit
-    hc: HeaderCarrier
+    request: Request[_]
   ): Future[Result] =
     subscriptionDetailsHolderService
       .cacheNinoOrUtrChoice(formData)
@@ -79,6 +79,8 @@ class HowCanWeIdentifyYouController @Inject() (
             Redirect(continueNino(inReviewMode, service))
           case Some("utr") =>
             Redirect(continueUtr(inReviewMode, service))
+          case _ =>
+            throw DataUnavailableException("HowCanWeIdentifyYouController Missing form data values")
         }
       }
 

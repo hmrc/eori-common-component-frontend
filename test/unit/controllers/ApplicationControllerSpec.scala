@@ -17,9 +17,10 @@
 package unit.controllers
 
 import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
+import play.api.mvc.Request
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
@@ -29,7 +30,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.start_subscribe
-import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
@@ -63,6 +63,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       .thenReturn(Future.successful(None))
     when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any()))
       .thenReturn(Future.successful(false))
+    when(groupEnrolmentExtractor.checkAllServiceEnrolments(any())(any())).thenReturn(Future.successful(None))
   }
 
   override protected def afterEach(): Unit = {
@@ -107,6 +108,26 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       verifyZeroInteractions(mockSessionCache)
     }
 
+    "direct authenticated users to start short-cut subscription and pick other enrolment apart from CDS" in {
+      when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(gvmsService))(any()))
+        .thenReturn(Future.successful(None))
+      when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(Future.successful(List.empty))
+      when(groupEnrolmentExtractor.checkAllServiceEnrolments(any())(any())).thenReturn(
+        Future.successful(groupEnrolment(atarService))
+      )
+      when(mockEnrolmentStoreProxyService.isEnrolmentInUse(any(), any())(any())).thenReturn(Future.successful(None))
+      when(mockSessionCache.saveGroupEnrolment(any[EnrolmentResponse])(any())).thenReturn(Future.successful(true))
+      val atarEnrolment   = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", "GB134123")
+      val route1Enrolment = Enrolment("HMRC-CTS-ORG").withIdentifier("EORINumber", "GB134123")
+      withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set(atarEnrolment, route1Enrolment))
+
+      val result =
+        controller.startSubscription(gvmsService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+
+      status(result) shouldBe SEE_OTHER
+      await(result).header.headers("Location") should endWith("check-existing-eori")
+    }
+
     "direct authenticated users where group id has CDS enrolment to start short-cut subscription" in {
       when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(atarService))(any()))
         .thenReturn(Future.successful(None))
@@ -124,6 +145,26 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       status(result) shouldBe SEE_OTHER
       await(result).header.headers("Location") should endWith("check-existing-eori")
       verify(mockSessionCache).saveGroupEnrolment(any[EnrolmentResponse])(any())
+    }
+
+    "direct authenticated users where group id has other than  enrolment to start short-cut subscription apart from CDS" in {
+      when(groupEnrolmentExtractor.checkAllServiceEnrolments(any())(any()))
+        .thenReturn(Future.successful(groupEnrolment(atarService)))
+      when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(Service.cds))(any()))
+        .thenReturn(Future.successful(None))
+      when(mockSessionCache.saveGroupEnrolment(any[EnrolmentResponse])(any())).thenReturn(Future.successful(true))
+      when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(Future.successful(List.empty))
+      when(mockEnrolmentStoreProxyService.isEnrolmentInUse(any(), any())(any())).thenReturn(Future.successful(None))
+
+      withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set.empty)
+
+      val result =
+        controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+      status(result) shouldBe SEE_OTHER
+      await(result).header.headers("Location") should endWith("check-existing-eori")
+      verify(mockSessionCache).saveGroupEnrolment(
+        meq(EnrolmentResponse("HMRC-ATAR-ORG", "Activated", List(KeyValue("EORINumber", "GB123456463324"))))
+      )(any())
     }
 
     "inform authenticated users with ATAR enrolment that subscription exists" in {
@@ -252,7 +293,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
     "logout an authenticated user for subscribe" in {
       withAuthorisedUser(defaultUserId, mockAuthConnector)
-      when(mockSessionCache.remove(any[HeaderCarrier])).thenReturn(Future.successful(true))
+      when(mockSessionCache.remove(any[Request[_]])).thenReturn(Future.successful(true))
 
       val result =
         controller.logout(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))

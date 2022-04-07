@@ -3,8 +3,8 @@ cds.banner.subscription=Tanysgrifio i {0}
 
 ecc.subscription.enter-eori-number.heading=Beth yw’ch rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI)?
 cds.subscription.enter-eori-number.no-eori.summary=Nid oes gennyf rif EORI
-cds.subscription.enter-eori-number.no-eori=Mae’n rhaid i chi {0} cyn i chi allu gwneud cais am {1}.
-cds.subscription.enter-eori-number.no-eori.link=gael rhif EORI
+cds.subscription.enter-eori-number.no-eori=Mae’n rhaid i chi {0} cyn i chi allu gwneud cais am {1}. Fel arfer, mae angen aros oddeutu 30 munud ar ôl gwneud cais am rif EORI cyn i chi allu mynd ati gyda’ch cais am {1}, ond gall gymryd hyd at 48 awr.
+cds.subscription.enter-eori-number.no-eori.link=gael rhif EORI {0}
 
 cds.has-existing-eori.title=Mae’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth yn gysylltiedig ag EORI
 cds.has-existing-eori.heading=Mae’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth yn gysylltiedig ag EORI
@@ -71,21 +71,17 @@ cds.registration.you-already-have-eori.para1=Rydym wedi canfod bod gennych EORI 
 
 ecc.subscription.information.heading=Mae’n rhaid i chi danysgrifio i ddefnyddio’r gwasanaeth {0}
 ecc.subscription.information.para1.heading=Yr hyn y bydd ei angen arnoch
-ecc.subscription.information.para1=Er mwyn eich tanysgrifio i’r gwasanaeth {0}, bydd arnom angen ychydig o wybodaeth gennych. Sicrhewch fod gennych yr holl fanylion cywir cyn i chi ddechrau, fel arall mae’n bosibl y caiff eich cais ei oedi.
+ecc.subscription.information.para1=Er mwyn eich tanysgrifio i’r gwasanaeth ar gyfer {0}, mae angen gwybodaeth arnom oddi wrthych. Sicrhewch fod gennych yr holl fanylion cywir cyn i chi ddechrau, fel arall mae’n bosibl y caiff eich cais ei oedi.
 
-ecc.subscription.information.para2.heading=Rhif EORI GB
-ecc.subscription.information.para2=Bydd angen rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (rhif EORI) GB arnoch.
-ecc.subscription.information.para2.warning=!RhybuddMae’n rhaid i’r rhif EORI GB fod yr un sy’n gysylltiedig â’r Dynodydd Defnyddiwr (ID) Porth y Llywodraeth a ddefnyddiwyd gennych i fewngofnodi. <a href="https://www.tax.service.gov.uk/check-eori-number" class="govuk-link" target="_blank">Gwiriwch y rhif EORI GB (yn agor ffenestr neu dab newydd)</a>.
-ecc.subscription.information.para2.text=Os nad oes gennych rif EORI, byddwch yn cael un gyda’ch tanysgrifiad i’r gwasanaeth {0}. Bydd angen i chi ddarparu’r canlynol:
-ecc.subscription.information.para2.list.first=manylion TAW os ydych wedi’ch cofrestru yn y DU
-ecc.subscription.information.para2.list.bullet.first=rhif TAW
-ecc.subscription.information.para2.list.bullet.second=cod post y cyfeiriad a gofrestrwyd ar gyfer TAW
-ecc.subscription.information.para2.list.bullet.third=dyddiad y daw TAW i rym
-ecc.subscription.information.para2.list.second=Cod Dosbarthiad Diwydiannol Safonol (SIC). <a href="https://resources.companieshouse.gov.uk/sic/" class="govuk-link">Dewch o hyd i’ch cod SIC (yn agor ffenestr neu dab newydd)</a>.
+ecc.subscription.information.para2.heading=Rhif EORI sy’n dechrau gyda GB
+ecc.subscription.information.para2=Mae’n rhaid i chi {0} cyn i chi allu gwneud cais am {1}. Fel arfer, mae angen aros oddeutu 30 munud ar ôl gwneud cais am rif EORI cyn i chi allu mynd ati gyda’ch cais am {1}, ond gall gymryd hyd at 48 awr.
+ecc.subscription.information.para2.link=gael rhif EORI {0}
+ecc.subscription.information.para2.warning=Mae’n rhaid i’r rhif EORI sy’n dechrau gyda GB fod yr un sy’n gysylltiedig â’r Dynodydd Defnyddiwr (ID) Porth y Llywodraeth a ddefnyddiwyd gennych pan gawsoch rif EORI.
 
 ecc.subscription.information.section.organisation.subheading=Manylion y cwmni neu sefydliad arall
+ecc.subscription.information.section.organisation.find-utr.label = UTR coll {0}
 ecc.subscription.information.section.organisation.list.heading=Os ydych yn gwmni cyfyngedig, partneriaeth neu elusen, bydd angen y canlynol arnoch:
-ecc.subscription.information.section.organisation.list.first=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth os ydych yn talu treth gorfforaeth yn y DU. Gallwch ddod o hyd i <a href="https://www.tax.service.gov.uk/ask-for-copy-of-your-corporation-tax-utr" class="govuk-link" target="_blank" rel="noopener noreferrer">UTR coll (yn agor ffenestr neu dab newydd)</a>.
+ecc.subscription.information.section.organisation.list.first=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth os ydych yn talu treth gorfforaeth yn y DU. Gallwch ddod o hyd i {0}
 ecc.subscription.information.section.organisation.list.second=Enw’r cwmni cofrestredig
 ecc.subscription.information.section.organisation.list.third=Cyfeiriad cofrestredig y cwmni
 ecc.subscription.information.section.organisation.list.fourth=Dyddiad sefydlu
@@ -93,8 +89,7 @@ ecc.subscription.information.section.organisation.list.fourth=Dyddiad sefydlu
 ecc.subscription.information.section.individual.subheading=Manylion yr unig fasnachwr neu unigolyn
 ecc.subscription.information.section.individual.para=Os ydych wedi gweithio yn y DU neu wedi cofrestru ar gyfer Hunanasesiad, bydd angen un o’r canlynol arnoch:
 ecc.subscription.information.section.individual.nino=Rhif Yswiriant Gwladol
-ecc.subscription.information.section.individual.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad. Gallwch ddod o hyd i <a href="https://www.gov.uk/find-lost-utr-number" class="govuk-link" target="_blank" rel="noopener noreferrer">UTR coll (yn agor ffenestr neu dab newydd)</a>.
-
+ecc.subscription.information.section.individual.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad. Gallwch ddod o hyd i <a href="https://www.gov.uk/find-lost-utr-number" class="govuk-link" target="_blank" rel="noopener noreferrer">UTR coll {0}.</a>
 ecc.subscription.information.only.once=Dim ond unwaith y mae angen gwneud hyn.
 ecc.subscription.information.email.confirm=Byddwn yn prosesu’ch cais ac yn anfon e-bost atoch gyda’r canlyniad cyn pen 2 awr.
 
@@ -104,7 +99,7 @@ subscription.check-your-email.no=Na, mae angen i mi newid y cyfeiriad e-bost hwn
 
 cds.form.contact-details=Eich cyfeiriad
 
-cds.error.field.hint=Gwall:
+cds.error.field.hint=Gwall
 
 date.day.error=Nodwch ddiwrnod rhwng 1 a 31
 date.month.error=Nodwch fis rhwng 1 a 12
@@ -128,8 +123,8 @@ cds.subscription.sign-in-with-different-details.para1=Mae {0} eisoes wedi cofres
 cds.subscription.sign-in-with-different-details.para1-noname=Rydych eisoes wedi cofrestru ar gyfer {0} gyda Phorth y Llywodraeth gwahanol.
 
 cds.matching.row-organisation.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890, a gellir ei ddilyn gan K. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Treth Gorfforaeth. Efallai y cyfeirir ato gan ddefnyddio’r geiriau ‘cyfeirnod’, ‘UTR’ neu ‘defnydd swyddogol’. Mae modd dod o hyd i UTR sydd ar goll.
-cds.matching.row-sole-trader-individual.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890, a gellir ei ddilyn gan K. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Hunanasesiad. Efallai y cyfeirir ato gan ddefnyddio’r geiriau ‘cyfeirnod’, ‘UTR’ neu ‘defnydd swyddogol’. Mae modd {0}.
-cds.matching.row-lost-urt.hint.link=dod o hyd i UTR sydd ar goll
+cds.matching.row-sole-trader-individual.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890, a gellir ei ddilyn gan K. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Hunanasesiad. Efallai y cyfeirir ato gan ddefnyddio’r geiriau ‘cyfeirnod’, ‘UTR’ neu ‘defnydd swyddogol’. Mae modd {0}
+cds.matching.row-lost-urt.hint.link=dod o hyd i UTR sydd ar goll {0}
 
 cds.subscribe.use-this-eori.heading=Eich rhif Cofrestru ac Adnabod Gweithredwr Economaidd (EORI)
 cds.subscribe.use-this-eori.paragraph1=Mae’r EORI hwn yn gysylltiedig â chyfrif Porth y Llywodraeth rydych yn ei ddefnyddio.
@@ -156,7 +151,7 @@ cds.matching.name-id-organisation.registered-company.utr=Cyfeirnod Unigryw y Tre
 cds.matching.name-id-organisation.partnership.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad y Bartneriaeth
 cds.matching.name-id-organisation.organisation.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad y Sefydliad
 
-cds.subscription.date-of-establishment.company.title-and-heading=Pryd y cafodd y cwmni ei sefydlu?
+cds.subscription.date-of-establishment.company.title-and-heading=Dyddiad y sefydlwyd y cwmni
 
 cds.subscription.address-details.postcode.row.label=Cod post
 
@@ -211,7 +206,9 @@ cds.subscription.organisation-disclose-personal-details-consent.yes=Iawn - Rwyf 
 cds.subscription.organisation-disclose-personal-details-consent.no=Na - Dangoswch fy rhif EORI yn unig
 
 subscription-journey.how-confirm-identity.nino.heading=Nodwch eich rhif Yswiriant Gwladol
+subscription-journey.how-confirm-identity.nino.hint=Mae’r rhif ar eich cerdyn Yswiriant Gwladol, llythyr budd-daliadau, slip cyflog neu P60. Er enghraifft, ''QQ123456C''.
 subscription-journey.how-confirm-identity.utr.heading=Nodwch eich Cyfeirnod Unigryw y Trethdalwr
+subscription-journey.how-confirm-identity.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890, a gellir ei ddilyn gan K.
 
 ecc.reg06.outcome.why-heading = Pam nad oedd y cais yn llwyddiannus
 ecc.reg06.outcome.eori = Rhif EORI {0}

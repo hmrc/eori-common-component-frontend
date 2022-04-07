@@ -22,8 +22,9 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Request, Session}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType.CompanyId
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, RequestSessionData}
 
 class RequestSessionDataSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
 
@@ -52,9 +53,76 @@ class RequestSessionDataSpec extends UnitSpec with MockitoSugar with BeforeAndAf
       requestSessionData.userSubscriptionFlow shouldBe OrganisationFlow
     }
 
+    "return Organisation Type cached" in {
+      when(mockRequest.session).thenReturn(Session(Map("selected-organisation-type" -> "company")))
+      requestSessionData.userSelectedOrganisationType shouldBe Some(CdsOrganisationType(CompanyId))
+    }
+
+    "return Session with Organisation Type added" in {
+      when(mockRequest.session).thenReturn(Session(Map("selected-organisation-type" -> "company")))
+      val session =
+        requestSessionData.sessionWithOrganisationTypeAdded(mockRequest.session, CdsOrganisationType(CompanyId))
+      session.data.get("selected-organisation-type") shouldBe Some("company")
+    }
+
+    "return User Location cached" in {
+      when(mockRequest.session).thenReturn(Session(Map("selected-user-location" -> "uk")))
+      requestSessionData.selectedUserLocation shouldBe Some("uk")
+    }
+    "return Session with User Location added" in {
+      when(mockRequest.session).thenReturn(Session(Map("selected-user-location" -> "uk")))
+      val session =
+        requestSessionData.sessionWithUserLocationAdded("uk")
+      session.data.get("selected-user-location") shouldBe Some("uk")
+    }
+
+    "return third country as selected userLocation for Channel Islands and eu from cache" in {
+      when(mockRequest.session).thenReturn(Session(Map("selected-user-location" -> "islands")))
+      requestSessionData.selectedUserLocation shouldBe Some("third-country")
+      when(mockRequest.session).thenReturn(Session(Map("selected-user-location" -> "eu")))
+      requestSessionData.selectedUserLocation shouldBe Some("third-country")
+    }
+
+    "return true when isPartnership is invoked if the orgType is of type partnership" in {
+      when(mockRequest.session).thenReturn(Session(Map("selected-organisation-type" -> "partnership")))
+      requestSessionData.isPartnership shouldBe true
+      when(mockRequest.session).thenReturn(
+        Session(Map("selected-organisation-type" -> "limited-liability-partnership"))
+      )
+      requestSessionData.isPartnership shouldBe true
+    }
+    "return false when isPartnership is invoked if the orgType is Not present in session data" in {
+      requestSessionData.isPartnership shouldBe false
+      requestSessionData.isPartnership shouldBe false
+    }
+    "return true when isCompany is invoked if the orgType is company" in {
+      when(mockRequest.session).thenReturn(Session(Map("selected-organisation-type" -> "company")))
+      requestSessionData.isCompany shouldBe true
+    }
+    "return false when isCompany is invoked if the orgType is Not present in session data" in {
+      requestSessionData.isCompany shouldBe false
+    }
+
+    "return true when isIndividual is invoked if the orgType is of type Individual" in {
+      when(mockRequest.session).thenReturn(Session(Map("selected-organisation-type" -> "individual")))
+      requestSessionData.isIndividualOrSoleTrader shouldBe true
+      when(mockRequest.session).thenReturn(Session(Map("selected-organisation-type" -> "sole-trader")))
+      requestSessionData.isIndividualOrSoleTrader shouldBe true
+      when(mockRequest.session).thenReturn(Session(Map("selected-organisation-type" -> "third-country-individual")))
+      requestSessionData.isIndividualOrSoleTrader shouldBe true
+      when(mockRequest.session).thenReturn(Session(Map("selected-organisation-type" -> "third-country-sole-trader")))
+      requestSessionData.isIndividualOrSoleTrader shouldBe true
+    }
+    "return true when isIndividual is invoked if the orgType is Not present in session data" in {
+      requestSessionData.isIndividualOrSoleTrader shouldBe false
+      requestSessionData.isIndividualOrSoleTrader shouldBe false
+      requestSessionData.isIndividualOrSoleTrader shouldBe false
+      requestSessionData.isIndividualOrSoleTrader shouldBe false
+    }
+
     "throw exception when flow is not cached" in {
       when(mockRequest.session).thenReturn(Session())
-      val caught = intercept[IllegalStateException](requestSessionData.userSubscriptionFlow)
+      val caught = intercept[DataUnavailableException](requestSessionData.userSubscriptionFlow)
       caught.getMessage shouldBe "Subscription flow is not cached"
     }
 
@@ -97,6 +165,11 @@ class RequestSessionDataSpec extends UnitSpec with MockitoSugar with BeforeAndAf
       "user is on different journey" in {
 
         when(mockRequest.session).thenReturn(Session(Map("subscription-flow" -> RowOrganisationFlow.name)))
+
+        requestSessionData.isUKJourney shouldBe false
+      }
+
+      "session does not have subscription flow in session data" in {
 
         requestSessionData.isUKJourney shouldBe false
       }

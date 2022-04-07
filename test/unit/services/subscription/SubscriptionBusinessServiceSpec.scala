@@ -17,28 +17,31 @@
 package unit.services.subscription
 
 import base.UnitSpec
+
+import java.time.LocalDate
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactAddressModel}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{ContactDetailsAdaptor, RegistrationDetailsCreator}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionBusinessService
 import uk.gov.hmrc.http.HeaderCarrier
 
-import java.time.LocalDate
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 import scala.util.Random
 
 class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
 
-  implicit val hc: HeaderCarrier = mock[HeaderCarrier]
+  implicit val hc: HeaderCarrier            = mock[HeaderCarrier]
+  implicit val request: Request[AnyContent] = mock[Request[AnyContent]]
 
   private val mockCdsFrontendDataCache       = mock[SessionCache]
   private val mockRegistrationDetailsCreator = mock[RegistrationDetailsCreator]
@@ -88,17 +91,17 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
 
     when(
       mockCdsFrontendDataCache
-        .saveRegistrationDetails(ArgumentMatchers.any[RegistrationDetails])(ArgumentMatchers.any[HeaderCarrier])
+        .saveRegistrationDetails(ArgumentMatchers.any[RegistrationDetails])(ArgumentMatchers.any[Request[AnyContent]])
     ).thenReturn(Future.successful(true))
 
     when(
       mockCdsFrontendDataCache
-        .saveSubscriptionDetails(ArgumentMatchers.any[SubscriptionDetails])(ArgumentMatchers.any[HeaderCarrier])
+        .saveSubscriptionDetails(ArgumentMatchers.any[SubscriptionDetails])(ArgumentMatchers.any[Request[AnyContent]])
     ).thenReturn(Future.successful(true))
 
     val existingHolder = SubscriptionDetails(contactDetails = Some(mock[ContactDetailsModel]))
 
-    when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(existingHolder)
+    when(mockCdsFrontendDataCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(existingHolder)
   }
 
   "Calling maybeCachedContactDetailsModel" should {
@@ -120,7 +123,9 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
 
   "Calling retrieveSubscriptionDetailsHolder" should {
     "fail when cache fails accessing current SubscriptionDetailsHolder" in {
-      when(mockCdsFrontendDataCache.subscriptionDetails(any[HeaderCarrier])).thenReturn(Future.failed(emulatedFailure))
+      when(mockCdsFrontendDataCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(
+        Future.failed(emulatedFailure)
+      )
 
       val caught = intercept[RuntimeException] {
         await(subscriptionBusinessService.retrieveSubscriptionDetailsHolder)
@@ -140,7 +145,7 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
     "throw exception when there are no Date Of Establishment details in the cdsFrontendCache" in {
       when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)
       when(mockSubscriptionDetailsHolder.dateEstablished).thenReturn(None)
-      val thrown = intercept[IllegalStateException] {
+      val thrown = intercept[DataUnavailableException] {
         await(subscriptionBusinessService.getCachedDateEstablished)
       }
       thrown.getMessage shouldBe "No Date Of Establishment Cached"
@@ -217,7 +222,7 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
     "throw exception when cache address details is not saved in cdsFrontendCache" in {
       when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)
       when(mockSubscriptionDetailsHolder.addressDetails).thenReturn(None)
-      val thrown = intercept[IllegalStateException] {
+      val thrown = intercept[DataUnavailableException] {
         await(subscriptionBusinessService.addressOrException)
       }
       thrown.getMessage shouldBe "No Address Details Cached"
@@ -234,7 +239,7 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
     "throw exception when cache Name Id is not saved in cdsFrontendCache" in {
       when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)
       when(mockSubscriptionDetailsHolder.nameIdOrganisationDetails).thenReturn(None)
-      val thrown = intercept[IllegalStateException] {
+      val thrown = intercept[DataUnavailableException] {
         await(subscriptionBusinessService.getCachedNameIdViewModel)
       }
       thrown.getMessage shouldBe "No Name/Utr/Id Details Cached"
@@ -265,7 +270,7 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
     "throw exception when there is no organisation details in the cdsFrontendCache" in {
       when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)
       when(mockSubscriptionDetailsHolder.nameOrganisationDetails).thenReturn(None)
-      val thrown = intercept[IllegalStateException] {
+      val thrown = intercept[DataUnavailableException] {
         await(subscriptionBusinessService.getCachedNameViewModel)
       }
       thrown.getMessage shouldBe "No Name Cached"
@@ -288,7 +293,7 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
     "throw exception when there is no dob details in the cdsFrontendCache" in {
       when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)
       when(mockSubscriptionDetailsHolder.nameDobDetails).thenReturn(None)
-      val thrown = intercept[IllegalStateException] {
+      val thrown = intercept[DataUnavailableException] {
         await(subscriptionBusinessService.getCachedSubscriptionNameDobViewModel)
       }
       thrown.getMessage shouldBe "No Name/Dob Details Cached"

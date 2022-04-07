@@ -16,25 +16,30 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
+import play.api.mvc.Request
+
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.NotifyRcmConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NotifyRcmRequest
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class NotifyRcmService @Inject() (sessionCache: SessionCache, notifyRcmConnector: NotifyRcmConnector) {
 
-  def notifyRcm(service: Service)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
+  def notifyRcm(
+    service: Service
+  )(implicit hc: HeaderCarrier, request: Request[_], ec: ExecutionContext): Future[Unit] = {
     val ff = for {
       sd    <- sessionCache.subscriptionDetails
       email <- sessionCache.email
     } yield {
       val name       = sd.name
-      val eori       = sd.eoriNumber.getOrElse(throw new IllegalArgumentException("Eori not found"))
+      val eori       = sd.eoriNumber.getOrElse(throw DataUnavailableException("Eori not found"))
       val rcmRequest = NotifyRcmRequest(eori, name, email, service)
       notifyRcmConnector.notifyRCM(rcmRequest)
     }

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.registration
 
-import javax.inject.{Inject, Singleton}
+import play.api.mvc.Request
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   CdsOrganisationType,
@@ -24,8 +24,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   RegistrationDetailsOrganisation
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
-import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -33,7 +33,7 @@ class RegistrationDetailsService @Inject() (sessionCache: SessionCache)(implicit
 
   def initialiseCacheWithRegistrationDetails(
     organisationType: CdsOrganisationType
-  )(implicit hq: HeaderCarrier): Future[Boolean] =
+  )(implicit request: Request[_]): Future[Boolean] =
     sessionCache.subscriptionDetails flatMap { subDetails =>
       sessionCache.saveSubscriptionDetails(
         subDetails.copy(formData = subDetails.formData.copy(organisationType = Some(organisationType)))

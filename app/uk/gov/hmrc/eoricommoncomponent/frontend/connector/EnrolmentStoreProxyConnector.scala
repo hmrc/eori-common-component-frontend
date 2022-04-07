@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
-import javax.inject.Inject
 import play.api.Logger
 import play.api.http.Status
 import play.api.libs.json.{Json, Reads}
@@ -32,9 +31,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.EnrolmentStoreProxyEvent
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.HttpStatusCheck
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, HttpClient, HttpResponse}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
@@ -95,20 +94,31 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
     knownFactsQuery: KnownFactsQuery
   )(implicit hc: HeaderCarrier): Future[Option[KnownFacts]] = {
 
-    import uk.gov.hmrc.http.HttpReads.Implicits._
-
     val url = s"$baseUrl/$serviceContext/enrolment-store/enrolments"
 
     // $COVERAGE-OFF$Loggers
     logger.debug(s"QueryKnownFactsByIdentifiers: $url, body: $knownFactsQuery and hc: $hc")
     // $COVERAGE-ON
 
-    http.POST[KnownFactsQuery, Option[KnownFacts]](url, knownFactsQuery) map {
+    http.POST[KnownFactsQuery, HttpResponse](url, knownFactsQuery) map {
       response =>
         // $COVERAGE-OFF$Loggers
         logger.debug(s"QueryKnownFactsByIdentifiers response $response")
         // $COVERAGE-ON
-        response
+        response.status match {
+          case Status.OK => Some(response.json.as[KnownFacts])
+          case Status.NO_CONTENT | Status.NOT_FOUND =>
+            logger.warn(
+              s"ES20 known facts Query returned no results- Response status: ${response.status} with body ${response.body}"
+            )
+            None
+          case _ =>
+            // $COVERAGE-OFF$Loggers
+            logger.warn(s"ES20 known facts Query FAIL - Response status: ${response.status} with body ${response.body}")
+            // $COVERAGE-ON
+            throw new Exception(s"ES20 known facts Query call failed with ${response.status} status")
+
+        }
     }
   }
 

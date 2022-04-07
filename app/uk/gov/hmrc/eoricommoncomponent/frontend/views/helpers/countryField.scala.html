@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,10 +40,7 @@
 
 @selectedValue = @{ form(field).value match { case Some(x) => x case None => "" case x => x }}
 
-@hintHtml = {
-    <span class="govuk-visually-hidden">@Html(s". ${messages("cds.country-picker.hint.screen-reader")}")</span>
-}
-<div class ="govuk-!-width-one-half">
+<div class ="govuk-body govuk-!-width-one-half">
 @inputSelect(
     form = form,
     id = field,
@@ -54,7 +51,6 @@
         selected = form(field).value.contains(c.countryCode)
     )),
     label = messages(label),
-    hint = Some(hintHtml),
     classes = Some("govuk-!-width-one-half"),
     isPageHeading = false
 )
@@ -83,5 +79,12 @@
     inputElement.addEventListener('blur', function(){
         if(this.value === "") selectElement.selectedIndex=0;
     });
+
+    var menu = document.getElementById('countryCode-select');
+    var template = document.createElement('div');
+    template.setAttribute("id","countryCode-hint");
+    template.classList.add("govuk-hint");
+    template.innerHTML = "<span class='govuk-visually-hidden'>"+'. @messages("cds.country-picker.hint.screen-reader")'+"</span>";
+    menu.parentNode.insertBefore(template, menu);
 }())
 </script>

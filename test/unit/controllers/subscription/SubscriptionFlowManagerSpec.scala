@@ -19,22 +19,21 @@ package unit.controllers.subscription
 import base.UnitSpec
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.prop.Tables.Table
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Request, Session}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType.{Company, Individual, SoleTrader}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
-  CdsOrganisationType,
-  RegistrationDetailsIndividual,
-  RegistrationDetailsOrganisation
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  DataUnavailableException,
+  RequestSessionData,
+  SessionCache
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 
 import scala.concurrent.ExecutionContext.global
@@ -51,21 +50,23 @@ class SubscriptionFlowManagerSpec
 
   private val mockOrgRegistrationDetails        = mock[RegistrationDetailsOrganisation]
   private val mockIndividualRegistrationDetails = mock[RegistrationDetailsIndividual]
+  private val mockRegistrationDetails           = mock[RegistrationDetailsSafeId]
   private val mockSession                       = mock[Session]
 
-  private val mockHC      = mock[HeaderCarrier]
   private val mockRequest = mock[Request[AnyContent]]
 
   private val mockSubscriptionFlow = mock[SubscriptionFlow]
 
-  val noSubscriptionFlowInSessionException = new IllegalStateException("No subscription flow in session.")
+  val noSubscriptionFlowInSessionException: DataUnavailableException = DataUnavailableException(
+    "No subscription flow in session."
+  )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
     when(mockRequestSessionData.storeUserSubscriptionFlow(any[SubscriptionFlow], any[String])(any[Request[AnyContent]]))
       .thenReturn(mockSession)
-    when(mockCdsFrontendDataCache.saveSubscriptionDetails(any[SubscriptionDetails])(any[HeaderCarrier]))
+    when(mockCdsFrontendDataCache.saveSubscriptionDetails(any[SubscriptionDetails])(any[Request[AnyContent]]))
       .thenReturn(Future.successful(true))
   }
 
@@ -86,7 +87,7 @@ class SubscriptionFlowManagerSpec
       when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]]))
         .thenThrow(noSubscriptionFlowInSessionException)
 
-      intercept[IllegalStateException](
+      intercept[DataUnavailableException](
         controller.currentSubscriptionFlow(mockRequest)
       ) shouldBe noSubscriptionFlowInSessionException
     }
@@ -133,10 +134,10 @@ class SubscriptionFlowManagerSpec
     "start Individual Subscription Flow for individual" in {
       when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
 
-      when(mockCdsFrontendDataCache.registrationDetails(mockHC))
+      when(mockCdsFrontendDataCache.registrationDetails(mockRequest))
         .thenReturn(Future.successful(mockIndividualRegistrationDetails))
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(Some(UserLocationPage), Individual, atarService)(mockHC, mockRequest))
+        await(controller.startSubscriptionFlow(Some(UserLocationPage), Individual, atarService)(mockRequest))
 
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
@@ -145,13 +146,38 @@ class SubscriptionFlowManagerSpec
         .storeUserSubscriptionFlow(IndividualFlow, UserLocationPage.url(atarService))(mockRequest)
     }
 
+    "start Individual Subscription Flow for individual for ROW journey" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
+      when(mockIndividualRegistrationDetails.customsId).thenReturn(Some(Utr("1111111111k")))
+      when(mockCdsFrontendDataCache.registrationDetails(mockRequest))
+        .thenReturn(Future.successful(mockIndividualRegistrationDetails))
+      val (subscriptionPage, session) =
+        await(controller.startSubscriptionFlow(Some(UserLocationPage), Individual, atarService)(mockRequest))
+
+      subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
+      session shouldBe mockSession
+
+      verify(mockRequestSessionData)
+        .storeUserSubscriptionFlow(IndividualFlow, UserLocationPage.url(atarService))(mockRequest)
+    }
+
+    "throw DataUnavailableException when registration details is not available in cache" in {
+      when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
+
+      when(mockCdsFrontendDataCache.registrationDetails(mockRequest))
+        .thenReturn(Future.successful(mockRegistrationDetails))
+      intercept[DataUnavailableException] {
+        await(controller.startSubscriptionFlow(Some(UserLocationPage), Individual, atarService)(mockRequest))
+      }
+
+    }
     "start Corporate Subscription Flow when cached registration details are for an Organisation" in {
       when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
 
-      when(mockCdsFrontendDataCache.registrationDetails(mockHC))
+      when(mockCdsFrontendDataCache.registrationDetails(mockRequest))
         .thenReturn(Future.successful(mockOrgRegistrationDetails))
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(None, Company, atarService)(mockHC, mockRequest))
+        await(controller.startSubscriptionFlow(None, Company, atarService)(mockRequest))
 
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
@@ -164,10 +190,10 @@ class SubscriptionFlowManagerSpec
       when(mockRequestSessionData.userSelectedOrganisationType(mockRequest))
         .thenReturn(Some(CdsOrganisationType.SoleTrader))
 
-      when(mockCdsFrontendDataCache.registrationDetails(mockHC))
+      when(mockCdsFrontendDataCache.registrationDetails(mockRequest))
         .thenReturn(Future.successful(mockIndividualRegistrationDetails))
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(None, SoleTrader, atarService)(mockHC, mockRequest))
+        await(controller.startSubscriptionFlow(None, SoleTrader, atarService)(mockRequest))
 
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
@@ -178,10 +204,10 @@ class SubscriptionFlowManagerSpec
 
     "start Corporate Subscription Flow when cached registration details are for an Organisation Reg-existing (a.k.a migration)" in {
       when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
-      when(mockCdsFrontendDataCache.registrationDetails(mockHC))
+      when(mockCdsFrontendDataCache.registrationDetails(mockRequest))
         .thenReturn(Future.successful(mockOrgRegistrationDetails))
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(None, Company, atarService)(mockHC, mockRequest))
+        await(controller.startSubscriptionFlow(None, Company, atarService)(mockRequest))
 
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
@@ -203,16 +229,13 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
 
   private val mockSession = mock[Session]
 
-  private val mockHC      = mock[HeaderCarrier]
   private val mockRequest = mock[Request[AnyContent]]
-
-  val noSubscriptionFlowInSessionException = new IllegalStateException("No subscription flow in session.")
 
   override def beforeEach(): Unit = {
     reset(mockRequestSessionData, mockSession, mockCdsFrontendDataCache)
     when(mockRequestSessionData.storeUserSubscriptionFlow(any[SubscriptionFlow], any[String])(any[Request[AnyContent]]))
       .thenReturn(mockSession)
-    when(mockCdsFrontendDataCache.saveSubscriptionDetails(any[SubscriptionDetails])(any[HeaderCarrier]))
+    when(mockCdsFrontendDataCache.saveSubscriptionDetails(any[SubscriptionDetails])(any[Request[_]]))
       .thenReturn(Future.successful(true))
   }
 
@@ -222,11 +245,11 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
       when(mockRequestSessionData.userSelectedOrganisationType(mockRequest))
         .thenReturn(Some(CdsOrganisationType.SoleTrader))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Eu))
-      when(mockCdsFrontendDataCache.registrationDetails(mockHC))
+      when(mockCdsFrontendDataCache.registrationDetails(mockRequest))
         .thenReturn(Future.successful(RegistrationDetailsIndividual()))
 
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(None, SoleTrader, atarService)(mockHC, mockRequest))
+        await(controller.startSubscriptionFlow(None, SoleTrader, atarService)(mockRequest))
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
       verify(mockRequestSessionData).storeUserSubscriptionFlow(RowIndividualFlow, UserLocationPage.url(atarService))(
@@ -238,11 +261,11 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
       when(mockRequestSessionData.userSelectedOrganisationType(mockRequest))
         .thenReturn(Some(CdsOrganisationType.Individual))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Eu))
-      when(mockCdsFrontendDataCache.registrationDetails(mockHC))
+      when(mockCdsFrontendDataCache.registrationDetails(mockRequest))
         .thenReturn(Future.successful(RegistrationDetailsIndividual()))
 
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(None, Individual, atarService)(mockHC, mockRequest))
+        await(controller.startSubscriptionFlow(None, Individual, atarService)(mockRequest))
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
       verify(mockRequestSessionData).storeUserSubscriptionFlow(RowIndividualFlow, UserLocationPage.url(atarService))(
@@ -253,11 +276,11 @@ class SubscriptionFlowManagerNinoUtrEnabledSpec
     "start Corporate Subscription Flow when cached registration details are for an Organisation" in {
       when(mockRequestSessionData.userSelectedOrganisationType(mockRequest)).thenReturn(None)
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Eu))
-      when(mockCdsFrontendDataCache.registrationDetails(mockHC))
+      when(mockCdsFrontendDataCache.registrationDetails(mockRequest))
         .thenReturn(Future.successful(RegistrationDetailsOrganisation()))
 
       val (subscriptionPage, session) =
-        await(controller.startSubscriptionFlow(None, Company, atarService)(mockHC, mockRequest))
+        await(controller.startSubscriptionFlow(None, Company, atarService)(mockRequest))
       subscriptionPage.isInstanceOf[SubscriptionPage] shouldBe true
       session shouldBe mockSession
       verify(mockRequestSessionData).storeUserSubscriptionFlow(RowOrganisationFlow, UserLocationPage.url(atarService))(

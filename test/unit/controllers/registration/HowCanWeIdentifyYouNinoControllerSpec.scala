@@ -38,7 +38,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionDetailsService
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.how_can_we_identify_you_nino
-import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -68,14 +67,14 @@ class HowCanWeIdentifyYouNinoControllerSpec extends ControllerSpec with BeforeAn
     mockSubscriptionDetailsHolderService
   )
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     super.beforeEach()
 
     Mockito.reset(mockSubscriptionDetailsHolderService)
 
-    when(mockSubscriptionDetailsHolderService.cacheCustomsId(any[CustomsId])(any[HeaderCarrier]))
+    when(mockSubscriptionDetailsHolderService.cacheCustomsId(any[CustomsId])(any[Request[AnyContent]]))
       .thenReturn(Future.successful(()))
-    when(mockSubscriptionBusinessService.getCachedCustomsId(any[HeaderCarrier]))
+    when(mockSubscriptionBusinessService.getCachedCustomsId(any[Request[AnyContent]]))
       .thenReturn(Future.successful(None))
 
     when(
@@ -96,6 +95,29 @@ class HowCanWeIdentifyYouNinoControllerSpec extends ControllerSpec with BeforeAn
         page.getElementsText(SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath) shouldBe empty
       }
     }
+
+    "populate the form values when session cache is having Nino details" in {
+      reviewForm(Map.empty, customsId = Nino("123456789")) { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath) shouldBe empty
+        page.getElementValue("//*[@id='nino']") shouldBe "123456789"
+      }
+    }
+  }
+
+  "Loading the page on review mode" should {
+
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(atarService))
+
+    "show the form without errors" in {
+      showForm(Map.empty) { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath) shouldBe empty
+      }
+    }
+
   }
 
   "Submitting the form" should {
@@ -128,6 +150,18 @@ class HowCanWeIdentifyYouNinoControllerSpec extends ControllerSpec with BeforeAn
       }
     }
 
+    "give a page and field level error when an nino is of incorrect format" in {
+      submitForm(Map("nino" -> "abcdef123")) { result =>
+        status(result) shouldBe BAD_REQUEST
+        val page = CdsPage(contentAsString(result))
+        page.getElementsText(
+          SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
+        ) shouldBe "Enter a National Insurance number in the right format"
+        page.getElementsText(
+          SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorNino
+        ) shouldBe "Error: Enter a National Insurance number in the right format"
+      }
+    }
     "give a page and field level error when an invalid nino is provided" in {
       submitForm(Map("nino" -> "123456789")) { result =>
         status(result) shouldBe BAD_REQUEST
@@ -179,14 +213,14 @@ class HowCanWeIdentifyYouNinoControllerSpec extends ControllerSpec with BeforeAn
     }
   }
 
-  def showForm(form: Map[String, String], userId: String = defaultUserId)(test: Future[Result] => Any) {
+  def showForm(form: Map[String, String], userId: String = defaultUserId)(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     test(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)))
   }
 
   def submitForm(form: Map[String, String], userId: String = defaultUserId, isInReviewMode: Boolean = false)(
     test: Future[Result] => Any
-  ) {
+  ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller
@@ -210,7 +244,7 @@ class HowCanWeIdentifyYouNinoControllerSpec extends ControllerSpec with BeforeAn
     test: Future[Result] => Any
   ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
-    when(mockSubscriptionBusinessService.getCachedCustomsId(any[HeaderCarrier]))
+    when(mockSubscriptionBusinessService.getCachedCustomsId(any[Request[AnyContent]]))
       .thenReturn(Future.successful(Some(customsId)))
 
     test(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)))

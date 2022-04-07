@@ -19,6 +19,7 @@ package unit.views
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.Helpers.contentAsString
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.eori_enrol_success
 import util.ViewSpec
 
@@ -26,32 +27,41 @@ class EoriEnrolSuccessSpec extends ViewSpec {
 
   implicit val request = withFakeCSRF(fakeAtarSubscribeRequest)
 
-  private val service = atarService
-  private val eori    = "GB234532132435"
+  private val service              = atarService
+  private val serviceNoCallBackUrl = atarService.copy(callBack = None)
+  private val eori                 = "GB234532132435"
 
   private val view = instanceOf[eori_enrol_success]
 
   "EORI Enrol Success Page" should {
 
     "display correct title" in {
-      doc.title must startWith("Application complete")
+      doc(service).title must startWith("Application complete")
     }
 
     "display correct heading" in {
-      doc.getElementsByTag("h1").text() must startWith("Application complete")
+      doc(service).getElementsByTag("h1").text() must startWith("Application complete")
     }
 
     "display eori" in {
-      doc.body.getElementById("eori-number").text mustBe eori
+      doc(service).body.getElementById("eori-number").text mustBe eori
     }
 
     "display correct service name" in {
-      doc.body.getElementById("para1").text() must startWith(
+      doc(service).body.getElementById("para1").text() must startWith(
         "You are now enrolled to the Advance Tariff Rulings service"
       )
     }
 
+    "display continue button when callBack URL exists" in {
+      doc(service).body.getElementsByClass("govuk-button").first().text must startWith("Continue")
+    }
+
+    "not display continue button when callBack URL doesn't exists" in {
+      doc(serviceNoCallBackUrl).body.getElementsByClass("govuk-button").size() must be(0)
+    }
   }
 
-  private lazy val doc: Document = Jsoup.parse(contentAsString(view(eori, service)))
+  private def doc(service: Service): Document = Jsoup.parse(contentAsString(view(eori, service)))
+
 }

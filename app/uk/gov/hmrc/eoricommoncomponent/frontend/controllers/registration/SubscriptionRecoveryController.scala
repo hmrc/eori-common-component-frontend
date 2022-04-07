@@ -39,6 +39,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Random
@@ -80,13 +81,13 @@ class SubscriptionRecoveryController @Inject() (
   )(implicit ec: ExecutionContext, request: Request[AnyContent], hc: HeaderCarrier): Future[Result] = {
     val result = for {
       subscriptionDetails <- sessionCache.subscriptionDetails
-      eori = subscriptionDetails.eoriNumber.getOrElse(throw new IllegalStateException("no eori found in the cache"))
+      eori = subscriptionDetails.eoriNumber.getOrElse(throw DataUnavailableException("no eori found in the cache"))
       registerWithEoriAndIdResponse <- sessionCache.registerWithEoriAndIdResponse
       safeId = registerWithEoriAndIdResponse.responseDetail
         .flatMap(_.responseData.map(_.SAFEID))
         .getOrElse(throw new IllegalStateException("no SAFEID found in the response"))
       queryParameters = ("EORI" -> eori) :: buildQueryParams
-      sub09Result  <- SUB09Connector.subscriptionDisplay(queryParameters)
+      sub09Result  <- SUB09Connector.subscriptionDisplay(queryParameters, service.code)
       sub01Outcome <- sessionCache.sub01Outcome
       email        <- sessionCache.email
     } yield sub09Result match {
@@ -116,10 +117,10 @@ class SubscriptionRecoveryController @Inject() (
     val result = for {
       subscriptionDetails <- sessionCache.subscriptionDetails
       registrationDetails <- sessionCache.registrationDetails
-      eori            = subscriptionDetails.eoriNumber.getOrElse(throw new IllegalStateException("no eori found in the cache"))
+      eori            = subscriptionDetails.eoriNumber.getOrElse(throw DataUnavailableException("no eori found in the cache"))
       safeId          = registrationDetails.safeId.id
       queryParameters = ("EORI" -> eori) :: buildQueryParams
-      sub09Result  <- SUB09Connector.subscriptionDisplay(queryParameters)
+      sub09Result  <- SUB09Connector.subscriptionDisplay(queryParameters, service.code)
       sub01Outcome <- sessionCache.sub01Outcome
       email        <- sessionCache.email
     } yield sub09Result match {
@@ -166,7 +167,7 @@ class SubscriptionRecoveryController @Inject() (
     subscriptionDisplayResponse: SubscriptionDisplayResponse,
     dateOfEstablishment: Option[LocalDate],
     service: Service
-  )(redirect: => Result)(implicit headerCarrier: HeaderCarrier, messages: Messages): Future[Result] = {
+  )(redirect: => Result)(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] = {
     val formBundleId =
       subscriptionDisplayResponse.responseCommon.returnParameters
         .flatMap(_.find(_.paramName.equals("ETMPFORMBUNDLENUMBER")).map(_.paramValue))
@@ -196,12 +197,12 @@ class SubscriptionRecoveryController @Inject() (
 
   private def completeEnrolment(service: Service, subscriptionInformation: SubscriptionInformation)(
     redirect: => Result
-  )(implicit hc: HeaderCarrier, messages: Messages): Future[Result] =
+  )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
     for {
       // Update Recovered Subscription Information
       _ <- updateSubscription(subscriptionInformation)
       // Update Email
-//      _ <- updateEmail(journey, subscriptionInformation)  // TODO - ECC-307
+      //      _ <- updateEmail(journey, subscriptionInformation)  // TODO - ECC-307
       // Subscribe Call for enrolment
       _ <- subscribe(service, subscriptionInformation)
       // Issuer Call for enrolment
@@ -211,7 +212,7 @@ class SubscriptionRecoveryController @Inject() (
       case _          => throw new IllegalArgumentException("Tax Enrolment issuer call failed")
     }
 
-  private def updateSubscription(subscriptionInformation: SubscriptionInformation)(implicit hc: HeaderCarrier) =
+  private def updateSubscription(subscriptionInformation: SubscriptionInformation)(implicit request: Request[_]) =
     sessionCache.saveSub02Outcome(
       Sub02Outcome(
         subscriptionInformation.processedDate,

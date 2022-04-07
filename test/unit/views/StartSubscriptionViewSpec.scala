@@ -53,15 +53,15 @@ class StartSubscriptionViewSpec extends ViewSpec {
       doc.body().getElementById("what-you-will-need").text() mustBe "What you will need"
       doc.body().getElementById(
         "what-you-will-need-text"
-      ).text() mustBe "In order to subscribe you to Advance Tariff Rulings we need some information from you. Ensure you have all the correct details with you before you start otherwise your application may be delayed."
+      ).text() mustBe "In order to subscribe you to Advance Tariff Rulings, we need some information from you. Ensure you have all the correct details with you before you start otherwise your application may be delayed."
     }
 
     "display `GB Eori` paragraph with all content" in {
 
-      doc.body().getElementById("gb-eori").text() mustBe "GB EORI number"
+      doc.body().getElementById("gb-eori").text() mustBe "An EORI number starting with GB"
       doc.body().getElementById(
         "gb-eori-text"
-      ).text() mustBe "You will need a GB Economic Operators Registration and Identification number (EORI number)."
+      ).text() startsWith "You must get an EORI number (opens in new tab) before you can apply for Advance Tariff Rulings, once you have applied for an EORI number it usually takes around 30 minutes, but may take up to 48 hours before you can proceed with your Advance Tariff Rulings application."
 
       val warning     = doc.body().getElementsByClass("govuk-warning-text").get(0)
       val warningMark = warning.getElementsByClass("govuk-warning-text__icon").get(0)
@@ -70,24 +70,8 @@ class StartSubscriptionViewSpec extends ViewSpec {
       warningMark.attr("aria-hidden") mustBe "true"
       warningMark.text() mustBe "!"
 
-      warningText.text() mustBe "Warning The GB EORI number must be the one linked to the Government Gateway ID you used to sign in. Check EORI (opens in new window or tab)."
+      warningText.text() mustBe "Warning The EORI number starting with GB must be the one linked to the Government Gateway user ID you used when you got an EORI number."
 
-      doc.body().getElementById(
-        "gb-eori-list-heading"
-      ).text() mustBe "If you do not have an EORI, you will get one with your Advance Tariff Rulings subscription. You will need to provide:"
-
-      val eoriList           = doc.body().getElementsByClass("govuk-list--number").get(0)
-      val eoriListFirstElem  = eoriList.getElementsByTag("li").get(0)
-      val eoriBulletList     = eoriList.getElementsByTag("ul").get(1)
-      val eoriListSecondElem = eoriList.getElementsByTag("li").get(4)
-
-      eoriListFirstElem.text() must include("VAT details if UK registered")
-
-      eoriBulletList.getElementsByTag("li").get(0).text() mustBe "VAT number"
-      eoriBulletList.getElementsByTag("li").get(1).text() mustBe "VAT registered address postcode"
-      eoriBulletList.getElementsByTag("li").get(2).text() mustBe "VAT effective date"
-
-      eoriListSecondElem.text() mustBe "Standard Industrial Classification (SIC) code. Find your SIC code (opens in new window or tab)."
     }
 
     "display organisation information" in {
@@ -97,11 +81,11 @@ class StartSubscriptionViewSpec extends ViewSpec {
         "organisation-text"
       ).text() mustBe "If you are a limited company, partnership or charity, you will need:"
 
-      val bulletList = doc.body().getElementsByClass("govuk-list--bullet").get(1)
+      val bulletList = doc.body().getElementsByClass("govuk-list--bullet").get(0)
 
       bulletList.getElementsByTag("li").get(
         0
-      ).text() mustBe "Corporation Tax Unique Tax Reference (UTR) if you pay corporation tax in the UK. You can find a UTR number (opens in a new window or tab)."
+      ).text() mustBe "Corporation Tax Unique Taxpayer Reference (UTR) if you pay Corporation Tax in the UK. You can find a UTR number (opens in new tab)."
       bulletList.getElementsByTag("li").get(1).text() mustBe "Registered company name"
       bulletList.getElementsByTag("li").get(2).text() mustBe "Registered company address"
       bulletList.getElementsByTag("li").get(3).text() mustBe "Date of establishment"
@@ -114,12 +98,12 @@ class StartSubscriptionViewSpec extends ViewSpec {
         "individual-text"
       ).text() mustBe "If you have worked in the UK or registered for self-assessment, you will need one of the following:"
 
-      val bulletList = doc.body().getElementsByClass("govuk-list--bullet").get(2)
+      val bulletList = doc.body().getElementsByClass("govuk-list--bullet").get(1)
 
       bulletList.getElementsByTag("li").get(0).text() mustBe "National Insurance number"
       bulletList.getElementsByTag("li").get(
         1
-      ).text() mustBe "Self Assessment Unique Taxpayer Reference (UTR). You can find a lost UTR number (opens in a new window or tab)."
+      ).text() mustBe "Self Assessment Unique Taxpayer Reference (UTR). You can find a lost UTR number (opens in new tab)."
     }
 
     "display 2 hours message" in {
