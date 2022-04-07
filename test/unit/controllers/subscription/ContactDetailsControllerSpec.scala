@@ -89,7 +89,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     mockFunctionWithRegistrationDetails(mockRegistrationDetails)
     setupMockSubscriptionFlowManager(ContactDetailsSubscriptionFlowPageMigrate)
     setupMockSubscriptionFlowManager(ConfirmContactAddressSubscriptionFlowPage)
-    when(mockCdsFrontendDataCache.email(any[HeaderCarrier])).thenReturn(Future.successful(Email))
+    when(mockCdsFrontendDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(Email))
     when(mockCdsFrontendDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(Email))
     when(mockSubscriptionDetailsHolderService.cachedCustomsId(any())).thenReturn(Future.successful(None))
     when(mockSubscriptionDetailsHolderService.cachedNameIdDetails(any())).thenReturn(Future.successful(None))

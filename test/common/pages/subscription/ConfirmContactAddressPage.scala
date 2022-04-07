@@ -27,7 +27,7 @@ sealed trait ConfirmContactAddressPage extends WebPage {
   override val title: String             = "Is this your contact address?"
   val hintTextXpath                      = "//*[@id='address-hint']"
   val addressTextXpath                   = "//*[@id='address']"
-  val fieldLevelErrorYesNoAnswer: String = "//span[@id='yes-no-answer-error'][@class='govuk-error-message']"
+  val fieldLevelErrorYesNoAnswer: String = "//p[@id='yes-no-answer-error'][@class='govuk-error-message']"
   val PageLevelErrorSummaryListXPath     = "//ul[@class='govuk-list govuk-error-summary__list']"
 
   val filledValues: ContactAddressModel =

@@ -64,9 +64,9 @@ class ConfirmContactAddressControllerSpec
     super.beforeEach()
     when(
       mockSubscriptionBusinessService
-        .cachedContactDetailsModel(any[HeaderCarrier])
+        .cachedContactDetailsModel(any[Request[_]])
     ).thenReturn(Future.successful(Some(contactDetailsModel)))
-    when(mockSubscriptionBusinessService.contactAddress(any[HeaderCarrier]))
+    when(mockSubscriptionBusinessService.contactAddress(any[Request[_]]))
       .thenReturn(Future.successful(Some(ConfirmContactAddressPage.filledValues)))
     setupMockSubscriptionFlowManager(ConfirmContactAddressSubscriptionFlowPage)
   }
@@ -112,7 +112,7 @@ class ConfirmContactAddressControllerSpec
 
       "contact address cache returns None during page load" in {
 
-        when(mockSubscriptionBusinessService.contactAddress(any[HeaderCarrier]))
+        when(mockSubscriptionBusinessService.contactAddress(any[Request[_]]))
           .thenReturn(Future.successful(None))
 
         showCreateForm() { result =>
@@ -123,7 +123,7 @@ class ConfirmContactAddressControllerSpec
 
       "contact address cache returns None during submit" in {
 
-        when(mockSubscriptionBusinessService.contactAddress(any[HeaderCarrier]))
+        when(mockSubscriptionBusinessService.contactAddress(any[Request[_]]))
           .thenReturn(Future.successful(None))
 
         submitForm(yesForm) { result =>

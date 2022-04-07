@@ -72,7 +72,7 @@ class SubscriptionDetailsService @Inject() (
     saveSubscriptionDetails(sd => sd.copy(addressDetails = Some(noneForEmptyPostcode(address))))
   }
 
-  def cacheContactAddressDetails(address: ContactAddressModel)(implicit hc: HeaderCarrier): Future[Unit] = {
+  def cacheContactAddressDetails(address: ContactAddressModel)(implicit request: Request[_]): Future[Unit] = {
     def noneForEmptyPostcode(a: ContactAddressModel) = a.copy(postcode = a.postcode.filter(_.nonEmpty))
 
     saveSubscriptionDetails(sd => sd.copy(contactAddress = Some(noneForEmptyPostcode(address))))

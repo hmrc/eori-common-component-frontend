@@ -46,7 +46,7 @@ class ContactInformationSpec extends UnitSpec {
       contactInformationWithContactAddress.personOfContact shouldBe Some("Full name")
       contactInformationWithContactAddress.emailAddress shouldBe Some("email")
       contactInformationWithContactAddress.faxNumber shouldBe None
-      contactInformationWithContactAddress.sepCorrAddrIndicator shouldBe Some(false)
+      contactInformationWithContactAddress.sepCorrAddrIndicator shouldBe Some(true)
       contactInformationWithContactAddress.streetAndNumber shouldBe Some("flat 20 street line 2")
       contactInformationWithContactAddress.city shouldBe Some("city")
       contactInformationWithContactAddress.postalCode shouldBe Some("HJ2 3HJ")

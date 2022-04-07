@@ -477,7 +477,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
       await(subscriptionDetailsHolderService.cacheContactAddressDetails(contactAddressDetails))
       val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
 
-      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
+      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(request))
       val holder: SubscriptionDetails = requestCaptor.getValue
       holder.contactAddress shouldBe Some(contactAddressDetails)
 
@@ -490,7 +490,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
       )
       val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
 
-      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(hc))
+      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(request))
       val holder: SubscriptionDetails = requestCaptor.getValue
       holder.contactAddress shouldBe Some(contactAddressDetails.copy(postcode = None))
     }

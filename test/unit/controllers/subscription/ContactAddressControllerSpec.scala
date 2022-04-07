@@ -22,7 +22,7 @@ import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalacheck.Gen
 import org.scalatest.BeforeAndAfterEach
-import play.api.mvc.Result
+import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ContactAddressController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactAddressController.submit
@@ -98,8 +98,8 @@ class ContactAddressControllerSpec
   override def beforeEach: Unit = {
     super.beforeEach()
 
-    when(mockSubscriptionBusinessService.contactAddress(any[HeaderCarrier])).thenReturn(None)
-    when(mockSubscriptionDetailsService.cachedCustomsId(any[HeaderCarrier])).thenReturn(None)
+    when(mockSubscriptionBusinessService.contactAddress(any[Request[_]])).thenReturn(None)
+    when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[_]])).thenReturn(None)
     registerSaveDetailsMockSuccess()
     setupMockSubscriptionFlowManager(ContactAddressSubscriptionFlowPage)
   }
@@ -143,7 +143,7 @@ class ContactAddressControllerSpec
     }
 
     "have Address input field prepopulated if cached previously" in {
-      when(mockSubscriptionBusinessService.contactAddress(any[HeaderCarrier]))
+      when(mockSubscriptionBusinessService.contactAddress(any[Request[_]]))
         .thenReturn(Future.successful(Some(ContactAddressPage.filledValues)))
       showCreateForm() { result =>
         val page = CdsPage(contentAsString(result))
@@ -187,7 +187,7 @@ class ContactAddressControllerSpec
     }
 
     "have Address input field prepopulated if cached previously" in {
-      when(mockSubscriptionBusinessService.contactAddress(any[HeaderCarrier]))
+      when(mockSubscriptionBusinessService.contactAddress(any[Request[_]]))
         .thenReturn(Future.successful(Some(ContactAddressPage.filledValues)))
       showCreateForm() { result =>
         val page = CdsPage(contentAsString(result))
@@ -427,11 +427,11 @@ class ContactAddressControllerSpec
   }
 
   private def registerSaveDetailsMockSuccess(): Unit =
-    when(mockSubscriptionDetailsService.cacheContactAddressDetails(any())(any[HeaderCarrier]))
+    when(mockSubscriptionDetailsService.cacheContactAddressDetails(any())(any[Request[_]]))
       .thenReturn(Future.successful(()))
 
   private def registerSaveDetailsMockFailure(exception: Throwable): Unit =
-    when(mockSubscriptionDetailsService.cacheContactAddressDetails(any())(any[HeaderCarrier]))
+    when(mockSubscriptionDetailsService.cacheContactAddressDetails(any())(any[Request[_]]))
       .thenReturn(Future.failed(exception))
 
   private def showCreateForm(userId: String = defaultUserId)(test: Future[Result] => Any): Unit = {

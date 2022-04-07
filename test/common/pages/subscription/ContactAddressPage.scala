@@ -29,17 +29,17 @@ sealed trait ContactAddressPage extends WebPage {
 
   val PageLevelErrorSummaryListXPath  = "//ul[@class='govuk-list govuk-error-summary__list']"
   val lineOneFieldXPath               = "//*[@id='line-1']"
-  val fieldLevelErrorAddressLineOne   = "//span[@id='line-1-error' and @class='govuk-error-message']"
+  val fieldLevelErrorAddressLineOne   = "//p[@id='line-1-error' and @class='govuk-error-message']"
   val lineTwoFieldXPath               = "//*[@id='line-2']"
-  val fieldLevelErrorAddressLineTwo   = "//span[@id='line-2-error' and @class='govuk-error-message']"
+  val fieldLevelErrorAddressLineTwo   = "//p[@id='line-2-error' and @class='govuk-error-message']"
   val lineThreeFieldXPath             = "//*[@id='line-3']"
-  val fieldLevelErrorAddressLineThree = "//span[@id='line-3-error' and @class='govuk-error-message']"
+  val fieldLevelErrorAddressLineThree = "//p[@id='line-3-error' and @class='govuk-error-message']"
   val lineFourFieldXPath              = "//*[@id='line-4']"
-  val fieldLevelErrorAddressLineFour  = "//span[@id='line-4-error' and @class='govuk-error-message']"
+  val fieldLevelErrorAddressLineFour  = "//p[@id='line-4-error' and @class='govuk-error-message']"
   val postcodeFieldXPath              = "//*[@id='postcode']"
-  val fieldLevelErrorPostcode         = "//span[@id='postcode-error' and @class='govuk-error-message']"
+  val fieldLevelErrorPostcode         = "//p[@id='postcode-error' and @class='govuk-error-message']"
   val countryFieldXPath               = "//*[@id='countryCode']"
-  val fieldLevelErrorCountry          = "//span[@id='countryCode-error' and @class='govuk-error-message']"
+  val fieldLevelErrorCountry          = "//p[@id='countryCode-error' and @class='govuk-error-message']"
 
   val filledValues: ContactAddressModel =
     ContactAddressModel(

@@ -61,7 +61,7 @@ trait TestData {
       "cds",
       "HMRC-CUS-ORG",
       "CDS",
-      "/test-cds/callback",
+      Some("/test-cds/callback"),
       "/test-cds/accessibility",
       "CDS Service",
       "",
