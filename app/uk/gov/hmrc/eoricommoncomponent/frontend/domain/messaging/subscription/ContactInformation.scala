@@ -83,7 +83,7 @@ object ContactInformation extends CommonHeader {
         val fourLineAddress = ContactAddressModel.toAddressViewModel(contactAddress)
         ContactInformation(
           personOfContact = Some(contactDetails.fullName),
-          sepCorrAddrIndicator = Some(false),
+          sepCorrAddrIndicator = Some(true),
           streetAndNumber = Some(fourLineAddress.street),
           city = Some(fourLineAddress.city),
           postalCode = fourLineAddress.postcode,
