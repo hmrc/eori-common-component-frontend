@@ -19,8 +19,10 @@ package unit.views.migration
 import java.time.LocalDate
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import play.api.i18n.{Messages, MessagesApi, MessagesImpl}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
+import play.i18n.Lang
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
@@ -35,6 +37,8 @@ import util.ViewSpec
 class CheckYourDetailsSpec extends ViewSpec {
 
   val view = instanceOf[check_your_details]
+
+  private val messageApi: MessagesApi = instanceOf[MessagesApi]
 
   private val languageUtils = instanceOf[LanguageUtils]
 
@@ -63,6 +67,8 @@ class CheckYourDetailsSpec extends ViewSpec {
   private val nino              = Some(Nino("AB123456C"))
   private val nameDobMatchModel = Some(NameDobMatchModel("FName", None, "LName", LocalDate.parse("2003-04-08")))
   private val registeredCountry = Some(CompanyRegisteredCountry("GB"))
+  private val enLan             = Lang.forCode("en")
+  private val cyLan             = Lang.forCode("cy")
 
   "Start page" should {
 
@@ -228,6 +234,61 @@ class CheckYourDetailsSpec extends ViewSpec {
         dateEstablished.getElementsByClass("govuk-summary-list__value").text mustBe languageUtils.Dates.formatDate(
           dateTime.get
         )
+        dateEstablished.getElementsByTag("a").attr(
+          "href"
+        ) mustBe "/customs-enrolment-services/atar/subscribe/date-established/review"
+        page.body.getElementsByClass("review-tbl__date-established").size() mustBe 1
+      }
+
+      "user is during ROW Organisation journey without UTR (Welsh language)" in {
+        val page = doc(
+          customsId = None,
+          isThirdCountrySubscription = true,
+          nameIdOrganisationDetails = None,
+          companyRegisteredCountry = registeredCountry,
+          language = cyLan
+        )
+
+        val email = page.body.getElementsByClass("review-tbl__email").get(0)
+        email.getElementsByClass("govuk-summary-list__key").text mustBe "Cyfeiriad e-bost"
+        email.getElementsByClass("govuk-summary-list__value").text mustBe "email@example.com"
+
+        val eori = page.body.getElementsByClass("review-tbl__eori-number").get(0)
+        eori.getElementsByClass("govuk-summary-list__key").text mustBe "Rhif EORI"
+        eori.getElementsByClass("govuk-summary-list__value").text mustBe "ZZ123456789112"
+        eori.getElementsByTag("a").attr(
+          "href"
+        ) mustBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/review"
+
+        val nameOrg = page.body.getElementsByClass("review-tbl__org_name").get(0)
+        nameOrg.getElementsByClass("govuk-summary-list__key").text mustBe "Enw’r sefydliad"
+        nameOrg.getElementsByClass("govuk-summary-list__value").text mustBe "Org name"
+        nameOrg.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/name/review"
+
+        val utrRow = page.body.getElementsByClass("review-tbl__utr").get(0)
+        utrRow.getElementsByClass("govuk-summary-list__key").text mustBe "Rhif Cyfeirnod Unigryw y Trethdalwr (UTR)"
+        utrRow.getElementsByClass("govuk-summary-list__value").text mustBe "Heb ei nodi"
+        utrRow.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-utr/review"
+
+        val countryLocation = page.body.getElementsByClass("review-tbl__country-location").get(0)
+        countryLocation.getElementsByClass("govuk-summary-list__key").text mustBe "Lleoliad y wlad"
+        countryLocation.getElementsByClass("govuk-summary-list__value").text mustBe "Y Deyrnas Unedig"
+        countryLocation.getElementsByTag("a").attr(
+          "href"
+        ) mustBe "/customs-enrolment-services/atar/subscribe/row-country/review"
+
+        val contactDetails = page.body.getElementsByClass("review-tbl__contact-details").get(0)
+        contactDetails.getElementsByClass("govuk-summary-list__key").text mustBe "Cyswllt"
+        contactDetails.getElementsByClass("govuk-summary-list__value").text mustBe "John Doe 11111111111"
+        contactDetails.getElementsByTag("a").attr(
+          "href"
+        ) mustBe "/customs-enrolment-services/atar/subscribe/contact-details/review"
+
+        val dateEstablished = page.body.getElementsByClass("review-tbl__date-established").get(0)
+        dateEstablished.getElementsByClass("govuk-summary-list__key").text mustBe "Dyddiad sefydlu"
+        dateEstablished.getElementsByClass("govuk-summary-list__value").text mustBe languageUtils.Dates.formatDate(
+          dateTime.get
+        )(MessagesImpl(cyLan, messageApi))
         dateEstablished.getElementsByTag("a").attr(
           "href"
         ) mustBe "/customs-enrolment-services/atar/subscribe/date-established/review"
@@ -654,10 +715,13 @@ class CheckYourDetailsSpec extends ViewSpec {
     nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg,
     existingEori: Option[ExistingEori] = None,
     companyRegisteredCountry: Option[CompanyRegisteredCountry] = None,
-    addressLookupParams: Option[AddressLookupParams] = None
+    addressLookupParams: Option[AddressLookupParams] = None,
+    language: Lang = enLan
   ): Document = {
 
-    implicit val request = withFakeCSRF(FakeRequest().withSession(("selected-user-location", "third-country")))
+    implicit val messages: Messages = MessagesImpl(language, messageApi)
+    implicit val request            = withFakeCSRF(FakeRequest().withSession(("selected-user-location", "third-country")))
+
     val result = view(
       isThirdCountrySubscription,
       isIndividualSubscriptionFlow,
