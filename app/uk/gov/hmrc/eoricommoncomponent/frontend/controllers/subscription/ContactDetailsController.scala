@@ -119,7 +119,7 @@ class ContactDetailsController @Inject() (
       .map(
         _ =>
           if (inReviewMode) Redirect(DetermineReviewPageController.determineRoute(service))
-          else if (appConfig.contactAddress && service.enrolmentKey.equalsIgnoreCase("HMRC-CUS-ORG"))
+          else if (appConfig.contactAddress)
             Redirect(
               subscriptionFlowManager
                 .stepInformation(ContactDetailsSubscriptionFlowPageMigrate)
