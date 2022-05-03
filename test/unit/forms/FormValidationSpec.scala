@@ -16,18 +16,15 @@
 
 package unit.forms
 
-import java.time.Year
-
 import base.UnitSpec
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
 import play.api.data.{Form, FormError}
 import uk.gov.hmrc.domain.Generator
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NameDobMatchModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{IdMatchModel, NameDobMatchModel}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm
 
+import java.time.{LocalDate, Year}
+import java.time.format.DateTimeFormatter
 import scala.util.Random
 
 class FormValidationSpec extends UnitSpec {
@@ -37,6 +34,8 @@ class FormValidationSpec extends UnitSpec {
   val nameDobForm: Form[NameDobMatchModel] = MatchingForms.enterNameDobForm
 
   val dateOfEstablishmentForm: Form[LocalDate] = SubscriptionForm.subscriptionDateOfEstablishmentForm
+
+  val ninoForm: Form[IdMatchModel] = MatchingForms.subscriptionNinoForm
 
   val formData = Map(
     "first-name"          -> "ff",
@@ -170,6 +169,29 @@ class FormValidationSpec extends UnitSpec {
       val data = formDataDoE.updated("date-of-establishment.year", "999")
       val res  = dateOfEstablishmentForm.bind(data)
       res.errors shouldBe Seq(FormError("date-of-establishment.year", Seq("date.year.error")))
+    }
+  }
+
+  "Nino form" should {
+    "only accept valid Nino" in {
+      val res = ninoForm.bind(Map("nino" -> "ZH981921A"))
+      assert(res.errors.isEmpty)
+    }
+    "fail when nino is empty" in {
+      val res = ninoForm.bind(Map("nino" -> ""))
+      res.errors shouldBe Seq(FormError("nino", Seq("cds.subscription.nino.error.empty")))
+    }
+    "fail when nino is wrong length" in {
+      val res = ninoForm.bind(Map("nino" -> "12345678"))
+      res.errors shouldBe Seq(FormError("nino", Seq("cds.subscription.nino.error.wrong-length")))
+    }
+    "fail when nino is invalid format" in {
+      val res = ninoForm.bind(Map("nino" -> "--9819219"))
+      res.errors shouldBe Seq(FormError("nino", Seq("cds.matching.nino.invalidFormat")))
+    }
+    "fail when nino is invalid nino" in {
+      val res = ninoForm.bind(Map("nino" -> "BG981921A"))
+      res.errors shouldBe Seq(FormError("nino", Seq("cds.matching.nino.invalidNino")))
     }
   }
 }

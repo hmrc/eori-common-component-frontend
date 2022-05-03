@@ -18,12 +18,10 @@ package unit.controllers.subscription
 
 import common.pages.subscription.SubscriptionContactDetailsPage
 import common.pages.subscription.SubscriptionContactDetailsPage._
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{AnyContent, Request, Result}
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._

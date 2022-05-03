@@ -255,8 +255,8 @@ object MatchingForms {
     Constraint({
       case s if formatInput(s).isEmpty                  => Invalid(ValidationError("cds.subscription.nino.error.empty"))
       case s if formatInput(s).length != 9              => Invalid(ValidationError("cds.subscription.nino.error.wrong-length"))
-      case s if !formatInput(s).matches("[a-zA-Z0-9]*") => Invalid(ValidationError("cds.matching.nino.invalid"))
-      case s if !Nino.isValid(formatInput(s))           => Invalid(ValidationError("cds.matching.nino.invalid"))
+      case s if !formatInput(s).matches("[a-zA-Z0-9]*") => Invalid(ValidationError("cds.matching.nino.invalidFormat"))
+      case s if !Nino.isValid(formatInput(s))           => Invalid(ValidationError("cds.matching.nino.invalidNino"))
       case _                                            => Valid
     })
 

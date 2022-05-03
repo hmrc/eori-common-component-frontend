@@ -151,7 +151,7 @@ class HowCanWeIdentifyYouNinoControllerSpec extends ControllerSpec with BeforeAn
     }
 
     "give a page and field level error when an nino is of incorrect format" in {
-      submitForm(Map("nino" -> "abcdef123")) { result =>
+      submitForm(Map("nino" -> "--9819219")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(
@@ -168,10 +168,10 @@ class HowCanWeIdentifyYouNinoControllerSpec extends ControllerSpec with BeforeAn
         val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
-        ) shouldBe "Enter a National Insurance number in the right format"
+        ) shouldBe "Enter a correct National Insurance Number"
         page.getElementsText(
           SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorNino
-        ) shouldBe "Error: Enter a National Insurance number in the right format"
+        ) shouldBe "Error: Enter a correct National Insurance Number"
       }
     }
 
