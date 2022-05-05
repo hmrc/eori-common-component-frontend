@@ -464,6 +464,16 @@ cds.subscription.nino.error.wrong-length=The National Insurance number must be 9
 ecc.subscription.enter-eori-number.page.title=What is your EORI number?
 ecc.subscription.enter-eori-number.heading=What is your EORI number?
 ecc.subscription.enter-eori-number.hint=The number starts with GB and is then followed by 12 digits, For example, GB345834921000.
+ecc.subscription.eori-number-invalid=EORI number invalid
+ecc.subscription.eori-number-invalid.entered=You Entered:
+ecc.subscription.eori-number-invalid.does-not-match= This EORI number starting with GB does not match our records.
+ecc.subscription.eori-number-invalid-reasons-title=Reasons for ‘EORI number invalid’
+ecc.subscription.eori-number-invalid-not-correct-title=EORI number is incorrect
+ecc.subscription.eori-number-invalid-not-correct-body=Check you have typed it correctly.
+ecc.subscription.eori-number-invalid-not-activated-title=EORI number is not activated
+ecc.subscription.eori-number-invalid-not-activated-body=The average wait time for a new EORI number to be activated is 30 minutes, but it can take up to 48 hours in some cases. Once your EORI number is activated, you will get an email notification. You can return and proceed with your {0} application.
+ecc.subscription.eori-number-invalid-try-again=Try Again
+
 ecc.matching-error.eori=Enter an EORI number in the right format
 ecc.matching-error.eori.isEmpty=Enter your EORI number
 ecc.matching-error.eori.wrong-length.too-short=The EORI number must be more than 11 digits

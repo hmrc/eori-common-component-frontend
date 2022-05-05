@@ -16,30 +16,24 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
-import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
-  AuthAction,
-  EnrolmentExtractor,
-  GroupEnrolmentExtractor
-}
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
+import play.api.mvc._
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.CheckEoriNumberConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, EnrolmentExtractor, GroupEnrolmentExtractor}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.UserLocationController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, MissingGroupId}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{ExistingEori, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{ExistingEori, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriNumberViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm.eoriNumberForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.checkEori.CheckEoriRequest
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  EnrolmentStoreProxyService,
-  SubscriptionBusinessService,
-  SubscriptionDetailsService
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{EnrolmentStoreProxyService, SubscriptionBusinessService, SubscriptionDetailsService}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration._
 import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -49,6 +43,7 @@ class WhatIsYourEoriController @Inject() (
   subscriptionDetailsHolderService: SubscriptionDetailsService,
   groupEnrolment: GroupEnrolmentExtractor,
   enrolmentStoreProxyService: EnrolmentStoreProxyService,
+  checkEoriNumberConnector: CheckEoriNumberConnector,
   requestSessionData: RequestSessionData,
   mcc: MessagesControllerComponents,
   whatIsYourEoriView: what_is_your_eori
@@ -98,14 +93,25 @@ class WhatIsYourEoriController @Inject() (
               whatIsYourEoriView(formWithErrors, isInReviewMode, UserLocation.isRow(requestSessionData), service)
             )
           ),
-        formData => submitNewDetails(formData, isInReviewMode, service)
+        formData => {
+          val eori = eoriWithCountry(formData.eoriNumber)
+          checkEoriNumberConnector.check(CheckEoriRequest(eori)).flatMap {
+            case Some(head::_) if head.valid =>
+              submitEori(formData, isInReviewMode, service)
+            case Some(head::_) =>
+              Future.successful(Redirect(routes.WhatIsYourEoriCheckFailedController.displayPage(head.eori, service)))
+            case _ => throw new RuntimeException("Missing Eori Check Response")
+          }
+        }
       )
     }
 
-  private def submitNewDetails(formData: EoriNumberViewModel, isInReviewMode: Boolean, service: Service)(implicit
+  private def submitEori(formData: EoriNumberViewModel, isInReviewMode: Boolean, service: Service)(implicit
     request: Request[_]
   ) = {
     val eori = eoriWithCountry(formData.eoriNumber)
+
+
 
     subscriptionDetailsHolderService.cacheEoriNumber(eori).flatMap { _ =>
       enrolmentStoreProxyService.isEnrolmentInUse(service, ExistingEori(eori, service.enrolmentKey)).map {

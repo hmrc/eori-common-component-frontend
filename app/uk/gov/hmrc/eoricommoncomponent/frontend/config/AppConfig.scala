@@ -49,6 +49,9 @@ class AppConfig @Inject() (
 
   private val feedbackLinkSubscribe = config.get[String]("external-url.feedback-survey-subscribe")
 
+  lazy val chenUrl: String = servicesConfig.getConfString("check-eori-number.url", "")
+  lazy val eisUrl: String = s"${servicesConfig.baseUrl("check-eori-number")}/${chenUrl}"
+
   def feedbackUrl(service: Service) = s"$feedbackLinkSubscribe-${service.code}"
 
   private val eoriCommonComponentRegistrationFrontendBaseUrl: String =
