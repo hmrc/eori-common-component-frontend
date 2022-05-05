@@ -25,9 +25,13 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{FormData, SubscriptionDetails}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{NameOrganisationMatchModel, _}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, CompanyRegisteredCountry}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
+  AddressViewModel,
+  CompanyRegisteredCountry,
+  ContactAddressModel
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{ContactDetailsAdaptor, RegistrationDetailsCreator}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
@@ -58,6 +62,9 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
 
   private val addressDetails =
     AddressViewModel(street = "street", city = "city", postcode = Some("postcode"), countryCode = "GB")
+
+  private val contactAddressDetails =
+    ContactAddressModel("Line 1", Some("Line 2"), "Town", Some("Region"), Some("SE28 1AA"), "GB")
 
   private val nameId        = NameIdOrganisationMatchModel(name = "orgname", id = "ID")
   private val customsIdUTR  = Utr("utrxxxxx")
@@ -461,6 +468,31 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
       verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(request))
       val details = requestCaptor.getValue
       details.registeredCompany shouldBe Some(CompanyRegisteredCountry("United Kingdom"))
+    }
+  }
+
+  "Calling cacheContactAddressDetails" should {
+    "save Contact Address Details in frontend cache" in {
+
+      await(subscriptionDetailsHolderService.cacheContactAddressDetails(contactAddressDetails))
+      val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
+
+      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(request))
+      val holder: SubscriptionDetails = requestCaptor.getValue
+      holder.contactAddress shouldBe Some(contactAddressDetails)
+
+    }
+
+    "should not save emptry strings in postcode field" in {
+
+      await(
+        subscriptionDetailsHolderService.cacheContactAddressDetails(contactAddressDetails.copy(postcode = Some("")))
+      )
+      val requestCaptor = ArgumentCaptor.forClass(classOf[SubscriptionDetails])
+
+      verify(mockSessionCache).saveSubscriptionDetails(requestCaptor.capture())(ArgumentMatchers.eq(request))
+      val holder: SubscriptionDetails = requestCaptor.getValue
+      holder.contactAddress shouldBe Some(contactAddressDetails.copy(postcode = None))
     }
   }
 

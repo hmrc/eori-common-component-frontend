@@ -16,16 +16,16 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.AddressDetails
 
 case class AddressViewModel(street: String, city: String, postcode: Option[String], countryCode: String) {
-  val addressDetails = AddressDetails(street, city, postcode, countryCode)
+  val addressDetails: AddressDetails = AddressDetails(street, city, postcode, countryCode)
 }
 
 object AddressViewModel {
-  implicit val jsonFormat = Json.format[AddressViewModel]
+  implicit val jsonFormat: OFormat[AddressViewModel] = Json.format[AddressViewModel]
 
   val sixLineAddressLine1MaxLength = 35
   val sixLineAddressLine2MaxLength = 34
@@ -42,6 +42,17 @@ object AddressViewModel {
     val townCity    = sixLineAddress.addressLine3.getOrElse("").trim.take(townCityMaxLength)
     val postCode    = sixLineAddress.postalCode.map(_.trim)
     val countryCode = sixLineAddress.countryCode
+    AddressViewModel(line1, townCity, postCode, countryCode)
+  }
+
+  def apply(sixLineAddress: ContactAddressModel): AddressViewModel = {
+    val line1 = (sixLineAddress.lineOne.trim.take(sixLineAddressLine1MaxLength) + " " + sixLineAddress.lineTwo
+      .getOrElse("")
+      .trim
+      .take(sixLineAddressLine2MaxLength)).trim
+    val townCity    = sixLineAddress.lineThree.trim.take(townCityMaxLength)
+    val postCode    = sixLineAddress.postcode.map(_.trim)
+    val countryCode = sixLineAddress.country
     AddressViewModel(line1, townCity, postCode, countryCode)
   }
 

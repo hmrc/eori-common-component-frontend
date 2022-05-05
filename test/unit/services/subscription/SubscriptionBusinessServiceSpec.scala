@@ -28,7 +28,7 @@ import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactAddressModel}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{ContactDetailsAdaptor, RegistrationDetailsCreator}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionBusinessService
@@ -53,23 +53,34 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
   private val expectedDate      = LocalDate.now()
   private val maybeExpectedDate = Some(expectedDate)
 
-  val sicCode = Some("someSicCode")
+  val sicCode: Option[String] = Some("someSicCode")
 
   private val subscriptionBusinessService =
     new SubscriptionBusinessService(mockCdsFrontendDataCache)(global)
 
   private val eoriNumericLength   = 15
   private val eoriId              = "GB" + Random.nextString(eoriNumericLength)
-  val maybeEoriId                 = Some(eoriId)
-  val mayBeCachedAddressViewModel = Some(AddressViewModel("Address Line 1", "city", Some("postcode"), "GB"))
-  val nameIdOrganisationDetails   = Some(NameIdOrganisationMatchModel("OrgName", "ID"))
-  val customsIDUTR                = Some(Utr("ID"))
+  val maybeEoriId: Option[String] = Some(eoriId)
 
-  val email = Some("OrgName@example.com")
+  val mayBeCachedAddressViewModel: Option[AddressViewModel] = Some(
+    AddressViewModel("Address Line 1", "city", Some("postcode"), "GB")
+  )
+
+  val mayBeCachedContactAddressModel: Option[ContactAddressModel] = Some(
+    ContactAddressModel("Line 1", Some("Line 2"), "Town", Some("Region"), Some("SE28 1AA"), "GB")
+  )
+
+  val nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = Some(
+    NameIdOrganisationMatchModel("OrgName", "ID")
+  )
+
+  val customsIDUTR: Option[Utr] = Some(Utr("ID"))
+
+  val email: Option[String] = Some("OrgName@example.com")
 
   val emulatedFailure = new UnsupportedOperationException("Emulation of failure")
 
-  override def beforeEach {
+  override def beforeEach: Unit = {
     reset(
       mockCdsFrontendDataCache,
       mockRegistrationDetailsCreator,
@@ -286,6 +297,21 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
         await(subscriptionBusinessService.getCachedSubscriptionNameDobViewModel)
       }
       thrown.getMessage shouldBe "No Name/Dob Details Cached"
+    }
+  }
+
+  "Calling contactAddress" should {
+    "retrieve any previously cached Address Details from the cdsFrontendCache" in {
+      when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)
+      when(mockSubscriptionDetailsHolder.contactAddress).thenReturn(mayBeCachedContactAddressModel)
+      await(subscriptionBusinessService.contactAddress) shouldBe mayBeCachedContactAddressModel
+      verify(mockCdsFrontendDataCache).subscriptionDetails
+    }
+
+    "throw exception when cache address details is not saved in cdsFrontendCache" in {
+      when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)
+      when(mockSubscriptionDetailsHolder.contactAddress).thenReturn(None)
+      await(subscriptionBusinessService.contactAddress) shouldBe None
     }
   }
 }

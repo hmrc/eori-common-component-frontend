@@ -22,6 +22,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.ContactInformation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactAddressModel
 
 trait SubscriptionDataGenerators {
 
@@ -45,6 +46,23 @@ trait SubscriptionDataGenerators {
     addressLine4 <- Gen.option(stringWithoutEmptyString)
     country      <- stringWithoutEmptyString
   } yield Address(addressLine1, addressLine2, addressLine3, addressLine4, Some(""), country)
+
+  val contactAddressGenerator: Gen[ContactAddressModel] = for {
+    addressLine1 <- stringWithoutEmptyString
+    addressLine2 <- Gen.option(stringWithoutEmptyString)
+    addressLine3 <- stringWithoutEmptyString
+    addressLine4 <- Gen.option(stringWithoutEmptyString)
+    postcode     <- Gen.option(stringWithoutEmptyString)
+    country      <- stringWithoutEmptyString
+  } yield ContactAddressModel(addressLine1, addressLine2, addressLine3, addressLine4, postcode, country)
+
+  val contactAddressGeneratorWithoutPostCode: Gen[ContactAddressModel] = for {
+    addressLine1 <- stringWithoutEmptyString
+    addressLine2 <- Gen.option(stringWithoutEmptyString)
+    addressLine3 <- stringWithoutEmptyString
+    addressLine4 <- Gen.option(stringWithoutEmptyString)
+    country      <- stringWithoutEmptyString
+  } yield ContactAddressModel(addressLine1, addressLine2, addressLine3, addressLine4, Some(" "), country)
 
   val subscriptionContactDetailsGenerator: Gen[ContactDetails] = for {
     faxOption        <- Gen.option("01632961234")
@@ -189,6 +207,17 @@ trait SubscriptionDataGenerators {
   val contactDetailsCreateViewModelAndAddressWithEmptyPostcodeGenerator: Gen[(ContactDetailsModel, Address)] = for {
     model   <- contactDetailsCreateViewModelGenerator
     address <- addressGeneratorWithoutPostCode
+  } yield model -> address
+
+  val contactDetailsCreateViewModelAndContactAddressGenerator: Gen[(ContactDetailsModel, ContactAddressModel)] = for {
+    model   <- contactDetailsCreateViewModelGenerator
+    address <- contactAddressGenerator
+  } yield model -> address
+
+  val contactDetailsCreateViewModelAndContactAddressWithEmptyPostcodeGenerator
+    : Gen[(ContactDetailsModel, ContactAddressModel)] = for {
+    model   <- contactDetailsCreateViewModelGenerator
+    address <- contactAddressGeneratorWithoutPostCode
   } yield model -> address
 
   val vatIdentificationGenerator: Gen[VatIdentification] = for {

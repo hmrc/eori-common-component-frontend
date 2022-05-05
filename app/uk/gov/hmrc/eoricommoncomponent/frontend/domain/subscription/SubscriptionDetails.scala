@@ -20,7 +20,11 @@ import java.time.LocalDate
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, CompanyRegisteredCountry}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
+  AddressViewModel,
+  CompanyRegisteredCountry,
+  ContactAddressModel
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 case class SubscriptionDetails(
@@ -37,7 +41,8 @@ case class SubscriptionDetails(
   idDetails: Option[IdMatchModel] = None,
   customsId: Option[CustomsId] = None,
   formData: FormData = FormData(),
-  registeredCompany: Option[CompanyRegisteredCountry] = None
+  registeredCompany: Option[CompanyRegisteredCountry] = None,
+  contactAddress: Option[ContactAddressModel] = None
 ) {
 
   def name: String =

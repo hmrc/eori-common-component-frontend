@@ -17,7 +17,12 @@
 package unit.domain
 
 import base.UnitSpec
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{OrganisationFlow, SubscriptionFlow}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  OrganisationFlow,
+  RowIndividualFlow,
+  RowOrganisationFlow,
+  SubscriptionFlow
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 class SubscriptionFlowSpec extends UnitSpec {
@@ -32,6 +37,14 @@ class SubscriptionFlowSpec extends UnitSpec {
         SubscriptionFlow("DOES_NOT_EXISTS") shouldBe OrganisationFlow
       }
       thrown.getMessage shouldBe s"Unknown Subscription flowname DOES_NOT_EXISTS"
+    }
+
+    "create for valid flow name for ROW organisation" in {
+      SubscriptionFlow("migration-eori-row-utrNino-enabled-Organisation") shouldBe RowOrganisationFlow
+    }
+
+    "create for valid flow name for ROW individual" in {
+      SubscriptionFlow("migration-eori-row-utrNino-enabled-Individual") shouldBe RowIndividualFlow
     }
   }
 

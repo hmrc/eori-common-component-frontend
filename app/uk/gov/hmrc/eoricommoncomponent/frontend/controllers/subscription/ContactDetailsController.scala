@@ -17,10 +17,14 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
 import play.api.mvc._
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetailsSubscriptionFlowPageMigrate
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  ConfirmContactAddressSubscriptionFlowPage,
+  ContactDetailsSubscriptionFlowPageMigrate
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{LoggedInUserWithEnrolments, NA}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactDetailsSubscribeModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.ContactDetailsForm
@@ -45,7 +49,8 @@ class ContactDetailsController @Inject() (
   subscriptionDetailsService: SubscriptionDetailsService,
   orgTypeLookup: OrgTypeLookup,
   mcc: MessagesControllerComponents,
-  contactDetailsView: contact_details
+  contactDetailsView: contact_details,
+  appConfig: AppConfig
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
@@ -59,12 +64,12 @@ class ContactDetailsController @Inject() (
         cachedNameIdDetails <- if (orgType == Some(NA)) Future.successful(None)
         else subscriptionDetailsService.cachedNameIdDetails
       } yield (cachedCustomsId, cachedNameIdDetails) match {
-        case (None, None) => populateForm(service)(false)
+        case (None, None) => populateForm(service)(isInReviewMode = false)
         case _ =>
           Future.successful(
             Redirect(
               subscriptionFlowManager
-                .stepInformation(ContactDetailsSubscriptionFlowPageMigrate)
+                .stepInformation(ConfirmContactAddressSubscriptionFlowPage)
                 .nextPage
                 .url(service)
             )
@@ -75,7 +80,7 @@ class ContactDetailsController @Inject() (
 
   def reviewForm(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      populateForm(service)(true)
+      populateForm(service)(isInReviewMode = true)
     }
 
   private def populateForm(
@@ -114,10 +119,17 @@ class ContactDetailsController @Inject() (
       .map(
         _ =>
           if (inReviewMode) Redirect(DetermineReviewPageController.determineRoute(service))
-          else
+          else if (appConfig.contactAddress)
             Redirect(
               subscriptionFlowManager
                 .stepInformation(ContactDetailsSubscriptionFlowPageMigrate)
+                .nextPage
+                .url(service)
+            )
+          else
+            Redirect(
+              subscriptionFlowManager
+                .stepInformation(ConfirmContactAddressSubscriptionFlowPage)
                 .nextPage
                 .url(service)
             )

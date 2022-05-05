@@ -44,7 +44,9 @@ object SubscriptionFlows {
       UtrSubscriptionFlowPage,
       NinoSubscriptionFlowPage,
       AddressDetailsSubscriptionFlowPage,
-      ContactDetailsSubscriptionFlowPageMigrate
+      ContactDetailsSubscriptionFlowPageMigrate,
+      ContactAddressSubscriptionFlowPage,
+      ConfirmContactAddressSubscriptionFlowPage
     )
   )
 
@@ -54,7 +56,9 @@ object SubscriptionFlows {
       UtrSubscriptionFlowPage,
       AddressDetailsSubscriptionFlowPage,
       RowDateOfEstablishmentSubscriptionFlowPage,
-      ContactDetailsSubscriptionFlowPageMigrate
+      ContactDetailsSubscriptionFlowPageMigrate,
+      ContactAddressSubscriptionFlowPage,
+      ConfirmContactAddressSubscriptionFlowPage
     )
   )
 
@@ -110,6 +114,24 @@ case object ContactDetailsSubscriptionFlowPageMigrate extends SubscriptionPage {
   override def url(service: Service): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactDetailsController
       .createForm(service)
+      .url
+
+}
+
+case object ConfirmContactAddressSubscriptionFlowPage extends SubscriptionPage {
+
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ConfirmContactAddressController
+      .displayPage(service)
+      .url
+
+}
+
+case object ContactAddressSubscriptionFlowPage extends SubscriptionPage {
+
+  override def url(service: Service): String =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactAddressController
+      .displayPage(service)
       .url
 
 }

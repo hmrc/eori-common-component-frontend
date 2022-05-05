@@ -19,9 +19,8 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription
 import java.time.{Clock, LocalDate, LocalDateTime, ZoneId}
 import java.time.format.DateTimeFormatter
 import java.util.UUID
-
 import play.api.Logger
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.EstablishmentAddress.createEstablishmentAddress
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.ContactInformation.createContactInformation
@@ -38,8 +37,8 @@ case class SubscriptionCreateRequest(requestCommon: RequestCommon, requestDetail
 
 object SubscriptionCreateRequest {
 
-  implicit val jsonFormat = Json.format[SubscriptionCreateRequest]
-  private val logger      = Logger(this.getClass)
+  implicit val jsonFormat: OFormat[SubscriptionCreateRequest] = Json.format[SubscriptionCreateRequest]
+  private val logger                                          = Logger(this.getClass)
 
   // ROW without UTR apply - REG01
   def apply(
@@ -115,7 +114,7 @@ object SubscriptionCreateRequest {
         CDSEstablishmentAddress = establishmentAddress,
         establishmentInTheCustomsTerritoryOfTheUnion = None,
         typeOfLegalEntity = etmpTypeOfPerson.map(_.legalStatus),
-        contactInformation = sub.contactDetails.map(_.toRowContactInformation()),
+        contactInformation = sub.contactDetails.map(ContactInformation(_, sub.contactAddress)),
         vatIDs = None,
         consentToDisclosureOfPersonalData = None,
         shortName = None,

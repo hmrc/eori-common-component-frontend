@@ -1,0 +1,131 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+@import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.YesNo
+@import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactAddressViewModel
+@import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+@import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
+@import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, InsetText, Text}
+@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukFieldset, GovukHint, GovukInsetText, GovukRadios}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.{Fieldset, Legend}
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.{RadioItem, Radios}
+@import views.html.helper._
+
+@this(
+layout_di: layout,
+govukButton: GovukButton,
+inputText: helpers.inputText,
+errorSummary: helpers.errorSummary,
+countryField: helpers.countryField,
+goveukFieldSet: GovukFieldset,
+govukRadios : GovukRadios,
+govukHint: GovukHint,
+govukInsetText : GovukInsetText,
+inputRadioGroup: helpers.inputRadioGroup
+)
+
+@(contactForm: Form[YesNo], service: Service, model: ContactAddressViewModel)(implicit request: Request[_], messages: Messages)
+
+@labelForEUCountry(countryCode: String) = @{
+    messages(messageKeyForEUCountryCode(countryCode))
+}
+
+@messageKeyForEUCountryCode(countryCode: String) = @{
+    s"cds.country.$countryCode"
+}
+
+@isEUCountryCode(countryCode: String) = @{
+    messages.isDefinedAt(messageKeyForEUCountryCode(countryCode))
+}
+
+@countryCodeToLabel(code: String) = @{
+    code match {
+        case "GB" => messages("cds.country.GB")
+        case c if isEUCountryCode(c) => labelForEUCountry(c)
+        case nonEuCode => nonEuCode
+    }
+}
+@values = @{
+    Seq("true" -> messages("confirm-contact-details.yes"), "false" -> messages("confirm-contact-details.no"))
+}
+@options = @{
+    values.map { case (value, label) =>
+        RadioItem(
+            content = Text(label),
+            value = Some(value),
+            id = Some(s"${contactForm("yes-no-answer").name}-${value.toLowerCase.replace(" ", "_")}"),
+            checked =contactForm("yes-no-answer").value.contains(value)
+        )
+    }
+}
+  @addressLine2 = {
+      <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-0">@model.lineTwo</p>
+  }
+    @addressLine4 = {
+        <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-0">@model.lineFour</p>
+    }
+    @postcode = {
+    <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-0">@model.postcode</p>
+    }
+    @country = @{
+        countryCodeToLabel(model.country)
+    }
+
+@addressHtml = {
+    <div id="address" class="govuk-body">
+        <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-0">@model.lineOne</p>
+        @model.lineTwo.map(lineTwo => addressLine2)
+        <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-0">@model.lineThree</p>
+        @model.lineFour.map(lineTwo => addressLine4)
+        @model.postcode.map(lineTwo => postcode)
+        <p class="govuk-body govuk-!-margin-bottom-0 govuk-!-margin-top-0">@country</p>
+    </div>
+}
+
+@layout_di(messages("confirm-contact-details.page.title"), AllCountriesInCountryPicker, form = Some(contactForm)) {
+
+
+<div>
+    @errorSummary(contactForm.errors, focusOverrides = Map("use-registered-address" -> "use-registered-address-yes"))
+    @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ConfirmContactAddressController.submit(service), "confirmContactAddressForm") {
+
+        @CSRF.formField
+
+
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-3" aria-describedby="address-hint">@messages("confirm-contact-details.page.heading")</h1>
+        @govukHint(Hint(id= Some("address-hint"), content = Text(messages("confirm-contact-address.address.hint")), classes = "govuk-!-margin-top-0 govuk-!-margin-bottom-5"))
+        @govukInsetText(InsetText(
+            content = HtmlContent(addressHtml)
+        ))
+
+        @inputRadioGroup(
+            contactForm("yes-no-answer"),
+            legend = messages("confirm-contact-details.address-text"),
+            items = options,
+            classes = "govuk-fieldset__legend--m",
+            legendAsHeading =  false
+        )
+
+        @govukButton(Button(
+            content = Text(messages("cds.navigation.continue"))
+        ))
+
+        @helpers.helpAndSupport()
+    }
+</div>
+}

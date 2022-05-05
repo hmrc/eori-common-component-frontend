@@ -23,6 +23,7 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{
   ContactDetailsController,
@@ -31,6 +32,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.contact_details
@@ -61,6 +63,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
   private val mockCdsFrontendDataCache = mock[SessionCache]
   private val mockOrgTypeLookup        = mock[OrgTypeLookup]
+  private val mockAppConfig            = mock[AppConfig]
   private val contactDetailsView       = instanceOf[contact_details]
 
   private val controller = new ContactDetailsController(
@@ -71,7 +74,8 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     mockSubscriptionDetailsHolderService,
     mockOrgTypeLookup,
     mcc,
-    contactDetailsView
+    contactDetailsView,
+    mockAppConfig
   )
 
   override protected def beforeEach(): Unit = {
@@ -82,9 +86,12 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     registerSaveContactDetailsMockSuccess()
     mockFunctionWithRegistrationDetails(mockRegistrationDetails)
     setupMockSubscriptionFlowManager(ContactDetailsSubscriptionFlowPageMigrate)
+    setupMockSubscriptionFlowManager(ConfirmContactAddressSubscriptionFlowPage)
+    when(mockCdsFrontendDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(Email))
     when(mockCdsFrontendDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(Email))
     when(mockSubscriptionDetailsHolderService.cachedCustomsId(any())).thenReturn(Future.successful(None))
     when(mockSubscriptionDetailsHolderService.cachedNameIdDetails(any())).thenReturn(Future.successful(None))
+    when(mockAppConfig.contactAddress).thenReturn(Future.successful(false))
   }
 
   override protected def afterEach(): Unit = {
@@ -269,8 +276,41 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       submitFormInCreateMode(createFormMandatoryFieldsMapSubscribe - fullNameFieldName)(verifyFormActionInCreateMode)
     }
 
-    "redirect to next page when details are valid" in {
-      submitFormInCreateMode(createFormMandatoryFieldsMapSubscribe)(verifyRedirectToNextPageInCreateMode)
+    "redirect to check your details page if its feature switched off and not CDS enrolment when details are valid" in {
+      when(nextPage.url(any[Service])).thenReturn("/check-your-details")
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
+      val result = controller
+        .submit(isInReviewMode = false, atarService)(
+          SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, createFormMandatoryFieldsMapSubscribe)
+        )
+
+      status(result) shouldBe SEE_OTHER
+      result.header.headers(LOCATION) should endWith("/check-your-details")
+    }
+
+    "redirect to check your details page if its feature switched on but it is not CDS enrolment when details are valid" in {
+      when(nextPage.url(any[Service])).thenReturn("/check-your-details")
+      when(mockAppConfig.contactAddress).thenReturn(Future.successful(true))
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
+      val result = controller
+        .submit(isInReviewMode = false, atarService)(
+          SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, createFormMandatoryFieldsMapSubscribe)
+        )
+
+      status(result) shouldBe SEE_OTHER
+      result.header.headers(LOCATION) should endWith("/check-your-details")
+    }
+    "redirect to contact address page if its feature switched is on and CDS enrolment when details are valid" in {
+      when(nextPage.url(any[Service])).thenReturn("/contact-address")
+      when(mockAppConfig.contactAddress).thenReturn(Future.successful(true))
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
+      val result = controller
+        .submit(isInReviewMode = false, cdsService)(
+          SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, createFormMandatoryFieldsMapSubscribe)
+        )
+
+      status(result) shouldBe SEE_OTHER
+      result.header.headers(LOCATION) should endWith("/contact-address")
     }
 
     "redirect to next page without validating contact address when 'Is this the right contact address' is Yes and country code is GB" in {

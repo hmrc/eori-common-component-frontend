@@ -20,7 +20,7 @@ import play.api.mvc.Request
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactAddressModel}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
 
 import java.time.LocalDate
@@ -52,6 +52,11 @@ class SubscriptionBusinessService @Inject() (cdsFrontendDataCache: SessionCache)
   def address(implicit request: Request[_]): Future[Option[AddressViewModel]] =
     cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
       subscriptionDetails.addressDetails
+    }
+
+  def contactAddress(implicit request: Request[_]): Future[Option[ContactAddressModel]] =
+    cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
+      subscriptionDetails.contactAddress
     }
 
   def getCachedNameIdViewModel(implicit request: Request[_]): Future[NameIdOrganisationMatchModel] =

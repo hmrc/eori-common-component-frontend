@@ -21,7 +21,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, CompanyRegisteredCountry}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
+  AddressViewModel,
+  CompanyRegisteredCountry,
+  ContactAddressModel
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{CachedData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.ContactDetailsAdaptor
@@ -65,8 +69,13 @@ class SubscriptionDetailsService @Inject() (
 
   def cacheAddressDetails(address: AddressViewModel)(implicit request: Request[_]): Future[Unit] = {
     def noneForEmptyPostcode(a: AddressViewModel) = a.copy(postcode = a.postcode.filter(_.nonEmpty))
-
     saveSubscriptionDetails(sd => sd.copy(addressDetails = Some(noneForEmptyPostcode(address))))
+  }
+
+  def cacheContactAddressDetails(address: ContactAddressModel)(implicit request: Request[_]): Future[Unit] = {
+    def noneForEmptyPostcode(a: ContactAddressModel) = a.copy(postcode = a.postcode.filter(_.nonEmpty))
+
+    saveSubscriptionDetails(sd => sd.copy(contactAddress = Some(noneForEmptyPostcode(address))))
   }
 
   def cacheNameIdDetails(
