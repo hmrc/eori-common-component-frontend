@@ -24,16 +24,14 @@ import play.api.data.Form
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.CheckEoriNumberConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, ExistingEori, KeyValue}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriNumberViewModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.checkEori.CheckEoriResponse
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  EnrolmentStoreProxyService,
-  SubscriptionBusinessService,
-  SubscriptionDetailsService
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{EnrolmentStoreProxyService, SubscriptionBusinessService, SubscriptionDetailsService}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.what_is_your_eori
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -49,6 +47,7 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
   private val mockSubscriptionBusinessService = mock[SubscriptionBusinessService]
   private val mockSubscriptionDetailsService  = mock[SubscriptionDetailsService]
   private val mockRequestSessionData          = mock[RequestSessionData]
+  private val mockCheckEoriNumberConnector    = mock[CheckEoriNumberConnector]
   private val groupEnrolmentExtractor         = mock[GroupEnrolmentExtractor]
   private val whatIsYourEoriView              = mock[what_is_your_eori]
 
@@ -60,6 +59,7 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
     mockSubscriptionDetailsService,
     groupEnrolmentExtractor,
     enrolmentStoreProxyService,
+    mockCheckEoriNumberConnector,
     mockRequestSessionData,
     mcc,
     whatIsYourEoriView
@@ -68,11 +68,14 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
   val existingGroupEnrolment: EnrolmentResponse =
     EnrolmentResponse("HMRC-OTHER-ORG", "Active", List(KeyValue("EORINumber", "GB1234567890")))
 
+  val checkEoriSuccess  = Future.successful(Some(List(CheckEoriResponse("GB1234567890", true, None))))
+
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     when(whatIsYourEoriView.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockCheckEoriNumberConnector.check(any())(any(), any())).thenReturn(checkEoriSuccess)
   }
 
   override protected def afterEach(): Unit = {
@@ -82,6 +85,7 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
       mockSubscriptionDetailsService,
       groupEnrolmentExtractor,
       enrolmentStoreProxyService,
+      mockCheckEoriNumberConnector,
       mockRequestSessionData,
       whatIsYourEoriView
     )
@@ -268,3 +272,4 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
     }
   }
 }
+

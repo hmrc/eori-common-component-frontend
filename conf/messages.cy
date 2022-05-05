@@ -420,6 +420,16 @@ cds.subscription.nino.error.wrong-length=Rhaid i’r rhif Yswiriant Gwladol fod 
 ecc.subscription.enter-eori-number.page.title=Beth yw’ch rhif EORI?
 ecc.subscription.enter-eori-number.heading=Beth yw’ch rhif EORI?
 ecc.subscription.enter-eori-number.hint=Mae’r rhif yn dechrau gyda GB ac yna’n cael ei ddilyn gan 12 digid, er enghraifft, GB345834921000.
+ecc.subscription.eori-number-invalid=[TRANSLATE] EORI number invalid
+ecc.subscription.eori-number-invalid.entered=[TRANSLATE] You Entered:
+ecc.subscription.eori-number-invalid.does-not-match=[TRANSLATE] This EORI number starting with GB does not match our records.
+ecc.subscription.eori-number-invalid-reasons-title=[TRANSLATE] Reasons for ‘EORI number invalid’
+ecc.subscription.eori-number-invalid-not-correct-title=[TRANSLATE] EORI number is incorrect
+ecc.subscription.eori-number-invalid-not-correct-body=[TRANSLATE] Check you have typed it correctly.
+ecc.subscription.eori-number-invalid-not-activated-title=[TRANSLATE] EORI number is not activated
+ecc.subscription.eori-number-invalid-not-activated-body=[TRANSLATE] The average wait time for a new EORI number to be activated is 30 minutes, but it can take up to 48 hours in some cases. Once your EORI number is activated, you will get an email notification. You can return and proceed with your {0} application.
+ecc.subscription.eori-number-invalid-try-again=[TRANSLATE] Try Again
+
 ecc.matching-error.eori=Nodwch rif EORI yn y fformat cywir
 ecc.matching-error.eori.isEmpty=Nodwch eich rhif EORI
 ecc.matching-error.eori.wrong-length.too-short=Mae’n rhaid i’r rhif EORI gynnwys mwy nag 11 digid
