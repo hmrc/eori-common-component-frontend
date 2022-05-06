@@ -31,7 +31,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, Exist
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriNumberViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.checkEori.CheckEoriResponse
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{EnrolmentStoreProxyService, SubscriptionBusinessService, SubscriptionDetailsService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  EnrolmentStoreProxyService,
+  SubscriptionBusinessService,
+  SubscriptionDetailsService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.what_is_your_eori
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -68,8 +72,8 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
   val existingGroupEnrolment: EnrolmentResponse =
     EnrolmentResponse("HMRC-OTHER-ORG", "Active", List(KeyValue("EORINumber", "GB1234567890")))
 
-  val checkEoriSuccess  = Future.successful(Some(List(CheckEoriResponse("GB1234567890", true, None))))
-  val checkEoriFail  = Future.successful(Some(List(CheckEoriResponse("GB1234567890", false, None))))
+  val checkEoriSuccess = Future.successful(Some(List(CheckEoriResponse("GB1234567890", true, None))))
+  val checkEoriFail    = Future.successful(Some(List(CheckEoriResponse("GB1234567890", false, None))))
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -106,7 +110,9 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
       val result = controller.submit(false, atarService)(postRequest("eori-number" -> eori))
 
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori-check-failed/GB1234567890"
+      redirectLocation(
+        result
+      ).get shouldBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori-check-failed/GB1234567890"
     }
 
     "return 200 (OK) for user without existing enrolment" when {
@@ -283,4 +289,3 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
     }
   }
 }
-

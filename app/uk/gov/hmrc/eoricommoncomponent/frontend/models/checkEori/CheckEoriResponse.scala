@@ -21,26 +21,21 @@ import play.api.libs.json.{Json, OFormat}
 import java.time.{ZoneId, ZonedDateTime}
 
 case class CheckEoriResponse(
-                              eori: String,
-                              valid: Boolean,
-                              companyDetails: Option[CompanyDetails],
-                              processingDate: ZonedDateTime = ZonedDateTime.now.withZoneSameInstant(ZoneId.of("Europe/London"))
-                            )
+  eori: String,
+  valid: Boolean,
+  companyDetails: Option[CompanyDetails],
+  processingDate: ZonedDateTime = ZonedDateTime.now.withZoneSameInstant(ZoneId.of("Europe/London"))
+)
 
-case class CompanyDetails (
-                            traderName: String,
-                            address: Address
-                          )
+case class CompanyDetails(traderName: String, address: Address)
 
-case class Address(
-                    streetAndNumber: String,
-                    cityName: String,
-                    postcode: String,
-                  )
+case class Address(streetAndNumber: String, cityName: String, postcode: String)
 
 object Address {
+
   implicit val addressFormat: OFormat[Address] =
     Json.format[Address]
+
 }
 
 object CompanyDetails {

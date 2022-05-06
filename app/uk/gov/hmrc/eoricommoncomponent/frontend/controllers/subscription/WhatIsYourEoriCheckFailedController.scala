@@ -28,16 +28,15 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class WhatIsYourEoriCheckFailedController @Inject() (
-    authAction: AuthAction,
-    mcc: MessagesControllerComponents,
-    whatIsYourEoriCheckFailedPage: what_is_your_eori_check_failed
-  )(implicit ec: ExecutionContext)
-  extends CdsController(mcc) with EnrolmentExtractor {
+  authAction: AuthAction,
+  mcc: MessagesControllerComponents,
+  whatIsYourEoriCheckFailedPage: what_is_your_eori_check_failed
+)(implicit ec: ExecutionContext)
+    extends CdsController(mcc) with EnrolmentExtractor {
 
+  def displayPage(eori: String, service: Service): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => user: LoggedInUserWithEnrolments =>
+      Future.successful(Ok(whatIsYourEoriCheckFailedPage(eori, service)))
+    }
 
-   def displayPage(eori: String, service: Service): Action[AnyContent] =
-     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request =>
-       user: LoggedInUserWithEnrolments =>
-         Future.successful(Ok(whatIsYourEoriCheckFailedPage(eori, service)))
-     }
-  }
+}
