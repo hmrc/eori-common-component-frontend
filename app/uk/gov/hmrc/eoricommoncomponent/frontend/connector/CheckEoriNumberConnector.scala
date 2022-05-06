@@ -26,30 +26,19 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-@ImplementedBy(classOf[CheckEoriNumberConnectorImpl])
-trait CheckEoriNumberConnector {
-  def check(
-             checkEoriRequest: CheckEoriRequest
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[List[CheckEoriResponse]]]
+@ImplementedBy(classOf[CheckEoriNumberConnectorImpl]) trait CheckEoriNumberConnector {
+  def check(checkEoriRequest: CheckEoriRequest)
+           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[List[CheckEoriResponse]]]
 }
 
-class CheckEoriNumberConnectorImpl @Inject()(
-  http: HttpClient,
-  appConfig: AppConfig
-) extends CheckEoriNumberConnector {
+class CheckEoriNumberConnectorImpl @Inject()(http: HttpClient, appConfig: AppConfig) extends CheckEoriNumberConnector {
 
-  def check(
-             checkEoriRequest: CheckEoriRequest
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[List[CheckEoriResponse]]] = {
-    http.GET[List[CheckEoriResponse]](
-      url = s"${appConfig.eisUrl}/check-eori/${checkEoriRequest.eoriNumber}").map(Some(_)
-                                                                                  ).recoverWith {
-      case e: UpstreamErrorResponse if e.statusCode == NOT_FOUND =>
-        Future.successful(
-          Some(
-            List(CheckEoriResponse(checkEoriRequest.eoriNumber, valid = false, None))
-          )
-        )
-    }
+  def check(checkEoriRequest: CheckEoriRequest)
+           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[List[CheckEoriResponse]]] = {
+    http.GET[List[CheckEoriResponse]](url = s"${appConfig.eisUrl}/check-eori/${checkEoriRequest.eoriNumber}")
+        .map(Some(_)).recoverWith {
+            case e: UpstreamErrorResponse if e.statusCode == NOT_FOUND => Future.successful(
+              Some(List(CheckEoriResponse(checkEoriRequest.eoriNumber, valid = false, None))))
+        }
   }
 }

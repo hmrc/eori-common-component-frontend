@@ -100,7 +100,7 @@ class WhatIsYourEoriController @Inject() (
               submitEori(formData, isInReviewMode, service)
             case Some(head::_) =>
               Future.successful(Redirect(routes.WhatIsYourEoriCheckFailedController.displayPage(head.eori, service)))
-            case _ => throw new RuntimeException("Missing Eori Check Response")
+            case _ => throw new MissingCheckResponseException
           }
         }
       )
@@ -141,3 +141,5 @@ class WhatIsYourEoriController @Inject() (
   private def eoriWithCountry(eori: String): String = if (eori.forall(_.isDigit)) "GB" + eori else eori
 
 }
+
+class MissingCheckResponseException extends RuntimeException("no CheckResponse from CheckEoriNumberConnector")
