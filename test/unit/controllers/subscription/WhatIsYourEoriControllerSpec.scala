@@ -26,7 +26,10 @@ import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.CheckEoriNumberConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{
+  MissingCheckResponseException,
+  WhatIsYourEoriController
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, ExistingEori, KeyValue}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriNumberViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.checkEori.CheckEoriResponse
@@ -38,11 +41,12 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.what_is_your_eori
 import util.ControllerSpec
-import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.AuthActionMock
+import util.builders.AuthBuilder.withAuthorisedUser
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 
 class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterEach {
 
@@ -72,8 +76,9 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
   val existingGroupEnrolment: EnrolmentResponse =
     EnrolmentResponse("HMRC-OTHER-ORG", "Active", List(KeyValue("EORINumber", "GB1234567890")))
 
-  val checkEoriSuccess = Future.successful(Some(List(CheckEoriResponse("GB1234567890", true, None))))
-  val checkEoriFail    = Future.successful(Some(List(CheckEoriResponse("GB1234567890", false, None))))
+  val checkEoriSuccess        = Future.successful(Some(List(CheckEoriResponse("GB1234567890", true, None))))
+  val checkEoriFail           = Future.successful(Some(List(CheckEoriResponse("GB1234567890", false, None))))
+  val checkEorMissingResponse = Future.successful(Some(List()))
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -113,6 +118,17 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
       redirectLocation(
         result
       ).get shouldBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori-check-failed/GB1234567890"
+    }
+
+    "throw exception for missing response for CheckEoriNumber" in {
+      reset(mockCheckEoriNumberConnector)
+      when(mockCheckEoriNumberConnector.check(any())(any(), any())).thenReturn(checkEorMissingResponse)
+
+      val futureResponse = controller.submit(false, atarService)(postRequest("eori-number" -> eori))
+      val caught = intercept[MissingCheckResponseException] {
+        Await.result(futureResponse, Duration.Inf)
+      }
+      caught.getMessage shouldBe "no CheckResponse from CheckEoriNumberConnector"
     }
 
     "return 200 (OK) for user without existing enrolment" when {
