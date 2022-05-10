@@ -28,6 +28,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 @ImplementedBy(classOf[CheckEoriNumberConnectorImpl]) trait CheckEoriNumberConnector {
+
   def check(
     checkEoriRequest: CheckEoriRequest
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[List[CheckEoriResponse]]]
@@ -40,11 +41,13 @@ class CheckEoriNumberConnectorImpl @Inject() (http: HttpClient, appConfig: AppCo
   def check(
     checkEoriRequest: CheckEoriRequest
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[List[CheckEoriResponse]]] =
-    http.GET[List[CheckEoriResponse]](url = s"${appConfig.eisUrl}/check-eori/${checkEoriRequest.eoriNumber}")
+    http.GET[List[CheckEoriResponse]](url =
+      s"${appConfig.checkEoriNumberUrl}/check-eori/${checkEoriRequest.eoriNumber}"
+    )
       .map(Some(_)).recoverWith {
         case e: UpstreamErrorResponse if e.statusCode == NOT_FOUND =>
           Future.successful(Some(List(CheckEoriResponse(checkEoriRequest.eoriNumber, valid = false, None))))
-        case e: UpstreamErrorResponse =>
+        case e: Throwable =>
           //log all upstream errors at error level and keep going
           logger.error("Upstream error from check-eori-number service,the user journey will continue anyway.", e)
           Future.successful(Some(List(CheckEoriResponse(checkEoriRequest.eoriNumber, valid = true, None))))
