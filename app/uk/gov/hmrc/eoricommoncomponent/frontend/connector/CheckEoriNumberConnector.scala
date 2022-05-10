@@ -44,9 +44,10 @@ class CheckEoriNumberConnectorImpl @Inject() (http: HttpClient, appConfig: AppCo
       .map(Some(_)).recoverWith {
         case e: UpstreamErrorResponse if e.statusCode == NOT_FOUND =>
           Future.successful(Some(List(CheckEoriResponse(checkEoriRequest.eoriNumber, valid = false, None))))
-        case e: UpstreamErrorResponse =>  //log all upstream errors at error level and keep going
+        case e: UpstreamErrorResponse =>
+          //log all upstream errors at error level and keep going
           logger.error("Upstream error from check-eori-number service,the user journey will continue anyway.", e)
-          Future.successful(Some(List(CheckEoriResponse(checkEoriRequest.eoriNumber, valid = false, None))))
+          Future.successful(Some(List(CheckEoriResponse(checkEoriRequest.eoriNumber, valid = true, None))))
       }
 
 }
