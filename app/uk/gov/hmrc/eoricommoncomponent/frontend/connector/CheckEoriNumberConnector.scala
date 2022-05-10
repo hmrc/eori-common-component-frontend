@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import com.google.inject.ImplementedBy
+import play.api.Logger
 import play.api.http.Status.NOT_FOUND
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.checkEori.{CheckEoriRequest, CheckEoriResponse}
@@ -27,7 +28,6 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 @ImplementedBy(classOf[CheckEoriNumberConnectorImpl]) trait CheckEoriNumberConnector {
-
   def check(
     checkEoriRequest: CheckEoriRequest
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[List[CheckEoriResponse]]]
@@ -35,6 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 }
 
 class CheckEoriNumberConnectorImpl @Inject() (http: HttpClient, appConfig: AppConfig) extends CheckEoriNumberConnector {
+  private val logger = Logger(this.getClass)
 
   def check(
     checkEoriRequest: CheckEoriRequest
@@ -42,6 +43,9 @@ class CheckEoriNumberConnectorImpl @Inject() (http: HttpClient, appConfig: AppCo
     http.GET[List[CheckEoriResponse]](url = s"${appConfig.eisUrl}/check-eori/${checkEoriRequest.eoriNumber}")
       .map(Some(_)).recoverWith {
         case e: UpstreamErrorResponse if e.statusCode == NOT_FOUND =>
+          Future.successful(Some(List(CheckEoriResponse(checkEoriRequest.eoriNumber, valid = false, None))))
+        case e: UpstreamErrorResponse =>  //log all upstream errors at error level and keep going
+          logger.error("Upstream error from check-eori-number service,the user journey will continue anyway.", e)
           Future.successful(Some(List(CheckEoriResponse(checkEoriRequest.eoriNumber, valid = false, None))))
       }
 
