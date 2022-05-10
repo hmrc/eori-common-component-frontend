@@ -82,11 +82,6 @@ class CdsErrorHandler @Inject() (
         logger.warn("DataUnavailableException with message - " + dataUnavailableException.message)
         // $COVERAGE-ON
         Future.successful(Results.InternalServerError(errorTemplateView()))
-      case dataUnavailableException: DataUnavailableException =>
-        // $COVERAGE-OFF$Loggers
-        logger.warn("DataUnavailableException with message - " + dataUnavailableException.message)
-        // $COVERAGE-ON
-        Future.successful(Results.InternalServerError(errorTemplateView()))
       case _ =>
         // $COVERAGE-OFF$Loggers
         logger.error("Internal server error: " + exception.getMessage, exception)
