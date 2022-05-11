@@ -181,3 +181,7 @@ POST        /customs-enrolment-services/:service/subscribe/confirm-contact-addre
 GET         /admin/metrics                                                         @com.kenshoo.play.metrics.MetricsController.metrics
 
 ->          /                                                                      health.Routes
+
+# Test Support Routes
+
+GET         /payloads/:key                                                                             @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.TestHelperController.payloads(key)

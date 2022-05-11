@@ -27,6 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
   SubscriptionResponse
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{Subscription, SubscriptionResult, SubscriptionSubmitted}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.PayloadCache
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
 
@@ -35,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class SubscriptionServiceConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
   ec: ExecutionContext
-) {
+) extends Instrumentable {
 
   private val logger = Logger(this.getClass)
   private val url    = appConfig.getServiceUrl("subscribe")
@@ -47,6 +48,8 @@ class SubscriptionServiceConnector @Inject() (http: HttpClient, appConfig: AppCo
       s"[Subscribe SUB02: $url, requestCommon: ${request.subscriptionCreateRequest.requestCommon} and hc: $hc"
     )
     // $COVERAGE-ON
+
+    sampleData(PayloadCache.SubscriptionCreate, request)
 
     http.POST[SubscriptionRequest, SubscriptionResponse](url, request) map { response =>
       // $COVERAGE-OFF$Loggers
