@@ -26,6 +26,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.control.NonFatal
 
 @ImplementedBy(classOf[CheckEoriNumberConnectorImpl]) trait CheckEoriNumberConnector {
 
@@ -47,7 +48,7 @@ class CheckEoriNumberConnectorImpl @Inject() (http: HttpClient, appConfig: AppCo
       .map(Some(_)).recoverWith {
         case e: UpstreamErrorResponse if e.statusCode == NOT_FOUND =>
           Future.successful(Some(List(CheckEoriResponse(checkEoriRequest.eoriNumber, valid = false, None))))
-        case e: Throwable =>
+        case NonFatal(e) =>
           //log all upstream errors at error level and keep going
           logger.error("Upstream error from check-eori-number service,the user journey will continue anyway.", e)
           Future.successful(Some(List(CheckEoriResponse(checkEoriRequest.eoriNumber, valid = true, None))))
