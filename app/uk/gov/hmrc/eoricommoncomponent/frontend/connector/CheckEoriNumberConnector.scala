@@ -20,7 +20,7 @@ import com.google.inject.ImplementedBy
 import play.api.Logger
 import play.api.http.Status.NOT_FOUND
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.checkEori.{CheckEoriRequest, CheckEoriResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.checkEori.CheckEoriResponse
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 
@@ -30,28 +30,23 @@ import scala.util.control.NonFatal
 
 @ImplementedBy(classOf[CheckEoriNumberConnectorImpl]) trait CheckEoriNumberConnector {
 
-  def check(
-    checkEoriRequest: CheckEoriRequest
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[List[CheckEoriResponse]]]
+  def check(eori: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Boolean]]
 
 }
 
 class CheckEoriNumberConnectorImpl @Inject() (http: HttpClient, appConfig: AppConfig) extends CheckEoriNumberConnector {
   private val logger = Logger(this.getClass)
 
-  def check(
-    checkEoriRequest: CheckEoriRequest
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[List[CheckEoriResponse]]] =
-    http.GET[List[CheckEoriResponse]](url =
-      s"${appConfig.checkEoriNumberUrl}/check-eori/${checkEoriRequest.eoriNumber}"
-    )
-      .map(Some(_)).recoverWith {
+  def check(eori: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Boolean]] =
+    http.GET[List[CheckEoriResponse]](url = s"${appConfig.checkEoriNumberUrl}/check-eori/$eori")
+      .map(response => response.headOption.map(_.valid))
+      .recoverWith {
         case e: UpstreamErrorResponse if e.statusCode == NOT_FOUND =>
-          Future.successful(Some(List(CheckEoriResponse(checkEoriRequest.eoriNumber, valid = false, None))))
+          Future.successful(Some(false))
         case NonFatal(e) =>
           //log all upstream errors at error level and keep going
-          logger.error("Upstream error from check-eori-number service,the user journey will continue anyway.", e)
-          Future.successful(Some(List(CheckEoriResponse(checkEoriRequest.eoriNumber, valid = true, None))))
+          logger.error(s"Upstream error from check-eori-number service for EORI $eori.", e)
+          Future.successful(Some(true))
       }
 
 }

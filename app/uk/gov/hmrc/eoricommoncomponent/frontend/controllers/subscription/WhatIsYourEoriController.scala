@@ -31,7 +31,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{ExistingEori, LoggedInUs
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriNumberViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm.eoriNumberForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.checkEori.CheckEoriRequest
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   EnrolmentStoreProxyService,
@@ -86,7 +85,7 @@ class WhatIsYourEoriController @Inject() (
   private def populateView(eoriNumber: Option[String], isInReviewMode: Boolean, service: Service)(implicit
     request: Request[AnyContent]
   ): Result = {
-    val eoriForForm = eoriNumber.map(eoriWithoutCountry(_))
+    val eoriForForm = eoriNumber.map(eoriWithoutCountry)
 
     val form = eoriForForm.map(EoriNumberViewModel.apply).fold(eoriNumberForm)(eoriNumberForm.fill)
     Ok(whatIsYourEoriView(form, isInReviewMode, UserLocation.isRow(requestSessionData), service))
@@ -103,12 +102,11 @@ class WhatIsYourEoriController @Inject() (
           ),
         formData => {
           val eori = eoriWithCountry(formData.eoriNumber)
-          checkEoriNumberConnector.check(CheckEoriRequest(eori)).flatMap {
-            case Some(head :: _) if head.valid =>
-              submitEori(formData, isInReviewMode, service)
-            case Some(head :: _) =>
-              Future.successful(Redirect(routes.WhatIsYourEoriCheckFailedController.displayPage(head.eori, service)))
-            case _ => throw new MissingCheckResponseException
+          checkEoriNumberConnector.check(eori).flatMap {
+            case Some(true) => submitEori(formData, isInReviewMode, service)
+            case Some(false) => // should this case be _ and remove the exception?
+              Future.successful(Redirect(routes.WhatIsYourEoriCheckFailedController.displayPage(eori, service)))
+            case _ => throw new MissingCheckResponseException // this seems unnecessary unless a None is possible
           }
         }
       )

@@ -32,7 +32,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, ExistingEori, KeyValue}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriNumberViewModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.checkEori.CheckEoriResponse
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   EnrolmentStoreProxyService,
@@ -76,9 +75,9 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
   val existingGroupEnrolment: EnrolmentResponse =
     EnrolmentResponse("HMRC-OTHER-ORG", "Active", List(KeyValue("EORINumber", "GB1234567890")))
 
-  val checkEoriSuccess        = Future.successful(Some(List(CheckEoriResponse("GB1234567890", true, None))))
-  val checkEoriFail           = Future.successful(Some(List(CheckEoriResponse("GB1234567890", false, None))))
-  val checkEorMissingResponse = Future.successful(Some(List()))
+  private val checkEoriSuccess        = Future.successful(Some(true))
+  private val checkEoriFail           = Future.successful(Some(false))
+  private val checkEorMissingResponse = Future.successful(None)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -112,19 +111,19 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
       reset(mockCheckEoriNumberConnector)
       when(mockCheckEoriNumberConnector.check(any())(any(), any())).thenReturn(checkEoriFail)
 
-      val result = controller.submit(false, atarService)(postRequest("eori-number" -> eori))
+      val result = controller.submit(isInReviewMode = false, atarService)(postRequest("eori-number" -> eori))
 
       status(result) shouldBe SEE_OTHER
       redirectLocation(
         result
-      ).get shouldBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori-check-failed/GB1234567890"
+      ).get shouldBe s"/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori-check-failed/$eori"
     }
 
     "throw exception for missing response for CheckEoriNumber" in {
       reset(mockCheckEoriNumberConnector)
       when(mockCheckEoriNumberConnector.check(any())(any(), any())).thenReturn(checkEorMissingResponse)
 
-      val futureResponse = controller.submit(false, atarService)(postRequest("eori-number" -> eori))
+      val futureResponse = controller.submit(isInReviewMode = false, atarService)(postRequest("eori-number" -> eori))
       val caught = intercept[MissingCheckResponseException] {
         Await.result(futureResponse, Duration.Inf)
       }
@@ -206,7 +205,7 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
 
       "eori provided by user is incorrect" in {
 
-        val result = controller.submit(false, atarService)(postRequest("eori-number" -> "incorrect"))
+        val result = controller.submit(isInReviewMode = false, atarService)(postRequest("eori-number" -> "incorrect"))
 
         status(result) shouldBe BAD_REQUEST
         verify(whatIsYourEoriView).apply(any(), any(), any(), any())(any(), any())
@@ -241,7 +240,7 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
         when(enrolmentStoreProxyService.isEnrolmentInUse(any(), any())(any()))
           .thenReturn(Future.successful(Some(ExistingEori(eori, "enrolmentKey"))))
 
-        val result = controller.submit(false, atarService)(postRequest("eori-number" -> eoriWithoutCountry))
+        val result = controller.submit(isInReviewMode = false, atarService)(postRequest("eori-number" -> eoriWithoutCountry))
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(
@@ -257,7 +256,7 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
         when(mockSubscriptionDetailsService.cacheEoriNumber(any())(any())).thenReturn(Future.successful((): Unit))
         when(enrolmentStoreProxyService.isEnrolmentInUse(any(), any())(any())).thenReturn(Future.successful(None))
 
-        val result = controller.submit(false, atarService)(postRequest("eori-number" -> eoriWithoutCountry))
+        val result = controller.submit(isInReviewMode = false, atarService)(postRequest("eori-number" -> eoriWithoutCountry))
 
         val eoriCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
@@ -277,7 +276,7 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
         when(mockSubscriptionDetailsService.cacheEoriNumber(any())(any())).thenReturn(Future.successful((): Unit))
         when(enrolmentStoreProxyService.isEnrolmentInUse(any(), any())(any())).thenReturn(Future.successful(None))
 
-        val result = controller.submit(false, atarService)(postRequest("eori-number" -> eori))
+        val result = controller.submit(isInReviewMode = false, atarService)(postRequest("eori-number" -> eori))
 
         val eoriCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
 
@@ -297,7 +296,7 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
         when(mockSubscriptionDetailsService.cacheEoriNumber(any())(any())).thenReturn(Future.successful((): Unit))
         when(enrolmentStoreProxyService.isEnrolmentInUse(any(), any())(any())).thenReturn(Future.successful(None))
 
-        val result = controller.submit(true, atarService)(postRequest("eori-number" -> eori))
+        val result = controller.submit(isInReviewMode = true, atarService)(postRequest("eori-number" -> eori))
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/matching/review-determine"

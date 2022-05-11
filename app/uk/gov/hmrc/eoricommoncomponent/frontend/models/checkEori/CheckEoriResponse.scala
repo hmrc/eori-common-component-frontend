@@ -16,32 +16,10 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.models.checkEori
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Json, Reads}
 
-import java.time.{ZoneId, ZonedDateTime}
-
-case class CheckEoriResponse(
-  eori: String,
-  valid: Boolean,
-  companyDetails: Option[CompanyDetails],
-  processingDate: ZonedDateTime = ZonedDateTime.now.withZoneSameInstant(ZoneId.of("Europe/London"))
-)
-
-case class CompanyDetails(traderName: String, address: Address)
-
-case class Address(streetAndNumber: String, cityName: String, postcode: String)
-
-object Address {
-
-  implicit val addressFormat: OFormat[Address] =
-    Json.format[Address]
-
-}
-
-object CompanyDetails {
-  implicit val format: OFormat[CompanyDetails] = Json.format[CompanyDetails]
-}
+case class CheckEoriResponse(valid: Boolean)
 
 object CheckEoriResponse {
-  implicit val format: OFormat[CheckEoriResponse] = Json.format[CheckEoriResponse]
+  implicit val reads: Reads[CheckEoriResponse] = Json.reads[CheckEoriResponse]
 }
