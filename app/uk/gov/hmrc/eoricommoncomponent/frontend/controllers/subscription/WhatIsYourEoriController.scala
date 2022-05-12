@@ -104,9 +104,7 @@ class WhatIsYourEoriController @Inject() (
           val eori = eoriWithCountry(formData.eoriNumber)
           checkEoriNumberConnector.check(eori).flatMap {
             case Some(true) => submitEori(formData, isInReviewMode, service)
-            case Some(false) => // should this case be _ and remove the exception?
-              Future.successful(Redirect(routes.WhatIsYourEoriCheckFailedController.displayPage(eori, service)))
-            case _ => throw new MissingCheckResponseException // this seems unnecessary unless a None is possible
+            case _          => Future.successful(Redirect(routes.WhatIsYourEoriCheckFailedController.displayPage(eori, service)))
           }
         }
       )
@@ -145,5 +143,3 @@ class WhatIsYourEoriController @Inject() (
   private def eoriWithCountry(eori: String): String = if (eori.forall(_.isDigit)) "GB" + eori else eori
 
 }
-
-class MissingCheckResponseException extends RuntimeException("no CheckResponse from CheckEoriNumberConnector")
