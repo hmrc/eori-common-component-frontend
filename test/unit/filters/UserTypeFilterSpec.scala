@@ -73,6 +73,26 @@ class UserTypeFilterSpec extends ControllerSpec with BeforeAndAfterEach with Aut
       status(result) shouldBe SEE_OTHER
     }
 
+    "return Redirect (303) when an organisation with an assistant account attempts to access a route with existing enrollment" in {
+      val atarEnrolment = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", "GB134123")
+
+      AuthBuilder.withAuthorisedUser(
+        "user-1236213",
+        mockAuthConnector,
+        userAffinityGroup = AffinityGroup.Organisation,
+        userCredentialRole = Some(Assistant),
+        otherEnrolments = Set(atarEnrolment)
+      )
+
+      val result = controller
+        .download()
+        .apply(
+          SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/atar/subscribe/", defaultUserId)
+        )
+
+      await(result).header.headers(LOCATION) should endWith("enrolment-already-exists")
+    }
+
     "return Redirect (303) when an organisation with an assistant account attempts to access a route the URL should contain you cannot use this service" in {
       AuthBuilder.withAuthorisedUser(
         "user-1236213",
