@@ -33,7 +33,7 @@ trait AccessController extends AllowlistVerification {
     credentialRole: Option[CredentialRole],
     enrolments: Set[Enrolment],
     email: Option[String]
-  )(action: Future[Result])(implicit request: Request[AnyContent]): Future[Result] = {
+  )(action: => Future[Result])(implicit request: Request[AnyContent]): Future[Result] = {
 
     def hasEnrolment(implicit request: Request[AnyContent]): Boolean =
       Service.serviceFromRequest.exists(service => enrolments.exists(_.key.equalsIgnoreCase(service.enrolmentKey)))
