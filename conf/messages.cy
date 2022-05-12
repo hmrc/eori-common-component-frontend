@@ -420,6 +420,16 @@ cds.subscription.nino.error.wrong-length=Rhaid i’r rhif Yswiriant Gwladol fod 
 ecc.subscription.enter-eori-number.page.title=Beth yw’ch rhif EORI?
 ecc.subscription.enter-eori-number.heading=Beth yw’ch rhif EORI?
 ecc.subscription.enter-eori-number.hint=Mae’r rhif yn dechrau gyda GB ac yna’n cael ei ddilyn gan 12 digid, er enghraifft, GB345834921000.
+ecc.subscription.eori-number-invalid=Mae’r rhif EORI yn annilys
+ecc.subscription.eori-number-invalid.entered=Rydych wedi nodi:
+ecc.subscription.eori-number-invalid.does-not-match=Nid yw’r rhif EORI hwn sy’n dechrau gyda GB yn cyd-fynd â’n cofnodion.
+ecc.subscription.eori-number-invalid-reasons-title=Rhesymau dros y neges ‘rhif EORI annilys’
+ecc.subscription.eori-number-invalid-not-correct-title=Mae’r rhif EORI yn anghywir
+ecc.subscription.eori-number-invalid-not-correct-body=Gwiriwch eich bod wedi ei deipio’n gywir.
+ecc.subscription.eori-number-invalid-not-activated-title=Nid yw’r rhif EORI wedi ei actifadu
+ecc.subscription.eori-number-invalid-not-activated-body=Yr amser aros cyfartalog ar gyfer actifadu rhif EORI newydd yw 30 munud, ond gall gymryd hyd at 48 awr mewn rhai achosion. Ar ôl i’ch rhif EORI gael ei actifadu, cewch hysbysiad drwy e-bost. Gallwch fynd yn ôl a pharhau â’ch cais ar gyfer {0}.
+ecc.subscription.eori-number-invalid-try-again=Rhowch gynnig arall arni
+
 ecc.matching-error.eori=Nodwch rif EORI yn y fformat cywir
 ecc.matching-error.eori.isEmpty=Nodwch eich rhif EORI
 ecc.matching-error.eori.wrong-length.too-short=Mae’n rhaid i’r rhif EORI gynnwys mwy nag 11 digid

@@ -16,18 +16,18 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
-import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
+import play.api.mvc._
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.CheckEoriNumberConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
   AuthAction,
   EnrolmentExtractor,
   GroupEnrolmentExtractor
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.UserLocationController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, MissingGroupId}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{ExistingEori, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{ExistingEori, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.EoriNumberViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm.eoriNumberForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
@@ -40,6 +40,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration._
 import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -49,6 +50,7 @@ class WhatIsYourEoriController @Inject() (
   subscriptionDetailsHolderService: SubscriptionDetailsService,
   groupEnrolment: GroupEnrolmentExtractor,
   enrolmentStoreProxyService: EnrolmentStoreProxyService,
+  checkEoriNumberConnector: CheckEoriNumberConnector,
   requestSessionData: RequestSessionData,
   mcc: MessagesControllerComponents,
   whatIsYourEoriView: what_is_your_eori
@@ -83,7 +85,7 @@ class WhatIsYourEoriController @Inject() (
   private def populateView(eoriNumber: Option[String], isInReviewMode: Boolean, service: Service)(implicit
     request: Request[AnyContent]
   ): Result = {
-    val eoriForForm = eoriNumber.map(eoriWithoutCountry(_))
+    val eoriForForm = eoriNumber.map(eoriWithoutCountry)
 
     val form = eoriForForm.map(EoriNumberViewModel.apply).fold(eoriNumberForm)(eoriNumberForm.fill)
     Ok(whatIsYourEoriView(form, isInReviewMode, UserLocation.isRow(requestSessionData), service))
@@ -98,11 +100,17 @@ class WhatIsYourEoriController @Inject() (
               whatIsYourEoriView(formWithErrors, isInReviewMode, UserLocation.isRow(requestSessionData), service)
             )
           ),
-        formData => submitNewDetails(formData, isInReviewMode, service)
+        formData => {
+          val eori = eoriWithCountry(formData.eoriNumber)
+          checkEoriNumberConnector.check(eori).flatMap {
+            case Some(true) => submitEori(formData, isInReviewMode, service)
+            case _          => Future.successful(Redirect(routes.WhatIsYourEoriCheckFailedController.displayPage(eori, service)))
+          }
+        }
       )
     }
 
-  private def submitNewDetails(formData: EoriNumberViewModel, isInReviewMode: Boolean, service: Service)(implicit
+  private def submitEori(formData: EoriNumberViewModel, isInReviewMode: Boolean, service: Service)(implicit
     request: Request[_]
   ) = {
     val eori = eoriWithCountry(formData.eoriNumber)
