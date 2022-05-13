@@ -52,7 +52,7 @@ class RegisterWithEoriAndIdConnector @Inject() (http: HttpClient, appConfig: App
     logger.debug(s"REG06 Register: $url, requestCommon: ${request.requestCommon} and hc: $hc")
     // $COVERAGE-ON
 
-    sampleData(PayloadCache.BusinessMatch, request)
+    if (appConfig.samplePayloads) sampleData(PayloadCache.BusinessMatch, request)
 
     http.POST[RegisterWithEoriAndIdRequestHolder, RegisterWithEoriAndIdResponseHolder](
       url,

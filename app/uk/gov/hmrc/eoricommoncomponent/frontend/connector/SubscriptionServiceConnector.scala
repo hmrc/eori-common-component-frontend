@@ -49,7 +49,7 @@ class SubscriptionServiceConnector @Inject() (http: HttpClient, appConfig: AppCo
     )
     // $COVERAGE-ON
 
-    sampleData(PayloadCache.SubscriptionCreate, request)
+    if (appConfig.samplePayloads) sampleData(PayloadCache.SubscriptionCreate, request)
 
     http.POST[SubscriptionRequest, SubscriptionResponse](url, request) map { response =>
       // $COVERAGE-OFF$Loggers
