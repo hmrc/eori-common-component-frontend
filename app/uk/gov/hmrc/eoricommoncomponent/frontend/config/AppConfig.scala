@@ -148,4 +148,6 @@ class AppConfig @Inject() (
 
   val addressLookup: String = addressLookupBaseUrl + addressLookupContext
   lazy val contactAddress   = config.getOptional[Boolean]("features.contact-address").getOrElse(false)
+
+  val samplePayloads = config.getOptional[Boolean]("features.sample-payloads").getOrElse(false)
 }
