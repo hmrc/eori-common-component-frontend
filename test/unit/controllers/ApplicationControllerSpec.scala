@@ -251,7 +251,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
         verify(mockSessionCache).saveEori(any())(any())
       }
 
-      "enrolment is not in use but user is Assistant" in {
+      "enrolment is not in use (user does not have any enrolments) and user's Credential Role is set to Assistant" in {
 
         when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(atarService))(any()))
           .thenReturn(Future.successful(None))
