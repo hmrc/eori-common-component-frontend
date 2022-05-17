@@ -22,7 +22,7 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Request
 import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment}
+import uk.gov.hmrc.auth.core.{Assistant, AuthConnector, CredentialRole, Enrolment}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{ApplicationController, MissingGroupId}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, ExistingEori, KeyValue}
@@ -181,6 +181,25 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
       await(result).header.headers("Location") should endWith("enrolment-already-exists")
     }
 
+    "inform authenticated Assistant users with ATAR enrolment that subscription exists" in {
+      val atarEnrolment = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", "GB134123")
+
+      withAuthorisedUser(
+        defaultUserId,
+        mockAuthConnector,
+        otherEnrolments = Set(atarEnrolment),
+        userCredentialRole = Some(Assistant)
+      )
+
+      val result =
+        controller.startSubscription(atarService).apply(
+          SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe", defaultUserId)
+        )
+
+      status(result) shouldBe SEE_OTHER
+      await(result).header.headers("Location") should endWith("enrolment-already-exists")
+    }
+
     "inform authenticated users where group Id has an enrolment that subscription exists" in {
 
       when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), ArgumentMatchers.eq(atarService))(any()))
@@ -230,6 +249,31 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
         status(result) shouldBe SEE_OTHER
         await(result).header.headers("Location") should endWith("unable-to-use-id")
         verify(mockSessionCache).saveEori(any())(any())
+      }
+
+      "enrolment is not in use (user does not have any enrolments) and user's Credential Role is set to Assistant" in {
+
+        when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(atarService))(any()))
+          .thenReturn(Future.successful(None))
+        when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(
+          Future.successful(List(groupEnrolment(atarService).get))
+        )
+        when(mockEnrolmentStoreProxyService.isEnrolmentInUse(any(), any())(any())).thenReturn(Future.successful(None))
+        when(mockSessionCache.saveEori(any())(any())).thenReturn(Future.successful(true))
+
+        withAuthorisedUser(
+          defaultUserId,
+          mockAuthConnector,
+          otherEnrolments = Set.empty[Enrolment],
+          userCredentialRole = Some(Assistant)
+        )
+
+        val result =
+          controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("you-cannot-use-service")
+
       }
     }
 
