@@ -17,7 +17,7 @@
 package unit.controllers.registration
 
 import java.time.{LocalDate, LocalDateTime}
-import org.mockito.ArgumentMatchers.{any, anyString, eq => meq, contains}
+import org.mockito.ArgumentMatchers.{any, anyString, contains, matches, eq => meq}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
@@ -181,6 +181,48 @@ class SubscriptionRecoveryControllerSpec
         any()
       )(any())
     }
+
+    "call Enrolment Complete with successful SUB09 call for Subscription UK journey using CDS formBundle enrichment when service is CDS" in {
+      setupMockCommon()
+
+      when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(Some("testEORInumber"))
+
+      when(mockSessionCache.registerWithEoriAndIdResponse(any[Request[AnyContent]]))
+        .thenReturn(Future.successful(mockRegisterWithEoriAndIdResponse))
+      when(mockRegisterWithEoriAndIdResponse.responseDetail).thenReturn(registerWithEoriAndIdResponseDetail)
+
+      when(
+        mockTaxEnrolmentsService
+          .issuerCall(anyString, any[Eori], any[Option[LocalDate]], any[Service])(any[HeaderCarrier])
+      ).thenReturn(Future.successful(NO_CONTENT))
+
+      val formBundleId = fullyPopulatedResponse.responseCommon.returnParameters
+        .flatMap(_.find(_.paramName.equals("ETMPFORMBUNDLENUMBER")).map(_.paramValue)).get
+
+      val expectedFormBundleIdMatcher = s"$formBundleId[0-9]+cds"
+
+      callEnrolmentComplete(service = cdsService) { result =>
+        status(result) shouldBe SEE_OTHER
+        header(LOCATION, result) shouldBe Some("/customs-enrolment-services/cds/subscribe/complete")
+      }
+
+      verify(mockTaxEnrolmentsService).issuerCall(
+        matches(expectedFormBundleIdMatcher),
+        meq(Eori("testEORInumber")),
+        any[Option[LocalDate]],
+        meq(cdsService)
+      )(any[HeaderCarrier])
+
+      verify(mockHandleSubscriptionService).handleSubscription(
+        matches(expectedFormBundleIdMatcher),
+        any(),
+        any(),
+        meq(Some(Eori("testEORInumber"))),
+        any(),
+        any()
+      )(any())
+    }
+
     "call Enrolment Complete with successful SUB09 call for Subscription ROW journey" in {
       setupMockCommon()
 
@@ -300,9 +342,11 @@ class SubscriptionRecoveryControllerSpec
     }
   }
 
-  def callEnrolmentComplete(userId: String = defaultUserId)(test: Future[Result] => Any): Unit = {
+  def callEnrolmentComplete(userId: String = defaultUserId, service: Service = atarService)(
+    test: Future[Result] => Any
+  ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
-    test(controller.complete(atarService).apply(SessionBuilder.buildRequestWithSession(userId)))
+    test(controller.complete(service).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
 }
