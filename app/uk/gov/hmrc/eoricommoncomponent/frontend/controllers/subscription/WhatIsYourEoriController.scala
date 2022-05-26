@@ -104,7 +104,10 @@ class WhatIsYourEoriController @Inject() (
           val eori = eoriWithCountry(formData.eoriNumber)
           checkEoriNumberConnector.check(eori).flatMap {
             case Some(true) => submitEori(formData, isInReviewMode, service)
-            case _          => Future.successful(Redirect(routes.WhatIsYourEoriCheckFailedController.displayPage(eori, service)))
+            case _ =>
+              subscriptionDetailsHolderService.cacheEoriNumber(eori).map { _ =>
+                Redirect(routes.WhatIsYourEoriCheckFailedController.displayPage(service))
+              }
           }
         }
       )

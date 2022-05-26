@@ -20,22 +20,26 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, EnrolmentExtractor}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.what_is_your_eori_check_failed
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class WhatIsYourEoriCheckFailedController @Inject() (
   authAction: AuthAction,
   mcc: MessagesControllerComponents,
+  subscriptionDetailsHolderService: SubscriptionDetailsService,
   whatIsYourEoriCheckFailedPage: what_is_your_eori_check_failed
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) with EnrolmentExtractor {
 
-  def displayPage(eori: String, service: Service): Action[AnyContent] =
+  def displayPage(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _ =>
-      Future.successful(Ok(whatIsYourEoriCheckFailedPage(eori, service)))
+      subscriptionDetailsHolderService.cachedEoriNumber.map { eori =>
+        Ok(whatIsYourEoriCheckFailedPage(eori.getOrElse(""), service))
+      }
     }
 
 }
