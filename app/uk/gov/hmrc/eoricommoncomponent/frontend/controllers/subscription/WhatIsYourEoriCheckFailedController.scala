@@ -20,6 +20,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, EnrolmentExtractor}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.what_is_your_eori_check_failed
 
@@ -38,7 +39,7 @@ class WhatIsYourEoriCheckFailedController @Inject() (
   def displayPage(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _ =>
       subscriptionDetailsHolderService.cachedEoriNumber.map { eori =>
-        Ok(whatIsYourEoriCheckFailedPage(eori.getOrElse(""), service))
+        Ok(whatIsYourEoriCheckFailedPage(eori.getOrElse(throw DataUnavailableException("Eori is not cached")), service))
       }
     }
 
