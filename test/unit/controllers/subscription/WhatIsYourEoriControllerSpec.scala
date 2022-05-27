@@ -80,6 +80,7 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     when(whatIsYourEoriView.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockCheckEoriNumberConnector.check(any())(any(), any())).thenReturn(checkEoriSuccess)
+    when(mockSubscriptionDetailsService.cacheEoriNumber(any())(any())).thenReturn(Future.successful(()))
   }
 
   override protected def afterEach(): Unit = {
@@ -111,7 +112,7 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
       status(result) shouldBe SEE_OTHER
       redirectLocation(
         result
-      ).get shouldBe s"/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori-check-failed/$eori"
+      ).get shouldBe s"/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori-check-failed"
     }
 
     "return 200 (OK) for user without existing enrolment" when {
