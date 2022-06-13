@@ -32,11 +32,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.Contac
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RandomUUIDGenerator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  HandleSubscriptionService,
-  SubscriptionDetailsService,
-  TaxEnrolmentsService
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{HandleSubscriptionService, SubscriptionDetailsService, TaxEnrolmentsService, UpdateVerifiedEmailService}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
@@ -64,6 +60,7 @@ class SubscriptionRecoveryControllerSpec
   private val mockTaxEnrolmentsService              = mock[TaxEnrolmentsService]
   private val mockSubscriptionDetailsService        = mock[SubscriptionDetailsService]
   private val mockRequestSessionData                = mock[RequestSessionData]
+  private val mockUpdateVerifiedEmailService        = mock[UpdateVerifiedEmailService]
 
   private val errorTemplateView = instanceOf[error_template]
 
@@ -77,7 +74,8 @@ class SubscriptionRecoveryControllerSpec
     errorTemplateView,
     mockRandomUUIDGenerator,
     mockRequestSessionData,
-    mockSubscriptionDetailsService
+    mockSubscriptionDetailsService,
+    mockUpdateVerifiedEmailService
   )(global)
 
   def registerWithEoriAndIdResponseDetail: Option[RegisterWithEoriAndIdResponseDetail] = {
@@ -105,8 +103,9 @@ class SubscriptionRecoveryControllerSpec
       mockOrgRegistrationDetails,
       mockRequestSessionData,
       mockSubscriptionDetailsService,
-      mockTaxEnrolmentsService
-    )
+      mockTaxEnrolmentsService,
+      mockUpdateVerifiedEmailService,
+      )
     when(mockRandomUUIDGenerator.generateUUIDAsString).thenReturn("MOCKUUID12345")
   }
 
@@ -141,13 +140,17 @@ class SubscriptionRecoveryControllerSpec
       ).thenReturn(Future.successful(result = ()))
       when(mockSubscriptionDetailsHolder.nameDobDetails)
         .thenReturn(Some(NameDobMatchModel("fname", Some("mName"), "lname", LocalDate.parse("2019-01-01"))))
+
+      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(None))
     }
 
     "call Enrolment Complete with successful SUB09 call for Subscription UK journey" in {
       setupMockCommon()
 
+      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(true)))
       when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(Some("testEORInumber"))
-
       when(mockSessionCache.registerWithEoriAndIdResponse(any[Request[AnyContent]]))
         .thenReturn(Future.successful(mockRegisterWithEoriAndIdResponse))
       when(mockRegisterWithEoriAndIdResponse.responseDetail).thenReturn(registerWithEoriAndIdResponseDetail)
@@ -225,7 +228,8 @@ class SubscriptionRecoveryControllerSpec
 
     "call Enrolment Complete with successful SUB09 call for Subscription ROW journey" in {
       setupMockCommon()
-
+      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(true)))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some("eu"))
       when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[AnyContent]]))
         .thenReturn(Future.successful(Some(Utr("someUtr"))))
@@ -264,7 +268,8 @@ class SubscriptionRecoveryControllerSpec
     }
     "call Enrolment Complete with successful SUB09 call for Subscription ROW journey without Identifier" in {
       setupMockCommon()
-
+      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(true)))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some("eu"))
       when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[AnyContent]]))
         .thenReturn(Future.successful(None))
@@ -348,5 +353,4 @@ class SubscriptionRecoveryControllerSpec
     withAuthorisedUser(userId, mockAuthConnector)
     test(controller.complete(service).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
-
 }

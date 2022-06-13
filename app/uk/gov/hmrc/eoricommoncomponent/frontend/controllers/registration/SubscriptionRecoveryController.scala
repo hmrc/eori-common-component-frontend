@@ -18,7 +18,6 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import javax.inject.{Inject, Singleton}
 import java.time.{LocalDate, LocalDateTime}
-
 import play.api.i18n.Messages
 import play.api.mvc.{Action, _}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SUB09SubscriptionDisplayConnector
@@ -32,11 +31,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.RecipientDet
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RandomUUIDGenerator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  HandleSubscriptionService,
-  SubscriptionDetailsService,
-  TaxEnrolmentsService
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{HandleSubscriptionService, SubscriptionDetailsService, TaxEnrolmentsService, UpdateVerifiedEmailService}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
@@ -55,7 +50,8 @@ class SubscriptionRecoveryController @Inject() (
   errorTemplateView: error_template,
   uuidGenerator: RandomUUIDGenerator,
   requestSessionData: RequestSessionData,
-  subscriptionDetailsService: SubscriptionDetailsService
+  subscriptionDetailsService: SubscriptionDetailsService,
+  updateVerifiedEmailService: UpdateVerifiedEmailService
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
@@ -214,7 +210,7 @@ class SubscriptionRecoveryController @Inject() (
       // Update Recovered Subscription Information
       _ <- updateSubscription(subscriptionInformation)
       // Update Email
-      //      _ <- updateEmail(journey, subscriptionInformation)  // TODO - ECC-307
+      _ <- updateEmail(subscriptionInformation)  // TODO - ECC-307
       // Subscribe Call for enrolment
       _ <- subscribe(service, subscriptionInformation)
       // Issuer Call for enrolment
@@ -223,6 +219,18 @@ class SubscriptionRecoveryController @Inject() (
       case NO_CONTENT => redirect
       case _          => throw new IllegalArgumentException("Tax Enrolment issuer call failed")
     }
+
+  private def updateEmail(subscriptionInformation: SubscriptionInformation)(
+    implicit hc: HeaderCarrier
+  ): Future[Option[Boolean]] =
+      updateVerifiedEmailService
+        .updateVerifiedEmail(newEmail = subscriptionInformation.email, eori = subscriptionInformation.eori.id)
+        .map {
+          case Some(true) => Some(true)
+          case _          => throw new IllegalArgumentException("UpdateEmail failed")
+        }
+
+
 
   private def updateSubscription(subscriptionInformation: SubscriptionInformation)(implicit request: Request[_]) =
     sessionCache.saveSub02Outcome(
