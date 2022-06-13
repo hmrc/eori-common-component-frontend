@@ -180,11 +180,23 @@ class SubscriptionRecoveryController @Inject() (
     val emailVerificationTimestamp =
       subscriptionDisplayResponse.responseDetail.contactInformation.flatMap(_.emailVerificationTimestamp)
 
+    /*
+     * When subscribing for CDS as a safeguard we're using historical CDS formBundleId enrichment.
+     * See: https://github.com/hmrc/customs-rosm-frontend/blob/477a1e1432938b004c463444ed851e69fc6214b5/app/uk/gov/hmrc/customs/rosmfrontend/controllers/registration/SubscriptionRecoveryController.scala#L220
+     *
+    * For other non-cds services we can use existing enrichment algorithm.
+     * */
+    def enrichFormBundleId(serviceCode: String, formBundleId: String) =
+      if (Service.cds.code.equalsIgnoreCase(serviceCode))
+        s"$formBundleId${Random.nextInt(1000)}$serviceCode"
+      else
+        formBundleId + service.code + "-" + (100000 + Random.nextInt(900000)).toString
+
     val subscriptionInformation = SubscriptionInformation(
       processedDate,
       email,
       emailVerificationTimestamp,
-      formBundleId + service.code + "-" + (100000 + Random.nextInt(900000)).toString,
+      enrichFormBundleId(service.code, formBundleId),
       recipientFullName,
       name,
       eori,
