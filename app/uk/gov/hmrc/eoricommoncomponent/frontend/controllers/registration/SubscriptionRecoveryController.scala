@@ -31,7 +31,12 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.RecipientDet
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RandomUUIDGenerator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{HandleSubscriptionService, SubscriptionDetailsService, TaxEnrolmentsService, UpdateVerifiedEmailService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  HandleSubscriptionService,
+  SubscriptionDetailsService,
+  TaxEnrolmentsService,
+  UpdateVerifiedEmailService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
@@ -210,7 +215,7 @@ class SubscriptionRecoveryController @Inject() (
       // Update Recovered Subscription Information
       _ <- updateSubscription(subscriptionInformation)
       // Update Email
-      _ <- updateEmail(subscriptionInformation)  // TODO - ECC-307
+      _ <- updateEmail(subscriptionInformation) // TODO - ECC-307
       // Subscribe Call for enrolment
       _ <- subscribe(service, subscriptionInformation)
       // Issuer Call for enrolment
@@ -220,17 +225,15 @@ class SubscriptionRecoveryController @Inject() (
       case _          => throw new IllegalArgumentException("Tax Enrolment issuer call failed")
     }
 
-  private def updateEmail(subscriptionInformation: SubscriptionInformation)(
-    implicit hc: HeaderCarrier
-  ): Future[Option[Boolean]] =
-      updateVerifiedEmailService
-        .updateVerifiedEmail(newEmail = subscriptionInformation.email, eori = subscriptionInformation.eori.id)
-        .map {
-          case Some(true) => Some(true)
-          case _          => throw new IllegalArgumentException("UpdateEmail failed")
-        }
-
-
+  private def updateEmail(
+    subscriptionInformation: SubscriptionInformation
+  )(implicit hc: HeaderCarrier): Future[Option[Boolean]] =
+    updateVerifiedEmailService
+      .updateVerifiedEmail(newEmail = subscriptionInformation.email, eori = subscriptionInformation.eori.id)
+      .map {
+        case Some(true) => Some(true)
+        case _          => throw new IllegalArgumentException("UpdateEmail failed")
+      }
 
   private def updateSubscription(subscriptionInformation: SubscriptionInformation)(implicit request: Request[_]) =
     sessionCache.saveSub02Outcome(

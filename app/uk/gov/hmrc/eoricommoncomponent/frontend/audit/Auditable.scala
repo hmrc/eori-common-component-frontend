@@ -34,20 +34,20 @@ class Auditable @Inject() (auditConnector: AuditConnector, appConfig: AppConfig)
   private val audit: Audit = Audit(auditSource, auditConnector)
 
   def sendDataEvent(
-                     transactionName: String,
-                     path: String = "N/A",
-                     tags: Map[String, String] = Map.empty,
-                     detail: Map[String, String],
-                     eventType: String
-                   )(implicit hc: HeaderCarrier): Unit =
+    transactionName: String,
+    path: String = "N/A",
+    tags: Map[String, String] = Map.empty,
+    detail: Map[String, String],
+    eventType: String
+  )(implicit hc: HeaderCarrier): Unit =
     audit.sendDataEvent(
       DataEvent(
         auditSource,
         eventType,
         tags = hc.toAuditTags(transactionName, path) ++ tags,
         detail = hc.toAuditDetails(detail.toSeq: _*)
-        )
       )
+    )
 
   def sendExtendedDataEvent(
     transactionName: String,

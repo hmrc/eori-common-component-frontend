@@ -18,8 +18,11 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
 import org.joda.time.format.ISODateTimeFormat
 import play.api.Logger
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{
+  UpdateCustomsDataStoreConnector,
+  UpdateVerifiedEmailConnector
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.VerifiedEmailRequest
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{UpdateCustomsDataStoreConnector, UpdateVerifiedEmailConnector}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.email.{DateTimeUtil, RequestDetail, UpdateVerifiedEmailRequest}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.MessagingServiceParam
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.CustomsDataStoreRequest
@@ -29,7 +32,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class UpdateVerifiedEmailService @Inject()(
+class UpdateVerifiedEmailService @Inject() (
   reqCommonGenerator: RequestCommonGenerator,
   updateVerifiedEmailConnector: UpdateVerifiedEmailConnector,
   customsDataStoreConnector: UpdateCustomsDataStoreConnector
@@ -37,8 +40,8 @@ class UpdateVerifiedEmailService @Inject()(
 
   private val logger = Logger(this.getClass)
 
-  def updateVerifiedEmail(currentEmail: Option[String] = None, newEmail: String, eori: String)(
-    implicit hc: HeaderCarrier
+  def updateVerifiedEmail(currentEmail: Option[String] = None, newEmail: String, eori: String)(implicit
+    hc: HeaderCarrier
   ): Future[Option[Boolean]] = {
 
     val requestDetail = RequestDetail(
@@ -74,4 +77,5 @@ class UpdateVerifiedEmailService @Inject()(
         None
     }
   }
+
 }

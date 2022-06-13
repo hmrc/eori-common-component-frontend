@@ -32,7 +32,12 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.Contac
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RandomUUIDGenerator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{HandleSubscriptionService, SubscriptionDetailsService, TaxEnrolmentsService, UpdateVerifiedEmailService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  HandleSubscriptionService,
+  SubscriptionDetailsService,
+  TaxEnrolmentsService,
+  UpdateVerifiedEmailService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
@@ -104,8 +109,8 @@ class SubscriptionRecoveryControllerSpec
       mockRequestSessionData,
       mockSubscriptionDetailsService,
       mockTaxEnrolmentsService,
-      mockUpdateVerifiedEmailService,
-      )
+      mockUpdateVerifiedEmailService
+    )
     when(mockRandomUUIDGenerator.generateUUIDAsString).thenReturn("MOCKUUID12345")
   }
 
@@ -187,13 +192,12 @@ class SubscriptionRecoveryControllerSpec
 
     "call Enrolment Complete with successful SUB09 call for Subscription UK journey using CDS formBundle enrichment when service is CDS" in {
       setupMockCommon()
-
+      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(true)))
       when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(Some("testEORInumber"))
-
       when(mockSessionCache.registerWithEoriAndIdResponse(any[Request[AnyContent]]))
         .thenReturn(Future.successful(mockRegisterWithEoriAndIdResponse))
       when(mockRegisterWithEoriAndIdResponse.responseDetail).thenReturn(registerWithEoriAndIdResponseDetail)
-
       when(
         mockTaxEnrolmentsService
           .issuerCall(anyString, any[Eori], any[Option[LocalDate]], any[Service])(any[HeaderCarrier])
@@ -353,4 +357,5 @@ class SubscriptionRecoveryControllerSpec
     withAuthorisedUser(userId, mockAuthConnector)
     test(controller.complete(service).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
+
 }

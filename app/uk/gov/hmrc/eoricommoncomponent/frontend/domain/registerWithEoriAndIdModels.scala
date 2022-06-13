@@ -234,7 +234,7 @@ trait CaseClassAuditHelper {
 
   def toMap(caseClassObject: AnyRef = this, ignoredFields: List[String] = List.empty): Map[String, String] =
     (Map[String, String]() /: caseClassObject.getClass.getDeclaredFields
-                                             .filterNot(field => ignoredFields.contains(field.getName))) {
+      .filterNot(field => ignoredFields.contains(field.getName))) {
 
       def getKeyValue(acc: Map[String, String], value: Any) =
         value match {
@@ -243,29 +243,25 @@ trait CaseClassAuditHelper {
         }
 
       def fetchValue(acc: Map[String, String], f: Field, value: Any) =
-        if (isLeafNode(value)) {
+        if (isLeafNode(value))
           acc + (f.getName -> value.toString)
-        } else {
+        else
           getKeyValue(acc, value)
-        }
 
       (acc, f) =>
         f.setAccessible(true)
         val value = f.get(caseClassObject)
-        if (value != null) {
+        if (value != null)
           if (isScalaOption(value)) {
             val option = value.asInstanceOf[Option[Any]]
-            if (option.isDefined) {
+            if (option.isDefined)
               fetchValue(acc, f, option.get)
-            } else {
+            else
               acc
-            }
-          } else {
+          } else
             fetchValue(acc, f, value)
-          }
-        } else {
+        else
           acc
-        }
     }
 
   def prefixMapKey(prefix: String, map: Map[String, String]): Map[String, String] =
@@ -276,13 +272,13 @@ trait CaseClassAuditHelper {
 
   def convertToMap(list: Seq[Map[String, String]]): Map[String, String] =
     list.zipWithIndex
-        .flatMap(
-          kv =>
-            kv._1.map(x => {
-              (x._1 + "." + kv._2) -> x._2
-            })
-          )
-        .toMap
+      .flatMap(
+        kv =>
+          kv._1.map { x =>
+            (x._1 + "." + kv._2) -> x._2
+          }
+      )
+      .toMap
 
   private def isLeafNode(value: Any) =
     value match {
@@ -299,7 +295,6 @@ trait CaseClassAuditHelper {
 
   private def isScalaOption(value: Object): Boolean = value.getClass.getSuperclass.equals(Class.forName("scala.Option"))
 }
-
 
 object RegisterWithEoriAndIdResponse {
   implicit val format            = Json.format[RegisterWithEoriAndIdResponse]
