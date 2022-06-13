@@ -187,7 +187,7 @@ class SubscriptionRecoveryController @Inject() (
     * For other non-cds services we can use existing enrichment algorithm.
      * */
     def enrichFormBundleId(serviceCode: String, formBundleId: String) =
-      if (serviceCode.equalsIgnoreCase(Service.cds.code))
+      if (Service.cds.code.equalsIgnoreCase(serviceCode))
         s"$formBundleId${Random.nextInt(1000)}$serviceCode"
       else
         formBundleId + service.code + "-" + (100000 + Random.nextInt(900000)).toString
