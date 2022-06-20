@@ -32,47 +32,9 @@
 
 @pageTitle = @{messages("ecc.address-lookup.postcode.title")}
 
-@changeParamsLink = @{
-    if(isInReviewMode) uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.AddressLookupPostcodeController.reviewPage(service)
-    else uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.AddressLookupPostcodeController.displayPage(service)
-}
-
 @manualAddressLink = @{
     if(isInReviewMode) uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.reviewForm(service)
     else uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.createForm(service)
-}
-
-
-@row(key: String, value: Option[String] , call: Option[Call] = None, classes : String, actionClasses: String) = @{
-SummaryListRow(
-    key = Key(
-        content = Text(messages(key))
-    ),
-    value = Value(
-        content = HtmlContent(value.getOrElse(""))
-    ),
-    actions = call.flatMap(c => Some(Actions(
-        items = Seq(
-            ActionItem(
-                href = c.url,
-                content = Text(messages("cds.form.change")),
-                visuallyHiddenText = Some(messages(key))
-            )
-        ),
-        classes = actionClasses
-    ))),
-    classes = classes
-)
-    }
-
-
-@AddressLinkRows = @{
-    if(addressLookupParams.skippedLine1) Some(row("ecc.address-lookup.postcode.line1.summary.label", Some(messages("ecc.address-lookup.postcode.results.not-found")), Some(changeParamsLink), "review-tbl__line1", "review-tbl__line1_change"))
-    else {
-        addressLookupParams.line1.map {
-            line1 => row("ecc.address-lookup.postcode.line1.summary.label", Some(line1), Some(changeParamsLink), "review-tbl__line1","review-tbl__line1_change")
-        }
-    }
 }
 
 @addressSeq = @{
