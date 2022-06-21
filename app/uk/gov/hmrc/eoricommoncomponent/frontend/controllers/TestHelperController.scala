@@ -18,10 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, ControllerComponents}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
-  RegisterWithEoriAndIdRequest,
-  RegisterWithEoriAndIdRequestHolder
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegisterWithEoriAndIdRequest
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionRequest
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.PayloadCache
 

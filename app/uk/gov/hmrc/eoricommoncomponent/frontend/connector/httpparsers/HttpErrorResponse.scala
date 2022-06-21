@@ -19,8 +19,6 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers
 import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.email.{UpdateVerifiedEmailRequest, UpdateVerifiedEmailResponse}
 
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.email.DateTimeUtil._
-
 sealed trait HttpErrorResponse
 case object BadRequest         extends HttpErrorResponse
 case object ServiceUnavailable extends HttpErrorResponse

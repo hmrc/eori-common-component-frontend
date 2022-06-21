@@ -18,7 +18,6 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.domain.email
 
 import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.RequestCommon
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.email.DateTimeUtil._
 
 case class UpdateVerifiedEmailRequest(requestCommon: RequestCommon, requestDetail: RequestDetail)
 
