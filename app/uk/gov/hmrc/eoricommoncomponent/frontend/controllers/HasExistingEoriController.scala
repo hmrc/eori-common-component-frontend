@@ -18,13 +18,9 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import play.api.Logger
 import play.api.mvc._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
-  AuthAction,
-  EnrolmentExtractor,
-  GroupEnrolmentExtractor
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, EnrolmentExtractor, GroupEnrolmentExtractor}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{LongJourney, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{EnrolmentService, MissingEnrolmentException}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{eori_enrol_success, has_existing_eori}
@@ -57,9 +53,9 @@ class HasExistingEoriController @Inject() (
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
       groupEnrolment.hasGroupIdEnrolmentTo(user.groupId.getOrElse(throw MissingGroupId()), service).flatMap {
         groupIdEnrolmentExists =>
-          if (groupIdEnrolmentExists)
+          if (groupIdEnrolmentExists) {
             Future.successful(Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExistsForGroup(service)))
-          else
+          } else
             existingEoriToUse.flatMap { eori =>
               enrolmentService.enrolWithExistingEnrolment(eori, service).map {
                 case NO_CONTENT => Redirect(routes.HasExistingEoriController.enrolSuccess(service))
@@ -67,7 +63,7 @@ class HasExistingEoriController @Inject() (
               } recover {
                 case e: MissingEnrolmentException =>
                   logger.info(s"EnrolWithExistingEnrolment : ${e.getMessage}")
-                  Redirect(routes.EmailController.form(service))
+                  Redirect(routes.EmailController.form(service, subscribeJourney = SubscribeJourney(LongJourney))) //If Sync Enrolment fails we want to try the Long Journey
               }
             }
       }

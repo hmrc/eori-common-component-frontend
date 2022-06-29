@@ -25,17 +25,18 @@
 @(
     email:Option[String],
     service: Service,
+    subscribeJourney: SubscribeJourney
 )(implicit request: Request[_], messages: Messages)
 
 @detailsContent = {
-    <p id="p3" class="govuk-body">@Html(messages("cds.subscription.verify-email.progressive-disclosure.content" , CheckYourEmailController.submit(service).url))</p>
+    <p id="p3" class="govuk-body">@Html(messages("cds.subscription.verify-email.progressive-disclosure.content" , CheckYourEmailController.submit(service, subscribeJourney).url))</p>
 }
 
 @layout_di(messages("cds.subscription.verify-email.title")) {
 
 <div>
 
-    @helpers.form(CheckYourEmailController.submit(service)) {
+    @helpers.form(CheckYourEmailController.submit(service, subscribeJourney)) {
 
         @CSRF.formField
 
