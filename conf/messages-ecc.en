@@ -96,8 +96,6 @@ ecc.subscription.information.email.confirm=We’ll process your application and 
 
 cds.navigation.subscribe=Subscribe
 
-subscription.check-your-email.no=No, I need to change this email address
-
 cds.form.contact-details=Your address
 
 cds.error.field.hint=Error

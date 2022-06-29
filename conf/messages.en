@@ -380,7 +380,7 @@ subscription.check-your-email.label=Email address
 subscription.check-your-email.confirm.label=We will send you a link to confirm your email address.
 subscription.check-your-email.confirm.question=Is this the email address you want to use?
 subscription.check-your-email.yes=Yes
-subscription.check-your-email.no=No, I need to change this email
+subscription.check-your-email.no=No, I need to correct this email address
 
 enter-email-body-text=We’ll use this to send you:
 subscription.enter-email-hint-text=the result of your application to get access to CDS
