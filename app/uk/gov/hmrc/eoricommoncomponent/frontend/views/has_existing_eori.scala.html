@@ -21,6 +21,7 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper
+@import uk.gov.hmrc.eoricommoncomponent.frontend.models.SubscribeJourney
 
 @this(layout_di: layout, govukButton: GovukButton)
 
@@ -36,7 +37,7 @@
     <p id="para2" class="govuk-body">@messages("cds.has-existing-eori.para2")</p>
     <p id="para3" class="govuk-body">@messages("cds.has-existing-eori.para3")</p>
 
-    @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.HasExistingEoriController.enrol(service)) {
+    @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.EmailController.form(service, subscribeJourney = SubscribeJourney(AutoEnrolment))) {
         @CSRF.formField
 
         @govukButton(Button(

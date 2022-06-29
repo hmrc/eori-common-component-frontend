@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription
 
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, JourneyType, LongJourney, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 object SubscriptionFlows {
@@ -106,12 +106,12 @@ object SubscriptionFlow {
 }
 
 sealed abstract class SubscriptionPage() {
-  def url(service: Service): String
+  def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String
 }
 
 case object ContactDetailsSubscriptionFlowPageMigrate extends SubscriptionPage {
 
-  override def url(service: Service): String =
+  override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactDetailsController
       .createForm(service)
       .url
@@ -120,7 +120,7 @@ case object ContactDetailsSubscriptionFlowPageMigrate extends SubscriptionPage {
 
 case object ConfirmContactAddressSubscriptionFlowPage extends SubscriptionPage {
 
-  override def url(service: Service): String =
+  override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ConfirmContactAddressController
       .displayPage(service)
       .url
@@ -129,7 +129,7 @@ case object ConfirmContactAddressSubscriptionFlowPage extends SubscriptionPage {
 
 case object ContactAddressSubscriptionFlowPage extends SubscriptionPage {
 
-  override def url(service: Service): String =
+  override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactAddressController
       .displayPage(service)
       .url
@@ -138,7 +138,7 @@ case object ContactAddressSubscriptionFlowPage extends SubscriptionPage {
 
 case object UtrSubscriptionFlowPage extends SubscriptionPage {
 
-  override def url(service: Service): String =
+  override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.HaveUtrSubscriptionController
       .createForm(service)
       .url
@@ -147,7 +147,7 @@ case object UtrSubscriptionFlowPage extends SubscriptionPage {
 
 case object NinoSubscriptionFlowPage extends SubscriptionPage {
 
-  override def url(service: Service): String =
+  override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.HaveNinoSubscriptionController
       .createForm(service)
       .url
@@ -156,14 +156,14 @@ case object NinoSubscriptionFlowPage extends SubscriptionPage {
 
 case object AddressDetailsSubscriptionFlowPage extends SubscriptionPage {
 
-  override def url(service: Service): String =
+  override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.createForm(service).url
 
 }
 
 case object NameUtrDetailsSubscriptionFlowPage extends SubscriptionPage {
 
-  override def url(service: Service): String =
+  override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController
       .createForm(service)
       .url
@@ -172,7 +172,7 @@ case object NameUtrDetailsSubscriptionFlowPage extends SubscriptionPage {
 
 case object NameDetailsSubscriptionFlowPage extends SubscriptionPage {
 
-  override def url(service: Service): String =
+  override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameOrgController
       .createForm(service)
       .url
@@ -181,7 +181,7 @@ case object NameDetailsSubscriptionFlowPage extends SubscriptionPage {
 
 case object NameDobDetailsSubscriptionFlowPage extends SubscriptionPage {
 
-  override def url(service: Service): String =
+  override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController
       .createForm(service)
       .url
@@ -190,7 +190,7 @@ case object NameDobDetailsSubscriptionFlowPage extends SubscriptionPage {
 
 case object HowCanWeIdentifyYouSubscriptionFlowPage extends SubscriptionPage {
 
-  override def url(service: Service): String =
+  override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.HowCanWeIdentifyYouController
       .createForm(service)
       .url
@@ -199,7 +199,7 @@ case object HowCanWeIdentifyYouSubscriptionFlowPage extends SubscriptionPage {
 
 case object RowDateOfEstablishmentSubscriptionFlowPage extends SubscriptionPage {
 
-  override def url(service: Service): String =
+  override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController
       .createForm(service)
       .url
@@ -208,7 +208,7 @@ case object RowDateOfEstablishmentSubscriptionFlowPage extends SubscriptionPage 
 
 case object DateOfEstablishmentSubscriptionFlowPageMigrate extends SubscriptionPage {
 
-  override def url(service: Service): String =
+  override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.DateOfEstablishmentController
       .createForm(service)
       .url
@@ -217,25 +217,25 @@ case object DateOfEstablishmentSubscriptionFlowPageMigrate extends SubscriptionP
 
 case object EmailSubscriptionFlowPage extends SubscriptionPage {
 
-  override def url(service: Service): String =
+  override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.WhatIsYourEmailController
-      .createForm(service)
+      .createForm(service, subscribeJourney)
       .url
 
 }
 
 case object CheckYourEmailSubscriptionFlowPage extends SubscriptionPage {
 
-  override def url(service: Service): String =
+  override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.CheckYourEmailController
-      .createForm(service)
+      .createForm(service, subscribeJourney)
       .url
 
 }
 
 case object ReviewDetailsPageSubscription extends SubscriptionPage {
 
-  override def url(service: Service): String =
+  override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
       .determineRoute(service)
       .url
@@ -244,7 +244,7 @@ case object ReviewDetailsPageSubscription extends SubscriptionPage {
 
 case object UserLocationPage extends SubscriptionPage {
 
-  override def url(service: Service): String =
+  override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =
     uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.UserLocationController
       .form(service)
       .url
@@ -252,5 +252,5 @@ case object UserLocationPage extends SubscriptionPage {
 }
 
 case class PreviousPage(someUrl: String) extends SubscriptionPage() {
-  override def url(service: Service): String = someUrl
+  override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String = someUrl
 }

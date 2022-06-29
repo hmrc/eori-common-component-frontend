@@ -19,20 +19,14 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 import play.api.Logger
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, EnrolmentExtractor}
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.{
-  CheckYourEmailController,
-  WhatIsYourEmailController
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.{CheckYourEmailController, WhatIsYourEmailController}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, InternalId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, LongJourney, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.{Save4LaterService, UserGroupIdSubscriptionStatusCheckService}
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{
-  enrolment_pending_against_group_id,
-  enrolment_pending_for_user
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{enrolment_pending_against_group_id, enrolment_pending_for_user}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -67,35 +61,41 @@ class EmailController @Inject() (
       .map(processingService => Ok(enrolmentPendingAgainstGroupId(service, processingService)))
 
   private def continue(
-    service: Service
+    service: Service,
+    subscribeJourney: SubscribeJourney
   )(implicit request: Request[AnyContent], user: LoggedInUserWithEnrolments): Future[Result] =
     save4LaterService.fetchEmail(GroupId(user.groupId)) flatMap {
       _.fold {
         // $COVERAGE-OFF$Loggers
         logger.info(s"emailStatus cache none ${user.internalId}")
-        Future.successful(Redirect(WhatIsYourEmailController.createForm(service)))
+        Future.successful(Redirect(WhatIsYourEmailController.createForm(service, subscribeJourney)))
       } { cachedEmailStatus =>
         cachedEmailStatus.email match {
           case Some(email) =>
             if (cachedEmailStatus.isVerified)
               sessionCache.saveEmail(email) map { _ =>
-                Redirect(CheckYourEmailController.emailConfirmed(service))
+                Redirect(CheckYourEmailController.emailConfirmed(service, subscribeJourney))
               }
-            else checkWithEmailService(email, cachedEmailStatus, service)
-          case _ => Future.successful(Redirect(WhatIsYourEmailController.createForm(service)))
+            else checkWithEmailService(email, cachedEmailStatus, service, subscribeJourney)
+          case _ => Future.successful(Redirect(WhatIsYourEmailController.createForm(service, subscribeJourney)))
         }
       }
     }
 
-  def form(implicit service: Service): Action[AnyContent] =
+  def form(implicit service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
       userGroupIdSubscriptionStatusCheckService
-        .checksToProceed(GroupId(user.groupId), InternalId(user.internalId))(continue(service))(
+        .checksToProceed(GroupId(user.groupId), InternalId(user.internalId))(continue(service, subscribeJourney))(
           userIsInProcess(service)
         )(otherUserWithinGroupIsInProcess(service))
     }
 
-  private def checkWithEmailService(email: String, emailStatus: EmailStatus, service: Service)(implicit
+  private def updateVerifiedEmail(email: String, service: Service, subscribeJourney: SubscribeJourney) = {
+    //TODO: Call UpdateVerifiedEmailService.updateVerifiedEmail
+    Future.successful(())
+  }
+
+  private def checkWithEmailService(email: String, emailStatus: EmailStatus, service: Service, subscribeJourney: SubscribeJourney)(implicit
     request: Request[_],
     userWithEnrolments: LoggedInUserWithEnrolments
   ): Future[Result] =
@@ -114,17 +114,21 @@ class EmailController @Inject() (
             // $COVERAGE-ON
             sessionCache.saveEmail(email)
           }
-        } yield Redirect(CheckYourEmailController.emailConfirmed(service))
+          _ <- subscribeJourney match {
+            case SubscribeJourney(AutoEnrolment) => updateVerifiedEmail(email, service, subscribeJourney) //here the email will be updated in case it was existing in save4later before and was not verified.
+            case SubscribeJourney(LongJourney) => Future.successful(()) //if it's a Long Journey we do not update email.
+          }
+        } yield Redirect(CheckYourEmailController.emailConfirmed(service, subscribeJourney))
       case Some(false) =>
         // $COVERAGE-OFF$Loggers
         logger.warn("verified email address false")
         // $COVERAGE-ON
-        Future.successful(Redirect(CheckYourEmailController.verifyEmailView(service)))
+        Future.successful(Redirect(CheckYourEmailController.verifyEmailView(service, subscribeJourney)))
       case _ =>
         // $COVERAGE-OFF$Loggers
         logger.error("Couldn't verify email address")
         // $COVERAGE-ON
-        Future.successful(Redirect(CheckYourEmailController.verifyEmailView(service)))
+        Future.successful(Redirect(CheckYourEmailController.verifyEmailView(service, subscribeJourney)))
     }
 
 }
