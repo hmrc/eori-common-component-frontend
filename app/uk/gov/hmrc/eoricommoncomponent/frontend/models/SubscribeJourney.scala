@@ -42,6 +42,7 @@ object SubscribeJourney {
 
       override def unbind(key: String, value: SubscribeJourney): String =
         stringBinder.unbind(key, value.journeyType.toString.toLowerCase)
+
     }
 
 }

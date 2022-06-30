@@ -17,7 +17,13 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription
 
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, JourneyType, LongJourney, Service, SubscribeJourney}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{
+  AutoEnrolment,
+  JourneyType,
+  LongJourney,
+  Service,
+  SubscribeJourney
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 object SubscriptionFlows {
@@ -252,5 +258,8 @@ case object UserLocationPage extends SubscriptionPage {
 }
 
 case class PreviousPage(someUrl: String) extends SubscriptionPage() {
-  override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String = someUrl
+
+  override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =
+    someUrl
+
 }

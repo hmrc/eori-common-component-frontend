@@ -19,13 +19,18 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email
 import play.api.Logger
 import play.api.mvc._
 import play.i18n.Messages
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, FailedEnrolmentException, MissingGroupId, routes}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{
+  routes,
+  CdsController,
+  FailedEnrolmentException,
+  MissingGroupId
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, GroupEnrolmentExtractor}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{ExistingEori, GroupId, LoggedInUserWithEnrolments}
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.{YesNo, confirmEmailYesNoAnswerForm}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.{confirmEmailYesNoAnswerForm, YesNo}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, LongJourney, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
@@ -52,14 +57,21 @@ class CheckYourEmailController @Inject() (
 
   private val logger = Logger(this.getClass)
 
-  private def populateView(email: Option[String], isInReviewMode: Boolean, service: Service, subscribeJourney: SubscribeJourney)(implicit
-    request: Request[AnyContent]
-  ): Future[Result] =
-    Future.successful(Ok(checkYourEmailView(email, confirmEmailYesNoAnswerForm, isInReviewMode, service, subscribeJourney)))
+  private def populateView(
+    email: Option[String],
+    isInReviewMode: Boolean,
+    service: Service,
+    subscribeJourney: SubscribeJourney
+  )(implicit request: Request[AnyContent]): Future[Result] =
+    Future.successful(
+      Ok(checkYourEmailView(email, confirmEmailYesNoAnswerForm, isInReviewMode, service, subscribeJourney))
+    )
 
-  private def populateEmailVerificationView(email: Option[String], service: Service, subscribeJourney: SubscribeJourney)(implicit
-    request: Request[AnyContent]
-  ): Future[Result] =
+  private def populateEmailVerificationView(
+    email: Option[String],
+    service: Service,
+    subscribeJourney: SubscribeJourney
+  )(implicit request: Request[AnyContent]): Future[Result] =
     Future.successful(Ok(verifyYourEmail(email, service, subscribeJourney)))
 
   def createForm(service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
@@ -93,7 +105,13 @@ class CheckYourEmailController @Inject() (
                     // $COVERAGE-ON
                     Future(
                       BadRequest(
-                        checkYourEmailView(None, formWithErrors, isInReviewMode = isInReviewMode, service = service, subscribeJourney)
+                        checkYourEmailView(
+                          None,
+                          formWithErrors,
+                          isInReviewMode = isInReviewMode,
+                          service = service,
+                          subscribeJourney
+                        )
                       )
                     )
                   } { emailStatus =>
@@ -161,12 +179,13 @@ class CheckYourEmailController @Inject() (
   def toResult(service: Service, subscribeJourney: SubscribeJourney)(implicit r: Request[AnyContent]): Result =
     Ok(emailConfirmedView(service, subscribeJourney))
 
-  private def updateVerifiedEmail(email: String, service: Service, subscribeJourney: SubscribeJourney) = {
+  private def updateVerifiedEmail(email: String, service: Service, subscribeJourney: SubscribeJourney) =
     //TODO: Call UpdateVerifiedEmailService.updateVerifiedEmail
     Future.successful(())
-  }
 
-  private def submitNewDetails(groupId: GroupId, service: Service, subscribeJourney: SubscribeJourney)(implicit request: Request[_]): Future[Result] =
+  private def submitNewDetails(groupId: GroupId, service: Service, subscribeJourney: SubscribeJourney)(implicit
+    request: Request[_]
+  ): Future[Result] =
     save4LaterService.fetchEmail(groupId) flatMap {
       _.fold {
         throw DataUnavailableException("[CheckYourEmailController][submitNewDetails] - emailStatus cache none")
@@ -174,35 +193,41 @@ class CheckYourEmailController @Inject() (
         val email: String = emailStatus.email.getOrElse(
           throw DataUnavailableException("[CheckYourEmailController][submitNewDetails] - emailStatus.email none")
         )
-          emailVerificationService.createEmailVerificationRequest(email, EmailController.form(service, subscribeJourney).url) flatMap {
-            case Some(true) =>
-              Future.successful(Redirect(CheckYourEmailController.verifyEmailView(service, subscribeJourney)))
-            case Some(false) =>
-              // $COVERAGE-OFF$Loggers
-              logger.warn(
-                "[CheckYourEmailController][sendVerification] - " +
-                  "Unable to send email verification request. Service responded with 'already verified'"
-              )
-              // $COVERAGE-ON
-              for {
-                _ <- subscribeJourney match {
-                  case SubscribeJourney(AutoEnrolment) => updateVerifiedEmail(email, service, subscribeJourney) //here we update email after it's verified.
-                  case SubscribeJourney(LongJourney) => Future.successful(()) //if it's a Long Journey we do not update email.
-                }
-                _ <- save4LaterService.saveEmail(groupId, emailStatus.copy(isVerified = true))
-                _ <- cdsFrontendDataCache.saveEmail(email)
-              } yield {
-                Redirect(EmailController.form(service, subscribeJourney))
+        emailVerificationService.createEmailVerificationRequest(
+          email,
+          EmailController.form(service, subscribeJourney).url
+        ) flatMap {
+          case Some(true) =>
+            Future.successful(Redirect(CheckYourEmailController.verifyEmailView(service, subscribeJourney)))
+          case Some(false) =>
+            // $COVERAGE-OFF$Loggers
+            logger.warn(
+              "[CheckYourEmailController][sendVerification] - " +
+                "Unable to send email verification request. Service responded with 'already verified'"
+            )
+            // $COVERAGE-ON
+            for {
+              _ <- subscribeJourney match {
+                case SubscribeJourney(AutoEnrolment) =>
+                  updateVerifiedEmail(email, service, subscribeJourney) //here we update email after it's verified.
+                case SubscribeJourney(LongJourney) =>
+                  Future.successful(()) //if it's a Long Journey we do not update email.
               }
-            case _ =>
-              throw new IllegalStateException("CreateEmailVerificationRequest Failed")
-          }
+              _ <- save4LaterService.saveEmail(groupId, emailStatus.copy(isVerified = true))
+              _ <- cdsFrontendDataCache.saveEmail(email)
+            } yield Redirect(EmailController.form(service, subscribeJourney))
+          case _ =>
+            throw new IllegalStateException("CreateEmailVerificationRequest Failed")
+        }
       }
     }
 
-  private def locationByAnswer(groupId: GroupId, yesNoAnswer: YesNo, service: Service, subscribeJourney: SubscribeJourney)(implicit
-    request: Request[AnyContent]
-  ): Future[Result] = yesNoAnswer match {
+  private def locationByAnswer(
+    groupId: GroupId,
+    yesNoAnswer: YesNo,
+    service: Service,
+    subscribeJourney: SubscribeJourney
+  )(implicit request: Request[AnyContent]): Future[Result] = yesNoAnswer match {
     case theAnswer if theAnswer.isYes => submitNewDetails(groupId, service, subscribeJourney)
     case _                            => Future(Redirect(WhatIsYourEmailController.createForm(service, subscribeJourney)))
   }
