@@ -57,14 +57,18 @@ class WhatIsYourEmailController @Inject() (
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
         emailForm.bindFromRequest.fold(
-          formWithErrors => Future.successful(BadRequest(whatIsYourEmailView(emailForm = formWithErrors, service, subscribeJourney))),
+          formWithErrors =>
+            Future.successful(BadRequest(whatIsYourEmailView(emailForm = formWithErrors, service, subscribeJourney))),
           formData => submitNewDetails(GroupId(userWithEnrolments.groupId), formData, service, subscribeJourney)
         )
     }
 
-  private def submitNewDetails(groupId: GroupId, formData: EmailViewModel, service: Service, subscribeJourney: SubscribeJourney)(implicit
-    hc: HeaderCarrier
-  ): Future[Result] =
+  private def submitNewDetails(
+    groupId: GroupId,
+    formData: EmailViewModel,
+    service: Service,
+    subscribeJourney: SubscribeJourney
+  )(implicit hc: HeaderCarrier): Future[Result] =
     save4LaterService
       .saveEmail(groupId, EmailStatus(Some(formData.email)))
       .flatMap(_ => Future.successful(Redirect(routes.CheckYourEmailController.createForm(service, subscribeJourney))))

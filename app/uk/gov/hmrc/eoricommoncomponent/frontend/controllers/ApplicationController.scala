@@ -84,7 +84,9 @@ class ApplicationController @Inject() (
       eoriFromUsedEnrolmentOpt =>
         if (eoriFromUsedEnrolmentOpt.isEmpty)
           if (isUserEnrolledFor(loggedInUser, Service.cds))
-            Future.successful(Redirect(routes.HasExistingEoriController.displayPage(service))) //AutoEnrolment / Short Journey
+            Future.successful(
+              Redirect(routes.HasExistingEoriController.displayPage(service))
+            ) //AutoEnrolment / Short Journey
           else
             groupEnrolment.groupIdEnrolmentTo(groupId, Service.cds).flatMap {
               case Some(groupEnrolment) if groupEnrolment.eori.isDefined =>
