@@ -28,11 +28,13 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, LongJourney, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.UpdateVerifiedEmailService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.{Save4LaterService, UserGroupIdSubscriptionStatusCheckService}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{
   enrolment_pending_against_group_id,
   enrolment_pending_for_user
 }
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,6 +46,7 @@ class EmailController @Inject() (
   sessionCache: SessionCache,
   mcc: MessagesControllerComponents,
   save4LaterService: Save4LaterService,
+  updateVerifiedEmailService: UpdateVerifiedEmailService,
   userGroupIdSubscriptionStatusCheckService: UserGroupIdSubscriptionStatusCheckService,
   enrolmentPendingForUser: enrolment_pending_for_user,
   enrolmentPendingAgainstGroupId: enrolment_pending_against_group_id
@@ -78,11 +81,12 @@ class EmailController @Inject() (
       } { cachedEmailStatus =>
         cachedEmailStatus.email match {
           case Some(email) =>
-            if (cachedEmailStatus.isVerified)
-              sessionCache.saveEmail(email) map { _ =>
-                Redirect(CheckYourEmailController.emailConfirmed(service, subscribeJourney))
-              }
-            else checkWithEmailService(email, cachedEmailStatus, service, subscribeJourney)
+//            if (cachedEmailStatus.isVerified)
+//              sessionCache.saveEmail(email) map { _ =>
+//                Redirect(CheckYourEmailController.emailConfirmed(service, subscribeJourney))
+//              }
+//            else
+            checkWithEmailService(email, cachedEmailStatus, service, subscribeJourney)
           case _ => Future.successful(Redirect(WhatIsYourEmailController.createForm(service, subscribeJourney)))
         }
       }
@@ -96,16 +100,23 @@ class EmailController @Inject() (
         )(otherUserWithinGroupIsInProcess(service))
     }
 
-  private def updateVerifiedEmail(email: String, service: Service, subscribeJourney: SubscribeJourney) =
-    //TODO: Call UpdateVerifiedEmailService.updateVerifiedEmail
-    Future.successful(())
+  private def updateVerifiedEmail(email: String)(implicit request: Request[AnyContent]): Future[Unit] =
+    for {
+      maybeEori <- sessionCache.eori
+      result <- maybeEori.fold(Future.successful(Option(false))) {
+        eori => updateVerifiedEmailService.updateVerifiedEmail(None, email, eori)
+      }
+    } yield result.map {
+      case true => true
+      case _    => throw new IllegalArgumentException("UpdateEmail failed")
+    }.map(_ => ())
 
   private def checkWithEmailService(
     email: String,
     emailStatus: EmailStatus,
     service: Service,
     subscribeJourney: SubscribeJourney
-  )(implicit request: Request[_], userWithEnrolments: LoggedInUserWithEnrolments): Future[Result] =
+  )(implicit request: Request[AnyContent], userWithEnrolments: LoggedInUserWithEnrolments): Future[Result] =
     emailVerificationService.isEmailVerified(email).flatMap {
       case Some(true) =>
         for {
@@ -124,9 +135,7 @@ class EmailController @Inject() (
           _ <- subscribeJourney match {
             case SubscribeJourney(AutoEnrolment) =>
               updateVerifiedEmail(
-                email,
-                service,
-                subscribeJourney
+                email
               ) //here the email will be updated in case it was existing in save4later before and was not verified.
             case SubscribeJourney(LongJourney) => Future.successful(()) //if it's a Long Journey we do not update email.
           }

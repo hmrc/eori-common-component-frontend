@@ -20,6 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{LongJourney, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.email_confirmed
 import util.ViewSpec
 
@@ -43,5 +44,5 @@ class EmailConfirmedSpec extends ViewSpec {
     }
   }
 
-  val migrateDoc: Document = Jsoup.parse(contentAsString(view()))
+  val migrateDoc: Document = Jsoup.parse(contentAsString(view(Service.cds, SubscribeJourney(LongJourney))))
 }

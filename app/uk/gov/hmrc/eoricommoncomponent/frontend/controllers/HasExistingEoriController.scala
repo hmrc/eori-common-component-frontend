@@ -48,8 +48,10 @@ class HasExistingEoriController @Inject() (
 
   def displayPage(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
-      existingEoriToUse.map { eori =>
-        Ok(hasExistingEoriView(service, eori.id))
+      existingEoriToUse.flatMap { eori =>
+        cache.saveEori(Eori(eori.id)).map { _ =>
+          Ok(hasExistingEoriView(service, eori.id))
+        }
       }
   }
 
