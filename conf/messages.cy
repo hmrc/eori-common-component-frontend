@@ -333,6 +333,8 @@ subscription.start-page.before-you-start.bullet5=y Cod Dosbarthiad Diwydiannol S
 cds.subscription.enter-email.page.title=Beth yw’ch cyfeiriad e-bost?
 cds.subscription.check-your-email.page.title=Gwirio’ch cyfeiriad e-bost
 cds.subscription.enter-email.email.label=cyfeiriad e-bost
+
+
 cds.subscription.verify-email.title=Dilysu’ch cyfeiriad e-bost
 cds.subscription.verify-email.para1=Rydym wedi anfon e-bost i {0}. Cliciwch ar y cysylltiad yn yr e-bost i ddilysu’ch cyfeiriad e-bost.
 cds.subscription.verify-email.missing-email-text=eich cyfeiriad e-bost
@@ -340,12 +342,18 @@ cds.subscription.verify-email.para2=Gallwch <a href="{0}" class="govuk-link">new
 cds.subscription.verify-email.progressive-disclosure.heading=Ches i ddim e-bost
 cds.subscription.verify-email.progressive-disclosure.content=Chwiliwch yn eich ffolder sothach. Os nad yw’r neges yno, gallwn <a href="{0}" class="govuk-link">ei hanfon eto</a>. Os byddwn yn anfon eich e-bost eto, ni fydd cysylltiadau blaenorol yn gweithio.
 subscription.enter-email.heading=Beth yw’ch cyfeiriad e-bost?
+cds.subscription.enter-email.heading=Pa gyfeiriad e-bost y gallwn ni ei ddefnyddio ar gyfer hysbysiadau’r tollau?
+cds.subscription.enter-email.list-heading=Y cyfeiriad e-bost rydych yn ei nodi yma fydd yr unig un y byddwn yn ei ddefnyddio i wneud y canlynol:
+cds.subscription.enter-email.list-bullet-1=rhoi’r wybodaeth ddiweddaraf i chi am newidiadau i’r Gwasanaeth Datganiadau Tollau (CDS)
+cds.subscription.enter-email.list-bullet-2=eich hysbysu am newidiadau brys o ran nwyddau yn y tollau, os ydych yn cyflwyno datganiadau mewnforio neu allforio
+cds.subscription.enter-email.list-bullet-3=anfon hysbysiadau Debyd Uniongyrchol ynghylch gohirio tollau atoch, a datganiadau TAW ohiriedig ar gyfer eich mewnforion
+cds.subscription.enter-email.hint=Gallwch newid y cyfeiriad e-bost hwn yn nes ymlaen. Er enghraifft, os yw gwahanol dimau’n cymryd rhan, efallai y byddwch yn penderfynu sefydlu mewnflwch e-bost a rennir ar gyfer hysbysiadau’r tollau.
 subscription.check-your-email.heading=Gwirio’ch cyfeiriad e-bost
 subscription.check-your-email.label=Cyfeiriad e-bost
 subscription.check-your-email.confirm.label=Byddwn yn anfon cysylltiad atoch i gadarnhau’ch cyfeiriad e-bost.
 subscription.check-your-email.confirm.question=Ai dyma’r cyfeiriad e-bost rydych am ei ddefnyddio?
 subscription.check-your-email.yes=Iawn
-subscription.check-your-email.no=Na, mae angen i mi newid yr e-bost hwn
+subscription.check-your-email.no=Na, mae angen i mi gywiro’r cyfeiriad e-bost hwn
 enter-email-body-text=Byddwn yn defnyddio hwn i anfon y canlynol atoch:
 subscription.enter-email-hint-text=canlyniad eich cais i gael mynediad at CDS
 registration.enter-email-hint-text=canlyniad eich cais am rif EORI
