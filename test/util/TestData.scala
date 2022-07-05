@@ -16,9 +16,12 @@
 
 package util
 
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, LongJourney, Service, SubscribeJourney}
 
 trait TestData {
+
+  val subscribeJourneyLong: SubscribeJourney  = SubscribeJourney(LongJourney)
+  val subscribeJourneyShort: SubscribeJourney = SubscribeJourney(AutoEnrolment)
 
   val atarService: Service =
     Service(

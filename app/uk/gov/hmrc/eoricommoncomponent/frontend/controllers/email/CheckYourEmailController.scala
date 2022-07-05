@@ -35,7 +35,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, LongJourn
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{EnrolmentService, MissingEnrolmentException}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  EnrolmentService,
+  MissingEnrolmentException,
+  UpdateVerifiedEmailService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.{check_your_email, email_confirmed, verify_your_email}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -51,7 +55,8 @@ class CheckYourEmailController @Inject() (
   checkYourEmailView: check_your_email,
   emailConfirmedView: email_confirmed,
   verifyYourEmail: verify_your_email,
-  emailVerificationService: EmailVerificationService
+  emailVerificationService: EmailVerificationService,
+  updateVerifiedEmailService: UpdateVerifiedEmailService
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
@@ -179,12 +184,18 @@ class CheckYourEmailController @Inject() (
   def toResult(service: Service, subscribeJourney: SubscribeJourney)(implicit r: Request[AnyContent]): Result =
     Ok(emailConfirmedView(service, subscribeJourney))
 
-  private def updateVerifiedEmail(email: String, service: Service, subscribeJourney: SubscribeJourney) =
-    //TODO: Call UpdateVerifiedEmailService.updateVerifiedEmail
-    Future.successful(())
+  private def updateVerifiedEmail(email: String, service: Service, subscribeJourney: SubscribeJourney)(implicit
+    request: Request[AnyContent]
+  ) =
+    for {
+      maybeEori <- cdsFrontendDataCache.eori
+      result <- maybeEori.fold(Future.successful(Option(false))) {
+        eori => updateVerifiedEmailService.updateVerifiedEmail(None, email, eori)
+      }
+    } yield result.map(isUpdated => if (isUpdated) () else throw new IllegalArgumentException("UpdateEmail failed"))
 
   private def submitNewDetails(groupId: GroupId, service: Service, subscribeJourney: SubscribeJourney)(implicit
-    request: Request[_]
+    request: Request[AnyContent]
   ): Future[Result] =
     save4LaterService.fetchEmail(groupId) flatMap {
       _.fold {

@@ -81,12 +81,12 @@ class EmailController @Inject() (
       } { cachedEmailStatus =>
         cachedEmailStatus.email match {
           case Some(email) =>
-//            if (cachedEmailStatus.isVerified)
-//              sessionCache.saveEmail(email) map { _ =>
-//                Redirect(CheckYourEmailController.emailConfirmed(service, subscribeJourney))
-//              }
-//            else
-            checkWithEmailService(email, cachedEmailStatus, service, subscribeJourney)
+            if (cachedEmailStatus.isVerified)
+              sessionCache.saveEmail(email) map { _ =>
+                Redirect(CheckYourEmailController.emailConfirmed(service, subscribeJourney))
+              }
+            else
+              checkWithEmailService(email, cachedEmailStatus, service, subscribeJourney)
           case _ => Future.successful(Redirect(WhatIsYourEmailController.createForm(service, subscribeJourney)))
         }
       }
@@ -106,10 +106,7 @@ class EmailController @Inject() (
       result <- maybeEori.fold(Future.successful(Option(false))) {
         eori => updateVerifiedEmailService.updateVerifiedEmail(None, email, eori)
       }
-    } yield result.map {
-      case true => true
-      case _    => throw new IllegalArgumentException("UpdateEmail failed")
-    }.map(_ => ())
+    } yield result.map(isUpdated => if (isUpdated) () else throw new IllegalArgumentException("UpdateEmail failed"))
 
   private def checkWithEmailService(
     email: String,
