@@ -18,11 +18,11 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
 import org.joda.time.format.ISODateTimeFormat
 import play.api.Logger
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.VerifiedEmailRequest
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{
   UpdateCustomsDataStoreConnector,
   UpdateVerifiedEmailConnector
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.VerifiedEmailRequest
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.email.{DateTimeUtil, RequestDetail, UpdateVerifiedEmailRequest}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.MessagingServiceParam
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.CustomsDataStoreRequest
@@ -56,25 +56,24 @@ class UpdateVerifiedEmailService @Inject() (
       newEmail,
       requestDetail.emailVerificationTimestamp.toString(ISODateTimeFormat.dateTimeNoMillis().withZoneUTC())
     )
-    updateVerifiedEmailConnector.updateVerifiedEmail(request, currentEmail).map {
+    updateVerifiedEmailConnector.updateVerifiedEmail(request, currentEmail).flatMap {
       case Right(res)
           if res.updateVerifiedEmailResponse.responseCommon.returnParameters
             .exists(msp => msp.head.paramName == MessagingServiceParam.formBundleIdParamName) =>
         logger.debug("[UpdateVerifiedEmailService][updateVerifiedEmail] - successfully updated verified email")
-        customsDataStoreConnector.updateCustomsDataStore(customsDataStoreRequest)
-        Some(true)
+        customsDataStoreConnector.updateCustomsDataStore(customsDataStoreRequest).map(_ => Some(true))
       case Right(res) =>
         val statusText = res.updateVerifiedEmailResponse.responseCommon.statusText
-        logger.debug(
+        logger.warn(
           "[UpdateVerifiedEmailService][updateVerifiedEmail]" +
             s" - updating verified email unsuccessful with business error/status code: ${statusText.getOrElse("Status text empty")}"
         )
-        Some(false)
+        Future.successful(Some(false))
       case Left(res) =>
         logger.warn(
           s"[UpdateVerifiedEmailService][updateVerifiedEmail] - updating verified email unsuccessful with response: $res"
         )
-        None
+        Future.successful(None)
     }
   }
 
