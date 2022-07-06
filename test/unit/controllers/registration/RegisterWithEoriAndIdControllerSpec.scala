@@ -837,9 +837,9 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-      /* result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .idAlreadyLinked(atarService)
-          .url*/
+          .url
       }
     }
 
@@ -871,9 +871,9 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-      /* result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
           .idAlreadyLinked(atarService)
-          .url*/
+          .url
       }
     }
 
