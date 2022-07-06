@@ -70,13 +70,13 @@
         <p id="additional-info" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.eori",eori)</p>
         @if(isIndividual){
             @if(hasUtr){
-                    <p id="individual-utr" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.utr", individualUtr ,eori)</p>
-                } else {
-                    <p id="individual-nino" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.nino",nino ,eori)</p>
-                    }
-                } else {
-                <p id="organisation-utr" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.utr", organisationUtr ,eori)</p>
+                <p id="individual-utr" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.utr", individualUtr ,eori)</p>
+            } else {
+                <p id="individual-nino" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.nino",nino ,eori)</p>
             }
+         } else {
+                <p id="organisation-utr" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.utr", organisationUtr ,eori)</p>
+         }
     </div>
 
     <div id="why-unsuccessful">
@@ -85,10 +85,10 @@
 
         @if(!isIndividual){
             @if(orgName == "None"){
-            <p id="info-text" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.text")</p>
-        } else {
-            <p id="info-text-org" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.text.business", orgName)</p>
-        }
+                <p id="info-text" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.text")</p>
+            } else {
+                <p id="info-text-org" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.text.business", orgName)</p>
+            }
         }
 
         <p id="info-steps" class="govuk-body">@Html(messages("ecc.reg06.outcome.id-already-linked.info.steps", addTeamLink))</p>

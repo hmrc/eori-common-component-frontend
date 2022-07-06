@@ -85,7 +85,7 @@ class AppConfig @Inject() (
   val askUtrCopy: String                                 = config.get[String]("external-url.ask-utr-copy")
   val addTeamMembers: String                             = config.get[String]("external-url.add-team-members")
   val changeToBusiness: String                           = config.get[String]("external-url.change-to-business")
-  val changeOfDetails: String                             = config.get[String]("external-url.change-of-details")
+  val changeOfDetails: String                            = config.get[String]("external-url.change-of-details")
   def callCharges()(implicit messages: Messages): String = config.get[String](s"external-url.call-charges-$languageKey")
 
   val blockedRoutesRegex: Seq[Regex] =

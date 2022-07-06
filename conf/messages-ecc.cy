@@ -226,11 +226,9 @@ ecc.reg06.outcome.id-already-linked.info.nino = Mae’r rhif Yswiriant Gwladol {
 ecc.reg06.outcome.id-already-linked.info.text = Os oes eraill yn eich busnes neu’ch sefydliad eisoes yn defnyddio gwasanaethau EORI, gallwch ofyn iddynt eich ychwanegu at yr ID y maent yn ei ddefnyddio ar gyfer Porth y Llywodraeth.
 ecc.reg06.outcome.id-already-linked.info.text.business = Os oes eraill yn {0} eisoes yn defnyddio gwasanaethau EORI, gallwch ofyn iddynt eich ychwanegu at yr ID y maent yn ei ddefnyddio ar gyfer Porth y Llywodraeth.
 ecc.reg06.outcome.id-already-linked.info.steps = TRANSLATE They need to follow the steps to {0}
-ecc.reg06.outcome.id-already-linked.info.link = TRANSLATE add a team member (opens in new tab).
+ecc.reg06.outcome.id-already-linked.info.link = ychwanegu aelod o’r tîm (yn agor tab newydd).
 
 
-
-ecc.reg06.outcome.why.individual.nino = rhif Yswiriant Gwladol
 ecc.reg06.outcome.why.org.utr = Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)
 ecc.reg06.outcome.why.eori = Rhif EORI
 ecc.reg06.outcome.apply.again = Gallwch adolygu’r manylion hyn a {0}

@@ -232,7 +232,6 @@ ecc.reg06.outcome.id-already-linked.info.text.business = If others in {0} are al
 ecc.reg06.outcome.id-already-linked.info.steps = They need to follow the steps to {0}
 ecc.reg06.outcome.id-already-linked.info.link = add a team member (opens in new tab).
 
-ecc.reg06.outcome.why.individual.nino = National Insurance number
 ecc.reg06.outcome.why.org.utr = Corporation Tax Unique Taxpayer Reference (UTR)
 ecc.reg06.outcome.why.eori = EORI number
 ecc.reg06.outcome.apply.again = You can review these details and {0}
