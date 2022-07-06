@@ -59,19 +59,15 @@
 <a class="govuk-link" href=@appConfig.addTeamMembers target="_blank" rel="noopener noreferrer">@messages("ecc.reg06.outcome.id-already-linked.info.link", messages("cds.navigation.opens-in-new-tab"))</a>.
 }
 
-@infoLink = {
-<a class="govuk-link" href=@messages("ecc.reg06.outcome.id-already-linked.info.link") target="_blank" rel="noopener noreferrer">@messages("ecc.reg06.outcome.id-already-linked.info.link")</a>
-}
-
 @applyLink = {
 <a class="govuk-link" href="@ApplicationController.startSubscription(service).url">@messages("ecc.reg06.outcome.apply.again.link")</a>
 }
 
-@layout_di(messages("ecc.reg06.outcome.id-already-linked.heading"), suppressTelephoneNumberDetection = false, displayBackLink = false) {
+@layout_di(messages("ecc.reg06.outcome.id-already-linked.title"), suppressTelephoneNumberDetection = false, displayBackLink = false) {
 <div>
     <div>
         <h1 id="page-heading" class="govuk-heading-xl" >@messages("ecc.reg06.outcome.id-already-linked.heading")</h1>
-        <p id="info-eori" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.eori",eori)</p>
+        <p id="additional-info" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.eori",eori)</p>
         @if(isIndividual){
             @if(hasUtr){
                     <p id="individual-utr" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.utr", individualUtr ,eori)</p>
@@ -79,7 +75,7 @@
                     <p id="individual-nino" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.nino",nino ,eori)</p>
                     }
                 } else {
-                <p id="org-utr" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.utr", organisationUtr ,eori)</p>
+                <p id="organisation-utr" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.utr", organisationUtr ,eori)</p>
             }
     </div>
 
@@ -87,10 +83,12 @@
         <h2 class="govuk-heading-m" id="why-heading">@messages("ecc.reg06.outcome.why-heading")</h2>
         <p id="again-link" class="govuk-body">@Html(messages("ecc.reg06.outcome.apply.again", applyLink))</p>
 
-        @if(isIndividual){
-            <p id="info-ind-text" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.text")</p>
+        @if(!isIndividual){
+            @if(orgName == "None"){
+            <p id="info-text" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.text")</p>
         } else {
-            <p id="info-text" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.text.org", orgName)</p>
+            <p id="info-text-org" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.text.business", orgName)</p>
+        }
         }
 
         <p id="info-steps" class="govuk-body">@Html(messages("ecc.reg06.outcome.id-already-linked.info.steps", addTeamLink))</p>

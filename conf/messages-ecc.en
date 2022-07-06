@@ -228,7 +228,7 @@ ecc.reg06.outcome.id-already-linked.info.eori = The details you gave us have alr
 ecc.reg06.outcome.id-already-linked.info.utr = The Unique Taxpayer Reference, {0}, is already used and cannot be matched with {1}.
 ecc.reg06.outcome.id-already-linked.info.nino = The National Insurance number, {0}, is already used and cannot be matched with {1}.
 ecc.reg06.outcome.id-already-linked.info.text = If others in your business or organisation are already using EORI-based services, you can ask them to add you to the Government Gateway ID they are using.
-ecc.reg06.outcome.id-already-linked.info.text.org = If others in {0} are already using EORI-based services, you can ask them to add you to the Government Gateway ID they are using.
+ecc.reg06.outcome.id-already-linked.info.text.business = If others in {0} are already using EORI-based services, you can ask them to add you to the Government Gateway ID they are using.
 ecc.reg06.outcome.id-already-linked.info.steps = They need to follow the steps to {0}
 ecc.reg06.outcome.id-already-linked.info.link = add a team member (opens in new tab).
 

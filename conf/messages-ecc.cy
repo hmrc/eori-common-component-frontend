@@ -224,7 +224,7 @@ ecc.reg06.outcome.id-already-linked.info.eori = Mae’r manylion a roesoch i ni 
 ecc.reg06.outcome.id-already-linked.info.utr = Mae Cyfeirnod Unigryw y Trethdalwr {0} eisoes mewn defnydd ac ni all gael ei baru â {1}.
 ecc.reg06.outcome.id-already-linked.info.nino = Mae’r rhif Yswiriant Gwladol {0} eisoes mewn defnydd ac ni all gael ei baru â {1}.
 ecc.reg06.outcome.id-already-linked.info.text = Os oes eraill yn eich busnes neu’ch sefydliad eisoes yn defnyddio gwasanaethau EORI, gallwch ofyn iddynt eich ychwanegu at yr ID y maent yn ei ddefnyddio ar gyfer Porth y Llywodraeth.
-ecc.reg06.outcome.id-already-linked.info.text.org = Os oes eraill yn {0} eisoes yn defnyddio gwasanaethau EORI, gallwch ofyn iddynt eich ychwanegu at yr ID y maent yn ei ddefnyddio ar gyfer Porth y Llywodraeth.
+ecc.reg06.outcome.id-already-linked.info.text.business = Os oes eraill yn {0} eisoes yn defnyddio gwasanaethau EORI, gallwch ofyn iddynt eich ychwanegu at yr ID y maent yn ei ddefnyddio ar gyfer Porth y Llywodraeth.
 ecc.reg06.outcome.id-already-linked.info.steps = TRANSLATE They need to follow the steps to {0}
 ecc.reg06.outcome.id-already-linked.info.link = TRANSLATE add a team member (opens in new tab).
 
