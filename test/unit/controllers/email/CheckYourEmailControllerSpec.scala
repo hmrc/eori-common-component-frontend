@@ -18,6 +18,7 @@ package unit.controllers.email
 
 import common.pages.emailvericationprocess.CheckYourEmailPage
 import org.mockito.ArgumentMatchers._
+import org.mockito.Mockito
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
@@ -93,6 +94,9 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       .thenReturn(Future.successful(Some(true)))
   }
 
+  override def afterEach(): Unit =
+    Mockito.reset(mockSave4LaterService, mockEmailVerificationService, mockUpdateVerifiedEmailService, mockSessionCache)
+
   "Displaying the Check Your Email Page" should {
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
@@ -111,9 +115,6 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   "Submitting the Check Your Email Page" should {
 
     "redirect to Verify Your Email Address page for unverified email address" in {
-      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Some(true)))
-
       when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(true)))
       submitForm(ValidRequest + (yesNoInputName -> answerYes), service = atarService, journey = subscribeJourneyShort) {
@@ -171,6 +172,62 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
             "/customs-enrolment-services/atar/subscribe/longjourney/check-user"
           )
       }
+    }
+
+    "update verified email for Short Journey (Auto-enrolment)" in {
+      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(true)))
+
+      when(mockSessionCache.eori(any[Request[AnyContent]]))
+        .thenReturn(Future.successful(Some("GB123456789")))
+
+      when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(emailStatus.copy(isVerified = true))))
+
+      when(
+        mockSave4LaterService
+          .saveEmail(any[GroupId], any[EmailStatus])(any[HeaderCarrier])
+      ).thenReturn(Future.successful(unit))
+
+      when(mockSessionCache.saveEmail(any[String])(any[Request[AnyContent]]))
+        .thenReturn(Future.successful(true))
+
+      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(false)))
+
+      submitForm(ValidRequest + (yesNoInputName -> answerYes), service = atarService, journey = subscribeJourneyShort) {
+        result =>
+          status(result) shouldBe SEE_OTHER
+          result.header.headers("Location") should endWith(
+            "/customs-enrolment-services/atar/subscribe/autoenrolment/check-user"
+          )
+      }
+      verify(mockUpdateVerifiedEmailService, times(1)).updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])
+    }
+
+    "do not update verified email for Long Journey" in {
+      when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(emailStatus.copy(isVerified = true))))
+
+      when(
+        mockSave4LaterService
+          .saveEmail(any[GroupId], any[EmailStatus])(any[HeaderCarrier])
+      ).thenReturn(Future.successful(unit))
+
+      when(mockSessionCache.saveEmail(any[String])(any[Request[AnyContent]]))
+        .thenReturn(Future.successful(true))
+
+      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(false)))
+
+      submitForm(ValidRequest + (yesNoInputName -> answerYes), service = atarService, journey = subscribeJourneyLong) {
+        result =>
+          status(result) shouldBe SEE_OTHER
+          result.header.headers("Location") should endWith(
+            "/customs-enrolment-services/atar/subscribe/longjourney/check-user"
+          )
+      }
+      verify(mockUpdateVerifiedEmailService, times(0)).updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])
     }
 
     "throw  IllegalStateException when downstream CreateEmailVerificationRequest Fails" in {
