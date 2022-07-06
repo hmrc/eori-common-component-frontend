@@ -20,8 +20,9 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 @import uk.gov.hmrc.play.language.LanguageUtils
 @import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 
-@this(layout_di: layout, feedback_di: helpers.feedback, help_di: partials.if_you_need_help, languageUtils: LanguageUtils)
+@this(layout_di: layout, appConfig: AppConfig, feedback_di: helpers.feedback, help_di: partials.if_you_need_help, languageUtils: LanguageUtils)
 
 @(orgName: String,
     eori: String,
@@ -53,14 +54,18 @@
 }
 
 @infoLink = {
-<a class="govuk-link" href=@messages("ecc.reg06.outcome.eori-already-linked.link") target="_blank" rel="noopener noreferrer">@messages("ecc.reg06.outcome.eori-already-linked.link")</a>
+@if(isIndividual){
+<a class="govuk-link" href=@appConfig.changeOfDetails>@messages("ecc.reg06.outcome.eori-already-linked.individual.link")</a>
+} else {
+<a class="govuk-link" href=@appConfig.changeToBusiness>@messages("ecc.reg06.outcome.eori-already-linked.org.link")</a>
+}
 }
 
 @applyLink = {
 <a class="govuk-link" href="@ApplicationController.startSubscription(service).url">@messages("ecc.reg06.outcome.apply.again.link")</a>
 }
 
-@layout_di(messages("cds.reg06.outcome.eori-already-linked.heading"), suppressTelephoneNumberDetection = false, displayBackLink = false) {
+@layout_di(messages("cds.reg06.outcome.eori-already-linked.title"), suppressTelephoneNumberDetection = false, displayBackLink = false) {
     <div>
         <div>
             <h1 id="page-heading" class="govuk-heading-xl" >@messages("cds.reg06.outcome.eori-already-linked.heading")</h1>
@@ -71,7 +76,7 @@
                     <p id="individual-nino" class="govuk-body">@messages("cds.reg06.outcome.eori-already-linked.info.nino",nino ,eori)</p>
                     }
                 } else {
-                <p id="org-utr" class="govuk-body">@messages("cds.reg06.outcome.eori-already-linked.info.utr",organisationUtr ,eori)</p>
+                <p id="organisation-utr" class="govuk-body">@messages("cds.reg06.outcome.eori-already-linked.info.utr",organisationUtr ,eori)</p>
             }
         </div>
 

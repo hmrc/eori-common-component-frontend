@@ -37,11 +37,12 @@ cds.sub01.outcome.rejected.register.heading=The {0} registration request for {1}
 cds.sub01.outcome.rejected.register.heading-noname=The {0} registration request has been unsuccessful
 cds.sub01.outcome.rejected.register.title=The {0} registration request has been unsuccessful
 
-
+cds.reg06.outcome.eori-already-linked.title=The details you gave us did not match our records
 cds.reg06.outcome.eori-already-linked.heading=The details you gave us did not match our records
 cds.subscription.outcomes.eori-already-linked.use-cds-para1=To access {0}, you should sign in using the Government Gateway login details for {1}.
 cds.subscription.outcomes.you-will-not-be-able-to-use-service=You will not be able to use {0} until this issue has been resolved.
 
+ecc.reg06.outcome.id-already-linked.title=The details you gave us are matched to a different EORI number
 ecc.reg06.outcome.id-already-linked.heading=The details you gave us are matched to a different EORI number
 
 cds.subscription.outcomes.inprocessing.we-are-processing=We will send you an email once your {0} subscription request has been processed. This can take up to 5 working days.
@@ -219,7 +220,8 @@ cds.reg06.outcome.eori-already-linked.info.utr = The Unique Taxpayer Reference, 
 cds.reg06.outcome.eori-already-linked.info.nino = The National Insurance number, {0}, you entered does not match our records for EORI number {1}.
 ecc.reg06.outcome.why-heading = What you can do now
 ecc.reg06.outcome.eori-already-linked.info = If you think our records are incorrect, you can {0}
-ecc.reg06.outcome.eori-already-linked.link = tell us about a change to your business.
+ecc.reg06.outcome.eori-already-linked.org.link = tell us about a change to your business.
+ecc.reg06.outcome.eori-already-linked.individual.link = tell us about any changes.
 
 ecc.reg06.outcome.id-already-linked.info.eori = The details you gave us have already been linked to another EORI number, not {0}.
 
