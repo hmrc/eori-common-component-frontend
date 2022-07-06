@@ -1,0 +1,105 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.models.JourneyStatus
+@import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+@import uk.gov.hmrc.play.language.LanguageUtils
+@import java.time.{LocalDate, LocalDateTime}
+@import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
+@import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+
+@this(layout_di: layout, appConfig: AppConfig, feedback_di: helpers.feedback, help_di: partials.if_you_need_help, languageUtils: LanguageUtils)
+
+@(orgName: String,
+    eori: String,
+    service: Service,
+    isIndividual: Boolean,
+    hasUtr: Boolean,
+    customsId: Option[CustomsId],
+    nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel])(implicit messages: Messages, request: Request[_])
+
+@individualUtr = @{
+    customsId match {
+            case u@Some(Utr(_)) => u.map(_.id).get
+            case n@Some(Nino(_)) => None
+        }
+}
+
+@organisationUtr = @{
+    nameIdOrganisationDetails match {
+        case u@Some(_) => u.map(_.id).get
+        case _ => None
+    }
+}
+
+@nino = @{
+    customsId match {
+        case n@Some(Nino(_)) => n.map(_.id).get
+        case u@Some(Utr(_)) => None
+    }
+}
+
+
+@addTeamLink = {
+<a class="govuk-link" href=@appConfig.addTeamMembers target="_blank" rel="noopener noreferrer">@messages("ecc.reg06.outcome.id-already-linked.info.link", messages("cds.navigation.opens-in-new-tab"))</a>.
+}
+
+@infoLink = {
+<a class="govuk-link" href=@messages("ecc.reg06.outcome.id-already-linked.info.link") target="_blank" rel="noopener noreferrer">@messages("ecc.reg06.outcome.id-already-linked.info.link")</a>
+}
+
+@applyLink = {
+<a class="govuk-link" href="@ApplicationController.startSubscription(service).url">@messages("ecc.reg06.outcome.apply.again.link")</a>
+}
+
+@layout_di(messages("ecc.reg06.outcome.id-already-linked.heading"), suppressTelephoneNumberDetection = false, displayBackLink = false) {
+<div>
+    <div>
+        <h1 id="page-heading" class="govuk-heading-xl" >@messages("ecc.reg06.outcome.id-already-linked.heading")</h1>
+        <p id="info-eori" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.eori",eori)</p>
+        @if(isIndividual){
+            @if(hasUtr){
+                    <p id="individual-utr" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.utr", individualUtr ,eori)</p>
+                } else {
+                    <p id="individual-nino" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.nino",nino ,eori)</p>
+                    }
+                } else {
+                <p id="org-utr" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.utr", organisationUtr ,eori)</p>
+            }
+    </div>
+
+    <div id="why-unsuccessful">
+        <h2 class="govuk-heading-m" id="why-heading">@messages("ecc.reg06.outcome.why-heading")</h2>
+        <p id="again-link" class="govuk-body">@Html(messages("ecc.reg06.outcome.apply.again", applyLink))</p>
+
+        @if(isIndividual){
+            <p id="info-ind-text" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.text")</p>
+        } else {
+            <p id="info-text" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.text.org", orgName)</p>
+        }
+
+        <p id="info-steps" class="govuk-body">@Html(messages("ecc.reg06.outcome.id-already-linked.info.steps", addTeamLink))</p>
+    </div>
+
+    @helpers.feedbackBackContinue(service, JourneyStatus.Failed)
+
+    @help_di()
+
+    @feedback_di()
+</div>
+}

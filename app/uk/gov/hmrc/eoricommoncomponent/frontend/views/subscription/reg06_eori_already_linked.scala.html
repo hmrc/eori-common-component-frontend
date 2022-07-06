@@ -19,46 +19,68 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.JourneyStatus
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 @import uk.gov.hmrc.play.language.LanguageUtils
-@import java.time.{LocalDate, LocalDateTime}
 @import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 
 @this(layout_di: layout, feedback_di: helpers.feedback, help_di: partials.if_you_need_help, languageUtils: LanguageUtils)
 
-@(orgName: String, eori: String, processedDate: LocalDateTime, service: Service, isIndividual: Boolean, hasUtr: Boolean)(implicit messages: Messages, request: Request[_])
+@(orgName: String,
+    eori: String,
+    service: Service,
+    isIndividual: Boolean,
+    hasUtr: Boolean,
+    customsId: Option[CustomsId],
+    nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel])(implicit messages: Messages, request: Request[_])
 
-@formatDate(dateTime: LocalDateTime) = @{
-  languageUtils.Dates.formatDate(LocalDate.from(dateTime))
+@individualUtr = @{
+    customsId match {
+        case u@Some(Utr(_)) => u.map(_.id).get
+        case n@Some(Nino(_)) => None
+    }
 }
 
-@layout_di(messages("cds.reg06.outcome.eori-already-linked.title", longName), suppressTelephoneNumberDetection = false, displayBackLink = false) {
+@organisationUtr = @{
+    nameIdOrganisationDetails match {
+        case u@Some(_) => u.map(_.id).get
+        case _ => None
+    }
+}
+
+@nino = @{
+    customsId match {
+        case n@Some(Nino(_)) => n.map(_.id).get
+        case u@Some(Utr(_)) => None
+    }
+}
+
+@infoLink = {
+<a class="govuk-link" href=@messages("ecc.reg06.outcome.eori-already-linked.link") target="_blank" rel="noopener noreferrer">@messages("ecc.reg06.outcome.eori-already-linked.link")</a>
+}
+
+@applyLink = {
+<a class="govuk-link" href="@ApplicationController.startSubscription(service).url">@messages("ecc.reg06.outcome.apply.again.link")</a>
+}
+
+@layout_di(messages("cds.reg06.outcome.eori-already-linked.heading"), suppressTelephoneNumberDetection = false, displayBackLink = false) {
     <div>
         <div>
-            <h1 id="page-heading" class="govuk-heading-xl" >@messages("cds.reg06.outcome.eori-already-linked.heading", longName, orgName)</h1>
-            <p id="processed-date" class="govuk-body">@messages("cds.reg06.outcome.eori-already-linked.received", formatDate(processedDate))</p>
-            <p id="eori-number" class="govuk-body">@messages("ecc.reg06.outcome.eori", eori)</p>
+            <h1 id="page-heading" class="govuk-heading-xl" >@messages("cds.reg06.outcome.eori-already-linked.heading")</h1>
+            @if(isIndividual){
+                @if(hasUtr){
+                    <p id="individual-utr" class="govuk-body">@messages("cds.reg06.outcome.eori-already-linked.info.utr",individualUtr ,eori)</p>
+                } else {
+                    <p id="individual-nino" class="govuk-body">@messages("cds.reg06.outcome.eori-already-linked.info.nino",nino ,eori)</p>
+                    }
+                } else {
+                <p id="org-utr" class="govuk-body">@messages("cds.reg06.outcome.eori-already-linked.info.utr",organisationUtr ,eori)</p>
+            }
         </div>
 
         <div id="why-unsuccessful">
             <h2 class="govuk-heading-m" id="why-heading">@messages("ecc.reg06.outcome.why-heading")</h2>
-            @if(isIndividual){
-                <p id="individual" class="govuk-body">@messages("ecc.reg06.outcome.why.individual")</p>
-            }else {
-                <p id="organisation" class="govuk-body">@messages("ecc.reg06.outcome.why.org")</p>
-            }
-            <ul class="govuk-list govuk-list--bullet">
-                @if(isIndividual && hasUtr){
-                    <li id="individual-utr">@messages("ecc.reg06.outcome.why.individual.utr")</li>
-                }else if(isIndividual && !hasUtr){
-                <li id="individual-nino">@messages("ecc.reg06.outcome.why.individual.nino")</li>
-                }else {
-                <li id="organisation-utr">@messages("ecc.reg06.outcome.why.org.utr")</li>
-                }
-                <li id="eori">@messages("ecc.reg06.outcome.why.eori")</li>
-            </ul>
-            <p id="again-link" class="govuk-body">@Html(messages("ecc.reg06.outcome.apply.again", ApplicationController.startSubscription(service).url))</p>
-        </div>
+            <p id="additional-info" class="govuk-body">@Html(messages("ecc.reg06.outcome.eori-already-linked.info", infoLink))</p>
 
-        <p id="use-cds-para" class="govuk-body">@messages("cds.subscription.outcomes.you-will-not-be-able-to-use-service", longName)</p>
+            <p id="again-link" class="govuk-body">@Html(messages("ecc.reg06.outcome.apply.again", applyLink))</p>
+        </div>
 
         @helpers.feedbackBackContinue(service, JourneyStatus.Failed)
 
