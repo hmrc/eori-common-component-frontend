@@ -36,6 +36,42 @@
 
         @CSRF.formField
 
+ @if(service.enrolmentKey == Service.cds.enrolmentKey) {
+
+        <h1 class="govuk-heading-l">@messages("cds.subscription.enter-email.heading")</h1>
+
+        <p class="govuk-body">@messages("cds.subscription.enter-email.list-heading")</p>
+
+        <ul class="govuk-list govuk-list--bullet"><li>@messages("cds.subscription.enter-email.list-bullet-1")</li>
+
+            <li>@messages("cds.subscription.enter-email.list-bullet-2")</li>
+
+            <li>@messages("cds.subscription.enter-email.list-bullet-3")</li></ul>
+
+            <div class="govuk-form-group">
+                @inputText(
+                    form = emailForm,
+                    id = "email",
+                    name = "email",
+                    inputType = "email",
+                    label = "cds.subscription.enter-email.heading",
+                    isPageHeading = true,
+                    hint = None,
+                    autocomplete = Some("email"),
+                    classes = Some("govuk-!-width-one-half"),
+                    labelClasses = Some("govuk-body")
+                )
+
+
+            </div>
+
+            <div class="govuk-inset-text"><p>@messages("cds.subscription.enter-email.hint")</p></div>
+
+            @govukButton(Button(
+                content = Text(ViewHelper.continueButtonText(false))
+            ))
+
+ } else {
 
         @inputText(
             form = emailForm,
@@ -57,6 +93,7 @@
 
     @helpers.helpAndSupport()
 
+}}
 </div>
-}
+
 
