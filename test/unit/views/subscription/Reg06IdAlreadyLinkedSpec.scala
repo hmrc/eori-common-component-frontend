@@ -24,18 +24,18 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.ApplicationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.reg06_eori_already_linked
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.reg06_id_already_linked
 import uk.gov.hmrc.play.language.LanguageUtils
 import util.ViewSpec
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models._
 
-class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
+class Reg06IdAlreadyLinkedSpec extends ViewSpec {
 
   private val name              = "John Doe"
   private val eori              = "GB123456789012"
   private val processedDate     = LocalDateTime.now()
-  private val expectedPageTitle = "The details you gave us did not match our records"
+  private val expectedPageTitle = "The details you gave us are matched to a different EORI number"
   private val languageUtils     = instanceOf[LanguageUtils]
   private val utr               = Some(Utr("UTRXXXXX"))
   private val utrNumber         = "UTRXXXXX"
@@ -44,11 +44,11 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
   private val nameIdOrg         = Some(NameIdOrganisationMatchModel("Name", utr.get.id))
 
   private val pageHeadingExpectedText =
-    "The details you gave us did not match our records"
+    "The details you gave us are matched to a different EORI number"
 
-  private val view = instanceOf[reg06_eori_already_linked]
+  private val view = instanceOf[reg06_id_already_linked]
 
-  "EORI Already Linked outcome page" should {
+  "Id Already Linked outcome page" should {
 
     "have the correct page title" in {
 
@@ -65,6 +65,7 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
       docUtr()
         .getElementById("what-you-think")
         .text() must include("What did you think of this service?")
+
       docUtr().getElementById("feedback_link").attributes().get("href") must endWith(
         "/feedback/eori-common-component-subscribe-atar"
       )
@@ -86,7 +87,7 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
     }
   }
 
-  "EORI already linked page" should {
+  "Id already linked page" should {
 
     "has specific content for individual with UTR" in {
 
@@ -97,12 +98,13 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
       val infoElement = page.getElementById("additional-info")
 
       heading.text() mustBe "What you can do now"
-      utrElement.text() mustBe s"The Unique Taxpayer Reference, $utrNumber, you entered does not match our records for EORI number $eori."
-      infoElement.text() mustBe "If you think our records are incorrect, you can tell us about any changes."
+      utrElement.text() mustBe s"The Unique Taxpayer Reference, $utrNumber, is already used and cannot be matched with $eori."
+      infoElement.text() mustBe "The details you gave us have already been linked to another EORI number, not GB123456789012."
 
       page.getElementById("individual-nino") mustBe null
       page.getElementById("organisation") mustBe null
       page.getElementById("organisation-utr") mustBe null
+      page.getElementById("info-steps") mustBe null
     }
 
     "has specific content for individual with NINO" in {
@@ -114,12 +116,13 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
       val infoElement = page.getElementById("additional-info")
 
       heading.text() mustBe "What you can do now"
-      ninoElement.text() mustBe s"The National Insurance number, $ninoNumber, you entered does not match our records for EORI number $eori."
-      infoElement.text() mustBe "If you think our records are incorrect, you can tell us about any changes."
+      ninoElement.text() mustBe s"The National Insurance number, $ninoNumber, is already used and cannot be matched with $eori."
+      infoElement.text() mustBe "The details you gave us have already been linked to another EORI number, not GB123456789012."
 
       page.getElementById("individual-utr") mustBe null
       page.getElementById("organisation") mustBe null
       page.getElementById("organisation-utr") mustBe null
+      page.getElementById("info-steps") mustBe null
     }
 
     "has specific content for organisation" in {
@@ -129,10 +132,12 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
       val heading     = page.getElementById("why-heading")
       val utrElement  = page.getElementById("organisation-utr")
       val infoElement = page.getElementById("additional-info")
+      val infoSteps   = page.getElementById("info-steps")
 
       heading.text() mustBe "What you can do now"
-      utrElement.text() mustBe s"The Unique Taxpayer Reference, $utrNumber, you entered does not match our records for EORI number $eori."
-      infoElement.text() mustBe "If you think our records are incorrect, you can tell us about a change to your business."
+      utrElement.text() mustBe s"The Unique Taxpayer Reference, $utrNumber, is already used and cannot be matched with $eori."
+      infoElement.text() mustBe "The details you gave us have already been linked to another EORI number, not GB123456789012."
+      infoSteps.text() mustBe "They need to follow the steps to add a team member (opens in new tab)."
 
       page.getElementById("individual") mustBe null
       page.getElementById("individual-utr") mustBe null

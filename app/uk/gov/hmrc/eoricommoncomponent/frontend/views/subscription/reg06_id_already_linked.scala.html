@@ -56,7 +56,7 @@
 
 
 @addTeamLink = {
-<a class="govuk-link" href=@appConfig.addTeamMembers target="_blank" rel="noopener noreferrer">@messages("ecc.reg06.outcome.id-already-linked.info.link", messages("cds.navigation.opens-in-new-tab"))</a>.
+<a class="govuk-link" href=@appConfig.addTeamMembers target="_blank" rel="noopener noreferrer">@messages("ecc.reg06.outcome.id-already-linked.info.link", messages("cds.navigation.opens-in-new-tab"))</a>
 }
 
 @applyLink = {
@@ -90,8 +90,9 @@
                 <p id="info-text-org" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.text.business", orgName)</p>
             }
         }
-
-        <p id="info-steps" class="govuk-body">@Html(messages("ecc.reg06.outcome.id-already-linked.info.steps", addTeamLink))</p>
+        @if(!isIndividual){
+            <p id="info-steps" class="govuk-body">@Html(messages("ecc.reg06.outcome.id-already-linked.info.steps", addTeamLink))</p>
+        }
     </div>
 
     @helpers.feedbackBackContinue(service, JourneyStatus.Failed)
