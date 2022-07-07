@@ -105,6 +105,22 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
       }
     }
 
+    "have redirection to Email Controller Check for CDS subscription" in {
+      displayPage(cdsService, Some(userEORI)) { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.formAction("form") shouldBe "/customs-enrolment-services/cds/subscribe/autoenrolment/check-user"
+      }
+    }
+
+    "have redirection to Enrolment Action for non CDS subscription" in {
+      displayPage(atarService, Some(userEORI)) { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.formAction("form") shouldBe "/customs-enrolment-services/atar/subscribe/check-existing-eori"
+      }
+    }
+
     "pick the first enrollment apart from CDS and display correct EORI if the user has other enrollments and no CDS enrolment" in {
       displayPage(atarService, cdsEnrolmentId = None, otherEnrolments = Set(gvmsEnrolment, route1Enrolment)) { result =>
         status(result) shouldBe OK

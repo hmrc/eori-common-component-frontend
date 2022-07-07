@@ -18,13 +18,9 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import play.api.Logger
 import play.api.mvc._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
-  AuthAction,
-  EnrolmentExtractor,
-  GroupEnrolmentExtractor
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, EnrolmentExtractor, GroupEnrolmentExtractor}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{LongJourney, Service, SubscribeJourney}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, LongJourney, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{EnrolmentService, MissingEnrolmentException}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{eori_enrol_success, has_existing_eori}
@@ -50,7 +46,16 @@ class HasExistingEoriController @Inject() (
     implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
       existingEoriToUse.flatMap { eori =>
         cache.saveEori(Eori(eori.id)).map { _ =>
-          Ok(hasExistingEoriView(service, eori.id))
+          val continueJourney =
+            if (service.enrolmentKey == Service.cds.enrolmentKey)
+              uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.EmailController.form(
+                service,
+                subscribeJourney = SubscribeJourney(AutoEnrolment)
+              )
+            else
+              uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.HasExistingEoriController.enrol(service)
+
+          Ok(hasExistingEoriView(service, eori.id, continueJourney))
         }
       }
   }

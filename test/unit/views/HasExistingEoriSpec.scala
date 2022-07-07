@@ -30,6 +30,9 @@ class HasExistingEoriSpec extends ViewSpec {
   private val service = atarService
   private val eori    = "GB234532132435"
 
+  private val continue =
+    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.HasExistingEoriController.enrol(service)
+
   private val view = instanceOf[has_existing_eori]
 
   "Has existing EORI Page" should {
@@ -48,5 +51,5 @@ class HasExistingEoriSpec extends ViewSpec {
 
   }
 
-  private lazy val doc: Document = Jsoup.parse(contentAsString(view(service, eori)))
+  private lazy val doc: Document = Jsoup.parse(contentAsString(view(service, eori, continue)))
 }
