@@ -220,7 +220,7 @@ cds.reg06.outcome.eori-already-linked.info.utr = The Unique Taxpayer Reference, 
 cds.reg06.outcome.eori-already-linked.info.nino = The National Insurance number, {0}, you entered does not match our records for EORI number {1}.
 ecc.reg06.outcome.why-heading = What you can do now
 ecc.reg06.outcome.eori-already-linked.info = If you think our records are incorrect, you can {0}
-ecc.reg06.outcome.eori-already-linked.org.link = tell us about a change to your business.
+ecc.reg06.outcome.eori-already-linked.org.link = tell us about a change to your business or organisation.
 ecc.reg06.outcome.eori-already-linked.individual.link = tell us about any changes.
 
 ecc.reg06.outcome.id-already-linked.info.eori = The details you gave us have already been linked to another EORI number, not {0}.

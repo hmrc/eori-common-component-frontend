@@ -69,7 +69,7 @@
     <div>
         <div>
             <h1 id="page-heading" class="govuk-heading-xl" >@messages("cds.reg06.outcome.eori-already-linked.heading")</h1>
-            <p id="intro-text" class="govuk-body">@messages("ecc.reg06.outcome.eori-already-linked.intro.text",eori)</p>
+
             @if(isIndividual){
                 @if(hasUtr){
                     <p id="individual-utr" class="govuk-body">@messages("cds.reg06.outcome.eori-already-linked.info.utr",individualUtr ,eori)</p>
@@ -79,6 +79,9 @@
                 } else {
                 <p id="organisation-utr" class="govuk-body">@messages("cds.reg06.outcome.eori-already-linked.info.utr",organisationUtr ,eori)</p>
                 }
+            @if(!isIndividual && organisationUtr=="None"){
+                <p id="intro-text" class="govuk-body">@messages("ecc.reg06.outcome.eori-already-linked.intro.text",eori)</p>
+            }
         </div>
 
         <div id="why-unsuccessful">

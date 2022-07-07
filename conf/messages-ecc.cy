@@ -217,7 +217,7 @@ cds.reg06.outcome.eori-already-linked.info.utr = Nid yw Cyfeirnod Unigryw y Tret
 cds.reg06.outcome.eori-already-linked.info.nino = Nid yw’r rhif Yswiriant Gwladol a nodwyd gennych, sef {0}, yn cyd-fynd â’n cofnodion ar gyfer rhif EORI {1}.
 ecc.reg06.outcome.why-heading = TRANSLATE What you can do now
 ecc.reg06.outcome.eori-already-linked.info = Os ydych o’r farn bod ein cofnodion yn anghywir, gallwch {0}
-ecc.reg06.outcome.eori-already-linked.org.link = roi gwybod i ni am newid i’ch busnes.
+ecc.reg06.outcome.eori-already-linked.org.link = roi gwybod i ni am newid i’ch busnes neu’ch sefydliad.
 ecc.reg06.outcome.eori-already-linked.individual.link =  roi gwybod i ni am unrhyw newidiadau.
 
 ecc.reg06.outcome.id-already-linked.info.eori = Mae’r manylion a roesoch i ni eisoes wedi’u cysylltu â rhif EORI arall, nid {0}.
