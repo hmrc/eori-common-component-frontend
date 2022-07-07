@@ -205,7 +205,7 @@ class CheckYourEmailController @Inject() (
             // $COVERAGE-ON
             for {
               _ <- subscribeJourney match {
-                case SubscribeJourney(AutoEnrolment) if service.code == Service.cds.code =>
+                case SubscribeJourney(AutoEnrolment) if service.enrolmentKey == Service.cds.enrolmentKey =>
                   updateVerifiedEmail(email) //here we update email after it's verified.
                 case _ =>
                   Future.successful(

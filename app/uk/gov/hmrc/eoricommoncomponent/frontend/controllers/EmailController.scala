@@ -129,7 +129,7 @@ class EmailController @Inject() (
             sessionCache.saveEmail(email)
           }
           _ <- subscribeJourney match {
-            case SubscribeJourney(AutoEnrolment) if service.code == Service.cds.code =>
+            case SubscribeJourney(AutoEnrolment) if service.enrolmentKey == Service.cds.enrolmentKey =>
               updateVerifiedEmail(
                 email
               ) //here the email will be updated in case it was existing in save4later before and was not verified.
