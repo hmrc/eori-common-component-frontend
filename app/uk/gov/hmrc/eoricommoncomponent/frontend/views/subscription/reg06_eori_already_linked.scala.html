@@ -39,11 +39,19 @@
     }
 }
 
-@organisationUtr = @{
+@companyUtr = @{
     nameIdOrganisationDetails match {
         case u@Some(_) => u.map(_.id).get
         case _ => None
     }
+}
+
+@additionalInfo = @{
+nameIdOrganisationDetails match {
+case u@Some(_) => <p id="organisation-utr" class="govuk-body">{messages("cds.reg06.outcome.eori-already-linked.info.utr", companyUtr ,eori)}</p>
+case _ => <p id="intro-text" class="govuk-body">{messages("ecc.reg06.outcome.eori-already-linked.intro.text", eori)}</p>
+}
+
 }
 
 @nino = @{
@@ -72,16 +80,14 @@
 
             @if(isIndividual){
                 @if(hasUtr){
-                    <p id="individual-utr" class="govuk-body">@messages("cds.reg06.outcome.eori-already-linked.info.utr",individualUtr ,eori)</p>
+                    <p id="individual-utr" class="govuk-body">@messages("cds.reg06.outcome.eori-already-linked.info.utr", individualUtr, eori)</p>
                 } else {
-                    <p id="individual-nino" class="govuk-body">@messages("cds.reg06.outcome.eori-already-linked.info.nino",nino ,eori)</p>
+                    <p id="individual-nino" class="govuk-body">@messages("cds.reg06.outcome.eori-already-linked.info.nino", nino ,eori)</p>
                     }
                 } else {
-                <p id="organisation-utr" class="govuk-body">@messages("cds.reg06.outcome.eori-already-linked.info.utr",organisationUtr ,eori)</p>
+                  @additionalInfo
                 }
-            @if(!isIndividual && organisationUtr=="None"){
-                <p id="intro-text" class="govuk-body">@messages("ecc.reg06.outcome.eori-already-linked.intro.text",eori)</p>
-            }
+
         </div>
 
         <div id="why-unsuccessful">
