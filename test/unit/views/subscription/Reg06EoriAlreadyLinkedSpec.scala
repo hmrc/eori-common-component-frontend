@@ -41,6 +41,7 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
   private val utr               = Some(Utr("UTRXXXXX"))
   private val utrNumber         = "UTRXXXXX"
   private val nino              = Some(Nino("AAXXXXX"))
+  private val ninoNone          = Some(None)
   private val ninoNumber        = "AAXXXXX"
   private val nameIdOrg         = Some(NameIdOrganisationMatchModel("Name", utr.get.id))
 
@@ -101,10 +102,14 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
       utrElement.text() mustBe s"The Unique Taxpayer Reference, $utrNumber, you entered does not match our records for EORI number $eori."
       infoElement.text() mustBe "If you think our records are incorrect, you can tell us about any changes."
 
+      val infoLink = docUtr().body().getElementById("additional-info")
+      infoLink.toString must include("www.gov.uk/tell-hmrc-change-of-details")
+
       page.getElementById("individual-nino") mustBe null
       page.getElementById("organisation") mustBe null
       page.getElementById("organisation-utr") mustBe null
       page.getElementById("intro-text") mustBe null
+      page.getElementById("intro-none-text") mustBe null
     }
 
     "has specific content for individual with NINO" in {
@@ -119,15 +124,19 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
       ninoElement.text() mustBe s"The National Insurance number, $ninoNumber, you entered does not match our records for EORI number $eori."
       infoElement.text() mustBe "If you think our records are incorrect, you can tell us about any changes."
 
+      val infoLink = docUtr().body().getElementById("additional-info")
+      infoLink.toString must include("www.gov.uk/tell-hmrc-change-of-details")
+
       page.getElementById("individual-utr") mustBe null
       page.getElementById("organisation") mustBe null
       page.getElementById("organisation-utr") mustBe null
       page.getElementById("intro-text") mustBe null
+      page.getElementById("intro-none-text") mustBe null
     }
 
     "has specific content for organisation" in {
 
-      val page = docUtr(isIndividual = false, hasUtr = false).body()
+      val page = docOrgUtr(isIndividual = false, hasUtr = false).body()
 
       val heading     = page.getElementById("why-heading")
       val utrElement  = page.getElementById("organisation-utr")
@@ -137,9 +146,61 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
       utrElement.text() mustBe s"The Unique Taxpayer Reference, $utrNumber, you entered does not match our records for EORI number $eori."
       infoElement.text() mustBe "If you think our records are incorrect, you can tell us about a change to your business or organisation."
 
+      val infoLink = docOrgUtr().body().getElementById("additional-info")
+      infoLink.toString must include("www.gov.uk/tell-hmrc-changed-business-details/change-to-your-business")
+
       page.getElementById("individual") mustBe null
       page.getElementById("individual-utr") mustBe null
       page.getElementById("individual-nino") mustBe null
+      page.getElementById("intro-text") mustBe null
+      page.getElementById("intro-none-text") mustBe null
+    }
+
+    "has specific content for No Ids" in {
+
+      val page = docNoId(isIndividual = false, hasUtr = false).body()
+
+      val heading     = page.getElementById("why-heading")
+      val infoElement = page.getElementById("additional-info")
+      val introText   = page.getElementById("intro-text")
+
+      heading.text() mustBe "What you can do now"
+      infoElement.text() mustBe "If you think our records are incorrect, you can tell us about a change to your business or organisation."
+      introText.toString must include(
+        "The details you entered do not match our records for EORI number GB123456789012."
+      )
+
+      val infoLink = docNoId().body().getElementById("additional-info")
+      infoLink.toString must include("www.gov.uk/tell-hmrc-changed-business-details/change-to-your-business")
+
+      page.getElementById("individual") mustBe null
+      page.getElementById("individual-utr") mustBe null
+      page.getElementById("individual-nino") mustBe null
+      page.getElementById("intro-nino-text") mustBe null
+      page.getElementById("organisation-utr") mustBe null
+    }
+
+    "has specific content for individual with no UTR or no NINO" in {
+
+      val page = docNinoNone(isIndividual = true, hasUtr = false).body()
+
+      val heading       = page.getElementById("why-heading")
+      val infoElement   = page.getElementById("additional-info")
+      val introNoneText = page.getElementById("intro-none-text")
+
+      heading.text() mustBe "What you can do now"
+      infoElement.text() mustBe "If you think our records are incorrect, you can tell us about any changes."
+      introNoneText.toString must include(
+        "The details you entered do not match our records for EORI number GB123456789012."
+      )
+
+      val infoLink = docNinoNone().body().getElementById("additional-info")
+      infoLink.toString must include("www.gov.uk/tell-hmrc-change-of-details")
+
+      page.getElementById("individual-utr") mustBe null
+      page.getElementById("individual-nino") mustBe null
+      page.getElementById("organisation") mustBe null
+      page.getElementById("organisation-utr") mustBe null
       page.getElementById("intro-text") mustBe null
     }
 
@@ -164,10 +225,37 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
 
   def docNino(
     isIndividual: Boolean = true,
-    hasUtr: Boolean = true,
+    hasUtr: Boolean = false,
     service: Service = atarService,
     customsId: Option[CustomsId] = nino,
     nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg
+  ): Document =
+    Jsoup.parse(contentAsString(view(name, eori, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails)))
+
+  def docNinoNone(
+    isIndividual: Boolean = true,
+    hasUtr: Boolean = false,
+    service: Service = atarService,
+    customsId: Option[CustomsId] = None,
+    nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg
+  ): Document =
+    Jsoup.parse(contentAsString(view(name, eori, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails)))
+
+  def docOrgUtr(
+    isIndividual: Boolean = false,
+    hasUtr: Boolean = false,
+    service: Service = atarService,
+    customsId: Option[CustomsId] = utr,
+    nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg
+  ): Document =
+    Jsoup.parse(contentAsString(view(name, eori, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails)))
+
+  def docNoId(
+    isIndividual: Boolean = false,
+    hasUtr: Boolean = false,
+    service: Service = atarService,
+    customsId: Option[CustomsId] = utr,
+    nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = None
   ): Document =
     Jsoup.parse(contentAsString(view(name, eori, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails)))
 

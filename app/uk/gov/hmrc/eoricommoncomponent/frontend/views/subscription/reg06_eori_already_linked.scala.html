@@ -39,34 +39,31 @@
     }
 }
 
-@companyUtr = @{
+@nonIndividualInfo = @{
     nameIdOrganisationDetails match {
-        case u@Some(_) => u.map(_.id).get
-        case _ => None
+        case u@Some(_) =>
+            <p id="organisation-utr" class="govuk-body">{messages("cds.reg06.outcome.eori-already-linked.info.utr", u.map(_.id).get ,eori)}</p>
+        case _ =>
+            <p id="intro-text" class="govuk-body">{messages("ecc.reg06.outcome.eori-already-linked.intro.text", eori)}</p>
     }
 }
 
-@additionalInfo = @{
-nameIdOrganisationDetails match {
-case u@Some(_) => <p id="organisation-utr" class="govuk-body">{messages("cds.reg06.outcome.eori-already-linked.info.utr", companyUtr ,eori)}</p>
-case _ => <p id="intro-text" class="govuk-body">{messages("ecc.reg06.outcome.eori-already-linked.intro.text", eori)}</p>
-}
-
-}
-
-@nino = @{
+@ninoInfo = @{
     customsId match {
-        case n@Some(Nino(_)) => n.map(_.id).get
+        case n@Some(Nino(_)) =>
+            <p id="individual-nino" class="govuk-body">{messages("cds.reg06.outcome.eori-already-linked.info.nino", n.map(_.id).get ,eori)}</p>
         case u@Some(Utr(_)) => None
+        case _              =>
+            <p id="intro-none-text" class="govuk-body">{messages("ecc.reg06.outcome.eori-already-linked.intro.text", eori)}</p>
     }
 }
 
 @infoLink = {
-@if(isIndividual){
-<a class="govuk-link" href=@appConfig.changeOfDetails>@messages("ecc.reg06.outcome.eori-already-linked.individual.link")</a>
-} else {
-<a class="govuk-link" href=@appConfig.changeToBusiness>@messages("ecc.reg06.outcome.eori-already-linked.org.link")</a>
-}
+    @if(isIndividual){
+        <a class="govuk-link" href=@appConfig.changeOfDetails>@messages("ecc.reg06.outcome.eori-already-linked.individual.link")</a>
+    } else {
+        <a class="govuk-link" href=@appConfig.changeToBusiness>@messages("ecc.reg06.outcome.eori-already-linked.org.link")</a>
+    }
 }
 
 @applyLink = {
@@ -82,16 +79,17 @@ case _ => <p id="intro-text" class="govuk-body">{messages("ecc.reg06.outcome.eor
                 @if(hasUtr){
                     <p id="individual-utr" class="govuk-body">@messages("cds.reg06.outcome.eori-already-linked.info.utr", individualUtr, eori)</p>
                 } else {
-                    <p id="individual-nino" class="govuk-body">@messages("cds.reg06.outcome.eori-already-linked.info.nino", nino ,eori)</p>
-                    }
+                    @ninoInfo
+                  }
                 } else {
-                  @additionalInfo
-                }
+                  @nonIndividualInfo
+            }
 
         </div>
 
         <div id="why-unsuccessful">
             <h2 class="govuk-heading-m" id="why-heading">@messages("ecc.reg06.outcome.why-heading")</h2>
+
             <p id="additional-info" class="govuk-body">@Html(messages("ecc.reg06.outcome.eori-already-linked.info", infoLink))</p>
 
             <p id="again-link" class="govuk-body">@Html(messages("ecc.reg06.outcome.apply.again", applyLink))</p>

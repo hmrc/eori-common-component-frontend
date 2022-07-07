@@ -139,17 +139,21 @@ class Reg06IdAlreadyLinkedSpec extends ViewSpec {
       infoElement.text() mustBe "The details you gave us have already been linked to another EORI number, not GB123456789012."
       infoSteps.text() mustBe "They need to follow the steps to add a team member (opens in new tab)."
 
+      infoSteps.toString must include(
+        "www.gov.uk/guidance/get-access-to-the-customs-declaration-service#after-youve-subscribed"
+      )
+
       page.getElementById("individual") mustBe null
       page.getElementById("individual-utr") mustBe null
       page.getElementById("individual-nino") mustBe null
     }
+  }
 
-    "has link to start again" in {
+  "has link to start again" in {
 
-      val link = docUtr().body().getElementById("again-link")
+    val link = docUtr().body().getElementById("again-link")
 
-      link.toString must include(ApplicationController.startSubscription(atarService).url)
-    }
+    link.toString must include(ApplicationController.startSubscription(atarService).url)
   }
 
   implicit val request = withFakeCSRF(FakeRequest.apply("GET", "/atar/subscribe"))
