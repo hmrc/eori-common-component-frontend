@@ -18,30 +18,18 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email
 
 import play.api.Logger
 import play.api.mvc._
-import play.i18n.Messages
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{
-  routes,
-  CdsController,
-  FailedEnrolmentException,
-  MissingGroupId
-}
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, GroupEnrolmentExtractor}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{ExistingEori, GroupId, LoggedInUserWithEnrolments}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.{confirmEmailYesNoAnswerForm, YesNo}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, LongJourney, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  EnrolmentService,
-  MissingEnrolmentException,
-  UpdateVerifiedEmailService
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.UpdateVerifiedEmailService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.{check_your_email, email_confirmed, verify_your_email}
-import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -184,9 +172,7 @@ class CheckYourEmailController @Inject() (
   def toResult(service: Service, subscribeJourney: SubscribeJourney)(implicit r: Request[AnyContent]): Result =
     Ok(emailConfirmedView(service, subscribeJourney))
 
-  private def updateVerifiedEmail(email: String, service: Service, subscribeJourney: SubscribeJourney)(implicit
-    request: Request[AnyContent]
-  ) =
+  private def updateVerifiedEmail(email: String)(implicit request: Request[AnyContent]) =
     for {
       maybeEori <- cdsFrontendDataCache.eori
       result <- maybeEori.fold(Future.successful(Option(false))) {
@@ -219,10 +205,12 @@ class CheckYourEmailController @Inject() (
             // $COVERAGE-ON
             for {
               _ <- subscribeJourney match {
-                case SubscribeJourney(AutoEnrolment) =>
-                  updateVerifiedEmail(email, service, subscribeJourney) //here we update email after it's verified.
-                case SubscribeJourney(LongJourney) =>
-                  Future.successful(()) //if it's a Long Journey we do not update email.
+                case SubscribeJourney(AutoEnrolment) if service.code == Service.cds.code =>
+                  updateVerifiedEmail(email) //here we update email after it's verified.
+                case _ =>
+                  Future.successful(
+                    ()
+                  ) //if it's a Long Journey or Short journey for other services than we do not update email.
               }
               _ <- save4LaterService.saveEmail(groupId, emailStatus.copy(isVerified = true))
               _ <- cdsFrontendDataCache.saveEmail(email)

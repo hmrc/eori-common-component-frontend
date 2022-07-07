@@ -174,7 +174,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       }
     }
 
-    "update verified email for Short Journey (Auto-enrolment)" in {
+    "update verified email for CDS Short Journey (Auto-enrolment)" in {
       when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(true)))
 
@@ -195,11 +195,11 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(false)))
 
-      submitForm(ValidRequest + (yesNoInputName -> answerYes), service = atarService, journey = subscribeJourneyShort) {
+      submitForm(ValidRequest + (yesNoInputName -> answerYes), service = cdsService, journey = subscribeJourneyShort) {
         result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers("Location") should endWith(
-            "/customs-enrolment-services/atar/subscribe/autoenrolment/check-user"
+            "/customs-enrolment-services/cds/subscribe/autoenrolment/check-user"
           )
       }
       verify(mockUpdateVerifiedEmailService, times(1)).updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])
@@ -225,6 +225,31 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
           status(result) shouldBe SEE_OTHER
           result.header.headers("Location") should endWith(
             "/customs-enrolment-services/atar/subscribe/longjourney/check-user"
+          )
+      }
+      verify(mockUpdateVerifiedEmailService, times(0)).updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])
+    }
+
+    "do not update verified email for non-CDS Short Journey" in {
+      when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(emailStatus.copy(isVerified = true))))
+
+      when(
+        mockSave4LaterService
+          .saveEmail(any[GroupId], any[EmailStatus])(any[HeaderCarrier])
+      ).thenReturn(Future.successful(unit))
+
+      when(mockSessionCache.saveEmail(any[String])(any[Request[AnyContent]]))
+        .thenReturn(Future.successful(true))
+
+      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(false)))
+
+      submitForm(ValidRequest + (yesNoInputName -> answerYes), service = atarService, journey = subscribeJourneyShort) {
+        result =>
+          status(result) shouldBe SEE_OTHER
+          result.header.headers("Location") should endWith(
+            "/customs-enrolment-services/atar/subscribe/autoenrolment/check-user"
           )
       }
       verify(mockUpdateVerifiedEmailService, times(0)).updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])

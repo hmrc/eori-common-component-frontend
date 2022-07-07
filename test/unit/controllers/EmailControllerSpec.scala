@@ -28,7 +28,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EmailController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.SubscribeJourney
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
@@ -180,10 +180,19 @@ class EmailControllerSpec
       verify(mockUpdateVerifiedEmailService, times(0)).updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])
     }
 
-    "do update email when it's a Short Journey" in new TestFixture {
-      showFormSubscription(controller)(journey = subscribeJourneyShort) { result =>
+    "do not update email when it's a non CDS Short Journey" in new TestFixture {
+      showFormSubscription(controller)(journey = subscribeJourneyShort, service = atarService) { result =>
         status(result) shouldBe SEE_OTHER
         await(result).header.headers("Location") should endWith("/atar/subscribe/autoenrolment/email-confirmed")
+      }
+
+      verify(mockUpdateVerifiedEmailService, times(0)).updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])
+    }
+
+    "do update email when it's a CDS Short Journey" in new TestFixture {
+      showFormSubscription(controller)(journey = subscribeJourneyShort, service = cdsService) { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("/cds/subscribe/autoenrolment/email-confirmed")
       }
 
       verify(mockUpdateVerifiedEmailService, times(1)).updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])
@@ -273,16 +282,18 @@ class EmailControllerSpec
 
   private def showFormSubscription(
     controller: EmailController
-  )(userId: String = defaultUserId, journey: SubscribeJourney)(test: Future[Result] => Any): Unit =
-    showForm(controller)(userId, journey)(test)
+  )(userId: String = defaultUserId, journey: SubscribeJourney, service: Service = atarService)(
+    test: Future[Result] => Any
+  ): Unit =
+    showForm(controller)(userId, journey, service)(test)
 
   private def showForm(
     controller: EmailController
-  )(userId: String, journey: SubscribeJourney)(test: Future[Result] => Any) {
+  )(userId: String, journey: SubscribeJourney, service: Service = atarService)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller
-        .form(atarService, journey)
+        .form(service, journey)
         .apply(SessionBuilder.buildRequestWithSessionAndPath("/atar", userId))
     )
   }

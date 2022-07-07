@@ -129,11 +129,14 @@ class EmailController @Inject() (
             sessionCache.saveEmail(email)
           }
           _ <- subscribeJourney match {
-            case SubscribeJourney(AutoEnrolment) =>
+            case SubscribeJourney(AutoEnrolment) if service.code == Service.cds.code =>
               updateVerifiedEmail(
                 email
               ) //here the email will be updated in case it was existing in save4later before and was not verified.
-            case SubscribeJourney(LongJourney) => Future.successful(()) //if it's a Long Journey we do not update email.
+            case _ =>
+              Future.successful(
+                ()
+              ) //if it's a Long Journey or Short journey for other services than we do not update email.
           }
         } yield Redirect(CheckYourEmailController.emailConfirmed(service, subscribeJourney))
       case Some(false) =>
