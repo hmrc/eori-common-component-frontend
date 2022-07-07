@@ -18,7 +18,11 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import play.api.Logger
 import play.api.mvc._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, EnrolmentExtractor, GroupEnrolmentExtractor}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
+  AuthAction,
+  EnrolmentExtractor,
+  GroupEnrolmentExtractor
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, LongJourney, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
