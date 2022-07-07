@@ -39,11 +39,13 @@ cds.sub01.outcome.rejected.register.title=Mae’r cais am {0} wedi bod yn aflwyd
 
 cds.reg06.outcome.eori-already-linked.title=Nid yw’r manylion a roesoch i ni yn cyd-fynd â’n cofnodion
 cds.reg06.outcome.eori-already-linked.heading=Nid yw’r manylion a roesoch i ni yn cyd-fynd â’n cofnodion
+ecc.reg06.outcome.eori-already-linked.intro.text=Nid yw’r manylion a nodwyd gennych yn cyd-fynd â’n cofnodion ar gyfer rhif EORI {0}.
 cds.subscription.outcomes.eori-already-linked.use-cds-para1=Mae angen i chi fewngofnodi gyda manylion mewngofnodi {0} ar gyfer Porth y Llywodraeth, a ddefnyddiwyd i gael mynediad at {1}.
 cds.subscription.outcomes.you-will-not-be-able-to-use-service=
 
 ecc.reg06.outcome.id-already-linked.title=Mae’r manylion a roesoch i ni yn cyd-fynd â rhif EORI gwahanol
 ecc.reg06.outcome.id-already-linked.heading=Mae’r manylion a roesoch i ni yn cyd-fynd â rhif EORI gwahanol
+ecc.reg06.outcome.id-already-linked.intro.text=Mae’r manylion a roesoch i ni eisoes wedi’u cysylltu â rhif EORI arall, nid {0}.
 
 cds.subscription.outcomes.inprocessing.we-are-processing=Rydym yn prosesu’ch cais am {0}. Gall hyn gymryd hyd at 5 diwrnod gwaith. Bydd yn rhaid i chi fewngofnodi eto i weld canlyniad eich cofrestriad.
 

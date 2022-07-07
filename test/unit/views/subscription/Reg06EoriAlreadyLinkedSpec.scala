@@ -36,6 +36,7 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
   private val eori              = "GB123456789012"
   private val processedDate     = LocalDateTime.now()
   private val expectedPageTitle = "The details you gave us did not match our records"
+  private val expectedPageIntro = "The details you entered do not match our records for EORI number"
   private val languageUtils     = instanceOf[LanguageUtils]
   private val utr               = Some(Utr("UTRXXXXX"))
   private val utrNumber         = "UTRXXXXX"
@@ -95,10 +96,12 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
       val heading     = page.getElementById("why-heading")
       val utrElement  = page.getElementById("individual-utr")
       val infoElement = page.getElementById("additional-info")
+      val infoText    = page.getElementById("intro-text")
 
       heading.text() mustBe "What you can do now"
       utrElement.text() mustBe s"The Unique Taxpayer Reference, $utrNumber, you entered does not match our records for EORI number $eori."
       infoElement.text() mustBe "If you think our records are incorrect, you can tell us about any changes."
+      infoText.text() mustBe s"The details you entered do not match our records for EORI number $eori."
 
       page.getElementById("individual-nino") mustBe null
       page.getElementById("organisation") mustBe null
@@ -112,10 +115,12 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
       val heading     = page.getElementById("why-heading")
       val ninoElement = page.getElementById("individual-nino")
       val infoElement = page.getElementById("additional-info")
+      val infoText    = page.getElementById("intro-text")
 
       heading.text() mustBe "What you can do now"
       ninoElement.text() mustBe s"The National Insurance number, $ninoNumber, you entered does not match our records for EORI number $eori."
       infoElement.text() mustBe "If you think our records are incorrect, you can tell us about any changes."
+      infoText.text() mustBe s"The details you entered do not match our records for EORI number $eori."
 
       page.getElementById("individual-utr") mustBe null
       page.getElementById("organisation") mustBe null
@@ -129,10 +134,12 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
       val heading     = page.getElementById("why-heading")
       val utrElement  = page.getElementById("organisation-utr")
       val infoElement = page.getElementById("additional-info")
+      val infoText    = page.getElementById("intro-text")
 
       heading.text() mustBe "What you can do now"
       utrElement.text() mustBe s"The Unique Taxpayer Reference, $utrNumber, you entered does not match our records for EORI number $eori."
       infoElement.text() mustBe "If you think our records are incorrect, you can tell us about a change to your business."
+      infoText.text() mustBe s"The details you entered do not match our records for EORI number $eori."
 
       page.getElementById("individual") mustBe null
       page.getElementById("individual-utr") mustBe null
