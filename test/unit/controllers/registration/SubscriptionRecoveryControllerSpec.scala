@@ -189,11 +189,7 @@ class SubscriptionRecoveryControllerSpec
         any()
       )(any())
 
-      verify(mockUpdateVerifiedEmailService, never()).updateVerifiedEmail(
-        any(),
-        any(),
-        any()
-        )(any[HeaderCarrier])
+      verify(mockUpdateVerifiedEmailService, never()).updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])
 
     }
 
@@ -236,11 +232,9 @@ class SubscriptionRecoveryControllerSpec
         any()
       )(any())
 
-      verify(mockUpdateVerifiedEmailService).updateVerifiedEmail(
-        any(),
-        meq("test@example.com"),
-        meq("testEORInumber")
-        )(any[HeaderCarrier])
+      verify(mockUpdateVerifiedEmailService).updateVerifiedEmail(any(), meq("test@example.com"), meq("testEORInumber"))(
+        any[HeaderCarrier]
+      )
     }
 
     "call Enrolment Complete with successful SUB09 call for Subscription ROW journey" in {

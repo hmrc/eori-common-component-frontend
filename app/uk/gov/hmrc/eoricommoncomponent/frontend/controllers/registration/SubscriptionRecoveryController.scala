@@ -215,7 +215,8 @@ class SubscriptionRecoveryController @Inject() (
       // Update Recovered Subscription Information
       _ <- updateSubscription(subscriptionInformation)
       // Update Email
-      _ <- if (service.enrolmentKey == Service.cds.enrolmentKey) updateEmail(subscriptionInformation) else Future.successful(None)
+      _ <- if (service.enrolmentKey == Service.cds.enrolmentKey) updateEmail(subscriptionInformation)
+      else Future.successful(None)
       // Subscribe Call for enrolment
       _ <- subscribe(service, subscriptionInformation)
       // Issuer Call for enrolment
