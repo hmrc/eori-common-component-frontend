@@ -215,7 +215,7 @@ subscription-journey.how-confirm-identity.utr.hint=Rhif 10 digid yw hwn, er engh
 
 cds.reg06.outcome.eori-already-linked.info.utr = Nid yw Cyfeirnod Unigryw y Trethdalwr a nodwyd gennych, sef {0}, yn cyd-fynd â’n cofnodion ar gyfer rhif EORI {1}.
 cds.reg06.outcome.eori-already-linked.info.nino = Nid yw’r rhif Yswiriant Gwladol a nodwyd gennych, sef {0}, yn cyd-fynd â’n cofnodion ar gyfer rhif EORI {1}.
-ecc.reg06.outcome.why-heading = TRANSLATE What you can do now
+ecc.reg06.outcome.why-heading = Yr hyn y gallwch ei wneud nawr
 ecc.reg06.outcome.eori-already-linked.info = Os ydych o’r farn bod ein cofnodion yn anghywir, gallwch {0}
 ecc.reg06.outcome.eori-already-linked.org.link = roi gwybod i ni am newid i’ch busnes neu’ch sefydliad.
 ecc.reg06.outcome.eori-already-linked.individual.link =  roi gwybod i ni am unrhyw newidiadau.
@@ -225,7 +225,7 @@ ecc.reg06.outcome.id-already-linked.info.utr = Mae Cyfeirnod Unigryw y Trethdalw
 ecc.reg06.outcome.id-already-linked.info.nino = Mae’r rhif Yswiriant Gwladol {0} eisoes mewn defnydd ac ni all gael ei baru â {1}.
 ecc.reg06.outcome.id-already-linked.info.text = Os oes eraill yn eich busnes neu’ch sefydliad eisoes yn defnyddio gwasanaethau EORI, gallwch ofyn iddynt eich ychwanegu at yr ID y maent yn ei ddefnyddio ar gyfer Porth y Llywodraeth.
 ecc.reg06.outcome.id-already-linked.info.text.business = Os oes eraill yn {0} eisoes yn defnyddio gwasanaethau EORI, gallwch ofyn iddynt eich ychwanegu at yr ID y maent yn ei ddefnyddio ar gyfer Porth y Llywodraeth.
-ecc.reg06.outcome.id-already-linked.info.steps = TRANSLATE They need to follow the steps to {0}
+ecc.reg06.outcome.id-already-linked.info.steps = Mae’n rhaid iddynt ddilyn y camau i {0}
 ecc.reg06.outcome.id-already-linked.info.link = ychwanegu aelod o’r tîm (yn agor tab newydd).
 
 
