@@ -150,7 +150,7 @@ class SubscriptionRecoveryControllerSpec
         .thenReturn(Future.successful(None))
     }
 
-    "call Enrolment Complete with successful SUB09 call for Subscription UK journey" in {
+    "call Enrolment Complete with successful SUB09 call for Subscription UK journey, default no UpdateEmail" in {
       setupMockCommon()
 
       when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
@@ -188,9 +188,12 @@ class SubscriptionRecoveryControllerSpec
         any(),
         any()
       )(any())
+
+      verify(mockUpdateVerifiedEmailService, never()).updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])
+
     }
 
-    "call Enrolment Complete with successful SUB09 call for Subscription UK journey using CDS formBundle enrichment when service is CDS" in {
+    "call Enrolment Complete with successful SUB09 call for Subscription UK journey using CDS formBundle enrichment when service is CDS, UpdateEmail" in {
       setupMockCommon()
       when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(true)))
@@ -228,6 +231,10 @@ class SubscriptionRecoveryControllerSpec
         any(),
         any()
       )(any())
+
+      verify(mockUpdateVerifiedEmailService).updateVerifiedEmail(any(), meq("test@example.com"), meq("testEORInumber"))(
+        any[HeaderCarrier]
+      )
     }
 
     "call Enrolment Complete with successful SUB09 call for Subscription ROW journey" in {
