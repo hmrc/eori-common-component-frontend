@@ -16,8 +16,6 @@
 
 package unit.views.subscription
 
-import java.time.LocalDateTime
-
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
@@ -25,18 +23,14 @@ import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.ApplicationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.reg06_id_already_linked
-import uk.gov.hmrc.play.language.LanguageUtils
 import util.ViewSpec
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models._
 
 class Reg06IdAlreadyLinkedSpec extends ViewSpec {
 
   private val name              = "John Doe"
   private val eori              = "GB123456789012"
-  private val processedDate     = LocalDateTime.now()
   private val expectedPageTitle = "The details you gave us are matched to a different EORI number"
-  private val languageUtils     = instanceOf[LanguageUtils]
   private val utr               = Some(Utr("UTRXXXXX"))
   private val utrNumber         = "UTRXXXXX"
   private val nino              = Some(Nino("AAXXXXX"))

@@ -32,9 +32,14 @@
     customsId: Option[CustomsId],
     nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel])(implicit messages: Messages, request: Request[_])
 
-@individualUtr = @{
+@individualInfo = @{
     customsId match {
-        case u@Some(Utr(_)) => <p id="individual-utr" class="govuk-body">{messages("cds.reg06.outcome.eori-already-linked.info.utr", u.map(_.id).get, eori)}</p>
+        case u@Some(Utr(_)) =>
+            <p id="individual-utr" class="govuk-body">{messages("cds.reg06.outcome.eori-already-linked.info.utr", u.map(_.id).get, eori)}</p>
+        case n@Some(Nino(_)) =>
+            <p id="individual-nino" class="govuk-body">{messages("cds.reg06.outcome.eori-already-linked.info.nino", n.map(_.id).get ,eori)}</p>
+        case _              =>
+            <p id="intro-ind-text" class="govuk-body">{messages("ecc.reg06.outcome.eori-already-linked.intro.text", eori)}</p>
     }
 }
 
@@ -44,15 +49,6 @@
             <p id="organisation-utr" class="govuk-body">{messages("cds.reg06.outcome.eori-already-linked.info.utr", u.map(_.id).get ,eori)}</p>
         case _ =>
             <p id="intro-text" class="govuk-body">{messages("ecc.reg06.outcome.eori-already-linked.intro.text", eori)}</p>
-    }
-}
-
-@ninoInfo = @{
-    customsId match {
-        case n@Some(Nino(_)) =>
-            <p id="individual-nino" class="govuk-body">{messages("cds.reg06.outcome.eori-already-linked.info.nino", n.map(_.id).get ,eori)}</p>
-        case _              =>
-            <p id="intro-none-text" class="govuk-body">{messages("ecc.reg06.outcome.eori-already-linked.intro.text", eori)}</p>
     }
 }
 
@@ -74,12 +70,8 @@
             <h1 id="page-heading" class="govuk-heading-xl" >@messages("cds.reg06.outcome.eori-already-linked.heading")</h1>
 
             @if(isIndividual){
-                @if(hasUtr){
-                    @individualUtr
-                } else {
-                    @ninoInfo
-                  }
-                } else {
+                    @individualInfo
+            } else {
                     @nonIndividualInfo
             }
 

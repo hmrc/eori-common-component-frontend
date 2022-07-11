@@ -16,8 +16,6 @@
 
 package unit.views.subscription
 
-import java.time.LocalDateTime
-
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
@@ -25,23 +23,17 @@ import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.ApplicationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.reg06_eori_already_linked
-import uk.gov.hmrc.play.language.LanguageUtils
 import util.ViewSpec
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models._
 
 class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
 
   private val name              = "John Doe"
   private val eori              = "GB123456789012"
-  private val processedDate     = LocalDateTime.now()
   private val expectedPageTitle = "The details you gave us did not match our records"
-  private val expectedPageIntro = "The details you entered do not match our records for EORI number"
-  private val languageUtils     = instanceOf[LanguageUtils]
   private val utr               = Some(Utr("UTRXXXXX"))
   private val utrNumber         = "UTRXXXXX"
   private val nino              = Some(Nino("AAXXXXX"))
-  private val ninoNone          = Some(None)
   private val ninoNumber        = "AAXXXXX"
   private val nameIdOrg         = Some(NameIdOrganisationMatchModel("Name", utr.get.id))
 
@@ -186,7 +178,7 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
 
       val heading       = page.getElementById("why-heading")
       val infoElement   = page.getElementById("additional-info")
-      val introNoneText = page.getElementById("intro-none-text")
+      val introNoneText = page.getElementById("intro-ind-text")
 
       heading.text() mustBe "What you can do now"
       infoElement.text() mustBe "If you think our records are incorrect, you can tell us about any changes."
