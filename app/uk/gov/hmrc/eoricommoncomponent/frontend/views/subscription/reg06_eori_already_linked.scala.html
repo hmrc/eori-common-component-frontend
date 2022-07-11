@@ -34,8 +34,7 @@
 
 @individualUtr = @{
     customsId match {
-        case u@Some(Utr(_)) => u.map(_.id).get
-        case n@Some(Nino(_)) => None
+        case u@Some(Utr(_)) => <p id="individual-utr" class="govuk-body">{messages("cds.reg06.outcome.eori-already-linked.info.utr", u.map(_.id).get, eori)}</p>
     }
 }
 
@@ -52,7 +51,6 @@
     customsId match {
         case n@Some(Nino(_)) =>
             <p id="individual-nino" class="govuk-body">{messages("cds.reg06.outcome.eori-already-linked.info.nino", n.map(_.id).get ,eori)}</p>
-        case u@Some(Utr(_)) => None
         case _              =>
             <p id="intro-none-text" class="govuk-body">{messages("ecc.reg06.outcome.eori-already-linked.intro.text", eori)}</p>
     }
@@ -77,12 +75,12 @@
 
             @if(isIndividual){
                 @if(hasUtr){
-                    <p id="individual-utr" class="govuk-body">@messages("cds.reg06.outcome.eori-already-linked.info.utr", individualUtr, eori)</p>
+                    @individualUtr
                 } else {
                     @ninoInfo
                   }
                 } else {
-                  @nonIndividualInfo
+                    @nonIndividualInfo
             }
 
         </div>
