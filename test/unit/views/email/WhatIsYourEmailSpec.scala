@@ -73,12 +73,12 @@ class WhatIsYourEmailSpec extends ViewSpec {
   }
 
   val MigrateDoc: Document = {
-    val result = view(form, atarService)
+    val result = view(form, atarService, subscribeJourneyShort)
     Jsoup.parse(contentAsString(result))
   }
 
   val docWithErrors: Document = {
-    val result = view(formWithError, atarService)
+    val result = view(formWithError, atarService, subscribeJourneyShort)
     Jsoup.parse(contentAsString(result))
   }
 
