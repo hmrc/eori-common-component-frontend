@@ -42,10 +42,12 @@
 }
 
 @organisationUtr = @{
-    nameIdOrganisationDetails match {
-        case u@Some(_) => <p id="organisation-utr" class="govuk-body">{messages("ecc.reg06.outcome.id-already-linked.info.utr", u.map(_.id).get ,eori)}</p>
+    nameIdOrganisationDetails.flatMap {
+        u =>
+        Some(<p id="organisation-utr" class="govuk-body">{messages("ecc.reg06.outcome.id-already-linked.info.utr", u.id ,eori)}</p>)
     }
 }
+
 
 
 @addTeamLink = {
