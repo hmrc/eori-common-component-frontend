@@ -37,10 +37,15 @@ cds.sub01.outcome.rejected.register.heading=Mae’r cais am {0} ar gyfer {1} wed
 cds.sub01.outcome.rejected.register.heading-noname=Mae’r cais am {0} wedi bod yn aflwyddiannus
 cds.sub01.outcome.rejected.register.title=Mae’r cais am {0} wedi bod yn aflwyddiannus
 
-cds.reg06.outcome.eori-already-linked.title=Mae’r cais am danysgrifiad {0} wedi bod yn aflwyddiannus
-cds.reg06.outcome.eori-already-linked.heading=Mae’r cais am danysgrifiad {0} ar gyfer {1} wedi bod yn aflwyddiannus
+cds.reg06.outcome.eori-already-linked.title=Nid yw’r manylion a roesoch i ni yn cyd-fynd â’n cofnodion
+cds.reg06.outcome.eori-already-linked.heading=Nid yw’r manylion a roesoch i ni yn cyd-fynd â’n cofnodion
+ecc.reg06.outcome.eori-already-linked.intro.text=Nid yw’r manylion a nodwyd gennych yn cyd-fynd â’n cofnodion ar gyfer rhif EORI {0}.
 cds.subscription.outcomes.eori-already-linked.use-cds-para1=Mae angen i chi fewngofnodi gyda manylion mewngofnodi {0} ar gyfer Porth y Llywodraeth, a ddefnyddiwyd i gael mynediad at {1}.
 cds.subscription.outcomes.you-will-not-be-able-to-use-service=
+
+ecc.reg06.outcome.id-already-linked.title=Mae’r manylion a roesoch i ni yn cyd-fynd â rhif EORI gwahanol
+ecc.reg06.outcome.id-already-linked.heading=Mae’r manylion a roesoch i ni yn cyd-fynd â rhif EORI gwahanol
+ecc.reg06.outcome.id-already-linked.intro.text=Mae’r manylion a roesoch i ni eisoes wedi’u cysylltu â rhif EORI arall, nid {0}.
 
 cds.subscription.outcomes.inprocessing.we-are-processing=Rydym yn prosesu’ch cais am {0}. Gall hyn gymryd hyd at 5 diwrnod gwaith. Bydd yn rhaid i chi fewngofnodi eto i weld canlyniad eich cofrestriad.
 
@@ -208,15 +213,26 @@ subscription-journey.how-confirm-identity.nino.hint=Mae’r rhif ar eich cerdyn 
 subscription-journey.how-confirm-identity.utr.heading=Nodwch eich Cyfeirnod Unigryw y Trethdalwr
 subscription-journey.how-confirm-identity.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890, a gellir ei ddilyn gan K.
 
-ecc.reg06.outcome.why-heading = Pam nad oedd y cais yn llwyddiannus
-ecc.reg06.outcome.eori = Rhif EORI {0}
-ecc.reg06.outcome.why.individual = Nid yw’r manylion canlynol yn cyd-fynd â’r enw a nodwyd gennych:
-ecc.reg06.outcome.why.org = Nid yw’r manylion canlynol yn cyd-fynd ag enw’r cwmni a nodwyd gennych:
-ecc.reg06.outcome.why.individual.utr = Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad
-ecc.reg06.outcome.why.individual.nino = rhif Yswiriant Gwladol
+cds.reg06.outcome.eori-already-linked.info.utr = Nid yw Cyfeirnod Unigryw y Trethdalwr a nodwyd gennych, sef {0}, yn cyd-fynd â’n cofnodion ar gyfer rhif EORI {1}.
+cds.reg06.outcome.eori-already-linked.info.nino = Nid yw’r rhif Yswiriant Gwladol a nodwyd gennych, sef {0}, yn cyd-fynd â’n cofnodion ar gyfer rhif EORI {1}.
+ecc.reg06.outcome.why-heading = Yr hyn y gallwch ei wneud nawr
+ecc.reg06.outcome.eori-already-linked.info = Os ydych o’r farn bod ein cofnodion yn anghywir, gallwch {0}
+ecc.reg06.outcome.eori-already-linked.org.link = roi gwybod i ni am newid i’ch busnes neu’ch sefydliad.
+ecc.reg06.outcome.eori-already-linked.individual.link =  roi gwybod i ni am unrhyw newidiadau.
+
+ecc.reg06.outcome.id-already-linked.info.eori = Mae’r manylion a roesoch i ni eisoes wedi’u cysylltu â rhif EORI arall, nid {0}.
+ecc.reg06.outcome.id-already-linked.info.utr = Mae Cyfeirnod Unigryw y Trethdalwr {0} eisoes mewn defnydd ac ni all gael ei baru â {1}.
+ecc.reg06.outcome.id-already-linked.info.nino = Mae’r rhif Yswiriant Gwladol {0} eisoes mewn defnydd ac ni all gael ei baru â {1}.
+ecc.reg06.outcome.id-already-linked.info.text = Os oes eraill yn eich busnes neu’ch sefydliad eisoes yn defnyddio gwasanaethau EORI, gallwch ofyn iddynt eich ychwanegu at yr ID y maent yn ei ddefnyddio ar gyfer Porth y Llywodraeth.
+ecc.reg06.outcome.id-already-linked.info.text.business = Os oes eraill yn {0} eisoes yn defnyddio gwasanaethau EORI, gallwch ofyn iddynt eich ychwanegu at yr ID y maent yn ei ddefnyddio ar gyfer Porth y Llywodraeth.
+ecc.reg06.outcome.id-already-linked.info.steps = Mae’n rhaid iddynt ddilyn y camau i {0}
+ecc.reg06.outcome.id-already-linked.info.link = ychwanegu aelod o’r tîm (yn agor tab newydd).
+
+
 ecc.reg06.outcome.why.org.utr = Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)
 ecc.reg06.outcome.why.eori = Rhif EORI
-ecc.reg06.outcome.apply.again = Ewch dros y manylion hyn a <a href="{0} class="govuk-link"">chyflwynwch gais eto</a>.
+ecc.reg06.outcome.apply.again = Gallwch adolygu’r manylion hyn a {0}
+ecc.reg06.outcome.apply.again.link = gwneud cais eto gan ddefnyddio manylion gwahanol.
 
 ecc.unable-to-use.title = Ni allwch gael mynediad at {0} gyda chyfrif Porth y Llywodraeth hwn
 ecc.unable-to-use.this-eori-number = Mae’r rhif EORI:
