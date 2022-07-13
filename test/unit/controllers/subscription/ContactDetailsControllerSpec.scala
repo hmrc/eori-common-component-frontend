@@ -32,7 +32,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.contact_details
@@ -277,7 +277,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     }
 
     "redirect to check your details page if its feature switched off and not CDS enrolment when details are valid" in {
-      when(nextPage.url(any[Service])).thenReturn("/check-your-details")
+      when(nextPage.url(any[Service], any[SubscribeJourney])).thenReturn("/check-your-details")
       withAuthorisedUser(defaultUserId, mockAuthConnector)
       val result = controller
         .submit(isInReviewMode = false, atarService)(
@@ -289,7 +289,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     }
 
     "redirect to check your details page if its feature switched on but it is not CDS enrolment when details are valid" in {
-      when(nextPage.url(any[Service])).thenReturn("/check-your-details")
+      when(nextPage.url(any[Service], any[SubscribeJourney])).thenReturn("/check-your-details")
       when(mockAppConfig.contactAddress).thenReturn(Future.successful(true))
       withAuthorisedUser(defaultUserId, mockAuthConnector)
       val result = controller
@@ -301,7 +301,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       result.header.headers(LOCATION) should endWith("/check-your-details")
     }
     "redirect to contact address page if its feature switched is on and CDS enrolment when details are valid" in {
-      when(nextPage.url(any[Service])).thenReturn("/contact-address")
+      when(nextPage.url(any[Service], any[SubscribeJourney])).thenReturn("/contact-address")
       when(mockAppConfig.contactAddress).thenReturn(Future.successful(true))
       withAuthorisedUser(defaultUserId, mockAuthConnector)
       val result = controller

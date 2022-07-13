@@ -180,7 +180,7 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
     when(mockSubscriptionFlowManager.stepInformation(any())(any[Request[AnyContent]]))
       .thenReturn(mockSubscriptionFlowInfo)
     when(mockSubscriptionFlowInfo.nextPage).thenReturn(mockSubscriptionPage)
-    when(mockSubscriptionPage.url(any())).thenReturn(url)
+    when(mockSubscriptionPage.url(any(), any())).thenReturn(url)
   }
 
 }

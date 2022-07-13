@@ -24,7 +24,7 @@
 
 @this(layout_di: layout, inputText: helpers.inputText, errorSummary: helpers.errorSummary, govukButton: GovukButton)
 
-@(emailForm: Form[EmailViewModel], service: Service)(implicit request: Request[_], messages: Messages)
+@(emailForm: Form[EmailViewModel], service: Service, subscribeJourney: SubscribeJourney)(implicit request: Request[_], messages: Messages)
 
 @layout_di(messages("cds.subscription.enter-email.page.title"), form = Some(emailForm)) {
 
@@ -32,7 +32,7 @@
 
     @errorSummary(emailForm.errors)
 
-    @helpers.form(WhatIsYourEmailController.submit(service),"emailForm") {
+    @helpers.form(WhatIsYourEmailController.submit(service, subscribeJourney),"emailForm") {
 
         @CSRF.formField
 

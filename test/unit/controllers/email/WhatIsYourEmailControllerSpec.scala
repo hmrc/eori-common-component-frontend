@@ -25,6 +25,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.WhatIsYourEmailController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.GroupId
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.what_is_your_email
 import uk.gov.hmrc.http.HeaderCarrier
@@ -66,10 +67,13 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   "What Is Your Email form in create mode" should {
 
-    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(atarService))
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
+      mockAuthConnector,
+      controller.createForm(atarService, subscribeJourneyShort)
+    )
 
     "display title as 'What is your email address'" in {
-      showCreateForm() { result =>
+      showCreateForm(journey = subscribeJourneyShort) { result =>
         val page = CdsPage(contentAsString(result))
         page.title() should startWith("What is your email address?")
       }
@@ -78,14 +82,14 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   "What Is Your Email form" should {
     "be mandatory" in {
-      submitFormInCreateMode(unpopulatedEmailFieldsMap) { result =>
+      submitFormInCreateMode(unpopulatedEmailFieldsMap, journey = subscribeJourneyShort) { result =>
         status(result) shouldBe BAD_REQUEST
       }
     }
 
     "be restricted to 50 characters for email length" in {
       val maxEmail = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx@xxxxxxxxxx"
-      submitFormInCreateMode(unpopulatedEmailFieldsMap ++ Map("email" -> maxEmail)) {
+      submitFormInCreateMode(unpopulatedEmailFieldsMap ++ Map("email" -> maxEmail), journey = subscribeJourneyShort) {
         result =>
           status(result) shouldBe BAD_REQUEST
 
@@ -93,30 +97,39 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "be valid for correct email format" in {
-
-      submitFormInCreateMode(EmailFieldsMap) { result =>
+      submitFormInCreateMode(EmailFieldsMap, journey = subscribeJourneyShort) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers("Location") should endWith(
-          "/customs-enrolment-services/atar/subscribe/matching/check-your-email"
+          "/customs-enrolment-services/atar/subscribe/autoenrolment/matching/check-your-email"
         )
+      }
+    }
 
+    "be valid for correct email format (Long Journey)" in {
+      submitFormInCreateMode(EmailFieldsMap, journey = subscribeJourneyLong) { result =>
+        status(result) shouldBe SEE_OTHER
+        result.header.headers("Location") should endWith(
+          "/customs-enrolment-services/atar/subscribe/longjourney/matching/check-your-email"
+        )
       }
     }
   }
 
-  private def submitFormInCreateMode(form: Map[String, String], userId: String = defaultUserId)(
-    test: Future[Result] => Any
-  ) {
+  private def submitFormInCreateMode(
+    form: Map[String, String],
+    userId: String = defaultUserId,
+    journey: SubscribeJourney
+  )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     val result =
-      controller.submit(atarService)(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
+      controller.submit(atarService, journey)(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }
 
-  private def showCreateForm(userId: String = defaultUserId)(test: Future[Result] => Any) {
+  private def showCreateForm(userId: String = defaultUserId, journey: SubscribeJourney)(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
-      .createForm(atarService)
+      .createForm(atarService, journey)
       .apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }
