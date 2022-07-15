@@ -23,10 +23,10 @@
 @this(layout_di: layout, appConfig: AppConfig)
 @(service: Service)(implicit messages: Messages, request: Request[_])
 
-@layout_di(messages("cds.enrolment.already.exists.title"), displayBackLink = false) {
+@layout_di(messages("cds.enrolment.already.exists.group.title"), displayBackLink = false) {
     <div>
 
-        <h1 id="page-heading" class="govuk-heading-l">@messages("cds.enrolment.already.exists.heading")</h1>
+        <h1 id="page-heading" class="govuk-heading-l">@messages("cds.enrolment.already.exists.group.heading")</h1>
 
         <p id="para1" class="govuk-body">@messages("cds.enrolment.already.exists.for-group.para1", longName)</p>
 

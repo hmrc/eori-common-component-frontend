@@ -12,8 +12,11 @@ cds.has-existing-eori.para1=Yn ôl ein cofnodion, mae’r Dynodydd Defnyddiwr (I
 cds.has-existing-eori.para2=Bydd eich cofrestriad yn gysylltiedig â’r EORI hwn.
 cds.has-existing-eori.para3=Os defnyddiwch EORI gwahanol gan amlaf, dylech allgofnodi a mewngofnodi eto gan ddefnyddio’r Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth sy’n gysylltiedig â’r EORI yr hoffech gofrestru ag ef.
 
-cds.enrolment.already.exists.title=Mae problem wedi codi
-cds.enrolment.already.exists.heading=Mae problem wedi codi
+cds.enrolment.already.exists.group.title=Mae problem wedi codi
+cds.enrolment.already.exists.group.heading=Mae problem wedi codi
+
+cds.enrolment.already.exists.title=Mae gennych fynediad at {0} eisoes
+cds.enrolment.already.exists.heading=Mae gennych fynediad at {0} eisoes
 cds.enrolment.already.exists.para1=Mae ein cofnodion yn dangos bod y Dynodydd Defnyddiwr (ID) hwn ar gyfer Porth y Llywodraeth eisoes wedi’i ddefnyddio i ddanysgrifio i {0}.
 
 cds.proposition.name.service=Cofrestru ar gyfer gwasanaeth tollau
