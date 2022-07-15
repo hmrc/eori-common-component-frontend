@@ -66,12 +66,12 @@ class Save4LaterService @Inject() (save4LaterConnector: Save4LaterConnector) {
     else
       saveEmail(groupId, emailStatus)
 
-  def saveCdsEmail(groupId: GroupId, emailStatus: EmailStatus)(implicit hc: HeaderCarrier): Future[Unit] = {
+  private def saveCdsEmail(groupId: GroupId, emailStatus: EmailStatus)(implicit hc: HeaderCarrier): Future[Unit] = {
     logger.debug(s"saving CDS email address $emailStatus for groupId $groupId")
     save4LaterConnector.put[EmailStatus](groupId.id, cdsEmailKey, emailStatus)
   }
 
-  def fetchCdsEmail(groupId: GroupId)(implicit hc: HeaderCarrier): Future[Option[EmailStatus]] = {
+  private def fetchCdsEmail(groupId: GroupId)(implicit hc: HeaderCarrier): Future[Option[EmailStatus]] = {
     logger.debug(s"fetching CDS EmailStatus groupId $groupId")
     save4LaterConnector
       .get[EmailStatus](groupId.id, cdsEmailKey)
