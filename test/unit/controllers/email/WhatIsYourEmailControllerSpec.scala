@@ -25,7 +25,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.WhatIsYourEmailController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.GroupId
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, SubscribeJourney}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.what_is_your_email
 import uk.gov.hmrc.http.HeaderCarrier
@@ -39,12 +39,10 @@ import scala.concurrent.Future
 
 class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockAuthAction    = authAction(mockAuthConnector)
-
+  private val mockAuthConnector     = mock[AuthConnector]
   private val mockSave4LaterService = mock[Save4LaterService]
-
-  private val whatIsYourEmailView = instanceOf[what_is_your_email]
+  private val mockAuthAction        = authAction(mockAuthConnector)
+  private val whatIsYourEmailView   = instanceOf[what_is_your_email]
 
   private val controller =
     new WhatIsYourEmailController(mockAuthAction, mcc, whatIsYourEmailView, mockSave4LaterService)
@@ -56,13 +54,11 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
   val unpopulatedEmailFieldsMap = Map("email" -> "")
 
   override def beforeEach: Unit = {
-    when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
+    when(mockSave4LaterService.fetchEmailForService(any(), any(), any())(any()))
       .thenReturn(Future.successful(Some(emailStatus)))
 
-    when(
-      mockSave4LaterService
-        .saveEmail(any[GroupId], any[EmailStatus])(any[HeaderCarrier])
-    ).thenReturn(Future.successful(()))
+    when(mockSave4LaterService.saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier]))
+      .thenReturn(Future.successful(()))
   }
 
   "What Is Your Email form in create mode" should {
@@ -118,11 +114,13 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
   private def submitFormInCreateMode(
     form: Map[String, String],
     userId: String = defaultUserId,
-    journey: SubscribeJourney
+    journey: SubscribeJourney,
+    service: Service = atarService,
+    controller: WhatIsYourEmailController = controller
   )(test: Future[Result] => Any) {
     withAuthorisedUser(userId, mockAuthConnector)
     val result =
-      controller.submit(atarService, journey)(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
+      controller.submit(service, journey)(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }
 

@@ -86,13 +86,13 @@ class EmailControllerSpec
   }
 
   override def beforeEach: Unit = {
-    when(mockSave4LaterService.fetchEmail(any[GroupId])(any()))
+    when(mockSave4LaterService.fetchEmailForService(any(), any(), any())(any()))
       .thenReturn(Future.successful(Some(emailStatus)))
     when(
       mockEmailVerificationService
         .isEmailVerified(any[String])(any[HeaderCarrier])
     ).thenReturn(Future.successful(Some(true)))
-    when(mockSave4LaterService.saveEmail(any(), any())(any[HeaderCarrier]))
+    when(mockSave4LaterService.saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier]))
       .thenReturn(Future.successful(()))
     when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])).thenReturn(
       Future.successful(Some(true))
@@ -120,8 +120,9 @@ class EmailControllerSpec
     }
 
     "redirect when cache has no email status" in new TestFixture {
-      when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
+      when(mockSave4LaterService.fetchEmailForService(any(), any(), any())(any()))
         .thenReturn(Future.successful(None))
+
       showFormSubscription(controller)(journey = subscribeJourneyShort) { result =>
         status(result) shouldBe SEE_OTHER
         await(result).header.headers("Location") should endWith(
@@ -131,8 +132,9 @@ class EmailControllerSpec
     }
 
     "redirect when cache has no email status (Long Journey)" in new TestFixture {
-      when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
+      when(mockSave4LaterService.fetchEmailForService(any(), any(), any())(any()))
         .thenReturn(Future.successful(None))
+
       showFormSubscription(controller)(journey = subscribeJourneyLong) { result =>
         status(result) shouldBe SEE_OTHER
         await(result).header.headers("Location") should endWith(
@@ -187,15 +189,6 @@ class EmailControllerSpec
       }
 
       verify(mockUpdateVerifiedEmailService, times(0)).updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])
-    }
-
-    "do update email when it's a CDS Short Journey" in new TestFixture {
-      showFormSubscription(controller)(journey = subscribeJourneyShort, service = cdsService) { result =>
-        status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("/cds/subscribe/autoenrolment/email-confirmed")
-      }
-
-      verify(mockUpdateVerifiedEmailService, times(1)).updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])
     }
 
     "redirect when email verified" in new TestFixture {
@@ -294,7 +287,7 @@ class EmailControllerSpec
     test(
       controller
         .form(service, journey)
-        .apply(SessionBuilder.buildRequestWithSessionAndPath("/atar", userId))
+        .apply(SessionBuilder.buildRequestWithSessionAndPath(s"/${service.code}", userId))
     )
   }
 

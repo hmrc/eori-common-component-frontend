@@ -25,7 +25,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, InternalId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, LongJourney, Service, SubscribeJourney}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.UpdateVerifiedEmailService
@@ -72,7 +72,7 @@ class EmailController @Inject() (
     request: Request[AnyContent],
     user: LoggedInUserWithEnrolments
   ): Future[Result] =
-    save4LaterService.fetchEmail(GroupId(user.groupId)) flatMap {
+    save4LaterService.fetchEmailForService(service, subscribeJourney, GroupId(user.groupId)) flatMap {
       _.fold {
         // $COVERAGE-OFF$Loggers
         logger.info(s"emailStatus cache none ${user.internalId}")
@@ -86,7 +86,7 @@ class EmailController @Inject() (
               }
             else
               checkWithEmailService(email, cachedEmailStatus, service, subscribeJourney)
-          case _ => Future.successful(Redirect(WhatIsYourEmailController.createForm(service, subscribeJourney)))
+          case None => Future.successful(Redirect(WhatIsYourEmailController.createForm(service, subscribeJourney)))
         }
       }
     }
@@ -120,7 +120,11 @@ class EmailController @Inject() (
             // $COVERAGE-OFF$Loggers
             logger.warn("updated verified email status true to save4later")
             // $COVERAGE-ON
-            save4LaterService.saveEmail(GroupId(userWithEnrolments.groupId), emailStatus.copy(isVerified = true))
+            save4LaterService.saveEmailForService(emailStatus.copy(isVerified = true))(
+              service,
+              subscribeJourney,
+              GroupId(userWithEnrolments.groupId)
+            )
           }
           _ <- {
             // $COVERAGE-OFF$Loggers

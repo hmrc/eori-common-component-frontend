@@ -21,7 +21,7 @@ import play.api.Logger
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.CachedData
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -32,9 +32,10 @@ class Save4LaterService @Inject() (save4LaterConnector: Save4LaterConnector) {
 
   private val logger = Logger(this.getClass)
 
-  private val safeIdKey  = "safeId"
-  private val orgTypeKey = "orgType"
-  private val emailKey   = "email"
+  private val safeIdKey   = "safeId"
+  private val orgTypeKey  = "orgType"
+  private val emailKey    = "email"
+  private val cdsEmailKey = "cdsEmail"
 
   def saveSafeId(groupId: GroupId, safeId: SafeId)(implicit hc: HeaderCarrier): Future[Unit] = {
     logger.debug(s"saving SafeId $safeId for groupId $groupId")
@@ -47,6 +48,33 @@ class Save4LaterService @Inject() (save4LaterConnector: Save4LaterConnector) {
     logger.debug(s"saving OrganisationType $mayBeOrgType for groupId $groupId")
     save4LaterConnector
       .put[CdsOrganisationType](groupId.id, orgTypeKey, mayBeOrgType)
+  }
+
+  def fetchEmailForService(service: Service, subscribeJourney: SubscribeJourney, groupId: GroupId)(implicit
+    hc: HeaderCarrier
+  ): Future[Option[EmailStatus]] =
+    if (service.enrolmentKey == Service.cds.enrolmentKey && subscribeJourney.journeyType == AutoEnrolment)
+      fetchCdsEmail(groupId)
+    else
+      fetchEmail(groupId)
+
+  def saveEmailForService(
+    emailStatus: EmailStatus
+  )(service: Service, subscribeJourney: SubscribeJourney, groupId: GroupId)(implicit hc: HeaderCarrier): Future[Unit] =
+    if (service.enrolmentKey == Service.cds.enrolmentKey && subscribeJourney.journeyType == AutoEnrolment)
+      saveCdsEmail(groupId, emailStatus)
+    else
+      saveEmail(groupId, emailStatus)
+
+  def saveCdsEmail(groupId: GroupId, emailStatus: EmailStatus)(implicit hc: HeaderCarrier): Future[Unit] = {
+    logger.debug(s"saving CDS email address $emailStatus for groupId $groupId")
+    save4LaterConnector.put[EmailStatus](groupId.id, cdsEmailKey, emailStatus)
+  }
+
+  def fetchCdsEmail(groupId: GroupId)(implicit hc: HeaderCarrier): Future[Option[EmailStatus]] = {
+    logger.debug(s"fetching CDS EmailStatus groupId $groupId")
+    save4LaterConnector
+      .get[EmailStatus](groupId.id, cdsEmailKey)
   }
 
   def saveEmail(groupId: GroupId, emailStatus: EmailStatus)(implicit hc: HeaderCarrier): Future[Unit] = {

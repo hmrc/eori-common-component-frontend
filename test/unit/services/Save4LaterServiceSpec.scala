@@ -28,7 +28,7 @@ import play.api.libs.json.Reads
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, LongJourney, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -47,10 +47,11 @@ class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAft
 
   private val emailStatus = EmailStatus(Some("test@example.com"))
 
-  private val safeIdKey  = "safeId"
-  private val orgTypeKey = "orgType"
-  private val emailKey   = "email"
-  private val groupIdKey = "cachedGroupId"
+  private val safeIdKey   = "safeId"
+  private val orgTypeKey  = "orgType"
+  private val emailKey    = "email"
+  private val cdsEmailKey = "cdsEmail"
+  private val groupIdKey  = "cachedGroupId"
 
   private val service =
     new Save4LaterService(mockSave4LaterConnector)
@@ -92,6 +93,54 @@ class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAft
       result shouldBe ((): Unit)
     }
 
+    "save the CDS email for CDS Short Journey" in {
+      when(
+        mockSave4LaterConnector.put[EmailStatus](
+          ArgumentMatchers.eq(groupId.id),
+          ArgumentMatchers.eq(cdsEmailKey),
+          ArgumentMatchers.eq(emailStatus)
+        )(any[HeaderCarrier])
+      ).thenReturn(Future.successful(()))
+
+      val result: Unit = service
+        .saveEmailForService(emailStatus)(cdsService, SubscribeJourney(AutoEnrolment), groupId)
+        .futureValue
+
+      result shouldBe ((): Unit)
+    }
+
+    "save email for CDS Long Journey" in {
+      when(
+        mockSave4LaterConnector.put[EmailStatus](
+          ArgumentMatchers.eq(groupId.id),
+          ArgumentMatchers.eq(emailKey),
+          ArgumentMatchers.eq(emailStatus)
+        )(any[HeaderCarrier])
+      ).thenReturn(Future.successful(()))
+
+      val result: Unit = service
+        .saveEmailForService(emailStatus)(cdsService, SubscribeJourney(LongJourney), groupId)
+        .futureValue
+
+      result shouldBe ((): Unit)
+    }
+
+    "save email for non CDS Short Journey" in {
+      when(
+        mockSave4LaterConnector.put[EmailStatus](
+          ArgumentMatchers.eq(groupId.id),
+          ArgumentMatchers.eq(emailKey),
+          ArgumentMatchers.eq(emailStatus)
+        )(any[HeaderCarrier])
+      ).thenReturn(Future.successful(()))
+
+      val result: Unit = service
+        .saveEmailForService(emailStatus)(atarService, SubscribeJourney(AutoEnrolment), groupId)
+        .futureValue
+
+      result shouldBe ((): Unit)
+    }
+
     "save the email against the users InternalId" in {
       when(
         mockSave4LaterConnector.put[EmailStatus](
@@ -120,6 +169,48 @@ class Save4LaterServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAft
         .futureValue
       result shouldBe Some(emailStatus)
     }
+  }
+
+  "fetch the CDS email for CDS Short Journey" in {
+    when(
+      mockSave4LaterConnector.get[EmailStatus](ArgumentMatchers.eq(groupId.id), ArgumentMatchers.eq(cdsEmailKey))(
+        any[HeaderCarrier],
+        any[Reads[EmailStatus]]
+      )
+    ).thenReturn(Future.successful(Some(emailStatus)))
+
+    val result = service
+      .fetchEmailForService(cdsService, SubscribeJourney(AutoEnrolment), groupId)
+      .futureValue
+    result shouldBe Some(emailStatus)
+  }
+
+  "fetch email for CDS Long Journey" in {
+    when(
+      mockSave4LaterConnector.get[EmailStatus](ArgumentMatchers.eq(groupId.id), ArgumentMatchers.eq(emailKey))(
+        any[HeaderCarrier],
+        any[Reads[EmailStatus]]
+      )
+    ).thenReturn(Future.successful(Some(emailStatus)))
+
+    val result = service
+      .fetchEmailForService(cdsService, SubscribeJourney(LongJourney), groupId)
+      .futureValue
+    result shouldBe Some(emailStatus)
+  }
+
+  "fetch email for non CDS Short Journey" in {
+    when(
+      mockSave4LaterConnector.get[EmailStatus](ArgumentMatchers.eq(groupId.id), ArgumentMatchers.eq(emailKey))(
+        any[HeaderCarrier],
+        any[Reads[EmailStatus]]
+      )
+    ).thenReturn(Future.successful(Some(emailStatus)))
+
+    val result = service
+      .fetchEmailForService(atarService, SubscribeJourney(AutoEnrolment), groupId)
+      .futureValue
+    result shouldBe Some(emailStatus)
   }
 
   "fetch the CacheIds for the users InternalId" in {
