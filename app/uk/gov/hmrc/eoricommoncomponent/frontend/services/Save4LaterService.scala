@@ -50,6 +50,10 @@ class Save4LaterService @Inject() (save4LaterConnector: Save4LaterConnector) {
       .put[CdsOrganisationType](groupId.id, orgTypeKey, mayBeOrgType)
   }
 
+  /*
+   * For CDS Short Auto-Enrolment journey we are using a separate save4later cache key in order to allow capturing user's
+   * email for every new subscription.
+   * */
   def fetchEmailForService(service: Service, subscribeJourney: SubscribeJourney, groupId: GroupId)(implicit
     hc: HeaderCarrier
   ): Future[Option[EmailStatus]] =
