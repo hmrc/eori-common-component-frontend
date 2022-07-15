@@ -26,7 +26,6 @@ import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.GroupId
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
@@ -87,11 +86,11 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   val unit       = ()
 
   override def beforeEach: Unit = {
-    when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
-      .thenReturn(Future.successful(Some(emailStatus)))
-
     when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
       .thenReturn(Future.successful(Some(true)))
+
+    when(mockSave4LaterService.fetchEmailForService(any(), any(), any())(any()))
+      .thenReturn(Future.successful(Some(emailStatus)))
   }
 
   override def afterEach(): Unit =
@@ -131,12 +130,8 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
         .thenReturn(Future.successful(Some("GB123456789")))
       when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(true)))
-      when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Some(emailStatus.copy(isVerified = true))))
-      when(
-        mockSave4LaterService
-          .saveEmail(any[GroupId], any[EmailStatus])(any[HeaderCarrier])
-      ).thenReturn(Future.successful(unit))
+      when(mockSave4LaterService.saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(()))
       when(mockSessionCache.saveEmail(any[String])(any[Request[AnyContent]]))
         .thenReturn(Future.successful(true))
 
@@ -153,12 +148,8 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     }
 
     "redirect to Are You based in UK for Already verified email (Long Journey)" in {
-      when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Some(emailStatus.copy(isVerified = true))))
-      when(
-        mockSave4LaterService
-          .saveEmail(any[GroupId], any[EmailStatus])(any[HeaderCarrier])
-      ).thenReturn(Future.successful(unit))
+      when(mockSave4LaterService.saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(()))
       when(mockSessionCache.saveEmail(any[String])(any[Request[AnyContent]]))
         .thenReturn(Future.successful(true))
 
@@ -181,13 +172,8 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       when(mockSessionCache.eori(any[Request[AnyContent]]))
         .thenReturn(Future.successful(Some("GB123456789")))
 
-      when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Some(emailStatus.copy(isVerified = true))))
-
-      when(
-        mockSave4LaterService
-          .saveEmail(any[GroupId], any[EmailStatus])(any[HeaderCarrier])
-      ).thenReturn(Future.successful(unit))
+      when(mockSave4LaterService.saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(()))
 
       when(mockSessionCache.saveEmail(any[String])(any[Request[AnyContent]]))
         .thenReturn(Future.successful(true))
@@ -206,13 +192,9 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     }
 
     "do not update verified email for Long Journey" in {
-      when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Some(emailStatus.copy(isVerified = true))))
 
-      when(
-        mockSave4LaterService
-          .saveEmail(any[GroupId], any[EmailStatus])(any[HeaderCarrier])
-      ).thenReturn(Future.successful(unit))
+      when(mockSave4LaterService.saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(()))
 
       when(mockSessionCache.saveEmail(any[String])(any[Request[AnyContent]]))
         .thenReturn(Future.successful(true))
@@ -231,13 +213,8 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     }
 
     "do not update verified email for non-CDS Short Journey" in {
-      when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Some(emailStatus.copy(isVerified = true))))
-
-      when(
-        mockSave4LaterService
-          .saveEmail(any[GroupId], any[EmailStatus])(any[HeaderCarrier])
-      ).thenReturn(Future.successful(unit))
+      when(mockSave4LaterService.saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(()))
 
       when(mockSessionCache.saveEmail(any[String])(any[Request[AnyContent]]))
         .thenReturn(Future.successful(true))

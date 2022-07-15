@@ -70,7 +70,7 @@ class CheckYourEmailController @Inject() (
   def createForm(service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
-        save4LaterService.fetchEmail(GroupId(userWithEnrolments.groupId)) flatMap {
+        save4LaterService.fetchEmailForService(service, subscribeJourney, GroupId(userWithEnrolments.groupId)) flatMap {
           _.fold {
             // $COVERAGE-OFF$Loggers
             logger.warn("[CheckYourEmailController][createForm] -   emailStatus cache none")
@@ -89,8 +89,7 @@ class CheckYourEmailController @Inject() (
           .bindFromRequest()
           .fold(
             formWithErrors =>
-              save4LaterService
-                .fetchEmail(GroupId(userWithEnrolments.groupId))
+              save4LaterService.fetchEmailForService(service, subscribeJourney, GroupId(userWithEnrolments.groupId))
                 .flatMap {
                   _.fold {
                     // $COVERAGE-OFF$Loggers
@@ -128,40 +127,45 @@ class CheckYourEmailController @Inject() (
   def verifyEmailView(service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
-        save4LaterService.fetchEmail(GroupId(userWithEnrolments.groupId)) flatMap { emailStatus =>
-          emailStatus.fold {
-            // $COVERAGE-OFF$Loggers
-            logger.warn("[CheckYourEmailController][verifyEmailView] -  emailStatus cache none")
-            // $COVERAGE-ON
-            populateEmailVerificationView(None, service, subscribeJourney)
-          } { email =>
-            populateEmailVerificationView(email.email, service, subscribeJourney)
-          }
+        save4LaterService.fetchEmailForService(service, subscribeJourney, GroupId(userWithEnrolments.groupId)) flatMap {
+          emailStatus =>
+            emailStatus.fold {
+              // $COVERAGE-OFF$Loggers
+              logger.warn("[CheckYourEmailController][verifyEmailView] -  emailStatus cache none")
+              // $COVERAGE-ON
+              populateEmailVerificationView(None, service, subscribeJourney)
+            } { email =>
+              populateEmailVerificationView(email.email, service, subscribeJourney)
+            }
         }
     }
 
   def emailConfirmed(service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
-        save4LaterService.fetchEmail(GroupId(userWithEnrolments.groupId)) flatMap { emailStatus =>
-          emailStatus.fold {
-            // $COVERAGE-OFF$Loggers
-            logger.warn("[CheckYourEmailController][emailConfirmed] -  emailStatus cache none")
-            // $COVERAGE-ON
-            Future.successful(Redirect(SecuritySignOutController.signOut(service)))
-          } { email =>
-            if (email.isConfirmed.getOrElse(false))
-              Future.successful(toResult(service, subscribeJourney))
-            else
-              save4LaterService
-                .saveEmail(GroupId(userWithEnrolments.groupId), email.copy(isConfirmed = Some(true)))
-                .map { _ =>
-                  Ok(emailConfirmedView(service, subscribeJourney))
-                }
+        save4LaterService.fetchEmailForService(service, subscribeJourney, GroupId(userWithEnrolments.groupId)) flatMap {
+          emailStatus =>
+            emailStatus.fold {
+              // $COVERAGE-OFF$Loggers
+              logger.warn("[CheckYourEmailController][emailConfirmed] -  emailStatus cache none")
+              // $COVERAGE-ON
+              Future.successful(Redirect(SecuritySignOutController.signOut(service)))
+            } { email =>
+              if (email.isConfirmed.getOrElse(false))
+                Future.successful(toResult(service, subscribeJourney))
+              else
+                save4LaterService
+                  .saveEmailForService(email.copy(isConfirmed = Some(true)))(
+                    service,
+                    subscribeJourney,
+                    GroupId(userWithEnrolments.groupId)
+                  )
+                  .map { _ =>
+                    Ok(emailConfirmedView(service, subscribeJourney))
+                  }
 
-          }
+            }
         }
-
     }
 
   def emailConfirmedContinue(service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
@@ -183,7 +187,7 @@ class CheckYourEmailController @Inject() (
   private def submitNewDetails(groupId: GroupId, service: Service, subscribeJourney: SubscribeJourney)(implicit
     request: Request[AnyContent]
   ): Future[Result] =
-    save4LaterService.fetchEmail(groupId) flatMap {
+    save4LaterService.fetchEmailForService(service, subscribeJourney, groupId) flatMap {
       _.fold {
         throw DataUnavailableException("[CheckYourEmailController][submitNewDetails] - emailStatus cache none")
       } { emailStatus =>
@@ -212,7 +216,11 @@ class CheckYourEmailController @Inject() (
                     ()
                   ) //if it's a Long Journey or Short journey for other services than we do not update email.
               }
-              _ <- save4LaterService.saveEmail(groupId, emailStatus.copy(isVerified = true))
+              _ <- save4LaterService.saveEmailForService(emailStatus.copy(isConfirmed = Some(true)))(
+                service,
+                subscribeJourney,
+                groupId
+              )
               _ <- cdsFrontendDataCache.saveEmail(email)
             } yield Redirect(EmailController.form(service, subscribeJourney))
           case _ =>
