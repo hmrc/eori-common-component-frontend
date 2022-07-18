@@ -56,7 +56,9 @@ class EnrolmentAlreadyExistsControllerSpec extends ControllerSpec with AuthActio
       val page = CdsPage(contentAsString(result))
 
       page.title should startWith("You're already subscribed to")
-      page.getElementsText(RegistrationCompletePage.regExistsPageHeadingXpath) shouldBe "You're already subscribed to Advance Tariff Rulings"
+      page.getElementsText(
+        RegistrationCompletePage.regExistsPageHeadingXpath
+      ) shouldBe "You're already subscribed to Advance Tariff Rulings"
       page.getElementsText(paragraphXpath) should be(empty)
       page.getElementsText(buttonXpath) should include("Continue")
 
