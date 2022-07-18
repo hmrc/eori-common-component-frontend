@@ -23,12 +23,10 @@
 
 @(service: Service)(implicit messages: Messages, request: Request[_])
 
-@layout_di(messages("cds.enrolment.already.exists.title"), displayBackLink = false) {
+@layout_di(messages("cds.enrolment.already.exists.title", longName), displayBackLink = false) {
     <div>
 
-        <h1 id="page-heading" class="govuk-heading-l">@messages("cds.enrolment.already.exists.heading")</h1>
-
-        <p id="para1" class="govuk-body">@messages("cds.enrolment.already.exists.para1", longName)</p>
+        <h1 id="page-heading" class="govuk-heading-l">@messages("cds.enrolment.already.exists.heading", longName)</h1>
 
         @if(service.callBack.nonEmpty){
             @callBackContinue(service)
