@@ -99,13 +99,16 @@ class EmailController @Inject() (
         )(otherUserWithinGroupIsInProcess(service))
     }
 
-  private def updateVerifiedEmail(email: String)(implicit request: Request[AnyContent]): Future[Unit] =
+  private def updateVerifiedEmail(email: String)(implicit request: Request[AnyContent]) =
     for {
       maybeEori <- sessionCache.eori
       result <- maybeEori.fold(Future.successful(Option(false))) {
         eori => updateVerifiedEmailService.updateVerifiedEmail(None, email, eori)
       }
-    } yield result.map(isUpdated => if (isUpdated) () else throw new IllegalArgumentException("UpdateEmail failed"))
+    } yield result match {
+      case Some(isUpdated) if isUpdated => ()
+      case _                            => throw new IllegalArgumentException("UpdateEmail failed")
+    }
 
   private def checkWithEmailService(
     email: String,
@@ -116,6 +119,16 @@ class EmailController @Inject() (
     emailVerificationService.isEmailVerified(email).flatMap {
       case Some(true) =>
         for {
+          _ <- subscribeJourney match {
+            case SubscribeJourney(AutoEnrolment) if service.enrolmentKey == Service.cds.enrolmentKey =>
+              updateVerifiedEmail(
+                email
+              ) //here the email will be updated in case it was existing in save4later before and was not verified.
+            case _ =>
+              Future.successful(
+                ()
+              ) //if it's a Long Journey or Short journey for other services than we do not update email.
+          }
           _ <- {
             // $COVERAGE-OFF$Loggers
             logger.warn("updated verified email status true to save4later")
@@ -131,16 +144,6 @@ class EmailController @Inject() (
             logger.warn("saved verified email address true to cache")
             // $COVERAGE-ON
             sessionCache.saveEmail(email)
-          }
-          _ <- subscribeJourney match {
-            case SubscribeJourney(AutoEnrolment) if service.enrolmentKey == Service.cds.enrolmentKey =>
-              updateVerifiedEmail(
-                email
-              ) //here the email will be updated in case it was existing in save4later before and was not verified.
-            case _ =>
-              Future.successful(
-                ()
-              ) //if it's a Long Journey or Short journey for other services than we do not update email.
           }
         } yield Redirect(CheckYourEmailController.emailConfirmed(service, subscribeJourney))
       case Some(false) =>

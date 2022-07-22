@@ -191,6 +191,31 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       verify(mockUpdateVerifiedEmailService, times(1)).updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])
     }
 
+    "do not save email when updating email fails" in {
+      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(None))
+
+      when(mockSessionCache.eori(any[Request[AnyContent]]))
+        .thenReturn(Future.successful(Some("GB123456789")))
+
+      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(false)))
+
+      the[IllegalArgumentException] thrownBy submitForm(
+        ValidRequest + (yesNoInputName -> answerYes),
+        service = cdsService,
+        journey = subscribeJourneyShort
+      ) {
+        result =>
+          status(result) shouldBe SEE_OTHER
+          result.header.headers("Location") should endWith(
+            "/customs-enrolment-services/cds/subscribe/autoenrolment/check-user"
+          )
+      } should have message "UpdateEmail failed"
+
+      verify(mockSave4LaterService, times(0)).saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier])
+    }
+
     "do not update verified email for Long Journey" in {
 
       when(mockSave4LaterService.saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier]))
