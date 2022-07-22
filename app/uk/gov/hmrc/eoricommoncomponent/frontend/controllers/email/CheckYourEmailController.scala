@@ -182,7 +182,10 @@ class CheckYourEmailController @Inject() (
       result <- maybeEori.fold(Future.successful(Option(false))) {
         eori => updateVerifiedEmailService.updateVerifiedEmail(None, email, eori)
       }
-    } yield result.map(isUpdated => if (isUpdated) () else throw new IllegalArgumentException("UpdateEmail failed"))
+    } yield result match {
+      case Some(isUpdated) if isUpdated => ()
+      case _                            => throw new IllegalArgumentException("UpdateEmail failed")
+    }
 
   private def submitNewDetails(groupId: GroupId, service: Service, subscribeJourney: SubscribeJourney)(implicit
     request: Request[AnyContent]

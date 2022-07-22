@@ -191,6 +191,30 @@ class EmailControllerSpec
       verify(mockUpdateVerifiedEmailService, times(0)).updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])
     }
 
+    "do call update email when it's CDS Short Journey" in new TestFixture {
+      showFormSubscription(controller)(journey = subscribeJourneyShort, service = cdsService) { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("/cds/subscribe/autoenrolment/email-confirmed")
+      }
+
+      verify(mockUpdateVerifiedEmailService, times(1)).updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])
+    }
+
+    "do not save email when updating email fails" in new TestFixture {
+      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])).thenReturn(
+        Future.successful(Some(false))
+      )
+      the[IllegalArgumentException] thrownBy showFormSubscription(controller)(
+        journey = subscribeJourneyShort,
+        service = cdsService
+      ) { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith("/cds/subscribe/autoenrolment/email-confirmed")
+      } should have message "UpdateEmail failed"
+
+      verify(mockSave4LaterService, times(0)).saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier])
+    }
+
     "redirect when email verified" in new TestFixture {
       when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(emailStatus.copy(isVerified = true))))
