@@ -48,7 +48,7 @@ class UpdateCustomsDataStoreConnector @Inject() (http: HttpClient, appConfig: Ap
       response.status match {
         case OK | NO_CONTENT =>
           logger.info(
-            s"[$LoggerComponentId][call] complete for call to $url and headers $headersForLogging. Status:${response.status}"
+            s"[$LoggerComponentId][call] complete to $url with status:${response.status}"
           )
           ()
         case _ => throw new BadRequestException(s"Status:${response.status}")
@@ -56,13 +56,13 @@ class UpdateCustomsDataStoreConnector @Inject() (http: HttpClient, appConfig: Ap
     } recoverWith {
       case e: BadRequestException =>
         logger.error(
-          s"[$LoggerComponentId][call] request failed with BAD_REQUEST status for call to $url and headers $headersForLogging: ${e.getMessage}",
+          s"[$LoggerComponentId][call] request failed with BAD_REQUEST status for call to $url: ${e.getMessage}",
           e
         )
         Future.failed(e)
       case NonFatal(e) =>
         logger.error(
-          s"[$LoggerComponentId][call] request failed for call to $url and headers $headersForLogging: ${e.getMessage}",
+          s"[$LoggerComponentId][call] request failed for call to $url: ${e.getMessage}",
           e
         )
         Future.failed(e)
@@ -88,5 +88,4 @@ class UpdateCustomsDataStoreConnector @Inject() (http: HttpClient, appConfig: Ap
         eventType = "Customs-Data-Store-Update-Response"
       )
     }
-
 }
