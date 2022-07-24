@@ -41,15 +41,13 @@ class UpdateCustomsDataStoreConnector @Inject() (http: HttpClient, appConfig: Ap
     val url = s"${appConfig.handleSubscriptionBaseUrl}/customs/update/datastore"
     logger.info(s"[$LoggerComponentId][call] postUrl: $url")
     val headers = Seq(ACCEPT -> "application/vnd.hmrc.1.0+json", CONTENT_TYPE -> MimeTypes.JSON)
-    
+
     auditCallRequest(url, request)
     http.POST[CustomsDataStoreRequest, HttpResponse](url, request, headers) map { response =>
       auditCallResponse(url, response)
       response.status match {
         case OK | NO_CONTENT =>
-          logger.info(
-            s"[$LoggerComponentId][call] complete to $url with status:${response.status}"
-          )
+          logger.info(s"[$LoggerComponentId][call] complete to $url with status:${response.status}")
           ()
         case _ => throw new BadRequestException(s"Status:${response.status}")
       }
@@ -61,10 +59,7 @@ class UpdateCustomsDataStoreConnector @Inject() (http: HttpClient, appConfig: Ap
         )
         Future.failed(e)
       case NonFatal(e) =>
-        logger.error(
-          s"[$LoggerComponentId][call] request failed for call to $url: ${e.getMessage}",
-          e
-        )
+        logger.error(s"[$LoggerComponentId][call] request failed for call to $url: ${e.getMessage}", e)
         Future.failed(e)
     }
   }
@@ -88,4 +83,5 @@ class UpdateCustomsDataStoreConnector @Inject() (http: HttpClient, appConfig: Ap
         eventType = "Customs-Data-Store-Update-Response"
       )
     }
+
 }
