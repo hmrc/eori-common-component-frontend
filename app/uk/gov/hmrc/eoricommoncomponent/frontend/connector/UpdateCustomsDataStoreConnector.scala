@@ -40,8 +40,8 @@ class UpdateCustomsDataStoreConnector @Inject() (http: HttpClient, appConfig: Ap
   def updateCustomsDataStore(request: CustomsDataStoreRequest)(implicit hc: HeaderCarrier): Future[Unit] = {
     val url = s"${appConfig.handleSubscriptionBaseUrl}/customs/update/datastore"
     logger.info(s"[$LoggerComponentId][call] postUrl: $url")
-    val headers           = Seq(ACCEPT -> "application/vnd.hmrc.1.0+json", CONTENT_TYPE -> MimeTypes.JSON)
-    val headersForLogging = hc.headers(explicitlyIncludedHeaders) ++ hc.extraHeaders ++ headers
+    val headers = Seq(ACCEPT -> "application/vnd.hmrc.1.0+json", CONTENT_TYPE -> MimeTypes.JSON)
+    
     auditCallRequest(url, request)
     http.POST[CustomsDataStoreRequest, HttpResponse](url, request, headers) map { response =>
       auditCallResponse(url, response)
