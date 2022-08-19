@@ -18,6 +18,8 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
 import org.joda.time.format.ISODateTimeFormat
 import play.api.Logger
+import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.VerifiedEmailRequest
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{
   UpdateCustomsDataStoreConnector,
@@ -35,10 +37,13 @@ import scala.concurrent.{ExecutionContext, Future}
 class UpdateVerifiedEmailService @Inject() (
   reqCommonGenerator: RequestCommonGenerator,
   updateVerifiedEmailConnector: UpdateVerifiedEmailConnector,
-  customsDataStoreConnector: UpdateCustomsDataStoreConnector
+  customsDataStoreConnector: UpdateCustomsDataStoreConnector,
+  audit: Auditable,
+  appConfig: AppConfig
 )(implicit ec: ExecutionContext) {
 
-  private val logger = Logger(this.getClass)
+  private val url: String = appConfig.getServiceUrl("update-verified-email")
+  private val logger      = Logger(this.getClass)
 
   def updateVerifiedEmail(currentEmail: Option[String] = None, newEmail: String, eori: String)(implicit
     hc: HeaderCarrier
@@ -56,11 +61,14 @@ class UpdateVerifiedEmailService @Inject() (
       newEmail,
       requestDetail.emailVerificationTimestamp.toString(ISODateTimeFormat.dateTimeNoMillis().withZoneUTC())
     )
-    updateVerifiedEmailConnector.updateVerifiedEmail(request, currentEmail).flatMap {
+    updateVerifiedEmailConnector.updateVerifiedEmail(request).flatMap {
       case Right(res)
           if res.updateVerifiedEmailResponse.responseCommon.returnParameters
             .exists(msp => msp.head.paramName == MessagingServiceParam.formBundleIdParamName) =>
-        logger.debug("[UpdateVerifiedEmailService][updateVerifiedEmail] - successfully updated verified email")
+        auditRequest(currentEmail, newEmail, eori, "changeEmailAddressConfirmed")
+        auditRequest(currentEmail, newEmail, eori, "changeEmailAddressVerified")
+
+        logger.info("[UpdateVerifiedEmailService][updateVerifiedEmail] - successfully updated verified email")
         customsDataStoreConnector.updateCustomsDataStore(customsDataStoreRequest).map(_ => Some(true))
       case Right(res) =>
         val statusText = res.updateVerifiedEmailResponse.responseCommon.statusText
@@ -76,5 +84,25 @@ class UpdateVerifiedEmailService @Inject() (
         Future.successful(None)
     }
   }
+
+  private def auditRequest(currentEmail: Option[String], newEmail: String, eoriNumber: String, auditType: String)(
+    implicit hc: HeaderCarrier
+  ): Unit =
+    currentEmail.fold(
+      audit.sendDataEvent(
+        transactionName = "UpdateVerifiedEmailRequestSubmitted",
+        path = url,
+        detail = Map("newEmailAddress" -> newEmail, "eori" -> eoriNumber),
+        eventType = auditType
+      )
+    )(
+      emailAddress =>
+        audit.sendDataEvent(
+          transactionName = "UpdateVerifiedEmailRequestSubmitted",
+          path = url,
+          detail = Map("currentEmailAddress" -> emailAddress, "newEmailAddress" -> newEmail, "eori" -> eoriNumber),
+          eventType = auditType
+        )
+    )
 
 }
