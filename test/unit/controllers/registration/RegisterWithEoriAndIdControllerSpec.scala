@@ -1176,6 +1176,8 @@ class RegisterWithEoriAndIdControllerSpec
         .thenReturn(Future.successful(stubHandleErrorCodeResponse(EoriAlreadyLinked)))
       when(mockCache.remove(any[Request[_]]))
         .thenReturn(Future.successful(true))
+      when(mockCache.email(any[Request[_]]))
+        .thenReturn(Future.successful("email@mail.com"))
 
       invokeEoriAlreadyLinked() { result =>
         status(result) shouldBe OK

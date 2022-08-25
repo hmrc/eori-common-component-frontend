@@ -15,13 +15,13 @@
  *@
 
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
-@import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.JourneyStatus
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 @import uk.gov.hmrc.play.language.LanguageUtils
-@import java.time.{LocalDate, LocalDateTime}
 @import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+@import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NameIdOrganisationMatchModel
+@import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CustomsId
 
 @this(layout_di: layout, appConfig: AppConfig, feedback_di: helpers.feedback, help_di: partials.if_you_need_help, languageUtils: LanguageUtils)
 
@@ -31,7 +31,8 @@
     isIndividual: Boolean,
     hasUtr: Boolean,
     customsId: Option[CustomsId],
-    nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel])(implicit messages: Messages, request: Request[_])
+    nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel],
+    email: String)(implicit messages: Messages, request: Request[_])
 
 @individualInfo = @{
    if(hasUtr){
@@ -71,24 +72,10 @@
     </div>
 
     <div id="why-unsuccessful">
-        <h2 class="govuk-heading-m" id="why-heading">@messages("ecc.reg06.outcome.why-heading")</h2>
-        <p id="again-link" class="govuk-body">@Html(messages("ecc.reg06.outcome.apply.again", applyLink))</p>
-
-        @if(!isIndividual){
-            @if(orgName == "None"){
-                <p id="info-text" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.text")</p>
-            } else {
-                <p id="info-text-org" class="govuk-body">@messages("ecc.reg06.outcome.id-already-linked.info.text.business", orgName)</p>
-            }
-        }
-        @if(!isIndividual){
-            <p id="info-steps" class="govuk-body">@Html(messages("ecc.reg06.outcome.id-already-linked.info.steps", addTeamLink))</p>
-        }
+        <p id="again-link" class="govuk-body"> @messages("ecc.reg06.outcome.id-already-linked.info.contact", email)</p>
     </div>
 
     @helpers.feedbackBackContinue(service, JourneyStatus.Failed)
-
-    @help_di()
 
     @feedback_di()
 </div>

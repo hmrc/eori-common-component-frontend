@@ -29,6 +29,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 class Reg06IdAlreadyLinkedSpec extends ViewSpec {
 
   private val name              = "John Doe"
+  private val email             = "email@email.email"
   private val eori              = "GB123456789012"
   private val expectedPageTitle = "The details you gave us are matched to a different EORI number"
   private val utr               = Some(Utr("UTRXXXXX"))
@@ -87,11 +88,9 @@ class Reg06IdAlreadyLinkedSpec extends ViewSpec {
 
       val page = docUtr(isIndividual = true, hasUtr = true).body()
 
-      val heading     = page.getElementById("why-heading")
       val utrElement  = page.getElementById("individual-utr")
       val infoElement = page.getElementById("additional-info")
 
-      heading.text() mustBe "What you can do now"
       utrElement.text() mustBe s"The Unique Taxpayer Reference, $utrNumber, is already used and cannot be matched with $eori."
       infoElement.text() mustBe "The details you gave us have already been linked to another EORI number, not GB123456789012."
 
@@ -105,11 +104,9 @@ class Reg06IdAlreadyLinkedSpec extends ViewSpec {
 
       val page = docNino(isIndividual = true, hasUtr = false).body()
 
-      val heading     = page.getElementById("why-heading")
       val ninoElement = page.getElementById("individual-nino")
       val infoElement = page.getElementById("additional-info")
 
-      heading.text() mustBe "What you can do now"
       ninoElement.text() mustBe s"The National Insurance number, $ninoNumber, is already used and cannot be matched with $eori."
       infoElement.text() mustBe "The details you gave us have already been linked to another EORI number, not GB123456789012."
 
@@ -123,31 +120,16 @@ class Reg06IdAlreadyLinkedSpec extends ViewSpec {
 
       val page = docUtr(isIndividual = false, hasUtr = false).body()
 
-      val heading     = page.getElementById("why-heading")
       val utrElement  = page.getElementById("organisation-utr")
       val infoElement = page.getElementById("additional-info")
-      val infoSteps   = page.getElementById("info-steps")
 
-      heading.text() mustBe "What you can do now"
       utrElement.text() mustBe s"The Unique Taxpayer Reference, $utrNumber, is already used and cannot be matched with $eori."
       infoElement.text() mustBe "The details you gave us have already been linked to another EORI number, not GB123456789012."
-      infoSteps.text() mustBe "They need to follow the steps to add a team member (opens in new tab)."
-
-      infoSteps.toString must include(
-        "www.gov.uk/guidance/get-access-to-the-customs-declaration-service#after-youve-subscribed"
-      )
 
       page.getElementById("individual") mustBe null
       page.getElementById("individual-utr") mustBe null
       page.getElementById("individual-nino") mustBe null
     }
-  }
-
-  "has link to start again" in {
-
-    val link = docUtr().body().getElementById("again-link")
-
-    link.toString must include(ApplicationController.startSubscription(atarService).url)
   }
 
   implicit val request = withFakeCSRF(FakeRequest.apply("GET", "/atar/subscribe"))
@@ -159,7 +141,9 @@ class Reg06IdAlreadyLinkedSpec extends ViewSpec {
     customsId: Option[CustomsId] = utr,
     nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg
   ): Document =
-    Jsoup.parse(contentAsString(view(name, eori, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails)))
+    Jsoup.parse(
+      contentAsString(view(name, eori, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails, email))
+    )
 
   def docNino(
     isIndividual: Boolean = true,
@@ -168,6 +152,8 @@ class Reg06IdAlreadyLinkedSpec extends ViewSpec {
     customsId: Option[CustomsId] = nino,
     nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg
   ): Document =
-    Jsoup.parse(contentAsString(view(name, eori, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails)))
+    Jsoup.parse(
+      contentAsString(view(name, eori, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails, email))
+    )
 
 }
