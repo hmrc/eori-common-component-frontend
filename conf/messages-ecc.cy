@@ -230,6 +230,7 @@ ecc.reg06.outcome.id-already-linked.info.text = Os oes eraill yn eich busnes neu
 ecc.reg06.outcome.id-already-linked.info.text.business = Os oes eraill yn {0} eisoes yn defnyddio gwasanaethau EORI, gallwch ofyn iddynt eich ychwanegu at yr ID y maent yn ei ddefnyddio ar gyfer Porth y Llywodraeth.
 ecc.reg06.outcome.id-already-linked.info.steps = Mae’n rhaid iddynt ddilyn y camau i {0}
 ecc.reg06.outcome.id-already-linked.info.link = ychwanegu aelod o’r tîm (yn agor tab newydd).
+ecc.reg06.outcome.id-already-linked.info.contact = Bydd y manylion a roesoch i ni yn cael eu hadolygu gan y tîm perthnasol. Byddant yn cysylltu â chi ar {0} cyn pen tri diwrnod gwaith er mwyn rhoi’r camau nesaf i chi.
 
 
 ecc.reg06.outcome.why.org.utr = Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)

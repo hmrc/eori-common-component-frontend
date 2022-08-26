@@ -188,6 +188,7 @@ class RegisterWithEoriAndIdController @Inject() (
         customsId                 <- cache.subscriptionDetails.map(_.customsId)
         nameIdOrganisationDetails <- cache.subscriptionDetails.map(_.nameIdOrganisationDetails)
         response                  <- cache.registerWithEoriAndIdResponse
+        email                     <- cache.email
         _                         <- cache.remove
       } yield {
         val eoriNumber = (maybeEori, maybeExistingEori) match {
@@ -205,7 +206,16 @@ class RegisterWithEoriAndIdController @Inject() (
           case _ => (false, false)
         }
         Ok(
-          reg06EoriAlreadyLinked(name, eoriNumber, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails)
+          reg06EoriAlreadyLinked(
+            name,
+            eoriNumber,
+            service,
+            isIndividual,
+            hasUtr,
+            customsId,
+            nameIdOrganisationDetails,
+            email
+          )
         ).withSession(newUserSession)
       }
     }
@@ -218,6 +228,7 @@ class RegisterWithEoriAndIdController @Inject() (
         maybeExistingEori         <- cache.subscriptionDetails.map(_.existingEoriNumber)
         customsId                 <- cache.subscriptionDetails.map(_.customsId)
         nameIdOrganisationDetails <- cache.subscriptionDetails.map(_.nameIdOrganisationDetails)
+        email                     <- cache.email
         response                  <- cache.registerWithEoriAndIdResponse
         _                         <- cache.remove
       } yield {
@@ -236,7 +247,16 @@ class RegisterWithEoriAndIdController @Inject() (
           case _ => (false, false)
         }
         Ok(
-          reg06IdAlreadyLinked(name, eoriNumber, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails)
+          reg06IdAlreadyLinked(
+            name,
+            eoriNumber,
+            service,
+            isIndividual,
+            hasUtr,
+            customsId,
+            nameIdOrganisationDetails,
+            email
+          )
         ).withSession(newUserSession)
       }
     }
