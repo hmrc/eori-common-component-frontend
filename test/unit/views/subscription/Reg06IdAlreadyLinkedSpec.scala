@@ -130,6 +130,38 @@ class Reg06IdAlreadyLinkedSpec extends ViewSpec {
       page.getElementById("individual-utr") mustBe null
       page.getElementById("individual-nino") mustBe null
     }
+
+    "has specific content for No Ids Organisation" in {
+      val page = docNoId(isIndividual = false, hasUtr = false).body()
+
+      val introElement   = page.getElementById("additional-info")
+      val contactElement = page.getElementById("contact-info")
+
+      introElement.text() mustBe "The details you gave us have already been linked to another EORI number, not GB123456789012."
+      contactElement.text() mustBe "The details you gave us will be reviewed by the relevant team. They will contact you on email@email.email within three working days to provide the next steps."
+
+      page.getElementById("organisation-utr") mustBe null
+      page.getElementById("individual") mustBe null
+      page.getElementById("individual-utr") mustBe null
+      page.getElementById("individual-nino") mustBe null
+      page.getElementById("intro-nino-text") mustBe null
+    }
+
+    "has specific content for individual with no UTR or no NINO" in {
+      val page = docNinoNone(isIndividual = true, hasUtr = false).body()
+
+      val introElement   = page.getElementById("additional-info")
+      val contactElement = page.getElementById("contact-info")
+
+      introElement.text() mustBe "The details you gave us have already been linked to another EORI number, not GB123456789012."
+      contactElement.text() mustBe "The details you gave us will be reviewed by the relevant team. They will contact you on email@email.email within three working days to provide the next steps."
+
+      page.getElementById("individual-utr") mustBe null
+      page.getElementById("individual-nino") mustBe null
+      page.getElementById("organisation") mustBe null
+      page.getElementById("organisation-utr") mustBe null
+      page.getElementById("intro-text") mustBe null
+    }
   }
 
   implicit val request = withFakeCSRF(FakeRequest.apply("GET", "/atar/subscribe"))
@@ -150,6 +182,28 @@ class Reg06IdAlreadyLinkedSpec extends ViewSpec {
     hasUtr: Boolean = true,
     service: Service = atarService,
     customsId: Option[CustomsId] = nino,
+    nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg
+  ): Document =
+    Jsoup.parse(
+      contentAsString(view(name, eori, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails, email))
+    )
+
+  def docNoId(
+    isIndividual: Boolean = false,
+    hasUtr: Boolean = false,
+    service: Service = atarService,
+    customsId: Option[CustomsId] = utr,
+    nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = None
+  ): Document =
+    Jsoup.parse(
+      contentAsString(view(name, eori, service, isIndividual, hasUtr, customsId, nameIdOrganisationDetails, email))
+    )
+
+  def docNinoNone(
+    isIndividual: Boolean = true,
+    hasUtr: Boolean = false,
+    service: Service = atarService,
+    customsId: Option[CustomsId] = None,
     nameIdOrganisationDetails: Option[NameIdOrganisationMatchModel] = nameIdOrg
   ): Document =
     Jsoup.parse(

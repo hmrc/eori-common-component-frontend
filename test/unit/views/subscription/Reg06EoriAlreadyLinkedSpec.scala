@@ -20,11 +20,10 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.ApplicationController
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.reg06_eori_already_linked
 import util.ViewSpec
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 
 class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
 
@@ -88,7 +87,7 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
       val page = docUtr(isIndividual = true, hasUtr = true).body()
 
       val utrElement     = page.getElementById("individual-utr")
-      val contactElement = page.getElementById("again-link")
+      val contactElement = page.getElementById("contact-info")
 
       utrElement.text() mustBe s"The Unique Taxpayer Reference, $utrNumber, you entered does not match our records for EORI number $eori."
       contactElement.text() mustBe "The details you gave us will be reviewed by the relevant team. They will contact you on email@email.email within three working days to provide the next steps."
@@ -105,7 +104,7 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
       val page = docNino(isIndividual = true, hasUtr = false).body()
 
       val ninoElement    = page.getElementById("individual-nino")
-      val contactElement = page.getElementById("again-link")
+      val contactElement = page.getElementById("contact-info")
 
       ninoElement.text() mustBe s"The National Insurance number, $ninoNumber, you entered does not match our records for EORI number $eori."
       contactElement.text() mustBe "The details you gave us will be reviewed by the relevant team. They will contact you on email@email.email within three working days to provide the next steps."
@@ -122,7 +121,7 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
       val page = docOrgUtr(isIndividual = false, hasUtr = false).body()
 
       val utrElement     = page.getElementById("organisation-utr")
-      val contactElement = page.getElementById("again-link")
+      val contactElement = page.getElementById("contact-info")
 
       utrElement.text() mustBe s"The Unique Taxpayer Reference, $utrNumber, you entered does not match our records for EORI number $eori."
       contactElement.text() mustBe "The details you gave us will be reviewed by the relevant team. They will contact you on email@email.email within three working days to provide the next steps."
@@ -138,7 +137,7 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
 
       val page = docNoId(isIndividual = false, hasUtr = false).body()
 
-      val contactElement = page.getElementById("again-link")
+      val contactElement = page.getElementById("contact-info")
       val introElement   = page.getElementById("intro-text")
 
       introElement.text() mustBe "The details you entered do not match our records for EORI number GB123456789012."
@@ -155,7 +154,7 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
 
       val page = docNinoNone(isIndividual = true, hasUtr = false).body()
 
-      val contactElement = page.getElementById("again-link")
+      val contactElement = page.getElementById("contact-info")
       val introElement   = page.getElementById("intro-ind-text")
 
       introElement.text() mustBe "The details you entered do not match our records for EORI number GB123456789012."

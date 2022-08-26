@@ -35,10 +35,12 @@
     email: String)(implicit messages: Messages, request: Request[_])
 
 @individualInfo = @{
-   if(hasUtr){
-        <p id="individual-utr" class="govuk-body">{messages("ecc.reg06.outcome.id-already-linked.info.utr", customsId.get.id ,eori)}</p>
-    } else {
-        <p id="individual-nino" class="govuk-body">{messages("ecc.reg06.outcome.id-already-linked.info.nino", customsId.get.id ,eori)}</p>
+    customsId.map{ cId =>
+        if(hasUtr){
+                <p id="individual-utr" class="govuk-body">{messages("ecc.reg06.outcome.id-already-linked.info.utr", cId.id, eori)}</p>
+        } else {
+                <p id="individual-nino" class="govuk-body">{messages("ecc.reg06.outcome.id-already-linked.info.nino", cId.id, eori)}</p>
+        }
     }
 }
 
@@ -72,7 +74,7 @@
     </div>
 
     <div id="why-unsuccessful">
-        <p id="again-link" class="govuk-body"> @messages("ecc.reg06.outcome.id-already-linked.info.contact", email)</p>
+        <p id="contact-info" class="govuk-body"> @messages("ecc.reg06.outcome.id-already-linked.info.contact", email)</p>
     </div>
 
     @helpers.feedbackBackContinue(service, JourneyStatus.Failed)
