@@ -23,7 +23,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, EnrolmentIdentifier}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.CompletedEnrolmentController
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.eori_enrol_success
 import util.ControllerSpec
 import util.builders.AuthActionMock
@@ -76,7 +76,7 @@ class CompletedEnrolmentControllerSpec extends ControllerSpec with AuthActionMoc
 
         withAuthorisedUser(defaultUserId, mockAuthConnector)
 
-        intercept[IllegalStateException] {
+        intercept[DataUnavailableException] {
           await(controller.enrolSuccess(atarService)(getRequest))
         }
       }

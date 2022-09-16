@@ -187,5 +187,39 @@ class AddressLookupSpec extends UnitSpec {
 
       result.get shouldBe expectedModel
     }
+
+    "correctly read only required information from json without line address - non UK" in {
+
+      val addressJsonResponse = Json.parse("""
+                                             |{
+                                             |  "id": "id",
+                                             |  "uprn": 1234,
+                                             |  "address": {
+                                             |    "lines": [],
+                                             |    "town": "Town",
+                                             |    "county": "County",
+                                             |    "postcode": "AA11 1AA",
+                                             |    "subdivision": {
+                                             |      "code": "HK",
+                                             |      "name": "Hong Kong"
+                                             |    },
+                                             |    "country": {
+                                             |      "code": "HK",
+                                             |      "name": "Hong Kong"
+                                             |    }
+                                             |  },
+                                             |  "language": "en",
+                                             |  "localCustodian": {
+                                             |    "code": 123,
+                                             |    "name": "Name"
+                                             |  }
+                                             |}""".stripMargin)
+
+      val result = AddressLookup.addressReads.reads(addressJsonResponse)
+
+      val expectedModel = AddressLookup("", "Town", "AA11 1AA", "HK")
+
+      result.get shouldBe expectedModel
+    }
   }
 }

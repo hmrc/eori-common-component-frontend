@@ -35,7 +35,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionDa
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   HandleSubscriptionService,
   SubscriptionDetailsService,
-  TaxEnrolmentsService
+  TaxEnrolmentsService,
+  UpdateVerifiedEmailService
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.http.HeaderCarrier
@@ -64,6 +65,7 @@ class SubscriptionRecoveryControllerSpec
   private val mockTaxEnrolmentsService              = mock[TaxEnrolmentsService]
   private val mockSubscriptionDetailsService        = mock[SubscriptionDetailsService]
   private val mockRequestSessionData                = mock[RequestSessionData]
+  private val mockUpdateVerifiedEmailService        = mock[UpdateVerifiedEmailService]
 
   private val errorTemplateView = instanceOf[error_template]
 
@@ -77,7 +79,8 @@ class SubscriptionRecoveryControllerSpec
     errorTemplateView,
     mockRandomUUIDGenerator,
     mockRequestSessionData,
-    mockSubscriptionDetailsService
+    mockSubscriptionDetailsService,
+    mockUpdateVerifiedEmailService
   )(global)
 
   def registerWithEoriAndIdResponseDetail: Option[RegisterWithEoriAndIdResponseDetail] = {
@@ -105,7 +108,8 @@ class SubscriptionRecoveryControllerSpec
       mockOrgRegistrationDetails,
       mockRequestSessionData,
       mockSubscriptionDetailsService,
-      mockTaxEnrolmentsService
+      mockTaxEnrolmentsService,
+      mockUpdateVerifiedEmailService
     )
     when(mockRandomUUIDGenerator.generateUUIDAsString).thenReturn("MOCKUUID12345")
   }
@@ -141,13 +145,17 @@ class SubscriptionRecoveryControllerSpec
       ).thenReturn(Future.successful(result = ()))
       when(mockSubscriptionDetailsHolder.nameDobDetails)
         .thenReturn(Some(NameDobMatchModel("fname", Some("mName"), "lname", LocalDate.parse("2019-01-01"))))
+
+      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(None))
     }
 
-    "call Enrolment Complete with successful SUB09 call for Subscription UK journey" in {
+    "call Enrolment Complete with successful SUB09 call for Subscription UK journey, default no UpdateEmail" in {
       setupMockCommon()
 
+      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(true)))
       when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(Some("testEORInumber"))
-
       when(mockSessionCache.registerWithEoriAndIdResponse(any[Request[AnyContent]]))
         .thenReturn(Future.successful(mockRegisterWithEoriAndIdResponse))
       when(mockRegisterWithEoriAndIdResponse.responseDetail).thenReturn(registerWithEoriAndIdResponseDetail)
@@ -180,17 +188,19 @@ class SubscriptionRecoveryControllerSpec
         any(),
         any()
       )(any())
+
+      verify(mockUpdateVerifiedEmailService, never()).updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])
+
     }
 
-    "call Enrolment Complete with successful SUB09 call for Subscription UK journey using CDS formBundle enrichment when service is CDS" in {
+    "call Enrolment Complete with successful SUB09 call for Subscription UK journey using CDS formBundle enrichment when service is CDS, UpdateEmail" in {
       setupMockCommon()
-
+      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(true)))
       when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(Some("testEORInumber"))
-
       when(mockSessionCache.registerWithEoriAndIdResponse(any[Request[AnyContent]]))
         .thenReturn(Future.successful(mockRegisterWithEoriAndIdResponse))
       when(mockRegisterWithEoriAndIdResponse.responseDetail).thenReturn(registerWithEoriAndIdResponseDetail)
-
       when(
         mockTaxEnrolmentsService
           .issuerCall(anyString, any[Eori], any[Option[LocalDate]], any[Service])(any[HeaderCarrier])
@@ -221,11 +231,16 @@ class SubscriptionRecoveryControllerSpec
         any(),
         any()
       )(any())
+
+      verify(mockUpdateVerifiedEmailService).updateVerifiedEmail(any(), meq("test@example.com"), meq("testEORInumber"))(
+        any[HeaderCarrier]
+      )
     }
 
     "call Enrolment Complete with successful SUB09 call for Subscription ROW journey" in {
       setupMockCommon()
-
+      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(true)))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some("eu"))
       when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[AnyContent]]))
         .thenReturn(Future.successful(Some(Utr("someUtr"))))
@@ -264,7 +279,8 @@ class SubscriptionRecoveryControllerSpec
     }
     "call Enrolment Complete with successful SUB09 call for Subscription ROW journey without Identifier" in {
       setupMockCommon()
-
+      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(true)))
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some("eu"))
       when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[AnyContent]]))
         .thenReturn(Future.successful(None))

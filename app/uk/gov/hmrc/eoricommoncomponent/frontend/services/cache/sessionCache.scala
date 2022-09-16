@@ -158,11 +158,7 @@ class SessionCache @Inject() (
 
   def registerWithEoriAndIdResponse(implicit request: Request[_]): Future[RegisterWithEoriAndIdResponse] =
     getData[RegisterWithEoriAndIdResponse](registerWithEoriAndIdResponseKey).map(
-      _.getOrElse(
-        throw new IllegalStateException(
-          s"$registerWithEoriAndIdResponseKey is not cached in data for the sessionId: $sessionId"
-        )
-      )
+      _.getOrElse(throwException(registerWithEoriAndIdResponseKey))
     )
 
   def safeId(implicit request: Request[_]): Future[SafeId] = fetchSafeIdFromRegDetails.flatMap {

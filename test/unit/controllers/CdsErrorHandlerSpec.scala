@@ -22,7 +22,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.LOCATION
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.CdsErrorHandler
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionTimeOutException
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionTimeOutException}
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.{Constants, InvalidUrlValueException}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{client_error_template, error_template, notFound}
 import util.ControllerSpec
@@ -39,6 +39,15 @@ class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {
     new CdsErrorHandler(messagesApi, configuration, errorTemplateView, clientErrorTemplateView, notFoundView)
 
   "Cds error handler" should {
+    "redirect to start page after receiving DataUnavailableException exception" in {
+      val mockSubscribeRequest = FakeRequest(method = "GET", "/atar/subscribe")
+
+      whenReady(cdsErrorHandler.onServerError(mockSubscribeRequest, DataUnavailableException("boom"))) { result =>
+        status(result) shouldBe SEE_OTHER
+        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe"
+      }
+    }
+
     "redirect to correct page after receive 500 error" in {
       whenReady(cdsErrorHandler.onServerError(mockRequest, new Exception())) { result =>
         val page = CdsPage(contentAsString(result))

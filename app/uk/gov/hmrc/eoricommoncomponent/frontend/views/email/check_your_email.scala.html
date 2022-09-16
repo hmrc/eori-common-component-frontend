@@ -29,7 +29,8 @@
 @(email:Option[String],
     confirmEmailYesNoAnswerForm: Form[YesNo],
     isInReviewMode: Boolean,
-    service: Service
+    service: Service,
+    subscribeJourney: SubscribeJourney
 )(implicit request: Request[_], messages: Messages)
 
 @hintHtml = {
@@ -58,7 +59,7 @@
     @errorSummary(confirmEmailYesNoAnswerForm.errors, focusOverrides = Map("yes-no-answer" -> "yes-no-answer-true"))
 
 
-    @helpers.form(CheckYourEmailController.submit(service), "confirmEmailYesNoAnswerForm") {
+    @helpers.form(CheckYourEmailController.submit(service, subscribeJourney), "confirmEmailYesNoAnswerForm") {
         @CSRF.formField
 
         @inputRadioGroup(

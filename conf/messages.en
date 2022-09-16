@@ -369,12 +369,18 @@ cds.subscription.verify-email.para2=You can <a href="{0}" class="govuk-link">cha
 cds.subscription.verify-email.progressive-disclosure.heading=I did not get an email
 cds.subscription.verify-email.progressive-disclosure.content=Check your junk folder. If it is not there we can <a href="{0}" class="govuk-link">send it again</a>. If we send your email again, any previous links will stop working.
 subscription.enter-email.heading=What is your email address?
+cds.subscription.enter-email.heading=What email address can we use for customs notifications?
+cds.subscription.enter-email.list-heading=The email address you give us here will be the only one we’ll use to:
+cds.subscription.enter-email.list-bullet-1=update you about changes to the Customs Declaration Service (CDS)
+cds.subscription.enter-email.list-bullet-2=notify you of urgent updates about goods in customs, if you submit import or export declarations
+cds.subscription.enter-email.list-bullet-3=send duty deferment Direct Debit notices and postponed VAT statements for your imports
+cds.subscription.enter-email.hint=You can change this email at a later date. For example, if different teams are involved, you may decide to set up a shared email inbox for customs notifications.
 subscription.check-your-email.heading=Check  your email address
 subscription.check-your-email.label=Email address
 subscription.check-your-email.confirm.label=We will send you a link to confirm your email address.
 subscription.check-your-email.confirm.question=Is this the email address you want to use?
 subscription.check-your-email.yes=Yes
-subscription.check-your-email.no=No, I need to change this email
+subscription.check-your-email.no=No, I need to correct this email address
 
 enter-email-body-text=We’ll use this to send you:
 subscription.enter-email-hint-text=the result of your application to get access to CDS

@@ -12,8 +12,11 @@ cds.has-existing-eori.para1=Our records show that the Government Gateway user ID
 cds.has-existing-eori.para2=Your registration will be linked to this EORI.
 cds.has-existing-eori.para3=If you use a different EORI most of the time then you should sign out and sign back in using the Government Gateway user ID linked to the EORI you would like to register with.
 
-cds.enrolment.already.exists.title=There is a problem
-cds.enrolment.already.exists.heading=There is a problem
+cds.enrolment.already.exists.group.title=There is a problem
+cds.enrolment.already.exists.group.heading=There is a problem
+
+cds.enrolment.already.exists.title=You''re already subscribed to {0}
+cds.enrolment.already.exists.heading=You''re already subscribed to {0}
 cds.enrolment.already.exists.para1=Our records show that this Government Gateway user ID has already been used to subscribe to {0}.
 
 cds.proposition.name.service=Register for a customs service
@@ -37,10 +40,15 @@ cds.sub01.outcome.rejected.register.heading=The {0} registration request for {1}
 cds.sub01.outcome.rejected.register.heading-noname=The {0} registration request has been unsuccessful
 cds.sub01.outcome.rejected.register.title=The {0} registration request has been unsuccessful
 
-cds.reg06.outcome.eori-already-linked.title=The {0} subscription request has been unsuccessful
-cds.reg06.outcome.eori-already-linked.heading=The {0} subscription request for {1} has been unsuccessful
+cds.reg06.outcome.eori-already-linked.title=The details you gave us did not match our records
+cds.reg06.outcome.eori-already-linked.heading=The details you gave us did not match our records
+ecc.reg06.outcome.eori-already-linked.intro.text=The details you entered do not match our records for EORI number {0}.
 cds.subscription.outcomes.eori-already-linked.use-cds-para1=To access {0}, you should sign in using the Government Gateway login details for {1}.
 cds.subscription.outcomes.you-will-not-be-able-to-use-service=You will not be able to use {0} until this issue has been resolved.
+
+ecc.reg06.outcome.id-already-linked.title=The details you gave us are matched to a different EORI number
+ecc.reg06.outcome.id-already-linked.heading=The details you gave us are matched to a different EORI number
+ecc.reg06.outcome.id-already-linked.intro.text=The details you gave us have already been linked to another EORI number, not {0}.
 
 cds.subscription.outcomes.inprocessing.we-are-processing=We will send you an email once your {0} subscription request has been processed. This can take up to 5 working days.
 
@@ -95,8 +103,6 @@ ecc.subscription.information.only.once=This only needs to be done once.
 ecc.subscription.information.email.confirm=We’ll process your application and email you with the result within 2 hours.
 
 cds.navigation.subscribe=Subscribe
-
-subscription.check-your-email.no=No, I need to change this email address
 
 cds.form.contact-details=Your address
 
@@ -213,15 +219,27 @@ subscription-journey.how-confirm-identity.nino.hint=It’s on your National Insu
 subscription-journey.how-confirm-identity.utr.heading=Enter your Unique Tax Reference number
 subscription-journey.how-confirm-identity.utr.hint=This is 10 numbers, for example 1234567890, which may be followed by a K.
 
-ecc.reg06.outcome.why-heading = Why the application was unsuccessful
-ecc.reg06.outcome.eori = EORI number {0}
-ecc.reg06.outcome.why.individual = The following details do not match the name you entered:
-ecc.reg06.outcome.why.org = The following details do not match the company name you entered:
-ecc.reg06.outcome.why.individual.utr = Self Assessment Unique Taxpayer Reference (UTR)
-ecc.reg06.outcome.why.individual.nino = National Insurance number
+cds.reg06.outcome.eori-already-linked.info.utr = The Unique Taxpayer Reference, {0}, you entered does not match our records for EORI number {1}.
+cds.reg06.outcome.eori-already-linked.info.nino = The National Insurance number, {0}, you entered does not match our records for EORI number {1}.
+ecc.reg06.outcome.why-heading = What you can do now
+ecc.reg06.outcome.eori-already-linked.info = If you think our records are incorrect, you can {0}
+ecc.reg06.outcome.eori-already-linked.org.link = tell us about a change to your business or organisation.
+ecc.reg06.outcome.eori-already-linked.individual.link = tell us about any changes.
+
+ecc.reg06.outcome.id-already-linked.info.eori = The details you gave us have already been linked to another EORI number, not {0}.
+
+ecc.reg06.outcome.id-already-linked.info.utr = The Unique Taxpayer Reference, {0}, is already used and cannot be matched with {1}.
+ecc.reg06.outcome.id-already-linked.info.nino = The National Insurance number, {0}, is already used and cannot be matched with {1}.
+ecc.reg06.outcome.id-already-linked.info.text = If others in your business or organisation are already using EORI-based services, you can ask them to add you to the Government Gateway ID they are using.
+ecc.reg06.outcome.id-already-linked.info.text.business = If others in {0} are already using EORI-based services, you can ask them to add you to the Government Gateway ID they are using.
+ecc.reg06.outcome.id-already-linked.info.steps = They need to follow the steps to {0}
+ecc.reg06.outcome.id-already-linked.info.link = add a team member (opens in new tab).
+ecc.reg06.outcome.id-already-linked.info.contact = The details you gave us will be reviewed by the relevant team. They will contact you on {0} within three working days to provide the next steps.
+
 ecc.reg06.outcome.why.org.utr = Corporation Tax Unique Taxpayer Reference (UTR)
 ecc.reg06.outcome.why.eori = EORI number
-ecc.reg06.outcome.apply.again = Review these details and <a href="{0}" class="govuk-link">apply again</a>.
+ecc.reg06.outcome.apply.again = You can review these details and {0}
+ecc.reg06.outcome.apply.again.link = apply again using different details.
 
 ecc.unable-to-use.title = You cannot access {0} with this Government Gateway account
 ecc.unable-to-use.this-eori-number = The EORI number:

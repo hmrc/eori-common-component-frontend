@@ -45,13 +45,13 @@ class VerifyYourEmailSpec extends ViewSpec {
       doc.body
         .getElementById("p3")
         .select("a[href]")
-        .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/matching/check-your-email"
+        .attr("href") mustBe "/customs-enrolment-services/atar/subscribe/autoenrolment/matching/check-your-email"
     }
   }
 
   val doc: Document = {
     val email  = "test@example.com"
-    val result = view(Some(email), atarService)
+    val result = view(Some(email), atarService, subscribeJourneyShort)
     Jsoup.parse(contentAsString(result))
   }
 

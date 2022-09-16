@@ -22,7 +22,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, EnrolmentExtractor}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.eori_enrol_success
 
 import scala.concurrent.ExecutionContext
@@ -40,7 +40,7 @@ class CompletedEnrolmentController @Inject() (
     implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
       activatedEnrolmentForService(loggedInUser, service) match {
         case Some(eori) => sessionCache.remove.map(_ => Ok(enrolSuccessView(eori.id, service)))
-        case _          => throw new IllegalStateException("No enrolment found for the user")
+        case _          => throw DataUnavailableException("No enrolment found for the user")
       }
   }
 

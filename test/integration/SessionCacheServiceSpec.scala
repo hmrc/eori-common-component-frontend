@@ -229,10 +229,10 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       caught.getMessage startsWith s"regDetails is not cached in data for the sessionId: sessionId-123"
     }
 
-    "throw IllegalStateException when registerWithEoriAndIdResponse is not present in cache" in {
+    "throw DataUnavailableException when registerWithEoriAndIdResponse is not present in cache" in {
       when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-123"))))
       await(sessionCache.putSession(DataKey("sub01Outcome"), data = Json.toJson(sub01Outcome)))
-      val caught = intercept[IllegalStateException] {
+      val caught = intercept[DataUnavailableException] {
         await(sessionCache.registerWithEoriAndIdResponse(request))
       }
       caught.getMessage startsWith s"registerWithEoriAndIdResponse is not cached in data for the sessionId: sessionId-123"

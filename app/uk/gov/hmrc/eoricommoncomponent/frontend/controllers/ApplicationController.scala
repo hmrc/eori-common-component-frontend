@@ -84,12 +84,14 @@ class ApplicationController @Inject() (
       eoriFromUsedEnrolmentOpt =>
         if (eoriFromUsedEnrolmentOpt.isEmpty)
           if (isUserEnrolledFor(loggedInUser, Service.cds))
-            Future.successful(Redirect(routes.HasExistingEoriController.displayPage(service)))
+            Future.successful(
+              Redirect(routes.HasExistingEoriController.displayPage(service))
+            ) //AutoEnrolment / Short Journey
           else
             groupEnrolment.groupIdEnrolmentTo(groupId, Service.cds).flatMap {
               case Some(groupEnrolment) if groupEnrolment.eori.isDefined =>
                 cache.saveGroupEnrolment(groupEnrolment).map { _ =>
-                  Redirect(routes.HasExistingEoriController.displayPage(service)) // AutoEnrolment
+                  Redirect(routes.HasExistingEoriController.displayPage(service)) // AutoEnrolment / Short Journey
                 }
               case _ => checkAllServiceEnrolments(loggedInUser, groupId, service)
 
@@ -120,15 +122,15 @@ class ApplicationController @Inject() (
     service: Service
   )(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] =
     if (isUserEnrolledForOtherServices(loggedInUser))
-      Future.successful(Redirect(routes.HasExistingEoriController.displayPage(service)))
+      Future.successful(Redirect(routes.HasExistingEoriController.displayPage(service))) //AutoEnrolment / Short Journey
     else
       groupEnrolment.checkAllServiceEnrolments(groupId).flatMap {
         case Some(groupEnrolment) if groupEnrolment.eori.isDefined =>
           cache.saveGroupEnrolment(groupEnrolment).map { _ =>
-            Redirect(routes.HasExistingEoriController.displayPage(service)) // AutoEnrolment
+            Redirect(routes.HasExistingEoriController.displayPage(service)) // AutoEnrolment / Short Journey
           }
         case _ =>
-          Future.successful(Ok(viewStartSubscribe(service))) // Display information page
+          Future.successful(Ok(viewStartSubscribe(service))) // Display information page / Long Journey
       }
 
 }

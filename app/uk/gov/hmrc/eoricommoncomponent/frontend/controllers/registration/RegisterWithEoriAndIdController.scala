@@ -57,6 +57,7 @@ class RegisterWithEoriAndIdController @Inject() (
   subscriptionOutcomePendingView: subscription_outcome_pending,
   subscriptionOutcomeFailView: subscription_outcome_fail,
   reg06EoriAlreadyLinked: reg06_eori_already_linked,
+  reg06IdAlreadyLinked: reg06_id_already_linked,
   groupEnrolment: GroupEnrolmentExtractor,
   languageUtils: LanguageUtils,
   notifyRcmService: NotifyRcmService
@@ -181,11 +182,14 @@ class RegisterWithEoriAndIdController @Inject() (
   def eoriAlreadyLinked(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
-        name              <- cache.subscriptionDetails.map(_.name)
-        maybeEori         <- cache.subscriptionDetails.map(_.eoriNumber)
-        maybeExistingEori <- cache.subscriptionDetails.map(_.existingEoriNumber)
-        response          <- cache.registerWithEoriAndIdResponse
-        _                 <- cache.remove
+        name                      <- cache.subscriptionDetails.map(_.name)
+        maybeEori                 <- cache.subscriptionDetails.map(_.eoriNumber)
+        maybeExistingEori         <- cache.subscriptionDetails.map(_.existingEoriNumber)
+        customsId                 <- cache.subscriptionDetails.map(_.customsId)
+        nameIdOrganisationDetails <- cache.subscriptionDetails.map(_.nameIdOrganisationDetails)
+        response                  <- cache.registerWithEoriAndIdResponse
+        email                     <- cache.email
+        _                         <- cache.remove
       } yield {
         val eoriNumber = (maybeEori, maybeExistingEori) match {
           case (_, Some(eori)) => eori.id
@@ -205,10 +209,53 @@ class RegisterWithEoriAndIdController @Inject() (
           reg06EoriAlreadyLinked(
             name,
             eoriNumber,
-            response.responseCommon.processingDate,
             service,
             isIndividual,
-            hasUtr
+            hasUtr,
+            customsId,
+            nameIdOrganisationDetails,
+            email
+          )
+        ).withSession(newUserSession)
+      }
+    }
+
+  def idAlreadyLinked(service: Service): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+      for {
+        name                      <- cache.subscriptionDetails.map(_.name)
+        maybeEori                 <- cache.subscriptionDetails.map(_.eoriNumber)
+        maybeExistingEori         <- cache.subscriptionDetails.map(_.existingEoriNumber)
+        customsId                 <- cache.subscriptionDetails.map(_.customsId)
+        nameIdOrganisationDetails <- cache.subscriptionDetails.map(_.nameIdOrganisationDetails)
+        email                     <- cache.email
+        response                  <- cache.registerWithEoriAndIdResponse
+        _                         <- cache.remove
+      } yield {
+        val eoriNumber = (maybeEori, maybeExistingEori) match {
+          case (_, Some(eori)) => eori.id
+          case (Some(eori), _) => eori
+          case _               => ""
+        }
+        val (hasUtr, isIndividual) = response.additionalInformation match {
+          case Some(info) =>
+            (info.id, info.isIndividual) match {
+              case (_: Utr, true) => (true, true)
+              case (_, true)      => (false, true)
+              case (_, _)         => (false, false)
+            }
+          case _ => (false, false)
+        }
+        Ok(
+          reg06IdAlreadyLinked(
+            name,
+            eoriNumber,
+            service,
+            isIndividual,
+            hasUtr,
+            customsId,
+            nameIdOrganisationDetails,
+            email
           )
         ).withSession(newUserSession)
       }
@@ -236,7 +283,7 @@ class RegisterWithEoriAndIdController @Inject() (
         Future.successful(Redirect(RegisterWithEoriAndIdController.eoriAlreadyLinked(service)))
       case _ if statusText.exists(_.equalsIgnoreCase(IDLinkedWithEori)) =>
         logger.warn("Reg06 IDLinkedWithEori")
-        Future.successful(Redirect(RegisterWithEoriAndIdController.eoriAlreadyLinked(service)))
+        Future.successful(Redirect(RegisterWithEoriAndIdController.idAlreadyLinked(service)))
       case _ if statusText.exists(_.equalsIgnoreCase(RejectedPreviouslyAndRetry)) =>
         logger.warn("REG06 Rejected previously")
         Future.successful(Redirect(RegisterWithEoriAndIdController.rejectedPreviously(service)))

@@ -24,7 +24,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{
   GroupEnrolmentExtractor
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, LongJourney, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{EnrolmentService, MissingEnrolmentException}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{eori_enrol_success, has_existing_eori}
@@ -48,8 +48,19 @@ class HasExistingEoriController @Inject() (
 
   def displayPage(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
-      existingEoriToUse.map { eori =>
-        Ok(hasExistingEoriView(service, eori.id))
+      existingEoriToUse.flatMap { eori =>
+        cache.saveEori(Eori(eori.id)).map { _ =>
+          val continueJourney =
+            if (service.enrolmentKey == Service.cds.enrolmentKey)
+              uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.EmailController.form(
+                service,
+                subscribeJourney = SubscribeJourney(AutoEnrolment)
+              )
+            else
+              uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.HasExistingEoriController.enrol(service)
+
+          Ok(hasExistingEoriView(service, eori.id, continueJourney))
+        }
       }
   }
 
@@ -67,7 +78,9 @@ class HasExistingEoriController @Inject() (
               } recover {
                 case e: MissingEnrolmentException =>
                   logger.info(s"EnrolWithExistingEnrolment : ${e.getMessage}")
-                  Redirect(routes.EmailController.form(service))
+                  Redirect(
+                    routes.EmailController.form(service, subscribeJourney = SubscribeJourney(LongJourney))
+                  ) //If Sync Enrolment fails we want to try the Long Journey
               }
             }
       }
