@@ -66,7 +66,6 @@ class UpdateVerifiedEmailService @Inject() (
           if res.updateVerifiedEmailResponse.responseCommon.returnParameters
             .exists(msp => msp.head.paramName == MessagingServiceParam.formBundleIdParamName) =>
         auditRequest(currentEmail, newEmail, eori, "changeEmailAddressConfirmed")
-        auditRequest(currentEmail, newEmail, eori, "changeEmailAddressVerified")
 
         logger.info("[UpdateVerifiedEmailService][updateVerifiedEmail] - successfully updated verified email")
         customsDataStoreConnector.updateCustomsDataStore(customsDataStoreRequest).map(_ => Some(true))
