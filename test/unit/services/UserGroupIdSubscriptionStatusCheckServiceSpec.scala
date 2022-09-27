@@ -53,6 +53,7 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
 
   private def continue: Future[Result]        = Future.successful(Redirect("/continue"))
   private def userIsInProcess: Future[Result] = Future.successful(Redirect("/blocked/userIsInProcess"))
+  private def existingApplicationInProcess: Future[Result] = Future.successful(Redirect("/blocked/existingApplicationInProcess"))
 
   private def otherUserWithinGroupIsInProcess: Future[Result] =
     Future.successful(Redirect("/blocked/otherUserWithinGroupIsInProcess"))
@@ -65,145 +66,148 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
 
   implicit val originatingService: Service = atarService
 
-  "UserGroupIdSubscriptionStatusCheckService" should {
-
-    "block the user for the groupID is cache for different service and subscription status is SubscriptionProcessing" in {
-
-      when(
-        mockSave4LaterService
-          .fetchCacheIds(any())(any[HeaderCarrier])
-      ).thenReturn(Future.successful(Some(cacheIds.copy(serviceCode = Some("otherService")))))
-      when(
-        mockSubscriptionStatusService.getStatus(any[String], any[String])(
-          any[HeaderCarrier],
-          any[Request[_]],
-          any[Service]
-        )
-      )
-        .thenReturn(Future.successful(SubscriptionProcessing))
-
+  "checksToProceed" should {
+    "Allow the user when there's no cache against groupId" in {
+      when(mockSave4LaterService.fetchCacheIds(any())(any[HeaderCarrier])) thenReturn Future.successful(None)
       val result: Result = service
-        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(otherUserWithinGroupIsInProcess).futureValue
-
-      result.header.headers(LOCATION) shouldBe "/blocked/userIsInProcess"
-    }
-
-    "block the user for the groupID is cache and subscription status is SubscriptionProcessing for some other user within the group" in {
-
-      when(
-        mockSave4LaterService
-          .fetchCacheIds(any())(any[HeaderCarrier])
-      ).thenReturn(Future.successful(Some(cacheIds.copy(internalId = InternalId("otherUserInternalId")))))
-      when(
-        mockSubscriptionStatusService.getStatus(any[String], any[String])(
-          any[HeaderCarrier],
-          any[Request[_]],
-          any[Service]
-        )
-      )
-        .thenReturn(Future.successful(SubscriptionProcessing))
-
-      val result: Result = service
-        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(otherUserWithinGroupIsInProcess).futureValue
-
-      result.header.headers(LOCATION) shouldBe "/blocked/otherUserWithinGroupIsInProcess"
-    }
-
-    "allow the user for the groupID is cache for same service and subscription status is SubscriptionProcessing" in {
-
-      when(
-        mockSave4LaterService
-          .fetchCacheIds(any())(any[HeaderCarrier])
-      ).thenReturn(Future.successful(Some(cacheIds.copy(serviceCode = Some(atarService.code)))))
-      when(
-        mockSubscriptionStatusService.getStatus(any[String], any[String])(
-          any[HeaderCarrier],
-          any[Request[_]],
-          any[Service]
-        )
-      )
-        .thenReturn(Future.successful(SubscriptionProcessing))
-
-      val result: Result = service
-        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(otherUserWithinGroupIsInProcess).futureValue
-
-      result.header.headers(LOCATION) shouldBe "/continue"
-    }
-
-    "Allow the user for the groupID is cached and subscription status is SubscriptionRejected" in {
-
-      allowUserWhenGroupIdCachedAndSubscriptionStatusIs(SubscriptionRejected)
-    }
-
-    "Allow the user for the groupID is cached and subscription status is NewSubscription" in {
-
-      allowUserWhenGroupIdCachedAndSubscriptionStatusIs(NewSubscription)
-    }
-
-    "Allow the user for the groupID is cached and subscription status is SubscriptionExists" in {
-
-      allowUserWhenGroupIdCachedAndSubscriptionStatusIs(SubscriptionExists)
-    }
-
-    "Delete cache for user when starting a second subscription" in {
-
-      when(
-        mockSave4LaterService
-          .fetchCacheIds(any())(any[HeaderCarrier])
-      ).thenReturn(Future.successful(Some(cacheIds.copy(serviceCode = Some("other")))))
-      when(
-        mockSubscriptionStatusService.getStatus(any[String], any[String])(
-          any[HeaderCarrier],
-          any[Request[_]],
-          any[Service]
-        )
-      )
-        .thenReturn(Future.successful(NewSubscription))
-      when(mockSave4LaterService.deleteCacheIds(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
-
-      val result: Result = service
-        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(otherUserWithinGroupIsInProcess).futureValue
-
-      result.header.headers(LOCATION) shouldBe "/continue"
-    }
-
-    "Allow the user if groupID is not cached" in {
-
-      when(
-        mockSave4LaterService
-          .fetchCacheIds(any())(any[HeaderCarrier])
-      ).thenReturn(Future.successful(None))
-
-      val result: Result = service
-        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(otherUserWithinGroupIsInProcess)(
-          any(),
-          any(),
-          atarService
+        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(existingApplicationInProcess)(
+          otherUserWithinGroupIsInProcess
         ).futureValue
 
       result.header.headers(LOCATION) shouldBe "/continue"
     }
-  }
 
-  private def allowUserWhenGroupIdCachedAndSubscriptionStatusIs(status: PreSubscriptionStatus) = {
-    when(
-      mockSave4LaterService
-        .fetchCacheIds(any())(any[HeaderCarrier])
-    ).thenReturn(Future.successful(Some(cacheIds)))
-    when(
-      mockSubscriptionStatusService.getStatus(any[String], any[String])(
-        any[HeaderCarrier],
-        any[Request[_]],
-        any[Service]
-      )
-    )
-      .thenReturn(Future.successful(status))
-    when(mockSave4LaterService.deleteCachedGroupId(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
+    "Allow the user for the groupID is cache for same service and subscription status is NewSubscription" in {
+      when(
+        mockSave4LaterService
+          .fetchCacheIds(any())(any[HeaderCarrier])
+      ).thenReturn(Future.successful(Some(cacheIds)))
+      when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier], any[Request[_]], any[Service]))
+        .thenReturn(Future.successful(NewSubscription))
+      when(mockSave4LaterService.deleteCachedGroupId(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
 
-    val result: Result = service
-      .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(otherUserWithinGroupIsInProcess).futureValue
+      val result: Result = service
+        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(existingApplicationInProcess)(
+          otherUserWithinGroupIsInProcess
+        ).futureValue
 
-    result.header.headers(LOCATION) shouldBe "/continue"
+      result.header.headers(LOCATION) shouldBe "/continue"
+    }
+
+    "Allow the user for the groupID is cache for same service and subscription status is SubscriptionRejected" in {
+      when(
+        mockSave4LaterService
+          .fetchCacheIds(any())(any[HeaderCarrier])
+      ).thenReturn(Future.successful(Some(cacheIds)))
+      when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier], any[Request[_]], any[Service]))
+        .thenReturn(Future.successful(SubscriptionRejected))
+      when(mockSave4LaterService.deleteCachedGroupId(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
+
+      val result: Result = service
+        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(existingApplicationInProcess)(
+          otherUserWithinGroupIsInProcess
+        ).futureValue
+
+      result.header.headers(LOCATION) shouldBe "/continue"
+    }
+
+    "Allow the user for the groupID is cache for different service and subscription status is NewSubscription" in {
+      when(
+        mockSave4LaterService
+          .fetchCacheIds(any())(any[HeaderCarrier])
+      ).thenReturn(Future.successful(Some(cacheIds.copy(serviceCode = Some("other")))))
+      when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier], any[Request[_]], any[Service]))
+        .thenReturn(Future.successful(NewSubscription))
+      when(mockSave4LaterService.deleteCacheIds(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
+
+      val result: Result = service
+        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(existingApplicationInProcess)(
+          otherUserWithinGroupIsInProcess
+        ).futureValue
+
+      result.header.headers(LOCATION) shouldBe "/continue"
+    }
+
+    "Allow the user for the groupID is cache for different service and subscription status is SubscriptionRejected" in {
+      when(
+        mockSave4LaterService
+          .fetchCacheIds(any())(any[HeaderCarrier])
+      ).thenReturn(Future.successful(Some(cacheIds.copy(serviceCode = Some("other")))))
+      when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier], any[Request[_]], any[Service]))
+        .thenReturn(Future.successful(SubscriptionRejected))
+      when(mockSave4LaterService.deleteCacheIds(any())(any[HeaderCarrier])).thenReturn(Future.successful(()))
+
+      val result: Result = service
+        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(existingApplicationInProcess)(
+          otherUserWithinGroupIsInProcess
+        ).futureValue
+
+      result.header.headers(LOCATION) shouldBe "/continue"
+    }
+
+    "block when SubscriptionProcessing for user" in {
+      when(
+        mockSave4LaterService
+          .fetchCacheIds(any())(any[HeaderCarrier])
+      ).thenReturn(Future.successful(Some(cacheIds)))
+      when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier], any[Request[_]], any[Service]))
+        .thenReturn(Future.successful(SubscriptionProcessing))
+
+      val result: Result = service
+        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(existingApplicationInProcess)(
+          otherUserWithinGroupIsInProcess
+        ).futureValue
+
+      result.header.headers(LOCATION) shouldBe "/blocked/existingApplicationInProcess"
+    }
+
+    "block when SubscriptionProcessing for group" in {
+      when(
+        mockSave4LaterService
+          .fetchCacheIds(any())(any[HeaderCarrier])
+      ).thenReturn(Future.successful(Some(cacheIds.copy(internalId = InternalId("other")))))
+      when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier], any[Request[_]], any[Service]))
+        .thenReturn(Future.successful(SubscriptionProcessing))
+
+      val result: Result = service
+        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(existingApplicationInProcess)(
+          otherUserWithinGroupIsInProcess
+        ).futureValue
+
+      result.header.headers(LOCATION) shouldBe "/blocked/otherUserWithinGroupIsInProcess"
+    }
+
+    "block when SubscriptionExists for user" in {
+      when(
+        mockSave4LaterService
+          .fetchCacheIds(any())(any[HeaderCarrier])
+      ).thenReturn(Future.successful(Some(cacheIds)))
+      when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier], any[Request[_]], any[Service]))
+        .thenReturn(Future.successful(SubscriptionExists))
+
+      val result: Result = service
+        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(existingApplicationInProcess)(
+          otherUserWithinGroupIsInProcess
+        ).futureValue
+
+      result.header.headers(LOCATION) shouldBe "/blocked/userIsInProcess"
+    }
+
+    "block when SubscriptionExists for group" in {
+      when(
+        mockSave4LaterService
+          .fetchCacheIds(any())(any[HeaderCarrier])
+      ).thenReturn(Future.successful(Some(cacheIds.copy(internalId = InternalId("other")))))
+      when(mockSubscriptionStatusService.getStatus(any[String], any[String])(any[HeaderCarrier], any[Request[_]], any[Service]))
+        .thenReturn(Future.successful(SubscriptionExists))
+
+      val result: Result = service
+        .checksToProceed(groupId, internalId)(continue)(userIsInProcess)(existingApplicationInProcess)(
+          otherUserWithinGroupIsInProcess
+        ).futureValue
+
+      result.header.headers(LOCATION) shouldBe "/blocked/otherUserWithinGroupIsInProcess"
+    }
   }
 
 }

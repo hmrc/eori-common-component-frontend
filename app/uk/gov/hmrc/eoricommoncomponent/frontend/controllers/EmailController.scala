@@ -23,6 +23,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.{
   CheckYourEmailController,
   WhatIsYourEmailController
 }
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.RegisterWithEoriAndIdController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, InternalId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, Service, SubscribeJourney}
@@ -61,6 +62,11 @@ class EmailController @Inject() (
       .fetchProcessingService(GroupId(user.groupId))
       .map(processingService => Ok(enrolmentPendingForUser(service, processingService)))
 
+  private def existingApplicationInProcess(
+    service: Service
+  )(implicit request: Request[AnyContent], user: LoggedInUserWithEnrolments): Future[Result] =
+    Future.successful(Redirect(RegisterWithEoriAndIdController.processing(service)))
+
   private def otherUserWithinGroupIsInProcess(
     service: Service
   )(implicit request: Request[AnyContent], user: LoggedInUserWithEnrolments): Future[Result] =
@@ -96,7 +102,8 @@ class EmailController @Inject() (
       userGroupIdSubscriptionStatusCheckService
         .checksToProceed(GroupId(user.groupId), InternalId(user.internalId))(continue(service, subscribeJourney))(
           userIsInProcess(service)
-        )(otherUserWithinGroupIsInProcess(service))
+        )(existingApplicationInProcess(service))(otherUserWithinGroupIsInProcess(service))
+
     }
 
   private def updateVerifiedEmail(email: String)(implicit request: Request[AnyContent]) =
