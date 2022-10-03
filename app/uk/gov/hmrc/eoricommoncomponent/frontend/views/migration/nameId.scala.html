@@ -41,12 +41,17 @@
     if(displayMode=="partnership") ""
     else messages(s"cds.matching.name-id-organisation.$displayMode.name.hint")
 }
-@utrLink = {
-    <a class="govuk-link" href=@appConfig.findLostUtr() target="_blank" rel="noopener noreferrer">@messages("cds.matching.utr.find-lost-utr.hint", messages("cds.navigation.opens-in-new-tab"))</a>
-}
 @utrHintText = @{
-    if(displayMode=="partnership") messages("cds.matching.partnership.utr.hint", utrLink)
-    else messages("cds.matching.utr.hint", utrLink)
+    if(displayMode=="partnership") messages("cds.matching.partnership.utr.hint")
+    else messages("cds.matching.utr.hint")
+}
+
+@utrHintAndLinkText = {
+    <br>
+    <p class="govuk-body">
+        You can <a class="govuk-link" id="utrLink" href=@appConfig.findLostUtr() target="_blank" rel="noopener noreferrer">@messages("cds.matching.utr.lost-utr-description")</a>
+    </p>
+@messages(utrHintText)
 }
 
 @layout_di(headerAndTitle, form = Some(nameUtrForm)) {
@@ -77,7 +82,7 @@
             name = "utr",
             label = messages(s"cds.matching.name-id-organisation.$displayMode.utr"),
             isPageHeading =  false,
-            hint = Some(Html(utrHintText)),
+            hint = Some(utrHintAndLinkText),
             classes = Some("govuk-!-width-one-half"),
             labelClasses = Some("govuk-!-font-weight-bold")
         )
