@@ -259,6 +259,7 @@ ecc.registered-company-country.individual.title = Ym mha wlad y mae’ch busnes 
 ecc.registered-company-country.individual.error = Nodwch y wlad lle y mae’ch busnes wedi’i gofrestruCountry location Lleoliad y wlad
 ecc.registered-company-country.summary = Lleoliad y wlad
 
+ecc.address-lookup.postcode.title = Dewis eich cyfeiriad
 ecc.address-lookup.postcode.organisation.title = Beth yw cyfeiriad cofrestredig eich cwmni?
 ecc.address-lookup.postcode.individual.title = Beth yw cyfeiriad cofrestredig eich busnes?
 ecc.address-lookup.postcode.partnership.title = Beth yw cyfeiriad cofrestredig eich partneriaeth?
@@ -272,7 +273,7 @@ ecc.address-lookup.postcode.summary.label = Cod post
 ecc.address-lookup.postcode.line1.summary.label = Enw neu rif yr eiddo
 ecc.address-lookup.postcode.address.label = Dewis eich cyfeiriad
 ecc.address-lookup.postcode.address.error = Dewiswch gyfeiriad o’r rhestr.
-ecc.address-lookup.postcode.cannot-find-address = Ni allaf ddod o hyd i’m cyfeiriad yn y rhestr
+ecc.address-lookup.postcode.cannot-find-address = Nodwch eich cyfeiriad â llaw
 ecc.address-lookup.postcode.line1.hint = Er enghraifft, Tegfan, 116 neu Fflat 37a
 ecc.address-lookup.postcode.find-address = Dod o hyd i gyfeiriad
 ecc.address-lookup.postcode.find-address.manual = Mae’r cyfeiriad cofrestredig y tu allan i’r DU

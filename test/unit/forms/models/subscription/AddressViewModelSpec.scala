@@ -22,12 +22,13 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{Addre
 
 class AddressViewModelSpec extends UnitSpec {
 
-  val addressLine1 = "some building"
-  val addressLine2 = "some street"
-  val addressLine3 = "some area"
-  val addressLine4 = "some town"
-  val postCode     = "PC55 5AA"
-  val countryCode  = "EN"
+  val addressLine1                = "some building"
+  val addressLine2                = "some street"
+  val addressLine3                = "some area"
+  val addressLine4                = "some town"
+  val postCode                    = "PC55 5AA"
+  val countryCode                 = "EN"
+  val countryCodeRequiredPostCode = "GG"
 
   val actualAddress: Address =
     Address(addressLine1, Some(addressLine2), Some(addressLine3), Some(addressLine4), Some(postCode), countryCode)
@@ -38,10 +39,24 @@ class AddressViewModelSpec extends UnitSpec {
   val actualContactAddress: ContactAddressModel =
     ContactAddressModel(addressLine1, Some(addressLine2), addressLine3, Some(addressLine4), Some(postCode), countryCode)
 
+  def actualContactAddressRequiredPostCode: ContactAddressModel =
+    ContactAddressModel(
+      addressLine1,
+      Some(addressLine2),
+      addressLine3,
+      Some(addressLine4),
+      None,
+      countryCodeRequiredPostCode
+    )
+
   val expectedContactAddress: AddressViewModel =
     AddressViewModel(addressLine1 + " " + addressLine2, addressLine3, Some(postCode), countryCode)
 
   "AddressViewModel" should {
+
+    "error when Postcode is required for ContactAddressModel" in {
+      assertThrows[IllegalArgumentException](actualContactAddressRequiredPostCode)
+    }
 
     "concatenate a 6 line address into a 4 line address" in {
       AddressViewModel(actualAddress) shouldEqual expectedAddress

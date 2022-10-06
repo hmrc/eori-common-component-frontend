@@ -23,10 +23,12 @@
         legendAsHeading: Boolean = true,
         hint: Option[Hint] = None,
         classes: String = "govuk-fieldset__legend--xl",
-        inline: Boolean = false
+        inline: Boolean = false,
+        formGroupClasses: String = ""
 )(implicit messages: Messages)
 
 @govukRadios(Radios(
+    formGroupClasses = formGroupClasses,
     classes = s"${if(inline){"govuk-radios--inline"}}",
     idPrefix = Some(field.id),
     name = field.name,
