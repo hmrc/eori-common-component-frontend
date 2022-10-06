@@ -89,37 +89,17 @@ class CheckYourEmailController @Inject() (
           .bindFromRequest()
           .fold(
             formWithErrors =>
-              save4LaterService.fetchEmailForService(service, subscribeJourney, GroupId(userWithEnrolments.groupId))
-                .flatMap {
-                  _.fold {
-                    // $COVERAGE-OFF$Loggers
-                    logger.warn("[CheckYourEmailController][submit] -   emailStatus cache none")
-                    // $COVERAGE-ON
-                    Future(
-                      BadRequest(
-                        checkYourEmailView(
-                          None,
-                          formWithErrors,
-                          isInReviewMode = isInReviewMode,
-                          service = service,
-                          subscribeJourney
-                        )
-                      )
-                    )
-                  } { emailStatus =>
-                    Future(
-                      BadRequest(
-                        checkYourEmailView(
-                          emailStatus.email,
-                          formWithErrors,
-                          isInReviewMode = isInReviewMode,
-                          service = service,
-                          subscribeJourney
-                        )
-                      )
-                    )
-                  }
-                },
+              Future(
+                BadRequest(
+                  checkYourEmailView(
+                    None,
+                    formWithErrors,
+                    isInReviewMode = isInReviewMode,
+                    service = service,
+                    subscribeJourney
+                  )
+                )
+              ),
             yesNoAnswer => locationByAnswer(GroupId(userWithEnrolments.groupId), yesNoAnswer, service, subscribeJourney)
           )
     }
