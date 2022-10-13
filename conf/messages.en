@@ -1297,6 +1297,11 @@ cds.error.helpSupport=Help and support
 cds.error.contact.part1=Telephone: 0300 322 7067
 cds.error.contact.part2=Open 8am to 6pm, Monday to Friday (except public holidays).
 
+#Email error page
+cds.email.error.title=Sorry, there is a problem with updating your email
+cds.email.error.message.part1=Please try again in 1 hour.
+cds.email.error.message.part2=We have saved your email. When you come back, you will have to start again.
+
 #Are you based in the UK?
 cds.based-in-uk.page.title=Are you or your organisation based in the UK?
 cds.based-in-uk.heading=Are you or your organisation based in the UK?

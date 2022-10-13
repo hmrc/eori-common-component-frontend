@@ -1129,6 +1129,12 @@ cds.error.message.part2=Nid ydym wedi cadw’ch atebion. Pan fydd y gwasanaeth a
 cds.error.helpSupport=Help a chymorth
 cds.error.contact.part1=Ffôn: 0300 200 3705
 cds.error.contact.part2=Ar agor 08:00 i 18:00 o ddydd Llun i ddydd Gwener (ar gau ar wyliau banc).
+
+#Email error page
+cds.email.error.title=TODO
+cds.email.error.message.part1=TODO
+cds.email.error.message.part2=TODO
+
 cds.based-in-uk.page.title=Ydych chi neu’ch sefydliad wedi’i leoli yn y DU?
 cds.based-in-uk.heading=Ydych chi neu’ch sefydliad wedi’i leoli yn y DU?
 cds.based-in-uk.page-error.yes-no-answer=Rhowch wybod i ni a ydych chi neu’ch sefydliad wedi’i leoli yn y DU

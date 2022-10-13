@@ -18,6 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers
 
 import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.email.{UpdateVerifiedEmailRequest, UpdateVerifiedEmailResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.MessagingServiceParam
 
 sealed trait HttpErrorResponse
 case object BadRequest         extends HttpErrorResponse
@@ -27,10 +28,17 @@ case object UnhandledException extends HttpErrorResponse
 
 sealed trait HttpSuccessResponse
 
-case class VerifiedEmailResponse(updateVerifiedEmailResponse: UpdateVerifiedEmailResponse) extends HttpSuccessResponse
+case class VerifiedEmailResponse(updateVerifiedEmailResponse: UpdateVerifiedEmailResponse) extends HttpSuccessResponse {
+  def getStatus: Option[String] = this.updateVerifiedEmailResponse.responseCommon.statusText
+
+  def getParameters: Option[List[MessagingServiceParam]] =
+    this.updateVerifiedEmailResponse.responseCommon.returnParameters
+
+}
 
 object VerifiedEmailResponse {
-  implicit val format = Json.format[VerifiedEmailResponse]
+  implicit val format            = Json.format[VerifiedEmailResponse]
+  val RequestCouldNotBeProcessed = "003 - Request could not be processed"
 }
 
 case class VerifiedEmailRequest(updateVerifiedEmailRequest: UpdateVerifiedEmailRequest)

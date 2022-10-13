@@ -21,6 +21,7 @@ import play.api.Logger
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.VerifiedEmailRequest
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.VerifiedEmailResponse.RequestCouldNotBeProcessed
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{
   UpdateCustomsDataStoreConnector,
   UpdateVerifiedEmailConnector
@@ -33,6 +34,10 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+
+sealed trait UpdateError
+case object RetriableError    extends UpdateError
+case object NonRetriableError extends UpdateError
 
 class UpdateVerifiedEmailService @Inject() (
   reqCommonGenerator: RequestCommonGenerator,
@@ -47,7 +52,7 @@ class UpdateVerifiedEmailService @Inject() (
 
   def updateVerifiedEmail(currentEmail: Option[String] = None, newEmail: String, eori: String)(implicit
     hc: HeaderCarrier
-  ): Future[Option[Boolean]] = {
+  ): Future[Either[UpdateError, Unit]] = {
 
     val requestDetail = RequestDetail(
       IDType = "EORI",
@@ -63,35 +68,49 @@ class UpdateVerifiedEmailService @Inject() (
     )
     updateVerifiedEmailConnector.updateVerifiedEmail(request).flatMap {
       case Right(res)
-          if res.updateVerifiedEmailResponse.responseCommon.returnParameters
-            .exists(msp => msp.head.paramName == MessagingServiceParam.formBundleIdParamName) =>
-        auditRequest(currentEmail, newEmail, eori, "changeEmailAddressConfirmed")
-
+          if res.getParameters.exists(
+            params => params.headOption.map(_.paramName).contains(MessagingServiceParam.formBundleIdParamName)
+          ) =>
+        auditRequest(currentEmail, newEmail, eori, "changeEmailAddressConfirmed", res.getStatus)
         logger.info("[UpdateVerifiedEmailService][updateVerifiedEmail] - successfully updated verified email")
-        customsDataStoreConnector.updateCustomsDataStore(customsDataStoreRequest).map(_ => Some(true))
-      case Right(res) =>
-        val statusText = res.updateVerifiedEmailResponse.responseCommon.statusText
+        customsDataStoreConnector.updateCustomsDataStore(customsDataStoreRequest).map(_ => Right((): Unit))
+
+      case Right(res) if res.getStatus.exists(_.equalsIgnoreCase(RequestCouldNotBeProcessed)) =>
+        val status = res.getStatus.getOrElse("Status text empty")
         logger.warn(
           "[UpdateVerifiedEmailService][updateVerifiedEmail]" +
-            s" - updating verified email unsuccessful with business error/status code: ${statusText.getOrElse("Status text empty")}"
+            s" - updating verified email unsuccessful with business error/status code: ${status}"
         )
-        Future.successful(Some(false))
+        auditRequest(currentEmail, newEmail, eori, "changeEmailAddressCouldNotBeProcessed", res.getStatus)
+        Future.successful(Left(RetriableError))
+
+      case Right(res) =>
+        logger.warn(
+          "[UpdateVerifiedEmailService][updateVerifiedEmail]" +
+            s" - updating verified email unsuccessful with business error/status code: ${res.getStatus.getOrElse("Status text empty")}"
+        )
+        Future.successful(Left(NonRetriableError))
+
       case Left(res) =>
         logger.warn(
           s"[UpdateVerifiedEmailService][updateVerifiedEmail] - updating verified email unsuccessful with response: $res"
         )
-        Future.successful(None)
+        Future.successful(Left(NonRetriableError))
     }
   }
 
-  private def auditRequest(currentEmail: Option[String], newEmail: String, eoriNumber: String, auditType: String)(
-    implicit hc: HeaderCarrier
-  ): Unit =
+  private def auditRequest(
+    currentEmail: Option[String],
+    newEmail: String,
+    eoriNumber: String,
+    auditType: String,
+    status: Option[String]
+  )(implicit hc: HeaderCarrier): Unit =
     currentEmail.fold(
       audit.sendDataEvent(
         transactionName = "UpdateVerifiedEmailRequestSubmitted",
         path = url,
-        detail = Map("newEmailAddress" -> newEmail, "eori" -> eoriNumber),
+        detail = Map("newEmailAddress" -> newEmail, "eori" -> eoriNumber) ++ status.map("status" -> _),
         eventType = auditType
       )
     )(
@@ -99,7 +118,11 @@ class UpdateVerifiedEmailService @Inject() (
         audit.sendDataEvent(
           transactionName = "UpdateVerifiedEmailRequestSubmitted",
           path = url,
-          detail = Map("currentEmailAddress" -> emailAddress, "newEmailAddress" -> newEmail, "eori" -> eoriNumber),
+          detail = Map(
+            "currentEmailAddress"  -> emailAddress,
+            "newEmailAddress"      -> newEmail,
+            "eori"                 -> eoriNumber
+          ) ++ status.map("status" -> _),
           eventType = auditType
         )
     )

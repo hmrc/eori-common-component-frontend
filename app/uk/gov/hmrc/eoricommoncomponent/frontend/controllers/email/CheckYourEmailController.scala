@@ -24,12 +24,19 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.{confirmEmailYesNoAnswerForm, YesNo}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, LongJourney, Service, SubscribeJourney}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.UpdateVerifiedEmailService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  NonRetriableError,
+  RetriableError,
+  UpdateError,
+  UpdateVerifiedEmailService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.{check_your_email, email_confirmed, verify_your_email}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email_error_template
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,7 +51,8 @@ class CheckYourEmailController @Inject() (
   emailConfirmedView: email_confirmed,
   verifyYourEmail: verify_your_email,
   emailVerificationService: EmailVerificationService,
-  updateVerifiedEmailService: UpdateVerifiedEmailService
+  updateVerifiedEmailService: UpdateVerifiedEmailService,
+  emailErrorPage: email_error_template
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
@@ -156,17 +164,6 @@ class CheckYourEmailController @Inject() (
   def toResult(service: Service, subscribeJourney: SubscribeJourney)(implicit r: Request[AnyContent]): Result =
     Ok(emailConfirmedView(service, subscribeJourney))
 
-  private def updateVerifiedEmail(email: String)(implicit request: Request[AnyContent]) =
-    for {
-      maybeEori <- cdsFrontendDataCache.eori
-      result <- maybeEori.fold(Future.successful(Option(false))) {
-        eori => updateVerifiedEmailService.updateVerifiedEmail(None, email, eori)
-      }
-    } yield result match {
-      case Some(isUpdated) if isUpdated => ()
-      case _                            => throw new IllegalArgumentException("UpdateEmail failed")
-    }
-
   private def submitNewDetails(groupId: GroupId, service: Service, subscribeJourney: SubscribeJourney)(implicit
     request: Request[AnyContent]
   ): Future[Result] =
@@ -190,26 +187,48 @@ class CheckYourEmailController @Inject() (
                 "Unable to send email verification request. Service responded with 'already verified'"
             )
             // $COVERAGE-ON
-            for {
-              _ <- subscribeJourney match {
-                case SubscribeJourney(AutoEnrolment) if service.enrolmentKey == Service.cds.enrolmentKey =>
-                  updateVerifiedEmail(email) //here we update email after it's verified.
-                case _ =>
-                  Future.successful(
-                    ()
-                  ) //if it's a Long Journey or Short journey for other services than we do not update email.
-              }
-              _ <- save4LaterService.saveEmailForService(emailStatus.copy(isConfirmed = Some(true)))(
-                service,
-                subscribeJourney,
-                groupId
-              )
-              _ <- cdsFrontendDataCache.saveEmail(email)
-            } yield Redirect(EmailController.form(service, subscribeJourney))
+            onVerifiedEmail(subscribeJourney, service, email, emailStatus, groupId)
           case _ =>
             throw new IllegalStateException("CreateEmailVerificationRequest Failed")
         }
       }
+    }
+
+  private def onVerifiedEmail(
+    subscribeJourney: SubscribeJourney,
+    service: Service,
+    email: String,
+    emailStatus: EmailStatus,
+    groupId: GroupId
+  )(implicit request: Request[AnyContent]) =
+    (subscribeJourney match {
+      case SubscribeJourney(AutoEnrolment) if service.enrolmentKey == Service.cds.enrolmentKey =>
+        for {
+          maybeEori <- cdsFrontendDataCache.eori
+          verifiedEmailStatus <- maybeEori.fold(Future.successful(Left(NonRetriableError): Either[UpdateError, Unit])) {
+            eori => updateVerifiedEmailService.updateVerifiedEmail(None, email, eori)
+          }
+        } yield verifiedEmailStatus
+      case _ =>
+        //if it's a Long Journey or Short journey for other services than cds we do not update email.
+        Future.successful(Right())
+    }).flatMap {
+      case Right(_) =>
+        for {
+          _ <- save4LaterService.saveEmailForService(emailStatus.copy(isConfirmed = Some(true)))(
+            service,
+            subscribeJourney,
+            groupId
+          )
+          _ <- cdsFrontendDataCache.saveEmail(email)
+        } yield Redirect(EmailController.form(service, subscribeJourney))
+      case Left(RetriableError) =>
+        logger.warn("Update Verified Email failed with user-retriable error. Redirecting to error page.")
+        //Future.successful(Ok(emailErrorPage())) // TODO: uncomment when error page is agreed
+        throw new IllegalArgumentException(
+          "Update Verified Email failed"
+        ) // TODO: replace this with error page when it's ready
+      case Left(_) => throw new IllegalArgumentException("Update Verified Email failed with non-retriable error")
     }
 
   private def locationByAnswer(
