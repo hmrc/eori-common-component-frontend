@@ -159,10 +159,7 @@ class EmailController @Inject() (
         // $COVERAGE-OFF$Loggers
         logger.warn("Update Verified Email failed with user-retriable error. Redirecting to error page.")
         // $COVERAGE-ON
-        //Future.successful(Ok(emailErrorPage())) // TODO: uncomment when error page is agreed
-        throw new IllegalArgumentException(
-          "Update Verified Email failed"
-        ) // TODO: replace this with error page when it's ready
+        Future.successful(Ok(emailErrorPage()))
       case Left(_) => throw new IllegalArgumentException("Update Verified Email failed with non-retriable error")
     }
 

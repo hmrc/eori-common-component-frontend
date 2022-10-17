@@ -221,23 +221,22 @@ class EmailControllerSpec
       verify(mockSave4LaterService, times(0)).saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier])
     }
 
-    //TODO uncomment this test when error screen is ready
-//    "do not save email when updating verified email with retriable failure and display error page" in new TestFixture {
-//      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
-//        .thenReturn(Future.successful(Left(RetriableFailure)))
-//
-//      when(mockSessionCache.eori(any[Request[AnyContent]]))
-//        .thenReturn(Future.successful(Some("GB123456789")))
-//
-//      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
-//        .thenReturn(Future.successful(Some(false)))
-//
-//      showFormSubscription(controller)(journey = subscribeJourneyShort, service = cdsService) { result =>
-//        status(result) shouldBe OK
-//      }
-//
-//      verify(mockSave4LaterService, times(0)).saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier])
-//    }
+    "do not save email when updating verified email with retriable failure and display error page" in new TestFixture {
+      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Left(RetriableError)))
+
+      when(mockSessionCache.eori(any[Request[AnyContent]]))
+        .thenReturn(Future.successful(Some("GB123456789")))
+
+      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(false)))
+
+      showFormSubscription(controller)(journey = subscribeJourneyShort, service = cdsService) { result =>
+        status(result) shouldBe OK
+      }
+
+      verify(mockSave4LaterService, times(0)).saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier])
+    }
 
     "redirect when email verified" in new TestFixture {
       when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
