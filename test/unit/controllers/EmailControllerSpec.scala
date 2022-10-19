@@ -33,9 +33,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   Error,
-  UpdateEmailError,
   SubscriptionProcessing,
   SubscriptionStatusService,
+  UpdateEmailError,
   UpdateVerifiedEmailService
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.{Save4LaterService, UserGroupIdSubscriptionStatusCheckService}

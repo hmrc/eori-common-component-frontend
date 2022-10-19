@@ -33,8 +33,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RandomUUIDGenerator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  HandleSubscriptionService,
   Error,
+  HandleSubscriptionService,
   SubscriptionDetailsService,
   TaxEnrolmentsService,
   UpdateVerifiedEmailService
