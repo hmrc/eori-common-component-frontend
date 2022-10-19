@@ -30,8 +30,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  NonRetriableError,
-  RetriableError,
+  Error,
+  UpdateEmailError,
   UpdateError,
   UpdateVerifiedEmailService
 }
@@ -205,7 +205,7 @@ class CheckYourEmailController @Inject() (
       case SubscribeJourney(AutoEnrolment) if service.enrolmentKey == Service.cds.enrolmentKey =>
         for {
           maybeEori <- cdsFrontendDataCache.eori
-          verifiedEmailStatus <- maybeEori.fold(Future.successful(Left(NonRetriableError): Either[UpdateError, Unit])) {
+          verifiedEmailStatus <- maybeEori.fold(Future.successful(Left(Error): Either[UpdateError, Unit])) {
             eori => updateVerifiedEmailService.updateVerifiedEmail(None, email, eori)
           }
         } yield verifiedEmailStatus
@@ -222,7 +222,7 @@ class CheckYourEmailController @Inject() (
           )
           _ <- cdsFrontendDataCache.saveEmail(email)
         } yield Redirect(EmailController.form(service, subscribeJourney))
-      case Left(RetriableError) =>
+      case Left(UpdateEmailError) =>
         logger.warn("Update Verified Email failed with user-retriable error. Redirecting to error page.")
         Future.successful(Ok(emailErrorPage()))
       case Left(_) => throw new IllegalArgumentException("Update Verified Email failed with non-retriable error")

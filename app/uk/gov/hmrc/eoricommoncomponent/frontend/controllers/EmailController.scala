@@ -29,8 +29,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, Service, 
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  NonRetriableError,
-  RetriableError,
+  Error,
+  UpdateEmailError,
   UpdateError,
   UpdateVerifiedEmailService
 }
@@ -138,7 +138,7 @@ class EmailController @Inject() (
       case SubscribeJourney(AutoEnrolment) if service.enrolmentKey == Service.cds.enrolmentKey =>
         for {
           maybeEori <- sessionCache.eori
-          verifiedEmailStatus <- maybeEori.fold(Future.successful(Left(NonRetriableError): Either[UpdateError, Unit])) {
+          verifiedEmailStatus <- maybeEori.fold(Future.successful(Left(Error): Either[UpdateError, Unit])) {
             eori => updateVerifiedEmailService.updateVerifiedEmail(None, email, eori)
           }
         } yield verifiedEmailStatus
@@ -155,7 +155,7 @@ class EmailController @Inject() (
           )
           _ <- sessionCache.saveEmail(email)
         } yield Redirect(CheckYourEmailController.emailConfirmed(service, subscribeJourney))
-      case Left(RetriableError) =>
+      case Left(UpdateEmailError) =>
         // $COVERAGE-OFF$Loggers
         logger.warn("Update Verified Email failed with user-retriable error. Redirecting to error page.")
         // $COVERAGE-ON

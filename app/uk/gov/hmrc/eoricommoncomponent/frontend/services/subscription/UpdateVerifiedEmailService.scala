@@ -36,8 +36,8 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 sealed trait UpdateError
-case object RetriableError    extends UpdateError
-case object NonRetriableError extends UpdateError
+case object UpdateEmailError extends UpdateError
+case object Error            extends UpdateError
 
 class UpdateVerifiedEmailService @Inject() (
   reqCommonGenerator: RequestCommonGenerator,
@@ -82,20 +82,20 @@ class UpdateVerifiedEmailService @Inject() (
             s" - updating verified email unsuccessful with business error/status code: ${status}"
         )
         auditRequest(currentEmail, newEmail, eori, "changeEmailAddressCouldNotBeProcessed", res.getStatus)
-        Future.successful(Left(RetriableError))
+        Future.successful(Left(UpdateEmailError))
 
       case Right(res) =>
         logger.warn(
           "[UpdateVerifiedEmailService][updateVerifiedEmail]" +
             s" - updating verified email unsuccessful with business error/status code: ${res.getStatus.getOrElse("Status text empty")}"
         )
-        Future.successful(Left(NonRetriableError))
+        Future.successful(Left(Error))
 
       case Left(res) =>
         logger.warn(
           s"[UpdateVerifiedEmailService][updateVerifiedEmail] - updating verified email unsuccessful with response: $res"
         )
-        Future.successful(Left(NonRetriableError))
+        Future.successful(Left(Error))
     }
   }
 

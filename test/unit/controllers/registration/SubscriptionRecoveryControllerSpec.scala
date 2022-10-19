@@ -34,7 +34,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.RandomUUIDGenerator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   HandleSubscriptionService,
-  NonRetriableError,
+  Error,
   SubscriptionDetailsService,
   TaxEnrolmentsService,
   UpdateVerifiedEmailService
@@ -148,7 +148,7 @@ class SubscriptionRecoveryControllerSpec
         .thenReturn(Some(NameDobMatchModel("fname", Some("mName"), "lname", LocalDate.parse("2019-01-01"))))
 
       when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Left(NonRetriableError)))
+        .thenReturn(Future.successful(Left(Error)))
     }
 
     "call Enrolment Complete with successful SUB09 call for Subscription UK journey, default no UpdateEmail" in {

@@ -32,8 +32,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourne
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  NonRetriableError,
-  RetriableError,
+  Error,
+  UpdateEmailError,
   SubscriptionProcessing,
   SubscriptionStatusService,
   UpdateVerifiedEmailService
@@ -208,7 +208,7 @@ class EmailControllerSpec
 
     "do not save email when updating email fails" in new TestFixture {
       when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])).thenReturn(
-        Future.successful(Left(NonRetriableError))
+        Future.successful(Left(Error))
       )
       the[IllegalArgumentException] thrownBy showFormSubscription(controller)(
         journey = subscribeJourneyShort,
@@ -223,7 +223,7 @@ class EmailControllerSpec
 
     "do not save email when updating verified email with retriable failure and display error page" in new TestFixture {
       when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Left(RetriableError)))
+        .thenReturn(Future.successful(Left(UpdateEmailError)))
 
       when(mockSessionCache.eori(any[Request[AnyContent]]))
         .thenReturn(Future.successful(Some("GB123456789")))

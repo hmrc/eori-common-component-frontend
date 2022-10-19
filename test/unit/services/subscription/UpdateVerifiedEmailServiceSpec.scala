@@ -34,8 +34,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.Cu
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{MessagingServiceParam, ResponseCommon}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  NonRetriableError,
-  RetriableError,
+  Error,
+  UpdateEmailError,
   UpdateVerifiedEmailService
 }
 import uk.gov.hmrc.http.HeaderCarrier
@@ -140,7 +140,7 @@ class UpdateVerifiedEmailServiceSpec extends UnitSpec with MockitoSugar with Bef
           .updateCustomsDataStore(any[CustomsDataStoreRequest])(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
 
-      await(service.updateVerifiedEmail(None, "newemail@email.email", "GB0123456789")) shouldBe Left(RetriableError)
+      await(service.updateVerifiedEmail(None, "newemail@email.email", "GB0123456789")) shouldBe Left(UpdateEmailError)
     }
 
     "fail with Non Retriable Failure when Email Update fails with a different status reason" in {
@@ -154,7 +154,7 @@ class UpdateVerifiedEmailServiceSpec extends UnitSpec with MockitoSugar with Bef
           .updateCustomsDataStore(any[CustomsDataStoreRequest])(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
 
-      await(service.updateVerifiedEmail(None, "newemail@email.email", "GB0123456789")) shouldBe Left(NonRetriableError)
+      await(service.updateVerifiedEmail(None, "newemail@email.email", "GB0123456789")) shouldBe Left(Error)
     }
 
     "fail with Non Retriable Failure when Email Update fails" in {
@@ -168,7 +168,7 @@ class UpdateVerifiedEmailServiceSpec extends UnitSpec with MockitoSugar with Bef
           .updateCustomsDataStore(any[CustomsDataStoreRequest])(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
 
-      await(service.updateVerifiedEmail(None, "newemail@email.email", "GB0123456789")) shouldBe Left(NonRetriableError)
+      await(service.updateVerifiedEmail(None, "newemail@email.email", "GB0123456789")) shouldBe Left(Error)
     }
   }
 }
