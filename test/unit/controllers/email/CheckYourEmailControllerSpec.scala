@@ -31,8 +31,13 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourne
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.UpdateVerifiedEmailService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  Error,
+  UpdateEmailError,
+  UpdateVerifiedEmailService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.{check_your_email, email_confirmed, verify_your_email}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email_error_template
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
@@ -64,6 +69,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   private val checkYourEmailView = instanceOf[check_your_email]
   private val emailConfirmedView = instanceOf[email_confirmed]
   private val verifyYourEmail    = instanceOf[verify_your_email]
+  private val errorTemplate      = instanceOf[email_error_template]
 
   private val controller = new CheckYourEmailController(
     mockAuthAction,
@@ -74,7 +80,8 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     emailConfirmedView,
     verifyYourEmail,
     mockEmailVerificationService,
-    mockUpdateVerifiedEmailService
+    mockUpdateVerifiedEmailService,
+    errorTemplate
   )
 
   val email       = "test@example.com"
@@ -129,7 +136,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       when(mockSessionCache.eori(any[Request[AnyContent]]))
         .thenReturn(Future.successful(Some("GB123456789")))
       when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Some(true)))
+        .thenReturn(Future.successful(Right()))
       when(mockSave4LaterService.saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier]))
         .thenReturn(Future.successful(()))
       when(mockSessionCache.saveEmail(any[String])(any[Request[AnyContent]]))
@@ -167,7 +174,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
 
     "update verified email for CDS Short Journey (Auto-enrolment)" in {
       when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Some(true)))
+        .thenReturn(Future.successful(Right()))
 
       when(mockSessionCache.eori(any[Request[AnyContent]]))
         .thenReturn(Future.successful(Some("GB123456789")))
@@ -193,7 +200,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
 
     "do not save email when updating email fails" in {
       when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(None))
+        .thenReturn(Future.successful(Left(Error)))
 
       when(mockSessionCache.eori(any[Request[AnyContent]]))
         .thenReturn(Future.successful(Some("GB123456789")))
@@ -211,7 +218,25 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
           result.header.headers("Location") should endWith(
             "/customs-enrolment-services/cds/subscribe/autoenrolment/check-user"
           )
-      } should have message "UpdateEmail failed"
+      }
+
+      verify(mockSave4LaterService, times(0)).saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier])
+    }
+
+    "do not save email when updating verified email with retriable failure and display error page" in {
+      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Left(UpdateEmailError)))
+
+      when(mockSessionCache.eori(any[Request[AnyContent]]))
+        .thenReturn(Future.successful(Some("GB123456789")))
+
+      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(false)))
+
+      submitForm(ValidRequest + (yesNoInputName -> answerYes), service = cdsService, journey = subscribeJourneyShort) {
+        result =>
+          status(result) shouldBe OK
+      }
 
       verify(mockSave4LaterService, times(0)).saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier])
     }

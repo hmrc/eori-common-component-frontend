@@ -28,9 +28,15 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.UpdateVerifiedEmailService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  Error,
+  UpdateEmailError,
+  UpdateError,
+  UpdateVerifiedEmailService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.{Save4LaterService, UserGroupIdSubscriptionStatusCheckService}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{
+  email_error_template,
   enrolment_pending_against_group_id,
   enrolment_pending_for_user
 }
@@ -48,7 +54,8 @@ class EmailController @Inject() (
   updateVerifiedEmailService: UpdateVerifiedEmailService,
   userGroupIdSubscriptionStatusCheckService: UserGroupIdSubscriptionStatusCheckService,
   enrolmentPendingForUser: enrolment_pending_for_user,
-  enrolmentPendingAgainstGroupId: enrolment_pending_against_group_id
+  enrolmentPendingAgainstGroupId: enrolment_pending_against_group_id,
+  emailErrorPage: email_error_template
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) with EnrolmentExtractor {
 
@@ -99,17 +106,6 @@ class EmailController @Inject() (
         )(otherUserWithinGroupIsInProcess(service))
     }
 
-  private def updateVerifiedEmail(email: String)(implicit request: Request[AnyContent]) =
-    for {
-      maybeEori <- sessionCache.eori
-      result <- maybeEori.fold(Future.successful(Option(false))) {
-        eori => updateVerifiedEmailService.updateVerifiedEmail(None, email, eori)
-      }
-    } yield result match {
-      case Some(isUpdated) if isUpdated => ()
-      case _                            => throw new IllegalArgumentException("UpdateEmail failed")
-    }
-
   private def checkWithEmailService(
     email: String,
     emailStatus: EmailStatus,
@@ -118,34 +114,7 @@ class EmailController @Inject() (
   )(implicit request: Request[AnyContent], userWithEnrolments: LoggedInUserWithEnrolments): Future[Result] =
     emailVerificationService.isEmailVerified(email).flatMap {
       case Some(true) =>
-        for {
-          _ <- subscribeJourney match {
-            case SubscribeJourney(AutoEnrolment) if service.enrolmentKey == Service.cds.enrolmentKey =>
-              updateVerifiedEmail(
-                email
-              ) //here the email will be updated in case it was existing in save4later before and was not verified.
-            case _ =>
-              Future.successful(
-                ()
-              ) //if it's a Long Journey or Short journey for other services than we do not update email.
-          }
-          _ <- {
-            // $COVERAGE-OFF$Loggers
-            logger.warn("updated verified email status true to save4later")
-            // $COVERAGE-ON
-            save4LaterService.saveEmailForService(emailStatus.copy(isVerified = true))(
-              service,
-              subscribeJourney,
-              GroupId(userWithEnrolments.groupId)
-            )
-          }
-          _ <- {
-            // $COVERAGE-OFF$Loggers
-            logger.warn("saved verified email address true to cache")
-            // $COVERAGE-ON
-            sessionCache.saveEmail(email)
-          }
-        } yield Redirect(CheckYourEmailController.emailConfirmed(service, subscribeJourney))
+        onVerifiedEmail(subscribeJourney, service, email, emailStatus, GroupId(userWithEnrolments.groupId))
       case Some(false) =>
         // $COVERAGE-OFF$Loggers
         logger.warn("verified email address false")
@@ -156,6 +125,42 @@ class EmailController @Inject() (
         logger.error("Couldn't verify email address")
         // $COVERAGE-ON
         Future.successful(Redirect(CheckYourEmailController.verifyEmailView(service, subscribeJourney)))
+    }
+
+  private def onVerifiedEmail(
+    subscribeJourney: SubscribeJourney,
+    service: Service,
+    email: String,
+    emailStatus: EmailStatus,
+    groupId: GroupId
+  )(implicit request: Request[AnyContent]) =
+    (subscribeJourney match {
+      case SubscribeJourney(AutoEnrolment) if service.enrolmentKey == Service.cds.enrolmentKey =>
+        for {
+          maybeEori <- sessionCache.eori
+          verifiedEmailStatus <- maybeEori.fold(Future.successful(Left(Error): Either[UpdateError, Unit])) {
+            eori => updateVerifiedEmailService.updateVerifiedEmail(None, email, eori)
+          }
+        } yield verifiedEmailStatus
+      case _ =>
+        //if it's a Long Journey or Short journey for other services than cds we do not update email.
+        Future.successful(Right())
+    }).flatMap {
+      case Right(_) =>
+        for {
+          _ <- save4LaterService.saveEmailForService(emailStatus.copy(isVerified = true))(
+            service,
+            subscribeJourney,
+            groupId
+          )
+          _ <- sessionCache.saveEmail(email)
+        } yield Redirect(CheckYourEmailController.emailConfirmed(service, subscribeJourney))
+      case Left(UpdateEmailError) =>
+        // $COVERAGE-OFF$Loggers
+        logger.warn("Update Verified Email failed with user-retriable error. Redirecting to error page.")
+        // $COVERAGE-ON
+        Future.successful(Ok(emailErrorPage()))
+      case Left(_) => throw new IllegalArgumentException("Update Verified Email failed with non-retriable error")
     }
 
 }

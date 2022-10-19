@@ -22,7 +22,7 @@ import org.mockito.Mockito
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.mvc.Result
+import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EmailController
@@ -32,14 +32,18 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourne
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  Error,
   SubscriptionProcessing,
   SubscriptionStatusService,
+  UpdateEmailError,
   UpdateVerifiedEmailService
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.{Save4LaterService, UserGroupIdSubscriptionStatusCheckService}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{
+  email_error_template,
   enrolment_pending_against_group_id,
-  enrolment_pending_for_user
+  enrolment_pending_for_user,
+  error_template
 }
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
@@ -61,6 +65,7 @@ class EmailControllerSpec
   private val mockUpdateVerifiedEmailService     = mock[UpdateVerifiedEmailService]
   private val enrolmentPendingAgainstGroupIdView = instanceOf[enrolment_pending_against_group_id]
   private val enrolmentPendingForUserView        = instanceOf[enrolment_pending_for_user]
+  private val errorEmailView                     = instanceOf[email_error_template]
 
   private val infoXpath = "//*[@id='info']"
 
@@ -80,7 +85,8 @@ class EmailControllerSpec
       mockUpdateVerifiedEmailService,
       userGroupIdSubscriptionStatusCheckService,
       enrolmentPendingForUserView,
-      enrolmentPendingAgainstGroupIdView
+      enrolmentPendingAgainstGroupIdView,
+      errorEmailView
     )
 
   }
@@ -95,7 +101,7 @@ class EmailControllerSpec
     when(mockSave4LaterService.saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier]))
       .thenReturn(Future.successful(()))
     when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])).thenReturn(
-      Future.successful(Some(true))
+      Future.successful(Right())
     )
     when(mockSessionCache.saveEmail(any())(any()))
       .thenReturn(Future.successful(true))
@@ -202,7 +208,7 @@ class EmailControllerSpec
 
     "do not save email when updating email fails" in new TestFixture {
       when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])).thenReturn(
-        Future.successful(Some(false))
+        Future.successful(Left(Error))
       )
       the[IllegalArgumentException] thrownBy showFormSubscription(controller)(
         journey = subscribeJourneyShort,
@@ -210,7 +216,24 @@ class EmailControllerSpec
       ) { result =>
         status(result) shouldBe SEE_OTHER
         await(result).header.headers("Location") should endWith("/cds/subscribe/autoenrolment/email-confirmed")
-      } should have message "UpdateEmail failed"
+      } should have message "Update Verified Email failed with non-retriable error"
+
+      verify(mockSave4LaterService, times(0)).saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier])
+    }
+
+    "do not save email when updating verified email with retriable failure and display error page" in new TestFixture {
+      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Left(UpdateEmailError)))
+
+      when(mockSessionCache.eori(any[Request[AnyContent]]))
+        .thenReturn(Future.successful(Some("GB123456789")))
+
+      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(false)))
+
+      showFormSubscription(controller)(journey = subscribeJourneyShort, service = cdsService) { result =>
+        status(result) shouldBe OK
+      }
 
       verify(mockSave4LaterService, times(0)).saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier])
     }
