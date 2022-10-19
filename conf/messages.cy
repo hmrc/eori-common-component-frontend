@@ -1131,9 +1131,9 @@ cds.error.contact.part1=Ffôn: 0300 200 3705
 cds.error.contact.part2=Ar agor 08:00 i 18:00 o ddydd Llun i ddydd Gwener (ar gau ar wyliau banc).
 
 #Email error page
-cds.email.error.title=TODO
-cds.email.error.message.part1=TODO
-cds.email.error.message.part2=TODO
+cds.email.error.title=Mae’n ddrwg gennym, ond ni allwn eich tanysgrifio i’r Gwasanaeth Datganiadau Tollau
+cds.email.error.message.part1=Mae ein system yn dal i brosesu eich manylion. Bydd hyn yn cymryd awr fel arfer, ond gall gymryd yn hirach.
+cds.email.error.message.part2=Rhowch gynnig arall arni ymhen awr.
 
 cds.based-in-uk.page.title=Ydych chi neu’ch sefydliad wedi’i leoli yn y DU?
 cds.based-in-uk.heading=Ydych chi neu’ch sefydliad wedi’i leoli yn y DU?
