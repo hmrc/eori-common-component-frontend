@@ -57,20 +57,20 @@ class YouCannotUseServiceController @Inject() (
   }
 
   def unableToUseIdPage(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
-    implicit request =>
-      _: LoggedInUserWithEnrolments =>
-        cache.eori.flatMap { eoriOpt =>
-          cache.remove.map { _ =>
-            eoriOpt match {
-              case Some(eori) => Ok(unableToUseIdPage(service, eori))
-              case _ =>
-                Redirect(
-                  uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.createForm(
-                    service
-                  )
+    implicit request => _: LoggedInUserWithEnrolments =>
+      cache.eori.flatMap { eoriOpt =>
+        cache.remove.map { _ =>
+          eoriOpt match {
+            case Some(eori) => Ok(unableToUseIdPage(service, eori))
+            case _ =>
+              Redirect(
+                uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController.createForm(
+                  service
                 )
-            }
+              )
           }
         }
+      }
   }
+
 }
