@@ -122,7 +122,7 @@ class WhatIsYourEoriController @Inject() (
       enrolmentStoreProxyService.isEnrolmentInUse(service, ExistingEori(eori, service.enrolmentKey)).map {
         case Some(ExistingEori(id, _)) if id.nonEmpty =>
           Redirect(
-            uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.EoriUnableToUseController.displayPage(
+            uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.YouCannotUseServiceController.unableToUseIdPage(
               service
             )
           )
