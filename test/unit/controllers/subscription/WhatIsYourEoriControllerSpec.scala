@@ -229,9 +229,7 @@ class WhatIsYourEoriControllerSpec extends ControllerSpec with AuthActionMock wi
           controller.submit(isInReviewMode = false, atarService)(postRequest("eori-number" -> eoriWithoutCountry))
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(
-          result
-        ).get shouldBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/unable-to-use-id"
+        redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/unable-to-use-id"
       }
     }
 

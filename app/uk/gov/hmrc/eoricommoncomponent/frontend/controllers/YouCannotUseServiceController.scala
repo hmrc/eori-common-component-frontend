@@ -25,7 +25,7 @@ import uk.gov.hmrc.auth.core.{AuthConnector, AuthProviders, AuthorisedFunctions}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, AuthRedirectSupport, EnrolmentExtractor}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionBusinessService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.unable_to_use_id
 
@@ -37,7 +37,7 @@ class YouCannotUseServiceController @Inject() (
   override val env: Environment,
   override val authConnector: AuthConnector,
   authAction: AuthAction,
-  cache: SessionCache,
+  subscriptionBusinessService: SubscriptionBusinessService,
   youCantUseService: you_cant_use_service,
   unauthorisedView: unauthorized,
   unableToUseIdPage: unable_to_use_id,
@@ -58,7 +58,7 @@ class YouCannotUseServiceController @Inject() (
 
   def unableToUseIdPage(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
-      cache.eori.map {
+      subscriptionBusinessService.cachedEoriNumber.map {
         case Some(eori) => Ok(unableToUseIdPage(service, eori))
         case _ =>
           Redirect(

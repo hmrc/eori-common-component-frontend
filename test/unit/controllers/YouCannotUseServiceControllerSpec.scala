@@ -25,6 +25,7 @@ import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.YouCannotUseServiceController
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionBusinessService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{unauthorized, you_cant_use_service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.unable_to_use_id
 import util.ControllerSpec
@@ -42,7 +43,7 @@ class YouCannotUseServiceControllerSpec extends ControllerSpec with AuthActionMo
   private val unableToUseIdPage     = mock[unable_to_use_id]
 
   private val mockAuthAction   = authAction(mockAuthConnector)
-  private val mockSessionCache = mock[SessionCache]
+  private val mockSessionCache = mock[SubscriptionBusinessService]
 
   private val controller =
     new YouCannotUseServiceController(
@@ -61,8 +62,7 @@ class YouCannotUseServiceControllerSpec extends ControllerSpec with AuthActionMo
     super.beforeEach()
 
     when(unableToUseIdPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(mockSessionCache.eori(any())).thenReturn(Future.successful(Some("GB123456789123")))
-    when(mockSessionCache.remove(any())).thenReturn(Future.successful(true))
+    when(mockSessionCache.cachedEoriNumber(any())).thenReturn(Future.successful(Some("GB123456789123")))
   }
 
   override protected def afterEach(): Unit = {
@@ -101,7 +101,7 @@ class YouCannotUseServiceControllerSpec extends ControllerSpec with AuthActionMo
 
     "redirect to What is Your email page " in {
       withAuthorisedUser(defaultUserId, mockAuthConnector)
-      when(mockSessionCache.eori(any())).thenReturn(Future.successful(None))
+      when(mockSessionCache.cachedEoriNumber(any())).thenReturn(Future.successful(None))
       val result =
         controller.unableToUseIdPage(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
