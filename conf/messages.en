@@ -1298,7 +1298,7 @@ cds.error.contact.part1=Telephone: 0300 322 7067
 cds.error.contact.part2=Open 8am to 6pm, Monday to Friday (except public holidays).
 
 #Email error page
-cds.email.error.title=Sorry, we cannot subscribe you to the Customs Declaration Service
+cds.email.error.title=We cannot subscribe you to the Customs Declaration Service
 cds.email.error.message.part1=Our system is still processing your details. This usually takes one hour, but can take longer.
 cds.email.error.message.part2=Try again in one hour.
 
