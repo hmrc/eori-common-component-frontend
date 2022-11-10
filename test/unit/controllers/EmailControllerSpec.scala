@@ -301,15 +301,16 @@ class EmailControllerSpec
       }
     }
 
-    "continue when same subscription is in progress for user" in new TestFixture {
+    "block when same subscription is in progress for user" in new TestFixture {
       when(mockSave4LaterService.fetchCacheIds(any())(any()))
         .thenReturn(Future.successful(Some(CacheIds(InternalId(defaultUserId), SafeId("safe-id"), Some("atar")))))
       when(mockSubscriptionStatusService.getStatus(any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(SubscriptionProcessing))
 
       showFormSubscription(controller)(journey = subscribeJourneyShort) { result =>
-        status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("/atar/subscribe/autoenrolment/email-confirmed")
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should startWith("There is a problem")
       }
     }
   }
