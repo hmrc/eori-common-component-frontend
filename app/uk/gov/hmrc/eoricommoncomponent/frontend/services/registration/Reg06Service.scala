@@ -59,7 +59,13 @@ class Reg06Service @Inject() (
         throw new IllegalArgumentException("Expected only nino or utr to be populated but got: " + unexpected)
     }
 
-    def createRegDetail(address: AddressViewModel, nameDob: NameDobMatchModel, eori: String, id: CustomsId) = {
+    def createRegDetail(
+      address: AddressViewModel,
+      nameDob: NameDobMatchModel,
+      eori: String,
+      id: CustomsId,
+      email: String
+    ) = {
       val addressStreet = address.street.take(70)
       val registerModeEori = RegisterModeEori(
         eori,
@@ -73,28 +79,32 @@ class Reg06Service @Inject() (
         Some(Individual(nameDob.firstName, None, nameDob.lastName, nameDob.dateOfBirth.toString)),
         None
       )
-      RegisterWithEoriAndIdDetail(registerModeEori, registerModeId, None)
+
+      RegisterWithEoriAndIdDetail(registerModeEori, registerModeId, Some(GovGatewayCredentials(email = email)))
     }
 
-    dataCache.subscriptionDetails.flatMap { subscription =>
-      val organisationType = requestSessionData.userSelectedOrganisationType.getOrElse(
+    for {
+      subscription <- dataCache.subscriptionDetails
+      email        <- dataCache.email
+      organisationType = requestSessionData.userSelectedOrganisationType.getOrElse(
         throw DataUnavailableException("Org type missing from cache")
       )
-      val maybeOrganisationTypeConfiguration: Option[OrganisationTypeConfiguration] =
+      maybeOrganisationTypeConfiguration: Option[OrganisationTypeConfiguration] =
         CdsToEtmpOrganisationType(Some(organisationType))
-      val address =
+      address =
         subscription.addressDetails.getOrElse(throw DataUnavailableException("Address missing from subscription"))
-      val nameDob =
+      nameDob =
         subscription.nameDobDetails.getOrElse(throw DataUnavailableException("Name / DOB missing from subscription"))
-      val eori =
+      eori =
         subscription.eoriNumber.getOrElse(throw DataUnavailableException("EORI number missing from subscription"))
-      val id = subscription.customsId.getOrElse(throw DataUnavailableException("Customs ID missing from subscription"))
-      registerWithEoriAndId(
-        createRegDetail(address, nameDob, eori, id),
+      id = subscription.customsId.getOrElse(throw DataUnavailableException("Customs ID missing from subscription"))
+      isRegistered <- registerWithEoriAndId(
+        createRegDetail(address, nameDob, eori, id, email),
         subscription,
         maybeOrganisationTypeConfiguration
       )
-    }
+    } yield isRegistered
+
   }
 
   def sendOrganisationRequest(implicit
@@ -123,6 +133,7 @@ class Reg06Service @Inject() (
 
     for {
       subscriptionDetails <- dataCache.subscriptionDetails
+      email               <- dataCache.email
       organisationType = requestSessionData.userSelectedOrganisationType.getOrElse(
         throw DataUnavailableException("Org type missing from cache")
       )
@@ -141,7 +152,7 @@ class Reg06Service @Inject() (
       regEoriAndId = RegisterWithEoriAndIdDetail(
         regModeEORI(address, eori, orgDetails.name),
         regModeId(UTR, orgDetails.id, organisationType, orgDetails.name),
-        None
+        Some(GovGatewayCredentials(email = email))
       )
       result <- registerWithEoriAndId(regEoriAndId, subscriptionDetails, maybeOrganisationTypeConfiguration)
     } yield result

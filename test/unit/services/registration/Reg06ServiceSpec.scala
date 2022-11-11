@@ -72,6 +72,8 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
   private val organisationNameAndAddressNonePostcode =
     EoriAndIdNameAndAddress("Full Name", EstablishmentAddress("25 Some Street", "Testville", None, "GB"))
 
+  val email = "email@email.email"
+
   private val registerWithUTR = RegisterModeId(
     "UTR",
     "45646757",
@@ -957,6 +959,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       when(subscriptionDetailsHolder.eoriNumber).thenReturn(eori)
       when(subscriptionDetailsHolder.nameDobDetails).thenReturn(nameDobDetails)
       when(subscriptionDetailsHolder.customsId).thenReturn(nino)
+      when(mockDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(email))
 
       mockRegistrationSuccess()
 
@@ -991,6 +994,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(mayBeEori)
       when(mockSubscriptionDetailsHolder.nameIdOrganisationDetails)
         .thenReturn(Some(nameIdOrganisationDetails))
+      when(mockDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(email))
       mockRegistrationSuccess()
 
       service
@@ -1019,6 +1023,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         .thenReturn(Future.successful(organisationRegistrationDetails))
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(Some(CdsOrganisationType.Company))
+      when(mockDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(email))
 
       when(mockSubscriptionDetailsHolder.addressDetails)
         .thenReturn(mayBeCachedAddressViewModel)
@@ -1041,6 +1046,8 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         .thenReturn(Future.successful(mockSubscriptionDetailsHolder))
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(None)
+      when(mockDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(email))
+
       intercept[DataUnavailableException] {
         await(service.sendOrganisationRequest(any(), hc, originatingService))
       }
@@ -1053,6 +1060,8 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         .thenReturn(Some(CdsOrganisationType.Company))
       when(mockSubscriptionDetailsHolder.addressDetails)
         .thenReturn(None)
+      when(mockDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(email))
+
       intercept[DataUnavailableException] {
         await(service.sendOrganisationRequest(any(), hc, originatingService))
       }
@@ -1068,6 +1077,8 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       when(mockSubscriptionDetailsHolder.addressDetails)
         .thenReturn(mayBeCachedAddressViewModel)
       when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(None)
+      when(mockDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(email))
+
       intercept[DataUnavailableException] {
         await(service.sendOrganisationRequest(any(), hc, originatingService))
       }
@@ -1086,6 +1097,8 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(mayBeEori)
       when(mockSubscriptionDetailsHolder.nameIdOrganisationDetails)
         .thenReturn(None)
+      when(mockDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(email))
+
       intercept[DataUnavailableException] {
         await(service.sendOrganisationRequest(any(), hc, originatingService))
       }
@@ -1107,6 +1120,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       when(mockSubscription.addressDetails).thenReturn(address)
       when(mockSubscription.eoriNumber).thenReturn(eori)
       when(mockSubscription.customsId).thenReturn(nino)
+      when(mockDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(email))
       when(mockSubscription.nameDobDetails)
         .thenReturn(Some(NameDobMatchModel("Fname", None, "Lname", LocalDate.parse("1978-02-10"))))
       mockRegistrationSuccess()
@@ -1127,6 +1141,8 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         .thenReturn(Future.successful(mockSubscription))
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(None)
+      when(mockDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(email))
+
       intercept[DataUnavailableException] {
         await(service.sendIndividualRequest(any(), hc, originatingService)) shouldBe true
       }
@@ -1139,6 +1155,8 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(Some(CdsOrganisationType.Company))
       when(mockSubscription.addressDetails).thenReturn(None)
+      when(mockDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(email))
+
       intercept[DataUnavailableException] {
         await(service.sendIndividualRequest(any(), hc, originatingService)) shouldBe true
       }
@@ -1154,6 +1172,8 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       when(mockSubscription.addressDetails).thenReturn(address)
       when(mockSubscription.nameDobDetails)
         .thenReturn(None)
+      when(mockDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(email))
+
       intercept[DataUnavailableException] {
         await(service.sendIndividualRequest(any(), hc, originatingService)) shouldBe true
       }
@@ -1170,6 +1190,8 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       when(mockSubscription.nameDobDetails)
         .thenReturn(Some(NameDobMatchModel("Fname", None, "Lname", LocalDate.parse("1978-02-10"))))
       when(mockSubscription.eoriNumber).thenReturn(None)
+      when(mockDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(email))
+
       intercept[DataUnavailableException] {
         await(service.sendIndividualRequest(any(), hc, originatingService)) shouldBe true
       }
@@ -1188,6 +1210,8 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         .thenReturn(Some(NameDobMatchModel("Fname", None, "Lname", LocalDate.parse("1978-02-10"))))
       when(mockSubscription.eoriNumber).thenReturn(eori)
       when(mockSubscription.customsId).thenReturn(None)
+      when(mockDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(email))
+
       intercept[DataUnavailableException] {
         await(service.sendIndividualRequest(any(), hc, originatingService)) shouldBe true
       }
@@ -1219,6 +1243,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         when(mockSubscriptionDetailsHolder.nameIdOrganisationDetails)
           .thenReturn(nameIdOrganisationDetails)
         mockRegistrationSuccess()
+        when(mockDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(email))
 
         service.sendOrganisationRequest(any(), hc, originatingService).futureValue shouldBe true
 
@@ -1259,6 +1284,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         when(mockSubscription.nameDobDetails)
           .thenReturn(Some(NameDobMatchModel("Fname", None, "Lname", LocalDate.parse("1978-02-10"))))
         mockRegistrationSuccess()
+        when(mockDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(email))
 
         await(service.sendIndividualRequest(any(), hc, originatingService)) shouldBe true
 
