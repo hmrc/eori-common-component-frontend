@@ -36,7 +36,8 @@ case class RegistrationSubmitted(
   organisation: Option[RegisterWithEoriAndIdOrganisation],
   receiptDate: String,
   regime: String,
-  originatingService: String
+  originatingService: String,
+  email: Option[String]
 )
 
 object RegistrationSubmitted {
@@ -58,7 +59,8 @@ object RegistrationSubmitted {
       organisation = request.requestDetail.registerModeID.organisation,
       receiptDate = request.requestCommon.receiptDate.toString(),
       regime = request.requestCommon.regime,
-      originatingService = originatingService
+      originatingService = originatingService,
+      email = request.requestDetail.govGatewayCredentials.map(_.email)
     )
   }
 
