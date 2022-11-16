@@ -182,12 +182,25 @@ cds.if.you.need.help.telephone.link=Find out about call charges
 cds.subscription.contact-details.intro=We will use these details to contact you about your application.
 
 # Start Page (end)
-
-cds.enrolment.pending.title=There is a problem
+cds.enrolment.pending.title.user.sameService=You have already applied for a subscription to {0}
+cds.enrolment.pending.title.user.otherService=You cannot apply until we have processed your application to {0}
+cds.enrolment.pending.title.group.sameService=Someone in your organisation has already applied for this subscription
+cds.enrolment.pending.title.group.otherService=Someone in your organisation has already applied for a subscription
 cds.enrolment.pending.otherService=another service
+
 cds.enrolment.pending.user.paragraph1=We are currently processing your subscription request to {0}.
 cds.enrolment.pending.user.paragraph2=This process must be completed before you can apply for another service.
 cds.enrolment.pending.user.paragraph3=Sign out and wait until you receive an email notification about {0} before applying to {1}.
+
+cds.enrolment.pending.user.paragraph1=We will send you an email when we have finished processing it.
+cds.enrolment.pending.user.paragraph2=You will get this email within either:
+
+cds.enrolment.pending.group.paragraph1=We will send them an email when we have finished processing it.
+cds.enrolment.pending.group.paragraph2=They will get this email within either:
+cds.enrolment.pending.group.paragraph3=Only one person from your organisation can apply.
+cds.enrolment.pending.bullet1=2 hours
+cds.enrolment.pending.bullet2=5 working days, if we need to make more checks
+
 cds.enrolment.pending.group.otherService.paragraph1=We are currently processing a subscription request to {0} from someone in your organisation.
 cds.enrolment.pending.group.otherService.paragraph2=This process must be completed before you can apply for another service.
 cds.enrolment.pending.group.sameService.paragraph1=Our records show that someone in your organisation has already applied for this service.
