@@ -235,7 +235,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your first name"
         page.getElementsText(firstNameFieldLevelErrorXPath) shouldBe "Error: Enter your first name"
         page.getElementsText("title") should startWith("Error: ")
-        verifyZeroInteractions(mockSubscriptionBusinessService)
+        verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
 
@@ -245,7 +245,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your given name"
         page.getElementsText(firstNameFieldLevelErrorXPath) shouldBe "Error: Enter your given name"
         page.getElementsText("title") should startWith("Error: ")
-        verifyZeroInteractions(mockSubscriptionBusinessService)
+        verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
 
@@ -260,7 +260,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
           firstNameFieldLevelErrorXPath
         ) shouldBe "Error: Enter a given name without invalid characters"
         page.getElementsText("title") should startWith("Error: ")
-        verifyZeroInteractions(mockSubscriptionBusinessService)
+        verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
 
@@ -273,7 +273,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
             firstNameFieldLevelErrorXPath
           ) shouldBe "Error: The first name must be 35 characters or less"
           page.getElementsText("title") should startWith("Error: ")
-          verifyZeroInteractions(mockSubscriptionBusinessService)
+          verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
 
@@ -289,7 +289,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
             firstNameFieldLevelErrorXPath
           ) shouldBe "Error: The given name must be 35 characters or less"
           page.getElementsText("title") should startWith("Error: ")
-          verifyZeroInteractions(mockSubscriptionBusinessService)
+          verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
 
@@ -304,7 +304,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
             firstNameFieldLevelErrorXPath
           ) shouldBe "Error: Enter a first name without invalid characters"
           page.getElementsText("title") should startWith("Error: ")
-          verifyZeroInteractions(mockSubscriptionBusinessService)
+          verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
 
@@ -314,7 +314,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your last name"
         page.getElementsText(lastNameFieldLevelErrorXPath) shouldBe "Error: Enter your last name"
         page.getElementsText("title") should startWith("Error: ")
-        verifyZeroInteractions(mockSubscriptionBusinessService)
+        verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
 
@@ -324,7 +324,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your family name"
         page.getElementsText(lastNameFieldLevelErrorXPath) shouldBe "Error: Enter your family name"
         page.getElementsText("title") should startWith("Error: ")
-        verifyZeroInteractions(mockSubscriptionBusinessService)
+        verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
 
@@ -339,7 +339,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
           lastNameFieldLevelErrorXPath
         ) shouldBe "Error: The family name must be 35 characters or less"
         page.getElementsText("title") should startWith("Error: ")
-        verifyZeroInteractions(mockSubscriptionBusinessService)
+        verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
 
@@ -352,7 +352,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
             lastNameFieldLevelErrorXPath
           ) shouldBe "Error: The last name must be 35 characters or less"
           page.getElementsText("title") should startWith("Error: ")
-          verifyZeroInteractions(mockSubscriptionBusinessService)
+          verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
 
@@ -365,7 +365,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
             lastNameFieldLevelErrorXPath
           ) shouldBe "Error: Enter a last name without invalid characters"
           page.getElementsText("title") should startWith("Error: ")
-          verifyZeroInteractions(mockSubscriptionBusinessService)
+          verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
 
@@ -381,7 +381,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
             lastNameFieldLevelErrorXPath
           ) shouldBe "Error: Enter a family name without invalid characters"
           page.getElementsText("title") should startWith("Error: ")
-          verifyZeroInteractions(mockSubscriptionBusinessService)
+          verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
 
@@ -391,7 +391,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your date of birth"
         page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Error: Enter your date of birth"
         page.getElementsText("title") should startWith("Error: ")
-        verifyZeroInteractions(mockSubscriptionBusinessService)
+        verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
 
@@ -401,7 +401,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your date of birth"
         page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Error: Enter your date of birth"
         page.getElementsText("title") should startWith("Error: ")
-        verifyZeroInteractions(mockSubscriptionBusinessService)
+        verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
 
@@ -411,7 +411,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your date of birth"
         page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Error: Enter your date of birth"
         page.getElementsText("title") should startWith("Error: ")
-        verifyZeroInteractions(mockSubscriptionBusinessService)
+        verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
 
@@ -425,7 +425,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
           dobFieldLevelErrorXPath
         ) shouldBe s"Error: Enter a year between 1900 and ${Year.now.getValue}"
         page.getElementsText("title") should startWith("Error: ")
-        verifyZeroInteractions(mockSubscriptionBusinessService)
+        verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
 
@@ -435,7 +435,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Date of birth must be in the past"
         page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Error: Date of birth must be in the past"
         page.getElementsText("title") should startWith("Error: ")
-        verifyZeroInteractions(mockSubscriptionBusinessService)
+        verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
 
@@ -450,7 +450,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
           dobFieldLevelErrorXPath
         ) shouldBe s"Error: Enter a year between 1900 and ${Year.now.getValue}"
         page.getElementsText("title") should startWith("Error: ")
-        verifyZeroInteractions(mockSubscriptionBusinessService)
+        verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
 

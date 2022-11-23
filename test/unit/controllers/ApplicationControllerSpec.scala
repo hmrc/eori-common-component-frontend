@@ -105,7 +105,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
       status(result) shouldBe SEE_OTHER
       await(result).header.headers("Location") should endWith("check-existing-eori")
-      verifyZeroInteractions(mockSessionCache)
+      verifyNoMoreInteractions(mockSessionCache)
     }
 
     "direct authenticated users to start short-cut subscription and pick other enrolment apart from CDS" in {
