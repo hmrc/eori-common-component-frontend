@@ -76,7 +76,6 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
       appConfig.handleSubscriptionServiceContext shouldBe "handle-subscription"
     }
 
-
     "have taxEnrolmentsBaseUrl defined" in {
       appConfig.taxEnrolmentsBaseUrl shouldBe "http://localhost:6754"
     }
