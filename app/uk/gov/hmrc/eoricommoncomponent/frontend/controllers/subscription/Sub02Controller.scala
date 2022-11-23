@@ -65,10 +65,6 @@ class Sub02Controller @Inject() (
         _.responseDetail.flatMap(_.responseData.map(_.trader.fullName))
       )
       sub02Outcome <- sessionCache.sub02Outcome
-      _            <- sessionCache.remove
-      _ <- sessionCache.saveSub02Outcome(
-        Sub02Outcome(sub02Outcome.processedDate, name.getOrElse(""), sub02Outcome.eori)
-      )
     } yield Ok(
       migrationSuccessView(
         sub02Outcome.eori,
