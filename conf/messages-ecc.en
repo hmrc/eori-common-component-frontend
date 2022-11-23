@@ -188,10 +188,6 @@ cds.enrolment.pending.title.group.sameService=Someone in your organisation has a
 cds.enrolment.pending.title.group.otherService=Someone in your organisation has already applied for a subscription
 cds.enrolment.pending.otherService=another service
 
-cds.enrolment.pending.user.paragraph1=We are currently processing your subscription request to {0}.
-cds.enrolment.pending.user.paragraph2=This process must be completed before you can apply for another service.
-cds.enrolment.pending.user.paragraph3=Sign out and wait until you receive an email notification about {0} before applying to {1}.
-
 cds.enrolment.pending.user.paragraph1=We will send you an email when we have finished processing it.
 cds.enrolment.pending.user.paragraph2=You will get this email within either:
 
