@@ -61,17 +61,11 @@ class Sub02Controller @Inject() (
 
   private def renderPageWithName(service: Service)(implicit request: Request[_]): Future[Result] =
     for {
-      name <- sessionCache.registerWithEoriAndIdResponse.map(
-        _.responseDetail.flatMap(_.responseData.map(_.trader.fullName))
-      )
       sub02Outcome <- sessionCache.sub02Outcome
+      _            <- sessionCache.remove
+      _            <- sessionCache.saveSub02Outcome(sub02Outcome)
     } yield Ok(
-      migrationSuccessView(
-        sub02Outcome.eori,
-        name.getOrElse(throw DataUnavailableException("Name not populated from reg06")),
-        sub02Outcome.processedDate,
-        service
-      )
+      migrationSuccessView(sub02Outcome.eori, sub02Outcome.fullName, sub02Outcome.processedDate, service)
     ).withSession(newUserSession)
 
   private def renderPageWithNameRow(service: Service)(implicit request: Request[_]): Future[Result] =
