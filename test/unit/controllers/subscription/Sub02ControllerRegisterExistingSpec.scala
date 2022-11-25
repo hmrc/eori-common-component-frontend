@@ -135,7 +135,12 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
           page.getElementsText(RegistrationCompletePage.additionalInformationXpath) should include(
             "What happens next We will send you an email to confirm when you have access to Advance Tariff Rulings. This can take up to two hours."
           )
-
+          page.getElementsText(RegistrationCompletePage.DownloadEoriLinkXpath) should include(
+            "Download an accessible text file with your registration details (1 kb)"
+          )
+          page.getElementsHref(RegistrationCompletePage.DownloadEoriLinkXpath) should endWith(
+            "/customs-enrolment-services/subscribe/download/text"
+          )
           page.elementIsPresent(RegistrationCompletePage.LeaveFeedbackLinkXpath) shouldBe true
           page.getElementsText(RegistrationCompletePage.LeaveFeedbackLinkXpath) should include(
             "What did you think of this service?"
