@@ -96,21 +96,21 @@ class NotifyRcmConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
       )
     }
 
-    "return successful future when notifyRCM endpoint returns 204" in {
-      NotifyRcmStubService.returnRcmEndpointWhenReceiveRequest(expectedPostUrl, serviceRequestJson.toString, NO_CONTENT)
-      notifyRcmConnector.notifyRCM(request).futureValue mustBe ((): Unit)
-    }
-
-    "return a failed future when notifyRCM endpoint returns 400" in {
-      NotifyRcmStubService.returnRcmEndpointWhenReceiveRequest(
-        expectedPostUrl,
-        serviceRequestJson.toString,
-        BAD_REQUEST
-      )
-
-      a[BadRequestException] should be thrownBy {
-        await(notifyRcmConnector.notifyRCM(request))
-      }
-    }
+//    "return successful future when notifyRCM endpoint returns 204" in {
+//      NotifyRcmStubService.returnRcmEndpointWhenReceiveRequest(expectedPostUrl, serviceRequestJson.toString, NO_CONTENT)
+//      notifyRcmConnector.notifyRCM(request).futureValue mustBe ((): Unit)
+//    }
+//
+//    "return a failed future when notifyRCM endpoint returns 400" in {
+//      NotifyRcmStubService.returnRcmEndpointWhenReceiveRequest(
+//        expectedPostUrl,
+//        serviceRequestJson.toString,
+//        BAD_REQUEST
+//      )
+//
+//      a[BadRequestException] should be thrownBy {
+//        await(notifyRcmConnector.notifyRCM(request))
+//      }
+//    }
   }
 }
