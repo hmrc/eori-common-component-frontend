@@ -17,7 +17,7 @@
 package unit.controllers.subscription
 
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, verifyZeroInteractions, when}
+import org.mockito.Mockito.{reset, verify, verifyNoMoreInteractions, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -80,7 +80,7 @@ class EoriUnableToUseSignoutControllerSpec extends ControllerSpec with AuthActio
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/logout"
-        verifyZeroInteractions(eoriSignoutPage)
+        verifyNoMoreInteractions(eoriSignoutPage)
       }
     }
 
@@ -95,7 +95,7 @@ class EoriUnableToUseSignoutControllerSpec extends ControllerSpec with AuthActio
         redirectLocation(
           result
         ).get shouldBe "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori/unable-to-use-id"
-        verifyZeroInteractions(eoriSignoutPage)
+        verifyNoMoreInteractions(eoriSignoutPage)
       }
     }
   }

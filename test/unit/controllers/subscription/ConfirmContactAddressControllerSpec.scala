@@ -20,7 +20,7 @@ import common.pages.subscription.ConfirmContactAddressPage
 import common.support.testdata.subscription.BusinessDatesOrganisationTypeTables
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
-import org.scalatest.{BeforeAndAfterEach, mock => _}
+import org.scalatest.BeforeAndAfterEach
 import play.api.mvc._
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ConfirmContactAddressController

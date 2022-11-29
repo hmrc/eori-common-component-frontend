@@ -16,10 +16,12 @@
 
 package unit.models
 
-import org.scalatest.{EitherValues, MustMatchers, OptionValues, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.{EitherValues, OptionValues}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
-class ServiceSpec extends WordSpec with MustMatchers with EitherValues with OptionValues {
+class ServiceSpec extends AnyWordSpec with Matchers with EitherValues with OptionValues {
 
   "Service" must {
 
