@@ -181,12 +181,22 @@ cds.if.you.need.help.telephone.link=Gwybodaeth am gostau galwadau
 cds.subscription.contact-details.intro=Byddwn yn defnyddio’r manylion hyn i gysylltu â chi ynglŷn â’ch cais.
 
 # Start Page (end)
+cds.enrolment.pending.title.user.sameService=Rydych eisoes wedi gwneud cais am danysgrifiad i’r canlynol: {0}
+cds.enrolment.pending.title.user.otherService=Ni allwch wneud cais hyd nes y byddwn wedi prosesu’ch cais i wneud y canlynol: {0}
+cds.enrolment.pending.title.group.sameService=Mae rhywun yn eich sefydliad eisoes wedi gwneud cais am y tanysgrifiad hwn
+cds.enrolment.pending.title.group.otherService=Mae rhywun yn eich sefydliad eisoes wedi gwneud cais am danysgrifiad
+
+cds.enrolment.pending.user.paragraph1=Byddwn yn anfon e-bost atoch pan fyddwn wedi gorffen prosesu’ch cais.
+cds.enrolment.pending.user.paragraph2=Byddwch yn cael yr e-bost hwn o fewn naill ai:
+
+cds.enrolment.pending.group.paragraph1=Byddwn yn anfon e-bost atynt pan fyddwn wedi gorffen ei brosesu.
+cds.enrolment.pending.group.paragraph2=Byddant yn cael yr e-bost hwn o fewn naill ai:
+cds.enrolment.pending.group.paragraph3=Dim ond un person o’ch sefydliad a all wneud cais.
+cds.enrolment.pending.bullet1=2 awr
+cds.enrolment.pending.bullet2=5 diwrnod gwaith, os bydd angen i ni wneud rhagor o wiriadau
 
 cds.enrolment.pending.title=Mae problem wedi codi
 cds.enrolment.pending.otherService=gwasanaeth arall
-cds.enrolment.pending.user.paragraph1=Rydym wrthi’n prosesu’ch cais am danysgrifiad i’r gwasanaeth {0}.
-cds.enrolment.pending.user.paragraph2=Mae’n rhaid i’r broses hon gael ei chwblhau cyn i chi allu gwneud cais am wasanaeth arall.
-cds.enrolment.pending.user.paragraph3=Allgofnodwch ac arhoswch tan i chi gael hysbysiadau drwy e-bost ynghylch {0} cyn gwneud cais i’r gwasanaeth {1}.
 cds.enrolment.pending.group.otherService.paragraph1=Rydym wrthi’n prosesu cais am danysgrifiad i’r gwasanaeth {0} gan rywun yn eich sefydliad.
 cds.enrolment.pending.group.otherService.paragraph2=Mae’n rhaid i’r broses hon gael ei chwblhau cyn i chi allu gwneud cais am wasanaeth arall.
 cds.enrolment.pending.group.sameService.paragraph1=Yn ôl ein cofnodion, mae rhywun yn eich sefydliad eisoes wedi gwneud cais am y gwasanaeth hwn.

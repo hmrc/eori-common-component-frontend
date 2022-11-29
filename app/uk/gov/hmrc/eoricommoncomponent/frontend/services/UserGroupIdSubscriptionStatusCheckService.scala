@@ -45,18 +45,17 @@ class UserGroupIdSubscriptionStatusCheckService @Inject() (
 
           subscriptionStatusService
             .getStatus(idType, cacheIds.safeId.id)
-            .flatMap { status =>
-              if (status != SubscriptionProcessing)
+            .flatMap {
+              case NewSubscription | SubscriptionRejected | SubscriptionExists =>
                 if (sameService)
                   save4Later.deleteCachedGroupId(groupId).flatMap(_ => continue)
                 else
                   save4Later.deleteCacheIds(groupId).flatMap(_ => continue)
-              else
-                (sameUser, sameService) match {
-                  case (true, true)  => continue
-                  case (true, false) => userIsInProcess
-                  case (false, _)    => otherUserWithinGroupIsInProcess
-                }
+              case SubscriptionProcessing => //Processing is defined as 01, 11 or 14 subscriptionStatus code
+                if (cacheIds.internalId == internalId)
+                  userIsInProcess
+                else
+                  otherUserWithinGroupIsInProcess
             }
         case _ =>
           continue

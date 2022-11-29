@@ -31,22 +31,7 @@ class EnrolmentPendingForUserViewSpec extends ViewSpec {
 
   "Enrolment Pending against group id page" should {
     "display correct title" in {
-      doc.title() must startWith("There is a problem")
-    }
-
-    "display correct heading" in {
-      doc.body().getElementsByTag("h1").text() mustBe "There is a problem"
-    }
-
-    "have the correct class on the h1" in {
-      doc.body().getElementsByTag("h1").hasClass("govuk-heading-l") mustBe true
-    }
-
-    "display the correct text for Subscribe to different service" in {
-      doc
-        .body()
-        .getElementById("info")
-        .text mustBe "We are currently processing your subscription request to Other Service."
+      doc.title() must startWith("You cannot apply until we have processed")
     }
   }
 
