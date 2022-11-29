@@ -96,6 +96,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
       when(mockSessionCache.saveSub02Outcome(any[Sub02Outcome])(any[Request[AnyContent]])).thenReturn(
         Future.successful(true)
       )
+      verify(mockSessionCache, never()).registerWithEoriAndIdResponse(any[Request[AnyContent]])
       invokeMigrationEnd { result =>
         assertCleanedSession(result)
         status(result) shouldBe OK
