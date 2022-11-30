@@ -23,14 +23,25 @@ import org.scalatest.BeforeAndAfter
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.{UnhandledException, VerifiedEmailRequest, VerifiedEmailResponse}
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{UpdateCustomsDataStoreConnector, UpdateVerifiedEmailConnector}
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.{
+  UnhandledException,
+  VerifiedEmailRequest,
+  VerifiedEmailResponse
+}
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{
+  UpdateCustomsDataStoreConnector,
+  UpdateVerifiedEmailConnector
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.email.DateTimeUtil.dateTime
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.email.UpdateVerifiedEmailResponse
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.CustomsDataStoreRequest
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{MessagingServiceParam, ResponseCommon}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{Error, UpdateEmailError, UpdateVerifiedEmailService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
+  Error,
+  UpdateEmailError,
+  UpdateVerifiedEmailService
+}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.{LocalDateTime, ZoneOffset}
@@ -136,7 +147,9 @@ class UpdateVerifiedEmailServiceSpec extends UnitSpec with MockitoSugar with Bef
       ).thenReturn(Future.successful(()))
       doNothing().when(mockAudit).sendDataEvent(any(), any(), any(), any(), any())(any[HeaderCarrier])
 
-      await(service.updateVerifiedEmail(Some("oldemail@email.com"), "newemail@email.email", "GB0123456789")) shouldBe Right((): Unit)
+      await(
+        service.updateVerifiedEmail(Some("oldemail@email.com"), "newemail@email.email", "GB0123456789")
+      ) shouldBe Right((): Unit)
       verify(mockAudit, times(1)).sendDataEvent(any(), any(), any(), any(), any())(any[HeaderCarrier])
     }
 
