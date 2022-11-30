@@ -99,5 +99,21 @@ class NotifyRcmConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
           .withHeader(HeaderNames.ACCEPT, equalTo("application/vnd.hmrc.1.0+json"))
       )
     }
+    "return successful future when notifyRCM endpoint returns 204" in {
+      NotifyRcmStubService.returnRcmEndpointWhenReceiveRequest(expectedPostUrl, serviceRequestJson.toString, NO_CONTENT)
+      notifyRcmConnector.notifyRCM(request).futureValue mustBe ((): Unit)
+    }
+
+    "return a failed future when notifyRCM endpoint returns 400" in {
+      NotifyRcmStubService.returnRcmEndpointWhenReceiveRequest(
+        expectedPostUrl,
+        serviceRequestJson.toString,
+        BAD_REQUEST
+      )
+
+      a[BadRequestException] should be thrownBy {
+        await(notifyRcmConnector.notifyRCM(request))
+      }
+    }
   }
 }
