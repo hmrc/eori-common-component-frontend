@@ -259,10 +259,7 @@ class EmailControllerSpec
       showFormSubscription(controller)(journey = subscribeJourneyShort) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should startWith("There is a problem")
-        page.getElementText(infoXpath) should include(
-          "Our records show that someone in your organisation has already applied for this service"
-        )
+        page.title should startWith("Someone in your organisation has already applied")
       }
     }
 
@@ -278,10 +275,7 @@ class EmailControllerSpec
       showFormSubscription(controller)(journey = subscribeJourneyShort) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should startWith("There is a problem")
-        page.getElementText(infoXpath) should include(
-          "We are currently processing a subscription request to Other Service from someone in your organisation"
-        )
+        page.title should startWith("Someone in your organisation has already applied")
       }
     }
 
@@ -294,22 +288,20 @@ class EmailControllerSpec
       showFormSubscription(controller)(journey = subscribeJourneyShort) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should startWith("There is a problem")
-        page.getElementText(infoXpath) should include(
-          "We are currently processing your subscription request to another service"
-        )
+        page.title should startWith("You cannot apply until we have processed your application")
       }
     }
 
-    "continue when same subscription is in progress for user" in new TestFixture {
+    "block when same subscription is in progress for user" in new TestFixture {
       when(mockSave4LaterService.fetchCacheIds(any())(any()))
         .thenReturn(Future.successful(Some(CacheIds(InternalId(defaultUserId), SafeId("safe-id"), Some("atar")))))
       when(mockSubscriptionStatusService.getStatus(any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(SubscriptionProcessing))
 
       showFormSubscription(controller)(journey = subscribeJourneyShort) { result =>
-        status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("/atar/subscribe/autoenrolment/email-confirmed")
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title should startWith("You cannot apply until we have processed")
       }
     }
   }

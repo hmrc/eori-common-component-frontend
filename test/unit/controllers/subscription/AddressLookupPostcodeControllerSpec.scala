@@ -18,7 +18,7 @@ package unit.controllers.subscription
 
 import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, verifyZeroInteractions, when}
+import org.mockito.Mockito.{reset, verify, verifyNoMoreInteractions, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.test.Helpers._
@@ -159,7 +159,7 @@ class AddressLookupPostcodeControllerSpec extends ControllerSpec with AuthAction
           await(controller.displayPage(atarService)(getRequest))
         }
 
-        verifyZeroInteractions(mockAddressLookupPostcodePage)
+        verifyNoMoreInteractions(mockAddressLookupPostcodePage)
       }
     }
 
@@ -187,7 +187,7 @@ class AddressLookupPostcodeControllerSpec extends ControllerSpec with AuthAction
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/address-postcode/results"
-        verifyZeroInteractions(mockAddressLookupPostcodePage)
+        verifyNoMoreInteractions(mockAddressLookupPostcodePage)
       }
 
       "form is correct and user is in the review mode" in {
@@ -201,7 +201,7 @@ class AddressLookupPostcodeControllerSpec extends ControllerSpec with AuthAction
         redirectLocation(
           result
         ).get shouldBe "/customs-enrolment-services/atar/subscribe/address-postcode/results/review"
-        verifyZeroInteractions(mockAddressLookupPostcodePage)
+        verifyNoMoreInteractions(mockAddressLookupPostcodePage)
       }
     }
   }

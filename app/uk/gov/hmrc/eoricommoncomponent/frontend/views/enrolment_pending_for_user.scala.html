@@ -21,19 +21,30 @@
 @this(layout_di: layout, help_di: partials.if_you_need_help)
 @(service: Service, otherService: Option[Service])(implicit messages: Messages, request: Request[_])
 
-@otherServiceName = @{
-  otherService.map(other => ServiceName.longName(other)).getOrElse(messages("cds.enrolment.pending.otherService"))
-}
+    @otherServiceName = @{
+        otherService.map(other => ServiceName.longName(other)).getOrElse(messages("cds.enrolment.pending.otherService"))
+    }
 
-@layout_di(messages("cds.enrolment.pending.title"), suppressTelephoneNumberDetection = false, displayBackLink = false) {
+    @title = @{
+        if(otherService.contains(service))
+            messages("cds.enrolment.pending.title.user.sameService", otherServiceName)
+        else
+            messages("cds.enrolment.pending.title.user.otherService", otherServiceName)
+    }
 
-    <div>
-        <h1 id="page-heading" class="govuk-heading-l">@messages("cds.enrolment.pending.title")</h1>
-        <p id="info" class="govuk-body">@messages("cds.enrolment.pending.user.paragraph1", otherServiceName)</p>
-        <p class="govuk-body">@messages("cds.enrolment.pending.user.paragraph2")</p>
-        <p class="govuk-body">@messages("cds.enrolment.pending.user.paragraph3", otherServiceName, ServiceName.longName(service))</p>
-        
-        @help_di()
-    </div>
+    @layout_di(title, suppressTelephoneNumberDetection = false, displayBackLink = false) {
 
-}
+        <div>
+            <h1 id="page-heading" class="govuk-heading-l">@title</h1>
+
+            <p id="info-para1" class="govuk-body">@messages("cds.enrolment.pending.user.paragraph1")</p>
+
+            <p id="info-para2" class="govuk-body">@messages("cds.enrolment.pending.user.paragraph2")</p>
+
+            <ul id="info-list" class="govuk-list govuk-list--bullet">
+                <li>@messages("cds.enrolment.pending.bullet1")</li>
+                <li>@messages("cds.enrolment.pending.bullet2")</li>
+            </ul>
+        </div>
+
+    }

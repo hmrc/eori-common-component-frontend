@@ -380,7 +380,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
         await(cdsSubscriber.subscribeWithCachedDetails(atarService))
       }
       caught shouldBe emulatedFailure
-      verifyZeroInteractions(mockSubscriptionService)
+      verifyNoMoreInteractions(mockSubscriptionService)
       verify(mockCdsFrontendDataCache, never).remove(any[Request[AnyContent]])
     }
   }

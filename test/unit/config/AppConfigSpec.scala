@@ -96,6 +96,12 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
       appConfig.feedbackUrl(atarService) shouldBe "http://localhost:9514/feedback/eori-common-component-subscribe-atar"
     }
 
+    "have feedbackLink defined for register" in {
+      appConfig.betaFeedBackRegister(
+        atarService
+      ) shouldBe "http://localhost:9250/contact/beta-feedback?service=eori-common-component-register-atar"
+    }
+
     "have reportAProblemPartialUrl defined for subscribe" in {
       appConfig.reportAProblemPartialUrlSubscribe(
         atarService

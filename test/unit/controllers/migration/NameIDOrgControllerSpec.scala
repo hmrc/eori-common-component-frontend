@@ -262,7 +262,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your registered organisation name"
         page.getElementsText(nameFieldLevelErrorXPath) shouldBe "Error: Enter your registered organisation name"
         page.getElementsText("title") should startWith("Error: ")
-        verifyZeroInteractions(mockSubscriptionBusinessService)
+        verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
 
@@ -277,7 +277,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
           nameFieldLevelErrorXPath
         ) shouldBe "Error: The organisation name must be 105 characters or less"
         page.getElementsText("title") should startWith("Error: ")
-        verifyZeroInteractions(mockSubscriptionBusinessService)
+        verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
 
@@ -288,7 +288,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your UTR number"
         page.getElementsText(utrFieldLevelErrorXPath) shouldBe "Error: Enter your UTR number"
         page.getElementsText("title") should startWith("Error: ")
-        verifyZeroInteractions(mockSubscriptionBusinessService)
+        verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
 
@@ -341,7 +341,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your registered company name"
         page.getElementsText(nameFieldLevelErrorXPath) shouldBe "Error: Enter your registered company name"
         page.getElementsText("title") should startWith("Error: ")
-        verifyZeroInteractions(mockSubscriptionBusinessService)
+        verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
 
@@ -354,7 +354,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "The company name must be 105 characters or less"
         page.getElementsText(nameFieldLevelErrorXPath) shouldBe "Error: The company name must be 105 characters or less"
         page.getElementsText("title") should startWith("Error: ")
-        verifyZeroInteractions(mockSubscriptionBusinessService)
+        verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
     "validation error when full name is not submitted for Partnership" in {
@@ -368,7 +368,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
         page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your registered partnership name"
         page.getElementsText(nameFieldLevelErrorXPath) shouldBe "Error: Enter your registered partnership name"
         page.getElementsText("title") should startWith("Error: ")
-        verifyZeroInteractions(mockSubscriptionBusinessService)
+        verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
 
@@ -387,7 +387,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
           nameFieldLevelErrorXPath
         ) shouldBe "Error: The partnership name must be 105 characters or less"
         page.getElementsText("title") should startWith("Error: ")
-        verifyZeroInteractions(mockSubscriptionBusinessService)
+        verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
     }
 

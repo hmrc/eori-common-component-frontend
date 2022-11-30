@@ -33,9 +33,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{CachedData, Data
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.mongo.CurrentTimestampSupport
 import uk.gov.hmrc.mongo.cache.{CacheItem, DataKey}
-import uk.gov.hmrc.mongo.test.MongoSupport
 import util.builders.RegistrationDetailsBuilder._
-
+import uk.gov.hmrc.mongo.test.MongoSupport
 import java.time.{LocalDate, LocalDateTime}
 import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
