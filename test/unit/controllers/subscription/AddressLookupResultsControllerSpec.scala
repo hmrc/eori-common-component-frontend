@@ -18,7 +18,7 @@ package unit.controllers.subscription
 
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.{any, eq => meq}
-import org.mockito.Mockito.{reset, times, verify, verifyZeroInteractions, when}
+import org.mockito.Mockito.{reset, times, verify, verifyNoMoreInteractions, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -168,7 +168,7 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
           await(controller.displayPage(atarService)(getRequest))
         }
 
-        verifyZeroInteractions(mockAddressLookupResultsPage)
+        verifyNoMoreInteractions(mockAddressLookupResultsPage)
       }
     }
 
@@ -471,7 +471,7 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/matching/review-determine"
-        verifyZeroInteractions(mockAddressLookupResultsPage)
+        verifyNoMoreInteractions(mockAddressLookupResultsPage)
       }
 
       "user is not in review mode and provide correct address" in {
@@ -490,7 +490,7 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/matching/review-determine"
-        verifyZeroInteractions(mockAddressLookupResultsPage)
+        verifyNoMoreInteractions(mockAddressLookupResultsPage)
       }
     }
   }

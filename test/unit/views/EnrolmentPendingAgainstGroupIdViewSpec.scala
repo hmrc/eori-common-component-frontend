@@ -32,29 +32,7 @@ class EnrolmentPendingAgainstGroupIdViewSpec extends ViewSpec {
 
   "Enrolment Pending against group id page" should {
     "display correct title" in {
-      migrateDoc(atarService).title() must startWith("There is a problem")
-    }
-
-    "display correct heading" in {
-      migrateDoc(atarService).body().getElementsByTag("h1").text() mustBe "There is a problem"
-    }
-
-    "have the correct class on the h1" in {
-      migrateDoc(atarService).body().getElementsByTag("h1").hasClass("govuk-heading-l") mustBe true
-    }
-
-    "display the correct text for Subscribe to same service" in {
-      migrateDoc(atarService)
-        .body()
-        .getElementById("info")
-        .text mustBe "Our records show that someone in your organisation has already applied for this service."
-    }
-
-    "display the correct text for Subscribe to different service" in {
-      migrateDoc(otherService)
-        .body()
-        .getElementById("info")
-        .text mustBe "We are currently processing a subscription request to Other Service from someone in your organisation."
+      migrateDoc(atarService).title() must startWith("Someone in your organisation has already applied")
     }
   }
 

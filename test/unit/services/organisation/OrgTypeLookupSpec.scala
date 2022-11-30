@@ -19,7 +19,7 @@ package unit.services.organisation
 import base.UnitSpec
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
-import org.scalatest.{BeforeAndAfterEach, mock => _}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CdsOrganisationType, CorporateBody, Partnership}

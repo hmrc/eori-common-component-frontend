@@ -18,7 +18,7 @@ package unit.controllers.subscription
 
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, verifyZeroInteractions, when}
+import org.mockito.Mockito.{reset, verify, verifyNoMoreInteractions, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -120,7 +120,7 @@ class AddressLookupErrorControllerSpec extends ControllerSpec with AuthActionMoc
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/address-postcode"
-        verifyZeroInteractions(mockAddressLookupNoResultsPage)
+        verifyNoMoreInteractions(mockAddressLookupNoResultsPage)
       }
 
       "reviewNoResultsPage method is invoked and address lookup params are not in the cache" in {
@@ -131,7 +131,7 @@ class AddressLookupErrorControllerSpec extends ControllerSpec with AuthActionMoc
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get shouldBe "/customs-enrolment-services/atar/subscribe/address-postcode/review"
-        verifyZeroInteractions(mockAddressLookupNoResultsPage)
+        verifyNoMoreInteractions(mockAddressLookupNoResultsPage)
       }
     }
   }

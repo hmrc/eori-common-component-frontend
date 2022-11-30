@@ -18,7 +18,7 @@ package unit.controllers.subscription
 
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, verifyZeroInteractions, when}
+import org.mockito.Mockito.{reset, verify, verifyNoMoreInteractions, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -90,7 +90,7 @@ class CompanyRegisteredCountryControllerSpec extends ControllerSpec with AuthAct
 
       status(result) shouldBe OK
       verify(countryOrganisationPage).apply(any(), any(), any(), any(), ArgumentMatchers.eq(false))(any(), any())
-      verifyZeroInteractions(countryIndividualPage)
+      verifyNoMoreInteractions(countryIndividualPage)
     }
 
     "display individual page" in {
@@ -101,7 +101,7 @@ class CompanyRegisteredCountryControllerSpec extends ControllerSpec with AuthAct
 
       status(result) shouldBe OK
       verify(countryIndividualPage).apply(any(), any(), any(), any(), ArgumentMatchers.eq(false))(any(), any())
-      verifyZeroInteractions(countryOrganisationPage)
+      verifyNoMoreInteractions(countryOrganisationPage)
     }
 
     "display review organisation page" in {
@@ -112,7 +112,7 @@ class CompanyRegisteredCountryControllerSpec extends ControllerSpec with AuthAct
 
       status(result) shouldBe OK
       verify(countryOrganisationPage).apply(any(), any(), any(), any(), ArgumentMatchers.eq(true))(any(), any())
-      verifyZeroInteractions(countryIndividualPage)
+      verifyNoMoreInteractions(countryIndividualPage)
     }
 
     "display review individual page" in {
@@ -123,7 +123,7 @@ class CompanyRegisteredCountryControllerSpec extends ControllerSpec with AuthAct
 
       status(result) shouldBe OK
       verify(countryIndividualPage).apply(any(), any(), any(), any(), ArgumentMatchers.eq(true))(any(), any())
-      verifyZeroInteractions(countryOrganisationPage)
+      verifyNoMoreInteractions(countryOrganisationPage)
     }
 
     "return 400 (BAD_REQUEST) for organisation" when {
@@ -137,7 +137,7 @@ class CompanyRegisteredCountryControllerSpec extends ControllerSpec with AuthAct
 
         status(result) shouldBe BAD_REQUEST
         verify(countryOrganisationPage).apply(any(), any(), any(), any(), ArgumentMatchers.eq(false))(any(), any())
-        verifyZeroInteractions(countryIndividualPage)
+        verifyNoMoreInteractions(countryIndividualPage)
       }
     }
 
@@ -152,7 +152,7 @@ class CompanyRegisteredCountryControllerSpec extends ControllerSpec with AuthAct
 
         status(result) shouldBe BAD_REQUEST
         verify(countryIndividualPage).apply(any(), any(), any(), any(), ArgumentMatchers.eq(false))(any(), any())
-        verifyZeroInteractions(countryOrganisationPage)
+        verifyNoMoreInteractions(countryOrganisationPage)
       }
     }
 
@@ -165,8 +165,8 @@ class CompanyRegisteredCountryControllerSpec extends ControllerSpec with AuthAct
         )
 
         status(result) shouldBe SEE_OTHER
-        verifyZeroInteractions(countryOrganisationPage)
-        verifyZeroInteractions(countryIndividualPage)
+        verifyNoMoreInteractions(countryOrganisationPage)
+        verifyNoMoreInteractions(countryIndividualPage)
       }
 
       "user provide correct country and is not in review mode" in {
@@ -176,8 +176,8 @@ class CompanyRegisteredCountryControllerSpec extends ControllerSpec with AuthAct
         )
 
         status(result) shouldBe SEE_OTHER
-        verifyZeroInteractions(countryOrganisationPage)
-        verifyZeroInteractions(countryIndividualPage)
+        verifyNoMoreInteractions(countryOrganisationPage)
+        verifyNoMoreInteractions(countryIndividualPage)
       }
     }
   }
