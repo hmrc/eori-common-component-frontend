@@ -72,7 +72,7 @@ cds.subscription.verify-email.para2=Er eich diogelwch, bydd y cysylltiad yn yr e
 
 cds.email-confirmed.para.get-access=Gallwch fynd yn eich blaen â’ch cais.
 
-cds.subscription.outcomes.success.will-send-email=Byddwn yn anfon e-bost atoch i gadarnhau pan fydd gennych fynediad at {0}. Gall hyn gymryd hyd at ddwy awr.
+cds.subscription.outcomes.success.will-send-email=Byddwn yn anfon e-bost atoch pan fydd eich tanysgrifiad yn barod i’w ddefnyddio. Gall hyn gymryd hyd at 2 awr.
 
 cds.registration.you-already-have-eori.title=Mae gennych EORI eisoes
 cds.registration.you-already-have-eori.para1=Rydym wedi canfod bod gennych EORI eisoes. Gallwch fynd yn eich blaen a thanysgrifio i’r gwasanaeth {0}.
