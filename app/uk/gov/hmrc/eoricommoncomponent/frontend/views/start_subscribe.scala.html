@@ -28,7 +28,7 @@
 @(service: Service)(implicit messages: Messages, request: Request[_])
 
 @getEoriLink = {
-<a class="govuk-link" href=@appConfig.externalGetEORILink(service) target="_blank" rel="noopener noreferrer">@messages("ecc.subscription.information.para2.link", messages("cds.navigation.opens-in-new-tab"))</a>
+<a class="govuk-link" href=@appConfig.externalGetEORILink(service)>@messages("ecc.subscription.information.para2.link")</a>
 }
 
 @askUtrCopyLink = {

@@ -63,13 +63,6 @@ class WhatIsYourEoriSpec extends ViewSpec {
       doc().body.getElementById("eori-number").attr("type") mustBe "text"
     }
 
-    "have a link to 'Get EORI'" in {
-      doc().body.getElementsByAttributeValue(
-        "href",
-        "http://localhost:6751/customs-registration-services/atar/register"
-      ).text() mustBe "get an EORI number (opens in new tab)"
-    }
-
     "have the correct details text" in {
       doc().body.getElementsByClass("govuk-details__text")
         .text() startsWith "You must get an EORI number"

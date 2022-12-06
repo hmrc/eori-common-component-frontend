@@ -3,8 +3,8 @@ cds.banner.subscription=Tanysgrifio i {0}
 
 ecc.subscription.enter-eori-number.heading=Beth yw’ch rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI)?
 cds.subscription.enter-eori-number.no-eori.summary=Nid oes gennyf rif EORI
-cds.subscription.enter-eori-number.no-eori=Mae’n rhaid i chi {0} cyn i chi allu gwneud cais am {1}. Fel arfer, mae angen aros oddeutu 30 munud ar ôl gwneud cais am rif EORI cyn i chi allu mynd ati gyda’ch cais am {1}, ond gall gymryd hyd at 48 awr.
-cds.subscription.enter-eori-number.no-eori.link=gael rhif EORI {0}
+cds.subscription.enter-eori-number.no-eori=Mae’n rhaid i chi {0} cyn y gallwch danysgrifio i’r canlynol: Ar ôl i chi wneud cais am rif EORI, bydd angen i chi aros iddo fod yn barod i’w ddefnyddio. Gall hyn gymryd hyd at ddwy awr neu bum diwrnod gwaith os bydd angen i ni wneud rhagor o wiriadau. Pan fydd eich rhif EORI yn barod i’w ddefnyddio, gallwch fynd yn eich blaen gyda’ch tanysgrifiad i’r canlynol:
+cds.subscription.enter-eori-number.no-eori.link=gael rhif EORI
 
 cds.has-existing-eori.title=Mae’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth yn gysylltiedig ag EORI
 cds.has-existing-eori.heading=Mae’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth yn gysylltiedig ag EORI
@@ -82,8 +82,8 @@ ecc.subscription.information.para1.heading=Yr hyn y bydd ei angen arnoch
 ecc.subscription.information.para1=Er mwyn eich tanysgrifio i’r gwasanaeth ar gyfer {0}, mae angen gwybodaeth arnom oddi wrthych. Sicrhewch fod gennych yr holl fanylion cywir cyn i chi ddechrau, fel arall mae’n bosibl y caiff eich cais ei oedi.
 
 ecc.subscription.information.para2.heading=Rhif EORI sy’n dechrau gyda GB
-ecc.subscription.information.para2=Mae’n rhaid i chi {0} cyn i chi allu gwneud cais am {1}. Fel arfer, mae angen aros oddeutu 30 munud ar ôl gwneud cais am rif EORI cyn i chi allu mynd ati gyda’ch cais am {1}, ond gall gymryd hyd at 48 awr.
-ecc.subscription.information.para2.link=gael rhif EORI {0}
+ecc.subscription.information.para2=Mae’n rhaid i chi {0} cyn y gallwch danysgrifio i’r canlynol: Ar ôl i chi wneud cais am rif EORI, bydd angen i chi aros iddo fod yn barod i’w ddefnyddio. Gall hyn gymryd hyd at ddwy awr neu bum diwrnod gwaith os bydd angen i ni wneud rhagor o wiriadau. Pan fydd eich rhif EORI yn barod i’w ddefnyddio, gallwch fynd yn eich blaen gyda’ch tanysgrifiad i’r canlynol:
+ecc.subscription.information.para2.link=gael rhif EORI
 ecc.subscription.information.para2.warning=Mae’n rhaid i’r rhif EORI sy’n dechrau gyda GB fod yr un sy’n gysylltiedig â’r Dynodydd Defnyddiwr (ID) Porth y Llywodraeth a ddefnyddiwyd gennych pan gawsoch rif EORI.
 
 ecc.subscription.information.section.organisation.subheading=Manylion y cwmni neu sefydliad arall

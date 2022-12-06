@@ -3,8 +3,8 @@ cds.banner.subscription=Subscribe to {0}
 
 ecc.subscription.enter-eori-number.heading=What is your GB Economic Operator Registration and Identification (EORI) number?
 cds.subscription.enter-eori-number.no-eori.summary=I do not have an EORI number
-cds.subscription.enter-eori-number.no-eori=You must {0} before you can apply for {1}, once you have applied for an EORI number it usually takes around 30 minutes, but may take up to 48 hours before you can proceed with your {1} application.
-cds.subscription.enter-eori-number.no-eori.link=get an EORI number {0}
+cds.subscription.enter-eori-number.no-eori=You must {0} before you can subscribe to {1}. After you have applied for an EORI number you need to wait for it to be ready to use. This can take up to 2 hours or 5 working days, if we need to make more checks. When it is ready to use you can proceed with your subscription to {1}.
+cds.subscription.enter-eori-number.no-eori.link=get an EORI number
 
 cds.has-existing-eori.title=Your Government Gateway user ID is linked to an EORI
 cds.has-existing-eori.heading=Your Government Gateway user ID is linked to an EORI
@@ -82,8 +82,8 @@ ecc.subscription.information.para1.heading=What you will need
 ecc.subscription.information.para1=In order to subscribe you to {0}, we need some information from you. Ensure you have all the correct details with you before you start otherwise your application may be delayed.
 
 ecc.subscription.information.para2.heading=An EORI number starting with GB
-ecc.subscription.information.para2=You must {0} before you can apply for {1}, once you have applied for an EORI number it usually takes around 30 minutes, but may take up to 48 hours before you can proceed with your {1} application.
-ecc.subscription.information.para2.link=get an EORI number {0}
+ecc.subscription.information.para2=You must {0} before you can subscribe to {1}, After you have applied for an EORI number you need to wait for it to be ready to use. This can take up to 2 hours or 5 working days, if we need to make more checks. When it is ready to use you can proceed with your subscription to {1}.
+ecc.subscription.information.para2.link=get an EORI number
 ecc.subscription.information.para2.warning=The EORI number starting with GB must be the one linked to the Government Gateway user ID you used when you got an EORI number.
 
 ecc.subscription.information.section.organisation.subheading=Company or other organisation details
