@@ -168,10 +168,10 @@ class HowCanWeIdentifyYouNinoControllerSpec extends ControllerSpec with BeforeAn
         val page = CdsPage(contentAsString(result))
         page.getElementsText(
           SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
-        ) shouldBe "Enter a correct National Insurance Number"
+        ) shouldBe "Enter a National Insurance number in the correct format"
         page.getElementsText(
           SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorNino
-        ) shouldBe "Error: Enter a correct National Insurance Number"
+        ) shouldBe "Error: Enter a National Insurance number in the correct format"
       }
     }
 
