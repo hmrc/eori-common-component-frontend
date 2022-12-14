@@ -385,7 +385,6 @@ subscription.check-your-details.contactpreference=Dewisiadau cyswllt
 subscription.confirmation.is-subscribed=Mae {0} wedi’i danysgrifio i’r Gwasanaethau Datgan Tollau
 subscription.confirmation.being-processed=Mae’r cofrestriad EORI ar gyfer <br>{0}<br> wrthi’n cael ei brosesu
 subscription.confirmation.been-rejected=Mae’r cofrestriad EORI ar gyfer <br>{0}<br> wedi’i wrthod
-subscription.confirmation.download-pdf=Lawrlwytho PDF gyda’ch manylion tanysgrifio
 subscription.confirmation.download-accessible-text=Lawrlwytho ffeil destun hygyrch gyda’ch manylion tanysgrifio
 subscription.confirmation.what-happens-next-sentence1-processing=Byddwn yn anfon e-bost atoch pan fydd eich cais wedi’i brosesu.
 subscription.confirmation.what-happens-next-sentence1-rejected=Gallwch ffonio CThEM i drafod eich cais ar 0300 200 3705. Ar agor 08:00 i 18:00 o ddydd Llun i ddydd Gwener (ar gau ar wyliau banc).

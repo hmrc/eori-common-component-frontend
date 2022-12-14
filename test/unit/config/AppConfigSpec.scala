@@ -76,10 +76,6 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
       appConfig.handleSubscriptionServiceContext shouldBe "handle-subscription"
     }
 
-    "have pdfGeneratorBaseUrl defined" in {
-      appConfig.pdfGeneratorBaseUrl shouldBe "http://localhost:9852"
-    }
-
     "have taxEnrolmentsBaseUrl defined" in {
       appConfig.taxEnrolmentsBaseUrl shouldBe "http://localhost:6754"
     }
@@ -98,6 +94,12 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
 
     "have feedbackLink defined for subscribe" in {
       appConfig.feedbackUrl(atarService) shouldBe "http://localhost:9514/feedback/eori-common-component-subscribe-atar"
+    }
+
+    "have feedbackLink defined for register" in {
+      appConfig.betaFeedBackRegister(
+        atarService
+      ) shouldBe "http://localhost:9250/contact/beta-feedback?service=eori-common-component-register-atar"
     }
 
     "have reportAProblemPartialUrl defined for subscribe" in {

@@ -18,12 +18,16 @@ package unit.services.subscription
 
 import base.UnitSpec
 import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.{doNothing, reset, times, verify, when}
 import org.scalatest.BeforeAndAfter
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.{VerifiedEmailRequest, VerifiedEmailResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.{
+  UnhandledException,
+  VerifiedEmailRequest,
+  VerifiedEmailResponse
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{
   UpdateCustomsDataStoreConnector,
   UpdateVerifiedEmailConnector
@@ -125,8 +129,28 @@ class UpdateVerifiedEmailServiceSpec extends UnitSpec with MockitoSugar with Bef
         mockUpdateCustomsDataStoreConnector
           .updateCustomsDataStore(any[CustomsDataStoreRequest])(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
+      doNothing().when(mockAudit).sendDataEvent(any(), any(), any(), any(), any())(any[HeaderCarrier])
 
       await(service.updateVerifiedEmail(None, "newemail@email.email", "GB0123456789")) shouldBe Right((): Unit)
+      verify(mockAudit, times(1)).sendDataEvent(any(), any(), any(), any(), any())(any[HeaderCarrier])
+    }
+
+    "Update verified Email successfully with a currentEmail" in {
+      when(
+        mockUpdateVerifiedEmailConnector
+          .updateVerifiedEmail(any[VerifiedEmailRequest])(any[HeaderCarrier])
+      ).thenReturn(Future.successful(Right(verifiedEmailResponse)))
+
+      when(
+        mockUpdateCustomsDataStoreConnector
+          .updateCustomsDataStore(any[CustomsDataStoreRequest])(any[HeaderCarrier])
+      ).thenReturn(Future.successful(()))
+      doNothing().when(mockAudit).sendDataEvent(any(), any(), any(), any(), any())(any[HeaderCarrier])
+
+      await(
+        service.updateVerifiedEmail(Some("oldemail@email.com"), "newemail@email.email", "GB0123456789")
+      ) shouldBe Right((): Unit)
+      verify(mockAudit, times(1)).sendDataEvent(any(), any(), any(), any(), any())(any[HeaderCarrier])
     }
 
     "fail with Retriable Failure when Email Update returns 003 status" in {
@@ -139,8 +163,10 @@ class UpdateVerifiedEmailServiceSpec extends UnitSpec with MockitoSugar with Bef
         mockUpdateCustomsDataStoreConnector
           .updateCustomsDataStore(any[CustomsDataStoreRequest])(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
+      doNothing().when(mockAudit).sendDataEvent(any(), any(), any(), any(), any())(any[HeaderCarrier])
 
       await(service.updateVerifiedEmail(None, "newemail@email.email", "GB0123456789")) shouldBe Left(UpdateEmailError)
+      verify(mockAudit, times(1)).sendDataEvent(any(), any(), any(), any(), any())(any[HeaderCarrier])
     }
 
     "fail with Non Retriable Failure when Email Update fails with a different status reason" in {
@@ -162,6 +188,20 @@ class UpdateVerifiedEmailServiceSpec extends UnitSpec with MockitoSugar with Bef
         mockUpdateVerifiedEmailConnector
           .updateVerifiedEmail(any[VerifiedEmailRequest])(any[HeaderCarrier])
       ).thenReturn(Future.successful(Right(verifiedEmailResponseError)))
+
+      when(
+        mockUpdateCustomsDataStoreConnector
+          .updateCustomsDataStore(any[CustomsDataStoreRequest])(any[HeaderCarrier])
+      ).thenReturn(Future.successful(()))
+
+      await(service.updateVerifiedEmail(None, "newemail@email.email", "GB0123456789")) shouldBe Left(Error)
+    }
+
+    "fail when Email Update fails with Left(response)" in {
+      when(
+        mockUpdateVerifiedEmailConnector
+          .updateVerifiedEmail(any[VerifiedEmailRequest])(any[HeaderCarrier])
+      ).thenReturn(Future.successful(Left(UnhandledException)))
 
       when(
         mockUpdateCustomsDataStoreConnector

@@ -19,6 +19,7 @@ package integration
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, equalToJson, postRequestedFor, urlEqualTo}
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.Application
 import play.api.http.HeaderNames
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -46,6 +47,9 @@ class NotifyRcmConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
   val expectedPostUrl = "/notify/rcm"
 
   private val timestamp = "timestamp"
+
+  override implicit val patienceConfig: PatienceConfig =
+    PatienceConfig(timeout = scaled(Span(5, Seconds)), interval = scaled(Span(150, Millis)))
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
@@ -95,7 +99,6 @@ class NotifyRcmConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
           .withHeader(HeaderNames.ACCEPT, equalTo("application/vnd.hmrc.1.0+json"))
       )
     }
-
     "return successful future when notifyRCM endpoint returns 204" in {
       NotifyRcmStubService.returnRcmEndpointWhenReceiveRequest(expectedPostUrl, serviceRequestJson.toString, NO_CONTENT)
       notifyRcmConnector.notifyRCM(request).futureValue mustBe ((): Unit)
