@@ -47,12 +47,6 @@ class EoriEnrolSuccessSpec extends ViewSpec {
       doc(service).body.getElementById("eori-number").text mustBe eori
     }
 
-    "display correct service name" in {
-      doc(service).body.getElementById("para1").text() must startWith(
-        "You are now enrolled to the Advance Tariff Rulings service"
-      )
-    }
-
     "display continue button when callBack URL exists" in {
       doc(service).body.getElementsByClass("govuk-button").first().text must startWith("Continue")
     }

@@ -23,7 +23,7 @@ cds.proposition.name.service=Cofrestru ar gyfer gwasanaeth tollau
 
 eds.existing-eori.enrolment.confirmation.title=Cais wedi’i gwblhau
 eds.existing-eori.enrolment.confirmation.heading=Cais wedi’i gwblhau
-eds.existing-eori.enrolment.confirmation.para1=Rydych nawr wedi’ch ymrestru i ddefnyddio’r gwasanaeth {0}.
+eds.existing-eori.enrolment.confirmation.para1=Roedd eich cais yn llwyddiannus. Gallwch nawr ddefnyddio’r gwasanaeth hwn.
 
 countries-in-the-eu.list=Yr Almaen, Awstria, Bwlgaria, Croatia, Denmarc, yr Eidal, Estonia, y Ffindir, Ffrainc, Gweriniaeth Cyprus, Gwlad Belg, Gwlad Groeg, Gwlad Pwyl, Hwngari, yr Iseldiroedd, Iwerddon, Latfia, Lithiwania, Lwcsembwrg, Malta, Portiwgal, România, Slofacia, Slofenia, Sbaen, Sweden a’r Weriniaeth Tsiec.
 
