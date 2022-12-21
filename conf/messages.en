@@ -1270,7 +1270,7 @@ cds.subscription.contact-details.form-error.use-registered-address=Tell us if th
 
 #text file messages
 cds.subscription.text-download.hmrc=HM Revenue & Customs
-cds.subscription.text-download.registered=is registered for the Customs Declaration Service (CDS)
+cds.subscription.text-download.registered=is registered for {0}
 cds.subscription.text-download.active=Active from
 cds.subscription.text-download.eori=EORI number:
 
