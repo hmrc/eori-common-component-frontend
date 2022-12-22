@@ -66,7 +66,7 @@ trait TestData {
       "CDS",
       Some("/test-cds/callback"),
       "/test-cds/accessibility",
-      "CDS Service",
+      "the Customs Declaration Service (CDS)",
       "",
       Some("/test-cds/feedback")
     )

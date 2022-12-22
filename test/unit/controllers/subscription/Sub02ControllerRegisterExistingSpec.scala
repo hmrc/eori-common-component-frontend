@@ -139,7 +139,7 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
             "Download an accessible text file with your registration details (1 kb)"
           )
           page.getElementsHref(RegistrationCompletePage.DownloadEoriLinkXpath) should endWith(
-            "/customs-enrolment-services/subscribe/download/text"
+            "/customs-enrolment-services/atar/subscribe/download/text"
           )
           page.elementIsPresent(RegistrationCompletePage.LeaveFeedbackLinkXpath) shouldBe true
           page.getElementsText(RegistrationCompletePage.LeaveFeedbackLinkXpath) should include(

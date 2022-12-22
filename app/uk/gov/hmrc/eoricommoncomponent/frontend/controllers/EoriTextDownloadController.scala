@@ -20,6 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.eori_number_text_download
 
@@ -34,14 +35,14 @@ class EoriTextDownloadController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
-  def download(): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => _: LoggedInUserWithEnrolments =>
+  def download(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithServiceAction {
+    implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
       for {
         Some(eori) <- cdsFrontendDataCache.sub02Outcome.map(_.eori)
         name       <- cdsFrontendDataCache.sub02Outcome.map(_.fullName.trim)
         processedDate <- cdsFrontendDataCache.sub02Outcome
           .map(_.processedDate)
-      } yield Ok(eoriNumberTextDownloadView(eori, name, processedDate))
+      } yield Ok(eoriNumberTextDownloadView(eori, name, processedDate, service.friendlyName))
         .as("plain/text")
         .withHeaders(CONTENT_DISPOSITION -> "attachment; filename=EORI-number.txt")
   }
