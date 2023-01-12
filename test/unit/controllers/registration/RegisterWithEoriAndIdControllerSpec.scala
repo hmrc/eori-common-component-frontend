@@ -1147,6 +1147,7 @@ class RegisterWithEoriAndIdControllerSpec
       when(mockSubscriptionDetails.name).thenReturn("name")
       when(mockCache.remove(any[Request[_]]))
         .thenReturn(Future.successful(true))
+      when(mockCache.saveSubscriptionDetails(any())(any[Request[_]])).thenReturn(Future.successful(true))
 
       invokePending() { result =>
         status(result) shouldBe OK
@@ -1162,6 +1163,7 @@ class RegisterWithEoriAndIdControllerSpec
       when(mockSubscriptionDetails.name).thenReturn("name")
       when(mockCache.remove(any[Request[_]]))
         .thenReturn(Future.successful(true))
+      when(mockCache.saveSubscriptionDetails(any())(any[Request[_]])).thenReturn(Future.successful(true))
 
       intercept[DataUnavailableException] {
         invokePending()(result => status(result))
