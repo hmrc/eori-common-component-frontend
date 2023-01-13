@@ -108,12 +108,12 @@ scalastyleConfig := baseDirectory.value / "project" / "scalastyle-config.xml"
 
 val compileDependencies = Seq(
   "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"    % "5.16.0",
-  "uk.gov.hmrc"       %% "play-conditional-form-mapping" % "1.10.0-play-28",
+  "uk.gov.hmrc"       %% "play-conditional-form-mapping" % "1.12.0-play-28",
   "uk.gov.hmrc"       %% "domain"                        % "8.1.0-play-28",
-  "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"            % "0.71.0",
-  "uk.gov.hmrc"       %% "emailaddress"                  % "3.5.0",
+  "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"            % "0.74.0",
+  "uk.gov.hmrc"       %% "emailaddress"                  % "3.7.0",
   "uk.gov.hmrc"       %% "logback-json-logger"           % "5.1.0",
-  "uk.gov.hmrc"       %% "play-language"                 % "5.1.0-play-28",
+  "uk.gov.hmrc"       %% "play-language"                 % "6.1.0-play-28",
   "org.webjars.npm"    % "accessible-autocomplete"       % "2.0.4",
   "uk.gov.hmrc"       %% "play-frontend-hmrc"            % "3.32.0-play-28"
 )
@@ -131,7 +131,7 @@ val testDependencies = Seq(
   "org.mockito"          % "mockito-core"            % "4.8.0"    % "test,it",
   "org.scalatestplus"   %% "mockito-4-6"             % "3.2.13.0" % "test, it",
   "org.pegdown"          % "pegdown"                 % "1.6.0",
-  "uk.gov.hmrc.mongo"   %% "hmrc-mongo-test-play-28" % "0.71.0"   % "test, it",
+  "uk.gov.hmrc.mongo"   %% "hmrc-mongo-test-play-28" % "0.74.0"   % "test, it",
   "com.vladsch.flexmark" % "flexmark-all"            % "0.62.0"   % "test,it"
 )
 
