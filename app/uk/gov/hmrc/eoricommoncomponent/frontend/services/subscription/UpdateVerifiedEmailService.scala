@@ -72,29 +72,14 @@ class UpdateVerifiedEmailService @Inject() (
             params => params.headOption.map(_.paramName).contains(MessagingServiceParam.formBundleIdParamName)
           ) =>
         auditRequest(currentEmail, newEmail, eori, "changeEmailAddressConfirmed", res.getStatus)
-        logger.info("[UpdateVerifiedEmailService][updateVerifiedEmail] - successfully updated verified email")
         customsDataStoreConnector.updateCustomsDataStore(customsDataStoreRequest).map(_ => Right((): Unit))
 
       case Right(res) if res.getStatus.exists(_.equalsIgnoreCase(RequestCouldNotBeProcessed)) =>
-        val status = res.getStatus.getOrElse("Status text empty")
-        logger.warn(
-          "[UpdateVerifiedEmailService][updateVerifiedEmail]" +
-            s" - updating verified email unsuccessful with business error/status code: ${status}"
-        )
         auditRequest(currentEmail, newEmail, eori, "changeEmailAddressCouldNotBeProcessed", res.getStatus)
         Future.successful(Left(UpdateEmailError))
 
-      case Right(res) =>
-        logger.warn(
-          "[UpdateVerifiedEmailService][updateVerifiedEmail]" +
-            s" - updating verified email unsuccessful with business error/status code: ${res.getStatus.getOrElse("Status text empty")}"
-        )
-        Future.successful(Left(Error))
-
-      case Left(res) =>
-        logger.warn(
-          s"[UpdateVerifiedEmailService][updateVerifiedEmail] - updating verified email unsuccessful with response: $res"
-        )
+      case _ =>
+        logger.warn(s"[UpdateVerifiedEmailService][updateVerifiedEmail] - updating verified email unsuccessful")
         Future.successful(Left(Error))
     }
   }

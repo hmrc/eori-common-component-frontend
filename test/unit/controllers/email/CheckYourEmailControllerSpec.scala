@@ -26,6 +26,8 @@ import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.GroupId
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
@@ -299,6 +301,29 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
 
     }
 
+    "Email Confirmed" should {
+      "redirect to SecuritySignOutController when no email in session" in {
+        when(mockSave4LaterService.fetchEmailForService(any(), any(), any[GroupId])(any[HeaderCarrier]))
+          .thenReturn(Future.successful(None))
+        emailConfirmed(defaultUserId) { result =>
+          status(result) shouldBe SEE_OTHER
+          result.header.headers("Location") should endWith(routes.SecuritySignOutController.signOut(atarService).url)
+        }
+      }
+
+      "display emailConfirmedView when email is not confirmed" in {
+        when(mockSave4LaterService.fetchEmailForService(any(), any(), any[GroupId])(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Some(EmailStatus(Some(email)))))
+        when(mockSave4LaterService.saveEmailForService(any())(any(), any(), any[GroupId])(any[HeaderCarrier]))
+          .thenReturn(Future.successful(unit))
+        emailConfirmed(defaultUserId) { result =>
+          status(result) shouldBe OK
+          val page = CdsPage(contentAsString(result))
+          page.title() should startWith("You have confirmed your email address")
+        }
+      }
+    }
+
     "redirect to What is Your Email Address Page on selecting No radio button" in {
       submitForm(ValidRequest + (yesNoInputName -> answerNo), service = atarService, journey = subscribeJourneyShort) {
         result =>
@@ -347,6 +372,14 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
       .createForm(atarService, journey)
+      .apply(SessionBuilder.buildRequestWithSession(userId))
+    test(result)
+  }
+
+  private def emailConfirmed(userId: String)(test: Future[Result] => Any) {
+    withAuthorisedUser(userId, mockAuthConnector)
+    val result = controller
+      .emailConfirmed(atarService, subscribeJourneyShort)
       .apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }

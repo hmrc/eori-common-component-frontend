@@ -23,7 +23,6 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, EnrolmentIdentifier}
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.PdfGeneratorConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.ResponseCommon
@@ -46,7 +45,6 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
   private val mockAuthAction                 = authAction(mockAuthConnector)
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSessionCache               = mock[SessionCache]
-  private val mockPdfGeneratorService        = mock[PdfGeneratorConnector]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
 
   private val migrationSuccessView = instanceOf[migration_success]
@@ -71,7 +69,7 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
   val emulatedFailure = new UnsupportedOperationException("Emulated service call failure.")
 
   override protected def afterEach(): Unit = {
-    reset(mockAuthConnector, mockPdfGeneratorService, mockSessionCache)
+    reset(mockAuthConnector, mockSessionCache)
 
     super.afterEach()
   }
@@ -127,7 +125,6 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
         result =>
           status(result) shouldBe OK
           val page = CdsPage(contentAsString(result))
-          verify(mockSessionCache).remove(any[Request[AnyContent]])
           page.title should startWith("Subscription request received")
           page.getElementsText(
             RegistrationCompletePage.pageHeadingXpath
@@ -136,16 +133,14 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
           page.getElementsText(RegistrationCompletePage.eoriNumberXpath) shouldBe "ZZZ1ZZZZ23ZZZZZZZ"
 
           page.getElementsText(RegistrationCompletePage.additionalInformationXpath) should include(
-            "What happens next We will send you an email to confirm when you have access to Advance Tariff Rulings. This can take up to two hours."
+            "We will send you an email when your subscription is ready to use. This can take up to 2 hours."
           )
-
           page.getElementsText(RegistrationCompletePage.DownloadEoriLinkXpath) should include(
-            "Download a PDF with your registration details (21kb)"
+            "Download an accessible text file with your registration details (1 kb)"
           )
           page.getElementsHref(RegistrationCompletePage.DownloadEoriLinkXpath) should endWith(
-            "/customs-enrolment-services/subscribe/download/pdf"
+            "/customs-enrolment-services/atar/subscribe/download/text"
           )
-
           page.elementIsPresent(RegistrationCompletePage.LeaveFeedbackLinkXpath) shouldBe true
           page.getElementsText(RegistrationCompletePage.LeaveFeedbackLinkXpath) should include(
             "What did you think of this service?"

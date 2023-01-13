@@ -23,7 +23,7 @@ cds.proposition.name.service=Register for a customs service
 
 eds.existing-eori.enrolment.confirmation.title=Application complete
 eds.existing-eori.enrolment.confirmation.heading=Application complete
-eds.existing-eori.enrolment.confirmation.para1=You are now enrolled to the {0} service.
+eds.existing-eori.enrolment.confirmation.para1=Your application was successful. You can now use this service.
 
 countries-in-the-eu.list=Austria, Belgium, Bulgaria, Croatia, Republic of Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Poland, Portugal, Romania, Slovakia, Slovenia, Spain and Sweden.
 
@@ -72,7 +72,7 @@ cds.subscription.verify-email.para2=For your security the link in the email will
 
 cds.email-confirmed.para.get-access=You can continue with your application.
 
-cds.subscription.outcomes.success.will-send-email=We will send you an email to confirm when you have access to {0}. This can take up to two hours.
+cds.subscription.outcomes.success.will-send-email=We will send you an email when your subscription is ready to use. This can take up to 2 hours.
 
 cds.registration.you-already-have-eori.title=You already have an EORI
 cds.registration.you-already-have-eori.para1=We have detected you already have an EORI.  You can continue and subscribe to the the {0} service.

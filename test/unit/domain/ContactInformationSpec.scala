@@ -18,6 +18,7 @@ package unit.domain
 
 import base.UnitSpec
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.ContactInformation
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactAddressModel
 
@@ -42,7 +43,7 @@ class ContactInformationSpec extends UnitSpec {
     val contactInformationWithoutContactAddress =
       ContactInformation.apply(contactDetails, None)
 
-    "populate contact information from contact address" in {
+    "creates contact info with email" in {
       contactInformationWithContactAddress.personOfContact shouldBe Some("Full name")
       contactInformationWithContactAddress.emailAddress shouldBe Some("email")
       contactInformationWithContactAddress.faxNumber shouldBe None
@@ -52,6 +53,30 @@ class ContactInformationSpec extends UnitSpec {
       contactInformationWithContactAddress.postalCode shouldBe Some("HJ2 3HJ")
       contactInformationWithContactAddress.countryCode shouldBe Some("FR")
       contactInformationWithContactAddress.telephoneNumber shouldBe Some("01234123123")
+
+    }
+
+    "populate contact information from contact address and email" in {
+      val contactDetailsTest = ContactDetails(
+        "fullName",
+        "email@email.email",
+        "00000000000",
+        Some("fax"),
+        "Street",
+        "city",
+        Some("postcode"),
+        "UK"
+      )
+      val contactInfo = ContactInformation.createContactInformation(contactDetailsTest)
+      contactInfo.personOfContact shouldBe Some("fullName")
+      contactInfo.emailAddress shouldBe Some("email@email.email")
+      contactInfo.faxNumber shouldBe Some("fax")
+      contactInfo.sepCorrAddrIndicator shouldBe Some(true)
+      contactInfo.streetAndNumber shouldBe Some("Street")
+      contactInfo.city shouldBe Some("city")
+      contactInfo.postalCode shouldBe Some("postcode")
+      contactInfo.countryCode shouldBe Some("UK")
+      contactInfo.telephoneNumber shouldBe Some("00000000000")
 
     }
 

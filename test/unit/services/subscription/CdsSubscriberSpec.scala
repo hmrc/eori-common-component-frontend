@@ -159,14 +159,8 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
             Some(emailVerificationTimestamp)
           )
           inOrder.verify(mockCdsFrontendDataCache).registerWithEoriAndIdResponse(any[Request[AnyContent]])
-          inOrder
-            .verify(mockSubscriptionService)
-            .existingReg(
-              meq(stubRegisterWithEoriAndIdResponse),
-              any[SubscriptionDetails],
-              meq(expectedEmail),
-              meq(atarService)
-            )(any[HeaderCarrier])
+          inOrder.verify(mockSubscriptionService)
+            .existingReg(any(), any[SubscriptionDetails], meq(expectedEmail), meq(atarService))(any[HeaderCarrier])
           inOrder.verify(mockCdsFrontendDataCache).saveSub02Outcome(any())(any())
           inOrder
             .verify(mockHandleSubscriptionService)

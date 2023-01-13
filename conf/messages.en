@@ -418,7 +418,6 @@ subscription.check-your-details.contactpreference=Contact preference
 subscription.confirmation.is-subscribed={0} is subscribed to Customs Declaration Services
 subscription.confirmation.being-processed=The EORI registration for<br>{0}<br>is being processed
 subscription.confirmation.been-rejected=The EORI registration for<br>{0}<br>has been rejected
-subscription.confirmation.download-pdf=Download a PDF with your subscription details
 subscription.confirmation.download-accessible-text=Download an accessible text file with your subscription details
 subscription.confirmation.what-happens-next-sentence1-processing=We will send you an email when your application has been processed.
 subscription.confirmation.what-happens-next-sentence1-rejected=You can phone HMRC to discuss your application on 0300 322 7067. Open 8am to 6pm, Monday to Friday (except public holidays).
@@ -1021,7 +1020,7 @@ cds.subscription.outcomes.success.title=Application complete
 cds.subscription.outcomes.success.heading=The EORI number for {0} is
 cds.subscription.outcomes.success.issued=issued by HMRC on
 cds.subscription.outcomes.success.optional-paragraph=We have sent you a confirmation email.
-cds.subscription.outcomes.success.will-send-email=We will send you an email to confirm when you have access to CDS. This can take up to two hours.
+cds.subscription.outcomes.success.will-send-email=We will send you an email when your subscription is ready to use. This can take up to 2 hours.
 cds.subscription.outcomes.success.extra.information=Your EORI number will be ready to use within 48 hours. It will appear on the EORI validation checker within 5 days. It has no expiry date.
 cds.subscription.outcomes.success.extra.information2=You should only share it with trusted business partners or approved customs representatives. For example, you should give it to your courier or freight forwarder. They will use it to make customs declarations on your behalf.
 cds.subscription.outcomes.success.download-eori=Download a PDF of your EORI number(266kb)
@@ -1271,7 +1270,7 @@ cds.subscription.contact-details.form-error.use-registered-address=Tell us if th
 
 #text file messages
 cds.subscription.text-download.hmrc=HM Revenue & Customs
-cds.subscription.text-download.registered=is registered for the Customs Declaration Service (CDS)
+cds.subscription.text-download.registered=is registered for {0}
 cds.subscription.text-download.active=Active from
 cds.subscription.text-download.eori=EORI number:
 

@@ -56,7 +56,7 @@ class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach w
     new EoriTextDownloadController(mockAuthAction, mockCache, eoriNumberTextDownloadView, mcc)
 
   override def beforeEach(): Unit = {
-    when(eoriNumberTextDownloadView.apply(any(), any(), any())(any())).thenReturn(HtmlFormat.empty)
+    when(eoriNumberTextDownloadView.apply(any(), any(), any(), any())(any())).thenReturn(HtmlFormat.empty)
     when(mockCache.sub02Outcome(any[Request[AnyContent]]))
       .thenReturn(Future.successful(Sub02Outcome("20/01/2019", "John Doe", Some("GB123456789012"))))
   }
@@ -67,7 +67,7 @@ class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach w
       AuthBuilder.withAuthorisedUser("user-1236213", mockAuthConnector, userEmail = Some("not@example.com"))
 
       val result = controller
-        .download()
+        .download(atarService)
         .apply(
           SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/atar/subscribe/", defaultUserId)
         )
@@ -80,7 +80,7 @@ class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach w
       AuthBuilder.withAuthorisedUser("user-1236213", mockAuthConnector, userEmail = None)
 
       val result = controller
-        .download()
+        .download(atarService)
         .apply(
           SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/atar/subscribe/", defaultUserId)
         )
@@ -93,7 +93,7 @@ class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach w
       AuthBuilder.withAuthorisedUser("user-2300121", mockAuthConnector, userEmail = Some("mister_allow@example.com"))
 
       val result = controller
-        .download()
+        .download(cdsService)
         .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe/", defaultUserId))
 
       status(result) shouldBe OK
@@ -105,7 +105,7 @@ class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach w
         .buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe/", defaultUserId)
         .withSession("allowlisted" -> "true")
 
-      val result = controller.download().apply(request)
+      val result = controller.download(cdsService).apply(request)
 
       status(result) shouldBe OK
     }
@@ -114,7 +114,7 @@ class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach w
       AuthBuilder.withAuthorisedUser("user-2300121", mockAuthConnector, userEmail = Some("BoB@example.com"))
 
       val result = controller
-        .download()
+        .download(cdsService)
         .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe/", defaultUserId))
 
       status(result) shouldBe OK
