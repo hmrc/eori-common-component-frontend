@@ -163,12 +163,17 @@ class RegisterWithEoriAndIdController @Inject() (
   def pending(service: Service, date: String): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
-        eori <- cache.subscriptionDetails.map(
-          _.eoriNumber.getOrElse(throw DataUnavailableException("No EORI found in cache"))
+        subscriptionDetails <- cache.subscriptionDetails
+        _                   <- cache.remove
+        _                   <- cache.saveSubscriptionDetails(subscriptionDetails)
+      } yield Ok(
+        subscriptionOutcomePendingView(
+          subscriptionDetails.eoriNumber.getOrElse(throw DataUnavailableException("No EORI found in cache")),
+          date,
+          subscriptionDetails.name,
+          service
         )
-        name <- cache.subscriptionDetails.map(_.name)
-        _    <- cache.remove
-      } yield Ok(subscriptionOutcomePendingView(eori, date, name, service)).withSession(newUserSession)
+      ).withSession(newUserSession)
     }
 
   def fail(service: Service, date: String): Action[AnyContent] =
