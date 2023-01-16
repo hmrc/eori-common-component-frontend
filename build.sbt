@@ -90,10 +90,10 @@ lazy val scoverageSettings = {
     ScoverageKeys.coverageExcludedPackages := List(
       "<empty>",
       "Reverse.*",
-      "uk\\.gov\\.hmrc\\.customs\\.rosmfrontend\\.models\\.data\\..*",
-      "uk\\.gov\\.hmrc\\.customs\\.rosmfrontend\\.view.*",
-      "uk\\.gov\\.hmrc\\.customs\\.rosmfrontend\\.models.*",
-      "uk\\.gov\\.hmrc\\.customs\\.rosmfrontend\\.config.*",
+      "uk\\.gov\\.hmrc\\.customs\\.eoricommoncomponent\\.models\\.data\\..*",
+      "uk\\.gov\\.hmrc\\.customs\\.eoricommoncomponent\\.view.*",
+      "uk\\.gov\\.hmrc\\.customs\\.eoricommoncomponent\\.models.*",
+      "uk\\.gov\\.hmrc\\.customs\\.eoricommoncomponent\\.config.*",
       "logger.*\\(.*\\)",
       ".*(AuthService|BuildInfo|Routes|TestOnly).*"
     ).mkString(";"),
@@ -110,23 +110,24 @@ val compileDependencies = Seq(
 
 
   "uk.gov.hmrc"       %% "play-conditional-form-mapping" % "1.12.0-play-28",
-  "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"    % "5.17.0",
+  "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"    % "7.12.0",
   "uk.gov.hmrc"       %% "domain"                        % "8.1.0-play-28",
   "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"            % "0.74.0",
   "uk.gov.hmrc"       %% "emailaddress"                  % "3.7.0",
   "uk.gov.hmrc"       %% "logback-json-logger"           % "5.1.0",
   "uk.gov.hmrc"       %% "play-language"                 % "6.1.0-play-28",
   "org.webjars.npm"    % "accessible-autocomplete"       % "2.0.4",
-  "uk.gov.hmrc"       %% "play-frontend-hmrc"            % "3.32.0-play-28"
+  "uk.gov.hmrc"       %% "play-frontend-hmrc"            % "5.5.0-play-28"
 )
 
 val testDependencies = Seq(
-  "org.scalatest"          %% "scalatest"           % "3.2.14"            % "test,it",
+  "org.scalatest"          %% "scalatest"           % "3.2.12"            % "test,it",
   "com.typesafe.play"      %% "play-test"           % PlayVersion.current % "test,it",
   "org.scalatestplus.play" %% "scalatestplus-play"  % "5.1.0"             % "test,it",
-  "com.github.tomakehurst"  % "wiremock-standalone" % "2.27.2"            % "test, it"
+  "com.github.tomakehurst"  % "wiremock-standalone" % "2.23.2"            % "test, it"
     exclude ("org.apache.httpcomponents", "httpclient") exclude ("org.apache.httpcomponents", "httpcore"),
   "org.scalacheck"      %% "scalacheck"              % "1.17.0"   % "test,it",
+  "uk.gov.hmrc"            %% "bootstrap-test-play-28" % "7.12.0" % "test,it",
   "org.scalatestplus"   %% "scalacheck-1-15"         % "3.2.11.0" % "test,it",
   "org.jsoup"            % "jsoup"                   % "1.15.3"   % "test,it",
   "us.codecraft"         % "xsoup"                   % "0.3.5"    % "test,it",

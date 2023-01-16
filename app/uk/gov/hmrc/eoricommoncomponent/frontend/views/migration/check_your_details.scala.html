@@ -371,7 +371,7 @@
                 @CSRF.formField
 
                 @govukButton(Button(
-                    preventDoubleClick = true,
+                    preventDoubleClick = Option(true),
                     content = Text(messages("cds.form.send"))
                 ))
             }
