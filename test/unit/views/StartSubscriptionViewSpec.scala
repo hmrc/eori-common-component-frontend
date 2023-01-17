@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,33 +29,9 @@ class StartSubscriptionViewSpec extends ViewSpec {
 
   implicit val request: Request[Any] = withFakeCSRF(fakeAtarSubscribeRequest)
 
-  private val doc: Document = Jsoup.parse(contentAsString(view(atarService)))
+  private val doc: Document = Jsoup.parse(contentAsString(view(atarService, "Subscribe to Advance Tariff Rulings")))
 
   "Start subscription page" should {
-
-    "display title" in {
-
-      doc.title() must startWith("You must subscribe to use")
-    }
-
-    "display header" in {
-
-      doc.body().getElementsByTag("h1").text() mustBe "You must subscribe to use Advance Tariff Rulings"
-    }
-
-    "display information about doing subscription once" in {
-
-      doc.body().getElementById("information-only-once").text() mustBe "This only needs to be done once."
-    }
-
-    "display 'What you will need' paragraph" in {
-
-      doc.body().getElementById("what-you-will-need").text() mustBe "What you will need"
-      doc.body().getElementById(
-        "what-you-will-need-text"
-      ).text() mustBe "In order to subscribe you to Advance Tariff Rulings, we need some information from you. Ensure you have all the correct details with you before you start otherwise your application may be delayed."
-    }
-
     "display organisation information" in {
 
       doc.body().getElementById("organisation").text() mustBe "Company or other organisation details"

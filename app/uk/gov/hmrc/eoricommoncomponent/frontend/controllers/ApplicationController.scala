@@ -130,7 +130,9 @@ class ApplicationController @Inject() (
             Redirect(routes.HasExistingEoriController.displayPage(service)) // AutoEnrolment / Short Journey
           }
         case _ =>
-          Future.successful(Ok(viewStartSubscribe(service))) // Display information page / Long Journey
+          val headingAndTitleMessage = s"ecc.subscription.information.titleAndHeading.${service.code}"
+          Future.successful(Ok(viewStartSubscribe(service, headingAndTitleMessage)))
+        // Display information page / Long Journey
       }
 
 }

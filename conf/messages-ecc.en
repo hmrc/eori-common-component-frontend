@@ -77,7 +77,6 @@ cds.subscription.outcomes.success.will-send-email=We will send you an email when
 cds.registration.you-already-have-eori.title=You already have an EORI
 cds.registration.you-already-have-eori.para1=We have detected you already have an EORI.  You can continue and subscribe to the the {0} service.
 
-ecc.subscription.information.heading=You must subscribe to use {0}
 ecc.subscription.information.para1.heading=What you will need
 ecc.subscription.information.para1=In order to subscribe you to {0}, we need some information from you. Ensure you have all the correct details with you before you start otherwise your application may be delayed.
 

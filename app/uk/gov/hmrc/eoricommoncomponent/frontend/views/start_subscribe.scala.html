@@ -25,7 +25,7 @@
 
 @this(layout_di: layout, appConfig: AppConfig, govukButton: GovukButton, govukWarningText : GovukWarningText)
 
-@(service: Service)(implicit messages: Messages, request: Request[_])
+@(service: Service, headingAndTitleMessage: String)(implicit messages: Messages, request: Request[_])
 
 @getEoriLink = {
 <a class="govuk-link" href=@appConfig.externalGetEORILink(service)>@messages("ecc.subscription.information.para2.link")</a>
@@ -45,10 +45,10 @@
         @Html(messages("ecc.subscription.information.para2.warning"))
 }
 
-@layout_di(messages("ecc.subscription.information.heading", ServiceName.longName), displayBackLink = false) {
+@layout_di(messages(headingAndTitleMessage), displayBackLink = false) {
 
     <div class="start_page">
-        <h1 class="govuk-heading-l">@messages("ecc.subscription.information.heading", ServiceName.longName)</h1>
+        <h1 class="govuk-heading-l">@messages(headingAndTitleMessage)</h1>
 
         <p id="information-only-once" class=" govuk-body">@messages("ecc.subscription.information.only.once")</p>
 
