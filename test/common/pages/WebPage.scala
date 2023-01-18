@@ -22,7 +22,7 @@ import org.scalatest.matchers.must.Matchers
 trait WebPage extends Matchers {
 
   val backLinkXPath: String          = "//*[@id='back-link']"
-  val pageLevelErrorSummaryListXPath = "//ul[@class='govuk-error-summary__list']"
+  val pageLevelErrorSummaryListXPath = "//ul[@class='govuk-list govuk-error-summary__list']"
   val countryCodeCss                 = By.xpath("//*[@id='countryCode']")
   val countrySuggestion              = By.xpath("//*[@id='countryCode__option--0']")
 

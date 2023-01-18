@@ -69,7 +69,7 @@ class HaveNinoSubscriptionSpec extends ViewSpec {
 
   "No option selected Subscription Have Nino Page" should {
     "have page level error with correct message" in {
-      docWithNoOptionSelected.body.getElementById("error-summary-title").text mustBe "There is a problem"
+      docWithNoOptionSelected.body.getElementsByClass("govuk-error-summary__title").text mustBe "There is a problem"
       docWithNoOptionSelected.body
         .getElementsByAttributeValue("href", "#have-nino-true")
         .text mustBe "Select yes if you have a National Insurance number"
