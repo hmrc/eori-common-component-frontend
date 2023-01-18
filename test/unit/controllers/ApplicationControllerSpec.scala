@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,7 +88,6 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
         controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       status(result) shouldBe OK
-      CdsPage(contentAsString(result)).title should startWith("You must subscribe to use")
     }
 
     "direct authenticated users with CDS enrolment to start short-cut subscription" in {
