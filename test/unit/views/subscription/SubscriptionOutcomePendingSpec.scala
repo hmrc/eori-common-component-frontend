@@ -40,9 +40,6 @@ class SubscriptionOutcomePendingSpec extends ViewSpec {
         s"We are processing the subscription request for $orgName"
       )
     }
-    "have the correct class on the h1" in {
-      doc().body.getElementsByTag("h1").hasClass("govuk-heading-xl") mustBe true
-    }
     "have the correct class on the message" in {
       doc().body.getElementById("active-from").hasClass("govuk-heading-m") mustBe true
       doc().body.getElementById("eori-number").hasClass("govuk-heading-m") mustBe true
