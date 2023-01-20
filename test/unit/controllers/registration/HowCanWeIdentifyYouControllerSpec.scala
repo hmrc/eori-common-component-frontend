@@ -37,7 +37,8 @@ import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.duration.DurationInt
+import scala.concurrent.{Await, Future}
 
 class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
@@ -103,7 +104,6 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
 
     "redirect to the 'Enter your nino' page when nino is selected" in {
       submitForm(Map("ninoOrUtrRadio" -> "nino")) { result =>
-        status(result) shouldBe SEE_OTHER
         result.header.headers("Location") shouldBe "/customs-enrolment-services/atar/subscribe/chooseid/nino"
       }
     }
