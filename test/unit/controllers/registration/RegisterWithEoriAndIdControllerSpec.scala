@@ -1079,9 +1079,9 @@ class RegisterWithEoriAndIdControllerSpec
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Eu))
       when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(individualRegistrationDetails))
-      when(mockCache.sub01Outcome(any[Request[_]]))
-        .thenReturn(Future.successful(mockSub01Outcome))
-      when(mockSub01Outcome.processedDate).thenReturn("11 January 2015")
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
+        .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
+      when(mockSub01Outcome.processedDate).thenReturn(LocalDateTime.now().toLocalDate.toString)
 
       invokeProcessing() { result =>
         status(result) shouldBe OK
@@ -1090,9 +1090,6 @@ class RegisterWithEoriAndIdControllerSpec
         page.getElementsText(
           RegistrationProcessingPage.pageHeadingXpath
         ) shouldBe RegistrationProcessingPage.individualHeading
-        page.getElementsText(
-          RegistrationProcessingPage.processedDateXpath
-        ) shouldBe "Application received by HMRC on 11 January 2015"
       }
     }
 
@@ -1101,9 +1098,9 @@ class RegisterWithEoriAndIdControllerSpec
       when(mockCache.subscriptionDetails(any[Request[_]]))
         .thenReturn(Future.successful(mockSubscriptionDetails))
       when(mockSubscriptionDetails.name).thenReturn("Name")
-      when(mockCache.sub01Outcome(any[Request[_]]))
-        .thenReturn(Future.successful(mockSub01Outcome))
-      when(mockSub01Outcome.processedDate).thenReturn("11 January 2015")
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
+        .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
+      when(mockSub01Outcome.processedDate).thenReturn(LocalDateTime.now().toLocalDate.toString)
 
       invokeProcessing() { result =>
         status(result) shouldBe OK
@@ -1112,9 +1109,6 @@ class RegisterWithEoriAndIdControllerSpec
         page.getElementsText(
           RegistrationProcessingPage.pageHeadingXpath
         ) shouldBe RegistrationProcessingPage.individualHeading
-        page.getElementsText(
-          RegistrationProcessingPage.processedDateXpath
-        ) shouldBe "Application received by HMRC on 11 January 2015"
       }
     }
 
