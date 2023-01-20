@@ -146,8 +146,10 @@ class RegisterWithEoriAndIdController @Inject() (
   def processing(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
-        name          <- cachedName
-        processedDate <- cache.registerWithEoriAndIdResponse.map(resp => languageUtils.Dates.formatDate(resp.responseCommon.processingDate.toLocalDate))
+        name <- cachedName
+        processedDate <- cache.registerWithEoriAndIdResponse.map(
+          resp => languageUtils.Dates.formatDate(resp.responseCommon.processingDate.toLocalDate)
+        )
       } yield Ok(sub01OutcomeProcessingView(Some(name), processedDate))
   }
 
