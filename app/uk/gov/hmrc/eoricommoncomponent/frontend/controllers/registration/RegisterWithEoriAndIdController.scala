@@ -147,7 +147,7 @@ class RegisterWithEoriAndIdController @Inject() (
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
         name          <- cachedName
-        processedDate <- cache.sub01Outcome.map(_.processedDate)
+        processedDate <- cache.registerWithEoriAndIdResponse.map(resp => languageUtils.Dates.formatDate(resp.responseCommon.processingDate.toLocalDate))
       } yield Ok(sub01OutcomeProcessingView(Some(name), processedDate))
   }
 
