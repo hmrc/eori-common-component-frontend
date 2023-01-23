@@ -130,8 +130,7 @@ class RegisterWithEoriAndIdController @Inject() (
           onRegistrationPassCheckSubscriptionStatus(idType = "SAFE", id = safeId)
         case Some("DEFERRED") =>
           notifyRcmService.notifyRcm(service).map { _ =>
-            val formattedDate = languageUtils.Dates.formatDate(resp.responseCommon.processingDate.toLocalDate)
-            Redirect(RegisterWithEoriAndIdController.pending(service, formattedDate))
+            Redirect(RegisterWithEoriAndIdController.pending(service))
           }
         case Some("FAIL") =>
           val formattedDate = languageUtils.Dates.formatDate(resp.responseCommon.processingDate.toLocalDate)
@@ -160,16 +159,19 @@ class RegisterWithEoriAndIdController @Inject() (
       } yield Ok(sub01OutcomeRejectedView(Some(name), processedDate, service))
   }
 
-  def pending(service: Service, date: String): Action[AnyContent] =
+  def pending(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         subscriptionDetails <- cache.subscriptionDetails
-        _                   <- cache.remove
         _                   <- cache.saveSubscriptionDetails(subscriptionDetails)
+        processedDate <- cache.registerWithEoriAndIdResponse.map(
+          resp => languageUtils.Dates.formatDate(resp.responseCommon.processingDate.toLocalDate)
+        )
+        _ <- cache.remove
       } yield Ok(
         subscriptionOutcomePendingView(
           subscriptionDetails.eoriNumber.getOrElse(throw DataUnavailableException("No EORI found in cache")),
-          date,
+          processedDate,
           subscriptionDetails.name,
           service
         )
@@ -317,7 +319,7 @@ class RegisterWithEoriAndIdController @Inject() (
         case sp: SubscriptionPending =>
           subscriptionDetailsService
             .saveKeyIdentifiers(groupId, internalId, service)
-            .map(_ => Redirect(RegisterWithEoriAndIdController.pending(service, sp.processingDate)))
+            .map(_ => Redirect(RegisterWithEoriAndIdController.pending(service)))
         case sf: SubscriptionFailed =>
           subscriptionDetailsService
             .saveKeyIdentifiers(groupId, internalId, service)

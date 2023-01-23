@@ -519,7 +519,7 @@ class RegisterWithEoriAndIdControllerSpec
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .pending(atarService, processingDateResponse)
+          .pending(atarService)
           .url
       }
     }
@@ -574,7 +574,7 @@ class RegisterWithEoriAndIdControllerSpec
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .pending(atarService, DateTimeFormatter.ofPattern("d MMMM yyyy").format(ZonedDateTime.now()))
+          .pending(atarService)
           .url
         verify(mockNotifyRcmService)
           .notifyRcm(meq(atarService))(any[HeaderCarrier], any[Request[_]], any[ExecutionContext])
@@ -1090,9 +1090,6 @@ class RegisterWithEoriAndIdControllerSpec
         page.getElementsText(
           RegistrationProcessingPage.pageHeadingXpath
         ) shouldBe RegistrationProcessingPage.individualHeading
-        page.getElementsText(
-          RegistrationProcessingPage.processedDateXpath
-        ) shouldBe "Application received by HMRC on 11 January 2015"
       }
     }
 
@@ -1112,9 +1109,6 @@ class RegisterWithEoriAndIdControllerSpec
         page.getElementsText(
           RegistrationProcessingPage.pageHeadingXpath
         ) shouldBe RegistrationProcessingPage.individualHeading
-        page.getElementsText(
-          RegistrationProcessingPage.processedDateXpath
-        ) shouldBe "Application received by HMRC on 11 January 2015"
       }
     }
 
@@ -1148,6 +1142,9 @@ class RegisterWithEoriAndIdControllerSpec
       when(mockCache.remove(any[Request[_]]))
         .thenReturn(Future.successful(true))
       when(mockCache.saveSubscriptionDetails(any())(any[Request[_]])).thenReturn(Future.successful(true))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
+        .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
+      when(mockSub01Outcome.processedDate).thenReturn(LocalDateTime.now().toLocalDate.toString)
 
       invokePending() { result =>
         status(result) shouldBe OK
@@ -1164,6 +1161,9 @@ class RegisterWithEoriAndIdControllerSpec
       when(mockCache.remove(any[Request[_]]))
         .thenReturn(Future.successful(true))
       when(mockCache.saveSubscriptionDetails(any())(any[Request[_]])).thenReturn(Future.successful(true))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
+        .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
+      when(mockSub01Outcome.processedDate).thenReturn(LocalDateTime.now().toLocalDate.toString)
 
       intercept[DataUnavailableException] {
         invokePending()(result => status(result))
@@ -1233,7 +1233,7 @@ class RegisterWithEoriAndIdControllerSpec
   )
 
   private def invokePending()(test: Future[Result] => Any) =
-    test(controller.pending(atarService, "11 August 2015").apply(withFakeCSRF(fakeAtarSubscribeRequest)))
+    test(controller.pending(atarService).apply(withFakeCSRF(fakeAtarSubscribeRequest)))
 
   private def invokeFail()(test: Future[Result] => Any) =
     test(controller.fail(atarService, "11 September 2015").apply(withFakeCSRF(fakeAtarSubscribeRequest)))
