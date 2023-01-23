@@ -1079,9 +1079,9 @@ class RegisterWithEoriAndIdControllerSpec
       when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Eu))
       when(mockCache.registrationDetails(any[Request[_]]))
         .thenReturn(Future.successful(individualRegistrationDetails))
-      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
-        .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
-      when(mockSub01Outcome.processedDate).thenReturn(LocalDateTime.now().toLocalDate.toString)
+      when(mockCache.sub01Outcome(any[Request[_]]))
+        .thenReturn(Future.successful(mockSub01Outcome))
+      when(mockSub01Outcome.processedDate).thenReturn("11 January 2015")
 
       invokeProcessing() { result =>
         status(result) shouldBe OK
@@ -1098,9 +1098,9 @@ class RegisterWithEoriAndIdControllerSpec
       when(mockCache.subscriptionDetails(any[Request[_]]))
         .thenReturn(Future.successful(mockSubscriptionDetails))
       when(mockSubscriptionDetails.name).thenReturn("Name")
-      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
-        .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
-      when(mockSub01Outcome.processedDate).thenReturn(LocalDateTime.now().toLocalDate.toString)
+      when(mockCache.sub01Outcome(any[Request[_]]))
+        .thenReturn(Future.successful(mockSub01Outcome))
+      when(mockSub01Outcome.processedDate).thenReturn("11 January 2015")
 
       invokeProcessing() { result =>
         status(result) shouldBe OK
@@ -1142,8 +1142,9 @@ class RegisterWithEoriAndIdControllerSpec
       when(mockCache.remove(any[Request[_]]))
         .thenReturn(Future.successful(true))
       when(mockCache.saveSubscriptionDetails(any())(any[Request[_]])).thenReturn(Future.successful(true))
-      when(mockCache.sub01Outcome(any[Request[_]]))
-        .thenReturn(Future.successful(mockSub01Outcome))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
+        .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
+      when(mockSub01Outcome.processedDate).thenReturn(LocalDateTime.now().toLocalDate.toString)
 
       invokePending() { result =>
         status(result) shouldBe OK
@@ -1160,8 +1161,9 @@ class RegisterWithEoriAndIdControllerSpec
       when(mockCache.remove(any[Request[_]]))
         .thenReturn(Future.successful(true))
       when(mockCache.saveSubscriptionDetails(any())(any[Request[_]])).thenReturn(Future.successful(true))
-      when(mockCache.sub01Outcome(any[Request[_]]))
-        .thenReturn(Future.successful(mockSub01Outcome))
+      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
+        .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
+      when(mockSub01Outcome.processedDate).thenReturn(LocalDateTime.now().toLocalDate.toString)
 
       intercept[DataUnavailableException] {
         invokePending()(result => status(result))

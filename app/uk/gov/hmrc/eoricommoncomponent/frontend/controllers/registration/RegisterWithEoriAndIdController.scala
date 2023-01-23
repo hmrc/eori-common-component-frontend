@@ -146,10 +146,8 @@ class RegisterWithEoriAndIdController @Inject() (
   def processing(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
-        name <- cachedName
-        processedDate <- cache.registerWithEoriAndIdResponse.map(
-          resp => languageUtils.Dates.formatDate(resp.responseCommon.processingDate.toLocalDate)
-        )
+        name          <- cachedName
+        processedDate <- cache.sub01Outcome.map(_.processedDate)
       } yield Ok(sub01OutcomeProcessingView(Some(name), processedDate))
   }
 
@@ -166,8 +164,10 @@ class RegisterWithEoriAndIdController @Inject() (
       for {
         subscriptionDetails <- cache.subscriptionDetails
         _                   <- cache.saveSubscriptionDetails(subscriptionDetails)
-        processedDate       <- cache.sub01Outcome.map(_.processedDate)
-        _                   <- cache.remove
+        processedDate <- cache.registerWithEoriAndIdResponse.map(
+          resp => languageUtils.Dates.formatDate(resp.responseCommon.processingDate.toLocalDate)
+        )
+        _ <- cache.remove
       } yield Ok(
         subscriptionOutcomePendingView(
           subscriptionDetails.eoriNumber.getOrElse(throw DataUnavailableException("No EORI found in cache")),
