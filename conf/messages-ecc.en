@@ -78,12 +78,10 @@ cds.registration.you-already-have-eori.title=You already have an EORI
 cds.registration.you-already-have-eori.para1=We have detected you already have an EORI.  You can continue and subscribe to the the {0} service.
 
 ecc.subscription.information.para1.heading=What you will need
-ecc.subscription.information.para1=In order to subscribe you to {0}, we need some information from you. Ensure you have all the correct details with you before you start otherwise your application may be delayed.
 
 ecc.subscription.information.para2.heading=An EORI number starting with GB
-ecc.subscription.information.para2=You must {0} before you can subscribe to {1}, After you have applied for an EORI number you need to wait for it to be ready to use. This can take up to 2 hours or 5 working days, if we need to make more checks. When it is ready to use you can proceed with your subscription to {1}.
-ecc.subscription.information.para2.link=get an EORI number
-ecc.subscription.information.para2.warning=The EORI number starting with GB must be the one linked to the Government Gateway user ID you used when you got an EORI number.
+ecc.subscription.information.para2=If you do not have one you can {0}
+ecc.subscription.information.para2.link=apply for both a subscription and an EORI number
 
 ecc.subscription.information.section.organisation.subheading=Company or other organisation details
 ecc.subscription.information.section.organisation.find-utr.label = find a UTR number {0}

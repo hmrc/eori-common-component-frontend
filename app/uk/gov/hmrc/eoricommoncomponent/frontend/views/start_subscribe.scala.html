@@ -36,13 +36,8 @@
 }
 @detailsContent = {
 <p id="gb-eori-text" class="govuk-body">
-    @Html(messages("ecc.subscription.information.para2", getEoriLink, ServiceName.longName))
+    @Html(messages("ecc.subscription.information.para2", getEoriLink))
 </p>
-}
-
-
-@warningContent = {
-        @Html(messages("ecc.subscription.information.para2.warning"))
 }
 
 @layout_di(messages(headingAndTitleMessage), displayBackLink = false) {
@@ -53,17 +48,10 @@
         <p id="information-only-once" class=" govuk-body">@messages("ecc.subscription.information.only.once")</p>
 
         <h2 class="govuk-heading-m" id="what-you-will-need">@messages("ecc.subscription.information.para1.heading")</h2>
-        <p id="what-you-will-need-text" class=" govuk-body">@messages("ecc.subscription.information.para1", ServiceName.longName)</p>
 
         <h3 class="govuk-heading-s" id="gb-eori">@messages("ecc.subscription.information.para2.heading")</h3>
 
         @detailsContent
-
-
-        @govukWarningText(WarningText(
-            iconFallbackText = "Warning",
-            content = HtmlContent(warningContent)
-        ))
 
 
         <h3 class="govuk-heading-s" id="organisation">@messages("ecc.subscription.information.section.organisation.subheading")</h3>
