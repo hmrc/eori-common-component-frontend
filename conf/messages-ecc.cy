@@ -82,9 +82,8 @@ ecc.subscription.information.para1.heading=Yr hyn y bydd ei angen arnoch
 ecc.subscription.information.para1=Er mwyn eich tanysgrifio i’r gwasanaeth ar gyfer {0}, mae angen gwybodaeth arnom oddi wrthych. Sicrhewch fod gennych yr holl fanylion cywir cyn i chi ddechrau, fel arall mae’n bosibl y caiff eich cais ei oedi.
 
 ecc.subscription.information.para2.heading=Rhif EORI sy’n dechrau gyda GB
-ecc.subscription.information.para2=Mae’n rhaid i chi {0} cyn y gallwch danysgrifio i’r canlynol: Ar ôl i chi wneud cais am rif EORI, bydd angen i chi aros iddo fod yn barod i’w ddefnyddio. Gall hyn gymryd hyd at ddwy awr neu bum diwrnod gwaith os bydd angen i ni wneud rhagor o wiriadau. Pan fydd eich rhif EORI yn barod i’w ddefnyddio, gallwch fynd yn eich blaen gyda’ch tanysgrifiad i’r canlynol:
-ecc.subscription.information.para2.link=gael rhif EORI
-ecc.subscription.information.para2.warning=Mae’n rhaid i’r rhif EORI sy’n dechrau gyda GB fod yr un sy’n gysylltiedig â’r Dynodydd Defnyddiwr (ID) Porth y Llywodraeth a ddefnyddiwyd gennych pan gawsoch rif EORI.
+ecc.subscription.information.para2=Os nad oes gennych un, gallwch {0}
+ecc.subscription.information.para2.link=wneud cais am danysgrifiad a rhif EORI
 
 ecc.subscription.information.section.organisation.subheading=Manylion y cwmni neu sefydliad arall
 ecc.subscription.information.section.organisation.find-utr.label = UTR coll {0}
