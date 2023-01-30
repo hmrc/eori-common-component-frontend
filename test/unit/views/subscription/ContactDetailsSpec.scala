@@ -68,7 +68,7 @@ class ContactDetailsSpec extends ViewSpec {
     "display telephone input" in {
 
       doc.body().getElementsByClass("telephone").text() mustBe "Telephone"
-      doc.body().getElementById("telephone-hint").text() mustBe "Only enter numbers, for example 01632 960 001"
+      doc.body().getElementById("telephone-hint").text() mustBe "For international numbers include the country code"
     }
 
     "display continue button" in {
