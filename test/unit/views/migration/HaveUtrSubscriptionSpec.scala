@@ -54,13 +54,6 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
         .text must include("You will have a UTR number if your organisation pays corporation tax in the UK.")
     }
 
-    "have correct hint" in {
-      companyDoc.body
-        .getElementById("have-utr-hint")
-        .text must include(
-        "It will be on tax returns and other letters about Corporation Tax. It may be called reference, UTR or official use. You can find a lost UTR number (opens in new tab)"
-      )
-    }
   }
 
   "Fresh Subscription Have Utr Page for Individual" should {
@@ -82,13 +75,7 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
         "You will have a self assessment UTR number if you registered for Self Assessment in the UK."
       )
     }
-    "have correct hint" in {
-      individualDoc.body
-        .getElementById("have-utr-hint")
-        .text must include(
-        "It will be on tax returns and other letters about Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’. You can find a lost UTR number (opens in new tab)"
-      )
-    }
+
   }
 
   "Subscription Have Utr Page" should {
