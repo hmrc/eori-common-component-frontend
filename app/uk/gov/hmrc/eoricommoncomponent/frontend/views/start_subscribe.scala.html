@@ -55,24 +55,34 @@
 
 
         <h3 class="govuk-heading-s" id="organisation">@messages("ecc.subscription.information.section.organisation.subheading")</h3>
-        <p id="organisation-text" class=" govuk-body">@messages("ecc.subscription.information.section.organisation.list.heading")</p>
+        <p id="organisation-text" class="govuk-body">@messages("ecc.subscription.information.section.organisation.list.heading")</p>
 
         <ul class="govuk-list govuk-list--bullet ">
-            <li>@Html(messages("ecc.subscription.information.section.organisation.list.first", askUtrCopyLink))</li>
+            <li>@messages("ecc.subscription.information.section.organisation.list.first")</li>
             <li>@messages("ecc.subscription.information.section.organisation.list.second")</li>
             <li>@messages("ecc.subscription.information.section.organisation.list.third")</li>
-            <li>@messages("ecc.subscription.information.section.organisation.list.fourth")</li>
         </ul>
+        <p id="find-utr-link" class="govuk-body">@Html(messages("ecc.subscription.information.section.organisation.utr.link"))</p>
+
+
 
         <h3 class="govuk-heading-s govuk-!-margin-top-2" id="individual">@messages("ecc.subscription.information.section.individual.subheading")</h3>
         <p id="individual-text" class=" govuk-body">@messages("ecc.subscription.information.section.individual.para")</p>
 
         <ul class="govuk-list govuk-list--bullet ">
             <li>@messages("ecc.subscription.information.section.individual.nino")</li>
-            <li>@Html(messages("ecc.subscription.information.section.individual.utr", messages("cds.navigation.opens-in-new-tab")))</li>
+            <li>@messages("ecc.subscription.information.section.individual.utr")</li>
         </ul>
+        <p id="find-utr-link-individual" class="govuk-body">@Html(messages("ecc.subscription.information.section.organisation.utr.link"))</p>
 
-        <p class="govuk-body" id="email-confirmation">@messages("ecc.subscription.information.email.confirm")</p>
+        <h3 class="govuk-heading-s govuk-!-margin-top-2" id="how-long">@messages("ecc.subscription.information.section.how-long")</h3>
+        <p id="average-time" class=" govuk-body">@messages("ecc.subscription.information.section.average-time")</p>
+        <p id="approval-message" class=" govuk-body">@messages("ecc.subscription.information.section.approval-message")</p>
+
+        <ul class="govuk-list govuk-list--bullet ">
+            <li>@messages("ecc.subscription.information.section.approval.list.first")</li>
+            <li>@messages("ecc.subscription.information.section.approval.list.second")</li>
+        </ul>
 
         @govukButton(Button(
             href = Some(EmailController.form(service, subscribeJourney = SubscribeJourney(LongJourney)).url),
