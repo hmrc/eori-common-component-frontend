@@ -36,10 +36,7 @@
 }
 
 @intro = @{
-    organisationType match {
-        case CdsOrganisationType.SoleTraderId | CdsOrganisationType.IndividualId => messages("cds.matching.row-sole-trader-individual.utr.paragraph")
-        case _ => messages("cds.matching.row-organisation.utr.paragraph")
-    }
+        if(organisationType == CdsOrganisationType.SoleTraderId | organisationType == CdsOrganisationType.IndividualId) messages("cds.matching.row-sole-trader-individual.utr.paragraph")
 }
 @utrlink = {
     <p>@messages("cds.navigation.opens-new-page")

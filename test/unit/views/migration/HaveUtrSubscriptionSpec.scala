@@ -47,13 +47,6 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
         "Does your organisation have a Corporation Tax Unique Taxpayer Reference (UTR) issued in the UK?"
       )
     }
-
-    "have correct intro" in {
-      companyDoc.body
-        .getElementById("have-utr-hint")
-        .text must include("You will have a UTR number if your organisation pays corporation tax in the UK.")
-    }
-
   }
 
   "Fresh Subscription Have Utr Page for Individual" should {
