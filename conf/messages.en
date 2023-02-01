@@ -409,7 +409,7 @@ cds.company.name.label=Company name
 cds.partnership.name.label=Registered partnership name
 cds.nino.label=National Insurance number
 cds.utr.label=UTR number
-cds.company.utr.label=Corporation Tax UTR number
+cds.company.utr.label=Corporation Tax UTR
 cds.partnership-utr.label=Partnership Self Assessment UTR number
 
 subscription.check-your-details.utrnumber.individual=UTR number

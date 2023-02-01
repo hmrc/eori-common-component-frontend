@@ -98,7 +98,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         orgName.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/nameid/review"
 
         val utrRow = doc().body.getElementsByClass("review-tbl__utr").get(0)
-        utrRow.getElementsByClass("govuk-summary-list__key").text mustBe "Corporation Tax UTR number"
+        utrRow.getElementsByClass("govuk-summary-list__key").text mustBe "Corporation Tax UTR"
         utrRow.getElementsByClass("govuk-summary-list__value").text mustBe "UTRXXXXX"
         utrRow.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/nameid/review"
 
@@ -331,7 +331,7 @@ class CheckYourDetailsSpec extends ViewSpec {
         nameOrg.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/name/review"
 
         val utrRow = page.body.getElementsByClass("review-tbl__utr").get(0)
-        utrRow.getElementsByClass("govuk-summary-list__key").text mustBe "Corporation Tax UTR number"
+        utrRow.getElementsByClass("govuk-summary-list__key").text mustBe "Corporation Tax UTR"
         utrRow.getElementsByClass("govuk-summary-list__value").text mustBe "UTRXXXXX"
         utrRow.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-utr/review"
 
