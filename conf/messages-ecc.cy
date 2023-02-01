@@ -85,20 +85,27 @@ ecc.subscription.information.para2.heading=Rhif EORI sy’n dechrau gyda GB
 ecc.subscription.information.para2=Os nad oes gennych un, gallwch {0}
 ecc.subscription.information.para2.link=wneud cais am danysgrifiad a rhif EORI
 
-ecc.subscription.information.section.organisation.subheading=Manylion y cwmni neu sefydliad arall
+ecc.subscription.information.section.organisation.subheading=Os byddwch yn gwneud cais fel cwmni cyfyngedig, partneriaeth neu sefydliad arall
 ecc.subscription.information.section.organisation.find-utr.label = UTR coll {0}
-ecc.subscription.information.section.organisation.list.heading=Os ydych yn gwmni cyfyngedig, partneriaeth neu elusen, bydd angen y canlynol arnoch:
-ecc.subscription.information.section.organisation.list.first=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth os ydych yn talu treth gorfforaeth yn y DU. Gallwch ddod o hyd i {0}
-ecc.subscription.information.section.organisation.list.second=Enw’r cwmni cofrestredig
-ecc.subscription.information.section.organisation.list.third=Cyfeiriad cofrestredig y cwmni
-ecc.subscription.information.section.organisation.list.fourth=Dyddiad sefydlu
+ecc.subscription.information.section.organisation.list.heading=I gadarnhau pwy ydych, bydd angen i chi ddarparu’r manylion canlynol am eich sefydliad:
+ecc.subscription.information.section.organisation.list.first=enw a’r cyfeiriad cofrestredig
+ecc.subscription.information.section.organisation.list.second=dyddiad sefydlu
+ecc.subscription.information.section.organisation.list.third=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth, os ydych yn talu Treth Gorfforaeth yn y DU
+ecc.subscription.information.section.organisation.utr.link=<a href="https://www.gov.uk/find-utr-number" class="govuk-link" target="_blank" rel="noopener noreferrer">Dod o hyd i’ch UTR (yn agor tab newydd)</a>
 
-ecc.subscription.information.section.individual.subheading=Manylion yr unig fasnachwr neu unigolyn
-ecc.subscription.information.section.individual.para=Os ydych wedi gweithio yn y DU neu wedi cofrestru ar gyfer Hunanasesiad, bydd angen un o’r canlynol arnoch:
-ecc.subscription.information.section.individual.nino=Rhif Yswiriant Gwladol
-ecc.subscription.information.section.individual.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad. Gallwch ddod o hyd i <a href="https://www.gov.uk/find-lost-utr-number" class="govuk-link" target="_blank" rel="noopener noreferrer">UTR coll {0}.</a>
+
+ecc.subscription.information.section.individual.subheading=Os byddwch yn gwneud cais fel unig fasnachwr neu’n unigolyn
+ecc.subscription.information.section.individual.para=I gadarnhau pwy ydych, bydd angen i chi roi un o’r canlynol:
+ecc.subscription.information.section.individual.nino=rhif Yswiriant Gwladol, os ydych wedi gweithio yn y DU
+ecc.subscription.information.section.individual.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad, os ydych wedi cofrestru ar gyfer Hunanasesiad
 ecc.subscription.information.only.once=Dim ond unwaith y mae angen gwneud hyn.
 ecc.subscription.information.email.confirm=Byddwn yn prosesu’ch cais ac yn anfon e-bost atoch gyda’r canlyniad cyn pen 2 awr.
+
+ecc.subscription.information.section.how-long=Faint o amser y mae’n ei gymryd
+ecc.subscription.information.section.average-time=Mae ceisiadau’n cymryd 6 munud ar gyfartaledd i’w cwblhau.
+ecc.subscription.information.section.approval-message=Os ydym yn cymeradwyo’ch cais, bydd y tanysgrifiad yn barod i’w ddefnyddio o fewn naill ai:
+ecc.subscription.information.section.approval.list.first=2 awr
+ecc.subscription.information.section.approval.list.second=3 i 5 diwrnod gwaith, os bydd angen i ni wneud rhagor o wiriadau
 
 cds.navigation.subscribe=Tanysgrifio
 
