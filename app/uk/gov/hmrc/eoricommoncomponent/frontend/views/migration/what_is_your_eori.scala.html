@@ -31,15 +31,14 @@
         isRestOfWorldJourney: Boolean,
         service: Service)(implicit request: Request[_], messages: Messages)
 
+
 @getEoriLink = {
-    <a class="govuk-link" href=@appConfig.externalGetEORILink(service)>
-    @messages("cds.subscription.enter-eori-number.no-eori.link")
-    </a>
+    <a class="govuk-link" href=@appConfig.externalGetEORILink(service)>@messages("cds.subscription.enter-eori-number.no-eori.link")</a>
 }
 
 @detailsContent = {
     <p class="govuk-body">
-    @Html(messages("cds.subscription.enter-eori-number.no-eori", getEoriLink, ServiceName.longName(service)))
+    @Html(messages("cds.subscription.enter-eori-number.no-eori", getEoriLink))
     </p>
 }
 

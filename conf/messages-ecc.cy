@@ -3,8 +3,8 @@ cds.banner.subscription=Tanysgrifio i {0}
 
 ecc.subscription.enter-eori-number.heading=Beth yw’ch rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI)?
 cds.subscription.enter-eori-number.no-eori.summary=Nid oes gennyf rif EORI
-cds.subscription.enter-eori-number.no-eori=Mae’n rhaid i chi {0} cyn y gallwch danysgrifio i’r canlynol: Ar ôl i chi wneud cais am rif EORI, bydd angen i chi aros iddo fod yn barod i’w ddefnyddio. Gall hyn gymryd hyd at ddwy awr neu bum diwrnod gwaith os bydd angen i ni wneud rhagor o wiriadau. Pan fydd eich rhif EORI yn barod i’w ddefnyddio, gallwch fynd yn eich blaen gyda’ch tanysgrifiad i’r canlynol:
-cds.subscription.enter-eori-number.no-eori.link=gael rhif EORI
+cds.subscription.enter-eori-number.no-eori=Dylech {0}
+cds.subscription.enter-eori-number.no-eori.link=wneud cais am danysgrifiad a rhif EORI
 
 cds.has-existing-eori.title=Mae’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth yn gysylltiedig ag EORI
 cds.has-existing-eori.heading=Mae’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth yn gysylltiedig ag EORI
