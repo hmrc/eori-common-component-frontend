@@ -40,7 +40,7 @@ class HowCanWeIdentifyYouUtrSpec extends ViewSpec {
   "Subscription Enter Your Nino Page" should {
 
     "display correct heading" in {
-      doc.body().getElementsByTag("h1").text() mustBe "Enter your Unique Tax Reference number"
+      doc.body().getElementsByTag("h1").text() mustBe "What is your Self Assessment Unique Taxpayer Reference (UTR)?"
     }
 
     "include the heading in the title" in {
@@ -51,7 +51,7 @@ class HowCanWeIdentifyYouUtrSpec extends ViewSpec {
 
       doc.body()
         .getElementById("utr-hint")
-        .text() mustBe "This is 10 numbers, for example 1234567890, which may be followed by a K."
+        .text() mustBe "This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’."
     }
 
     "display an page level error if no nino entered" in {
