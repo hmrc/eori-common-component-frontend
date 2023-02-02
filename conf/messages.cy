@@ -9,6 +9,7 @@ cds.navigation.cancel=Canslo
 cds.navigation.match=Paru
 cds.navigation.save-and-review=Cadw ac adolygu
 cds.navigation.opens-in-new-tab=(yn agor tab newydd)
+cds.navigation.opens-new-page=Gallwch
 cds.error.page-title=Gwall
 cds.error.mandatory.field=Mae angen llenwi’r maes hwn
 cds.error.invalid.date.format=Nodwch ddyddiad dilys, er enghraifft “31 3 1980’’
