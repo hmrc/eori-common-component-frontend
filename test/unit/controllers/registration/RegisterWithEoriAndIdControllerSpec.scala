@@ -1222,6 +1222,29 @@ class RegisterWithEoriAndIdControllerSpec
     }
   }
 
+  "Call the idAlreadyLinked function" in {
+    val utr       = Some(Utr("UTRXXXXX"))
+    val nameIdOrg = Some(NameIdOrganisationMatchModel("Name", utr.get.id))
+    when(mockSubscriptionDetails.nameIdOrganisationDetails).thenReturn(nameIdOrg)
+    when(mockCache.subscriptionDetails(any[Request[_]]))
+      .thenReturn(Future.successful(mockSubscriptionDetails))
+    when(mockSubscriptionDetails.name).thenReturn("reg06_id_already_linked")
+    when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
+      .thenReturn(Future.successful(stubHandleErrorCodeResponse(IDLinkedWithEori)))
+    when(mockCache.remove(any[Request[_]]))
+      .thenReturn(Future.successful(true))
+    when(mockCache.email(any[Request[_]]))
+      .thenReturn(Future.successful("email@mail.com"))
+
+    invokeIdAlreadyLinked() { result =>
+      status(result) shouldBe OK
+      val page = CdsPage(contentAsString(result))
+      page.title() should startWith(
+        "The details you gave us are matched to a different EORI number - Subscribe to Advance Tariff Rulings - GOV.UK"
+      )
+    }
+  }
+
   private def regExistingEori()(test: Future[Result] => Any) =
     test(controller.registerWithEoriAndId(atarService)(withFakeCSRF(fakeAtarSubscribeRequest)))
 
@@ -1240,6 +1263,9 @@ class RegisterWithEoriAndIdControllerSpec
 
   private def invokeEoriAlreadyLinked()(test: Future[Result] => Assertion): Unit =
     test(controller.eoriAlreadyLinked(atarService).apply(withFakeCSRF(fakeAtarSubscribeRequest)))
+
+  private def invokeIdAlreadyLinked()(test: Future[Result] => Assertion): Unit =
+    test(controller.idAlreadyLinked(atarService).apply(withFakeCSRF(fakeAtarSubscribeRequest)))
 
   private def invokeRejectedPreviously()(test: Future[Result] => Assertion): Unit =
     test(controller.rejectedPreviously(atarService).apply(withFakeCSRF(fakeAtarSubscribeRequest)))

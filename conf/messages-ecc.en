@@ -136,6 +136,7 @@ cds.matching.row-organisation.utr.hint=This is 10 numbers, for example 123456789
 cds.matching.row-sole-trader-individual.utr.hint=This is 10 numbers, for example 1234567890, which may be followed by a K. It will be on tax returns and other letters about Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’.
 cds.matching.row-lost-urt.hint.link=find a lost UTR.
 
+
 cds.subscribe.use-this-eori.heading=Your GB Economic Operator Registration and Identification (EORI) number
 cds.subscribe.use-this-eori.paragraph1=This EORI is linked to the Government Gateway account you are using.
 cds.subscribe.use-this-eori.paragraph2=To use a different EORI you must {0} and start again with a different Government Gateway user ID and password.
@@ -228,8 +229,8 @@ cds.subscription.organisation-disclose-personal-details-consent.no=No - Just sho
 
 subscription-journey.how-confirm-identity.nino.heading=Enter your National Insurance number
 subscription-journey.how-confirm-identity.nino.hint=It’s on your National Insurance card, benefit letter, payslip or P60. For example, ''QQ123456C''.
-subscription-journey.how-confirm-identity.utr.heading=Enter your Unique Tax Reference number
-subscription-journey.how-confirm-identity.utr.hint=This is 10 numbers, for example 1234567890, which may be followed by a K.
+subscription-journey.how-confirm-identity.utr.heading=What is your Self Assessment Unique Taxpayer Reference (UTR)?
+subscription-journey.how-confirm-identity.utr.hint=This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Self Assessment. It may be called '‘reference’', '‘UTR’' or '‘official use’'.
 
 cds.reg06.outcome.eori-already-linked.info.utr = The Unique Taxpayer Reference, {0}, you entered does not match our records for EORI number {1}.
 cds.reg06.outcome.eori-already-linked.info.nino = The National Insurance number, {0}, you entered does not match our records for EORI number {1}.

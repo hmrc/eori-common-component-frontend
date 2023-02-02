@@ -136,7 +136,10 @@ cds.subscription.sign-in-with-different-details.para1-noname=Rydych eisoes wedi 
 
 cds.matching.row-organisation.utr.hint=Mae hwn yn cynnwys 10 rhif, er enghraifft 1234567890. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Treth Gorfforaeth. Efallai y cyfeirir ato gan ddefnyddio’r geiriau ‘cyfeirnod’, ‘UTR’ neu ‘defnydd swyddogol’.
 cds.matching.row-sole-trader-individual.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890, a gellir ei ddilyn gan K. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Hunanasesiad. Efallai y cyfeirir ato gan ddefnyddio’r geiriau ‘cyfeirnod’, ‘UTR’ neu ‘defnydd swyddogol’. Mae modd {0}
-cds.matching.row-lost-urt.hint.link=dod o hyd i UTR sydd ar goll
+
+cds.matching.row-lost-urt.hint.link=Mae modd dod o hyd i UTR sydd ar goll.
+
+
 
 cds.subscribe.use-this-eori.heading=Eich rhif Cofrestru ac Adnabod Gweithredwr Economaidd (EORI)
 cds.subscribe.use-this-eori.paragraph1=Mae’r EORI hwn yn gysylltiedig â chyfrif Porth y Llywodraeth rydych yn ei ddefnyddio.
@@ -229,8 +232,8 @@ cds.subscription.organisation-disclose-personal-details-consent.no=Na - Dangoswc
 
 subscription-journey.how-confirm-identity.nino.heading=Nodwch eich rhif Yswiriant Gwladol
 subscription-journey.how-confirm-identity.nino.hint=Mae’r rhif ar eich cerdyn Yswiriant Gwladol, llythyr budd-daliadau, slip cyflog neu P60. Er enghraifft, ''QQ123456C''.
-subscription-journey.how-confirm-identity.utr.heading=Nodwch eich Cyfeirnod Unigryw y Trethdalwr
-subscription-journey.how-confirm-identity.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890, a gellir ei ddilyn gan K.
+subscription-journey.how-confirm-identity.utr.heading=Beth yw'ch Cyfeirnod Unigryw y Trethdalwr ar gyfer Hunanasesiad (UTR)?
+subscription-journey.how-confirm-identity.utr.hint=Mae hwn yn cynnwys 10 rhif, er enghraifft 1234567890. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Hunanasesiad. Efallai y cyfeirir ato gan ddefnyddio’r geiriau '‘cyfeirnod’', '‘UTR’' neu '‘defnydd swyddogol’'.
 
 cds.reg06.outcome.eori-already-linked.info.utr = Nid yw Cyfeirnod Unigryw y Trethdalwr a nodwyd gennych, sef {0}, yn cyd-fynd â’n cofnodion ar gyfer rhif EORI {1}.
 cds.reg06.outcome.eori-already-linked.info.nino = Nid yw’r rhif Yswiriant Gwladol a nodwyd gennych, sef {0}, yn cyd-fynd â’n cofnodion ar gyfer rhif EORI {1}.
