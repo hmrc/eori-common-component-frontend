@@ -1223,7 +1223,7 @@ class RegisterWithEoriAndIdControllerSpec
   }
 
   "Call the idAlreadyLinked function" in {
-    val utr = Some(Utr("UTRXXXXX"))
+    val utr       = Some(Utr("UTRXXXXX"))
     val nameIdOrg = Some(NameIdOrganisationMatchModel("Name", utr.get.id))
     when(mockSubscriptionDetails.nameIdOrganisationDetails).thenReturn(nameIdOrg)
     when(mockCache.subscriptionDetails(any[Request[_]]))
@@ -1239,7 +1239,9 @@ class RegisterWithEoriAndIdControllerSpec
     invokeIdAlreadyLinked() { result =>
       status(result) shouldBe OK
       val page = CdsPage(contentAsString(result))
-      page.title() should startWith("The details you gave us are matched to a different EORI number - Subscribe to Advance Tariff Rulings - GOV.UK")
+      page.title() should startWith(
+        "The details you gave us are matched to a different EORI number - Subscribe to Advance Tariff Rulings - GOV.UK"
+      )
     }
   }
 
