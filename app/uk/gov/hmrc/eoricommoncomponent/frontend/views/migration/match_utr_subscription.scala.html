@@ -36,22 +36,21 @@
 }
 
 @intro = @{
-    organisationType match {
-        case CdsOrganisationType.SoleTraderId | CdsOrganisationType.IndividualId => messages("cds.matching.row-sole-trader-individual.utr.paragraph")
-        case _ => messages("cds.matching.row-organisation.utr.paragraph")
-    }
+        if(organisationType == CdsOrganisationType.SoleTraderId | organisationType == CdsOrganisationType.IndividualId) messages("cds.matching.row-sole-trader-individual.utr.paragraph")
 }
 @utrlink = {
-    <a href="@appConfig.findLostUtr" class="govuk-link" target="_blank" rel="noopener noreferrer">@messages("cds.matching.row-lost-urt.hint.link", messages("cds.navigation.opens-in-new-tab"))</a>
+    <p>@messages("cds.navigation.opens-new-page")
+        <a href="@appConfig.findLostUtr" class="govuk-link" target="_blank" rel="noopener noreferrer">@messages("cds.matching.row-lost-urt.hint.link")</a></p>
 }
 @utrHelp = @{
     organisationType match {
-        case CdsOrganisationType.SoleTraderId | CdsOrganisationType.IndividualId => Html(messages("cds.matching.row-sole-trader-individual.utr.hint", utrlink))
-        case _ => Html(messages("cds.matching.row-organisation.utr.hint", utrlink))
+        case CdsOrganisationType.SoleTraderId | CdsOrganisationType.IndividualId => Html(messages("cds.matching.row-sole-trader-individual.utr.hint"))
+        case _ => Html(messages("cds.matching.row-organisation.utr.hint"))
     }
 }
 @hint = {
     <p>@intro</p>
+    <p>@utrlink</p>
     <p>@utrHelp</p>
 }
 @values = @{

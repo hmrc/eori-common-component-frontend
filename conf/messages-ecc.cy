@@ -134,9 +134,9 @@ cds.feedback.continue=Rhagor am {0}
 cds.subscription.sign-in-with-different-details.para1=Mae {0} eisoes wedi cofrestru ar gyfer {1} gyda Phorth y Llywodraeth gwahanol.
 cds.subscription.sign-in-with-different-details.para1-noname=Rydych eisoes wedi cofrestru ar gyfer {0} gyda Phorth y Llywodraeth gwahanol.
 
-cds.matching.row-organisation.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890, a gellir ei ddilyn gan K. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Treth Gorfforaeth. Efallai y cyfeirir ato gan ddefnyddio’r geiriau ‘cyfeirnod’, ‘UTR’ neu ‘defnydd swyddogol’. Mae modd dod o hyd i UTR sydd ar goll.
+cds.matching.row-organisation.utr.hint=Mae hwn yn cynnwys 10 rhif, er enghraifft 1234567890. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Treth Gorfforaeth. Efallai y cyfeirir ato gan ddefnyddio’r geiriau ‘cyfeirnod’, ‘UTR’ neu ‘defnydd swyddogol’.
 cds.matching.row-sole-trader-individual.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890, a gellir ei ddilyn gan K. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Hunanasesiad. Efallai y cyfeirir ato gan ddefnyddio’r geiriau ‘cyfeirnod’, ‘UTR’ neu ‘defnydd swyddogol’. Mae modd {0}
-cds.matching.row-lost-urt.hint.link=dod o hyd i UTR sydd ar goll {0}
+cds.matching.row-lost-urt.hint.link=dod o hyd i UTR sydd ar goll
 
 cds.subscribe.use-this-eori.heading=Eich rhif Cofrestru ac Adnabod Gweithredwr Economaidd (EORI)
 cds.subscribe.use-this-eori.paragraph1=Mae’r EORI hwn yn gysylltiedig â chyfrif Porth y Llywodraeth rydych yn ei ddefnyddio.
