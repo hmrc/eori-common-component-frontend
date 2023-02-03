@@ -232,7 +232,7 @@ cds.subscription.organisation-disclose-personal-details-consent.no=Na - Dangoswc
 
 subscription-journey.how-confirm-identity.nino.heading=Nodwch eich rhif Yswiriant Gwladol
 subscription-journey.how-confirm-identity.nino.hint=Mae’r rhif ar eich cerdyn Yswiriant Gwladol, llythyr budd-daliadau, slip cyflog neu P60. Er enghraifft, ''QQ123456C''.
-subscription-journey.how-confirm-identity.utr.heading=Beth yw'ch Cyfeirnod Unigryw y Trethdalwr ar gyfer Hunanasesiad (UTR)?
+subscription-journey.how-confirm-identity.utr.heading=Beth yw'''ch Cyfeirnod Unigryw y Trethdalwr ar gyfer Hunanasesiad (UTR)?
 subscription-journey.how-confirm-identity.utr.hint=Mae hwn yn cynnwys 10 rhif, er enghraifft 1234567890. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Hunanasesiad. Efallai y cyfeirir ato gan ddefnyddio’r geiriau '‘cyfeirnod’', '‘UTR’' neu '‘defnydd swyddogol’'.
 
 cds.reg06.outcome.eori-already-linked.info.utr = Nid yw Cyfeirnod Unigryw y Trethdalwr a nodwyd gennych, sef {0}, yn cyd-fynd â’n cofnodion ar gyfer rhif EORI {1}.
