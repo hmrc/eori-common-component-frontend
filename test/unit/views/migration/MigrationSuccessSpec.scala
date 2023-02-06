@@ -44,6 +44,6 @@ class MigrationSuccessSpec extends ViewSpec {
   }
 
   def doc(service: Service = atarService): Document =
-    Jsoup.parse(contentAsString(view(Some("GB1231233122"), "name", "", service)))
+    Jsoup.parse(contentAsString(view(Some("GB1231233122"), "name", "", "", service)))
 
 }

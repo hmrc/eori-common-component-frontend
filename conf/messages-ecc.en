@@ -72,7 +72,9 @@ cds.subscription.verify-email.para2=For your security the link in the email will
 
 cds.email-confirmed.para.get-access=You can continue with your application.
 
-cds.subscription.outcomes.success.will-send-email=We will send you an email when your subscription is ready to use. This can take up to 2 hours.
+cds.subscription.outcomes.success.will-send-email=We will process your application. This can take up to 2 hours.
+cds.subscription.outcomes.success.will-send-email.para2=We will then email you to let you know that the subscription is ready to use. At this point you can:
+
 
 cds.registration.you-already-have-eori.title=You already have an EORI
 cds.registration.you-already-have-eori.para1=We have detected you already have an EORI.  You can continue and subscribe to the the {0} service.

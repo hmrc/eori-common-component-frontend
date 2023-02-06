@@ -1025,6 +1025,15 @@ cds.subscription.outcomes.steps.Review=Review
 cds.subscription.outcomes.steps.Decision=Decision
 cds.subscription.outcomes.steps.Completed=Completed
 cds.subscription.outcomes.steps.next=What happens next
+cds.subscription.outcomes.steps.bullet2 = subscribe to more customs services
+
+cds.subscription.outcomes.steps.next.atar = <li>apply for an Advance Tariff Ruling</li>
+cds.subscription.outcomes.steps.next.gagmr = <li>get a goods movement reference (GMR)</li>
+cds.subscription.outcomes.steps.next.cts = <li>apply for repayment of import duty and VAT (CHIEF)</li><li>send documents for a customs check for declarations made in CHIEF</li><li>tell HMRC about an underpayment of Customs Duty or import VAT</li>
+cds.subscription.outcomes.steps.next.ss = <li>make entry summary declarations</li>
+cds.subscription.outcomes.steps.next.ncts = <li>submit union transit declarations through NCTS</li>
+cds.subscription.outcomes.steps.next.cds = <li>use the Customs Declaration Service</li>
+
 cds.subscription.outcomes.steps.why=Why am I seeing this?
 cds.subscription.outcomes.success.title=Application complete
 cds.subscription.outcomes.success.heading=The EORI number for {0} is
