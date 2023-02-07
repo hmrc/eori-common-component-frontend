@@ -44,7 +44,7 @@ cds.reg06.outcome.eori-already-linked.title=Nid yw’r manylion a roesoch i ni y
 cds.reg06.outcome.eori-already-linked.heading=Nid yw’r manylion a roesoch i ni yn cyd-fynd â’n cofnodion
 ecc.reg06.outcome.eori-already-linked.intro.text=Nid yw’r manylion a nodwyd gennych yn cyd-fynd â’n cofnodion ar gyfer rhif EORI {0}.
 cds.subscription.outcomes.eori-already-linked.use-cds-para1=Mae angen i chi fewngofnodi gyda manylion mewngofnodi {0} ar gyfer Porth y Llywodraeth, a ddefnyddiwyd i gael mynediad at {1}.
-cds.subscription.outcomes.you-will-not-be-able-to-use-service=
+cds.subscription.outcomes.you-will-not-be-able-to-use-service=Yna, byddwn yn anfon e-bost atoch i roi gwybod i chi bod y tanysgrifiad yn barod i’w ddefnyddio. Ar yr adeg hon, gallwch wneud y canlynol:
 
 ecc.reg06.outcome.id-already-linked.title=Mae’r manylion a roesoch i ni yn cyd-fynd â rhif EORI gwahanol
 ecc.reg06.outcome.id-already-linked.heading=Mae’r manylion a roesoch i ni yn cyd-fynd â rhif EORI gwahanol
@@ -72,7 +72,8 @@ cds.subscription.verify-email.para2=Er eich diogelwch, bydd y cysylltiad yn yr e
 
 cds.email-confirmed.para.get-access=Gallwch fynd yn eich blaen â’ch cais.
 
-cds.subscription.outcomes.success.will-send-email=Byddwn yn anfon e-bost atoch pan fydd eich tanysgrifiad yn barod i’w ddefnyddio. Gall hyn gymryd hyd at 2 awr.
+cds.subscription.outcomes.success.will-send-email=Byddwn yn prosesu’ch cais. Gall hyn gymryd hyd at 2 awr.
+cds.subscription.outcomes.success.will-send-email.para2=Yna, byddwn yn anfon e-bost atoch i roi gwybod i chi bod y tanysgrifiad yn barod i’w ddefnyddio. Ar yr adeg hon, gallwch wneud y canlynol:
 
 cds.registration.you-already-have-eori.title=Mae gennych EORI eisoes
 cds.registration.you-already-have-eori.para1=Rydym wedi canfod bod gennych EORI eisoes. Gallwch fynd yn eich blaen a thanysgrifio i’r gwasanaeth {0}.

@@ -22,7 +22,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(layout_di: layout, feedback_di: helpers.feedback, dateFormatter: DateFormatter, govukPanel : GovukPanel )
-@(eori: Option[String], name: String, processedDate: String, service: Service)(implicit messages: Messages, request: Request[_])
+@(eori: Option[String], name: String, processedDate: String, subscriptionTo: String, service: Service)(implicit messages: Messages, request: Request[_])
 
 @confirmationHtml = {
         <div class="govuk-!-font-size-27">
@@ -30,19 +30,31 @@
             <p  class="govuk-!-font-size-19"><strong>@messages("cds.reg.existing.outcomes.success.eori.number")<br><span id="eori-number">@eori</span></strong></p>
         </div>
 }
+
+
+
+
 @layout_di(messages("cds.mig.existing.outcomes.application-received.title"), displayBackLink = false) {
     <div>
         @govukPanel(Panel(
             title = Text(s"${messages("cds.reg.existing.outcomes.success.heading.part1")} $name"),
             content = HtmlContent(confirmationHtml)
         ))
+        <p class="govuk-body">
+            <a id="download-eori" class="govuk-link" href="@{s"/customs-enrolment-services/${service.code}/subscribe/download/text"}">@messages("cds.reg.existing.outcomes.success.download-eori-textfile")</a>
+        </p>
 
         <div id='additional-information'>
             <h2 class="govuk-heading-m">@messages("cds.subscription.outcomes.steps.next")</h2>
             <p class="govuk-body">@messages("cds.subscription.outcomes.success.will-send-email")</p>
-            <p class="govuk-body">
-                <a id="download-eori" class="govuk-link" href="@{s"/customs-enrolment-services/${service.code}/subscribe/download/text"}">@messages("cds.reg.existing.outcomes.success.download-eori-textfile")</a>
-            </p>
+            <p class="govuk-body">@messages("cds.subscription.outcomes.success.will-send-email.para2")</p>
+            <ul class="govuk-body">
+                @Html(messages(subscriptionTo))
+                <li>@messages("cds.subscription.outcomes.steps.bullet2")</li>
+            </ul>
+
+
+
         </div>
 
         @helpers.helpAndSupport()

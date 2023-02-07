@@ -59,22 +59,38 @@ class Sub02Controller @Inject() (
       }
   }
 
-  private def renderPageWithName(service: Service)(implicit request: Request[_]): Future[Result] =
+  private def renderPageWithName(service: Service)(implicit request: Request[_]): Future[Result] = {
+    val subscriptionTo = s"cds.subscription.outcomes.steps.next.${service.code}"
     for {
       sub02Outcome <- sessionCache.sub02Outcome
       _            <- sessionCache.remove
       _            <- sessionCache.saveSub02Outcome(sub02Outcome)
     } yield Ok(
-      migrationSuccessView(sub02Outcome.eori, sub02Outcome.fullName, sub02Outcome.processedDate, service)
+      migrationSuccessView(
+        sub02Outcome.eori,
+        sub02Outcome.fullName,
+        sub02Outcome.processedDate,
+        subscriptionTo,
+        service
+      )
     ).withSession(newUserSession)
+  }
 
-  private def renderPageWithNameRow(service: Service)(implicit request: Request[_]): Future[Result] =
+  private def renderPageWithNameRow(service: Service)(implicit request: Request[_]): Future[Result] = {
+    val subscriptionTo = s"cds.subscription.outcomes.steps.next.${service.code}"
     for {
       sub02Outcome <- sessionCache.sub02Outcome
       _            <- sessionCache.remove
       _            <- sessionCache.saveSub02Outcome(sub02Outcome)
     } yield Ok(
-      migrationSuccessView(sub02Outcome.eori, sub02Outcome.fullName, sub02Outcome.processedDate, service)
+      migrationSuccessView(
+        sub02Outcome.eori,
+        sub02Outcome.fullName,
+        sub02Outcome.processedDate,
+        subscriptionTo,
+        service
+      )
     ).withSession(newUserSession)
+  }
 
 }
