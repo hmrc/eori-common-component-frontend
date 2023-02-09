@@ -1,7 +1,7 @@
 cds.banner.registration=Get an EORI
 cds.banner.subscription=Subscribe to {0}
 
-ecc.subscription.enter-eori-number.heading=What is your GB Economic Operator Registration and Identification (EORI) number?
+ecc.subscription.enter-eori-number.heading=What is your EORI number?
 cds.subscription.enter-eori-number.no-eori.summary=I do not have an EORI number
 cds.subscription.enter-eori-number.no-eori=You should {0}
 cds.subscription.enter-eori-number.no-eori.link=apply for both a subscription and an EORI number

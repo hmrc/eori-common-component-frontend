@@ -36,6 +36,13 @@
     <a class="govuk-link" href=@appConfig.externalGetEORILink(service)>@messages("cds.subscription.enter-eori-number.no-eori.link")</a>
 }
 
+@hintTextMessage = {
+    <p class="govuk-body">@messages("ecc.subscription.enter-eori-number.hint.para1")</p>
+
+    <p class="govuk-body">@messages("ecc.subscription.enter-eori-number.hint")</p>
+
+}
+
 @detailsContent = {
     <p class="govuk-body">
     @Html(messages("cds.subscription.enter-eori-number.no-eori", getEoriLink))
@@ -58,7 +65,7 @@
                 name = "eori-number",
                 label = "ecc.subscription.enter-eori-number.heading",
                 isPageHeading = true,
-                hint = Some(Html(messages("ecc.subscription.enter-eori-number.hint"))),
+                hint = Some(hintTextMessage),
                 classes = Some("govuk-!-width-one-half"),
                 labelClasses = Some("govuk-label--l"),
                 spellcheck = Some(false),

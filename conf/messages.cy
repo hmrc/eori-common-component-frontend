@@ -429,6 +429,7 @@ cds.subscription.nino.error.wrong-length=Rhaid i’r rhif Yswiriant Gwladol fod 
 ecc.subscription.enter-eori-number.page.title=Beth yw’ch rhif EORI?
 ecc.subscription.enter-eori-number.heading=Beth yw’ch rhif EORI?
 ecc.subscription.enter-eori-number.hint=Mae’r rhif yn dechrau gyda GB ac yna’n cael ei ddilyn gan 12 digid, er enghraifft, GB345834921000.
+ecc.subscription.enter-eori-number.hint.para1 = Mae angen rhif EORI arnoch sy’n dechrau gyda GB os byddwch yn symud nwyddau i Brydain Fawr neu oddi yno.
 ecc.subscription.eori-number-invalid=Mae’r rhif EORI yn annilys
 ecc.subscription.eori-number-invalid.entered=Rydych wedi nodi:
 ecc.subscription.eori-number-invalid.does-not-match=Nid yw’r rhif EORI hwn sy’n dechrau gyda GB yn cyd-fynd â’n cofnodion.
