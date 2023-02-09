@@ -162,7 +162,7 @@ cds.registration.user-location.location.third-country-inc-eu.label=Rest of the w
 cds.matching.name-id-organisation.company.utr=Corporation Tax Unique Taxpayer Reference (UTR)
 cds.matching.name-id-organisation.registered-company.utr=Corporation Tax Unique Taxpayer Reference (UTR)
 cds.matching.name-id-organisation.partnership.utr=Partnership Self Assessment Unique Taxpayer Reference (UTR)
-cds.matching.name-id-organisation.organisation.utr=Organisation Self Assessment Unique Taxpayer Reference (UTR)
+cds.matching.name-id-organisation.organisation.utr=Corporation Tax Unique Taxpayer Reference (UTR)
 
 cds.subscription.date-of-establishment.company.title-and-heading=Date when the company was established
 
