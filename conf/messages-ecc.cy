@@ -1,7 +1,7 @@
 cds.banner.registration=Cael rhif EORI
 cds.banner.subscription=Tanysgrifio i {0}
 
-ecc.subscription.enter-eori-number.heading=Beth yw’ch rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI)?
+ecc.subscription.enter-eori-number.heading=Beth yw’ch rhif EORI?
 cds.subscription.enter-eori-number.no-eori.summary=Nid oes gennyf rif EORI
 cds.subscription.enter-eori-number.no-eori=Dylech {0}
 cds.subscription.enter-eori-number.no-eori.link=wneud cais am danysgrifiad a rhif EORI

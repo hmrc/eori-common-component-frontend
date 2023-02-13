@@ -41,21 +41,19 @@ class WhatIsYourEoriSpec extends ViewSpec {
 
     "display correct title" in {
 
-      doc().title must startWith("What is your GB Economic Operator Registration and Identification (EORI) number?")
+      doc().title must startWith("What is your EORI number?")
     }
 
     "have the correct heading text" in {
 
-      doc().body.getElementsByClass(
-        "govuk-label--l"
-      ).text() mustBe "What is your GB Economic Operator Registration and Identification (EORI) number?"
+      doc().body.getElementsByClass("govuk-label--l").text() mustBe "What is your EORI number?"
     }
 
     "have the correct text in the label" in {
 
       doc().body
         .getElementById("eori-number-hint")
-        .text() mustBe "The number starts with GB and is then followed by 12 digits, For example, GB345834921000."
+        .text() mustBe "You need an EORI number that starts with GB if you move goods to or from Great Britain. The number starts with GB and is then followed by 12 digits, For example, GB345834921000."
     }
 
     "have an input of type 'text'" in {
