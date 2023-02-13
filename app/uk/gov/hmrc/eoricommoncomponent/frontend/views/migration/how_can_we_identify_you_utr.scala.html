@@ -48,11 +48,11 @@
                 form = utrForm,
                 id = "utr",
                 name = "utr",
-                label = "",
-                isPageHeading = true,
+                label = "lost UTR link",
+                isPageHeading = false,
                 hint = Some(Html(messages("subscription-journey.how-confirm-identity.utr.hint"))),
                 classes = Some("govuk-!-width-one-half"),
-                labelClasses = Some("govuk-label govuk-label--l")
+                labelClasses = Some("govuk-visually-hidden")
             )
 
             @govukButton(Button(
