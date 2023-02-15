@@ -561,7 +561,7 @@ cds.matching.name-id-organisation.partnership.name.hint=Mae hwn ar eich tystysgr
 cds.matching.name-id-organisation.partnership.utr=Rhif Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad y Bartneriaeth
 cds.matching.name-id-organisation.organisation.name=Enw’r sefydliad
 cds.matching.name-id-organisation.organisation.name.hint=Mae hwn ar eich tystysgrif ymgorffori oddi wrth Dŷ’r Cwmnïau.
-cds.matching.name-id-organisation.organisation.utr=Rhif Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad y Sefydliad
+cds.matching.name-id-organisation.organisation.utr=Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)
 cds.matching.name-id-organisation.not-registered=Os nad ydych wedi’ch cofrestru ar gyfer Hunanasesiad, neu os yw’ch cofrestriad ar y gweill ac nid oes gennych Gyfeirnod Unigryw y Trethdalwr (UTR) eto, gallwch <a href="{0}" class="govuk-link">gofrestru gan ddefnyddio’ch enw a chyfeiriad</a> yn lle hynny.
 cds.matching.name-id-organisation.eu-organisation.name=Enw’r sefydliad cofrestredig
 cds.matching.name-id-organisation.eu-organisation.name.hint=Mae hwn ar eich tystysgrif ymgorffori oddi wrth Dŷ’r Cwmnïau.

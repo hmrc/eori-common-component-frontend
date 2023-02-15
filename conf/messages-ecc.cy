@@ -165,7 +165,7 @@ cds.registration.user-location.location.third-country-inc-eu.label=Gweddill y by
 cds.matching.name-id-organisation.company.utr=Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)
 cds.matching.name-id-organisation.registered-company.utr=Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)
 cds.matching.name-id-organisation.partnership.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad y Bartneriaeth
-cds.matching.name-id-organisation.organisation.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad y Sefydliad
+cds.matching.name-id-organisation.organisation.utr=Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)
 
 cds.subscription.date-of-establishment.company.title-and-heading=Dyddiad y sefydlwyd y cwmni
 

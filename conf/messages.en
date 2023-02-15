@@ -638,7 +638,7 @@ cds.matching.name-id-organisation.partnership.name.hint=This is on your certific
 cds.matching.name-id-organisation.partnership.utr=Partnership Self Assessment Unique Taxpayer Reference (UTR) number
 cds.matching.name-id-organisation.organisation.name=Organisation name
 cds.matching.name-id-organisation.organisation.name.hint=This is on your certificate of incorporation from Companies House.
-cds.matching.name-id-organisation.organisation.utr=Organisation Self Assessment Unique Taxpayer Reference (UTR) number
+cds.matching.name-id-organisation.organisation.utr=Corporation Tax Unique Taxpayer Reference (UTR)
 cds.matching.name-id-organisation.not-registered=If you are not registered for Self Assessment, or if your registration is in progress and you do not yet have a UTR, you can <a href="{0}" class="govuk-link">register using your name and address</a> instead.
 cds.matching.name-id-organisation.eu-organisation.name=Registered organisation name
 cds.matching.name-id-organisation.eu-organisation.name.hint=This is on your certificate of incorporation from Companies House.
