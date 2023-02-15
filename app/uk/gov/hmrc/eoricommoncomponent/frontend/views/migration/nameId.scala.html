@@ -32,7 +32,7 @@
 )(implicit request: Request[_], messages: Messages)
 
 @headerAndTitle = @{
-    if(displayMode=="partnership") messages("cds.matching.header.partnership")
+    if(displayMode=="partnership" || displayMode=="Llp-partnership") messages("cds.matching.header.partnership")
     else if(displayMode=="registered-company") messages("cds.matching.header.company")
     else messages("cds.matching.header")
 }
@@ -49,7 +49,7 @@
 @utrHintAndLinkText = {
     <br>
     <p class="govuk-body">
-        You can <a class="govuk-link" id="utrLink" href=@appConfig.findLostUtr() target="_blank" rel="noopener noreferrer">@messages("cds.matching.utr.lost-utr-description")</a>
+        @Html(messages("cds.matching.you-can.text")) <a class="govuk-link" id="utrLink" href=@appConfig.findLostUtr() target="_blank" rel="noopener noreferrer">@messages("cds.matching.utr.lost-utr-description")</a>
     </p>
 @messages(utrHintText)
 }
