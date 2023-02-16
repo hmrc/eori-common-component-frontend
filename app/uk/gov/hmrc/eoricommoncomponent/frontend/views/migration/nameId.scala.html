@@ -21,6 +21,7 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.helper.CSRF
+@import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameIdOrganisationDisplayMode._
 
 @this(layout_di: layout, inputText: helpers.inputText,  errorSummary: helpers.errorSummary, govukButton: GovukButton, appConfig: AppConfig)
 
@@ -32,17 +33,17 @@
 )(implicit request: Request[_], messages: Messages)
 
 @headerAndTitle = @{
-    if(displayMode=="partnership" || displayMode=="Llp-partnership") messages("cds.matching.header.partnership")
-    else if(displayMode=="registered-company") messages("cds.matching.header.company")
+    if(displayMode==PartnershipDM || displayMode==PartnershipLLP) messages("cds.matching.header.partnership")
+    else if(displayMode==RegisteredCompanyDM) messages("cds.matching.header.company")
     else messages("cds.matching.header")
 }
 
 @nameHintText = @{
-    if(displayMode=="partnership") ""
+    if(displayMode==PartnershipDM) ""
     else messages(s"cds.matching.name-id-organisation.$displayMode.name.hint")
 }
 @utrHintText = @{
-    if(displayMode=="partnership") messages("cds.matching.partnership.utr.hint")
+    if(displayMode==PartnershipDM) messages("cds.matching.partnership.utr.hint")
     else messages("cds.matching.utr.hint")
 }
 
