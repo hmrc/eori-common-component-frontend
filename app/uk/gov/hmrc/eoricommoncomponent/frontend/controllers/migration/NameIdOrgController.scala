@@ -188,7 +188,7 @@ class NameIDOrgController @Inject() (
     Map(
       CdsOrganisationType.CompanyId                     -> UtrConfiguration("Corporate Body", displayMode = RegisteredCompanyDM),
       CdsOrganisationType.PartnershipId                 -> UtrConfiguration("Partnership", displayMode = PartnershipDM),
-      CdsOrganisationType.LimitedLiabilityPartnershipId -> UtrConfiguration("LLP", displayMode = PartnershipDM),
+      CdsOrganisationType.LimitedLiabilityPartnershipId -> UtrConfiguration("LLP", displayMode = PartnershipLLpDM),
       CdsOrganisationType.CharityPublicBodyNotForProfitId -> UtrConfiguration(
         "Unincorporated Body",
         displayMode = OrganisationModeDM,
@@ -203,4 +203,5 @@ object NameIdOrganisationDisplayMode {
   val CompanyDM           = "company"
   val PartnershipDM       = "partnership"
   val OrganisationModeDM  = "organisation"
+  val PartnershipLLpDM    = "limited-liability-partnership"
 }

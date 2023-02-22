@@ -33,7 +33,7 @@
 )(implicit request: Request[_], messages: Messages)
 
 @headerAndTitle = @{
-    if(displayMode==PartnershipDM) messages("cds.matching.header.partnership")
+    if(displayMode==PartnershipDM || displayMode==PartnershipLLpDM) messages("cds.matching.header.partnership")
     else if(displayMode==RegisteredCompanyDM) messages("cds.matching.header.company")
     else messages("cds.matching.header")
 }

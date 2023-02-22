@@ -337,6 +337,7 @@ cds.skip-link=Skip to main content
 cds.matching.individual.title=Enter your details
 cds.matching.header=What are your organisation details?
 cds.matching.header.partnership=What are your partnership details?
+
 cds.matching.header.company=What are your company details?
 cds.matching.intro=This will link your business, Government Gateway ID and EORI number together which helps you move and declare goods.
 cds.matching.individual.header=Enter your details
@@ -634,11 +635,14 @@ cds.matching.name-id-organisation.registered-company.name=Registered company nam
 cds.matching.name-id-organisation.registered-company.name.hint=This is on your certificate of incorporation from Companies House.
 cds.matching.name-id-organisation.registered-company.utr=Corporation Tax Unique Taxpayer Reference (UTR) number
 cds.matching.name-id-organisation.partnership.name=Registered partnership name
+cds.matching.name-id-organisation.limited-liability-partnership.name = Registered partnership name
 cds.matching.name-id-organisation.partnership.name.hint=This is on your certificate of incorporation from Companies House.
 cds.matching.name-id-organisation.partnership.utr=Partnership Self Assessment Unique Taxpayer Reference (UTR) number
 cds.matching.name-id-organisation.organisation.name=Organisation name
+cds.matching.name-id-organisation.limited-liability-partnership.utr = Corporation Tax Unique Taxpayer Reference (UTR)
 cds.matching.name-id-organisation.organisation.name.hint=This is on your certificate of incorporation from Companies House.
 cds.matching.name-id-organisation.registered-partnership.name.hint= Enter the exact name that you registered with HMRC. We will use this to verify your identity. <br><br> You can find this name on documents from HMRC. For example, a confirmation of your partnership registration.
+cds.matching.name-id-organisation.limited-liability-partnership.name.hint = This is on your certificate of incorporation from Companies House.
 cds.matching.name-id-organisation.organisation.utr=Corporation Tax Unique Taxpayer Reference (UTR)
 cds.matching.name-id-organisation.not-registered=If you are not registered for Self Assessment, or if your registration is in progress and you do not yet have a UTR, you can <a href="{0}" class="govuk-link">register using your name and address</a> instead.
 cds.matching.name-id-organisation.eu-organisation.name=Registered organisation name
