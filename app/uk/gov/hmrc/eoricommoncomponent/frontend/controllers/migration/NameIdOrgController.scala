@@ -132,14 +132,14 @@ class NameIDOrgController @Inject() (
   private def populateOkView(
     nameUtrViewModel: Option[NameIdOrganisationMatchModel],
     organisationType: String,
-    conf: NameIdOrgViewModel,
+    nameIdOrgViewMode: NameIdOrgViewModel,
     isInReviewMode: Boolean,
     service: Service
   )(implicit request: Request[AnyContent]): Future[Result] = {
 
     lazy val nameUtrForm = nameUtrViewModel.fold(form)(form.fill)
     sessionCache.registrationDetails map { registrationDetails =>
-      Ok(nameIdView(nameUtrForm, registrationDetails, isInReviewMode, conf.displayMode, service))
+      Ok(nameIdView(nameUtrForm, registrationDetails, isInReviewMode, nameIdOrgViewMode.displayMode, service))
     }
   }
 
