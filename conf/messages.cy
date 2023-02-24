@@ -555,16 +555,16 @@ cds.matching.name-id-organisation.company.name=Enw’r cwmni
 cds.matching.name-id-organisation.company.name.hint=Mae hwn ar eich tystysgrif ymgorffori oddi wrth Dŷ’r Cwmnïau.
 cds.matching.name-id-organisation.company.utr=Rhif Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth
 cds.matching.name-id-organisation.registered-company.name=Enw’r cwmni cofrestredig
-cds.matching.name-id-organisation.registered-company.name.hint=Nodwch yr union enw sydd ar dystysgrif ymgorffori eich cwmni. Byddwn yn defnyddio hwn i gadarnhau pwy ydych. <br><br><p class="govuk-body">Gallwch hefyd gael yr enw hwn o <a class="govuk-link" href="https://beta.companieshouse.gov.uk/">gofrestr Tŷ’r Cwmnïau (yn agor tab newydd).</a></p>
+cds.matching.name-id-organisation.registered-company.name.hint=<p class="govuk-body">Byddwn yn defnyddio hwn i gadarnhau pwy ydych. Gallwch gael yr enw o <a class="govuk-link" href="https://beta.companieshouse.gov.uk/">gofrestr Tŷ'’'r Cwmnïau (yn agor tab newydd).</a></p>Nodwch yr union enw sydd ar dystysgrif ymgorffori eich cwmni.
 cds.matching.name-id-organisation.registered-company.utr=Rhif Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth
 cds.matching.name-id-organisation.Llp-partnership.name=Enw’r bartneriaeth gofrestredig
-cds.matching.name-id-organisation.Llp-partnership.name.hint=Nodwch yr union enw sydd ar dystysgrif ymgorffori’r bartneriaeth. Byddwn yn defnyddio hwn i gadarnhau pwy ydych. <br><br><p class="govuk-body">Gallwch hefyd gael yr enw hwn o <a class="govuk-link" href="https://beta.companieshouse.gov.uk/">gofrestr Tŷ’r Cwmnïau (yn agor tab newydd).</a></p>
+cds.matching.name-id-organisation.Llp-partnership.name.hint=<p class="govuk-body">Byddwn yn defnyddio hwn i gadarnhau pwy ydych. Gallwch gael yr enw o <a class="govuk-link" href="https://beta.companieshouse.gov.uk/">gofrestr Tŷ'’'r Cwmnïau (yn agor tab newydd).</a></p>Nodwch yr union enw sydd ar dystysgrif ymgorffori’r bartneriaeth.
 cds.matching.name-id-organisation.Llp-partnership.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth
 cds.matching.name-id-organisation.partnership.name=Enw’r bartneriaeth gofrestredig
 cds.matching.name-id-organisation.partnership.name.hint=Mae hwn ar eich tystysgrif ymgorffori oddi wrth Dŷ’r Cwmnïau.
 cds.matching.name-id-organisation.partnership.utr=Rhif Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad y Bartneriaeth
 cds.matching.name-id-organisation.organisation.name=Enw’r sefydliad
-cds.matching.name-id-organisation.organisation.name.hint=Nodwch yr union enw sydd ar dystysgrif ymgorffori eich sefydliad. Byddwn yn defnyddio hwn i gadarnhau pwy ydych. <br><br><p class="govuk-body">Gallwch hefyd gael yr enw hwn o <a class="govuk-link" href="https://beta.companieshouse.gov.uk/">gofrestr Tŷ’r Cwmnïau (yn agor tab newydd).</a></p>
+cds.matching.name-id-organisation.organisation.name.hint=<p class="govuk-body">Byddwn yn defnyddio hwn i gadarnhau pwy ydych. Gallwch gael yr enw o <a class="govuk-link" href="https://beta.companieshouse.gov.uk/">gofrestr Tŷ'’'r Cwmnïau (yn agor tab newydd).</a></p>Nodwch yr union enw sydd ar dystysgrif ymgorffori eich sefydliad.
 cds.matching.name-id-organisation.organisation.utr=Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)
 cds.matching.name-id-organisation.not-registered=Os nad ydych wedi’ch cofrestru ar gyfer Hunanasesiad, neu os yw’ch cofrestriad ar y gweill ac nid oes gennych Gyfeirnod Unigryw y Trethdalwr (UTR) eto, gallwch <a href="{0}" class="govuk-link">gofrestru gan ddefnyddio’ch enw a chyfeiriad</a> yn lle hynny.
 cds.matching.name-id-organisation.eu-organisation.name=Enw’r sefydliad cofrestredig
