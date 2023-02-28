@@ -409,16 +409,21 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     }
   }
 
-  "UtrConfiguration returns correct NameIdOrgViewModel" should {
+  "UtrConfiguration returns correct Configuration" should {
 
     "for RegExistingEoriLimitedCompanyId" in {
-      val cfg = controller.NameIdOrgViewModel("Corporate Body", displayMode = RegisteredCompanyDM)
+      val cfg = controller.UtrConfiguration("Corporate Body", displayMode = RegisteredCompanyDM)
       cfg.matchingServiceType shouldBe "Corporate Body"
       cfg.displayMode shouldBe "registered-company"
       cfg.isNameAddressRegistrationAvailable shouldBe false
       cfg.form shouldBe nameUtrOrganisationForm
     }
 
+    "will create a customs id" in {
+      val cfg = controller.UtrConfiguration("Corporate Body", displayMode = RegisteredCompanyDM)
+      val utr = cfg.createCustomsId("1234567890")
+      utr shouldBe Utr("1234567890")
+    }
   }
 
   "invalidOrganisationType returns correct message" should {
