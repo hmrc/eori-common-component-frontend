@@ -23,7 +23,7 @@ class SessionTimeoutSpec extends UnitSpec with Injector {
 
   private val configuration = instanceOf[Configuration]
 
-  "Configuration" should {
+  "NameIdOrgViewModel" should {
 
     "have 20 min session timeout" in {
 

@@ -557,10 +557,14 @@ cds.matching.name-id-organisation.registered-company.name=Enw’r cwmni cofrestr
 cds.matching.name-id-organisation.registered-company.name.hint=Mae hwn ar eich tystysgrif ymgorffori oddi wrth Dŷ’r Cwmnïau.
 cds.matching.name-id-organisation.registered-company.utr=Rhif Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth
 cds.matching.name-id-organisation.partnership.name=Enw’r bartneriaeth gofrestredig
-cds.matching.name-id-organisation.partnership.name.hint=Mae hwn ar eich tystysgrif ymgorffori oddi wrth Dŷ’r Cwmnïau.
+cds.matching.name-id-organisation.partnership.name.hint=Mae hwn ar eich tystysgrif ymgorffori oddi wrth Dŷ'’'r Cwmnïau.
 cds.matching.name-id-organisation.partnership.utr=Rhif Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad y Bartneriaeth
-cds.matching.name-id-organisation.organisation.name=Enw’r sefydliad
-cds.matching.name-id-organisation.organisation.name.hint=Mae hwn ar eich tystysgrif ymgorffori oddi wrth Dŷ’r Cwmnïau.
+cds.matching.name-id-organisation.organisation.name=Enw'’'r sefydliad
+cds.matching.name-id-organisation.organisation.name.hint=Mae hwn ar eich tystysgrif ymgorffori oddi wrth Dŷ'’'r Cwmnïau.
+cds.matching.name-id-organisation.limited-liability-partnership.name = Enw'’'r bartneriaeth gofrestredig
+cds.matching.name-id-organisation.limited-liability-partnership.name.hint = Mae hyn ar eich tystysgrif ymgorffori oddi wrth Dŷ'’'r Cwmnïau.
+cds.matching.name-id-organisation.registered-partnership.name.hint=Nodwch yr union enw y gwnaethoch ei gofrestru gyda CThEF. Byddwn yn defnyddio hwn i gadarnhau pwy ydych. <br><br> Gallwch ddod o hyd i'’'r enw hwn ar ddogfennau gan CThEF. Er enghraifft, cadarnhad o gofrestriad eich partneriaeth
+cds.matching.name-id-organisation.limited-liability-partnership.utr = Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth
 cds.matching.name-id-organisation.organisation.utr=Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)
 cds.matching.name-id-organisation.not-registered=Os nad ydych wedi’ch cofrestru ar gyfer Hunanasesiad, neu os yw’ch cofrestriad ar y gweill ac nid oes gennych Gyfeirnod Unigryw y Trethdalwr (UTR) eto, gallwch <a href="{0}" class="govuk-link">gofrestru gan ddefnyddio’ch enw a chyfeiriad</a> yn lle hynny.
 cds.matching.name-id-organisation.eu-organisation.name=Enw’r sefydliad cofrestredig
