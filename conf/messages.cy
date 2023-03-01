@@ -560,6 +560,9 @@ cds.matching.name-id-organisation.registered-company.utr=Rhif Cyfeirnod Unigryw 
 cds.matching.name-id-organisation.Llp-partnership.name=Enw’r bartneriaeth gofrestredig
 cds.matching.name-id-organisation.Llp-partnership.name.hint=<p class="govuk-body">Byddwn yn defnyddio hwn i gadarnhau pwy ydych. Gallwch gael yr enw o <a class="govuk-link" href="https://beta.companieshouse.gov.uk/">gofrestr Tŷ'’'r Cwmnïau (yn agor tab newydd).</a></p>Nodwch yr union enw sydd ar dystysgrif ymgorffori’r bartneriaeth.
 cds.matching.name-id-organisation.Llp-partnership.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth
+
+cds.matching.name-id-organisation.registered-partnership.name.hint = Nodwch yr union enw y gwnaethoch ei gofrestru gyda CThEF. Byddwn yn defnyddio hwn i gadarnhau pwy ydych. <br><br> Gallwch ddod o hyd i'’'r enw hwn ar ddogfennau gan CThEF. Er enghraifft, cadarnhad o gofrestriad eich partneriaeth
+
 cds.matching.name-id-organisation.partnership.name=Enw’r bartneriaeth gofrestredig
 cds.matching.name-id-organisation.partnership.name.hint=Mae hwn ar eich tystysgrif ymgorffori oddi wrth Dŷ’r Cwmnïau.
 cds.matching.name-id-organisation.partnership.utr=Rhif Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad y Bartneriaeth
