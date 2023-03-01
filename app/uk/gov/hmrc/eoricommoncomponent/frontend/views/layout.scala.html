@@ -43,7 +43,8 @@
         countriesInCountryPicker: CountriesInCountryPicker = NoCountriesInCountryPicker,
         form: Option[Form[_]] = None,
         suppressTelephoneNumberDetection: Boolean = true,
-        displayBackLink: Boolean = true
+        displayBackLink: Boolean = true,
+        userResearchBanner: Boolean = true
 )(content: Html)(implicit messages: Messages, request: Request[_])
 
 @isLoggedIn = @{
@@ -129,6 +130,7 @@
 }
 
 @hmrcLayout(
+    userResearchBannerUrl = if(userResearchBanner) Some(appConfig.userResearchBannerUrl) else None,
     pageTitle = Some(titleErr),
     isWelshTranslationAvailable = true, /* or false if your service has not been translated */
     serviceUrl = Some(serviceUrl),
