@@ -50,7 +50,7 @@ class NameIDOrgController @Inject() (
   authAction: AuthAction,
   subscriptionBusinessService: SubscriptionBusinessService,
   requestSessionData: RequestSessionData,
-  cdsFrontendDataCache: SessionCache,
+  sessionCache: SessionCache,
   subscriptionFlowManager: SubscriptionFlowManager,
   mcc: MessagesControllerComponents,
   nameIdView: nameId,
@@ -107,7 +107,7 @@ class NameIDOrgController @Inject() (
       form.bindFromRequest
         .fold(
           formWithErrors =>
-            cdsFrontendDataCache.registrationDetails map { registrationDetails =>
+            sessionCache.registrationDetails map { registrationDetails =>
               val selectedOrganisationType =
                 requestSessionData.userSelectedOrganisationType.map(_.id)
               selectedOrganisationType match {
@@ -132,14 +132,14 @@ class NameIDOrgController @Inject() (
   private def populateOkView(
     nameUtrViewModel: Option[NameIdOrganisationMatchModel],
     organisationType: String,
-    conf: Configuration,
+    nameIdOrgViewMode: NameIdOrgViewModel,
     isInReviewMode: Boolean,
     service: Service
   )(implicit request: Request[AnyContent]): Future[Result] = {
 
     lazy val nameUtrForm = nameUtrViewModel.fold(form)(form.fill)
-    cdsFrontendDataCache.registrationDetails map { registrationDetails =>
-      Ok(nameIdView(nameUtrForm, registrationDetails, isInReviewMode, conf.displayMode, service))
+    sessionCache.registrationDetails map { registrationDetails =>
+      Ok(nameIdView(nameUtrForm, registrationDetails, isInReviewMode, nameIdOrgViewMode.displayMode, service))
     }
   }
 
@@ -164,32 +164,24 @@ class NameIDOrgController @Inject() (
             )
       )
 
-  trait Configuration {
-    def matchingServiceType: String
-    def displayMode: String
-    def isNameAddressRegistrationAvailable: Boolean
-    def form: Form[NameIdOrganisationMatchModel]
-    def createCustomsId(id: String): CustomsId
-  }
-
-  case class UtrConfiguration(
+  case class NameIdOrgViewModel(
     matchingServiceType: String,
     displayMode: String,
     isNameAddressRegistrationAvailable: Boolean = false
-  ) extends Configuration {
+  ) {
     lazy val form: Form[NameIdOrganisationMatchModel] = nameUtrOrganisationForm
-    def createCustomsId(utr: String): Utr             = Utr(utr)
+
   }
 
   def invalidOrganisationType(organisationType: String): Any =
     s"Invalid organisation type '$organisationType'."
 
-  private val OrganisationTypeConfigurations: Map[String, Configuration] =
+  private val OrganisationTypeConfigurations: Map[String, NameIdOrgViewModel] =
     Map(
-      CdsOrganisationType.CompanyId                     -> UtrConfiguration("Corporate Body", displayMode = RegisteredCompanyDM),
-      CdsOrganisationType.PartnershipId                 -> UtrConfiguration("Partnership", displayMode = PartnershipDM),
-      CdsOrganisationType.LimitedLiabilityPartnershipId -> UtrConfiguration("LLP", displayMode = PartnershipDM),
-      CdsOrganisationType.CharityPublicBodyNotForProfitId -> UtrConfiguration(
+      CdsOrganisationType.CompanyId                     -> NameIdOrgViewModel("Corporate Body", displayMode = RegisteredCompanyDM),
+      CdsOrganisationType.PartnershipId                 -> NameIdOrgViewModel("Partnership", displayMode = PartnershipDM),
+      CdsOrganisationType.LimitedLiabilityPartnershipId -> NameIdOrgViewModel("LLP", displayMode = PartnershipLLP),
+      CdsOrganisationType.CharityPublicBodyNotForProfitId -> NameIdOrgViewModel(
         "Unincorporated Body",
         displayMode = OrganisationModeDM,
         isNameAddressRegistrationAvailable = true
@@ -203,4 +195,5 @@ object NameIdOrganisationDisplayMode {
   val CompanyDM           = "company"
   val PartnershipDM       = "partnership"
   val OrganisationModeDM  = "organisation"
+  val PartnershipLLP      = "Llp-partnership"
 }

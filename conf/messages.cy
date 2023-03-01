@@ -317,7 +317,8 @@ cds.matching.individual.header=Nodwch eich manylion
 cds.matching-lede=Byddwn yn ceisio paru’ch manylion â’r wybodaeth sydd gennym ar hyn o bryd.
 cds.matching.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890, a gellir ei ddilyn gan K. Bydd hwn ar Ffurflenni Treth a llythyrau eraill am Dreth Gorfforaeth. Efallai y cyfeirir ato gan ddefnyddio’r geiriau “cyfeirnod”, “UTR” neu “defnydd swyddogol”.
 cds.matching.utr.find-lost-utr.hint=ddod o hyd i UTR sydd ar goll {0}.
-cds.matching.utr.lost-utr-description=find a lost UTR
+cds.matching.you-can.text=Gallwch
+cds.matching.utr.lost-utr-description=dod o hyd i UTR sydd ar goll
 cds.matching.partnership.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890, a gellir ei ddilyn gan K. Bydd hwn i’w weld ar Ffurflenni Treth partneriaeth a llythyrau eraill ynghylch eich partneriaeth. Efallai y cyfeirir ato gan ddefnyddio’r geiriau “cyfeirnod”, “UTR” neu “defnydd swyddogol”.
 cds.matching.eori.hint=Mae gan eich rhif EORI rhwng 14 ac 17 o gymeriadau.
 cds.matching.back=Yn ôl
@@ -554,13 +555,19 @@ cds.matching.name-id-organisation.company.name=Enw’r cwmni
 cds.matching.name-id-organisation.company.name.hint=Mae hwn ar eich tystysgrif ymgorffori oddi wrth Dŷ’r Cwmnïau.
 cds.matching.name-id-organisation.company.utr=Rhif Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth
 cds.matching.name-id-organisation.registered-company.name=Enw’r cwmni cofrestredig
-cds.matching.name-id-organisation.registered-company.name.hint=Mae hwn ar eich tystysgrif ymgorffori oddi wrth Dŷ’r Cwmnïau.
+cds.matching.name-id-organisation.registered-company.name.hint=<p class="govuk-body">Byddwn yn defnyddio hwn i gadarnhau pwy ydych. Gallwch gael yr enw o <a class="govuk-link" href="https://beta.companieshouse.gov.uk/">gofrestr Tŷ'’'r Cwmnïau (yn agor tab newydd).</a></p>Nodwch yr union enw sydd ar dystysgrif ymgorffori eich cwmni.
 cds.matching.name-id-organisation.registered-company.utr=Rhif Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth
+cds.matching.name-id-organisation.Llp-partnership.name=Enw’r bartneriaeth gofrestredig
+cds.matching.name-id-organisation.Llp-partnership.name.hint=<p class="govuk-body">Byddwn yn defnyddio hwn i gadarnhau pwy ydych. Gallwch gael yr enw o <a class="govuk-link" href="https://beta.companieshouse.gov.uk/">gofrestr Tŷ'’'r Cwmnïau (yn agor tab newydd).</a></p>Nodwch yr union enw sydd ar dystysgrif ymgorffori’r bartneriaeth.
+cds.matching.name-id-organisation.Llp-partnership.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth
+
+cds.matching.name-id-organisation.registered-partnership.name.hint = Nodwch yr union enw y gwnaethoch ei gofrestru gyda CThEF. Byddwn yn defnyddio hwn i gadarnhau pwy ydych. <br><br> Gallwch ddod o hyd i'’'r enw hwn ar ddogfennau gan CThEF. Er enghraifft, cadarnhad o gofrestriad eich partneriaeth
+
 cds.matching.name-id-organisation.partnership.name=Enw’r bartneriaeth gofrestredig
 cds.matching.name-id-organisation.partnership.name.hint=Mae hwn ar eich tystysgrif ymgorffori oddi wrth Dŷ’r Cwmnïau.
 cds.matching.name-id-organisation.partnership.utr=Rhif Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad y Bartneriaeth
 cds.matching.name-id-organisation.organisation.name=Enw’r sefydliad
-cds.matching.name-id-organisation.organisation.name.hint=Mae hwn ar eich tystysgrif ymgorffori oddi wrth Dŷ’r Cwmnïau.
+cds.matching.name-id-organisation.organisation.name.hint=<p class="govuk-body">Byddwn yn defnyddio hwn i gadarnhau pwy ydych. Gallwch gael yr enw o <a class="govuk-link" href="https://beta.companieshouse.gov.uk/">gofrestr Tŷ'’'r Cwmnïau (yn agor tab newydd).</a></p>Nodwch yr union enw sydd ar dystysgrif ymgorffori eich sefydliad.
 cds.matching.name-id-organisation.organisation.utr=Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)
 cds.matching.name-id-organisation.not-registered=Os nad ydych wedi’ch cofrestru ar gyfer Hunanasesiad, neu os yw’ch cofrestriad ar y gweill ac nid oes gennych Gyfeirnod Unigryw y Trethdalwr (UTR) eto, gallwch <a href="{0}" class="govuk-link">gofrestru gan ddefnyddio’ch enw a chyfeiriad</a> yn lle hynny.
 cds.matching.name-id-organisation.eu-organisation.name=Enw’r sefydliad cofrestredig

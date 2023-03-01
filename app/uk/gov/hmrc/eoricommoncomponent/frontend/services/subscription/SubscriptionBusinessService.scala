@@ -28,80 +28,80 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SubscriptionBusinessService @Inject() (cdsFrontendDataCache: SessionCache)(implicit ec: ExecutionContext) {
+class SubscriptionBusinessService @Inject() (sessionCache: SessionCache)(implicit ec: ExecutionContext) {
 
   def cachedContactDetailsModel(implicit request: Request[_]): Future[Option[ContactDetailsModel]] =
-    cdsFrontendDataCache.subscriptionDetails map (_.contactDetails)
+    sessionCache.subscriptionDetails map (_.contactDetails)
 
   def getCachedDateEstablished(implicit request: Request[_]): Future[LocalDate] =
-    cdsFrontendDataCache.subscriptionDetails map {
+    sessionCache.subscriptionDetails map {
       _.dateEstablished.getOrElse(throw DataUnavailableException("No Date Of Establishment Cached"))
     }
 
   def maybeCachedDateEstablished(implicit request: Request[_]): Future[Option[LocalDate]] =
-    cdsFrontendDataCache.subscriptionDetails map (_.dateEstablished)
+    sessionCache.subscriptionDetails map (_.dateEstablished)
 
   def cachedEoriNumber(implicit request: Request[_]): Future[Option[String]] =
-    cdsFrontendDataCache.subscriptionDetails map (_.eoriNumber)
+    sessionCache.subscriptionDetails map (_.eoriNumber)
 
   def addressOrException(implicit request: Request[_]): Future[AddressViewModel] =
-    cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
+    sessionCache.subscriptionDetails map { subscriptionDetails =>
       subscriptionDetails.addressDetails.getOrElse(throw DataUnavailableException("No Address Details Cached"))
     }
 
   def address(implicit request: Request[_]): Future[Option[AddressViewModel]] =
-    cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
+    sessionCache.subscriptionDetails map { subscriptionDetails =>
       subscriptionDetails.addressDetails
     }
 
   def contactAddress(implicit request: Request[_]): Future[Option[ContactAddressModel]] =
-    cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
+    sessionCache.subscriptionDetails map { subscriptionDetails =>
       subscriptionDetails.contactAddress
     }
 
   def getCachedNameIdViewModel(implicit request: Request[_]): Future[NameIdOrganisationMatchModel] =
-    cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
+    sessionCache.subscriptionDetails map { subscriptionDetails =>
       subscriptionDetails.nameIdOrganisationDetails.getOrElse(
         throw DataUnavailableException("No Name/Utr/Id Details Cached")
       )
     }
 
   def getCachedNameViewModel(implicit request: Request[_]): Future[NameOrganisationMatchModel] =
-    cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
+    sessionCache.subscriptionDetails map { subscriptionDetails =>
       subscriptionDetails.nameOrganisationDetails.getOrElse(throw DataUnavailableException("No Name Cached"))
     }
 
   def cachedNameIdOrganisationViewModel(implicit request: Request[_]): Future[Option[NameIdOrganisationMatchModel]] =
-    cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
+    sessionCache.subscriptionDetails map { subscriptionDetails =>
       subscriptionDetails.nameIdOrganisationDetails
     }
 
   def cachedNameOrganisationViewModel(implicit request: Request[_]): Future[Option[NameOrganisationMatchModel]] =
-    cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
+    sessionCache.subscriptionDetails map { subscriptionDetails =>
       subscriptionDetails.nameOrganisationDetails
     }
 
   def getCachedSubscriptionNameDobViewModel(implicit request: Request[_]): Future[NameDobMatchModel] =
-    cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
+    sessionCache.subscriptionDetails map { subscriptionDetails =>
       subscriptionDetails.nameDobDetails.getOrElse(throw DataUnavailableException("No Name/Dob Details Cached"))
     }
 
   def cachedSubscriptionNameDobViewModel(implicit request: Request[_]): Future[Option[NameDobMatchModel]] =
-    cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
+    sessionCache.subscriptionDetails map { subscriptionDetails =>
       subscriptionDetails.nameDobDetails
     }
 
   def getCachedCustomsId(implicit request: Request[_]): Future[Option[CustomsId]] =
-    cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
+    sessionCache.subscriptionDetails map { subscriptionDetails =>
       subscriptionDetails.customsId
     }
 
   def getCachedNinoOrUtrChoice(implicit request: Request[_]): Future[Option[String]] =
-    cdsFrontendDataCache.subscriptionDetails map { subscriptionDetails =>
+    sessionCache.subscriptionDetails map { subscriptionDetails =>
       subscriptionDetails.formData.ninoOrUtrChoice
     }
 
   def retrieveSubscriptionDetailsHolder(implicit request: Request[_]): Future[SubscriptionDetails] =
-    cdsFrontendDataCache.subscriptionDetails
+    sessionCache.subscriptionDetails
 
 }
