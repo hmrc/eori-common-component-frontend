@@ -1035,7 +1035,7 @@ cds.subscription.outcomes.steps.bullet2 = subscribe to more customs services
 
 
 cds.subscription.outcomes.steps.next.ars = <li>apply for an Advance Tariff Ruling</li> <li>apply for an Advance Valuation Ruling </li>
-cds.subscription.outcomes.steps.next.atar = <li>apply for an Advance Tariff Ruling</li> <li>apply for an Advance Valuation Ruling </li>
+cds.subscription.outcomes.steps.next.atar = <li>apply for an Advance Tariff Ruling</li>
 cds.subscription.outcomes.steps.next.gagmr = <li>get a goods movement reference (GMR)</li>
 cds.subscription.outcomes.steps.next.cts = <li>apply for repayment of import duty and VAT (CHIEF)</li><li>send documents for a customs check for declarations made in CHIEF</li><li>tell HMRC about an underpayment of Customs Duty or import VAT</li>
 cds.subscription.outcomes.steps.next.route1 = <li>apply for repayment of import duty and VAT (CHIEF)</li><li>send documents for a customs check for declarations made in CHIEF</li><li>tell HMRC about an underpayment of Customs Duty or import VAT</li>
@@ -1429,3 +1429,13 @@ confirm-contact-details.address-text=Is this address correct?
 confirm-contact-details.yes=Yes, this address is correct
 confirm-contact-details.no=No, I want to change the address
 confirm-contact-details.page-error.yes-no-answer=Confirm your address details
+
+
+cds.subscription.outcomes.steps.next.new.ars = <li>apply for an Advance Tariff Ruling</li> <li>apply for an Advance Valuation Ruling </li>
+cds.subscription.outcomes.steps.next.new.atar = <li>apply for an Advance Tariff Ruling</li> <li>apply for an Advance Valuation Ruling </li>
+cds.subscription.outcomes.steps.next.new.gagmr = <li>get a goods movement reference (GMR)</li>
+cds.subscription.outcomes.steps.next.new.cts = <li>apply for repayment of import duty and VAT (CHIEF)</li><li>send documents for a customs check for declarations made in CHIEF</li><li>tell HMRC about an underpayment of Customs Duty or import VAT</li>
+cds.subscription.outcomes.steps.next.new.route1 = <li>apply for repayment of import duty and VAT (CHIEF)</li><li>send documents for a customs check for declarations made in CHIEF</li><li>tell HMRC about an underpayment of Customs Duty or import VAT</li>
+cds.subscription.outcomes.steps.next.new.gbss = <li>make entry summary declarations</li>
+cds.subscription.outcomes.steps.next.new.ctc = <li>submit union transit declarations through NCTS</li>
+cds.subscription.outcomes.steps.next.new.cds = <li>use the Customs Declaration Service</li>

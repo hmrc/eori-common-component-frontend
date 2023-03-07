@@ -23,6 +23,7 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{AnyContent, Request, Result, Session}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.FeatureFlags
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
@@ -44,6 +45,7 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
   private val mockRequestSessionData         = mock[RequestSessionData]
   private val mockSessionCache               = mock[SessionCache]
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
+  private val mockFeatureFlag                = mock[FeatureFlags]
 
   private val migrationSuccessView = instanceOf[migration_success]
 
@@ -53,7 +55,8 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
     mockSessionCache,
     mockSubscriptionDetailsService,
     mcc,
-    migrationSuccessView
+    migrationSuccessView,
+    mockFeatureFlag
   )(global)
 
   val eoriNumberResponse: String                = "EORI-Number"
