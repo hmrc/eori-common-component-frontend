@@ -908,7 +908,8 @@ cds.subscription.outcomes.steps.Completed=Wedi cwblhau
 cds.subscription.outcomes.steps.next=Yr hyn sy’n digwydd nesaf
 cds.subscription.outcomes.steps.bullet2 =tanysgrifio i ragor o wasanaethau tollau
 
-cds.subscription.outcomes.steps.next.atar= <li>Gwneud cais am Ddyfarniad Tariffau Uwch</li>
+cds.subscription.outcomes.steps.next.ars= <li>Gwneud cais am Ddyfarniad Tariffau Uwch</li> <li>Gwneud cais am Ddyfarniad Prisio Uwch</li>
+cds.subscription.outcomes.steps.next.atar= <li>Gwneud cais am Ddyfarniad Tariffau Uwch</li> <li>Gwneud cais am Ddyfarniad Prisio Uwch</li>
 cds.subscription.outcomes.steps.next.gagmr = <li>Cael cyfeirnod symud nwyddau</li>
 cds.subscription.outcomes.steps.next.cts = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
 cds.subscription.outcomes.steps.next.route1 = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'''r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
