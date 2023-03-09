@@ -441,6 +441,7 @@ ecc.subscription.eori-number-invalid-not-activated-title=Nid yw’r rhif EORI we
 ecc.subscription.eori-number-invalid-not-activated-body=Yr amser aros cyfartalog ar gyfer actifadu rhif EORI newydd yw 30 munud, ond gall gymryd hyd at 48 awr mewn rhai achosion. Ar ôl i’ch rhif EORI gael ei actifadu, cewch hysbysiad drwy e-bost. Gallwch fynd yn ôl a pharhau â’ch cais ar gyfer {0}.
 ecc.subscription.eori-number-invalid-try-again=Rhowch gynnig arall arni
 
+ecc.subscription.information.titleAndHeading.ars = Tanysgrifio i ddyfarniadau uwch
 ecc.subscription.information.titleAndHeading.gagmr=Tanysgrifio i’r Gwasanaeth Symud Cerbydau Nwyddau
 ecc.subscription.information.titleAndHeading.atar=Tanysgrifio i Ddyfarniadau Tariffau Uwch
 ecc.subscription.information.titleAndHeading.route1=Tanysgrifio i Wasanaethau Masnachwyr Tollau
