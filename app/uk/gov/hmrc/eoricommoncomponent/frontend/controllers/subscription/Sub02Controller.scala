@@ -16,8 +16,9 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
+import com.fasterxml.jackson.annotation.JsonFormat.Feature
 import play.api.mvc._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, FeatureFlags}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, EnrolmentExtractor}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -41,7 +42,8 @@ class Sub02Controller @Inject() (
   sessionCache: SessionCache,
   subscriptionDetailsService: SubscriptionDetailsService,
   mcc: MessagesControllerComponents,
-  migrationSuccessView: migration_success
+  migrationSuccessView: migration_success,
+  featureFlags: FeatureFlags
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) with EnrolmentExtractor {
 
@@ -60,7 +62,9 @@ class Sub02Controller @Inject() (
   }
 
   private def renderPageWithName(service: Service)(implicit request: Request[_]): Future[Result] = {
-    val subscriptionTo = s"cds.subscription.outcomes.steps.next.${service.code}"
+    val subscriptionTo =
+      if (featureFlags.arsNewJourney) s"cds.subscription.outcomes.steps.next.new.${service.code}"
+      else s"cds.subscription.outcomes.steps.next.${service.code}"
     for {
       sub02Outcome <- sessionCache.sub02Outcome
       _            <- sessionCache.remove
@@ -77,7 +81,9 @@ class Sub02Controller @Inject() (
   }
 
   private def renderPageWithNameRow(service: Service)(implicit request: Request[_]): Future[Result] = {
-    val subscriptionTo = s"cds.subscription.outcomes.steps.next.${service.code}"
+    val subscriptionTo =
+      if (featureFlags.arsNewJourney) s"cds.subscription.outcomes.steps.next.new.${service.code}"
+      else s"cds.subscription.outcomes.steps.next.${service.code}"
     for {
       sub02Outcome <- sessionCache.sub02Outcome
       _            <- sessionCache.remove

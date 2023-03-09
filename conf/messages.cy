@@ -909,6 +909,7 @@ cds.subscription.outcomes.steps.Completed=Wedi cwblhau
 cds.subscription.outcomes.steps.next=Yr hyn sy’n digwydd nesaf
 cds.subscription.outcomes.steps.bullet2 =tanysgrifio i ragor o wasanaethau tollau
 
+cds.subscription.outcomes.steps.next.ars= <li>Gwneud cais am Ddyfarniad Tariffau Uwch</li> <li>Gwneud cais am Ddyfarniad Prisio Uwch</li>
 cds.subscription.outcomes.steps.next.atar= <li>Gwneud cais am Ddyfarniad Tariffau Uwch</li>
 cds.subscription.outcomes.steps.next.gagmr = <li>Cael cyfeirnod symud nwyddau</li>
 cds.subscription.outcomes.steps.next.cts = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
@@ -1271,3 +1272,12 @@ confirm-contact-details.address-text=A yw’r cyfeiriad hwn yn gywir?
 confirm-contact-details.yes=Ydy, mae’r cyfeiriad hwn yn gywir
 confirm-contact-details.no=Nac ydy, hoffwn newid y cyfeiriad
 confirm-contact-details.page-error.yes-no-answer=Cadarnhau manylion eich cyfeiriad
+
+cds.subscription.outcomes.steps.next.new.ars= <li>Gwneud cais am Ddyfarniad Tariffau Uwch</li> <li>Gwneud cais am Ddyfarniad Prisio Uwch</li>
+cds.subscription.outcomes.steps.next.new.atar= <li>Gwneud cais am Ddyfarniad Tariffau Uwch</li> <li>Gwneud cais am Ddyfarniad Prisio Uwch</li>
+cds.subscription.outcomes.steps.next.new.gagmr = <li>Cael cyfeirnod symud nwyddau</li>
+cds.subscription.outcomes.steps.next.new.cts = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
+cds.subscription.outcomes.steps.next.new.route1 = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'''r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
+cds.subscription.outcomes.steps.next.new.gbss = <li>gwneud datganiad cryno wrth gyrraedd</li>
+cds.subscription.outcomes.steps.next.new.ctc = <li>cyflwyno datganiadau ‘Cludo yn yr Undeb’ trwy ddefnyddio’r System Gludo Gyfrifiadurol Newydd (NCTS)</li>
+cds.subscription.outcomes.steps.next.new.cds = <li>defnyddio’r Gwasanaeth Datganiadau Tollau</li>
