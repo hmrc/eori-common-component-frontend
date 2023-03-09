@@ -60,12 +60,14 @@ class HowCanWeIdentifyYouUtrController @Inject() (
         populateView(service, isInReviewMode = true)
     }
 
-  private def populateView(service: Service, isInReviewMode: Boolean)(implicit request: Request[_]) =
+  private def populateView(service: Service, isInReviewMode: Boolean)(implicit request: Request[AnyContent]) =
     subscriptionBusinessService.getCachedCustomsId.map {
       case Some(Utr(id)) =>
         Ok(
           howCanWeIdentifyYouView(
             subscriptionUtrForm.fill(IdMatchModel(id)),
+            getHeadingMessage.getOrElse("subscription-journey.how-confirm-identity.utr.heading"),
+            getHintMessage.getOrElse("subscription-journey.how-confirm-identity.utr.hint"),
             isInReviewMode,
             routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service)
           )
@@ -74,6 +76,8 @@ class HowCanWeIdentifyYouUtrController @Inject() (
         Ok(
           howCanWeIdentifyYouView(
             subscriptionUtrForm,
+            getHeadingMessage.getOrElse("subscription-journey.how-confirm-identity.utr.heading"),
+            getHintMessage.getOrElse("subscription-journey.how-confirm-identity.utr.hint"),
             isInReviewMode,
             routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service)
           )
@@ -90,6 +94,8 @@ class HowCanWeIdentifyYouUtrController @Inject() (
               BadRequest(
                 howCanWeIdentifyYouView(
                   invalidForm,
+                  getHeadingMessage.getOrElse("subscription-journey.how-confirm-identity.utr.heading"),
+                  getHintMessage.getOrElse("subscription-journey.how-confirm-identity.utr.hint"),
                   isInReviewMode,
                   routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service)
                 )
@@ -115,5 +121,19 @@ class HowCanWeIdentifyYouUtrController @Inject() (
               subscriptionFlowManager.stepInformation(HowCanWeIdentifyYouSubscriptionFlowPage).nextPage.url(service)
             )
       )
+
+  private def getHintMessage()(implicit request: Request[AnyContent]) =
+    requestSessionData.userSelectedOrganisationType.map(
+      orgType =>
+        if (orgType == CdsOrganisationType.Company) "cds.matching.row-organisation.utr.hint"
+        else "subscription-journey.how-confirm-identity.utr.hint"
+    )
+
+  private def getHeadingMessage()(implicit request: Request[AnyContent]) =
+    requestSessionData.userSelectedOrganisationType.map(
+      orgType =>
+        if (orgType == CdsOrganisationType.Company) "subscription-journey.how-confirm-identity.utr.third-org.heading"
+        else "subscription-journey.how-confirm-identity.utr.heading"
+    )
 
 }

@@ -26,18 +26,18 @@
 
 @this(layout_di: layout, inputText: helpers.inputText, errorSummary: helpers.errorSummary, appConfig: AppConfig, govukButton: GovukButton)
 
-@(utrForm: Form[IdMatchModel], isInReviewMode: Boolean, submit: Call)(implicit request: Request[_], messages: Messages)
+@(utrForm: Form[IdMatchModel], headingText: String, hintText: String, isInReviewMode: Boolean, submit: Call)(implicit request: Request[_], messages: Messages)
 
 @forWelshLink = @{
-    if(messages.lang.code == "cy") <p class="govuk-body"><a href="https://www.gov.uk/find-utr-number" class="govuk-link" target="_blank" rel="noopener noreferrer">Mae modd dod o hyd i UTR sydd ar goll.</a></p>
-    else <p class="govuk-body">You can <a href="https://www.gov.uk/find-utr-number" class="govuk-link" target="_blank" rel="noopener noreferrer">find a lost UTR</a></p>
+    if(messages.lang.code == "cy") <p class="govuk-body"><a href="https://www.gov.uk/find-utr-number" class="govuk-link" target="_blank" rel="noopener noreferrer">Mae modd dod o hyd i UTR sydd ar goll (yn agor tab newydd)</a></p>
+    else <p class="govuk-body">You can <a href="https://www.gov.uk/find-utr-number" class="govuk-link" target="_blank" rel="noopener noreferrer">find a lost UTR (opens in a new tab)</a></p>
 
 
 }
 
-@layout_di(messages("subscription-journey.how-confirm-identity.utr.heading"), form = Some(utrForm)) {
+@layout_di(messages(headingText), form = Some(utrForm)) {
     <div>
-        <h1 class="govuk-heading-l">@messages("subscription-journey.how-confirm-identity.utr.heading")</h1>
+        <h1 class="govuk-heading-l">@messages(headingText)</h1>
         @errorSummary(utrForm.errors)
 
         @helpers.form(submit, "utrForm") {
@@ -50,7 +50,7 @@
                 name = "utr",
                 label = "lost UTR link",
                 isPageHeading = false,
-                hint = Some(Html(messages("subscription-journey.how-confirm-identity.utr.hint"))),
+                hint = Some(Html(messages(hintText))),
                 classes = Some("govuk-!-width-one-half"),
                 labelClasses = Some("govuk-visually-hidden")
             )
