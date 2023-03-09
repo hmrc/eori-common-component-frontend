@@ -492,6 +492,7 @@ ecc.matching-error.gbeori.wrong-length.too-long=The EORI number must be 17 chara
 ecc.matching-error.eori.not-gb=Enter an EORI number that starts with GB
 ecc.what-is-your-eori.page-error.eori-number=Enter your EORI number
 
+ecc.subscription.information.titleAndHeading.ars = Subscribe to advance rulings
 ecc.subscription.information.titleAndHeading.gagmr=Subscribe to the Goods Vehicle Movement Service
 ecc.subscription.information.titleAndHeading.atar=Subscribe to Advance Tariff Rulings
 ecc.subscription.information.titleAndHeading.route1=Subscribe to Customs Trader Services
