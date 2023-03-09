@@ -69,7 +69,13 @@ class HowCanWeIdentifyYouUtrSpec extends ViewSpec {
 
   lazy val doc: Document = Jsoup.parse(
     contentAsString(
-      view(form, isInReviewMode, routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, atarService))
+      view(
+        form,
+        "subscription-journey.how-confirm-identity.utr.heading",
+        "subscription-journey.how-confirm-identity.utr.hint",
+        isInReviewMode,
+        routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, atarService)
+      )
     )
   )
 
@@ -78,6 +84,8 @@ class HowCanWeIdentifyYouUtrSpec extends ViewSpec {
       contentAsString(
         view(
           formWithNothingEntered,
+          "subscription-journey.how-confirm-identity.utr.heading",
+          "subscription-journey.how-confirm-identity.utr.hint",
           isInReviewMode,
           routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, atarService)
         )

@@ -86,7 +86,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
       createForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should include("What is your Self Assessment Unique Taxpayer Reference (UTR)?")
+        page.title should include("What is your Corporation Tax Unique Taxpayer Reference (UTR)?")
       }
     }
 
@@ -124,7 +124,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
       createForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should include("What is your Self Assessment Unique Taxpayer Reference (UTR)?")
+        page.title should include("What is your Corporation Tax Unique Taxpayer Reference (UTR)?")
         page.getElementValue("//*[@id='utr']") shouldBe "1111111111K"
       }
     }
@@ -139,7 +139,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
       reviewForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should include("What is your Self Assessment Unique Taxpayer Reference (UTR)?")
+        page.title should include("What is your Corporation Tax Unique Taxpayer Reference (UTR)?")
       }
     }
 

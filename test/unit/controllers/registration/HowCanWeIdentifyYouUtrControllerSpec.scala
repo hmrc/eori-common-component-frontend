@@ -76,6 +76,9 @@ class HowCanWeIdentifyYouUtrControllerSpec extends ControllerSpec with BeforeAnd
       .thenReturn(Future.successful(()))
     when(mockSubscriptionBusinessService.getCachedCustomsId(any[Request[AnyContent]]))
       .thenReturn(Future.successful(None))
+    when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(
+      Some(CdsOrganisationType.Company)
+    )
 
     when(
       mockSubscriptionFlowManager.stepInformation(ArgumentMatchers.eq(HowCanWeIdentifyYouSubscriptionFlowPage))(
