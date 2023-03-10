@@ -37,14 +37,23 @@
 
 @intro = @{
         if(organisationType == CdsOrganisationType.SoleTraderId | organisationType == CdsOrganisationType.IndividualId) messages("cds.matching.row-sole-trader-individual.utr.paragraph")
+    
 }
-@utrlink = {
-    <p>@messages("cds.navigation.opens-new-page")
-        <a href="@appConfig.findLostUtr" class="govuk-link" target="_blank" rel="noopener noreferrer">@messages("cds.matching.row-lost-urt.hint.link")</a></p>
+@utrlink = @{
+    organisationType match {
+        case CdsOrganisationType.SoleTraderId | CdsOrganisationType.IndividualId => Html(messages(""))
+        case _ => hintlinkOrganisation
+    }
+    }
+
+@hintlinkOrganisation = {
+    <p>@messages("cds.navigation.opens-new-page")<a href="@appConfig.findLostUtr" class="govuk-link" target="_blank" rel="noopener noreferrer">
+        @messages("cds.matching.row-lost-urt.hint.link")</a></p>
 }
+    
 @utrHelp = @{
     organisationType match {
-        case CdsOrganisationType.SoleTraderId | CdsOrganisationType.IndividualId => Html(messages("cds.matching.row-sole-trader-individual.utr.hint"))
+        case CdsOrganisationType.SoleTraderId | CdsOrganisationType.IndividualId => Html(messages(""))
         case _ => Html(messages("cds.matching.row-organisation.utr.hint"))
     }
 }

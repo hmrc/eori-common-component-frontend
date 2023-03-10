@@ -64,9 +64,7 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
     "have correct intro" in {
       individualDoc.body
         .getElementById("have-utr-hint")
-        .text must include(
-        "You will have a self assessment UTR number if you registered for Self Assessment in the UK."
-      )
+        .text must include("You will have a Self Assessment UTR if you registered for Self Assessment in the UK.")
     }
 
   }
