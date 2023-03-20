@@ -26,6 +26,8 @@ import util.TestData
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration.{Duration, DurationInt, FiniteDuration}
 
+import scala.language.postfixOps
+
 trait UnitSpec extends AnyWordSpec with Matchers with TestData {
 
   // Convenience to avoid having to wrap andThen() parameters in Future.successful
