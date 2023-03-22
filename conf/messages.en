@@ -674,6 +674,9 @@ cds.matching-error.business-details.company-name.isEmpty=Enter your registered c
 cds.matching-error.business-details.company-name.too-long=The company name must be 105 characters or less
 
 cds.matching.organisation.name.title=What is your registered organisation name?
+cds.matching.organisation.name.para= We will use this to verify your identity.
+cds.matching.organisation.name.para.hint = Enter the exact name you used when you applied for an EORI number.
+
 cds.matching.organisation.name.label=Organisation name
 cds.matching.organisation.name.heading=What is your registered organisation name?
 cds.matching.organisation-name.error.name=Enter your registered organisation name
