@@ -1299,8 +1299,8 @@ cds.subscription.contact-details.form-error.use-registered-address=Tell us if th
 
 #text file messages
 cds.subscription.text-download.hmrc=HM Revenue & Customs
-cds.subscription.text-download.registered=is registered for {0}
-cds.subscription.text-download.active=Active from
+cds.subscription.text-download.registered=Subscription request received for {0}
+cds.subscription.text-download.active=issued by HMRC on
 cds.subscription.text-download.eori=EORI number:
 
 cds.contact-details.page-error.telephone.isEmpty=Enter your contact telephone number
