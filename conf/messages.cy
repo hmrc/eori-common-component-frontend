@@ -639,6 +639,9 @@ cds.matching.nino.date-of-birth=Dyddiad geni
 cds.matching.id.page-error.nino-text-field=Nodwch eich rhif Yswiriant Gwladol
 cds.matching.id.page-error.utr-text-field=Nodwch eich Cyfeirnod Unigryw y Trethdalwr (UTR)
 cds.subscription.nino.utr.invalid=Rhowch wybod sut y gallwn eich adnabod
+
+cds.matching.individual.hint=Mae’n rhaid i’r enw a nodwyd gennych fod yr un enw a ddefnyddioch ar gyfer eich cais am rif EORI.
+cds.matching.individual.hint-description=Byddwn yn defnyddio hwn i gadarnhau pwy ydych.
 cds.matching.individual.first-name=Enw cyntaf
 cds.matching.individual.given-name=Enw a roddwyd
 cds.matching.individual.middle-name=Enw canol

@@ -51,6 +51,10 @@
         @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.submit(isInReviewMode, service), "subscriptionNameDobForm") {
         @CSRF.formField
 
+            <p class="govuk-hint" id="hint">@Html(messages("cds.matching.individual.hint"))</p>
+
+            <p class="govuk-body" id="hint-description">@Html(messages("cds.matching.individual.hint-description"))</p>
+
             @inputText(
                 form = subscriptionNameDobForm,
                 id = "first-name",
