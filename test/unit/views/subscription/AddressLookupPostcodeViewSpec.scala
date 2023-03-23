@@ -94,19 +94,16 @@ class AddressLookupPostcodeViewSpec extends ViewSpec {
       ).text() mustBe "This is the address registered with Companies House which may not be your business address."
     }
 
-    "display default hint" in {
-
-      doc(SoleTrader).body().getElementById("hint").text() mustBe "This may not be your business address."
-    }
-
     "display postcode input with label" in {
 
-      doc().body().getElementsByClass("govuk-label postcode").text() mustBe "Postcode"
+      doc().body().getElementsByClass("govuk-label govuk-!-font-weight-bold postcode").text() mustBe "Postcode"
     }
 
     "display line 1 input with label" in {
 
-      doc().body().getElementsByClass("govuk-label line1").text() mustBe "Property name or number (optional)"
+      doc().body().getElementsByClass(
+        "govuk-label govuk-!-font-weight-bold"
+      ).text() mustBe "Property name or number (optional)"
     }
 
     "display Find Address button" in {

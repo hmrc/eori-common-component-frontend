@@ -45,10 +45,24 @@
 }
 
 @formHint = {
-    @if(selectedOrganisationType.id == CompanyId) {
-        <p class="govuk-hint" id="hint">@Html(messages("ecc.address-lookup.postcode.organisation.hint"))</p>
+    @if(selectedOrganisationType.id == PartnershipId) {
+        <p class="govuk-hint" id="hint">@Html(messages("ecc.address-lookup.postcode.partnership.hint.text"))</p>
+
     } else {
-        <p class="govuk-hint" id="hint">@Html(messages("ecc.address-lookup.postcode.default.hint"))</p>
+        <p class="govuk-hint" id="hint">@Html(messages("ecc.address-lookup.postcode.organisation.hint"))</p>
+
+    }
+}
+
+@hintTextForPostcode = @{
+    if(selectedOrganisationType.id == CompanyId) {
+        messages("ecc.address-lookup.postcode.hint.company")
+    } else if(selectedOrganisationType.id == LimitedLiabilityPartnershipId) {
+        messages("ecc.address-lookup.postcode.hint.llp")
+    } else if(selectedOrganisationType.id == CharityPublicBodyNotForProfitId) {
+        messages("ecc.address-lookup.postcode.hint.organisation")
+    } else {
+        messages("ecc.address-lookup.postcode.hint.partnership")
     }
 }
 
@@ -70,6 +84,7 @@
 
             @CSRF.formField
 
+
             @formHint
             @inputText(
                 form = addressPostcodeForm,
@@ -77,8 +92,9 @@
                 name = "postcode",
                 label = "ecc.address-lookup.postcode.label",
                 isPageHeading = false,
+                hint = Some(Html(hintTextForPostcode)),
                 classes = Some("govuk-!-width-one-half"),
-                labelClasses = Some("postcode")
+                labelClasses = Some("govuk-!-font-weight-bold postcode")
             )
             @inputText(
                 form = addressPostcodeForm,
@@ -88,7 +104,7 @@
                 hint = Some(Html(messages("ecc.address-lookup.postcode.line1.hint"))),
                 isPageHeading = false,
                 classes = Some("govuk-!-width-one-half"),
-                labelClasses = Some("line1")
+                labelClasses = Some("govuk-!-font-weight-bold")
             )
 
             @govukButton(Button(
