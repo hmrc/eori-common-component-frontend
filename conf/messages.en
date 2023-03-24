@@ -1093,7 +1093,7 @@ cds.reg.existing.outcomes.success.heading.part2=the Customs Declaration Service
 cds.reg.existing.outcomes.success.eori.number=EORI number:
 cds.reg.existing.outcomes.success.download-eori=Download a PDF with your registration details (40kb)
 cds.reg.existing.outcomes.success.download-eori.21kb=Download a PDF with your registration details (21kb)
-cds.reg.existing.outcomes.success.download-eori-textfile=Download an accessible text file with your registration details (1 kb)
+cds.reg.existing.outcomes.success.download-eori-textfile=Download a text file of your subscription request (1 kb)
 cds.mig.existing.outcomes.application-received.title=Application received
 
 # Enrolment Already Exists

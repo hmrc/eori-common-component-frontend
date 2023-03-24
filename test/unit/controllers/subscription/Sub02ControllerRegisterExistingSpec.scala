@@ -139,7 +139,7 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
             "We will process your application. This can take up to 2 hours."
           )
           page.getElementsText(RegistrationCompletePage.DownloadEoriLinkXpath) should include(
-            "Download an accessible text file with your registration details (1 kb)"
+            "Download a text file of your subscription request (1 kb)"
           )
           page.getElementsHref(RegistrationCompletePage.DownloadEoriLinkXpath) should endWith(
             "/customs-enrolment-services/atar/subscribe/download/text"
