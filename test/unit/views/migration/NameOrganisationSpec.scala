@@ -38,7 +38,7 @@ class NameOrganisationSpec extends ViewSpec {
 
   "Match Organisation Name page" should {
     "display correct title" in {
-      doc.title() must startWith("What is your registered organisation name?")
+      doc.title() must startWith("What is the name of your organisation?")
     }
     "have the correct h1 text" in {
       doc.body().getElementsByTag("h1").text() mustBe "What is your registered organisation name?"

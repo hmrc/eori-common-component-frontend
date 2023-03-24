@@ -23,7 +23,7 @@ trait OrganisationNamePage extends WebPage {
   val labelForName        = "//*label[@for='name']"
   val labelForNameOuter   = "//*[@id='name-outer']//label"
 
-  override val title = "What is your registered organisation name?"
+  override val title = "What is the name of your organisation?"
 
 }
 
