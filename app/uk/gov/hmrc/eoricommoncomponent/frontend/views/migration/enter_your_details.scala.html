@@ -21,6 +21,8 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.DateConverter
 @import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NameDobMatchModel
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper
+@import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
 @this(govukDateInput : GovukDateInput,  errorSummary: helpers.errorSummary, layout_di: layout, h1: helpers.h1,inputText: helpers.inputText, inputDate: helpers.inputDate, govukButton: GovukButton)
 
@@ -51,41 +53,42 @@
         @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameDobSoleTraderController.submit(isInReviewMode, service), "subscriptionNameDobForm") {
         @CSRF.formField
 
+        @if(UserLocation.isRow(selectedUserLocationWithIslands.getOrElse(""))){
             <p class="govuk-hint" id="hint">@Html(messages("cds.matching.individual.hint"))</p>
-
             <p class="govuk-body" id="hint-description">@Html(messages("cds.matching.individual.hint-description"))</p>
+        }
 
-            @inputText(
-                form = subscriptionNameDobForm,
-                id = "first-name",
-                name = "first-name",
-                label = firstNameLabel,
-                isPageHeading = false,
-                autocomplete = Some("given-name"),
-                spellcheck =  Some(false),
-                classes = Some("govuk-!-width-one-half"),
-                labelClasses = Some("first-name")
-            )
+        @inputText(
+            form = subscriptionNameDobForm,
+            id = "first-name",
+            name = "first-name",
+            label = firstNameLabel,
+            isPageHeading = false,
+            autocomplete = Some("given-name"),
+            spellcheck =  Some(false),
+            classes = Some("govuk-!-width-one-half"),
+            labelClasses = Some("first-name")
+        )
 
-            @inputText(
-                form = subscriptionNameDobForm,
-                id = "last-name",
-                name = "last-name",
-                label = lastNameLabel,
-                isPageHeading = false,
-                autocomplete = Some("family-name"),
-                spellcheck =  Some(false),
-                classes = Some("govuk-!-width-one-half"),
-                labelClasses = Some("last-name")
-            )
+        @inputText(
+            form = subscriptionNameDobForm,
+            id = "last-name",
+            name = "last-name",
+            label = lastNameLabel,
+            isPageHeading = false,
+            autocomplete = Some("family-name"),
+            spellcheck =  Some(false),
+            classes = Some("govuk-!-width-one-half"),
+            labelClasses = Some("last-name")
+        )
 
-            @inputDate(updateFormErrors,Some("cds.matching.individual.what-is-your-date-of-birth"), hintText = Some(Html(messages("cds.date-of-birth.hint"))), id = "date-of-birth", legendAsPageHeading= false,legendClasses = Some("govuk-!-font-weight-bold"))
+        @inputDate(updateFormErrors,Some("cds.matching.individual.what-is-your-date-of-birth"), hintText = Some(Html(messages("cds.date-of-birth.hint"))), id = "date-of-birth", legendAsPageHeading= false,legendClasses = Some("govuk-!-font-weight-bold"))
 
-            @govukButton(Button(
-                content = Text(ViewHelper.continueButtonText(isInReviewMode))
-            ))
+        @govukButton(Button(
+            content = Text(ViewHelper.continueButtonText(isInReviewMode))
+        ))
 
-            @helpers.helpAndSupport()
+        @helpers.helpAndSupport()
         }
     </div>
 }
