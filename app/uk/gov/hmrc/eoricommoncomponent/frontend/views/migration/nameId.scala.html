@@ -41,7 +41,10 @@
 @nameHintText = @{
     if(displayMode==PartnershipDM) messages("cds.matching.name-id-organisation.registered-partnership.name.hint")
     else messages(s"cds.matching.name-id-organisation.$displayMode.name.hint")
+
 }
+
+
 @utrHintText = @{
     if(displayMode==PartnershipDM) messages("cds.matching.partnership.utr.hint")
     else messages("cds.matching.utr.hint")
