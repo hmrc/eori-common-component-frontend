@@ -633,17 +633,17 @@ cds.matching.name-id-organisation.company.name=Company name
 cds.matching.name-id-organisation.company.name.hint=This is on your certificate of incorporation from Companies House.
 cds.matching.name-id-organisation.company.utr=Corporation Tax Unique Taxpayer Reference (UTR) number
 cds.matching.name-id-organisation.registered-company.name=Registered company name
-cds.matching.name-id-organisation.registered-company.name.hint=<p class="govuk-body">We will use this to verify your identity. You can get the name from the <a class="govuk-link" href="https://beta.companieshouse.gov.uk/">Companies House register (opens in new tab).</a></p>Enter the exact name that'''s on your company'’'s certificate of incorporation.
+cds.matching.name-id-organisation.registered-company.name.hint=<p class="govuk-body">We will use this to verify your identity. You can get the name from the <a class="govuk-link" href="https://beta.companieshouse.gov.uk/" target="_blank">Companies House register (opens in new tab).</a></p>Enter the exact name that'''s on your company'’'s certificate of incorporation.
 cds.matching.name-id-organisation.registered-company.utr=Corporation Tax Unique Taxpayer Reference (UTR) number
 cds.matching.name-id-organisation.partnership.name=Registered partnership name
 cds.matching.name-id-organisation.Llp-partnership.name=Registered partnership name
-cds.matching.name-id-organisation.Llp-partnership.name.hint=<p class="govuk-body">We will use this to verify your identity. You can get the name from the <a class="govuk-link" href="https://beta.companieshouse.gov.uk/">Companies House register (opens in new tab).</a></p> Enter the exact name that'''s on your partnership'’'s certificate of incorporation.
+cds.matching.name-id-organisation.Llp-partnership.name.hint=<p class="govuk-body">We will use this to verify your identity. You can get the name from the <a class="govuk-link" href="https://beta.companieshouse.gov.uk/" target="_blank">Companies House register (opens in new tab).</a></p> Enter the exact name that'''s on your partnership'’'s certificate of incorporation.
 cds.matching.name-id-organisation.registered-partnership.name.hint= Enter the exact name that you registered with HMRC. We will use this to verify your identity. <br><br> You can find this name on documents from HMRC. For example, a confirmation of your partnership registration.
 cds.matching.name-id-organisation.partnership.name.hint=This is on your certificate of incorporation from Companies House.
 cds.matching.name-id-organisation.partnership.utr=Partnership Self Assessment Unique Taxpayer Reference (UTR) number
 cds.matching.name-id-organisation.Llp-partnership.utr = Corporation Tax Unique Taxpayer Reference (UTR)
 cds.matching.name-id-organisation.organisation.name=Organisation name
-cds.matching.name-id-organisation.organisation.name.hint=<p class="govuk-body">We will use this to verify your identity. You can get this name from the <a class="govuk-link" href="https://beta.companieshouse.gov.uk/">Companies House register (opens in new tab).</a></p>Enter the exact name that'''s on your organisation'’'s certificate of incorporation.
+cds.matching.name-id-organisation.organisation.name.hint=<p class="govuk-body">We will use this to verify your identity. You can get this name from the <a class="govuk-link" href="https://beta.companieshouse.gov.uk/" target="_blank">Companies House register (opens in new tab).</a></p>Enter the exact name that'''s on your organisation'’'s certificate of incorporation.
 cds.matching.name-id-organisation.organisation.utr=Corporation Tax Unique Taxpayer Reference (UTR)
 cds.matching.name-id-organisation.not-registered=If you are not registered for Self Assessment, or if your registration is in progress and you do not yet have a UTR, you can <a href="{0}" class="govuk-link">register using your name and address</a> instead.
 cds.matching.name-id-organisation.eu-organisation.name=Registered organisation name
@@ -1444,8 +1444,8 @@ cds.subscription.outcomes.steps.next.new.gbss = <li>make entry summary declarati
 cds.subscription.outcomes.steps.next.new.ctc = <li>submit union transit declarations through NCTS</li>
 cds.subscription.outcomes.steps.next.new.cds = <li>use the Customs Declaration Service</li>
 
-ecc.address-lookup.postcode.hint.company = <p class="govuk-body">We will use this to verify your identity. You can get the postcode from the <a href="https://beta.companieshouse.gov.uk/">Companies House register (opens in new tab).</a></p> Enter the postcode that's on the company’s certificate of incorporation.
-ecc.address-lookup.postcode.hint.llp = <p class="govuk-body">We will use this to verify your identity. You can get the postcode from the <a href="https://beta.companieshouse.gov.uk/">Companies House register (opens in new tab).</a></p> Enter the postcode that's on the partnership’s certificate of incorporation.
-ecc.address-lookup.postcode.hint.organisation =<p class="govuk-body">We will use this to verify your identity. You can get the postcode from the <a href="https://beta.companieshouse.gov.uk/">Companies House register (opens in new tab).</a></p> Enter the postcode that's on the organisation’s certificate of incorporation.
+ecc.address-lookup.postcode.hint.company = <p class="govuk-body">We will use this to verify your identity. You can get the postcode from the <a href="https://beta.companieshouse.gov.uk/" target="_blank">Companies House register (opens in new tab).</a></p> Enter the postcode that's on the company’s certificate of incorporation.
+ecc.address-lookup.postcode.hint.llp = <p class="govuk-body">We will use this to verify your identity. You can get the postcode from the <a href="https://beta.companieshouse.gov.uk/" target="_blank">Companies House register (opens in new tab).</a></p> Enter the postcode that's on the partnership’s certificate of incorporation.
+ecc.address-lookup.postcode.hint.organisation =<p class="govuk-body">We will use this to verify your identity. You can get the postcode from the <a href="https://beta.companieshouse.gov.uk/" target="_blank">Companies House register (opens in new tab).</a></p> Enter the postcode that's on the organisation’s certificate of incorporation.
 ecc.address-lookup.postcode.hint.partnership=Enter the postcode for the partnership address that you registered with HMRC.
 ecc.address-lookup.postcode.partnership.hint.text =We will use this to verify your identity.
