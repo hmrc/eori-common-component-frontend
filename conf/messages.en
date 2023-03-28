@@ -744,6 +744,8 @@ cds.matching.id.page-error.utr-text-field=Enter your Unique Taxpayer Reference (
 cds.subscription.nino.utr.invalid=Tell us how we can identify you
 
 #Individual Match
+cds.matching.individual.hint=The name you enter must be the same name you used for your EORI number application.
+cds.matching.individual.hint-description=We will use this to verify your identity.
 cds.matching.individual.first-name=First name
 cds.matching.individual.given-name=Given name
 cds.matching.individual.middle-name=Middle name
