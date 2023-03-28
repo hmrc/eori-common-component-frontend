@@ -46,10 +46,10 @@
 
 @formHint = {
     @if(selectedOrganisationType.id == PartnershipId) {
-        <p class="govuk-hint" id="hint">@Html(messages("ecc.address-lookup.postcode.partnership.hint.text"))</p>
+        <p class="govuk-body" id="hint">@Html(messages("ecc.address-lookup.postcode.partnership.hint.text"))</p>
 
     } else {
-        <p class="govuk-hint" id="hint">@Html(messages("ecc.address-lookup.postcode.organisation.hint"))</p>
+        <p class="govuk-body" id="hint">@Html(messages("ecc.address-lookup.postcode.organisation.hint"))</p>
 
     }
 }
