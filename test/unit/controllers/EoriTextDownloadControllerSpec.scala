@@ -69,9 +69,9 @@ class EoriTextDownloadControllerSpec extends ControllerSpec with BeforeAndAfterE
       contentAsString(result).filterNot(_ == '\r') shouldBe
         """HM Revenue & Customs
           |
-          |Test Company is registered for the Customs Declaration Service (CDS)
+          |Subscription request received for Test Company
           |
-          |Active from 23 June 2018
+          |issued by HMRC on 23 June 2018
           |
           |EORI number: ZZ123456789000""".stripMargin
     }
