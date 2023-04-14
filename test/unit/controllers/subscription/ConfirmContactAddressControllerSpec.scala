@@ -167,10 +167,10 @@ class ConfirmContactAddressControllerSpec
         val page = CdsPage(contentAsString(result))
         page.getElementsText(
           ConfirmContactAddressPage.pageLevelErrorSummaryListXPath
-        ) shouldBe "Confirm your address details"
+        ) shouldBe "Select yes if this address is correct"
         page.getElementsText(
           ConfirmContactAddressPage.fieldLevelErrorYesNoAnswer
-        ) shouldBe "Error: Confirm your address details"
+        ) shouldBe "Error: Select yes if this address is correct"
       }
     }
   }

@@ -1434,7 +1434,7 @@ confirm-contact-address.address.hint=This is the address we will use to contact 
 confirm-contact-details.address-text=Is this address correct?
 confirm-contact-details.yes=Yes, this address is correct
 confirm-contact-details.no=No, I want to change the address
-confirm-contact-details.page-error.yes-no-answer=Confirm your address details
+confirm-contact-details.page-error.yes-no-answer=Select yes if this address is correct
 
 
 cds.subscription.outcomes.steps.next.new.ars = <li>apply for an Advance Tariff Ruling</li> <li>apply for an Advance Valuation Ruling </li>

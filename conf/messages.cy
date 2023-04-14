@@ -1276,7 +1276,7 @@ confirm-contact-address.address.hint=Dyma’r cyfeiriad y byddwn yn ei ddefnyddi
 confirm-contact-details.address-text=A yw’r cyfeiriad hwn yn gywir?
 confirm-contact-details.yes=Ydy, mae’r cyfeiriad hwn yn gywir
 confirm-contact-details.no=Nac ydy, hoffwn newid y cyfeiriad
-confirm-contact-details.page-error.yes-no-answer=Cadarnhau manylion eich cyfeiriad
+confirm-contact-details.page-error.yes-no-answer=Dewiswch ‘Iawn’ os yw’r cyfeiriad hwn yn gywir
 
 cds.subscription.outcomes.steps.next.new.ars= <li>Gwneud cais am Ddyfarniad Tariffau Uwch</li> <li>Gwneud cais am Ddyfarniad Prisio Uwch</li>
 cds.subscription.outcomes.steps.next.new.atar= <li>Gwneud cais am Ddyfarniad Tariffau Uwch</li> <li>Gwneud cais am Ddyfarniad Prisio Uwch</li>
