@@ -62,7 +62,7 @@ class HaveNinoSubscriptionSpec extends ViewSpec {
       doc.body.getElementById("have-nino-hint").text must include(
         "It’s on your National Insurance card, benefit letter, payslip or P60."
       )
-      doc.body.getElementById("have-nino-hint").text must include("For example, 'QQ123456C'")
+      doc.body.getElementById("have-nino-hint").text must include("For example, 'QQ 12 34 56 C'")
     }
 
   }
