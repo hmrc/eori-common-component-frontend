@@ -51,7 +51,7 @@ class HowCanWeIdentifyYouNinoSpec extends ViewSpec {
 
       doc.body()
         .getElementById("nino-hint")
-        .text() mustBe "It’s on your National Insurance card, benefit letter, payslip or P60. For example, 'QQ123456C'."
+        .text() mustBe "It’s on your National Insurance card, benefit letter, payslip or P60. For example, 'QQ 12 34 56 C'."
     }
 
     "display an page level error if no nino entered" in {

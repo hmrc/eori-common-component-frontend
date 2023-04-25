@@ -463,7 +463,7 @@ cds.matching.id.page-error.ninoOrUtrRadio=Tell us how we can identify you
 #What is your Nino
 subscription-journey.what-is-your-nino=What is your National Insurance number?
 subscription-journey.what-is-your-nino.label=National Insurance number
-subscription-journey.what-is-your-nino.hint=It’s on your National Insurance card, benefit letter, payslip or P60. For example, QQ123456C
+subscription-journey.what-is-your-nino.hint=It’s on your National Insurance card, benefit letter, payslip or P60. For example, QQ 12 34 56 C
 cds.subscription.nino-details.page-error.nino=National Insurance number
 cds.subscription.nino.error.empty=Enter your National Insurance number
 cds.subscription.nino.error.wrong-length=The National Insurance number must be 9 characters
@@ -735,7 +735,7 @@ cds.matching.nino.row.header=Do you have a National Insurance number issued in t
 cds.matching.nino.row.description=You will have a National Insurance number if you have worked in the UK.
 cds.matching.nino.row.error.have-nino=Tell us if you have a National Insurance number
 
-cds.matching.nino.nino.hint=It’s on your National Insurance card, benefit letter, payslip or P60. For example, ''QQ123456C''
+cds.matching.nino.nino.hint=It’s on your National Insurance card, benefit letter, payslip or P60. For example, ''QQ 12 34 56 C''
 cds.matching.nino.date-of-birth=Date of birth
 
 #Nino Or UTR
