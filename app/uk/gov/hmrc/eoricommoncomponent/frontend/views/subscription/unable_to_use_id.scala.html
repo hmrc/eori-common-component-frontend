@@ -27,29 +27,29 @@
     <strong>@eori</strong>
 }
 
-@layout_di(messages("ecc.unable-to-use.title", longName), suppressTelephoneNumberDetection = false, displayBackLink = false) {
+@layout_di(messages("ecc.unable-to-use.title"), suppressTelephoneNumberDetection = false, displayBackLink = false) {
     <div>
         <div>
-            <h1 id="page-heading" class="govuk-heading-l" >@messages("ecc.unable-to-use.title", longName, "")</h1>
+            <h1 id="page-heading" class="govuk-heading-l" >@messages("ecc.unable-to-use.title")</h1>
+            <p id="eori-number-text" class="govuk-body">@messages("ecc.unable-to-use.this-eori-para-one")</p>
+        </div>
+        <div>
+            <h2 id="page-title-two" class="govuk-heading-m">@messages("ecc.unable-to-use.this-eori-para-title-two")</h2>
+            <p id="para1" class="govuk-body">@messages("ecc.unable-to-use-title-two-para1")</p>
+            <p id="para2" class="govuk-body">@messages("ecc.unable-to-use-title-two-para2")</p>
+        </div>
+        <div>
+            <h2 id="page-title-three" class="govuk-heading-m">@messages("ecc.unable-to-use.this-eori-para-title-three")</h2>
+            <p id="para3" class="govuk-body"><a class="govuk-link" id="contact-hmrc" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/online-services-helpdesk">@messages("ecc.unable-to-use.this-eori-para-title-three-link")</a>
+                @messages("ecc.unable-to-use.this-eori-title-three-para")</p>
+            
         </div>
 
-        <p id="eori-number-text" class="govuk-body">@messages("ecc.unable-to-use.this-eori-number")</p>
-
-        @govukInsetText(InsetText(
-            id = Some("eori-number"),
-            content = HtmlContent(contentHtml)
-        ))
-
-        <p id="para1" class="govuk-body">@messages("ecc.unable-to-use.para1", longName)</p>
-        <p id="para2" class="govuk-body">@messages("ecc.unable-to-use.para2")</p>
 
         @govukButton(Button(
             href = Some(routes.ApplicationController.logout(service).url),
             content = Text(messages("cds.sign.out"))
         ))
-
-        @help_di()
-
         @feedback_di()
     </div>
 }

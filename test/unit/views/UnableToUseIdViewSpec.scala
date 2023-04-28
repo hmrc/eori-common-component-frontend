@@ -34,32 +34,31 @@ class UnableToUseIdViewSpec extends ViewSpec {
 
     "display correct title" in {
 
-      doc.title() must startWith("You cannot access Advance Tariff Rulings with this Government Gateway account")
+      doc.title() must startWith("You cannot use this service with this Government Gateway user ID")
     }
 
     "display correct header" in {
 
       doc.body().getElementsByTag(
         "h1"
-      ).text() mustBe "You cannot access Advance Tariff Rulings with this Government Gateway account"
+      ).text() mustBe "You cannot use this service with this Government Gateway user ID"
     }
 
     "display eori paragraph" in {
 
       val body = doc.body()
 
-      body.getElementById("eori-number-text").text() mustBe "The EORI number:"
-      body.getElementById("eori-number").text() mustBe "GB123456789123"
+      body.getElementById("eori-number-text").text() mustBe "The user ID needs to be the one that you or your organisation subscribed to this service with."
       body.getElementById(
         "para1"
-      ).text() mustBe "which is linked to your Government Gateway account is already used by another account to access Advance Tariff Rulings. You will need to sign in with that account to access Advance Tariff Rulings."
+      ).text() mustBe "Subscribing to a service is what you do the first time you use it. You or someone in your organisation subscribed with a user ID that’s different to this one."
     }
 
     "display additional paragraph" in {
 
       doc.body().getElementById(
         "para2"
-      ).text() mustBe "Sign out and sign in again with a different Government Gateway account."
+      ).text() mustBe "You need to sign out then sign in with that user ID."
     }
 
     "display signout button" in {
