@@ -114,8 +114,6 @@ val compileDependencies = Seq(
   "uk.gov.hmrc"       %% "domain"                        % "8.2.0-play-28",
   "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"            % "1.1.0",
   "uk.gov.hmrc"       %% "emailaddress"                  % "3.8.0",
-  "uk.gov.hmrc"       %% "logback-json-logger"           % "5.2.0",
-  "uk.gov.hmrc"       %% "play-language"                 % "6.1.0-play-28",
   "org.webjars.npm"    % "accessible-autocomplete"       % "2.0.4",
   "uk.gov.hmrc"       %% "play-frontend-hmrc"            % "7.5.0-play-28"
 )
