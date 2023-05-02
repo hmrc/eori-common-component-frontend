@@ -31,13 +31,15 @@
         @govukButton(Button(
             href = Some(AddressLookupPostcodeController.reviewPage(service).url),
             content = Text(messages("ecc.address-lookup.postcode.error.re-enter")),
-            classes = "reenter-postcode-button"
+            classes = "reenter-postcode-button",
+            id = Some("continue-button")
         ))
     } else {
         @govukButton(Button(
             href = Some(AddressLookupPostcodeController.displayPage(service).url),
             content = Text(messages("ecc.address-lookup.postcode.error.re-enter")),
-            classes = "reenter-postcode-button"
+            classes = "reenter-postcode-button",
+            id = Some("continue-button")
         ))
     }
 }

@@ -372,7 +372,8 @@
 
                 @govukButton(Button(
                     preventDoubleClick = Option(true),
-                    content = Text(messages("cds.form.send"))
+                    content = Text(messages("cds.form.send")),
+                    id = Some("continue-button")
                 ))
             }
 

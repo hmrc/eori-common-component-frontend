@@ -79,7 +79,8 @@
             </div>
 
             @govukButton(Button(
-                content = Text(ViewHelper.continueButtonText(isInReviewMode))
+                content = Text(ViewHelper.continueButtonText(isInReviewMode)),
+                id = Some("continue-button")
             ))
         }
     </div>

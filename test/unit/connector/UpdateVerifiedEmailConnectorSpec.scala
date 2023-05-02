@@ -92,6 +92,7 @@ class UpdateVerifiedEmailConnectorSpec
   private val verifiedEmailRequest = VerifiedEmailRequest(UpdateVerifiedEmailRequest(requestCommon, requestDetail))
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit val ex: ExecutionContext = ExecutionContext.Implicits.global
 
   val connector = new UpdateVerifiedEmailConnector(mockAppConfig, mockHttpClient)
 

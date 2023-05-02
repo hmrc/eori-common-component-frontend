@@ -41,7 +41,8 @@
             @CSRF.formField
 
             @govukButton(Button(
-                content = Text(ViewHelper.continueButtonText(false))
+                content = Text(ViewHelper.continueButtonText(false)),
+                id = Some("continue-button")
             ))
         }
 

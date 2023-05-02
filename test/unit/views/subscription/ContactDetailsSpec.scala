@@ -73,7 +73,7 @@ class ContactDetailsSpec extends ViewSpec {
 
     "display continue button" in {
 
-      doc.body().getElementsByClass("govuk-button").text() mustBe "Continue"
+      doc.body().getElementById("continue-button").text() mustBe "Continue"
 
     }
 

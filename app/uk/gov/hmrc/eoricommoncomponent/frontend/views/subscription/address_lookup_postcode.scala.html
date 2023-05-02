@@ -108,7 +108,8 @@
             )
 
             @govukButton(Button(
-                content = Text(messages("ecc.address-lookup.postcode.find-address"))
+                content = Text(messages("ecc.address-lookup.postcode.find-address")),
+                id = Some("continue-button")
             ))
 
             <div class="govuk-body govuk-!-margin-top-2 govuk-!-margin-bottom-4">

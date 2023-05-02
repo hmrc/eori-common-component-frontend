@@ -50,7 +50,8 @@ service: Service)(implicit request: Request[_], messages: Messages)
 
 
             @govukButton(Button(
-                content = Text(messages("cds.subscribe.use-this-eori.confirm"))
+                content = Text(messages("cds.subscribe.use-this-eori.confirm")),
+                id = Some("continue-button")
             ))
 
         }

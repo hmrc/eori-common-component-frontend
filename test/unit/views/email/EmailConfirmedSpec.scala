@@ -40,7 +40,7 @@ class EmailConfirmedSpec extends ViewSpec {
       migrateDoc.body.getElementsByTag("h1").hasClass("govuk-heading-l") mustBe true
     }
     "have a continue button" in {
-      migrateDoc.body.getElementsByClass("govuk-button").text() mustBe "Continue"
+      migrateDoc.body.getElementById("continue-button").text() mustBe "Continue"
     }
   }
 

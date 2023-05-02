@@ -89,7 +89,8 @@
             @inputDate(updateFormErrors, None, hintText = Some(introHtml), id = "date-of-establishment", legendClasses = Some("date-of-establishment-field"))
 
             @govukButton(Button(
-                content = Text(ViewHelper.continueButtonText(isInReviewMode))
+                content = Text(ViewHelper.continueButtonText(isInReviewMode)),
+                id = Some("continue-button")
             ))
         }
 

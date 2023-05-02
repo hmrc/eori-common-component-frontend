@@ -68,7 +68,8 @@
             <div class="govuk-inset-text"><p>@messages("cds.subscription.enter-email.hint")</p></div>
 
             @govukButton(Button(
-                content = Text(ViewHelper.continueButtonText(false))
+                content = Text(ViewHelper.continueButtonText(false)),
+                id = Some("continue-button")
             ))
 
  } else {
@@ -87,7 +88,8 @@
         )
 
         @govukButton(Button(
-            content = Text(ViewHelper.continueButtonText(false))
+            content = Text(ViewHelper.continueButtonText(false)),
+            id = Some("continue-button")
         ))
     }
 
