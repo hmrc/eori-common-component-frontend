@@ -28,13 +28,13 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NotifyRcmReq
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.NotifyRcm
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.http.HttpClient
-
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
 @Singleton
-class NotifyRcmConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable) {
+class NotifyRcmConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
+  ec: ExecutionContext
+) {
 
   private val logger = Logger(this.getClass)
 

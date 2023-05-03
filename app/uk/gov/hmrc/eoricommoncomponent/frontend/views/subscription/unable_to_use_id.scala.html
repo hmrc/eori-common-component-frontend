@@ -45,7 +45,8 @@
 
         @govukButton(Button(
             href = Some(routes.ApplicationController.logout(service).url),
-            content = Text(messages("cds.sign.out"))
+            content = Text(messages("cds.sign.out")),
+            id = Some("continue-button")
         ))
 
         @help_di()

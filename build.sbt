@@ -68,7 +68,7 @@ lazy val integrationTestSettings =
       addTestReportOption(IntegrationTest, "int-test-reports")
     )
 
-lazy val commonSettings: Seq[Setting[_]] = publishingSettings ++ defaultSettings()
+lazy val commonSettings: Seq[Setting[_]] = defaultSettings()
 
 lazy val playSettings: Seq[Setting[_]] = Seq(
   routesImport ++= Seq("uk.gov.hmrc.eoricommoncomponent.frontend.domain._"),
@@ -109,15 +109,13 @@ scalastyleConfig := baseDirectory.value / "project" / "scalastyle-config.xml"
 val compileDependencies = Seq(
 
 
-  "uk.gov.hmrc"       %% "play-conditional-form-mapping" % "1.12.0-play-28",
-  "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"    % "7.14.0",
-  "uk.gov.hmrc"       %% "domain"                        % "8.1.0-play-28",
+  "uk.gov.hmrc"       %% "play-conditional-form-mapping" % "1.13.0-play-28",
+  "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"    % "7.15.0",
+  "uk.gov.hmrc"       %% "domain"                        % "8.2.0-play-28",
   "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"            % "1.1.0",
-  "uk.gov.hmrc"       %% "emailaddress"                  % "3.7.0",
-  "uk.gov.hmrc"       %% "logback-json-logger"           % "5.2.0",
-  "uk.gov.hmrc"       %% "play-language"                 % "6.1.0-play-28",
+  "uk.gov.hmrc"       %% "emailaddress"                  % "3.8.0",
   "org.webjars.npm"    % "accessible-autocomplete"       % "2.0.4",
-  "uk.gov.hmrc"       %% "play-frontend-hmrc"            % "6.8.0-play-28"
+  "uk.gov.hmrc"       %% "play-frontend-hmrc"            % "7.5.0-play-28"
 )
 
 val testDependencies = Seq(
@@ -127,15 +125,15 @@ val testDependencies = Seq(
   "com.github.tomakehurst"  % "wiremock-standalone" % "2.27.2"            % "test, it"
     exclude ("org.apache.httpcomponents", "httpclient") exclude ("org.apache.httpcomponents", "httpcore"),
   "org.scalacheck"      %% "scalacheck"              % "1.17.0"   % "test,it",
-  "uk.gov.hmrc"            %% "bootstrap-test-play-28" % "7.12.0" % "test,it",
+  "uk.gov.hmrc"            %% "bootstrap-test-play-28" % "7.15.0" % "test,it",
   "org.scalatestplus"   %% "scalacheck-1-15"         % "3.2.11.0" % "test,it",
   "org.jsoup"            % "jsoup"                   % "1.15.4"   % "test,it",
   "us.codecraft"         % "xsoup"                   % "0.3.6"    % "test,it",
-  "org.mockito"          % "mockito-core"            % "4.8.0"    % "test,it",
+  "org.mockito"          % "mockito-core"            % "5.2.0"    % "test,it",
   "org.scalatestplus"   %% "mockito-4-6"             % "3.2.15.0" % "test, it",
   "org.pegdown"          % "pegdown"                 % "1.6.0",
-  "uk.gov.hmrc.mongo"   %% "hmrc-mongo-test-play-28" % "0.74.0"   % "test, it",
-  "com.vladsch.flexmark" % "flexmark-all"            % "0.62.0"   % "test,it"
+  "uk.gov.hmrc.mongo"   %% "hmrc-mongo-test-play-28" % "1.1.0"   % "test, it",
+  "com.vladsch.flexmark" % "flexmark-all"            % "0.64.0"   % "test,it"
 )
 
 

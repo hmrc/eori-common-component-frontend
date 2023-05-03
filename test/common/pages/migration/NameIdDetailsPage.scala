@@ -39,7 +39,7 @@ trait NameIdDetailsPage extends WebPage {
   val utrFieldId              = "utr"
   val utrFieldName            = "utr"
 
-  val continueButtonXpath = "//*[@class='govuk-button']"
+  val continueButtonXpath = "//*[@id='continue-button']"
 
   val filledValues = NameIdOrganisationMatchModel(name = "Test Business Name", id = "2108834503")
 

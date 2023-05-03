@@ -119,7 +119,7 @@ class AddressLookupResultsViewSpec extends ViewSpec {
 
     "display Continue button" in {
 
-      doc().body().getElementsByClass("govuk-button").text() mustBe "Continue"
+      doc().body().getElementById("continue-button").text() mustBe "Continue"
     }
 
     "display error summary" in {

@@ -46,7 +46,8 @@
     <p id="para-2" class="govuk-body">@para2</p>
     @govukButton(Button(
         href = Some(logout(service).url),
-        content = Text(messages("cds.sign.out"))
+        content = Text(messages("cds.sign.out")),
+        id = Some("continue-button")
     ))
     @helpers.helpAndSupport()
 </div>

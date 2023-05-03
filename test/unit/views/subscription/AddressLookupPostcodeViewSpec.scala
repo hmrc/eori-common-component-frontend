@@ -108,7 +108,7 @@ class AddressLookupPostcodeViewSpec extends ViewSpec {
 
     "display Find Address button" in {
 
-      doc().body().getElementsByClass("govuk-button").text() mustBe "Find address"
+      doc().body().getElementById("continue-button").text() mustBe "Find address"
     }
 
     "display address is outside UK link" in {

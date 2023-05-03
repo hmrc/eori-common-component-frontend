@@ -25,7 +25,7 @@ sealed trait ContactAddressPage extends WebPage {
 
   val formId: String = "contactAddressForm"
 
-  val continueButtonXpath = "//*[@class='govuk-button']"
+  val continueButtonXpath = "//*[@id='continue-button']"
 
   val PageLevelErrorSummaryListXPath  = "//ul[@class='govuk-list govuk-error-summary__list']"
   val lineOneFieldXPath               = "//*[@id='line-1']"

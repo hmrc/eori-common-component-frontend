@@ -53,7 +53,7 @@ trait NameDobSoleTraderPage extends WebPage {
   val dobMonthFieldName = "date-of-birth.month"
   val dobYearFieldName  = "date-of-birth.year"
 
-  val continueButtonXpath = "//*[@class='govuk-button']"
+  val continueButtonXpath = "//*[@id='continue-button']"
 
   val filledValues = NameDobMatchModel(
     firstName = "Test First Name",

@@ -23,7 +23,7 @@ sealed trait ConfirmContactAddressPage extends WebPage {
 
   val formId: String = "confirmContactAddressForm"
 
-  val continueButtonXpath                = "//*[@class='govuk-button']"
+  val continueButtonXpath                = "//*[@id='continue-button']"
   override val title: String             = "Is this your contact address?"
   val hintTextXpath                      = "//*[@id='address-hint']"
   val addressTextXpath                   = "//*[@id='address']"

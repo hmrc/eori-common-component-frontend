@@ -44,7 +44,8 @@
         <br>
         @govukButton(Button(
             content = Text(messages("ecc.subscription.eori-number-invalid-try-again")),
-            href =  Some(routes.WhatIsYourEoriController.createForm(service).url)
+            href =  Some(routes.WhatIsYourEoriController.createForm(service).url),
+            id = Some("continue-button")
         ))
             <br/>
 

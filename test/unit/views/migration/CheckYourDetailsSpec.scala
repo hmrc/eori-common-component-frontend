@@ -734,7 +734,7 @@ class CheckYourDetailsSpec extends ViewSpec {
       doc().body.getElementById(
         "disclaimer"
       ).text mustBe "By sending this application you confirm that the information you are providing is correct and complete."
-      doc().body.getElementsByClass("govuk-button").text() mustBe "Confirm and send"
+      doc().body.getElementById("continue-button").text() mustBe "Confirm and send"
     }
 
     "should display individual UTR" when {
