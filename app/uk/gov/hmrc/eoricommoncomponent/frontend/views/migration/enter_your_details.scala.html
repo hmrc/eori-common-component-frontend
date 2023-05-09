@@ -29,12 +29,12 @@
 @(subscriptionNameDobForm: Form[NameDobMatchModel],isInReviewMode: Boolean, service: Service, selectedUserLocationWithIslands: Option[String])(implicit request: Request[_], messages: Messages)
 
 @firstNameLabel = @{
-    if(selectedUserLocationWithIslands == Some("uk")) messages("cds.matching.individual.first-name")
+    if(selectedUserLocationWithIslands.contains(UserLocation.Uk)) messages("cds.matching.individual.first-name")
     else messages("cds.matching.individual.given-name")
 }
 
 @lastNameLabel = @{
-    if(selectedUserLocationWithIslands == Some("uk")) messages("cds.matching.individual.last-name")
+    if(selectedUserLocationWithIslands.contains(UserLocation.Uk)) messages("cds.matching.individual.last-name")
     else messages("cds.matching.individual.family-name")
 }
 

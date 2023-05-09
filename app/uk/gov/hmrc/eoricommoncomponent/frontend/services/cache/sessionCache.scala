@@ -19,6 +19,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services.cache
 import play.api.libs.json.{Json, OFormat, Reads, Writes}
 import play.api.mvc.Request
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.EmailVerificationKeys
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressLookupParams
@@ -28,6 +29,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.mongo.cache.{DataKey, SessionCacheRepository}
 import uk.gov.hmrc.mongo.{MongoComponent, TimestampSupport}
 import uk.gov.hmrc.play.http.logging.Mdc.preservingMdc
+
 import java.time.LocalDateTime
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -53,12 +55,12 @@ object CachedData {
   val sub01OutcomeKey                      = "sub01Outcome"
   val sub02OutcomeKey                      = "sub02Outcome"
   val registerWithEoriAndIdResponseKey     = "registerWithEoriAndIdResponse"
-  val emailKey                             = "email"
+  val emailKey                             = EmailVerificationKeys.EmailKey
   val keepAliveKey                         = "keepAlive"
-  val safeIdKey                            = "safeId"
+  val safeIdKey                            = CustomsId.safeId
   val groupIdKey                           = "cachedGroupId"
   val groupEnrolmentKey                    = "groupEnrolment"
-  val eoriKey                              = "eori"
+  val eoriKey                              = CustomsId.eori
   val addressLookupParamsKey               = "addressLookupParams"
   implicit val format: OFormat[CachedData] = Json.format[CachedData]
 }

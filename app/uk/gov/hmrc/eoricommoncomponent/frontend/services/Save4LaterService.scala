@@ -18,7 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services
 
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{EmailVerificationKeys, Save4LaterConnector}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, Service, SubscribeJourney}
@@ -32,9 +32,9 @@ class Save4LaterService @Inject() (save4LaterConnector: Save4LaterConnector) {
 
   private val logger = Logger(this.getClass)
 
-  private val safeIdKey   = "safeId"
+  private val safeIdKey   = CustomsId.safeId
   private val orgTypeKey  = "orgType"
-  private val emailKey    = "email"
+  private val emailKey    = EmailVerificationKeys.EmailKey
   private val cdsEmailKey = "cdsEmail"
 
   def saveSafeId(groupId: GroupId, safeId: SafeId)(implicit hc: HeaderCarrier): Future[Unit] = {
