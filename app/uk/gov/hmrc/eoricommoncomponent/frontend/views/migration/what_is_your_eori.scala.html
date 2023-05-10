@@ -39,6 +39,11 @@
 @hintTextMessage = {
     <p class="govuk-body">@messages("ecc.subscription.enter-eori-number.hint.para1")</p>
 
+    @govukDetails(Details(
+        summary = Text(messages("cds.subscription.enter-eori-number.no-eori.summary")),
+        content = HtmlContent(detailsContent)
+    ))
+
     <p class="govuk-body">@messages("ecc.subscription.enter-eori-number.hint")</p>
 
 }
@@ -76,11 +81,6 @@
             @govukButton(Button(
                 content = Text(ViewHelper.continueButtonText(isInReviewMode)),
                 id = Some("continue-button")
-            ))
-
-            @govukDetails(Details(
-                summary = Text(messages("cds.subscription.enter-eori-number.no-eori.summary")),
-                content = HtmlContent(detailsContent)
             ))
         }
 
