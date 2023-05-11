@@ -101,7 +101,7 @@ object ContactInformation extends CommonHeader {
           city = None,
           postalCode = None,
           countryCode = None,
-          telephoneNumber = Some(contactDetails.telephone),
+          telephoneNumber = if (contactDetails.telephone.isBlank) None else Some(contactDetails.telephone),
           faxNumber = None,
           emailAddress = Some(contactDetails.emailAddress)
         )
