@@ -89,7 +89,7 @@ ecc.subscription.information.section.organisation.subheading=If you apply as a l
 ecc.subscription.information.section.organisation.find-utr.label = find a UTR number {0}
 ecc.subscription.information.section.organisation.list.heading=To verify your identity you will need to provide your organisation’s:
 ecc.subscription.information.section.organisation.list.first=registered name and address
-ecc.subscription.information.section.organisation.list.second=date of establishment
+
 ecc.subscription.information.section.organisation.list.third=Corporation Tax Unique Taxpayer Reference (UTR), if you pay Corporation Tax in the UK
 ecc.subscription.information.section.organisation.utr.link=<a href="https://www.gov.uk/find-utr-number" class="govuk-link" target="_blank" rel="noopener noreferrer">Find your UTR (opens in a new tab)</a>
 

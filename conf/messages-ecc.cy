@@ -90,7 +90,7 @@ ecc.subscription.information.section.organisation.subheading=Os byddwch yn gwneu
 ecc.subscription.information.section.organisation.find-utr.label = UTR coll {0}
 ecc.subscription.information.section.organisation.list.heading=I gadarnhau pwy ydych, bydd angen i chi ddarparu’r manylion canlynol am eich sefydliad:
 ecc.subscription.information.section.organisation.list.first=enw a’r cyfeiriad cofrestredig
-ecc.subscription.information.section.organisation.list.second=dyddiad sefydlu
+
 ecc.subscription.information.section.organisation.list.third=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth, os ydych yn talu Treth Gorfforaeth yn y DU
 ecc.subscription.information.section.organisation.utr.link=<a href="https://www.gov.uk/find-utr-number" class="govuk-link" target="_blank" rel="noopener noreferrer">Dod o hyd i’ch UTR (yn agor tab newydd)</a>
 
