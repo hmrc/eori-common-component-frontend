@@ -27,6 +27,11 @@
 
 @(contactForm: Form[ContactDetailsSubscribeModel], email: String, isInReviewMode: Boolean, service: Service)(implicit request: Request[_], messages: Messages)
 
+@paraAndHintText = {
+<p class="govuk-body" id="telephone-para">@messages("cds.subscription.contact-details.telephone.para")</p>
+<p class="govuk-hint" id="telephone-hint">@messages("cds.subscription.contact-details.telephone.hint")</p>
+}
+
 @layout_di(messages("cds.subscription.contact-details.page.title"), form = Some(contactForm)) {
 
 <div>
@@ -64,7 +69,7 @@
             label = "cds.subscription.contact-details.telephone.label",
             isPageHeading = false,
             classes = Some("govuk-!-width-two-thirds"),
-            hint = Some(Html(messages("cds.subscription.contact-details.telephone.hint"))),
+            hint = Some(paraAndHintText),
             labelClasses = Some("telephone govuk-!-font-weight-bold")
         )
 

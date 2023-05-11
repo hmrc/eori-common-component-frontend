@@ -36,10 +36,9 @@ class ContactDetailsFormSpec extends UnitSpec {
 
         val boundForm = form.bind(formData)
 
-        val fullNameError  = FormError("full-name", "cds.subscription.contact-details.form-error.full-name")
-        val telephoneError = FormError("telephone", "cds.contact-details.page-error.telephone.isEmpty")
+        val fullNameError = FormError("full-name", "cds.subscription.contact-details.form-error.full-name")
 
-        val expectedErrors = Seq(fullNameError, telephoneError)
+        val expectedErrors = Seq(fullNameError)
 
         boundForm.errors shouldBe expectedErrors
       }

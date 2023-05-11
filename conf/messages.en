@@ -1267,7 +1267,8 @@ cds.subscription.contact-details.heading=Who can we contact?
 cds.subscription.contact-details.intro=We will use these details to contact you about your EORI number. We will also use them to contact you if there are any issues with your customs activities.
 cds.subscription.contact-details.full-name.label=Full name
 cds.subscription.contact-details.email.label=Email address
-cds.subscription.contact-details.telephone.label=Telephone
+cds.subscription.contact-details.telephone.label=Telephone (optional)
+cds.subscription.contact-details.telephone.para=We’ll only use this if we need to talk to you about this application
 cds.subscription.contact-details.telephone.hint=For international numbers include the country code
 cds.subscription.contact-details.fax.label=Fax (optional)
 cds.subscription.contact-details.fax.hint=For international numbers include the country code
@@ -1308,7 +1309,6 @@ cds.subscription.text-download.registered=Subscription request received for {0}
 cds.subscription.text-download.active=issued by HMRC on
 cds.subscription.text-download.eori=EORI number:
 
-cds.contact-details.page-error.telephone.isEmpty=Enter your contact telephone number
 cds.contact-details.page-error.telephone.wrong-length.too-long=The telephone number must be 24 digits or less
 cds.contact-details.page-error.telephone.wrong-format=Please enter a valid telephone number
 
