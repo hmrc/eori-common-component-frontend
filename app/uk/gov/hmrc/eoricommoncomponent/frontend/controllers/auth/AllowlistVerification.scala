@@ -28,9 +28,9 @@ trait AllowlistVerification {
 
   def isAllowlisted(email: Option[String])(implicit request: Request[_]): Boolean =
     if (allowlistEnabled) {
-      val alreadyAllowListed = request.session.get("allowlisted").contains("true")
+      val alreadyAllowlisted = request.session.get("allowlisted").contains("true")
       val permittedEmail     = email.exists(e => allowlist.exists(_.equalsIgnoreCase(e)))
-      alreadyAllowListed || permittedEmail
+      alreadyAllowlisted || permittedEmail
     } else
       true
 

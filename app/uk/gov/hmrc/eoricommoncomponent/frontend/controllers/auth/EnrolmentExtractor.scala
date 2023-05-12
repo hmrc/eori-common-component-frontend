@@ -19,7 +19,6 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.ExistingEori
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.RegistrationInfoRequest.{NINO, UTR}
 
 trait EnrolmentExtractor {
 
@@ -79,13 +78,13 @@ trait EnrolmentExtractor {
       }
 
   def enrolledCtUtr(loggedInUser: LoggedInUserWithEnrolments): Option[Utr] =
-    identifierFor("IR-CT", UTR, loggedInUser).map(existingEori => Utr(existingEori.id))
+    identifierFor("IR-CT", "UTR", loggedInUser).map(existingEori => Utr(existingEori.id))
 
   def enrolledSaUtr(loggedInUser: LoggedInUserWithEnrolments): Option[Utr] =
-    identifierFor("IR-SA", UTR, loggedInUser).map(existingEori => Utr(existingEori.id))
+    identifierFor("IR-SA", "UTR", loggedInUser).map(existingEori => Utr(existingEori.id))
 
   def enrolledNino(loggedInUser: LoggedInUserWithEnrolments): Option[Nino] =
-    identifierFor("HMRC-NI", NINO, loggedInUser).map(existingEori => Nino(existingEori.id))
+    identifierFor("HMRC-NI", "NINO", loggedInUser).map(existingEori => Nino(existingEori.id))
 
   def existingEoriForUserOrGroup(
     loggedInUser: LoggedInUserWithEnrolments,

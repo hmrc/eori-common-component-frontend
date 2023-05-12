@@ -26,10 +26,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{
   UpdateCustomsDataStoreConnector,
   UpdateVerifiedEmailConnector
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CustomsId
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.email.{DateTimeUtil, RequestDetail, UpdateVerifiedEmailRequest}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.MessagingServiceParam
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.RegistrationInfoRequest.EORI
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.CustomsDataStoreRequest
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
 import uk.gov.hmrc.http.HeaderCarrier
@@ -57,7 +55,7 @@ class UpdateVerifiedEmailService @Inject() (
   ): Future[Either[UpdateError, Unit]] = {
 
     val requestDetail = RequestDetail(
-      IDType = EORI,
+      IDType = "EORI",
       IDNumber = eori,
       emailAddress = newEmail,
       emailVerificationTimestamp = DateTimeUtil.dateTime
@@ -97,7 +95,7 @@ class UpdateVerifiedEmailService @Inject() (
       audit.sendDataEvent(
         transactionName = "UpdateVerifiedEmailRequestSubmitted",
         path = url,
-        detail = Map("newEmailAddress" -> newEmail, CustomsId.eori -> eoriNumber) ++ status.map("status" -> _),
+        detail = Map("newEmailAddress" -> newEmail, "eori" -> eoriNumber) ++ status.map("status" -> _),
         eventType = auditType
       )
     )(
@@ -108,7 +106,7 @@ class UpdateVerifiedEmailService @Inject() (
           detail = Map(
             "currentEmailAddress"  -> emailAddress,
             "newEmailAddress"      -> newEmail,
-            CustomsId.eori         -> eoriNumber
+            "eori"                 -> eoriNumber
           ) ++ status.map("status" -> _),
           eventType = auditType
         )

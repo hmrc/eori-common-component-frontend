@@ -22,7 +22,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.organisationTypeDetailsForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
@@ -52,7 +51,7 @@ class OrganisationTypeController @Inject() (
           requestSessionData.selectedUserLocation match {
             case Some(_) =>
               Ok(organisationTypeView(filledForm, requestSessionData.selectedUserLocation, service))
-            case None => Ok(organisationTypeView(filledForm, Some(UserLocation.Uk), service))
+            case None => Ok(organisationTypeView(filledForm, Some("uk"), service))
           }
         }
     }

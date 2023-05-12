@@ -22,11 +22,14 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ConfirmContactAddressSubscriptionFlowPage
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.confirmContactAddressYesNoAnswerForm
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.{
+  confirmContactAddressYesNoAnswerForm,
+  YesNo
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionBusinessService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.confirm_contact_address
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.YesNo
+
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -22,7 +22,7 @@ import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.DateConverter._
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.MatchingServiceConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Individual, RegistrationInfoRequest}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.RequestCommonGenerator
@@ -45,9 +45,9 @@ class MatchingService @Inject() (
   requestSessionData: RequestSessionData
 )(implicit ec: ExecutionContext) {
 
-  private val UTR  = RegistrationInfoRequest.UTR
-  private val EORI = RegistrationInfoRequest.EORI
-  private val NINO = RegistrationInfoRequest.NINO
+  private val UTR  = "UTR"
+  private val EORI = "EORI"
+  private val NINO = "NINO"
 
   private val CustomsIdsMap: Map[Class[_ <: CustomsId], String] =
     Map(classOf[Utr] -> UTR, classOf[Eori] -> EORI, classOf[Nino] -> NINO)
