@@ -19,6 +19,10 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.UtrSubscriptionMessages.{
+  defaultHeadingMessage,
+  defaultHintMessage
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.AddressLookupPostcodeController
@@ -122,22 +126,18 @@ class HowCanWeIdentifyYouUtrController @Inject() (
             )
       )
 
-  private def getHintMessage()(implicit request: Request[AnyContent]) = {
-    val defaultHintMessage = "subscription-journey.how-confirm-identity.utr.hint"
+  private def getHintMessage()(implicit request: Request[AnyContent]) =
     requestSessionData.userSelectedOrganisationType.map(
       orgType =>
         if (orgType == CdsOrganisationType.Company) "cds.matching.row-organisation.utr.hint"
         else defaultHintMessage
     ).getOrElse(defaultHintMessage)
-  }
 
-  private def getHeadingMessage()(implicit request: Request[AnyContent]) = {
-    val defaultHeadingMessage = "subscription-journey.how-confirm-identity.utr.heading"
+  private def getHeadingMessage()(implicit request: Request[AnyContent]) =
     requestSessionData.userSelectedOrganisationType.map(
       orgType =>
         if (orgType == CdsOrganisationType.Company) "subscription-journey.how-confirm-identity.utr.third-org.heading"
         else defaultHeadingMessage
     ).getOrElse(defaultHeadingMessage)
-  }
 
 }

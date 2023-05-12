@@ -113,7 +113,7 @@ object MatchingForms {
   def eoriSignoutYesNoForm()(implicit messages: Messages): Form[YesNo] =
     Form(
       mapping(
-        "yes-no-answer" -> optional(
+        YesNo.yesNoAnswer -> optional(
           text.verifying(messages("ecc.unable-to-use.signout.empty"), oneOf(validYesNoAnswerOptions))
         )
           .verifying(messages("ecc.unable-to-use.signout.empty"), _.isDefined)
@@ -156,7 +156,7 @@ object MatchingForms {
   }
 
   val nameUtrOrganisationForm: Form[NameIdOrganisationMatchModel] = Form(
-    mapping("name" -> text.verifying(validBusinessName), "utr" -> text.verifying(validUtr))(
+    mapping("name" -> text.verifying(validBusinessName), CustomsId.utr -> text.verifying(validUtr))(
       NameIdOrganisationMatchModel.apply
     )(NameIdOrganisationMatchModel.unapply)
   )
@@ -168,7 +168,7 @@ object MatchingForms {
   )
 
   val nameUtrCompanyForm: Form[NameIdOrganisationMatchModel] = Form(
-    mapping("name" -> text.verifying(validCompanyName), "utr" -> text.verifying(validUtr))(
+    mapping("name" -> text.verifying(validCompanyName), CustomsId.utr -> text.verifying(validUtr))(
       NameIdOrganisationMatchModel.apply
     )(NameIdOrganisationMatchModel.unapply)
   )
@@ -261,11 +261,11 @@ object MatchingForms {
     })
 
   val subscriptionNinoForm: Form[IdMatchModel] = Form(
-    mapping("nino" -> text.verifying(validNino))(IdMatchModel.apply)(IdMatchModel.unapply)
+    mapping(CustomsId.nino -> text.verifying(validNino))(IdMatchModel.apply)(IdMatchModel.unapply)
   )
 
   val subscriptionUtrForm: Form[IdMatchModel] = Form(
-    mapping("utr" -> text.verifying(validUtr))(IdMatchModel.apply)(IdMatchModel.unapply)
+    mapping(CustomsId.utr -> text.verifying(validUtr))(IdMatchModel.apply)(IdMatchModel.unapply)
   )
 
   val ninoOrUtrChoiceForm: Form[NinoOrUtrChoice] = Form(

@@ -19,6 +19,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services.cache
 import javax.inject.Singleton
 import play.api.mvc.{AnyContent, Request, Session}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   IndividualFlow,
   OrganisationFlow,
@@ -51,9 +52,9 @@ class RequestSessionData {
     val userLocation = request.session.data.get(RequestSessionDataKeys.selectedUserLocation)
 
     userLocation match {
-      case Some("islands") => Some("third-country")
-      case Some("eu")      => Some("third-country")
-      case _               => userLocation
+      case Some(UserLocation.Islands) => Some(UserLocation.ThirdCountry)
+      case Some(UserLocation.Eu)      => Some(UserLocation.ThirdCountry)
+      case _                          => userLocation
     }
   }
 

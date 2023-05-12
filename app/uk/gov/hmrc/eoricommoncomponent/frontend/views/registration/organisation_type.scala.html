@@ -42,7 +42,7 @@
         CdsOrganisationType.SoleTraderId -> messages("cds.matching.organisation-type.radio.sole-trader.label"),
         CdsOrganisationType.IndividualId -> messages("cds.matching.organisation-type.radio.individual.label"))
 
-    if(selectedUserLocation == Some(UserLocation.Uk)) ukOptionsFirstScreen
+    if(selectedUserLocation.contains(UserLocation.Uk)) ukOptionsFirstScreen
     else rowOptionsFirstScreen
 }
 
@@ -53,7 +53,7 @@
         CdsOrganisationType.SoleTraderId -> messages("cds.matching.organisation-type.radio.sole-trader.hint-text"),
         CdsOrganisationType.IndividualId -> messages("cds.matching.organisation-type.radio.individual.hint-text"))
 
-    if (selectedUserLocation == Some(UserLocation.Uk)) Seq.empty else nonUkOptionHints
+    if (selectedUserLocation.contains(UserLocation.Uk)) Seq.empty else nonUkOptionHints
 }
 
 @options = @{
