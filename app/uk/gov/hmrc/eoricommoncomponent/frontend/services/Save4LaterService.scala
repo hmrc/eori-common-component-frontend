@@ -32,9 +32,9 @@ class Save4LaterService @Inject() (save4LaterConnector: Save4LaterConnector) {
 
   private val logger = Logger(this.getClass)
 
-  private val safeIdKey   = CustomsId.safeId
+  private val safeIdKey   = "safeId"
   private val orgTypeKey  = "orgType"
-  private val emailKey    = EmailVerificationKeys.EmailKey
+  private val emailKey    = "email"
   private val cdsEmailKey = "cdsEmail"
 
   def saveSafeId(groupId: GroupId, safeId: SafeId)(implicit hc: HeaderCarrier): Future[Unit] = {
