@@ -34,9 +34,9 @@
 )(implicit request: Request[_], messages: Messages)
 
 @hintHtml = {
-    <p id="email" class="govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6 govuk-!-font-weight-bold">@email</p>
-    <p class="govuk-body">@messages("subscription.check-your-email.confirm.label")</p>
+    <p class="govuk-!-margin-top-2">@messages("subscription.check-your-email.confirm.label")</p>
 }
+
 @values = @{
         Seq("true" -> messages("subscription.check-your-email.yes"), "false" -> messages("subscription.check-your-email.no"))
     }
@@ -52,7 +52,7 @@
     }
 }
 
-@layout_di(messages("subscription.check-your-email.confirm.question"), form = Some(confirmEmailYesNoAnswerForm)) {
+@layout_di(messages("subscription.check-your-email.confirm.title"), form = Some(confirmEmailYesNoAnswerForm)) {
 
 <div>
 
@@ -64,7 +64,7 @@
 
         @inputRadioGroup(
             confirmEmailYesNoAnswerForm("yes-no-answer"),
-            legend = messages("subscription.check-your-email.confirm.question"),
+            legend = messages("subscription.check-your-email.confirm.question", email.getOrElse("")),
             items = options,
             hint = Some(Hint(content = HtmlContent(hintHtml), classes = "govuk-body-s")),
             classes = "govuk-fieldset__legend--l"
