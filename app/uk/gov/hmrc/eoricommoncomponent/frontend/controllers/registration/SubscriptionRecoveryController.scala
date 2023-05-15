@@ -25,7 +25,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.RegistrationInfoRequest.EORI
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionDisplayResponse
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.RecipientDetails
@@ -88,7 +87,7 @@ class SubscriptionRecoveryController @Inject() (
       safeId = registerWithEoriAndIdResponse.responseDetail
         .flatMap(_.responseData.map(_.SAFEID))
         .getOrElse(throw new IllegalStateException("no SAFEID found in the response"))
-      queryParameters = (EORI -> eori) :: buildQueryParams
+      queryParameters = ("EORI" -> eori) :: buildQueryParams
       sub09Result  <- SUB09Connector.subscriptionDisplay(queryParameters, service.code)
       sub01Outcome <- sessionCache.sub01Outcome
       email        <- sessionCache.email
@@ -121,7 +120,7 @@ class SubscriptionRecoveryController @Inject() (
       registrationDetails <- sessionCache.registrationDetails
       eori            = subscriptionDetails.eoriNumber.getOrElse(throw DataUnavailableException("no eori found in the cache"))
       safeId          = registrationDetails.safeId.id
-      queryParameters = (EORI -> eori) :: buildQueryParams
+      queryParameters = ("EORI" -> eori) :: buildQueryParams
       sub09Result  <- SUB09Connector.subscriptionDisplay(queryParameters, service.code)
       sub01Outcome <- sessionCache.sub01Outcome
       email        <- sessionCache.email

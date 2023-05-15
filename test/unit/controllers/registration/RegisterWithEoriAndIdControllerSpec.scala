@@ -360,7 +360,7 @@ class RegisterWithEoriAndIdControllerSpec
       ).thenReturn(Future.successful(true))
       when(
         mockSubscriptionStatusService
-          .getStatus(meq("taxPayerId"), meq("SapNumber000000000000000000000000000000000"))(any(), any(), any())
+          .getStatus(meq("taxPayerID"), meq("SapNumber000000000000000000000000000000000"))(any(), any(), any())
       ).thenReturn(Future.successful(NewSubscription))
       when(mockRequestSessionData.userSelectedOrganisationType(any()))
         .thenReturn(Some(CdsOrganisationType.Individual))

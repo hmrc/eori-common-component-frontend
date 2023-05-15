@@ -75,9 +75,9 @@ class HowCanWeIdentifyYouController @Inject() (
       .cacheNinoOrUtrChoice(formData)
       .map { _ =>
         formData.ninoOrUtrRadio match {
-          case Some(CustomsId.nino) =>
+          case Some("nino") =>
             Redirect(continueNino(inReviewMode, service))
-          case Some(CustomsId.utr) =>
+          case Some("utr") =>
             Redirect(continueUtr(inReviewMode, service))
           case _ =>
             throw DataUnavailableException("HowCanWeIdentifyYouController Missing form data values")

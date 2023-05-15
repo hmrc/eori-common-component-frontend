@@ -18,7 +18,6 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.domain
 
 import play.api.libs.json._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.EtmpLegalStatus
 
 sealed trait EtmpOrganisationType {
   def etmpOrgTypeCode: String
@@ -68,10 +67,10 @@ object EtmpOrganisationType {
   def apply(cdsOrgType: CdsOrganisationType): EtmpOrganisationType = cdsToEtmpOrgType.getOrElse(cdsOrgType.id, NA)
 
   def apply(id: String): EtmpOrganisationType = id match {
-    case EtmpLegalStatus.Partnership        => Partnership
-    case EtmpLegalStatus.Llp                => LLP
-    case EtmpLegalStatus.CorporateBody      => CorporateBody
-    case EtmpLegalStatus.UnincorporatedBody => UnincorporatedBody
+    case "Partnership"         => Partnership
+    case "LLP"                 => LLP
+    case "Corporate Body"      => CorporateBody
+    case "Unincorporated Body" => UnincorporatedBody
     case invalidId =>
       throw new IllegalArgumentException(
         s"""I got an $invalidId as an ETMP Organisation Type but I wanted one of "Partnership", "LLP", "Corporate Body", "Unincorporated Body""""
@@ -79,10 +78,10 @@ object EtmpOrganisationType {
   }
 
   private def unapply(id: EtmpOrganisationType): String = id match {
-    case Partnership        => EtmpLegalStatus.Partnership
-    case LLP                => EtmpLegalStatus.Llp
-    case CorporateBody      => EtmpLegalStatus.CorporateBody
-    case UnincorporatedBody => EtmpLegalStatus.UnincorporatedBody
+    case Partnership        => "Partnership"
+    case LLP                => "LLP"
+    case CorporateBody      => "Corporate Body"
+    case UnincorporatedBody => "Unincorporated Body"
     case _                  => "N/A"
   }
 

@@ -35,7 +35,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
   RequestSessionData,
   SessionCache
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.EtmpLegalStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionBusinessService,
   SubscriptionDetailsService
@@ -179,17 +178,11 @@ class NameIDOrgController @Inject() (
 
   private val OrganisationTypeConfigurations: Map[String, NameIdOrgViewModel] =
     Map(
-      CdsOrganisationType.CompanyId -> NameIdOrgViewModel(
-        EtmpLegalStatus.CorporateBody,
-        displayMode = RegisteredCompanyDM
-      ),
-      CdsOrganisationType.PartnershipId -> NameIdOrgViewModel(EtmpLegalStatus.Partnership, displayMode = PartnershipDM),
-      CdsOrganisationType.LimitedLiabilityPartnershipId -> NameIdOrgViewModel(
-        EtmpLegalStatus.Llp,
-        displayMode = PartnershipLLP
-      ),
+      CdsOrganisationType.CompanyId                     -> NameIdOrgViewModel("Corporate Body", displayMode = RegisteredCompanyDM),
+      CdsOrganisationType.PartnershipId                 -> NameIdOrgViewModel("Partnership", displayMode = PartnershipDM),
+      CdsOrganisationType.LimitedLiabilityPartnershipId -> NameIdOrgViewModel("LLP", displayMode = PartnershipLLP),
       CdsOrganisationType.CharityPublicBodyNotForProfitId -> NameIdOrgViewModel(
-        EtmpLegalStatus.UnincorporatedBody,
+        "Unincorporated Body",
         displayMode = OrganisationModeDM,
         isNameAddressRegistrationAvailable = true
       )

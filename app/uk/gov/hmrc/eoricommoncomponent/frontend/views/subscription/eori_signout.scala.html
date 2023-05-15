@@ -38,8 +38,8 @@
         RadioItem(
             content = Text(label),
             value = Some(value),
-            id = Some(s"${form(YesNo.yesNoAnswer).name}-${value.toLowerCase.replace(" ", "_")}"),
-            checked = form(YesNo.yesNoAnswer).value.contains(value)
+            id = Some(s"${form("yes-no-answer").name}-${value.toLowerCase.replace(" ", "_")}"),
+            checked = form("yes-no-answer").value.contains(value)
         )
     }
 }
@@ -51,7 +51,7 @@
         </div>
 
         @errorSummary(form.errors,
-            focusOverrides = Map(YesNo.yesNoAnswer -> YesNo.answerTrue))
+            focusOverrides = Map("yes-no-answer" -> s"yes-no-answer-true"))
 
         @helpers.form(routes.EoriUnableToUseSignoutController.submit(service), "signout-form") {
             @CSRF.formField
