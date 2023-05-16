@@ -65,12 +65,6 @@ class ContactDetailsSpec extends ViewSpec {
       doc.body().getElementsByClass("full-name").text() mustBe "Full name"
     }
 
-    "display telephone input" in {
-
-      doc.body().getElementsByClass("telephone").text() mustBe "Telephone"
-      doc.body().getElementById("telephone-hint").text() mustBe "For international numbers include the country code"
-    }
-
     "display continue button" in {
 
       doc.body().getElementById("continue-button").text() mustBe "Continue"
@@ -84,7 +78,6 @@ class ContactDetailsSpec extends ViewSpec {
 
       docWithErrorSummary.getElementsByClass("govuk-error-summary__title").text() mustBe "There is a problem"
       errorList.get(0).text() mustBe "Enter your contact name"
-      errorList.get(1).text() mustBe "Enter your contact telephone number"
     }
   }
 }
