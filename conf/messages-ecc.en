@@ -104,9 +104,19 @@ ecc.subscription.information.section.individual.para=To verify your identity you
 ecc.subscription.information.section.individual.nino=National Insurance number, if you have worked in the UK
 ecc.subscription.information.section.individual.utr=Self Assessment Unique Taxpayer Reference (UTR), if you registered for Self Assessment
 
-ecc.subscription.information.only.once=This only needs to be done once.
+ecc.subscription.information.only.once=Subscribing means:
 ecc.subscription.information.email.confirm=We’ll process your application and email you with the result within 2 hours.
-
+ecc.subscription.information.only.once.bullet1=you need to enter some personal details
+ecc.subscription.information.only.once.bullet2=HMRC will do a security check to verify your details
+ecc.subscription.information.only.once.para1.atar= Once you have subscribed you can apply for an: <ul class="govuk-body"><li>Advance Tariff Ruling</li><li>Advance Valuation Ruling</li></ul>
+ecc.subscription.information.only.once.para1.cds = Once you have subscribed you will have access to the Customs Declaration Service.
+ecc.subscription.information.only.once.para1.gagmr = Once you have subscribed you can get a goods movement reference (GMR).
+ecc.subscription.information.only.once.para1.route1 =Once you have subscribed you can: <ul class="govuk-body"><li>apply for repayment of import duty and VAT (CHIEF)</li><li>send documents for a customs check for declarations made in CHIEF</li><li>tell HMRC about an underpayment of Customs Duty or import VAT</li></ul>
+ecc.subscription.information.only.once.para1.ctc = Once you have subscribed you can submit union transit declarations.
+ecc.subscription.information.only.once.para1.gbss = Once you have subscribed you can make entry summary declarations.
+ecc.subscription.information.only.once.para1.ars = Once you have subscribed you can apply for an: <ul class="govuk-body"><li>Advance Tariff Ruling</li><li>Advance Valuation Ruling</li></ul>
+ecc.subscription.information.only.once.para1 = You only need to do this once.
+ecc.subscription.information.only.once.para1.cts =Once you have subscribed you can: <ul class="govuk-body"><li>apply for repayment of import duty and VAT (CHIEF)</li><li>send documents for a customs check for declarations made in CHIEF</li><li>tell HMRC about an underpayment of Customs Duty or import VAT</li></ul>
 cds.navigation.subscribe=Subscribe
 
 cds.form.contact-details=Your address
