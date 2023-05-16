@@ -18,7 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.domain
 
 import java.time.LocalDate
 import play.api.libs.json._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.IndividualName
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{IndividualName, RegistrationInfoRequest}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.formatInput
 
 sealed trait CustomsId {
@@ -75,11 +75,12 @@ object CacheIds {
 }
 
 object CustomsId {
-  private val utr        = "utr"
-  private val eori       = "eori"
-  private val nino       = "nino"
-  private val safeId     = "safeId"
-  private val taxPayerId = "taxPayerId"
+  val utr        = "utr"
+  val eori       = "eori"
+  val nino       = "nino"
+  val safeId     = "safeId"
+  val taxPayerId = "taxPayerId"
+  val taxPayerID = "taxPayerID"
 
   private val idTypeMapping = Map[String, String => CustomsId](
     utr        -> Utr,
@@ -108,11 +109,11 @@ object CustomsId {
 
   def apply(idType: String, idNumber: String): CustomsId =
     idType match {
-      case "NINO"   => Nino(idNumber)
-      case "UTR"    => Utr(idNumber)
-      case "EORI"   => Eori(idNumber)
-      case "SAFEID" => SafeId(idNumber)
-      case _        => throw new IllegalArgumentException(s"Unknown Identifier $idType")
+      case RegistrationInfoRequest.NINO => Nino(idNumber)
+      case RegistrationInfoRequest.UTR  => Utr(idNumber)
+      case RegistrationInfoRequest.EORI => Eori(idNumber)
+      case "SAFEID"                     => SafeId(idNumber)
+      case _                            => throw new IllegalArgumentException(s"Unknown Identifier $idType")
     }
 
 }
@@ -146,6 +147,11 @@ object NameOrganisationMatchModel {
 
 case class YesNo(isYes: Boolean) {
   def isNo: Boolean = !isYes
+}
+
+object YesNo {
+  val yesNoAnswer = "yes-no-answer"
+  val answerTrue  = "yes-no-answer-true"
 }
 
 trait NameDobMatch {
