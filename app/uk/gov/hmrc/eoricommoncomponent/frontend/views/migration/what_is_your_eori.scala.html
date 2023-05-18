@@ -33,7 +33,7 @@
 
 
 @getEoriLink = {
-    <a class="govuk-link" href=@appConfig.externalGetEORILink(service)>@messages("cds.subscription.enter-eori-number.no-eori.link")</a>
+    <a class="govuk-link" href=@appConfig.eoriCommonComponentRegistrationFrontend(service.code)>@messages("cds.subscription.enter-eori-number.no-eori.link")</a>
 }
 
 @hintTextMessage = {

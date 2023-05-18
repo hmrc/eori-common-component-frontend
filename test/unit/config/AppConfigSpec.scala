@@ -147,27 +147,5 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
 
       appConfig.addressLookup shouldBe "http://localhost:6754/lookup"
     }
-
-    "return url for 'get EORI" when {
-
-      "register is blocked" in {
-        when(mockConfig.getOptional[String]("routes-to-block")).thenReturn(Some("register"))
-        when(mockConfig.get[String]("external-url.get-cds-eori")).thenReturn("/config-url")
-
-        val testAppConfig = new AppConfig(mockConfig, mockServiceConfig, "appName")
-
-        testAppConfig.externalGetEORILink(atarService) shouldBe "/config-url"
-      }
-
-      "register is un-blocked" in {
-        when(mockConfig.getOptional[String]("routes-to-block")).thenReturn(None)
-
-        val testAppConfig = new AppConfig(mockConfig, mockServiceConfig, "appName")
-
-        testAppConfig.externalGetEORILink(
-          atarService
-        ) shouldBe "http://localhost:6751/customs-registration-services/atar/register"
-      }
-    }
   }
 }

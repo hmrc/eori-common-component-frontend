@@ -60,15 +60,6 @@ class AppConfig @Inject() (
   def eoriCommonComponentRegistrationFrontend(serviceName: String): String =
     eoriCommonComponentRegistrationFrontendBaseUrl + serviceName + "/register"
 
-  def externalGetEORILink(service: Service): String = {
-    def registerBlocked = blockedRoutesRegex.exists(_.findFirstIn("register").isDefined)
-
-    if (registerBlocked)
-      config.get[String]("external-url.get-cds-eori")
-    else
-      eoriCommonComponentRegistrationFrontend(service.code)
-  }
-
   private def languageKey(implicit messages: Messages) = messages.lang.language match {
     case "cy" => "cy"
     case _    => "en"
