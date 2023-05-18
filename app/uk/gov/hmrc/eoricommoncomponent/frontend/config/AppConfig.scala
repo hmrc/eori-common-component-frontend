@@ -80,12 +80,6 @@ class AppConfig @Inject() (
   val userResearchBannerUrl: String                      = config.get[String]("external-url.user-research-bannerUrl")
   def callCharges()(implicit messages: Messages): String = config.get[String](s"external-url.call-charges-$languageKey")
 
-  val blockedRoutesRegex: Seq[Regex] =
-    config.getOptional[String]("routes-to-block") match {
-      case Some(routes) if routes.nonEmpty => routes.split(',').map(_.r).toSeq
-      case _                               => Seq.empty
-    }
-
   //get help link feedback for Subscribe journey
   def reportAProblemPartialUrlSubscribe(service: Service): String =
     s"$contactBaseUrl/contact/problem_reports_ajax?service=$serviceIdentifierSubscribe-${service.code}"

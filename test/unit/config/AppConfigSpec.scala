@@ -42,10 +42,6 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
 
   "AppConfig" should {
 
-    "have blockedRoutesRegex defined" in {
-      appConfig.blockedRoutesRegex.map(_.pattern.pattern()).mkString(":") shouldBe ""
-    }
-
     "have ttl defined" in {
       appConfig.ttl shouldBe Duration(40, TimeUnit.MINUTES)
     }
