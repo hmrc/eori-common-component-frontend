@@ -143,6 +143,12 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
       ) shouldBe "http://localhost:6753/vat-known-facts-control-list"
     }
 
+    "register for an EORI link takes user to ECC" in {
+      appConfig.eoriCommonComponentRegistrationFrontend(
+        atarService.code
+      ) shouldBe "http://localhost:6751/customs-registration-services/atar/register"
+    }
+
     "return address lookup url" in {
 
       appConfig.addressLookup shouldBe "http://localhost:6754/lookup"
