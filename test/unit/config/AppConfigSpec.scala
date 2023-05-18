@@ -33,6 +33,8 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
   private val mockConfig: Configuration = spy(config)
   private val mockServiceConfig         = mock[ServicesConfig]
 
+  private val services = Seq(atarService.code, gvmsService.code, otherService.code, cdsService.code)
+
   override def beforeEach() {
     super.beforeEach()
     Mockito.reset(mockConfig, mockServiceConfig)
@@ -144,9 +146,12 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
     }
 
     "register for an EORI link takes user to ECC" in {
-      appConfig.eoriCommonComponentRegistrationFrontend(
-        atarService.code
-      ) shouldBe "http://localhost:6751/customs-registration-services/atar/register"
+      services.foreach(
+        serviceCode =>
+          appConfig.eoriCommonComponentRegistrationFrontend(
+            serviceCode
+          ) shouldBe s"http://localhost:6751/customs-registration-services/$serviceCode/register"
+      )
     }
 
     "return address lookup url" in {
