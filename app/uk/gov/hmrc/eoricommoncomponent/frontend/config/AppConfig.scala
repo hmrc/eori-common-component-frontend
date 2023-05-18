@@ -60,15 +60,6 @@ class AppConfig @Inject() (
   def eoriCommonComponentRegistrationFrontend(serviceName: String): String =
     eoriCommonComponentRegistrationFrontendBaseUrl + serviceName + "/register"
 
-  def externalGetEORILink(service: Service): String = {
-    def registerBlocked = blockedRoutesRegex.exists(_.findFirstIn("register").isDefined)
-
-    if (registerBlocked)
-      config.get[String]("external-url.get-cds-eori")
-    else
-      eoriCommonComponentRegistrationFrontend(service.code)
-  }
-
   private def languageKey(implicit messages: Messages) = messages.lang.language match {
     case "cy" => "cy"
     case _    => "en"
@@ -88,12 +79,6 @@ class AppConfig @Inject() (
   val changeOfDetails: String                            = config.get[String]("external-url.change-of-details")
   val userResearchBannerUrl: String                      = config.get[String]("external-url.user-research-bannerUrl")
   def callCharges()(implicit messages: Messages): String = config.get[String](s"external-url.call-charges-$languageKey")
-
-  val blockedRoutesRegex: Seq[Regex] =
-    config.getOptional[String]("routes-to-block") match {
-      case Some(routes) if routes.nonEmpty => routes.split(',').map(_.r).toSeq
-      case _                               => Seq.empty
-    }
 
   //get help link feedback for Subscribe journey
   def reportAProblemPartialUrlSubscribe(service: Service): String =

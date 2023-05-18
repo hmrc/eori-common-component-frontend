@@ -30,7 +30,7 @@
 @(service: Service, headingAndTitleMessage: String)(implicit messages: Messages, request: Request[_])
 
 @getEoriLink = {
-<a class="govuk-link" href=@appConfig.externalGetEORILink(service)>@messages("ecc.subscription.information.para2.link")</a>
+<a class="govuk-link" href=@appConfig.eoriCommonComponentRegistrationFrontend(service.code)>@messages("ecc.subscription.information.para2.link")</a>
 }
 
 @dynamicContent = {

@@ -33,16 +33,14 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
   private val mockConfig: Configuration = spy(config)
   private val mockServiceConfig         = mock[ServicesConfig]
 
+  private val services = Seq(atarService.code, gvmsService.code, otherService.code, cdsService.code)
+
   override def beforeEach() {
     super.beforeEach()
     Mockito.reset(mockConfig, mockServiceConfig)
   }
 
   "AppConfig" should {
-
-    "have blockedRoutesRegex defined" in {
-      appConfig.blockedRoutesRegex.map(_.pattern.pattern()).mkString(":") shouldBe ""
-    }
 
     "have ttl defined" in {
       appConfig.ttl shouldBe Duration(40, TimeUnit.MINUTES)
@@ -143,31 +141,18 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
       ) shouldBe "http://localhost:6753/vat-known-facts-control-list"
     }
 
+    "register for an EORI link takes user to ECC" in {
+      services.foreach(
+        serviceCode =>
+          appConfig.eoriCommonComponentRegistrationFrontend(
+            serviceCode
+          ) shouldBe s"http://localhost:6751/customs-registration-services/$serviceCode/register"
+      )
+    }
+
     "return address lookup url" in {
 
       appConfig.addressLookup shouldBe "http://localhost:6754/lookup"
-    }
-
-    "return url for 'get EORI" when {
-
-      "register is blocked" in {
-        when(mockConfig.getOptional[String]("routes-to-block")).thenReturn(Some("register"))
-        when(mockConfig.get[String]("external-url.get-cds-eori")).thenReturn("/config-url")
-
-        val testAppConfig = new AppConfig(mockConfig, mockServiceConfig, "appName")
-
-        testAppConfig.externalGetEORILink(atarService) shouldBe "/config-url"
-      }
-
-      "register is un-blocked" in {
-        when(mockConfig.getOptional[String]("routes-to-block")).thenReturn(None)
-
-        val testAppConfig = new AppConfig(mockConfig, mockServiceConfig, "appName")
-
-        testAppConfig.externalGetEORILink(
-          atarService
-        ) shouldBe "http://localhost:6751/customs-registration-services/atar/register"
-      }
     }
   }
 }
