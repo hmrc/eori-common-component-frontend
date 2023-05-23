@@ -137,22 +137,23 @@ class GetUtrSubscriptionController @Inject() (
   private lazy val noOrgTypeSelected = throw DataUnavailableException("No organisation type selected by user")
   private lazy val noBusinessName    = throw DataUnavailableException("No business name cached")
 
-  private def getHintMessage()(implicit request: Request[AnyContent]) = {
-    val defaultHintMessage = "subscription-journey.how-confirm-identity.utr.hint"
+  private def getHintMessage()(implicit request: Request[AnyContent]) =
     requestSessionData.userSelectedOrganisationType.map(
       orgType =>
         if (orgType == CdsOrganisationType.Company) "cds.matching.row-organisation.utr.hint"
-        else defaultHintMessage
-    ).getOrElse(defaultHintMessage)
-  }
+        else UtrSubscriptionMessages.defaultHintMessage
+    ).getOrElse(UtrSubscriptionMessages.defaultHintMessage)
 
-  private def getHeadingMessage()(implicit request: Request[AnyContent]) = {
-    val defaultHeadingMessage = "subscription-journey.how-confirm-identity.utr.heading"
+  private def getHeadingMessage()(implicit request: Request[AnyContent]) =
     requestSessionData.userSelectedOrganisationType.map(
       orgType =>
         if (orgType == CdsOrganisationType.Company) "subscription-journey.how-confirm-identity.utr.third-org.heading"
-        else defaultHeadingMessage
-    ).getOrElse(defaultHeadingMessage)
-  }
+        else UtrSubscriptionMessages.defaultHeadingMessage
+    ).getOrElse(UtrSubscriptionMessages.defaultHeadingMessage)
 
+}
+
+object UtrSubscriptionMessages {
+  val defaultHeadingMessage = "subscription-journey.how-confirm-identity.utr.heading"
+  val defaultHintMessage    = "subscription-journey.how-confirm-identity.utr.hint"
 }
