@@ -274,11 +274,14 @@ ecc.reg06.outcome.why.eori = Rhif EORI
 ecc.reg06.outcome.apply.again = Gallwch adolygu’r manylion hyn a {0}
 ecc.reg06.outcome.apply.again.link = gwneud cais eto gan ddefnyddio manylion gwahanol.
 
-ecc.unable-to-use.title = Ni allwch gael mynediad at {0} gyda chyfrif Porth y Llywodraeth hwn
-ecc.unable-to-use.this-eori-number = Mae’r rhif EORI:
-ecc.unable-to-use.para1 = sy’n gysylltiedig â’ch cyfrif Porth y Llywodraeth eisoes yn cael ei ddefnyddio gan gyfrif arall i gael mynediad at {0}. Bydd angen i chi fewngofnodi gyda’r cyfrif hwnnw i gael mynediad at {0}.
-ecc.unable-to-use.para2 = Allgofnodwch a mewngofnodwch eto gyda Dynodydd Defnyddiwr (ID) gwahanol ar gyfer Porth y Llywodraeth.
-
+ecc.unable-to-use.title = Does dim modd i chi ddefnyddio’r gwasanaeth hwn gyda’r Dynodydd Defnyddiwr (ID) hwn ar gyfer Porth y Llywodraeth
+ecc.unable-to-use.this-eori-para-one = Mae angen i’r Dynodydd Defnyddiwr bod yr un a ddefnyddiwyd gennych chi neu’ch sefydliad i danysgrifio i’r gwasanaeth.
+ecc.unable-to-use.this-eori-para-title-two = Sut i unioni hyn
+ecc.unable-to-use.this-eori-para-title-three = Os nad ydych yn gwybod beth yw’r Dynodydd Defnyddiwr gwnaethoch ei defnyddio i danysgrifio
+ecc.unable-to-use.this-eori-para-title-three-link= Cysylltwch â CThEF
+ecc.unable-to-use-title-two-para1 = Tanysgrifio i wasanaeth yw’r hyn yr ydych yn ei wneud y tro cyntaf yr ydych yn ei ddefnyddio. Rydych chi neu rywun yn eich sefydliad wedi tanysgrifio gyda Dynodydd Defnyddiwr sy’n wahanol i’r un hwn.
+ecc.unable-to-use-title-two-para2 = Mae’n rhaid i chi allgofnodi, ac yna fewngofnodi gyda’r Dynodydd Defnyddiwr hwnnw.
+ecc.unable-to-use.this-eori-title-three-para = am help.
 ecc.what-is-your-eori.unable-to-use.title = Nid yw’ch cyfrif Porth y Llywodraeth yn gysylltiedig â’r EORI hwn
 ecc.what-is-your-eori.unable-to-use.question = Beth ydych am ei wneud?
 ecc.what-is-your-eori.unable-to-use.empty = Dewiswch yr hyn yr hoffech ei wneud

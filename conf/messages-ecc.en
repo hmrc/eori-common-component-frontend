@@ -267,11 +267,14 @@ ecc.reg06.outcome.why.eori = EORI number
 ecc.reg06.outcome.apply.again = You can review these details and {0}
 ecc.reg06.outcome.apply.again.link = apply again using different details.
 
-ecc.unable-to-use.title = You cannot access {0} with this Government Gateway account
-ecc.unable-to-use.this-eori-number = The EORI number:
-ecc.unable-to-use.para1 = which is linked to your Government Gateway account is already used by another account to access {0}. You will need to sign in with that account to access {0}.
-ecc.unable-to-use.para2 = Sign out and sign in again with a different Government Gateway account.
-
+ecc.unable-to-use.title = You cannot use this service with this Government Gateway user ID
+ecc.unable-to-use.this-eori-para-one = The user ID needs to be the one that you or your organisation subscribed to this service with.
+ecc.unable-to-use.this-eori-para-title-two = How to fix this
+ecc.unable-to-use-title-two-para1 = Subscribing to a service is what you do the first time you use it. You or someone in your organisation subscribed with a user ID that’s different to this one.
+ecc.unable-to-use.this-eori-para-title-three = If you don’t know the user ID you subscribed with
+ecc.unable-to-use.this-eori-para-title-three-link = Contact HMRC
+ecc.unable-to-use-title-two-para2 = You need to sign out then sign in with that user ID.
+ecc.unable-to-use.this-eori-title-three-para = for help.
 ecc.what-is-your-eori.unable-to-use.title = Your Government Gateway account is not linked to this EORI
 ecc.what-is-your-eori.unable-to-use.question = What would you like to do?
 ecc.what-is-your-eori.unable-to-use.empty = Select what you would like to do
