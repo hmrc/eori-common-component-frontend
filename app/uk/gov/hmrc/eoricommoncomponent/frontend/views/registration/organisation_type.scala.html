@@ -15,7 +15,7 @@
  *@
 
 @import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
-@import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
+
 @import views.html.helper._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
@@ -25,63 +25,19 @@
 
 @this(layout_di: layout, errorSummary: helpers.errorSummary, govukButton: GovukButton, inputRadioGroup: helpers.inputRadioGroup)
 
-@(OrganisationTypeForm: Form[CdsOrganisationType], selectedUserLocation: Option[String], service: Service)(implicit request: Request[_], messages: Messages)
-
-@validOptions = @{
-
-    lazy val ukOptionsFirstScreen = Seq(
-        CdsOrganisationType.CompanyId -> messages("cds.matching.organisation-type.radio.company.label"),
-        CdsOrganisationType.SoleTraderId -> messages("cds.matching.organisation-type.radio.sole-trader.label"),
-        CdsOrganisationType.IndividualId -> messages("cds.matching.organisation-type.radio.individual.label"),
-        CdsOrganisationType.PartnershipId -> messages("cds.matching.organisation-type.radio.partnership.label"),
-        CdsOrganisationType.LimitedLiabilityPartnershipId -> messages("cds.matching.organisation-type.radio.limited-liability-partnership.label"),
-        CdsOrganisationType.CharityPublicBodyNotForProfitId -> messages("cds.matching.organisation-type.radio.charity-public-body-not-for-profit.label"))
-
-    lazy val rowOptionsFirstScreen = Seq(
-        CdsOrganisationType.CompanyId -> messages("cds.matching.organisation-type.radio.organisation.label"),
-        CdsOrganisationType.SoleTraderId -> messages("cds.matching.organisation-type.radio.sole-trader.label"),
-        CdsOrganisationType.IndividualId -> messages("cds.matching.organisation-type.radio.individual.label"))
-
-    if(selectedUserLocation.contains(UserLocation.Uk)) ukOptionsFirstScreen
-    else rowOptionsFirstScreen
-}
-
-@hintTextOptions = @{
-
-    lazy val nonUkOptionHints = Seq(
-        CdsOrganisationType.CompanyId -> messages("cds.matching.organisation-type.radio.organisation.hint-text"),
-        CdsOrganisationType.SoleTraderId -> messages("cds.matching.organisation-type.radio.sole-trader.hint-text"),
-        CdsOrganisationType.IndividualId -> messages("cds.matching.organisation-type.radio.individual.hint-text"))
-
-    if (selectedUserLocation.contains(UserLocation.Uk)) Seq.empty else nonUkOptionHints
-}
-
-@options = @{
-    validOptions.map { case (value, label) =>
-        RadioItem(
-            content = Text(label),
-            value = Some(value),
-            id = Some(s"${OrganisationTypeForm("organisation-type").name}-${value.toLowerCase.replace(" ", "_")}"),
-            checked = OrganisationTypeForm("organisation-type").value.contains(value),
-            hint = hintTextOptions.toMap.get(value).map(hint => Hint(content = HtmlContent(hint)))
-        )
-    }
-}
+@(OrganisationTypeForm: Form[CdsOrganisationType], radioItems: Seq[RadioItem], service: Service)(implicit request: Request[_], messages: Messages)
 
 @layout_di(messages("cds.matching.organisation-type.user.header"), form = Some(OrganisationTypeForm)) {
     <div>
-
-        @errorSummary(OrganisationTypeForm.errors, focusOverrides = Map("organisation-type" -> s"organisation-type-${validOptions.head._1}"))
-
+        @errorSummary(OrganisationTypeForm.errors, focusOverrides = Map("organisation-type" -> radioItems.headOption.flatMap(_.id).getOrElse("organisation-type-company")))
         @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.OrganisationTypeController.submit(service), "OrganisationTypeForm") {
             @CSRF.formField
-
 
 
             @inputRadioGroup(
                 OrganisationTypeForm("organisation-type"),
                 legend = messages("cds.matching.organisation-type.user.header"),
-                items = options,
+                items = radioItems,
                 classes = "govuk-fieldset__legend--l"
             )
 

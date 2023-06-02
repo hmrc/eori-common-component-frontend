@@ -28,6 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.address_lookup_postcode
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
+import uk.gov.hmrc.eoricommoncomponent.frontend.viewModels.AddressLookupPostcodeViewModel
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -65,8 +66,9 @@ class AddressLookupPostcodeController @Inject() (
     val selectedOrganisationType = requestSessionData.userSelectedOrganisationType.getOrElse(
       throw DataUnavailableException("Organisation type is not cached")
     )
+    val viewModel = AddressLookupPostcodeViewModel(isInReviewMode, selectedOrganisationType, service)
 
-    addressLookupPostcodePage(form, isInReviewMode, selectedOrganisationType, service)
+    addressLookupPostcodePage(form, isInReviewMode, viewModel, service)
   }
 
   def submit(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
