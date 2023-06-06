@@ -22,6 +22,8 @@ majorVersion := 0
 
 PlayKeys.devSettings := Seq("play.server.http.port" -> "6750")
 
+val bootstrapVersion = "7.15.0"
+
 lazy val allResolvers = resolvers ++= Seq(Resolver.jcenterRepo)
 
 lazy val IntegrationTest = config("it") extend Test
@@ -110,7 +112,7 @@ val compileDependencies = Seq(
 
 
   "uk.gov.hmrc"       %% "play-conditional-form-mapping" % "1.13.0-play-28",
-  "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"    % "7.15.0",
+  "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"    % bootstrapVersion,
   "uk.gov.hmrc"       %% "domain"                        % "8.2.0-play-28",
   "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"            % "1.1.0",
   "uk.gov.hmrc"       %% "emailaddress"                  % "3.8.0",
@@ -125,7 +127,7 @@ val testDependencies = Seq(
   "com.github.tomakehurst"  % "wiremock-standalone" % "2.27.2"            % "test, it"
     exclude ("org.apache.httpcomponents", "httpclient") exclude ("org.apache.httpcomponents", "httpcore"),
   "org.scalacheck"      %% "scalacheck"              % "1.17.0"   % "test,it",
-  "uk.gov.hmrc"            %% "bootstrap-test-play-28" % "7.15.0" % "test,it",
+  "uk.gov.hmrc"            %% "bootstrap-test-play-28" % bootstrapVersion % "test,it",
   "org.scalatestplus"   %% "scalacheck-1-15"         % "3.2.11.0" % "test,it",
   "org.jsoup"            % "jsoup"                   % "1.15.4"   % "test,it",
   "us.codecraft"         % "xsoup"                   % "0.3.6"    % "test,it",
