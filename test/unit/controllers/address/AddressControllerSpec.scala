@@ -65,6 +65,8 @@ class AddressControllerSpec
   }
 
   "Subscription Address Controller form in create mode" should {
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.createForm(atarService))
+
     "Display successfully" in {
       when(mockAddressService.populateFormViewCached(any(), any())(any[Request[AnyContent]])).thenReturn(
         Future.successful(Status(OK))
@@ -76,6 +78,8 @@ class AddressControllerSpec
   }
 
   "Subscription Address Controller form in review mode" should {
+    assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.reviewForm(atarService))
+
     "Display successfully" in {
       when(mockAddressService.populateReviewViewCached(any(), any())(any[Request[AnyContent]])).thenReturn(
         Future.successful(Status(SEE_OTHER))
