@@ -22,19 +22,36 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
 import uk.gov.hmrc.eoricommoncomponent.frontend.viewModels.AddressLookupPostcodeViewModel
 
 class AddressLookupPostcodeViewModelSpec extends UnitSpec {
-  val isInReviewMode                                = true
-  val selectedOrganisationType: CdsOrganisationType = CdsOrganisationType.Company
-
-  val expectedPageTitleKey      = "ecc.address-lookup.postcode.organisation.title"
-  val expectedFormHintKey       = "ecc.address-lookup.postcode.organisation.hint"
-  val expectedHintTextKey       = "ecc.address-lookup.postcode.hint.company"
-  val expectedAddressLink: Call = Call("GET", "/customs-enrolment-services/atar/subscribe/address/review")
-
-  val viewModel: AddressLookupPostcodeViewModel =
-    AddressLookupPostcodeViewModel(isInReviewMode, selectedOrganisationType, atarService)
 
   "AddressLookupPostcodeViewModel" should {
-    "return the expected AddressLookupPostcodeViewModel" in {
+    "return the expected model for the company in reviewMode" in {
+      val isInReviewMode                                = true
+      val selectedOrganisationType: CdsOrganisationType = CdsOrganisationType.Company
+
+      val expectedPageTitleKey      = "ecc.address-lookup.postcode.organisation.title"
+      val expectedFormHintKey       = "ecc.address-lookup.postcode.organisation.hint"
+      val expectedHintTextKey       = "ecc.address-lookup.postcode.hint.company"
+      val expectedAddressLink: Call = Call("GET", "/customs-enrolment-services/atar/subscribe/address/review")
+
+      val viewModel: AddressLookupPostcodeViewModel =
+        AddressLookupPostcodeViewModel(isInReviewMode, selectedOrganisationType, atarService)
+
+      viewModel.pageTitleKey shouldBe expectedPageTitleKey
+      viewModel.formHintKey shouldBe expectedFormHintKey
+      viewModel.hintTextKey shouldBe expectedHintTextKey
+      viewModel.addressLink shouldBe expectedAddressLink
+    }
+    "return the expected model for the company" in {
+      val isInReviewMode                                = false
+      val selectedOrganisationType: CdsOrganisationType = CdsOrganisationType.Company
+
+      val expectedPageTitleKey      = "ecc.address-lookup.postcode.organisation.title"
+      val expectedFormHintKey       = "ecc.address-lookup.postcode.organisation.hint"
+      val expectedHintTextKey       = "ecc.address-lookup.postcode.hint.company"
+      val expectedAddressLink: Call = Call("GET", "/customs-enrolment-services/atar/subscribe/address")
+
+      val viewModel: AddressLookupPostcodeViewModel =
+        AddressLookupPostcodeViewModel(isInReviewMode, selectedOrganisationType, atarService)
 
       viewModel.pageTitleKey shouldBe expectedPageTitleKey
       viewModel.formHintKey shouldBe expectedFormHintKey
