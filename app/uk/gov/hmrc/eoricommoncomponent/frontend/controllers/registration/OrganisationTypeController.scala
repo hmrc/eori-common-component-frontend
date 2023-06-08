@@ -16,6 +16,9 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
+import play.api.data.Form
+import play.api.i18n.Messages
+
 import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
@@ -28,6 +31,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.RegistrationDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
+import uk.gov.hmrc.eoricommoncomponent.frontend.viewModels.OrganisationViewModel.getRadioItem
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.organisation_type
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -48,12 +52,12 @@ class OrganisationTypeController @Inject() (
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
         subscriptionDetailsService.cachedOrganisationType map { orgType =>
-          def filledForm = orgType.map(organisationTypeDetailsForm.fill(_)).getOrElse(organisationTypeDetailsForm)
-          requestSessionData.selectedUserLocation match {
-            case Some(_) =>
-              Ok(organisationTypeView(filledForm, requestSessionData.selectedUserLocation, service))
-            case None => Ok(organisationTypeView(filledForm, Some(UserLocation.Uk), service))
-          }
+          val isUk       = requestSessionData.selectedUserLocation.forall(_ == UserLocation.Uk)
+          val filledForm = orgType.map(organisationTypeDetailsForm.fill(_)).getOrElse(organisationTypeDetailsForm)
+          val radioItem  = getRadioItem(isUk, filledForm)
+
+          Ok(organisationTypeView(filledForm, radioItem, service))
+
         }
     }
 
@@ -71,8 +75,9 @@ class OrganisationTypeController @Inject() (
         _: LoggedInUserWithEnrolments =>
           organisationTypeDetailsForm.bindFromRequest.fold(
             formWithErrors => {
-              val userLocation = requestSessionData.selectedUserLocation
-              Future.successful(BadRequest(organisationTypeView(formWithErrors, userLocation, service)))
+              val isUk      = requestSessionData.selectedUserLocation.forall(_ == UserLocation.Uk)
+              val radioItem = getRadioItem(isUk, formWithErrors)
+              Future.successful(BadRequest(organisationTypeView(formWithErrors, radioItem, service)))
             },
             organisationType =>
               registrationDetailsService.initialiseCacheWithRegistrationDetails(organisationType) flatMap { ok =>
