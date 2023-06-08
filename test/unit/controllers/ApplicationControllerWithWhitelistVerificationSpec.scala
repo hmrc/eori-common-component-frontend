@@ -22,6 +22,7 @@ import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.ApplicationService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.start_subscribe
@@ -34,21 +35,18 @@ import scala.concurrent.Future
 
 class ApplicationControllerWithAllowlistVerificationSpec extends ControllerSpec with AuthActionMock {
 
-  private val mockAuthConnector       = mock[AuthConnector]
-  private val mockAuthAction          = authAction(mockAuthConnector)
-  private val mockSessionCache        = mock[SessionCache]
-  private val startSubscribeView      = instanceOf[start_subscribe]
-  private val groupEnrolmentExtractor = mock[GroupEnrolmentExtractor]
-
-  private val enrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
+  private val mockAuthConnector      = mock[AuthConnector]
+  private val mockAuthAction         = authAction(mockAuthConnector)
+  private val mockSessionCache       = mock[SessionCache]
+  private val startSubscribeView     = instanceOf[start_subscribe]
+  private val mockApplicationService = mock[ApplicationService]
 
   val controller = new ApplicationController(
     mockAuthAction,
     mcc,
     startSubscribeView,
     mockSessionCache,
-    groupEnrolmentExtractor,
-    enrolmentStoreProxyService,
+    mockApplicationService,
     appConfig
   )
 

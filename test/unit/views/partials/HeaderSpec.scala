@@ -24,8 +24,9 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.LongJourney
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.ApplicationService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.start_subscribe
 import unit.controllers.CdsPage
 import util.ControllerSpec
@@ -41,7 +42,7 @@ class HeaderSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterE
   private val mockAuthAction       = authAction(mockAuthConnector)
   private val mockCdsFrontendCache = mock[SessionCache]
 
-  private val mockEnrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
+  private val mockApplicationService = mock[ApplicationService]
 
   private val viewStartSubscribe      = instanceOf[start_subscribe]
   private val groupEnrolmentExtractor = mock[GroupEnrolmentExtractor]
@@ -51,8 +52,7 @@ class HeaderSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterE
     mcc,
     viewStartSubscribe,
     mockCdsFrontendCache,
-    groupEnrolmentExtractor,
-    mockEnrolmentStoreProxyService,
+    mockApplicationService,
     appConfig
   )
 
@@ -77,6 +77,10 @@ class HeaderSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterE
     "be present when the user is logged in" in {
       AuthBuilder.withAuthorisedUser("user-1236213", mockAuthConnector)
 
+      when(mockApplicationService.getJourney(any(), any(), any())(any(), any())).thenReturn(
+        Future.successful(Right(LongJourney))
+      )
+
       val result =
         controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
@@ -86,6 +90,10 @@ class HeaderSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterE
 
     "not be present when a user isn't logged in" in {
       AuthBuilder.withNotLoggedInUser(mockAuthConnector)
+
+      when(mockApplicationService.getJourney(any(), any(), any())(any(), any())).thenReturn(
+        Future.successful(Right(LongJourney))
+      )
 
       val result = controller.startSubscription(atarService).apply(SessionBuilder.buildRequestWithSessionNoUser)
 
@@ -99,6 +107,10 @@ class HeaderSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterE
       val result = controller
         .startSubscription(atarService)
         .apply(FakeRequest("GET", "/customs-enrolment-services/atar/subscribe"))
+
+      when(mockApplicationService.getJourney(any(), any(), any())(any(), any())).thenReturn(
+        Future.successful(Right(LongJourney))
+      )
 
       val page = CdsPage(contentAsString(result))
 
