@@ -1,0 +1,199 @@
+2023.06.01 12:26:48 INFO  Started: Metals version 0.11.12 in workspace '/Users/mike.burns/Documents/hmrc/eori-common-component-frontend' for client Visual Studio Code 1.78.0.
+Jun 01, 2023 12:26:48 PM org.flywaydb.core.internal.license.VersionPrinter printVersionOnly
+INFO: Flyway Community Edition 9.16.3 by Redgate
+Jun 01, 2023 12:26:48 PM org.flywaydb.core.internal.license.VersionPrinter printVersion
+INFO: See release notes here: https://rd.gt/416ObMi
+Jun 01, 2023 12:26:48 PM org.flywaydb.core.internal.license.VersionPrinter printVersion
+INFO: 
+Jun 01, 2023 12:26:49 PM org.flywaydb.core.internal.database.base.BaseDatabaseType createDatabase
+INFO: Database: jdbc:h2:file:/Users/mike.burns/Documents/hmrc/eori-common-component-frontend/.metals/metals (H2 2.1)
+Jun 01, 2023 12:26:49 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFO: Schema history table "PUBLIC"."flyway_schema_history" does not exist yet
+Jun 01, 2023 12:26:49 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.028s)
+Jun 01, 2023 12:26:49 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFO: Creating Schema History table "PUBLIC"."flyway_schema_history" ...
+Jun 01, 2023 12:26:49 PM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "PUBLIC": << Empty Schema >>
+Jun 01, 2023 12:26:49 PM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "PUBLIC" to version "1 - Create tables"
+Jun 01, 2023 12:26:49 PM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "PUBLIC" to version "2 - Server discovery"
+Jun 01, 2023 12:26:49 PM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "PUBLIC" to version "3 - Jar symbols"
+Jun 01, 2023 12:26:49 PM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFO: Migrating schema "PUBLIC" to version "4 - Fingerprints"
+Jun 01, 2023 12:26:49 PM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFO: Successfully applied 4 migrations to schema "PUBLIC", now at version v4 (execution time 00:00.124s)
+2023.06.01 12:26:49 INFO  time: initialize in 1.1s
+2023.06.01 12:26:50 WARN  Build server is not auto-connectable.
+newlines.source is experimental, will change ignoring edition setting
+2023.06.01 12:26:54 WARN  no build target for: /Users/mike.burns/Documents/hmrc/eori-common-component-frontend/app/uk/gov/hmrc/eoricommoncomponent/frontend/controllers/registration/OrganisationTypeController.scala
+2023.06.01 12:27:01 INFO  no build target found for /Users/mike.burns/Documents/hmrc/eori-common-component-frontend/app/uk/gov/hmrc/eoricommoncomponent/frontend/controllers/registration/OrganisationTypeController.scala. Using presentation compiler with project's scala-library version: 3.2.2
+2023.06.01 12:27:05 INFO  time: code lens generation in 8.9s
+2023.06.01 12:27:05 INFO  time: code lens generation in 3.99s
+Jun 01, 2023 12:27:05 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 11
+Exception in thread "pool-5-thread-1" java.lang.Error: java.lang.InterruptedException
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1155)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.lang.InterruptedException
+	at scala.meta.internal.metals.FutureCancelToken.checkCanceled(FutureCancelToken.scala:29)
+	at scala.meta.internal.pc.CompilerAccess.onCompilerJobQueue$$anonfun$1(CompilerAccess.scala:195)
+	at scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:152)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	... 2 more
+2023.06.01 13:01:05 WARN  no build target for: /Users/mike.burns/Documents/hmrc/eori-common-component-frontend/app/uk/gov/hmrc/eoricommoncomponent/frontend/controllers/registration/OrganisationTypeController.scala
+Exception in thread "pool-5-thread-2" java.lang.Error: java.lang.InterruptedException
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1155)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.lang.InterruptedException
+	at scala.meta.internal.metals.FutureCancelToken.checkCanceled(FutureCancelToken.scala:29)
+	at scala.meta.internal.pc.CompilerAccess.onCompilerJobQueue$$anonfun$1(CompilerAccess.scala:195)
+	at scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:152)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	... 2 more
+2023.06.01 13:22:27 WARN  no build target for: /Users/mike.burns/Documents/hmrc/eori-common-component-frontend/app/uk/gov/hmrc/eoricommoncomponent/frontend/domain/CdsOrganisationType.scala
+2023.06.01 13:22:29 INFO  time: code lens generation in 1.16s
+Exception in thread "pool-5-thread-3" java.lang.Error: java.lang.InterruptedException
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1155)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.lang.InterruptedException
+	at scala.meta.internal.metals.FutureCancelToken.checkCanceled(FutureCancelToken.scala:29)
+	at scala.meta.internal.pc.CompilerAccess.onCompilerJobQueue$$anonfun$1(CompilerAccess.scala:195)
+	at scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:152)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	... 2 more
+Exception in thread "pool-5-thread-4" java.lang.Error: java.lang.InterruptedException
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1155)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.lang.InterruptedException
+	at scala.meta.internal.metals.FutureCancelToken.checkCanceled(FutureCancelToken.scala:29)
+	at scala.meta.internal.pc.CompilerAccess.onCompilerJobQueue$$anonfun$1(CompilerAccess.scala:195)
+	at scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:152)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	... 2 more
+Exception in thread "pool-5-thread-5" java.lang.Error: java.lang.InterruptedException
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1155)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.lang.InterruptedException
+	at scala.meta.internal.metals.FutureCancelToken.checkCanceled(FutureCancelToken.scala:29)
+	at scala.meta.internal.pc.CompilerAccess.onCompilerJobQueue$$anonfun$1(CompilerAccess.scala:195)
+	at scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:152)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	... 2 more
+2023.06.01 16:07:47 INFO  Shutting down server
+2023.06.01 16:07:47 INFO  shutting down Metals
+2023.06.01 16:07:47 INFO  Exiting server
+2023.06.01 16:13:50 INFO  Started: Metals version 0.11.12 in workspace '/Users/mike.burns/Documents/hmrc/eori-common-component-frontend' for client Visual Studio Code 1.78.0.
+Jun 01, 2023 4:13:50 PM org.flywaydb.core.internal.license.VersionPrinter printVersionOnly
+INFO: Flyway Community Edition 9.16.3 by Redgate
+Jun 01, 2023 4:13:50 PM org.flywaydb.core.internal.license.VersionPrinter printVersion
+INFO: See release notes here: https://rd.gt/416ObMi
+Jun 01, 2023 4:13:50 PM org.flywaydb.core.internal.license.VersionPrinter printVersion
+INFO: 
+Jun 01, 2023 4:13:50 PM org.flywaydb.core.internal.database.base.BaseDatabaseType createDatabase
+INFO: Database: jdbc:h2:file:/Users/mike.burns/Documents/hmrc/eori-common-component-frontend/.metals/metals (H2 2.1)
+Jun 01, 2023 4:13:51 PM org.flywaydb.core.internal.command.DbValidate validate
+INFO: Successfully validated 4 migrations (execution time 00:00.059s)
+Jun 01, 2023 4:13:51 PM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFO: Current version of schema "PUBLIC": 4
+Jun 01, 2023 4:13:51 PM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFO: Schema "PUBLIC" is up to date. No migration necessary.
+2023.06.01 16:13:51 INFO  time: initialize in 0.99s
+2023.06.01 16:13:53 WARN  Build server is not auto-connectable.
+2023.06.01 16:13:53 WARN  no build target for: /Users/mike.burns/Documents/hmrc/eori-common-component-frontend/test/unit/views/registration/OrganisationTypePageSpec.scala
+newlines.source is experimental, will change ignoring edition setting
+2023.06.01 16:13:58 INFO  no build target found for /Users/mike.burns/Documents/hmrc/eori-common-component-frontend/test/unit/views/registration/OrganisationTypePageSpec.scala. Using presentation compiler with project's scala-library version: 3.2.2
+2023.06.01 16:14:01 INFO  time: code lens generation in 8.65s
+Jun 01, 2023 4:14:50 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 46
+Jun 01, 2023 4:15:36 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 88
+2023.06.02 12:08:31 WARN  no build target for: /Users/mike.burns/Documents/hmrc/eori-common-component-frontend/app/uk/gov/hmrc/eoricommoncomponent/frontend/views/helpers/DateFormatter.scala
+Jun 02, 2023 12:08:32 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 109
+Jun 02, 2023 12:08:32 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 111
+2023.06.08 10:40:05 WARN  no build target for: /Users/mike.burns/Documents/hmrc/eori-common-component-frontend/app/uk/gov/hmrc/eoricommoncomponent/frontend/services/cache/sessionCache.scala
+2023.06.08 10:40:10 INFO  time: code lens generation in 1.62s
+2023.06.08 10:40:10 INFO  time: code lens generation in 2.8s
+Exception in thread "pool-5-thread-1" java.lang.Error: java.lang.InterruptedException
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1155)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.lang.InterruptedException
+	at scala.meta.internal.metals.FutureCancelToken.checkCanceled(FutureCancelToken.scala:29)
+	at scala.meta.internal.pc.CompilerAccess.onCompilerJobQueue$$anonfun$1(CompilerAccess.scala:195)
+	at scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:152)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	... 2 more
+Exception in thread "pool-5-thread-2" java.lang.Error: java.lang.InterruptedException
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1155)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.lang.InterruptedException
+	at scala.meta.internal.metals.FutureCancelToken.checkCanceled(FutureCancelToken.scala:29)
+	at scala.meta.internal.pc.CompilerAccess.onCompilerJobQueue$$anonfun$1(CompilerAccess.scala:195)
+	at scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:152)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	... 2 more
+Exception in thread "pool-5-thread-3" java.lang.Error: java.lang.InterruptedException
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1155)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.lang.InterruptedException
+	at scala.meta.internal.metals.FutureCancelToken.checkCanceled(FutureCancelToken.scala:29)
+	at scala.meta.internal.pc.CompilerAccess.onCompilerJobQueue$$anonfun$1(CompilerAccess.scala:195)
+	at scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:152)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	... 2 more
+2023.06.08 12:02:12 WARN  no build target for: /Users/mike.burns/Documents/hmrc/eori-common-component-frontend/app/uk/gov/hmrc/eoricommoncomponent/frontend/models/Service.scala
+2023.06.08 12:02:16 WARN  no build target for: /Users/mike.burns/Documents/hmrc/eori-common-component-frontend/app/uk/gov/hmrc/eoricommoncomponent/frontend/models/Service.scala
+Exception in thread "pool-5-thread-4" java.lang.Error: java.lang.InterruptedException
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1155)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.lang.InterruptedException
+	at scala.meta.internal.metals.FutureCancelToken.checkCanceled(FutureCancelToken.scala:29)
+	at scala.meta.internal.pc.CompilerAccess.onCompilerJobQueue$$anonfun$1(CompilerAccess.scala:195)
+	at scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:152)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	... 2 more
+Exception in thread "pool-5-thread-5" java.lang.Error: java.lang.InterruptedException
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1155)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.lang.InterruptedException
+	at scala.meta.internal.metals.FutureCancelToken.checkCanceled(FutureCancelToken.scala:29)
+	at scala.meta.internal.pc.CompilerAccess.onCompilerJobQueue$$anonfun$1(CompilerAccess.scala:195)
+	at scala.meta.internal.pc.CompilerJobQueue$Job.run(CompilerJobQueue.scala:152)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	... 2 more
+2023.06.08 12:02:17 WARN  no build target for: /Users/mike.burns/Documents/hmrc/eori-common-component-frontend/app/uk/gov/hmrc/eoricommoncomponent/frontend/models/Service.scala
+Jun 08, 2023 12:02:17 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 180
+2023.06.08 12:08:14 WARN  no build target for: /Users/mike.burns/Documents/hmrc/eori-common-component-frontend/app/uk/gov/hmrc/eoricommoncomponent/frontend/controllers/ApplicationController.scala
+2023.06.08 12:08:15 WARN  no build target for: /Users/mike.burns/Documents/hmrc/eori-common-component-frontend/app/uk/gov/hmrc/eoricommoncomponent/frontend/controllers/ApplicationController.scala
+Jun 08, 2023 12:08:15 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 202
+2023.06.08 12:22:08 WARN  no build target for: /Users/mike.burns/Documents/hmrc/eori-common-component-frontend/app/uk/gov/hmrc/eoricommoncomponent/frontend/controllers/ApplicationController.scala
+2023.06.08 12:22:18 WARN  no build target for: /Users/mike.burns/Documents/hmrc/eori-common-component-frontend/app/uk/gov/hmrc/eoricommoncomponent/frontend/controllers/ApplicationController.scala
+2023.06.08 12:22:18 WARN  no build target for: /Users/mike.burns/Documents/hmrc/eori-common-component-frontend/app/uk/gov/hmrc/eoricommoncomponent/frontend/controllers/ApplicationController.scala
+2023.06.08 12:22:19 WARN  no build target for: /Users/mike.burns/Documents/hmrc/eori-common-component-frontend/app/uk/gov/hmrc/eoricommoncomponent/frontend/controllers/ApplicationController.scala
+2023.06.08 12:22:19 WARN  no build target for: /Users/mike.burns/Documents/hmrc/eori-common-component-frontend/app/uk/gov/hmrc/eoricommoncomponent/frontend/controllers/ApplicationController.scala
+Jun 08, 2023 12:25:39 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+Jun 08, 2023 12:25:40 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+Jun 08, 2023 12:25:40 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFO: Unsupported notification method: $/setTrace
+2023.06.08 12:33:09 WARN  no build target for: /Users/mike.burns/Documents/hmrc/eori-common-component-frontend/app/uk/gov/hmrc/eoricommoncomponent/frontend/controllers/subscription/Sub02Controller.scala
+2023.06.08 12:52:18 WARN  no build target for: /Users/mike.burns/Documents/hmrc/eori-common-component-frontend/app/uk/gov/hmrc/eoricommoncomponent/frontend/models/Service.scala
+Jun 08, 2023 12:52:19 PM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 300

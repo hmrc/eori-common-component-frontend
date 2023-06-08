@@ -102,18 +102,17 @@ ecc.subscription.information.section.individual.utr=Cyfeirnod Unigryw y Trethdal
 ecc.subscription.information.only.once=Mae tanysgrifio yn golygu’r canlynol:
 ecc.subscription.information.only.once.bullet1=bydd yn rhaid i chi nodi rhywfaint o fanylion personol
 ecc.subscription.information.only.once.bullet2=bydd CThEF yn gwneud gwiriad diogelwch er mwyn gwirio’ch manylion
+ecc.subscription.information.only.once.para1 = Dim ond unwaith y mae angen i chi wneud hyn.
+
 ecc.subscription.information.only.once.para1.atar= Unwaith i chi danysgrifio, gallwch wneud cais am y canlynol: <ul class="govuk-body"><li>Dyfarniad Tariffau Uwch</li><li>Dyfarniad Prisio Uwch</li></ul>
 ecc.subscription.information.only.once.para1.cds = Unwaith i chi danysgrifio, bydd gennych fynediad at y Gwasanaeth Datganiadau Tollau.
 ecc.subscription.information.only.once.para1.gagmr = Unwaith i chi danysgrifio, gallwch gael cyfeirnod symud nwyddau (GMR).
-ecc.subscription.information.only.once.para1.route1 =Unwaith i chi danysgrifio, gallwch wneud y canlynol: <ul class="govuk-body"><li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy’r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li></ul>
 ecc.subscription.information.only.once.para1.ctc = Unwaith i chi danysgrifio, gallwch gyflwyno datganiadau cludo yn yr undeb.
 ecc.subscription.information.only.once.para1.gbss = Unwaith i chi danysgrifio, gallwch wneud datganiadau cryno wrth gyrraedd.
 ecc.subscription.information.only.once.para1.ars = Unwaith i chi danysgrifio, gallwch wneud cais am y canlynol: <ul class="govuk-body"><li>Dyfarniad Tariffau Uwch</li><li>Dyfarniad Prisio Uwch</li></ul>
-ecc.subscription.information.only.once.para1 = Dim ond unwaith y mae angen i chi wneud hyn.
-ecc.subscription.information.only.once.para1.cts =Unwaith i chi danysgrifio, gallwch wneud y canlynol: <ul class="govuk-body"><li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'r system CHIEF</li><li>tell HMRC about an underpayment of Customs Duty or import VAT</li></ul>
-
-
-
+ecc.subscription.information.only.once.para1.route1 =Unwaith i chi danysgrifio, gallwch wneud y canlynol: <ul class="govuk-body"><li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy’r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li></ul>
+ecc.subscription.information.only.once.para1.ivd =Unwaith i chi danysgrifio, gallwch wneud y canlynol: <ul class="govuk-body"><li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'r system CHIEF</li><li>tell HMRC about an underpayment of Customs Duty or import VAT</li></ul>
+ecc.subscription.information.only.once.para1.ndrc =Unwaith i chi danysgrifio, gallwch wneud y canlynol: <ul class="govuk-body"><li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'r system CHIEF</li><li>tell HMRC about an underpayment of Customs Duty or import VAT</li></ul>
 
 ecc.subscription.information.email.confirm=Byddwn yn prosesu’ch cais ac yn anfon e-bost atoch gyda’r canlyniad cyn pen 2 awr.
 
