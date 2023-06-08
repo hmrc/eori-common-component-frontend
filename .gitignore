@@ -30,4 +30,6 @@ yarn-error.log
 .bsp
 .bsp/
 project/metals.*
+.metals/*
+
     
