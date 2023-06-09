@@ -919,12 +919,12 @@ cds.subscription.outcomes.steps.next.ars= <li>Gwneud cais am Ddyfarniad Tariffau
 cds.subscription.outcomes.steps.next.atar= <li>Gwneud cais am Ddyfarniad Tariffau Uwch</li>
 cds.subscription.outcomes.steps.next.gagmr = <li>Cael cyfeirnod symud nwyddau</li>
 cds.subscription.outcomes.steps.next.cts = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
-cds.subscription.outcomes.steps.next.route1 = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'''r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
 cds.subscription.outcomes.steps.next.gbss = <li>gwneud datganiad cryno wrth gyrraedd</li>
 cds.subscription.outcomes.steps.next.ctc = <li>cyflwyno datganiadau ‘Cludo yn yr Undeb’ trwy ddefnyddio’r System Gludo Gyfrifiadurol Newydd (NCTS)</li>
 cds.subscription.outcomes.steps.next.cds = <li>defnyddio’r Gwasanaeth Datganiadau Tollau</li>
-
-
+cds.subscription.outcomes.steps.next.route1 = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'''r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
+cds.subscription.outcomes.steps.next.ivd = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'''r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
+cds.subscription.outcomes.steps.next.ndrc = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'''r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
 
 cds.subscription.outcomes.steps.why=Pam ydw i’n gweld hyn?
 cds.subscription.outcomes.success.title=Cais wedi’i gwblhau
@@ -1283,10 +1283,12 @@ cds.subscription.outcomes.steps.next.new.ars= <li>Gwneud cais am Ddyfarniad Tari
 cds.subscription.outcomes.steps.next.new.atar= <li>Gwneud cais am Ddyfarniad Tariffau Uwch</li> <li>Gwneud cais am Ddyfarniad Prisio Uwch</li>
 cds.subscription.outcomes.steps.next.new.gagmr = <li>Cael cyfeirnod symud nwyddau</li>
 cds.subscription.outcomes.steps.next.new.cts = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
-cds.subscription.outcomes.steps.next.new.route1 = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'''r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
 cds.subscription.outcomes.steps.next.new.gbss = <li>gwneud datganiad cryno wrth gyrraedd</li>
 cds.subscription.outcomes.steps.next.new.ctc = <li>cyflwyno datganiadau ‘Cludo yn yr Undeb’ trwy ddefnyddio’r System Gludo Gyfrifiadurol Newydd (NCTS)</li>
 cds.subscription.outcomes.steps.next.new.cds = <li>defnyddio’r Gwasanaeth Datganiadau Tollau</li>
+cds.subscription.outcomes.steps.next.new.route1 = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'''r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
+cds.subscription.outcomes.steps.next.new.ivd = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'''r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
+cds.subscription.outcomes.steps.next.new.ndrc = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'''r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
 
 
 ecc.address-lookup.postcode.hint.company = <p class="govuk-body">Byddwn yn defnyddio hyn i gadarnhau pwy ydych. Gallwch gael y cod post hwn o <a href="https://beta.companieshouse.gov.uk/" target="_blank">gofrestr Tŷ’r Cwmnïau (yn agor tab newydd).</a></p> Nodwch y cod post sydd ar dystysgrif ymgorffori’r cwmni.
