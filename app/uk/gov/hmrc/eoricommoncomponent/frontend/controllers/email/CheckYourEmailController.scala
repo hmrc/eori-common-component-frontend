@@ -22,10 +22,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.confirmEmailYesNoAnswerForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, Service, SubscribeJourney}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, LongJourney, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
@@ -163,6 +164,15 @@ class CheckYourEmailController @Inject() (
 
   def toResult(service: Service, subscribeJourney: SubscribeJourney)(implicit r: Request[AnyContent]): Result =
     Ok(emailConfirmedView(service, subscribeJourney))
+
+  def acceptConfirmation(service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+      val redirect = subscribeJourney match {
+        case SubscribeJourney(AutoEnrolment) => HasExistingEoriController.displayPage(service)
+        case SubscribeJourney(LongJourney) => WhatIsYourEoriController.createForm(service)
+      }
+      Future.successful(Redirect(redirect))
+    }
 
   private def submitNewDetails(groupId: GroupId, service: Service, subscribeJourney: SubscribeJourney)(implicit
     request: Request[AnyContent]
