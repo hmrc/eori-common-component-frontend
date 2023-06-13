@@ -65,7 +65,7 @@ class CheckYourEmailController @Inject() (
     subscribeJourney: SubscribeJourney
   )(implicit request: Request[AnyContent]): Future[Result] =
     Future.successful(
-      Ok(checkYourEmailView(email, confirmEmailYesNoAnswerForm, isInReviewMode, service, subscribeJourney))
+      Ok(checkYourEmailView(email, confirmEmailYesNoAnswerForm(), isInReviewMode, service, subscribeJourney))
     )
 
   private def populateEmailVerificationView(
@@ -93,7 +93,7 @@ class CheckYourEmailController @Inject() (
   def submit(isInReviewMode: Boolean, service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
-        confirmEmailYesNoAnswerForm
+        confirmEmailYesNoAnswerForm()
           .bindFromRequest()
           .fold(
             formWithErrors =>

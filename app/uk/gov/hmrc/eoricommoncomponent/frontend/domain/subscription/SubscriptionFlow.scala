@@ -17,13 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription
 
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{
-  AutoEnrolment,
-  JourneyType,
-  LongJourney,
-  Service,
-  SubscribeJourney
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{LongJourney, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 object SubscriptionFlows {

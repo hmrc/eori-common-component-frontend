@@ -32,7 +32,7 @@ object SubscribeJourney {
 
       override def bind(key: String, value: String): Either[String, SubscribeJourney] =
         for {
-          str <- stringBinder.bind(key, value).right
+          str <- stringBinder.bind(key, value)
           journey <- str.toLowerCase match {
             case "autoenrolment" => Right(SubscribeJourney(AutoEnrolment: JourneyType))
             case "longjourney"   => Right(SubscribeJourney(LongJourney: JourneyType))

@@ -105,7 +105,7 @@ class NameIDOrgController @Inject() (
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      form.bindFromRequest
+      form.bindFromRequest()
         .fold(
           formWithErrors =>
             sessionCache.registrationDetails map { registrationDetails =>

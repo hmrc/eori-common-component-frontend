@@ -79,7 +79,7 @@ class GetNinoSubscriptionController @Inject() (
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
-        subscriptionNinoForm.bindFromRequest.fold(
+        subscriptionNinoForm.bindFromRequest().fold(
           formWithErrors =>
             Future.successful(
               BadRequest(
@@ -99,7 +99,7 @@ class GetNinoSubscriptionController @Inject() (
   ): Future[Result] =
     subscriptionDetailsHolderService.cacheCustomsId(Nino(form.id)).map(
       _ =>
-        if (isInReviewMode && !isItRowJourney)
+        if (isInReviewMode && !isItRowJourney())
           Redirect(DetermineReviewPageController.determineRoute(service))
         else
           Redirect(subscriptionFlowManager.stepInformation(NinoSubscriptionFlowPage).nextPage.url(service))

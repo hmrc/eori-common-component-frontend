@@ -16,9 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
-import play.api.data.Form
-import play.api.i18n.Messages
-
 import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
@@ -73,7 +70,7 @@ class OrganisationTypeController @Inject() (
         }
 
         _: LoggedInUserWithEnrolments =>
-          organisationTypeDetailsForm.bindFromRequest.fold(
+          organisationTypeDetailsForm.bindFromRequest().fold(
             formWithErrors => {
               val isUk      = requestSessionData.selectedUserLocation.forall(_ == UserLocation.Uk)
               val radioItem = getRadioItem(isUk, formWithErrors)

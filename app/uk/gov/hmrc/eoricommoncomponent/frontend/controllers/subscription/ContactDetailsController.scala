@@ -100,7 +100,7 @@ class ContactDetailsController @Inject() (
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       cdsFrontendDataCache.email flatMap { email =>
-        ContactDetailsForm.form().bindFromRequest.fold(
+        ContactDetailsForm.form().bindFromRequest().fold(
           formWithErrors =>
             Future.successful(BadRequest(contactDetailsView(formWithErrors, email, isInReviewMode, service))),
           formData => storeContactDetails(formData, email, isInReviewMode, service)

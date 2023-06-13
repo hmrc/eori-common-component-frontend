@@ -154,7 +154,7 @@ class AddressLookupResultsController @Inject() (
                 val addressesMap  = addresses.map(address => address.dropDownView -> address).toMap
                 val addressesView = addressesMap.keys.toSeq
 
-                AddressResultsForm.form(addressesView).bindFromRequest.fold(
+                AddressResultsForm.form(addressesView).bindFromRequest().fold(
                   formWithErrors =>
                     Future.successful(
                       BadRequest(prepareView(formWithErrors, addressLookupParams, addresses, isInReviewMode, service))

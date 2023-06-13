@@ -40,7 +40,6 @@ class UserGroupIdSubscriptionStatusCheckService @Inject() (
     save4Later.fetchCacheIds(groupId)
       .flatMap {
         case Some(cacheIds) =>
-          val sameUser    = cacheIds.internalId == internalId
           val sameService = cacheIds.serviceCode.contains(service.code)
 
           subscriptionStatusService

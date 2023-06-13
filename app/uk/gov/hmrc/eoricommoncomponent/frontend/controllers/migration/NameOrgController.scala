@@ -63,7 +63,7 @@ class NameOrgController @Inject() (
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      nameOrganisationForm.bindFromRequest.fold(
+      nameOrganisationForm.bindFromRequest().fold(
         formWithErrors =>
           sessionCache.registrationDetails map { registrationDetails =>
             BadRequest(nameOrgView(formWithErrors, registrationDetails, isInReviewMode, service))

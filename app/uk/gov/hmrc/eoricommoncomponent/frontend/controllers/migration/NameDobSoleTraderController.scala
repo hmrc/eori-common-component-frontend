@@ -67,7 +67,7 @@ class NameDobSoleTraderController @Inject() (
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       val form = if (UserLocation.isRow(requestSessionData)) enterNameDobFormRow else enterNameDobForm
-      form.bindFromRequest.fold(
+      form.bindFromRequest().fold(
         formWithErrors =>
           cdsFrontendDataCache.registrationDetails map { _ =>
             BadRequest(
