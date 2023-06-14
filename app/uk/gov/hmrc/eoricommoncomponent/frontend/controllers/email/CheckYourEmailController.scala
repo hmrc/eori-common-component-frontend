@@ -169,7 +169,7 @@ class CheckYourEmailController @Inject() (
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       val redirect = subscribeJourney match {
         case SubscribeJourney(AutoEnrolment) => HasExistingEoriController.displayPage(service)
-        case SubscribeJourney(LongJourney) => WhatIsYourEoriController.createForm(service)
+        case SubscribeJourney(LongJourney)   => WhatIsYourEoriController.createForm(service)
       }
       Future.successful(Redirect(redirect))
     }

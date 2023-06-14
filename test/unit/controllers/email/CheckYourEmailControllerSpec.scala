@@ -360,16 +360,16 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       acceptEmailConfirmation(journey = subscribeJourneyShort) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers("Location") should endWith(
-            "/customs-enrolment-services/atar/subscribe/check-existing-eori"
-          )
+          "/customs-enrolment-services/atar/subscribe/check-existing-eori"
+        )
       }
     }
 
-      "redirect to WhatIsYourEoriController.createForm for the long journey" in {
+    "redirect to WhatIsYourEoriController.createForm for the long journey" in {
       acceptEmailConfirmation(journey = subscribeJourneyLong) { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers("Location") should endWith(
-            "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori"
+          "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori"
         )
       }
     }
