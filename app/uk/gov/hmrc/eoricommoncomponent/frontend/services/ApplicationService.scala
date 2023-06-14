@@ -18,7 +18,12 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services
 
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{EnrolmentExtractor, GroupEnrolmentExtractor}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Eori, ExistingEori, LoggedInUserWithEnrolments}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
+  EnrolmentResponse,
+  Eori,
+  ExistingEori,
+  LoggedInUserWithEnrolments
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, JourneyType, LongJourney, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
@@ -35,65 +40,60 @@ class ApplicationService @Inject() (
 )(implicit ec: ExecutionContext)
     extends EnrolmentExtractor {
 
-  private def isEnrolmentInUse(service: Service, groupId: String, loggedInUser: LoggedInUserWithEnrolments)(implicit
-    hc: HeaderCarrier
-  ): Future[Option[ExistingEori]] =
-    groupEnrolment.groupIdEnrolments(groupId).flatMap { groupEnrolments =>
-      existingEoriForUserOrGroup(loggedInUser, groupEnrolments) match {
-        case Some(existingEori) => enrolmentStoreProxyService.isEnrolmentInUse(service, existingEori)
-        case _                  => Future.successful(None)
-      }
+  private def getEnrolmentInUse(
+    service: Service,
+    groupEnrolments: List[EnrolmentResponse],
+    loggedInUser: LoggedInUserWithEnrolments
+  )(implicit hc: HeaderCarrier): Future[Option[ExistingEori]] =
+    existingEoriForUserOrGroup(loggedInUser, groupEnrolments) match {
+      case Some(existingEori) => enrolmentStoreProxyService.isEnrolmentInUse(service, existingEori)
+      case _                  => Future.successful(None)
     }
 
-  private def isUserEnrolledFor(loggedInUser: LoggedInUserWithEnrolments, service: Service): Boolean =
-    enrolledForService(loggedInUser, service).isDefined
-
-  private def isUserEnrolledForOtherServices(loggedInUser: LoggedInUserWithEnrolments): Boolean =
+  private def isUserEnrolledToOtherService(loggedInUser: LoggedInUserWithEnrolments) =
     enrolledForOtherServices(loggedInUser).isDefined
 
-  private def checkAllServiceEnrolments(loggedInUser: LoggedInUserWithEnrolments, groupId: String)(implicit
-    hc: HeaderCarrier,
-    request: Request[_]
-  ): Future[Either[JourneyError, JourneyType]] =
-    if (isUserEnrolledForOtherServices(loggedInUser))
-      Future.successful(Right(AutoEnrolment))
-    else
-      groupEnrolment.checkAllServiceEnrolments(groupId).flatMap {
-        case Some(groupEnrolment) if groupEnrolment.eori.isDefined =>
-          cache.saveGroupEnrolment(groupEnrolment).map(_ => Right(AutoEnrolment))
-        case _ =>
-          Future.successful(Right(LongJourney))
-      }
+  private def isGroupEnrolledToOtherService(groupEnrolments: List[EnrolmentResponse])(implicit request: Request[_]) = {
+    def checkSupportedServiceEnrolments(groupEnrolments: List[EnrolmentResponse]) = {
+      val serviceList = Service.supportedServicesMap.values.toList
+      groupEnrolments.find(enrolment => serviceList.contains(enrolment.service))
+    }
 
-  private def checkCDSEnrolments(loggedInUser: LoggedInUserWithEnrolments, groupId: String)(implicit
-    hc: HeaderCarrier,
-    request: Request[_]
-  ): Future[Either[JourneyError, JourneyType]] =
-    if (isUserEnrolledFor(loggedInUser, Service.cds))
-      Future.successful(Right(AutoEnrolment))
+    checkSupportedServiceEnrolments(groupEnrolments) match {
+      case Some(groupEnrolment) if groupEnrolment.eori.isDefined =>
+        cache.saveGroupEnrolment(groupEnrolment).map(_ => true)
+      case None => Future.successful(false)
+    }
+  }
+
+  private def isUserOrGroupEnrolledToOtherServices(
+    loggedInUser: LoggedInUserWithEnrolments,
+    groupEnrolments: List[EnrolmentResponse]
+  )(implicit request: Request[_]) =
+    if (isUserEnrolledToOtherService(loggedInUser))
+      Future.successful(true)
     else
-      groupEnrolment.groupIdEnrolmentTo(groupId, Service.cds).flatMap {
-        case Some(groupEnrolment) if groupEnrolment.eori.isDefined =>
-          cache.saveGroupEnrolment(groupEnrolment).map(_ => Right(AutoEnrolment))
-        case _ =>
-          checkAllServiceEnrolments(loggedInUser, groupId)
+      isGroupEnrolledToOtherService(groupEnrolments).flatMap { isGroupEnrolled =>
+        if (isGroupEnrolled) Future.successful(true)
+        else Future.successful(false)
       }
 
   def getJourney(loggedInUser: LoggedInUserWithEnrolments, groupId: String, service: Service)(implicit
     hc: HeaderCarrier,
     request: Request[_]
   ): Future[Either[JourneyError, JourneyType]] =
-    groupEnrolment.hasGroupIdEnrolmentTo(groupId, service).flatMap {
-      case true =>
+    groupEnrolment.groupIdEnrolments(groupId).flatMap {
+      case groupEnrolments if groupEnrolments.exists(_.service == service.enrolmentKey) =>
         Future.successful(Left(EnrolmentExistsGroup))
-      case false =>
-        isEnrolmentInUse(service, groupId, loggedInUser).flatMap {
+      case groupEnrolments =>
+        getEnrolmentInUse(service, groupEnrolments, loggedInUser).flatMap {
           case Some(existingEori) =>
             cache.saveEori(Eori(existingEori.id)).map(_ => Left(EnrolmentExistsUser))
           case None =>
-            checkCDSEnrolments(loggedInUser, groupId)
+            isUserOrGroupEnrolledToOtherServices(loggedInUser, groupEnrolments).map {
+              isEnrolled => if (isEnrolled) Right(AutoEnrolment) else Right(LongJourney)
+            }
         }
-
     }
 
 }
