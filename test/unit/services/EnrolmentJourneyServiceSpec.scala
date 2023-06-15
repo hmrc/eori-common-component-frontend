@@ -25,12 +25,7 @@ import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, Enrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
-  EnrolmentResponse,
-  ExistingEori,
-  KeyValue,
-  LoggedInUserWithEnrolments
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, LongJourney, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
@@ -42,7 +37,7 @@ import util.builders.AuthActionMock
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ApplicationServiceSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock with ScalaFutures {
+class EnrolmentJourneyServiceSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock with ScalaFutures {
 
   override implicit val patienceConfig: PatienceConfig =
     PatienceConfig(timeout = scaled(Span(3, Seconds)), interval = scaled(Span(50, Millis)))
@@ -53,7 +48,7 @@ class ApplicationServiceSpec extends ControllerSpec with BeforeAndAfterEach with
   private val mockEnrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
   private val groupEnrolmentExtractor        = mock[GroupEnrolmentExtractor]
 
-  val service = new ApplicationService(mockSessionCache, groupEnrolmentExtractor, mockEnrolmentStoreProxyService)
+  val service = new EnrolmentJourneyService(mockSessionCache, groupEnrolmentExtractor, mockEnrolmentStoreProxyService)
 
   override protected def beforeEach(): Unit = {
     when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), any())(any()))
@@ -81,7 +76,7 @@ class ApplicationServiceSpec extends ControllerSpec with BeforeAndAfterEach with
 
   "Application Service" should {
 
-    "return LongJourney to start subscription" in {
+    "return LongJourney to start subscription for users with no existing enrolments" in {
       val user = loggedInUser(Set.empty[Enrolment])
 
       when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(Future.successful(List.empty))
@@ -92,7 +87,7 @@ class ApplicationServiceSpec extends ControllerSpec with BeforeAndAfterEach with
       result shouldBe Right(LongJourney)
     }
 
-    "return ShortJourney for users with CDS enrolment to start short-cut subscription" in {
+    "return ShortJourney for users with existing enrolment to other service" in {
       when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(atarService))(any()))
         .thenReturn(Future.successful(None))
       when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(Future.successful(List.empty))
@@ -107,96 +102,60 @@ class ApplicationServiceSpec extends ControllerSpec with BeforeAndAfterEach with
       verifyNoMoreInteractions(mockSessionCache)
     }
 
-    "return ShortJourney for users with other enrolments apart from CDS" in {
-      when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(gvmsService))(any()))
-        .thenReturn(Future.successful(None))
-      when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(Future.successful(List.empty))
-      when(groupEnrolmentExtractor.checkAllServiceEnrolments(any())(any())).thenReturn(
-        Future.successful(groupEnrolment(atarService))
+    "return ShortJourney for users where group has enrolment to other service" in {
+      when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(
+        Future.successful(List(groupEnrolment(cdsService).get))
       )
       when(mockEnrolmentStoreProxyService.isEnrolmentInUse(any(), any())(any())).thenReturn(Future.successful(None))
       when(mockSessionCache.saveGroupEnrolment(any[EnrolmentResponse])(any())).thenReturn(Future.successful(true))
-      val atarEnrolment   = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", "GB134123")
-      val route1Enrolment = Enrolment("HMRC-CTS-ORG").withIdentifier("EORINumber", "GB134123")
-      val user            = loggedInUser(Set(atarEnrolment, route1Enrolment))
-
-      val result = service.getJourney(user, groupId, atarService).futureValue
-
-      result shouldBe Right(AutoEnrolment)
-    }
-
-    "return ShortJourney for users where group id has CDS enrolment to start short-cut subscription" in {
-      when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(atarService))(any()))
-        .thenReturn(Future.successful(None))
-      when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(Service.cds))(any()))
-        .thenReturn(Future.successful(groupEnrolment(Service.cds)))
-      when(mockSessionCache.saveGroupEnrolment(any[EnrolmentResponse])(any())).thenReturn(Future.successful(true))
-      when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(Future.successful(List.empty))
-      when(mockEnrolmentStoreProxyService.isEnrolmentInUse(any(), any())(any())).thenReturn(Future.successful(None))
-
-      val user   = loggedInUser(Set.empty[Enrolment])
-      val result = service.getJourney(user, groupId, atarService).futureValue
-
-      result shouldBe Right(AutoEnrolment)
-    }
-
-    "return ShortJourney for users where group id has other than CDS enrolment" in {
-      when(groupEnrolmentExtractor.checkAllServiceEnrolments(any())(any()))
-        .thenReturn(Future.successful(groupEnrolment(atarService)))
-      when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(Service.cds))(any()))
-        .thenReturn(Future.successful(None))
-      when(mockSessionCache.saveGroupEnrolment(any[EnrolmentResponse])(any())).thenReturn(Future.successful(true))
-      when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(Future.successful(List.empty))
-      when(mockEnrolmentStoreProxyService.isEnrolmentInUse(any(), any())(any())).thenReturn(Future.successful(None))
 
       val user   = loggedInUser(Set.empty[Enrolment])
       val result = service.getJourney(user, groupId, atarService).futureValue
 
       result shouldBe Right(AutoEnrolment)
       verify(mockSessionCache).saveGroupEnrolment(
-        meq(EnrolmentResponse("HMRC-ATAR-ORG", "Activated", List(KeyValue("EORINumber", "GB123456463324"))))
+        meq(EnrolmentResponse("HMRC-CUS-ORG", "Activated", List(KeyValue("EORINumber", "GB123456463324"))))
       )(any())
     }
 
-    "return EnrolmentExistsUser for users with ATAR enrolment that subscription exists" in {
-      val atarEnrolment = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", "GB134123")
+    "return EnrolmentExistsUser for users with existing enrolment" in {
+      val atarEnrolment = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", "GB123456789123")
+
       when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(
-        Future.successful(List(groupEnrolment(atarService).get))
+        Future.successful(List.empty[EnrolmentResponse])
       )
       when(mockEnrolmentStoreProxyService.isEnrolmentInUse(any(), any())(any())).thenReturn(
-        Future.successful(Some(ExistingEori("GB123456789123", "HMRC-GVMS-ORG")))
+        Future.successful(Some(ExistingEori("GB123456789123", "HMRC-ATAR-ORG")))
       )
-      when(mockSessionCache.saveEori(any())(any())).thenReturn(Future.successful(true))
+      when(mockSessionCache.saveEori(any[Eori])(any())).thenReturn(Future.successful(true))
 
       val user   = loggedInUser(Set(atarEnrolment))
       val result = service.getJourney(user, groupId, atarService).futureValue
 
       result shouldBe Left(EnrolmentExistsUser)
+      verify(mockSessionCache).saveEori(meq(Eori("GB123456789123")))(any())
     }
 
-    "return EnrolmentExistsUser for users with GVMS enrolment and without CDS enrolment and without groupId enrolment" in {
-
-      when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(atarService))(any()))
-        .thenReturn(Future.successful(None))
-      when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), ArgumentMatchers.eq(Service.cds))(any()))
-        .thenReturn(Future.successful(None))
+    "return EnrolmentExistsUser for users with other enrolment assigned to their group" in {
       when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(
-        Future.successful(List(groupEnrolment(atarService).get))
+        Future.successful(List(groupEnrolment(cdsService).get))
       )
       when(mockEnrolmentStoreProxyService.isEnrolmentInUse(any(), any())(any())).thenReturn(
-        Future.successful(Some(ExistingEori("GB123456789123", "HMRC-GVMS-ORG")))
+        Future.successful(Some(ExistingEori("GB123456789123", "HMRC-CUS-ORG")))
       )
-      when(mockSessionCache.saveEori(any())(any())).thenReturn(Future.successful(true))
+      when(mockSessionCache.saveEori(any[Eori])(any())).thenReturn(Future.successful(true))
 
       val user   = loggedInUser(Set.empty[Enrolment])
       val result = service.getJourney(user, groupId, atarService).futureValue
 
       result shouldBe Left(EnrolmentExistsUser)
+      verify(mockSessionCache).saveEori(meq(Eori("GB123456789123")))(any())
     }
 
-    "return EnrolmentExistsGroup for users where group Id has an enrolment that subscription exists" in {
-      when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), ArgumentMatchers.eq(atarService))(any()))
-        .thenReturn(Future.successful(true))
+    "return EnrolmentExistsGroup for users who have enrolment assigned to their group" in {
+      when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(
+        Future.successful(List(groupEnrolment(atarService).get))
+      )
 
       val user   = loggedInUser(Set.empty[Enrolment])
       val result = service.getJourney(user, groupId, atarService).futureValue

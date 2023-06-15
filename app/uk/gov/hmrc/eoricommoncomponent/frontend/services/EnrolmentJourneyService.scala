@@ -33,12 +33,13 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ApplicationService @Inject() (
+class EnrolmentJourneyService @Inject()(
   cache: SessionCache,
   groupEnrolment: GroupEnrolmentExtractor,
   enrolmentStoreProxyService: EnrolmentStoreProxyService
 )(implicit ec: ExecutionContext)
     extends EnrolmentExtractor {
+  private lazy val serviceList = Service.supportedServicesMap.values.map(_.enrolmentKey).toList
 
   private def getEnrolmentInUse(
     service: Service,
@@ -50,33 +51,11 @@ class ApplicationService @Inject() (
       case _                  => Future.successful(None)
     }
 
-  private def isUserEnrolledToOtherService(loggedInUser: LoggedInUserWithEnrolments) =
-    enrolledForOtherServices(loggedInUser).isDefined
-
-  private def isGroupEnrolledToOtherService(groupEnrolments: List[EnrolmentResponse])(implicit request: Request[_]) = {
-    def checkSupportedServiceEnrolments(groupEnrolments: List[EnrolmentResponse]) = {
-      val serviceList = Service.supportedServicesMap.values.toList
-      groupEnrolments.find(enrolment => serviceList.contains(enrolment.service))
+  private def groupEnrolledForOtherServices(groupEnrolments: List[EnrolmentResponse]) =
+    groupEnrolments.find(enrolment => serviceList.contains(enrolment.service)) match {
+      case Some(groupEnrolment) if groupEnrolment.eori.isDefined => Some(groupEnrolment)
+      case _                                                     => None
     }
-
-    checkSupportedServiceEnrolments(groupEnrolments) match {
-      case Some(groupEnrolment) if groupEnrolment.eori.isDefined =>
-        cache.saveGroupEnrolment(groupEnrolment).map(_ => true)
-      case None => Future.successful(false)
-    }
-  }
-
-  private def isUserOrGroupEnrolledToOtherServices(
-    loggedInUser: LoggedInUserWithEnrolments,
-    groupEnrolments: List[EnrolmentResponse]
-  )(implicit request: Request[_]) =
-    if (isUserEnrolledToOtherService(loggedInUser))
-      Future.successful(true)
-    else
-      isGroupEnrolledToOtherService(groupEnrolments).flatMap { isGroupEnrolled =>
-        if (isGroupEnrolled) Future.successful(true)
-        else Future.successful(false)
-      }
 
   def getJourney(loggedInUser: LoggedInUserWithEnrolments, groupId: String, service: Service)(implicit
     hc: HeaderCarrier,
@@ -90,9 +69,13 @@ class ApplicationService @Inject() (
           case Some(existingEori) =>
             cache.saveEori(Eori(existingEori.id)).map(_ => Left(EnrolmentExistsUser))
           case None =>
-            isUserOrGroupEnrolledToOtherServices(loggedInUser, groupEnrolments).map {
-              isEnrolled => if (isEnrolled) Right(AutoEnrolment) else Right(LongJourney)
-            }
+            if (enrolledForOtherServices(loggedInUser).isDefined)
+              Future.successful(Right(AutoEnrolment))
+            else
+              groupEnrolledForOtherServices(groupEnrolments) match {
+                case Some(grEnr) => cache.saveGroupEnrolment(grEnr).map(_ => Right(AutoEnrolment))
+                case None        => Future.successful(Right(LongJourney))
+              }
         }
     }
 

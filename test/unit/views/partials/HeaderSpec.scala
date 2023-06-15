@@ -25,7 +25,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.LongJourney
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.ApplicationService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.EnrolmentJourneyService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.start_subscribe
 import unit.controllers.CdsPage
@@ -42,7 +42,7 @@ class HeaderSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterE
   private val mockAuthAction       = authAction(mockAuthConnector)
   private val mockCdsFrontendCache = mock[SessionCache]
 
-  private val mockApplicationService = mock[ApplicationService]
+  private val mockApplicationService = mock[EnrolmentJourneyService]
 
   private val viewStartSubscribe      = instanceOf[start_subscribe]
   private val groupEnrolmentExtractor = mock[GroupEnrolmentExtractor]

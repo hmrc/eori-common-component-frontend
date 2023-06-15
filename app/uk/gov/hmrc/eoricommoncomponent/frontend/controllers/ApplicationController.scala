@@ -31,19 +31,19 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class ApplicationController @Inject() (
-  authorise: AuthAction,
-  mcc: MessagesControllerComponents,
-  viewStartSubscribe: start_subscribe,
-  cache: SessionCache,
-  applicationService: ApplicationService,
-  appConfig: AppConfig
+                                        authorise: AuthAction,
+                                        mcc: MessagesControllerComponents,
+                                        viewStartSubscribe: start_subscribe,
+                                        cache: SessionCache,
+                                        enrolmentJourneyService: EnrolmentJourneyService,
+                                        appConfig: AppConfig
 )(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
     extends CdsController(mcc) {
 
   def startSubscription(service: Service): Action[AnyContent] = authorise.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
       val groupId = loggedInUser.groupId.getOrElse(throw MissingGroupId())
-      applicationService
+      enrolmentJourneyService
         .getJourney(loggedInUser, groupId, service).map {
           case Right(AutoEnrolment) =>
             Redirect(routes.HasExistingEoriController.displayPage(service))

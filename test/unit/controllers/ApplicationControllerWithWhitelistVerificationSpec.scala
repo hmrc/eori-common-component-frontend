@@ -22,7 +22,7 @@ import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.ApplicationService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.EnrolmentJourneyService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.start_subscribe
@@ -39,7 +39,7 @@ class ApplicationControllerWithAllowlistVerificationSpec extends ControllerSpec 
   private val mockAuthAction         = authAction(mockAuthConnector)
   private val mockSessionCache       = mock[SessionCache]
   private val startSubscribeView     = instanceOf[start_subscribe]
-  private val mockApplicationService = mock[ApplicationService]
+  private val mockApplicationService = mock[EnrolmentJourneyService]
 
   val controller = new ApplicationController(
     mockAuthAction,

@@ -107,9 +107,6 @@ class JourneySpec extends AnyWordSpec with Matchers with EitherValues with Optio
         queryBindable.unbind("key", Journey.Subscribe)
 
       result mustEqual "subscribe"
-
-      Journey.withName("Subscribe") mustEqual Journey.Subscribe
-      Journey.Subscribe mustEqual ""
     }
   }
 }

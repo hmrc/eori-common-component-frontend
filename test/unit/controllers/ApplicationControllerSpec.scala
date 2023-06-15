@@ -41,7 +41,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
   private val mockAuthConnector      = mock[AuthConnector]
   private val mockAuthAction         = authAction(mockAuthConnector)
   private val mockSessionCache       = mock[SessionCache]
-  private val mockApplicationService = mock[ApplicationService]
+  private val mockApplicationService = mock[EnrolmentJourneyService]
 
   private val startSubscribeView = instanceOf[start_subscribe]
 
