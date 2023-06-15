@@ -31,12 +31,12 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class ApplicationController @Inject() (
-                                        authorise: AuthAction,
-                                        mcc: MessagesControllerComponents,
-                                        viewStartSubscribe: start_subscribe,
-                                        cache: SessionCache,
-                                        enrolmentJourneyService: EnrolmentJourneyService,
-                                        appConfig: AppConfig
+  authorise: AuthAction,
+  mcc: MessagesControllerComponents,
+  viewStartSubscribe: start_subscribe,
+  cache: SessionCache,
+  enrolmentJourneyService: EnrolmentJourneyService,
+  appConfig: AppConfig
 )(implicit override val messagesApi: MessagesApi, ec: ExecutionContext)
     extends CdsController(mcc) {
 

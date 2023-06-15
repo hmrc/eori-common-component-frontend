@@ -24,6 +24,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   ExistingEori,
   LoggedInUserWithEnrolments
 }
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service.supportedServiceEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, JourneyType, LongJourney, Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
@@ -33,13 +34,12 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EnrolmentJourneyService @Inject()(
+class EnrolmentJourneyService @Inject() (
   cache: SessionCache,
   groupEnrolment: GroupEnrolmentExtractor,
   enrolmentStoreProxyService: EnrolmentStoreProxyService
 )(implicit ec: ExecutionContext)
     extends EnrolmentExtractor {
-  private lazy val serviceList = Service.supportedServicesMap.values.map(_.enrolmentKey).toList
 
   private def getEnrolmentInUse(
     service: Service,
@@ -52,7 +52,7 @@ class EnrolmentJourneyService @Inject()(
     }
 
   private def groupEnrolledForOtherServices(groupEnrolments: List[EnrolmentResponse]) =
-    groupEnrolments.find(enrolment => serviceList.contains(enrolment.service)) match {
+    groupEnrolments.find(enrolment => supportedServiceEnrolments.contains(enrolment.service)) match {
       case Some(groupEnrolment) if groupEnrolment.eori.isDefined => Some(groupEnrolment)
       case _                                                     => None
     }
