@@ -355,12 +355,24 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     }
   }
 
+  "Pressing Save and continue on the Email Confirmation page" should {
+
+    "redirect to WhatIsYourEoriController.createForm" in {
+      acceptEmailConfirmation(journey = subscribeJourneyLong) { result =>
+        status(result) shouldBe SEE_OTHER
+        result.header.headers("Location") should endWith(
+          "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori"
+        )
+      }
+    }
+  }
+
   private def submitForm(
     form: Map[String, String],
     userId: String = defaultUserId,
     service: Service,
     journey: SubscribeJourney
-  )(test: Future[Result] => Any) {
+  )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller.submit(isInReviewMode = false, service, journey)(
       SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
@@ -368,7 +380,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     test(result)
   }
 
-  private def showForm(userId: String = defaultUserId, journey: SubscribeJourney)(test: Future[Result] => Any) {
+  private def showForm(userId: String = defaultUserId, journey: SubscribeJourney)(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
       .createForm(atarService, journey)
@@ -376,7 +388,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     test(result)
   }
 
-  private def emailConfirmed(userId: String)(test: Future[Result] => Any) {
+  private def emailConfirmed(userId: String)(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
       .emailConfirmed(atarService, subscribeJourneyShort)
@@ -386,10 +398,20 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
 
   private def verifyEmailViewForm(userId: String = defaultUserId, journey: SubscribeJourney)(
     test: Future[Result] => Any
-  ) {
+  ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
       .verifyEmailView(atarService, journey)
+      .apply(SessionBuilder.buildRequestWithSession(userId))
+    test(result)
+  }
+
+  private def acceptEmailConfirmation(userId: String = defaultUserId, journey: SubscribeJourney)(
+    test: Future[Result] => Any
+  ): Unit = {
+    withAuthorisedUser(userId, mockAuthConnector)
+    val result = controller
+      .acceptConfirmation(atarService, journey)
       .apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }

@@ -27,8 +27,10 @@ GET         /customs-enrolment-services/:service/subscribe/unable-to-use-id     
 
 GET         /customs-enrolment-services/:service/subscribe/keep-alive                                  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.keepAlive(service: Service)
 
-GET         /customs-enrolment-services/:service/subscribe/:subscribeJourney/email-confirmed                    @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.emailConfirmed(service: Service, subscribeJourney: SubscribeJourney)
-GET         /customs-enrolment-services/:service/subscribe/:subscribeJourney/email-confirmed-continue                    @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.emailConfirmedContinue(service: Service, subscribeJourney: SubscribeJourney)
+GET         /customs-enrolment-services/:service/subscribe/:subscribeJourney/email-confirmed            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.emailConfirmed(service: Service, subscribeJourney: SubscribeJourney)
+GET         /customs-enrolment-services/:service/subscribe/:subscribeJourney/email-confirmed-continue   @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.emailConfirmedContinue(service: Service, subscribeJourney: SubscribeJourney)
+POST        /customs-enrolment-services/:service/subscribe/:subscribeJourney/email-confirmed/accepted   @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.acceptConfirmation(service: Service, subscribeJourney: SubscribeJourney)
+
 
 # subscribe
 GET         /customs-enrolment-services/:service/subscribe                                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.startSubscription(service: Service)

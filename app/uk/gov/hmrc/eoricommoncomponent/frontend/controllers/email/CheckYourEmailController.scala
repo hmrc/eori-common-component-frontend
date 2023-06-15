@@ -22,6 +22,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.confirmEmailYesNoAnswerForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
@@ -163,6 +164,11 @@ class CheckYourEmailController @Inject() (
 
   def toResult(service: Service, subscribeJourney: SubscribeJourney)(implicit r: Request[AnyContent]): Result =
     Ok(emailConfirmedView(service, subscribeJourney))
+
+  def acceptConfirmation(service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction { _ => _: LoggedInUserWithEnrolments =>
+      Future.successful(Redirect(WhatIsYourEoriController.createForm(service)))
+    }
 
   private def submitNewDetails(groupId: GroupId, service: Service, subscribeJourney: SubscribeJourney)(implicit
     request: Request[AnyContent]
