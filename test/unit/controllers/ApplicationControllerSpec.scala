@@ -38,10 +38,10 @@ import scala.concurrent.Future
 
 class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
-  private val mockAuthConnector      = mock[AuthConnector]
-  private val mockAuthAction         = authAction(mockAuthConnector)
-  private val mockSessionCache       = mock[SessionCache]
-  private val mockApplicationService = mock[EnrolmentJourneyService]
+  private val mockAuthConnector           = mock[AuthConnector]
+  private val mockAuthAction              = authAction(mockAuthConnector)
+  private val mockSessionCache            = mock[SessionCache]
+  private val mockEnrolmentJourneyService = mock[EnrolmentJourneyService]
 
   private val startSubscribeView = instanceOf[start_subscribe]
 
@@ -50,12 +50,12 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
     mcc,
     startSubscribeView,
     mockSessionCache,
-    mockApplicationService,
+    mockEnrolmentJourneyService,
     appConfig
   )
 
   override protected def afterEach(): Unit = {
-    reset(mockAuthConnector, mockSessionCache, mockApplicationService)
+    reset(mockAuthConnector, mockSessionCache, mockEnrolmentJourneyService)
 
     super.afterEach()
   }
@@ -68,7 +68,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
     "direct authenticated users to start subscription" in {
       withAuthorisedUser(defaultUserId, mockAuthConnector)
-      when(mockApplicationService.getJourney(any(), any(), any())(any(), any())).thenReturn(
+      when(mockEnrolmentJourneyService.getJourney(any(), any(), any())(any(), any())).thenReturn(
         Future.successful(Right(LongJourney))
       )
 
@@ -79,9 +79,9 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
     }
 
     "direct authenticated users with CDS enrolment to start short-cut subscription" in {
-      when(mockApplicationService.getJourney(any(), any(), ArgumentMatchers.eq(atarService))(any(), any())).thenReturn(
-        Future.successful(Right(AutoEnrolment))
-      )
+      when(
+        mockEnrolmentJourneyService.getJourney(any(), any(), ArgumentMatchers.eq(atarService))(any(), any())
+      ).thenReturn(Future.successful(Right(AutoEnrolment)))
 
       val cdsEnrolment = Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", "GB134123")
       withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set(cdsEnrolment))
@@ -95,9 +95,9 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
     }
 
     "inform authenticated users with ATAR enrolment that subscription exists" in {
-      when(mockApplicationService.getJourney(any(), any(), ArgumentMatchers.eq(atarService))(any(), any())).thenReturn(
-        Future.successful(Left(EnrolmentExistsUser))
-      )
+      when(
+        mockEnrolmentJourneyService.getJourney(any(), any(), ArgumentMatchers.eq(atarService))(any(), any())
+      ).thenReturn(Future.successful(Left(EnrolmentExistsUser)))
 
       val atarEnrolment = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", "GB134123")
 
@@ -113,9 +113,9 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
     }
 
     "inform authenticated Assistant users with ATAR enrolment that subscription exists" in {
-      when(mockApplicationService.getJourney(any(), any(), ArgumentMatchers.eq(atarService))(any(), any())).thenReturn(
-        Future.successful(Left(EnrolmentExistsUser))
-      )
+      when(
+        mockEnrolmentJourneyService.getJourney(any(), any(), ArgumentMatchers.eq(atarService))(any(), any())
+      ).thenReturn(Future.successful(Left(EnrolmentExistsUser)))
 
       val atarEnrolment = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", "GB134123")
 
@@ -136,9 +136,9 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
     }
 
     "inform authenticated users where group Id has an enrolment that subscription exists" in {
-      when(mockApplicationService.getJourney(any(), any(), ArgumentMatchers.eq(atarService))(any(), any())).thenReturn(
-        Future.successful(Left(EnrolmentExistsGroup))
-      )
+      when(
+        mockEnrolmentJourneyService.getJourney(any(), any(), ArgumentMatchers.eq(atarService))(any(), any())
+      ).thenReturn(Future.successful(Left(EnrolmentExistsGroup)))
 
       withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set.empty)
 
@@ -165,7 +165,7 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
       "enrolment is in use" in {
         when(
-          mockApplicationService.getJourney(any(), any(), ArgumentMatchers.eq(atarService))(any(), any())
+          mockEnrolmentJourneyService.getJourney(any(), any(), ArgumentMatchers.eq(atarService))(any(), any())
         ).thenReturn(Future.successful(Left(EnrolmentExistsUser)))
 
         when(mockSessionCache.saveEori(any())(any())).thenReturn(Future.successful(true))

@@ -42,7 +42,7 @@ class HeaderSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterE
   private val mockAuthAction       = authAction(mockAuthConnector)
   private val mockCdsFrontendCache = mock[SessionCache]
 
-  private val mockApplicationService = mock[EnrolmentJourneyService]
+  private val mockEnrolmentJourneyService = mock[EnrolmentJourneyService]
 
   private val viewStartSubscribe      = instanceOf[start_subscribe]
   private val groupEnrolmentExtractor = mock[GroupEnrolmentExtractor]
@@ -52,7 +52,7 @@ class HeaderSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterE
     mcc,
     viewStartSubscribe,
     mockCdsFrontendCache,
-    mockApplicationService,
+    mockEnrolmentJourneyService,
     appConfig
   )
 
@@ -77,7 +77,7 @@ class HeaderSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterE
     "be present when the user is logged in" in {
       AuthBuilder.withAuthorisedUser("user-1236213", mockAuthConnector)
 
-      when(mockApplicationService.getJourney(any(), any(), any())(any(), any())).thenReturn(
+      when(mockEnrolmentJourneyService.getJourney(any(), any(), any())(any(), any())).thenReturn(
         Future.successful(Right(LongJourney))
       )
 
@@ -91,7 +91,7 @@ class HeaderSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterE
     "not be present when a user isn't logged in" in {
       AuthBuilder.withNotLoggedInUser(mockAuthConnector)
 
-      when(mockApplicationService.getJourney(any(), any(), any())(any(), any())).thenReturn(
+      when(mockEnrolmentJourneyService.getJourney(any(), any(), any())(any(), any())).thenReturn(
         Future.successful(Right(LongJourney))
       )
 
@@ -108,7 +108,7 @@ class HeaderSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterE
         .startSubscription(atarService)
         .apply(FakeRequest("GET", "/customs-enrolment-services/atar/subscribe"))
 
-      when(mockApplicationService.getJourney(any(), any(), any())(any(), any())).thenReturn(
+      when(mockEnrolmentJourneyService.getJourney(any(), any(), any())(any(), any())).thenReturn(
         Future.successful(Right(LongJourney))
       )
 
