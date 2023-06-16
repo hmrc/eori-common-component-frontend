@@ -113,7 +113,6 @@ class CdsSubscriber @Inject() (
         val cdsFullName = Some(regDetails.name)
         completeSubscription(
           service,
-          Journey.Subscribe,
           subDetails.name,
           Some(success.eori),
           email,
@@ -130,7 +129,6 @@ class CdsSubscriber @Inject() (
         val cdsFullName = Some(regDetails.name)
         completeSubscription(
           service,
-          Journey.Subscribe,
           subDetails.name,
           subDetails.eoriNumber.map(Eori),
           email,
@@ -162,7 +160,6 @@ class CdsSubscriber @Inject() (
       case success: SubscriptionSuccessful =>
         completeSubscription(
           service,
-          Journey.Subscribe,
           subDetails.name,
           Some(success.eori),
           email,
@@ -176,7 +173,6 @@ class CdsSubscriber @Inject() (
       case pending: SubscriptionPending =>
         completeSubscription(
           service,
-          Journey.Subscribe,
           subDetails.name,
           subDetails.eoriNumber.map(Eori),
           email,
@@ -197,7 +193,6 @@ class CdsSubscriber @Inject() (
 
   private def completeSubscription(
     service: Service,
-    journey: Journey.Value,
     name: String,
     maybeEori: Option[Eori],
     email: String,
@@ -212,7 +207,7 @@ class CdsSubscriber @Inject() (
       Sub02Outcome(processingDate, cdsFullName.getOrElse(name), maybeEori.map(_.id))
     ).flatMap { _ =>
       val recipientDetails =
-        RecipientDetails(service, journey, email, contactName.getOrElse(""), cdsFullName, Some(processingDate))
+        RecipientDetails(service, email, contactName.getOrElse(""), cdsFullName, Some(processingDate))
 
       handleSubscriptionService.handleSubscription(
         formBundleId,

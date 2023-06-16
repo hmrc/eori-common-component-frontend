@@ -166,16 +166,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
             .verify(mockHandleSubscriptionService)
             .handleSubscription(
               meq(formBundleId),
-              meq(
-                RecipientDetails(
-                  atarService,
-                  Journey.Subscribe,
-                  expectedEmail,
-                  "",
-                  Some("New trading"),
-                  Some(processingDate)
-                )
-              ),
+              meq(RecipientDetails(atarService, expectedEmail, "", Some("New trading"), Some(processingDate))),
               any[TaxPayerId],
               meq(Some(Eori(eori))),
               meq(Some(emailVerificationTimestamp)),
@@ -248,14 +239,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
       when(mockCdsFrontendDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(expectedEmail))
 
       val expectedRecipient =
-        RecipientDetails(
-          atarService,
-          Journey.Subscribe,
-          expectedEmail,
-          "TEST NAME",
-          Some("New trading"),
-          Some(processingDate)
-        )
+        RecipientDetails(atarService, expectedEmail, "TEST NAME", Some("New trading"), Some(processingDate))
       when(mockRequestSessionData.selectedUserLocation(any())).thenReturn(Some(UserLocation.Uk))
       mockSuccessfulExistingRegistration(
         stubRegisterWithEoriAndIdResponseWithContactDetails,
@@ -311,14 +295,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
       when(mockCdsFrontendDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(expectedEmail))
 
       val expectedRecipient =
-        RecipientDetails(
-          atarService,
-          Journey.Subscribe,
-          expectedEmail,
-          "TEST NAME",
-          Some("New trading"),
-          Some(processingDate)
-        )
+        RecipientDetails(atarService, expectedEmail, "TEST NAME", Some("New trading"), Some(processingDate))
 
       whenReady(cdsSubscriber.subscribeWithCachedDetails(atarService)) {
         result =>
@@ -532,16 +509,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
           .verify(mockHandleSubscriptionService)
           .handleSubscription(
             meq(formBundleId),
-            meq(
-              RecipientDetails(
-                atarService,
-                Journey.Subscribe,
-                expectedEmail,
-                "",
-                Some("New trading"),
-                Some(processingDate)
-              )
-            ),
+            meq(RecipientDetails(atarService, expectedEmail, "", Some("New trading"), Some(processingDate))),
             any[TaxPayerId],
             meq(Some(Eori(eori))),
             meq(Some(emailVerificationTimestamp)),
@@ -653,16 +621,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
           .verify(mockHandleSubscriptionService)
           .handleSubscription(
             meq(formBundleId),
-            meq(
-              RecipientDetails(
-                atarService,
-                Journey.Subscribe,
-                expectedEmail,
-                "",
-                Some("New trading"),
-                Some(processingDate)
-              )
-            ),
+            meq(RecipientDetails(atarService, expectedEmail, "", Some("New trading"), Some(processingDate))),
             any[TaxPayerId],
             meq(Some(Eori(eori))),
             meq(Some(emailVerificationTimestamp)),
