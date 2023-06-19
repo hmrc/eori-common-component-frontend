@@ -108,6 +108,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     Mockito.reset(mockUpdateVerifiedEmailService)
     Mockito.reset(mockSessionCache)
   }
+
   "Displaying the Check Your Email Page" should {
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
