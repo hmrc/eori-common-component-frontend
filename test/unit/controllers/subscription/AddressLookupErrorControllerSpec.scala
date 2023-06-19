@@ -62,7 +62,10 @@ class AddressLookupErrorControllerSpec extends ControllerSpec with AuthActionMoc
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockAuthConnector, mockSessionCache, mockAddressLookupErrorPage, mockAddressLookupNoResultsPage)
+    reset(mockAuthConnector)
+    reset(mockSessionCache)
+    reset(mockAddressLookupErrorPage)
+    reset(mockAddressLookupNoResultsPage)
 
     super.afterEach()
   }

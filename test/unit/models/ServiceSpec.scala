@@ -34,7 +34,7 @@ class ServiceSpec extends AnyWordSpec with Matchers with EitherValues with Optio
     "bind Service name properly from query" in {
 
       val result =
-        Service.binder.bind("key", "atar").right.value
+        Service.binder.bind("key", "atar").value
 
       result.code mustEqual "atar"
     }

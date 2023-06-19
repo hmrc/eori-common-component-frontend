@@ -72,8 +72,8 @@ class Sub02ControllerGetAnEoriSpec extends ControllerSpec with BeforeAndAfterEac
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockAuthConnector, mockSessionCache)
-
+    reset(mockAuthConnector)
+    reset(mockSessionCache)
     super.afterEach()
   }
 

@@ -59,8 +59,6 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   private val mockRegistrationDetails = mock[RegistrationDetails](RETURNS_DEEP_STUBS)
   private val mockSubscriptionDetails = mock[SubscriptionDetails](RETURNS_DEEP_STUBS)
 
-  private val hintTextTelAndFax = "For international numbers include the country code"
-
   private val mockCdsFrontendDataCache = mock[SessionCache]
   private val mockOrgTypeLookup        = mock[OrgTypeLookup]
   private val mockAppConfig            = mock[AppConfig]
@@ -95,12 +93,10 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   }
 
   override protected def afterEach(): Unit = {
-    reset(
-      mockSubscriptionBusinessService,
-      mockCdsFrontendDataCache,
-      mockSubscriptionFlowManager,
-      mockSubscriptionDetailsHolderService
-    )
+    reset(mockSubscriptionBusinessService)
+    reset(mockCdsFrontendDataCache)
+    reset(mockSubscriptionFlowManager)
+    reset(mockSubscriptionDetailsHolderService)
 
     super.afterEach()
   }

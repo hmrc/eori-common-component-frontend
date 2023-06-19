@@ -83,13 +83,12 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
   private val emulatedFailure           = new UnsupportedOperationException("Emulation of service call failure")
   private val emulatedInvalidURLFailure = DataUnavailableException("Organisation type is not available in cache")
 
-  override def beforeEach: Unit = {
-    reset(
-      mockSubscriptionBusinessService,
-      mockCdsFrontendDataCache,
-      mockSubscriptionFlowManager,
-      mockSubscriptionDetailsHolderService
-    )
+  override def beforeEach(): Unit = {
+    reset(mockSubscriptionBusinessService)
+    reset(mockCdsFrontendDataCache)
+    reset(mockSubscriptionFlowManager)
+    reset(mockSubscriptionDetailsHolderService)
+
     when(mockSubscriptionBusinessService.cachedNameIdOrganisationViewModel(any[Request[_]])).thenReturn(None)
     when(mockSubscriptionBusinessService.getCachedNameIdViewModel(any[Request[_]]))
       .thenReturn(Future.successful(NameIdDetailsPage.filledValues))
@@ -193,8 +192,8 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     "leave fields empty if details weren't found in cache" in {
       showCreateForm() { result =>
         val page = CdsPage(contentAsString(result))
-        page.getElementValue(nameFieldXPath) shouldBe 'empty
-        page.getElementValue(utrFieldXPath) shouldBe 'empty
+        page.getElementValue(nameFieldXPath) shouldBe Symbol("empty")
+        page.getElementValue(utrFieldXPath) shouldBe Symbol("empty")
       }
     }
 

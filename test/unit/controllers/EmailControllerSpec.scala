@@ -42,8 +42,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.{Save4LaterService, Use
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{
   email_error_template,
   enrolment_pending_against_group_id,
-  enrolment_pending_for_user,
-  error_template
+  enrolment_pending_for_user
 }
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
@@ -56,18 +55,16 @@ import scala.concurrent.Future
 class EmailControllerSpec
     extends ControllerSpec with AddressPageFactoring with MockitoSugar with BeforeAndAfterEach with AuthActionMock {
 
-  private val mockAuthConnector                  = mock[AuthConnector]
-  private val mockAuthAction                     = authAction(mockAuthConnector)
-  private val mockEmailVerificationService       = mock[EmailVerificationService]
-  private val mockSave4LaterService              = mock[Save4LaterService]
-  private val mockSessionCache                   = mock[SessionCache]
-  private val mockSubscriptionStatusService      = mock[SubscriptionStatusService]
-  private val mockUpdateVerifiedEmailService     = mock[UpdateVerifiedEmailService]
-  private val enrolmentPendingAgainstGroupIdView = instanceOf[enrolment_pending_against_group_id]
-  private val enrolmentPendingForUserView        = instanceOf[enrolment_pending_for_user]
-  private val errorEmailView                     = instanceOf[email_error_template]
-
-  private val infoXpath = "//*[@id='info']"
+  private val mockAuthConnector                                          = mock[AuthConnector]
+  private val mockAuthAction                                             = authAction(mockAuthConnector)
+  private val mockEmailVerificationService: EmailVerificationService     = mock[EmailVerificationService]
+  private val mockSave4LaterService: Save4LaterService                   = mock[Save4LaterService]
+  private val mockSessionCache: SessionCache                             = mock[SessionCache]
+  private val mockSubscriptionStatusService                              = mock[SubscriptionStatusService]
+  private val mockUpdateVerifiedEmailService: UpdateVerifiedEmailService = mock[UpdateVerifiedEmailService]
+  private val enrolmentPendingAgainstGroupIdView                         = instanceOf[enrolment_pending_against_group_id]
+  private val enrolmentPendingForUserView                                = instanceOf[enrolment_pending_for_user]
+  private val errorEmailView                                             = instanceOf[email_error_template]
 
   private val userGroupIdSubscriptionStatusCheckService =
     new UserGroupIdSubscriptionStatusCheckService(mockSubscriptionStatusService, mockSave4LaterService)
@@ -91,7 +88,7 @@ class EmailControllerSpec
 
   }
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     when(mockSave4LaterService.fetchEmailForService(any(), any(), any())(any()))
       .thenReturn(Future.successful(Some(emailStatus)))
     when(
@@ -101,7 +98,7 @@ class EmailControllerSpec
     when(mockSave4LaterService.saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier]))
       .thenReturn(Future.successful(()))
     when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])).thenReturn(
-      Future.successful(Right())
+      Future.successful(Right((): Unit))
     )
     when(mockSessionCache.saveEmail(any())(any()))
       .thenReturn(Future.successful(true))
@@ -113,7 +110,11 @@ class EmailControllerSpec
   }
 
   override def afterEach(): Unit =
-    Mockito.reset(mockSave4LaterService, mockEmailVerificationService, mockUpdateVerifiedEmailService, mockSessionCache)
+    Mockito.reset(mockSave4LaterService)
+
+  Mockito.reset(mockEmailVerificationService)
+  Mockito.reset(mockUpdateVerifiedEmailService)
+  Mockito.reset(mockSessionCache)
 
   "Viewing the form on Subscribe" should {
 
@@ -259,7 +260,7 @@ class EmailControllerSpec
       showFormSubscription(controller)(journey = subscribeJourneyShort) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should startWith("Someone in your organisation has already applied")
+        page.title() should startWith("Someone in your organisation has already applied")
       }
     }
 
@@ -275,7 +276,7 @@ class EmailControllerSpec
       showFormSubscription(controller)(journey = subscribeJourneyShort) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should startWith("Someone in your organisation has already applied")
+        page.title() should startWith("Someone in your organisation has already applied")
       }
     }
 
@@ -288,7 +289,7 @@ class EmailControllerSpec
       showFormSubscription(controller)(journey = subscribeJourneyShort) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should startWith("You cannot apply until we have processed your application")
+        page.title() should startWith("You cannot apply until we have processed your application")
       }
     }
 
@@ -301,7 +302,7 @@ class EmailControllerSpec
       showFormSubscription(controller)(journey = subscribeJourneyShort) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should startWith("You cannot apply until we have processed")
+        page.title() should startWith("You cannot apply until we have processed")
       }
     }
   }
@@ -321,7 +322,7 @@ class EmailControllerSpec
 
   private def showForm(
     controller: EmailController
-  )(userId: String, journey: SubscribeJourney, service: Service = atarService)(test: Future[Result] => Any) {
+  )(userId: String, journey: SubscribeJourney, service: Service)(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller

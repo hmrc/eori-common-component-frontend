@@ -49,7 +49,9 @@ class AllowlistFilterSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
   }
 
   override protected def afterEach(): Unit = {
-    reset(next, config, mockSessionCookieBaker)
+    reset(next)
+    reset(config)
+    reset(mockSessionCookieBaker)
 
     super.afterEach()
   }

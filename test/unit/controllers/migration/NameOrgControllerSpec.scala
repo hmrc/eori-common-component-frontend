@@ -78,7 +78,9 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
   override def beforeEach(): Unit = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
-    reset(mockSubscriptionBusinessService, mockSessionCache, mockSubscriptionDetailsService)
+    reset(mockSubscriptionBusinessService)
+    reset(mockSessionCache)
+    reset(mockSubscriptionDetailsService)
   }
 
   "NameOrgController" should {
@@ -90,7 +92,7 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
       createForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should include(OrganisationNamePage.title)
+        page.title() should include(OrganisationNamePage.title)
       }
     }
 
@@ -103,7 +105,7 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
       reviewForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should include(OrganisationNamePage.title)
+        page.title() should include(OrganisationNamePage.title)
       }
     }
 
@@ -113,7 +115,7 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
       submit(isInReviewMode = false, incorrectForm) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.title should include(OrganisationNamePage.title)
+        page.title() should include(OrganisationNamePage.title)
       }
     }
 

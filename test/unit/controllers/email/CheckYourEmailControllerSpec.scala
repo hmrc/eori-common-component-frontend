@@ -94,7 +94,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   val data       = Map(internalId -> jsonValue)
   val unit       = ()
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
       .thenReturn(Future.successful(Some(true)))
 
@@ -103,7 +103,11 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   }
 
   override def afterEach(): Unit =
-    Mockito.reset(mockSave4LaterService, mockEmailVerificationService, mockUpdateVerifiedEmailService, mockSessionCache)
+    Mockito.reset(mockSave4LaterService)
+
+  Mockito.reset(mockEmailVerificationService)
+  Mockito.reset(mockUpdateVerifiedEmailService)
+  Mockito.reset(mockSessionCache)
 
   "Displaying the Check Your Email Page" should {
 
@@ -138,7 +142,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       when(mockSessionCache.eori(any[Request[AnyContent]]))
         .thenReturn(Future.successful(Some("GB123456789")))
       when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Right()))
+        .thenReturn(Future.successful(Right((): Unit)))
       when(mockSave4LaterService.saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier]))
         .thenReturn(Future.successful(()))
       when(mockSessionCache.saveEmail(any[String])(any[Request[AnyContent]]))
@@ -176,7 +180,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
 
     "update verified email for CDS Short Journey (Auto-enrolment)" in {
       when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Right()))
+        .thenReturn(Future.successful(Right((): Unit)))
 
       when(mockSessionCache.eori(any[Request[AnyContent]]))
         .thenReturn(Future.successful(Some("GB123456789")))
@@ -360,7 +364,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     userId: String = defaultUserId,
     service: Service,
     journey: SubscribeJourney
-  )(test: Future[Result] => Any) {
+  )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller.submit(isInReviewMode = false, service, journey)(
       SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)
@@ -368,7 +372,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     test(result)
   }
 
-  private def showForm(userId: String = defaultUserId, journey: SubscribeJourney)(test: Future[Result] => Any) {
+  private def showForm(userId: String = defaultUserId, journey: SubscribeJourney)(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
       .createForm(atarService, journey)
@@ -376,7 +380,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     test(result)
   }
 
-  private def emailConfirmed(userId: String)(test: Future[Result] => Any) {
+  private def emailConfirmed(userId: String)(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
       .emailConfirmed(atarService, subscribeJourneyShort)
@@ -386,7 +390,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
 
   private def verifyEmailViewForm(userId: String = defaultUserId, journey: SubscribeJourney)(
     test: Future[Result] => Any
-  ) {
+  ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
       .verifyEmailView(atarService, journey)

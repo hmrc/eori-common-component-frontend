@@ -122,13 +122,15 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
     assertCorrectSessionDataAndRedirect(UserLocation.Islands)
   }
 
-  private def showForm(userId: String = defaultUserId)(test: Future[Result] => Any) {
+  private def showForm(userId: String = defaultUserId)(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
 
     test(controller.form(atarService).apply(SessionBuilder.buildRequestWithSession(userId)))
   }
 
-  private def submitForm(form: Map[String, String], userId: String = defaultUserId)(test: Future[Result] => Any) {
+  private def submitForm(form: Map[String, String], userId: String = defaultUserId)(
+    test: Future[Result] => Any
+  ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
 
     test(controller.submit(atarService).apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form)))

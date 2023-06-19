@@ -51,7 +51,7 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
 
   private val nextPageFlowUrl = "/customs-enrolment-services/subscribe/address"
 
-  override protected def beforeEach: Unit = {
+  override protected def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockSubscriptionDetailsService)
     when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[_]]))
@@ -72,7 +72,7 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
       createForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should include("Enter your National Insurance number")
+        page.title() should include("Enter your National Insurance number")
       }
     }
     "populate the field values when Session cache hold Nino details" in {
@@ -81,7 +81,7 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
       createForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should include("Enter your National Insurance number")
+        page.title() should include("Enter your National Insurance number")
         page.getElementValue("//*[@id='nino']") shouldBe "123456789"
       }
     }
@@ -92,7 +92,7 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
       reviewForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should include("Enter your National Insurance number")
+        page.title() should include("Enter your National Insurance number")
       }
     }
   }

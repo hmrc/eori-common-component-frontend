@@ -64,7 +64,10 @@ class AddressLookupPostcodeControllerSpec extends ControllerSpec with AuthAction
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockAuthConnector, mockSessionCache, mockRequestSessionData, mockAddressLookupPostcodePage)
+    reset(mockAuthConnector)
+    reset(mockSessionCache)
+    reset(mockRequestSessionData)
+    reset(mockAddressLookupPostcodePage)
 
     super.afterEach()
   }

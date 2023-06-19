@@ -56,8 +56,9 @@ class CheckYourDetailsControllerSpec
   val controller =
     new CheckYourDetailsController(mockAuthAction, mockCdsDataCache, mcc, checkYourDetailsView, mockRequestSessionData)
 
-  override def beforeEach: Unit = {
-    reset(mockCdsDataCache, mockSubscriptionFlow)
+  override def beforeEach(): Unit = {
+    reset(mockCdsDataCache)
+    reset(mockSubscriptionFlow)
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(mockSubscriptionFlow)
 
     val subscriptionDetailsHolderForCompany = SubscriptionDetails(
@@ -96,7 +97,7 @@ class CheckYourDetailsControllerSpec
     userSelectedOrgType: Option[CdsOrganisationType] = None,
     userId: String = defaultUserId,
     isIndividualSubscriptionFlow: Boolean = false
-  )(test: Future[Result] => Any) {
+  )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(userSelectedOrgType)
     when(mockSubscriptionFlow.isIndividualFlow).thenReturn(isIndividualSubscriptionFlow)

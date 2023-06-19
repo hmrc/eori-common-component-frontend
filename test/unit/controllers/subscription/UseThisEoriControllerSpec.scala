@@ -52,7 +52,9 @@ class UseThisEoriControllerSpec extends ControllerSpec with AuthActionMock with 
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockAuthConnector, mockSubscriptionDetailsService, mockUseThisEoriPage)
+    reset(mockAuthConnector)
+    reset(mockSubscriptionDetailsService)
+    reset(mockUseThisEoriPage)
 
     super.afterEach()
   }

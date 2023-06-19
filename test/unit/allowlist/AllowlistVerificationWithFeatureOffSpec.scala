@@ -69,13 +69,11 @@ class AllowlistVerificationWithFeatureOffSpec
     mockSubscriptionDetailsHolderService
   )
 
-  override def beforeEach: Unit = {
-    reset(
-      mockSubscriptionBusinessService,
-      mockCdsFrontendDataCache,
-      mockSubscriptionFlowManager,
-      mockSubscriptionDetailsHolderService
-    )
+  override def beforeEach(): Unit = {
+    reset(mockSubscriptionBusinessService)
+    reset(mockCdsFrontendDataCache)
+    reset(mockSubscriptionFlowManager)
+    reset(mockSubscriptionDetailsHolderService)
     when(mockSubscriptionBusinessService.cachedSubscriptionNameDobViewModel(any[Request[_]])).thenReturn(None)
     when(mockSubscriptionBusinessService.getCachedSubscriptionNameDobViewModel(any[Request[_]]))
       .thenReturn(Future.successful(NameDobSoleTraderPage.filledValues))

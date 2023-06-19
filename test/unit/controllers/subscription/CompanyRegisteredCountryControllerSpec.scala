@@ -69,13 +69,11 @@ class CompanyRegisteredCountryControllerSpec extends ControllerSpec with AuthAct
   }
 
   override protected def afterEach(): Unit = {
-    reset(
-      mockAuthConnector,
-      mockSubscriptionDetailsService,
-      mockRequestSessionData,
-      countryIndividualPage,
-      countryOrganisationPage
-    )
+    reset(mockAuthConnector)
+    reset(mockSubscriptionDetailsService)
+    reset(mockRequestSessionData)
+    reset(countryIndividualPage)
+    reset(countryOrganisationPage)
 
     super.afterEach()
   }

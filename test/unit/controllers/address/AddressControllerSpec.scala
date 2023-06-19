@@ -54,7 +54,7 @@ class AddressControllerSpec
   private val mockAddressService = mock[AddressService]
   private val controller         = new AddressController(mockAuthAction, mcc, mockAddressService)
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach()
     setupMockSubscriptionFlowManager(AddressDetailsSubscriptionFlowPage)
   }

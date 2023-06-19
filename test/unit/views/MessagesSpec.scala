@@ -25,7 +25,6 @@ class MessagesSpec extends PlaySpec with Injector {
 
   private val messageApi: MessagesApi = instanceOf[MessagesApi]
 
-  private val messagesEn: Messages = MessagesImpl(Lang.forCode("en"), messageApi)
   private val messagesCy: Messages = MessagesImpl(Lang.forCode("cy"), messageApi)
 
   val keysEn: Set[String] =

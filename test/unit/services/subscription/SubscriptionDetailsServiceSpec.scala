@@ -84,15 +84,13 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
   private val contactDetailsViewModelWhenUsingRegisteredAddress =
     SubscriptionContactDetailsFormBuilder.createContactDetailsViewModelWhenUseRegAddress
 
-  override def beforeEach: Unit = {
-    reset(
-      mockSessionCache,
-      mockRegistrationDetailsCreator,
-      mockRegistrationDetails,
-      mockSubscriptionDetailsHolder,
-      mockContactDetailsAdaptor,
-      mockSave4LaterConnector
-    )
+  override def beforeEach(): Unit = {
+    reset(mockSessionCache)
+    reset(mockRegistrationDetailsCreator)
+    reset(mockRegistrationDetails)
+    reset(mockSubscriptionDetailsHolder)
+    reset(mockContactDetailsAdaptor)
+    reset(mockSave4LaterConnector)
 
     when(mockSessionCache.saveRegistrationDetails(any[RegistrationDetails])(any[Request[AnyContent]]))
       .thenReturn(Future.successful(true))
@@ -500,7 +498,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
     "return Some company when found in subscription Details" in {
       when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]]))
         .thenReturn(SubscriptionDetails(registeredCompany = Some(CompanyRegisteredCountry("United Kingdom"))))
-      await(subscriptionDetailsHolderService.cachedRegisteredCountry) shouldBe Some(
+      await(subscriptionDetailsHolderService.cachedRegisteredCountry()) shouldBe Some(
         CompanyRegisteredCountry("United Kingdom")
       )
     }

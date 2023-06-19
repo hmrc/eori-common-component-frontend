@@ -67,7 +67,10 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockAuthConnector, groupEnrolmentExtractor, mockSessionCache, mockEnrolmentStoreProxyService)
+    reset(mockAuthConnector)
+    reset(groupEnrolmentExtractor)
+    reset(mockSessionCache)
+    reset(mockEnrolmentStoreProxyService)
 
     super.afterEach()
   }

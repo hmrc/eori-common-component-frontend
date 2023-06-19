@@ -17,7 +17,7 @@
 package base
 
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers
+
 import org.scalatest.matchers.should.Matchers
 import play.api.mvc.Result
 import play.api.test.Helpers._

@@ -44,7 +44,7 @@ class RequestSessionDataSpec extends UnitSpec with MockitoSugar with BeforeAndAf
     "add correct flow name in request cache" in {
       val newSession = requestSessionData.storeUserSubscriptionFlow(OrganisationFlow, "")
       newSession shouldBe Session(
-        existingSessionValues + ("subscription-flow" -> OrganisationFlow.name, "uri-before-subscription-flow" -> "")
+        existingSessionValues ++ Map("subscription-flow" -> OrganisationFlow.name, "uri-before-subscription-flow" -> "")
       )
     }
 

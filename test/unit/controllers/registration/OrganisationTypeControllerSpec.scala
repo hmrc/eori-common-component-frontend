@@ -71,7 +71,9 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
   private val individualXpath           = "//*[@id='organisation-type-individual']"
 
   override protected def beforeEach(): Unit = {
-    reset(mockRequestSessionData, mockRegistrationDetailsService, mockSubscriptionDetailsService)
+    reset(mockRequestSessionData)
+    reset(mockRegistrationDetailsService)
+    reset(mockSubscriptionDetailsService)
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
     when(
       mockRegistrationDetailsService

@@ -49,7 +49,9 @@ class CompletedEnrolmentControllerSpec extends ControllerSpec with AuthActionMoc
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockAuthConnector, mockSessionCache, mockEnrolSuccessView)
+    reset(mockAuthConnector)
+    reset(mockSessionCache)
+    reset(mockEnrolSuccessView)
 
     super.afterEach()
   }

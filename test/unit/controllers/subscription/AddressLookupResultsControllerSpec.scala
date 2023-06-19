@@ -81,15 +81,13 @@ class AddressLookupResultsControllerSpec extends ControllerSpec with AuthActionM
   }
 
   override protected def afterEach(): Unit = {
-    reset(
-      mockAuthConnector,
-      mockSessionCache,
-      mockSubscriptionDetailsService,
-      mockRequestSessionData,
-      mockSubscriptionFlowManager,
-      mockAddressLookupConnector,
-      mockAddressLookupResultsPage
-    )
+    reset(mockAuthConnector)
+    reset(mockSessionCache)
+    reset(mockSubscriptionDetailsService)
+    reset(mockRequestSessionData)
+    reset(mockSubscriptionFlowManager)
+    reset(mockAddressLookupConnector)
+    reset(mockAddressLookupResultsPage)
 
     super.afterEach()
   }
