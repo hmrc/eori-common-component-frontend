@@ -102,13 +102,12 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       .thenReturn(Future.successful(Some(emailStatus)))
   }
 
-  override def afterEach(): Unit =
+  override def afterEach(): Unit = {
     Mockito.reset(mockSave4LaterService)
-
-  Mockito.reset(mockEmailVerificationService)
-  Mockito.reset(mockUpdateVerifiedEmailService)
-  Mockito.reset(mockSessionCache)
-
+    Mockito.reset(mockEmailVerificationService)
+    Mockito.reset(mockUpdateVerifiedEmailService)
+    Mockito.reset(mockSessionCache)
+  }
   "Displaying the Check Your Email Page" should {
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
