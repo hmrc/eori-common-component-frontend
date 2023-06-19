@@ -299,11 +299,12 @@ ecc.registered-company-country.summary = Lleoliad y wlad
 
 ecc.address-lookup.postcode.title = Dewis eich cyfeiriad
 ecc.address-lookup.postcode.organisation.title = Beth yw cyfeiriad cofrestredig eich cwmni?
-ecc.address-lookup.postcode.individual.title = Beth yw cyfeiriad cofrestredig eich busnes?
+ecc.address-lookup.postcode.individual.title = Beth yw’ch cyfeiriad?
 ecc.address-lookup.postcode.partnership.title = Beth yw cyfeiriad cofrestredig eich partneriaeth?
 ecc.address-lookup.postcode.charity.title = Beth yw cyfeiriad cofrestredig eich sefydliad?
 ecc.address-lookup.postcode.default.hint = Mae’n bosibl nad dyma gyfeiriad eich busnes.
 ecc.address-lookup.postcode.organisation.hint = Dyma’r cyfeiriad sydd wedi’i gofrestru gyda Thŷ’r Cwmnïau. Mae’n bosibl nad dyma’ch cyfeiriad busnes.
+ecc.address-lookup.postcode.individual.hint = Dyma’r cyfeiriad a ddefnyddioch yn eich cais am rif EORI.
 ecc.address-lookup.postcode.label = Cod post
 ecc.address-lookup.postcode.line1.label = Enw neu rif yr eiddo (dewisol)
 ecc.address-lookup.postcode.line1.error = Ni all enw neu rif yr eiddo fod yn fwy na 35 o gymeriadau

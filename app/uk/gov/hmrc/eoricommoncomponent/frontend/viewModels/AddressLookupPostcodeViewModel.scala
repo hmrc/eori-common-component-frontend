@@ -47,6 +47,7 @@ object AddressLookupPostcodeViewModel {
 
     val formHintKey = selectedOrganisationType.id match {
       case PartnershipId => "ecc.address-lookup.postcode.partnership.hint.text"
+      case SoleTraderId | IndividualId     => "ecc.address-lookup.postcode.individual.hint"
       case _             => "ecc.address-lookup.postcode.organisation.hint"
     }
 
@@ -54,6 +55,7 @@ object AddressLookupPostcodeViewModel {
       case CompanyId                       => "ecc.address-lookup.postcode.hint.company"
       case LimitedLiabilityPartnershipId   => "ecc.address-lookup.postcode.hint.llp"
       case CharityPublicBodyNotForProfitId => "ecc.address-lookup.postcode.hint.organisation"
+      case SoleTraderId | IndividualId     => "ecc.address-lookup.postcode.hint.individual"
       case _                               => "ecc.address-lookup.postcode.hint.partnership"
     }
 

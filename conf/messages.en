@@ -1455,4 +1455,5 @@ ecc.address-lookup.postcode.hint.company = <p class="govuk-body">We will use thi
 ecc.address-lookup.postcode.hint.llp = <p class="govuk-body">We will use this to verify your identity. You can get the postcode from the <a href="https://beta.companieshouse.gov.uk/" target="_blank">Companies House register (opens in new tab).</a></p> Enter the postcode that's on the partnership’s certificate of incorporation.
 ecc.address-lookup.postcode.hint.organisation =<p class="govuk-body">We will use this to verify your identity. You can get the postcode from the <a href="https://beta.companieshouse.gov.uk/" target="_blank">Companies House register (opens in new tab).</a></p> Enter the postcode that's on the organisation’s certificate of incorporation.
 ecc.address-lookup.postcode.hint.partnership=Enter the postcode for the partnership address that you registered with HMRC.
+ecc.address-lookup.postcode.hint.individual=Enter the same postcode you used in your application for an EORI number.
 ecc.address-lookup.postcode.partnership.hint.text =We will use this to verify your identity.

@@ -68,12 +68,12 @@ class AddressLookupPostcodeViewSpec extends ViewSpec {
 
     "display title for individual" in {
 
-      doc(SoleTrader).title() must startWith("What is your registered business address?")
+      doc(SoleTrader).title() must startWith("What is your address?")
     }
 
     "display header for individual" in {
 
-      doc(SoleTrader).body().getElementsByTag("h1").text() mustBe "What is your registered business address?"
+      doc(SoleTrader).body().getElementsByTag("h1").text() mustBe "What is your address?"
     }
 
     "display title for partnership" in {
