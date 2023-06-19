@@ -25,7 +25,7 @@
 
 @layout_di(EnrolmentPendingViewModel.groupIdTitle(otherService, service), suppressTelephoneNumberDetection = false, displayBackLink = false) {
     <div>
-        @h1("page-heading", Some("govuk-heading-l"), EnrolmentPendingViewModel.groupIdTitle(otherService, service))
+        @h1(EnrolmentPendingViewModel.groupIdTitle(otherService, service), Some("page-heading"), "govuk-heading-l")
 
         @p(Some("info-para1"), messages("cds.enrolment.pending.group.paragraph1"))
 
