@@ -61,7 +61,6 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
     reset(mockSessionCache)
     reset(mockEnrolmentStoreProxyService)
 
-
     super.afterEach()
   }
 
