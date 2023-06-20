@@ -53,16 +53,18 @@ class AddressLookupErrorController @Inject() (
   def displayNoResultsPage(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       sessionCache.addressLookupParams.map {
-        case Some(addressLookupParams) => Ok(addressLookupNoResultsPage(addressLookupParams.postcode, service, false))
-        case _                         => Redirect(routes.AddressLookupPostcodeController.displayPage(service))
+        case Some(addressLookupParams) =>
+          Ok(addressLookupNoResultsPage(addressLookupParams.postcode, service, isInReviewMode = false))
+        case _ => Redirect(routes.AddressLookupPostcodeController.displayPage(service))
       }
     }
 
   def reviewNoResultsPage(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       sessionCache.addressLookupParams.map {
-        case Some(addressLookupParams) => Ok(addressLookupNoResultsPage(addressLookupParams.postcode, service, true))
-        case _                         => Redirect(routes.AddressLookupPostcodeController.reviewPage(service))
+        case Some(addressLookupParams) =>
+          Ok(addressLookupNoResultsPage(addressLookupParams.postcode, service, isInReviewMode = true))
+        case _ => Redirect(routes.AddressLookupPostcodeController.reviewPage(service))
       }
     }
 
