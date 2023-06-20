@@ -35,9 +35,6 @@ class AppConfig @Inject() (
 
   val ttl: Duration = Duration.create(config.get[String]("cds-frontend-cache.ttl"))
 
-//  val allowlistReferrers: Seq[String] =
-//    config.get[String]("allowlist-referrers").split(',').map(_.trim).filter(_.nonEmpty)
-
   val allowlistReferrers: Seq[String] = {
     val configValue        = config.get[String]("allowlist-referrers")
     val substrings         = configValue.split(',').map(_.trim)

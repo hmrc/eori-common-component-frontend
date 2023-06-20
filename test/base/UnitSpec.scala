@@ -17,7 +17,6 @@
 package base
 
 import org.scalatest.wordspec.AnyWordSpec
-
 import org.scalatest.matchers.should.Matchers
 import play.api.mvc.Result
 import play.api.test.Helpers._
@@ -25,8 +24,7 @@ import util.TestData
 
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration.{Duration, DurationInt, FiniteDuration}
-
-import scala.language.postfixOps
+import scala.language.{implicitConversions, postfixOps}
 
 trait UnitSpec extends AnyWordSpec with Matchers with TestData {
 

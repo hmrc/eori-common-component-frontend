@@ -337,7 +337,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
   "Calling cachedCustomsId" should {
     "return Some of customsID when found in subscription Details" in {
       when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]]))
-        .thenReturn(SubscriptionDetails(customsId = Option(Utr("12345"))))
+        .thenReturn(Future.successful(SubscriptionDetails(customsId = Option(Utr("12345")))))
       await(subscriptionDetailsHolderService.cachedCustomsId(request)) shouldBe Some(Utr("12345"))
     }
 
@@ -350,7 +350,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
   "Calling cachedUtrMatch" should {
     "return Some utrMatch when found in subscription Details" in {
       when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]]))
-        .thenReturn(SubscriptionDetails(formData = FormData(utrMatch = Option(utrMatch))))
+        .thenReturn(Future.successful(SubscriptionDetails(formData = FormData(utrMatch = Option(utrMatch)))))
       await(subscriptionDetailsHolderService.cachedUtrMatch(request)) shouldBe Some(utrMatch)
     }
 
@@ -363,7 +363,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
   "Calling cachedNinoMatch" should {
     "return Some ninoMatch when found in subscription Details" in {
       when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]]))
-        .thenReturn(SubscriptionDetails(formData = FormData(ninoMatch = Option(ninoMatch))))
+        .thenReturn(Future.successful(SubscriptionDetails(formData = FormData(ninoMatch = Option(ninoMatch)))))
       await(subscriptionDetailsHolderService.cachedNinoMatch(request)) shouldBe Some(ninoMatch)
     }
 
@@ -376,7 +376,11 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
   "Calling cachedOrganisationType" should {
     "return Some company when found in subscription Details" in {
       when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]]))
-        .thenReturn(SubscriptionDetails(formData = FormData(organisationType = Option(CdsOrganisationType.Company))))
+        .thenReturn(
+          Future.successful(
+            SubscriptionDetails(formData = FormData(organisationType = Option(CdsOrganisationType.Company)))
+          )
+        )
       await(subscriptionDetailsHolderService.cachedOrganisationType(request)) shouldBe Some(CdsOrganisationType.Company)
     }
 
@@ -407,7 +411,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
   "Calling cachedNameIdDetails" should {
     "return Some name Id details when found in subscription Details" in {
       when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]]))
-        .thenReturn(SubscriptionDetails(nameIdOrganisationDetails = Some(nameId)))
+        .thenReturn(Future.successful(SubscriptionDetails(nameIdOrganisationDetails = Some(nameId))))
       await(subscriptionDetailsHolderService.cachedNameIdDetails) shouldBe Some(nameId)
     }
 
@@ -434,7 +438,11 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
   "Calling cachedExistingEoriNumber" should {
     "return Some company when found in subscription Details" in {
       when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]]))
-        .thenReturn(SubscriptionDetails(existingEoriNumber = Some(ExistingEori("GB123456789123", "HMRC-CUS-ORG"))))
+        .thenReturn(
+          Future.successful(
+            SubscriptionDetails(existingEoriNumber = Some(ExistingEori("GB123456789123", "HMRC-CUS-ORG")))
+          )
+        )
       await(subscriptionDetailsHolderService.cachedExistingEoriNumber(request)) shouldBe Some(
         ExistingEori("GB123456789123", "HMRC-CUS-ORG")
       )
@@ -497,7 +505,9 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
   "Calling cachedRegisteredCountry" should {
     "return Some company when found in subscription Details" in {
       when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]]))
-        .thenReturn(SubscriptionDetails(registeredCompany = Some(CompanyRegisteredCountry("United Kingdom"))))
+        .thenReturn(
+          Future.successful(SubscriptionDetails(registeredCompany = Some(CompanyRegisteredCountry("United Kingdom"))))
+        )
       await(subscriptionDetailsHolderService.cachedRegisteredCountry()) shouldBe Some(
         CompanyRegisteredCountry("United Kingdom")
       )
