@@ -55,18 +55,12 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
   )
 
   override protected def afterEach(): Unit = {
-
     reset(mockAuthConnector)
-    reset(groupEnrolmentExtractor)
     reset(mockSessionCache)
-    reset(mockEnrolmentStoreProxyService)
+    reset(mockEnrolmentJourneyService)
 
     super.afterEach()
   }
-
-  private def groupEnrolment(service: Service) = Some(
-    EnrolmentResponse(service.enrolmentKey, "Activated", List(KeyValue("EORINumber", "GB123456463324")))
-  )
 
   "Navigating to start" should {
 
