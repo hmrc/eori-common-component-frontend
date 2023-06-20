@@ -44,6 +44,8 @@ object Service {
   def withName(str: String): Option[Service] =
     supportedServicesMap.get(str)
 
+  lazy val supportedServiceEnrolments: List[String] = supportedServicesMap.values.map(_.enrolmentKey).toList
+
   implicit def binder(implicit stringBinder: PathBindable[String]): PathBindable[Service] = new PathBindable[Service] {
 
     override def bind(key: String, value: String): Either[String, Service] =
