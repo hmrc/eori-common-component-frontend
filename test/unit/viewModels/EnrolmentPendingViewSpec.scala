@@ -45,7 +45,7 @@ class EnrolmentPendingViewSpec extends UnitSpec with ControllerSpec {
     "should return the appropriate title when the other service is the same as the other services " in {
       val someOtherService = Some(otherService)
       val service          = atarService
-      when(mockMessages(messages("cds.enrolment.pending.title.user.otherService", atarService))).thenReturn(
+      when(mockMessages(messages("cds.enrolment.pending.title.user.processingService", atarService))).thenReturn(
         Future.successful("Other Service")
       )
 
@@ -73,7 +73,7 @@ class EnrolmentPendingViewSpec extends UnitSpec with ControllerSpec {
       val someOtherService = Some(otherService)
       val service          = atarService
 
-      when(mockMessages(messages("cds.enrolment.pending.title.group.otherService", otherService))).thenReturn(
+      when(mockMessages(messages("cds.enrolment.pending.title.group.processingService", otherService))).thenReturn(
         Future.successful("Some Service")
       )
 

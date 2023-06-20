@@ -22,19 +22,21 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName
 
 object EnrolmentPendingViewModel {
 
-  private def otherServiceName(otherService: Option[Service])(implicit messages: Messages) =
-    otherService.map(other => ServiceName.longName(other)).getOrElse(messages("cds.enrolment.pending.otherService"))
+  private def processingServiceName(processingService: Option[Service])(implicit messages: Messages) =
+    processingService.map(other => ServiceName.longName(other)).getOrElse(
+      messages("cds.enrolment.pending.otherService")
+    )
 
-  def title(otherService: Option[Service], service: Service)(implicit messages: Messages): String =
-    if (otherService.contains(service))
-      messages("cds.enrolment.pending.title.user.sameService", otherServiceName(otherService))
+  def title(processingService: Option[Service], service: Service)(implicit messages: Messages): String =
+    if (processingService.contains(service))
+      messages("cds.enrolment.pending.title.user.sameService", processingServiceName(processingService))
     else
-      messages("cds.enrolment.pending.title.user.otherService", otherServiceName(otherService))
+      messages("cds.enrolment.pending.title.user.processingService", processingServiceName(processingService))
 
-  def groupIdTitle(otherService: Option[Service], service: Service)(implicit messages: Messages): String =
-    if (otherService.contains(service))
+  def groupIdTitle(processingService: Option[Service], service: Service)(implicit messages: Messages): String =
+    if (processingService.contains(service))
       messages("cds.enrolment.pending.title.group.sameService")
     else
-      messages("cds.enrolment.pending.title.group.otherService")
+      messages("cds.enrolment.pending.title.group.processingService")
 
 }
