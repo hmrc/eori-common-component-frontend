@@ -255,7 +255,6 @@ class SubscriptionRecoveryController @Inject() (
         subscriptionInformation.formBundleId,
         RecipientDetails(
           service,
-          Journey.Subscribe,
           subscriptionInformation.email,
           subscriptionInformation.recipientFullName,
           Some(subscriptionInformation.name),
