@@ -25,6 +25,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 case class AddressLookupPostcodeViewModel(
   pageTitleKey: String,
   formHintKey: String,
+  paragraphWithLink: String,
   hintTextKey: String,
   addressLink: Call
 )
@@ -51,12 +52,16 @@ object AddressLookupPostcodeViewModel {
       case _                           => "ecc.address-lookup.postcode.organisation.hint"
     }
 
+    val paragraphWithLink = selectedOrganisationType.id match {
+      case CompanyId | LimitedLiabilityPartnershipId | CharityPublicBodyNotForProfitId =>
+        "ecc.address-lookup.postcode.hint.link"
+      case PartnershipId => "ecc.address-lookup.postcode.hint.partnership.link"
+      case _             => ""
+    }
+
     val hintTextKey = selectedOrganisationType.id match {
-      case CompanyId                       => "ecc.address-lookup.postcode.hint.company"
-      case LimitedLiabilityPartnershipId   => "ecc.address-lookup.postcode.hint.llp"
-      case CharityPublicBodyNotForProfitId => "ecc.address-lookup.postcode.hint.organisation"
-      case SoleTraderId | IndividualId     => "ecc.address-lookup.postcode.hint.individual"
-      case _                               => "ecc.address-lookup.postcode.hint.partnership"
+      case SoleTraderId | IndividualId => "ecc.address-lookup.postcode.hint.individual"
+      case _                           => ""
     }
 
     val addressLink = {
@@ -64,7 +69,7 @@ object AddressLookupPostcodeViewModel {
         uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.reviewForm(service)
       else uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.createForm(service)
     }
-    AddressLookupPostcodeViewModel(pageTitleKey, formHintKey, hintTextKey, addressLink)
+    AddressLookupPostcodeViewModel(pageTitleKey, formHintKey, paragraphWithLink, hintTextKey, addressLink)
 
   }
 
