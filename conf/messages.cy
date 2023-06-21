@@ -1293,8 +1293,8 @@ cds.subscription.outcomes.steps.next.new.ndrc = <li>gwneud cais am ad-daliad o d
 
 ecc.address-lookup.postcode.hint.company = <p class="govuk-body">Byddwn yn defnyddio hyn i gadarnhau pwy ydych. Gallwch gael y cod post hwn o <a href="https://beta.companieshouse.gov.uk/" target="_blank">gofrestr Tŷ’r Cwmnïau (yn agor tab newydd).</a></p> Nodwch y cod post sydd ar dystysgrif ymgorffori’r cwmni.
 ecc.address-lookup.postcode.hint.llp =  <p class="govuk-body">Byddwn yn defnyddio hyn i gadarnhau pwy ydych. Gallwch gael y cod post hwn o <a href="https://beta.companieshouse.gov.uk/" target="_blank">gofrestr Tŷ’r Cwmnïau (yn agor tab newydd).</a></p> Nodwch y cod post sydd ar dystysgrif ymgorffori’r bartneriaeth.
-ecc.address-lookup.postcode.hint.organisation = <p class="govuk-body">Byddwn yn defnyddio hyn i gadarnhau pwy ydych. Gallwch gael y cod post hwn o <a href="https://beta.companieshouse.gov.uk/" target="_blank">gofrestr Tŷ’r Cwmnïau (yn agor tab newydd).</a></p> Nodwch y cod post sydd ar dystysgrif ymgorffori’r sefydliad.
-ecc.address-lookup.postcode.hint.partnership= Nodwch y cod post ar gyfer cyfeiriad y bartneriaeth y gwnaethoch ei chofrestru â CThEF
+ecc.address-lookup.postcode.hint.organisation =<p class="govuk-body">Gallwch ddod o hyd hwn ar gofrestr <a href="https://beta.companieshouse.gov.uk/" target="_blank">gofrestr Tŷ’r Cwmnïau (yn agor tab newydd).</a></p>
+ecc.address-lookup.postcode.hint.partnership= <p class="govuk-body">Dyma’r enw sydd wedi’i gofrestru gyda CThEF. Gallwch ddod o hyd i hyn yn <a href="https://www.gov.uk/log-in-register-hmrc-online-services" target="_blank">gwasanaethau ar-lein CThEF (yn agor tab newydd)</a> neu ar lythyrau oddi wrth CThEF.</p>
 ecc.address-lookup.postcode.organisation.para.hint.text = Byddwn yn defnyddio hyn i gadarnhau pwy ydych. Gallwch gael y cod post hwn o
 ecc.address-lookup.postcode.organisation.para.hint.text.link=gofrestr Tŷ’r Cwmnïau (yn agor tab newydd).
 ecc.address-lookup.postcode.partnership.hint.text = Byddwn yn defnyddio hwn i gadarnhau pwy ydych.

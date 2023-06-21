@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.viewModels
 
-import com.google.inject.Inject
 import play.api.mvc.Call
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
@@ -26,6 +25,7 @@ case class AddressLookupPostcodeViewModel(
   pageTitleKey: String,
   formHintKey: String,
   hintTextKey: String,
+  companyHouseLink: String,
   addressLink: Call
 )
 
@@ -50,11 +50,15 @@ object AddressLookupPostcodeViewModel {
       case _             => "ecc.address-lookup.postcode.organisation.hint"
     }
 
+    val companyHouseLink = selectedOrganisationType.id match {
+      case SoleTraderId | IndividualId => " "
+      case PartnershipId               => "ecc.address-lookup.postcode.hint.partnership"
+      case _                           => "ecc.address-lookup.postcode.hint.organisation"
+    }
+
     val hintTextKey = selectedOrganisationType.id match {
-      case CompanyId                       => "ecc.address-lookup.postcode.hint.company"
-      case LimitedLiabilityPartnershipId   => "ecc.address-lookup.postcode.hint.llp"
-      case CharityPublicBodyNotForProfitId => "ecc.address-lookup.postcode.hint.organisation"
-      case _                               => "ecc.address-lookup.postcode.hint.partnership"
+      case CompanyId | LimitedLiabilityPartnershipId | CharityPublicBodyNotForProfitId | PartnershipId => ""
+      case _                                                                                           => "ecc.address-lookup.postcode.hint.partnership"
     }
 
     val addressLink = {
@@ -62,7 +66,7 @@ object AddressLookupPostcodeViewModel {
         uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.reviewForm(service)
       else uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.createForm(service)
     }
-    AddressLookupPostcodeViewModel(pageTitleKey, formHintKey, hintTextKey, addressLink)
+    AddressLookupPostcodeViewModel(pageTitleKey, formHintKey, hintTextKey, companyHouseLink, addressLink)
 
   }
 

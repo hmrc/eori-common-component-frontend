@@ -41,6 +41,7 @@
             @CSRF.formField
 
             @p(Some("hint"), messages(viewModel.formHintKey))
+            @p(Some("link"), messages(viewModel.companyHouseLink))
 
             @inputText(
                 form = addressPostcodeForm,

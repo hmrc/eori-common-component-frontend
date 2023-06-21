@@ -30,7 +30,7 @@ class AddressLookupPostcodeViewModelSpec extends UnitSpec {
 
       val expectedPageTitleKey      = "ecc.address-lookup.postcode.organisation.title"
       val expectedFormHintKey       = "ecc.address-lookup.postcode.organisation.hint"
-      val expectedHintTextKey       = "ecc.address-lookup.postcode.hint.company"
+      val expectedHintTextKey       = ""
       val expectedAddressLink: Call = Call("GET", "/customs-enrolment-services/atar/subscribe/address/review")
 
       val viewModel: AddressLookupPostcodeViewModel =
@@ -47,7 +47,7 @@ class AddressLookupPostcodeViewModelSpec extends UnitSpec {
 
       val expectedPageTitleKey      = "ecc.address-lookup.postcode.organisation.title"
       val expectedFormHintKey       = "ecc.address-lookup.postcode.organisation.hint"
-      val expectedHintTextKey       = "ecc.address-lookup.postcode.hint.company"
+      val expectedHintTextKey       = ""
       val expectedAddressLink: Call = Call("GET", "/customs-enrolment-services/atar/subscribe/address")
 
       val viewModel: AddressLookupPostcodeViewModel =
