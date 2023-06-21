@@ -16,41 +16,8 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.models
 
-import play.api.libs.json.{Reads, Writes}
-import play.api.mvc.{PathBindable, QueryStringBindable}
-import uk.gov.hmrc.eoricommoncomponent.frontend.util.Constants
+sealed trait Journey { def value: String }
 
-object Journey extends Enumeration {
-
-  val Register, Subscribe = Value
-
-  implicit val reads: Reads[Journey.Value]   = Reads.enumNameReads(Journey)
-  implicit val writes: Writes[Journey.Value] = Writes.enumNameWrites
-
-  implicit lazy val pathBindable: PathBindable[Journey.Value] = new PathBindable[Journey.Value] {
-
-    override def bind(key: String, value: String): Either[String, Journey.Value] =
-      value match {
-        case "subscribe" => Right(Subscribe)
-        case "register"  => Right(Register)
-        case _           => Left(Constants.INVALID_PATH_PARAM)
-      }
-
-    override def unbind(key: String, value: Journey.Value): String =
-      value match {
-        case Subscribe => "subscribe"
-        case Register  => "register"
-      }
-
-  }
-
-  implicit def queryBindable(implicit pathBindable: PathBindable[Journey.Value]): QueryStringBindable[Journey.Value] =
-    new QueryStringBindable[Journey.Value] {
-
-      override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, Journey.Value]] =
-        params.get(key).map(seq => pathBindable.bind(key, seq.headOption.getOrElse("")))
-
-      override def unbind(key: String, value: Journey.Value): String = pathBindable.unbind(key, value)
-    }
-
+case object Subscribe extends Journey {
+  val value: String = "Subscribe"
 }

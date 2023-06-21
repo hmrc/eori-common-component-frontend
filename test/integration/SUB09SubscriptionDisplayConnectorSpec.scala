@@ -82,8 +82,7 @@ class SUB09SubscriptionDisplayConnectorSpec extends IntegrationTestsSpec with Sc
 
       SubscriptionDisplayMessagingService.returnSubscriptionDisplayWhenReceiveRequest(
         requestEori,
-        requestAcknowledgementReference,
-        Journey.Subscribe
+        requestAcknowledgementReference
       )
       await(connector.subscriptionDisplay(reqEori, "atar")) mustBe Right(expectedResponse)
     }
@@ -93,7 +92,6 @@ class SUB09SubscriptionDisplayConnectorSpec extends IntegrationTestsSpec with Sc
       SubscriptionDisplayMessagingService.returnSubscriptionDisplayWhenReceiveRequest(
         requestTaxPayerId,
         requestAcknowledgementReference,
-        Journey.Subscribe,
         returnedStatus = SERVICE_UNAVAILABLE
       )
       await(connector.subscriptionDisplay(reqTaxPayerId, "atar")) mustBe Left(ServiceUnavailableResponse)

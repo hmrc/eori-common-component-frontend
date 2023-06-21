@@ -18,8 +18,8 @@ package unit.services.subscription
 
 import base.UnitSpec
 import common.support.testdata.TestData
-import java.time.LocalDateTime
 
+import java.time.LocalDateTime
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfter
@@ -28,7 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.connector.HandleSubscriptionConn
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.HandleSubscriptionRequest
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.RecipientDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{Eori, SafeId, TaxPayerId}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Subscribe}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.HandleSubscriptionService
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -48,7 +48,7 @@ class HandleSubscriptionServiceSpec extends UnitSpec with MockitoSugar with Befo
   val formBundleId: String = "formBundleId"
 
   val recipientDetails: RecipientDetails =
-    RecipientDetails(Journey.Register, atarService.code, "Advance Tariff Rulings", "", "", None, None)
+    RecipientDetails(Subscribe.value, atarService.code, "Advance Tariff Rulings", "", "", None, None)
 
   val sapNumber: TaxPayerId                             = TaxPayerId("id")
   val eori: Option[Eori]                                = Some(Eori("eori"))
