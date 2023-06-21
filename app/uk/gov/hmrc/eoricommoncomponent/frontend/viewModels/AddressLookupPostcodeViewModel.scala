@@ -46,8 +46,9 @@ object AddressLookupPostcodeViewModel {
     }
 
     val formHintKey = selectedOrganisationType.id match {
-      case PartnershipId => "ecc.address-lookup.postcode.partnership.hint.text"
-      case _             => "ecc.address-lookup.postcode.organisation.hint"
+      case PartnershipId               => "ecc.address-lookup.postcode.partnership.hint.text"
+      case SoleTraderId | IndividualId => "ecc.address-lookup.postcode.individual.hint"
+      case _                           => "ecc.address-lookup.postcode.organisation.hint"
     }
 
     val companyHouseLink = selectedOrganisationType.id match {
@@ -57,8 +58,10 @@ object AddressLookupPostcodeViewModel {
     }
 
     val hintTextKey = selectedOrganisationType.id match {
+
       case CompanyId | LimitedLiabilityPartnershipId | CharityPublicBodyNotForProfitId | PartnershipId => ""
       case _                                                                                           => "ecc.address-lookup.postcode.hint.partnership"
+
     }
 
     val addressLink = {

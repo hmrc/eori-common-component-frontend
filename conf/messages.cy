@@ -1298,3 +1298,4 @@ ecc.address-lookup.postcode.hint.partnership= <p class="govuk-body">Dyma’r enw
 ecc.address-lookup.postcode.organisation.para.hint.text = Byddwn yn defnyddio hyn i gadarnhau pwy ydych. Gallwch gael y cod post hwn o
 ecc.address-lookup.postcode.organisation.para.hint.text.link=gofrestr Tŷ’r Cwmnïau (yn agor tab newydd).
 ecc.address-lookup.postcode.partnership.hint.text = Byddwn yn defnyddio hwn i gadarnhau pwy ydych.
+ecc.address-lookup.postcode.hint.individual=Nodwch yr un cod post â’r un a ddefnyddioch yn eich cais am rif EORI.
