@@ -18,7 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription
 
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Journey, Service, Subscribe, SubscribeJourney}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, Subscribe}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName
 
 case class RecipientDetails(
