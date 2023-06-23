@@ -45,7 +45,7 @@ class ConfirmContactAddressController @Inject() (
       subscriptionBusinessService.contactAddress.flatMap {
         case Some(address) =>
           Future.successful(
-            Ok(contactAddressView(confirmContactAddressYesNoAnswerForm, service, address.toContactAddressViewModel))
+            Ok(contactAddressView(confirmContactAddressYesNoAnswerForm(), service, address.toContactAddressViewModel))
           )
         case None => Future.successful(Redirect(ContactAddressController.displayPage(service)))
       }
@@ -56,7 +56,7 @@ class ConfirmContactAddressController @Inject() (
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.contactAddress.flatMap {
         case Some(address) =>
-          confirmContactAddressYesNoAnswerForm.bindFromRequest
+          confirmContactAddressYesNoAnswerForm().bindFromRequest()
             .fold(
               formWithErrors =>
                 Future.successful(

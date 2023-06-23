@@ -82,7 +82,7 @@ class AddressServiceSpec
       single: Char       <- Gen.alphaNumChar
       baseString: String <- Gen.listOfN(minLength, Gen.alphaNumChar).map(c => c.mkString)
       additionalEnding   <- Gen.alphaStr
-    } yield single + baseString + additionalEnding
+    } yield s"$single$baseString$additionalEnding"
 
   val mandatoryFields      = Map("city" -> "city", "street" -> "street", "postcode" -> "SE28 1AA", "countryCode" -> "GB")
   val mandatoryFieldsEmpty = Map("city" -> "", "street" -> "", "postcode" -> "", "countryCode" -> "")
@@ -92,7 +92,7 @@ class AddressServiceSpec
     path = s"/customs-enrolment-services/atar/subscribe/"
   )
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach()
 
     when(mockSubscriptionBusinessService.address(any[Request[_]])).thenReturn(None)
@@ -108,13 +108,11 @@ class AddressServiceSpec
   }
 
   override protected def afterEach(): Unit = {
-    reset(
-      mockSubscriptionBusinessService,
-      mockSubscriptionFlowManager,
-      mockRequestSessionData,
-      mockSubscriptionDetailsService,
-      mockCdsFrontendDataCache
-    )
+    reset(mockSubscriptionBusinessService)
+    reset(mockSubscriptionFlowManager)
+    reset(mockRequestSessionData)
+    reset(mockSubscriptionDetailsService)
+    reset(mockCdsFrontendDataCache)
 
     super.afterEach()
   }
@@ -375,7 +373,7 @@ class AddressServiceSpec
 
   private def submitFormInCreateModeForOrganisation(form: Map[String, String], userId: String = defaultUserId)(
     test: Future[Result] => Any
-  ) {
+  ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
 
     when(mockCdsFrontendDataCache.registrationDetails(any[Request[_]])).thenReturn(organisationRegistrationDetails)
@@ -390,7 +388,7 @@ class AddressServiceSpec
   private def submitFormInCreateModeForIndividualSubscription(
     form: Map[String, String],
     userId: String = defaultUserId
-  )(test: Future[Result] => Any) {
+  )(test: Future[Result] => Any): Unit = {
     val individualRegistrationDetails = RegistrationDetails.individual(
       sapNumber = "0123456789",
       safeId = SafeId("safe-id"),
@@ -417,7 +415,7 @@ class AddressServiceSpec
     form: Map[String, String],
     userId: String = defaultUserId,
     userSelectedOrgType: Option[CdsOrganisationType] = None
-  )(test: Future[Result] => Any) {
+  )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
 
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]]))
@@ -430,20 +428,18 @@ class AddressServiceSpec
     )
   }
 
-  private def registerSaveDetailsMockSuccess() {
+  private def registerSaveDetailsMockSuccess(): Unit =
     when(mockSubscriptionDetailsService.cacheAddressDetails(any())(any[Request[_]]))
       .thenReturn(Future.successful(()))
-  }
 
-  private def registerSaveDetailsMockFailure(exception: Throwable) {
+  private def registerSaveDetailsMockFailure(exception: Throwable): Unit =
     when(mockSubscriptionDetailsService.cacheAddressDetails(any())(any[Request[_]]))
       .thenReturn(Future.failed(exception))
-  }
 
   private def showCreateForm(
     userId: String = defaultUserId,
     userSelectedOrganisationType: Option[CdsOrganisationType] = None
-  )(test: Future[Result] => Any) {
+  )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     when(mockRequestSessionData.isIndividualOrSoleTrader(any[Request[AnyContent]]))
       .thenReturn(isIndividual(userSelectedOrganisationType))
@@ -454,7 +450,7 @@ class AddressServiceSpec
     dataToEdit: AddressViewModel = AddressPage.filledValues,
     userId: String = defaultUserId,
     userSelectedOrganisationType: Option[CdsOrganisationType] = None
-  )(test: Future[Result] => Any) {
+  )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
 
     when(mockRequestSessionData.isIndividualOrSoleTrader(any[Request[AnyContent]]))

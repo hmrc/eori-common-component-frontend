@@ -47,7 +47,7 @@ class NotifyRcmServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
   "NotifyRcmService" should {
     "call handle subscription connector with a valid handle subscription request" in {
       when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]]))
-        .thenReturn(SubscriptionDetails(nameIdOrganisationDetails = Some(nameId)))
+        .thenReturn(Future.successful(SubscriptionDetails(nameIdOrganisationDetails = Some(nameId))))
       when(mockSessionCache.email(any[Request[AnyContent]])).thenReturn(Future.successful("test@example.com"))
       when(mockNotifyRcmConnector.notifyRCM(any[NotifyRcmRequest])(any[HeaderCarrier]))
         .thenReturn(Future.successful {})

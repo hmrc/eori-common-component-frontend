@@ -23,9 +23,9 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.WhatIsYourEmailController
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.GroupId
+
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, Service, SubscribeJourney}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.what_is_your_email
 import uk.gov.hmrc.http.HeaderCarrier
@@ -53,7 +53,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
   val EmailFieldsMap            = Map("email" -> email)
   val unpopulatedEmailFieldsMap = Map("email" -> "")
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     when(mockSave4LaterService.fetchEmailForService(any(), any(), any())(any()))
       .thenReturn(Future.successful(Some(emailStatus)))
 
@@ -117,14 +117,16 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     journey: SubscribeJourney,
     service: Service = atarService,
     controller: WhatIsYourEmailController = controller
-  )(test: Future[Result] => Any) {
+  )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     val result =
       controller.submit(service, journey)(SessionBuilder.buildRequestWithSessionAndFormValues(userId, form))
     test(result)
   }
 
-  private def showCreateForm(userId: String = defaultUserId, journey: SubscribeJourney)(test: Future[Result] => Any) {
+  private def showCreateForm(userId: String = defaultUserId, journey: SubscribeJourney)(
+    test: Future[Result] => Any
+  ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
       .createForm(atarService, journey)

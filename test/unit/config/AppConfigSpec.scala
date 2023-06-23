@@ -19,10 +19,10 @@ package unit.config
 import java.util.concurrent.TimeUnit
 
 import org.mockito.Mockito
-import org.mockito.Mockito.{spy, when}
+import org.mockito.Mockito.spy
 import org.scalatest.BeforeAndAfterEach
 import play.api.Configuration
-import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import util.ControllerSpec
 
@@ -35,9 +35,10 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
 
   private val services = Seq(atarService.code, gvmsService.code, otherService.code, cdsService.code)
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     super.beforeEach()
-    Mockito.reset(mockConfig, mockServiceConfig)
+    Mockito.reset(mockConfig)
+    Mockito.reset(mockServiceConfig)
   }
 
   "AppConfig" should {

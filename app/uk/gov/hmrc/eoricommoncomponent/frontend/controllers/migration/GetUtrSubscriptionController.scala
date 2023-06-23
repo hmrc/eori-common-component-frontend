@@ -61,8 +61,8 @@ class GetUtrSubscriptionController @Inject() (
             Ok(
               getUtrSubscriptionView(
                 subscriptionUtrForm.fill(IdMatchModel(id)),
-                getHeadingMessage,
-                getHintMessage,
+                getHeadingMessage(),
+                getHintMessage(),
                 isInReviewMode,
                 routes.GetUtrSubscriptionController.submit(isInReviewMode, service)
               )
@@ -72,8 +72,8 @@ class GetUtrSubscriptionController @Inject() (
             Ok(
               getUtrSubscriptionView(
                 subscriptionUtrForm,
-                getHeadingMessage,
-                getHintMessage,
+                getHeadingMessage(),
+                getHintMessage(),
                 isInReviewMode,
                 routes.GetUtrSubscriptionController.submit(isInReviewMode, service)
               )
@@ -87,14 +87,14 @@ class GetUtrSubscriptionController @Inject() (
       implicit request => _: LoggedInUserWithEnrolments =>
         requestSessionData.userSelectedOrganisationType match {
           case Some(orgType) =>
-            subscriptionUtrForm.bindFromRequest.fold(
+            subscriptionUtrForm.bindFromRequest().fold(
               formWithErrors =>
                 Future.successful(
                   BadRequest(
                     getUtrSubscriptionView(
                       formWithErrors,
-                      getHeadingMessage,
-                      getHintMessage,
+                      getHeadingMessage(),
+                      getHintMessage(),
                       isInReviewMode,
                       routes.GetUtrSubscriptionController.submit(isInReviewMode, service)
                     )
@@ -114,7 +114,7 @@ class GetUtrSubscriptionController @Inject() (
   )(implicit request: Request[AnyContent]): Future[Result] =
     cacheUtr(form, orgType).map(
       _ =>
-        if (isInReviewMode && !isItRowJourney)
+        if (isInReviewMode && !isItRowJourney())
           Redirect(DetermineReviewPageController.determineRoute(service))
         else
           Redirect(AddressController.createForm(service))

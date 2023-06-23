@@ -18,8 +18,8 @@ package unit.views.subscription
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.scalatestplus.mockito.MockitoSugar.mock
-import play.api.mvc.{Call, Request}
+
+import play.api.mvc.Request
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._

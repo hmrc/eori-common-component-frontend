@@ -59,7 +59,7 @@ class ConfirmContactAddressControllerSpec
   val noForm    = Map("yes-no-answer" -> "false")
   val emptyForm = Map("yes-no-answer" -> " ")
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach()
     when(
       mockSubscriptionBusinessService
@@ -71,7 +71,9 @@ class ConfirmContactAddressControllerSpec
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockSubscriptionBusinessService, mockSubscriptionFlowManager, mockRequestSessionData)
+    reset(mockSubscriptionBusinessService)
+    reset(mockSubscriptionFlowManager)
+    reset(mockRequestSessionData)
 
     super.afterEach()
   }

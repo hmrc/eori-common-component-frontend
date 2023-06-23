@@ -59,7 +59,7 @@ class DetermineReviewPageControllerSpec extends ControllerSpec with BeforeAndAft
     }
   }
 
-  private def determinRouteSubscription(test: Future[Result] => Any) {
+  private def determinRouteSubscription(test: Future[Result] => Any): Unit = {
     val aUserId = defaultUserId
     withAuthorisedUser(aUserId, mockAuthConnector)
 

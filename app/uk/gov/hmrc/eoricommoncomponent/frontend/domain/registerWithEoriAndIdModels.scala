@@ -233,36 +233,37 @@ case class RegisterWithEoriAndIdResponse(
 trait CaseClassAuditHelper {
 
   def toMap(caseClassObject: AnyRef = this, ignoredFields: List[String] = List.empty): Map[String, String] =
-    (Map[String, String]() /: caseClassObject.getClass.getDeclaredFields
-      .filterNot(field => ignoredFields.contains(field.getName))) {
+    caseClassObject.getClass.getDeclaredFields
+      .filterNot(field => ignoredFields.contains(field.getName))
+      .foldLeft(Map[String, String]()) {
 
-      def getKeyValue(acc: Map[String, String], value: Any) =
-        value match {
-          case v: CaseClassAuditHelper => v.toMap()
-          case _                       => acc
-        }
+        (acc, f) =>
+          f.setAccessible(true)
+          val value = f.get(caseClassObject)
+          if (value != null)
+            if (isScalaOption(value)) {
+              val option = value.asInstanceOf[Option[Any]]
+              if (option.isDefined)
+                fetchValue(acc, f, option.get)
+              else
+                acc
+            } else
+              fetchValue(acc, f, value)
+          else
+            acc
+      }
 
-      def fetchValue(acc: Map[String, String], f: Field, value: Any) =
-        if (isLeafNode(value))
-          acc + (f.getName -> value.toString)
-        else
-          getKeyValue(acc, value)
-
-      (acc, f) =>
-        f.setAccessible(true)
-        val value = f.get(caseClassObject)
-        if (value != null)
-          if (isScalaOption(value)) {
-            val option = value.asInstanceOf[Option[Any]]
-            if (option.isDefined)
-              fetchValue(acc, f, option.get)
-            else
-              acc
-          } else
-            fetchValue(acc, f, value)
-        else
-          acc
+  private def getKeyValue(acc: Map[String, String], value: Any) =
+    value match {
+      case v: CaseClassAuditHelper => v.toMap()
+      case _                       => acc
     }
+
+  private def fetchValue(acc: Map[String, String], f: Field, value: Any) =
+    if (isLeafNode(value))
+      acc + (f.getName -> value.toString)
+    else
+      getKeyValue(acc, value)
 
   def prefixMapKey(prefix: String, map: Map[String, String]): Map[String, String] =
     map.map(x => prefix + x._1 -> x._2)

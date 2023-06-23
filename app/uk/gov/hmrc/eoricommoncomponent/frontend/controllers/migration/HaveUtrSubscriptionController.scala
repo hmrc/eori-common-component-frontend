@@ -73,7 +73,7 @@ class HaveUtrSubscriptionController @Inject() (
       implicit request => _: LoggedInUserWithEnrolments =>
         requestSessionData.userSelectedOrganisationType match {
           case Some(orgType) =>
-            haveUtrForm.bindFromRequest.fold(
+            haveUtrForm.bindFromRequest().fold(
               formWithErrors =>
                 Future.successful(
                   BadRequest(matchUtrSubscriptionView(formWithErrors, orgType.id, isInReviewMode, service))

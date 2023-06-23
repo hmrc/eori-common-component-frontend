@@ -46,9 +46,12 @@ object IndividualIdFormBuilder {
     "date-of-birth.year"  -> ValidDateOfBirthYear
   )
 
-  val ValidRequestEori = ValidRequest + ("middle-name" -> ValidMiddleName, "matching-id" -> ValidEoriId)
+  val ValidRequestEori: Map[String, String] =
+    ValidRequest ++ Map("middle-name" -> ValidMiddleName, "matching-id" -> ValidEoriId)
 
-  val validIndividualUtr = Individual.noMiddle(ValidFirstName, ValidLastName, validDateOfBirth)
+  val validIndividualUtr: Individual = Individual.noMiddle(ValidFirstName, ValidLastName, validDateOfBirth)
 
-  val ValidIndividualEori = Individual(ValidFirstName, Some(ValidMiddleName), ValidLastName, validDateOfBirth)
+  val ValidIndividualEori: Individual =
+    Individual(ValidFirstName, Some(ValidMiddleName), ValidLastName, validDateOfBirth)
+
 }

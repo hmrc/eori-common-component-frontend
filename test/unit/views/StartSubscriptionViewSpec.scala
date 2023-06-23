@@ -16,18 +16,12 @@
 
 package unit.views
 
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
 import play.api.mvc.Request
-import play.api.test.Helpers.contentAsString
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.start_subscribe
+
 import util.ViewSpec
 
 class StartSubscriptionViewSpec extends ViewSpec {
 
-  private val view = instanceOf[start_subscribe]
-
   implicit val request: Request[Any] = withFakeCSRF(fakeAtarSubscribeRequest)
 
-  private val doc: Document = Jsoup.parse(contentAsString(view(atarService, "Subscribe to Advance Tariff Rulings")))
 }

@@ -124,18 +124,17 @@ class DateTupleSpec extends UnitSpec {
 
   private def assertSuccessfulBinding(request: Map[String, String], expectedResult: Option[LocalDate])(implicit
     dateMapping: Mapping[Option[LocalDate]]
-  ) {
+  ): Unit =
     dateMapping.bind(request) shouldBe Right(expectedResult)
-  }
 
   private def assertErrorTriggered(request: Map[String, String], field: String, errorMessage: String)(implicit
     dateMapping: Mapping[Option[LocalDate]]
-  ) {
+  ): Unit =
     dateMapping.bind(request) shouldBe Left(Seq(FormError(field, errorMessage)))
-  }
 
-  private def assertNoDateReturned(request: Map[String, String])(implicit dateMapping: Mapping[Option[LocalDate]]) {
+  private def assertNoDateReturned(
+    request: Map[String, String]
+  )(implicit dateMapping: Mapping[Option[LocalDate]]): Unit =
     dateMapping.bind(request) shouldBe Right(None)
-  }
 
 }

@@ -70,8 +70,8 @@ class HowCanWeIdentifyYouUtrController @Inject() (
         Ok(
           howCanWeIdentifyYouView(
             subscriptionUtrForm.fill(IdMatchModel(id)),
-            getHeadingMessage,
-            getHintMessage,
+            getHeadingMessage(),
+            getHintMessage(),
             isInReviewMode,
             routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service)
           )
@@ -80,8 +80,8 @@ class HowCanWeIdentifyYouUtrController @Inject() (
         Ok(
           howCanWeIdentifyYouView(
             subscriptionUtrForm,
-            getHeadingMessage,
-            getHintMessage,
+            getHeadingMessage(),
+            getHintMessage(),
             isInReviewMode,
             routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service)
           )
@@ -98,8 +98,8 @@ class HowCanWeIdentifyYouUtrController @Inject() (
               BadRequest(
                 howCanWeIdentifyYouView(
                   invalidForm,
-                  getHeadingMessage,
-                  getHintMessage,
+                  getHeadingMessage(),
+                  getHintMessage(),
                   isInReviewMode,
                   routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service)
                 )

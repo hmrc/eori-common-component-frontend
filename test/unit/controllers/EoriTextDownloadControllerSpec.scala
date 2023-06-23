@@ -26,7 +26,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EoriTextDownloadController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.eori_number_text_download
 import util.ControllerSpec
@@ -43,7 +43,7 @@ class EoriTextDownloadControllerSpec extends ControllerSpec with BeforeAndAfterE
 
   private val eoriNumberTextDownloadView = instanceOf[eori_number_text_download]
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     val mockSubscribeOutcome = mock[Sub02Outcome]
     when(mockCache.sub02Outcome(any[Request[AnyContent]])).thenReturn(Future.successful(mockSubscribeOutcome))
     when(mockSubscribeOutcome.processedDate).thenReturn("23 June 2018")

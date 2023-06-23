@@ -22,7 +22,7 @@ import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalacheck.Gen
 import org.scalatest.BeforeAndAfterEach
-import play.api.mvc.{AnyContent, Request, Result}
+import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ContactAddressController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.ContactAddressController.submit
@@ -31,7 +31,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionDa
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Country
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.contact_address
-import uk.gov.hmrc.http.HeaderCarrier
+
 import unit.controllers.CdsPage
 import util.StringThings._
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -73,9 +73,9 @@ class ContactAddressControllerSpec
       single: Char       <- Gen.alphaNumChar
       baseString: String <- Gen.listOfN(minLength, Gen.alphaNumChar).map(c => c.mkString)
       additionalEnding   <- Gen.alphaStr
-    } yield single + baseString + additionalEnding
+    } yield s"$single$baseString$additionalEnding"
 
-  val addressFields = Map(
+  val addressFields: Map[String, String] = Map(
     "line-1"      -> "addressLine1",
     "line-2"      -> "addressLine2",
     "line-3"      -> "addressLine3",
@@ -84,18 +84,19 @@ class ContactAddressControllerSpec
     "countryCode" -> "GB"
   )
 
-  val mandatoryFields = Map("line-1" -> "addressLine1", "line-3" -> "addressLine3", "countryCode" -> "FR")
+  val mandatoryFields: Map[String, String] =
+    Map("line-1" -> "addressLine1", "line-3" -> "addressLine3", "countryCode" -> "FR")
 
-  val addressFieldsEmpty = Map("line-1" -> "", "line-3" -> "", "countryCode" -> "")
+  val addressFieldsEmpty: Map[String, String] = Map("line-1" -> "", "line-3" -> "", "countryCode" -> "")
 
-  val aFewCountries = List(
+  val aFewCountries: List[Country] = List(
     Country("France", "country:FR"),
     Country("Germany", "country:DE"),
     Country("Italy", "country:IT"),
     Country("Japan", "country:JP")
   )
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach()
 
     when(mockSubscriptionBusinessService.contactAddress(any[Request[_]])).thenReturn(None)
@@ -105,13 +106,11 @@ class ContactAddressControllerSpec
   }
 
   override protected def afterEach(): Unit = {
-    reset(
-      mockSubscriptionBusinessService,
-      mockSubscriptionFlowManager,
-      mockRequestSessionData,
-      mockSubscriptionDetailsService,
-      mockCdsFrontendDataCache
-    )
+    reset(mockSubscriptionBusinessService)
+    reset(mockSubscriptionFlowManager)
+    reset(mockRequestSessionData)
+    reset(mockSubscriptionDetailsService)
+    reset(mockCdsFrontendDataCache)
 
     super.afterEach()
   }

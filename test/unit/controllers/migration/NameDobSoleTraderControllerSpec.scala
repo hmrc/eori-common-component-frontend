@@ -80,13 +80,12 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
   private val stringContaining36Characters      = "Abcdef ghi-jklm - nopqrstuvwxyz ABCD"
   private val stringContainingInvalidCharacters = "John Doe%"
 
-  override def beforeEach: Unit = {
-    reset(
-      mockSubscriptionBusinessService,
-      mockCdsFrontendDataCache,
-      mockSubscriptionFlowManager,
-      mockSubscriptionDetailsHolderService
-    )
+  override def beforeEach(): Unit = {
+    reset(mockSubscriptionBusinessService)
+    reset(mockCdsFrontendDataCache)
+    reset(mockSubscriptionFlowManager)
+    reset(mockSubscriptionDetailsHolderService)
+
     when(mockSubscriptionBusinessService.cachedSubscriptionNameDobViewModel(any[Request[_]])).thenReturn(None)
     when(mockSubscriptionBusinessService.getCachedSubscriptionNameDobViewModel(any[Request[_]]))
       .thenReturn(Future.successful(NameDobSoleTraderPage.filledValues))
@@ -174,11 +173,11 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     "leave fields empty if details weren't found in cache" in {
       showCreateForm() { result =>
         val page = CdsPage(contentAsString(result))
-        page.getElementValue(firstNameFieldXPath) shouldBe 'empty
-        page.getElementValue(lastNameFieldXPath) shouldBe 'empty
-        page.getElementValue(dateOfBirthYearFieldXPath) shouldBe 'empty
-        page.getElementValue(dateOfBirthMonthFieldXPath) shouldBe 'empty
-        page.getElementValue(dateOfBirthDayFieldXPath) shouldBe 'empty
+        page.getElementValue(firstNameFieldXPath) shouldBe Symbol("empty")
+        page.getElementValue(lastNameFieldXPath) shouldBe Symbol("empty")
+        page.getElementValue(dateOfBirthYearFieldXPath) shouldBe Symbol("empty")
+        page.getElementValue(dateOfBirthMonthFieldXPath) shouldBe Symbol("empty")
+        page.getElementValue(dateOfBirthDayFieldXPath) shouldBe Symbol("empty")
       }
     }
   }
@@ -552,16 +551,15 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     )
   }
 
-  private def mockFunctionWithRegistrationDetails(registrationDetails: RegistrationDetails) {
+  private def mockFunctionWithRegistrationDetails(registrationDetails: RegistrationDetails): Unit =
     when(mockCdsFrontendDataCache.registrationDetails(any[Request[_]]))
       .thenReturn(registrationDetails)
-  }
 
   private def submitFormInCreateMode(
     form: Map[String, String],
     userId: String = defaultUserId,
     location: String = "uk"
-  )(test: Future[Result] => Any) {
+  )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     when(mockRequestSessionData.selectedUserLocation(any())).thenReturn(Some(location))
 
@@ -573,7 +571,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
   private def submitFormInReviewMode(form: Map[String, String], userId: String = defaultUserId)(
     test: Future[Result] => Any
-  ) {
+  ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
 
     val result = controller.submit(isInReviewMode = true, atarService)(
@@ -582,7 +580,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     test(result)
   }
 
-  private def showCreateForm(subscriptionFlow: SubscriptionFlow = SoleTraderFlow)(test: Future[Result] => Any) {
+  private def showCreateForm(subscriptionFlow: SubscriptionFlow = SoleTraderFlow)(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
@@ -592,7 +590,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     test(result)
   }
 
-  private def showReviewForm(subscriptionFlow: SubscriptionFlow = SoleTraderFlow)(test: Future[Result] => Any) {
+  private def showReviewForm(subscriptionFlow: SubscriptionFlow = SoleTraderFlow)(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
@@ -604,15 +602,13 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     test(result)
   }
 
-  private def registerSaveNameDobDetailsMockSuccess() {
+  private def registerSaveNameDobDetailsMockSuccess(): Unit =
     when(mockSubscriptionDetailsHolderService.cacheNameDobDetails(any[NameDobMatchModel])(any[Request[_]]))
       .thenReturn(Future.successful(()))
-  }
 
-  private def registerSaveNameDobDetailsMockFailure(exception: Throwable) {
+  private def registerSaveNameDobDetailsMockFailure(exception: Throwable): Unit =
     when(mockSubscriptionDetailsHolderService.cacheNameDobDetails(any[NameDobMatchModel])(any[Request[_]]))
       .thenReturn(Future.failed(exception))
-  }
 
   private def getDobFromPage(page: CdsPage): String =
     (("0000" + page.getElementValue(dateOfBirthYearFieldXPath)) takeRight 4) + '-' + (("00" + page.getElementValue(

@@ -80,14 +80,12 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
 
   val emulatedFailure = new UnsupportedOperationException("Emulation of failure")
 
-  override def beforeEach: Unit = {
-    reset(
-      mockCdsFrontendDataCache,
-      mockRegistrationDetailsCreator,
-      mockRegistrationDetails,
-      mockSubscriptionDetailsHolder,
-      mockContactDetailsAdaptor
-    )
+  override def beforeEach(): Unit = {
+    reset(mockCdsFrontendDataCache)
+    reset(mockRegistrationDetailsCreator)
+    reset(mockRegistrationDetails)
+    reset(mockSubscriptionDetailsHolder)
+    reset(mockContactDetailsAdaptor)
 
     when(
       mockCdsFrontendDataCache

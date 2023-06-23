@@ -67,16 +67,15 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
     mockSubscriptionDetailsService
   )
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(
-      mockAuthConnector,
-      mockRequestSessionData,
-      mockSubscriptionFlowManager,
-      mockSubscriptionDetailsService,
-      mockSubscriptionFlowInfo,
-      mockSubscriptionPage
-    )
+    reset(mockAuthConnector)
+    reset(mockRequestSessionData)
+    reset(mockSubscriptionFlowManager)
+    reset(mockSubscriptionDetailsService)
+    reset(mockSubscriptionFlowInfo)
+    reset(mockSubscriptionPage)
+
     when(mockSubscriptionDetailsService.cachedUtrMatch(any[Request[_]]))
       .thenReturn(Future.successful(None))
   }
@@ -88,7 +87,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       createForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should include(SubscriptionRowCompanyUtr.title)
+        page.title() should include(SubscriptionRowCompanyUtr.title)
       }
     }
 
@@ -98,7 +97,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       createForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should include(SubscriptionRowIndividualsUtr.title)
+        page.title() should include(SubscriptionRowIndividualsUtr.title)
 
       }
     }
@@ -109,7 +108,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       createForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should include(SubscriptionRowIndividualsUtr.title)
+        page.title() should include(SubscriptionRowIndividualsUtr.title)
       }
     }
 
@@ -127,7 +126,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       createForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should include(SubscriptionRowIndividualsUtr.title)
+        page.title() should include(SubscriptionRowIndividualsUtr.title)
       }
     }
   }
@@ -139,7 +138,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       reviewForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should include(SubscriptionRowCompanyUtr.title)
+        page.title() should include(SubscriptionRowCompanyUtr.title)
       }
     }
 
@@ -149,7 +148,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       reviewForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should include(SubscriptionRowIndividualsUtr.title)
+        page.title() should include(SubscriptionRowIndividualsUtr.title)
 
       }
     }
@@ -160,7 +159,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       reviewForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should include(SubscriptionRowIndividualsUtr.title)
+        page.title() should include(SubscriptionRowIndividualsUtr.title)
       }
     }
 

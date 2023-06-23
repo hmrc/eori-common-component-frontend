@@ -24,8 +24,8 @@ import play.api.mvc.Request
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{Assistant, AuthConnector, Enrolment}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{ApplicationController, MissingGroupId}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, KeyValue}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, LongJourney, Service}
+
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, LongJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.start_subscribe
@@ -55,14 +55,12 @@ class ApplicationControllerSpec extends ControllerSpec with BeforeAndAfterEach w
   )
 
   override protected def afterEach(): Unit = {
-    reset(mockAuthConnector, mockSessionCache, mockEnrolmentJourneyService)
+    reset(mockAuthConnector)
+    reset(mockSessionCache)
+    reset(mockEnrolmentJourneyService)
 
     super.afterEach()
   }
-
-  private def groupEnrolment(service: Service) = Some(
-    EnrolmentResponse(service.enrolmentKey, "Activated", List(KeyValue("EORINumber", "GB123456463324")))
-  )
 
   "Navigating to start" should {
 

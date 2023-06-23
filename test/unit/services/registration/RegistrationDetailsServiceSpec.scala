@@ -79,7 +79,7 @@ class RegistrationDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
     CharityPublicBodyNotForProfit
   )
 
-  override def beforeEach {
+  override def beforeEach(): Unit = {
     reset(mockSessionCache)
     when(mockSessionCache.saveRegistrationDetails(any[RegistrationDetails])(any[Request[AnyContent]]))
       .thenReturn(Future.successful(true))

@@ -571,7 +571,9 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
   )
 
   override protected def beforeEach(): Unit = {
-    reset(mockConnector, mockDetailsCreator, mockDataCache)
+    reset(mockConnector)
+    reset(mockDetailsCreator)
+    reset(mockDataCache)
     when(mockReqCommonGen.generate()).thenReturn(mockRequestCommon)
     when(mockDataCache.saveRegisterWithEoriAndIdResponse(any[RegisterWithEoriAndIdResponse])(any[Request[AnyContent]]))
       .thenReturn(Future.successful(true))

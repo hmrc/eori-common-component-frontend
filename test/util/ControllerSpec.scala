@@ -17,11 +17,11 @@
 package util
 
 import java.util.UUID
-
 import akka.stream.Materializer
 import akka.stream.testkit.NoMaterializer
 import base.{Injector, UnitSpec}
 import common.pages.WebPage
+
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypesConfiguration}
 import play.api.{Configuration, Environment}

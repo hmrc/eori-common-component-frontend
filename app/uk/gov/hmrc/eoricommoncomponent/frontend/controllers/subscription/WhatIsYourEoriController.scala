@@ -93,7 +93,7 @@ class WhatIsYourEoriController @Inject() (
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      eoriNumberForm.bindFromRequest.fold(
+      eoriNumberForm.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(
             BadRequest(

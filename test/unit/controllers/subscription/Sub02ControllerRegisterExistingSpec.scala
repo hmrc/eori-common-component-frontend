@@ -72,8 +72,8 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
   val emulatedFailure = new UnsupportedOperationException("Emulated service call failure.")
 
   override protected def afterEach(): Unit = {
-    reset(mockAuthConnector, mockSessionCache)
-
+    reset(mockAuthConnector)
+    reset(mockSessionCache)
     super.afterEach()
   }
 
@@ -128,7 +128,7 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
         result =>
           status(result) shouldBe OK
           val page = CdsPage(contentAsString(result))
-          page.title should startWith("Subscription request received")
+          page.title() should startWith("Subscription request received")
           page.getElementsText(
             RegistrationCompletePage.pageHeadingXpath
           ) shouldBe "Subscription request received for Name"
@@ -174,7 +174,9 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
     }
   }
 
-  def invokeRegExistingEndPageWithAuthenticatedUser(userId: String = defaultUserId)(test: Future[Result] => Any) {
+  def invokeRegExistingEndPageWithAuthenticatedUser(
+    userId: String = defaultUserId
+  )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       subscriptionController.migrationEnd(atarService).apply(

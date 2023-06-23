@@ -55,8 +55,8 @@ class AddressLookupConnectorSpec
   }
 
   override protected def afterEach(): Unit = {
-    reset(httpClient, appConfig)
-
+    reset(httpClient)
+    reset(appConfig)
     super.afterEach()
   }
 

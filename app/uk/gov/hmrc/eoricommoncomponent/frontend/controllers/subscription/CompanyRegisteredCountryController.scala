@@ -67,7 +67,7 @@ class CompanyRegisteredCountryController @Inject() (
     implicit request: Request[AnyContent]
   ): Result = {
 
-    val form       = CompanyRegisteredCountry.form(errorMessageBasedOnType)
+    val form       = CompanyRegisteredCountry.form(errorMessageBasedOnType())
     val filledForm = country.fold(form)(form.fill(_))
 
     Ok(prepareViewBasedOnType(filledForm, service, isInReviewMode))
@@ -92,7 +92,7 @@ class CompanyRegisteredCountryController @Inject() (
   def submit(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       CompanyRegisteredCountry
-        .form(errorMessageBasedOnType)
+        .form(errorMessageBasedOnType())
         .bindFromRequest()
         .fold(
           formWithErrors =>

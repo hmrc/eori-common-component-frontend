@@ -21,10 +21,10 @@ import org.mockito.Mockito._
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
+
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.EnrolmentJourneyService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
+
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.start_subscribe
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser

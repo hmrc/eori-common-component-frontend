@@ -45,8 +45,8 @@ class EoriUnableToUseSignoutControllerSpec extends ControllerSpec with AuthActio
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockAuthConnector, eoriSignoutPage)
-
+    reset(mockAuthConnector)
+    reset(eoriSignoutPage)
     super.afterEach()
   }
 

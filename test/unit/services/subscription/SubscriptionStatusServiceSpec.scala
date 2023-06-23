@@ -63,7 +63,7 @@ class SubscriptionStatusServiceSpec extends UnitSpec with MockitoSugar with Befo
   private implicit val req: Request[AnyContent] = mock[Request[AnyContent]]
   implicit val originatingService: Service      = atarService
 
-  override protected def beforeEach() {
+  override protected def beforeEach(): Unit = {
     reset(mockConfig)
     reset(mockConnector)
     reset(mockSessionCache)

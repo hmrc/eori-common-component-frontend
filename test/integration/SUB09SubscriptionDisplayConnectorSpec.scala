@@ -26,7 +26,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{
   ServiceUnavailableResponse
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionDisplayResponseHolder
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Journey
 import uk.gov.hmrc.http._
 import util.externalservices.ExternalServicesConfig._
 import util.externalservices.SubscriptionDisplayMessagingService
@@ -71,10 +70,10 @@ class SUB09SubscriptionDisplayConnectorSpec extends IntegrationTestsSpec with Sc
     resetMockServer()
   }
 
-  override def beforeAll: Unit =
+  override def beforeAll(): Unit =
     startMockServer()
 
-  override def afterAll: Unit =
+  override def afterAll(): Unit =
     stopMockServer()
 
   "SubscriptionDisplay SUB09" should {

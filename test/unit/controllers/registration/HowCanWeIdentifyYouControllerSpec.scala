@@ -37,8 +37,8 @@ import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration.DurationInt
-import scala.concurrent.{Await, Future}
+
+import scala.concurrent.Future
 
 class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
@@ -57,7 +57,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
     mockSubscriptionDetailsHolderService
   )
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     super.beforeEach()
 
     Mockito.reset(mockSubscriptionDetailsHolderService)
@@ -143,7 +143,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
 
   }
 
-  def showForm(form: Map[String, String], userId: String = defaultUserId)(test: Future[Result] => Any) {
+  def showForm(form: Map[String, String], userId: String = defaultUserId)(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     when(mockSubscriptionBusinessService.getCachedCustomsId(any[Request[AnyContent]]))
       .thenReturn(Future.successful(Some(Utr("id"))))
@@ -152,7 +152,7 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
 
   def submitForm(form: Map[String, String], userId: String = defaultUserId, isInReviewMode: Boolean = false)(
     test: Future[Result] => Any
-  ) {
+  ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     test(
       controller

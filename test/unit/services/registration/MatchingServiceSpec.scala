@@ -118,7 +118,10 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
   }
 
   override protected def afterEach(): Unit = {
-    Mockito.reset(mockMatchingServiceConnector, mockDetailsCreator, mockCache, loggedInCtUser)
+    Mockito.reset(mockMatchingServiceConnector)
+    Mockito.reset(mockDetailsCreator)
+    Mockito.reset(mockCache)
+    Mockito.reset(loggedInCtUser)
 
     super.afterEach()
   }

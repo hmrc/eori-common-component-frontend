@@ -48,7 +48,8 @@ class EnrolmentServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfte
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    reset(enrolmentStoreProxyConnector, taxEnrolmentsConnector)
+    reset(enrolmentStoreProxyConnector)
+    reset(taxEnrolmentsConnector)
 
     when(taxEnrolmentsConnector.enrolAndActivate(any(), any())(any()))
       .thenReturn(Future.successful(HttpResponse(NO_CONTENT, "")))

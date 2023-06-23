@@ -94,7 +94,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   val data       = Map(internalId -> jsonValue)
   val unit       = ()
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
       .thenReturn(Future.successful(Some(true)))
 
@@ -102,8 +102,12 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       .thenReturn(Future.successful(Some(emailStatus)))
   }
 
-  override def afterEach(): Unit =
-    Mockito.reset(mockSave4LaterService, mockEmailVerificationService, mockUpdateVerifiedEmailService, mockSessionCache)
+  override def afterEach(): Unit = {
+    Mockito.reset(mockSave4LaterService)
+    Mockito.reset(mockEmailVerificationService)
+    Mockito.reset(mockUpdateVerifiedEmailService)
+    Mockito.reset(mockSessionCache)
+  }
 
   "Displaying the Check Your Email Page" should {
 
@@ -138,7 +142,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       when(mockSessionCache.eori(any[Request[AnyContent]]))
         .thenReturn(Future.successful(Some("GB123456789")))
       when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Right()))
+        .thenReturn(Future.successful(Right((): Unit)))
       when(mockSave4LaterService.saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier]))
         .thenReturn(Future.successful(()))
       when(mockSessionCache.saveEmail(any[String])(any[Request[AnyContent]]))
@@ -176,7 +180,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
 
     "update verified email for CDS Short Journey (Auto-enrolment)" in {
       when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Right()))
+        .thenReturn(Future.successful(Right((): Unit)))
 
       when(mockSessionCache.eori(any[Request[AnyContent]]))
         .thenReturn(Future.successful(Some("GB123456789")))

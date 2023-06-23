@@ -60,7 +60,8 @@ class OrganisationTypeViewSpec
   )
 
   override def beforeEach(): Unit = {
-    reset(mockAuthConnector, mockRequestSessionData)
+    reset(mockAuthConnector)
+    reset(mockRequestSessionData)
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
     when(mockSubscriptionDetailsService.cachedOrganisationType(any())).thenReturn(Future.successful(None))
   }
@@ -105,7 +106,7 @@ class OrganisationTypeViewSpec
     maybeOrgType: Option[CdsOrganisationType] = None,
     userLocation: Option[String] = None,
     userId: String = defaultUserId
-  )(test: Future[Result] => Any) {
+  )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(userLocation)
 

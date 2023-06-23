@@ -60,7 +60,8 @@ class WhatIsYourEoriCheckFailedControllerSpec extends ControllerSpec with AuthAc
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockAuthConnector, mockSubscriptionDetailsService)
+    reset(mockAuthConnector)
+    reset(mockSubscriptionDetailsService)
 
     super.afterEach()
   }

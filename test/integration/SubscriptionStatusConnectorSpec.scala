@@ -102,10 +102,10 @@ class SubscriptionStatusConnectorSpec extends IntegrationTestsSpec with ScalaFut
     AuditService.stubAuditService()
   }
 
-  override def beforeAll: Unit =
+  override def beforeAll(): Unit =
     startMockServer()
 
-  override def afterAll: Unit =
+  override def afterAll(): Unit =
     stopMockServer()
 
   "subscription status" should {

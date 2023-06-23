@@ -56,10 +56,10 @@ class RegisterWithEoriAndIdConnectorSpec extends IntegrationTestsSpec with Scala
     AuditService.stubAuditService()
   }
 
-  override def beforeAll: Unit =
+  override def beforeAll(): Unit =
     startMockServer()
 
-  override def afterAll: Unit =
+  override def afterAll(): Unit =
     stopMockServer()
 
   private val requestDateInd = LocalDateTime.of(2001, 12, 17, 9, 30, 47, 0)

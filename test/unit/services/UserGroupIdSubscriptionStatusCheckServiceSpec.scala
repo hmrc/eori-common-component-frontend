@@ -60,8 +60,10 @@ class UserGroupIdSubscriptionStatusCheckServiceSpec
   override implicit def patienceConfig: PatienceConfig =
     super.patienceConfig.copy(timeout = Span(defaultTimeout.toMillis, Millis))
 
-  override def beforeEach() =
-    reset(mockSubscriptionStatusService, mockSave4LaterService)
+  override def beforeEach(): Unit = {
+    reset(mockSubscriptionStatusService)
+    reset(mockSave4LaterService)
+  }
 
   implicit val originatingService: Service = atarService
 

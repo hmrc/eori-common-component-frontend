@@ -49,9 +49,9 @@ class CheckEoriNumberConnectorSpec extends IntegrationTestsSpec with ScalaFuture
     resetMockServer()
   }
 
-  override def beforeAll: Unit = startMockServer()
+  override def beforeAll(): Unit = startMockServer()
 
-  override def afterAll: Unit = stopMockServer()
+  override def afterAll(): Unit = stopMockServer()
 
   "CheckEoriNumber" should {
 

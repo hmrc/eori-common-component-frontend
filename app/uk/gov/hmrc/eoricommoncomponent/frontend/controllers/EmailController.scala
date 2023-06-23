@@ -144,7 +144,7 @@ class EmailController @Inject() (
         } yield verifiedEmailStatus
       case _ =>
         //if it's a Long Journey or Short journey for other services than cds we do not update email.
-        Future.successful(Right())
+        Future.successful(Right((): Unit))
     }).flatMap {
       case Right(_) =>
         for {

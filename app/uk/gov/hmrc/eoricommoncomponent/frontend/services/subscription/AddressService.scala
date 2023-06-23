@@ -72,7 +72,7 @@ class AddressService @Inject() (
   def handleFormDataAndRedirect(form: Form[AddressViewModel], isInReviewMode: Boolean, service: Service)(implicit
     request: Request[AnyContent]
   ): Future[Result] =
-    form.bindFromRequest
+    form.bindFromRequest()
       .fold(
         formWithErrors => populateCountriesToInclude(isInReviewMode, service, formWithErrors, BadRequest),
         address =>

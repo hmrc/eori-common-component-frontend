@@ -76,8 +76,8 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockRequestSessionData, mockSubscriptionDetailsService)
-
+    reset(mockRequestSessionData)
+    reset(mockSubscriptionDetailsService)
     super.afterEach()
   }
 
@@ -86,7 +86,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
       createForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should include(SubscriptionNinoPage.title)
+        page.title() should include(SubscriptionNinoPage.title)
       }
     }
 
@@ -96,7 +96,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
       createForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should include(SubscriptionNinoPage.title)
+        page.title() should include(SubscriptionNinoPage.title)
       }
     }
   }
@@ -106,7 +106,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
       reviewForm() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title should include(SubscriptionNinoPage.title)
+        page.title() should include(SubscriptionNinoPage.title)
       }
     }
   }

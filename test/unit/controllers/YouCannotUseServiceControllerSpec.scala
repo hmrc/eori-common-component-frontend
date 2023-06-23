@@ -24,7 +24,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.YouCannotUseServiceController
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
+
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionBusinessService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{unauthorized, you_cant_use_service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.unable_to_use_id
@@ -66,7 +66,8 @@ class YouCannotUseServiceControllerSpec extends ControllerSpec with AuthActionMo
   }
 
   override protected def afterEach(): Unit = {
-    reset(unableToUseIdPage, mockSessionCache)
+    reset(unableToUseIdPage)
+    reset(mockSessionCache)
 
     super.afterEach()
   }
@@ -76,7 +77,7 @@ class YouCannotUseServiceControllerSpec extends ControllerSpec with AuthActionMo
       page() { result =>
         status(result) shouldBe UNAUTHORIZED
         val page = CdsPage(contentAsString(result))
-        page.title should startWith(messages("cds.you-cant-use-service.heading"))
+        page.title() should startWith(messages("cds.you-cant-use-service.heading"))
       }
     }
 
@@ -84,7 +85,7 @@ class YouCannotUseServiceControllerSpec extends ControllerSpec with AuthActionMo
       unauthorisedPage() { result =>
         status(result) shouldBe UNAUTHORIZED
         val page = CdsPage(contentAsString(result))
-        page.title should startWith(messages("cds.server-errors.401.heading"))
+        page.title() should startWith(messages("cds.server-errors.401.heading"))
       }
     }
 

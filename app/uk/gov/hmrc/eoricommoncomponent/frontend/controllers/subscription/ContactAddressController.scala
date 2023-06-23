@@ -83,7 +83,7 @@ class ContactAddressController @Inject() (
 
   def submit(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
-      contactAddressCreateForm().bindFromRequest
+      contactAddressCreateForm().bindFromRequest()
         .fold(
           formWithErrors => populateCountriesToInclude(service, isInReviewMode, formWithErrors, BadRequest),
           address =>

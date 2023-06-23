@@ -67,7 +67,7 @@ class HaveNinoSubscriptionController @Inject() (
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
-        haveRowIndividualsNinoForm.bindFromRequest.fold(
+        haveRowIndividualsNinoForm.bindFromRequest().fold(
           formWithErrors =>
             Future.successful(BadRequest(matchNinoSubscriptionView(formWithErrors, isInReviewMode, service))),
           formData => destinationsByAnswer(isInReviewMode, formData, service)

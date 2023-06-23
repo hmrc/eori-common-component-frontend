@@ -173,15 +173,13 @@ class RegisterWithEoriAndIdControllerSpec
   private val stubRegisterWithEoriAndIdResponseExceptionCase =
     stubRegisterWithEoriAndIdResponse("ANYTHING ELSE")
 
-  override def beforeEach: Unit = {
-    reset(
-      mockAuthConnector,
-      mockCdsSubscriber,
-      mockCache,
-      mockReg06Service,
-      mockSubscriptionStatusService,
-      mockSubscriptionDetailsService
-    )
+  override def beforeEach(): Unit = {
+    reset(mockAuthConnector)
+    reset(mockCdsSubscriber)
+    reset(mockCache)
+    reset(mockReg06Service)
+    reset(mockSubscriptionStatusService)
+    reset(mockSubscriptionDetailsService)
     withAuthorisedUser(defaultUserId, mockAuthConnector)
     when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[_]]))
       .thenReturn(Future.successful(Some(Utr(""))))

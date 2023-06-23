@@ -23,7 +23,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.duration.Duration
-import scala.util.matching.Regex
 
 @Singleton
 class AppConfig @Inject() (
@@ -36,8 +35,12 @@ class AppConfig @Inject() (
 
   val ttl: Duration = Duration.create(config.get[String]("cds-frontend-cache.ttl"))
 
-  val allowlistReferrers: Seq[String] =
-    config.get[String]("allowlist-referrers").split(',').map(_.trim).filter(_.nonEmpty)
+  val allowlistReferrers: Seq[String] = {
+    val configValue        = config.get[String]("allowlist-referrers")
+    val substrings         = configValue.split(',').map(_.trim)
+    val nonEmptySubstrings = substrings.filter(_.nonEmpty)
+    nonEmptySubstrings.toIndexedSeq
+  }
 
   val contactBaseUrl = servicesConfig.baseUrl("contact-frontend")
 
