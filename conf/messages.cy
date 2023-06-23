@@ -446,6 +446,7 @@ ecc.subscription.information.titleAndHeading.ars = Tanysgrifio i ddyfarniadau uw
 ecc.subscription.information.titleAndHeading.gagmr=Tanysgrifio i’r Gwasanaeth Symud Cerbydau Nwyddau
 ecc.subscription.information.titleAndHeading.atar=Tanysgrifio i Ddyfarniadau Tariffau Uwch
 ecc.subscription.information.titleAndHeading.route1=Tanysgrifio i Wasanaethau Masnachwyr Tollau
+ecc.subscription.information.titleAndHeading.esc = Tanysgrifiwch ar gyfer Rhoi gwybod am a rheoli’ch lwfans ar gyfer hawliadau Ildio Toll Dramor
 ecc.subscription.information.titleAndHeading.ivd=Tanysgrifio i Wasanaethau Masnachwyr Tollau
 ecc.subscription.information.titleAndHeading.ndrc=Tanysgrifio i Wasanaethau Masnachwyr Tollau
 ecc.subscription.information.titleAndHeading.gbss=Tanysgrifio i’r Gwasanaeth Diogelwch (yn y DU)
@@ -1279,6 +1280,7 @@ confirm-contact-details.yes=Ydy, mae’r cyfeiriad hwn yn gywir
 confirm-contact-details.no=Nac ydy, hoffwn newid y cyfeiriad
 confirm-contact-details.page-error.yes-no-answer=Dewiswch ‘Iawn’ os yw’r cyfeiriad hwn yn gywir
 
+cds.subscription.outcomes.steps.next.new.esc = <li>tanysgrifiad ar gyfer Rhoi gwybod am a rheoli’ch lwfans ar gyfer hawliadau Ildio Toll Dramor</li>
 cds.subscription.outcomes.steps.next.new.ars= <li>Gwneud cais am Ddyfarniad Tariffau Uwch</li> <li>Gwneud cais am Ddyfarniad Prisio Uwch</li>
 cds.subscription.outcomes.steps.next.new.atar= <li>Gwneud cais am Ddyfarniad Tariffau Uwch</li> <li>Gwneud cais am Ddyfarniad Prisio Uwch</li>
 cds.subscription.outcomes.steps.next.new.gagmr = <li>Cael cyfeirnod symud nwyddau</li>

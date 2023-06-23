@@ -104,7 +104,9 @@ ecc.subscription.information.only.once.bullet1=bydd yn rhaid i chi nodi rhywfain
 ecc.subscription.information.only.once.bullet2=bydd CThEF yn gwneud gwiriad diogelwch er mwyn gwirio’ch manylion
 ecc.subscription.information.only.once.para1 = Dim ond unwaith y mae angen i chi wneud hyn.
 
+
 ecc.subscription.information.only.once.para1.atar= Unwaith i chi danysgrifio, gallwch wneud cais am y canlynol: <ul class="govuk-body"><li>Dyfarniad Tariffau Uwch</li><li>Dyfarniad Prisio Uwch</li></ul>
+ecc.subscription.information.only.once.para1.esc = Unwaith y byddwch wedi tanysgrifio, gallwch adrodd a rheoli’ch lwfans ar gyfer hawliadau ildio Toll Dramor
 ecc.subscription.information.only.once.para1.cds = Unwaith i chi danysgrifio, bydd gennych fynediad at y Gwasanaeth Datganiadau Tollau.
 ecc.subscription.information.only.once.para1.gagmr = Unwaith i chi danysgrifio, gallwch gael cyfeirnod symud nwyddau (GMR).
 ecc.subscription.information.only.once.para1.ctc = Unwaith i chi danysgrifio, gallwch gyflwyno datganiadau cludo yn yr undeb.
