@@ -28,9 +28,9 @@
         <div>
             @h1("page-heading", Some("govuk-heading-l"), title(otherService, service))
 
-            @p(Some("info-para1"), messages("cds.enrolment.pending.user.paragraph1"))
+            @p(messages("cds.enrolment.pending.user.paragraph1"), Some("info-para1"))
 
-            @p(Some("info-para2"), messages("cds.enrolment.pending.user.paragraph2"))
+            @p(messages("cds.enrolment.pending.user.paragraph2"), Some("info-para2"))
 
             <ul id="info-list" class="govuk-list govuk-list--bullet">
                 <li>@messages("cds.enrolment.pending.bullet1")</li>
