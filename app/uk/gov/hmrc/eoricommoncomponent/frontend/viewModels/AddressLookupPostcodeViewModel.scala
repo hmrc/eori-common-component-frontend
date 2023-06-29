@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.viewModels
 
-import com.google.inject.Inject
 import play.api.mvc.Call
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
@@ -26,7 +25,7 @@ case class AddressLookupPostcodeViewModel(
   pageTitleKey: String,
   formHintKey: String,
   paragraphWithLink: String,
-  hintTextKey: String,
+  hintTextKey: Option[String],
   addressLink: Call
 )
 
@@ -60,8 +59,8 @@ object AddressLookupPostcodeViewModel {
     }
 
     val hintTextKey = selectedOrganisationType.id match {
-      case SoleTraderId | IndividualId => "ecc.address-lookup.postcode.hint.individual"
-      case _                           => ""
+      case SoleTraderId | IndividualId => Some("ecc.address-lookup.postcode.hint.individual")
+      case _                           => None
     }
 
     val addressLink = {
