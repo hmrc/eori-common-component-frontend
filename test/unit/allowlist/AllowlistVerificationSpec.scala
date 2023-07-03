@@ -81,9 +81,7 @@ class AllowlistVerificationSpec extends ControllerSpec with BeforeAndAfterEach w
 
       val result = controller
         .download(atarService)
-        .apply(
-          SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe/", defaultUserId)
-        )
+        .apply(SessionBuilder.buildRequestWithSessionAndPath("/customs-enrolment-services/subscribe/", defaultUserId))
 
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some("/customs-enrolment-services/subscribe/unauthorised")

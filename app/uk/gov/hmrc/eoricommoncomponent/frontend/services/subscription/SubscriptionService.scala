@@ -44,11 +44,9 @@ class SubscriptionService @Inject() (connector: SubscriptionServiceConnector, fe
   def subscribeWithMandatoryOnly(
     registration: RegistrationDetails,
     subscription: SubscriptionDetails,
-    service: Service,
-                                )(implicit hc: HeaderCarrier): Future[SubscriptionResult] = {
-    val request = SubscriptionRequest(
-      SubscriptionCreateRequest(registration, subscription,  maybe(service))
-    )
+    service: Service
+  )(implicit hc: HeaderCarrier): Future[SubscriptionResult] = {
+    val request = SubscriptionRequest(SubscriptionCreateRequest(registration, subscription, maybe(service)))
     subscribeWithConnector(request)
   }
 

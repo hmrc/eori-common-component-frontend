@@ -37,7 +37,7 @@ class RegistrationDetailsCreator {
     capturedDate: Option[LocalDate]
   ): RegistrationDetails = {
     val responseDetail = response.getResponseDetail
-    val sapNumber            = extractSapNumber(response.responseCommon.returnParameters)
+    val sapNumber      = extractSapNumber(response.responseCommon.returnParameters)
     if (responseDetail.isAnIndividual)
       convertIndividualMatchingResponse(
         responseDetail.individual.get,

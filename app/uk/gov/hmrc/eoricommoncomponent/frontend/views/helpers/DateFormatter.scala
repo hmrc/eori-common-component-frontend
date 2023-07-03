@@ -28,10 +28,8 @@ class DateFormatter @Inject() (languageUtils: LanguageUtils) {
 
   val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMM yyyy")
 
-  def format(dateString: String)(implicit messages: Messages): String = {
+  def format(dateString: String)(implicit messages: Messages): String =
     Try(languageUtils.Dates.formatDate(LocalDate.parse(dateString, dateFormatter)))
-        .getOrElse(dateString)
-
-  }
+      .getOrElse(dateString)
 
 }
