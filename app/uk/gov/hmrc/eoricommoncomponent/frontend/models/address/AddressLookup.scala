@@ -35,11 +35,11 @@ case class AddressLookup(addressLine: String, city: String, postcode: String, co
 object AddressLookup {
 
   def applyWithLines(lines: Seq[String], town: String, postcode: String, country: String): AddressLookup = {
-    val addressLine = lines match {
-      case Seq(line1, line2, _ @_*) => line1 + ", " + line2
-      case Seq(line1)               => line1
-      case Seq()                    => ""
-      case _                        => throw new IllegalArgumentException("No address sequence was provided")
+    val addressLine = lines.toList match {
+      case line1 :: line2 :: _ => line1 + ", " + line2
+      case line1 :: Nil        => line1
+      case Nil                 => ""
+
     }
     val countryCode = if (country == "UK") "GB" else country
 
