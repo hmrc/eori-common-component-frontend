@@ -186,8 +186,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
           .subscribeWithMandatoryOnly(
             any[RegistrationDetails],
             any[SubscriptionDetails],
-            any[Service],
-            Some(any[String])
+            any[Service]
           )(any[HeaderCarrier])
       ).thenReturn(
         Future
@@ -216,8 +215,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
             .subscribeWithMandatoryOnly(
               any[RegistrationDetails],
               any[SubscriptionDetails],
-              meq(atarService),
-              meq(Some(expectedEmail))
+              meq(atarService)
             )(any[HeaderCarrier])
 
           verify(mockHandleSubscriptionService)
@@ -435,8 +433,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
         .subscribeWithMandatoryOnly(
           any[RegistrationDetails],
           any[SubscriptionDetails],
-          any[Service],
-          Some(any[String])
+          any[Service]
         )(any[HeaderCarrier])
     ).thenReturn(
       Future
@@ -548,8 +545,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
           .subscribeWithMandatoryOnly(
             any[RegistrationDetails],
             any[SubscriptionDetails],
-            meq(atarService),
-            meq(Some(expectedEmail))
+            meq(atarService)
           )(any[HeaderCarrier])
 
         verify(mockHandleSubscriptionService)
@@ -688,8 +684,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
         .subscribeWithMandatoryOnly(
           any[RegistrationDetails],
           any[SubscriptionDetails],
-          any[Service],
-          Some(any[String])
+          any[Service]
         )(any[HeaderCarrier])
     ).thenReturn(
       Future
@@ -714,8 +709,7 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
           .subscribeWithMandatoryOnly(
             any[RegistrationDetails],
             any[SubscriptionDetails],
-            meq(atarService),
-            meq(Some(expectedEmail))
+            meq(atarService)
           )(any[HeaderCarrier])
 
     }

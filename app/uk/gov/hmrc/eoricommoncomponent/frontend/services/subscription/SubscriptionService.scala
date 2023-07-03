@@ -45,10 +45,9 @@ class SubscriptionService @Inject() (connector: SubscriptionServiceConnector, fe
     registration: RegistrationDetails,
     subscription: SubscriptionDetails,
     service: Service,
-    cachedEmail: Option[String]
-  )(implicit hc: HeaderCarrier): Future[SubscriptionResult] = {
+                                )(implicit hc: HeaderCarrier): Future[SubscriptionResult] = {
     val request = SubscriptionRequest(
-      SubscriptionCreateRequest(registration, subscription, cachedEmail, maybe(service))
+      SubscriptionCreateRequest(registration, subscription,  maybe(service))
     )
     subscribeWithConnector(request)
   }
@@ -105,6 +104,11 @@ class SubscriptionService @Inject() (connector: SubscriptionServiceConnector, fe
             s"Response status of FAIL returned for a SUB02: Create Subscription.${responseCommon.statusText.map(
               text => s" $text"
             ).getOrElse("")}"
+          logger.error(message)
+          SubscriptionFailed(message, processingDate)
+        case _ =>
+          val message =
+            s"Unknown error returned for a SUB02: Create Subscription"
           logger.error(message)
           SubscriptionFailed(message, processingDate)
       }

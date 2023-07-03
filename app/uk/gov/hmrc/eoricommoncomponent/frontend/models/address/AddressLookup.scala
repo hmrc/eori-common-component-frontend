@@ -39,6 +39,7 @@ object AddressLookup {
       case Seq(line1, line2, _ @_*) => line1 + ", " + line2
       case Seq(line1)               => line1
       case Seq()                    => ""
+      case _ => throw new IllegalArgumentException("No address sequence was provided")
     }
     val countryCode = if (country == "UK") "GB" else country
 

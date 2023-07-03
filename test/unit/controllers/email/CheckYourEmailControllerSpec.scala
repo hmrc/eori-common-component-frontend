@@ -415,7 +415,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
-      .acceptConfirmation(atarService, journey)
+      .acceptConfirmation(atarService)
       .apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }

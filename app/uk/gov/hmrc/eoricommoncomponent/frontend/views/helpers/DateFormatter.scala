@@ -22,19 +22,16 @@ import java.time.format.DateTimeFormatter
 import play.api.i18n.Messages
 import uk.gov.hmrc.play.language.LanguageUtils
 
+import scala.util.Try
+
 class DateFormatter @Inject() (languageUtils: LanguageUtils) {
 
   val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMM yyyy")
 
   def format(dateString: String)(implicit messages: Messages): String = {
+    Try(languageUtils.Dates.formatDate(LocalDate.parse(dateString, dateFormatter)))
+        .getOrElse(dateString)
 
-    def tryConvert =
-      try Some(languageUtils.Dates.formatDate(LocalDate.parse(dateString, dateFormatter)))
-      catch {
-        case e: Exception => None
-      }
-
-    tryConvert.getOrElse(dateString)
   }
 
 }

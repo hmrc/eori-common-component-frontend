@@ -88,8 +88,7 @@ class CdsSubscriber @Inject() (
       subscriptionResult <- subscriptionService.subscribeWithMandatoryOnly(
         registrationDetails,
         subscriptionDetails,
-        service,
-        Some(email)
+        service
       )
       _ <- onSubscriptionResultForRowSubscribe(
         subscriptionResult,

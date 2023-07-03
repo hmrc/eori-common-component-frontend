@@ -149,7 +149,7 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
       )
       val subscriptionDetails = SubscriptionDetails(contactDetails = Some(contactDetails))
 
-      val request = SubscriptionCreateRequest(registrationDetails, subscriptionDetails, emailAddress, service)
+      val request = SubscriptionCreateRequest(registrationDetails, subscriptionDetails,  service)
 
       val requestCommon  = request.requestCommon
       val requestDetails = request.requestDetail
@@ -187,7 +187,7 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
       )
       val subscriptionDetails = SubscriptionDetails(contactDetails = Some(contactDetails))
 
-      val request = SubscriptionCreateRequest(registrationDetails, subscriptionDetails, emailAddress, service)
+      val request = SubscriptionCreateRequest(registrationDetails, subscriptionDetails,  service)
 
       val requestCommon  = request.requestCommon
       val requestDetails = request.requestDetail
@@ -227,7 +227,7 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
       val subscriptionDetails =
         SubscriptionDetails(contactDetails = Some(contactDetails), contactAddress = Some(contactAddress))
 
-      val request = SubscriptionCreateRequest(registrationDetails, subscriptionDetails, emailAddress, service)
+      val request = SubscriptionCreateRequest(registrationDetails, subscriptionDetails, service)
 
       val requestCommon  = request.requestCommon
       val requestDetails = request.requestDetail
@@ -266,7 +266,7 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
       val subscriptionDetails =
         SubscriptionDetails(contactDetails = Some(contactDetails), contactAddress = Some(contactAddress))
 
-      val request = SubscriptionCreateRequest(registrationDetails, subscriptionDetails, emailAddress, service)
+      val request = SubscriptionCreateRequest(registrationDetails, subscriptionDetails,  service)
 
       val requestCommon  = request.requestCommon
       val requestDetails = request.requestDetail
@@ -380,7 +380,7 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
         registeredCompany = Some(CompanyRegisteredCountry("GB"))
       )
 
-      val request = SubscriptionCreateRequest(registrationDetails, subscriptionDetails, emailAddress, service)
+      val request = SubscriptionCreateRequest(registrationDetails, subscriptionDetails,  service)
 
       val requestCommon  = request.requestCommon
       val requestDetails = request.requestDetail
@@ -418,7 +418,7 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
       )
       val subscriptionDetails = SubscriptionDetails(contactDetails = Some(contactDetails))
       intercept[Exception] {
-        SubscriptionCreateRequest(registrationDetails, subscriptionDetails, emailAddress, service)
+        SubscriptionCreateRequest(registrationDetails, subscriptionDetails,  service)
       }
     }
 
@@ -435,7 +435,7 @@ class SubscriptionCreateRequestSpec extends UnitSpec {
       val subscriptionDetails = SubscriptionDetails(contactDetails = Some(contactDetails))
       intercept[IllegalArgumentException] {
 
-        SubscriptionCreateRequest(registrationDetails, subscriptionDetails, emailAddress, service)
+        SubscriptionCreateRequest(registrationDetails, subscriptionDetails,  service)
       }
 
     }

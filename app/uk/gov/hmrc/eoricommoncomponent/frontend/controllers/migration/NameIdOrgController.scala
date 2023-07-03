@@ -74,7 +74,6 @@ class NameIDOrgController @Inject() (
             validateOrganisationType(orgType)
             populateOkView(
               cachedNameUtrViewModel,
-              orgType,
               OrganisationTypeConfigurations(orgType),
               isInReviewMode = false,
               service
@@ -96,7 +95,7 @@ class NameIDOrgController @Inject() (
         selectedOrganisationType match {
           case Some(orgType) =>
             validateOrganisationType(orgType)
-            populateOkView(Some(cdm), orgType, OrganisationTypeConfigurations(orgType), isInReviewMode = true, service)
+            populateOkView(Some(cdm), OrganisationTypeConfigurations(orgType), isInReviewMode = true, service)
           case None => throw DataUnavailableException("Organisation type is not available in cache")
         }
 
@@ -132,7 +131,6 @@ class NameIDOrgController @Inject() (
 
   private def populateOkView(
     nameUtrViewModel: Option[NameIdOrganisationMatchModel],
-    organisationType: String,
     nameIdOrgViewMode: NameIdOrgViewModel,
     isInReviewMode: Boolean,
     service: Service

@@ -36,7 +36,7 @@ class RegistrationDetailsCreator {
     customsId: CustomsId,
     capturedDate: Option[LocalDate]
   ): RegistrationDetails = {
-    val Some(responseDetail) = response.responseDetail
+    val responseDetail = response.getResponseDetail
     val sapNumber            = extractSapNumber(response.responseCommon.returnParameters)
     if (responseDetail.isAnIndividual)
       convertIndividualMatchingResponse(
@@ -162,9 +162,8 @@ class RegistrationDetailsCreator {
   }
 
   def registrationDetails(response: RegistrationDisplayResponse): RegistrationDetails = {
-    val RegistrationDisplayResponse(responseCommon, Some(responseDetail)) =
-      response
-    (responseDetail.individual, responseDetail.organisation, responseCommon.taxPayerID) match {
+    val responseDetail = response.getResponseDetail
+    (responseDetail.individual, responseDetail.organisation, response.responseCommon.taxPayerID) match {
       case (Some(individual), None, Some(taxPayerId)) =>
         convertIndividualMatchingResponse(
           individual,

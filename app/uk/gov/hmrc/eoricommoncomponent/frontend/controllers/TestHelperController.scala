@@ -42,6 +42,7 @@ class TestHelperController @Inject() (cc: ControllerComponents) extends Abstract
         )
         val payload = someData match {
           case SubscriptionRequest(scr) => SubscriptionRequest(scr)
+          case _ => throw new IllegalArgumentException("SubscriptionRequest did not include expected PayloadCache object")
         }
         Json.toJson(payload)
       case PayloadCache.BusinessMatch =>
@@ -51,6 +52,7 @@ class TestHelperController @Inject() (cc: ControllerComponents) extends Abstract
         )
         val payload = someData match {
           case RegisterWithEoriAndIdRequest(rc, rd) => RegisterWithEoriAndIdRequest(rc, rd)
+          case _ => throw new IllegalArgumentException("RegisterWithEoriAndIdRequest did not include expected ResponseDetail object")
         }
         Json.toJson(payload)
       case _ => throw new RuntimeException("Something bad has happened")

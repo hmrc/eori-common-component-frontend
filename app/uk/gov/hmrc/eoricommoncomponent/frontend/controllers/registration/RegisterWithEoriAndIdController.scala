@@ -143,7 +143,7 @@ class RegisterWithEoriAndIdController @Inject() (
       }
     }
 
-  def processing(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
+  def processing(): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
         name          <- cachedName
@@ -316,7 +316,7 @@ class RegisterWithEoriAndIdController @Inject() (
           subscriptionDetailsService
             .saveKeyIdentifiers(groupId, internalId, service)
             .map(_ => Redirect(Sub02Controller.migrationEnd(service)))
-        case sp: SubscriptionPending =>
+        case _: SubscriptionPending =>
           subscriptionDetailsService
             .saveKeyIdentifiers(groupId, internalId, service)
             .map(_ => Redirect(RegisterWithEoriAndIdController.pending(service)))
@@ -337,7 +337,7 @@ class RegisterWithEoriAndIdController @Inject() (
       case NewSubscription | SubscriptionRejected =>
         onSuccessfulSubscriptionStatusSubscribe(service)
       case SubscriptionProcessing =>
-        Future.successful(Redirect(RegisterWithEoriAndIdController.processing(service)))
+        Future.successful(Redirect(RegisterWithEoriAndIdController.processing()))
       case SubscriptionExists => Future.successful(Redirect(SubscriptionRecoveryController.complete(service)))
     }
 

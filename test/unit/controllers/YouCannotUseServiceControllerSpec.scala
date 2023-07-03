@@ -114,10 +114,10 @@ class YouCannotUseServiceControllerSpec extends ControllerSpec with AuthActionMo
 
   private def page()(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.page(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    await(test(controller.page().apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
   private def unauthorisedPage()(test: Future[Result] => Any) =
-    await(test(controller.unauthorisedPage(atarService).apply(SessionBuilder.buildRequestWithSessionNoUser)))
+    await(test(controller.unauthorisedPage().apply(SessionBuilder.buildRequestWithSessionNoUser)))
 
 }
