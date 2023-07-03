@@ -1290,7 +1290,7 @@ cds.subscription.outcomes.steps.next.new.route1 = <li>gwneud cais am ad-daliad o
 cds.subscription.outcomes.steps.next.new.ivd = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'''r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
 cds.subscription.outcomes.steps.next.new.ndrc = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'''r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
 
-ecc.address-lookup.postcode.hint.link = <p class="govuk-body">Gallwch ddod o hyd hwn ar gofrestr <a href="https://beta.companieshouse.gov.uk/" target="_blank">gofrestr Tŷ’r Cwmnïau (yn agor tab newydd).</a></p>
+ecc.address-lookup.postcode.hint.link = <p class="govuk-body">Gallwch ddod o hyd hwn ar gofrestr <a href="https://beta.companieshouse.gov.uk/" target="_blank">Tŷ’r Cwmnïau (yn agor tab newydd).</a></p>
 ecc.address-lookup.postcode.hint.partnership.link = <p class="govuk-body">Dyma’r enw sydd wedi’i gofrestru gyda CThEF. Gallwch ddod o hyd i hyn yn <a href="https://www.gov.uk/log-in-register-hmrc-online-services" target="_blank">gwasanaethau ar-lein CThEF (yn agor tab newydd)</a> neu ar lythyrau oddi wrth CThEF.</p>
 
 ecc.address-lookup.postcode.hint.company = <p class="govuk-body">Byddwn yn defnyddio hyn i gadarnhau pwy ydych. Gallwch gael y cod post hwn o <a href="https://beta.companieshouse.gov.uk/" target="_blank">gofrestr Tŷ’r Cwmnïau (yn agor tab newydd).</a></p> Nodwch y cod post sydd ar dystysgrif ymgorffori’r cwmni.
