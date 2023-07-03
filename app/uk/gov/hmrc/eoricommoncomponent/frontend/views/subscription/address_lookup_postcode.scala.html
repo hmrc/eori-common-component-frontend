@@ -41,6 +41,7 @@
             @CSRF.formField
 
             @p(Some("hint"), messages(viewModel.formHintKey))
+            @if(viewModel.paragraphWithLink.nonEmpty) {@Html(messages(viewModel.paragraphWithLink))}
 
             @inputText(
                 form = addressPostcodeForm,
@@ -48,7 +49,7 @@
                 name = "postcode",
                 label = "ecc.address-lookup.postcode.label",
                 isPageHeading = false,
-                hint = Some(Html(messages(viewModel.hintTextKey))),
+                hint = viewModel.hintTextKey.map(hintString => Html(messages(hintString))),
                 classes = Some("govuk-!-width-one-half"),
                 labelClasses = Some("govuk-!-font-weight-bold postcode")
             )
