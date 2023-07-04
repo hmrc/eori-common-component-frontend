@@ -38,15 +38,11 @@ class HasExistingEoriSpec extends ViewSpec {
   "Has existing EORI Page" should {
 
     "display correct title" in {
-      doc.title must startWith("Your Government Gateway user ID is linked to an EORI")
+      doc.title must startWith("We’ll subscribe you to this service with EORI number")
     }
 
     "display correct heading" in {
-      doc.getElementsByTag("h1").text() must startWith("Your Government Gateway user ID is linked to an EORI")
-    }
-
-    "display eori" in {
-      doc.body.getElementById("eoriNum").text mustBe eori
+      doc.getElementsByTag("h1").text() must startWith(s"We’ll subscribe you to this service with EORI number $eori")
     }
 
   }

@@ -6,9 +6,9 @@ cds.subscription.enter-eori-number.no-eori.summary=Nid oes gennyf rif EORI
 cds.subscription.enter-eori-number.no-eori=Dylech {0}
 cds.subscription.enter-eori-number.no-eori.link=wneud cais am danysgrifiad a rhif EORI
 
-cds.has-existing-eori.title=Mae’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth yn gysylltiedig ag EORI
-cds.has-existing-eori.heading=Mae’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth yn gysylltiedig ag EORI
-cds.has-existing-eori.para1=Yn ôl ein cofnodion, mae’r Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth a ddefnyddioch i fewngofnodi yn gysylltiedig ag EORI:
+cds.has-existing-eori.title=Byddwn yn eich tanysgrifio i’r gwasanaeth hwn gan ddefnyddio rhif
+cds.has-existing-eori.heading=Byddwn yn eich tanysgrifio i’r gwasanaeth hwn gan ddefnyddio rhif {0}
+cds.has-existing-eori.para1=Os ydych am ddefnyddio rhif EORI gwahanol, bydd angen i chi allgofnodi. Yna, bydd angen i chi fewngofnodi gan ddefnyddio Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth sydd wedi’i gysylltu â’r rhif EORI rydych am ei ddefnyddio.
 cds.has-existing-eori.para2=Bydd eich cofrestriad yn gysylltiedig â’r EORI hwn.
 cds.has-existing-eori.para3=Os defnyddiwch EORI gwahanol gan amlaf, dylech allgofnodi a mewngofnodi eto gan ddefnyddio’r Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth sy’n gysylltiedig â’r EORI yr hoffech gofrestru ag ef.
 
