@@ -185,6 +185,3 @@ GET         /admin/metrics                                                      
 
 ->          /                                                                      health.Routes
 
-# Test Support Routes
-
-GET         /customs-enrolment-services/payloads/:key                                                                             @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.TestHelperController.payloads(key)
