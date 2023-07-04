@@ -104,7 +104,9 @@ ecc.subscription.information.only.once.bullet1=bydd yn rhaid i chi nodi rhywfain
 ecc.subscription.information.only.once.bullet2=bydd CThEF yn gwneud gwiriad diogelwch er mwyn gwirio’ch manylion
 ecc.subscription.information.only.once.para1 = Dim ond unwaith y mae angen i chi wneud hyn.
 
+
 ecc.subscription.information.only.once.para1.atar= Unwaith i chi danysgrifio, gallwch wneud cais am y canlynol: <ul class="govuk-body"><li>Dyfarniad Tariffau Uwch</li><li>Dyfarniad Prisio Uwch</li></ul>
+ecc.subscription.information.only.once.para1.esc = Unwaith y byddwch wedi tanysgrifio, gallwch adrodd a rheoli’ch lwfans ar gyfer hawliadau ildio Toll Dramor
 ecc.subscription.information.only.once.para1.cds = Unwaith i chi danysgrifio, bydd gennych fynediad at y Gwasanaeth Datganiadau Tollau.
 ecc.subscription.information.only.once.para1.gagmr = Unwaith i chi danysgrifio, gallwch gael cyfeirnod symud nwyddau (GMR).
 ecc.subscription.information.only.once.para1.ctc = Unwaith i chi danysgrifio, gallwch gyflwyno datganiadau cludo yn yr undeb.
@@ -298,12 +300,12 @@ ecc.registered-company-country.individual.error = Nodwch y wlad lle y mae’ch b
 ecc.registered-company-country.summary = Lleoliad y wlad
 
 ecc.address-lookup.postcode.title = Dewis eich cyfeiriad
-ecc.address-lookup.postcode.organisation.title = Beth yw cyfeiriad cofrestredig eich cwmni?
+ecc.address-lookup.postcode.organisation.title = Ble mae swyddfa gofrestredig y cwmni?
 ecc.address-lookup.postcode.individual.title = Beth yw’ch cyfeiriad?
-ecc.address-lookup.postcode.partnership.title = Beth yw cyfeiriad cofrestredig eich partneriaeth?
-ecc.address-lookup.postcode.charity.title = Beth yw cyfeiriad cofrestredig eich sefydliad?
+ecc.address-lookup.postcode.partnership.title = Ble mae swyddfa gofrestredig y bartneriaeth?
+ecc.address-lookup.postcode.charity.title = Ble mae swyddfa gofrestredig y sefydliad?
 ecc.address-lookup.postcode.default.hint = Mae’n bosibl nad dyma gyfeiriad eich busnes.
-ecc.address-lookup.postcode.organisation.hint = Dyma’r cyfeiriad sydd wedi’i gofrestru gyda Thŷ’r Cwmnïau. Mae’n bosibl nad dyma’ch cyfeiriad busnes.
+ecc.address-lookup.postcode.organisation.hint = Byddwn yn defnyddio hwn i gadarnhau pwy ydych.
 ecc.address-lookup.postcode.individual.hint = Dyma’r cyfeiriad a ddefnyddioch yn eich cais am rif EORI.
 ecc.address-lookup.postcode.label = Cod post
 ecc.address-lookup.postcode.line1.label = Enw neu rif yr eiddo (dewisol)

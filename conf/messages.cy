@@ -446,6 +446,7 @@ ecc.subscription.information.titleAndHeading.ars = Tanysgrifio i ddyfarniadau uw
 ecc.subscription.information.titleAndHeading.gagmr=Tanysgrifio i’r Gwasanaeth Symud Cerbydau Nwyddau
 ecc.subscription.information.titleAndHeading.atar=Tanysgrifio i Ddyfarniadau Tariffau Uwch
 ecc.subscription.information.titleAndHeading.route1=Tanysgrifio i Wasanaethau Masnachwyr Tollau
+ecc.subscription.information.titleAndHeading.esc = Tanysgrifiwch ar gyfer Rhoi gwybod am a rheoli’ch lwfans ar gyfer hawliadau Ildio Toll Dramor
 ecc.subscription.information.titleAndHeading.ivd=Tanysgrifio i Wasanaethau Masnachwyr Tollau
 ecc.subscription.information.titleAndHeading.ndrc=Tanysgrifio i Wasanaethau Masnachwyr Tollau
 ecc.subscription.information.titleAndHeading.gbss=Tanysgrifio i’r Gwasanaeth Diogelwch (yn y DU)
@@ -1279,6 +1280,7 @@ confirm-contact-details.yes=Ydy, mae’r cyfeiriad hwn yn gywir
 confirm-contact-details.no=Nac ydy, hoffwn newid y cyfeiriad
 confirm-contact-details.page-error.yes-no-answer=Dewiswch ‘Iawn’ os yw’r cyfeiriad hwn yn gywir
 
+cds.subscription.outcomes.steps.next.new.esc = <li>tanysgrifiad ar gyfer Rhoi gwybod am a rheoli’ch lwfans ar gyfer hawliadau Ildio Toll Dramor</li>
 cds.subscription.outcomes.steps.next.new.ars= <li>Gwneud cais am Ddyfarniad Tariffau Uwch</li> <li>Gwneud cais am Ddyfarniad Prisio Uwch</li>
 cds.subscription.outcomes.steps.next.new.atar= <li>Gwneud cais am Ddyfarniad Tariffau Uwch</li> <li>Gwneud cais am Ddyfarniad Prisio Uwch</li>
 cds.subscription.outcomes.steps.next.new.gagmr = <li>Cael cyfeirnod symud nwyddau</li>
@@ -1290,6 +1292,8 @@ cds.subscription.outcomes.steps.next.new.route1 = <li>gwneud cais am ad-daliad o
 cds.subscription.outcomes.steps.next.new.ivd = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'''r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
 cds.subscription.outcomes.steps.next.new.ndrc = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'''r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
 
+ecc.address-lookup.postcode.hint.link = <p class="govuk-body">Gallwch ddod o hyd hwn ar gofrestr <a href="https://beta.companieshouse.gov.uk/" target="_blank">Tŷ’r Cwmnïau (yn agor tab newydd).</a></p>
+ecc.address-lookup.postcode.hint.partnership.link = <p class="govuk-body">Dyma’r enw sydd wedi’i gofrestru gyda CThEF. Gallwch ddod o hyd i hyn yn <a href="https://www.gov.uk/log-in-register-hmrc-online-services" target="_blank">gwasanaethau ar-lein CThEF (yn agor tab newydd)</a> neu ar lythyrau oddi wrth CThEF.</p>
 
 ecc.address-lookup.postcode.hint.company = <p class="govuk-body">Byddwn yn defnyddio hyn i gadarnhau pwy ydych. Gallwch gael y cod post hwn o <a href="https://beta.companieshouse.gov.uk/" target="_blank">gofrestr Tŷ’r Cwmnïau (yn agor tab newydd).</a></p> Nodwch y cod post sydd ar dystysgrif ymgorffori’r cwmni.
 ecc.address-lookup.postcode.hint.llp =  <p class="govuk-body">Byddwn yn defnyddio hyn i gadarnhau pwy ydych. Gallwch gael y cod post hwn o <a href="https://beta.companieshouse.gov.uk/" target="_blank">gofrestr Tŷ’r Cwmnïau (yn agor tab newydd).</a></p> Nodwch y cod post sydd ar dystysgrif ymgorffori’r bartneriaeth.

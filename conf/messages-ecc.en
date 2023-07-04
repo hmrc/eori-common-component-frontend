@@ -113,6 +113,7 @@ ecc.subscription.information.only.once.para1 = You only need to do this once.
 ecc.subscription.information.only.once.para1.atar= Once you have subscribed you can apply for an: <ul class="govuk-body"><li>Advance Tariff Ruling</li><li>Advance Valuation Ruling</li></ul>
 ecc.subscription.information.only.once.para1.cds = Once you have subscribed you will have access to the Customs Declaration Service.
 ecc.subscription.information.only.once.para1.gagmr = Once you have subscribed you can get a goods movement reference (GMR).
+ecc.subscription.information.only.once.para1.esc =  Once you have subscribed you can report and manage your allowance for Customs Duty Waiver claims
 ecc.subscription.information.only.once.para1.ctc = Once you have subscribed you can submit union transit declarations.
 ecc.subscription.information.only.once.para1.gbss = Once you have subscribed you can make entry summary declarations.
 ecc.subscription.information.only.once.para1.ars = Once you have subscribed you can apply for an: <ul class="govuk-body"><li>Advance Tariff Ruling</li><li>Advance Valuation Ruling</li></ul>
@@ -295,12 +296,12 @@ ecc.registered-company-country.individual.error = Enter the country in which you
 ecc.registered-company-country.summary = Country location
 
 ecc.address-lookup.postcode.title = Select your address
-ecc.address-lookup.postcode.organisation.title = What is your registered company address?
+ecc.address-lookup.postcode.organisation.title = Where is the company’s registered office?
 ecc.address-lookup.postcode.individual.title = What is your address?
-ecc.address-lookup.postcode.partnership.title = What is your registered partnership address?
-ecc.address-lookup.postcode.charity.title = What is your registered organisation address?
+ecc.address-lookup.postcode.partnership.title = Where is the partnership’s registered office?
+ecc.address-lookup.postcode.charity.title = Where is the organisation’s registered office?
 ecc.address-lookup.postcode.default.hint = This may not be your business address.
-ecc.address-lookup.postcode.organisation.hint = This is the address registered with Companies House which may not be your business address.
+ecc.address-lookup.postcode.organisation.hint = We will use this to verify your identity.
 ecc.address-lookup.postcode.individual.hint = This is the address you used in your application for an EORI number.
 ecc.address-lookup.postcode.label = Postcode
 ecc.address-lookup.postcode.line1.label = Property name or number (optional)
