@@ -21,9 +21,20 @@ cds.enrolment.already.exists.para1=Mae ein cofnodion yn dangos bod y Dynodydd De
 
 cds.proposition.name.service=Cofrestru ar gyfer gwasanaeth tollau
 
-eds.existing-eori.enrolment.confirmation.title=Cais wedi’i gwblhau
-eds.existing-eori.enrolment.confirmation.heading=Cais wedi’i gwblhau
-eds.existing-eori.enrolment.confirmation.para1=Roedd eich cais yn llwyddiannus. Gallwch nawr ddefnyddio’r gwasanaeth hwn.
+eds.existing-eori.enrolment.confirmation.title=Tanysgrifiad wedi’i gwblhau
+eds.existing-eori.enrolment.confirmation.heading=Tanysgrifiad wedi’i gwblhau
+eds.existing-eori.enrolment.confirmation.para1=Tanysgrifiad wedi’i gwblhau.
+
+cds.existing-eori.enrolment.confirmation.para2.atar=Erbyn hyn, gallwch wneud cais am Ddyfarniad Tariffau Uwch.
+cds.existing-eori.enrolment.confirmation.para2.ctc=Erbyn hyn, gallwch gyflwyno datganiadau ‘union transit’ trwy ddefnyddio’r System Gludo Gyfrifiadurol Newydd (NCTS).
+cds.existing-eori.enrolment.confirmation.para2.gagmr=Erbyn hyn, gallwch gael cyfeirnod symud nwyddau (GMR).
+cds.existing-eori.enrolment.confirmation.para2.gbss=Gallwch nawr gyflwyno datganiadau cryno wrth gyrraedd drwy wneud un o’r canlynol: <ul class="govuk-body"><li>prynu meddalwedd sy’n cydweddu</li><li>defnyddio gwasanaethau Darparwr Gwasanaeth Cymunedol</li></ul>
+cds.existing-eori.enrolment.confirmation.para2.ivd=Gallwch nawr wneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)
+cds.existing-eori.enrolment.confirmation.para2.route1=Gallwch nawr anfon dogfennau am wiriad tollau ar gyfer datganiadau a wneir drwy’r system CHIEF
+cds.existing-eori.enrolment.confirmation.para2.ndrc=Gallwch nawr wneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)
+cds.existing-eori.enrolment.confirmation.para2.esc=Gallwch nawr rhoi gwybod am a rheoli’ch lwfans ar gyfer hawliadau Ildio Toll Dramor
+cds.existing-eori.enrolment.confirmation.para2.cds=Erbyn hyn, gallwch ddefnyddio’r Gwasanaeth Datganiadau Tollau.
+cds.existing-eori.enrolment.confirmation.para2.ars=Erbyn hyn, gallwch: <ul class="govuk-body"><li>Dyfarniad Tariffau Uwch</li><li>Dyfarniad Prisio Uwch</li></ul>
 
 countries-in-the-eu.list=Yr Almaen, Awstria, Bwlgaria, Croatia, Denmarc, yr Eidal, Estonia, y Ffindir, Ffrainc, Gweriniaeth Cyprus, Gwlad Belg, Gwlad Groeg, Gwlad Pwyl, Hwngari, yr Iseldiroedd, Iwerddon, Latfia, Lithiwania, Lwcsembwrg, Malta, Portiwgal, România, Slofacia, Slofenia, Sbaen, Sweden a’r Weriniaeth Tsiec.
 

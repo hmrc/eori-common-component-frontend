@@ -36,15 +36,11 @@ class EoriEnrolSuccessSpec extends ViewSpec {
   "EORI Enrol Success Page" should {
 
     "display correct title" in {
-      doc(service).title must startWith("Application complete")
+      doc(service).title must startWith("Subscription complete")
     }
 
     "display correct heading" in {
-      doc(service).getElementsByTag("h1").text() must startWith("Application complete")
-    }
-
-    "display eori" in {
-      doc(service).body.getElementById("eori-number").text mustBe eori
+      doc(service).getElementsByTag("h1").text() must startWith("Subscription complete")
     }
 
     "display continue button when callBack URL exists" in {
@@ -56,6 +52,6 @@ class EoriEnrolSuccessSpec extends ViewSpec {
     }
   }
 
-  private def doc(service: Service): Document = Jsoup.parse(contentAsString(view(eori, service)))
+  private def doc(service: Service): Document = Jsoup.parse(contentAsString(view(service)))
 
 }
