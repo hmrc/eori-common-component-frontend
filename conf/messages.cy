@@ -562,7 +562,7 @@ cds.matching.name-id-organisation.registered-company.name=Beth yw enw cofrestred
 cds.matching.name-id-organisation.registered-company.name.para=Gallwch ddod o hyd hwn ar gofrestr <a class="govuk-link" href="https://beta.companieshouse.gov.uk/" target="_blank">Tŷ'’'r Cwmnïau (yn agor tab newydd).</a>
 cds.matching.name-id-organisation.registered-company.name.hint=Nodwch yr union enw sydd ar gofrestr Tŷ’r Cwmnïau.
 cds.matching.name-id-organisation.Llp-partnership.name.para=Gallwch ddod o hyd hwn ar gofrestr <a class="govuk-link" href="https://beta.companieshouse.gov.uk/" target="_blank">Tŷ'’'r Cwmnïau (yn agor tab newydd).</a>
-cds.matching.name-id-organisation.registered-company.utr=Rhif Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth
+cds.matching.name-id-organisation.registered-company.utr=Beth yw Cyfeirnod Unigryw y Trethdalwr (UTR) y cwmni ar gyfer Treth Gorfforaeth?
 cds.matching.name-id-organisation.Llp-partnership.name=Beth yw enw cofrestredig eich partneriaeth?
 cds.matching.name-id-organisation.Llp-partnership.name.hint=Nodwch yr union enw sydd ar gofrestr Tŷ’r Cwmnïau.
 cds.matching.name-id-organisation.Llp-partnership.utr=Beth yw Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth (UTR) y bartneriaeth?
