@@ -15,7 +15,7 @@
  *@
 
 @this()
-@(id: Option[String] = None, text: String = "", html: Option[Html] = None)
+@(text: String = "", id: Option[String] = None, html: Option[Html] = None)
 
 @content = @{
   html.getOrElse(Html(text))
