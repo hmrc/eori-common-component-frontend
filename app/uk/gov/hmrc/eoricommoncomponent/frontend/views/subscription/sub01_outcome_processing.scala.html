@@ -24,18 +24,16 @@
 
 @(orgName: Option[String], processedDate: String)(implicit messages: Messages, request: Request[_])
 
-@confirmationHtml = {
-    <p id="processed-date" class="govuk-!-font-size-36"><strong>@messages("cds.subscription.outcomes.in-processing.received", dateFormatter.format(processedDate))</strong></p>
-}
+
 @layout_di(messages("cds.sub01.outcome.processing.title", shortName), displayBackLink = false) {
     <div>
         @govukPanel(Panel(
             title = HtmlContent(headingForProcessing(orgName)),
-            content = HtmlContent(confirmationHtml)
+            content = HtmlContent(p(messages("cds.subscription.outcomes.in-processing.received", dateFormatter.format(processedDate)), Some("processed-date"), "govuk-!-font-size-36")))
         ))
         <div id="what-happens-next">
             @h2(messages("cds.subscription.outcomes.steps.next"))
-            @p(Some("processing-para"), messages("cds.sub01.outcome.processing.we-are-processing", shortName))
+            @p(messages("cds.sub01.outcome.processing.we-are-processing", shortName), Some("processing-para"))
 
         </div>
         

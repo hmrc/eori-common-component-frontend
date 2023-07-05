@@ -28,27 +28,31 @@ class YouCantUseServiceViewModelSpec extends UnitSpec with ControllerSpec {
 
   "YouCantUseServiceViewModel firstParagraph" should {
     "return the correct first paragraph for the 'Agent' user type" in {
-      val name   = Option(AffinityGroup.Agent)
+      val name   = Some(AffinityGroup.Agent)
       val result = YouCantUseServiceViewModel.firstParagraph(name)(messages, fakeRequest)
       result shouldBe messages("cds.you-cant-use-service-agent.para1")
     }
-    "return the correct first paragraph for other user types" in {
 
-      val result = YouCantUseServiceViewModel.firstParagraph(None)(messages, fakeRequest)
-      result shouldBe messages("cds.you-cant-use-service-standard-organisation.para1", longName)
+    Seq(None, Some(AffinityGroup.Individual), Some(AffinityGroup.Organisation)).foreach { affinityGroup =>
+      s"return the correct first paragraph for $affinityGroup user type" in {
+        val result = YouCantUseServiceViewModel.firstParagraph(affinityGroup)(messages, fakeRequest)
+        result shouldBe messages("cds.you-cant-use-service-standard-organisation.para1", longName)
+      }
     }
 
   }
   "YouCantUseServiceViewModel.secondParagraph" should {
     "return the correct second paragraph for the 'Agent' user type" in {
-      val name   = Option(AffinityGroup.Agent)
+      val name   = Some(AffinityGroup.Agent)
       val result = YouCantUseServiceViewModel.secondParagraph(name)(messages, fakeRequest)
       result shouldBe messages("cds.you-cant-use-service-agent.para2", longName)
     }
-    "return the correct second paragraph for other user types" in {
 
-      val result = YouCantUseServiceViewModel.secondParagraph(None)(messages, fakeRequest)
-      result shouldBe messages("cds.you-cant-use-service-standard-organisation.para2")
+    Seq(None, Some(AffinityGroup.Individual), Some(AffinityGroup.Organisation)).foreach { affinityGroup =>
+      s"return the correct second paragraph for $affinityGroup user type" in {
+        val result = YouCantUseServiceViewModel.secondParagraph(affinityGroup)(messages, fakeRequest)
+        result shouldBe messages("cds.you-cant-use-service-standard-organisation.para2")
+      }
     }
 
   }

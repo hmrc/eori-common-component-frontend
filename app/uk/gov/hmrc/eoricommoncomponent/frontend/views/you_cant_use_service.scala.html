@@ -31,8 +31,8 @@
 @layout_di(messages("cds.you-cant-use-service.heading"), displayBackLink = false) {
 <div>
     @h1(messages("cds.you-cant-use-service.heading"))
-    @p(Some("para-1"), firstParagraph(userType))
-    @p(Some("para-2"), secondParagraph(userType))
+    @p(firstParagraph(userType), Some("para-1"))
+    @p(secondParagraph(userType), Some("para-2"))
 
 
     @govukButton(Button(
