@@ -40,7 +40,7 @@
 
             @CSRF.formField
 
-            @p(Some("hint"), messages(viewModel.formHintKey))
+            @p(messages(viewModel.formHintKey), Some("hint"))
             @if(viewModel.paragraphWithLink.nonEmpty) {@Html(messages(viewModel.paragraphWithLink))}
 
             @inputText(
