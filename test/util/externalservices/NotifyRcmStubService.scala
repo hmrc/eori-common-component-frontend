@@ -21,17 +21,6 @@ import play.mvc.Http.Status.NO_CONTENT
 
 object NotifyRcmStubService {
 
-  private val notifyRcmUrl = "/notify/rcm"
-
-  def stubRcmEndpoint(returnStatus: Int = NO_CONTENT): Unit =
-    stubFor(
-      post(urlEqualTo(notifyRcmUrl))
-        .willReturn(
-          aResponse()
-            .withStatus(returnStatus)
-        )
-    )
-
   def returnRcmEndpointWhenReceiveRequest(url: String, request: String, status: Int): Unit =
     stubFor(
       post(urlEqualTo(url))
@@ -42,5 +31,4 @@ object NotifyRcmStubService {
         )
     )
 
-  def verifyRcmEndpointCalled(): Unit = verify(postRequestedFor(urlEqualTo(notifyRcmUrl)))
 }

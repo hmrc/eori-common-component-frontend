@@ -24,8 +24,6 @@ import play.mvc.Http.Status.OK
 
 object RegisterWithEoriAndIdMessagingService {
 
-  private val RegistrationWithEoriAndIdPath: UrlPattern = urlMatching("/register-with-eori-and-id")
-
   def returnTheResponseWhenReceiveRequest(url: String, request: String, response: String): Unit =
     returnTheResponseWhenReceiveRequest(url, request, response, OK)
 
@@ -40,8 +38,5 @@ object RegisterWithEoriAndIdMessagingService {
             .withHeader(CONTENT_TYPE, JSON)
         )
     )
-
-  def verifyRegisterWithEoriAndIdNotCalled(): Unit =
-    verify(0, postRequestedFor(RegistrationWithEoriAndIdPath))
 
 }

@@ -40,8 +40,6 @@ import play.mvc.Http.Status.OK
 
 object SubscriptionService {
 
-  val SubscribePath: UrlPattern = urlMatching("/subscribe")
-
   def returnResponseWhenReceiveRequest(url: String, request: String, response: String): Unit =
     returnResponseWhenReceiveRequest(url, request, response, OK)
 
