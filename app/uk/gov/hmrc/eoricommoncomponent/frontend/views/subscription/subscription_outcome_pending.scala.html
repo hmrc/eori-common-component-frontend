@@ -27,17 +27,17 @@
 @layout_di(messages("cds.subscription.outcomes.in-processing.title"), suppressTelephoneNumberDetection = false, displayBackLink = false) {
     <div>
         @h1("cds.subscription.outcomes.in-processing.heading")
-        @p(Some("pending-para-one"), messages("cds.subscription.outcomes.in-processing.para1"))
+        @p(messages("cds.subscription.outcomes.in-processing.para1"), Some("pending-para-one"))
         <div id="what-happens-next">
             @h2(messages("cds.subscription.outcomes.in-processing.second.title"))
-            @p(Some("pending-para-two"), messages("cds.subscription.outcomes.in-processing.ordered.list.para"))
+            @p(messages("cds.subscription.outcomes.in-processing.ordered.list.para"), Some("pending-para-two"))
             @ol(Seq(
                 messages("cds.subscription.outcomes.in-processing.ordered.list.one"),
                 messages("cds.subscription.outcomes.in-processing.ordered.list.two"),
                 messages("cds.subscription.outcomes.in-processing.ordered.list.three")
             ))
             @h2(messages("cds.subscription.outcomes.pending.steps.next"))
-            @p(Some("pending-next-steps-para"), messages("cds.subscription.outcomes.pending.steps.next.para"))
+            @p(messages("cds.subscription.outcomes.pending.steps.next.para"), Some("pending-next-steps-para"))
         </div>
 
         @helpers.feedbackBackContinue(service, JourneyStatus.Processing)
