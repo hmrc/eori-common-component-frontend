@@ -6,9 +6,9 @@ cds.subscription.enter-eori-number.no-eori.summary=Nid oes gennyf rif EORI
 cds.subscription.enter-eori-number.no-eori=Dylech {0}
 cds.subscription.enter-eori-number.no-eori.link=wneud cais am danysgrifiad a rhif EORI
 
-cds.has-existing-eori.title=Mae’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth yn gysylltiedig ag EORI
-cds.has-existing-eori.heading=Mae’ch Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth yn gysylltiedig ag EORI
-cds.has-existing-eori.para1=Yn ôl ein cofnodion, mae’r Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth a ddefnyddioch i fewngofnodi yn gysylltiedig ag EORI:
+cds.has-existing-eori.title=Byddwn yn eich tanysgrifio i’r gwasanaeth hwn gan ddefnyddio rhif
+cds.has-existing-eori.heading=Byddwn yn eich tanysgrifio i’r gwasanaeth hwn gan ddefnyddio rhif EORI {0}
+cds.has-existing-eori.para1=Os ydych am ddefnyddio rhif EORI gwahanol, bydd angen i chi allgofnodi. Yna, bydd angen i chi fewngofnodi gan ddefnyddio Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth sydd wedi’i gysylltu â’r rhif EORI rydych am ei ddefnyddio.
 cds.has-existing-eori.para2=Bydd eich cofrestriad yn gysylltiedig â’r EORI hwn.
 cds.has-existing-eori.para3=Os defnyddiwch EORI gwahanol gan amlaf, dylech allgofnodi a mewngofnodi eto gan ddefnyddio’r Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth sy’n gysylltiedig â’r EORI yr hoffech gofrestru ag ef.
 
@@ -187,11 +187,6 @@ cds.registration.user-location.location.uk.label=Y Deyrnas Unedig
 cds.registration.user-location.location.third-country.label=Y tu allan i’r Undeb Ewropeaidd
 cds.registration.user-location.location.third-country-inc-eu.label=Gweddill y byd
 
-cds.matching.name-id-organisation.company.utr=Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)
-cds.matching.name-id-organisation.registered-company.utr=Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)
-cds.matching.name-id-organisation.partnership.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad y Bartneriaeth
-cds.matching.name-id-organisation.organisation.utr=Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)
-
 cds.subscription.date-of-establishment.company.title-and-heading=Dyddiad y sefydlwyd y cwmni
 
 cds.subscription.address-details.postcode.row.label=Cod post
@@ -309,12 +304,12 @@ ecc.registered-company-country.individual.error = Nodwch y wlad lle y mae’ch b
 ecc.registered-company-country.summary = Lleoliad y wlad
 
 ecc.address-lookup.postcode.title = Dewis eich cyfeiriad
-ecc.address-lookup.postcode.organisation.title = Beth yw cyfeiriad cofrestredig eich cwmni?
+ecc.address-lookup.postcode.organisation.title = Ble mae swyddfa gofrestredig y cwmni?
 ecc.address-lookup.postcode.individual.title = Beth yw’ch cyfeiriad?
-ecc.address-lookup.postcode.partnership.title = Beth yw cyfeiriad cofrestredig eich partneriaeth?
-ecc.address-lookup.postcode.charity.title = Beth yw cyfeiriad cofrestredig eich sefydliad?
+ecc.address-lookup.postcode.partnership.title = Ble mae swyddfa gofrestredig y bartneriaeth?
+ecc.address-lookup.postcode.charity.title = Ble mae swyddfa gofrestredig y sefydliad?
 ecc.address-lookup.postcode.default.hint = Mae’n bosibl nad dyma gyfeiriad eich busnes.
-ecc.address-lookup.postcode.organisation.hint = Dyma’r cyfeiriad sydd wedi’i gofrestru gyda Thŷ’r Cwmnïau. Mae’n bosibl nad dyma’ch cyfeiriad busnes.
+ecc.address-lookup.postcode.organisation.hint = Byddwn yn defnyddio hwn i gadarnhau pwy ydych.
 ecc.address-lookup.postcode.individual.hint = Dyma’r cyfeiriad a ddefnyddioch yn eich cais am rif EORI.
 ecc.address-lookup.postcode.label = Cod post
 ecc.address-lookup.postcode.line1.label = Enw neu rif yr eiddo (dewisol)

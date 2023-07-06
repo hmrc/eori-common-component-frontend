@@ -309,9 +309,10 @@ cds.country.ZM=Zambia
 cds.country.ZW=Zimbabwe
 cds.country.AX=Ynysoedd Åland
 cds.matching.individual.title=Nodwch eich manylion
-cds.matching.header=Beth yw manylion eich sefydliad?
-cds.matching.header.partnership=Beth yw manylion eich partneriaeth?
-cds.matching.header.company=Beth yw manylion eich cwmni?
+cds.matching.header=Manylion y sefydliad
+cds.matching.header.partnership=Manylion y bartneriaeth
+cds.matching.header.company=Manylion y cwmni
+cds.matching.intro.para=Byddwn yn defnyddio’r manylion hyn i gadarnhau pwy ydych.
 cds.matching.intro=Bydd hyn yn cysylltu’ch busnes, eich Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth a’ch rhif EORI â’i gilydd sy’n eich helpu i symud a datgan nwyddau.
 cds.matching.individual.header=Nodwch eich manylion
 cds.matching-lede=Byddwn yn ceisio paru’ch manylion â’r wybodaeth sydd gennym ar hyn o bryd.
@@ -556,22 +557,25 @@ cds.matching.organisation-address.postcode.error.empty=Nodwch eich cod post
 cds.matching.organisation-address.country.error.empty=Nodwch eich gwlad
 cds.matching.name-id-organisation.company.name=Enw’r cwmni
 cds.matching.name-id-organisation.company.name.hint=Mae hwn ar eich tystysgrif ymgorffori oddi wrth Dŷ’r Cwmnïau.
-cds.matching.name-id-organisation.company.utr=Rhif Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth
-cds.matching.name-id-organisation.registered-company.name=Enw’r cwmni cofrestredig
-cds.matching.name-id-organisation.registered-company.name.hint=<p class="govuk-body">Byddwn yn defnyddio hwn i gadarnhau pwy ydych. Gallwch gael yr enw o <a class="govuk-link" href="https://beta.companieshouse.gov.uk/" target="_blank">gofrestr Tŷ'’'r Cwmnïau (yn agor tab newydd).</a></p>Nodwch yr union enw sydd ar dystysgrif ymgorffori eich cwmni.
-cds.matching.name-id-organisation.registered-company.utr=Rhif Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth
-cds.matching.name-id-organisation.Llp-partnership.name=Enw’r bartneriaeth gofrestredig
-cds.matching.name-id-organisation.Llp-partnership.name.hint=<p class="govuk-body">Byddwn yn defnyddio hwn i gadarnhau pwy ydych. Gallwch gael yr enw o <a class="govuk-link" href="https://beta.companieshouse.gov.uk/" target="_blank">gofrestr Tŷ'’'r Cwmnïau (yn agor tab newydd).</a></p>Nodwch yr union enw sydd ar dystysgrif ymgorffori’r bartneriaeth.
-cds.matching.name-id-organisation.Llp-partnership.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth
+cds.matching.name-id-organisation.company.utr=Beth yw Cyfeirnod Unigryw y Trethdalwr (UTR) y cwmni ar gyfer Treth Gorfforaeth?
+cds.matching.name-id-organisation.registered-company.name=Beth yw enw cofrestredig y cwmni?
+cds.matching.name-id-organisation.registered-company.name.para=Gallwch ddod o hyd hwn ar gofrestr <a class="govuk-link" href="https://beta.companieshouse.gov.uk/" target="_blank">Tŷ'’'r Cwmnïau (yn agor tab newydd).</a>
+cds.matching.name-id-organisation.registered-company.name.hint=Nodwch yr union enw sydd ar gofrestr Tŷ’r Cwmnïau.
+cds.matching.name-id-organisation.Llp-partnership.name.para=Gallwch ddod o hyd hwn ar gofrestr <a class="govuk-link" href="https://beta.companieshouse.gov.uk/" target="_blank">Tŷ'’'r Cwmnïau (yn agor tab newydd).</a>
+cds.matching.name-id-organisation.registered-company.utr=Beth yw Cyfeirnod Unigryw y Trethdalwr (UTR) y cwmni ar gyfer Treth Gorfforaeth?
+cds.matching.name-id-organisation.Llp-partnership.name=Beth yw enw cofrestredig eich partneriaeth?
+cds.matching.name-id-organisation.Llp-partnership.name.hint=Nodwch yr union enw sydd ar gofrestr Tŷ’r Cwmnïau.
+cds.matching.name-id-organisation.Llp-partnership.utr=Beth yw Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth (UTR) y bartneriaeth?
 
-cds.matching.name-id-organisation.registered-partnership.name.hint = Nodwch yr union enw y gwnaethoch ei gofrestru gyda CThEF. Byddwn yn defnyddio hwn i gadarnhau pwy ydych. <br><br> Gallwch ddod o hyd i'’'r enw hwn ar ddogfennau gan CThEF. Er enghraifft, cadarnhad o gofrestriad eich partneriaeth
+cds.matching.name-id-organisation.registered-partnership.name.hint =Nodwch yr union enw a gofrestrwyd gyda CThEF.
 
-cds.matching.name-id-organisation.partnership.name=Enw’r bartneriaeth gofrestredig
-cds.matching.name-id-organisation.partnership.name.hint=Mae hwn ar eich tystysgrif ymgorffori oddi wrth Dŷ’r Cwmnïau.
-cds.matching.name-id-organisation.partnership.utr=Rhif Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad y Bartneriaeth
-cds.matching.name-id-organisation.organisation.name=Enw’r sefydliad
-cds.matching.name-id-organisation.organisation.name.hint=<p class="govuk-body">Byddwn yn defnyddio hwn i gadarnhau pwy ydych. Gallwch gael yr enw o <a class="govuk-link" href="https://beta.companieshouse.gov.uk/" target="_blank">gofrestr Tŷ'’'r Cwmnïau (yn agor tab newydd).</a></p>Nodwch yr union enw sydd ar dystysgrif ymgorffori eich sefydliad.
-cds.matching.name-id-organisation.organisation.utr=Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)
+cds.matching.name-id-organisation.partnership.name=Beth yw enw cofrestredig eich partneriaeth?
+cds.matching.name-id-organisation.partnership.name.para=Dyma’r enw sydd wedi’i gofrestru gyda CThEF. Gallwch ddod o hyd i hyn yn <a class="govuk-link" href="https://www.gov.uk/dod-o-hyd-i-utr-sydd-ar-goll" target="_blank">gwasanaethau ar-lein CThEF (yn agor tab newydd)</a> neu ar lythyrau oddi wrth CThEF.
+cds.matching.name-id-organisation.partnership.utr=Beth yw Cyfeirnod Unigryw y Trethdalwr (UTR) eich partneriaeth ar gyfer Hunanasesiad?
+cds.matching.name-id-organisation.organisation.name=Beth yw enw cofrestredig y cwmni?
+cds.matching.name-id-organisation.organisation.name.para=Gallwch ddod o hyd hwn ar gofrestr <a class="govuk-link" href="https://beta.companieshouse.gov.uk/" target="_blank">Tŷ'’'r Cwmnïau (yn agor tab newydd).</a>
+cds.matching.name-id-organisation.organisation.name.hint=Nodwch yr union enw sydd ar gofrestr Tŷ’r Cwmnïau.
+cds.matching.name-id-organisation.organisation.utr=Beth yw Cyfeirnod Unigryw y Trethdalwr (UTR) y sefydliad ar gyfer Treth Gorfforaeth?
 cds.matching.name-id-organisation.not-registered=Os nad ydych wedi’ch cofrestru ar gyfer Hunanasesiad, neu os yw’ch cofrestriad ar y gweill ac nid oes gennych Gyfeirnod Unigryw y Trethdalwr (UTR) eto, gallwch <a href="{0}" class="govuk-link">gofrestru gan ddefnyddio’ch enw a chyfeiriad</a> yn lle hynny.
 cds.matching.name-id-organisation.eu-organisation.name=Enw’r sefydliad cofrestredig
 cds.matching.name-id-organisation.eu-organisation.name.hint=Mae hwn ar eich tystysgrif ymgorffori oddi wrth Dŷ’r Cwmnïau.
@@ -1292,6 +1296,8 @@ cds.subscription.outcomes.steps.next.new.route1 = <li>gwneud cais am ad-daliad o
 cds.subscription.outcomes.steps.next.new.ivd = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'''r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
 cds.subscription.outcomes.steps.next.new.ndrc = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'''r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
 
+ecc.address-lookup.postcode.hint.link = <p class="govuk-body">Gallwch ddod o hyd hwn ar gofrestr <a href="https://beta.companieshouse.gov.uk/" target="_blank">Tŷ’r Cwmnïau (yn agor tab newydd).</a></p>
+ecc.address-lookup.postcode.hint.partnership.link = <p class="govuk-body">Dyma’r enw sydd wedi’i gofrestru gyda CThEF. Gallwch ddod o hyd i hyn yn <a href="https://www.gov.uk/log-in-register-hmrc-online-services" target="_blank">gwasanaethau ar-lein CThEF (yn agor tab newydd)</a> neu ar lythyrau oddi wrth CThEF.</p>
 
 ecc.address-lookup.postcode.hint.company = <p class="govuk-body">Byddwn yn defnyddio hyn i gadarnhau pwy ydych. Gallwch gael y cod post hwn o <a href="https://beta.companieshouse.gov.uk/" target="_blank">gofrestr Tŷ’r Cwmnïau (yn agor tab newydd).</a></p> Nodwch y cod post sydd ar dystysgrif ymgorffori’r cwmni.
 ecc.address-lookup.postcode.hint.llp =  <p class="govuk-body">Byddwn yn defnyddio hyn i gadarnhau pwy ydych. Gallwch gael y cod post hwn o <a href="https://beta.companieshouse.gov.uk/" target="_blank">gofrestr Tŷ’r Cwmnïau (yn agor tab newydd).</a></p> Nodwch y cod post sydd ar dystysgrif ymgorffori’r bartneriaeth.
