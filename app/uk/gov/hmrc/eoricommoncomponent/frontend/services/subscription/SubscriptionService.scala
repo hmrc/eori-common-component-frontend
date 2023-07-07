@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SubscriptionServiceConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.FeatureFlags
+
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.MessagingServiceParam
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionCreateResponse._
@@ -33,13 +33,9 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SubscriptionService @Inject() (connector: SubscriptionServiceConnector, featureFlags: FeatureFlags)(implicit
-  ec: ExecutionContext
-) {
+class SubscriptionService @Inject() (connector: SubscriptionServiceConnector)(implicit ec: ExecutionContext) {
 
   private val logger = Logger(this.getClass)
-
-  private def maybe(service: Service): Option[Service] = if (featureFlags.sub02UseServiceName) Some(service) else None
 
   def subscribeWithMandatoryOnly(
     registration: RegistrationDetails,
@@ -47,9 +43,7 @@ class SubscriptionService @Inject() (connector: SubscriptionServiceConnector, fe
     service: Service,
     cachedEmail: Option[String]
   )(implicit hc: HeaderCarrier): Future[SubscriptionResult] = {
-    val request = SubscriptionRequest(
-      SubscriptionCreateRequest(registration, subscription, cachedEmail, maybe(service))
-    )
+    val request = SubscriptionRequest(SubscriptionCreateRequest(registration, subscription, cachedEmail, Some(service)))
     subscribeWithConnector(request)
   }
 
@@ -62,7 +56,7 @@ class SubscriptionService @Inject() (connector: SubscriptionServiceConnector, fe
     registerWithEoriAndIdResponse.responseDetail.flatMap(_.responseData) match {
       case Some(data) =>
         val request = SubscriptionRequest(
-          SubscriptionCreateRequest(data, subscriptionDetails, capturedEmail, maybe(service))
+          SubscriptionCreateRequest(data, subscriptionDetails, capturedEmail, Some(service))
         )
         subscribeWithConnector(request)
       case _ =>
