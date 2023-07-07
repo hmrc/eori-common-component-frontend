@@ -32,7 +32,7 @@ cds.existing-eori.enrolment.confirmation.para2.gbss=Gallwch nawr gyflwyno datgan
 cds.existing-eori.enrolment.confirmation.para2.ivd=Gallwch nawr rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio
 cds.existing-eori.enrolment.confirmation.para2.route1=Gallwch nawr anfon dogfennau am wiriad tollau ar gyfer datganiadau a wneir drwy’r system CHIEF
 cds.existing-eori.enrolment.confirmation.para2.ndrc=Gallwch nawr wneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)
-cds.existing-eori.enrolment.confirmation.para2.esc=Gallwch nawr rhoi gwybod am a rheoli’ch lwfans ar gyfer hawliadau Ildio Toll Dramor
+cds.existing-eori.enrolment.confirmation.para2.esc=Gallwch nawr rhoi gwybod am a rheoli’ch lwfans ar gyfer hawliadau ildio Toll Dramor
 cds.existing-eori.enrolment.confirmation.para2.cds=Erbyn hyn, gallwch ddefnyddio’r Gwasanaeth Datganiadau Tollau.
 cds.existing-eori.enrolment.confirmation.para2.ars=Erbyn hyn, gallwch wneud cais am Dyfarniad Prisio Uwch.
 
