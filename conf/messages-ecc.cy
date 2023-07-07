@@ -34,7 +34,7 @@ cds.existing-eori.enrolment.confirmation.para2.route1=Gallwch nawr anfon dogfenn
 cds.existing-eori.enrolment.confirmation.para2.ndrc=Gallwch nawr wneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)
 cds.existing-eori.enrolment.confirmation.para2.esc=Gallwch nawr rhoi gwybod am a rheoli’ch lwfans ar gyfer hawliadau Ildio Toll Dramor
 cds.existing-eori.enrolment.confirmation.para2.cds=Erbyn hyn, gallwch ddefnyddio’r Gwasanaeth Datganiadau Tollau.
-cds.existing-eori.enrolment.confirmation.para2.ars=Erbyn hyn, gallwch: <ul class="govuk-body"><li>Dyfarniad Tariffau Uwch</li><li>Dyfarniad Prisio Uwch</li></ul>
+cds.existing-eori.enrolment.confirmation.para2.ars=Erbyn hyn, gallwch wneud cais am Dyfarniad Prisio Uwch.
 
 countries-in-the-eu.list=Yr Almaen, Awstria, Bwlgaria, Croatia, Denmarc, yr Eidal, Estonia, y Ffindir, Ffrainc, Gweriniaeth Cyprus, Gwlad Belg, Gwlad Groeg, Gwlad Pwyl, Hwngari, yr Iseldiroedd, Iwerddon, Latfia, Lithiwania, Lwcsembwrg, Malta, Portiwgal, România, Slofacia, Slofenia, Sbaen, Sweden a’r Weriniaeth Tsiec.
 
