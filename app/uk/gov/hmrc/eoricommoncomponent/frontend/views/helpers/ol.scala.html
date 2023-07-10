@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,20 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package common.pages.subscription
+@this()
 
-import common.pages.WebPage
+@(msg: Seq[String], id: Option[String] = None, classes: String = "govuk-list govuk-list--number")(implicit messages: Messages)
 
-trait ApplicationUnsuccessfulPage extends WebPage {
-
-  override val title = "The subscription request has been unsuccessful"
-}
-
-object ApplicationPendingPage extends WebPage {
-
-  override val title = "We need to make more checks on your application"
-}
-
-object ApplicationUnsuccessfulPage extends ApplicationUnsuccessfulPage
+<ol @{id.fold("")(id => s"id=$id")} class="@classes">
+ @for(message <- msg) {
+  <li>@message</li>
+ }
+</ol>

@@ -65,8 +65,15 @@ cds.subscription.outcomes.rejected.title=The subscription request has been unsuc
 cds.subscription.outcomes.rejected.heading=The subscription request for {0} has been unsuccessful
 
 cds.subscription.outcomes.in-processing.title=We are processing the subscription request
-cds.subscription.outcomes.in-processing.heading=We are processing the subscription request for {0}
-
+cds.subscription.outcomes.in-processing.heading=We need to make more checks on your application
+cds.subscription.outcomes.in-processing.para1= This can take 3 to 5 working days.
+cds.subscription.outcomes.in-processing.second.title = If the checks are successful you need to apply again
+cds.subscription.outcomes.in-processing.ordered.list.para = We will not email you. You can check if you can apply by following these steps:
+cds.subscription.outcomes.in-processing.ordered.list.one = Return to the page on GOV.UK where you started your application.
+cds.subscription.outcomes.in-processing.ordered.list.two = Start the application and sign in using Government Gateway.
+cds.subscription.outcomes.in-processing.ordered.list.three = If we’ve completed the checks you’ll be able to continue. If we’ve not completed the checks you’ll see this screen again.
+cds.subscription.outcomes.pending.steps.next = If the checks on your application are unsuccessful
+cds.subscription.outcomes.pending.steps.next.para = We will email you the reason.
 enter-email-body-text=We will use this to send you the result of your application.
 cds.subscription.verify-email.para2=For your security the link in the email will expire after 72 hours.
 
