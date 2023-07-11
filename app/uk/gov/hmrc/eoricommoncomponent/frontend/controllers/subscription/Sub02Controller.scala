@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
 import play.api.mvc._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, FeatureFlags}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, EnrolmentExtractor}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -37,8 +37,7 @@ class Sub02Controller @Inject() (
   sessionCache: SessionCache,
   subscriptionDetailsService: SubscriptionDetailsService,
   mcc: MessagesControllerComponents,
-  migrationSuccessView: migration_success,
-  featureFlags: FeatureFlags
+  migrationSuccessView: migration_success
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) with EnrolmentExtractor {
 
@@ -56,29 +55,9 @@ class Sub02Controller @Inject() (
       }
   }
 
-  private def renderPageWithName(service: Service)(implicit request: Request[_]): Future[Result] = {
-    val subscriptionTo =
-      if (featureFlags.arsNewJourney) s"cds.subscription.outcomes.steps.next.new.${service.code}"
-      else s"cds.subscription.outcomes.steps.next.${service.code}"
-    for {
-      sub02Outcome <- sessionCache.sub02Outcome
-      _            <- sessionCache.remove
-      _            <- sessionCache.saveSub02Outcome(sub02Outcome)
-    } yield Ok(
-      migrationSuccessView(
-        sub02Outcome.eori,
-        sub02Outcome.fullName,
-        sub02Outcome.processedDate,
-        subscriptionTo,
-        service
-      )
-    ).withSession(newUserSession)
-  }
+  def subscriptionTo(service: Service) = s"cds.subscription.outcomes.steps.next.new.${service.code}"
 
-  private def renderPageWithNameRow(service: Service)(implicit request: Request[_]): Future[Result] = {
-    val subscriptionTo =
-      if (featureFlags.arsNewJourney) s"cds.subscription.outcomes.steps.next.new.${service.code}"
-      else s"cds.subscription.outcomes.steps.next.${service.code}"
+  private def renderPageWithName(service: Service)(implicit request: Request[_]): Future[Result] =
     for {
       sub02Outcome <- sessionCache.sub02Outcome
       _            <- sessionCache.remove
@@ -88,10 +67,24 @@ class Sub02Controller @Inject() (
         sub02Outcome.eori,
         sub02Outcome.fullName,
         sub02Outcome.processedDate,
-        subscriptionTo,
+        subscriptionTo(service),
         service
       )
     ).withSession(newUserSession)
-  }
+
+  private def renderPageWithNameRow(service: Service)(implicit request: Request[_]): Future[Result] =
+    for {
+      sub02Outcome <- sessionCache.sub02Outcome
+      _            <- sessionCache.remove
+      _            <- sessionCache.saveSub02Outcome(sub02Outcome)
+    } yield Ok(
+      migrationSuccessView(
+        sub02Outcome.eori,
+        sub02Outcome.fullName,
+        sub02Outcome.processedDate,
+        subscriptionTo(service),
+        service
+      )
+    ).withSession(newUserSession)
 
 }
