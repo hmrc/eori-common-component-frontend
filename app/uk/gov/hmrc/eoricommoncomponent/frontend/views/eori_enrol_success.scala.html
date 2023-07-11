@@ -29,9 +29,9 @@
             title = Text(messages("eds.existing-eori.enrolment.confirmation.title"))
         ))
         <div id='additional-information'>
-            @para(Some("para1"), messages("eds.existing-eori.enrolment.confirmation.para1"))
+            @para(messages("eds.existing-eori.enrolment.confirmation.para1"), Some("para1"))
             @h2(messages("cds.subscription.outcomes.steps.next"))
-            @para(Some("para2"), messages(s"cds.existing-eori.enrolment.confirmation.para2.${service.code}"))
+            @para(messages(s"cds.existing-eori.enrolment.confirmation.para2.${service.code}"), Some("para2"))
         </div>
 
         @helpers.helpAndSupport()
