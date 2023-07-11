@@ -23,7 +23,7 @@ cds.proposition.name.service=Cofrestru ar gyfer gwasanaeth tollau
 
 eds.existing-eori.enrolment.confirmation.title=Tanysgrifiad wedi’i gwblhau
 eds.existing-eori.enrolment.confirmation.heading=Tanysgrifiad wedi’i gwblhau
-eds.existing-eori.enrolment.confirmation.para1=Tanysgrifiad wedi’i gwblhau.
+eds.existing-eori.enrolment.confirmation.para1=Rydym wedi eich tanysgrifio i’r gwasanaeth hwn.
 
 cds.existing-eori.enrolment.confirmation.para2.atar=Erbyn hyn, gallwch wneud cais am Ddyfarniad Tariffau Uwch.
 cds.existing-eori.enrolment.confirmation.para2.ctc=Erbyn hyn, gallwch gyflwyno datganiadau ‘union transit’ trwy ddefnyddio’r System Gludo Gyfrifiadurol Newydd (NCTS).
