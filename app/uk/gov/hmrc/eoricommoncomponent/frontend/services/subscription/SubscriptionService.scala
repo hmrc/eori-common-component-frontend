@@ -42,8 +42,8 @@ class SubscriptionService @Inject() (connector: SubscriptionServiceConnector)(im
     subscription: SubscriptionDetails,
     service: Service
   )(implicit hc: HeaderCarrier): Future[SubscriptionResult] = {
- val request = SubscriptionRequest(SubscriptionCreateRequest(registration, subscription, cachedEmail, Some(service)))
- subscribeWithConnector(request)
+    val request = SubscriptionRequest(SubscriptionCreateRequest(registration, subscription, Some(service)))
+    subscribeWithConnector(request)
   }
 
   def existingReg(
