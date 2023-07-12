@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
-import java.time.LocalDate
+import java.time.{LocalDate, LocalDateTime}
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.mvc._
@@ -28,6 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, Miss
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegisterWithEoriAndIdResponse._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubmissionCompleteData
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{MatchingService, Reg06Service}
@@ -162,17 +163,22 @@ class RegisterWithEoriAndIdController @Inject() (
   def pending(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
-        subscriptionDetails <- cache.subscriptionDetails
-        _                   <- cache.saveSubscriptionDetails(subscriptionDetails)
-        processedDate <- cache.registerWithEoriAndIdResponse.map(
-          resp => languageUtils.Dates.formatDate(resp.responseCommon.processingDate.toLocalDate)
-        )
-        _ <- cache.remove
+        submissionCompleteData <- cache.submissionCompleteDetails
+        _                      <- cache.remove
+        _                      <- cache.saveSubmissionCompleteDetails(submissionCompleteData)
       } yield Ok(
         subscriptionOutcomePendingView(
-          subscriptionDetails.eoriNumber.getOrElse(throw DataUnavailableException("No EORI found in cache")),
-          processedDate,
-          subscriptionDetails.name,
+          submissionCompleteData.subscriptionDetails.getOrElse(
+            throw DataUnavailableException("No subscriptionDetails found within submissionCompleteData in cache")
+          ).eoriNumber.getOrElse(throw DataUnavailableException("No EORI found in cache")),
+          languageUtils.Dates.formatDate(
+            submissionCompleteData.processingDate.getOrElse(
+              throw DataUnavailableException("No processingDate found within submissionCompleteData in cache")
+            ).toLocalDate
+          ),
+          submissionCompleteData.subscriptionDetails.getOrElse(
+            throw DataUnavailableException("No subscriptionDetails found within submissionCompleteData in cache")
+          ).name,
           service
         )
       ).withSession(newUserSession)

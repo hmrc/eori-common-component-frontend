@@ -19,9 +19,8 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.services.cache
 import play.api.libs.json.{Json, OFormat, Reads, Writes}
 import play.api.mvc.Request
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubmissionCompleteData, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressLookupParams
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.CachedData._
@@ -45,13 +44,15 @@ sealed case class CachedData(
   groupEnrolment: Option[EnrolmentResponse] = None,
   keepAlive: Option[String] = None,
   eori: Option[String] = None,
-  addressLookupParams: Option[AddressLookupParams] = None
+  addressLookupParams: Option[AddressLookupParams] = None,
+  submissionCompleteDetails: Option[SubmissionCompleteData] = None
 )
 
 object CachedData {
   val regDetailsKey                        = "regDetails"
   val regInfoKey                           = "regInfo"
   val subDetailsKey                        = "subDetails"
+  val submissionCompleteKey                = "submissionCompleteDetails"
   val sub01OutcomeKey                      = "sub01Outcome"
   val sub02OutcomeKey                      = "sub02Outcome"
   val registerWithEoriAndIdResponseKey     = "registerWithEoriAndIdResponse"
@@ -119,8 +120,16 @@ class SessionCache @Inject() (
 
   def saveRegisterWithEoriAndIdResponse(
     rd: RegisterWithEoriAndIdResponse
-  )(implicit request: Request[_]): Future[Boolean] =
-    putData(registerWithEoriAndIdResponseKey, Json.toJson(rd)) map (_ => true)
+  )(implicit request: Request[_]): Future[Boolean] = for {
+    subCompleteDetails <- submissionCompleteDetails
+    _                  <- putData(registerWithEoriAndIdResponseKey, Json.toJson(rd)) map (_ => true)
+    _ <- putData(
+      submissionCompleteKey,
+      Json.toJson(
+        SubmissionCompleteData(subCompleteDetails.subscriptionDetails, Some(rd.responseCommon.processingDate))
+      )
+    )
+  } yield true
 
   def saveSub02Outcome(subscribeOutcome: Sub02Outcome)(implicit request: Request[_]): Future[Boolean] =
     putData(sub02OutcomeKey, Json.toJson(subscribeOutcome)) map (_ => true)
@@ -128,8 +137,14 @@ class SessionCache @Inject() (
   def saveSub01Outcome(sub01Outcome: Sub01Outcome)(implicit request: Request[_]): Future[Boolean] =
     putData(sub01OutcomeKey, Json.toJson(sub01Outcome)) map (_ => true)
 
-  def saveSubscriptionDetails(rdh: SubscriptionDetails)(implicit request: Request[_]): Future[Boolean] =
-    putData(subDetailsKey, Json.toJson(rdh)) map (_ => true)
+  def saveSubscriptionDetails(rdh: SubscriptionDetails)(implicit request: Request[_]): Future[Boolean] = for {
+    subCompleteDetails <- submissionCompleteDetails
+    _                  <- putData(subDetailsKey, Json.toJson(rdh)) map (_ => true)
+    _ <- putData(
+      submissionCompleteKey,
+      Json.toJson(SubmissionCompleteData(Some(rdh), subCompleteDetails.processingDate))
+    )
+  } yield true
 
   def saveEmail(email: String)(implicit request: Request[_]): Future[Boolean] =
     putData(emailKey, Json.toJson(email)) map (_ => true)
@@ -143,11 +158,19 @@ class SessionCache @Inject() (
   def saveGroupEnrolment(groupEnrolment: EnrolmentResponse)(implicit request: Request[_]): Future[Boolean] =
     putData(groupEnrolmentKey, Json.toJson(groupEnrolment)) map (_ => true)
 
+  def saveSubmissionCompleteDetails(
+    submissionCompleteData: SubmissionCompleteData
+  )(implicit request: Request[_]): Future[Boolean] =
+    putData(submissionCompleteKey, Json.toJson(submissionCompleteData)) map (_ => true)
+
   def saveAddressLookupParams(addressLookupParams: AddressLookupParams)(implicit request: Request[_]): Future[Unit] =
     putData(addressLookupParamsKey, Json.toJson(addressLookupParams)).map(_ => ())
 
   def subscriptionDetails(implicit request: Request[_]): Future[SubscriptionDetails] =
     getData[SubscriptionDetails](subDetailsKey).map(_.getOrElse(SubscriptionDetails()))
+
+  def submissionCompleteDetails(implicit request: Request[_]): Future[SubmissionCompleteData] =
+    getData[SubmissionCompleteData](submissionCompleteKey).map(_.getOrElse(SubmissionCompleteData()))
 
   def eori(implicit request: Request[_]): Future[Option[String]] =
     getData[String](eoriKey)

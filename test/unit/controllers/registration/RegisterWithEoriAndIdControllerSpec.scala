@@ -35,7 +35,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegisterWithEoriAndIdResp
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, ResponseCommon}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubmissionCompleteData, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
   DataUnavailableException,
@@ -1132,17 +1132,19 @@ class RegisterWithEoriAndIdControllerSpec
     }
 
     "Call the pending function" in {
-      when(mockCache.subscriptionDetails(any[Request[_]]))
-        .thenReturn(Future.successful(mockSubscriptionDetails))
-      when(mockSubscriptionDetails.eoriNumber)
-        .thenReturn(Some("someEoriNumber"))
-      when(mockSubscriptionDetails.name).thenReturn("name")
+      val subscriptionDetails =
+        SubscriptionDetails(eoriNumber = Some("123456789"), nameDetails = Some(NameMatchModel("John Doe")))
+      val submissionCompleteData = SubmissionCompleteData(
+        Some(subscriptionDetails),
+        Some(stubRegisterWithEoriAndIdResponse().responseCommon.processingDate)
+      )
+
+      when(mockCache.submissionCompleteDetails(any[Request[_]]))
+        .thenReturn(Future.successful(submissionCompleteData))
+      when(mockCache.saveSubmissionCompleteDetails(any())(any[Request[_]]))
+        .thenReturn(Future.successful(true))
       when(mockCache.remove(any[Request[_]]))
         .thenReturn(Future.successful(true))
-      when(mockCache.saveSubscriptionDetails(any())(any[Request[_]])).thenReturn(Future.successful(true))
-      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
-        .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
-      when(mockSub01Outcome.processedDate).thenReturn(LocalDateTime.now().toLocalDate.toString)
 
       invokePending() { result =>
         status(result) shouldBe OK
@@ -1152,20 +1154,58 @@ class RegisterWithEoriAndIdControllerSpec
     }
 
     "throws exception when Eori number is not found for pending function" in {
-      when(mockCache.subscriptionDetails(any[Request[_]]))
-        .thenReturn(Future.successful(mockSubscriptionDetails))
-      when(mockSubscriptionDetails.eoriNumber).thenReturn(None)
-      when(mockSubscriptionDetails.name).thenReturn("name")
+
+      val subscriptionDetails = SubscriptionDetails(eoriNumber = None, nameDetails = Some(NameMatchModel("John Doe")))
+      val submissionCompleteData = SubmissionCompleteData(
+        Some(subscriptionDetails),
+        Some(stubRegisterWithEoriAndIdResponse().responseCommon.processingDate)
+      )
+
+      when(mockCache.submissionCompleteDetails(any[Request[_]]))
+        .thenReturn(Future.successful(submissionCompleteData))
+      when(mockCache.saveSubmissionCompleteDetails(any())(any[Request[_]]))
+        .thenReturn(Future.successful(true))
       when(mockCache.remove(any[Request[_]]))
         .thenReturn(Future.successful(true))
-      when(mockCache.saveSubscriptionDetails(any())(any[Request[_]])).thenReturn(Future.successful(true))
-      when(mockCache.registerWithEoriAndIdResponse(any[Request[_]]))
-        .thenReturn(Future.successful(stubRegisterWithEoriAndIdResponse()))
-      when(mockSub01Outcome.processedDate).thenReturn(LocalDateTime.now().toLocalDate.toString)
 
       intercept[DataUnavailableException] {
         invokePending()(result => status(result))
       }.getMessage shouldBe "No EORI found in cache"
+    }
+
+    "throws exception when subscriptionDetails is not found within submissionCompleteData for pending function" in {
+
+      val submissionCompleteData =
+        SubmissionCompleteData(None, Some(stubRegisterWithEoriAndIdResponse().responseCommon.processingDate))
+
+      when(mockCache.submissionCompleteDetails(any[Request[_]]))
+        .thenReturn(Future.successful(submissionCompleteData))
+      when(mockCache.saveSubmissionCompleteDetails(any())(any[Request[_]]))
+        .thenReturn(Future.successful(true))
+      when(mockCache.remove(any[Request[_]]))
+        .thenReturn(Future.successful(true))
+
+      intercept[DataUnavailableException] {
+        invokePending()(result => status(result))
+      }.getMessage shouldBe "No subscriptionDetails found within submissionCompleteData in cache"
+    }
+
+    "throws exception when processingDate is not found within submissionCompleteData for pending function" in {
+
+      val subscriptionDetails =
+        SubscriptionDetails(eoriNumber = Some("123456789"), nameDetails = Some(NameMatchModel("John Doe")))
+      val submissionCompleteData = SubmissionCompleteData(Some(subscriptionDetails), None)
+
+      when(mockCache.submissionCompleteDetails(any[Request[_]]))
+        .thenReturn(Future.successful(submissionCompleteData))
+      when(mockCache.saveSubmissionCompleteDetails(any())(any[Request[_]]))
+        .thenReturn(Future.successful(true))
+      when(mockCache.remove(any[Request[_]]))
+        .thenReturn(Future.successful(true))
+
+      intercept[DataUnavailableException] {
+        invokePending()(result => status(result))
+      }.getMessage shouldBe "No processingDate found within submissionCompleteData in cache"
     }
 
     "Call the eoriAlreadyLinked function" in {

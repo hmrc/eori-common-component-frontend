@@ -25,7 +25,7 @@ import play.api.mvc.{Request, Session}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.ResponseCommon
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubmissionCompleteData, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressLookupParams
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
@@ -35,6 +35,7 @@ import uk.gov.hmrc.mongo.CurrentTimestampSupport
 import uk.gov.hmrc.mongo.cache.DataKey
 import util.builders.RegistrationDetailsBuilder._
 import uk.gov.hmrc.mongo.test.MongoSupport
+
 import java.time.{LocalDate, LocalDateTime}
 import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -162,7 +163,6 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       val cache = await(sessionCache.cacheRepo.findById(request)).getOrElse(
         throw new IllegalStateException("Cache returned None")
       )
-
       val expectedJson = toJson(CachedData(registerWithEoriAndIdResponse = Some(rd)))
       cache.data mustBe expectedJson
 
@@ -390,7 +390,12 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
         throw new IllegalStateException("Cache returned None")
       )
 
-      val expectedJson = toJson(CachedData(subDetails = Some(subscriptionDetails)))
+      val expectedJson = toJson(
+        CachedData(
+          subDetails = Some(subscriptionDetails),
+          submissionCompleteDetails = Some(SubmissionCompleteData(Some(subscriptionDetails), None))
+        )
+      )
 
       cache.data mustBe expectedJson
     }
