@@ -123,12 +123,7 @@ class SessionCache @Inject() (
   )(implicit request: Request[_]): Future[Boolean] = for {
     subCompleteDetails <- submissionCompleteDetails
     _                  <- putData(registerWithEoriAndIdResponseKey, Json.toJson(rd)) map (_ => true)
-    _ <- putData(
-      submissionCompleteKey,
-      Json.toJson(
-        SubmissionCompleteData(subCompleteDetails.subscriptionDetails, Some(rd.responseCommon.processingDate))
-      )
-    )
+    _                  <- saveSubmissionCompleteDetails(subCompleteDetails.copy(processingDate = Some(rd.responseCommon.processingDate)))
   } yield true
 
   def saveSub02Outcome(subscribeOutcome: Sub02Outcome)(implicit request: Request[_]): Future[Boolean] =
@@ -140,10 +135,7 @@ class SessionCache @Inject() (
   def saveSubscriptionDetails(rdh: SubscriptionDetails)(implicit request: Request[_]): Future[Boolean] = for {
     subCompleteDetails <- submissionCompleteDetails
     _                  <- putData(subDetailsKey, Json.toJson(rdh)) map (_ => true)
-    _ <- putData(
-      submissionCompleteKey,
-      Json.toJson(SubmissionCompleteData(Some(rdh), subCompleteDetails.processingDate))
-    )
+    _                  <- saveSubmissionCompleteDetails(subCompleteDetails.copy(subscriptionDetails = Some(rdh)))
   } yield true
 
   def saveEmail(email: String)(implicit request: Request[_]): Future[Boolean] =
