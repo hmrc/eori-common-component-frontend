@@ -501,46 +501,6 @@ trait SubscriptionServiceTestData extends TestData {
          |}
       """.stripMargin)
 
-  def organisationAutomaticSubscriptionRequestWithoutServiceNameJson: JsValue =
-    Json.parse(s"""
-                  |{
-                  |   "subscriptionCreateRequest":{
-                  |      "requestCommon":{
-                  |         "regime":"CDS",
-                  |         "receiptDate":"2016-08-18T14:00:05Z",
-                  |         "acknowledgementReference":"4482baa81c844d23a8db3fc180325e7a",
-                  |         "originatingSystem":"MDTP"
-                  |      },
-                  |      "requestDetail":{
-                  |         "SAFE":"safe-id",
-                  |         "EORINo":"$responseEoriNumber",
-                  |         "CDSFullName":"$businessName",
-                  |         "CDSEstablishmentAddress":{
-                  |            "streetAndNumber":"Line 1 line 2",
-                  |            "city":"city name",
-                  |            "postalCode":"SE28 1AA",
-                  |            "countryCode":"GB"
-                  |         },
-                  |         "typeOfLegalEntity":"Corporate Body",
-                  |         "contactInformation":{
-                  |            "personOfContact":"John Doe",
-                  |            "sepCorrAddrIndicator":true,
-                  |            "streetAndNumber":"Line 1",
-                  |            "city":"city name",
-                  |            "postalCode":"SE28 1AA",
-                  |            "countryCode":"GB",
-                  |            "telephoneNumber":"01632961234",
-                  |            "faxNumber":"01632961235",
-                  |            "emailAddress":"$contactEmail",
-                  |            "emailVerificationTimestamp": "$emailVerificationTimestamp"
-                  |         },
-                  |         "dateOfEstablishment":"$dateEstablishedString",
-                  |         "typeOfPerson": "2"
-                  |      }
-                  |   }
-                  |}
-      """.stripMargin)
-
   def requestJsonIndividual(
     name: String,
     vatIds: List[VatIdentification],

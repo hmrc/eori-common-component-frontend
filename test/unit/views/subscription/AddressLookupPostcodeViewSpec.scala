@@ -58,12 +58,12 @@ class AddressLookupPostcodeViewSpec extends ViewSpec {
 
     "display title for company" in {
 
-      doc().title() must startWith("What is your registered company address?")
+      doc().title() must startWith("Where is the company’s registered office?")
     }
 
     "display header for company" in {
 
-      doc().body().getElementsByTag("h1").text() mustBe "What is your registered company address?"
+      doc().body().getElementsByTag("h1").text() mustBe "Where is the company’s registered office?"
     }
 
     "display title for individual" in {
@@ -78,31 +78,29 @@ class AddressLookupPostcodeViewSpec extends ViewSpec {
 
     "display title for partnership" in {
 
-      doc(Partnership).title() must startWith("What is your registered partnership address?")
+      doc(Partnership).title() must startWith("Where is the partnership’s registered office?")
     }
 
     "display header for partnership" in {
 
-      doc(Partnership).body().getElementsByTag("h1").text() mustBe "What is your registered partnership address?"
+      doc(Partnership).body().getElementsByTag("h1").text() mustBe "Where is the partnership’s registered office?"
     }
 
     "display title for charity" in {
 
-      doc(CharityPublicBodyNotForProfit).title() must startWith("What is your registered organisation address?")
+      doc(CharityPublicBodyNotForProfit).title() must startWith("Where is the organisation’s registered office?")
     }
 
     "display header for charity" in {
 
       doc(CharityPublicBodyNotForProfit).body().getElementsByTag(
         "h1"
-      ).text() mustBe "What is your registered organisation address?"
+      ).text() mustBe "Where is the organisation’s registered office?"
     }
 
     "display hint for company" in {
 
-      doc().body().getElementById(
-        "hint"
-      ).text() mustBe "This is the address registered with Companies House which may not be your business address."
+      doc().body().getElementById("hint").text() mustBe "We will use this to verify your identity."
     }
 
     "display postcode input with label" in {

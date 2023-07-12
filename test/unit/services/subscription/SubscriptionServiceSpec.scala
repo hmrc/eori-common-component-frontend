@@ -24,7 +24,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.scalacheck.Checkers
 import play.api.libs.json.{JsObject, JsValue, Json}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SubscriptionServiceConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.FeatureFlags
+
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
   SubscriptionRequest,
@@ -39,12 +39,9 @@ import scala.concurrent.Future
 class SubscriptionServiceSpec
     extends UnitSpec with MockitoSugar with BeforeAndAfterAll with Checkers with SubscriptionServiceTestData {
   private val mockHeaderCarrier = mock[HeaderCarrier]
-  private val mockConfig        = mock[FeatureFlags]
 
-  override def beforeAll(): Unit = {
+  override def beforeAll(): Unit =
     super.beforeAll()
-    when(mockConfig.sub02UseServiceName).thenReturn(true)
-  }
 
   private def subscriptionSuccessResultIgnoreTimestamp(
     expected: SubscriptionSuccessful,
@@ -189,8 +186,6 @@ class SubscriptionServiceSpec
 
     "call connector with without service name" in {
 
-      when(mockConfig.sub02UseServiceName).thenReturn(false)
-
       val result = makeSubscribeWhenAutoAllowed(
         RegistrationDetailsOrganisation(
           Some(eori),
@@ -204,10 +199,7 @@ class SubscriptionServiceSpec
         subscriptionGenerateResponse
       )
 
-      assertSameJson(
-        Json.toJson(result.actualConnectorRequest),
-        organisationAutomaticSubscriptionRequestWithoutServiceNameJson
-      )
+      assertSameJson(Json.toJson(result.actualConnectorRequest), organisationAutomaticSubscriptionRequestJson)
       result.actualServiceCallResult shouldEqual subscriptionSuccessResultIgnoreTimestamp(
         subscriptionSuccessResult,
         result.actualConnectorRequest
@@ -218,8 +210,6 @@ class SubscriptionServiceSpec
   "Calling Subscribe with service name returns Subscription failed if enrolment already exists" should {
 
     "call connector with without service name" in {
-
-      when(mockConfig.sub02UseServiceName).thenReturn(false)
 
       val result = makeSubscribeWhenAutoAllowed(
         RegistrationDetailsOrganisation(
@@ -234,10 +224,7 @@ class SubscriptionServiceSpec
         subscriptionFailedResponseForEnrolmentAlreadyExists
       )
 
-      assertSameJson(
-        Json.toJson(result.actualConnectorRequest),
-        organisationAutomaticSubscriptionRequestWithoutServiceNameJson
-      )
+      assertSameJson(Json.toJson(result.actualConnectorRequest), organisationAutomaticSubscriptionRequestJson)
       result.actualServiceCallResult shouldEqual subscriptionFailureResult
     }
   }
@@ -245,8 +232,6 @@ class SubscriptionServiceSpec
   "Calling Subscribe with service name returns Subscription failed if request not processed" should {
 
     "call connector with without service name" in {
-
-      when(mockConfig.sub02UseServiceName).thenReturn(false)
 
       val result = makeSubscribeWhenAutoAllowed(
         RegistrationDetailsOrganisation(
@@ -261,10 +246,7 @@ class SubscriptionServiceSpec
         subscriptionFailedResponseForRequestNotProcessed
       )
 
-      assertSameJson(
-        Json.toJson(result.actualConnectorRequest),
-        organisationAutomaticSubscriptionRequestWithoutServiceNameJson
-      )
+      assertSameJson(Json.toJson(result.actualConnectorRequest), organisationAutomaticSubscriptionRequestJson)
       result.actualServiceCallResult shouldEqual subscriptionFailureResultRequestNotProcessed
     }
   }
@@ -272,8 +254,6 @@ class SubscriptionServiceSpec
   "Calling Subscribe with service name returns Subscription failed if eori already associated" should {
 
     "call connector with without service name" in {
-
-      when(mockConfig.sub02UseServiceName).thenReturn(false)
 
       val result = makeSubscribeWhenAutoAllowed(
         RegistrationDetailsOrganisation(
@@ -288,10 +268,7 @@ class SubscriptionServiceSpec
         subscriptionFailedResponseForEoriAlreadyAssociated
       )
 
-      assertSameJson(
-        Json.toJson(result.actualConnectorRequest),
-        organisationAutomaticSubscriptionRequestWithoutServiceNameJson
-      )
+      assertSameJson(Json.toJson(result.actualConnectorRequest), organisationAutomaticSubscriptionRequestJson)
       result.actualServiceCallResult shouldEqual subscriptionFailureResultEoriAlreadyAssociated
     }
   }
@@ -299,8 +276,6 @@ class SubscriptionServiceSpec
   "Calling Subscribe with service name returns Subscription failed if subscription in progress" should {
 
     "call connector with without service name" in {
-
-      when(mockConfig.sub02UseServiceName).thenReturn(false)
 
       val result = makeSubscribeWhenAutoAllowed(
         RegistrationDetailsOrganisation(
@@ -315,10 +290,7 @@ class SubscriptionServiceSpec
         subscriptionFailedResponseForSubscriptionInProgress
       )
 
-      assertSameJson(
-        Json.toJson(result.actualConnectorRequest),
-        organisationAutomaticSubscriptionRequestWithoutServiceNameJson
-      )
+      assertSameJson(Json.toJson(result.actualConnectorRequest), organisationAutomaticSubscriptionRequestJson)
       result.actualServiceCallResult shouldEqual subscriptionFailureResultSubscriptionInProgress
     }
   }
@@ -326,8 +298,6 @@ class SubscriptionServiceSpec
   "Calling Subscribe with service name returns Subscription failed if the enrolment failed" should {
 
     "call connector with without service name" in {
-
-      when(mockConfig.sub02UseServiceName).thenReturn(false)
 
       val result = makeSubscribeWhenAutoAllowed(
         RegistrationDetailsOrganisation(
@@ -342,10 +312,7 @@ class SubscriptionServiceSpec
         subscriptionFailedResponse
       )
 
-      assertSameJson(
-        Json.toJson(result.actualConnectorRequest),
-        organisationAutomaticSubscriptionRequestWithoutServiceNameJson
-      )
+      assertSameJson(Json.toJson(result.actualConnectorRequest), organisationAutomaticSubscriptionRequestJson)
       result.actualServiceCallResult shouldEqual subscriptionFailureResultSubscriptionFailed
     }
   }
@@ -353,8 +320,6 @@ class SubscriptionServiceSpec
   "Calling Subscribe with service name returns Subscription Pending response if the subscription is pending" should {
 
     "call connector with without service name" in {
-
-      when(mockConfig.sub02UseServiceName).thenReturn(false)
 
       val result = makeSubscribeWhenAutoAllowed(
         RegistrationDetailsOrganisation(
@@ -369,10 +334,7 @@ class SubscriptionServiceSpec
         subscriptionPendingResponse
       )
 
-      assertSameJson(
-        Json.toJson(result.actualConnectorRequest),
-        organisationAutomaticSubscriptionRequestWithoutServiceNameJson
-      )
+      assertSameJson(Json.toJson(result.actualConnectorRequest), organisationAutomaticSubscriptionRequestJson)
       result.actualServiceCallResult shouldEqual subscriptionPendingResultIgnoreTimestamp(
         subscriptionPendingResult,
         result.actualConnectorRequest
@@ -430,7 +392,7 @@ class SubscriptionServiceSpec
   private def constructService(setupServiceConnector: SubscriptionServiceConnector => Unit) = {
     val mockSubscriptionServiceConnector = mock[SubscriptionServiceConnector]
     setupServiceConnector(mockSubscriptionServiceConnector)
-    new SubscriptionService(mockSubscriptionServiceConnector, mockConfig)
+    new SubscriptionService(mockSubscriptionServiceConnector)
   }
 
   private def assertSameJson(json: JsValue, expectedJson: JsValue) = {
