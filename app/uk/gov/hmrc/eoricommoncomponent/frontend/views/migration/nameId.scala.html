@@ -23,7 +23,7 @@
 @import views.html.helper.CSRF
 @import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameIdOrganisationDisplayMode._
 
-@this(layout_di: layout, inputText: helpers.inputText,  errorSummary: helpers.errorSummary, govukButton: GovukButton, appConfig: AppConfig)
+@this(layout_di: layout, inputText: helpers.inputText, h1: helpers.h1, h2: helpers.h2, para: helpers.paragraph, errorSummary: helpers.errorSummary, govukButton: GovukButton, appConfig: AppConfig)
 
 @(nameUtrForm: Form[NameIdOrganisationMatchModel],
     registrationDetails: RegistrationDetails,       
@@ -50,24 +50,26 @@
     else messages("cds.matching.utr.hint")
 }
 
-@utrHintAndLinkText = {
-    <br>
-    <p class="govuk-body">
-        @Html(messages("cds.matching.you-can.text")) <a class="govuk-link" id="utrLink" href=@appConfig.findLostUtr() target="_blank" rel="noopener noreferrer">@messages("cds.matching.utr.lost-utr-description")</a>
-    </p>
-@messages(utrHintText)
-}
-
 @layout_di(headerAndTitle, form = Some(nameUtrForm)) {
 
 <div>
 
     @errorSummary(nameUtrForm.errors)
 
-    <h1 class="govuk-heading-l">@headerAndTitle</h1>
+    @h1(headerAndTitle)
+
+    @para(messages("cds.matching.intro.para"), Some("intro-paragraph"))
+
+
 
     @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameIDOrgController.submit(isInReviewMode, service), "nameUtrOrganisationForm") {
         @CSRF.formField
+
+
+    @h2(messages(s"cds.matching.name-id-organisation.$displayMode.name"))
+
+    @para(messages(s"cds.matching.name-id-organisation.$displayMode.name.para"), Some("companies-house-register-label"))
+
 
         @inputText(
             form = nameUtrForm,
@@ -77,8 +79,14 @@
             hint = Some(Html(nameHintText)),
             isPageHeading =  false,
             classes = Some("govuk-!-width-one-half"),
-            labelClasses = Some("govuk-!-font-weight-bold")
+            labelClasses = Some("govuk-visually-hidden")
         )
+
+    @h2(messages(s"cds.matching.name-id-organisation.$displayMode.utr"))
+
+    <p class="govuk-body">
+        @Html(messages("cds.matching.you-can.text")) <a class="govuk-link" id="utrLink" href=@appConfig.findLostUtr() target="_blank" rel="noopener noreferrer">@messages("cds.matching.utr.lost-utr-description")</a>
+    </p>
 
         @inputText(
             form = nameUtrForm,
@@ -86,9 +94,9 @@
             name = "utr",
             label = messages(s"cds.matching.name-id-organisation.$displayMode.utr"),
             isPageHeading =  false,
-            hint = Some(utrHintAndLinkText),
+            hint = Some(Html(messages(utrHintText))),
             classes = Some("govuk-!-width-one-half"),
-            labelClasses = Some("govuk-!-font-weight-bold")
+            labelClasses = Some("govuk-visually-hidden")
         )
 
         @govukButton(Button(

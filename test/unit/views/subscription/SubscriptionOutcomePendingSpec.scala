@@ -36,24 +36,13 @@ class SubscriptionOutcomePendingSpec extends ViewSpec {
   "'Subscription Pending' Page" should {
 
     "display correct heading" in {
-      doc().body.getElementsByTag("h1").text() must startWith(
-        s"We are processing the subscription request for $orgName"
-      )
+      doc().body.getElementsByTag("h1").text() must startWith(s"We need to make more checks on your application")
     }
-    "have the correct class on the message" in {
-      doc().body.getElementById("active-from").hasClass("govuk-heading-m") mustBe true
-      doc().body.getElementById("eori-number").hasClass("govuk-heading-m") mustBe true
-    }
-    "have the correct processing date and text" in {
-      doc().body.getElementById("active-from").text mustBe s"Application received by HMRC on 1 February 2020"
-    }
-    "have the correct eori number" in {
-      doc().body.getElementById("eori-number").text mustBe s"EORI number: $eoriNumber"
-    }
+
     "have the correct 'what happens next' text" in {
       doc().body
         .getElementById("what-happens-next")
-        .text mustBe "What happens next We will send you an email once your Advance Tariff Rulings subscription request has been processed. This can take up to 5 working days. You will not be able to use Advance Tariff Rulings until this issue has been resolved."
+        .text mustBe "If the checks are successful you need to apply again We will not email you. You can check if you can apply by following these steps: Return to the page on GOV.UK where you started your application. Start the application and sign in using Government Gateway. If we’ve completed the checks you’ll be able to continue. If we’ve not completed the checks you’ll see this screen again. If the checks on your application are unsuccessful We will email you the reason."
     }
 
     "have a feedback 'continue' button" in {

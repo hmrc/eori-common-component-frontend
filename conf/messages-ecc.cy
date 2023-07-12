@@ -65,8 +65,17 @@ cds.subscription.outcomes.rejected.title=Mae’r cais am danysgrifiad wedi bod y
 cds.subscription.outcomes.rejected.heading=Mae’r cais am danysgrifiad ar gyfer {0} wedi bod yn aflwyddiannus
 
 cds.subscription.outcomes.in-processing.title=Rydym yn prosesu’r cais am danysgrifiad
-cds.subscription.outcomes.in-processing.heading=Rydym yn prosesu’r cais am danysgrifiad ar gyfer {0}
+cds.subscription.outcomes.in-processing.heading=Mae’n rhaid i ni wneud rhagor o wiriadau ar eich cais
+cds.subscription.outcomes.in-processing.para1=Gall hyn gymryd rhwng 3 a 5 diwrnod gwaith.
+cds.subscription.outcomes.in-processing.second.title = Os yw’r gwiriadau’n llwyddiannus, bydd angen i chi wneud cais eto
 
+cds.subscription.outcomes.in-processing.ordered.list.para = Ni fyddwn yn anfon e-bost atoch. Gallwch wirio a allwch wneud cais drwy ddilyn y camau hyn:
+cds.subscription.outcomes.in-processing.ordered.list.one = Ewch yn ôl i’r dudalen ar Gov.uk lle gwnaethoch ddechrau’ch cais.
+cds.subscription.outcomes.in-processing.ordered.list.two =  Dechreuwch y cais, a mewngofnodwch drwy ddefnyddio Porth y Llywodraeth.
+cds.subscription.outcomes.in-processing.ordered.list.three = Os ydym wedi cwblhau’r gwiriadau, byddwch yn gallu mynd yn eich blaen. Os nad ydym wedi cwblhau’r gwiriadau, byddwch yn gweld y sgrin hon eto.
+
+cds.subscription.outcomes.pending.steps.next = Os nad yw’r gwiriadau ar eich cais yn llwyddiannus
+cds.subscription.outcomes.pending.steps.next.para = Byddwn yn anfon y rheswm pam atoch.
 enter-email-body-text=Byddwn yn defnyddio hyn i anfon canlyniad eich cais atoch.
 cds.subscription.verify-email.para2=Er eich diogelwch, bydd y cysylltiad yn yr e-bost yn dod i ben ar ôl 72 awr.
 
@@ -177,11 +186,6 @@ cds.email-confirmed.title-and-heading=Rydych wedi cadarnhau’ch cyfeiriad e-bos
 cds.registration.user-location.location.uk.label=Y Deyrnas Unedig
 cds.registration.user-location.location.third-country.label=Y tu allan i’r Undeb Ewropeaidd
 cds.registration.user-location.location.third-country-inc-eu.label=Gweddill y byd
-
-cds.matching.name-id-organisation.company.utr=Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)
-cds.matching.name-id-organisation.registered-company.utr=Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)
-cds.matching.name-id-organisation.partnership.utr=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad y Bartneriaeth
-cds.matching.name-id-organisation.organisation.utr=Cyfeirnod Unigryw y Trethdalwr ar gyfer Treth Gorfforaeth (UTR)
 
 cds.subscription.date-of-establishment.company.title-and-heading=Dyddiad y sefydlwyd y cwmni
 

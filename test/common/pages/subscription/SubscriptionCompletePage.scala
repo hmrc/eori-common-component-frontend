@@ -25,7 +25,7 @@ trait ApplicationUnsuccessfulPage extends WebPage {
 
 object ApplicationPendingPage extends WebPage {
 
-  override val title = "We are processing the subscription request"
+  override val title = "We need to make more checks on your application"
 }
 
 object ApplicationUnsuccessfulPage extends ApplicationUnsuccessfulPage

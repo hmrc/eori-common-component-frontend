@@ -102,7 +102,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
   }
 
   val subscriptionFlows: TableFor2[SubscriptionFlow, String] =
-    Table[SubscriptionFlow, String](("Flow name", "Label"), (OrganisationFlow, "What are your company details?"))
+    Table[SubscriptionFlow, String](("Flow name", "Label"), (OrganisationFlow, "Company details"))
 
   val formModes: TableFor2[String, SubscriptionFlow => (Future[Result] => Any) => Unit] = Table(
     ("formMode", "showFormFunction"),
