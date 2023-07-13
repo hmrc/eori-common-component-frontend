@@ -15,7 +15,7 @@
  *@
 
 @this()
-@(text: String = "", id: Option[String] = None, classes: String = "govuk-body",html: Option[Html] = None)
+@(text: String = "", id: Option[String] = None, classes: String = "govuk-body", html: Option[Html] = None)
 
 @content = @{
   html.getOrElse(Html(text))
