@@ -47,7 +47,9 @@ class HandleSubscriptionConnector @Inject() (http: HttpClient, appConfig: AppCon
         case OK | NO_CONTENT =>
           logger.debug(s"Call complete for call to $url and  hc: $hc. Status:${response.status}")
           ()
-        case _ => throw new BadRequestException(s"Status:${response.status}")
+        case _ => 
+          logger.error(s"${response.status} : ${response.body}")
+          throw new BadRequestException(s"Status:${response.status}")
       }
     } recoverWith {
       case e: BadRequestException =>
