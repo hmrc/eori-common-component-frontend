@@ -138,7 +138,7 @@ POST        /customs-enrolment-services/:service/subscribe/matching/organisation
 
 GET         /customs-enrolment-services/:service/subscribe/complete-enrolment                          @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.SubscriptionRecoveryController.complete(service: Service)
 
-GET         /customs-enrolment-services/:service/subscribe/subscribe-existing                          @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController.registerWithEoriAndId(service: Service)
+POST        /customs-enrolment-services/:service/subscribe/subscribe-existing                          @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController.registerWithEoriAndId(service: Service)
 
 GET         /customs-enrolment-services/:service/subscribe/date-established                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.DateOfEstablishmentController.createForm(service: Service)
 POST        /customs-enrolment-services/:service/subscribe/date-established                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.DateOfEstablishmentController.submit(isInReviewMode: Boolean = false, service: Service)
