@@ -19,29 +19,24 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@this(layout_di: layout, appConfig: AppConfig, feedback_di: helpers.feedback, callBackContinue: helpers.callBackContinue, govukPanel : GovukPanel)
+@this(layout_di: layout, appConfig: AppConfig, feedback_di: helpers.feedback, para: helpers.paragraph, h2: helpers.h2, callBackContinue: helpers.callBackContinue, govukPanel : GovukPanel)
 
-@(eori: String, service: Service)(implicit messages: Messages, request: Request[_])
-
-@confirmationHtml = {
-        <p class="govuk-!-font-size-27"><strong>@messages("cds.reg.existing.outcomes.success.eori.number")<br><span id="eori-number">@eori</span></strong></p>
-}
+@(service: Service)(implicit messages: Messages, request: Request[_])
 
 @layout_di(messages("eds.existing-eori.enrolment.confirmation.title"), displayBackLink = false) {
     <div>
-
         @govukPanel(Panel(
-            title = Text(messages("eds.existing-eori.enrolment.confirmation.title")),
-            content = HtmlContent(confirmationHtml)
+            title = Text(messages("eds.existing-eori.enrolment.confirmation.title"))
         ))
         <div id='additional-information'>
-            <h2 class="govuk-heading-m">@messages("cds.subscription.outcomes.steps.next")</h2>
-            <p id="para1" class="govuk-body">@messages("eds.existing-eori.enrolment.confirmation.para1")</p>
+            @para(messages("eds.existing-eori.enrolment.confirmation.para1"), Some("para1"))
+            @h2(messages("cds.subscription.outcomes.steps.next"))
+            @para(messages(s"cds.existing-eori.enrolment.confirmation.para2.${service.code}"), Some("para2"))
         </div>
 
         @helpers.helpAndSupport()
 
-        @if(service.callBack.nonEmpty){
+        @if(service.callBack.nonEmpty && service.code != "gbss"){
             @callBackContinue(service)
         }
 
