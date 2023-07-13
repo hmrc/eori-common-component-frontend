@@ -14,32 +14,33 @@
  * limitations under the License.
  */
 
-package unit.controllers
+package unit.services
 
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{AnyContent, Request, Result}
-import play.api.test.Helpers.{INTERNAL_SERVER_ERROR, _}
-import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment}
+import play.api.test.Helpers._
+import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, Enrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{FailedEnrolmentException, HasExistingEoriController}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, ExistingEori, KeyValue}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{EnrolmentService, MissingEnrolmentException}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.{ExistingEoriService, FailedEnrolmentException}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{eori_enrol_success, has_existing_eori}
+import uk.gov.hmrc.http.HeaderCarrier
+import unit.controllers.CdsPage
 import util.ControllerSpec
-import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
-  private val mockAuthConnector = mock[AuthConnector]
+class ExistingEoriServiceSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
+  private implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private val mockAuthAction = authAction(mockAuthConnector)
+  private val mockAuthConnector = mock[AuthConnector]
 
   private val mockEnrolmentService = mock[EnrolmentService]
 
@@ -51,7 +52,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   private val eoriEnrolSuccessView = instanceOf[eori_enrol_success]
 
-  private val userEORI = "GB123456463324"
+  private val cdsEnrolment = Enrolment("HMRC-CUS-ORG").withIdentifier("EORINumber", "GB123456463324")
 
   private val groupEORI = "GB435474553564"
 
@@ -61,15 +62,11 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   private val route1Enrolment = Enrolment("HMRC-CTS-ORG").withIdentifier("EORINumber", "GB13412346")
 
-  private val controller = new HasExistingEoriController(
-    mockAuthAction,
-    hasExistingEoriView,
-    eoriEnrolSuccessView,
-    mcc,
-    mockEnrolmentService,
-    groupEnrolmentExtractor,
-    mockSessionCache
-  )
+  private def loggedInUser(enrolments: Set[Enrolment]) =
+    LoggedInUserWithEnrolments(None, None, Enrolments(enrolments), None, None)
+
+  private val controller =
+    new ExistingEoriService(mockSessionCache, hasExistingEoriView, mockEnrolmentService, eoriEnrolSuccessView)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -81,7 +78,8 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     userDoesNotHaveGroupEnrolmentToService
   }
 
-  "Has Existing EORI Controller display page" should {
+  "ExistingEORIService onDisplay" should {
+
     "throw exception when user does not have existing CDS enrolment" in {
       userDoesNotHaveGroupEnrolmentToCds
 
@@ -89,24 +87,17 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
         "No EORI found"
     }
 
-    "redirect if user already has the requested service" in {
-      displayPage(atarService, cdsEnrolmentId = None, otherEnrolments = Set(atarEnrolment)) { result =>
-        status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("/enrolment-already-exists")
-      }
-    }
-
     "display page with user eori" in {
-      displayPage(atarService, Some(userEORI)) { result =>
+      displayPage(atarService, Some(cdsEnrolment)) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
         page.title() should startWith("We’ll subscribe you to this service with EORI number")
-        page.h1() shouldBe s"We’ll subscribe you to this service with EORI number $userEORI"
+        page.h1() shouldBe s"We’ll subscribe you to this service with EORI number ${cdsEnrolment.identifiers.headOption.map(_.value).getOrElse("")}"
       }
     }
 
     "have redirection to Email Controller Check for CDS subscription" in {
-      displayPage(cdsService, Some(userEORI)) { result =>
+      displayPage(cdsService, Some(cdsEnrolment)) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
         page.formAction("form") shouldBe "/customs-enrolment-services/cds/subscribe/autoenrolment/check-user"
@@ -114,7 +105,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "have redirection to Enrolment Action for non CDS subscription" in {
-      displayPage(atarService, Some(userEORI)) { result =>
+      displayPage(atarService, Some(cdsEnrolment)) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
         page.formAction("form") shouldBe "/customs-enrolment-services/atar/subscribe/check-existing-eori"
@@ -131,7 +122,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "pick the CDS and display correct EORI if the user has CDS enrolment along with other enrollments" in {
-      displayPage(atarService, Some(userEORI), otherEnrolments = Set(gvmsEnrolment, route1Enrolment)) { result =>
+      displayPage(atarService, Some(cdsEnrolment), otherEnrolments = Set(gvmsEnrolment, route1Enrolment)) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
         page.title() should startWith("We’ll subscribe you to this service with EORI number")
@@ -159,7 +150,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
   }
 
-  "Has Existing EORI Controller enrol" should {
+  "ExistingEORIService onEnrol" should {
     "redirect to confirmation page on success" in {
       enrol(atarService, NO_CONTENT) { result =>
         status(result) shouldBe SEE_OTHER
@@ -197,15 +188,6 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
       }
     }
 
-    "redirect to enrolment exists if user has group enrolment to service" in {
-      userHasGroupEnrolmentToService
-
-      enrol(atarService, NO_CONTENT) { result =>
-        status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith("/atar/subscribe/enrolment-already-exists-for-group")
-      }
-    }
-
     "throw exception on failure" in {
       intercept[FailedEnrolmentException](
         enrol(atarService, INTERNAL_SERVER_ERROR)(result => status(result))
@@ -222,7 +204,7 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
 
     "return Ok 200 when enrol confirmation page is requested" in {
-      enrolSuccess(atarService, Some("GB123456463324")) { result =>
+      enrolSuccess(atarService, Some(cdsEnrolment)) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
         page.title() should startWith("Application complete")
@@ -232,50 +214,48 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   private def displayPage(
     service: Service,
-    cdsEnrolmentId: Option[String] = None,
+    cdsEnrolmentId: Option[Enrolment] = None,
     otherEnrolments: Set[Enrolment] = Set.empty
   )(test: Future[Result] => Any) = {
-    withAuthorisedUser(
-      defaultUserId,
-      mockAuthConnector,
-      cdsEnrolmentId = cdsEnrolmentId,
-      otherEnrolments = otherEnrolments
-    )
-    await(
-      test(
-        controller.displayPage(service)
-          .apply(SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe/", defaultUserId))
-      )
-    )
+    implicit val user: LoggedInUserWithEnrolments = loggedInUser(otherEnrolments ++ cdsEnrolmentId)
+    implicit val req                              = SessionBuilder.buildRequestWithSessionAndPath("/atar/subscribe/", defaultUserId)
+
+    await(test(controller.onDisplay(service)))
   }
 
   private def enrol(service: Service, responseStatus: Int)(test: Future[Result] => Any) = {
-    withAuthorisedUser(defaultUserId, mockAuthConnector)
     when(mockEnrolmentService.enrolWithExistingEnrolment(any[ExistingEori], any[Service])(any())).thenReturn(
       Future(responseStatus)
     )
-    await(test(controller.enrol(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    implicit val user: LoggedInUserWithEnrolments = loggedInUser(Set())
+    implicit val req                              = SessionBuilder.buildRequestWithSession(defaultUserId)
+
+    await(test(controller.onEnrol(service)))
   }
 
   private def enrolMissingEnrolment(service: Service)(test: Future[Result] => Any) = {
-    withAuthorisedUser(defaultUserId, mockAuthConnector)
     when(mockEnrolmentService.enrolWithExistingEnrolment(any[ExistingEori], any[Service])(any())).thenReturn(
       Future.failed(MissingEnrolmentException("EORI"))
     )
-    await(test(controller.enrol(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    implicit val user: LoggedInUserWithEnrolments = loggedInUser(Set())
+    implicit val req                              = SessionBuilder.buildRequestWithSession(defaultUserId)
+
+    await(test(controller.onEnrol(service)))
   }
 
   private def enrolMissingEnrolmentForUser(service: Service)(test: Future[Result] => Any) = {
-    withAuthorisedUser(defaultUserId, mockAuthConnector, otherEnrolments = Set(atarEnrolment))
     when(mockEnrolmentService.enrolWithExistingEnrolment(any[ExistingEori], any[Service])(any())).thenReturn(
       Future.failed(MissingEnrolmentException("EORI"))
     )
-    await(test(controller.enrol(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    implicit val user: LoggedInUserWithEnrolments = loggedInUser(Set(atarEnrolment))
+    implicit val req                              = SessionBuilder.buildRequestWithSession(defaultUserId)
+    await(test(controller.onEnrol(service)))
   }
 
-  private def enrolSuccess(service: Service, cdsEnrolmentId: Option[String] = None)(test: Future[Result] => Any) = {
-    withAuthorisedUser(defaultUserId, mockAuthConnector, cdsEnrolmentId = cdsEnrolmentId)
-    await(test(controller.enrolSuccess(service).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+  private def enrolSuccess(service: Service, cdsEnrolmentId: Option[Enrolment] = None)(test: Future[Result] => Any) = {
+    implicit val user: LoggedInUserWithEnrolments = loggedInUser(Set.empty[Enrolment] ++ cdsEnrolmentId)
+    implicit val req                              = SessionBuilder.buildRequestWithSession(defaultUserId)
+    await(test(controller.onEnrolSuccess(service)))
   }
 
   private def userDoesNotHaveGroupEnrolmentToCds = {
@@ -305,9 +285,6 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
           EnrolmentResponse(atarService.enrolmentKey, "Activated", List(KeyValue("EORINumber", groupEORI)))
         )
       )
-
-  private def userHasGroupEnrolmentToService =
-    when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any())).thenReturn(Future.successful(true))
 
   private def userDoesNotHaveGroupEnrolmentToService =
     when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any())).thenReturn(Future.successful(false))
