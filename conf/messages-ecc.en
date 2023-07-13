@@ -6,9 +6,9 @@ cds.subscription.enter-eori-number.no-eori.summary=I do not have an EORI number
 cds.subscription.enter-eori-number.no-eori=You should {0}
 cds.subscription.enter-eori-number.no-eori.link=apply for both a subscription and an EORI number
 
-cds.has-existing-eori.title=Your Government Gateway user ID is linked to an EORI
-cds.has-existing-eori.heading=Your Government Gateway user ID is linked to an EORI
-cds.has-existing-eori.para1=Our records show that the Government Gateway user ID you signed in with is connected to the EORI:
+cds.has-existing-eori.title=We’ll subscribe you to this service with EORI number
+cds.has-existing-eori.heading=We’ll subscribe you to this service with EORI number {0}
+cds.has-existing-eori.para1=If you want to use a different EORI number, sign out. Then sign in with the Government Gateway user ID linked to the EORI number you want to use.
 cds.has-existing-eori.para2=Your registration will be linked to this EORI.
 cds.has-existing-eori.para3=If you use a different EORI most of the time then you should sign out and sign back in using the Government Gateway user ID linked to the EORI you would like to register with.
 
@@ -77,8 +77,15 @@ cds.subscription.outcomes.rejected.title=The subscription request has been unsuc
 cds.subscription.outcomes.rejected.heading=The subscription request for {0} has been unsuccessful
 
 cds.subscription.outcomes.in-processing.title=We are processing the subscription request
-cds.subscription.outcomes.in-processing.heading=We are processing the subscription request for {0}
-
+cds.subscription.outcomes.in-processing.heading=We need to make more checks on your application
+cds.subscription.outcomes.in-processing.para1= This can take 3 to 5 working days.
+cds.subscription.outcomes.in-processing.second.title = If the checks are successful you need to apply again
+cds.subscription.outcomes.in-processing.ordered.list.para = We will not email you. You can check if you can apply by following these steps:
+cds.subscription.outcomes.in-processing.ordered.list.one = Return to the page on GOV.UK where you started your application.
+cds.subscription.outcomes.in-processing.ordered.list.two = Start the application and sign in using Government Gateway.
+cds.subscription.outcomes.in-processing.ordered.list.three = If we’ve completed the checks you’ll be able to continue. If we’ve not completed the checks you’ll see this screen again.
+cds.subscription.outcomes.pending.steps.next = If the checks on your application are unsuccessful
+cds.subscription.outcomes.pending.steps.next.para = We will email you the reason.
 enter-email-body-text=We will use this to send you the result of your application.
 cds.subscription.verify-email.para2=For your security the link in the email will expire after 72 hours.
 
@@ -183,11 +190,6 @@ cds.email-confirmed.title-and-heading=You have confirmed your email address
 cds.registration.user-location.location.uk.label=United Kingdom
 cds.registration.user-location.location.third-country.label=Outside the European Union
 cds.registration.user-location.location.third-country-inc-eu.label=Rest of the world
-
-cds.matching.name-id-organisation.company.utr=Corporation Tax Unique Taxpayer Reference (UTR)
-cds.matching.name-id-organisation.registered-company.utr=Corporation Tax Unique Taxpayer Reference (UTR)
-cds.matching.name-id-organisation.partnership.utr=Partnership Self Assessment Unique Taxpayer Reference (UTR)
-cds.matching.name-id-organisation.organisation.utr=Corporation Tax Unique Taxpayer Reference (UTR)
 
 cds.subscription.date-of-establishment.company.title-and-heading=Date when the company was established
 

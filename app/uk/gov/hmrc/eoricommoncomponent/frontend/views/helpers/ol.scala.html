@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,20 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
+@this()
 
-import javax.inject.Inject
-import play.api.Configuration
+@(msg: Seq[String], id: Option[String] = None, classes: String = "govuk-list govuk-list--number")(implicit messages: Messages)
 
-class FeatureFlags @Inject() (config: Configuration) {
-
-  def loadConfig(path: String): Boolean = config.get[Boolean](path)
-
-  // hard-code flag in case the feature ever needs to be re-introduced
-
-  val sub02UseServiceName: Boolean = loadConfig("features.sub02UseServiceName")
-
-  val arsNewJourney: Boolean = loadConfig("features.arsNewJourney")
-}
+<ol @{id.fold("")(id => s"id=$id")} class="@classes">
+ @for(message <- msg) {
+  <li>@message</li>
+ }
+</ol>

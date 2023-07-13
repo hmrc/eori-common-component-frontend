@@ -51,8 +51,6 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
   private val eoriEnrolSuccessView = instanceOf[eori_enrol_success]
 
-  private val eoriElement = "//*[@id='eoriNum']"
-
   private val userEORI = "GB123456463324"
 
   private val groupEORI = "GB435474553564"
@@ -102,9 +100,8 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
       displayPage(atarService, Some(userEORI)) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title() should startWith("Your Government Gateway user ID is linked to an EORI")
-
-        page.getElementText(eoriElement) shouldBe userEORI
+        page.title() should startWith("We’ll subscribe you to this service with EORI number")
+        page.h1() shouldBe s"We’ll subscribe you to this service with EORI number $userEORI"
       }
     }
 
@@ -128,9 +125,8 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
       displayPage(atarService, cdsEnrolmentId = None, otherEnrolments = Set(gvmsEnrolment, route1Enrolment)) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title() should startWith("Your Government Gateway user ID is linked to an EORI")
+        page.title() should startWith("We’ll subscribe you to this service with EORI number")
 
-        page.getElementText(eoriElement) shouldBe "GB13412345"
       }
     }
 
@@ -138,9 +134,8 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
       displayPage(atarService, Some(userEORI), otherEnrolments = Set(gvmsEnrolment, route1Enrolment)) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title() should startWith("Your Government Gateway user ID is linked to an EORI")
+        page.title() should startWith("We’ll subscribe you to this service with EORI number")
 
-        page.getElementText(eoriElement) shouldBe "GB123456463324"
       }
     }
 
@@ -148,9 +143,8 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
       displayPage(atarService, None) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title() should startWith("Your Government Gateway user ID is linked to an EORI")
+        page.title() should startWith("We’ll subscribe you to this service with EORI number")
 
-        page.getElementText(eoriElement) shouldBe groupEORI
       }
     }
 
@@ -159,9 +153,8 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
       displayPage(gvmsService, None) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title() should startWith("Your Government Gateway user ID is linked to an EORI")
+        page.title() should startWith("We’ll subscribe you to this service with EORI number")
 
-        page.getElementText(eoriElement) shouldBe groupEORI
       }
     }
   }
