@@ -213,11 +213,20 @@ class HasExistingEoriControllerSpec extends ControllerSpec with BeforeAndAfterEa
     }
   }
 
-  "return Ok 200 when enrol confirmation page is requested" in {
-    enrolSuccess(atarService, Some("GB123456463324")) { result =>
-      status(result) shouldBe OK
-      val page = CdsPage(contentAsString(result))
-      page.title() should startWith("Subscription complete")
+  "Has Existing EORI Controller enrol confirmation page" should {
+    "throw exception when user does not have existing CDS enrolment" in {
+      userDoesNotHaveGroupEnrolmentToCds
+
+      intercept[DataUnavailableException](enrolSuccess(atarService)(result => status(result))).getMessage shouldBe
+        "No EORI found"
+    }
+
+    "return Ok 200 when enrol confirmation page is requested" in {
+      enrolSuccess(atarService, Some("GB123456463324")) { result =>
+        status(result) shouldBe OK
+        val page = CdsPage(contentAsString(result))
+        page.title() should startWith("Application complete")
+      }
     }
   }
 

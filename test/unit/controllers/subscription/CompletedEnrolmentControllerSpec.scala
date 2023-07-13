@@ -45,7 +45,7 @@ class CompletedEnrolmentControllerSpec extends ControllerSpec with AuthActionMoc
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
-    when(mockEnrolSuccessView.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockEnrolSuccessView.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -69,7 +69,7 @@ class CompletedEnrolmentControllerSpec extends ControllerSpec with AuthActionMoc
       val result = controller.enrolSuccess(atarService)(getRequest)
 
       status(result) shouldBe OK
-      verify(mockEnrolSuccessView).apply(any())(any(), any())
+      verify(mockEnrolSuccessView).apply(any(), any())(any(), any())
     }
 
     "throw an exception" when {
