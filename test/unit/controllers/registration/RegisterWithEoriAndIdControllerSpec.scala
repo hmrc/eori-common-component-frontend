@@ -652,7 +652,7 @@ class RegisterWithEoriAndIdControllerSpec
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .processing()
+          .processing(atarService)
           .url
         verify(mockReg06Service).sendOrganisationRequest(any(), any(), any())
         verify(mockSubscriptionStatusService)
@@ -1247,7 +1247,7 @@ class RegisterWithEoriAndIdControllerSpec
     test(controller.registerWithEoriAndId(atarService)(withFakeCSRF(fakeAtarSubscribeRequest)))
 
   private def invokeProcessing()(test: Future[Result] => Any) =
-    test(controller.processing().apply(withFakeCSRF(fakeAtarSubscribeRequest)))
+    test(controller.processing(atarService).apply(withFakeCSRF(fakeAtarSubscribeRequest)))
 
   private def invokeRejected()(test: Future[Result] => Any) = test(
     controller.rejected(atarService).apply(withFakeCSRF(fakeAtarSubscribeRequest))
