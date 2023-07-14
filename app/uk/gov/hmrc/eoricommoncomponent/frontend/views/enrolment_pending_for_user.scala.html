@@ -26,7 +26,7 @@
 @layout_di(title(otherService, service), suppressTelephoneNumberDetection = false, displayBackLink = false) {
 
         <div>
-            @h1("page-heading", Some("govuk-heading-l"), title(otherService, service))
+            @h1(title(otherService, service), Some("page-heading"), "govuk-heading-l")
 
             @p(messages("cds.enrolment.pending.user.paragraph1"), Some("info-para1"))
 
