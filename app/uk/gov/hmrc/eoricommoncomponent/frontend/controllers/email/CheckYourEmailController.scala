@@ -165,7 +165,7 @@ class CheckYourEmailController @Inject() (
   def toResult(service: Service, subscribeJourney: SubscribeJourney)(implicit r: Request[AnyContent]): Result =
     Ok(emailConfirmedView(service, subscribeJourney))
 
-  def acceptConfirmation(service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
+  def acceptConfirmation(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { _ => _: LoggedInUserWithEnrolments =>
       Future.successful(Redirect(WhatIsYourEoriController.createForm(service)))
     }

@@ -144,6 +144,7 @@ class UserLocationControllerSpec extends ControllerSpec with MockitoSugar with B
         case UserLocation.Uk           => "uk"
         case UserLocation.Iom          => "iom"
         case UserLocation.Islands      => "islands"
+        case _                         => throw new IllegalArgumentException("Unsupported User Location")
       }
 
       submitForm(Map(locationFieldName -> selectedOptionValue)) { result =>
