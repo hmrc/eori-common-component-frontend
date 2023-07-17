@@ -253,9 +253,7 @@ class AddressServiceSpec
 
     "redirect to review screen" in {
       when(mockCdsFrontendDataCache.clearAddressLookupParams(any())).thenReturn(Future.successful((): Unit))
-      submitFormInReviewMode(mandatoryFields, userSelectedOrgType = Some(mockOrganisationType))(
-        verifyRedirectToReviewPage()
-      )
+      submitFormInReviewMode(mandatoryFields)(verifyRedirectToReviewPage())
     }
   }
 
@@ -411,11 +409,9 @@ class AddressServiceSpec
     )
   }
 
-  private def submitFormInReviewMode(
-    form: Map[String, String],
-    userId: String = defaultUserId,
-    userSelectedOrgType: Option[CdsOrganisationType] = None
-  )(test: Future[Result] => Any): Unit = {
+  private def submitFormInReviewMode(form: Map[String, String], userId: String = defaultUserId)(
+    test: Future[Result] => Any
+  ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
 
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]]))

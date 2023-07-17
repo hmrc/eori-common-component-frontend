@@ -36,7 +36,7 @@ class EoriTextDownloadController @Inject() (
     extends CdsController(mcc) {
 
   def download(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithServiceAction {
-    implicit request => loggedInUser: LoggedInUserWithEnrolments =>
+    implicit request => _: LoggedInUserWithEnrolments =>
       for {
         Some(eori) <- cdsFrontendDataCache.sub02Outcome.map(_.eori)
         name       <- cdsFrontendDataCache.sub02Outcome.map(_.fullName.trim)

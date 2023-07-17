@@ -32,7 +32,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{CachedData, DataUnavailableException, SessionCache}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.mongo.CurrentTimestampSupport
-import uk.gov.hmrc.mongo.cache.{CacheItem, DataKey}
+import uk.gov.hmrc.mongo.cache.DataKey
 import util.builders.RegistrationDetailsBuilder._
 import uk.gov.hmrc.mongo.test.MongoSupport
 import java.time.{LocalDate, LocalDateTime}
@@ -70,40 +70,42 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
 
       await(sessionCache.saveRegistrationDetails(organisationRegistrationDetails)(request))
 
-      val cache = await(sessionCache.cacheRepo.findById(request))
-
-      val expectedJson                   = toJson(CachedData(regDetails = Some(organisationRegistrationDetails)))
-      val Some(CacheItem(_, json, _, _)) = cache
-      json mustBe expectedJson
+      val cacheItem = await(sessionCache.cacheRepo.findById(request)).getOrElse(
+        throw new IllegalStateException("Cache returned None")
+      )
+      val expectedJson = toJson(CachedData(regDetails = Some(organisationRegistrationDetails)))
+      cacheItem.data mustBe expectedJson
 
       await(sessionCache.registrationDetails(request)) mustBe organisationRegistrationDetails
       await(sessionCache.saveRegistrationDetails(individualRegistrationDetails)(request))
 
-      val updatedCache = await(sessionCache.cacheRepo.findById(request))
-
-      val expectedUpdatedJson                   = toJson(CachedData(regDetails = Some(individualRegistrationDetails)))
-      val Some(CacheItem(_, updatedJson, _, _)) = updatedCache
-      updatedJson mustBe expectedUpdatedJson
+      val cacheUpdate = await(sessionCache.cacheRepo.findById(request)).getOrElse(
+        throw new IllegalStateException("Cache returned None")
+      )
+      val expectedUpdatedJson = toJson(CachedData(regDetails = Some(individualRegistrationDetails)))
+      cacheUpdate.data mustBe expectedUpdatedJson
     }
 
     "store, fetch and update Registration details when group ID and orgType are privided correctly" in {
       when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-" + UUID.randomUUID()))))
       await(sessionCache.saveRegistrationDetails(organisationRegistrationDetails, GroupId("groupId"))(hc, request))
 
-      val cache = await(sessionCache.cacheRepo.findById(request))
+      val cache = await(sessionCache.cacheRepo.findById(request)).getOrElse(
+        throw new IllegalStateException("Cache returned None")
+      )
 
-      val expectedJson                   = toJson(CachedData(regDetails = Some(organisationRegistrationDetails)))
-      val Some(CacheItem(_, json, _, _)) = cache
-      json mustBe expectedJson
+      val expectedJson = toJson(CachedData(regDetails = Some(organisationRegistrationDetails)))
+
+      cache.data mustBe expectedJson
 
       await(sessionCache.registrationDetails(request)) mustBe organisationRegistrationDetails
       await(sessionCache.saveRegistrationDetails(individualRegistrationDetails)(request))
 
-      val updatedCache = await(sessionCache.cacheRepo.findById(request))
-
-      val expectedUpdatedJson                   = toJson(CachedData(regDetails = Some(individualRegistrationDetails)))
-      val Some(CacheItem(_, updatedJson, _, _)) = updatedCache
-      updatedJson mustBe expectedUpdatedJson
+      val updatedCache = await(sessionCache.cacheRepo.findById(request)).getOrElse(
+        throw new IllegalStateException("Cache returned None")
+      )
+      val expectedUpdatedJson = toJson(CachedData(regDetails = Some(individualRegistrationDetails)))
+      updatedCache.data mustBe expectedUpdatedJson
     }
 
     "calling saveRegistrationDetailsWithoutId should store, fetch and update Registration details when group ID and orgType are privided correctly" in {
@@ -112,20 +114,22 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
         sessionCache.saveRegistrationDetailsWithoutId(organisationRegistrationDetails, GroupId("groupId"))(hc, request)
       )
 
-      val cache = await(sessionCache.cacheRepo.findById(request))
+      val cache = await(sessionCache.cacheRepo.findById(request)).getOrElse(
+        throw new IllegalStateException("Cache returned None")
+      )
 
-      val expectedJson                   = toJson(CachedData(regDetails = Some(organisationRegistrationDetails)))
-      val Some(CacheItem(_, json, _, _)) = cache
-      json mustBe expectedJson
+      val expectedJson = toJson(CachedData(regDetails = Some(organisationRegistrationDetails)))
+      cache.data mustBe expectedJson
 
       await(sessionCache.registrationDetails(request)) mustBe organisationRegistrationDetails
       await(sessionCache.saveRegistrationDetails(individualRegistrationDetails)(request))
 
-      val updatedCache = await(sessionCache.cacheRepo.findById(request))
+      val updatedCache = await(sessionCache.cacheRepo.findById(request)).getOrElse(
+        throw new IllegalStateException("Cache returned None")
+      )
 
-      val expectedUpdatedJson                   = toJson(CachedData(regDetails = Some(individualRegistrationDetails)))
-      val Some(CacheItem(_, updatedJson, _, _)) = updatedCache
-      updatedJson mustBe expectedUpdatedJson
+      val expectedUpdatedJson = toJson(CachedData(regDetails = Some(individualRegistrationDetails)))
+      updatedCache.data mustBe expectedUpdatedJson
     }
 
     "store and fetch RegisterWith EORI And Id Response correctly for Reg06 response" in {
@@ -155,11 +159,12 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
 
       await(sessionCache.saveRegisterWithEoriAndIdResponse(rd)(request))
 
-      val cache = await(sessionCache.cacheRepo.findById(request))
+      val cache = await(sessionCache.cacheRepo.findById(request)).getOrElse(
+        throw new IllegalStateException("Cache returned None")
+      )
 
-      val expectedJson                   = toJson(CachedData(registerWithEoriAndIdResponse = Some(rd)))
-      val Some(CacheItem(_, json, _, _)) = cache
-      json mustBe expectedJson
+      val expectedJson = toJson(CachedData(registerWithEoriAndIdResponse = Some(rd)))
+      cache.data mustBe expectedJson
 
       await(sessionCache.registerWithEoriAndIdResponse(request)) mustBe rd
 
@@ -173,13 +178,13 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
 
       await(sessionCache.saveAddressLookupParams(addressLookupParams)(request))
 
-      val cache = await(sessionCache.cacheRepo.findById(request))
+      val cache = await(sessionCache.cacheRepo.findById(request)).getOrElse(
+        throw new IllegalStateException("Cache returned None")
+      )
 
       val expectedJson = toJson(CachedData(addressLookupParams = Some(addressLookupParams)))
 
-      val Some(CacheItem(_, json, _, _)) = cache
-
-      json mustBe expectedJson
+      cache.data mustBe expectedJson
     }
     "store and fetch group enrolment correctly" in {
 
@@ -189,13 +194,13 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
 
       await(sessionCache.saveGroupEnrolment(groupEnrolmentResponse)(request))
 
-      val cache = await(sessionCache.cacheRepo.findById(request))
+      val cache = await(sessionCache.cacheRepo.findById(request)).getOrElse(
+        throw new IllegalStateException("Cache returned None")
+      )
 
       val expectedJson = toJson(CachedData(groupEnrolment = Some(groupEnrolmentResponse)))
 
-      val Some(CacheItem(_, json, _, _)) = cache
-
-      json mustBe expectedJson
+      cache.data mustBe expectedJson
 
       await(sessionCache.groupEnrolment(request)) mustBe groupEnrolmentResponse
     }
@@ -343,13 +348,13 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
 
       await(sessionCache.saveEori(eori)(request))
 
-      val cache = await(sessionCache.cacheRepo.findById(request))
+      val cache = await(sessionCache.cacheRepo.findById(request)).getOrElse(
+        throw new IllegalStateException("Cache returned None")
+      )
 
       val expectedJson = toJson(CachedData(eori = Some(eori.id)))
 
-      val Some(CacheItem(_, json, _, _)) = cache
-
-      json mustBe expectedJson
+      cache.data mustBe expectedJson
 
       await(sessionCache.eori(request)) mustBe Some(eori.id)
     }
@@ -362,13 +367,13 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
 
       await(sessionCache.saveEmail(email)(request))
 
-      val cache = await(sessionCache.cacheRepo.findById(request))
+      val cache = await(sessionCache.cacheRepo.findById(request)).getOrElse(
+        throw new IllegalStateException("Cache returned None")
+      )
 
       val expectedJson = toJson(CachedData(email = Some(email)))
 
-      val Some(CacheItem(_, json, _, _)) = cache
-
-      json mustBe expectedJson
+      cache.data mustBe expectedJson
       await(sessionCache.email(request)) mustBe email
 
     }
@@ -381,13 +386,13 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
 
       await(sessionCache.saveSubscriptionDetails(subscriptionDetails)(request))
 
-      val cache = await(sessionCache.cacheRepo.findById(request))
+      val cache = await(sessionCache.cacheRepo.findById(request)).getOrElse(
+        throw new IllegalStateException("Cache returned None")
+      )
 
       val expectedJson = toJson(CachedData(subDetails = Some(subscriptionDetails)))
 
-      val Some(CacheItem(_, json, _, _)) = cache
-
-      json mustBe expectedJson
+      cache.data mustBe expectedJson
     }
 
     "store and fetch sub01Outcome details correctly" in {
@@ -398,13 +403,14 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
 
       await(sessionCache.saveSub01Outcome(sub01Outcome)(request))
 
-      val cache = await(sessionCache.cacheRepo.findById(request))
+      val cache = await(sessionCache.cacheRepo.findById(request)).getOrElse(
+        throw new IllegalStateException("Cache returned None")
+      )
 
       val expectedJson = toJson(CachedData(sub01Outcome = Some(sub01Outcome)))
 
-      val Some(CacheItem(_, json, _, _)) = cache
+      cache.data mustBe expectedJson
 
-      json mustBe expectedJson
       await(sessionCache.sub01Outcome(request)) mustBe sub01Outcome
     }
 
@@ -416,13 +422,13 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
 
       await(sessionCache.saveSub02Outcome(sub02Outcome)(request))
 
-      val cache = await(sessionCache.cacheRepo.findById(request))
+      val cache = await(sessionCache.cacheRepo.findById(request)).getOrElse(
+        throw new IllegalStateException("Cache returned None")
+      )
 
       val expectedJson = toJson(CachedData(sub02Outcome = Some(sub02Outcome)))
 
-      val Some(CacheItem(_, json, _, _)) = cache
-
-      json mustBe expectedJson
+      cache.data mustBe expectedJson
       await(sessionCache.sub02Outcome(request)) mustBe sub02Outcome
     }
 
@@ -439,11 +445,13 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
 
       await(sessionCache.clearAddressLookupParams(request))
 
-      val Some(CacheItem(_, jsonAfter, _, _)) = await(sessionCache.cacheRepo.findById(request))
+      val cacheItem = await(sessionCache.cacheRepo.findById(request)).getOrElse(
+        throw new IllegalStateException("Cache returned None")
+      )
 
       val expectedJsonAfter = toJson(CachedData(addressLookupParams = Some(AddressLookupParams("", None))))
 
-      jsonAfter mustBe expectedJsonAfter
+      cacheItem.data mustBe expectedJsonAfter
       await(sessionCache.addressLookupParams(request)) mustBe Some(AddressLookupParams("", None))
     }
 

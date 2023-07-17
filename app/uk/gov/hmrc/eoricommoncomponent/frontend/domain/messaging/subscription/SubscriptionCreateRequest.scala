@@ -44,7 +44,6 @@ object SubscriptionCreateRequest {
   def apply(
     registration: RegistrationDetails,
     subscription: SubscriptionDetails,
-    email: Option[String],
     service: Option[Service]
   ): SubscriptionCreateRequest =
     registration match {

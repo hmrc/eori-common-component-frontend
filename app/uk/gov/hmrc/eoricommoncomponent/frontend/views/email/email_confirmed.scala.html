@@ -31,7 +31,7 @@
 @actionM = @{
     subscribeJourney match {
         case SubscribeJourney(AutoEnrolment) => HasExistingEoriController.enrol(service)
-        case SubscribeJourney(LongJourney) => CheckYourEmailController.acceptConfirmation(service, subscribeJourney)
+        case SubscribeJourney(LongJourney) => CheckYourEmailController.acceptConfirmation(service)
     }
 }
 

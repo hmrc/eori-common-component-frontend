@@ -183,12 +183,9 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
       mockSuccessfulWithMandatoryOnly(subscriptionDetails.copy(email = Some(expectedEmail)))
       when(
         mockSubscriptionService
-          .subscribeWithMandatoryOnly(
-            any[RegistrationDetails],
-            any[SubscriptionDetails],
-            any[Service],
-            Some(any[String])
-          )(any[HeaderCarrier])
+          .subscribeWithMandatoryOnly(any[RegistrationDetails], any[SubscriptionDetails], any[Service])(
+            any[HeaderCarrier]
+          )
       ).thenReturn(
         Future
           .successful(SubscriptionPending(formBundleId, processingDate, Some(emailVerificationTimestamp)))
@@ -213,12 +210,9 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
           )
 
           verify(mockSubscriptionService)
-            .subscribeWithMandatoryOnly(
-              any[RegistrationDetails],
-              any[SubscriptionDetails],
-              meq(atarService),
-              meq(Some(expectedEmail))
-            )(any[HeaderCarrier])
+            .subscribeWithMandatoryOnly(any[RegistrationDetails], any[SubscriptionDetails], meq(atarService))(
+              any[HeaderCarrier]
+            )
 
           verify(mockHandleSubscriptionService)
             .handleSubscription(
@@ -432,12 +426,9 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
 
     when(
       mockSubscriptionService
-        .subscribeWithMandatoryOnly(
-          any[RegistrationDetails],
-          any[SubscriptionDetails],
-          any[Service],
-          Some(any[String])
-        )(any[HeaderCarrier])
+        .subscribeWithMandatoryOnly(any[RegistrationDetails], any[SubscriptionDetails], any[Service])(
+          any[HeaderCarrier]
+        )
     ).thenReturn(
       Future
         .successful(SubscriptionSuccessful(Eori(eori), formBundleId, processingDate, Some(emailVerificationTimestamp)))
@@ -545,12 +536,9 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
         )
 
         verify(mockSubscriptionService)
-          .subscribeWithMandatoryOnly(
-            any[RegistrationDetails],
-            any[SubscriptionDetails],
-            meq(atarService),
-            meq(Some(expectedEmail))
-          )(any[HeaderCarrier])
+          .subscribeWithMandatoryOnly(any[RegistrationDetails], any[SubscriptionDetails], meq(atarService))(
+            any[HeaderCarrier]
+          )
 
         verify(mockHandleSubscriptionService)
           .handleSubscription(
@@ -685,12 +673,9 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
     mockSuccessfulWithMandatoryOnly(subscriptionDetails.copy(email = Some(expectedEmail)))
     when(
       mockSubscriptionService
-        .subscribeWithMandatoryOnly(
-          any[RegistrationDetails],
-          any[SubscriptionDetails],
-          any[Service],
-          Some(any[String])
-        )(any[HeaderCarrier])
+        .subscribeWithMandatoryOnly(any[RegistrationDetails], any[SubscriptionDetails], any[Service])(
+          any[HeaderCarrier]
+        )
     ).thenReturn(
       Future
         .successful(SubscriptionFailed(EoriAlreadyExists, processingDate))
@@ -711,12 +696,9 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
         subscriptionResult shouldBe SubscriptionFailed(EoriAlreadyExists, processingDate)
 
         verify(mockSubscriptionService)
-          .subscribeWithMandatoryOnly(
-            any[RegistrationDetails],
-            any[SubscriptionDetails],
-            meq(atarService),
-            meq(Some(expectedEmail))
-          )(any[HeaderCarrier])
+          .subscribeWithMandatoryOnly(any[RegistrationDetails], any[SubscriptionDetails], meq(atarService))(
+            any[HeaderCarrier]
+          )
 
     }
   }
