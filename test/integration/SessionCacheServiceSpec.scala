@@ -163,7 +163,14 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       val cache = await(sessionCache.cacheRepo.findById(request)).getOrElse(
         throw new IllegalStateException("Cache returned None")
       )
-      val expectedJson = toJson(CachedData(registerWithEoriAndIdResponse = Some(rd)))
+
+      val expectedJson = toJson(
+        CachedData(
+          registerWithEoriAndIdResponse = Some(rd),
+          submissionCompleteDetails = Some(SubmissionCompleteData(None, Some(rd.responseCommon.processingDate)))
+        )
+      )
+
       cache.data mustBe expectedJson
 
       await(sessionCache.registerWithEoriAndIdResponse(request)) mustBe rd
