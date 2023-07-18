@@ -414,7 +414,7 @@ cds.partnership.name.label=Registered partnership name
 cds.nino.label=National Insurance number
 cds.utr.label=UTR number
 cds.company.utr.label=Corporation Tax UTR
-cds.partnership-utr.label=Partnership Self Assessment UTR number
+cds.partnership-utr.label=Partnership Self Assessment UTR
 
 subscription.check-your-details.utrnumber.individual=UTR number
 subscription.check-your-details.contactpreference=Contact preference
