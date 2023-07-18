@@ -362,7 +362,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   "Pressing Save and continue on the Email Confirmation page" should {
 
     "redirect to WhatIsYourEoriController.createForm" in {
-      acceptEmailConfirmation(journey = subscribeJourneyLong) { result =>
+      acceptEmailConfirmation() { result =>
         status(result) shouldBe SEE_OTHER
         result.header.headers("Location") should endWith(
           "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori"
@@ -410,12 +410,10 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     test(result)
   }
 
-  private def acceptEmailConfirmation(userId: String = defaultUserId, journey: SubscribeJourney)(
-    test: Future[Result] => Any
-  ): Unit = {
+  private def acceptEmailConfirmation(userId: String = defaultUserId)(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
-      .acceptConfirmation(atarService, journey)
+      .acceptConfirmation(atarService)
       .apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }

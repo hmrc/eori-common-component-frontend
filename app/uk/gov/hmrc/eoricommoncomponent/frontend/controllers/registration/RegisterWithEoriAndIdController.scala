@@ -316,7 +316,7 @@ class RegisterWithEoriAndIdController @Inject() (
           subscriptionDetailsService
             .saveKeyIdentifiers(groupId, internalId, service)
             .map(_ => Redirect(Sub02Controller.migrationEnd(service)))
-        case sp: SubscriptionPending =>
+        case _: SubscriptionPending =>
           subscriptionDetailsService
             .saveKeyIdentifiers(groupId, internalId, service)
             .map(_ => Redirect(RegisterWithEoriAndIdController.pending(service)))
