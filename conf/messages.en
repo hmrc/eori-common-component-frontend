@@ -993,6 +993,13 @@ cds.subscription.date-of-birth.page-error.date-of-birth=Enter your date of birth
 cds.subscription.date-of-birth.error.required.date-of-birth=Enter your date of birth, for example ''31 3 1980''
 cds.subscription.date-of-birth.error.invalid.date-of-birth=Please enter a valid date of birth, for example ''31 3 1980''
 cds.subscription.date-of-birth.error.in-future.date-of-birth=You cannot enter a date of birth in the future
+date-of-birth.day.empty=Date of birth must include a day
+date-of-birth.month.empty=Date of birth must include a month
+date-of-birth.year.empty=Date of birth must include a year
+date-of-birth.day-date-of-birth.month.empty=Date of birth must include a day and month
+date-of-birth.day-date-of-birth.year.empty=Date of birth must include a day and year
+date-of-birth.month-date-of-birth.year.empty=Date of birth must include a month and year
+dob.error.minMax=Date of birth must be between {0} and today
 
 #Subscription Date of Establishment
 
@@ -1001,6 +1008,13 @@ cds.subscription.date-of-establishment.title-and-heading=Date when the organisat
 cds.subscription.partnership.date-of-establishment.title-and-heading=When was the partnership established?
 cds.subscription.date-of-establishment.date-of-establishment.label=Date of establishment
 cds.subscription.date-of-establishment.page-error.date-of-establishment=Enter your date of establishment
+date-of-establishment.day.empty=Date of establishment must include a day
+date-of-establishment.month.empty=Date of establishment must include a month
+date-of-establishment.year.empty=Date of establishment must include a year
+date-of-establishment.day-date-of-establishment.month.empty=Date of establishment must include a day and month
+date-of-establishment.day-date-of-establishment.year.empty=Date of establishment must include a day and year
+date-of-establishment.month-date-of-establishment.year.empty=Date of establishment must include a month and year
+date-invalid-year-too-short=Year must include 4 numbers
 cds.subscription.business.date-established.label=Enter the date shown on the organisation’s certificate of incorporation. You can find the date your organisation was established on the {0}</a>
 cds.subscription.llp.date-established.charity-label=Enter the date shown on the organisation’s certificate of incorporation or registration certificate.
 cds.subscription.llp.date-established.label=Enter the date shown on the partnership’s certificate of incorporation. You can find the date your business was established on the {0}

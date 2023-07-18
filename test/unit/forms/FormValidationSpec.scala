@@ -25,6 +25,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionF
 
 import java.time.{LocalDate, Year}
 import java.time.format.DateTimeFormatter
+import scala.collection.compat.immutable.ArraySeq
 import scala.util.Random
 
 class FormValidationSpec extends UnitSpec {
@@ -113,7 +114,10 @@ class FormValidationSpec extends UnitSpec {
     "fail when a date of birth is missing" in {
       val data = formData.updated("date-of-birth.day", "").updated("date-of-birth.month", "")
       val res  = nameDobForm.bind(data)
-      res.errors shouldBe Seq(FormError("date-of-birth", Seq("dob.error.empty-date")))
+      res.errors shouldBe Seq(
+        FormError("date-of-birth.day", List("date-of-birth.day-date-of-birth.month.empty"), List()),
+        FormError("date-of-birth.month", List(""), List())
+      )
     }
     "fail when a date of birth in future" in {
       val todayPlusOneDay = LocalDate.now().plusDays(1)
@@ -123,17 +127,17 @@ class FormValidationSpec extends UnitSpec {
           DateTimeFormatter.ofPattern("MM").format(todayPlusOneDay)
         ).updated("date-of-birth.year", DateTimeFormatter.ofPattern("yyyy").format(todayPlusOneDay))
       val res = nameDobForm.bind(data)
-      res.errors shouldBe Seq(FormError("date-of-birth", Seq("dob.error.future-date")))
+      res.errors shouldBe Seq(FormError("date-of-birth", List("dob.error.future-date"), ArraySeq("1900")))
     }
     "fail when a date of birth year invalid" in {
       val data = formData.updated("date-of-birth.year", Year.now.plusYears(1).getValue.toString)
       val res  = nameDobForm.bind(data)
-      res.errors shouldBe Seq(FormError("date-of-birth.year", Seq("date.year.error")))
+      res.errors shouldBe Seq(FormError("date-of-birth", List("dob.error.future-date"), ArraySeq("1900")))
     }
     "fail when a date of birth too early" in {
       val data = formData.updated("date-of-birth.year", "1800")
       val res  = nameDobForm.bind(data)
-      res.errors shouldBe Seq(FormError("date-of-birth.year", Seq("date.year.error")))
+      res.errors shouldBe Seq(FormError("date-of-birth", List("dob.error.minMax"), ArraySeq("1900")))
     }
   }
 
@@ -146,7 +150,14 @@ class FormValidationSpec extends UnitSpec {
     "fail when date of establishment is missing" in {
       val data = formDataDoE.updated("date-of-establishment.day", "").updated("date-of-establishment.month", "")
       val res  = dateOfEstablishmentForm.bind(data)
-      res.errors shouldBe Seq(FormError("date-of-establishment", Seq("doe.error.empty-date")))
+      res.errors shouldBe Seq(
+        FormError(
+          "date-of-establishment.day",
+          List("date-of-establishment.day-date-of-establishment.month.empty"),
+          List()
+        ),
+        FormError("date-of-establishment.month", List(""), List())
+      )
     }
     "fail when date of establishment in future" in {
       val todayPlusOneDay = LocalDate.now().plusDays(1)
@@ -158,17 +169,17 @@ class FormValidationSpec extends UnitSpec {
         DateTimeFormatter.ofPattern("yyyy").format(todayPlusOneDay)
       )
       val res = dateOfEstablishmentForm.bind(data)
-      res.errors shouldBe Seq(FormError("date-of-establishment", Seq("doe.error.future-date")))
+      res.errors shouldBe Seq(FormError("date-of-establishment", List("doe.error.future-date"), ArraySeq("1000")))
     }
     "fail when date of establishment year invalid" in {
       val data = formDataDoE.updated("date-of-establishment.year", Year.now.plusYears(1).getValue.toString)
       val res  = dateOfEstablishmentForm.bind(data)
-      res.errors shouldBe Seq(FormError("date-of-establishment.year", Seq("date.year.error")))
+      res.errors shouldBe Seq(FormError("date-of-establishment", List("doe.error.future-date"), ArraySeq("1000")))
     }
     "fail when date of establishment too early" in {
       val data = formDataDoE.updated("date-of-establishment.year", "999")
       val res  = dateOfEstablishmentForm.bind(data)
-      res.errors shouldBe Seq(FormError("date-of-establishment.year", Seq("date.year.error")))
+      res.errors shouldBe Seq(FormError("date-of-establishment.year", List("date-invalid-year-too-short"), List()))
     }
   }
 

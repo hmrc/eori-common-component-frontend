@@ -26,14 +26,17 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription._
 
 object SubscriptionForm {
 
-  val subscriptionDateOfEstablishmentForm: Form[LocalDate] = Form(
-    "date-of-establishment" -> mandatoryDateTodayOrBefore(
-      onEmptyError = "doe.error.empty-date",
-      onInvalidDateError = "doe.error.invalid-date",
-      onDateInFutureError = "doe.error.future-date",
-      minYear = DateConverter.earliestYearDateOfEstablishment
+  private val minimumDate = LocalDate.of(DateConverter.earliestYearDateOfEstablishment, 1, 1)
+  private val today       = LocalDate.now()
+
+  val subscriptionDateOfEstablishmentForm: Form[LocalDate] =
+    Form(
+      "date-of-establishment" -> localDateUserInput(
+        emptyKey = "doe.error.empty-date",
+        invalidKey = "doe.error.invalid-date"
+      ).verifying(minDate(minimumDate, "doe.error.minMax", DateConverter.earliestYearDateOfEstablishment.toString))
+        .verifying(maxDate(today, "doe.error.future-date", DateConverter.earliestYearDateOfEstablishment.toString))
     )
-  )
 
   def validEoriWithOrWithoutGB: Constraint[String] =
     Constraint({
