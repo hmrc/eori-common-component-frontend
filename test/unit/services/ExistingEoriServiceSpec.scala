@@ -207,7 +207,7 @@ class ExistingEoriServiceSpec extends ControllerSpec with BeforeAndAfterEach wit
       enrolSuccess(atarService, Some(cdsEnrolment)) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title() should startWith("Application complete")
+        page.title() should startWith("Subscription complete")
       }
     }
   }
