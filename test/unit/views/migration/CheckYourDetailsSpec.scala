@@ -145,7 +145,9 @@ class CheckYourDetailsSpec extends ViewSpec {
         page.body.getElementsByClass("review-tbl__date-of-birth").size() mustBe 1
 
         val utrRow = page.body.getElementsByClass("review-tbl__utr").get(0)
-        utrRow.getElementsByClass("govuk-summary-list__key").text mustBe "UTR number"
+        utrRow.getElementsByClass(
+          "govuk-summary-list__key"
+        ).text mustBe "Self Assessment Unique Taxpayer Reference (UTR)"
         utrRow.getElementsByClass("govuk-summary-list__value").text mustBe "UTRXXXXX"
         utrRow.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/chooseid/review"
 
@@ -217,7 +219,9 @@ class CheckYourDetailsSpec extends ViewSpec {
         nameOrg.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/name/review"
 
         val utrRow = page.body.getElementsByClass("review-tbl__utr").get(0)
-        utrRow.getElementsByClass("govuk-summary-list__key").text mustBe "UTR number"
+        utrRow.getElementsByClass(
+          "govuk-summary-list__key"
+        ).text mustBe "Self Assessment Unique Taxpayer Reference (UTR)"
         utrRow.getElementsByClass("govuk-summary-list__value").text mustBe "Not entered"
         utrRow.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-utr/review"
 
@@ -281,7 +285,9 @@ class CheckYourDetailsSpec extends ViewSpec {
         nameOrg.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/name/review"
 
         val utrRow = page.body.getElementsByClass("review-tbl__utr").get(0)
-        utrRow.getElementsByClass("govuk-summary-list__key").text mustBe "Rhif Cyfeirnod Unigryw y Trethdalwr (UTR)"
+        utrRow.getElementsByClass(
+          "govuk-summary-list__key"
+        ).text mustBe "Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad"
         utrRow.getElementsByClass("govuk-summary-list__value").text mustBe "Heb ei nodi"
         utrRow.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-utr/review"
 
@@ -384,7 +390,9 @@ class CheckYourDetailsSpec extends ViewSpec {
         page.body.getElementsByClass("review-tbl__date-of-birth").size() mustBe 1
 
         val utrRow = page.body.getElementsByClass("review-tbl__utr").get(0)
-        utrRow.getElementsByClass("govuk-summary-list__key").text mustBe "UTR number"
+        utrRow.getElementsByClass(
+          "govuk-summary-list__key"
+        ).text mustBe "Self Assessment Unique Taxpayer Reference (UTR)"
         utrRow.getElementsByClass("govuk-summary-list__value").text mustBe "Not entered"
         utrRow.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-utr/review"
 
@@ -445,7 +453,9 @@ class CheckYourDetailsSpec extends ViewSpec {
         page.body.getElementsByClass("review-tbl__date-of-birth").size() mustBe 1
 
         val utrRow = page.body.getElementsByClass("review-tbl__utr").get(0)
-        utrRow.getElementsByClass("govuk-summary-list__key").text mustBe "UTR number"
+        utrRow.getElementsByClass(
+          "govuk-summary-list__key"
+        ).text mustBe "Self Assessment Unique Taxpayer Reference (UTR)"
         utrRow.getElementsByClass("govuk-summary-list__value").text mustBe "UTRXXXXX"
         utrRow.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-utr/review"
 
@@ -488,7 +498,9 @@ class CheckYourDetailsSpec extends ViewSpec {
         page.body.getElementsByClass("review-tbl__date-of-birth").size() mustBe 1
 
         val utrRow = page.body.getElementsByClass("review-tbl__utr").get(0)
-        utrRow.getElementsByClass("govuk-summary-list__key").text mustBe "UTR number"
+        utrRow.getElementsByClass(
+          "govuk-summary-list__key"
+        ).text mustBe "Self Assessment Unique Taxpayer Reference (UTR)"
         utrRow.getElementsByClass("govuk-summary-list__value").text mustBe "Not entered"
         utrRow.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/row-utr/review"
 
@@ -751,7 +763,9 @@ class CheckYourDetailsSpec extends ViewSpec {
         )
 
         val utrRow = page.body.getElementsByClass("review-tbl__utr").get(0)
-        utrRow.getElementsByClass("govuk-summary-list__key").text mustBe "UTR number"
+        utrRow.getElementsByClass(
+          "govuk-summary-list__key"
+        ).text mustBe "Self Assessment Unique Taxpayer Reference (UTR)"
         utrRow.getElementsByClass("govuk-summary-list__value").text mustBe individualUtr.id
         utrRow.getElementsByTag("a").attr("href") mustBe "/customs-enrolment-services/atar/subscribe/chooseid/review"
 
