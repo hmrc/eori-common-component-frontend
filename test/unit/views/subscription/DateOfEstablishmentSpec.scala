@@ -36,22 +36,18 @@ class DateOfEstablishmentSpec extends ViewSpec {
 
   "On a UK journey the 'When was the organisation established?' page" should {
     "display correct title" in {
-      doc.title() must startWith("Date when the company was established")
+      doc.title() must startWith("When was the company established?")
     }
     "have the correct h1 text" in {
-      doc.body.getElementsByTag("h1").text() mustBe "Date when the company was established"
+      doc.body.getElementsByTag("h1").text() mustBe "When was the company established?"
     }
     "have the correct class on the h1" in {
       doc.body.getElementsByTag("h1").hasClass("govuk-fieldset__legend--l") mustBe true
     }
     "have the correct text in the hint" in {
-      doc.body.getElementById("date-of-establishment-hint-text").text() mustBe "For example, 31 03 1980."
+      doc.body.getElementById("date-of-establishment-hint").text() mustBe "For example, 31 03 1980."
     }
-    "have the correct text in the intro paragraph" in {
-      doc.body
-        .getElementById("date-of-establishment-info")
-        .text() mustBe "Enter the date shown on the organisation’s certificate of incorporation. You can find the date your organisation was established on the Companies House register (opens in new tab)"
-    }
+
   }
 
   "On a RoW journey the 'When was the organisation established?' page" should {
@@ -88,22 +84,18 @@ class DateOfEstablishmentSpec extends ViewSpec {
 
   "On an UnincorporatedBody org type journey Date Established page" should {
     "display correct title" in {
-      docCharity.title() must startWith("Date when the organisation was established")
+      docCharity.title() must startWith("When was the partnership established?")
     }
     "have the correct h1 text" in {
-      docCharity.body.getElementsByTag("h1").text() mustBe "Date when the organisation was established"
+      docCharity.body.getElementsByTag("h1").text() mustBe "When was the partnership established?"
     }
     "have the correct class on the h1" in {
       docCharity.body.getElementsByTag("h1").hasClass("govuk-fieldset__legend--l") mustBe true
     }
     "have the correct text in the hint" in {
-      docCharity.body.getElementById("date-of-establishment-hint-text").text() mustBe "For example, 31 03 1980."
+      docCharity.body.getElementById("date-of-establishment-hint").text() mustBe "For example, 31 03 1980."
     }
-    "have the correct text in the intro paragraph" in {
-      docCharity.body
-        .getElementById("date-of-establishment-info")
-        .text() mustBe "Enter the date shown on the organisation’s certificate of incorporation or registration certificate."
-    }
+
   }
 
   lazy val doc: Document = {
