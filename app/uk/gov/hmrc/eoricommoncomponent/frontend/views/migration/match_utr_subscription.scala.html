@@ -35,13 +35,6 @@
     }
 }
 
-@hintText = @{
-    if(organisationType == CdsOrganisationType.SoleTraderId | organisationType == CdsOrganisationType.IndividualId) {
-        Some(Hint(content = Text(messages("cds.matching.row-sole-trader-individual.utr.paragraph"))))
-    }else{
-        None
-    }
-}
 
 @values = @{
     Seq("true" -> messages("cds.yes"), "false" -> messages("cds.no"))
@@ -59,28 +52,27 @@
 
 
 @layout_di(headerAndTitle, form = Some(matchOrgIdForm)) {
-<div>
 
     @errorSummary(matchOrgIdForm.errors, focusOverrides = Map("have-utr" -> "have-utr-true"))
 
     @helpers.form(HaveUtrSubscriptionController.submit(isInReviewMode, service), "subscriptionUtrForm") {
     @CSRF.formField
-    <div class="govuk-form-group">
-        @inputRadioGroup(
+
+    @inputRadioGroup(
             matchOrgIdForm("have-utr"),
             legend = headerAndTitle,
             items = options,
-            hint = hintText,
+            hint = None,
             classes = "govuk-fieldset__legend--l"
         )
-    </div>
 
-        @govukButton(Button(
+
+    @govukButton(Button(
             content = Text(ViewHelper.continueButtonText(isInReviewMode)),
             id = Some("continue-button")
         ))
 
     @helpers.helpAndSupport()
     }
-</div>
+
 }
