@@ -58,6 +58,11 @@ class ConditionalValidatePostcodeFormSpec extends UnitSpec {
         val res  = form.bind(data)
         assert(res.errors.isEmpty)
       }
+      "accept an empty space in postcode" in {
+        val data = Map("postcode" -> "  111 111  111  ", "countryCode" -> "FR")
+        val res  = form.bind(data)
+        assert(res.errors.isEmpty)
+      }
     }
   }
 
