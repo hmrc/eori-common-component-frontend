@@ -21,9 +21,21 @@ cds.enrolment.already.exists.para1=Our records show that this Government Gateway
 
 cds.proposition.name.service=Register for a customs service
 
-eds.existing-eori.enrolment.confirmation.title=Application complete
-eds.existing-eori.enrolment.confirmation.heading=Application complete
-eds.existing-eori.enrolment.confirmation.para1=Your application was successful. You can now use this service.
+eds.existing-eori.enrolment.confirmation.title=Subscription complete
+eds.existing-eori.enrolment.confirmation.heading=Subscription complete
+eds.existing-eori.enrolment.confirmation.para1=We’ve subscribed you to this service.
+
+cds.existing-eori.enrolment.confirmation.para2.atar=You can now apply for an Advance Tariff Ruling.
+cds.existing-eori.enrolment.confirmation.para2.ctc=You can now submit union transit declarations through NCTS.
+cds.existing-eori.enrolment.confirmation.para2.gagmr=You can now get a goods movement reference (GMR).
+cds.existing-eori.enrolment.confirmation.para2.gbss=You can now submit entry summary declarations by either: <ul class="govuk-body"><li>purchasing compatible software.</li><li>employing the services of a Community System Provider.</li></ul>
+cds.existing-eori.enrolment.confirmation.para2.ivd=You can now tell HMRC about an underpayment of Customs Duty or import VAT.
+cds.existing-eori.enrolment.confirmation.para2.route1=You can now send documents for a customs check for declarations made in CHIEF.
+cds.existing-eori.enrolment.confirmation.para2.ndrc=You can now apply for repayment of import duty and VAT (CHIEF).
+cds.existing-eori.enrolment.confirmation.para2.esc=You can now report and manage your allowance for Customs Duty waiver claims.
+cds.existing-eori.enrolment.confirmation.para2.cds=You can now use the Customs Declaration Service.
+cds.existing-eori.enrolment.confirmation.para2.ars=You can now apply for an Advance Valuation Ruling.
+
 
 countries-in-the-eu.list=Austria, Belgium, Bulgaria, Croatia, Republic of Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Poland, Portugal, Romania, Slovakia, Slovenia, Spain and Sweden.
 
