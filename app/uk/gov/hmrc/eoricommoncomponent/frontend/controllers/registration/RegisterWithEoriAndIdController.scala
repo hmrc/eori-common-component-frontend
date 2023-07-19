@@ -22,21 +22,25 @@ import play.api.Logger
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, GroupEnrolmentExtractor}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.EnrolmentAlreadyExistsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.{
+  ApplicationController,
+  EnrolmentAlreadyExistsController
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.Sub02Controller
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, MissingGroupId}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegisterWithEoriAndIdResponse._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubmissionCompleteData
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{MatchingService, Reg06Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName.service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.language.LanguageUtils
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -159,24 +163,36 @@ class RegisterWithEoriAndIdController @Inject() (
       } yield Ok(sub01OutcomeRejectedView(Some(name), processedDate, service))
   }
 
-  def pending(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+  def pending(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
+    implicit request => _: LoggedInUserWithEnrolments =>
       for {
-        subscriptionDetails <- cache.subscriptionDetails
-        _                   <- cache.saveSubscriptionDetails(subscriptionDetails)
-        processedDate <- cache.registerWithEoriAndIdResponse.map(
-          resp => languageUtils.Dates.formatDate(resp.responseCommon.processingDate.toLocalDate)
-        )
-        _ <- cache.remove
-      } yield Ok(
-        subscriptionOutcomePendingView(
-          subscriptionDetails.eoriNumber.getOrElse(throw DataUnavailableException("No EORI found in cache")),
-          processedDate,
-          subscriptionDetails.name,
-          service
-        )
-      ).withSession(newUserSession)
+        submissionCompleteData <- cache.submissionCompleteDetails
+        _                      <- cache.remove
+        _                      <- cache.saveSubmissionCompleteDetails(submissionCompleteData)
+      } yield displaySubscriptionOutcomePendingView(submissionCompleteData, service)
+  }
+
+  private def displaySubscriptionOutcomePendingView(submissionCompleteData: SubmissionCompleteData, service: Service)(
+    implicit request: Request[_]
+  ) = {
+    val result = for {
+      details        <- submissionCompleteData.subscriptionDetails
+      processingDate <- submissionCompleteData.processingDate
+      eoriNumber     <- details.eoriNumber
+    } yield Ok(
+      subscriptionOutcomePendingView(
+        eoriNumber,
+        languageUtils.Dates.formatDate(processingDate.toLocalDate),
+        details.name,
+        service
+      )
+    ).withSession(newUserSession)
+
+    result.getOrElse {
+      logger.warn("Subscription Complete Data not found for this session")
+      Redirect(ApplicationController.startSubscription(service))
     }
+  }
 
   def fail(service: Service, date: String): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
