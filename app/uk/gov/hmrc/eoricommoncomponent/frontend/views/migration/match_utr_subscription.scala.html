@@ -35,11 +35,12 @@
     }
 }
 
-@intro = {
-        @if(organisationType == CdsOrganisationType.SoleTraderId | organisationType == CdsOrganisationType.IndividualId) {
-        @Html(messages("cds.matching.row-sole-trader-individual.utr.paragraph"))
+@hintText = @{
+    if(organisationType == CdsOrganisationType.SoleTraderId | organisationType == CdsOrganisationType.IndividualId) {
+        Some(Hint(content = Text(messages("cds.matching.row-sole-trader-individual.utr.paragraph"))))
+    }else{
+        None
     }
-    
 }
 
 @values = @{
@@ -69,7 +70,7 @@
             matchOrgIdForm("have-utr"),
             legend = headerAndTitle,
             items = options,
-            hint = Some(Hint(content = HtmlContent(intro), classes = "govuk-body-s")),
+            hint = hintText,
             classes = "govuk-fieldset__legend--l"
         )
     </div>
