@@ -25,16 +25,17 @@ import play.api.mvc.{Request, Session}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.ResponseCommon
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubmissionCompleteData, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressLookupParams
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{CachedData, DataUnavailableException, SessionCache}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.mongo.CurrentTimestampSupport
-import uk.gov.hmrc.mongo.cache.DataKey
+import uk.gov.hmrc.mongo.cache.{CacheItem, DataKey}
 import util.builders.RegistrationDetailsBuilder._
 import uk.gov.hmrc.mongo.test.MongoSupport
+
 import java.time.{LocalDate, LocalDateTime}
 import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -163,8 +164,74 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
         throw new IllegalStateException("Cache returned None")
       )
 
-      val expectedJson = toJson(CachedData(registerWithEoriAndIdResponse = Some(rd)))
+      val expectedJson = toJson(
+        CachedData(
+          registerWithEoriAndIdResponse = Some(rd),
+          submissionCompleteDetails = Some(SubmissionCompleteData(None, Some(rd.responseCommon.processingDate)))
+        )
+      )
+
       cache.data mustBe expectedJson
+
+      await(sessionCache.registerWithEoriAndIdResponse(request)) mustBe rd
+
+    }
+
+    "store and fetch RegisterWithEORIAndId with SubscriptionDetails pre-populated" in {
+      when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-" + UUID.randomUUID()))))
+
+      val subscriptionDetails =
+        SubscriptionDetails(eoriNumber = Some("123456789"), nameDetails = Some(NameMatchModel("John Doe")))
+      val processingDate = LocalDateTime.now().withNano(0)
+      val responseCommon = ResponseCommon(status = "OK", processingDate = processingDate)
+      val trader         = Trader(fullName = "New trading", shortName = "nt")
+      val establishmentAddress =
+        EstablishmentAddress(streetAndNumber = "new street", city = "leeds", countryCode = "GB")
+      val responseData: ResponseData = ResponseData(
+        SAFEID = "SomeSafeId",
+        trader = trader,
+        establishmentAddress = establishmentAddress,
+        hasInternetPublication = true,
+        startDate = "2018-01-01"
+      )
+      val registerWithEoriAndIdResponseDetail = RegisterWithEoriAndIdResponseDetail(
+        outcome = Some("PASS"),
+        caseNumber = Some("case no 1"),
+        responseData = Some(responseData)
+      )
+      val rd = RegisterWithEoriAndIdResponse(
+        responseCommon = responseCommon,
+        responseDetail = Some(registerWithEoriAndIdResponseDetail)
+      )
+      val submissionCompleteData = SubmissionCompleteData(Some(subscriptionDetails), None)
+
+      await(sessionCache.saveSubmissionCompleteDetails(submissionCompleteData)(request))
+
+      val cachePreUpdate = await(sessionCache.cacheRepo.findById(request))
+
+      val expectedJsonPreUpdate = toJson(
+        CachedData(
+          registerWithEoriAndIdResponse = None,
+          submissionCompleteDetails = Some(SubmissionCompleteData(Some(subscriptionDetails), None))
+        )
+      )
+
+      val Some(CacheItem(_, jsonPreUpdate, _, _)) = cachePreUpdate
+      jsonPreUpdate mustBe expectedJsonPreUpdate
+
+      await(sessionCache.saveRegisterWithEoriAndIdResponse(rd)(request))
+
+      val cache = await(sessionCache.cacheRepo.findById(request))
+
+      val expectedJson = toJson(
+        CachedData(
+          registerWithEoriAndIdResponse = Some(rd),
+          submissionCompleteDetails =
+            Some(SubmissionCompleteData(Some(subscriptionDetails), Some(rd.responseCommon.processingDate)))
+        )
+      )
+      val Some(CacheItem(_, json, _, _)) = cache
+      json mustBe expectedJson
 
       await(sessionCache.registerWithEoriAndIdResponse(request)) mustBe rd
 
@@ -390,8 +457,47 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
         throw new IllegalStateException("Cache returned None")
       )
 
-      val expectedJson = toJson(CachedData(subDetails = Some(subscriptionDetails)))
+      val expectedJson = toJson(
+        CachedData(
+          subDetails = Some(subscriptionDetails),
+          submissionCompleteDetails = Some(SubmissionCompleteData(Some(subscriptionDetails), None))
+        )
+      )
 
+      cache.data mustBe expectedJson
+    }
+
+    "store subscription details correctly with processedDate pre-populated" in {
+
+      when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-" + UUID.randomUUID()))))
+
+      val now = Some(LocalDateTime.now())
+
+      val submissionCompleteData = SubmissionCompleteData(None, now)
+
+      await(sessionCache.saveSubmissionCompleteDetails(submissionCompleteData)(request))
+
+      val cachePreUpdate =
+        await(sessionCache.cacheRepo.findById(request)).getOrElse(throw new IllegalStateException("cache not found"))
+
+      val expectedJsonPreUpdate =
+        toJson(CachedData(subDetails = None, submissionCompleteDetails = Some(SubmissionCompleteData(None, now))))
+
+      cachePreUpdate.data mustBe expectedJsonPreUpdate
+
+      val subscriptionDetails = SubscriptionDetails(email = Some("email@email.com"))
+
+      await(sessionCache.saveSubscriptionDetails(subscriptionDetails)(request))
+
+      val cache =
+        await(sessionCache.cacheRepo.findById(request)).getOrElse(throw new IllegalStateException("cache not found"))
+
+      val expectedJson = toJson(
+        CachedData(
+          subDetails = Some(subscriptionDetails),
+          submissionCompleteDetails = Some(SubmissionCompleteData(Some(subscriptionDetails), now))
+        )
+      )
       cache.data mustBe expectedJson
     }
 

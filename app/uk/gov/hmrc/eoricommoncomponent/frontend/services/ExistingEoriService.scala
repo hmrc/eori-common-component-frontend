@@ -70,7 +70,7 @@ class ExistingEoriService @Inject() (
   def onEnrolSuccess(
     service: Service
   )(implicit request: Request[_], loggedInUser: LoggedInUserWithEnrolments, msg: Messages): Future[Result] =
-    getExistingEORI.map(eori => Ok(enrolSuccessView(eori.id, service)))
+    getExistingEORI.map(_ => Ok(enrolSuccessView(service)))
 
   private def getRoute(service: Service): Call =
     if (service.enrolmentKey == Service.cds.enrolmentKey)

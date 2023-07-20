@@ -38,7 +38,7 @@ object FormValidation {
       condition = isAnyOf("countryCode", postCodeMandatoryCountryCodes),
       wrapped = MandatoryOptionalMapping(text.verifying(validPostcode)),
       elseValue = (key, data) => data.get(key)
-    ).verifying(lift(postcodeMax(9)))
+    ).transform[Option[String]](_.map(_.filterNot(_.isWhitespace)), identity).verifying(lift(postcodeMax(9)))
 
   private def validPostcode: Constraint[String] =
     Constraint({

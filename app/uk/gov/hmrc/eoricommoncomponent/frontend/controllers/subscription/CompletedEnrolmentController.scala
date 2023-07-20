@@ -39,8 +39,8 @@ class CompletedEnrolmentController @Inject() (
   def enrolSuccess(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithServiceAction {
     implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
       activatedEnrolmentForService(loggedInUser, service) match {
-        case Some(eori) => sessionCache.remove.map(_ => Ok(enrolSuccessView(eori.id, service)))
-        case _          => throw DataUnavailableException("No enrolment found for the user")
+        case Some(_) => sessionCache.remove.map(_ => Ok(enrolSuccessView(service)))
+        case _       => throw DataUnavailableException("No enrolment found for the user")
       }
   }
 

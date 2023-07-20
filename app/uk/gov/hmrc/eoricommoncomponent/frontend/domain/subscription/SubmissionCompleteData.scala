@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this()
+package uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription
 
-@(msg: String, id: Option[String] = None, classes: String = "govuk-heading-m")(implicit messages: Messages)
+import play.api.libs.json.{Format, Json}
+import java.time.LocalDateTime
 
-<h2 @{id.fold("")(id => s"id=$id")} class="@classes">@messages(msg)</h2>
+case class SubmissionCompleteData(
+  subscriptionDetails: Option[SubscriptionDetails] = None,
+  processingDate: Option[LocalDateTime] = None
+)
+
+object SubmissionCompleteData {
+  implicit val format: Format[SubmissionCompleteData] = Json.format[SubmissionCompleteData]
+}
