@@ -97,7 +97,7 @@ class AddressLookupResultsViewSpec extends ViewSpec {
     "display address selection list" in {
       val document = doc().body()
 
-      document.getElementById("addressId").`val`() mustBe "Line 1, City, BB11 1BB"
+      document.getElementById("address").`val`() mustBe "Line 1, City, BB11 1BB"
       document.getElementById("addressId-1").`val`() mustBe "Line 1, City2, BB11 1BC"
     }
 
