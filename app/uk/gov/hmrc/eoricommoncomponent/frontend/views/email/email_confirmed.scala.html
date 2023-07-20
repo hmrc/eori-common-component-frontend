@@ -24,7 +24,7 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.LongJourney
 @import views.html.helper.CSRF
 
-@this(layout_di: layout, govukButton: GovukButton)
+@this(layout_di: layout, govukButton: GovukButton, h1: helpers.h1)
 
 @(service: Service, subscribeJourney: SubscribeJourney)(implicit messages: Messages, request: Request[_])
 
@@ -41,14 +41,14 @@
         @CSRF.formField
 
         <div class="start_page">
-            <h1 class="govuk-heading-l">@messages("cds.email-confirmed.title-and-heading")</h1>
 
-            <p class="govuk-body">
+            @h1(messages("cds.email-confirmed.title-and-heading"))
+
             @govukButton(Button(
                 content = Text(messages("cds.navigation.continue")),
                 id = Some("continue-button")
             ))
-            </p>
+
 
             @helpers.helpAndSupport()
         </div>
