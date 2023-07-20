@@ -84,10 +84,10 @@ class DateOfEstablishmentSpec extends ViewSpec {
 
   "On an UnincorporatedBody org type journey Date Established page" should {
     "display correct title" in {
-      docCharity.title() must startWith("When was the partnership established?")
+      docCharity.title() must startWith("When was the organisation established?")
     }
     "have the correct h1 text" in {
-      docCharity.body.getElementsByTag("h1").text() mustBe "When was the partnership established?"
+      docCharity.body.getElementsByTag("h1").text() mustBe "When was the organisation established?"
     }
     "have the correct class on the h1" in {
       docCharity.body.getElementsByTag("h1").hasClass("govuk-fieldset__legend--l") mustBe true
