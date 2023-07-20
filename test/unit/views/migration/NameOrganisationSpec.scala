@@ -41,7 +41,7 @@ class NameOrganisationSpec extends ViewSpec {
       doc.title() must startWith("What is the name of your organisation?")
     }
     "have the correct h1 text" in {
-      doc.body().getElementsByTag("h1").text() mustBe "What is your registered organisation name?"
+      doc.body().getElementsByTag("h1").text() mustBe "What is the name of your organisation?"
     }
     "have an input of type 'text' for organisation name" in {
       doc.body().getElementById("name").attr("type") mustBe "text"
