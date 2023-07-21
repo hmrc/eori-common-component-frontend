@@ -16,43 +16,38 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.forms
 
+import play.api.data.Forms.of
+
 import java.time.LocalDate
-import play.api.data.Mapping
+import play.api.data.FieldMapping
 import play.api.data.validation._
-import uk.gov.hmrc.eoricommoncomponent.frontend.playext.mappers.DateTuple._
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.LocalDateFormatter
 
 object FormUtils {
 
-  val messageKeyMandatoryField    = "cds.error.mandatory.field"
-  val messageKeyInvalidDateFormat = "cds.error.invalid.date.format"
-  val messageKeyFutureDate        = "cds.error.future-date"
+  val messageKeyMandatoryField = "cds.error.mandatory.field"
 
   def formatInput(value: String): String                      = value.replaceAll(" ", "").toUpperCase
   def formatInput(maybeValue: Option[String]): Option[String] = maybeValue.map(value => formatInput(value))
 
-  def mandatoryDate(
-    onEmptyError: String = messageKeyMandatoryField,
-    onInvalidDateError: String = messageKeyInvalidDateFormat,
-    minYear: Int
-  ): Mapping[LocalDate] =
-    dateTuple(onInvalidDateError, minYear)
-      .verifying(onEmptyError, d => d.isDefined)
-      .transform(_.get, Option(_))
+  def maxDate(maximum: LocalDate, errorKey: String, args: Any*): Constraint[LocalDate] =
+    Constraint {
+      case date if date.isAfter(maximum) =>
+        Invalid(errorKey, args: _*)
+      case _ =>
+        Valid
+    }
 
-  def mandatoryDateTodayOrBefore(
-    onEmptyError: String = messageKeyMandatoryField,
-    onInvalidDateError: String = messageKeyInvalidDateFormat,
-    onDateInFutureError: String = messageKeyFutureDate,
-    minYear: Int
-  ): Mapping[LocalDate] =
-    mandatoryDate(onEmptyError, onInvalidDateError, minYear)
-      .verifying(
-        onDateInFutureError,
-        d => {
-          val today = LocalDate.now()
-          d.isEqual(today) || d.isBefore(today)
-        }
-      )
+  def minDate(minimum: LocalDate, errorKey: String, args: Any*): Constraint[LocalDate] =
+    Constraint {
+      case date if date.isBefore(minimum) =>
+        Invalid(errorKey, args: _*)
+      case _ =>
+        Valid
+    }
+
+  def localDateUserInput(emptyKey: String, invalidKey: String, args: Seq[String] = Seq.empty): FieldMapping[LocalDate] =
+    of(new LocalDateFormatter(emptyKey, invalidKey, args))
 
   def oneOf[T](validValues: Set[T]): T => Boolean = validValues.contains
 

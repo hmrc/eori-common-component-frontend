@@ -30,7 +30,6 @@ object DateConverter {
   private val logger = Logger(this.getClass)
 
   val earliestYearDateOfBirth         = 1900
-  val earliestYearEffectiveVatDate    = 1970
   val earliestYearDateOfEstablishment = 1000
 
   def toLocalDate(dateStr: String): Option[LocalDate] =
