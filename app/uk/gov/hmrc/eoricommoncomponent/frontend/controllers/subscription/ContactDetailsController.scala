@@ -119,17 +119,10 @@ class ContactDetailsController @Inject() (
       .map(
         _ =>
           if (inReviewMode) Redirect(DetermineReviewPageController.determineRoute(service))
-          else if (appConfig.contactAddress)
-            Redirect(
-              subscriptionFlowManager
-                .stepInformation(ContactDetailsSubscriptionFlowPageMigrate)
-                .nextPage
-                .url(service)
-            )
           else
             Redirect(
               subscriptionFlowManager
-                .stepInformation(ConfirmContactAddressSubscriptionFlowPage)
+                .stepInformation(ContactDetailsSubscriptionFlowPageMigrate)
                 .nextPage
                 .url(service)
             )
