@@ -28,6 +28,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.RowOrganisationFlow
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.CompanyRegisteredCountry
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
@@ -76,7 +77,7 @@ class CompanyRegisteredCountryController @Inject() (
   private def prepareViewBasedOnType(form: Form[CompanyRegisteredCountry], service: Service, isInReviewMode: Boolean)(
     implicit request: Request[AnyContent]
   ): Html = {
-    val (countries, picker) = Countries.getCountryParametersForAllCountries()
+    val (countries, picker) = Countries.getCountryParameters(Some(UserLocation.ThirdCountryIncEU))
 
     if (requestSessionData.userSubscriptionFlow == RowOrganisationFlow)
       countryOrganisationPage(form, countries, picker, service, isInReviewMode)
