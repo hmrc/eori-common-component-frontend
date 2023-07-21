@@ -52,14 +52,6 @@ class ContactDetailsSpec extends ViewSpec {
       doc.body().getElementsByTag("h1").text() mustBe "Who can we contact?"
     }
 
-    "display email" in {
-
-      val emailDiv = doc.body().getElementById("email-outer")
-
-      emailDiv.getElementsByTag("span").get(0).text() must startWith("Email address")
-      emailDiv.getElementById("email").text() mustBe email
-    }
-
     "display full name input" in {
 
       doc.body().getElementsByClass("full-name").text() mustBe "Full name"
