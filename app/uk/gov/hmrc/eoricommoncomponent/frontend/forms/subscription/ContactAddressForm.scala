@@ -18,9 +18,9 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription
 
 import play.api.data.Forms.{text, _}
 import play.api.data.validation._
-import play.api.data.{Form, Mapping}
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.messageKeyMandatoryField
+import play.api.data.Form
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation._
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.Mappings
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactAddressModel
 
 object ContactAddressForm {
@@ -34,7 +34,7 @@ object ContactAddressForm {
         "line-3"      -> text.verifying(validLine3),
         "line-4"      -> optional(text.verifying(validLine4)),
         "postcode"    -> postcodeMapping,
-        "countryCode" -> mandatoryString("cds.matching-error.country.invalid")(s => s.length == Length2)
+        "countryCode" -> Mappings.mandatoryString("cds.matching-error.country.invalid")(s => s.length == Length2)
       )(ContactAddressModel.apply)(ContactAddressModel.unapply)
     )
 
@@ -67,21 +67,5 @@ object ContactAddressForm {
         Invalid(ValidationError("cds.matching.organisation-address.line-4.error.too-long"))
       case _ => Valid
     })
-
-  def mandatoryString(
-    onEmptyError: String
-  )(constraintFunction: String => Boolean, error: => String = onEmptyError): Mapping[String] = {
-    val constraint = Constraint((s: String) => if (constraintFunction.apply(s)) Valid else Invalid(error))
-    mandatoryString(onEmptyError, Seq(constraint))
-  }
-
-  def mandatoryString(onEmptyError: String, constraints: Seq[Constraint[String]]): Mapping[String] =
-    optional(text.verifying(nonEmptyString(onEmptyError)).verifying(constraints: _*))
-      .verifying(onEmptyError, _.isDefined)
-      .transform[String](o => o.get, s => Some(s))
-
-  def nonEmptyString(error: => String = messageKeyMandatoryField): Constraint[String] = Constraint { s =>
-    Option(s).filter(_.trim.nonEmpty).fold[ValidationResult](ifEmpty = Invalid(error))(_ => Valid)
-  }
 
 }

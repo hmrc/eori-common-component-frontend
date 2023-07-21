@@ -152,9 +152,8 @@ class AddressLookupResultsController @Inject() (
             response match {
               case AddressLookupSuccess(addresses) if addresses.nonEmpty && addresses.forall(_.nonEmpty) =>
                 val addressesMap  = addresses.map(address => address.dropDownView -> address).toMap
-                val addressesView = addressesMap.keys.toSeq
-
-                AddressResultsForm.form(addressesView).bindFromRequest().fold(
+                val addressesList = addressesMap.keys.toSeq
+                AddressResultsForm.form(addressesList).bindFromRequest().fold(
                   formWithErrors =>
                     Future.successful(
                       BadRequest(prepareView(formWithErrors, addressLookupParams, addresses, isInReviewMode, service))
