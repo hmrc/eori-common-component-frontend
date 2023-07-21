@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.config
 
 import play.api.Logging
-import models.Done
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Done
 import play.api.Configuration
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
@@ -38,10 +38,9 @@ class NoOpInternalAuthTokenInitialiser @Inject() () extends InternalAuthTokenIni
 }
 
 @Singleton
-class InternalAuthTokenInitialiserImpl @Inject() (
-                                               configuration: Configuration,
-                                               httpClient: HttpClientV2
-                                             )(implicit ec: ExecutionContext) extends InternalAuthTokenInitialiser with Logging {
+class InternalAuthTokenInitialiserImpl @Inject() (configuration: Configuration, httpClient: HttpClientV2)(implicit
+  ec: ExecutionContext
+) extends InternalAuthTokenInitialiser with Logging {
 
   private val internalAuthService: Service =
     configuration.get[Service]("microservice.services.internal-auth")
@@ -57,44 +56,39 @@ class InternalAuthTokenInitialiserImpl @Inject() (
 
   Await.result(initialised, 30.seconds)
 
-  private def ensureAuthToken(): Future[Done] = {
+  private def ensureAuthToken(): Future[Done] =
     authTokenIsValid.flatMap { isValid =>
       if (isValid) {
         logger.info("Auth token is already valid")
         Future.successful(Done)
-      } else {
+      } else
         createClientAuthToken()
-      }
     }
-  }
 
   private def createClientAuthToken(): Future[Done] = {
     logger.info("Initialising auth token")
     httpClient.post(url"${internalAuthService.baseUrl}/test-only/token")(HeaderCarrier())
-      .withBody(Json.obj(
-        "token" -> authToken,
-        "principal" -> appName,
-        "permissions" -> Seq(
-          Json.obj(
-            "resourceType" -> "eori-common-component",
-            "resourceLocation" -> "*",
-            "actions" -> List("WRITE")
-          ),
-          Json.obj(
-            "resourceType" -> "eori-common-component-hods-proxy",
-            "resourceLocation" -> "*",
-            "actions" -> List("WRITE")
+      .withBody(
+        Json.obj(
+          "token"     -> authToken,
+          "principal" -> appName,
+          "permissions" -> Seq(
+            Json.obj("resourceType" -> "eori-common-component", "resourceLocation" -> "*", "actions" -> List("WRITE")),
+            Json.obj(
+              "resourceType"     -> "eori-common-component-hods-proxy",
+              "resourceLocation" -> "*",
+              "actions"          -> List("WRITE")
+            )
           )
         )
-      ))
+      )
       .execute
       .flatMap { response =>
         if (response.status == 201) {
           logger.info("Auth token initialised")
           Future.successful(Done)
-        } else {
+        } else
           Future.failed(new RuntimeException("Unable to initialise internal-auth token"))
-        }
       }
 
   }
@@ -106,4 +100,5 @@ class InternalAuthTokenInitialiserImpl @Inject() (
       .execute
       .map(_.status == 200)
   }
+
 }

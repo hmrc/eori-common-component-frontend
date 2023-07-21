@@ -23,27 +23,36 @@ import play.mvc.Http.Status.{NO_CONTENT, OK}
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.CustomsDataStoreRequest
-import uk.gov.hmrc.http.{HttpClient, _}
+import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.client.HttpClientV2
+import play.api.libs.json.Json
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
 @Singleton
-class UpdateCustomsDataStoreConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
-  ec: ExecutionContext
+class UpdateCustomsDataStoreConnector @Inject() (httpClient: HttpClientV2, appConfig: AppConfig, audit: Auditable)(
+  implicit ec: ExecutionContext
 ) {
 
   val LoggerComponentId = "UpdateCustomsDataStoreConnector"
   private val logger    = Logger(this.getClass)
 
   def updateCustomsDataStore(request: CustomsDataStoreRequest)(implicit hc: HeaderCarrier): Future[Unit] = {
-    val url = s"${appConfig.handleSubscriptionBaseUrl}/customs/update/datastore"
-    logger.info(s"[$LoggerComponentId][call] postUrl: $url")
-    val headers = Seq(ACCEPT -> "application/vnd.hmrc.1.0+json", CONTENT_TYPE -> MimeTypes.JSON)
+    val url = url"${appConfig.handleSubscriptionBaseUrl}/customs/update/datastore"
 
-    auditCallRequest(url, request)
-    http.POST[CustomsDataStoreRequest, HttpResponse](url, request, headers) map { response =>
-      auditCallResponse(url, response)
+    logger.info(s"[$LoggerComponentId][call] postUrl: $url")
+    auditCallRequest(url.toString, request)
+
+    val httpRequest = httpClient
+      .post(url)
+      .withBody(Json.toJson(request))
+      .setHeader(ACCEPT -> "application/vnd.hmrc.1.0+json")
+      .setHeader(CONTENT_TYPE -> MimeTypes.JSON)
+      .setHeader(AUTHORIZATION -> appConfig.internalAuthToken)
+
+    httpRequest.execute[HttpResponse] map { response =>
+      auditCallResponse(url.toString, response)
       response.status match {
         case OK | NO_CONTENT =>
           logger.info(s"[$LoggerComponentId][call] complete to $url with status:${response.status}")

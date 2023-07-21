@@ -140,4 +140,6 @@ class AppConfig @Inject() (
   lazy val contactAddress   = config.getOptional[Boolean]("features.contact-address").getOrElse(false)
 
   val samplePayloads = config.getOptional[Boolean]("features.sample-payloads").getOrElse(false)
+
+  val internalAuthToken: String = config.get[String]("internal-auth.token")
 }

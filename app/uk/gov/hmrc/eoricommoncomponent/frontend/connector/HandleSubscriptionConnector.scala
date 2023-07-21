@@ -24,30 +24,39 @@ import play.mvc.Http.Status.{NO_CONTENT, OK}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.HandleSubscriptionRequest
 import uk.gov.hmrc.http._
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.client.HttpClientV2
+import play.api.libs.json.Json
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
 @Singleton
-class HandleSubscriptionConnector @Inject() (http: HttpClient, appConfig: AppConfig)(implicit ec: ExecutionContext) {
+class HandleSubscriptionConnector @Inject() (httpClient: HttpClientV2, appConfig: AppConfig)(implicit
+  ec: ExecutionContext
+) {
 
   private val logger = Logger(this.getClass)
-  private val url    = s"${appConfig.handleSubscriptionBaseUrl}/${appConfig.handleSubscriptionServiceContext}"
+  private val url    = url"${appConfig.handleSubscriptionBaseUrl}/${appConfig.handleSubscriptionServiceContext}"
 
   def call(request: HandleSubscriptionRequest)(implicit hc: HeaderCarrier): Future[Unit] = {
-    val headers = Seq(ACCEPT -> "application/vnd.hmrc.1.0+json", CONTENT_TYPE -> MimeTypes.JSON)
 
     // $COVERAGE-OFF$Loggers
-    logger.debug(s"Call: $url, eori: ${request.eori}, headers: $headers and hc: $hc")
+    logger.debug(s"Call: $url, eori: ${request.eori}, and hc: $hc")
     // $COVERAGE-ON
 
-    http.POST[HandleSubscriptionRequest, HttpResponse](url, request, headers) map { response =>
+    val httpRequest = httpClient
+      .post(url)
+      .withBody(Json.toJson(request))
+      .setHeader(ACCEPT -> "application/vnd.hmrc.1.0+json")
+      .setHeader(CONTENT_TYPE -> MimeTypes.JSON)
+      .setHeader(AUTHORIZATION -> appConfig.internalAuthToken)
+
+    httpRequest.execute[HttpResponse] map { response =>
       response.status match {
         case OK | NO_CONTENT =>
           logger.debug(s"Call complete for call to $url and  hc: $hc. Status:${response.status}")
           ()
-        case _ => 
+        case _ =>
           logger.error(s"${response.status} : ${response.body}")
           throw new BadRequestException(s"Status:${response.status}")
       }

@@ -27,22 +27,29 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NotifyRcmRequest
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.NotifyRcm
 import uk.gov.hmrc.http._
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.client.HttpClientV2
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
 @Singleton
-class NotifyRcmConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
+class NotifyRcmConnector @Inject() (httpClient: HttpClientV2, appConfig: AppConfig, audit: Auditable)(implicit
   ec: ExecutionContext
 ) {
 
   private val logger = Logger(this.getClass)
 
   def notifyRCM(request: NotifyRcmRequest)(implicit hc: HeaderCarrier): Future[Unit] = {
-    val url     = s"${appConfig.handleSubscriptionBaseUrl}/notify/rcm"
-    val headers = Seq(ACCEPT -> "application/vnd.hmrc.1.0+json", CONTENT_TYPE -> MimeTypes.JSON)
-    http.POST[NotifyRcmRequest, HttpResponse](url, request, headers) map { response =>
-      auditCallResponse(url, request, response)
+    val url = url"${appConfig.handleSubscriptionBaseUrl}/notify/rcm"
+
+    val httpRequest = httpClient
+      .post(url)
+      .withBody(Json.toJson(request))
+      .setHeader(ACCEPT -> "application/vnd.hmrc.1.0+json")
+      .setHeader(CONTENT_TYPE -> MimeTypes.JSON)
+      .setHeader(AUTHORIZATION -> appConfig.internalAuthToken)
+
+    httpRequest.execute[HttpResponse] map { response =>
+      auditCallResponse(url.toString, request, response)
       response.status match {
         case OK | NO_CONTENT => ()
         case _               => throw new BadRequestException(s"Status:${response.status}")
