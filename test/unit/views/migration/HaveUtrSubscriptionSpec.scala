@@ -61,11 +61,6 @@ class HaveUtrSubscriptionSpec extends ViewSpec {
         "Do you have a Self Assessment Unique Taxpayer Reference (UTR) issued in the UK?"
       )
     }
-    "have correct intro" in {
-      individualDoc.body
-        .getElementById("have-utr-hint")
-        .text must include("You will have a Self Assessment UTR if you registered for Self Assessment in the UK.")
-    }
 
   }
 

@@ -35,33 +35,7 @@
     }
 }
 
-@intro = @{
-        if(organisationType == CdsOrganisationType.SoleTraderId | organisationType == CdsOrganisationType.IndividualId) messages("cds.matching.row-sole-trader-individual.utr.paragraph")
-    
-}
-@utrlink = @{
-    organisationType match {
-        case CdsOrganisationType.SoleTraderId | CdsOrganisationType.IndividualId => Html(messages(""))
-        case _ => hintlinkOrganisation
-    }
-    }
 
-@hintlinkOrganisation = {
-    <p>@messages("cds.navigation.opens-new-page")<a href="@appConfig.findLostUtr" class="govuk-link" target="_blank" rel="noopener noreferrer">
-        @messages("cds.matching.row-lost-urt.hint.link")</a></p>
-}
-    
-@utrHelp = @{
-    organisationType match {
-        case CdsOrganisationType.SoleTraderId | CdsOrganisationType.IndividualId => Html(messages(""))
-        case _ => Html(messages("cds.matching.row-organisation.utr.hint"))
-    }
-}
-@hint = {
-    <p>@intro</p>
-    <p>@utrlink</p>
-    <p>@utrHelp</p>
-}
 @values = @{
     Seq("true" -> messages("cds.yes"), "false" -> messages("cds.no"))
 }
@@ -78,28 +52,27 @@
 
 
 @layout_di(headerAndTitle, form = Some(matchOrgIdForm)) {
-<div>
 
     @errorSummary(matchOrgIdForm.errors, focusOverrides = Map("have-utr" -> "have-utr-true"))
 
     @helpers.form(HaveUtrSubscriptionController.submit(isInReviewMode, service), "subscriptionUtrForm") {
     @CSRF.formField
-    <div class="govuk-form-group">
-        @inputRadioGroup(
+
+    @inputRadioGroup(
             matchOrgIdForm("have-utr"),
             legend = headerAndTitle,
             items = options,
-            hint = Some(Hint(content = HtmlContent(hint), classes = "govuk-body-s")),
+            hint = None,
             classes = "govuk-fieldset__legend--l"
         )
-    </div>
 
-        @govukButton(Button(
+
+    @govukButton(Button(
             content = Text(ViewHelper.continueButtonText(isInReviewMode)),
             id = Some("continue-button")
         ))
 
     @helpers.helpAndSupport()
     }
-</div>
+
 }
