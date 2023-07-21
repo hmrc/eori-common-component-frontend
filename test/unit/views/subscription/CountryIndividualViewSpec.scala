@@ -69,12 +69,12 @@ class CountryIndividualViewSpec extends ViewSpec {
 
     "display correct title" in {
 
-      doc.title() must startWith("In which country is you business registered?")
+      doc.title() must startWith("In which country is your business registered?")
     }
 
     "display correct header" in {
 
-      doc.body().getElementsByTag("h1").text() mustBe "In which country is you business registered?"
+      doc.body().getElementsByTag("h1").text() mustBe "In which country is your business registered?"
     }
 
     "display input with Country label" in {
