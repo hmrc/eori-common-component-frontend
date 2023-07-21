@@ -42,7 +42,7 @@ class DateOfEstablishmentSpec extends ViewSpec {
       doc.body.getElementsByTag("h1").text() mustBe "When was the company established?"
     }
     "have the correct class on the h1" in {
-      doc.body.getElementsByTag("h1").hasClass("govuk-fieldset__legend--l") mustBe true
+      doc.body.getElementsByTag("h1").hasClass("govuk-heading-l") mustBe true
     }
     "have the correct text in the hint" in {
       doc.body.getElementById("date-of-establishment-hint").text() mustBe "For example, 31 03 1980."
@@ -58,7 +58,7 @@ class DateOfEstablishmentSpec extends ViewSpec {
       docRestOfWorld.body.getElementsByTag("h1").text() mustBe "When was the organisation established?"
     }
     "have the correct class on the h1" in {
-      docRestOfWorld.body.getElementsByTag("h1").hasClass("govuk-fieldset__legend--l") mustBe true
+      docRestOfWorld.body.getElementsByTag("h1").hasClass("govuk-heading-l") mustBe true
     }
     "have the correct text in the description" in {
       docRestOfWorld.body
@@ -75,7 +75,7 @@ class DateOfEstablishmentSpec extends ViewSpec {
       docLlp.body.getElementsByTag("h1").text() mustBe "When was the partnership established?"
     }
     "have the correct class on the h1" in {
-      docLlp.body.getElementsByTag("h1").hasClass("govuk-fieldset__legend--l") mustBe true
+      docLlp.body.getElementsByTag("h1").hasClass("govuk-heading-l") mustBe true
     }
     "not have intro paragraph" in {
       Option(docLlp.body.getElementById("date-of-establishment-info")) mustBe empty
@@ -90,7 +90,7 @@ class DateOfEstablishmentSpec extends ViewSpec {
       docCharity.body.getElementsByTag("h1").text() mustBe "When was the organisation established?"
     }
     "have the correct class on the h1" in {
-      docCharity.body.getElementsByTag("h1").hasClass("govuk-fieldset__legend--l") mustBe true
+      docCharity.body.getElementsByTag("h1").hasClass("govuk-heading-l") mustBe true
     }
     "have the correct text in the hint" in {
       docCharity.body.getElementById("date-of-establishment-hint").text() mustBe "For example, 31 03 1980."
