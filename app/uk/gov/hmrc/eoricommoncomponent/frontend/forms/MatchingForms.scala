@@ -123,24 +123,28 @@ object MatchingForms {
 
   private def validBusinessName: Constraint[String] =
     Constraint({
-      case s if s.isEmpty      => Invalid(ValidationError("cds.matching-error.business-details.business-name.isEmpty"))
-      case s if s.length > 105 => Invalid(ValidationError("cds.matching-error.business-details.business-name.too-long"))
-      case _                   => Valid
+      case s if s.trim().isEmpty =>
+        Invalid(ValidationError("cds.matching-error.business-details.business-name.isEmpty"))
+      case s if s.trim().length > 105 =>
+        Invalid(ValidationError("cds.matching-error.business-details.business-name.too-long"))
+      case _ => Valid
     })
 
   private def validPartnershipName: Constraint[String] =
     Constraint({
-      case s if s.isEmpty => Invalid(ValidationError("cds.matching-error.business-details.partnership-name.isEmpty"))
-      case s if s.length > 105 =>
+      case s if s.trim().isEmpty =>
+        Invalid(ValidationError("cds.matching-error.business-details.partnership-name.isEmpty"))
+      case s if s.trim().length > 105 =>
         Invalid(ValidationError("cds.matching-error.business-details.partnership-name.too-long"))
       case _ => Valid
     })
 
   private def validCompanyName: Constraint[String] =
     Constraint({
-      case s if s.isEmpty      => Invalid(ValidationError("cds.matching-error.business-details.company-name.isEmpty"))
-      case s if s.length > 105 => Invalid(ValidationError("cds.matching-error.business-details.company-name.too-long"))
-      case _                   => Valid
+      case s if s.trim().isEmpty => Invalid(ValidationError("cds.matching-error.business-details.company-name.isEmpty"))
+      case s if s.trim().length > 105 =>
+        Invalid(ValidationError("cds.matching-error.business-details.company-name.too-long"))
+      case _ => Valid
     })
 
   private def validUtr: Constraint[String] = {
