@@ -18,13 +18,14 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription
 
 import play.api.data.Form
 import play.api.data.Forms._
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.Mappings.mandatoryString
 
 case class AddressResultsForm(address: String)
 
 object AddressResultsForm {
 
   def form(allowedAddresses: Seq[String]): Form[AddressResultsForm] = Form(
-    mapping("address" -> text.verifying("ecc.address-lookup.postcode.address.error", allowedAddresses.contains(_)))(
+    mapping("address" -> mandatoryString("ecc.address-lookup.postcode.address.error")(allowedAddresses.contains(_)))(
       AddressResultsForm.apply
     )(AddressResultsForm.unapply)
   )

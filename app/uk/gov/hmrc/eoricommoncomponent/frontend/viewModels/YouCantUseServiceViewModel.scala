@@ -20,7 +20,7 @@ import play.api.i18n.Messages
 import play.api.mvc.Request
 import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName.{longName, shortName}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName.longName
 
 object YouCantUseServiceViewModel {
 

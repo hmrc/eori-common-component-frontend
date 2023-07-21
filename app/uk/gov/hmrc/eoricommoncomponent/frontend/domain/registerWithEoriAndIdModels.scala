@@ -17,8 +17,6 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain
 
 import org.joda.time.DateTime
-
-import java.time.LocalDateTime
 import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
@@ -29,17 +27,6 @@ case class GovGatewayCredentials(email: String)
 
 object GovGatewayCredentials {
   implicit val format = Json.format[GovGatewayCredentials]
-}
-
-case class RegisterWithEoriAndIdRequestCommon(
-  receiptDate: LocalDateTime,
-  acknowledgementReference: String,
-  requestParameters: Option[Seq[RequestParameter]] = None
-)
-
-object RegisterWithEoriAndIdRequestCommon extends CommonHeader {
-  implicit val format             = Json.format[RegisterWithEoriAndIdRequestCommon]
-  implicit val requestParamFormat = Json.format[RequestParameter]
 }
 
 case class EstablishmentAddress(
@@ -264,22 +251,6 @@ trait CaseClassAuditHelper {
       acc + (f.getName -> value.toString)
     else
       getKeyValue(acc, value)
-
-  def prefixMapKey(prefix: String, map: Map[String, String]): Map[String, String] =
-    map.map(x => prefix + x._1 -> x._2)
-
-  def prefixMapKey(prefix: String, list: Seq[String]): Map[String, String] =
-    list.zipWithIndex.map(kv => prefix + (kv._2 + 1) -> kv._1).toMap
-
-  def convertToMap(list: Seq[Map[String, String]]): Map[String, String] =
-    list.zipWithIndex
-      .flatMap(
-        kv =>
-          kv._1.map { x =>
-            (x._1 + "." + kv._2) -> x._2
-          }
-      )
-      .toMap
 
   private def isLeafNode(value: Any) =
     value match {

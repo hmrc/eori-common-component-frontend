@@ -24,12 +24,13 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.eoricommoncomponent.frontend.DateConverter
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.{mandatoryDateTodayOrBefore, _}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils._
+
+import java.time.LocalDate
 
 object MatchingForms {
 
   val Length35          = 35
-  val Length34          = 34
   private val nameRegex = "[a-zA-Z0-9-' ]*"
 
   private def validUtrFormat(utr: Option[String]): Boolean = {
@@ -179,16 +180,19 @@ object MatchingForms {
     )
   )
 
+  private val minimumDate = LocalDate.of(DateConverter.earliestYearDateOfBirth, 1, 1)
+  private val today       = LocalDate.now()
+
   val enterNameDobForm: Form[NameDobMatchModel] = Form(
     mapping(
       "first-name"  -> text.verifying(validFirstName),
       "middle-name" -> optional(text.verifying(validMiddleName)),
       "last-name"   -> text.verifying(validLastName),
-      "date-of-birth" -> mandatoryDateTodayOrBefore(
-        onEmptyError = "dob.error.empty-date",
-        onInvalidDateError = "dob.error.invalid-date",
-        onDateInFutureError = "dob.error.future-date",
-        minYear = DateConverter.earliestYearDateOfBirth
+      "date-of-birth" -> localDateUserInput(
+        emptyKey = "dob.error.empty-date",
+        invalidKey = "dob.error.invalid-date"
+      ).verifying(minDate(minimumDate, "dob.error.minMax", DateConverter.earliestYearDateOfBirth.toString)).verifying(
+        maxDate(today, "dob.error.future-date", DateConverter.earliestYearDateOfBirth.toString)
       )
     )(NameDobMatchModel.apply)(NameDobMatchModel.unapply)
   )
@@ -198,11 +202,11 @@ object MatchingForms {
       "first-name"  -> text.verifying(validGivenName),
       "middle-name" -> optional(text.verifying(validMiddleName)),
       "last-name"   -> text.verifying(validFamilyName),
-      "date-of-birth" -> mandatoryDateTodayOrBefore(
-        onEmptyError = "dob.error.empty-date",
-        onInvalidDateError = "dob.error.invalid-date",
-        onDateInFutureError = "dob.error.future-date",
-        minYear = DateConverter.earliestYearDateOfBirth
+      "date-of-birth" -> localDateUserInput(
+        emptyKey = "dob.error.empty-date",
+        invalidKey = "dob.error.invalid-date"
+      ).verifying(minDate(minimumDate, "dob.error.minMax", DateConverter.earliestYearDateOfBirth.toString)).verifying(
+        maxDate(today, "dob.error.future-date", DateConverter.earliestYearDateOfBirth.toString)
       )
     )(NameDobMatchModel.apply)(NameDobMatchModel.unapply)
   )
@@ -275,7 +279,7 @@ object MatchingForms {
     )(NinoOrUtrChoice.apply)(NinoOrUtrChoice.unapply)
   )
 
-  def validHaveUtr: Constraint[Option[Boolean]] =
+  private def validHaveUtr: Constraint[Option[Boolean]] =
     Constraint({
       case None => Invalid(ValidationError("cds.matching.organisation-utr.field-error.have-utr"))
       case _    => Valid
@@ -285,7 +289,7 @@ object MatchingForms {
     mapping("have-utr" -> optional(boolean).verifying(validHaveUtr))(UtrMatchModel.apply)(model => Some(model.haveUtr))
   )
 
-  def validHaveNino: Constraint[Option[Boolean]] =
+  private def validHaveNino: Constraint[Option[Boolean]] =
     Constraint({
       case None => Invalid(ValidationError("cds.matching.nino.row.yes-no.error"))
       case _    => Valid
