@@ -198,7 +198,7 @@ cds.registration.user-location.location.uk.label=Y Deyrnas Unedig
 cds.registration.user-location.location.third-country.label=Y tu allan i’r Undeb Ewropeaidd
 cds.registration.user-location.location.third-country-inc-eu.label=Gweddill y byd
 
-cds.subscription.date-of-establishment.company.title-and-heading=Dyddiad y sefydlwyd y cwmni
+cds.subscription.date-of-establishment.company.title-and-heading=Pryd y cafodd y cwmni ei sefydlu?
 
 cds.subscription.address-details.postcode.row.label=Cod post
 
