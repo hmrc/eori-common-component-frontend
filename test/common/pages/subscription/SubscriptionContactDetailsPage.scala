@@ -26,14 +26,13 @@ trait SubscriptionContactDetailsPage extends WebPage {
 
   val headingXPath        = "//*[@id='page-heading']"
   val introXPathRegister  = "//*[@id='contactDetailsForm']/fieldset/legend/p"
-  val introXPathSubscribe = "//*[@id='contactDetailsForm']/p"
+  val introXPathSubscribe = "//*[@id='contactDetailsForm']/p[@id='telephone-para']"
 
   val fullNameFieldXPath           = "//*[@id='full-name']"
   val fullNameFieldLevelErrorXPath = "//p[@id='full-name-error'][@class='govuk-error-message']"
   val fullNameFieldLabel           = "Full name"
   val fullNameFieldId              = "full-name"
 
-  val emailFieldXPath                  = "//*[@id='email']"
   val emailAddressFieldLevelErrorXPath = "//p[@id='email-error'][@class='govuk-error-message']"
   val emailAddressFieldLabel           = "Email address"
   val emailAddressFieldId              = "email"

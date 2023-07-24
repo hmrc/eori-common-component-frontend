@@ -130,7 +130,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         page.getElementsText(headingXPath) shouldBe "Who can we contact?"
         page.getElementsText(
           introXPathSubscribe
-        ) shouldBe "We will use these details to contact you about your application."
+        ) shouldBe "We’ll only use this if we need to talk to you about this application."
       }
     }
 
@@ -151,7 +151,6 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       showReviewForm() { result =>
         val page = CdsPage(contentAsString(result))
         page.getElementValue(fullNameFieldXPath) shouldBe FullName
-        page.getElementText(emailFieldXPath) shouldBe Email
         page.getElementValue(telephoneFieldXPath) shouldBe Telephone
       }
     }
