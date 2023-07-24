@@ -30,6 +30,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.Cu
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import util.externalservices.CustomsDataStoreStubService
 import util.externalservices.ExternalServicesConfig.{Host, Port}
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
+import play.api.inject.bind
 
 class UpdateCustomsDataStoreConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
 
@@ -53,6 +55,7 @@ class UpdateCustomsDataStoreConnectorSpec extends IntegrationTestsSpec with Scal
         "auditing.consumer.baseUri.port"                 -> Port
       )
     )
+    .overrides(bind[InternalAuthTokenInitialiser].to[NoOpInternalAuthTokenInitialiser])
     .build()
 
   private lazy val customsDataStoreConnector = app.injector.instanceOf[UpdateCustomsDataStoreConnector]

@@ -34,6 +34,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.{
 import uk.gov.hmrc.http._
 import util.externalservices.ExternalServicesConfig._
 import util.externalservices.TaxEnrolmentsService
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
+import play.api.inject.bind
 
 class TaxEnrolmentsConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
 
@@ -48,6 +50,7 @@ class TaxEnrolmentsConnectorSpec extends IntegrationTestsSpec with ScalaFutures 
         "auditing.consumer.baseUri.port"               -> Port
       )
     )
+    .overrides(bind[InternalAuthTokenInitialiser].to[NoOpInternalAuthTokenInitialiser])
     .build()
 
   private lazy val taxEnrolmentsConnector = app.injector.instanceOf[TaxEnrolmentsConnector]

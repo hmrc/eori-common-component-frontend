@@ -30,7 +30,6 @@ import play.api.test.Helpers.AUTHORIZATION
 import scala.util.Try
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.InternalAuthTokenInitialiser
-
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 
