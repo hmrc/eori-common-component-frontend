@@ -35,7 +35,7 @@
     }
 }
 
-@layout_di(messages("cds.email-confirmed.title-and-heading"), displayBackLink = false) {
+@layout_di(messages("cds.email-confirmed.title-and-heading"), displayBackLink = true) {
 
     @helpers.form(actionM) {
         @CSRF.formField
