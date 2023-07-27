@@ -18,7 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, Json, JsValue, JsString}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.EmailVerificationKeys.{
   LinkExpiryDurationKey,
@@ -98,6 +98,54 @@ class EmailVerificationConnector @Inject() (http: HttpClient, appConfig: AppConf
         response
     }
   }
+
+  private[connector] lazy val verifyEmailUrl: String =
+    s"${appConfig.emailVerificationBaseUrl}/${appConfig.emailVerificationServiceContext}/verify-email"
+
+  import uk.gov.hmrc.eoricommoncomponent.frontend.models.ResponseWithURI
+
+  def verifyEmail(credId: String, serviceName: String, email: Option[String])(implicit
+    hc: HeaderCarrier
+  ): Future[ResponseWithURI] = {
+
+  val emailJson: Seq[(String, JsObject)] = email match {
+    case Some(emailAddress) => 
+      Seq("email" -> JsObject(Seq(
+        "address" -> JsString(emailAddress),
+        "enterUrl" -> JsString("http://localhost:6750/customs-enrolment-services/esc/subscribe/longjourney/matching/what-is-your-email")
+      )))
+    case None => Nil
+  }      
+
+  val json = JsObject(
+    Seq(
+        "credId" -> JsString(credId),
+        "continueUrl" -> JsString("http://localhost:6750/customs-enrolment-services/esc/subscribe/longjourney/email-confirmed"),
+        "origin" -> JsString("ecc"),
+        "deskproServiceName" -> JsString("eori-common-component"), 
+        "accessibilityStatementUrl" -> JsString("/accessibility"),
+        "pageTitle" ->  JsString(serviceName), 
+        "lang" -> JsString("en")
+      ) ++ emailJson
+  )
+
+    http.POST[JsValue, ResponseWithURI](verifyEmailUrl, json)
+  }
+
+  def passcodes(implicit
+    hc: HeaderCarrier
+  ) = {
+    logger.info(s"Headers: $hc")
+    http.GET("http://localhost:9891/test-only/passcodes").map{ res =>
+      logger.info(res.toString)
+      res
+    } 
+  }
+
+    //   |    "email": {
+    // |        "address":"$email",
+    // |        "enterUrl":"http://localhost:6750/customs-enrolment-services/esc/subscribe/"
+    // |    }, // Optional, if absent then SI UI will prompt the User for the email address
 
 }
 

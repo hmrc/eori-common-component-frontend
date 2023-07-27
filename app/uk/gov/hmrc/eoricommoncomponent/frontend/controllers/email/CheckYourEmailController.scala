@@ -42,6 +42,15 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.YesNo
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
+import uk.gov.hmrc.auth.core.retrieve.Credentials
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
+
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName
+import play.api.i18n.Messages
+
 @Singleton
 class CheckYourEmailController @Inject() (
   authAction: AuthAction,
@@ -53,11 +62,39 @@ class CheckYourEmailController @Inject() (
   verifyYourEmail: verify_your_email,
   emailVerificationService: EmailVerificationService,
   updateVerifiedEmailService: UpdateVerifiedEmailService,
-  emailErrorPage: email_error_template
+  emailErrorPage: email_error_template,
+  val authConnector:    AuthConnector
 )(implicit ec: ExecutionContext)
-    extends CdsController(mcc) {
+    extends CdsController(mcc) with AuthorisedFunctions {
 
   private val logger = Logger(this.getClass)
+
+  def startVerificationJourney(
+    service: Service,
+    subscribeJourney: SubscribeJourney
+  ) = authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
+
+      val messages = implicitly[Messages]
+
+      userWithEnrolments.credentials match {
+        case Some(Credentials(credId, _)) =>
+          implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+
+          for {
+            emailOpt <- save4LaterService.fetchEmailForService(service, subscribeJourney, GroupId(userWithEnrolments.groupId))
+            responseWithURI <- emailVerificationService.startVerificationJourney(credId, messages(s"ecc.subscription.information.titleAndHeading.${service.code}"), emailOpt.flatMap(_.email))
+            uri = responseWithURI.redirectUri
+          } yield Redirect(Call("GET", s"http://localhost:9890$uri"))
+        case _ => Future.successful(BadRequest("Nope"))
+      }
+  }
+
+
+
+  def testOnlyDisplayPasscode = authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
+    emailVerificationService.passcodes.map(res => Ok(res.body.toString))
+  }
 
   private def populateView(
     email: Option[String],
@@ -144,7 +181,7 @@ class CheckYourEmailController @Inject() (
                 Future.successful(toResult(service, subscribeJourney))
               else
                 save4LaterService
-                  .saveEmailForService(email.copy(isConfirmed = Some(true)))(
+                  .saveEmailForService(email.copy(isConfirmed = Some(true), isVerified = true))(
                     service,
                     subscribeJourney,
                     GroupId(userWithEnrolments.groupId)
@@ -185,7 +222,7 @@ class CheckYourEmailController @Inject() (
           EmailController.form(service, subscribeJourney).url
         ) flatMap {
           case Some(true) =>
-            Future.successful(Redirect(CheckYourEmailController.verifyEmailView(service, subscribeJourney)))
+            Future.successful(Redirect(CheckYourEmailController.startVerificationJourney(service, subscribeJourney)))
           case Some(false) =>
             // $COVERAGE-OFF$Loggers
             logger.warn(

@@ -51,4 +51,17 @@ class EmailVerificationService @Inject() (emailVerificationConnector: EmailVerif
       case _                                   => None
     }
 
+  import uk.gov.hmrc.eoricommoncomponent.frontend.models.ResponseWithURI
+
+  def startVerificationJourney(credId: String, serviceName: String, email: Option[String])(implicit
+    hc: HeaderCarrier
+  ): Future[ResponseWithURI] =
+    emailVerificationConnector.verifyEmail(credId, serviceName, email)
+
+  def passcodes(implicit
+    hc: HeaderCarrier
+  ) = {
+    emailVerificationConnector.passcodes
+  }
+
 }

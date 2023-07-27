@@ -27,6 +27,9 @@ GET         /customs-enrolment-services/:service/subscribe/unable-to-use-id     
 
 GET         /customs-enrolment-services/:service/subscribe/keep-alive                                  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.keepAlive(service: Service)
 
+GET         /customs-enrolment-services/:service/subscribe/:subscribeJourney/start-email-journey            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.startVerificationJourney(service: Service, subscribeJourney: SubscribeJourney)
+GET         /customs-enrolment-services/passcodes            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.testOnlyDisplayPasscode
+
 GET         /customs-enrolment-services/:service/subscribe/:subscribeJourney/email-confirmed            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.emailConfirmed(service: Service, subscribeJourney: SubscribeJourney)
 GET         /customs-enrolment-services/:service/subscribe/:subscribeJourney/email-confirmed-continue   @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.emailConfirmedContinue(service: Service, subscribeJourney: SubscribeJourney)
 POST        /customs-enrolment-services/:service/subscribe/email-confirmed/accepted   @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.acceptConfirmation(service: Service)

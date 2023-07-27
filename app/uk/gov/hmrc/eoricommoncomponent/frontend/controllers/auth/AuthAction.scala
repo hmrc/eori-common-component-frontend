@@ -44,7 +44,7 @@ class AuthAction @Inject() (
     Request[AnyContent] => Option[String] => LoggedInUserWithEnrolments => Future[Result]
 
   private val baseRetrievals     = ggEmail and credentialRole and affinityGroup
-  private val extendedRetrievals = baseRetrievals and internalId and allEnrolments and groupIdentifier
+  private val extendedRetrievals = baseRetrievals and internalId and allEnrolments and groupIdentifier and credentials
 
   /**
     * Allows Gov Gateway user with correct user type, affinity group and no enrolment to service
@@ -79,10 +79,10 @@ class AuthAction @Inject() (
 
     authorised(AuthProviders(GovernmentGateway))
       .retrieve(extendedRetrievals) {
-        case currentUserEmail ~ userCredentialRole ~ userAffinityGroup ~ userInternalId ~ userAllEnrolments ~ groupId =>
+        case currentUserEmail ~ userCredentialRole ~ userAffinityGroup ~ userInternalId ~ userAllEnrolments ~ groupId ~ credentials =>
           transformRequest(
             Right(requestProcessor),
-            LoggedInUserWithEnrolments(userAffinityGroup, userInternalId, userAllEnrolments, currentUserEmail, groupId),
+            LoggedInUserWithEnrolments(userAffinityGroup, userInternalId, userAllEnrolments, currentUserEmail, groupId, credentials),
             userCredentialRole,
             checkPermittedAccess,
             checkServiceEnrolment
