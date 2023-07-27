@@ -52,7 +52,7 @@
 }
 
 @titleWithEnding = @{
-    title + " - " + messages("cds.banner.subscription", longName) + " - " + messages("cds.end-of-title")
+    title + " - " + messages(s"cds.banner.subscription.${service.code}") + " - " + messages("cds.end-of-title")
 }
 
 @titleErr = @{
@@ -143,7 +143,7 @@
     phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedBackSubscribe(service))),
     additionalHeadBlock = Some(theHead),
     additionalScriptsBlock = Some(scripts),
-    serviceName = Some(messages("cds.banner.subscription", longName)),
+    serviceName = Some(messages(s"cds.banner.subscription.${service.code}" )),
     accessibilityStatementUrl = Some(service.accessibilityUrl),
     beforeContentBlock = Some(beforeContent)
 )(mainContent)
