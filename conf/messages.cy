@@ -453,6 +453,7 @@ ecc.subscription.information.titleAndHeading.gbss=Tanysgrifio i’r Gwasanaeth D
 ecc.subscription.information.titleAndHeading.ctc=Tanysgrifio i’r System Gludo Gyfrifiadurol Newydd (NCTS)
 ecc.subscription.information.titleAndHeading.cds=Tanysgrifio i’r Gwasanaeth Datganiadau Tollau
 
+
 ecc.matching-error.eori=Nodwch rif EORI yn y fformat cywir
 ecc.matching-error.eori.isEmpty=Nodwch eich rhif EORI
 ecc.matching-error.eori.wrong-length.too-short=Mae’n rhaid i’r rhif EORI gynnwys mwy nag 11 digid
