@@ -23,7 +23,6 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
-import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{
   ContactDetailsController,
@@ -61,7 +60,6 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
   private val mockCdsFrontendDataCache = mock[SessionCache]
   private val mockOrgTypeLookup        = mock[OrgTypeLookup]
-  private val mockAppConfig            = mock[AppConfig]
   private val contactDetailsView       = instanceOf[contact_details]
 
   private val controller = new ContactDetailsController(
@@ -72,8 +70,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     mockSubscriptionDetailsHolderService,
     mockOrgTypeLookup,
     mcc,
-    contactDetailsView,
-    mockAppConfig
+    contactDetailsView
   )
 
   override protected def beforeEach(): Unit = {
@@ -89,7 +86,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     when(mockCdsFrontendDataCache.email(any[Request[AnyContent]])).thenReturn(Future.successful(Email))
     when(mockSubscriptionDetailsHolderService.cachedCustomsId(any())).thenReturn(Future.successful(None))
     when(mockSubscriptionDetailsHolderService.cachedNameIdDetails(any())).thenReturn(Future.successful(None))
-    when(mockAppConfig.contactAddress).thenReturn(Future.successful(false))
+
   }
 
   override protected def afterEach(): Unit = {
@@ -130,7 +127,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         page.getElementsText(headingXPath) shouldBe "Who can we contact?"
         page.getElementsText(
           introXPathSubscribe
-        ) shouldBe "We will use these details to contact you about your application."
+        ) shouldBe "We’ll only use this if we need to talk to you about this application."
       }
     }
 
@@ -151,7 +148,6 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       showReviewForm() { result =>
         val page = CdsPage(contentAsString(result))
         page.getElementValue(fullNameFieldXPath) shouldBe FullName
-        page.getElementText(emailFieldXPath) shouldBe Email
         page.getElementValue(telephoneFieldXPath) shouldBe Telephone
       }
     }
@@ -277,7 +273,6 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
     "redirect to check your details page if its feature switched on but it is not CDS enrolment when details are valid" in {
       when(nextPage.url(any[Service], any[SubscribeJourney])).thenReturn("/check-your-details")
-      when(mockAppConfig.contactAddress).thenReturn(Future.successful(true))
       withAuthorisedUser(defaultUserId, mockAuthConnector)
       val result = controller
         .submit(isInReviewMode = false, atarService)(
@@ -289,7 +284,6 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
     }
     "redirect to contact address page if its feature switched is on and CDS enrolment when details are valid" in {
       when(nextPage.url(any[Service], any[SubscribeJourney])).thenReturn("/contact-address")
-      when(mockAppConfig.contactAddress).thenReturn(Future.successful(true))
       withAuthorisedUser(defaultUserId, mockAuthConnector)
       val result = controller
         .submit(isInReviewMode = false, cdsService)(

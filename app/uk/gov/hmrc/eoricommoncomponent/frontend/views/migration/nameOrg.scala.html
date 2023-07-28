@@ -21,50 +21,55 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper
 @import uk.gov.hmrc.eoricommoncomponent.frontend.domain.NameOrganisationMatchModel
+@import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes
 
-@this(layout_di: layout,  errorSummary: helpers.errorSummary, inputText: helpers.inputText, govukButton: GovukButton)
+@this(layout_di: layout,
+        errorSummary: helpers.errorSummary,
+        inputText: helpers.inputText,
+        govukButton: GovukButton,
+        h1: helpers.h1,
+        p: helpers.paragraph
+)
 
-
-@(nameOrganisationForm: Form[NameOrganisationMatchModel],
+@(
+nameOrganisationForm: Form[NameOrganisationMatchModel],
 registrationDetails: RegistrationDetails,
 isInReviewMode: Boolean,
 service: Service,
-    )(implicit request: Request[_], messages: Messages)
-
-
+)(implicit request: Request[_], messages: Messages)
 
 @layout_di(messages("cds.matching.organisation.name.title"), form = Some(nameOrganisationForm)) {
-<div>
-    <h2 class="govuk-heading-l">@messages("cds.matching.organisation.name.title")</h2>
-    <p class="govuk-body">@messages("cds.matching.organisation.name.para")</p>
 
     @errorSummary(nameOrganisationForm.errors)
 
-    <div class="govuk-form-group">
-    @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.NameOrgController.submit(isInReviewMode, service), "nameUtrOrganisationForm") {
+    @h1(messages("cds.matching.organisation.name.title"))
+
+    @p(messages("cds.matching.organisation.name.para"))
+
+    @helpers.form(routes.NameOrgController.submit(isInReviewMode, service), "nameUtrOrganisationForm") {
+
         @CSRF.formField
 
-
-
-            @inputText(
+        @inputText(
                 form = nameOrganisationForm,
                 id = "name",
                 name = "name",
-                label = "cds.matching.organisation.name.heading",
-                isPageHeading = true,
+                label = "cds.matching.organisation.name.title",
+                isPageHeading = false,
                 hint = Some(Html(messages("cds.matching.organisation.name.para.hint"))),
                 classes = Some("govuk-!-width-two-thirds"),
                 labelClasses = Some("govuk-visually-hidden govuk-label--l")
-            )
+        )
 
-            @govukButton(Button(
+        @govukButton(Button(
                 content = Text(ViewHelper.continueButtonText(isInReviewMode)),
                 id = Some("continue-button")
-            ))
+        ))
+
         @helpers.helpAndSupport()
         }
-    </div>
 
 
-</div>
+
+
 }

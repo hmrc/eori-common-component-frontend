@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
 import play.api.mvc._
-import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
@@ -49,8 +48,7 @@ class ContactDetailsController @Inject() (
   subscriptionDetailsService: SubscriptionDetailsService,
   orgTypeLookup: OrgTypeLookup,
   mcc: MessagesControllerComponents,
-  contactDetailsView: contact_details,
-  appConfig: AppConfig
+  contactDetailsView: contact_details
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
@@ -119,17 +117,10 @@ class ContactDetailsController @Inject() (
       .map(
         _ =>
           if (inReviewMode) Redirect(DetermineReviewPageController.determineRoute(service))
-          else if (appConfig.contactAddress)
-            Redirect(
-              subscriptionFlowManager
-                .stepInformation(ContactDetailsSubscriptionFlowPageMigrate)
-                .nextPage
-                .url(service)
-            )
           else
             Redirect(
               subscriptionFlowManager
-                .stepInformation(ConfirmContactAddressSubscriptionFlowPage)
+                .stepInformation(ContactDetailsSubscriptionFlowPageMigrate)
                 .nextPage
                 .url(service)
             )

@@ -36,7 +36,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{MatchingService, Reg06Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName.service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription._
 import uk.gov.hmrc.http.HeaderCarrier

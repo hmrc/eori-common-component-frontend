@@ -1,5 +1,15 @@
 cds.banner.registration=Get an EORI
-cds.banner.subscription=Subscribe to {0}
+
+cds.banner.subscription.ars = Subscribe to advance rulings
+cds.banner.subscription.gagmr=Subscribe to the Goods Vehicle Movement Service
+cds.banner.subscription.atar=Subscribe to Advance Tariff Rulings
+cds.banner.subscription.esc = Subscribe to Report and manage your allowance for Customs Duty waiver claims
+cds.banner.subscription.route1=Subscribe to Customs Trader Services
+cds.banner.subscription.ivd=Subscribe to Customs Trader Services
+cds.banner.subscription.ndrc=Subscribe to Customs Trader Services
+cds.banner.subscription.gbss=Subscribe to the Safety and Security GB service
+cds.banner.subscription.ctc=Subscribe to the New Computerised Transit System (NCTS)
+cds.banner.subscription.cds=Subscribe to the Customs Declaration Service
 
 ecc.subscription.enter-eori-number.heading=What is your EORI number?
 cds.subscription.enter-eori-number.no-eori.summary=I do not have an EORI number
@@ -132,7 +142,7 @@ ecc.subscription.information.only.once.para1 = You only need to do this once.
 ecc.subscription.information.only.once.para1.atar= Once you have subscribed you can apply for an: <ul class="govuk-body"><li>Advance Tariff Ruling</li><li>Advance Valuation Ruling</li></ul>
 ecc.subscription.information.only.once.para1.cds = Once you have subscribed you will have access to the Customs Declaration Service.
 ecc.subscription.information.only.once.para1.gagmr = Once you have subscribed you can get a goods movement reference (GMR).
-ecc.subscription.information.only.once.para1.esc =  Once you have subscribed you can report and manage your allowance for Customs Duty Waiver claims
+ecc.subscription.information.only.once.para1.esc =  Once you have subscribed you can report and manage your allowance for Customs Duty waiver claims
 ecc.subscription.information.only.once.para1.ctc = Once you have subscribed you can submit union transit declarations.
 ecc.subscription.information.only.once.para1.gbss = Once you have subscribed you can make entry summary declarations.
 ecc.subscription.information.only.once.para1.ars = Once you have subscribed you can apply for an: <ul class="govuk-body"><li>Advance Tariff Ruling</li><li>Advance Valuation Ruling</li></ul>
@@ -191,7 +201,7 @@ cds.registration.user-location.location.uk.label=United Kingdom
 cds.registration.user-location.location.third-country.label=Outside the European Union
 cds.registration.user-location.location.third-country-inc-eu.label=Rest of the world
 
-cds.subscription.date-of-establishment.company.title-and-heading=Date when the company was established
+cds.subscription.date-of-establishment.company.title-and-heading=When was the company established?
 
 cds.subscription.address-details.postcode.row.label=Postal code
 

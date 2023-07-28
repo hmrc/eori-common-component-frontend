@@ -353,7 +353,6 @@ cds.subscription.enter-email.list-bullet-2=eich hysbysu am newidiadau brys o ran
 cds.subscription.enter-email.list-bullet-3=anfon hysbysiadau Debyd Uniongyrchol ynghylch gohirio tollau atoch, a datganiadau TAW ohiriedig ar gyfer eich mewnforion
 cds.subscription.enter-email.hint=Gallwch newid y cyfeiriad e-bost hwn yn nes ymlaen. Er enghraifft, os yw gwahanol dimau’n cymryd rhan, efallai y byddwch yn penderfynu sefydlu mewnflwch e-bost a rennir ar gyfer hysbysiadau’r tollau.
 subscription.check-your-email.heading=Gwirio’ch cyfeiriad e-bost
-subscription.check-your-email.label=Cyfeiriad e-bost
 subscription.check-your-email.confirm.label=Byddwn yn anfon cysylltiad atoch i gadarnhau’ch cyfeiriad e-bost.
 subscription.check-your-email.confirm.question=Ai {0} yw’r cyfeiriad e-bost rydych am ei ddefnyddio?
 subscription.check-your-email.confirm.title=Ai dyma’r cyfeiriad e-bost rydych am ei ddefnyddio?
@@ -453,6 +452,7 @@ ecc.subscription.information.titleAndHeading.ndrc=Tanysgrifio i Wasanaethau Masn
 ecc.subscription.information.titleAndHeading.gbss=Tanysgrifio i’r Gwasanaeth Diogelwch (yn y DU)
 ecc.subscription.information.titleAndHeading.ctc=Tanysgrifio i’r System Gludo Gyfrifiadurol Newydd (NCTS)
 ecc.subscription.information.titleAndHeading.cds=Tanysgrifio i’r Gwasanaeth Datganiadau Tollau
+
 
 ecc.matching-error.eori=Nodwch rif EORI yn y fformat cywir
 ecc.matching-error.eori.isEmpty=Nodwch eich rhif EORI
@@ -888,7 +888,7 @@ date-of-birth.day-date-of-birth.year.empty=Mae’n rhaid i’r dyddiad geni gynn
 date-of-birth.month-date-of-birth.year.empty=Mae’n rhaid i’r dyddiad geni gynnwys mis a blwyddyn
 dob.error.minMax = Mae’n rhaid i’r dyddiad geni fod rhwng {0} a heddiw
 cds.subscription.date-of-establishment.steps=eich manylion
-cds.subscription.date-of-establishment.title-and-heading=Dyddiad y sefydlwyd y sefydliad
+cds.subscription.date-of-establishment.title-and-heading=Pryd y cafodd y sefydliad ei sefydlu?
 cds.date-established.hint.organisation.label=Pryd y cafodd y sefydliad ei sefydlu?
 cds.subscription.partnership.date-of-establishment.title-and-heading=Pryd y cafodd y bartneriaeth ei sefydlu?
 cds.date-established.hint.company.label=Pryd y cafodd y cwmni ei sefydlu?

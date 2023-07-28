@@ -1,5 +1,15 @@
 cds.banner.registration=Cael rhif EORI
-cds.banner.subscription=Tanysgrifio i {0}
+
+cds.banner.subscription.ars = Tanysgrifio i ddyfarniadau uwch
+cds.banner.subscription.gagmr=Tanysgrifio i'''r Gwasanaeth Symud Cerbydau Nwyddau
+cds.banner.subscription.atar=Tanysgrifio i Ddyfarniadau Tariffau Uwch
+cds.banner.subscription.route1=Tanysgrifio i Wasanaethau Masnachwyr Tollau
+cds.banner.subscription.esc = Tanysgrifiwch ar gyfer Rhoi gwybod am a rheoli'''ch lwfans ar gyfer hawliadau Ildio Toll Dramor
+cds.banner.subscription.ivd=Tanysgrifio i Wasanaethau Masnachwyr Tollau
+cds.banner.subscription.ndrc=Tanysgrifio i Wasanaethau Masnachwyr Tollau
+cds.banner.subscription.gbss=Tanysgrifio i'''r Gwasanaeth Diogelwch (yn y DU)
+cds.banner.subscription.ctc=Tanysgrifio i'''r System Gludo Gyfrifiadurol Newydd (NCTS)
+cds.banner.subscription.cds=Tanysgrifio i'''r Gwasanaeth Datganiadau Tollau
 
 ecc.subscription.enter-eori-number.heading=Beth yw’ch rhif EORI?
 cds.subscription.enter-eori-number.no-eori.summary=Nid oes gennyf rif EORI
@@ -198,7 +208,7 @@ cds.registration.user-location.location.uk.label=Y Deyrnas Unedig
 cds.registration.user-location.location.third-country.label=Y tu allan i’r Undeb Ewropeaidd
 cds.registration.user-location.location.third-country-inc-eu.label=Gweddill y byd
 
-cds.subscription.date-of-establishment.company.title-and-heading=Dyddiad y sefydlwyd y cwmni
+cds.subscription.date-of-establishment.company.title-and-heading=Pryd y cafodd y cwmni ei sefydlu?
 
 cds.subscription.address-details.postcode.row.label=Cod post
 
