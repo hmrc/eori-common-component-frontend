@@ -23,6 +23,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.connector.CheckEoriNumberConnect
 import uk.gov.hmrc.http._
 import util.externalservices.CheckEoriNumberService
 import util.externalservices.ExternalServicesConfig._
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
+import play.api.inject.bind
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -39,6 +41,7 @@ class CheckEoriNumberConnectorSpec extends IntegrationTestsSpec with ScalaFuture
         "auditing.consumer.baseUri.port"                  -> Port
       )
     )
+    .overrides(bind[InternalAuthTokenInitialiser].to[NoOpInternalAuthTokenInitialiser])
     .build()
 
   private lazy val connector = app.injector.instanceOf[CheckEoriNumberConnector]

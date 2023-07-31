@@ -29,17 +29,19 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{Subscription, SubscriptionResult, SubscriptionSubmitted}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.PayloadCache
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.client.HttpClientV2
+import play.api.http.HeaderNames.AUTHORIZATION
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SubscriptionServiceConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
+class SubscriptionServiceConnector @Inject() (httpClient: HttpClientV2, appConfig: AppConfig, audit: Auditable)(implicit
   ec: ExecutionContext
 ) extends Instrumentable {
 
   private val logger = Logger(this.getClass)
-  private val url    = appConfig.getServiceUrl("subscribe")
+  private val url    = url"${appConfig.getServiceUrl("subscribe")}"
 
   def subscribe(request: SubscriptionRequest)(implicit hc: HeaderCarrier): Future[SubscriptionResponse] = {
 
@@ -51,12 +53,17 @@ class SubscriptionServiceConnector @Inject() (http: HttpClient, appConfig: AppCo
 
     if (appConfig.samplePayloads) sampleData(PayloadCache.SubscriptionCreate, request)
 
-    http.POST[SubscriptionRequest, SubscriptionResponse](url, request) map { response =>
+    val httpRequest = httpClient
+      .post(url)
+      .withBody(Json.toJson(request))
+      .setHeader(AUTHORIZATION -> appConfig.internalAuthToken)
+
+    httpRequest.execute[SubscriptionResponse] map { response =>
       // $COVERAGE-OFF$Loggers
       logger.debug(s"[Subscribe SUB02: responseCommon: ${response.subscriptionCreateResponse.responseCommon}")
       // $COVERAGE-ON
 
-      auditCall(url, request, response)
+      auditCall(url.toString, request, response)
       response
     } recoverWith {
       case e: Throwable =>

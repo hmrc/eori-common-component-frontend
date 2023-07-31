@@ -31,6 +31,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NotifyRcmReq
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import util.externalservices.ExternalServicesConfig.{Host, Port}
 import util.externalservices.NotifyRcmStubService
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
+import play.api.inject.bind
 
 class NotifyRcmConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
 
@@ -61,6 +63,7 @@ class NotifyRcmConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
         "auditing.consumer.baseUri.port"                 -> Port
       )
     )
+    .overrides(bind[InternalAuthTokenInitialiser].to[NoOpInternalAuthTokenInitialiser])
     .build()
 
   private lazy val notifyRcmConnector = app.injector.instanceOf[NotifyRcmConnector]

@@ -31,6 +31,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import util.externalservices.ExternalServicesConfig._
 import util.externalservices.{AuditService, SubscriptionStatusMessagingService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
+import play.api.inject.bind
 
 import java.time.LocalDateTime
 
@@ -45,6 +47,7 @@ class SubscriptionStatusConnectorSpec extends IntegrationTestsSpec with ScalaFut
         "auditing.consumer.baseUri.port"                                                     -> Port
       )
     )
+    .overrides(bind[InternalAuthTokenInitialiser].to[NoOpInternalAuthTokenInitialiser])
     .build()
 
   private val subscriptionStatusConnector = app.injector.instanceOf[SubscriptionStatusConnector]

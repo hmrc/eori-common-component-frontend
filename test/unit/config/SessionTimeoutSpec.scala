@@ -18,8 +18,16 @@ package unit.config
 
 import base.{Injector, UnitSpec}
 import play.api.Configuration
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
+import play.api.Application
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 
 class SessionTimeoutSpec extends UnitSpec with Injector {
+
+  implicit lazy val app: Application = new GuiceApplicationBuilder()
+    .overrides(bind[InternalAuthTokenInitialiser].to[NoOpInternalAuthTokenInitialiser])
+    .build()
 
   private val configuration = instanceOf[Configuration]
 

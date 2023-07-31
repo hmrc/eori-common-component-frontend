@@ -25,8 +25,17 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.viewModels.OrganisationViewModel
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
+import play.api.Application
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 
 class OrganisationViewModelSpec extends UnitSpec with Injector {
+
+  implicit lazy val app: Application = new GuiceApplicationBuilder()
+    .overrides(bind[InternalAuthTokenInitialiser].to[NoOpInternalAuthTokenInitialiser])
+    .build()
+
   private val form: Form[CdsOrganisationType] = organisationTypeDetailsForm
 
   implicit val messages: Messages = MessagesImpl(Lang("en"), instanceOf[MessagesApi])

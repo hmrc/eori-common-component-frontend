@@ -40,6 +40,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.{
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
 import util.externalservices.EnrolmentStoreProxyService
 import util.externalservices.ExternalServicesConfig._
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
+import play.api.inject.bind
 
 class EnrolmentStoreProxyConnectorSpec extends IntegrationTestsSpec with ScalaFutures with MockitoSugar {
 
@@ -54,6 +56,7 @@ class EnrolmentStoreProxyConnectorSpec extends IntegrationTestsSpec with ScalaFu
         "auditing.consumer.baseUri.port"                      -> Port
       )
     )
+    .overrides(bind[InternalAuthTokenInitialiser].to[NoOpInternalAuthTokenInitialiser])
     .build()
 
   private lazy val enrolmentStoreProxyConnector = app.injector.instanceOf[EnrolmentStoreProxyConnector]

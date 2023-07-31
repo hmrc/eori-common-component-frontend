@@ -32,33 +32,43 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{
 }
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http._
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.client.HttpClientV2
+import play.api.http.HeaderNames.AUTHORIZATION
+import java.net.URLEncoder
+import java.net.URL
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 
 @Singleton
-class SUB09SubscriptionDisplayConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
-  ec: ExecutionContext
+class SUB09SubscriptionDisplayConnector @Inject() (httpClient: HttpClientV2, appConfig: AppConfig, audit: Auditable)(
+  implicit ec: ExecutionContext
 ) {
 
-  private val logger = Logger(this.getClass)
-  private val url    = appConfig.getServiceUrl("subscription-display")
+  private val logger  = Logger(this.getClass)
+  private val baseUrl = s"${appConfig.getServiceUrl("subscription-display")}"
 
   def subscriptionDisplay(sub09Request: Seq[(String, String)], originatingService: String)(implicit
     hc: HeaderCarrier
   ): Future[Either[EoriHttpResponse, SubscriptionDisplayResponse]] = {
 
+    val url = new URL(s"$baseUrl?${makeQueryString(sub09Request)}")
+
     // $COVERAGE-OFF$Loggers
     logger.debug(s"SubscriptionDisplay SUB09: $url, body: $sub09Request and hc: $hc")
     // $COVERAGE-ON
 
-    http.GET[SubscriptionDisplayResponseHolder](url, sub09Request) map { resp =>
+    val httpRequest = httpClient
+      .get(url)
+      .transform(_.addHttpHeaders(sub09Request: _*))
+      .setHeader(AUTHORIZATION -> appConfig.internalAuthToken)
+
+    httpRequest.execute[SubscriptionDisplayResponseHolder] map { resp =>
       // $COVERAGE-OFF$Loggers
       logger.debug(s"SubscriptionDisplay SUB09: responseCommon: ${resp.subscriptionDisplayResponse.responseCommon}")
       // $COVERAGE-ON
 
-      auditCall(url, sub09Request, originatingService, resp)
+      auditCall(url.toString, sub09Request, originatingService, resp)
       Right(resp.subscriptionDisplayResponse)
     } recover {
       case NonFatal(e) =>
@@ -83,6 +93,11 @@ class SUB09SubscriptionDisplayConnector @Inject() (http: HttpClient, appConfig: 
       details = Json.toJson(SubscriptionDisplay(subscriptionDisplaySubmitted, subscriptionDisplayResult)),
       eventType = "SubscriptionDisplay"
     )
+  }
+
+  private def makeQueryString(queryParams: Seq[(String, String)]) = {
+    val paramPairs = queryParams.map { case (k, v) => s"$k=${URLEncoder.encode(v, "utf-8")}" }
+    if (paramPairs.isEmpty) "" else paramPairs.mkString("&")
   }
 
 }

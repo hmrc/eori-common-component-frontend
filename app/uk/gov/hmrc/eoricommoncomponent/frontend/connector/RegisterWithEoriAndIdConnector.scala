@@ -31,18 +31,20 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{Registration, RegistrationResult, RegistrationSubmitted}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.PayloadCache
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
+
+import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.client.HttpClientV2
+import play.api.http.HeaderNames.AUTHORIZATION
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RegisterWithEoriAndIdConnector @Inject() (http: HttpClient, appConfig: AppConfig, audit: Auditable)(implicit
-  ec: ExecutionContext
+class RegisterWithEoriAndIdConnector @Inject() (httpClient: HttpClientV2, appConfig: AppConfig, audit: Auditable)(
+  implicit ec: ExecutionContext
 ) extends Instrumentable {
 
   private val logger = Logger(this.getClass)
-  private val url    = appConfig.getServiceUrl("register-with-eori-and-id")
+  private val url    = url"${appConfig.getServiceUrl("register-with-eori-and-id")}"
 
   def register(
     request: RegisterWithEoriAndIdRequest
@@ -54,15 +56,17 @@ class RegisterWithEoriAndIdConnector @Inject() (http: HttpClient, appConfig: App
 
     if (appConfig.samplePayloads) sampleData(PayloadCache.BusinessMatch, request)
 
-    http.POST[RegisterWithEoriAndIdRequestHolder, RegisterWithEoriAndIdResponseHolder](
-      url,
-      RegisterWithEoriAndIdRequestHolder(request)
-    ) map { resp =>
+    val httpRequest = httpClient
+      .post(url)
+      .withBody(Json.toJson(RegisterWithEoriAndIdRequestHolder(request)))
+      .setHeader(AUTHORIZATION -> appConfig.internalAuthToken)
+
+    httpRequest.execute[RegisterWithEoriAndIdResponseHolder] map { resp =>
       // $COVERAGE-OFF$Loggers
       logger.debug(s"REG06 Register: responseCommon: ${resp.registerWithEORIAndIDResponse.responseCommon}")
       // $COVERAGE-ON
 
-      auditCall(url, request, resp)
+      auditCall(url.toString, request, resp)
       resp.registerWithEORIAndIDResponse.withAdditionalInfo(request.requestDetail.registerModeID)
     } recover {
       case e: Throwable =>

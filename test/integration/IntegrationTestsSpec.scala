@@ -21,6 +21,10 @@ import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import util.WireMockRunner
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
+import play.api.Application
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
@@ -29,7 +33,11 @@ import scala.language.postfixOps
 
 class IntegrationTestsSpec
     extends PlaySpec with BeforeAndAfter with BeforeAndAfterAll with Eventually with IntegrationPatience
-    with GuiceOneAppPerSuite with WireMockRunner {
+    with WireMockRunner {
+
+  implicit lazy val app: Application = new GuiceApplicationBuilder()
+    .overrides(bind[InternalAuthTokenInitialiser].to[NoOpInternalAuthTokenInitialiser])
+    .build()
 
   implicit val defaultTimeout: FiniteDuration = 5 seconds
 

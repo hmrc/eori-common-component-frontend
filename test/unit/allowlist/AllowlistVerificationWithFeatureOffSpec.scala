@@ -21,7 +21,6 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.mvc.Request
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.NameDobSoleTraderController
@@ -37,8 +36,7 @@ import util.builders.{AuthBuilder, SessionBuilder}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AllowlistVerificationWithFeatureOffSpec
-    extends SubscriptionFlowSpec with GuiceOneAppPerSuite with MockitoSugar with BeforeAndAfterEach {
+class AllowlistVerificationWithFeatureOffSpec extends SubscriptionFlowSpec with MockitoSugar with BeforeAndAfterEach {
 
   protected override val mockSubscriptionFlowManager: SubscriptionFlowManager = mock[SubscriptionFlowManager]
   protected override val formId: String                                       = NameDobSoleTraderPage.formId
