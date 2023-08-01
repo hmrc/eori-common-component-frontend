@@ -113,7 +113,7 @@ object CustomsId {
       case RegistrationInfoRequest.UTR  => Utr(idNumber)
       case RegistrationInfoRequest.EORI => Eori(idNumber)
       case "SAFEID"                     => SafeId(idNumber)
-      case _                            => throw new IllegalArgumentException(s"Unknown Identifier $idType")
+      case _                            => throw new IllegalArgumentException(s"Unknown Identifier: $idType. Expected Nino, UTR or EORI number")
     }
 
 }

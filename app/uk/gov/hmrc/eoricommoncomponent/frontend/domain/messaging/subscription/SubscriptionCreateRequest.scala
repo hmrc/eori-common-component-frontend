@@ -27,6 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.Co
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{RequestCommon, RequestParameter}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
   CdsToEtmpOrganisationType,
@@ -83,10 +84,15 @@ object SubscriptionCreateRequest {
     val address =
       if (Countries.all.map(_.countryCode).contains(registration.address.countryCode)) registration.address
       else {
-        val subscriptionCountry =
-          subscription.registeredCompany.getOrElse(throw new Exception("Registered company is not in cache"))
-
-        registration.address.copy(countryCode = subscriptionCountry.country)
+        val registeredCompany =
+          subscription.registeredCompany.getOrElse {
+            val error = "Registered company is not in cache"
+            // $COVERAGE-OFF$Loggers
+            logger.error(".")
+            // $COVERAGE-ON
+            throw DataUnavailableException(error)
+          }
+        registration.address.copy(countryCode = registeredCompany.country)
       }
 
     val establishmentAddress = createEstablishmentAddress(address)

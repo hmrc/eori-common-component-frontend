@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration
 
+import play.api.Logging
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
@@ -39,7 +40,7 @@ class GetUtrSubscriptionController @Inject() (
   getUtrSubscriptionView: how_can_we_identify_you_utr,
   subscriptionDetailsService: SubscriptionDetailsService
 )(implicit ec: ExecutionContext)
-    extends CdsController(mcc) {
+    extends CdsController(mcc) with Logging {
 
   def createForm(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
@@ -79,7 +80,11 @@ class GetUtrSubscriptionController @Inject() (
               )
             )
         }
-      case None => noOrgTypeSelected
+      case None =>
+        // $COVERAGE-OFF$Loggers
+        logger.error("GetUtrSubscriptionController: populateView - No organisation type selected by user")
+        // $COVERAGE-ON
+        noOrgTypeSelected
     }
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
@@ -102,7 +107,11 @@ class GetUtrSubscriptionController @Inject() (
                 ),
               formData => cacheAndContinue(isInReviewMode, formData, service, orgType)
             )
-          case None => noOrgTypeSelected
+          case None =>
+            // $COVERAGE-OFF$Loggers
+            logger.error("GetUtrSubscriptionController: submit - No organisation type selected by user")
+            // $COVERAGE-ON
+            noOrgTypeSelected
         }
     }
 
@@ -129,7 +138,11 @@ class GetUtrSubscriptionController @Inject() (
       subscriptionDetailsService.cachedNameDetails.flatMap {
         case Some(nameDetails) =>
           subscriptionDetailsService.cacheNameAndCustomsId(nameDetails.name, Utr(form.id))
-        case _ => noBusinessName
+        case _ =>
+          // $COVERAGE-OFF$Loggers
+          logger.error("GetUtrSubscriptionController: cacheUtr - No business name cached")
+          // $COVERAGE-ON
+          noBusinessName
 
       }
     else subscriptionDetailsService.cacheCustomsId(Utr(form.id))
