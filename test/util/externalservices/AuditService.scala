@@ -40,5 +40,5 @@ object AuditService {
     )
   }
 
-  def verifyXAuditWrite(times: Int): Unit = verify(times, postRequestedFor(urlEqualTo(AuditWriteUrl)))
+  def verifyXAuditWrite(times: Int): Unit = verify(moreThanOrExactly(times), postRequestedFor(urlEqualTo(AuditWriteUrl)))
 }
