@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.registration
 
+import play.api.Logging
+
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.RegisterWithEoriAndIdConnector
@@ -45,7 +47,8 @@ class Reg06Service @Inject() (
   reqCommonGenerator: RequestCommonGenerator,
   dataCache: SessionCache,
   requestSessionData: RequestSessionData
-)(implicit ec: ExecutionContext) {
+)(implicit ec: ExecutionContext)
+    extends Logging {
 
   def sendIndividualRequest(implicit
     request: Request[AnyContent],
@@ -56,7 +59,11 @@ class Reg06Service @Inject() (
       case _: Nino => NINO
       case _: Utr  => UTR
       case unexpected =>
-        throw new IllegalArgumentException("Expected only nino or utr to be populated but got: " + unexpected)
+        val error = "Expected only nino or utr to be populated but got: " + unexpected
+        // $COVERAGE-OFF$Loggers
+        logger.warn(error)
+        // $COVERAGE-ON
+        throw new IllegalArgumentException(error)
     }
 
     def createRegDetail(
@@ -86,9 +93,13 @@ class Reg06Service @Inject() (
     for {
       subscription <- dataCache.subscriptionDetails
       email        <- dataCache.email
-      organisationType = requestSessionData.userSelectedOrganisationType.getOrElse(
-        throw DataUnavailableException("Org type missing from cache")
-      )
+      organisationType = requestSessionData.userSelectedOrganisationType.getOrElse {
+        val error = "Org type missing from cache"
+        // $COVERAGE-OFF$Loggers
+        logger.warn(error)
+        // $COVERAGE-ON
+        throw DataUnavailableException(error)
+      }
       maybeOrganisationTypeConfiguration: Option[OrganisationTypeConfiguration] =
         CdsToEtmpOrganisationType(Some(organisationType))
       address =

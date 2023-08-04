@@ -23,6 +23,7 @@ import play.api.Logger
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.EstablishmentAddress.createEstablishmentAddress
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.RegistrationInfoRequest.logger
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.ContactInformation.createContactInformation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{RequestCommon, RequestParameter}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
@@ -73,7 +74,11 @@ object SubscriptionCreateRequest {
         )
 
       case _ =>
-        throw new IllegalArgumentException("Invalid Registration Details. Unable to create SubscriptionCreateRequest.")
+        val error = "Invalid Registration Details. Unable to create SubscriptionCreateRequest."
+        // $COVERAGE-OFF$Loggers
+        logger.warn(error)
+        // $COVERAGE-ON
+        throw new IllegalArgumentException(error)
     }
 
   private def createRowAddress(
@@ -145,7 +150,13 @@ object SubscriptionCreateRequest {
       else
         subscription.addressDetails.map { address =>
           data.establishmentAddress.updateCountryFromAddress(address)
-        }.getOrElse(throw new IllegalStateException("Reg06 EstablishmentAddress cannot be empty"))
+        }.getOrElse {
+          val error = "Reg06 EstablishmentAddress cannot be empty"
+          // $COVERAGE-OFF$Loggers
+          logger.warn(error)
+          // $COVERAGE-ON
+          throw new IllegalStateException(error)
+        }
 
     SubscriptionCreateRequest(
       generateWithOriginatingSystem(),

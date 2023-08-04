@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.cache
 
+import akka.event.Logging
+import play.api.Logging
 import play.api.libs.json.{Json, OFormat, Reads, Writes}
 import play.api.mvc.Request
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
@@ -79,7 +81,7 @@ class SessionCache @Inject() (
       ttl = appConfig.ttl,
       timestampSupport = timestampSupport,
       sessionIdKey = SessionKeys.sessionId
-    )(ec) {
+    )(ec) with Logging {
 
   def sessionId(implicit request: Request[_]): String =
     request.session.get("sessionId").getOrElse("Session Id is not available")
@@ -168,22 +170,43 @@ class SessionCache @Inject() (
     getData[String](eoriKey)
 
   def email(implicit request: Request[_]): Future[String] =
-    getData[String](emailKey).map(_.getOrElse(throwException(emailKey)))
+    getData[String](emailKey).map(_.getOrElse {
+      val error = s"Email with key: $emailKey not found for the sessionId: $sessionId"
+      // $COVERAGE-OFF$Loggers
+      logger.warn(error)
+      // $COVERAGE-ON
+      throwException(emailKey)
+    })
 
   def registrationDetails(implicit request: Request[_]): Future[RegistrationDetails] =
-    getData[RegistrationDetails](regDetailsKey).map(_.getOrElse(throwException(regDetailsKey)))
+    getData[RegistrationDetails](regDetailsKey).map(_.getOrElse {
+      val error = s"Registration details with key: $regDetailsKey not found for the sessionId: $sessionId"
+      // $COVERAGE-OFF$Loggers
+      logger.warn(error)
+      // $COVERAGE-ON
+      throwException(regDetailsKey)
+    })
 
   def registerWithEoriAndIdResponse(implicit request: Request[_]): Future[RegisterWithEoriAndIdResponse] =
-    getData[RegisterWithEoriAndIdResponse](registerWithEoriAndIdResponseKey).map(
-      _.getOrElse(throwException(registerWithEoriAndIdResponseKey))
-    )
+    getData[RegisterWithEoriAndIdResponse](registerWithEoriAndIdResponseKey).map(_.getOrElse {
+      val error =
+        s"Register with Eori and ID response details with key: $registerWithEoriAndIdResponseKey not found for the sessionId: $sessionId"
+      // $COVERAGE-OFF$Loggers
+      logger.warn(error)
+      // $COVERAGE-ON
+      throwException(registerWithEoriAndIdResponseKey)
+    })
 
   def safeId(implicit request: Request[_]): Future[SafeId] = fetchSafeIdFromRegDetails.flatMap {
     case Some(value) => Future.successful(value)
     case None =>
-      fetchSafeIdFromReg06Response.map(
-        _.getOrElse(throw new IllegalStateException(s"$safeIdKey is not cached in data for the sessionId: $sessionId"))
-      )
+      fetchSafeIdFromReg06Response.map(_.getOrElse {
+        val error = s"$safeIdKey is not cached in data for the sessionId: $sessionId"
+        // $COVERAGE-OFF$Loggers
+        logger.warn(error)
+        // $COVERAGE-ON
+        throw new IllegalStateException(error)
+      })
   }
 
   def fetchSafeIdFromReg06Response(implicit request: Request[_]): Future[Option[SafeId]] =
@@ -202,13 +225,31 @@ class SessionCache @Inject() (
       }
 
   def sub01Outcome(implicit request: Request[_]): Future[Sub01Outcome] =
-    getData[Sub01Outcome](sub01OutcomeKey).map(_.getOrElse(throwException(sub01OutcomeKey)))
+    getData[Sub01Outcome](sub01OutcomeKey).map(_.getOrElse {
+      val error = s"$sub01OutcomeKey is not cached in data for the sessionId: $sessionId"
+      // $COVERAGE-OFF$Loggers
+      logger.warn(error)
+      // $COVERAGE-ON
+      throwException(sub01OutcomeKey)
+    })
 
   def sub02Outcome(implicit request: Request[_]): Future[Sub02Outcome] =
-    getData[Sub02Outcome](sub02OutcomeKey).map(_.getOrElse(throwException(sub02OutcomeKey)))
+    getData[Sub02Outcome](sub02OutcomeKey).map(_.getOrElse {
+      val error = s"$sub02OutcomeKey is not cached in data for the sessionId: $sessionId"
+      // $COVERAGE-OFF$Loggers
+      logger.warn(error)
+      // $COVERAGE-ON
+      throwException(sub02OutcomeKey)
+    })
 
   def groupEnrolment(implicit request: Request[_]): Future[EnrolmentResponse] =
-    getData[EnrolmentResponse](groupEnrolmentKey).map(_.getOrElse(throwException(groupEnrolmentKey)))
+    getData[EnrolmentResponse](groupEnrolmentKey).map(_.getOrElse {
+      val error = s"$groupEnrolmentKey is not cached in data for the sessionId: $sessionId"
+      // $COVERAGE-OFF$Loggers
+      logger.warn(error)
+      // $COVERAGE-ON
+      throwException(groupEnrolmentKey)
+    })
 
   def addressLookupParams(implicit request: Request[_]): Future[Option[AddressLookupParams]] =
     getData[AddressLookupParams](addressLookupParamsKey)

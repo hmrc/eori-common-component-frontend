@@ -172,7 +172,15 @@ class MatchingService @Inject() (
     )
 
   private def nameOfCustomsIdType(customsId: CustomsId): String =
-    CustomsIdsMap.getOrElse(customsId.getClass, throw new IllegalArgumentException(s"Invalid matching id $customsId"))
+    CustomsIdsMap.getOrElse(
+      customsId.getClass, {
+        val error = s"Invalid matching id $customsId"
+        // $COVERAGE-OFF$Loggers
+        logger.warn(error)
+        // $COVERAGE-ON
+        throw new IllegalArgumentException(error)
+      }
+    )
 
   private def individualIdMatchRequest(customsId: CustomsId, individual: Individual): MatchingRequestHolder =
     MatchingRequestHolder(

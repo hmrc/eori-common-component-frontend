@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping
 
+import play.api.Logging
+
 import javax.inject.Singleton
 import java.time.LocalDate
 import uk.gov.hmrc.eoricommoncomponent.frontend.DateConverter._
@@ -29,7 +31,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.{
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.registration.RegistrationDisplayResponse
 
 @Singleton
-class RegistrationDetailsCreator {
+class RegistrationDetailsCreator extends Logging {
 
   def registrationDetails(
     response: RegisterWithIDResponse,
@@ -62,7 +64,13 @@ class RegistrationDetailsCreator {
     returnParameters
       .getOrElse(List.empty)
       .find(_.paramName == "SAP_NUMBER")
-      .fold(throw new IllegalArgumentException("Invalid Response. SAP Number not returned by Messaging."))(_.paramValue)
+      .fold {
+        val error = "Invalid Response. SAP Number not returned by Messaging."
+        // $COVERAGE-OFF$Loggers
+        logger.warn(error)
+        // $COVERAGE-ON
+        throw new IllegalArgumentException(error)
+      }(_.paramValue)
 
   private def convertIndividualMatchingResponse(
     individualResponse: IndividualResponse,
@@ -75,11 +83,13 @@ class RegistrationDetailsCreator {
     val name = individualResponse.fullName
     val dob =
       individualResponse.dateOfBirth.flatMap(toLocalDate).orElse(dateOfBirth)
-    dob.fold(ifEmpty =
-      throw new IllegalArgumentException(
-        "Date of Birth is neither provided in registration response nor captured in the application page"
-      )
-    )(
+    dob.fold(ifEmpty = {
+      val error = "Date of Birth is neither provided in registration response nor captured in the application page"
+      // $COVERAGE-OFF$Loggers
+      logger.warn(error)
+      // $COVERAGE-ON
+      throw new IllegalArgumentException(error)
+    })(
       dateOfBirth =>
         RegistrationDetails
           .individual(sapNumber, safeId, name, address, dateOfBirth, customsId)
@@ -127,7 +137,13 @@ class RegistrationDetailsCreator {
       sapNumber,
       SafeId(
         response.responseDetail
-          .getOrElse(throw new IllegalStateException("No responseDetail"))
+          .getOrElse {
+            val error = "Organisation registrationDetails: No responseDetail"
+            // $COVERAGE-OFF$Loggers
+            logger.warn(error)
+            // $COVERAGE-ON
+            throw new IllegalStateException(error)
+          }
           .SAFEID
       ),
       orgName,
@@ -151,7 +167,13 @@ class RegistrationDetailsCreator {
       sapNumber,
       SafeId(
         response.responseDetail
-          .getOrElse(throw new IllegalStateException("No responseDetail"))
+          .getOrElse {
+            val error = "Individual RegistrationDetails: No responseDetail"
+            // $COVERAGE-OFF$Loggers
+            logger.warn(error)
+            // $COVERAGE-ON
+            throw new IllegalStateException("No responseDetail")
+          }
           .SAFEID
       ),
       name,
@@ -183,7 +205,11 @@ class RegistrationDetailsCreator {
           dateOfEstablishment = None
         )
       case _ =>
-        throw new IllegalStateException("Unexpected Response or Missing Key Information")
+        val error = "RegistrationDetails: Unexpected Response or Missing Key Information"
+        // $COVERAGE-OFF$Loggers
+        logger.warn(error)
+        // $COVERAGE-ON
+        throw new IllegalStateException(error)
     }
   }
 

@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.forms
 
+import play.api.Logging
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation._
@@ -28,7 +29,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils._
 
 import java.time.LocalDate
 
-object MatchingForms {
+object MatchingForms extends Logging {
 
   val Length35          = 35
   private val nameRegex = "[a-zA-Z0-9-' ]*"
@@ -91,9 +92,13 @@ object MatchingForms {
         o =>
           CdsOrganisationType(
             CdsOrganisationType
-              .forId(
-                o.getOrElse(throw new IllegalArgumentException("Could not create CdsOrganisationType for empty ID."))
-              )
+              .forId(o.getOrElse {
+                val error = "Could not create CdsOrganisationType for empty ID."
+                // $COVERAGE-OFF$Loggers
+                logger.warn(error)
+                // $COVERAGE-ON
+                throw new IllegalArgumentException(error)
+              })
               .id
           ),
         x => Some(x.id)

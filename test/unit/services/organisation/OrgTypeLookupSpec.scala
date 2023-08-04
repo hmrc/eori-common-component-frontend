@@ -88,8 +88,7 @@ class OrgTypeLookupSpec extends UnitSpec with BeforeAndAfterEach with MockitoSug
       val thrown = intercept[DataUnavailableException] {
         await(lookup.etmpOrgType(req))
       }
-
-      thrown.getMessage shouldBe "No Registration details in cache."
+      thrown.getMessage shouldBe "etmpOrgType: No Registration details in cache."
     }
   }
 }

@@ -84,7 +84,7 @@ class ExistingEoriServiceSpec extends ControllerSpec with BeforeAndAfterEach wit
       userDoesNotHaveGroupEnrolmentToCds
 
       intercept[DataUnavailableException](displayPage(atarService)(result => status(result))).getMessage shouldBe
-        "No EORI found"
+        "No existing EORI found"
     }
 
     "display page with user eori" in {
@@ -200,7 +200,7 @@ class ExistingEoriServiceSpec extends ControllerSpec with BeforeAndAfterEach wit
       userDoesNotHaveGroupEnrolmentToCds
 
       intercept[DataUnavailableException](enrolSuccess(atarService)(result => status(result))).getMessage shouldBe
-        "No EORI found"
+        "No existing EORI found"
     }
 
     "return Ok 200 when enrol confirmation page is requested" in {

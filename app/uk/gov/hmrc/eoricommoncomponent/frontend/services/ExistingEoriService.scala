@@ -57,10 +57,17 @@ class ExistingEoriService @Inject() (
     getExistingEORI.flatMap { eori =>
       enrolmentService.enrolWithExistingEnrolment(eori, service).map {
         case NO_CONTENT => Redirect(routes.HasExistingEoriController.enrolSuccess(service))
-        case status     => throw FailedEnrolmentException(status)
+        case status =>
+          val error = s"Failed enrolment exception with status: $status"
+          // $COVERAGE-OFF$Loggers
+          logger.warn(error)
+          // $COVERAGE-ON
+          throw FailedEnrolmentException(status)
       } recover {
         case e: MissingEnrolmentException =>
+          // $COVERAGE-OFF$Loggers
           logger.info(s"EnrolWithExistingEnrolment : ${e.getMessage}")
+          // $COVERAGE-ON
           Redirect(
             routes.EmailController.form(service, subscribeJourney = SubscribeJourney(LongJourney))
           ) //If Sync Enrolment fails we want to try the Long Journey
@@ -89,7 +96,16 @@ class ExistingEoriService @Inject() (
           case Some(eori) => Future.successful(eori)
           case None =>
             cache.groupEnrolment.map { enrolment =>
-              ExistingEori(enrolment.eori.getOrElse(throw DataUnavailableException("No EORI found")), enrolment.service)
+              ExistingEori(
+                enrolment.eori.getOrElse {
+                  val error = "No existing EORI found"
+                  // $COVERAGE-OFF$Loggers
+                  logger.warn(error)
+                  // $COVERAGE-ON
+                  throw DataUnavailableException(error)
+                },
+                enrolment.service
+              )
             }
         }
     }

@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation
 
+import play.api.Logging
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EtmpOrganisationType, RegistrationDetailsOrganisation}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
@@ -30,7 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class OrgTypeLookup @Inject() (requestSessionData: RequestSessionData, sessionCache: SessionCache)(implicit
   ec: ExecutionContext
-) {
+) extends Logging {
 
   def etmpOrgTypeOpt(implicit request: Request[AnyContent]): Future[Option[EtmpOrganisationType]] =
     requestSessionData.userSelectedOrganisationType match {
@@ -38,7 +39,12 @@ class OrgTypeLookup @Inject() (requestSessionData: RequestSessionData, sessionCa
       case None =>
         sessionCache.registrationDetails map {
           case RegistrationDetailsOrganisation(_, _, _, _, _, _, orgType) => orgType
-          case _                                                          => throw DataUnavailableException("No Registration details in cache.")
+          case _ =>
+            val error = "No Registration details in cache."
+            // $COVERAGE-OFF$Loggers
+            logger.warn(error)
+            // $COVERAGE-ON
+            throw DataUnavailableException(error)
         }
     }
 
@@ -49,8 +55,17 @@ class OrgTypeLookup @Inject() (requestSessionData: RequestSessionData, sessionCa
         sessionCache.registrationDetails map {
           case RegistrationDetailsOrganisation(_, _, _, _, _, _, Some(orgType)) => orgType
           case RegistrationDetailsOrganisation(_, _, _, _, _, _, _) =>
-            throw DataUnavailableException("Unable to retrieve Org Type from the cache")
-          case _ => throw DataUnavailableException("No Registration details in cache.")
+            val error = "Unable to retrieve Org Type from the cache"
+            // $COVERAGE-OFF$Loggers
+            logger.warn(error)
+            // $COVERAGE-ON
+            throw DataUnavailableException(error)
+          case _ =>
+            val error = "etmpOrgType: No Registration details in cache."
+            // $COVERAGE-OFF$Loggers
+            logger.warn(error)
+            // $COVERAGE-ON
+            throw DataUnavailableException(error)
         }
     }
 

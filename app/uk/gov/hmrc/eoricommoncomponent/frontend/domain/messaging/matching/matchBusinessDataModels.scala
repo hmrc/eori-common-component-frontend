@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching
 
+import play.api.Logging
 import play.api.libs.json._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.ExistingEori.logger
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging._
 
 case class Organisation(organisationName: String, organisationType: String)
@@ -99,12 +101,17 @@ object ResponseDetail {
   implicit val formats = Json.format[ResponseDetail]
 }
 
-case class RegisterWithIDResponse(responseCommon: ResponseCommon, responseDetail: Option[ResponseDetail]) {
+case class RegisterWithIDResponse(responseCommon: ResponseCommon, responseDetail: Option[ResponseDetail])
+    extends Logging {
 
   def getResponseDetail: ResponseDetail = responseDetail match {
     case Some(detail) => detail
     case None =>
-      throw new IllegalArgumentException("RegisterWithIDResponse did not include expected ResponseDetail object")
+      val error = "RegisterWithIDResponse did not include expected ResponseDetail object"
+      // $COVERAGE-OFF$Loggers
+      logger.warn(error)
+      // $COVERAGE-ON
+      throw new IllegalArgumentException(error)
   }
 
 }
