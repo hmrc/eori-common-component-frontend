@@ -18,15 +18,16 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.EmailVerificationKeys.{
-  LinkExpiryDurationKey,
-  TemplateIdKey,
-  _
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.EmailVerificationKeys._
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.EmailVerificationRequestHttpParser.EmailVerificationRequestResponse
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.EmailVerificationStateHttpParser.EmailVerificationStateResponse
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{
+  ResponseWithURI,
+  StartVerificationJourneyEmail,
+  StartVerificationJourneyRequest
+}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
 
@@ -96,6 +97,41 @@ class EmailVerificationConnector @Inject() (http: HttpClient, appConfig: AppConf
       response =>
         logResponse(response)
         response
+    }
+  }
+
+  private[connector] lazy val verifyEmailUrl: String =
+    s"${appConfig.emailVerificationBaseUrl}/${appConfig.emailVerificationServiceContext}/verify-email"
+
+  def startVerificationJourney(credId: String, serviceName: String, email: String)(implicit
+    hc: HeaderCarrier
+  ): Future[ResponseWithURI] = {
+
+    val request = StartVerificationJourneyRequest(
+      credId = credId,
+      continueUrl = "http://localhost:6750/customs-enrolment-services/esc/subscribe/longjourney/email-confirmed",
+      origin = "ecc",
+      deskproServiceName = "eori-common-component",
+      accessibilityStatementUrl = "/accessibility",
+      pageTitle = serviceName,
+      lang = "en",
+      email = Some(
+        StartVerificationJourneyEmail(
+          address = email,
+          enterUrl =
+            "http://localhost:6750/customs-enrolment-services/esc/subscribe/longjourney/matching/what-is-your-email"
+        )
+      )
+    )
+
+    http.POST[StartVerificationJourneyRequest, ResponseWithURI](verifyEmailUrl, request)
+  }
+
+  def passcodes(implicit hc: HeaderCarrier) = {
+    logger.info(s"Headers: $hc")
+    http.GET("http://localhost:9891/test-only/passcodes").map { res =>
+      logger.info(res.toString)
+      res
     }
   }
 

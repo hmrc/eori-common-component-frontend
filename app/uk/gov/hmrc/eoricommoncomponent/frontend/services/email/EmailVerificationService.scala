@@ -26,6 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.EmailVerif
   EmailNotVerified,
   EmailVerified
 }
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.ResponseWithURI
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -50,5 +51,13 @@ class EmailVerificationService @Inject() (emailVerificationConnector: EmailVerif
       case Right(EmailAlreadyVerified)         => Some(false)
       case _                                   => None
     }
+
+  def startVerificationJourney(credId: String, serviceName: String, email: String)(implicit
+    hc: HeaderCarrier
+  ): Future[ResponseWithURI] =
+    emailVerificationConnector.startVerificationJourney(credId, serviceName, email)
+
+  def passcodes(implicit hc: HeaderCarrier) =
+    emailVerificationConnector.passcodes
 
 }

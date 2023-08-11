@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eoricommoncomponent.frontend.domain
+package uk.gov.hmrc.eoricommoncomponent.frontend.models.email
 
-import uk.gov.hmrc.auth.core.retrieve.Credentials
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
+import play.api.libs.json.Json
 
-case class LoggedInUserWithEnrolments(
-  affinityGroup: Option[AffinityGroup],
-  internalId: Option[String],
-  enrolments: Enrolments,
-  email: Option[String],
-  groupId: Option[String],
-  credentials: Option[Credentials] = None
-)
+case class ResponseWithURI(redirectUri: String)
+
+object ResponseWithURI {
+  implicit val format = Json.format[ResponseWithURI]
+}
