@@ -26,8 +26,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.EmailVerif
   EmailNotVerified,
   EmailVerified
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.ResponseWithURI
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{EmailStatus, ResponseWithURI, EmailVerificationStatus}
 import uk.gov.hmrc.http.HeaderCarrier
+import cats.data.EitherT
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.ResponseError
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -52,12 +54,19 @@ class EmailVerificationService @Inject() (emailVerificationConnector: EmailVerif
       case _                                   => None
     }
 
-  def startVerificationJourney(credId: String, serviceName: String, email: String)(implicit
-    hc: HeaderCarrier
-  ): Future[ResponseWithURI] =
-    emailVerificationConnector.startVerificationJourney(credId, serviceName, email)
+  def getVerificationStatus(
+    email: String,
+    credId: String
+  )(implicit hc: HeaderCarrier): EitherT[Future, ResponseError, EmailStatus] = 
+    emailVerificationConnector.getVerificationStatus(credId).map { statusResponse =>
+      val emailStatus: Option[EmailVerificationStatus] = statusResponse.emails.find(_.emailAddress == email)
 
-  def passcodes(implicit hc: HeaderCarrier) =
-    emailVerificationConnector.passcodes
+      emailStatus match {
+        case Some(status) if status.locked => EmailStatus.Locked
+        case Some(status) if status.verified => EmailStatus.Verified
+        case _ => EmailStatus.Unverified
+      }
+
+    }
 
 }

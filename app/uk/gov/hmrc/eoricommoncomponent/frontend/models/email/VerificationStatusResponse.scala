@@ -18,23 +18,14 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.models.email
 
 import play.api.libs.json.Json
 
-case class StartVerificationJourneyEmail(address: String, enterUrl: String)
+case class EmailVerificationStatus(emailAddress: String, verified: Boolean, locked: Boolean)
 
-object StartVerificationJourneyEmail {
-  implicit val format = Json.format[StartVerificationJourneyEmail]
+object EmailVerificationStatus {
+  implicit val format = Json.format[EmailVerificationStatus]
 }
 
-case class StartVerificationJourneyRequest(
-  credId: String,
-  continueUrl: String,
-  origin: String,
-  deskproServiceName: String,
-  accessibilityStatementUrl: String,
-  pageTitle: String,
-  lang: String,
-  email: Option[StartVerificationJourneyEmail]
-)
+case class VerificationStatusResponse(emails: Seq[EmailVerificationStatus])
 
-object StartVerificationJourneyRequest {
-  implicit val format = Json.format[StartVerificationJourneyRequest]
+object VerificationStatusResponse {
+  implicit val format = Json.format[VerificationStatusResponse]
 }
