@@ -23,15 +23,6 @@ object HandleSubscriptionService {
 
   private val handleSubscriptionUrl = "/handle-subscription"
 
-  def stubHandleSubscriptionEndpoint(returnStatus: Int = NO_CONTENT): Unit =
-    stubFor(
-      post(urlEqualTo(handleSubscriptionUrl))
-        .willReturn(
-          aResponse()
-            .withStatus(returnStatus)
-        )
-    )
-
   def returnHandleSubscriptionResponseWhenReceiveRequest(url: String, request: String, status: Int): Unit =
     stubFor(
       post(urlEqualTo(url))
@@ -42,5 +33,4 @@ object HandleSubscriptionService {
         )
     )
 
-  def verifyHandleSubscriptionCalled(): Unit = verify(postRequestedFor(urlEqualTo(handleSubscriptionUrl)))
 }

@@ -24,30 +24,6 @@ import play.mvc.Http.Status.OK
 
 object RegisterWithoutIdMessagingService {
 
-  val RegistrationPath: UrlPattern = urlMatching("/register-without-id")
-
-  val AValidResponse: String =
-    """
-      |{
-      |   "registerWithoutIDResponse":{
-      |      "responseCommon":{
-      |         "status":"OK",
-      |         "processingDate":"2016-03-17T09:31:05Z",
-      |         "returnParameters":[
-      |            {
-      |               "paramName":"SAP_NUMBER",
-      |               "paramValue":"sapNumber-123"
-      |            }
-      |         ]
-      |      },
-      |      "responseDetail":{
-      |         "SAFEID":"XE0000123456789",
-      |         "ARN":"ZARN1234567"
-      |      }
-      |   }
-      |}
-    """.stripMargin
-
   def returnTheResponseWhenReceiveRequest(url: String, request: String, response: String): Unit =
     returnTheResponseWhenReceiveRequest(url, request, response, OK)
 
