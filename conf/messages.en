@@ -396,7 +396,7 @@ enter-email-hint-text-3=exports notifications
 subscription.enter-email.label=Email address
 cds.subscription.enter-eori-number.eori-number.label=EORI number
 subscription.subscription-results.subscription-complete=Subscription complete
-subscription.subscription-results.active-from=on
+subscription.subscription-results.active-from=Received by HMRC on
 cds.subscription.enter-email.page-error.email=Enter your email address
 cds.subscription.contact-details.form-error.email.wrong-format=Enter a valid email address
 cds.subscription.check-your-email.page-error.yes-no-answer=Tell us if this is the correct email address
@@ -1119,7 +1119,7 @@ cds.reg.existing.outcomes.success.heading.part2=the Customs Declaration Service
 cds.reg.existing.outcomes.success.eori.number=EORI number:
 cds.reg.existing.outcomes.success.download-eori=Download a PDF with your registration details (40kb)
 cds.reg.existing.outcomes.success.download-eori.21kb=Download a PDF with your registration details (21kb)
-cds.reg.existing.outcomes.success.download-eori-textfile=Download a text file of your subscription request (1 kb)
+cds.reg.existing.outcomes.success.download-eori-textfile=Download a text file of your confirmation (1 kb)
 cds.mig.existing.outcomes.application-received.title=Application received
 
 # Enrolment Already Exists
@@ -1326,7 +1326,7 @@ cds.subscription.contact-details.form-error.use-registered-address=Tell us if th
 
 #text file messages
 cds.subscription.text-download.hmrc=HM Revenue & Customs
-cds.subscription.text-download.registered=Subscription request received for {0}
+cds.subscription.text-download.registered=Application sent
 cds.subscription.text-download.active=issued by HMRC on
 cds.subscription.text-download.eori=EORI number:
 

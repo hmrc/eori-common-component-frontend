@@ -69,7 +69,7 @@ class EoriTextDownloadControllerSpec extends ControllerSpec with BeforeAndAfterE
       contentAsString(result).filterNot(_ == '\r') shouldBe
         """HM Revenue & Customs
           |
-          |Subscription request received for Test Company
+          |Application sent
           |
           |issued by HMRC on 23 June 2018
           |
