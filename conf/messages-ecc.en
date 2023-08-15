@@ -11,8 +11,8 @@ cds.banner.subscription.gbss=Subscribe to the Safety and Security GB service
 cds.banner.subscription.ctc=Subscribe to the New Computerised Transit System (NCTS)
 cds.banner.subscription.cds=Subscribe to the Customs Declaration Service
 
-ecc.subscription.enter-eori-number.heading=What is your EORI number?
-cds.subscription.enter-eori-number.no-eori.summary=I do not have an EORI number
+ecc.subscription.enter-eori-number.heading=What is your EORI number starting with GB?
+cds.subscription.enter-eori-number.no-eori.summary=I do not have an EORI number starting with GB
 cds.subscription.enter-eori-number.no-eori=You should {0}
 cds.subscription.enter-eori-number.no-eori.link=apply for both a subscription and an EORI number
 

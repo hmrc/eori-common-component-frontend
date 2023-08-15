@@ -470,9 +470,9 @@ cds.subscription.nino.error.empty=Enter your National Insurance number
 cds.subscription.nino.error.wrong-length=The National Insurance number must be 9 characters
 
 #What is your Eori
-ecc.subscription.enter-eori-number.page.title=What is your EORI number?
-ecc.subscription.enter-eori-number.heading=What is your EORI number?
-ecc.subscription.enter-eori-number.hint=The number starts with GB and is then followed by 12 digits, For example, GB345834921000.
+ecc.subscription.enter-eori-number.page.title=What is your EORI number starting with GB?
+ecc.subscription.enter-eori-number.heading=What is your EORI number starting with GB?
+ecc.subscription.enter-eori-number.hint=The first 2 letters are GB. This is followed by 12 numbers, like GB123456123456.
 ecc.subscription.enter-eori-number.hint.para1 = You need an EORI number that starts with GB if you move goods to or from Great Britain.
 ecc.subscription.eori-number-invalid=EORI number invalid
 ecc.subscription.eori-number-invalid.entered=You entered:
