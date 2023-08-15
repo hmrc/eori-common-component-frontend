@@ -18,10 +18,10 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.models.email
 
 import play.api.libs.json.Json
 
-sealed trait EmailStatus
+sealed trait EmailVerificationStatus
 
-object EmailStatus {
-  case object Unverified extends EmailStatus
-  case object Verified extends EmailStatus
-  case object Locked extends EmailStatus
+object EmailVerificationStatus {
+  case object Unverified extends EmailVerificationStatus
+  case object Verified extends EmailVerificationStatus
+  case object Locked extends EmailVerificationStatus
 }

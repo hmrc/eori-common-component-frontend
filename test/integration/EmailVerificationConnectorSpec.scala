@@ -29,7 +29,7 @@ import util.externalservices.EmailVerificationStubService
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.EmailVerificationStateHttpParser._
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
 import play.api.inject.bind
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{ResponseWithURI, VerificationStatusResponse, EmailVerificationStatus}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{ResponseWithURI, VerificationStatusResponse, VerificationStatus}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.ResponseError
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{SubscribeJourney, Service, AutoEnrolment}
 import play.api.i18n._
@@ -116,12 +116,12 @@ class EmailVerificationConnectorSpec extends IntegrationTestsSpec with ScalaFutu
       EmailVerificationStubService.stubVerificationStatusSuccess(credId)
 
       val emailVerificationStatuses = Seq(
-        EmailVerificationStatus(
+        VerificationStatus(
           emailAddress = "fredbloggs@hotmail.com",
           verified = true,
           locked = false
         ),
-        EmailVerificationStatus(
+        VerificationStatus(
           emailAddress = "somename@live.com",
           verified = false,
           locked = true

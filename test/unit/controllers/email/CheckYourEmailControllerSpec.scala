@@ -95,7 +95,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   val unit       = ()
 
   override def beforeEach(): Unit = {
-    when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
+    when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String]))
       .thenReturn(Future.successful(Some(true)))
 
     when(mockSave4LaterService.fetchEmailForService(any(), any(), any())(any()))
@@ -127,7 +127,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   "Submitting the Check Your Email Page" should {
 
     "redirect to Verify Your Email Address page for unverified email address" in {
-      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
+      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String]))
         .thenReturn(Future.successful(Some(true)))
       submitForm(ValidRequest + (yesNoInputName -> answerYes), service = atarService, journey = subscribeJourneyShort) {
         result =>
@@ -148,7 +148,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       when(mockSessionCache.saveEmail(any[String])(any[Request[AnyContent]]))
         .thenReturn(Future.successful(true))
 
-      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
+      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String]))
         .thenReturn(Future.successful(Some(false)))
 
       submitForm(ValidRequest + (yesNoInputName -> answerYes), service = atarService, journey = subscribeJourneyShort) {
@@ -166,7 +166,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       when(mockSessionCache.saveEmail(any[String])(any[Request[AnyContent]]))
         .thenReturn(Future.successful(true))
 
-      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
+      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String]))
         .thenReturn(Future.successful(Some(false)))
 
       submitForm(ValidRequest + (yesNoInputName -> answerYes), service = atarService, journey = subscribeJourneyLong) {
@@ -191,7 +191,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       when(mockSessionCache.saveEmail(any[String])(any[Request[AnyContent]]))
         .thenReturn(Future.successful(true))
 
-      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
+      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String]))
         .thenReturn(Future.successful(Some(false)))
 
       submitForm(ValidRequest + (yesNoInputName -> answerYes), service = cdsService, journey = subscribeJourneyShort) {
@@ -211,7 +211,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       when(mockSessionCache.eori(any[Request[AnyContent]]))
         .thenReturn(Future.successful(Some("GB123456789")))
 
-      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
+      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String]))
         .thenReturn(Future.successful(Some(false)))
 
       the[IllegalArgumentException] thrownBy submitForm(
@@ -236,7 +236,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       when(mockSessionCache.eori(any[Request[AnyContent]]))
         .thenReturn(Future.successful(Some("GB123456789")))
 
-      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
+      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String]))
         .thenReturn(Future.successful(Some(false)))
 
       submitForm(ValidRequest + (yesNoInputName -> answerYes), service = cdsService, journey = subscribeJourneyShort) {
@@ -255,7 +255,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       when(mockSessionCache.saveEmail(any[String])(any[Request[AnyContent]]))
         .thenReturn(Future.successful(true))
 
-      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
+      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String]))
         .thenReturn(Future.successful(Some(false)))
 
       submitForm(ValidRequest + (yesNoInputName -> answerYes), service = atarService, journey = subscribeJourneyLong) {
@@ -275,7 +275,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       when(mockSessionCache.saveEmail(any[String])(any[Request[AnyContent]]))
         .thenReturn(Future.successful(true))
 
-      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
+      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String]))
         .thenReturn(Future.successful(Some(false)))
 
       submitForm(ValidRequest + (yesNoInputName -> answerYes), service = atarService, journey = subscribeJourneyShort) {
@@ -289,7 +289,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     }
 
     "throw  IllegalStateException when downstream CreateEmailVerificationRequest Fails" in {
-      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
+      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String]))
         .thenReturn(Future.successful(None))
 
       the[IllegalStateException] thrownBy {

@@ -19,9 +19,6 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.EmailVerificationKeys._
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.EmailVerificationRequestHttpParser.EmailVerificationRequestResponse
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.EmailVerificationStateHttpParser.EmailVerificationStateResponse
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{
   ResponseWithURI,
   VerificationStatusResponse,
@@ -31,7 +28,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import uk.gov.hmrc.http.client.HttpClientV2
 import java.net.URL
-import play.api.Logging
 import cats.data.EitherT
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{SubscribeJourney, Service}
 import play.mvc.Http.Status.{CREATED, OK}
@@ -42,20 +38,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class EmailVerificationConnector @Inject() (httpClient: HttpClientV2, appConfig: AppConfig)(implicit ec: ExecutionContext) extends HandleResponses {
-
-  private[connector] lazy val checkVerifiedEmailUrl: String =
-    s"${appConfig.emailVerificationBaseUrl}/${appConfig.emailVerificationServiceContext}/verified-email-check"
-
-  private[connector] lazy val createEmailVerificationRequestUrl: String =
-    s"${appConfig.emailVerificationBaseUrl}/${appConfig.emailVerificationServiceContext}/verification-requests"
-
-  def getEmailVerificationState(
-    emailAddress: String
-  )(implicit hc: HeaderCarrier): Future[EmailVerificationStateResponse] = Future.failed(new Exception("Woops"))
-
-  def createEmailVerificationRequest(emailAddress: String, continueUrl: String)(implicit
-    hc: HeaderCarrier
-  ): Future[EmailVerificationRequestResponse] =  Future.failed(new Exception("Woops"))
 
   def startVerificationJourney(credId: String, service: Service, email: String, subscribeJourney: SubscribeJourney)(implicit
     hc: HeaderCarrier, messages: Messages

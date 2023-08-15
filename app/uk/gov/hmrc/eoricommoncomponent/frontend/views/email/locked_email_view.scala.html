@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,20 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package uk.gov.hmrc.eoricommoncomponent.frontend.models.email
+@this(
+        layout_di: layout,
+        govukButton: GovukButton
+)
 
-import play.api.libs.json.Json
+@()(implicit request: Request[_], messages: Messages)
 
-case class VerificationStatus(emailAddress: String, verified: Boolean, locked: Boolean)
+@layout_di(title = messages("lockedEmail.title")) {
 
-object VerificationStatus {
-  implicit val format = Json.format[VerificationStatus]
-}
-
-case class VerificationStatusResponse(emails: Seq[VerificationStatus])
-
-object VerificationStatusResponse {
-  implicit val format = Json.format[VerificationStatusResponse]
+    <h1 class="govuk-heading-xl">@messages("lockedEmail.heading")</h1>
 }
