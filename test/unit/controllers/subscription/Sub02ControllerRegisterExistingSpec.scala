@@ -120,24 +120,19 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
           Future.successful(mockSubscribeOutcome)
         )
         when(mockSubscribeOutcome.processedDate).thenReturn("22 May 2016")
-        when(mockSubscribeOutcome.eori).thenReturn(Some("ZZZ1ZZZZ23ZZZZZZZ"))
-        when(mockSubscribeOutcome.fullName).thenReturn("Name")
 
         result =>
           status(result) shouldBe OK
           val page = CdsPage(contentAsString(result))
-          page.title() should startWith("Subscription request received")
-          page.getElementsText(
-            RegistrationCompletePage.pageHeadingXpath
-          ) shouldBe "Subscription request received for Name"
-          page.getElementsText(RegistrationCompletePage.activeFromXpath) shouldBe "on 22 May 2016"
-          page.getElementsText(RegistrationCompletePage.eoriNumberXpath) shouldBe "ZZZ1ZZZZ23ZZZZZZZ"
+          page.title() should startWith("Application sent")
+          page.getElementsText(RegistrationCompletePage.pageHeadingXpath) shouldBe "Application sent"
+          page.getElementsText(RegistrationCompletePage.activeFromXpath) shouldBe "Received by HMRC on 22 May 2016"
 
           page.getElementsText(RegistrationCompletePage.additionalInformationXpath) should include(
             "We will process your application. This can take up to 2 hours."
           )
           page.getElementsText(RegistrationCompletePage.DownloadEoriLinkXpath) should include(
-            "Download a text file of your subscription request (1 kb)"
+            "Download a text file of your confirmation (1 kb)"
           )
           page.getElementsHref(RegistrationCompletePage.DownloadEoriLinkXpath) should endWith(
             "/customs-enrolment-services/atar/subscribe/download/text"
