@@ -187,6 +187,21 @@ class EmailControllerSpec
       }
     }
 
+    "redirect when email is locked" in new TestFixture {
+      when(mockSave4LaterService.fetchEmail(any[GroupId])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(emailStatus.copy(isVerified = false))))
+      when(
+        mockEmailVerificationService
+          .getVerificationStatus(any[String], any[String])(any[HeaderCarrier])
+      ).thenReturn(EitherT(lockedEitherT))
+      callEndpointDefaulting(controller)(journey = subscribeJourneyLong) { result =>
+        status(result) shouldBe SEE_OTHER
+        await(result).header.headers("Location") should endWith(
+          "/atar/subscribe/longjourney/matching/locked-email"
+        )
+      }
+    }
+
     "do not update email when it's a Long Journey" in new TestFixture {
       callEndpointDefaulting(controller)(journey = subscribeJourneyLong) { result =>
         status(result) shouldBe SEE_OTHER

@@ -17,14 +17,10 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.email
 
 import play.api.mvc._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.{
-  CheckYourEmailController,
-  WhatIsYourEmailController,
-  LockedEmailController
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.EmailVerificationStatus
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{ResponseWithURI, EmailVerificationStatus}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
@@ -43,6 +39,7 @@ import play.api.Logging
 import play.api.mvc.Results._
 import play.api.i18n.Messages
 import uk.gov.hmrc.http.HeaderCarrier
+import cats.data.OptionT
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -67,17 +64,17 @@ class EmailJourneyService @Inject() (
       _.fold {
         // $COVERAGE-OFF$Loggers
         logger.info(s"emailStatus cache none ${user.internalId}")
-        Future.successful(Redirect(WhatIsYourEmailController.createForm(service, subscribeJourney)))
+        Future.successful(Redirect(routes.WhatIsYourEmailController.createForm(service, subscribeJourney)))
       } { cachedEmailStatus =>
         cachedEmailStatus.email match {
           case Some(email) =>
             if (cachedEmailStatus.isVerified)
               sessionCache.saveEmail(email) map { _ =>
-                Redirect(CheckYourEmailController.emailConfirmed(service, subscribeJourney))
+                Redirect(CheckYourEmailController.nextPage(service, subscribeJourney))
               }
             else
-              checkWithEmailService(email, cachedEmailStatus, "credId", service, subscribeJourney)
-          case None => Future.successful(Redirect(WhatIsYourEmailController.createForm(service, subscribeJourney)))
+              checkWithEmailService(email, cachedEmailStatus, user.credId, service, subscribeJourney)
+          case None => Future.successful(Redirect(routes.WhatIsYourEmailController.createForm(service, subscribeJourney)))
         }
       }
     }
@@ -98,12 +95,12 @@ class EmailJourneyService @Inject() (
           // $COVERAGE-OFF$Loggers
           logger.info("Email address was not verified")
           // $COVERAGE-ON
-          Future.successful(Redirect(CheckYourEmailController.verifyEmailView(service, subscribeJourney)))
+          submitNewDetails(email, service, subscribeJourney, credId)
         case EmailVerificationStatus.Locked =>
           // $COVERAGE-OFF$Loggers
           logger.warn("Email address is locked")
           // $COVERAGE-ON
-          Future.successful(Redirect(LockedEmailController.onPageLoad(service, subscribeJourney)))
+          Future.successful(Redirect(routes.LockedEmailController.onPageLoad(service, subscribeJourney)))
       }
     )
 
@@ -134,7 +131,7 @@ class EmailJourneyService @Inject() (
             groupId
           )
           _ <- sessionCache.saveEmail(email)
-        } yield Redirect(CheckYourEmailController.emailConfirmed(service, subscribeJourney))
+        } yield Redirect(routes.CheckYourEmailController.emailConfirmed(service, subscribeJourney))
       case Left(UpdateEmailError) =>
         // $COVERAGE-OFF$Loggers
         logger.warn("Update Verified Email failed with user-retriable error. Redirecting to error page.")
@@ -142,5 +139,16 @@ class EmailJourneyService @Inject() (
         Future.successful(Ok(emailErrorPage()))
       case Left(_) => throw new IllegalArgumentException("Update Verified Email failed with non-retriable error")
     }
+
+  private def submitNewDetails(email: String, service: Service, subscribeJourney: SubscribeJourney, credId: String)(implicit
+    request: Request[AnyContent], messages: Messages, hc: HeaderCarrier
+  ): Future[Result] = {
+
+    emailVerificationService.startVerificationJourney(credId, service, email, subscribeJourney).fold(
+      { _ => InternalServerError(errorPage())},
+      { responseWithUri: ResponseWithURI => Redirect(s"http://localhost:9890${responseWithUri.redirectUri}")}
+    )
+
+  }  
 
 }

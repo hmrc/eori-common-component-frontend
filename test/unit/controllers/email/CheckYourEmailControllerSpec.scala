@@ -38,7 +38,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   UpdateEmailError,
   UpdateVerifiedEmailService
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.{check_your_email, email_confirmed, verify_your_email}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.{check_your_email, email_confirmed}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email_error_template
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
@@ -70,7 +70,6 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
 
   private val checkYourEmailView = instanceOf[check_your_email]
   private val emailConfirmedView = instanceOf[email_confirmed]
-  private val verifyYourEmail    = instanceOf[verify_your_email]
   private val errorTemplate      = instanceOf[email_error_template]
 
   private val controller = new CheckYourEmailController(

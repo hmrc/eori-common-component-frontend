@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain
 
-import uk.gov.hmrc.auth.core.retrieve.Credentials
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 
 case class LoggedInUserWithEnrolments(
@@ -25,5 +24,5 @@ case class LoggedInUserWithEnrolments(
   enrolments: Enrolments,
   email: Option[String],
   groupId: Option[String],
-  credentials: Option[Credentials] = None
+  credId: String
 )

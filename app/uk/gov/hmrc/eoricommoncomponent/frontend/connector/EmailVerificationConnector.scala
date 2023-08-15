@@ -30,7 +30,7 @@ import uk.gov.hmrc.http.client.HttpClientV2
 import java.net.URL
 import cats.data.EitherT
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{SubscribeJourney, Service}
-import play.mvc.Http.Status.{CREATED, OK}
+import play.mvc.Http.Status.{CREATED, OK, NOT_FOUND}
 import play.api.i18n.Messages
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
@@ -48,7 +48,7 @@ class EmailVerificationConnector @Inject() (httpClient: HttpClientV2, appConfig:
 
     val request = StartVerificationJourneyRequest(
       credId = credId,
-      continueUrl = controllers.routes.EmailController.form(service, subscribeJourney).url,
+      continueUrl = s"http://localhost:6750${controllers.routes.EmailController.form(service, subscribeJourney).url}",
       origin = "ecc",
       deskproServiceName = "eori-common-component",
       accessibilityStatementUrl = service.accessibilityUrl,
@@ -57,7 +57,7 @@ class EmailVerificationConnector @Inject() (httpClient: HttpClientV2, appConfig:
       email = Some(
         StartVerificationJourneyEmail(
           address = email,
-          enterUrl = controllers.email.routes.WhatIsYourEmailController.createForm(service, subscribeJourney).url
+          enterUrl = s"http://localhost:6750${controllers.email.routes.WhatIsYourEmailController.createForm(service, subscribeJourney).url}"
         )
       )
     )
@@ -89,8 +89,9 @@ class EmailVerificationConnector @Inject() (httpClient: HttpClientV2, appConfig:
       .map { response =>
         response.status match {
           case OK => handleResponse[VerificationStatusResponse](response)
+          case NOT_FOUND => Right(VerificationStatusResponse(Nil))
           case _ => 
-            val error = s"Unexpected response from verification-status: ${response.body}"
+            val error = s"Unexpected response from verification-status. Status: ${response.status}. Body: ${response.body}"
             logger.error(error)
             Left(ResponseError(response.status, error))
         }
@@ -98,8 +99,8 @@ class EmailVerificationConnector @Inject() (httpClient: HttpClientV2, appConfig:
 
   }
 
-  def passcodes(implicit hc: HeaderCarrier) = {
-    httpClient.get(url"http://localhost:9891/test-only/passcodes")
+  def passcodes(implicit hc: HeaderCarrier): Future[String] = {
+    httpClient.get(url"http://localhost:9891/test-only/passcodes").execute.map(_.body)
   }
 
 }

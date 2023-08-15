@@ -28,14 +28,14 @@ GET         /customs-enrolment-services/:service/subscribe/unable-to-use-id     
 GET         /customs-enrolment-services/:service/subscribe/keep-alive                                  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.keepAlive(service: Service)
 
 GET         /customs-enrolment-services/:service/subscribe/:subscribeJourney/email-confirmed            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.emailConfirmed(service: Service, subscribeJourney: SubscribeJourney)
-GET         /customs-enrolment-services/:service/subscribe/:subscribeJourney/email-confirmed-continue   @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.emailConfirmedContinue(service: Service, subscribeJourney: SubscribeJourney)
-POST        /customs-enrolment-services/:service/subscribe/email-confirmed/accepted   @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.acceptConfirmation(service: Service)
+POST        /customs-enrolment-services/:service/subscribe/:subscribeJourney/email-confirmed/accepted   @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.acceptConfirmation(service: Service, subscribeJourney: SubscribeJourney)
 
 
 # subscribe
 GET         /customs-enrolment-services/:service/subscribe                                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.startSubscription(service: Service)
 
 GET         /customs-enrolment-services/:service/subscribe/:subscribeJourney/check-user                                  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EmailController.form(service: Service, subscribeJourney: SubscribeJourney)
+GET         /customs-enrolment-services/passcodes                                  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EmailController.passcodes()
 
 GET         /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriController.createForm(service: Service)
 POST        /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriController.submit(isInReviewMode: Boolean = false, service: Service)
@@ -112,8 +112,6 @@ POST        /customs-enrolment-services/:service/subscribe/:subscribeJourney/mat
 
 GET         /customs-enrolment-services/:service/subscribe/:subscribeJourney/matching/check-your-email                   @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.createForm(service: Service, subscribeJourney: SubscribeJourney)
 POST        /customs-enrolment-services/:service/subscribe/:subscribeJourney/matching/check-your-email                   @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.submit(isInReviewMode: Boolean = false, service: Service, subscribeJourney: SubscribeJourney)
-
-GET         /customs-enrolment-services/:service/subscribe/:subscribeJourney/matching/verify-your-email                  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.verifyEmailView(service: Service, subscribeJourney: SubscribeJourney)
 
 GET         /customs-enrolment-services/:service/subscribe/complete                           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller.migrationEnd(service: Service)
 GET         /customs-enrolment-services/:service/subscribe/pending                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController.pending(service: Service)

@@ -26,6 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{
   enrolment_pending_against_group_id,
   enrolment_pending_for_user,
 }
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.EmailVerificationConnector
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,7 +39,8 @@ class EmailController @Inject() (
   userGroupIdSubscriptionStatusCheckService: UserGroupIdSubscriptionStatusCheckService,
   enrolmentPendingForUser: enrolment_pending_for_user,
   enrolmentPendingAgainstGroupId: enrolment_pending_against_group_id,
-  emailJourneyService: EmailJourneyService
+  emailJourneyService: EmailJourneyService,
+  emailVerificationConnector: EmailVerificationConnector
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) with EnrolmentExtractor {
 
@@ -63,5 +65,11 @@ class EmailController @Inject() (
     save4LaterService
       .fetchProcessingService(GroupId(user.groupId))
       .map(processingService => Ok(enrolmentPendingAgainstGroupId(service, processingService)))
+
+  def passcodes = {
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
+      emailVerificationConnector.passcodes.map(Ok(_))
+    }
+  }
 
 }

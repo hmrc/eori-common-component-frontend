@@ -26,6 +26,7 @@ import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
+import uk.gov.hmrc.auth.core.retrieve.Credentials
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -79,7 +80,7 @@ class AuthAction @Inject() (
 
     authorised(AuthProviders(GovernmentGateway))
       .retrieve(extendedRetrievals) {
-        case currentUserEmail ~ userCredentialRole ~ userAffinityGroup ~ userInternalId ~ userAllEnrolments ~ groupId ~ credentials =>
+        case currentUserEmail ~ userCredentialRole ~ userAffinityGroup ~ userInternalId ~ userAllEnrolments ~ groupId ~ Some(Credentials(credId, _)) =>
           transformRequest(
             Right(requestProcessor),
             LoggedInUserWithEnrolments(
@@ -88,7 +89,7 @@ class AuthAction @Inject() (
               userAllEnrolments,
               currentUserEmail,
               groupId,
-              credentials
+              credId
             ),
             userCredentialRole,
             checkPermittedAccess,
