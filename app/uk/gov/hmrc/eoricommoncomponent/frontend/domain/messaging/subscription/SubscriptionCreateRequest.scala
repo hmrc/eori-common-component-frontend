@@ -23,10 +23,12 @@ import play.api.Logger
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.EstablishmentAddress.createEstablishmentAddress
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.RegistrationInfoRequest.logger
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.ContactInformation.createContactInformation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{RequestCommon, RequestParameter}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
   CdsToEtmpOrganisationType,
@@ -72,7 +74,11 @@ object SubscriptionCreateRequest {
         )
 
       case _ =>
-        throw new IllegalArgumentException("Invalid Registration Details. Unable to create SubscriptionCreateRequest.")
+        val error = "Invalid Registration Details. Unable to create SubscriptionCreateRequest."
+        // $COVERAGE-OFF$Loggers
+        logger.warn(error)
+        // $COVERAGE-ON
+        throw new IllegalArgumentException(error)
     }
 
   private def createRowAddress(
@@ -83,10 +89,15 @@ object SubscriptionCreateRequest {
     val address =
       if (Countries.all.map(_.countryCode).contains(registration.address.countryCode)) registration.address
       else {
-        val subscriptionCountry =
-          subscription.registeredCompany.getOrElse(throw new Exception("Registered company is not in cache"))
-
-        registration.address.copy(countryCode = subscriptionCountry.country)
+        val registeredCompany =
+          subscription.registeredCompany.getOrElse {
+            val error = "Registered company is not in cache"
+            // $COVERAGE-OFF$Loggers
+            logger.error(".")
+            // $COVERAGE-ON
+            throw DataUnavailableException(error)
+          }
+        registration.address.copy(countryCode = registeredCompany.country)
       }
 
     val establishmentAddress = createEstablishmentAddress(address)
@@ -139,7 +150,13 @@ object SubscriptionCreateRequest {
       else
         subscription.addressDetails.map { address =>
           data.establishmentAddress.updateCountryFromAddress(address)
-        }.getOrElse(throw new IllegalStateException("Reg06 EstablishmentAddress cannot be empty"))
+        }.getOrElse {
+          val error = "Reg06 EstablishmentAddress cannot be empty"
+          // $COVERAGE-OFF$Loggers
+          logger.warn(error)
+          // $COVERAGE-ON
+          throw new IllegalStateException(error)
+        }
 
     SubscriptionCreateRequest(
       generateWithOriginatingSystem(),

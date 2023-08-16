@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain
 
+import play.api.Logging
 import play.api.libs.json._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.EtmpLegalStatus
@@ -54,7 +55,7 @@ case object NA extends EtmpOrganisationType {
   override def toString: String = "N/A"
 }
 
-object EtmpOrganisationType {
+object EtmpOrganisationType extends Logging {
 
   private val cdsToEtmpOrgType = Map(
     CompanyId                       -> CorporateBody,
@@ -73,9 +74,12 @@ object EtmpOrganisationType {
     case EtmpLegalStatus.CorporateBody      => CorporateBody
     case EtmpLegalStatus.UnincorporatedBody => UnincorporatedBody
     case invalidId =>
-      throw new IllegalArgumentException(
+      val error =
         s"""I got an $invalidId as an ETMP Organisation Type but I wanted one of "Partnership", "LLP", "Corporate Body", "Unincorporated Body""""
-      )
+      // $COVERAGE-OFF$Loggers
+      logger.warn(error)
+      // $COVERAGE-ON
+      throw new IllegalArgumentException(error)
   }
 
   private def unapply(id: EtmpOrganisationType): String = id match {

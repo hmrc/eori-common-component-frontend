@@ -16,8 +16,12 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain
 
+import play.api.Logging
+
 import java.time.LocalDate
 import play.api.libs.json._
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.EtmpOrganisationType.logger
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.InternalId.logger
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{IndividualName, RegistrationInfoRequest}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils.formatInput
 
@@ -49,20 +53,32 @@ object SafeId {
 
 case class InternalId(id: String)
 
-object InternalId {
+object InternalId extends Logging {
 
   def apply(id: Option[String]): InternalId =
-    new InternalId(id.getOrElse(throw new IllegalArgumentException("InternalId is missing")))
+    new InternalId(id.getOrElse {
+      val error = "InternalId is missing"
+      // $COVERAGE-OFF$Loggers
+      logger.warn(error)
+      // $COVERAGE-ON
+      throw new IllegalArgumentException(error)
+    })
 
   implicit val format = Json.format[InternalId]
 }
 
 case class GroupId(id: String)
 
-object GroupId {
+object GroupId extends Logging {
 
   def apply(id: Option[String]): GroupId =
-    new GroupId(id.getOrElse(throw new IllegalArgumentException("GroupId is missing")))
+    new GroupId(id.getOrElse {
+      val error = "GroupId is missing"
+      // $COVERAGE-OFF$Loggers
+      logger.warn(error)
+      // $COVERAGE-ON
+      throw new IllegalArgumentException("GroupId is missing")
+    })
 
   implicit val format = Json.format[GroupId]
 }
@@ -74,7 +90,7 @@ object CacheIds {
   implicit def toJsonFormat(cacheIds: CacheIds): JsValue = Json.toJson(cacheIds)
 }
 
-object CustomsId {
+object CustomsId extends Logging {
   val utr        = "utr"
   val eori       = "eori"
   val nino       = "nino"
@@ -113,7 +129,12 @@ object CustomsId {
       case RegistrationInfoRequest.UTR  => Utr(idNumber)
       case RegistrationInfoRequest.EORI => Eori(idNumber)
       case "SAFEID"                     => SafeId(idNumber)
-      case _                            => throw new IllegalArgumentException(s"Unknown Identifier $idType")
+      case _ =>
+        val error = s"Unknown Identifier: $idType. Expected Nino, UTR or EORI number"
+        // $COVERAGE-OFF$Loggers
+        logger.warn(error)
+        // $COVERAGE-ON
+        throw new IllegalArgumentException(error)
     }
 
 }
@@ -263,10 +284,19 @@ object NinoMatchModel {
 
 case class ExistingEori(id: String, enrolmentKey: String)
 
-object ExistingEori {
+object ExistingEori extends Logging {
   implicit val jsonFormat = Json.format[ExistingEori]
 
   def apply(id: Option[String], enrolmentKey: String): ExistingEori =
-    new ExistingEori(id.getOrElse(throw new IllegalArgumentException("EORI is missing")), enrolmentKey)
+    new ExistingEori(
+      id.getOrElse {
+        val error = "EORI is missing"
+        // $COVERAGE-OFF$Loggers
+        logger.warn(error)
+        // $COVERAGE-ON
+        throw new IllegalArgumentException(error)
+      },
+      enrolmentKey
+    )
 
 }

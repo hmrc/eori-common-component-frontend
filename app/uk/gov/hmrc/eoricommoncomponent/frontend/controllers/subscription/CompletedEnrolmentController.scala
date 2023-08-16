@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
+import play.api.Logging
+
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
@@ -34,13 +36,17 @@ class CompletedEnrolmentController @Inject() (
   mcc: MessagesControllerComponents,
   enrolSuccessView: eori_enrol_success
 )(implicit ec: ExecutionContext)
-    extends CdsController(mcc) with EnrolmentExtractor {
+    extends CdsController(mcc) with EnrolmentExtractor with Logging {
 
   def enrolSuccess(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithServiceAction {
     implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
       activatedEnrolmentForService(loggedInUser, service) match {
         case Some(_) => sessionCache.remove.map(_ => Ok(enrolSuccessView(service)))
-        case _       => throw DataUnavailableException("No enrolment found for the user")
+        case _       =>
+          // $COVERAGE-OFF$Loggers
+          logger.error("CompletedEnrolmentController - enrolSuccess: No enrolment found for the user.")
+          // $COVERAGE-ON
+          throw DataUnavailableException("No enrolment found for the user")
       }
   }
 

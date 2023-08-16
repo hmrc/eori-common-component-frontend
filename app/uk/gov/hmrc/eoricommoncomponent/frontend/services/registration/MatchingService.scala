@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.registration
 
+import play.api.Logging
+
 import javax.inject.{Inject, Singleton}
 import java.time.LocalDate
 import play.api.mvc.{AnyContent, Request}
@@ -43,7 +45,8 @@ class MatchingService @Inject() (
   detailsCreator: RegistrationDetailsCreator,
   cache: SessionCache,
   requestSessionData: RequestSessionData
-)(implicit ec: ExecutionContext) {
+)(implicit ec: ExecutionContext)
+    extends Logging {
 
   private val UTR  = RegistrationInfoRequest.UTR
   private val EORI = RegistrationInfoRequest.EORI
@@ -67,12 +70,22 @@ class MatchingService @Inject() (
       subscriptionDetailsHolder <- cache.subscriptionDetails
       orgType = EtmpOrganisationType(
         requestSessionData.userSelectedOrganisationType
-          .getOrElse(throw DataUnavailableException("OrganisationType number missing"))
+          .getOrElse {
+            val error = "OrganisationType number missing"
+            // $COVERAGE-OFF$Loggers
+            logger.error(error)
+            // $COVERAGE-ON
+            throw DataUnavailableException(error)
+          }
       ).toString
       org = Organisation(subscriptionDetailsHolder.name, orgType)
-      eori = subscriptionDetailsHolder.eoriNumber.getOrElse(
-        throw DataUnavailableException("EORI number missing from subscription")
-      )
+      eori = subscriptionDetailsHolder.eoriNumber.getOrElse {
+        val error = "EORI number missing from subscription"
+        // $COVERAGE-OFF$Loggers
+        logger.error(error)
+        // $COVERAGE-ON
+        throw DataUnavailableException(error)
+      }
       result <- matchBusiness(Eori(eori), org, subscriptionDetailsHolder.dateEstablished, GroupId(loggedInUser.groupId))
     } yield result
 
@@ -84,10 +97,20 @@ class MatchingService @Inject() (
   ): Future[Boolean] =
     for {
       subscription <- cache.subscriptionDetails
-      nameDob = subscription.nameDobDetails.getOrElse(
-        throw DataUnavailableException("Name / DOB missing from subscription")
-      )
-      eori       = subscription.eoriNumber.getOrElse(throw DataUnavailableException("EORI number missing from subscription"))
+      nameDob = subscription.nameDobDetails.getOrElse {
+        val error = "nameDobDetails missing from subscriptionDetails"
+        // $COVERAGE-OFF$Loggers
+        logger.error(error)
+        // $COVERAGE-ON
+        throw DataUnavailableException(error)
+      }
+      eori = subscription.eoriNumber.getOrElse {
+        val error = "EORI number missing from subscriptionDetails"
+        // $COVERAGE-OFF$Loggers
+        logger.error(error)
+        // $COVERAGE-ON
+        throw DataUnavailableException(error)
+      }
       individual = Individual(nameDob.firstName, None, nameDob.lastName, nameDob.dateOfBirth.toString)
       result <- matchIndividualWithId(Eori(eori), individual, GroupId(loggedInUser.groupId))
     } yield result
@@ -149,7 +172,15 @@ class MatchingService @Inject() (
     )
 
   private def nameOfCustomsIdType(customsId: CustomsId): String =
-    CustomsIdsMap.getOrElse(customsId.getClass, throw new IllegalArgumentException(s"Invalid matching id $customsId"))
+    CustomsIdsMap.getOrElse(
+      customsId.getClass, {
+        val error = s"Invalid matching id $customsId"
+        // $COVERAGE-OFF$Loggers
+        logger.warn(error)
+        // $COVERAGE-ON
+        throw new IllegalArgumentException(error)
+      }
+    )
 
   private def individualIdMatchRequest(customsId: CustomsId, individual: Individual): MatchingRequestHolder =
     MatchingRequestHolder(

@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.cache
 
+import play.api.Logging
+
 import javax.inject.Singleton
 import play.api.mvc.{AnyContent, Request, Session}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
@@ -28,7 +30,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
 }
 
 @Singleton
-class RequestSessionData {
+class RequestSessionData extends Logging {
 
   def storeUserSubscriptionFlow(subscriptionFlow: SubscriptionFlow, uriBeforeSubscriptionFlow: String)(implicit
     request: Request[AnyContent]
@@ -39,7 +41,12 @@ class RequestSessionData {
   def userSubscriptionFlow(implicit request: Request[AnyContent]): SubscriptionFlow =
     request.session.data.get(RequestSessionDataKeys.subscriptionFlow) match {
       case Some(flowName) => SubscriptionFlow(flowName)
-      case None           => throw DataUnavailableException("Subscription flow is not cached")
+      case None =>
+        val error = "Subscription flow is not cached"
+        // $COVERAGE-OFF$Loggers
+        logger.warn(error)
+        // $COVERAGE-ON
+        throw DataUnavailableException(error)
     }
 
   def userSelectedOrganisationType(implicit request: Request[AnyContent]): Option[CdsOrganisationType] =

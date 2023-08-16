@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription
 
+import play.api.Logging
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{LongJourney, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
@@ -96,12 +97,18 @@ case object RowOrganisationFlow
 case object RowIndividualFlow
     extends SubscriptionFlow("migration-eori-row-utrNino-enabled-Individual", isIndividualFlow = true)
 
-object SubscriptionFlow {
+object SubscriptionFlow extends Logging {
 
   def apply(flowName: String): SubscriptionFlow =
     SubscriptionFlows.flows.keys
       .find(_.name == flowName)
-      .fold(throw DataUnavailableException(s"Unknown Subscription flowname $flowName"))(identity)
+      .fold {
+        val error = s"Unknown Subscription flowname $flowName"
+        // $COVERAGE-OFF$Loggers
+        logger.error(error)
+        // $COVERAGE-ON
+        throw DataUnavailableException(error)
+      }(identity)
 
 }
 

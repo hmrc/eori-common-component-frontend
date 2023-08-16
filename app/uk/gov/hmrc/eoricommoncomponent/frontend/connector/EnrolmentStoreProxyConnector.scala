@@ -63,13 +63,18 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
         case NO_CONTENT =>
           EnrolmentStoreProxyResponse(enrolments = List.empty[EnrolmentResponse])
         case _ =>
+          // $COVERAGE-OFF$Loggers
+          logger.warn(s"Enrolment Store Proxy Bad Request - status: ${resp.status} with body: ${resp.body}")
+          // $COVERAGE-ON
           throw new BadRequestException(s"Enrolment Store Proxy Status : ${resp.status}")
       }
       auditCall(url, groupId, parsedResponse)
       parsedResponse
     } recover {
       case e: Throwable =>
+        // $COVERAGE-OFF$Loggers
         logger.error(s"enrolment-store-proxy failed. url: $url, error: $e", e)
+        // $COVERAGE-ON
         throw e
     }
   }
@@ -134,9 +139,12 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
     http.GET[HttpResponse](url).map { response =>
       response.status match {
         case Status.OK =>
-          ES1Response.format.reads(response.json).asOpt.getOrElse(
+          ES1Response.format.reads(response.json).asOpt.getOrElse {
+            // $COVERAGE-OFF$Loggers
+            logger.error("ES1 FAIL - Incorrect response format for ES1.")
+            // $COVERAGE-ON
             throw new Exception("Incorrect format for ES1 response")
-          )
+          }
         case Status.NO_CONTENT  => ES1Response(None, None)
         case Status.BAD_REQUEST =>
           // TODO - ADD alert config for this

@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping
 
+import play.api.Logging
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{RegistrationDetailsIndividual, _}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
@@ -83,7 +84,7 @@ object OrganisationTypeConfiguration {
 
 }
 
-object CdsToEtmpOrganisationType {
+object CdsToEtmpOrganisationType extends Logging {
 
   private val cdsTypeOfPersonMap = Map(
     CdsOrganisationType.Company                       -> OrganisationTypeConfiguration.Company,
@@ -104,7 +105,12 @@ object CdsToEtmpOrganisationType {
     case LLP                => OrganisationTypeConfiguration.EtmpLlp
     case CorporateBody      => OrganisationTypeConfiguration.EtmpCorporateBody
     case UnincorporatedBody => OrganisationTypeConfiguration.EtmpUnincorporatedBody
-    case invalid            => throw new IllegalArgumentException(s"Invalid ETMP orgType: $invalid")
+    case invalid =>
+      val error = s"Invalid ETMP orgType: $invalid"
+      // $COVERAGE-OFF$Loggers
+      logger.warn(error)
+      // $COVERAGE-ON
+      throw new IllegalArgumentException(error)
   }
 
   def apply(cdsOrganisationType: Option[CdsOrganisationType]): Option[OrganisationTypeConfiguration] =
@@ -114,7 +120,12 @@ object CdsToEtmpOrganisationType {
     case org: RegistrationDetailsOrganisation => org.etmpOrganisationType.map(etmpTypeOfPersonMap)
     case _: RegistrationDetailsIndividual =>
       Some(OrganisationTypeConfiguration(EtmpTypeOfPerson.NaturalPerson, EtmpLegalStatus.UnincorporatedBody))
-    case _ => throw DataUnavailableException("Incomplete cache cannot complete journey")
+    case _ =>
+      val error = "Incomplete cache cannot complete journey"
+      // $COVERAGE-OFF$Loggers
+      logger.warn(error)
+      // $COVERAGE-ON
+      throw DataUnavailableException(error)
   }
 
 }

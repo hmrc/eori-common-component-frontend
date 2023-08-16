@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription
 
+import play.api.Logging
+
 import java.time.LocalDate
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -43,13 +45,18 @@ case class SubscriptionDetails(
   formData: FormData = FormData(),
   registeredCompany: Option[CompanyRegisteredCountry] = None,
   contactAddress: Option[ContactAddressModel] = None
-) {
+) extends Logging {
 
   def name: String =
     nameIdOrganisationDetails.map(_.name) orElse nameOrganisationDetails.map(_.name) orElse nameDobDetails.map(
       _.name
     ) orElse nameDetails
-      .map(_.name) getOrElse (throw DataUnavailableException("Name is missing"))
+      .map(_.name) getOrElse ({
+      // $COVERAGE-OFF$Loggers
+      logger.error("name is missing from subscriptionDetails")
+      // $COVERAGE-ON
+      throw DataUnavailableException("Name is missing")
+    })
 
 }
 
