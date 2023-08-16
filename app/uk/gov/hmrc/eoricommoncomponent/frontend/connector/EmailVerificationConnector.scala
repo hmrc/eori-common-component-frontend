@@ -21,26 +21,30 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{
   ResponseWithURI,
-  VerificationStatusResponse,
   StartVerificationJourneyEmail,
-  StartVerificationJourneyRequest
+  StartVerificationJourneyRequest,
+  VerificationStatusResponse
 }
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import uk.gov.hmrc.http.client.HttpClientV2
 import java.net.URL
 import cats.data.EitherT
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{SubscribeJourney, Service}
-import play.mvc.Http.Status.{CREATED, OK, NOT_FOUND}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
+import play.mvc.Http.Status.{CREATED, NOT_FOUND, OK}
 import play.api.i18n.Messages
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EmailVerificationConnector @Inject() (httpClient: HttpClientV2, appConfig: AppConfig)(implicit ec: ExecutionContext) extends HandleResponses {
+class EmailVerificationConnector @Inject() (httpClient: HttpClientV2, appConfig: AppConfig)(implicit
+  ec: ExecutionContext
+) extends HandleResponses {
 
-  def startVerificationJourney(credId: String, service: Service, email: String, subscribeJourney: SubscribeJourney)(implicit
-    hc: HeaderCarrier, messages: Messages
+  def startVerificationJourney(credId: String, service: Service, email: String, subscribeJourney: SubscribeJourney)(
+    implicit
+    hc: HeaderCarrier,
+    messages: Messages
   ): EitherT[Future, ResponseError, ResponseWithURI] = EitherT {
 
     lazy val verifyEmailUrl: URL =
@@ -48,7 +52,7 @@ class EmailVerificationConnector @Inject() (httpClient: HttpClientV2, appConfig:
 
     val request = StartVerificationJourneyRequest(
       credId = credId,
-      continueUrl = s"http://localhost:6750${controllers.routes.EmailController.form(service, subscribeJourney).url}",
+      continueUrl = controllers.routes.EmailController.form(service, subscribeJourney).url,
       origin = "ecc",
       deskproServiceName = "eori-common-component",
       accessibilityStatementUrl = service.accessibilityUrl,
@@ -57,7 +61,7 @@ class EmailVerificationConnector @Inject() (httpClient: HttpClientV2, appConfig:
       email = Some(
         StartVerificationJourneyEmail(
           address = email,
-          enterUrl = s"http://localhost:6750${controllers.email.routes.WhatIsYourEmailController.createForm(service, subscribeJourney).url}"
+          enterUrl = controllers.email.routes.WhatIsYourEmailController.createForm(service, subscribeJourney).url
         )
       )
     )
@@ -68,7 +72,7 @@ class EmailVerificationConnector @Inject() (httpClient: HttpClientV2, appConfig:
       .map { response =>
         response.status match {
           case CREATED => handleResponse[ResponseWithURI](response)
-          case _ => 
+          case _ =>
             val error = s"Unexpected response from verify-email: ${response.body}"
             logger.error(error)
             Left(ResponseError(response.status, error))
@@ -77,9 +81,9 @@ class EmailVerificationConnector @Inject() (httpClient: HttpClientV2, appConfig:
 
   }
 
-  def getVerificationStatus(credId: String)(implicit
-    hc: HeaderCarrier
-  ): EitherT[Future, ResponseError, VerificationStatusResponse] = EitherT {
+  def getVerificationStatus(
+    credId: String
+  )(implicit hc: HeaderCarrier): EitherT[Future, ResponseError, VerificationStatusResponse] = EitherT {
 
     lazy val url: URL =
       url"${appConfig.emailVerificationBaseUrl}/${appConfig.emailVerificationServiceContext}/verification-status/$credId"
@@ -88,19 +92,15 @@ class EmailVerificationConnector @Inject() (httpClient: HttpClientV2, appConfig:
       .execute
       .map { response =>
         response.status match {
-          case OK => handleResponse[VerificationStatusResponse](response)
+          case OK        => handleResponse[VerificationStatusResponse](response)
           case NOT_FOUND => Right(VerificationStatusResponse(Nil))
-          case _ => 
-            val error = s"Unexpected response from verification-status. Status: ${response.status}. Body: ${response.body}"
+          case _ =>
+            val error = s"Unexpected response from verification-status: ${response.body}"
             logger.error(error)
             Left(ResponseError(response.status, error))
         }
       }
 
-  }
-
-  def passcodes(implicit hc: HeaderCarrier): Future[String] = {
-    httpClient.get(url"http://localhost:9891/test-only/passcodes").execute.map(_.body)
   }
 
 }

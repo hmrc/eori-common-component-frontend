@@ -20,7 +20,7 @@ import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{ResponseWithURI, EmailVerificationStatus}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{EmailVerificationStatus, ResponseWithURI}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
@@ -31,15 +31,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   UpdateVerifiedEmailService
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{
-  email_error_template,
-  error_template
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{email_error_template, error_template}
 import play.api.Logging
 import play.api.mvc.Results._
 import play.api.i18n.Messages
 import uk.gov.hmrc.http.HeaderCarrier
-import cats.data.OptionT
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -52,7 +48,8 @@ class EmailJourneyService @Inject() (
   updateVerifiedEmailService: UpdateVerifiedEmailService,
   emailErrorPage: email_error_template,
   errorPage: error_template
-)(implicit ec: ExecutionContext) extends Logging {
+)(implicit ec: ExecutionContext)
+    extends Logging {
 
   def continue(service: Service, subscribeJourney: SubscribeJourney)(implicit
     request: Request[AnyContent],
@@ -74,7 +71,8 @@ class EmailJourneyService @Inject() (
               }
             else
               checkWithEmailService(email, cachedEmailStatus, user.credId, service, subscribeJourney)
-          case None => Future.successful(Redirect(routes.WhatIsYourEmailController.createForm(service, subscribeJourney)))
+          case None =>
+            Future.successful(Redirect(routes.WhatIsYourEmailController.createForm(service, subscribeJourney)))
         }
       }
     }
@@ -85,7 +83,12 @@ class EmailJourneyService @Inject() (
     credId: String,
     service: Service,
     subscribeJourney: SubscribeJourney
-  )(implicit request: Request[AnyContent], userWithEnrolments: LoggedInUserWithEnrolments, messages: Messages, hc: HeaderCarrier): Future[Result] =
+  )(implicit
+    request: Request[AnyContent],
+    userWithEnrolments: LoggedInUserWithEnrolments,
+    messages: Messages,
+    hc: HeaderCarrier
+  ): Future[Result] =
     emailVerificationService.getVerificationStatus(email, credId).foldF(
       (_ => Future.successful(InternalServerError(errorPage()))),
       {
@@ -140,15 +143,15 @@ class EmailJourneyService @Inject() (
       case Left(_) => throw new IllegalArgumentException("Update Verified Email failed with non-retriable error")
     }
 
-  private def submitNewDetails(email: String, service: Service, subscribeJourney: SubscribeJourney, credId: String)(implicit
-    request: Request[AnyContent], messages: Messages, hc: HeaderCarrier
-  ): Future[Result] = {
-
+  private def submitNewDetails(
+    email: String,
+    service: Service,
+    subscribeJourney: SubscribeJourney,
+    credId: String
+  )(implicit request: Request[AnyContent], messages: Messages, hc: HeaderCarrier): Future[Result] =
     emailVerificationService.startVerificationJourney(credId, service, email, subscribeJourney).fold(
-      { _ => InternalServerError(errorPage())},
-      { responseWithUri: ResponseWithURI => Redirect(s"http://localhost:9890${responseWithUri.redirectUri}")}
+      _ => InternalServerError(errorPage()),
+      { responseWithUri: ResponseWithURI => Redirect(responseWithUri.redirectUri) }
     )
-
-  }  
 
 }

@@ -29,7 +29,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EmailController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.EmailVerificationStatus
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{EmailVerificationStatus, ResponseWithURI}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.{EmailJourneyService, EmailVerificationService}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
@@ -69,7 +69,7 @@ class EmailControllerSpec
   private val enrolmentPendingAgainstGroupIdView                         = instanceOf[enrolment_pending_against_group_id]
   private val enrolmentPendingForUserView                                = instanceOf[enrolment_pending_for_user]
   private val errorEmailView                                             = instanceOf[email_error_template]
-  private val errorView                                             = instanceOf[error_template]
+  private val errorView                                                  = instanceOf[error_template]
 
   private val userGroupIdSubscriptionStatusCheckService =
     new UserGroupIdSubscriptionStatusCheckService(mockSubscriptionStatusService, mockSave4LaterService)
@@ -81,7 +81,7 @@ class EmailControllerSpec
     val emailJourneyService = new EmailJourneyService(
       mockEmailVerificationService,
       mockSessionCache,
-      mockSave4LaterService, 
+      mockSave4LaterService,
       mockUpdateVerifiedEmailService,
       errorEmailView,
       errorView
@@ -99,9 +99,14 @@ class EmailControllerSpec
 
   }
 
-  val verifiedEitherT: Future[Either[ResponseError, EmailVerificationStatus]] = Future.successful(Right(EmailVerificationStatus.Verified))
-  val unverifiedEitherT: Future[Either[ResponseError, EmailVerificationStatus]]  = Future.successful(Right(EmailVerificationStatus.Unverified))
-  val lockedEitherT: Future[Either[ResponseError, EmailVerificationStatus]] = Future.successful(Right(EmailVerificationStatus.Locked))
+  val verifiedEitherT: Future[Either[ResponseError, EmailVerificationStatus]] =
+    Future.successful(Right(EmailVerificationStatus.Verified))
+
+  val unverifiedEitherT: Future[Either[ResponseError, EmailVerificationStatus]] =
+    Future.successful(Right(EmailVerificationStatus.Unverified))
+
+  val lockedEitherT: Future[Either[ResponseError, EmailVerificationStatus]] =
+    Future.successful(Right(EmailVerificationStatus.Locked))
 
   override def beforeEach(): Unit = {
     when(mockSave4LaterService.fetchEmailForService(any(), any(), any())(any()))
@@ -164,11 +169,16 @@ class EmailControllerSpec
         mockEmailVerificationService
           .getVerificationStatus(any[String], any[String])(any[HeaderCarrier])
       ).thenReturn(EitherT(unverifiedEitherT))
+      val startVerificationResponse: Future[Either[ResponseError, ResponseWithURI]] =
+        Future.successful(Right(ResponseWithURI("Some URI")))
+      when(
+        mockEmailVerificationService
+          .startVerificationJourney(any(), any(), any(), any())(any(), any())
+      ).thenReturn(EitherT(startVerificationResponse))
+
       callEndpointDefaulting(controller)(journey = subscribeJourneyShort) { result =>
         status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith(
-          "/atar/subscribe/autoenrolment/matching/verify-your-email"
-        )
+        await(result).header.headers("Location") should endWith("Some URI")
       }
     }
 
@@ -179,11 +189,15 @@ class EmailControllerSpec
         mockEmailVerificationService
           .getVerificationStatus(any[String], any[String])(any[HeaderCarrier])
       ).thenReturn(EitherT(unverifiedEitherT))
+      val startVerificationResponse: Future[Either[ResponseError, ResponseWithURI]] =
+        Future.successful(Right(ResponseWithURI("Some URI")))
+      when(
+        mockEmailVerificationService
+          .startVerificationJourney(any(), any(), any(), any())(any(), any())
+      ).thenReturn(EitherT(startVerificationResponse))
       callEndpointDefaulting(controller)(journey = subscribeJourneyLong) { result =>
         status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith(
-          "/atar/subscribe/longjourney/matching/verify-your-email"
-        )
+        await(result).header.headers("Location") should endWith("Some URI")
       }
     }
 
@@ -196,9 +210,7 @@ class EmailControllerSpec
       ).thenReturn(EitherT(lockedEitherT))
       callEndpointDefaulting(controller)(journey = subscribeJourneyLong) { result =>
         status(result) shouldBe SEE_OTHER
-        await(result).header.headers("Location") should endWith(
-          "/atar/subscribe/longjourney/matching/locked-email"
-        )
+        await(result).header.headers("Location") should endWith("/atar/subscribe/longjourney/matching/locked-email")
       }
     }
 

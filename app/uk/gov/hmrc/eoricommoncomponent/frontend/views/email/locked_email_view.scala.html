@@ -16,12 +16,18 @@
 
 @this(
         layout_di: layout,
-        govukButton: GovukButton
+        govukButton: GovukButton,
+        h1: helpers.h1,
+        p: helpers.paragraph
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@layout_di(title = messages("lockedEmail.title")) {
+@layout_di(title = messages("lockedEmail.heading"), displayBackLink = false) {
 
-    <h1 class="govuk-heading-xl">@messages("lockedEmail.heading")</h1>
+    @h1(messages("lockedEmail.heading"))
+
+    @p(messages("lockedEmail.para1"))
+    @p(messages("lockedEmail.para2"))
+
 }

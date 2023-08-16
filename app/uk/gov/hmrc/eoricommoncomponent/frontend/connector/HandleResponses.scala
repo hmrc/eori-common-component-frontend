@@ -16,24 +16,21 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
-import play.api.libs.json.{Json, Reads, JsSuccess, JsError}
+import play.api.libs.json.{JsError, JsSuccess, Reads}
 import uk.gov.hmrc.http.HttpResponse
 import play.mvc.Http.Status.INTERNAL_SERVER_ERROR
-import scala.concurrent.Future
 import play.api.Logging
 
 trait HandleResponses extends Logging {
 
-  def handleResponse[A](response: HttpResponse)(implicit reads: Reads[A]): Either[ResponseError, A] = {
+  def handleResponse[A](response: HttpResponse)(implicit reads: Reads[A]): Either[ResponseError, A] =
     response.json.validate[A] match {
       case JsSuccess(a, _) => Right(a)
-      case JsError(_) => {
+      case JsError(_) =>
         val error = s"Invalid JSON returned: ${response.body}"
         logger.error(error)
         Left(ResponseError(INTERNAL_SERVER_ERROR, error))
-      }
     }
-  }
 
 }
 

@@ -25,20 +25,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.confirmEmailYesNoAnswerForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, Service, SubscribeJourney, LongJourney}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.ResponseWithURI
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, LongJourney, Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.{EmailJourneyService, EmailVerificationService}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  Error,
-  UpdateEmailError,
-  UpdateError,
-  UpdateVerifiedEmailService
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailJourneyService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.{check_your_email, email_confirmed}
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{error_template, email_error_template}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.YesNo
 import javax.inject.{Inject, Singleton}
 
@@ -48,14 +38,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class CheckYourEmailController @Inject() (
   authAction: AuthAction,
   save4LaterService: Save4LaterService,
-  cdsFrontendDataCache: SessionCache,
   mcc: MessagesControllerComponents,
   checkYourEmailView: check_your_email,
   emailConfirmedView: email_confirmed,
-  emailVerificationService: EmailVerificationService,
-  updateVerifiedEmailService: UpdateVerifiedEmailService,
-  emailErrorPage: email_error_template,
-  errorPage: error_template,
   emailJourneyService: EmailJourneyService
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
@@ -109,7 +94,6 @@ class CheckYourEmailController @Inject() (
           )
     }
 
-
   def emailConfirmed(service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
@@ -146,11 +130,10 @@ class CheckYourEmailController @Inject() (
       Future.successful(Redirect(CheckYourEmailController.nextPage(service, subscribeJourney)))
     }
 
-  private def locationByAnswer(
-    yesNoAnswer: YesNo,
-    service: Service,
-    subscribeJourney: SubscribeJourney
-  )(implicit request: Request[AnyContent], userWithEnrolments: LoggedInUserWithEnrolments): Future[Result] = yesNoAnswer match {
+  private def locationByAnswer(yesNoAnswer: YesNo, service: Service, subscribeJourney: SubscribeJourney)(implicit
+    request: Request[AnyContent],
+    userWithEnrolments: LoggedInUserWithEnrolments
+  ): Future[Result] = yesNoAnswer match {
     case theAnswer if theAnswer.isYes => emailJourneyService.continue(service, subscribeJourney)
     case _                            => Future(Redirect(WhatIsYourEmailController.createForm(service, subscribeJourney)))
   }
@@ -158,9 +141,11 @@ class CheckYourEmailController @Inject() (
 }
 
 object CheckYourEmailController {
+
   def nextPage(service: Service, subscribeJourney: SubscribeJourney): Call =
     subscribeJourney match {
       case SubscribeJourney(AutoEnrolment) => HasExistingEoriController.enrol(service)
-      case SubscribeJourney(LongJourney) => WhatIsYourEoriController.createForm(service)
+      case SubscribeJourney(LongJourney)   => WhatIsYourEoriController.createForm(service)
     }
+
 }

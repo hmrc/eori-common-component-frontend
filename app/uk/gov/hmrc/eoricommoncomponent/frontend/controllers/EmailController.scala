@@ -24,9 +24,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailJourneyServi
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.{Save4LaterService, UserGroupIdSubscriptionStatusCheckService}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{
   enrolment_pending_against_group_id,
-  enrolment_pending_for_user,
+  enrolment_pending_for_user
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.EmailVerificationConnector
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,17 +38,16 @@ class EmailController @Inject() (
   userGroupIdSubscriptionStatusCheckService: UserGroupIdSubscriptionStatusCheckService,
   enrolmentPendingForUser: enrolment_pending_for_user,
   enrolmentPendingAgainstGroupId: enrolment_pending_against_group_id,
-  emailJourneyService: EmailJourneyService,
-  emailVerificationConnector: EmailVerificationConnector
+  emailJourneyService: EmailJourneyService
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) with EnrolmentExtractor {
 
   def form(implicit service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
       userGroupIdSubscriptionStatusCheckService
-        .checksToProceed(GroupId(user.groupId), InternalId(user.internalId))(emailJourneyService.continue(service, subscribeJourney))(
-          userIsInProcess(service)
-        )(otherUserWithinGroupIsInProcess(service))
+        .checksToProceed(GroupId(user.groupId), InternalId(user.internalId))(
+          emailJourneyService.continue(service, subscribeJourney)
+        )(userIsInProcess(service))(otherUserWithinGroupIsInProcess(service))
     }
 
   private def userIsInProcess(
@@ -65,11 +63,5 @@ class EmailController @Inject() (
     save4LaterService
       .fetchProcessingService(GroupId(user.groupId))
       .map(processingService => Ok(enrolmentPendingAgainstGroupId(service, processingService)))
-
-  def passcodes = {
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
-      emailVerificationConnector.passcodes.map(Ok(_))
-    }
-  }
 
 }

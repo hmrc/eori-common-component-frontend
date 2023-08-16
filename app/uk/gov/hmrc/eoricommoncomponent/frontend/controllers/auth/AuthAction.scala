@@ -80,7 +80,9 @@ class AuthAction @Inject() (
 
     authorised(AuthProviders(GovernmentGateway))
       .retrieve(extendedRetrievals) {
-        case currentUserEmail ~ userCredentialRole ~ userAffinityGroup ~ userInternalId ~ userAllEnrolments ~ groupId ~ Some(Credentials(credId, _)) =>
+        case currentUserEmail ~ userCredentialRole ~ userAffinityGroup ~ userInternalId ~ userAllEnrolments ~ groupId ~ Some(
+              Credentials(credId, _)
+            ) =>
           transformRequest(
             Right(requestProcessor),
             LoggedInUserWithEnrolments(

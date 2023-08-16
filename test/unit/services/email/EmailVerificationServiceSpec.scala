@@ -30,8 +30,13 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerification
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.ResponseError
 import cats.data.EitherT
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{EmailVerificationStatus, ResponseWithURI, VerificationStatusResponse, VerificationStatus}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{SubscribeJourney, Service, AutoEnrolment}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{
+  EmailVerificationStatus,
+  ResponseWithURI,
+  VerificationStatus,
+  VerificationStatusResponse
+}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, Service, SubscribeJourney}
 import org.mockito.ArgumentMatchers.any
 import play.api.i18n._
 import scala.concurrent.duration._
@@ -39,7 +44,8 @@ import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 
 class EmailVerificationServiceSpec
-    extends AsyncWordSpec with Matchers with ScalaFutures with MockitoSugar with BeforeAndAfterAll with BeforeAndAfterEach {
+    extends AsyncWordSpec with Matchers with ScalaFutures with MockitoSugar with BeforeAndAfterAll
+    with BeforeAndAfterEach {
   private val mockConnector = mock[EmailVerificationConnector]
 
   implicit val hc: HeaderCarrier       = mock[HeaderCarrier]
@@ -56,21 +62,25 @@ class EmailVerificationServiceSpec
   override protected def beforeEach(): Unit =
     reset(mockConnector)
 
-  def mockGetVerificationStatus(credId: String)(response: EitherT[Future, ResponseError, VerificationStatusResponse]): Unit =
+  def mockGetVerificationStatus(
+    credId: String
+  )(response: EitherT[Future, ResponseError, VerificationStatusResponse]): Unit =
     when(
       mockConnector.getVerificationStatus(ArgumentMatchers.eq(credId))(ArgumentMatchers.any[HeaderCarrier])
     ) thenReturn response
 
   val credId = "123"
-  
+
   "getVerificationStatus" should {
 
     "return Error when the connector returns an Error" in {
 
       val expected: Either[ResponseError, VerificationStatusResponse] = Left(ResponseError(500, "Something went wrong"))
-      mockGetVerificationStatus(credId)(EitherT[Future, ResponseError, VerificationStatusResponse]{Future.successful(expected)})
+      mockGetVerificationStatus(credId)(EitherT[Future, ResponseError, VerificationStatusResponse] {
+        Future.successful(expected)
+      })
 
-      sut.getVerificationStatus(email, credId).value.map{ res =>
+      sut.getVerificationStatus(email, credId).value.map { res =>
         res shouldEqual expected
       }
     }
@@ -78,10 +88,14 @@ class EmailVerificationServiceSpec
     "return Locked where the input email has locked=true" in {
 
       val expected = Right(EmailVerificationStatus.Locked)
-      val response: Either[ResponseError, VerificationStatusResponse] = Right(VerificationStatusResponse(Seq(VerificationStatus(emailAddress = email, verified = false, locked = true))))
-      mockGetVerificationStatus(credId)(EitherT[Future, ResponseError, VerificationStatusResponse]{Future.successful(response)})
+      val response: Either[ResponseError, VerificationStatusResponse] = Right(
+        VerificationStatusResponse(Seq(VerificationStatus(emailAddress = email, verified = false, locked = true)))
+      )
+      mockGetVerificationStatus(credId)(EitherT[Future, ResponseError, VerificationStatusResponse] {
+        Future.successful(response)
+      })
 
-      sut.getVerificationStatus(email, credId).value.map{ res =>
+      sut.getVerificationStatus(email, credId).value.map { res =>
         res shouldEqual expected
       }
     }
@@ -89,10 +103,14 @@ class EmailVerificationServiceSpec
     "return Verified where the input email has verified=true" in {
 
       val expected = Right(EmailVerificationStatus.Verified)
-      val response: Either[ResponseError, VerificationStatusResponse] = Right(VerificationStatusResponse(Seq(VerificationStatus(emailAddress = email, verified = true, locked = false))))
-      mockGetVerificationStatus(credId)(EitherT[Future, ResponseError, VerificationStatusResponse]{Future.successful(response)})
+      val response: Either[ResponseError, VerificationStatusResponse] = Right(
+        VerificationStatusResponse(Seq(VerificationStatus(emailAddress = email, verified = true, locked = false)))
+      )
+      mockGetVerificationStatus(credId)(EitherT[Future, ResponseError, VerificationStatusResponse] {
+        Future.successful(response)
+      })
 
-      sut.getVerificationStatus(email, credId).value.map{ res =>
+      sut.getVerificationStatus(email, credId).value.map { res =>
         res shouldEqual expected
       }
     }
@@ -100,10 +118,16 @@ class EmailVerificationServiceSpec
     "return Unverified where it doesn't exist but a different email has verified=true" in {
 
       val expected = Right(EmailVerificationStatus.Unverified)
-      val response: Either[ResponseError, VerificationStatusResponse] = Right(VerificationStatusResponse(Seq(VerificationStatus(emailAddress = differentEmail, verified = true, locked = false))))
-      mockGetVerificationStatus(credId)(EitherT[Future, ResponseError, VerificationStatusResponse]{Future.successful(response)})
+      val response: Either[ResponseError, VerificationStatusResponse] = Right(
+        VerificationStatusResponse(
+          Seq(VerificationStatus(emailAddress = differentEmail, verified = true, locked = false))
+        )
+      )
+      mockGetVerificationStatus(credId)(EitherT[Future, ResponseError, VerificationStatusResponse] {
+        Future.successful(response)
+      })
 
-      sut.getVerificationStatus(email, credId).value.map{ res =>
+      sut.getVerificationStatus(email, credId).value.map { res =>
         res shouldEqual expected
       }
     }
@@ -111,21 +135,29 @@ class EmailVerificationServiceSpec
     "return Unverified where it doesn't exist but a different email has locked=true" in {
 
       val expected = Right(EmailVerificationStatus.Unverified)
-      val response: Either[ResponseError, VerificationStatusResponse] = Right(VerificationStatusResponse(Seq(VerificationStatus(emailAddress = differentEmail, verified = false, locked = true))))
-      mockGetVerificationStatus(credId)(EitherT[Future, ResponseError, VerificationStatusResponse]{Future.successful(response)})
+      val response: Either[ResponseError, VerificationStatusResponse] = Right(
+        VerificationStatusResponse(
+          Seq(VerificationStatus(emailAddress = differentEmail, verified = false, locked = true))
+        )
+      )
+      mockGetVerificationStatus(credId)(EitherT[Future, ResponseError, VerificationStatusResponse] {
+        Future.successful(response)
+      })
 
-      sut.getVerificationStatus(email, credId).value.map{ res =>
+      sut.getVerificationStatus(email, credId).value.map { res =>
         res shouldEqual expected
       }
     }
 
     "return Unverified where an empty list is returned" in {
 
-      val expected = Right(EmailVerificationStatus.Unverified)
+      val expected                                                    = Right(EmailVerificationStatus.Unverified)
       val response: Either[ResponseError, VerificationStatusResponse] = Right(VerificationStatusResponse(Nil))
-      mockGetVerificationStatus(credId)(EitherT[Future, ResponseError, VerificationStatusResponse]{Future.successful(response)})
+      mockGetVerificationStatus(credId)(EitherT[Future, ResponseError, VerificationStatusResponse] {
+        Future.successful(response)
+      })
 
-      sut.getVerificationStatus(email, credId).value.map{ res =>
+      sut.getVerificationStatus(email, credId).value.map { res =>
         res shouldEqual expected
       }
     }
@@ -133,11 +165,16 @@ class EmailVerificationServiceSpec
     "return Locked where the input email has locked=true and a different email exists" in {
 
       val expected = Right(EmailVerificationStatus.Locked)
-      val sequence = Seq(VerificationStatus(emailAddress = email, verified = false, locked = true), VerificationStatus(emailAddress = differentEmail, verified = true, locked = false))
+      val sequence = Seq(
+        VerificationStatus(emailAddress = email, verified = false, locked = true),
+        VerificationStatus(emailAddress = differentEmail, verified = true, locked = false)
+      )
       val response: Either[ResponseError, VerificationStatusResponse] = Right(VerificationStatusResponse(sequence))
-      mockGetVerificationStatus(credId)(EitherT[Future, ResponseError, VerificationStatusResponse]{Future.successful(response)})
+      mockGetVerificationStatus(credId)(EitherT[Future, ResponseError, VerificationStatusResponse] {
+        Future.successful(response)
+      })
 
-      sut.getVerificationStatus(email, credId).value.map{ res =>
+      sut.getVerificationStatus(email, credId).value.map { res =>
         res shouldEqual expected
       }
     }
@@ -145,11 +182,16 @@ class EmailVerificationServiceSpec
     "return Verified where the input email has verified=true and a different email exists" in {
 
       val expected = Right(EmailVerificationStatus.Verified)
-      val sequence = Seq(VerificationStatus(emailAddress = email, verified = true, locked = false), VerificationStatus(emailAddress = differentEmail, verified = false, locked = true))
-      val response: Either[ResponseError, VerificationStatusResponse] = Right(VerificationStatusResponse(sequence))      
-      mockGetVerificationStatus(credId)(EitherT[Future, ResponseError, VerificationStatusResponse]{Future.successful(response)})
+      val sequence = Seq(
+        VerificationStatus(emailAddress = email, verified = true, locked = false),
+        VerificationStatus(emailAddress = differentEmail, verified = false, locked = true)
+      )
+      val response: Either[ResponseError, VerificationStatusResponse] = Right(VerificationStatusResponse(sequence))
+      mockGetVerificationStatus(credId)(EitherT[Future, ResponseError, VerificationStatusResponse] {
+        Future.successful(response)
+      })
 
-      sut.getVerificationStatus(email, credId).value.map{ res =>
+      sut.getVerificationStatus(email, credId).value.map { res =>
         res shouldEqual expected
       }
     }
@@ -157,11 +199,9 @@ class EmailVerificationServiceSpec
   }
 
   def mockStartVerificationJourney(response: EitherT[Future, ResponseError, ResponseWithURI]): Unit =
-    when(
-      mockConnector.startVerificationJourney(any(), any(), any(), any())(any(), any())
-    ) thenReturn response
+    when(mockConnector.startVerificationJourney(any(), any(), any(), any())(any(), any())) thenReturn response
 
-  val service = Service.cds
+  val service          = Service.cds
   val subscribeJourney = SubscribeJourney(AutoEnrolment)
 
   "startVerificationJourney" should {
@@ -169,9 +209,9 @@ class EmailVerificationServiceSpec
     "return Error when the connector returns an Error" in {
 
       val expected: Either[ResponseError, ResponseWithURI] = Left(ResponseError(500, "Something went wrong"))
-      mockStartVerificationJourney(EitherT[Future, ResponseError, ResponseWithURI]{Future.successful(expected)})
+      mockStartVerificationJourney(EitherT[Future, ResponseError, ResponseWithURI](Future.successful(expected)))
 
-      sut.startVerificationJourney(credId, service, email, subscribeJourney).value.map{ res =>
+      sut.startVerificationJourney(credId, service, email, subscribeJourney).value.map { res =>
         res shouldEqual expected
       }
     }
@@ -179,13 +219,13 @@ class EmailVerificationServiceSpec
     "return a response when the connector returns a response" in {
 
       val expected: Either[ResponseError, ResponseWithURI] = Right(ResponseWithURI("Some uri"))
-      mockStartVerificationJourney(EitherT[Future, ResponseError, ResponseWithURI]{Future.successful(expected)})
+      mockStartVerificationJourney(EitherT[Future, ResponseError, ResponseWithURI](Future.successful(expected)))
 
-      sut.startVerificationJourney(credId, service, email, subscribeJourney).value.map{ res =>
+      sut.startVerificationJourney(credId, service, email, subscribeJourney).value.map { res =>
         res shouldEqual expected
       }
     }
 
   }
-  
+
 }

@@ -27,15 +27,17 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolment
 
 import scala.concurrent.Future
 
-class LockedEmailController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       authAction: AuthAction,
-                                       view: locked_email_view
-                                     ) extends FrontendBaseController with I18nSupport {
+class LockedEmailController @Inject() (
+  override val messagesApi: MessagesApi,
+  val controllerComponents: MessagesControllerComponents,
+  authAction: AuthAction,
+  view: locked_email_view
+) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
-    implicit request =>  _: LoggedInUserWithEnrolments =>
-      Future.successful(Ok(view()))
-  }
+  def onPageLoad(service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
+    authAction.ggAuthorisedUserWithEnrolmentsAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        Future.successful(Ok(view()))
+    }
+
 }

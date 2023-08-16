@@ -63,7 +63,7 @@ class ExistingEoriServiceSpec extends ControllerSpec with BeforeAndAfterEach wit
   private val route1Enrolment = Enrolment("HMRC-CTS-ORG").withIdentifier("EORINumber", "GB13412346")
 
   private def loggedInUser(enrolments: Set[Enrolment]) =
-    LoggedInUserWithEnrolments(None, None, Enrolments(enrolments), None, None)
+    LoggedInUserWithEnrolments(None, None, Enrolments(enrolments), None, None, "credId")
 
   private val controller =
     new ExistingEoriService(mockSessionCache, hasExistingEoriView, mockEnrolmentService, eoriEnrolSuccessView)
