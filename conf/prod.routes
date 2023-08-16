@@ -1,6 +1,4 @@
 
-#----------------------------------
-
 ->         /customs-enrolment-services/hmrc-frontend                      hmrcfrontend.Routes
 
 GET         /customs-enrolment-services/assets/*file                                                  @controllers.Assets.versioned(path="/public", file: Asset)
@@ -34,7 +32,7 @@ POST        /customs-enrolment-services/:service/subscribe/:subscribeJourney/ema
 # subscribe
 GET         /customs-enrolment-services/:service/subscribe                                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.startSubscription(service: Service)
 
-GET         /customs-enrolment-services/:service/subscribe/:subscribeJourney/check-user                                  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EmailController.form(service: Service, subscribeJourney: SubscribeJourney)
+GET         /customs-enrolment-services/:service/subscribe/:subscribeJourney/check-user               @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EmailController.form(service: Service, subscribeJourney: SubscribeJourney)
 
 GET         /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriController.createForm(service: Service)
 POST        /customs-enrolment-services/:service/subscribe/matching/what-is-your-eori                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriController.submit(isInReviewMode: Boolean = false, service: Service)

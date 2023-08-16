@@ -36,6 +36,7 @@ import play.api.Logging
 import play.api.mvc.Results._
 import play.api.i18n.Messages
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -47,7 +48,8 @@ class EmailJourneyService @Inject() (
   save4LaterService: Save4LaterService,
   updateVerifiedEmailService: UpdateVerifiedEmailService,
   emailErrorPage: email_error_template,
-  errorPage: error_template
+  errorPage: error_template,
+  appConfig: AppConfig
 )(implicit ec: ExecutionContext)
     extends Logging {
 
@@ -151,7 +153,9 @@ class EmailJourneyService @Inject() (
   )(implicit request: Request[AnyContent], messages: Messages, hc: HeaderCarrier): Future[Result] =
     emailVerificationService.startVerificationJourney(credId, service, email, subscribeJourney).fold(
       _ => InternalServerError(errorPage()),
-      { responseWithUri: ResponseWithURI => Redirect(responseWithUri.redirectUri) }
+      { responseWithUri: ResponseWithURI =>
+        Redirect(s"${appConfig.emailVerificationFrontendBaseUrl}${responseWithUri.redirectUri}")
+      }
     )
 
 }

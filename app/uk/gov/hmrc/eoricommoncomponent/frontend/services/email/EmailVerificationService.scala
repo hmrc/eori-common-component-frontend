@@ -28,30 +28,32 @@ import cats.data.EitherT
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.ResponseError
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
 import play.api.i18n.Messages
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EmailVerificationService @Inject() (emailVerificationConnector: EmailVerificationConnector)(implicit
-  ec: ExecutionContext
+class EmailVerificationService @Inject() (emailVerificationConnector: EmailVerificationConnector, appConfig: AppConfig)(
+  implicit ec: ExecutionContext
 ) {
 
-  def createEmailVerificationRequest(email: String, continueUrl: String): Future[Option[Boolean]] =
-    Future.failed(new Exception("Something went wrong"))
+  val verifiedResponse: Future[Either[ResponseError, EmailVerificationStatus]] =
+    Future.successful(Right(EmailVerificationStatus.Verified))
 
   def getVerificationStatus(email: String, credId: String)(implicit
     hc: HeaderCarrier
   ): EitherT[Future, ResponseError, EmailVerificationStatus] =
-    emailVerificationConnector.getVerificationStatus(credId).map { statusResponse =>
-      val emailStatus: Option[VerificationStatus] = statusResponse.emails.find(_.emailAddress == email)
+    if (appConfig.emailVerificationEnabled)
+      emailVerificationConnector.getVerificationStatus(credId).map { statusResponse =>
+        val emailStatus: Option[VerificationStatus] = statusResponse.emails.find(_.emailAddress == email)
 
-      emailStatus match {
-        case Some(status) if status.locked   => EmailVerificationStatus.Locked
-        case Some(status) if status.verified => EmailVerificationStatus.Verified
-        case _                               => EmailVerificationStatus.Unverified
+        emailStatus match {
+          case Some(status) if status.locked   => EmailVerificationStatus.Locked
+          case Some(status) if status.verified => EmailVerificationStatus.Verified
+          case _                               => EmailVerificationStatus.Unverified
+        }
       }
-
-    }
+    else EitherT(verifiedResponse)
 
   def startVerificationJourney(credId: String, service: Service, email: String, subscribeJourney: SubscribeJourney)(
     implicit

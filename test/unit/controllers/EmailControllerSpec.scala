@@ -52,6 +52,7 @@ import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
 import cats.data.EitherT
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.ResponseError
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -84,7 +85,8 @@ class EmailControllerSpec
       mockSave4LaterService,
       mockUpdateVerifiedEmailService,
       errorEmailView,
-      errorView
+      errorView,
+      appConfig
     )
 
     val controller = new EmailController(
@@ -262,9 +264,6 @@ class EmailControllerSpec
 
       when(mockSessionCache.eori(any[Request[AnyContent]]))
         .thenReturn(Future.successful(Some("GB123456789")))
-
-      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String]))
-        .thenReturn(Future.successful(Some(false)))
 
       callEndpointDefaulting(controller)(journey = subscribeJourneyShort, service = cdsService) { result =>
         status(result) shouldBe OK

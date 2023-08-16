@@ -86,13 +86,9 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   val data       = Map(internalId -> jsonValue)
   val unit       = ()
 
-  override def beforeEach(): Unit = {
-    when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String]))
-      .thenReturn(Future.successful(Some(true)))
-
+  override def beforeEach(): Unit =
     when(mockSave4LaterService.fetchEmailForService(any(), any(), any())(any()))
       .thenReturn(Future.successful(Some(emailStatus)))
-  }
 
   override def afterEach(): Unit = {
     Mockito.reset(mockSave4LaterService)

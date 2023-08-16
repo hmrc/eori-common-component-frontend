@@ -32,7 +32,8 @@ import cats.data.EitherT
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
 import play.mvc.Http.Status.{CREATED, NOT_FOUND, OK}
 import play.api.i18n.Messages
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.{routes => emailRoutes}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -50,9 +51,11 @@ class EmailVerificationConnector @Inject() (httpClient: HttpClientV2, appConfig:
     lazy val verifyEmailUrl: URL =
       url"${appConfig.emailVerificationBaseUrl}/${appConfig.emailVerificationServiceContext}/verify-email"
 
+    val urlPrefix = appConfig.emailVerificationContinueUrlPrefix
+
     val request = StartVerificationJourneyRequest(
       credId = credId,
-      continueUrl = controllers.routes.EmailController.form(service, subscribeJourney).url,
+      continueUrl = s"$urlPrefix${routes.EmailController.form(service, subscribeJourney).url}",
       origin = "ecc",
       deskproServiceName = "eori-common-component",
       accessibilityStatementUrl = service.accessibilityUrl,
@@ -61,7 +64,7 @@ class EmailVerificationConnector @Inject() (httpClient: HttpClientV2, appConfig:
       email = Some(
         StartVerificationJourneyEmail(
           address = email,
-          enterUrl = controllers.email.routes.WhatIsYourEmailController.createForm(service, subscribeJourney).url
+          enterUrl = s"$urlPrefix${emailRoutes.WhatIsYourEmailController.createForm(service, subscribeJourney).url}"
         )
       )
     )
@@ -101,6 +104,14 @@ class EmailVerificationConnector @Inject() (httpClient: HttpClientV2, appConfig:
         }
       }
 
+  }
+
+  //For testing email-verification in non-production environments
+  def getPasscodes(implicit hc: HeaderCarrier) = {
+    lazy val url: URL = url"${appConfig.emailVerificationBaseUrl}/test-only/passcodes"
+
+    httpClient.get(url)
+      .execute
   }
 
 }

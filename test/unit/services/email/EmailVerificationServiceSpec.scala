@@ -40,18 +40,21 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, Service, 
 import org.mockito.ArgumentMatchers.any
 import play.api.i18n._
 import scala.concurrent.duration._
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 
 import scala.concurrent.{Await, Future}
 
 class EmailVerificationServiceSpec
     extends AsyncWordSpec with Matchers with ScalaFutures with MockitoSugar with BeforeAndAfterAll
     with BeforeAndAfterEach {
-  private val mockConnector = mock[EmailVerificationConnector]
+
+  private val mockConnector            = mock[EmailVerificationConnector]
+  private val mockAppConfig: AppConfig = mock[AppConfig]
 
   implicit val hc: HeaderCarrier       = mock[HeaderCarrier]
   implicit val rq: Request[AnyContent] = mock[Request[AnyContent]]
 
-  val sut = new EmailVerificationService(mockConnector)
+  val sut = new EmailVerificationService(mockConnector, mockAppConfig)
 
   implicit val messages: Messages = mock[Messages]
 
@@ -59,8 +62,10 @@ class EmailVerificationServiceSpec
   private val differentEmail = "different@example.com"
   private val continueUrl    = "/customs-enrolment-services/test-continue-url"
 
-  override protected def beforeEach(): Unit =
+  override protected def beforeEach(): Unit = {
     reset(mockConnector)
+    when(mockAppConfig.emailVerificationEnabled) thenReturn true
+  }
 
   def mockGetVerificationStatus(
     credId: String
