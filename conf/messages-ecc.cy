@@ -11,8 +11,8 @@ cds.banner.subscription.gbss=Tanysgrifio i'''r Gwasanaeth Diogelwch (yn y DU)
 cds.banner.subscription.ctc=Tanysgrifio i'''r System Gludo Gyfrifiadurol Newydd (NCTS)
 cds.banner.subscription.cds=Tanysgrifio i'''r Gwasanaeth Datganiadau Tollau
 
-ecc.subscription.enter-eori-number.heading=Beth yw’ch rhif EORI?
-cds.subscription.enter-eori-number.no-eori.summary=Nid oes gennyf rif EORI
+ecc.subscription.enter-eori-number.heading=Beth yw eich rhif EORI sy’n dechrau gyda GB?
+cds.subscription.enter-eori-number.no-eori.summary=Nid oes gennyf rif EORI sy’n dechrau gyda GB
 cds.subscription.enter-eori-number.no-eori=Dylech {0}
 cds.subscription.enter-eori-number.no-eori.link=wneud cais am danysgrifiad a rhif EORI
 

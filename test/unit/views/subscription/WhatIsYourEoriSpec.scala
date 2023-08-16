@@ -40,13 +40,13 @@ class WhatIsYourEoriSpec extends ViewSpec {
   "What Is Your EORI page" should {
 
     "display correct title" in {
-
-      doc().title must startWith("What is your EORI number?")
+      doc().title must startWith(messages("ecc.subscription.enter-eori-number.page.title"))
     }
 
     "have the correct heading text" in {
-
-      doc().body.getElementsByClass("govuk-label--l").text() mustBe "What is your EORI number?"
+      doc().body.getElementsByClass("govuk-heading-l").text() mustBe messages(
+        "ecc.subscription.enter-eori-number.page.title"
+      )
     }
 
     "have an input of type 'text'" in {
