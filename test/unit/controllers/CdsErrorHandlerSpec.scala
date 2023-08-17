@@ -30,13 +30,12 @@ import util.ControllerSpec
 class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {
   val configuration = mock[Configuration]
 
-  private val errorTemplateView       = instanceOf[error_template]
-  private val clientErrorTemplateView = instanceOf[client_error_template]
-  private val notFoundView            = instanceOf[notFound]
-  private val mockRequest             = FakeRequest()
+  private val errorTemplateView = instanceOf[error_template]
+  private val notFoundView      = instanceOf[notFound]
+  private val mockRequest       = FakeRequest()
 
   val cdsErrorHandler =
-    new CdsErrorHandler(messagesApi, configuration, errorTemplateView, clientErrorTemplateView, notFoundView)
+    new CdsErrorHandler(messagesApi, configuration, errorTemplateView, notFoundView)
 
   "Cds error handler" should {
     "redirect to start page after receiving DataUnavailableException exception" in {
@@ -111,7 +110,7 @@ class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {
         val page = CdsPage(contentAsString(result))
 
         result.header.status shouldBe INTERNAL_SERVER_ERROR
-        page.title() should startWith("Something went wrong. Please try again later.")
+        page.title() should startWith("Sorry, there is a problem with the service")
       }
     }
 
