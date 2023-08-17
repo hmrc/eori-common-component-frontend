@@ -22,24 +22,21 @@ import org.mockito.Mockito
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContent, Request, Result}
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.{routes => emailRoutes}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.GroupId
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
-  Error,
-  UpdateEmailError,
-  UpdateVerifiedEmailService
-}
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.{check_your_email, email_confirmed, verify_your_email}
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email_error_template
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.{EmailJourneyService, EmailVerificationService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.UpdateVerifiedEmailService
+import play.api.mvc.Results.Ok
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.{check_your_email, email_confirmed}
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
@@ -67,23 +64,18 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   private val mockSave4LaterService          = mock[Save4LaterService]
   private val mockSessionCache               = mock[SessionCache]
   private val mockUpdateVerifiedEmailService = mock[UpdateVerifiedEmailService]
+  private val mockEmailJourneyService        = mock[EmailJourneyService]
 
   private val checkYourEmailView = instanceOf[check_your_email]
   private val emailConfirmedView = instanceOf[email_confirmed]
-  private val verifyYourEmail    = instanceOf[verify_your_email]
-  private val errorTemplate      = instanceOf[email_error_template]
 
   private val controller = new CheckYourEmailController(
     mockAuthAction,
     mockSave4LaterService,
-    mockSessionCache,
     mcc,
     checkYourEmailView,
     emailConfirmedView,
-    verifyYourEmail,
-    mockEmailVerificationService,
-    mockUpdateVerifiedEmailService,
-    errorTemplate
+    mockEmailJourneyService
   )
 
   val email       = "test@example.com"
@@ -94,13 +86,9 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
   val data       = Map(internalId -> jsonValue)
   val unit       = ()
 
-  override def beforeEach(): Unit = {
-    when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
-      .thenReturn(Future.successful(Some(true)))
-
+  override def beforeEach(): Unit =
     when(mockSave4LaterService.fetchEmailForService(any(), any(), any())(any()))
       .thenReturn(Future.successful(Some(emailStatus)))
-  }
 
   override def afterEach(): Unit = {
     Mockito.reset(mockSave4LaterService)
@@ -126,183 +114,24 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
 
   "Submitting the Check Your Email Page" should {
 
-    "redirect to Verify Your Email Address page for unverified email address" in {
-      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Some(true)))
-      submitForm(ValidRequest + (yesNoInputName -> answerYes), service = atarService, journey = subscribeJourneyShort) {
-        result =>
-          status(result) shouldBe SEE_OTHER
-          result.header.headers("Location") should endWith(
-            "/customs-enrolment-services/atar/subscribe/autoenrolment/matching/verify-your-email"
-          )
-      }
-    }
-
-    "redirect to Are You based in UK for Already verified email" in {
-      when(mockSessionCache.eori(any[Request[AnyContent]]))
-        .thenReturn(Future.successful(Some("GB123456789")))
-      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Right((): Unit)))
-      when(mockSave4LaterService.saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(()))
-      when(mockSessionCache.saveEmail(any[String])(any[Request[AnyContent]]))
-        .thenReturn(Future.successful(true))
-
-      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Some(false)))
+    "call EmailJourneyService.continue if the user selects yes" in {
+      when(mockEmailJourneyService.continue(any(), any())(any(), any(), any(), any()))
+        .thenReturn(Future.successful(Ok("Some response")))
 
       submitForm(ValidRequest + (yesNoInputName -> answerYes), service = atarService, journey = subscribeJourneyShort) {
-        result =>
-          status(result) shouldBe SEE_OTHER
-          result.header.headers("Location") should endWith(
-            "/customs-enrolment-services/atar/subscribe/autoenrolment/check-user"
-          )
-      }
-    }
-
-    "redirect to Are You based in UK for Already verified email (Long Journey)" in {
-      when(mockSave4LaterService.saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(()))
-      when(mockSessionCache.saveEmail(any[String])(any[Request[AnyContent]]))
-        .thenReturn(Future.successful(true))
-
-      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Some(false)))
-
-      submitForm(ValidRequest + (yesNoInputName -> answerYes), service = atarService, journey = subscribeJourneyLong) {
-        result =>
-          status(result) shouldBe SEE_OTHER
-          result.header.headers("Location") should endWith(
-            "/customs-enrolment-services/atar/subscribe/longjourney/check-user"
-          )
-      }
-    }
-
-    "update verified email for CDS Short Journey (Auto-enrolment)" in {
-      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Right((): Unit)))
-
-      when(mockSessionCache.eori(any[Request[AnyContent]]))
-        .thenReturn(Future.successful(Some("GB123456789")))
-
-      when(mockSave4LaterService.saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(()))
-
-      when(mockSessionCache.saveEmail(any[String])(any[Request[AnyContent]]))
-        .thenReturn(Future.successful(true))
-
-      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Some(false)))
-
-      submitForm(ValidRequest + (yesNoInputName -> answerYes), service = cdsService, journey = subscribeJourneyShort) {
-        result =>
-          status(result) shouldBe SEE_OTHER
-          result.header.headers("Location") should endWith(
-            "/customs-enrolment-services/cds/subscribe/autoenrolment/check-user"
-          )
-      }
-      verify(mockUpdateVerifiedEmailService, times(1)).updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])
-    }
-
-    "do not save email when updating email fails" in {
-      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Left(Error)))
-
-      when(mockSessionCache.eori(any[Request[AnyContent]]))
-        .thenReturn(Future.successful(Some("GB123456789")))
-
-      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Some(false)))
-
-      the[IllegalArgumentException] thrownBy submitForm(
-        ValidRequest + (yesNoInputName -> answerYes),
-        service = cdsService,
-        journey = subscribeJourneyShort
-      ) {
-        result =>
-          status(result) shouldBe SEE_OTHER
-          result.header.headers("Location") should endWith(
-            "/customs-enrolment-services/cds/subscribe/autoenrolment/check-user"
-          )
-      }
-
-      verify(mockSave4LaterService, times(0)).saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier])
-    }
-
-    "do not save email when updating verified email with retriable failure and display error page" in {
-      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Left(UpdateEmailError)))
-
-      when(mockSessionCache.eori(any[Request[AnyContent]]))
-        .thenReturn(Future.successful(Some("GB123456789")))
-
-      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Some(false)))
-
-      submitForm(ValidRequest + (yesNoInputName -> answerYes), service = cdsService, journey = subscribeJourneyShort) {
         result =>
           status(result) shouldBe OK
       }
-
-      verify(mockSave4LaterService, times(0)).saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier])
     }
 
-    "do not update verified email for Long Journey" in {
-
-      when(mockSave4LaterService.saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(()))
-
-      when(mockSessionCache.saveEmail(any[String])(any[Request[AnyContent]]))
-        .thenReturn(Future.successful(true))
-
-      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Some(false)))
-
-      submitForm(ValidRequest + (yesNoInputName -> answerYes), service = atarService, journey = subscribeJourneyLong) {
+    "redirect to WhatIsYourEmailController.createForm if the user selects no" in {
+      submitForm(ValidRequest + (yesNoInputName -> answerNo), service = atarService, journey = subscribeJourneyShort) {
         result =>
           status(result) shouldBe SEE_OTHER
           result.header.headers("Location") should endWith(
-            "/customs-enrolment-services/atar/subscribe/longjourney/check-user"
+            emailRoutes.WhatIsYourEmailController.createForm(atarService, subscribeJourneyShort).url
           )
       }
-      verify(mockUpdateVerifiedEmailService, times(0)).updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])
-    }
-
-    "do not update verified email for non-CDS Short Journey" in {
-      when(mockSave4LaterService.saveEmailForService(any())(any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(()))
-
-      when(mockSessionCache.saveEmail(any[String])(any[Request[AnyContent]]))
-        .thenReturn(Future.successful(true))
-
-      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Some(false)))
-
-      submitForm(ValidRequest + (yesNoInputName -> answerYes), service = atarService, journey = subscribeJourneyShort) {
-        result =>
-          status(result) shouldBe SEE_OTHER
-          result.header.headers("Location") should endWith(
-            "/customs-enrolment-services/atar/subscribe/autoenrolment/check-user"
-          )
-      }
-      verify(mockUpdateVerifiedEmailService, times(0)).updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])
-    }
-
-    "throw  IllegalStateException when downstream CreateEmailVerificationRequest Fails" in {
-      when(mockEmailVerificationService.createEmailVerificationRequest(any[String], any[String])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(None))
-
-      the[IllegalStateException] thrownBy {
-        submitForm(
-          ValidRequest + (yesNoInputName -> answerYes),
-          service = atarService,
-          journey = subscribeJourneyShort
-        ) {
-          result =>
-            status(result) shouldBe SEE_OTHER
-        }
-      } should have message "CreateEmailVerificationRequest Failed"
-
     }
 
     "Email Confirmed" should {
@@ -350,27 +179,6 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     }
   }
 
-  "Redirecting to Verify Your Email Address Page" should {
-    "display title as 'Confirm your email address'" in {
-      verifyEmailViewForm(journey = subscribeJourneyShort) { result =>
-        val page = CdsPage(contentAsString(result))
-        page.title() should startWith("Confirm your email address")
-      }
-    }
-  }
-
-  "Pressing Save and continue on the Email Confirmation page" should {
-
-    "redirect to WhatIsYourEoriController.createForm" in {
-      acceptEmailConfirmation() { result =>
-        status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith(
-          "/customs-enrolment-services/atar/subscribe/matching/what-is-your-eori"
-        )
-      }
-    }
-  }
-
   private def submitForm(
     form: Map[String, String],
     userId: String = defaultUserId,
@@ -396,24 +204,6 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
       .emailConfirmed(atarService, subscribeJourneyShort)
-      .apply(SessionBuilder.buildRequestWithSession(userId))
-    test(result)
-  }
-
-  private def verifyEmailViewForm(userId: String = defaultUserId, journey: SubscribeJourney)(
-    test: Future[Result] => Any
-  ): Unit = {
-    withAuthorisedUser(userId, mockAuthConnector)
-    val result = controller
-      .verifyEmailView(atarService, journey)
-      .apply(SessionBuilder.buildRequestWithSession(userId))
-    test(result)
-  }
-
-  private def acceptEmailConfirmation(userId: String = defaultUserId)(test: Future[Result] => Any): Unit = {
-    withAuthorisedUser(userId, mockAuthConnector)
-    val result = controller
-      .acceptConfirmation(atarService)
       .apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }

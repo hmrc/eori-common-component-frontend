@@ -380,7 +380,7 @@ cds.subscription.enter-email.list-bullet-2=notify you of urgent updates about go
 cds.subscription.enter-email.list-bullet-3=send duty deferment Direct Debit notices and postponed VAT statements for your imports
 cds.subscription.enter-email.hint=You can change this email at a later date. For example, if different teams are involved, you may decide to set up a shared email inbox for customs notifications.
 subscription.check-your-email.heading=Check  your email address
-subscription.check-your-email.confirm.label=We will send you a link to confirm your email address.
+subscription.check-your-email.confirm.label=To confirm it's your email address we will send you a code.
 subscription.check-your-email.confirm.question=Is {0} the email address you want to use?
 subscription.check-your-email.confirm.title=Is this the email address you want to use?
 subscription.check-your-email.yes=Yes
@@ -1479,3 +1479,8 @@ ecc.address-lookup.postcode.hint.organisation =<p class="govuk-body">We will use
 ecc.address-lookup.postcode.hint.partnership=Enter the postcode for the partnership address that you registered with HMRC.
 ecc.address-lookup.postcode.hint.individual=Enter the same postcode you used in your application for an EORI number.
 ecc.address-lookup.postcode.partnership.hint.text =We will use this to verify your identity.
+
+#Locked email screen
+lockedEmail.heading = You've entered an incorrect code too many times
+lockedEmail.para1 = You will not be able to continue with your application.
+lockedEmail.para2 = You can try again in 24 hours.

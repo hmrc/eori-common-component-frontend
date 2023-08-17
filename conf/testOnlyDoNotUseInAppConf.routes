@@ -10,5 +10,6 @@
 # Failing to follow this rule may result in test routes deployed in production.
 
 # Add all the application routes to the prod.routes file
+->         /                                                             prod.Routes
 
-->         /                                            prod.Routes
+GET        /customs-enrolment-services/test-only/passcodes      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.testOnly.PasscodesController.getEmailVerificationPasscodes()

@@ -77,7 +77,7 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
   val atarEnrolment: Enrolment = Enrolment("HMRC-ATAR-ORG").withIdentifier("EORINumber", eori.id)
 
   private val mockLoggedInUserEnrolments =
-    LoggedInUserWithEnrolments(None, None, Enrolments(Set(atarEnrolment)), None, Some("groupId"))
+    LoggedInUserWithEnrolments(None, None, Enrolments(Set(atarEnrolment)), None, Some("groupId"), "credId")
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eoricommoncomponent.frontend.domain
+package uk.gov.hmrc.eoricommoncomponent.frontend.models.email
 
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
+import play.api.libs.json.Json
 
-case class LoggedInUserWithEnrolments(
-  affinityGroup: Option[AffinityGroup],
-  internalId: Option[String],
-  enrolments: Enrolments,
-  email: Option[String],
-  groupId: Option[String],
-  credId: String
-)
+case class VerificationStatus(emailAddress: String, verified: Boolean, locked: Boolean)
+
+object VerificationStatus {
+  implicit val format = Json.format[VerificationStatus]
+}
+
+case class VerificationStatusResponse(emails: Seq[VerificationStatus])
+
+object VerificationStatusResponse {
+  implicit val format = Json.format[VerificationStatusResponse]
+}

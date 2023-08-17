@@ -353,7 +353,7 @@ cds.subscription.enter-email.list-bullet-2=eich hysbysu am newidiadau brys o ran
 cds.subscription.enter-email.list-bullet-3=anfon hysbysiadau Debyd Uniongyrchol ynghylch gohirio tollau atoch, a datganiadau TAW ohiriedig ar gyfer eich mewnforion
 cds.subscription.enter-email.hint=Gallwch newid y cyfeiriad e-bost hwn yn nes ymlaen. Er enghraifft, os yw gwahanol dimau’n cymryd rhan, efallai y byddwch yn penderfynu sefydlu mewnflwch e-bost a rennir ar gyfer hysbysiadau’r tollau.
 subscription.check-your-email.heading=Gwirio’ch cyfeiriad e-bost
-subscription.check-your-email.confirm.label=Byddwn yn anfon cysylltiad atoch i gadarnhau’ch cyfeiriad e-bost.
+subscription.check-your-email.confirm.label=I gadarnhau mai'ch cyfeiriad e-bost chi yw hwn, byddwn yn anfon cod atoch.
 subscription.check-your-email.confirm.question=Ai {0} yw’r cyfeiriad e-bost rydych am ei ddefnyddio?
 subscription.check-your-email.confirm.title=Ai dyma’r cyfeiriad e-bost rydych am ei ddefnyddio?
 subscription.check-your-email.yes=Iawn
@@ -1321,3 +1321,8 @@ ecc.address-lookup.postcode.organisation.para.hint.text = Byddwn yn defnyddio hy
 ecc.address-lookup.postcode.organisation.para.hint.text.link=gofrestr Tŷ’r Cwmnïau (yn agor tab newydd).
 ecc.address-lookup.postcode.partnership.hint.text = Byddwn yn defnyddio hwn i gadarnhau pwy ydych.
 ecc.address-lookup.postcode.hint.individual=Nodwch yr un cod post â’r un a ddefnyddioch yn eich cais am rif EORI.
+
+#Locked email screen
+lockedEmail.heading = Rydych wedi nodi cod anghywir gormod o weithiau
+lockedEmail.para1 = Ni fyddwch yn gallu mynd yn eich blaen â’ch cais.
+lockedEmail.para2 = Gallwch roi cynnig arall arni ymhen 24 awr.
