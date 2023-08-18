@@ -17,12 +17,8 @@
 package unit.domain
 
 import base.UnitSpec
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
-  OrganisationFlow,
-  RowIndividualFlow,
-  RowOrganisationFlow,
-  SubscriptionFlow
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowConfig
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
 class SubscriptionFlowSpec extends UnitSpec {
@@ -46,6 +42,26 @@ class SubscriptionFlowSpec extends UnitSpec {
     "create for valid flow name for ROW individual" in {
       SubscriptionFlow("migration-eori-row-utrNino-enabled-Individual") shouldBe RowIndividualFlow
     }
+  }
+
+  "flows" should {
+
+    "returns the flowConfig for RowIndividualFlow" in {
+      SubscriptionFlows(RowIndividualFlow) shouldBe SubscriptionFlowConfig(
+        pageBeforeFirstFlowPage = UserLocationPage,
+        List(
+          NameDobDetailsSubscriptionFlowPage,
+          UtrSubscriptionFlowPage,
+          NinoSubscriptionFlowPage,
+          AddressDetailsSubscriptionFlowPage,
+          ContactDetailsSubscriptionFlowPageMigrate,
+          ContactAddressSubscriptionFlowPage,
+          ConfirmContactAddressSubscriptionFlowPage
+        ),
+        pageAfterLastFlowPage = ReviewDetailsPageSubscription
+      )
+    }
+
   }
 
 }
