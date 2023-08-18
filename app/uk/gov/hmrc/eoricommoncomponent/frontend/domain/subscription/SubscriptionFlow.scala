@@ -215,24 +215,6 @@ case object DateOfEstablishmentSubscriptionFlowPageMigrate extends SubscriptionP
 
 }
 
-case object EmailSubscriptionFlowPage extends SubscriptionPage {
-
-  override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.WhatIsYourEmailController
-      .createForm(service, subscribeJourney)
-      .url
-
-}
-
-case object CheckYourEmailSubscriptionFlowPage extends SubscriptionPage {
-
-  override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =
-    uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes.CheckYourEmailController
-      .createForm(service, subscribeJourney)
-      .url
-
-}
-
 case object ReviewDetailsPageSubscription extends SubscriptionPage {
 
   override def url(service: Service, subscribeJourney: SubscribeJourney = SubscribeJourney(LongJourney)): String =
