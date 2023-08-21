@@ -21,7 +21,7 @@ import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes._
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{routes, HasExistingEoriController}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.confirmEmailYesNoAnswerForm
@@ -103,7 +103,7 @@ class CheckYourEmailController @Inject() (
               // $COVERAGE-OFF$Loggers
               logger.warn("[CheckYourEmailController][emailConfirmed] -  emailStatus cache none")
               // $COVERAGE-ON
-              Future.successful(Redirect(SecuritySignOutController.signOut(service)))
+              Future.successful(Redirect(routes.SecuritySignOutController.signOut(service)))
             } { email =>
               if (email.isConfirmed.getOrElse(false))
                 Future.successful(toResult(service, subscribeJourney))
@@ -125,9 +125,9 @@ class CheckYourEmailController @Inject() (
   def toResult(service: Service, subscribeJourney: SubscribeJourney)(implicit r: Request[AnyContent]): Result =
     Ok(emailConfirmedView(service, subscribeJourney))
 
-  def acceptConfirmation(service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
+  def acceptConfirmation(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { _ => _: LoggedInUserWithEnrolments =>
-      Future.successful(Redirect(CheckYourEmailController.nextPage(service, subscribeJourney)))
+      Future.successful(Redirect(WhatIsYourEoriController.createForm(service)))
     }
 
   private def locationByAnswer(yesNoAnswer: YesNo, service: Service, subscribeJourney: SubscribeJourney)(implicit
@@ -137,15 +137,5 @@ class CheckYourEmailController @Inject() (
     case theAnswer if theAnswer.isYes => emailJourneyService.continue(service, subscribeJourney)
     case _                            => Future(Redirect(WhatIsYourEmailController.createForm(service, subscribeJourney)))
   }
-
-}
-
-object CheckYourEmailController {
-
-  def nextPage(service: Service, subscribeJourney: SubscribeJourney): Call =
-    subscribeJourney match {
-      case SubscribeJourney(AutoEnrolment) => HasExistingEoriController.enrol(service)
-      case SubscribeJourney(LongJourney)   => WhatIsYourEoriController.createForm(service)
-    }
 
 }
