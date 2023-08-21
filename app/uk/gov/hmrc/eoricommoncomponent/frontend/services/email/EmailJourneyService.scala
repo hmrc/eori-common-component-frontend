@@ -17,11 +17,13 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.email
 
 import play.api.mvc._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email._
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.{routes => emailRoutes}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{EmailVerificationStatus, ResponseWithURI}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, Service, SubscribeJourney}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, LongJourney, Service, SubscribeJourney}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.ExistingEoriService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailVerificationService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
@@ -49,7 +51,8 @@ class EmailJourneyService @Inject() (
   updateVerifiedEmailService: UpdateVerifiedEmailService,
   emailErrorPage: email_error_template,
   errorPage: error_template,
-  appConfig: AppConfig
+  appConfig: AppConfig,
+  existingEoriService: ExistingEoriService
 )(implicit ec: ExecutionContext)
     extends Logging {
 
@@ -63,18 +66,18 @@ class EmailJourneyService @Inject() (
       _.fold {
         // $COVERAGE-OFF$Loggers
         logger.info(s"emailStatus cache none ${user.internalId}")
-        Future.successful(Redirect(routes.WhatIsYourEmailController.createForm(service, subscribeJourney)))
+        Future.successful(Redirect(emailRoutes.WhatIsYourEmailController.createForm(service, subscribeJourney)))
       } { cachedEmailStatus =>
         cachedEmailStatus.email match {
           case Some(email) =>
             if (cachedEmailStatus.isVerified)
-              sessionCache.saveEmail(email) map { _ =>
-                Redirect(CheckYourEmailController.nextPage(service, subscribeJourney))
+              sessionCache.saveEmail(email) flatMap { _ =>
+                verifiedInCache(service, subscribeJourney)
               }
             else
               checkWithEmailService(email, cachedEmailStatus, user.credId, service, subscribeJourney)
           case None =>
-            Future.successful(Redirect(routes.WhatIsYourEmailController.createForm(service, subscribeJourney)))
+            Future.successful(Redirect(emailRoutes.WhatIsYourEmailController.createForm(service, subscribeJourney)))
         }
       }
     }
@@ -105,7 +108,7 @@ class EmailJourneyService @Inject() (
           // $COVERAGE-OFF$Loggers
           logger.warn("Email address is locked")
           // $COVERAGE-ON
-          Future.successful(Redirect(routes.LockedEmailController.onPageLoad(service, subscribeJourney)))
+          Future.successful(Redirect(emailRoutes.LockedEmailController.onPageLoad(service, subscribeJourney)))
       }
     )
 
@@ -136,7 +139,7 @@ class EmailJourneyService @Inject() (
             groupId
           )
           _ <- sessionCache.saveEmail(email)
-        } yield Redirect(routes.CheckYourEmailController.emailConfirmed(service, subscribeJourney))
+        } yield Redirect(emailRoutes.CheckYourEmailController.emailConfirmed(service, subscribeJourney))
       case Left(UpdateEmailError) =>
         // $COVERAGE-OFF$Loggers
         logger.warn("Update Verified Email failed with user-retriable error. Redirecting to error page.")
@@ -157,5 +160,16 @@ class EmailJourneyService @Inject() (
         Redirect(s"${appConfig.emailVerificationFrontendBaseUrl}${responseWithUri.redirectUri}")
       }
     )
+
+  private def verifiedInCache(service: Service, subscribeJourney: SubscribeJourney)(implicit
+    request: Request[AnyContent],
+    user: LoggedInUserWithEnrolments,
+    hc: HeaderCarrier
+  ): Future[Result] =
+    subscribeJourney match {
+      case SubscribeJourney(AutoEnrolment) => existingEoriService.onEnrol(service)
+      case SubscribeJourney(LongJourney) =>
+        Future.successful(Redirect(routes.WhatIsYourEoriController.createForm(service)))
+    }
 
 }

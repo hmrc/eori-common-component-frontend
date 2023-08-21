@@ -30,6 +30,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{EmailVerificationStatus, ResponseWithURI}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.ExistingEoriService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.{EmailJourneyService, EmailVerificationService}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
@@ -67,6 +68,7 @@ class EmailControllerSpec
   private val mockSessionCache: SessionCache                             = mock[SessionCache]
   private val mockSubscriptionStatusService                              = mock[SubscriptionStatusService]
   private val mockUpdateVerifiedEmailService: UpdateVerifiedEmailService = mock[UpdateVerifiedEmailService]
+  private val mockExistingEoriService                                    = mock[ExistingEoriService]
   private val enrolmentPendingAgainstGroupIdView                         = instanceOf[enrolment_pending_against_group_id]
   private val enrolmentPendingForUserView                                = instanceOf[enrolment_pending_for_user]
   private val errorEmailView                                             = instanceOf[email_error_template]
@@ -86,7 +88,8 @@ class EmailControllerSpec
       mockUpdateVerifiedEmailService,
       errorEmailView,
       errorView,
-      appConfig
+      appConfig,
+      mockExistingEoriService
     )
 
     val controller = new EmailController(
