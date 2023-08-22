@@ -96,5 +96,3 @@ case object ThirdCountriesInCountryPicker        extends CountriesInCountryPicke
 case object ThirdCountriesIncEuInCountryPicker   extends CountriesInCountryPicker
 case object IslandsInCountryPicker               extends CountriesInCountryPicker
 case object NoCountriesInCountryPicker           extends CountriesInCountryPicker
-
-case object IslandsAndIomInCountryPicker extends CountriesInCountryPicker
