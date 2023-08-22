@@ -77,7 +77,11 @@ class CompanyRegisteredCountryController @Inject() (
   private def prepareViewBasedOnType(form: Form[CompanyRegisteredCountry], service: Service, isInReviewMode: Boolean)(
     implicit request: Request[AnyContent]
   ): Html = {
-    val (countries, picker) = Countries.getCountryParameters(Some(UserLocation.ThirdCountryIncEU))
+
+    val (countries, picker)  = requestSessionData.selectedUserLocation match {
+      case Some(UserLocation.Islands) => Countries.getCountryParameters(Some(UserLocation.IslandsAndIom))
+      case _ => Countries.getCountryParameters(Some(UserLocation.ThirdCountryIncEU))
+    }
 
     if (requestSessionData.userSubscriptionFlow == RowOrganisationFlow)
       countryOrganisationPage(form, countries, picker, service, isInReviewMode)
