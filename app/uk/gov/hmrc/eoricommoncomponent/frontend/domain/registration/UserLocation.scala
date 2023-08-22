@@ -28,7 +28,6 @@ object UserLocation {
   val ThirdCountry      = "third-country"
   val ThirdCountryIncEU = "third-country-inc-eu"
   val Islands           = "islands"
-  val IslandsAndIom     = "islandsAndIom"
 
   val validLocations: Set[String] = Set(Uk, Iom, Eu, ThirdCountry, ThirdCountryIncEU, Islands)
 

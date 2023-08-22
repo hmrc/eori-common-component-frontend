@@ -79,7 +79,7 @@ class CompanyRegisteredCountryController @Inject() (
   ): Html = {
 
     val (countries, picker) = requestSessionData.selectedUserLocation match {
-      case Some(UserLocation.Islands) => Countries.getCountryParameters(Some(UserLocation.IslandsAndIom))
+      case Some(UserLocation.Islands) => Countries.getCountryParameters(Some(UserLocation.Islands))
       case _                          => Countries.getCountryParameters(Some(UserLocation.ThirdCountryIncEU))
     }
 
