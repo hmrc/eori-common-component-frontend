@@ -78,9 +78,9 @@ class CompanyRegisteredCountryController @Inject() (
     implicit request: Request[AnyContent]
   ): Html = {
 
-    val (countries, picker)  = requestSessionData.selectedUserLocation match {
+    val (countries, picker) = requestSessionData.selectedUserLocation match {
       case Some(UserLocation.Islands) => Countries.getCountryParameters(Some(UserLocation.IslandsAndIom))
-      case _ => Countries.getCountryParameters(Some(UserLocation.ThirdCountryIncEU))
+      case _                          => Countries.getCountryParameters(Some(UserLocation.ThirdCountryIncEU))
     }
 
     if (requestSessionData.userSubscriptionFlow == RowOrganisationFlow)

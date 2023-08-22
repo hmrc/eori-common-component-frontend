@@ -81,9 +81,9 @@ object Countries extends Logging {
       (third, ThirdCountriesInCountryPicker)
     case Some(UserLocation.ThirdCountryIncEU) =>
       (thirdIncEu, ThirdCountriesIncEuInCountryPicker)
-    case Some(UserLocation.Islands) => (islands, IslandsInCountryPicker)
+    case Some(UserLocation.Islands)       => (islands, IslandsInCountryPicker)
     case Some(UserLocation.IslandsAndIom) => (IslandsAndIom, IslandsAndIomInCountryPicker)
-    case _                          => (allExceptIom, AllCountriesExceptIomInCountryPicker)
+    case _                                => (allExceptIom, AllCountriesExceptIomInCountryPicker)
   }
 
   def getCountryParametersForAllCountries(): (List[Country], CountriesInCountryPicker) =
@@ -101,4 +101,4 @@ case object ThirdCountriesIncEuInCountryPicker   extends CountriesInCountryPicke
 case object IslandsInCountryPicker               extends CountriesInCountryPicker
 case object NoCountriesInCountryPicker           extends CountriesInCountryPicker
 
-case object IslandsAndIomInCountryPicker           extends CountriesInCountryPicker
+case object IslandsAndIomInCountryPicker extends CountriesInCountryPicker
