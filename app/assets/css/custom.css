@@ -8,21 +8,6 @@
   visibility: visible
 }
 
-@media (min-width: 641px){
-    .autocomplete__wrapper {
-      width: 50%;
-    }
-}
-
-.autocomplete__wrapper input[type="text"] {
-  width: 100%
-}
-
-.autocomplete__menu--inline {
-  position: absolute;
-  z-index: 999;
-}
-
 .add-remove__item {
   border-bottom: 1px solid #bfc1c3;
   padding: 30px 0;
