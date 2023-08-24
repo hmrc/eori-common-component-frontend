@@ -182,7 +182,7 @@ cds.subscription.sign-in-with-different-details.para1=Mae {0} eisoes wedi cofres
 cds.subscription.sign-in-with-different-details.para1-noname=Rydych eisoes wedi cofrestru ar gyfer {0} gyda Phorth y Llywodraeth gwahanol.
 
 cds.matching.row-organisation.utr.hint=Mae hwn yn cynnwys 10 rhif, er enghraifft 1234567890. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Treth Gorfforaeth. Efallai y cyfeirir ato gan ddefnyddio’r geiriau ‘cyfeirnod’, ‘UTR’ neu ‘defnydd swyddogol’.
-cds.matching.row-sole-trader-individual.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890, a gellir ei ddilyn gan K. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Hunanasesiad. Efallai y cyfeirir ato gan ddefnyddio’r geiriau ‘cyfeirnod’, ‘UTR’ neu ‘defnydd swyddogol’. Mae modd {0}
+cds.matching.row-sole-trader-individual.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Hunanasesiad. Efallai y cyfeirir ato gan ddefnyddio’r geiriau ‘cyfeirnod’, ‘UTR’ neu ‘defnydd swyddogol’. Mae modd {0}
 
 cds.matching.row-lost-urt.hint.link=Mae modd dod o hyd i UTR sydd ar goll (yn agor tab newydd)
 
