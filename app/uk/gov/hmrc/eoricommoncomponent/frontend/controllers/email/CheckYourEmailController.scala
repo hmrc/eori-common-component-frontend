@@ -18,20 +18,18 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email
 
 import play.api.Logger
 import play.api.mvc._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.routes._
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{routes, HasExistingEoriController}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.WhatIsYourEoriController
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, LoggedInUserWithEnrolments}
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{routes, CdsController}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, LoggedInUserWithEnrolments, YesNo}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailForm.confirmEmailYesNoAnswerForm
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, LongJourney, Service, SubscribeJourney}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.EmailJourneyService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.{check_your_email, email_confirmed}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.YesNo
-import javax.inject.{Inject, Singleton}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

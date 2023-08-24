@@ -18,7 +18,6 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching
 
 import play.api.Logging
 import play.api.libs.json._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.ExistingEori.logger
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging._
 
 case class Organisation(organisationName: String, organisationType: String)
