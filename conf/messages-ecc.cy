@@ -182,7 +182,7 @@ cds.subscription.sign-in-with-different-details.para1=Mae {0} eisoes wedi cofres
 cds.subscription.sign-in-with-different-details.para1-noname=Rydych eisoes wedi cofrestru ar gyfer {0} gyda Phorth y Llywodraeth gwahanol.
 
 cds.matching.row-organisation.utr.hint=Mae hwn yn cynnwys 10 rhif, er enghraifft 1234567890. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Treth Gorfforaeth. Efallai y cyfeirir ato gan ddefnyddio’r geiriau ‘cyfeirnod’, ‘UTR’ neu ‘defnydd swyddogol’.
-cds.matching.row-sole-trader-individual.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890, a gellir ei ddilyn gan K. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Hunanasesiad. Efallai y cyfeirir ato gan ddefnyddio’r geiriau ‘cyfeirnod’, ‘UTR’ neu ‘defnydd swyddogol’. Mae modd {0}
+cds.matching.row-sole-trader-individual.utr.hint=Rhif 10 digid yw hwn, er enghraifft 1234567890. Bydd i’w weld ar Ffurflenni Treth a llythyrau eraill ynghylch Hunanasesiad. Efallai y cyfeirir ato gan ddefnyddio’r geiriau ‘cyfeirnod’, ‘UTR’ neu ‘defnydd swyddogol’. Mae modd {0}
 
 cds.matching.row-lost-urt.hint.link=Mae modd dod o hyd i UTR sydd ar goll (yn agor tab newydd)
 
@@ -324,7 +324,7 @@ ecc.registered-company-country.individual.title = Ym mha wlad y mae’ch busnes 
 ecc.registered-company-country.individual.error = Nodwch y wlad lle y mae’ch busnes wedi’i gofrestruCountry location Lleoliad y wlad
 ecc.registered-company-country.summary = Lleoliad y wlad
 
-ecc.address-lookup.postcode.title = Dewis eich cyfeiriad
+ecc.address-lookup.postcode.title = Dewiswch eich cyfeiriad
 ecc.address-lookup.postcode.organisation.title = Ble mae swyddfa gofrestredig y cwmni?
 ecc.address-lookup.postcode.individual.title = Beth yw’ch cyfeiriad?
 ecc.address-lookup.postcode.partnership.title = Ble mae swyddfa gofrestredig y bartneriaeth?
@@ -337,7 +337,7 @@ ecc.address-lookup.postcode.line1.label = Enw neu rif yr eiddo (dewisol)
 ecc.address-lookup.postcode.line1.error = Ni all enw neu rif yr eiddo fod yn fwy na 35 o gymeriadau
 ecc.address-lookup.postcode.summary.label = Cod post
 ecc.address-lookup.postcode.line1.summary.label = Enw neu rif yr eiddo
-ecc.address-lookup.postcode.address.label = Dewis eich cyfeiriad
+ecc.address-lookup.postcode.address.label = Dewiswch eich cyfeiriad
 ecc.address-lookup.postcode.address.error = Dewiswch gyfeiriad o’r rhestr.
 ecc.address-lookup.postcode.cannot-find-address = Nodwch eich cyfeiriad â llaw
 ecc.address-lookup.postcode.line1.hint = Er enghraifft, Tegfan, 116 neu Fflat 37a

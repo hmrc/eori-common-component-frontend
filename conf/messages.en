@@ -10,6 +10,8 @@ cds.navigation.match=Match
 cds.navigation.save-and-review=Save and review
 cds.navigation.opens-in-new-tab=(opens in new tab)
 cds.navigation.opens-new-page=You can
+cds.navigation.find-utr-link=https://www.gov.uk/find-utr-number
+cds.navigation.find-lost-utr=find a lost UTR (opens in a new tab)
 cds.error.page-title=Error
 cds.error.mandatory.field=This field is required
 cds.error.invalid.date.format=Please enter a valid date, for example ''31 3 1980''
@@ -380,7 +382,7 @@ cds.subscription.enter-email.list-bullet-2=notify you of urgent updates about go
 cds.subscription.enter-email.list-bullet-3=send duty deferment Direct Debit notices and postponed VAT statements for your imports
 cds.subscription.enter-email.hint=You can change this email at a later date. For example, if different teams are involved, you may decide to set up a shared email inbox for customs notifications.
 subscription.check-your-email.heading=Check  your email address
-subscription.check-your-email.confirm.label=To confirm it's your email address we will send you a code.
+subscription.check-your-email.confirm.label=To confirm it’s your email address we will send you a code.
 subscription.check-your-email.confirm.question=Is {0} the email address you want to use?
 subscription.check-your-email.confirm.title=Is this the email address you want to use?
 subscription.check-your-email.yes=Yes
@@ -1481,6 +1483,6 @@ ecc.address-lookup.postcode.hint.individual=Enter the same postcode you used in 
 ecc.address-lookup.postcode.partnership.hint.text =We will use this to verify your identity.
 
 #Locked email screen
-lockedEmail.heading = You've entered an incorrect code too many times
+lockedEmail.heading = You’ve entered an incorrect code too many times
 lockedEmail.para1 = You will not be able to continue with your application.
 lockedEmail.para2 = You can try again in 24 hours.

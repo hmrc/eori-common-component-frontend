@@ -16,10 +16,9 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
-import javax.inject.{Inject, Singleton}
 import play.api.Logger
+import play.api.http.HeaderNames.AUTHORIZATION
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
@@ -27,18 +26,17 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
   SubscriptionResponse
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{Subscription, SubscriptionResult, SubscriptionSubmitted}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.PayloadCache
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, _}
 import uk.gov.hmrc.http.client.HttpClientV2
-import play.api.http.HeaderNames.AUTHORIZATION
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SubscriptionServiceConnector @Inject() (httpClient: HttpClientV2, appConfig: AppConfig, audit: Auditable)(implicit
   ec: ExecutionContext
-) extends Instrumentable {
+) {
 
   private val logger = Logger(this.getClass)
   private val url    = url"${appConfig.getServiceUrl("subscribe")}"
@@ -50,8 +48,6 @@ class SubscriptionServiceConnector @Inject() (httpClient: HttpClientV2, appConfi
       s"[Subscribe SUB02: $url, requestCommon: ${request.subscriptionCreateRequest.requestCommon} and hc: $hc"
     )
     // $COVERAGE-ON
-
-    if (appConfig.samplePayloads) sampleData(PayloadCache.SubscriptionCreate, request)
 
     val httpRequest = httpClient
       .post(url)

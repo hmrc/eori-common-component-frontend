@@ -24,25 +24,24 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper
 
-@this(layout_di: layout, inputText: helpers.inputText, errorSummary: helpers.errorSummary, appConfig: AppConfig, govukButton: GovukButton)
+@this(layout_di: layout, inputText: helpers.inputText, errorSummary: helpers.errorSummary, appConfig: AppConfig, govukButton: GovukButton, h1: helpers.h1, link: helpers.link)
 
 @(utrForm: Form[IdMatchModel], headingText: String, hintText: String, isInReviewMode: Boolean, submit: Call)(implicit request: Request[_], messages: Messages)
 
-@forWelshLink = @{
-    if(messages.lang.code == "cy") <p class="govuk-body"><a href="https://www.gov.uk/find-utr-number" class="govuk-link" target="_blank" rel="noopener noreferrer">Mae modd dod o hyd i UTR sydd ar goll (yn agor tab newydd)</a></p>
-    else <p class="govuk-body">You can <a href="https://www.gov.uk/find-utr-number" class="govuk-link" target="_blank" rel="noopener noreferrer">find a lost UTR (opens in a new tab)</a></p>
 
-
-}
 
 @layout_di(messages(headingText), form = Some(utrForm)) {
-    <div>
-        <h1 class="govuk-heading-l">@messages(headingText)</h1>
+
+        @h1(messages(headingText))
         @errorSummary(utrForm.errors)
+        <div class="govuk-body">
+        @messages("cds.navigation.opens-new-page")
+        @link(text=messages("cds.navigation.find-lost-utr"), href=messages("cds.navigation.find-utr-link"))
+        </div>
 
         @helpers.form(submit, "utrForm") {
             @CSRF.formField
-            @forWelshLink
+
 
             @inputText(
                 form = utrForm,
@@ -63,7 +62,6 @@
         }
 
         @helpers.helpAndSupport()
-    </div>
 }
 
 

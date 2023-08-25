@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.cache
 
-import akka.event.Logging
 import play.api.Logging
 import play.api.libs.json.{Json, OFormat, Reads, Writes}
 import play.api.mvc.Request

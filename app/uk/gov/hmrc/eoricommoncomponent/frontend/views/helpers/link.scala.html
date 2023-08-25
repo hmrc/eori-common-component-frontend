@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,22 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package uk.gov.hmrc.eoricommoncomponent.frontend.connector
+@this()
 
-import play.api.Logger
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.PayloadCache
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.PayloadCache.Payload
+@(text: String, href: String, id: Option[String] = None, classes: String = "govuk-link")
 
-trait Instrumentable {
-
-  private val logger = Logger(this.getClass)
-  val cache          = PayloadCache.payloads
-
-  def sampleData[A](key: Payload, value: A): Unit = {
-    logger.info(s"SAMPLING: payload ${key}, data ${value}")
-    cache += (key -> value)
-  }
-
-}
+<a href="@href" @{id.fold("")(id => s"id=$id")} class="@classes" target="_blank" rel="noopener noreferrer">@text</a>
