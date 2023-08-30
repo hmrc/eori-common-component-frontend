@@ -59,7 +59,7 @@ class RequestSessionData extends Logging {
     val userLocation = request.session.data.get(RequestSessionDataKeys.selectedUserLocation)
 
     userLocation match {
-      case Some(UserLocation.Islands) => Some(UserLocation.ThirdCountry)
+      case Some(UserLocation.Islands) => Some(UserLocation.Islands)
       case Some(UserLocation.Eu)      => Some(UserLocation.ThirdCountry)
       case _                          => userLocation
     }
