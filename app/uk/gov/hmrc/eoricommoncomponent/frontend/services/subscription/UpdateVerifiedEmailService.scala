@@ -37,9 +37,12 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-sealed trait UpdateError
-case object UpdateEmailError extends UpdateError
-case object Error            extends UpdateError
+sealed trait UpdateError {
+  def message: String
+}
+
+case class UpdateEmailError(message: String) extends UpdateError
+case class Error(message: String)            extends UpdateError
 
 class UpdateVerifiedEmailService @Inject() (
   reqCommonGenerator: RequestCommonGenerator,
@@ -78,11 +81,18 @@ class UpdateVerifiedEmailService @Inject() (
 
       case Right(res) if res.getStatus.exists(_.equalsIgnoreCase(RequestCouldNotBeProcessed)) =>
         auditRequest(currentEmail, newEmail, eori, "changeEmailAddressCouldNotBeProcessed", res.getStatus)
-        Future.successful(Left(UpdateEmailError))
+        Future.successful(Left(UpdateEmailError(RequestCouldNotBeProcessed)))
+
+      case Right(res) =>
+        val status = res.getStatus.getOrElse("Unknown error status")
+        logger.warn(
+          s"[UpdateVerifiedEmailService][updateVerifiedEmail] - updating verified email unsuccessful with status: $status"
+        )
+        Future.successful(Left(Error(status)))
 
       case _ =>
         logger.warn(s"[UpdateVerifiedEmailService][updateVerifiedEmail] - updating verified email unsuccessful")
-        Future.successful(Left(Error))
+        Future.successful(Left(Error("Unknown error status")))
     }
   }
 

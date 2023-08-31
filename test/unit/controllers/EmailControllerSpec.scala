@@ -248,7 +248,7 @@ class EmailControllerSpec
 
     "do not save email when updating email fails" in new TestFixture {
       when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier])).thenReturn(
-        Future.successful(Left(Error))
+        Future.successful(Left(Error("Some status")))
       )
       the[IllegalArgumentException] thrownBy callEndpointDefaulting(controller)(
         journey = subscribeJourneyShort,
@@ -263,7 +263,7 @@ class EmailControllerSpec
 
     "do not save email when updating verified email with retriable failure and display error page" in new TestFixture {
       when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
-        .thenReturn(Future.successful(Left(UpdateEmailError)))
+        .thenReturn(Future.successful(Left(UpdateEmailError("Some status"))))
 
       when(mockSessionCache.eori(any[Request[AnyContent]]))
         .thenReturn(Future.successful(Some("GB123456789")))

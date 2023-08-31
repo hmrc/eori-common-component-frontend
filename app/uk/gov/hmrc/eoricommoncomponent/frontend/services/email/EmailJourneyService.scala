@@ -123,7 +123,9 @@ class EmailJourneyService @Inject() (
       case SubscribeJourney(AutoEnrolment) if service.enrolmentKey == Service.cds.enrolmentKey =>
         for {
           maybeEori <- sessionCache.eori
-          verifiedEmailStatus <- maybeEori.fold(Future.successful(Left(Error): Either[UpdateError, Unit])) {
+          verifiedEmailStatus <- maybeEori.fold(
+            Future.successful(Left(Error("No EORI in cache")): Either[UpdateError, Unit])
+          ) {
             eori => updateVerifiedEmailService.updateVerifiedEmail(None, email, eori)
           }
         } yield verifiedEmailStatus
@@ -140,7 +142,7 @@ class EmailJourneyService @Inject() (
           )
           _ <- sessionCache.saveEmail(email)
         } yield Redirect(emailRoutes.CheckYourEmailController.emailConfirmed(service, subscribeJourney))
-      case Left(UpdateEmailError) =>
+      case Left(UpdateEmailError(_)) =>
         // $COVERAGE-OFF$Loggers
         logger.warn("Update Verified Email failed with user-retriable error. Redirecting to error page.")
         // $COVERAGE-ON
