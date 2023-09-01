@@ -233,8 +233,8 @@ class SubscriptionRecoveryController @Inject() (
     updateVerifiedEmailService
       .updateVerifiedEmail(newEmail = subscriptionInformation.email, eori = subscriptionInformation.eori.id)
       .map {
-        case Right(_) => Some(true)
-        case _        => throw new IllegalArgumentException("UpdateEmail failed")
+        case Right(_)    => Some(true)
+        case Left(error) => throw new Exception(s"UpdateEmail failed with status: ${error.message}")
       }
 
   private def updateSubscription(subscriptionInformation: SubscriptionInformation)(implicit request: Request[_]) =
