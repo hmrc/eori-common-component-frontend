@@ -38,7 +38,7 @@ class UseThisEoriController @Inject() (
     extends CdsController(mcc) {
 
   def display(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction {
+    authAction.enrolledUserWithSessionAction(service) {
       implicit request => _: LoggedInUserWithEnrolments =>
         detailsService.cachedExistingEoriNumber.map { eori =>
           Ok(useThisEoriView(eori.getOrElse(throw MissingExistingEori()).id, service))
@@ -47,7 +47,7 @@ class UseThisEoriController @Inject() (
     }
 
   def submit(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
       detailsService.cachedExistingEoriNumber.flatMap { eori =>
         detailsService.cacheEoriNumber(eori.getOrElse(throw MissingExistingEori()).id).map { _ =>
           Redirect(UserLocationController.form(service))

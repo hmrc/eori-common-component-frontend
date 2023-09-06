@@ -48,14 +48,14 @@ class ContactAddressController @Inject() (
     extends CdsController(mcc) {
 
   def displayPage(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.contactAddress.flatMap {
         populateOkView(_, isInReviewMode = false, service)
       }
     }
 
   def reviewForm(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.contactAddress.flatMap {
         populateOkView(_, isInReviewMode = true, service)
       }
@@ -82,7 +82,7 @@ class ContactAddressController @Inject() (
   }
 
   def submit(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
       contactAddressCreateForm().bindFromRequest()
         .fold(
           formWithErrors => populateCountriesToInclude(service, isInReviewMode, formWithErrors, BadRequest),

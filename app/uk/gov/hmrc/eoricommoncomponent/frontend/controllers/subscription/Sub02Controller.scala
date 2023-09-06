@@ -60,8 +60,7 @@ class Sub02Controller @Inject() (
   private def renderPageWithName(service: Service)(implicit request: Request[_]): Future[Result] =
     for {
       sub02Outcome <- sessionCache.sub02Outcome
-      _            <- sessionCache.remove
-      _            <- sessionCache.saveSub02Outcome(sub02Outcome)
+      _            <- sessionCache.journeyCompleted
     } yield Ok(
       migrationSuccessView(
         sub02Outcome.eori,
@@ -70,13 +69,12 @@ class Sub02Controller @Inject() (
         subscriptionTo(service),
         service
       )
-    ).withSession(newUserSession)
+    )
 
   private def renderPageWithNameRow(service: Service)(implicit request: Request[_]): Future[Result] =
     for {
       sub02Outcome <- sessionCache.sub02Outcome
-      _            <- sessionCache.remove
-      _            <- sessionCache.saveSub02Outcome(sub02Outcome)
+      _            <- sessionCache.journeyCompleted
     } yield Ok(
       migrationSuccessView(
         sub02Outcome.eori,
@@ -85,6 +83,6 @@ class Sub02Controller @Inject() (
         subscriptionTo(service),
         service
       )
-    ).withSession(newUserSession)
+    )
 
 }

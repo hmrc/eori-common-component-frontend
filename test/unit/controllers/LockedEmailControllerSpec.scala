@@ -29,7 +29,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.locked_email_vi
 import util.ControllerSpec
 import util.builders.AuthActionMock
 import util.builders.AuthBuilder._
-import play.api.i18n.{Lang, Messages, MessagesApi, MessagesImpl}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, Service, SubscribeJourney}
 import scala.concurrent.ExecutionContext.global

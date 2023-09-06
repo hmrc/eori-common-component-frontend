@@ -166,8 +166,7 @@ class RegisterWithEoriAndIdController @Inject() (
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
         submissionCompleteData <- cache.submissionCompleteDetails
-        _                      <- cache.remove
-        _                      <- cache.saveSubmissionCompleteDetails(submissionCompleteData)
+        _                      <- cache.journeyCompleted
       } yield displaySubscriptionOutcomePendingView(submissionCompleteData, service)
   }
 
@@ -185,7 +184,7 @@ class RegisterWithEoriAndIdController @Inject() (
         details.name,
         service
       )
-    ).withSession(newUserSession)
+    )
 
     result.getOrElse {
       logger.warn("Subscription Complete Data not found for this session")
@@ -197,8 +196,8 @@ class RegisterWithEoriAndIdController @Inject() (
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
         name <- cache.subscriptionDetails.map(_.name)
-        _    <- cache.remove
-      } yield Ok(subscriptionOutcomeFailView(date, name, service)).withSession(newUserSession)
+        _    <- cache.journeyCompleted
+      } yield Ok(subscriptionOutcomeFailView(date, name, service))
     }
 
   def eoriAlreadyLinked(service: Service): Action[AnyContent] =
@@ -211,7 +210,7 @@ class RegisterWithEoriAndIdController @Inject() (
         nameIdOrganisationDetails <- cache.subscriptionDetails.map(_.nameIdOrganisationDetails)
         response                  <- cache.registerWithEoriAndIdResponse
         email                     <- cache.email
-        _                         <- cache.remove
+        _                         <- cache.journeyCompleted
       } yield {
         val eoriNumber = (maybeEori, maybeExistingEori) match {
           case (_, Some(eori)) => eori.id
@@ -238,7 +237,7 @@ class RegisterWithEoriAndIdController @Inject() (
             nameIdOrganisationDetails,
             email
           )
-        ).withSession(newUserSession)
+        )
       }
     }
 
@@ -252,7 +251,7 @@ class RegisterWithEoriAndIdController @Inject() (
         nameIdOrganisationDetails <- cache.subscriptionDetails.map(_.nameIdOrganisationDetails)
         email                     <- cache.email
         response                  <- cache.registerWithEoriAndIdResponse
-        _                         <- cache.remove
+        _                         <- cache.journeyCompleted
       } yield {
         val eoriNumber = (maybeEori, maybeExistingEori) match {
           case (_, Some(eori)) => eori.id
@@ -279,7 +278,7 @@ class RegisterWithEoriAndIdController @Inject() (
             nameIdOrganisationDetails,
             email
           )
-        ).withSession(newUserSession)
+        )
       }
     }
 
@@ -290,8 +289,8 @@ class RegisterWithEoriAndIdController @Inject() (
         date <- cache.registerWithEoriAndIdResponse.map(
           r => languageUtils.Dates.formatDate(r.responseCommon.processingDate.toLocalDate)
         )
-        _ <- cache.remove
-      } yield Ok(sub01OutcomeRejectedView(Some(name), date, service)).withSession(newUserSession)
+        _ <- cache.journeyCompleted
+      } yield Ok(sub01OutcomeRejectedView(Some(name), date, service))
     }
 
   private def handleErrorCodes(service: Service, response: RegisterWithEoriAndIdResponse)(implicit

@@ -41,17 +41,17 @@ class AddressLookupErrorController @Inject() (
     extends CdsController(mcc) {
 
   def displayErrorPage(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
       Future.successful(Ok(addressLookupErrorPage(service, false)))
     }
 
   def reviewErrorPage(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
       Future.successful(Ok(addressLookupErrorPage(service, true)))
     }
 
   def displayNoResultsPage(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
       sessionCache.addressLookupParams.map {
         case Some(addressLookupParams) =>
           Ok(addressLookupNoResultsPage(addressLookupParams.postcode, service, isInReviewMode = false))
@@ -60,7 +60,7 @@ class AddressLookupErrorController @Inject() (
     }
 
   def reviewNoResultsPage(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
       sessionCache.addressLookupParams.map {
         case Some(addressLookupParams) =>
           Ok(addressLookupNoResultsPage(addressLookupParams.postcode, service, isInReviewMode = true))

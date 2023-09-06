@@ -26,6 +26,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{
   enrolment_pending_against_group_id,
   enrolment_pending_for_user
 }
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.CacheClearOnCompletionAction
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -43,11 +44,12 @@ class EmailController @Inject() (
     extends CdsController(mcc) with EnrolmentExtractor {
 
   def form(implicit service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
-      userGroupIdSubscriptionStatusCheckService
-        .checksToProceed(GroupId(user.groupId), InternalId(user.internalId))(
-          emailJourneyService.continue(service, subscribeJourney)
-        )(userIsInProcess(service))(otherUserWithinGroupIsInProcess(service))
+    authAction.enrolledUserClearingCacheOnCompletionAction(service) {
+      implicit request => implicit user: LoggedInUserWithEnrolments =>
+        userGroupIdSubscriptionStatusCheckService
+          .checksToProceed(GroupId(user.groupId), InternalId(user.internalId))(
+            emailJourneyService.continue(service, subscribeJourney)
+          )(userIsInProcess(service))(otherUserWithinGroupIsInProcess(service))
     }
 
   private def userIsInProcess(

@@ -35,7 +35,7 @@ class LockedEmailController @Inject() (
 ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction {
+    authAction.enrolledUserWithSessionAction(service) {
       implicit request => _: LoggedInUserWithEnrolments =>
         Future.successful(Ok(view()))
     }

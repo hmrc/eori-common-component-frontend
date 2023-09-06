@@ -53,7 +53,7 @@ class ContactDetailsController @Inject() (
     extends CdsController(mcc) {
 
   def createForm(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
       val f = for {
         orgType <- orgTypeLookup.etmpOrgTypeOpt
 
@@ -77,7 +77,7 @@ class ContactDetailsController @Inject() (
     }
 
   def reviewForm(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
       populateForm(service)(isInReviewMode = true)
     }
 
@@ -96,7 +96,7 @@ class ContactDetailsController @Inject() (
   }.flatMap(identity)
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
       cdsFrontendDataCache.email flatMap { email =>
         ContactDetailsForm.form().bindFromRequest().fold(
           formWithErrors =>

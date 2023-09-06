@@ -64,7 +64,7 @@ class WhatIsYourEoriController @Inject() (
     displayForm(service, isInReviewMode = true)
 
   private def displayForm(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction {
+    authAction.enrolledUserWithSessionAction(service) {
       implicit request => user: LoggedInUserWithEnrolments =>
         existingEori(user).flatMap {
           case Some(e) =>
@@ -92,7 +92,7 @@ class WhatIsYourEoriController @Inject() (
   }
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
       eoriNumberForm.bindFromRequest().fold(
         formWithErrors =>
           Future.successful(

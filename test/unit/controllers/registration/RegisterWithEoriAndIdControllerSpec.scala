@@ -185,6 +185,8 @@ class RegisterWithEoriAndIdControllerSpec
       .thenReturn(Future.successful(Some(Utr(""))))
     when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any()))
       .thenReturn(Future.successful(false))
+    when(mockCache.journeyCompleted(any[Request[AnyContent]]))
+      .thenReturn(Future.successful(true))
   }
 
   private def assertCleanedSession(result: Future[Result]): Unit = {
