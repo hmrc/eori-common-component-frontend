@@ -27,8 +27,7 @@
         help_di: partials.if_you_need_help,
         h1: helpers.h1,
         p: helpers.paragraph,
-        pWithLink: helpers.linkWithPreText,
-        pPostText: helpers.linkWithPostText,
+        pWithLink: helpers.linkWithPreTextAndPostText,
         h2: helpers.h2,
         h3: helpers.h3,
         govukButton: GovukButton
@@ -64,7 +63,7 @@
 
     @h3(messages("cds.subscription.outcomes.rejected.heading4"), Some("contact-us-heading"))
 
-    @pPostText(
+    @pWithLink(
         text = messages("cds.navigation.contact-us"),
         href = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/customs-international-trade-and-excise-enquiries",
         id = Some("contact-us-link"),

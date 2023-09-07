@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@this()
+@this(link: helpers.link)
 
 @(
         text: String,
@@ -27,6 +27,6 @@
 
 <p class="govuk-body">
  @preText
-<a href="@href" @{id.fold("")(id => s"id=$id")} class="@classes" target="_blank" rel="noopener noreferrer">@text</a>
+ @link(text, href, id, classes)
  @postText
 </p>
