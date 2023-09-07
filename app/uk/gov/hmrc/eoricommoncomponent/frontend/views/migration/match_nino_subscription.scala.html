@@ -21,14 +21,10 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.helper.CSRF
 
-@this(layout_di: layout, errorSummary: helpers.errorSummary, govukButton: GovukButton, inputRadioGroup: helpers.inputRadioGroup)
+@this(layout_di: layout, errorSummary: helpers.errorSummary, govukButton: GovukButton, inputRadioGroup: helpers.inputRadioGroup, p: helpers.paragraph)
 
 @(matchNinoIdForm: Form[NinoMatchModel], isInReviewMode: Boolean, service: Service)(implicit request: Request[_], messages: Messages)
 
-@hint = {
-    <p>@messages("cds.matching.nino.row.description")</p>
-    <p>@Html(messages("cds.matching.nino.nino.hint"))</p>
-}
 
 @values = @{
     Seq("true" -> messages("cds.yes"), "false" -> messages("cds.no"))
@@ -46,7 +42,7 @@
 
 
 @layout_di(messages("cds.matching.nino.row.header"), form = Some(matchNinoIdForm)) {
-    <div>
+
 
     @errorSummary(matchNinoIdForm.errors, focusOverrides = Map("have-nino" -> "have-nino-true"))
 
@@ -58,7 +54,7 @@
             matchNinoIdForm("have-nino"),
             legend = messages("cds.matching.nino.row.header"),
             items = options,
-            hint = Some(Hint(content = HtmlContent(hint), classes = "govuk-body-s")),
+            hint = Some(Hint(content = HtmlContent(p(messages("cds.matching.nino.row.description"))), classes = "govuk-body-s")),
             classes = "govuk-fieldset__legend--l"
         )
 
@@ -70,5 +66,5 @@
 
     @helpers.helpAndSupport()
     }
-</div>
+
 }
