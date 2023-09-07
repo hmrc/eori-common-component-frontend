@@ -49,13 +49,13 @@ class WhatIsYourEmailController @Inject() (
   }
 
   def createForm(service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
-    authAction.enrolledUserClearingCacheOnCompletionAction(service) {
+    authAction.enrolledUserClearingCacheOnCompletionAction {
       implicit request => _: LoggedInUserWithEnrolments =>
         populateView(None, service, subscribeJourney)
     }
 
   def submit(service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
-    authAction.enrolledUserClearingCacheOnCompletionAction(service) {
+    authAction.enrolledUserClearingCacheOnCompletionAction {
       implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
         emailForm.bindFromRequest().fold(
           formWithErrors =>

@@ -56,7 +56,7 @@ class CheckYourEmailController @Inject() (
     )
 
   def createForm(service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
-    authAction.enrolledUserClearingCacheOnCompletionAction(service) {
+    authAction.enrolledUserClearingCacheOnCompletionAction {
       implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
         save4LaterService.fetchEmailForService(service, subscribeJourney, GroupId(userWithEnrolments.groupId)) flatMap {
           _.fold {
@@ -71,7 +71,7 @@ class CheckYourEmailController @Inject() (
     }
 
   def submit(isInReviewMode: Boolean, service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
-    authAction.enrolledUserClearingCacheOnCompletionAction(service) {
+    authAction.enrolledUserClearingCacheOnCompletionAction {
       implicit request => implicit userWithEnrolments: LoggedInUserWithEnrolments =>
         confirmEmailYesNoAnswerForm()
           .bindFromRequest()
@@ -93,7 +93,7 @@ class CheckYourEmailController @Inject() (
     }
 
   def emailConfirmed(service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
-    authAction.enrolledUserClearingCacheOnCompletionAction(service) {
+    authAction.enrolledUserClearingCacheOnCompletionAction {
       implicit request => userWithEnrolments: LoggedInUserWithEnrolments =>
         save4LaterService.fetchEmailForService(service, subscribeJourney, GroupId(userWithEnrolments.groupId)) flatMap {
           emailStatus =>
@@ -124,7 +124,7 @@ class CheckYourEmailController @Inject() (
     Ok(emailConfirmedView(service, subscribeJourney))
 
   def acceptConfirmation(service: Service): Action[AnyContent] =
-    authAction.enrolledUserClearingCacheOnCompletionAction(service) { _ => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserClearingCacheOnCompletionAction { _ => _: LoggedInUserWithEnrolments =>
       Future.successful(Redirect(WhatIsYourEoriController.createForm(service)))
     }
 
