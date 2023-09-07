@@ -35,13 +35,13 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegisterWithEoriAndIdResp
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, ResponseCommon}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubmissionCompleteData, SubscriptionDetails}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
-  DataUnavailableException,
-  RequestSessionData,
-  SessionCache
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  FormData,
+  SubmissionCompleteData,
+  SubscriptionDetails
 }
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{MatchingService, Reg06Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
@@ -53,8 +53,7 @@ import util.builders.AuthActionMock
 import util.builders.AuthBuilder._
 import util.{CSRFTest, ControllerSpec}
 
-import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, LocalDateTime, ZonedDateTime}
+import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -74,22 +73,21 @@ class RegisterWithEoriAndIdControllerSpec
   private val mockSubscriptionDetails        = mock[SubscriptionDetails]
   private val mockSub01Outcome               = mock[Sub01Outcome]
   private val groupEnrolmentExtractor        = mock[GroupEnrolmentExtractor]
-
-  private val sub01OutcomeProcessingView = instanceOf[sub01_outcome_processing]
-
-  private val sub01OutcomeRejectedView = instanceOf[sub01_outcome_rejected]
-
-  private val errorTemplateView = instanceOf[error_template]
-
+  private val sub01OutcomeProcessingView     = instanceOf[sub01_outcome_processing]
+  private val sub01OutcomeRejectedView       = instanceOf[sub01_outcome_rejected]
+  private val errorTemplateView              = instanceOf[error_template]
   private val subscriptionOutcomePendingView = instanceOf[subscription_outcome_pending]
 
-  private val subscriptionOutcomeFailView = instanceOf[subscription_outcome_fail]
-
-  private val reg06EoriAlreadyLinked = instanceOf[reg06_eori_already_linked]
-
-  private val reg06IdAlreadyLinked = instanceOf[reg06_id_already_linked]
-
-  private val languageUtils = instanceOf[LanguageUtils]
+  private val reg06EoriAlreadyLinked                       = instanceOf[reg06_eori_already_linked]
+  private val reg06IdAlreadyLinked                         = instanceOf[reg06_id_already_linked]
+  private val languageUtils                                = instanceOf[LanguageUtils]
+  private val subscriptionOutcomeFailCompanyView           = instanceOf[subscription_outcome_fail_company]
+  private val subscriptionOutcomeFailLlpView               = instanceOf[subscription_outcome_fail_llp]
+  private val subscriptionOutcomeFailPartnershipView       = instanceOf[subscription_outcome_fail_partnership]
+  private val subscriptionOutcomeFailOrganisationView      = instanceOf[subscription_outcome_fail_organisation]
+  private val subscriptionOutcomeFailSoloAndIndividualView = instanceOf[subscription_outcome_fail_solo_and_individual]
+  private val subscriptionOutcomeFailRowUtrView            = instanceOf[subscription_outcome_fail_row_utr_organisation]
+  private val subscriptionOutcomeFailRowView               = instanceOf[subscription_outcome_fail_row]
 
   private val controller = new RegisterWithEoriAndIdController(
     mockAuthAction,
@@ -105,7 +103,13 @@ class RegisterWithEoriAndIdControllerSpec
     sub01OutcomeRejectedView,
     errorTemplateView,
     subscriptionOutcomePendingView,
-    subscriptionOutcomeFailView,
+    subscriptionOutcomeFailCompanyView,
+    subscriptionOutcomeFailPartnershipView,
+    subscriptionOutcomeFailLlpView,
+    subscriptionOutcomeFailOrganisationView,
+    subscriptionOutcomeFailSoloAndIndividualView,
+    subscriptionOutcomeFailRowUtrView,
+    subscriptionOutcomeFailRowView,
     reg06EoriAlreadyLinked,
     reg06IdAlreadyLinked,
     groupEnrolmentExtractor,
@@ -535,7 +539,7 @@ class RegisterWithEoriAndIdControllerSpec
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .fail(atarService, DateTimeFormatter.ofPattern("d MMMM yyyy").format(ZonedDateTime.now()))
+          .fail(atarService)
           .url
       }
     }
@@ -614,7 +618,7 @@ class RegisterWithEoriAndIdControllerSpec
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .fail(atarService, DateTimeFormatter.ofPattern("d MMMM yyyy").format(ZonedDateTime.now()))
+          .fail(atarService)
           .url
       }
     }
@@ -734,7 +738,7 @@ class RegisterWithEoriAndIdControllerSpec
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .fail(atarService, processingDateResponse)
+          .fail(atarService)
           .url
       }
     }
@@ -981,7 +985,7 @@ class RegisterWithEoriAndIdControllerSpec
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .fail(atarService, DateTimeFormatter.ofPattern("d MMMM yyyy").format(ZonedDateTime.now()))
+          .fail(atarService)
           .url
       }
     }
@@ -1018,7 +1022,7 @@ class RegisterWithEoriAndIdControllerSpec
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .fail(atarService, DateTimeFormatter.ofPattern("d MMMM yyyy").format(ZonedDateTime.now()))
+          .fail(atarService)
           .url
       }
     }
@@ -1212,11 +1216,13 @@ class RegisterWithEoriAndIdControllerSpec
     }
 
     "Call the fail function" in {
+      val formData            = FormData(organisationType = Some(CdsOrganisationType.Company))
+      val subscriptionDetails = SubscriptionDetails(customsId = Some(Utr("UTR")), formData = formData)
       when(mockCache.subscriptionDetails(any[Request[_]]))
-        .thenReturn(Future.successful(mockSubscriptionDetails))
-      when(mockSubscriptionDetails.name).thenReturn("reg06-FAIL")
-      when(mockCache.remove(any[Request[_]]))
-        .thenReturn(Future.successful(true))
+        .thenReturn(Future.successful(subscriptionDetails))
+      when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(
+        Future.successful(Some(UserLocation.Uk))
+      )
 
       invokeFail() { result =>
         status(result) shouldBe OK
@@ -1249,6 +1255,90 @@ class RegisterWithEoriAndIdControllerSpec
     }
   }
 
+  "determineFailView" should {
+    implicit val fakeRequest = defaultLangFakeRequest
+
+    "populate Company view" in {
+      val company              = CdsOrganisationType.Company
+      val isCustomsIdPopulated = true
+      val result               = controller.determineFailView(atarService, Some(company), isCustomsIdPopulated, isUk = true)
+      val page                 = CdsPage(result.toString())
+      page.title() should startWith("Some details you entered do not match our records")
+      page.getElementById("orgType").text shouldBe messages("cds.subscription.outcomes.rejected.heading2.company")
+    }
+
+    "populate LLP view" in {
+
+      val company              = CdsOrganisationType.LimitedLiabilityPartnership
+      val isCustomsIdPopulated = true
+      val result               = controller.determineFailView(atarService, Some(company), isCustomsIdPopulated, isUk = true)
+      val page                 = CdsPage(result.toString())
+      page.title() should startWith("Some details you entered do not match our records")
+      page.getElementById("orgType").text shouldBe messages("cds.subscription.outcomes.rejected.heading2.llp")
+
+    }
+    "populate Partnership view" in {
+
+      val company              = CdsOrganisationType.Partnership
+      val isCustomsIdPopulated = true
+      val result               = controller.determineFailView(atarService, Some(company), isCustomsIdPopulated, isUk = true)
+      val page                 = CdsPage(result.toString())
+      page.title() should startWith("Some details you entered do not match our records")
+      page.getElementById("orgType").text shouldBe messages("cds.subscription.outcomes.rejected.heading2.llp")
+
+    }
+    "populate Organisation view" in {
+
+      val company              = CdsOrganisationType.CharityPublicBodyNotForProfit
+      val isCustomsIdPopulated = true
+      val result               = controller.determineFailView(atarService, Some(company), isCustomsIdPopulated, isUk = true)
+      val page                 = CdsPage(result.toString())
+      page.title() should startWith("Some details you entered do not match our records")
+      page.getElementById("orgType").text shouldBe messages("cds.subscription.outcomes.rejected.heading2.organisation")
+
+    }
+    "populate Solo view" in {
+
+      val company              = CdsOrganisationType.SoleTrader
+      val isCustomsIdPopulated = true
+      val result               = controller.determineFailView(atarService, Some(company), isCustomsIdPopulated, isUk = true)
+      val page                 = CdsPage(result.toString())
+      page.title() should startWith("Some details you entered do not match our records")
+      page.getElementById("orgType").text shouldBe messages("cds.subscription.outcomes.rejected.heading2.sole")
+
+    }
+
+    "populate Individual  view" in {
+
+      val company              = CdsOrganisationType.Individual
+      val isCustomsIdPopulated = true
+      val result               = controller.determineFailView(atarService, Some(company), isCustomsIdPopulated, isUk = true)
+      val page                 = CdsPage(result.toString())
+      page.title() should startWith("Some details you entered do not match our records")
+      page.getElementById("orgType").text shouldBe messages("cds.subscription.outcomes.rejected.heading2.sole")
+
+    }
+    "populate Row with UTR view" in {
+
+      val company              = CdsOrganisationType.Company
+      val isCustomsIdPopulated = true
+      val result               = controller.determineFailView(atarService, Some(company), isCustomsIdPopulated, false)
+      val page                 = CdsPage(result.toString())
+      page.title() should startWith("Some details you entered do not match our records")
+      page.getElementById("orgType").text shouldBe messages("cds.subscription.outcomes.rejected.heading2.organisation")
+
+    }
+    "populate Row without UTR view" in {
+
+      val company              = CdsOrganisationType.ThirdCountryOrganisation
+      val isCustomsIdPopulated = false
+      val result               = controller.determineFailView(atarService, Some(company), isCustomsIdPopulated, isUk = false)
+      val page                 = CdsPage(result.toString())
+      page.title() should startWith("The name you entered does not match our records")
+
+    }
+  }
+
   private def regExistingEori()(test: Future[Result] => Any) =
     test(controller.registerWithEoriAndId(atarService)(withFakeCSRF(fakeAtarSubscribeRequest)))
 
@@ -1263,7 +1353,7 @@ class RegisterWithEoriAndIdControllerSpec
     test(controller.pending(atarService).apply(withFakeCSRF(fakeAtarSubscribeRequest)))
 
   private def invokeFail()(test: Future[Result] => Any) =
-    test(controller.fail(atarService, "11 September 2015").apply(withFakeCSRF(fakeAtarSubscribeRequest)))
+    test(controller.fail(atarService).apply(withFakeCSRF(fakeAtarSubscribeRequest)))
 
   private def invokeEoriAlreadyLinked()(test: Future[Result] => Assertion): Unit =
     test(controller.eoriAlreadyLinked(atarService).apply(withFakeCSRF(fakeAtarSubscribeRequest)))

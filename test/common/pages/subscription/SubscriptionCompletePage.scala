@@ -20,7 +20,7 @@ import common.pages.WebPage
 
 trait ApplicationUnsuccessfulPage extends WebPage {
 
-  override val title = "The subscription request has been unsuccessful"
+  override val title = "Some details you entered do not match our records"
 }
 
 object ApplicationPendingPage extends WebPage {

@@ -24,7 +24,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.CdsErrorHandler
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableException, SessionTimeOutException}
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.{Constants, InvalidUrlValueException}
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{client_error_template, error_template, notFound}
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{error_template, notFound}
 import util.ControllerSpec
 
 class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {

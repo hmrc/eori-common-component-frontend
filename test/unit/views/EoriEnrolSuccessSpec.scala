@@ -29,7 +29,6 @@ class EoriEnrolSuccessSpec extends ViewSpec {
 
   private val service              = atarService
   private val serviceNoCallBackUrl = atarService.copy(callBack = None)
-  private val eori                 = "GB234532132435"
 
   private val view = instanceOf[eori_enrol_success]
 

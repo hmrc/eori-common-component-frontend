@@ -53,7 +53,6 @@ import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
 import cats.data.EitherT
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.ResponseError
-import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

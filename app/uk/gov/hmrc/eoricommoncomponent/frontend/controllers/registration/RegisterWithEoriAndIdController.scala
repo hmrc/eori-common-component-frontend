@@ -18,6 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration
 
 import play.api.Logger
 import play.api.mvc._
+import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, GroupEnrolmentExtractor}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.{
@@ -26,6 +27,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.{
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.Sub02Controller
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.{CdsController, MissingGroupId}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegisterWithEoriAndIdResponse._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
@@ -39,7 +41,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.language.LanguageUtils
 
-import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -58,7 +59,13 @@ class RegisterWithEoriAndIdController @Inject() (
   sub01OutcomeRejectedView: sub01_outcome_rejected,
   errorTemplateView: error_template,
   subscriptionOutcomePendingView: subscription_outcome_pending,
-  subscriptionOutcomeFailView: subscription_outcome_fail,
+  subscriptionOutcomeFailCompanyView: subscription_outcome_fail_company,
+  subscriptionOutcomeFailPartnershipView: subscription_outcome_fail_partnership,
+  subscriptionOutcomeFailLlpView: subscription_outcome_fail_llp,
+  subscriptionOutcomeFailOrganisationView: subscription_outcome_fail_organisation,
+  subscriptionOutcomeFailSoloAndIndividualView: subscription_outcome_fail_solo_and_individual,
+  subscriptionOutcomeFailRowUtrOrgView: subscription_outcome_fail_row_utr_organisation,
+  subscriptionOutcomeFailRowView: subscription_outcome_fail_row,
   reg06EoriAlreadyLinked: reg06_eori_already_linked,
   reg06IdAlreadyLinked: reg06_id_already_linked,
   groupEnrolment: GroupEnrolmentExtractor,
@@ -82,8 +89,7 @@ class RegisterWithEoriAndIdController @Inject() (
                 case true                                     => handleREG06Response
                 case false =>
                   logger.error("Reg01 BadRequest ROW")
-                  val formattedDate = languageUtils.Dates.formatDate(LocalDate.now())
-                  Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service, formattedDate)))
+                  Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service)))
               }
             }
       }
@@ -136,8 +142,7 @@ class RegisterWithEoriAndIdController @Inject() (
             Redirect(RegisterWithEoriAndIdController.pending(service))
           }
         case Some("FAIL") =>
-          val formattedDate = languageUtils.Dates.formatDate(resp.responseCommon.processingDate.toLocalDate)
-          Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service, formattedDate)))
+          Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service)))
         case None =>
           handleErrorCodes(service, resp)
         case _ =>
@@ -193,13 +198,45 @@ class RegisterWithEoriAndIdController @Inject() (
     }
   }
 
-  def fail(service: Service, date: String): Action[AnyContent] =
+  def fail(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
       for {
-        name <- cache.subscriptionDetails.map(_.name)
-        _    <- cache.remove
-      } yield Ok(subscriptionOutcomeFailView(date, name, service)).withSession(newUserSession)
+        subscriptionDetails <- cache.subscriptionDetails
+        orgType   = subscriptionDetails.formData.organisationType
+        customsId = subscriptionDetails.customsId
+
+      } yield {
+        val isUk = requestSessionData.selectedUserLocation.forall(_ == UserLocation.Uk)
+        val view = determineFailView(service, orgType, customsId.nonEmpty, isUk)
+        Ok(view).withSession(newUserSession)
+      }
     }
+
+  def determineFailView(
+    service: Service,
+    orgType: Option[CdsOrganisationType],
+    isCustomsIdPopulated: Boolean,
+    isUk: Boolean
+  )(implicit request: Request[_]): HtmlFormat.Appendable =
+    if (isUk)
+      orgType match {
+        case Some(Company)                         => subscriptionOutcomeFailCompanyView(service)
+        case Some(CdsOrganisationType.Partnership) => subscriptionOutcomeFailPartnershipView(service)
+        case Some(LimitedLiabilityPartnership)     => subscriptionOutcomeFailLlpView(service)
+        case Some(CharityPublicBodyNotForProfit)   => subscriptionOutcomeFailOrganisationView(service)
+        case Some(SoleTrader) | Some(Individual)   => subscriptionOutcomeFailSoloAndIndividualView(service)
+        case _                                     => subscriptionOutcomeFailSoloAndIndividualView(service)
+      }
+    else
+      orgType match {
+        case Some(Company) =>
+          if (isCustomsIdPopulated) subscriptionOutcomeFailRowUtrOrgView(service)
+          else subscriptionOutcomeFailRowView(service, isOrganisation = true)
+        case _ =>
+          if (isCustomsIdPopulated) subscriptionOutcomeFailSoloAndIndividualView(service)
+          else subscriptionOutcomeFailRowView(service, isOrganisation = false)
+
+      }
 
   def eoriAlreadyLinked(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
@@ -311,8 +348,7 @@ class RegisterWithEoriAndIdController @Inject() (
         Future.successful(Redirect(RegisterWithEoriAndIdController.rejectedPreviously(service)))
       case _ if statusText.exists(_.equalsIgnoreCase(RequestCouldNotBeProcessed)) =>
         logger.warn("REG06 Request could not be processed")
-        val formattedDate = languageUtils.Dates.formatDate(LocalDate.now())
-        Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service, formattedDate)))
+        Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service)))
       case _ => Future.successful(InternalServerError(errorTemplateView()))
     }
   }
@@ -335,10 +371,10 @@ class RegisterWithEoriAndIdController @Inject() (
           subscriptionDetailsService
             .saveKeyIdentifiers(groupId, internalId, service)
             .map(_ => Redirect(RegisterWithEoriAndIdController.pending(service)))
-        case sf: SubscriptionFailed =>
+        case _: SubscriptionFailed =>
           subscriptionDetailsService
             .saveKeyIdentifiers(groupId, internalId, service)
-            .map(_ => Redirect(RegisterWithEoriAndIdController.fail(service, sf.processingDate)))
+            .map(_ => Redirect(RegisterWithEoriAndIdController.fail(service)))
       }
   }
 
