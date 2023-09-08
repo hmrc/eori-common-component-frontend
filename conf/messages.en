@@ -416,6 +416,7 @@ cds.company.name.label=Company name
 cds.partnership.name.label=Registered partnership name
 cds.nino.label=National Insurance number
 cds.utr.label=Self Assessment Unique Taxpayer Reference (UTR)
+cds.utr.label.fail.partnership = Self Assessment Unique Taxpayer Reference (UTR)
 cds.company.utr.label=Corporation Tax UTR
 cds.partnership-utr.label=Partnership Self Assessment UTR
 
