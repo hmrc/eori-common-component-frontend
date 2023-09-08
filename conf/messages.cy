@@ -11,7 +11,7 @@ cds.navigation.save-and-review=Cadw ac adolygu
 cds.navigation.opens-in-new-tab=(yn agor tab newydd)
 cds.navigation.opens-new-page=Gallwch
 cds.navigation.find-utr-link=https://www.gov.uk/dod-o-hyd-i-utr-sydd-ar-goll
-cds.navigation.find-lost-utr=ddod o hyd i UTR sydd ar goll
+cds.navigation.find-lost-utr=ddod o hyd i UTR coll (yn agor tab newydd).
 cds.navigation.hmrc.online-services = ngwasanaethau ar-lein CThEF
 
 cds.navigation.contact-us = Cysylltwch â ni
