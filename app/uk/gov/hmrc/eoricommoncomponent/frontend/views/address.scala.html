@@ -23,6 +23,8 @@
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Button
 @import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import views.html.helper.CSRF
+@import views.html.helper.CSPNonce
+
 @this(layout_di: layout, countryField: helpers.countryField, inputText: helpers.inputText, errorSummary: helpers.errorSummary, govukButton: GovukButton, fieldset: helpers.fieldset)
 
 @(addressForm: Form[AddressViewModel],
