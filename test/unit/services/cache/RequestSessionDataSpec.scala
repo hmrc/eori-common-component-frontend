@@ -76,9 +76,9 @@ class RequestSessionDataSpec extends UnitSpec with MockitoSugar with BeforeAndAf
       session.data.get("selected-user-location") shouldBe Some("uk")
     }
 
-    "return third country as selected userLocation for Channel Islands and eu from cache" in {
+    "return islands as selected userLocation for Channel Islands and third-country for eu from cache" in {
       when(mockRequest.session).thenReturn(Session(Map("selected-user-location" -> "islands")))
-      requestSessionData.selectedUserLocation shouldBe Some("third-country")
+      requestSessionData.selectedUserLocation shouldBe Some("islands")
       when(mockRequest.session).thenReturn(Session(Map("selected-user-location" -> "eu")))
       requestSessionData.selectedUserLocation shouldBe Some("third-country")
     }
