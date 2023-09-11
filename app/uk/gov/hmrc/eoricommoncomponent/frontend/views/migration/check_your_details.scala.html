@@ -96,7 +96,10 @@
         messages("cds.form.contact-details")
     } else if(isPartnership) {
         messages("cds.form.partner-address")
-    } else if(isCompany) {
+    } else if(organisationType.contains(CdsOrganisationType.LimitedLiabilityPartnership)) {
+        messages("cds.form.partner-address")
+    }
+    else if(isCompany) {
         messages("cds.form.company-address")
     } else {
         messages("cds.form.business-details")
