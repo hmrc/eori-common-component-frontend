@@ -38,7 +38,7 @@ isInReviewMode: Boolean,
 service: Service,
 )(implicit request: Request[_], messages: Messages)
 
-@layout_di(messages("cds.matching.organisation.name.title"), form = Some(nameOrganisationForm)) {
+@layout_di(messages("cds.matching.organisation.name.title"), form = Some(nameOrganisationForm), service = service) {
 
     @errorSummary(nameOrganisationForm.errors)
 

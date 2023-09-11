@@ -82,7 +82,9 @@ class YouCantUseServiceSpec extends ViewSpec {
     }
   }
 
-  private lazy val standardOrgDoc: Document = Jsoup.parse(contentAsString(youCantUseServiceView(Some(Organisation))))
-  private lazy val agentDoc: Document       = Jsoup.parse(contentAsString(youCantUseServiceView(Some(Agent))))
+  private lazy val standardOrgDoc: Document =
+    Jsoup.parse(contentAsString(youCantUseServiceView(Some(Organisation), atarService)))
+
+  private lazy val agentDoc: Document = Jsoup.parse(contentAsString(youCantUseServiceView(Some(Agent), atarService)))
 
 }

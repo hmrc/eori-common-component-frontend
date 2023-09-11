@@ -50,7 +50,8 @@
         form: Option[Form[_]] = None,
         suppressTelephoneNumberDetection: Boolean = true,
         displayBackLink: Boolean = true,
-        userResearchBanner: Boolean = true
+        userResearchBanner: Boolean = true,
+        service: Service
 )(content: Html)(implicit messages: Messages, request: Request[_])
 
 @isLoggedIn = @{

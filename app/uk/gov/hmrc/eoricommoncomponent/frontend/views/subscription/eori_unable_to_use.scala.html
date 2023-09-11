@@ -42,7 +42,7 @@
         )
     }
 }
-@layout_di(messages("ecc.what-is-your-eori.unable-to-use.title"), suppressTelephoneNumberDetection = false, displayBackLink = false) {
+@layout_di(messages("ecc.what-is-your-eori.unable-to-use.title"), suppressTelephoneNumberDetection = false, displayBackLink = false, service = service) {
     <div>
 
         @errorSummary(form.errors, focusOverrides = Map("answer" -> s"answer-change"))

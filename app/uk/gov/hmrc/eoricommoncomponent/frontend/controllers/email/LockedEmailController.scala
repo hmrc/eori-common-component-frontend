@@ -22,7 +22,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.locked_email_view
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 
 import scala.concurrent.Future
@@ -34,10 +34,10 @@ class LockedEmailController @Inject() (
   view: locked_email_view
 ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
+  def onPageLoad(service: Service): Action[AnyContent] =
     authAction.ggAuthorisedUserWithEnrolmentsAction {
       implicit request => _: LoggedInUserWithEnrolments =>
-        Future.successful(Ok(view()))
+        Future.successful(Ok(view(service)))
     }
 
 }

@@ -74,7 +74,8 @@ class HowCanWeIdentifyYouUtrSpec extends ViewSpec {
         "subscription-journey.how-confirm-identity.utr.heading",
         "subscription-journey.how-confirm-identity.utr.hint",
         isInReviewMode,
-        routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, atarService)
+        routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, atarService),
+        atarService
       )
     )
   )
@@ -87,7 +88,8 @@ class HowCanWeIdentifyYouUtrSpec extends ViewSpec {
           "subscription-journey.how-confirm-identity.utr.heading",
           "subscription-journey.how-confirm-identity.utr.hint",
           isInReviewMode,
-          routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, atarService)
+          routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, atarService),
+          atarService
         )
       )
     )
