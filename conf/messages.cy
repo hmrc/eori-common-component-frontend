@@ -383,7 +383,7 @@ cds.company.name.label=Enw’r cwmni
 cds.partnership.name.label=Enw’r bartneriaeth gofrestredig
 cds.nino.label=Rhif Yswiriant Gwladol
 cds.utr.label=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad
-cds.company.utr.label=Rhif Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth
+cds.company.utr.label=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth
 cds.partnership-utr.label=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad y Bartneriaeth
 subscription.check-your-details.utrnumber.individual=Rhif Cyfeirnod Unigryw y Trethdalwr (UTR)
 subscription.check-your-details.contactpreference=Dewisiadau cyswllt
@@ -1075,7 +1075,7 @@ cds.subscription.name-id-details.utr.label=Rhif Cyfeirnod Unigryw y Trethdalwr (
 cds.enter-address-details.organisation.title-and-heading=Nodwch gyfeiriad eich sefydliad
 cds.enter-address-details.individual.title-and-heading=Nodwch eich cyfeiriad
 cds.enter-address-details.partnership.title-and-heading=Nodwch gyfeiriad eich partneriaeth
-cds.enter-address-details.company.title-and-heading=Nodwch gyfeiriad eich cwmni
+cds.enter-address-details.company.title-and-heading=Nodwch gyfeiriad cofrestredig llawn eich cwmni
 cds.subscription.address-details.street.label=Cyfeiriad - llinell 1
 cds.subscription.address-details.city.label=Tref neu ddinas
 cds.subscription.address-details.postcode.label=Cod post
@@ -1313,7 +1313,7 @@ cds.subscription.outcomes.steps.next.new.ivd = <li>gwneud cais am ad-daliad o do
 cds.subscription.outcomes.steps.next.new.ndrc = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'''r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
 
 ecc.address-lookup.postcode.hint.link = <p class="govuk-body">Gallwch ddod o hyd i hwn ar gofrestr <a href="https://beta.companieshouse.gov.uk/" target="_blank">Tŷ’r Cwmnïau (yn agor tab newydd).</a></p>
-ecc.address-lookup.postcode.hint.partnership.link = <p class="govuk-body">Dyma’r enw sydd wedi’i gofrestru gyda CThEF. Gallwch ddod o hyd i hyn yng <a href="https://www.gov.uk/log-in-register-hmrc-online-services" target="_blank">ngwasanaethau ar-lein CThEF (yn agor tab newydd)</a> neu ar lythyrau oddi wrth CThEF.</p>
+ecc.address-lookup.postcode.hint.partnership.link = <p class="govuk-body">Dyma’r cyfeiriad sydd wedi’i gofrestru gyda CThEF. Gallwch ddod o hyd i hyn yng <a href="https://www.gov.uk/log-in-register-hmrc-online-services" target="_blank">ngwasanaethau ar-lein CThEF (yn agor tab newydd)</a> neu ar lythyrau oddi wrth CThEF.</p>
 
 ecc.address-lookup.postcode.hint.company = <p class="govuk-body">Byddwn yn defnyddio hyn i gadarnhau pwy ydych. Gallwch gael y cod post hwn o <a href="https://beta.companieshouse.gov.uk/" target="_blank">gofrestr Tŷ’r Cwmnïau (yn agor tab newydd).</a></p> Nodwch y cod post sydd ar dystysgrif ymgorffori’r cwmni.
 ecc.address-lookup.postcode.hint.llp =  <p class="govuk-body">Byddwn yn defnyddio hyn i gadarnhau pwy ydych. Gallwch gael y cod post hwn o <a href="https://beta.companieshouse.gov.uk/" target="_blank">gofrestr Tŷ’r Cwmnïau (yn agor tab newydd).</a></p> Nodwch y cod post sydd ar dystysgrif ymgorffori’r bartneriaeth.
