@@ -58,7 +58,7 @@
 }
 
 @titleWithEnding = @{
-    title + " - " + messages(s"cds.banner.subscription.${if (service.code.isEmpty) "cds" else service.code}") + " - " + messages("cds.end-of-title")
+    title + " - " + messages(s"cds.banner.subscription.${service.code}") + " - " + messages("cds.end-of-title")
 }
 
 @titleErr = @{
