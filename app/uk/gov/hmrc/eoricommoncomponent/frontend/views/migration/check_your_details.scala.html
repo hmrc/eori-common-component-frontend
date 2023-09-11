@@ -82,12 +82,13 @@
 }
 
 @isCompany = @{
-    organisationType.contains(CdsOrganisationType.Company) && !isThirdCountrySubscription
+    organisationType.contains(CdsOrganisationType.Company) && !isThirdCountrySubscription ||
+            organisationType.contains(CdsOrganisationType.LimitedLiabilityPartnership)
 }
 
 @isPartnership = @{
-    organisationType.contains(CdsOrganisationType.Partnership) ||
-            organisationType.contains(CdsOrganisationType.LimitedLiabilityPartnership)
+    organisationType.contains(CdsOrganisationType.Partnership)
+
 }
 
 @businessDetailsLabel = @{
