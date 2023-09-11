@@ -119,19 +119,6 @@ class SubscriptionBusinessServiceSpec extends UnitSpec with MockitoSugar with Be
     }
   }
 
-  "Calling retrieveSubscriptionDetailsHolder" should {
-    "fail when cache fails accessing current SubscriptionDetailsHolder" in {
-      when(mockCdsFrontendDataCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(
-        Future.failed(emulatedFailure)
-      )
-
-      val caught = intercept[RuntimeException] {
-        await(subscriptionBusinessService.retrieveSubscriptionDetailsHolder)
-      }
-      caught shouldBe emulatedFailure
-    }
-  }
-
   "Calling getCachedDateEstablished" should {
     "retrieve any previously cached Date Of Establishment Details from the cdsFrontendCache" in {
       when(mockCdsFrontendDataCache.subscriptionDetails).thenReturn(mockSubscriptionDetailsHolder)

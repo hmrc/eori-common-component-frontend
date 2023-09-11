@@ -55,7 +55,6 @@ class EnrolmentJourneyServiceSpec extends ControllerSpec with BeforeAndAfterEach
       .thenReturn(Future.successful(None))
     when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any()))
       .thenReturn(Future.successful(false))
-    when(groupEnrolmentExtractor.checkAllServiceEnrolments(any())(any())).thenReturn(Future.successful(None))
   }
 
   override protected def afterEach(): Unit = {

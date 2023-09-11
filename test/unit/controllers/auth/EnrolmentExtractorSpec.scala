@@ -137,66 +137,6 @@ class EnrolmentExtractorSpec extends UnitSpec {
       }
     }
 
-    "return Self Assessment UTR" when {
-
-      "user has correct enrolment" in {
-
-        val selfAssessmentEnrolment = Enrolment("IR-SA").withIdentifier("UTR", utr.id)
-
-        val result = enrolmentExtractor.enrolledSaUtr(loggedInUser(Set(selfAssessmentEnrolment)))
-
-        result shouldBe Some(utr)
-      }
-    }
-
-    "doesn't return Self Assessment UTR" when {
-
-      "user doesn't have correct enrolment" in {
-
-        enrolmentExtractor.enrolledSaUtr(loggedInUser(Set.empty)) shouldBe None
-      }
-    }
-
-    "return Corporation Tax UTR" when {
-
-      "user has correct enrolment" in {
-
-        val corporationTaxEnrolment = Enrolment("IR-CT").withIdentifier("UTR", utr.id)
-
-        val result = enrolmentExtractor.enrolledCtUtr(loggedInUser(Set(corporationTaxEnrolment)))
-
-        result shouldBe Some(utr)
-      }
-    }
-
-    "doesn't return Corporation Tax UTR" when {
-
-      "user doesn't have correct enrolment" in {
-
-        enrolmentExtractor.enrolledCtUtr(loggedInUser(Set.empty)) shouldBe None
-      }
-    }
-
-    "return Nino" when {
-
-      "user has correct enrolment" in {
-
-        val ninoEnrolment = Enrolment("HMRC-NI").withIdentifier("NINO", nino.id)
-
-        val result = enrolmentExtractor.enrolledNino(loggedInUser(Set(ninoEnrolment)))
-
-        result shouldBe Some(nino)
-      }
-    }
-
-    "doesn't return Nino" when {
-
-      "user doesn't have correct enrolment" in {
-
-        enrolmentExtractor.enrolledNino(loggedInUser(Set.empty)) shouldBe None
-      }
-    }
-
     "return existing EORI for user and/or group" when {
 
       "user has enrolment with an EORI" in {
