@@ -37,7 +37,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, Respo
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubmissionCompleteData, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  DataUnavailableException,
+  RequestSessionData,
+  SessionCache
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{MatchingService, Reg06Service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
@@ -648,7 +652,7 @@ class RegisterWithEoriAndIdControllerSpec
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
-          .processing
+          .processing(atarService)
           .url
         verify(mockReg06Service).sendOrganisationRequest(any(), any(), any())
         verify(mockSubscriptionStatusService)
@@ -1249,7 +1253,7 @@ class RegisterWithEoriAndIdControllerSpec
     test(controller.registerWithEoriAndId(atarService)(withFakeCSRF(fakeAtarSubscribeRequest)))
 
   private def invokeProcessing()(test: Future[Result] => Any) =
-    test(controller.processing.apply(withFakeCSRF(fakeAtarSubscribeRequest)))
+    test(controller.processing(atarService).apply(withFakeCSRF(fakeAtarSubscribeRequest)))
 
   private def invokeRejected()(test: Future[Result] => Any) = test(
     controller.rejected(atarService).apply(withFakeCSRF(fakeAtarSubscribeRequest))

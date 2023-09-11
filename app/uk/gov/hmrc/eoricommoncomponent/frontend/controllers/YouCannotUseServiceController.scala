@@ -45,14 +45,14 @@ class YouCannotUseServiceController @Inject() (
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) with AuthorisedFunctions with AuthRedirectSupport with EnrolmentExtractor {
 
-  def page: Action[AnyContent] = Action.async { implicit request =>
+  def page(service: Service): Action[AnyContent] = Action.async { implicit request =>
     authorised(AuthProviders(GovernmentGateway))
       .retrieve(affinityGroup) { ag =>
         Future.successful(Unauthorized(youCantUseService(ag)))
       } recover withAuthRecovery(request)
   }
 
-  def unauthorisedPage: Action[AnyContent] = Action { implicit request =>
+  def unauthorisedPage(service: Service): Action[AnyContent] = Action { implicit request =>
     Unauthorized(unauthorisedView())
   }
 

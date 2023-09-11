@@ -18,12 +18,12 @@ GET         /customs-enrolment-services/:service/subscribe/check-existing-eori/c
 GET         /customs-enrolment-services/:service/subscribe/display-sign-out                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.SecuritySignOutController.displayPage(service: Service)
 GET         /customs-enrolment-services/:service/subscribe/sign-out                                    @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.SecuritySignOutController.signOut(service: Service)
 
-GET         /customs-enrolment-services/subscribe/you-cannot-use-service                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.YouCannotUseServiceController.page()
-GET         /customs-enrolment-services/subscribe/unauthorised                                @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.YouCannotUseServiceController.unauthorisedPage()
+GET         /customs-enrolment-services/:service/subscribe/you-cannot-use-service                      @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.YouCannotUseServiceController.page(service: Service)
+GET         /customs-enrolment-services/:service/subscribe/unauthorised                                @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.YouCannotUseServiceController.unauthorisedPage(service: Service)
 
 GET         /customs-enrolment-services/:service/subscribe/unable-to-use-id                           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.YouCannotUseServiceController.unableToUseIdPage(service: Service)
 
-GET         /customs-enrolment-services/subscribe/keep-alive                                  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.keepAlive()
+GET         /customs-enrolment-services/:service/subscribe/keep-alive                                  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.ApplicationController.keepAlive(service: Service)
 
 GET         /customs-enrolment-services/:service/subscribe/:subscribeJourney/email-confirmed            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.emailConfirmed(service: Service, subscribeJourney: SubscribeJourney)
 POST        /customs-enrolment-services/:service/subscribe/email-confirmed/accepted   @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController.acceptConfirmation(service: Service)
@@ -113,7 +113,7 @@ POST        /customs-enrolment-services/:service/subscribe/:subscribeJourney/mat
 GET         /customs-enrolment-services/:service/subscribe/complete                           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller.migrationEnd(service: Service)
 GET         /customs-enrolment-services/:service/subscribe/pending                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController.pending(service: Service)
 GET         /customs-enrolment-services/:service/subscribe/unsuccessful/:date                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController.fail(service: Service, date)
-GET         /customs-enrolment-services/subscribe/processing                         @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController.processing()
+GET         /customs-enrolment-services/:service/subscribe/processing                         @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController.processing(service: Service)
 GET         /customs-enrolment-services/:service/subscribe/status-rejected                    @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController.rejected(service: Service)
 GET         /customs-enrolment-services/:service/subscribe/eori-already-linked                @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController.eoriAlreadyLinked(service: Service)
 GET         /customs-enrolment-services/:service/subscribe/id-already-linked                  @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController.idAlreadyLinked(service: Service)
@@ -176,7 +176,7 @@ POST        /customs-enrolment-services/:service/subscribe/contact-address/revie
 GET         /customs-enrolment-services/:service/subscribe/confirm-contact-address                     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ConfirmContactAddressController.displayPage(service: Service)
 POST        /customs-enrolment-services/:service/subscribe/confirm-contact-address                             @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.ConfirmContactAddressController.submit(service: Service)
 
-GET         /customs-enrolment-services/subscribe/matching/locked-email     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.LockedEmailController.onPageLoad()
+GET         /customs-enrolment-services/:service/subscribe/:subscribeJourney/matching/locked-email     @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.LockedEmailController.onPageLoad(service: Service, subscribeJourney: SubscribeJourney)
 
 GET         /admin/metrics                                                         @com.kenshoo.play.metrics.MetricsController.metrics
 

@@ -146,7 +146,7 @@ class RegisterWithEoriAndIdController @Inject() (
       }
     }
 
-  def processing: Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
+  def processing(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       for {
         name          <- cachedName
@@ -352,7 +352,7 @@ class RegisterWithEoriAndIdController @Inject() (
       case NewSubscription | SubscriptionRejected =>
         onSuccessfulSubscriptionStatusSubscribe(service)
       case SubscriptionProcessing =>
-        Future.successful(Redirect(RegisterWithEoriAndIdController.processing))
+        Future.successful(Redirect(RegisterWithEoriAndIdController.processing(service)))
       case SubscriptionExists => Future.successful(Redirect(SubscriptionRecoveryController.complete(service)))
     }
 
