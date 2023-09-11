@@ -53,13 +53,13 @@ trait AccessController extends AllowlistVerification {
       }
 
     if (!isPermittedEmail(email)) // TODO Check if we would like to keep email allowlisting
-      Future.successful(Redirect(routes.YouCannotUseServiceController.unauthorisedPage(service)))
+      Future.successful(Redirect(routes.YouCannotUseServiceController.unauthorisedPage()))
     else if (!isPermittedUserType)
-      Future.successful(Redirect(routes.YouCannotUseServiceController.page(service)))
+      Future.successful(Redirect(routes.YouCannotUseServiceController.page()))
     else if (hasEnrolment)
       Future.successful(Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service)))
     else if (!isPermittedCredentialRole)
-      Future.successful(Redirect(routes.YouCannotUseServiceController.page(service)))
+      Future.successful(Redirect(routes.YouCannotUseServiceController.page()))
     else
       action
   }

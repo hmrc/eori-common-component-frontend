@@ -65,7 +65,7 @@ class ApplicationController @Inject() (
         }
     }
 
-  def keepAlive(service: Service): Action[AnyContent] = Action.async { implicit request =>
+  def keepAlive: Action[AnyContent] = Action.async { implicit request =>
     cache.keepAlive map { _ =>
       Ok("Ok")
     }
