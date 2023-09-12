@@ -30,7 +30,7 @@
 
 @(addressPostcodeForm: Form[AddressLookupParams], isInReviewMode: Boolean, viewModel: AddressLookupPostcodeViewModel, service: Service)(implicit request: Request[_], messages: Messages)
 
-@layout_di(messages(viewModel.pageTitleKey), form = Some(addressPostcodeForm)) {
+@layout_di(messages(viewModel.pageTitleKey), form = Some(addressPostcodeForm), service = service) {
 
         @errorSummary(addressPostcodeForm.errors)
 

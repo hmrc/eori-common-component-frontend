@@ -38,5 +38,4 @@ object ServiceName {
   def service(implicit request: Request[_]): Service =
     Service.serviceFromRequest.getOrElse(Service.cds)
 
-  private val empty = Service("", "", "", None, "", "", "", None)
 }

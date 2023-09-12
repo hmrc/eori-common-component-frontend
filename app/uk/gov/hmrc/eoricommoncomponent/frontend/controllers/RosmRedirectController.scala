@@ -19,7 +19,6 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
-import play.api.mvc.Results.Redirect
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 @Singleton

@@ -41,7 +41,7 @@
     dateForm.copy(errors = DateConverter.updateDateOfEstablishmentErrors(dateForm.errors))
 }
 
-@layout_di(messages(headerAndTitle), form = Some(dateForm)) {
+@layout_di(messages(headerAndTitle), form = Some(dateForm), service = service) {
     <div>
 
         @errorSummary(DateConverter.updateDateOfEstablishmentErrors(dateForm.errors),

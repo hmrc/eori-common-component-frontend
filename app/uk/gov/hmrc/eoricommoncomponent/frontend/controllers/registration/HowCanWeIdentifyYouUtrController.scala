@@ -73,7 +73,8 @@ class HowCanWeIdentifyYouUtrController @Inject() (
             getHeadingMessage(),
             getHintMessage(),
             isInReviewMode,
-            routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service)
+            routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service),
+            service
           )
         )
       case _ =>
@@ -83,7 +84,8 @@ class HowCanWeIdentifyYouUtrController @Inject() (
             getHeadingMessage(),
             getHintMessage(),
             isInReviewMode,
-            routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service)
+            routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service),
+            service
           )
         )
     }
@@ -101,7 +103,8 @@ class HowCanWeIdentifyYouUtrController @Inject() (
                   getHeadingMessage(),
                   getHintMessage(),
                   isInReviewMode,
-                  routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service)
+                  routes.HowCanWeIdentifyYouUtrController.submit(isInReviewMode, service),
+                  service
                 )
               )
             ),
