@@ -23,7 +23,7 @@
 @(service: Service, otherService: Option[Service])(implicit messages: Messages, request: Request[_])
 
 
-@layout_di(title(otherService, service), suppressTelephoneNumberDetection = false, displayBackLink = false) {
+@layout_di(title(otherService, service), suppressTelephoneNumberDetection = false, displayBackLink = false, service = service) {
 
         <div>
             @h1(title(otherService, service), Some("page-heading"), "govuk-heading-l")

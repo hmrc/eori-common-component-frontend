@@ -13,7 +13,6 @@ object AppDependencies {
     "uk.gov.hmrc"       %% "domain"                        % "8.3.0-play-28",
     "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"            % mongoDbVersion,
     "uk.gov.hmrc"       %% "emailaddress"                  % "3.8.0",
-    "org.webjars.npm"    % "accessible-autocomplete"       % "2.0.4",
     "uk.gov.hmrc"       %% "play-frontend-hmrc"            % "7.14.0-play-28",
     "uk.gov.hmrc"       %% "internal-auth-client-play-28"  % "1.3.0"
   )

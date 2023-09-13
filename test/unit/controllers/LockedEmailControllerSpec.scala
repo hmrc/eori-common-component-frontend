@@ -51,9 +51,7 @@ class LockedEmailControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
       val service = Service.cds
 
-      val result = controller.onPageLoad(service, SubscribeJourney(AutoEnrolment)).apply(
-        SessionBuilder.buildRequestWithSession("user")
-      )
+      val result = controller.onPageLoad(service).apply(SessionBuilder.buildRequestWithSession("user"))
 
       status(result) shouldBe OK
       val page = CdsPage(contentAsString(result))

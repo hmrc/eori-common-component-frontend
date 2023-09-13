@@ -82,12 +82,13 @@
 }
 
 @isCompany = @{
-    organisationType.contains(CdsOrganisationType.Company) && !isThirdCountrySubscription
+    organisationType.contains(CdsOrganisationType.Company) && !isThirdCountrySubscription ||
+            organisationType.contains(CdsOrganisationType.LimitedLiabilityPartnership)
 }
 
 @isPartnership = @{
-    organisationType.contains(CdsOrganisationType.Partnership) ||
-            organisationType.contains(CdsOrganisationType.LimitedLiabilityPartnership)
+    organisationType.contains(CdsOrganisationType.Partnership)
+
 }
 
 @businessDetailsLabel = @{
@@ -95,7 +96,10 @@
         messages("cds.form.contact-details")
     } else if(isPartnership) {
         messages("cds.form.partner-address")
-    } else if(isCompany) {
+    } else if(organisationType.contains(CdsOrganisationType.LimitedLiabilityPartnership)) {
+        messages("cds.form.partner-address")
+    }
+    else if(isCompany) {
         messages("cds.form.company-address")
     } else {
         messages("cds.form.business-details")
@@ -237,7 +241,7 @@
     )
 }
 
-@layout_di(messages("cds.form.check-answers"), displayBackLink = false) {
+@layout_di(messages("cds.form.check-answers"), displayBackLink = false, service = service) {
 
     <div>
         <h1 class="govuk-heading-l">@messages("cds.form.check-answers")</h1>

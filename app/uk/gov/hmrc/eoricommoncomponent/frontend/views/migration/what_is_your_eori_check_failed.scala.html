@@ -23,12 +23,12 @@
 
 @(eori: String, service: Service)(implicit request: Request[_], messages: Messages)
 
-@layout_di(messages("ecc.subscription.eori-number-invalid")) {
+@layout_di(messages("ecc.subscription.eori-number-invalid"), service = service) {
     <div class="govuk-body">
         <h1 class="govuk-heading-l">@messages("ecc.subscription.eori-number-invalid")</h1>
 
         <p>@messages("ecc.subscription.eori-number-invalid.entered")</p>
-            <h2 class="govuk-heading-s">@eori</h2>
+            <h2 class="govuk-heading-s" id="eori-number">@eori</h2>
             <p>@messages("ecc.subscription.eori-number-invalid.does-not-match")
             </p><br>
             <h2 class="govuk-heading-m">@messages("ecc.subscription.eori-number-invalid-reasons-title")</h2>
@@ -41,13 +41,11 @@
             </p>
 
 
-        <br>
         @govukButton(Button(
             content = Text(messages("ecc.subscription.eori-number-invalid-try-again")),
             href =  Some(routes.WhatIsYourEoriController.createForm(service).url),
             id = Some("continue-button")
         ))
-            <br/>
 
         @help_di()
     </div>

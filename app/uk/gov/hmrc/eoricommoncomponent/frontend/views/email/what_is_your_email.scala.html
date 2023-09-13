@@ -26,7 +26,7 @@
 
 @(emailForm: Form[EmailViewModel], service: Service, subscribeJourney: SubscribeJourney)(implicit request: Request[_], messages: Messages)
 
-@layout_di(messages("cds.subscription.enter-email.page.title"), form = Some(emailForm)) {
+@layout_di(messages("cds.subscription.enter-email.page.title"), form = Some(emailForm), service = service) {
 
 <div>
 

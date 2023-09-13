@@ -165,7 +165,9 @@ class UpdateVerifiedEmailServiceSpec extends UnitSpec with MockitoSugar with Bef
       ).thenReturn(Future.successful(()))
       doNothing().when(mockAudit).sendDataEvent(any(), any(), any(), any(), any())(any[HeaderCarrier])
 
-      await(service.updateVerifiedEmail(None, "newemail@email.email", "GB0123456789")) shouldBe Left(UpdateEmailError)
+      await(service.updateVerifiedEmail(None, "newemail@email.email", "GB0123456789")) shouldBe Left(
+        UpdateEmailError("003 - Request could not be processed")
+      )
       verify(mockAudit, times(1)).sendDataEvent(any(), any(), any(), any(), any())(any[HeaderCarrier])
     }
 
@@ -180,7 +182,9 @@ class UpdateVerifiedEmailServiceSpec extends UnitSpec with MockitoSugar with Bef
           .updateCustomsDataStore(any[CustomsDataStoreRequest])(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
 
-      await(service.updateVerifiedEmail(None, "newemail@email.email", "GB0123456789")) shouldBe Left(Error)
+      await(service.updateVerifiedEmail(None, "newemail@email.email", "GB0123456789")) shouldBe Left(
+        Error("Something went wrong")
+      )
     }
 
     "fail with Non Retriable Failure when Email Update fails" in {
@@ -194,7 +198,9 @@ class UpdateVerifiedEmailServiceSpec extends UnitSpec with MockitoSugar with Bef
           .updateCustomsDataStore(any[CustomsDataStoreRequest])(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
 
-      await(service.updateVerifiedEmail(None, "newemail@email.email", "GB0123456789")) shouldBe Left(Error)
+      await(service.updateVerifiedEmail(None, "newemail@email.email", "GB0123456789")) shouldBe Left(
+        Error("Bad Request")
+      )
     }
 
     "fail when Email Update fails with Left(response)" in {
@@ -208,7 +214,9 @@ class UpdateVerifiedEmailServiceSpec extends UnitSpec with MockitoSugar with Bef
           .updateCustomsDataStore(any[CustomsDataStoreRequest])(any[HeaderCarrier])
       ).thenReturn(Future.successful(()))
 
-      await(service.updateVerifiedEmail(None, "newemail@email.email", "GB0123456789")) shouldBe Left(Error)
+      await(service.updateVerifiedEmail(None, "newemail@email.email", "GB0123456789")) shouldBe Left(
+        Error("Unknown error status")
+      )
     }
   }
 }

@@ -42,7 +42,7 @@
   subscriptionNameDobForm.copy(errors = DateConverter.updateDateOfBirthErrors(subscriptionNameDobForm.errors))
 }
 
-@layout_di(messages("cds.matching.individual.title"), form = Some(subscriptionNameDobForm)) {
+@layout_di(messages("cds.matching.individual.title"), form = Some(subscriptionNameDobForm), service = service) {
     <div>
 
         @errorSummary(DateConverter.updateDateOfBirthErrors(subscriptionNameDobForm.errors),
