@@ -50,9 +50,8 @@ class ApplicationControllerWithAllowlistVerificationSpec extends ControllerSpec 
     appConfig
   )
 
-  // TODO This test doesn't test what described, please check if logout method is not coevered in ApplicationControllerSpec
   "Navigating to logout" should {
-    "logout a non-allowlisted user" in {
+    "logout a non-allowlisted user and clear the cache" in {
       withAuthorisedUser(defaultUserId, mockAuthConnector, userEmail = Some("not@example.com"))
       when(mockSessionCache.remove(any[Request[AnyContent]])).thenReturn(Future.successful(true))
 
