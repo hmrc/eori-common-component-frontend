@@ -76,6 +76,6 @@ class Sub01OutcomeProcessingSpec extends ViewSpec {
     }
   }
 
-  lazy val docWithName: Document    = Jsoup.parse(contentAsString(view(Some(orgName), processedDate)))
-  lazy val docWithoutName: Document = Jsoup.parse(contentAsString(view(None, processedDate)))
+  lazy val docWithName: Document    = Jsoup.parse(contentAsString(view(Some(orgName), processedDate, atarService)))
+  lazy val docWithoutName: Document = Jsoup.parse(contentAsString(view(None, processedDate, atarService)))
 }

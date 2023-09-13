@@ -71,7 +71,12 @@ class HowCanWeIdentifyYouNinoSpec extends ViewSpec {
 
   lazy val doc: Document = Jsoup.parse(
     contentAsString(
-      view(form, isInReviewMode, routes.HowCanWeIdentifyYouNinoController.submit(isInReviewMode, atarService))
+      view(
+        form,
+        isInReviewMode,
+        routes.HowCanWeIdentifyYouNinoController.submit(isInReviewMode, atarService),
+        atarService
+      )
     )
   )
 
@@ -81,7 +86,8 @@ class HowCanWeIdentifyYouNinoSpec extends ViewSpec {
         view(
           formWithNothingEntered,
           isInReviewMode,
-          routes.HowCanWeIdentifyYouNinoController.submit(isInReviewMode, atarService)
+          routes.HowCanWeIdentifyYouNinoController.submit(isInReviewMode, atarService),
+          atarService
         )
       )
     )

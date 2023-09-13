@@ -51,7 +51,7 @@
 }
 
 
-@layout_di(headerAndTitle, form = Some(matchOrgIdForm)) {
+@layout_di(headerAndTitle, form = Some(matchOrgIdForm), service = service) {
 
     @errorSummary(matchOrgIdForm.errors, focusOverrides = Map("have-utr" -> "have-utr-true"))
 

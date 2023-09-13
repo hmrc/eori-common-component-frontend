@@ -27,7 +27,7 @@
 
 @(OrganisationTypeForm: Form[CdsOrganisationType], radioItems: Seq[RadioItem], service: Service)(implicit request: Request[_], messages: Messages)
 
-@layout_di(messages("cds.matching.organisation-type.user.header"), form = Some(OrganisationTypeForm)) {
+@layout_di(messages("cds.matching.organisation-type.user.header"), form = Some(OrganisationTypeForm), service = service) {
     <div>
         @errorSummary(OrganisationTypeForm.errors, focusOverrides = Map("organisation-type" -> radioItems.headOption.flatMap(_.id).getOrElse("organisation-type-company")))
         @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes.OrganisationTypeController.submit(service), "OrganisationTypeForm") {

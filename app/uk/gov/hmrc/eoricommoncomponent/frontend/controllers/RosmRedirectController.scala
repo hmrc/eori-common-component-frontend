@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,22 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-        layout_di: layout,
-        govukButton: GovukButton,
-        h1: helpers.h1,
-        p: helpers.paragraph
-)
+package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
-@(service: Service)(implicit request: Request[_], messages: Messages)
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes
+import javax.inject.{Inject, Singleton}
+import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
-@layout_di(title = messages("lockedEmail.heading"), displayBackLink = false, service = service) {
+@Singleton
+class RosmRedirectController @Inject() (val controllerComponents: ControllerComponents) extends BaseController {
 
-    @h1(messages("lockedEmail.heading"))
-
-    @p(messages("lockedEmail.para1"), id = Some("paragraph1"))
-    @p(messages("lockedEmail.para2"), id = Some("paragraph2"))
+  def redirectToStart: Action[AnyContent] = Action { _ =>
+    Redirect(routes.ApplicationController.startSubscription(Service.cds))
+  }
 
 }

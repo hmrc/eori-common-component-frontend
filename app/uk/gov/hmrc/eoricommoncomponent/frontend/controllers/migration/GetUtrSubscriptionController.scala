@@ -65,7 +65,8 @@ class GetUtrSubscriptionController @Inject() (
                 getHeadingMessage(),
                 getHintMessage(),
                 isInReviewMode,
-                routes.GetUtrSubscriptionController.submit(isInReviewMode, service)
+                routes.GetUtrSubscriptionController.submit(isInReviewMode, service),
+                service
               )
             )
 
@@ -76,7 +77,8 @@ class GetUtrSubscriptionController @Inject() (
                 getHeadingMessage(),
                 getHintMessage(),
                 isInReviewMode,
-                routes.GetUtrSubscriptionController.submit(isInReviewMode, service)
+                routes.GetUtrSubscriptionController.submit(isInReviewMode, service),
+                service
               )
             )
         }
@@ -101,7 +103,8 @@ class GetUtrSubscriptionController @Inject() (
                       getHeadingMessage(),
                       getHintMessage(),
                       isInReviewMode,
-                      routes.GetUtrSubscriptionController.submit(isInReviewMode, service)
+                      routes.GetUtrSubscriptionController.submit(isInReviewMode, service),
+                      service
                     )
                   )
                 ),

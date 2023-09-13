@@ -40,7 +40,7 @@
 }
 }
 
-@layout_di(messages("ecc.registered-company-country.individual.title"), countriesInCountryPicker, Some(countryForm)) {
+@layout_di(messages("ecc.registered-company-country.individual.title"), countriesInCountryPicker, Some(countryForm), service = service) {
     <div>
 
         @errorSummary(countryForm.errors)

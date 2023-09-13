@@ -36,8 +36,6 @@ object ServiceName {
     shortName(service)
 
   def service(implicit request: Request[_]): Service =
-    // TODO - investigate why service is sometimes missing from url
-    Service.serviceFromRequest.getOrElse(empty)
+    Service.serviceFromRequest.getOrElse(Service.cds)
 
-  private val empty = Service("", "", "", None, "", "", "", None)
 }
