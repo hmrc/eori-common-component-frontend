@@ -16,6 +16,7 @@
 
 package unit.services.registration
 
+import play.api.test.Helpers._
 import base.UnitSpec
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}

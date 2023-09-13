@@ -16,6 +16,7 @@
 
 package unit.services.subscription
 
+import play.api.test.Helpers._
 import base.UnitSpec
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, verify, when}

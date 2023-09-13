@@ -16,14 +16,13 @@
 
 package base
 
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
-import play.api.mvc.Result
+import org.scalatest.wordspec.AnyWordSpec
 import play.api.test.Helpers._
 import util.TestData
 
-import scala.concurrent.{Await, Future}
-import scala.concurrent.duration.{Duration, DurationInt, FiniteDuration}
+import scala.concurrent.Future
+import scala.concurrent.duration.{DurationInt, FiniteDuration}
 import scala.language.{implicitConversions, postfixOps}
 
 trait UnitSpec extends AnyWordSpec with Matchers with TestData {
@@ -41,11 +40,4 @@ trait UnitSpec extends AnyWordSpec with Matchers with TestData {
   // TODO Similar like above, prefer explicit extraction, most of the play.api.test.Helpers._ methods works with Future and are more efficient
   implicit def extractAwait[A](future: Future[A]): A = await[A](future)
 
-  // From github.com.hmrc/hmrctest to have a possibility to remove deprecated hmrctest library
-  // TODO use await from play.api.test.Helpers or futureValue from ScalaFutures trait
-  def await[A](future: Future[A])(implicit timeout: Duration): A = Await.result(future, timeout)
-
-  // From github.com.hmrc/hmrctest to have a possibility to remove deprecated hmrctest library
-  // TODO Inline this method if possible
-  def status(of: Future[Result]): Int = play.api.test.Helpers.status(of)
 }

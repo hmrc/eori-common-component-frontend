@@ -19,6 +19,7 @@ package unit.services.subscription
 import base.{Injector, UnitSpec}
 import common.support.testdata.TestData
 import common.support.testdata.subscription.SubscriptionContactDetailsBuilder
+import play.api.test.Helpers._
 
 import java.time.{LocalDate, LocalDateTime}
 import org.mockito.ArgumentMatchers.{eq => meq, _}

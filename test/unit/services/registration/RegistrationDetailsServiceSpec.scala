@@ -17,7 +17,7 @@
 package unit.services.registration
 
 import base.UnitSpec
-
+import play.api.test.Helpers._
 import java.time.LocalDate
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}

@@ -43,7 +43,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   UpdateVerifiedEmailService
 }
 import uk.gov.hmrc.http.HeaderCarrier
-
+import play.api.test.Helpers._
 import java.time.{LocalDateTime, ZoneOffset}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

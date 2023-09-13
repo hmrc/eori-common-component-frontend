@@ -267,7 +267,7 @@ class AddressServiceSpec
     "wait until the saveSubscriptionDetailsHolder is completed before progressing" in {
       registerSaveDetailsMockFailure(emulatedFailure)
       the[UnsupportedOperationException] thrownBy {
-        submitFormInReviewMode(mandatoryFields)(await)
+        submitFormInReviewMode(mandatoryFields)(await(_))
       } should have message emulatedFailure.getMessage
     }
 

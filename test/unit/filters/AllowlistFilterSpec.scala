@@ -27,7 +27,7 @@ import play.api.test.FakeRequest
 import play.mvc.Http.HeaderNames
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.filters.AllowlistFilter
-
+import play.api.test.Helpers._
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
