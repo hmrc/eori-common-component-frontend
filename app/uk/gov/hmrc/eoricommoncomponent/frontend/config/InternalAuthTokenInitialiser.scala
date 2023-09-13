@@ -23,6 +23,7 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.duration.DurationInt
@@ -38,12 +39,15 @@ class NoOpInternalAuthTokenInitialiser @Inject() () extends InternalAuthTokenIni
 }
 
 @Singleton
-class InternalAuthTokenInitialiserImpl @Inject() (configuration: Configuration, httpClient: HttpClientV2)(implicit
-  ec: ExecutionContext
-) extends InternalAuthTokenInitialiser with Logging {
+class InternalAuthTokenInitialiserImpl @Inject() (
+  configuration: Configuration,
+  httpClient: HttpClientV2,
+  servicesConfig: ServicesConfig
+)(implicit ec: ExecutionContext)
+    extends InternalAuthTokenInitialiser with Logging {
 
-  private val internalAuthService: Service =
-    configuration.get[Service]("microservice.services.internal-auth")
+  private val internalAuthService =
+    servicesConfig.baseUrl("internal-auth")
 
   private val authToken: String =
     configuration.get[String]("internal-auth.token")
@@ -67,7 +71,7 @@ class InternalAuthTokenInitialiserImpl @Inject() (configuration: Configuration, 
 
   private def createClientAuthToken(): Future[Done] = {
     logger.info("Initialising auth token")
-    httpClient.post(url"${internalAuthService.baseUrl}/test-only/token")(HeaderCarrier())
+    httpClient.post(url"$internalAuthService/test-only/token")(HeaderCarrier())
       .withBody(
         Json.obj(
           "token"     -> authToken,
@@ -95,7 +99,7 @@ class InternalAuthTokenInitialiserImpl @Inject() (configuration: Configuration, 
 
   private def authTokenIsValid: Future[Boolean] = {
     logger.info("Checking auth token")
-    httpClient.get(url"${internalAuthService.baseUrl}/test-only/token")(HeaderCarrier())
+    httpClient.get(url"$internalAuthService/test-only/token")(HeaderCarrier())
       .setHeader("Authorization" -> authToken)
       .execute
       .map(_.status == 200)

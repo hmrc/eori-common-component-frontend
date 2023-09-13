@@ -158,6 +158,16 @@ class AddressServiceSpec
       }
     }
   }
+  "Subscription Address Controller form in create mode for Partnership" should {
+
+    "display title as 'Enter your address'" in {
+      showCreateForm(userSelectedOrganisationType = Some(CdsOrganisationType.Partnership)) { result =>
+        val page = CdsPage(contentAsString(result))
+        page.title() should startWith("Enter your organisation address")
+        page.h1() shouldBe "Enter your organisation address"
+      }
+    }
+  }
 
   "Subscription Address form in review mode for Individual" should {
 
@@ -166,6 +176,16 @@ class AddressServiceSpec
         val page = CdsPage(contentAsString(result))
         page.title() should startWith("Enter your address")
         page.h1() shouldBe "Enter your address"
+      }
+    }
+  }
+  "Subscription Address form in review mode for Partnership" should {
+
+    "display title as 'Enter your address'" in {
+      showReviewForm(userSelectedOrganisationType = Some(CdsOrganisationType.Partnership)) { result =>
+        val page = CdsPage(contentAsString(result))
+        page.title() should startWith("Enter your organisation address")
+        page.h1() shouldBe "Enter your organisation address"
       }
     }
   }
@@ -299,12 +319,7 @@ class AddressServiceSpec
     }
 
     "not allow spaces to satisfy minimum length requirements" in {
-      submitFormInCreateModeForOrganisation(
-        Map(
-          "city"   -> 10.spaces,
-          "street" -> 7.spaces // we allow spaces for postcode
-        )
-      ) { result =>
+      submitFormInCreateModeForOrganisation(Map("city" -> 10.spaces, "street" -> 7.spaces)) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(AddressPage.pageLevelErrorSummaryListXPath) should include(
