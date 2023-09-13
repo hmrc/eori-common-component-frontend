@@ -36,7 +36,7 @@
 
 @(service: Service)(implicit messages: Messages, request: Request[_])
 
-@layout_di(messages("cds.subscription.outcomes.rejected.title.with.utr"), suppressTelephoneNumberDetection = false, displayBackLink = false) {
+@layout_di(messages("cds.subscription.outcomes.rejected.title.with.utr"), suppressTelephoneNumberDetection = false, displayBackLink = false, service = service) {
 
 
     @h1(messages("cds.subscription.outcomes.rejected.title.with.utr"), Some("page-heading"), classes = "govuk-heading-xl")

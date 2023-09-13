@@ -156,7 +156,7 @@ class RegisterWithEoriAndIdController @Inject() (
       for {
         name          <- cachedName
         processedDate <- cache.sub01Outcome.map(_.processedDate)
-      } yield Ok(sub01OutcomeProcessingView(Some(name), processedDate))
+      } yield Ok(sub01OutcomeProcessingView(Some(name), processedDate, service))
   }
 
   def rejected(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
@@ -349,7 +349,7 @@ class RegisterWithEoriAndIdController @Inject() (
       case _ if statusText.exists(_.equalsIgnoreCase(RequestCouldNotBeProcessed)) =>
         logger.warn("REG06 Request could not be processed")
         Future.successful(Redirect(RegisterWithEoriAndIdController.fail(service)))
-      case _ => Future.successful(InternalServerError(errorTemplateView()))
+      case _ => Future.successful(InternalServerError(errorTemplateView(service)))
     }
   }
 
