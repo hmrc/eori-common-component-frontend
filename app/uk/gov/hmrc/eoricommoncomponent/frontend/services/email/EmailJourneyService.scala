@@ -95,7 +95,7 @@ class EmailJourneyService @Inject() (
     hc: HeaderCarrier
   ): Future[Result] =
     emailVerificationService.getVerificationStatus(email, credId).foldF(
-      (_ => Future.successful(InternalServerError(errorPage()))),
+      (_ => Future.successful(InternalServerError(errorPage(service)))),
       {
         case EmailVerificationStatus.Verified =>
           onVerifiedEmail(subscribeJourney, service, email, emailStatus, GroupId(userWithEnrolments.groupId))
@@ -108,7 +108,7 @@ class EmailJourneyService @Inject() (
           // $COVERAGE-OFF$Loggers
           logger.warn("Email address is locked")
           // $COVERAGE-ON
-          Future.successful(Redirect(emailRoutes.LockedEmailController.onPageLoad(service, subscribeJourney)))
+          Future.successful(Redirect(emailRoutes.LockedEmailController.onPageLoad(service)))
       }
     )
 
@@ -146,7 +146,7 @@ class EmailJourneyService @Inject() (
         // $COVERAGE-OFF$Loggers
         logger.warn("Update Verified Email failed with user-retriable error. Redirecting to error page.")
         // $COVERAGE-ON
-        Future.successful(Ok(emailErrorPage()))
+        Future.successful(Ok(emailErrorPage(service)))
       case Left(_) => throw new IllegalArgumentException("Update Verified Email failed with non-retriable error")
     }
 
@@ -157,7 +157,7 @@ class EmailJourneyService @Inject() (
     credId: String
   )(implicit request: Request[AnyContent], messages: Messages, hc: HeaderCarrier): Future[Result] =
     emailVerificationService.startVerificationJourney(credId, service, email, subscribeJourney).fold(
-      _ => InternalServerError(errorPage()),
+      _ => InternalServerError(errorPage(service)),
       { responseWithUri: ResponseWithURI =>
         Redirect(s"${appConfig.emailVerificationFrontendBaseUrl}${responseWithUri.redirectUri}")
       }

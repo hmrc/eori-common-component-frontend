@@ -67,7 +67,8 @@ class HowCanWeIdentifyYouNinoController @Inject() (
           howCanWeIdentifyYouView(
             subscriptionNinoForm.fill(IdMatchModel(id)),
             isInReviewMode,
-            routes.HowCanWeIdentifyYouNinoController.submit(isInReviewMode, service)
+            routes.HowCanWeIdentifyYouNinoController.submit(isInReviewMode, service),
+            service
           )
         )
       case _ =>
@@ -75,7 +76,8 @@ class HowCanWeIdentifyYouNinoController @Inject() (
           howCanWeIdentifyYouView(
             subscriptionNinoForm,
             isInReviewMode,
-            routes.HowCanWeIdentifyYouNinoController.submit(isInReviewMode, service)
+            routes.HowCanWeIdentifyYouNinoController.submit(isInReviewMode, service),
+            service
           )
         )
     }
@@ -91,7 +93,8 @@ class HowCanWeIdentifyYouNinoController @Inject() (
                 howCanWeIdentifyYouView(
                   invalidForm,
                   isInReviewMode,
-                  routes.HowCanWeIdentifyYouNinoController.submit(isInReviewMode, service)
+                  routes.HowCanWeIdentifyYouNinoController.submit(isInReviewMode, service),
+                  service
                 )
               )
             ),

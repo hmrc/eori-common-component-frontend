@@ -35,7 +35,7 @@
 }
 
 
-@layout_di(messages("contact-address.heading"), countriesInCountryPicker, form = Some(addressForm)) {
+@layout_di(messages("contact-address.heading"), countriesInCountryPicker, form = Some(addressForm), service = service) {
     <div>
         @errorSummary(addressForm.errors)
 

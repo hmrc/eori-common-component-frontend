@@ -27,7 +27,7 @@
 
 @(service: Service, eoriNumber: String, continue: Call)(implicit request: Request[_], messages: Messages)
 
-@layout_di(messages("cds.has-existing-eori.title"), displayBackLink = false) {
+@layout_di(messages("cds.has-existing-eori.title"), displayBackLink = false, service = service) {
     <div>
 
         @h1(messages("cds.has-existing-eori.heading", eoriNumber))

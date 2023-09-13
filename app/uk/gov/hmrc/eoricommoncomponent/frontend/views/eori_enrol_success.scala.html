@@ -23,7 +23,7 @@
 
 @(service: Service)(implicit messages: Messages, request: Request[_])
 
-@layout_di(messages("eds.existing-eori.enrolment.confirmation.title"), displayBackLink = false) {
+@layout_di(messages("eds.existing-eori.enrolment.confirmation.title"), displayBackLink = false, service = service) {
     <div>
         @govukPanel(Panel(
             title = Text(messages("eds.existing-eori.enrolment.confirmation.title"))

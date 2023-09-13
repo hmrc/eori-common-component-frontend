@@ -1,11 +1,10 @@
-import com.typesafe.sbt.packager.MappingsHelper._
-import play.core.PlayVersion
+import com.typesafe.sbt.packager.MappingsHelper.*
 import play.sbt.routes.RoutesKeys
-import play.sbt.routes.RoutesKeys._
-import sbt.Keys._
-import sbt._
+import play.sbt.routes.RoutesKeys.*
+import sbt.Keys.*
+import sbt.*
 import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings, targetJvm}
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
+
 
 import scala.language.postfixOps
 
@@ -31,16 +30,16 @@ val testConfig = Seq(IntegrationTest, Test)
 lazy val microservice = (project in file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .disablePlugins(sbt.plugins.JUnitXmlReportPlugin)
-  .configs(testConfig: _*)
+  .configs(testConfig *)
   .settings(
     scalacOptions ++= Seq(
-      "-unchecked", // Enable additional warnings where generated code depends on assumptions.
-      "-Wunused:imports", // Warn if an import selector is not referenced.
-      "-Wunused:privates", // Warn if a private member is unused.
-      "-Wunused:patvars", // Warn if a variable bound in a pattern is unused.
-      "-Wunused:locals", // Warn if a local definition is unused.
-      "-Wunused:explicits", // Warn if an explicit parameter is unused.
-      "-Wunused:implicits", // Warn if an implicit parameter is unused.
+      "-unchecked",
+      "-Wunused:imports",
+      "-Wunused:privates",
+      "-Wunused:patvars",
+      "-Wunused:locals",
+      "-Wunused:explicits",
+      "-Wunused:implicits",
     ),
     commonSettings,
     unitTestSettings,
@@ -77,14 +76,14 @@ lazy val integrationTestSettings =
       addTestReportOption(IntegrationTest, "int-test-reports")
     )
 
-lazy val commonSettings: Seq[Setting[_]] = defaultSettings()
+lazy val commonSettings: Seq[Setting[?]] = defaultSettings()
 
-lazy val playSettings: Seq[Setting[_]] = Seq(
+lazy val playSettings: Seq[Setting[?]] = Seq(
   routesImport ++= Seq("uk.gov.hmrc.eoricommoncomponent.frontend.domain._"),
   RoutesKeys.routesImport += "uk.gov.hmrc.eoricommoncomponent.frontend.models._"
 )
 
-lazy val twirlSettings: Seq[Setting[_]] = Seq(
+lazy val twirlSettings: Seq[Setting[?]] = Seq(
   TwirlKeys.templateImports ++= Seq(
     "uk.gov.hmrc.eoricommoncomponent.frontend.views.html._",
     "uk.gov.hmrc.eoricommoncomponent.frontend.domain._"
@@ -95,7 +94,6 @@ lazy val scoverageSettings = {
   import scoverage.ScoverageKeys
 
   Seq(
-    // Semicolon-separated list of regexs matching classes to exclude
     ScoverageKeys.coverageExcludedPackages := List(
       "<empty>",
       "Reverse.*",
@@ -107,7 +105,9 @@ lazy val scoverageSettings = {
       ".*(AuthService|BuildInfo|Routes|TestOnly).*"
     ).mkString(";"),
     ScoverageKeys.coverageMinimumStmtTotal := 92,
+
     ScoverageKeys.coverageMinimumBranchTotal := 90,
+
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
     Test / parallelExecution := false
@@ -118,7 +118,7 @@ scalastyleConfig := baseDirectory.value / "project" / "scalastyle-config.xml"
 
 libraryDependencies ++= AppDependencies()
 
-lazy val silencerSettings: Seq[Setting[_]] = {
+lazy val silencerSettings: Seq[Setting[?]] = {
   val silencerVersion = "1.7.12"
   Seq(
     libraryDependencies ++= Seq(

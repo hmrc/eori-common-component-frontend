@@ -108,7 +108,7 @@ class SubscriptionRecoveryController @Inject() (
           service
         )(Redirect(Sub02Controller.migrationEnd(service)))
       case Left(_) =>
-        Future.successful(InternalServerError(errorTemplateView()))
+        Future.successful(InternalServerError(errorTemplateView(service)))
     }
     result.flatMap(identity)
   }
@@ -141,7 +141,7 @@ class SubscriptionRecoveryController @Inject() (
           service
         )(Redirect(Sub02Controller.migrationEnd(service)))
       case Left(_) =>
-        Future.successful(InternalServerError(errorTemplateView()))
+        Future.successful(InternalServerError(errorTemplateView(service)))
     }
     result.flatMap(identity)
   }
