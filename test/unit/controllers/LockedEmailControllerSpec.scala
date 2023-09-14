@@ -25,10 +25,8 @@ import util.ControllerSpec
 import util.builders.AuthActionMock
 import util.builders.AuthBuilder._
 
-
 import play.api.mvc.MessagesControllerComponents
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, Service, SubscribeJourney}
-
 
 import util.builders.SessionBuilder
 
