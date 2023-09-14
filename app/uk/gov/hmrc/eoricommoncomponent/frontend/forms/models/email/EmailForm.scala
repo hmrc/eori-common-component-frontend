@@ -47,8 +47,6 @@ object EmailForm {
 
   def confirmEmailYesNoAnswerForm()(implicit messages: Messages): Form[YesNo] = yesNoAnswerForm()
 
-  def eoriSignoutForm()(implicit messages: Messages): Form[YesNo] = yesNoAnswerForm()
-
   def confirmContactAddressYesNoAnswerForm()(implicit messages: Messages): Form[YesNo] = confirmContactAddressForm()
 
   private def yesNoAnswerForm()(implicit messages: Messages): Form[YesNo] = Form(

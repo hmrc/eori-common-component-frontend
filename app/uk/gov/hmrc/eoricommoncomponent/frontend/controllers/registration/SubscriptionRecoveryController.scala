@@ -36,9 +36,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   HandleSubscriptionService,
   SubscriptionDetailsService,
   TaxEnrolmentsService,
+  UpdateEmailError,
   UpdateVerifiedEmailService
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{email_error_template, error_template}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 
@@ -57,7 +58,8 @@ class SubscriptionRecoveryController @Inject() (
   uuidGenerator: RandomUUIDGenerator,
   requestSessionData: RequestSessionData,
   subscriptionDetailsService: SubscriptionDetailsService,
-  updateVerifiedEmailService: UpdateVerifiedEmailService
+  updateVerifiedEmailService: UpdateVerifiedEmailService,
+  emailErrorPage: email_error_template
 )(implicit ec: ExecutionContext)
     extends CdsController(mcc) {
 
@@ -212,12 +214,11 @@ class SubscriptionRecoveryController @Inject() (
   private def completeEnrolment(service: Service, subscriptionInformation: SubscriptionInformation)(
     redirect: => Result
   )(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[Result] =
-    for {
+    (for {
       // Update Recovered Subscription Information
       _ <- updateSubscription(subscriptionInformation)
       // Update Email
-      _ <- if (service.enrolmentKey == Service.cds.enrolmentKey) updateEmail(subscriptionInformation)
-      else Future.successful(None)
+      _ <- updateEmail(subscriptionInformation, service)
       // Subscribe Call for enrolment
       _ <- subscribe(service, subscriptionInformation)
       // Issuer Call for enrolment
@@ -225,17 +226,22 @@ class SubscriptionRecoveryController @Inject() (
     } yield res match {
       case NO_CONTENT => redirect
       case _          => throw new IllegalArgumentException("Tax Enrolment issuer call failed")
+    }) recover {
+      case UpdateEmailRetryException => Ok(emailErrorPage(service))
     }
 
-  private def updateEmail(
-    subscriptionInformation: SubscriptionInformation
-  )(implicit hc: HeaderCarrier): Future[Option[Boolean]] =
-    updateVerifiedEmailService
-      .updateVerifiedEmail(newEmail = subscriptionInformation.email, eori = subscriptionInformation.eori.id)
-      .map {
-        case Right(_)    => Some(true)
-        case Left(error) => throw new Exception(s"UpdateEmail failed with status: ${error.message}")
-      }
+  private def updateEmail(subscriptionInformation: SubscriptionInformation, service: Service)(implicit
+    hc: HeaderCarrier
+  ): Future[Boolean] =
+    if (service.enrolmentKey == Service.cds.enrolmentKey)
+      updateVerifiedEmailService
+        .updateVerifiedEmail(newEmail = subscriptionInformation.email, eori = subscriptionInformation.eori.id)
+        .flatMap {
+          case Right(_)                  => Future.successful(true)
+          case Left(UpdateEmailError(_)) => Future.failed(UpdateEmailRetryException)
+          case Left(error)               => Future.failed(new Exception(s"UpdateEmail failed with status: ${error.message}"))
+        }
+    else Future.successful(false)
 
   private def updateSubscription(subscriptionInformation: SubscriptionInformation)(implicit request: Request[_]) =
     sessionCache.saveSub02Outcome(
@@ -294,3 +300,6 @@ class SubscriptionRecoveryController @Inject() (
   case class MissingDateException(msg: String = "Missing date of enrolment or birth") extends Exception(msg)
 
 }
+
+case object UpdateEmailRetryException
+    extends Exception("Email update failed due to a downstream batch process. User can retry later.")

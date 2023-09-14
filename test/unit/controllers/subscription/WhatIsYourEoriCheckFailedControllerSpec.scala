@@ -16,14 +16,18 @@
 
 package unit.controllers.subscription
 
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.http.Status._
+import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.WhatIsYourEoriCheckFailedController
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.what_is_your_eori_check_failed
@@ -41,6 +45,8 @@ class WhatIsYourEoriCheckFailedControllerSpec extends ControllerSpec with AuthAc
   private val mockAuthAction                 = authAction(mockAuthConnector)
   private val mockSubscriptionDetailsService = mock[SubscriptionDetailsService]
   private val whatIsYourEoriCheckFailedView  = mock[what_is_your_eori_check_failed]
+
+  private val view = instanceOf[what_is_your_eori_check_failed]
 
   private val controller = new WhatIsYourEoriCheckFailedController(
     mockAuthAction,
@@ -90,4 +96,57 @@ class WhatIsYourEoriCheckFailedControllerSpec extends ControllerSpec with AuthAc
       caught.message shouldBe "Eori is not cached"
     }
   }
+
+  "what_is_your_eori_check_failed " should {
+
+    def doc(service: Service = atarService): Document =
+      Jsoup.parse(contentAsString(view(eori, service)(getRequest, messages)))
+
+    "have the correct title " in {
+      doc().title() should startWith(messages("ecc.subscription.eori-number-invalid"))
+    }
+
+    "display correct heading" in {
+      doc().body.getElementById("heading").text() should startWith(messages("ecc.subscription.eori-number-invalid"))
+    }
+    "have the correct class on the h1" in {
+      doc().body.getElementsByTag("h1").hasClass("govuk-heading-l") shouldBe true
+    }
+
+    "have correct first paragraph" in {
+      doc().body().getElementById("rejected-para1").text should startWith(
+        messages("ecc.subscription.eori-number-invalid.entered")
+      )
+    }
+    "have the correct h2 for company" in {
+      doc().body.getElementById("eori-number").text should startWith(eori)
+    }
+
+    "have the correct h2 for corporation" in {
+      doc().body.getElementById("invalid-reason").text should startWith(
+        messages("ecc.subscription.eori-number-invalid-reasons-title")
+      )
+    }
+    "have the correct para 3 " in {
+      doc().body.getElementById("eori-number-invalid").text should startWith(
+        messages("ecc.subscription.eori-number-invalid-not-correct-title")
+      )
+    }
+
+    "have correct contact us heading" in {
+      doc().body.getElementById("eori-number-invalid-title").text should startWith(
+        messages("ecc.subscription.eori-number-invalid-not-activated-title")
+      )
+    }
+
+    "have a no feedback 'continue' button when config missing" in {
+      val link = doc(atarService.copy(feedbackUrl = None)).body.getElementById("feedback-continue")
+      link shouldBe null
+    }
+    "display continue button when callBack URL exists" in {
+      doc().body.getElementById("continue-button").text should startWith("Try Again")
+    }
+
+  }
+
 }
