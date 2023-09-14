@@ -1372,3 +1372,7 @@ ecc.address-lookup.postcode.hint.individual=Nodwch yr un cod post â’r un a dd
 lockedEmail.heading = Rydych wedi nodi cod anghywir gormod o weithiau
 lockedEmail.para1 = Ni fyddwch yn gallu mynd yn eich blaen â’ch cais.
 lockedEmail.para2 = Gallwch roi cynnig arall arni ymhen 24 awr.
+
+# ROSM redirect screen where an EORI exists
+cds.eori-exists-rosm.title = Mae gennych rif EORI eisoes
+cds.eori-exists-rosm.heading = Mae gennych rif EORI eisoes
