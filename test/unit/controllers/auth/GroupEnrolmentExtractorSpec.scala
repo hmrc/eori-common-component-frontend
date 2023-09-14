@@ -35,8 +35,7 @@ class GroupEnrolmentExtractorSpec extends UnitSpec with MockitoSugar with Before
 
   private val enrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
 
-  private val enrolmentResponse     = EnrolmentResponse("HMRC-CUS-ORG", "ACTIVATED", List.empty)
-  private val atarEnrolmentResponse = EnrolmentResponse("HMRC-ATAR-ORG", "ACTIVATED", List.empty)
+  private val enrolmentResponse = EnrolmentResponse("HMRC-CUS-ORG", "ACTIVATED", List.empty)
 
   private val hc = HeaderCarrier()
 

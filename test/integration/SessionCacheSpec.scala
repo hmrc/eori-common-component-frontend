@@ -32,7 +32,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{CachedData, DataUnavailableException, SessionCache}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.mongo.CurrentTimestampSupport
-import uk.gov.hmrc.mongo.cache.{CacheItem, DataKey}
+import uk.gov.hmrc.mongo.cache.DataKey
 import util.builders.RegistrationDetailsBuilder._
 import uk.gov.hmrc.mongo.test.MongoSupport
 
@@ -207,7 +207,9 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
 
       await(sessionCache.saveSubmissionCompleteDetails(submissionCompleteData)(request))
 
-      val cachePreUpdate = await(sessionCache.cacheRepo.findById(request))
+      val cachePreUpdateItem = await(sessionCache.cacheRepo.findById(request)).getOrElse(
+        throw new IllegalStateException("Cache returned None")
+      )
 
       val expectedJsonPreUpdate = toJson(
         CachedData(
@@ -216,12 +218,13 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
         )
       )
 
-      val Some(CacheItem(_, jsonPreUpdate, _, _)) = cachePreUpdate
-      jsonPreUpdate mustBe expectedJsonPreUpdate
+      cachePreUpdateItem.data mustBe expectedJsonPreUpdate
 
       await(sessionCache.saveRegisterWithEoriAndIdResponse(rd)(request))
 
-      val cache = await(sessionCache.cacheRepo.findById(request))
+      val cacheItem = await(sessionCache.cacheRepo.findById(request)).getOrElse(
+        throw new IllegalStateException("Cache returned None")
+      )
 
       val expectedJson = toJson(
         CachedData(
@@ -230,8 +233,8 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
             Some(SubmissionCompleteData(Some(subscriptionDetails), Some(rd.responseCommon.processingDate)))
         )
       )
-      val Some(CacheItem(_, json, _, _)) = cache
-      json mustBe expectedJson
+
+      cacheItem.data mustBe expectedJson
 
       await(sessionCache.registerWithEoriAndIdResponse(request)) mustBe rd
 
