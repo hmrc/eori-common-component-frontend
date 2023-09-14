@@ -222,9 +222,7 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
 
       await(sessionCache.saveRegisterWithEoriAndIdResponse(rd)(request))
 
-      val cacheItem = await(sessionCache.cacheRepo.findById(request)).getOrElse(
-        throw new IllegalStateException("Cache returned None")
-      )
+      val cacheItem = await(sessionCache.cacheRepo.findById(request))
 
       val expectedJson = toJson(
         CachedData(
@@ -234,7 +232,7 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
         )
       )
 
-      cacheItem.data mustBe expectedJson
+      cacheItem.map(_.data) mustBe Some(expectedJson)
 
       await(sessionCache.registerWithEoriAndIdResponse(request)) mustBe rd
 
@@ -248,13 +246,11 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
 
       await(sessionCache.saveAddressLookupParams(addressLookupParams)(request))
 
-      val cache = await(sessionCache.cacheRepo.findById(request)).getOrElse(
-        throw new IllegalStateException("Cache returned None")
-      )
+      val cache = await(sessionCache.cacheRepo.findById(request))
 
       val expectedJson = toJson(CachedData(addressLookupParams = Some(addressLookupParams)))
 
-      cache.data mustBe expectedJson
+      cache.map(_.data) mustBe Some(expectedJson)
     }
     "store and fetch group enrolment correctly" in {
 
