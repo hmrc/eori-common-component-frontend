@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,20 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package common.pages.subscription
+@this(link: helpers.link)
 
-import common.pages.WebPage
+@(
+        text: String,
+        href: String,
+        id: Option[String] = None,
+        classes: String = "govuk-link",
+        preText: Option[String] = None,
+        postText: Option[String] = None
+)
 
-trait ApplicationUnsuccessfulPage extends WebPage {
-
-  override val title = "Some details you entered do not match our records"
-}
-
-object ApplicationPendingPage extends WebPage {
-
-  override val title = "We need to make more checks on your application"
-}
-
-object ApplicationUnsuccessfulPage extends ApplicationUnsuccessfulPage
+<p class="govuk-body">
+ @preText
+ @link(text, href, id, classes)
+ @postText
+</p>

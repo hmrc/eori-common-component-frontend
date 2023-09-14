@@ -11,7 +11,12 @@ cds.navigation.save-and-review=Cadw ac adolygu
 cds.navigation.opens-in-new-tab=(yn agor tab newydd)
 cds.navigation.opens-new-page=Gallwch
 cds.navigation.find-utr-link=https://www.gov.uk/dod-o-hyd-i-utr-sydd-ar-goll
-cds.navigation.find-lost-utr=ddod o hyd i UTR sydd ar goll (yn agor tab newydd)
+
+cds.navigation.find-lost-utr=ddod o hyd i UTR coll (yn agor tab newydd).
+cds.navigation.hmrc.online-services = ngwasanaethau ar-lein CThEF
+
+cds.navigation.contact-us = Cysylltwch â ni
+
 cds.error.page-title=Gwall
 cds.error.mandatory.field=Mae angen llenwi’r maes hwn
 cds.error.invalid.date.format=Nodwch ddyddiad dilys, er enghraifft “31 3 1980’’
@@ -383,7 +388,8 @@ cds.company.name.label=Enw’r cwmni
 cds.partnership.name.label=Enw’r bartneriaeth gofrestredig
 cds.nino.label=Rhif Yswiriant Gwladol
 cds.utr.label=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad
-cds.company.utr.label=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth
+cds.utr.label.fail.partnership = Gyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad
+cds.company.utr.label=Rhif Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth
 cds.partnership-utr.label=Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad y Bartneriaeth
 subscription.check-your-details.utrnumber.individual=Rhif Cyfeirnod Unigryw y Trethdalwr (UTR)
 subscription.check-your-details.contactpreference=Dewisiadau cyswllt
@@ -971,6 +977,44 @@ cds.subscription.outcomes.in-processing.sub-title=Mae’ch cais wrthi’n cael e
 cds.subscription.outcomes.in-processing.why-steps.1=Mae’ch cofrestriad wrthi’n cael ei brosesu ond nid yw wedi’i gwblhau eto.
 cds.subscription.outcomes.in-processing.next-steps.1=Cewch e-bost unwaith y bydd eich cais wedi’i brosesu.
 cds.subscription.outcomes.rejected.title=EORI wedi’i wrthod
+
+cds.subscription.outcomes.rejected.title.with.utr =Nid yw rhai o’r manylion a nodwyd gennych yn cyd-fynd â’n cofnodion
+cds.subscription.outcomes.rejected.title.without.utr.org = Nid yw enw’r sefydliad yr ydych wedi’i nodi yn cyd-fynd â’n cofnodion
+cds.subscription.outcomes.rejected.title.without.utr = Nid yw’r enw yr ydych wedi’i nodi yn cyd-fynd â’n cofnodion
+cds.subscription.outcomes.rejected.para1 =Dilynwch yr arweiniad hwn a rhowch gynnig arall arni.
+cds.subscription.outcomes.rejected.para2.partnership = Gwiriwch fod hwn yn cyd-fynd â’r enw sydd wedi’i gofrestru gyda CThEF.
+cds.subscription.outcomes.rejected.para2.partnership.pre-text = Gallwch ddod o hyd i hyn yng
+cds.subscription.outcomes.rejected.para2.partnership.post-text = neu ar lythyrau oddi wrth CThEF.
+
+
+
+cds.subscription.outcomes.rejected.heading2.company = Enw’r cwmni
+cds.subscription.outcomes.rejected.heading2.llp = Enw’r bartneriaeth
+cds.subscription.outcomes.rejected.heading2.organisation = Enw’r sefydliad
+cds.subscription.outcomes.rejected.heading2.sole = Eich enw
+cds.subscription.outcomes.rejected.heading-h3.organisation = Ar gyfer elusennau a sefydliadau nid er elw
+
+
+cds.subscription.outcomes.rejected.para2 = Gwiriwch fod hwn yn cyd-fynd â’r enw o
+cds.subscription.outcomes.rejected.para2.link = gofrestr Tŷ’r Cwmnïau (yn agor tab newydd).
+cds.subscription.outcomes.rejected.para2.sole = Gwiriwch fod hwn yn cyd-fynd â’r enw a ddefnyddioch yn eich cais am rif EORI.
+
+
+cds.subscription.outcomes.rejected.heading3.corporation =Cyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Treth Gorfforaeth
+cds.subscription.outcomes.rejected.heading3.sole = Os gwnaethoch nodi Gyfeirnod Unigryw y Trethdalwr (UTR) ar gyfer Hunanasesiad
+
+cds.subscription.outcomes.rejected.para3 =Gwiriwch fod hwn yn cyd-fynd â’r UTR ar ffurflenni treth y cwmni a llythyrau eraill am dreth.
+cds.subscription.outcomes.rejected.para3.llp = Gwiriwch fod hwn yn cyd-fynd â’r UTR ar ffurflenni treth y bartneriaeth a llythyrau eraill am dreth.
+cds.subscription.outcomes.rejected.para3.organisation = Gwiriwch fod hwn yn cyd-fynd â’r UTR ar ffurflenni treth y sefydliad a llythyrau eraill am dreth.
+cds.subscription.outcomes.rejected.para3.sole = Gwiriwch fod hwn yn cyd-fynd â’r rhif ar eich Ffurflenni Treth a llythyrau eraill ynghylch Hunanasesiad Efallai y cyfeirir ato gan ddefnyddio’r geiriau ‘cyfeirnod’, ‘UTR’ neu ‘defnydd swyddogol’.
+cds.subscription.outcomes.rejected.para3.nino = Gwiriwch fod hwn yn cyd-fynd â’r rhif ar eich cerdyn Yswiriant Gwladol, llythyr ynghylch budd-daliadau, slip cyflog neu P60.
+
+
+cds.subscription.outcomes.rejected.heading4 = Beth i’w wneud os ydych yn parhau i gael y neges hon
+cds.subscription.outcomes.rejected.heading4.nino = Os gwnaethoch nodi rif Yswiriant Gwladol
+
+
+
 cds.subscription.outcomes.rejected.heading=Cofrestriad wedi’i wrthod
 cds.subscription.outcomes.rejected.title-and-heading=Mae’r cofrestriad ar gyfer {0} wedi bod yn aflwyddiannus
 cds.subscription.outcomes.rejected.sub-title=Mae’ch cofrestriad Tollau wedi’i wrthod.
@@ -1075,7 +1119,7 @@ cds.subscription.name-id-details.utr.label=Rhif Cyfeirnod Unigryw y Trethdalwr (
 cds.enter-address-details.organisation.title-and-heading=Nodwch gyfeiriad eich sefydliad
 cds.enter-address-details.individual.title-and-heading=Nodwch eich cyfeiriad
 cds.enter-address-details.partnership.title-and-heading=Nodwch gyfeiriad eich partneriaeth
-cds.enter-address-details.company.title-and-heading=Nodwch gyfeiriad cofrestredig llawn eich cwmni
+cds.enter-address-details.company.title-and-heading=Nodwch gyfeiriad eich cwmni
 cds.subscription.address-details.street.label=Cyfeiriad - llinell 1
 cds.subscription.address-details.city.label=Tref neu ddinas
 cds.subscription.address-details.postcode.label=Cod post
@@ -1313,7 +1357,7 @@ cds.subscription.outcomes.steps.next.new.ivd = <li>gwneud cais am ad-daliad o do
 cds.subscription.outcomes.steps.next.new.ndrc = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'''r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
 
 ecc.address-lookup.postcode.hint.link = <p class="govuk-body">Gallwch ddod o hyd i hwn ar gofrestr <a href="https://beta.companieshouse.gov.uk/" target="_blank">Tŷ’r Cwmnïau (yn agor tab newydd).</a></p>
-ecc.address-lookup.postcode.hint.partnership.link = <p class="govuk-body">Dyma’r cyfeiriad sydd wedi’i gofrestru gyda CThEF. Gallwch ddod o hyd i hyn yng <a href="https://www.gov.uk/log-in-register-hmrc-online-services" target="_blank">ngwasanaethau ar-lein CThEF (yn agor tab newydd)</a> neu ar lythyrau oddi wrth CThEF.</p>
+ecc.address-lookup.postcode.hint.partnership.link = <p class="govuk-body">Dyma’r enw sydd wedi’i gofrestru gyda CThEF. Gallwch ddod o hyd i hyn yng <a href="https://www.gov.uk/log-in-register-hmrc-online-services" target="_blank">ngwasanaethau ar-lein CThEF (yn agor tab newydd)</a> neu ar lythyrau oddi wrth CThEF.</p>
 
 ecc.address-lookup.postcode.hint.company = <p class="govuk-body">Byddwn yn defnyddio hyn i gadarnhau pwy ydych. Gallwch gael y cod post hwn o <a href="https://beta.companieshouse.gov.uk/" target="_blank">gofrestr Tŷ’r Cwmnïau (yn agor tab newydd).</a></p> Nodwch y cod post sydd ar dystysgrif ymgorffori’r cwmni.
 ecc.address-lookup.postcode.hint.llp =  <p class="govuk-body">Byddwn yn defnyddio hyn i gadarnhau pwy ydych. Gallwch gael y cod post hwn o <a href="https://beta.companieshouse.gov.uk/" target="_blank">gofrestr Tŷ’r Cwmnïau (yn agor tab newydd).</a></p> Nodwch y cod post sydd ar dystysgrif ymgorffori’r bartneriaeth.

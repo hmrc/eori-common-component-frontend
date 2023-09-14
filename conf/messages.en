@@ -11,7 +11,11 @@ cds.navigation.save-and-review=Save and review
 cds.navigation.opens-in-new-tab=(opens in new tab)
 cds.navigation.opens-new-page=You can
 cds.navigation.find-utr-link=https://www.gov.uk/find-utr-number
-cds.navigation.find-lost-utr=find a lost UTR (opens in new tab)
+
+cds.navigation.find-lost-utr=find a lost UTR (opens in a new tab)
+cds.navigation.hmrc.online-services =  HMRC online services
+cds.navigation.contact-us= Contact us
+
 cds.error.page-title=Error
 cds.error.mandatory.field=This field is required
 cds.error.invalid.date.format=Please enter a valid date, for example ''31 3 1980''
@@ -414,6 +418,7 @@ cds.company.name.label=Company name
 cds.partnership.name.label=Registered partnership name
 cds.nino.label=National Insurance number
 cds.utr.label=Self Assessment Unique Taxpayer Reference (UTR)
+cds.utr.label.fail.partnership = Self Assessment Unique Taxpayer Reference (UTR)
 cds.company.utr.label=Corporation Tax UTR
 cds.partnership-utr.label=Partnership Self Assessment UTR
 
@@ -1095,6 +1100,37 @@ cds.subscription.outcomes.inprocessing.we-are-processing=We are processing your 
 cds.subscription.outcomes.in-processing.sub-title=Your application is being processed
 cds.subscription.outcomes.in-processing.why-steps.1=Your registration is processing but not yet complete.
 cds.subscription.outcomes.in-processing.next-steps.1=You will receive an email once your application has been processed.
+cds.subscription.outcomes.rejected.title.with.utr = Some details you entered do not match our records
+cds.subscription.outcomes.rejected.title.without.utr.org = The organisation name you entered does not match our records
+cds.subscription.outcomes.rejected.title.without.utr = The name you entered does not match our records
+cds.subscription.outcomes.rejected.heading2.company = Company name
+cds.subscription.outcomes.rejected.heading2.llp = Partnership name
+cds.subscription.outcomes.rejected.heading2.organisation = Organisation name
+cds.subscription.outcomes.rejected.heading2.sole = Your name
+cds.subscription.outcomes.rejected.heading-h3.organisation = For charities and not for profit organisations
+
+
+cds.subscription.outcomes.rejected.heading3.corporation = Corporation Tax Unique Taxpayer Reference (UTR)
+cds.subscription.outcomes.rejected.heading3.sole = If you entered a Self Assessment Unique Taxpayer Reference (UTR)
+
+cds.subscription.outcomes.rejected.heading4 = What to do if you keep getting this message
+cds.subscription.outcomes.rejected.heading4.nino = If you entered a National Insurance number
+
+
+cds.subscription.outcomes.rejected.para1 = Follow this guidance and try again.
+cds.subscription.outcomes.rejected.para2 = Check this matches the name on the
+cds.subscription.outcomes.rejected.para2.partnership = Check this matches the name registered with HMRC.
+cds.subscription.outcomes.rejected.para2.partnership.pre-text = You can find this in
+cds.subscription.outcomes.rejected.para2.partnership.post-text = or in letters from HMRC.
+
+cds.subscription.outcomes.rejected.para2.sole = Check this matches the name you used in your application for an EORI number.
+cds.subscription.outcomes.rejected.para2.link =  Companies House register (opens in new tab).
+cds.subscription.outcomes.rejected.para3 = Check this matches the UTR on the company’s tax returns and other letters about tax.
+cds.subscription.outcomes.rejected.para3.llp = Check this matches the UTR on the partnership’s tax returns and other letters about tax.
+cds.subscription.outcomes.rejected.para3.organisation = Check this matches the UTR on the organisation’s tax returns and other letters about tax.
+cds.subscription.outcomes.rejected.para3.sole = Check this matches the number on your tax returns and other letters about Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’.
+cds.subscription.outcomes.rejected.para3.nino = Check this matches the number on your National Insurance card, benefit letters, payslip or P60.
+
 cds.subscription.outcomes.rejected.title=EORI rejected
 cds.subscription.outcomes.rejected.heading=Registration rejected
 cds.subscription.outcomes.rejected.title-and-heading=The application for {0} has been unsuccessful
