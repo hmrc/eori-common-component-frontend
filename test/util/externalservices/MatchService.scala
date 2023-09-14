@@ -17,8 +17,6 @@
 package util.externalservices
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import com.github.tomakehurst.wiremock.matching.UrlPattern
-import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.mvc.Http.HeaderNames.CONTENT_TYPE
 import play.mvc.Http.MimeTypes.JSON
 import play.mvc.Http.Status._
