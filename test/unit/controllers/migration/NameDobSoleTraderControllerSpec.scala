@@ -39,7 +39,7 @@ import unit.controllers.subscription.SubscriptionFlowSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.SessionBuilder
 
-import java.time.{LocalDate, Year}
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

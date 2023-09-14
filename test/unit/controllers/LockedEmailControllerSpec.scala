@@ -24,8 +24,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.locked_email_vi
 import util.ControllerSpec
 import util.builders.AuthActionMock
 import util.builders.AuthBuilder._
+
 import play.api.mvc.MessagesControllerComponents
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, Service, SubscribeJourney}
+
 import util.builders.SessionBuilder
 
 class LockedEmailControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {

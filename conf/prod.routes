@@ -112,7 +112,7 @@ POST        /customs-enrolment-services/:service/subscribe/:subscribeJourney/mat
 
 GET         /customs-enrolment-services/:service/subscribe/complete                           @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.Sub02Controller.migrationEnd(service: Service)
 GET         /customs-enrolment-services/:service/subscribe/pending                            @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController.pending(service: Service)
-GET         /customs-enrolment-services/:service/subscribe/unsuccessful/:date                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController.fail(service: Service, date)
+GET         /customs-enrolment-services/:service/subscribe/unsuccessful                       @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController.fail(service: Service)
 GET         /customs-enrolment-services/:service/subscribe/processing                         @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController.processing(service: Service)
 GET         /customs-enrolment-services/:service/subscribe/status-rejected                    @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController.rejected(service: Service)
 GET         /customs-enrolment-services/:service/subscribe/eori-already-linked                @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.RegisterWithEoriAndIdController.eoriAlreadyLinked(service: Service)
