@@ -16,7 +16,6 @@
 
 @import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 @import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries._
-@import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName._
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcReportTechnicalIssue
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcTimeoutDialog
 @import uk.gov.hmrc.hmrcfrontend.views.Aliases.TimeoutDialog
@@ -30,13 +29,19 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.Cy
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.En
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcLanguageSelectHelper
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcAccessibleAutocompleteCss
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcAccessibleAutocompleteJavascript
+
 @this(hmrcLayout: HmrcLayout,
         standardBetaBanner: StandardBetaBanner,
         govukBackLink: GovukBackLink,
         appConfig: AppConfig,
         reportAProblemLink: HmrcReportTechnicalIssue,
         hmrcTimeoutDialog: HmrcTimeoutDialog,
-        hmrcLanguageSelectHelper: HmrcLanguageSelectHelper)
+        hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
+        autocompleteCss: HmrcAccessibleAutocompleteCss,
+        autocompleteJavascript: HmrcAccessibleAutocompleteJavascript
+)
 
 @(
         title: String,
@@ -44,7 +49,8 @@
         form: Option[Form[_]] = None,
         suppressTelephoneNumberDetection: Boolean = true,
         displayBackLink: Boolean = true,
-        userResearchBanner: Boolean = true
+        userResearchBanner: Boolean = true,
+        service: Service
 )(content: Html)(implicit messages: Messages, request: Request[_])
 
 @isLoggedIn = @{
@@ -87,28 +93,28 @@
 
 @theHead = {
 
-<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("css/application.css")" type="text/css">
+    @autocompleteCss()
+    <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("css/application.css")" type="text/css">
 
-@if(suppressTelephoneNumberDetection) {
-    <meta name="format-detection" content="telephone=no" />
-}
+    @if(suppressTelephoneNumberDetection) {
+        <meta name="format-detection" content="telephone=no" />
+    }
 
-@if(isLoggedIn) {
+    @if(isLoggedIn) {
 
 
-    @hmrcTimeoutDialog(TimeoutDialog(
-        title = Some(" "),
-        timeout = Some(1200),
-        countdown = Some(300),
-        keepAliveUrl = Some(keepAliveUrl),
-        signOutUrl = Some(logOutUrl),
-        timeoutUrl = Some(signOutUrl),
-        keepAliveButtonText = Some(messages("cds.timeout.keep-alive-button")),
-        signOutButtonText = Some(messages("cds.timeout.sign-out-button")),
-        message = Some(messages("cds.timeout.message"))
-    ))
-}
-@partials.countrypickerscript(countriesInCountryPicker)
+        @hmrcTimeoutDialog(TimeoutDialog(
+            title = Some(" "),
+            timeout = Some(1200),
+            countdown = Some(300),
+            keepAliveUrl = Some(keepAliveUrl),
+            signOutUrl = Some(logOutUrl),
+            timeoutUrl = Some(signOutUrl),
+            keepAliveButtonText = Some(messages("cds.timeout.keep-alive-button")),
+            signOutButtonText = Some(messages("cds.timeout.sign-out-button")),
+            message = Some(messages("cds.timeout.message"))
+        ))
+    }
 
 }
 
@@ -127,11 +133,8 @@
 
 @scripts = {
     <script @{CSPNonce.attr} src="@routes.Assets.versioned("javascripts/backLink.js")"></script>
-    <script @{CSPNonce.attr} src="@routes.Assets.versioned("javascripts/location-autocomplete.min.js")"></script>
-
-    @if(countriesInCountryPicker != NoCountriesInCountryPicker){
-        <script @{CSPNonce.attr} src='@controllers.routes.Assets.versioned("javascripts/country-picker.js")' type="text/javascript"></script>
-    }
+    <script @{CSPNonce.attr} src="@routes.Assets.versioned("javascripts/autocomplete.js")"></script>
+    @autocompleteJavascript()
 }
 
 @hmrcLayout(

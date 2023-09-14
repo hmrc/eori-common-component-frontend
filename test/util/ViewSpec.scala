@@ -52,4 +52,5 @@ trait CSRFTest {
     CSRFTokenHelper.addCSRFToken(fakeRequest)
 
   val fakeAtarSubscribeRequest = FakeRequest("GET", "/atar/subscribe")
+  val defaultLangFakeRequest   = FakeRequest("GET", "/atar/subscribe").withTransientLang(defaultLang)
 }

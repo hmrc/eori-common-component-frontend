@@ -43,7 +43,6 @@ import util.builders.{AuthActionMock, SessionBuilder}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-// TODO Move view spec to separate test and keep here only controller logic test
 class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
 
   private val mockAuthConnector              = mock[AuthConnector]
@@ -166,6 +165,28 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
           status(result) shouldBe SEE_OTHER
           result.header.headers(LOCATION) shouldBe page.url(atarService)
         }
+      }
+      s"thrown IllegalStateException  '$option' when unable to save " in {
+        when(
+          mockRegistrationDetailsService
+            .initialiseCacheWithRegistrationDetails(any[CdsOrganisationType]())(any[Request[AnyContent]]())
+        ).thenReturn(Future.successful(false))
+        val updatedMockSession =
+          Session(Map()) + (RequestSessionDataKeys.selectedOrganisationType -> CdsOrganisationType.CompanyId)
+        when(mockRequestSessionData.sessionWithOrganisationTypeAdded(any(), any())).thenReturn(updatedMockSession)
+
+        when(
+          mockSubscriptionFlowManager
+            .startSubscriptionFlow(any(), any(), any())(any())
+        ).thenReturn(Future.successful((page, updatedMockSession)))
+
+        val caught = intercept[IllegalStateException] {
+          submitForm(Map("organisation-type" -> option)) { result =>
+            status(result)
+
+          }
+        }
+        caught.getMessage shouldBe s"Unable to save CdsOrganisationType($option) registration in cache"
       }
 
       s"store the correct organisation type when '$option' is selected for Subscription Journey" in {

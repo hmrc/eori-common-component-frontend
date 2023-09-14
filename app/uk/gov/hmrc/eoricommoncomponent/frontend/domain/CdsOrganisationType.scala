@@ -52,6 +52,8 @@ object CdsOrganisationType {
   val ThirdCountrySoleTrader: CdsOrganisationType   = CdsOrganisationType(ThirdCountrySoleTraderId)
   val ThirdCountryIndividual: CdsOrganisationType   = CdsOrganisationType(ThirdCountryIndividualId)
 
+  val rowOrganisationType = Seq(ThirdCountrySoleTrader, ThirdCountryIndividual)
+
   val validOrganisationTypes: Map[String, CdsOrganisationType] = Map(
     CompanyId                       -> Company,
     SoleTraderId                    -> SoleTrader,

@@ -23,31 +23,29 @@
 
 @(eori: String, service: Service)(implicit request: Request[_], messages: Messages)
 
-@layout_di(messages("ecc.subscription.eori-number-invalid")) {
+@layout_di(messages("ecc.subscription.eori-number-invalid"), service = service) {
     <div class="govuk-body">
-        <h1 class="govuk-heading-l">@messages("ecc.subscription.eori-number-invalid")</h1>
+        <h1 class="govuk-heading-l" id="heading">@messages("ecc.subscription.eori-number-invalid")</h1>
 
-        <p>@messages("ecc.subscription.eori-number-invalid.entered")</p>
-            <h2 class="govuk-heading-s">@eori</h2>
+        <p id="rejected-para1">@messages("ecc.subscription.eori-number-invalid.entered")</p>
+            <h2 class="govuk-heading-s" id="eori-number">@eori</h2>
             <p>@messages("ecc.subscription.eori-number-invalid.does-not-match")
             </p><br>
-            <h2 class="govuk-heading-m">@messages("ecc.subscription.eori-number-invalid-reasons-title")</h2>
+            <h2 class="govuk-heading-m" id="invalid-reason">@messages("ecc.subscription.eori-number-invalid-reasons-title")</h2>
             <br>
-            <h3 class="govuk-heading-s">@messages("ecc.subscription.eori-number-invalid-not-correct-title")</h3>
+            <h3 class="govuk-heading-s" id="eori-number-invalid">@messages("ecc.subscription.eori-number-invalid-not-correct-title")</h3>
             <p>@messages("ecc.subscription.eori-number-invalid-not-correct-body")
             </p>
-            <h3 class="govuk-heading-s">@messages("ecc.subscription.eori-number-invalid-not-activated-title")</h3>
+            <h3 class="govuk-heading-s" id="eori-number-invalid-title">@messages("ecc.subscription.eori-number-invalid-not-activated-title")</h3>
             <p>@messages("ecc.subscription.eori-number-invalid-not-activated-body", service.friendlyName)
             </p>
 
 
-        <br>
         @govukButton(Button(
             content = Text(messages("ecc.subscription.eori-number-invalid-try-again")),
             href =  Some(routes.WhatIsYourEoriController.createForm(service).url),
             id = Some("continue-button")
         ))
-            <br/>
 
         @help_di()
     </div>

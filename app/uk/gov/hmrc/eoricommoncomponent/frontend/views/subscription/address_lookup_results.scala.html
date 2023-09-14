@@ -59,7 +59,7 @@
     }
 }
 
-@layout_di(messages("ecc.address-lookup.postcode.title"), form = Some(addressResultsForm)) {
+@layout_di(messages("ecc.address-lookup.postcode.title"), form = Some(addressResultsForm), service = service) {
     <div>
 
         @errorSummary(addressResultsForm.errors)

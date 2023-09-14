@@ -16,22 +16,17 @@
 
 package unit.controllers
 
-import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
-import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.LockedEmailController
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{CdsSubscriber, SubscriptionDetailsService}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.locked_email_view
 import util.ControllerSpec
 import util.builders.AuthActionMock
 import util.builders.AuthBuilder._
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.MessagesControllerComponents
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, Service, SubscribeJourney}
-import scala.concurrent.ExecutionContext.global
+
 import util.builders.SessionBuilder
 
 class LockedEmailControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
@@ -55,9 +50,7 @@ class LockedEmailControllerSpec extends ControllerSpec with BeforeAndAfterEach w
 
       val service = Service.cds
 
-      val result = controller.onPageLoad(service, SubscribeJourney(AutoEnrolment)).apply(
-        SessionBuilder.buildRequestWithSession("user")
-      )
+      val result = controller.onPageLoad(service).apply(SessionBuilder.buildRequestWithSession("user"))
 
       status(result) shouldBe OK
       val page = CdsPage(contentAsString(result))

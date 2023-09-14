@@ -28,7 +28,7 @@
         <strong><span class="govuk-!-font-size-27" id="active-from">@messages("subscription.subscription-results.active-from") @dateFormatter.format(processedDate)</span></strong>
 }
 
-@layout_di(messages("cds.reg.existing.outcomes.success.heading.part1"), displayBackLink = false) {
+@layout_di(messages("cds.reg.existing.outcomes.success.heading.part1"), displayBackLink = false, service = service) {
     <div>
         @govukPanel(Panel(
             title = Text(messages("cds.reg.existing.outcomes.success.heading.part1")),

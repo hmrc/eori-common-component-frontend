@@ -29,7 +29,7 @@ service: Service)(implicit request: Request[_], messages: Messages)
     <a class="govuk-link" href="@ApplicationController.logout(service)">@messages("cds.subscribe.use-this-eori.signout")</a>
 }
 
-@layout_di(messages("cds.subscribe.use-this-eori.heading"), form = None) {
+@layout_di(messages("cds.subscribe.use-this-eori.heading"), form = None, service = service) {
 
     <div>
 

@@ -61,7 +61,7 @@
 <a class="govuk-link" href="@ApplicationController.startSubscription(service).url">@messages("ecc.reg06.outcome.apply.again.link")</a>
 }
 
-@layout_di(messages("ecc.reg06.outcome.id-already-linked.title"), suppressTelephoneNumberDetection = false, displayBackLink = false) {
+@layout_di(messages("ecc.reg06.outcome.id-already-linked.title"), suppressTelephoneNumberDetection = false, displayBackLink = false, service = service) {
 <div>
     <div>
         <h1 id="page-heading" class="govuk-heading-xl" >@messages("ecc.reg06.outcome.id-already-linked.heading")</h1>

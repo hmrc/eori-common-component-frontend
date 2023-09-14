@@ -62,7 +62,8 @@ class GetNinoSubscriptionController @Inject() (
           getNinoSubscriptionView(
             subscriptionNinoForm.fill(IdMatchModel(id)),
             isInReviewMode,
-            routes.GetNinoSubscriptionController.submit(isInReviewMode, service)
+            routes.GetNinoSubscriptionController.submit(isInReviewMode, service),
+            service
           )
         )
 
@@ -71,7 +72,8 @@ class GetNinoSubscriptionController @Inject() (
           getNinoSubscriptionView(
             subscriptionNinoForm,
             isInReviewMode,
-            routes.GetNinoSubscriptionController.submit(isInReviewMode, service)
+            routes.GetNinoSubscriptionController.submit(isInReviewMode, service),
+            service
           )
         )
     }
@@ -86,7 +88,8 @@ class GetNinoSubscriptionController @Inject() (
                 getNinoSubscriptionView(
                   formWithErrors,
                   isInReviewMode,
-                  routes.GetNinoSubscriptionController.submit(isInReviewMode, service)
+                  routes.GetNinoSubscriptionController.submit(isInReviewMode, service),
+                  service
                 )
               )
             ),

@@ -48,12 +48,12 @@ class YouCannotUseServiceController @Inject() (
   def page(service: Service): Action[AnyContent] = Action.async { implicit request =>
     authorised(AuthProviders(GovernmentGateway))
       .retrieve(affinityGroup) { ag =>
-        Future.successful(Unauthorized(youCantUseService(ag)))
+        Future.successful(Unauthorized(youCantUseService(ag, service)))
       } recover withAuthRecovery(request)
   }
 
   def unauthorisedPage(service: Service): Action[AnyContent] = Action { implicit request =>
-    Unauthorized(unauthorisedView())
+    Unauthorized(unauthorisedView(service))
   }
 
   def unableToUseIdPage(service: Service): Action[AnyContent] = authAction.enrolledUserWithSessionAction(service) {

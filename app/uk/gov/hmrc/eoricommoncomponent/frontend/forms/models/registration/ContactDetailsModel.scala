@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration
 
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.ContactInformation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel.trim
 
@@ -42,18 +41,6 @@ case class ContactDetailsModel(
     trim(city).getOrElse(""),
     trim(postcode),
     countryCode.getOrElse("")
-  )
-
-  def toRowContactInformation(): ContactInformation = ContactInformation(
-    personOfContact = Some(fullName),
-    sepCorrAddrIndicator = Some(false),
-    streetAndNumber = street,
-    city = city,
-    postalCode = postcode,
-    countryCode = countryCode,
-    telephoneNumber = Some(telephone),
-    faxNumber = None,
-    emailAddress = Some(emailAddress)
   )
 
 }

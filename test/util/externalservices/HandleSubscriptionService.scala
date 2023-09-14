@@ -17,11 +17,8 @@
 package util.externalservices
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import play.mvc.Http.Status.NO_CONTENT
 
 object HandleSubscriptionService {
-
-  private val handleSubscriptionUrl = "/handle-subscription"
 
   def returnHandleSubscriptionResponseWhenReceiveRequest(url: String, request: String, status: Int): Unit =
     stubFor(
