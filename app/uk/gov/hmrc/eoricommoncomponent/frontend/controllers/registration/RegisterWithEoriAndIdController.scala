@@ -203,7 +203,7 @@ class RegisterWithEoriAndIdController @Inject() (
         subscriptionDetails <- cache.subscriptionDetails
         orgType   = subscriptionDetails.formData.organisationType
         customsId = subscriptionDetails.customsId
-        _    <- cache.journeyCompleted
+        _ <- cache.journeyCompleted
       } yield {
         val isUk = requestSessionData.selectedUserLocation.forall(_ == UserLocation.Uk)
         val view = determineFailView(service, orgType, customsId.nonEmpty, isUk)
