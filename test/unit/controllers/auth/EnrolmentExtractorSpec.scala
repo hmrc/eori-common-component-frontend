@@ -26,8 +26,8 @@ class EnrolmentExtractorSpec extends UnitSpec {
 
   private val eori     = Eori("GB123456789012")
   private val gvmseori = Eori("GB123456789013")
-  private val utr      = Utr("1111111111K")
-  private val nino     = Nino("NINO")
+
+  private val nino = Nino("NINO")
 
   private def loggedInUser(enrolments: Set[Enrolment]) =
     LoggedInUserWithEnrolments(None, None, Enrolments(enrolments), None, None, "credId")
