@@ -102,32 +102,6 @@ class GroupEnrolmentExtractorSpec extends UnitSpec with MockitoSugar with Before
       }
     }
 
-    "calling checkAllEnrollments should return enrolmentResponse while" when {
-
-      "groupId has any Enrolment" in {
-
-        when(enrolmentStoreProxyService.checkAllEnrolmentsForGroup(any(), any())(any()))
-          .thenReturn(Future.successful(Some(atarEnrolmentResponse)))
-
-        val result = groupEnrolmentExtractor.checkAllServiceEnrolments("groupId")(hc)
-
-        result.futureValue shouldBe Some(atarEnrolmentResponse)
-      }
-
-      "return None" when {
-
-        "groupId doesn't have any enrolment" in {
-
-          when(enrolmentStoreProxyService.checkAllEnrolmentsForGroup(any(), any())(any()))
-            .thenReturn(Future.successful(None))
-
-          val result = groupEnrolmentExtractor.checkAllServiceEnrolments("groupId")(hc)
-
-          result.futureValue shouldBe None
-        }
-      }
-    }
-
     "return all group enrolments" when {
 
       "groupId has enrolments" in {

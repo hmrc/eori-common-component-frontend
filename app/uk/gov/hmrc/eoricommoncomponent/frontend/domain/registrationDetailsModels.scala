@@ -111,9 +111,6 @@ object RegistrationDetails {
       etmpOrganisationType
     )
 
-  def rdSafeId(safeId: SafeId): RegistrationDetailsSafeId =
-    RegistrationDetailsSafeId(safeId, Address("", Some(""), Some(""), Some(""), Some(""), ""), TaxPayerId(""), None, "")
-
   private val orgFormat                = Json.format[RegistrationDetailsOrganisation]
   private val individualFormat         = Json.format[RegistrationDetailsIndividual]
   private val registrationSafeIdFormat = Json.format[RegistrationDetailsSafeId]

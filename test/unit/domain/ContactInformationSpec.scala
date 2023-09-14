@@ -55,6 +55,34 @@ class ContactInformationSpec extends UnitSpec {
       contactInformationWithContactAddress.telephoneNumber shouldBe Some("01234123123")
 
     }
+    "creates contact info with telephone number empty " in {
+      val contactDetailsTest =
+        ContactDetailsModel(
+          "Full name",
+          "email",
+          "",
+          None,
+          useAddressFromRegistrationDetails = false,
+          Some("street"),
+          Some("city"),
+          Some("postCode"),
+          Some("countryCode")
+        )
+
+      val contactInformationWithContactAddress =
+        ContactInformation.apply(contactDetailsTest, Some(contactAddress))
+
+      contactInformationWithContactAddress.personOfContact shouldBe Some("Full name")
+      contactInformationWithContactAddress.emailAddress shouldBe Some("email")
+      contactInformationWithContactAddress.faxNumber shouldBe None
+      contactInformationWithContactAddress.sepCorrAddrIndicator shouldBe Some(true)
+      contactInformationWithContactAddress.streetAndNumber shouldBe Some("flat 20 street line 2")
+      contactInformationWithContactAddress.city shouldBe Some("city")
+      contactInformationWithContactAddress.postalCode shouldBe Some("HJ2 3HJ")
+      contactInformationWithContactAddress.countryCode shouldBe Some("FR")
+      contactInformationWithContactAddress.telephoneNumber shouldBe None
+
+    }
 
     "populate contact information from contact address and email" in {
       val contactDetailsTest = ContactDetails(
@@ -79,6 +107,22 @@ class ContactInformationSpec extends UnitSpec {
       contactInfo.telephoneNumber shouldBe Some("00000000000")
 
     }
+    "populate contact information from contact address and email where telephone is None" in {
+
+      val contactDetailsTest =
+        ContactDetails("fullName", "email@email.email", "", Some("fax"), "Street", "city", Some("postcode"), "UK")
+      val contactInfo = ContactInformation.createContactInformation(contactDetailsTest)
+      contactInfo.personOfContact shouldBe Some("fullName")
+      contactInfo.emailAddress shouldBe Some("email@email.email")
+      contactInfo.faxNumber shouldBe Some("fax")
+      contactInfo.sepCorrAddrIndicator shouldBe Some(true)
+      contactInfo.streetAndNumber shouldBe Some("Street")
+      contactInfo.city shouldBe Some("city")
+      contactInfo.postalCode shouldBe Some("postcode")
+      contactInfo.countryCode shouldBe Some("UK")
+      contactInfo.telephoneNumber shouldBe Some("")
+
+    }
 
     "populate None for address if contact address is None" in {
       contactInformationWithoutContactAddress.personOfContact shouldBe Some("Full name")
@@ -90,6 +134,32 @@ class ContactInformationSpec extends UnitSpec {
       contactInformationWithoutContactAddress.postalCode shouldBe None
       contactInformationWithoutContactAddress.countryCode shouldBe None
       contactInformationWithoutContactAddress.telephoneNumber shouldBe Some("01234123123")
+
+    }
+    "populate None for address if contact telephone is None" in {
+      val contactDetailsNoTell = ContactDetailsModel(
+        "Full name",
+        "email",
+        "",
+        None,
+        useAddressFromRegistrationDetails = false,
+        Some("street"),
+        Some("city"),
+        Some("postCode"),
+        Some("countryCode")
+      )
+      val contactInformationWithoutContactAddressNoTell =
+        ContactInformation.apply(contactDetailsNoTell, None)
+
+      contactInformationWithoutContactAddress.personOfContact shouldBe Some("Full name")
+      contactInformationWithoutContactAddress.emailAddress shouldBe Some("email")
+      contactInformationWithoutContactAddress.faxNumber shouldBe None
+      contactInformationWithoutContactAddress.sepCorrAddrIndicator shouldBe Some(false)
+      contactInformationWithoutContactAddress.streetAndNumber shouldBe None
+      contactInformationWithoutContactAddress.city shouldBe None
+      contactInformationWithoutContactAddress.postalCode shouldBe None
+      contactInformationWithoutContactAddress.countryCode shouldBe None
+      contactInformationWithoutContactAddressNoTell.telephoneNumber shouldBe None
 
     }
   }

@@ -37,14 +37,17 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   HandleSubscriptionService,
   SubscriptionDetailsService,
   TaxEnrolmentsService,
+  UpdateEmailError,
   UpdateVerifiedEmailService
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.error_template
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{email_error_template, error_template}
 import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.SubscriptionInfoBuilder._
 import util.builders.{AuthActionMock, SessionBuilder}
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.VerifiedEmailResponse.RequestCouldNotBeProcessed
+import unit.controllers.CdsPage
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
@@ -68,7 +71,8 @@ class SubscriptionRecoveryControllerSpec
   private val mockRequestSessionData                = mock[RequestSessionData]
   private val mockUpdateVerifiedEmailService        = mock[UpdateVerifiedEmailService]
 
-  private val errorTemplateView = instanceOf[error_template]
+  private val errorTemplateView      = instanceOf[error_template]
+  private val emailErrorTemplateView = instanceOf[email_error_template]
 
   private val controller = new SubscriptionRecoveryController(
     mockAuthAction,
@@ -81,7 +85,8 @@ class SubscriptionRecoveryControllerSpec
     mockRandomUUIDGenerator,
     mockRequestSessionData,
     mockSubscriptionDetailsService,
-    mockUpdateVerifiedEmailService
+    mockUpdateVerifiedEmailService,
+    emailErrorTemplateView
   )(global)
 
   def registerWithEoriAndIdResponseDetail: Option[RegisterWithEoriAndIdResponseDetail] = {
@@ -354,6 +359,30 @@ class SubscriptionRecoveryControllerSpec
       intercept[IllegalArgumentException] {
         await(controller.complete(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
       }
+    }
+
+    "display the email error page when the update email returns a 003 error " in {
+      setupMockCommon()
+      when(mockUpdateVerifiedEmailService.updateVerifiedEmail(any(), any(), any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Left(UpdateEmailError(RequestCouldNotBeProcessed))))
+      when(mockSubscriptionDetailsHolder.eoriNumber).thenReturn(Some("testEORInumber"))
+      when(mockSessionCache.registerWithEoriAndIdResponse(any[Request[AnyContent]]))
+        .thenReturn(Future.successful(mockRegisterWithEoriAndIdResponse))
+      when(mockRegisterWithEoriAndIdResponse.responseDetail).thenReturn(registerWithEoriAndIdResponseDetail)
+      when(
+        mockTaxEnrolmentsService
+          .issuerCall(anyString, any[Eori], any[Option[LocalDate]], any[Service])(any[HeaderCarrier])
+      ).thenReturn(Future.successful(NO_CONTENT))
+
+      callEnrolmentComplete(service = cdsService) { result =>
+        status(result) shouldBe OK
+        val page = new CdsPage(contentAsString(result))
+        page.h1() shouldBe messages("cds.email.error.title")
+      }
+
+      verify(mockUpdateVerifiedEmailService).updateVerifiedEmail(any(), meq("test@example.com"), meq("testEORInumber"))(
+        any[HeaderCarrier]
+      )
     }
   }
 
