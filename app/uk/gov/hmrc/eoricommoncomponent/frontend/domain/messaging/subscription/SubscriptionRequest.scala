@@ -21,6 +21,5 @@ import play.api.libs.json.Json
 case class SubscriptionRequest(subscriptionCreateRequest: SubscriptionCreateRequest)
 
 object SubscriptionRequest {
-  implicit val jsonFormat             = Json.format[SubscriptionRequest]
-  val principalEconomicActivityLength = 4
+  implicit val jsonFormat = Json.format[SubscriptionRequest]
 }

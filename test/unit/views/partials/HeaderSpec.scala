@@ -63,7 +63,6 @@ class HeaderSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterE
     when(groupEnrolmentExtractor.hasGroupIdEnrolmentTo(any(), any())(any())).thenReturn(Future.successful(false))
     when(groupEnrolmentExtractor.groupIdEnrolments(any())(any())).thenReturn(Future.successful(List.empty))
     when(groupEnrolmentExtractor.groupIdEnrolmentTo(any(), any())(any())).thenReturn(Future.successful(None))
-    when(groupEnrolmentExtractor.checkAllServiceEnrolments(any())(any())).thenReturn(Future.successful(None))
   }
 
   override protected def afterEach(): Unit = {

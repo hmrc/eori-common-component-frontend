@@ -17,31 +17,14 @@
 package unit.models.enrolmentRequest
 
 import base.UnitSpec
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.{ES1QueryType, ES1Request, ES1Response}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.{ES1QueryType, ES1Response}
 
 class ES1ModelsSpec extends UnitSpec {
 
   "ES1QueryType" should {
 
     "have a correct value for all types" in {
-
       ES1QueryType.All.value shouldBe "all"
-      ES1QueryType.Principal.value shouldBe "principal"
-      ES1QueryType.Delegated.value shouldBe "delegated"
-    }
-  }
-
-  "ES1Request" should {
-
-    "be successfully created with service, eori and query type" in {
-
-      val request = ES1Request(Service.withName("atar").get, "GB123456789123", ES1QueryType.Principal)
-
-      val expectedEnrolment = "HMRC-ATAR-ORG~EORINumber~GB123456789123"
-      val expectedRequest   = ES1Request(expectedEnrolment, ES1QueryType.Principal)
-
-      request shouldBe expectedRequest
     }
   }
 

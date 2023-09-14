@@ -23,10 +23,6 @@ sealed abstract class ES1QueryType(val value: String)
 
 object ES1QueryType {
   case object All extends ES1QueryType("all")
-
-  case object Principal extends ES1QueryType("principal")
-
-  case object Delegated extends ES1QueryType("delegated")
 }
 
 case class ES1Request(enrolment: String, queryType: ES1QueryType)
