@@ -31,13 +31,13 @@ class HasExistingEoriController @Inject() (
   existingEoriService: ExistingEoriService
 ) extends CdsController(mcc) {
 
-  def displayPage(service: Service): Action[AnyContent] = authAction.enrolledUserWithSessionAction(service) {
+  def displayPage(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
       existingEoriService.onDisplay(service)
   }
 
   def enrol(service: Service): Action[AnyContent] =
-    authAction.enrolledUserWithSessionAction(service) { implicit request => implicit user: LoggedInUserWithEnrolments =>
+    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
       existingEoriService.onEnrol(service)
     }
 
