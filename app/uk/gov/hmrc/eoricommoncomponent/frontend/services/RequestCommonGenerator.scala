@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services
 
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{RequestCommon, RequestParameter}
+
 import java.time.{Clock, LocalDateTime, ZoneId}
 import java.util.UUID
-
 import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{RequestCommon, RequestParameter}
 
 @Singleton
 class RequestCommonGenerator @Inject() (uuidGenerator: RandomUUIDGenerator, clock: UtcClock) {

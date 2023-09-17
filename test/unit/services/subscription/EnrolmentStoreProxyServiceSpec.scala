@@ -16,21 +16,15 @@
 
 package unit.services.subscription
 
-import play.api.test.Helpers._
 import base.UnitSpec
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.EnrolmentStoreProxyConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
-  EnrolmentResponse,
-  EnrolmentStoreProxyResponse,
-  ExistingEori,
-  GroupId,
-  KeyValue
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.ES1Response
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService

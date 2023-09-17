@@ -23,8 +23,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{IdMatchModel, NameDobMat
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm
 
-import java.time.{LocalDate, Year}
 import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, Year}
 import scala.collection.compat.immutable.ArraySeq
 import scala.util.Random
 

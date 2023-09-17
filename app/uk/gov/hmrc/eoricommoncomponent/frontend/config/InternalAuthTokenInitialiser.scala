@@ -16,13 +16,12 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.config
 
-import play.api.Logging
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.Done
-import play.api.Configuration
+import play.api.{Configuration, Logging}
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
-import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.Done
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}

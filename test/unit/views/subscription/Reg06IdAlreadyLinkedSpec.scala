@@ -20,11 +20,10 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
-
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.reg06_id_already_linked
 import util.ViewSpec
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 
 class Reg06IdAlreadyLinkedSpec extends ViewSpec {
 

@@ -16,7 +16,6 @@
 
 package unit.controllers.registration
 
-import java.time.{LocalDate, LocalDateTime}
 import org.mockito.ArgumentMatchers.{any, anyString, contains, matches, eq => meq}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -49,6 +48,7 @@ import util.builders.{AuthActionMock, SessionBuilder}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.VerifiedEmailResponse.RequestCouldNotBeProcessed
 import unit.controllers.CdsPage
 
+import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
@@ -174,7 +174,7 @@ class SubscriptionRecoveryControllerSpec
 
       callEnrolmentComplete() { result =>
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/subscribe/complete")
+        header(LOCATION, result).value shouldBe "/customs-enrolment-services/atar/subscribe/complete"
       }
 
       verify(mockTaxEnrolmentsService).issuerCall(
@@ -217,7 +217,7 @@ class SubscriptionRecoveryControllerSpec
 
       callEnrolmentComplete(service = cdsService) { result =>
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result) shouldBe Some("/customs-enrolment-services/cds/subscribe/complete")
+        header(LOCATION, result).value shouldBe "/customs-enrolment-services/cds/subscribe/complete"
       }
 
       verify(mockTaxEnrolmentsService).issuerCall(
@@ -263,7 +263,7 @@ class SubscriptionRecoveryControllerSpec
 
       callEnrolmentComplete() { result =>
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/subscribe/complete")
+        header(LOCATION, result).value shouldBe "/customs-enrolment-services/atar/subscribe/complete"
       }
       verify(mockTaxEnrolmentsService).issuerCall(
         contains(expectedFormBundleId),
@@ -303,7 +303,7 @@ class SubscriptionRecoveryControllerSpec
 
       callEnrolmentComplete() { result =>
         status(result) shouldBe SEE_OTHER
-        header(LOCATION, result) shouldBe Some("/customs-enrolment-services/atar/subscribe/complete")
+        header(LOCATION, result).value shouldBe "/customs-enrolment-services/atar/subscribe/complete"
       }
       verify(mockTaxEnrolmentsService).issuerCall(
         contains(expectedFormBundleId),

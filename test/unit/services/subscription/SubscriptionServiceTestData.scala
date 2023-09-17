@@ -17,8 +17,6 @@
 package unit.services.subscription
 
 import common.support.testdata.TestData
-
-import java.time.{LocalDate, LocalDateTime}
 import org.scalacheck.Gen
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import org.scalatest.prop.TableFor1
@@ -46,6 +44,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   SubscriptionSuccessful
 }
 import util.TestData
+
+import java.time.{LocalDate, LocalDateTime}
 
 trait SubscriptionServiceTestData extends TestData {
 

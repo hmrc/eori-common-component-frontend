@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.email
 
-import org.joda.time.{DateTime, DateTimeZone}
 import org.joda.time.format.ISODateTimeFormat
+import org.joda.time.{DateTime, DateTimeZone}
 import play.api.libs.json._
 
 import java.time.Clock

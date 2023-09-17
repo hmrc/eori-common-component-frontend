@@ -31,7 +31,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionDa
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Country
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.contact_address
-
 import unit.controllers.CdsPage
 import util.StringThings._
 import util.builders.AuthBuilder.withAuthorisedUser
@@ -99,8 +98,8 @@ class ContactAddressControllerSpec
   override def beforeEach(): Unit = {
     super.beforeEach()
 
-    when(mockSubscriptionBusinessService.contactAddress(any[Request[_]])).thenReturn(None)
-    when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[_]])).thenReturn(None)
+    when(mockSubscriptionBusinessService.contactAddress(any[Request[_]])).thenReturn(Future.successful(None))
+    when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[_]])).thenReturn(Future.successful(None))
     registerSaveDetailsMockSuccess()
     setupMockSubscriptionFlowManager(ContactAddressSubscriptionFlowPage)
   }

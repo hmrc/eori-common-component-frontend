@@ -17,10 +17,11 @@
 package unit.domain
 
 import base.UnitSpec
-import java.time.LocalDate
 import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.TaxEnrolmentsRequest._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{KeyValue, TaxEnrolmentsRequest}
+
+import java.time.LocalDate
 
 class TaxEnrolmentsRequestSpec extends UnitSpec {
   def expectedTaxEnrolmentsRequestJson(service: String) = Json.parse(s"""{

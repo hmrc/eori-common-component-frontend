@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
-import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.http.HeaderNames._
 import play.api.libs.json.Json
@@ -28,6 +27,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NotifyRcmReq
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.NotifyRcm
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.http.client.HttpClientV2
+
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 

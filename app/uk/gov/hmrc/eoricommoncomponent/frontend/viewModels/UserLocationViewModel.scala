@@ -19,8 +19,8 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.viewModels
 import play.api.i18n.Messages
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.userLocationForm
-import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 object UserLocationViewModel {
 

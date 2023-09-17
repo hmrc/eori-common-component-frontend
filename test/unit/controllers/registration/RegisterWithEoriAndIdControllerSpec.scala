@@ -211,7 +211,7 @@ class RegisterWithEoriAndIdControllerSpec
 
       regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe EnrolmentAlreadyExistsController
+        header(LOCATION, result).value shouldBe EnrolmentAlreadyExistsController
           .enrolmentAlreadyExistsForGroup(atarService)
           .url
       }
@@ -254,7 +254,7 @@ class RegisterWithEoriAndIdControllerSpec
 
       regExistingEori() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe Sub02Controller
+        header(LOCATION, result).value shouldBe Sub02Controller
           .migrationEnd(atarService)
           .url
       }
@@ -299,7 +299,7 @@ class RegisterWithEoriAndIdControllerSpec
         assertCleanedSession(result)
 
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe Sub02Controller
+        header(LOCATION, result).value shouldBe Sub02Controller
           .migrationEnd(atarService)
           .url
       }
@@ -343,7 +343,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe Sub02Controller
+        header(LOCATION, result).value shouldBe Sub02Controller
           .migrationEnd(atarService)
           .url
       }
@@ -391,7 +391,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe Sub02Controller
+        header(LOCATION, result).value shouldBe Sub02Controller
           .migrationEnd(atarService)
           .url
       }
@@ -436,7 +436,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe Sub02Controller
+        header(LOCATION, result).value shouldBe Sub02Controller
           .migrationEnd(atarService)
           .url
       }
@@ -481,7 +481,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe Sub02Controller
+        header(LOCATION, result).value shouldBe Sub02Controller
           .migrationEnd(atarService)
           .url
       }
@@ -520,7 +520,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
           .pending(atarService)
           .url
       }
@@ -538,7 +538,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
           .fail(atarService)
           .url
       }
@@ -575,7 +575,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
           .pending(atarService)
           .url
         verify(mockNotifyRcmService)
@@ -617,7 +617,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
           .fail(atarService)
           .url
       }
@@ -655,7 +655,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
           .processing(atarService)
           .url
         verify(mockReg06Service).sendOrganisationRequest(any(), any(), any())
@@ -696,7 +696,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe SubscriptionRecoveryController.complete(atarService).url
+        header(LOCATION, result).value shouldBe SubscriptionRecoveryController.complete(atarService).url
         verify(mockReg06Service).sendOrganisationRequest(any(), any(), any())
         verify(mockSubscriptionStatusService)
           .getStatus(meq("SAFE"), meq("SomeSafeId"))(any[HeaderCarrier], any(), any())
@@ -737,7 +737,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
           .fail(atarService)
           .url
       }
@@ -771,7 +771,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
           .eoriAlreadyLinked(atarService)
           .url
       }
@@ -805,7 +805,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
           .eoriAlreadyLinked(atarService)
           .url
       }
@@ -839,7 +839,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
           .idAlreadyLinked(atarService)
           .url
       }
@@ -873,7 +873,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
           .idAlreadyLinked(atarService)
           .url
       }
@@ -910,7 +910,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
           .rejectedPreviously(atarService)
           .url
       }
@@ -947,7 +947,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
           .rejectedPreviously(atarService)
           .url
       }
@@ -984,7 +984,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
           .fail(atarService)
           .url
       }
@@ -1021,7 +1021,7 @@ class RegisterWithEoriAndIdControllerSpec
       regExistingEori() { result =>
         assertCleanedSession(result)
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe RegisterWithEoriAndIdController
+        header(LOCATION, result).value shouldBe RegisterWithEoriAndIdController
           .fail(atarService)
           .url
       }
@@ -1174,7 +1174,7 @@ class RegisterWithEoriAndIdControllerSpec
 
       invokePending() { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") shouldBe "/customs-enrolment-services/atar/subscribe"
+        header(LOCATION, result).value shouldBe "/customs-enrolment-services/atar/subscribe"
       }
     }
 
@@ -1220,9 +1220,7 @@ class RegisterWithEoriAndIdControllerSpec
       val subscriptionDetails = SubscriptionDetails(customsId = Some(Utr("UTR")), formData = formData)
       when(mockCache.subscriptionDetails(any[Request[_]]))
         .thenReturn(Future.successful(subscriptionDetails))
-      when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(
-        Future.successful(Some(UserLocation.Uk))
-      )
+      when(mockRequestSessionData.selectedUserLocation(any[Request[AnyContent]])).thenReturn(Some(UserLocation.Uk))
 
       invokeFail() { result =>
         status(result) shouldBe OK

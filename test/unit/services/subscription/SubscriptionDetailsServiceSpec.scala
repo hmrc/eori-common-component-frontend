@@ -23,9 +23,10 @@ import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Request}
+import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{FormData, SubscriptionDetails}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{NameOrganisationMatchModel, _}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
   AddressViewModel,
@@ -44,7 +45,6 @@ import java.time.LocalDate
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 import scala.util.Random
-import play.api.test.Helpers._
 
 class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
 
@@ -104,7 +104,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
 
     val existingHolder = SubscriptionDetails(contactDetails = Some(mock[ContactDetailsModel]))
 
-    when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(existingHolder)
+    when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(Future.successful(existingHolder))
   }
 
   "Calling saveKeyIdentifiers" should {
@@ -292,7 +292,7 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
 
     "Update SubscriptionDetailsHolder with contact details when using registered address" in {
       when(mockSessionCache.registrationDetails)
-        .thenReturn(RegistrationDetailsBuilder.withBusinessAddress(defaultAddress))
+        .thenReturn(Future.successful(RegistrationDetailsBuilder.withBusinessAddress(defaultAddress)))
 
       when(
         mockContactDetailsAdaptor.toContactDetailsModelWithRegistrationAddress(
@@ -301,9 +301,9 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
         )
       ).thenReturn(contactDetailsViewModelWhenUsingRegisteredAddress)
 
-      when(mockSessionCache.subscriptionDetails).thenReturn(SubscriptionDetails())
+      when(mockSessionCache.subscriptionDetails).thenReturn(Future.successful(SubscriptionDetails()))
       when(mockSessionCache.subscriptionDetails).thenReturn(
-        SubscriptionDetails(dateEstablished = Some(dateOfEstablishment))
+        Future.successful(SubscriptionDetails(dateEstablished = Some(dateOfEstablishment)))
       )
 
       await(subscriptionDetailsHolderService.cacheContactDetails(contactDetailsViewModelWhenUsingRegisteredAddress))
@@ -343,7 +343,9 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
     }
 
     "return None for customsId when no value found for subscription Details" in {
-      when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(SubscriptionDetails())
+      when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(
+        Future.successful(SubscriptionDetails())
+      )
       await(subscriptionDetailsHolderService.cachedCustomsId(request)) shouldBe None
     }
   }
@@ -356,7 +358,9 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
     }
 
     "return None for utrMatch when no value found for subscription Details" in {
-      when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(SubscriptionDetails())
+      when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(
+        Future.successful(SubscriptionDetails())
+      )
       await(subscriptionDetailsHolderService.cachedUtrMatch(request)) shouldBe None
     }
   }
@@ -369,7 +373,9 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
     }
 
     "return None for ninoMatch when no value found for subscription Details" in {
-      when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(SubscriptionDetails())
+      when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(
+        Future.successful(SubscriptionDetails())
+      )
       await(subscriptionDetailsHolderService.cachedNinoMatch(request)) shouldBe None
     }
   }
@@ -386,7 +392,9 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
     }
 
     "return None for utrMatch when no value found for subscription Details" in {
-      when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(SubscriptionDetails())
+      when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(
+        Future.successful(SubscriptionDetails())
+      )
       await(subscriptionDetailsHolderService.cachedOrganisationType(request)) shouldBe None
     }
   }
@@ -417,7 +425,9 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
     }
 
     "return None for Name Id details when no value found in subscription Details" in {
-      when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(SubscriptionDetails())
+      when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(
+        Future.successful(SubscriptionDetails())
+      )
       await(subscriptionDetailsHolderService.cachedNameIdDetails(request)) shouldBe None
     }
   }
@@ -450,7 +460,9 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
     }
 
     "return None for utrMatch when no value found for subscription Details" in {
-      when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(SubscriptionDetails())
+      when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(
+        Future.successful(SubscriptionDetails())
+      )
       await(subscriptionDetailsHolderService.cachedExistingEoriNumber(request)) shouldBe None
     }
   }
@@ -515,7 +527,9 @@ class SubscriptionDetailsServiceSpec extends UnitSpec with MockitoSugar with Bef
     }
 
     "return None for registered country when no value found for subscription Details" in {
-      when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(SubscriptionDetails())
+      when(mockSessionCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(
+        Future.successful(SubscriptionDetails())
+      )
       await(subscriptionDetailsHolderService.cachedRegisteredCountry()) shouldBe None
     }
   }

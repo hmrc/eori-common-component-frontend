@@ -18,9 +18,10 @@ package unit.services.subscription
 
 import base.UnitSpec
 import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito.{doNothing, reset, times, verify, when}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfter
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers.{
@@ -43,7 +44,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   UpdateVerifiedEmailService
 }
 import uk.gov.hmrc.http.HeaderCarrier
-import play.api.test.Helpers._
+
 import java.time.{LocalDateTime, ZoneOffset}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

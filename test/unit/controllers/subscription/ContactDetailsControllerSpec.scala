@@ -76,8 +76,12 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
-    when(mockSubscriptionBusinessService.cachedContactDetailsModel(any[Request[AnyContent]])).thenReturn(None)
-    when(mockCdsFrontendDataCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(mockSubscriptionDetails)
+    when(mockSubscriptionBusinessService.cachedContactDetailsModel(any[Request[AnyContent]])).thenReturn(
+      Future.successful(None)
+    )
+    when(mockCdsFrontendDataCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(
+      Future.successful(mockSubscriptionDetails)
+    )
     registerSaveContactDetailsMockSuccess()
     mockFunctionWithRegistrationDetails(mockRegistrationDetails)
     setupMockSubscriptionFlowManager(ContactDetailsSubscriptionFlowPageMigrate)
@@ -118,7 +122,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
       )
       val result =
         await(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
-      status(result) shouldBe SEE_OTHER
+      status(Future.successful(result)) shouldBe SEE_OTHER
     }
 
     "display the correct text in the heading and intro" in {
@@ -268,7 +272,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         )
 
       status(result) shouldBe SEE_OTHER
-      result.header.headers(LOCATION) should endWith("/check-your-details")
+      header(LOCATION, result).value should endWith("/check-your-details")
     }
 
     "redirect to check your details page if its feature switched on but it is not CDS enrolment when details are valid" in {
@@ -280,7 +284,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         )
 
       status(result) shouldBe SEE_OTHER
-      result.header.headers(LOCATION) should endWith("/check-your-details")
+      header(LOCATION, result).value should endWith("/check-your-details")
     }
     "redirect to contact address page if its feature switched is on and CDS enrolment when details are valid" in {
       when(nextPage.url(any[Service], any[SubscribeJourney])).thenReturn("/contact-address")
@@ -291,7 +295,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
         )
 
       status(result) shouldBe SEE_OTHER
-      result.header.headers(LOCATION) should endWith("/contact-address")
+      header(LOCATION, result).value should endWith("/contact-address")
     }
 
     "redirect to next page without validating contact address when 'Is this the right contact address' is Yes and country code is GB" in {
@@ -313,7 +317,9 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   }
 
   private def mockFunctionWithRegistrationDetails(registrationDetails: RegistrationDetails): Unit =
-    when(mockCdsFrontendDataCache.registrationDetails(any[Request[AnyContent]])).thenReturn(registrationDetails)
+    when(mockCdsFrontendDataCache.registrationDetails(any[Request[AnyContent]])).thenReturn(
+      Future.successful(registrationDetails)
+    )
 
   private def submitFormInCreateMode(form: Map[String, String], userId: String = defaultUserId)(
     test: Future[Result] => Any
@@ -341,7 +347,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
   )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
 
-    when(mockOrgTypeLookup.etmpOrgTypeOpt(any[Request[AnyContent]])).thenReturn(Some(orgType))
+    when(mockOrgTypeLookup.etmpOrgTypeOpt(any[Request[AnyContent]])).thenReturn(Future.successful(Some(orgType)))
 
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
 
@@ -356,7 +362,7 @@ class ContactDetailsControllerSpec extends SubscriptionFlowSpec with BeforeAndAf
 
     when(mockRequestSessionData.userSubscriptionFlow(any[Request[AnyContent]])).thenReturn(subscriptionFlow)
     when(mockSubscriptionBusinessService.cachedContactDetailsModel(any[Request[AnyContent]]))
-      .thenReturn(Some(contactDetailsModel))
+      .thenReturn(Future.successful(Some(contactDetailsModel)))
 
     test(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }

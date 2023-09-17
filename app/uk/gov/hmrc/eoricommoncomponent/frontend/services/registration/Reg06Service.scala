@@ -17,8 +17,6 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.registration
 
 import play.api.Logging
-
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.RegisterWithEoriAndIdConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -39,6 +37,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
 }
 import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

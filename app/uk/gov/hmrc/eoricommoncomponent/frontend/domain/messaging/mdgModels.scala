@@ -17,11 +17,11 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging
 
 import play.api.Logging
-
-import java.time.{LocalDate, LocalDateTime, ZoneId, ZoneOffset, ZonedDateTime}
-import java.time.format.DateTimeFormatter
 import play.api.libs.json._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
+
+import java.time.format.DateTimeFormatter
+import java.time._
 
 case class Address(
   addressLine1: String,

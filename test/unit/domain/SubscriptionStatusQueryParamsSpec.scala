@@ -18,6 +18,7 @@ package unit.domain
 
 import base.UnitSpec
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{SubscriptionStatusQueryParams, TaxPayerId}
+
 import java.time.LocalDateTime
 
 class SubscriptionStatusQueryParamsSpec extends UnitSpec {

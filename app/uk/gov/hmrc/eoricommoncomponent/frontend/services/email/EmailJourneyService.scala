@@ -16,14 +16,18 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.email
 
+import play.api.Logging
+import play.api.i18n.Messages
+import play.api.mvc.Results._
 import play.api.mvc._
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.{routes => emailRoutes}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{GroupId, LoggedInUserWithEnrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{EmailVerificationStatus, ResponseWithURI}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, LongJourney, Service, SubscribeJourney}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.ExistingEoriService
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.{ExistingEoriService, Save4LaterService}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   Error,
@@ -31,13 +35,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   UpdateError,
   UpdateVerifiedEmailService
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{email_error_template, error_template}
-import play.api.Logging
-import play.api.mvc.Results._
-import play.api.i18n.Messages
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

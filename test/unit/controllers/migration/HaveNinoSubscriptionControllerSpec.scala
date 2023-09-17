@@ -131,7 +131,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
       mockSubscriptionFlow(nextPageFlowUrl)
       submit(Map("have-nino" -> "true")) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-get-nino"
+        header(LOCATION, result).value shouldBe "/customs-enrolment-services/atar/subscribe/row-get-nino"
       }
       verify(mockSubscriptionDetailsService).cacheNinoMatch(meq(Some(NinoMatchModel(Some(true), None))))(
         any[Request[_]]
@@ -145,7 +145,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
       mockSubscriptionFlow(nextPageFlowUrl)
       submit(Map("have-nino" -> "true"), isInReviewMode = true) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-get-nino/review"
+        header(LOCATION, result).value shouldBe "/customs-enrolment-services/atar/subscribe/row-get-nino/review"
       }
       verify(mockSubscriptionDetailsService).cacheNinoMatch(meq(Some(NinoMatchModel(Some(true), None))))(
         any[Request[_]]
@@ -163,7 +163,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
       mockSubscriptionFlow(nextPageFlowUrl)
       submit(Map("have-nino" -> "false")) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
+        header(LOCATION, result).value shouldBe "/customs-enrolment-services/subscribe/address"
       }
     }
     "cache None for CustomsId and redirect to Country page" in {
@@ -173,7 +173,7 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
       when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowIndividualFlow)
       submit(ValidNinoNoRequest) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-country"
+        header(LOCATION, result).value shouldBe "/customs-enrolment-services/atar/subscribe/row-country"
       }
       verify(mockSubscriptionDetailsService).cacheNinoMatchForNoAnswer(meq(Some(NinoMatchModel(Some(false), None))))(
         any[Request[_]]
@@ -183,23 +183,23 @@ class HaveNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAf
 
   private def createForm()(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    test(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }
 
   private def reviewForm()(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    test(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }
 
   private def submit(form: Map[String, String], isInReviewMode: Boolean = false)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(
-      test(
-        controller.submit(isInReviewMode, atarService).apply(
-          SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form)
-        )
+
+    test(
+      controller.submit(isInReviewMode, atarService).apply(
+        SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form)
       )
     )
+
   }
 
   private def mockSubscriptionFlow(url: String) = {

@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
-import java.time.LocalDateTime
-
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.Eori
+
+import java.time.LocalDateTime
 
 sealed trait SubscriptionResult {
   val processingDate: String

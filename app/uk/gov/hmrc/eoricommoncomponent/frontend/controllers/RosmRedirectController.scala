@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, BaseController, ControllerComponents}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class RosmRedirectController @Inject() (val controllerComponents: ControllerComponents) extends BaseController {

@@ -40,7 +40,6 @@ import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-//TODO: We need to simplify the reduce no of tests in the class. Review page should be simple, if value is available in holder then display otherwise not.
 class CheckYourDetailsControllerSpec
     extends ControllerSpec with BusinessDatesOrganisationTypeTables with ReviewPageOrganisationTypeTables
     with BeforeAndAfterEach with AuthActionMock {
@@ -75,8 +74,12 @@ class CheckYourDetailsControllerSpec
     )
     when(mockCdsDataCache.email(any[Request[_]])).thenReturn(Future.successful(Email))
 
-    when(mockCdsDataCache.subscriptionDetails(any[Request[_]])).thenReturn(subscriptionDetailsHolderForCompany)
-    when(mockCdsDataCache.registrationDetails(any[Request[_]])).thenReturn(individualRegistrationDetails)
+    when(mockCdsDataCache.subscriptionDetails(any[Request[_]])).thenReturn(
+      Future.successful(subscriptionDetailsHolderForCompany)
+    )
+    when(mockCdsDataCache.registrationDetails(any[Request[_]])).thenReturn(
+      Future.successful(individualRegistrationDetails)
+    )
     when(mockCdsDataCache.addressLookupParams(any[Request[_]])).thenReturn(Future.successful(None))
   }
 
@@ -85,7 +88,9 @@ class CheckYourDetailsControllerSpec
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.reviewDetails(atarService))
 
     "return ok when data has been provided" in {
-      when(mockCdsDataCache.registrationDetails(any[Request[_]])).thenReturn(existingOrganisationRegistrationDetails)
+      when(mockCdsDataCache.registrationDetails(any[Request[_]])).thenReturn(
+        Future.successful(existingOrganisationRegistrationDetails)
+      )
 
       showForm() { result =>
         status(result) shouldBe OK

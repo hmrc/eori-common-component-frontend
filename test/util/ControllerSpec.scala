@@ -16,33 +16,30 @@
 
 package util
 
-import java.util.UUID
 import akka.stream.Materializer
 import akka.stream.testkit.NoMaterializer
 import base.{Injector, UnitSpec}
-import common.pages.WebPage
-
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypesConfiguration}
-import play.api.{Configuration, Environment}
-import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesImpl}
-import play.api.mvc._
-import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import unit.controllers.CdsPage
-import util.builders.{AuthBuilder, SessionBuilder}
 import play.api.i18n.Lang._
-import play.api.test.FakeRequest
-import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
-import play.api.Application
+import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesImpl}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc._
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
+import play.api.{Application, Configuration, Environment}
+import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.{
+  AppConfig,
+  InternalAuthTokenInitialiser,
+  NoOpInternalAuthTokenInitialiser
+}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+import util.builders.{AuthBuilder, SessionBuilder}
 
+import java.util.UUID
 import scala.concurrent.ExecutionContext.global
-import scala.concurrent.Future
 import scala.util.Random
 
 trait ControllerSpec extends UnitSpec with MockitoSugar with I18nSupport with Injector with TestData {
@@ -96,63 +93,14 @@ trait ControllerSpec extends UnitSpec with MockitoSugar with I18nSupport with In
         )
       )
       status(result) shouldBe SEE_OTHER
-      header(LOCATION, result).get should include(
+      header(LOCATION, result).value should include(
         "/bas-gateway/sign-in?continue_url=http%3A%2F%2Flocalhost%3A6750%2Fcustoms-enrolment-services%2Fatar%2Fsubscribe&origin=eori-common-component-frontend"
       )
     }
 
-  // TODO This trait is used in only one controller, extract the necessary logic and use in the test, rest to remove
-  trait AbstractControllerFixture[C <: FrontendController] {
-    val mockAuthConnector = mock[AuthConnector]
-    val userId            = defaultUserId
-
-    val controller: C
-
-    private def withAuthorisedUser[T](block: => T): T = {
-      AuthBuilder.withAuthorisedUser(userId, mockAuthConnector)
-      block
-    }
-
-    protected def show(controller: C): Action[AnyContent]
-
-    def showForm[T](test: Future[Result] => T): T = withAuthorisedUser {
-      test(show(controller).apply(SessionBuilder.buildRequestWithSession(userId)))
-    }
-
-    protected def submit(controller: C): Action[AnyContent]
-
-    def submitForm[T](formValues: Map[String, String])(test: Future[Result] => T): T = withAuthorisedUser {
-      test(submit(controller).apply(SessionBuilder.buildRequestWithSessionAndFormValues(userId, formValues)))
-    }
-
-    def assertInvalidField(
-      formValues: Map[String, String],
-      webPage: WebPage
-    )(problemField: String, fieldLevelErrorXPath: String, errorMessage: String): Result =
-      submitForm(formValues) { result =>
-        status(result) shouldBe BAD_REQUEST
-        val page = CdsPage(contentAsString(result))
-        page.getElementsText(webPage.pageLevelErrorSummaryListXPath) shouldBe errorMessage
-        withClue(
-          s"Not found in the page: field level error block for '$problemField' with xpath $fieldLevelErrorXPath"
-        ) {
-          page.elementIsPresent(fieldLevelErrorXPath) shouldBe true
-        }
-        page.getElementsText(fieldLevelErrorXPath) shouldBe s"Error: $errorMessage"
-        result
-      }
-
-    def assertPresentOnPage(page: CdsPage)(elementXpath: String): Unit =
-      withClue(s"Element xpath not present in page: $elementXpath")(page.elementIsPresent(elementXpath) shouldBe true)
-
-  }
-
   val defaultUserId: String = s"user-${UUID.randomUUID}"
 
-  // TODO Extract below methods to some Utils class
   def strim(s: String): String = s.stripMargin.trim.split("\n").mkString(" ")
 
   def oversizedString(maxLength: Int): String = Random.alphanumeric.take(maxLength + 1).mkString
-
-  def undersizedString(minLength: Int): String = Random.alphanumeric.take(minLength - 1).mkString
 }
