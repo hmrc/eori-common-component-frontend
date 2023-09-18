@@ -26,7 +26,6 @@ import javax.inject.{Inject, Singleton}
 class EoriLanguageController @Inject() (languageUtils: LanguageUtils, cc: ControllerComponents)
     extends LanguageController(languageUtils, cc) {
 
-  // TODO Find a way to include a service name in the url
   override protected def fallbackURL: String =
     "/customs-enrolment-services/subscribe" //This will be always register for cds we might need to add a route for fallback cannot be dynamic
 

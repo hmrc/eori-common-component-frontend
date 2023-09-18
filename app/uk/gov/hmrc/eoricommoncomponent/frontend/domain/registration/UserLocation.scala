@@ -19,7 +19,6 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 
-//TODO Make these sealed trait / case object with a isROW fn
 object UserLocation {
 
   val Uk                = "uk"
