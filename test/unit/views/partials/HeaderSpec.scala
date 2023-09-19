@@ -101,25 +101,6 @@ class HeaderSpec extends ControllerSpec with AuthActionMock with BeforeAndAfterE
     }
   }
 
-  "Feedback URL" should {
-    "be present with service param equal to 'eori-common-component-subscribe''" in {
-      val result = controller
-        .startSubscription(atarService)
-        .apply(FakeRequest("GET", "/customs-enrolment-services/atar/subscribe"))
-
-      when(mockEnrolmentJourneyService.getJourney(any(), any(), any())(any(), any())).thenReturn(
-        Future.successful(Right(LongJourney))
-      )
-
-      val page = CdsPage(contentAsString(result))
-
-      page.getElementAttribute(
-        "//span[@class='govuk-phase-banner__text']//a[@class='govuk-link']",
-        "href"
-      ) should endWith("/contact/beta-feedback?service=eori-common-component-subscribe-atar")
-    }
-  }
-
   "Language switch" should {
 
     "be always presented" in {

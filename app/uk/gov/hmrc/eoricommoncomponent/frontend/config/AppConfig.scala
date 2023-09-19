@@ -90,14 +90,6 @@ class AppConfig @Inject() (
   def reportAProblemNonJSUrlSubscribe(service: Service): String =
     s"$contactBaseUrl/contact/problem_reports_nonjs?service=$serviceIdentifierSubscribe-${service.code}"
 
-  private val betafeedbackBaseUrl = s"$contactBaseUrl/contact/beta-feedback"
-
-  def betaFeedBackRegister(service: Service) =
-    s"$betafeedbackBaseUrl?service=$serviceIdentifierRegister-${service.code}"
-
-  def betaFeedBackSubscribe(service: Service) =
-    s"$betafeedbackBaseUrl?service=$serviceIdentifierSubscribe-${service.code}"
-
   //email verification service
   val emailVerificationEnabled: Boolean          = config.get[Boolean]("microservice.services.email-verification.enabled")
   val emailVerificationContinueUrlPrefix: String = config.get[String]("external-url.email-verification.continue-url")
