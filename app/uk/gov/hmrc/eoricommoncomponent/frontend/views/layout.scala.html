@@ -20,7 +20,6 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcTimeoutDialog
 @import uk.gov.hmrc.hmrcfrontend.views.Aliases.TimeoutDialog
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.reporttechnicalissue.ReportTechnicalIssue
-@import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcLayout
 @import views.html.helper.CSPNonce
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -33,7 +32,6 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcAccessibleAutocompleteJavascript
 
 @this(hmrcLayout: HmrcLayout,
-        standardBetaBanner: StandardBetaBanner,
         govukBackLink: GovukBackLink,
         appConfig: AppConfig,
         reportAProblemLink: HmrcReportTechnicalIssue,
@@ -49,7 +47,7 @@
         form: Option[Form[_]] = None,
         suppressTelephoneNumberDetection: Boolean = true,
         displayBackLink: Boolean = true,
-        userResearchBanner: Boolean = true,
+        userResearchBanner: Boolean = false,
         service: Service
 )(content: Html)(implicit messages: Messages, request: Request[_])
 
@@ -138,12 +136,12 @@
 }
 
 @hmrcLayout(
-    userResearchBannerUrl = if(userResearchBanner) Some(appConfig.userResearchBannerUrl) else None,
+    userResearchBannerUrl = None,
     pageTitle = Some(titleErr),
     isWelshTranslationAvailable = true, /* or false if your service has not been translated */
     serviceUrl = Some(serviceUrl),
     signOutUrl = Some(logOutUrl),
-    phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedBackSubscribe(service))),
+    phaseBanner = None,
     additionalHeadBlock = Some(theHead),
     additionalScriptsBlock = Some(scripts),
     serviceName = Some(messages(s"cds.banner.subscription.${service.code}" )),
