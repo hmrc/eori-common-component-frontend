@@ -47,7 +47,7 @@ class EoriEnrolSuccessSpec extends ViewSpec {
     }
 
     "not display continue button when callBack URL doesn't exists" in {
-      doc(serviceNoCallBackUrl).body.getElementsByClass("govuk-button").size() must be(1)
+      doc(serviceNoCallBackUrl).body.getElementsByClass("govuk-button").size() must be(0)
     }
   }
 
