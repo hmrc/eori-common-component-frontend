@@ -24,6 +24,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json._
 import play.api.mvc.{AnyContent, Request}
+import play.api.test.Helpers._
 import play.mvc.Http.Status.INTERNAL_SERVER_ERROR
 import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.MatchingServiceConnector
@@ -94,13 +95,13 @@ class MatchingServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter
         ArgumentMatchers.any[GroupId],
         ArgumentMatchers.any[Option[CdsOrganisationType]]
       )(ArgumentMatchers.any[HeaderCarrier], ArgumentMatchers.any[Request[AnyContent]])
-    ).thenReturn(true)
+    ).thenReturn(Future.successful(true))
 
     when(
       mockCache.saveRegistrationDetails(ArgumentMatchers.any[RegistrationDetails])(
         ArgumentMatchers.any[Request[AnyContent]]
       )
-    ).thenReturn(true)
+    ).thenReturn(Future.successful(true))
 
     when(mockCache.subscriptionDetails(any[Request[AnyContent]]))
       .thenReturn(

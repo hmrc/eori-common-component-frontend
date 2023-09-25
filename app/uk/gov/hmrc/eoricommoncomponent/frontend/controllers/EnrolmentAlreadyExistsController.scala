@@ -16,16 +16,15 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
-import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.registration_exists
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.registration_exists_group
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{registration_exists, registration_exists_group}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
+import javax.inject.Inject
 import scala.concurrent.Future
 
 class EnrolmentAlreadyExistsController @Inject() (

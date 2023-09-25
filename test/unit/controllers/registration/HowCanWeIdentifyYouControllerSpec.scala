@@ -37,7 +37,6 @@ import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-
 import scala.concurrent.Future
 
 class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAfterEach with AuthActionMock {
@@ -104,28 +103,28 @@ class HowCanWeIdentifyYouControllerSpec extends ControllerSpec with BeforeAndAft
 
     "redirect to the 'Enter your nino' page when nino is selected" in {
       submitForm(Map("ninoOrUtrRadio" -> "nino")) { result =>
-        result.header.headers("Location") shouldBe "/customs-enrolment-services/atar/subscribe/chooseid/nino"
+        header(LOCATION, result).value shouldBe "/customs-enrolment-services/atar/subscribe/chooseid/nino"
       }
     }
 
     "redirect to the 'Enter your utr' page when utr is selected" in {
       submitForm(Map("ninoOrUtrRadio" -> "utr")) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") shouldBe "/customs-enrolment-services/atar/subscribe/chooseid/utr"
+        header(LOCATION, result).value shouldBe "/customs-enrolment-services/atar/subscribe/chooseid/utr"
       }
     }
 
     "in review mode redirect to 'Enter nino' page when nino selected" in {
       submitFormInReviewMode(Map("ninoOrUtrRadio" -> "nino")) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") shouldBe "/customs-enrolment-services/atar/subscribe/chooseid/nino/review"
+        header(LOCATION, result).value shouldBe "/customs-enrolment-services/atar/subscribe/chooseid/nino/review"
       }
     }
 
     "in review mode redirect to 'Enter utr' page when utr selected" in {
       submitFormInReviewMode(Map("ninoOrUtrRadio" -> "utr")) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") shouldBe "/customs-enrolment-services/atar/subscribe/chooseid/utr/review"
+        header(LOCATION, result).value shouldBe "/customs-enrolment-services/atar/subscribe/chooseid/utr/review"
       }
     }
 

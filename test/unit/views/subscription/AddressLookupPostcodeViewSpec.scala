@@ -18,7 +18,6 @@ package unit.views.subscription
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-
 import play.api.mvc.Request
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType

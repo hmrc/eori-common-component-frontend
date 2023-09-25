@@ -23,11 +23,11 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
 import play.api.mvc.Result
+import play.api.mvc.Results.Ok
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.CheckYourEmailController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.{CheckYourEmailController, routes => emailRoutes}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.{routes => emailRoutes}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.GroupId
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
@@ -35,13 +35,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.{EmailJourneyService, EmailVerificationService}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.UpdateVerifiedEmailService
-import play.api.mvc.Results.Ok
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.email.{check_your_email, email_confirmed}
 import uk.gov.hmrc.http.HeaderCarrier
 import unit.controllers.CdsPage
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
-import util.builders.YesNoFormBuilder.ValidRequest
 import util.builders.{AuthActionMock, SessionBuilder}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -118,17 +116,17 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
       when(mockEmailJourneyService.continue(any(), any())(any(), any(), any(), any()))
         .thenReturn(Future.successful(Ok("Some response")))
 
-      submitForm(ValidRequest + (yesNoInputName -> answerYes), service = atarService, journey = subscribeJourneyShort) {
+      submitForm(Map(yesNoInputName -> answerYes), service = atarService, journey = subscribeJourneyShort) {
         result =>
           status(result) shouldBe OK
       }
     }
 
     "redirect to WhatIsYourEmailController.createForm if the user selects no" in {
-      submitForm(ValidRequest + (yesNoInputName -> answerNo), service = atarService, journey = subscribeJourneyShort) {
+      submitForm(Map(yesNoInputName -> answerNo), service = atarService, journey = subscribeJourneyShort) {
         result =>
           status(result) shouldBe SEE_OTHER
-          result.header.headers("Location") should endWith(
+          header(LOCATION, result).value should endWith(
             emailRoutes.WhatIsYourEmailController.createForm(atarService, subscribeJourneyShort).url
           )
       }
@@ -140,7 +138,7 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
           .thenReturn(Future.successful(None))
         emailConfirmed(defaultUserId) { result =>
           status(result) shouldBe SEE_OTHER
-          result.header.headers("Location") should endWith(routes.SecuritySignOutController.signOut(atarService).url)
+          header(LOCATION, result).value should endWith(routes.SecuritySignOutController.signOut(atarService).url)
         }
       }
 
@@ -158,17 +156,17 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     }
 
     "redirect to What is Your Email Address Page on selecting No radio button" in {
-      submitForm(ValidRequest + (yesNoInputName -> answerNo), service = atarService, journey = subscribeJourneyShort) {
+      submitForm(Map(yesNoInputName -> answerNo), service = atarService, journey = subscribeJourneyShort) {
         result =>
           status(result) shouldBe SEE_OTHER
-          result.header.headers("Location") should endWith(
+          header(LOCATION, result).value should endWith(
             "/customs-enrolment-services/atar/subscribe/autoenrolment/matching/what-is-your-email"
           )
       }
     }
 
     "display an error message when no option is selected" in {
-      submitForm(ValidRequest - yesNoInputName, service = atarService, journey = subscribeJourneyShort) { result =>
+      submitForm(Map(), service = atarService, journey = subscribeJourneyShort) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
         page.getElementsText(CheckYourEmailPage.pageLevelErrorSummaryListXPath) shouldBe problemWithSelectionError

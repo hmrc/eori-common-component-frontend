@@ -26,7 +26,6 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EoriTextDownloadController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.eori_number_text_download
 import util.ControllerSpec
@@ -61,7 +60,7 @@ class EoriTextDownloadControllerSpec extends ControllerSpec with BeforeAndAfterE
 
       withAuthorisedUser(defaultUserId, mockAuthConnector)
 
-      val result = await(controller.download(cdsService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+      val result = controller.download(cdsService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       status(result) shouldBe OK
       contentType(result) shouldBe Some("plain/text")
@@ -80,7 +79,7 @@ class EoriTextDownloadControllerSpec extends ControllerSpec with BeforeAndAfterE
 
       withAuthorisedUser(defaultUserId, mockAuthConnector)
 
-      val result = await(controller.download(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
+      val result = controller.download(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))
 
       val content = contentAsString(result)
       val lines   = content.split('\n').drop(1)

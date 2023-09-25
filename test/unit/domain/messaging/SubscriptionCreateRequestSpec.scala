@@ -17,6 +17,7 @@
 package unit.domain.messaging
 
 import base.UnitSpec
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Address
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
   ContactInformation,
@@ -24,10 +25,12 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
   VatId
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, ContactAddressModel}
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.CompanyRegisteredCountry
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
+  AddressViewModel,
+  CompanyRegisteredCountry,
+  ContactAddressModel
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 import java.time.{LocalDate, LocalDateTime}

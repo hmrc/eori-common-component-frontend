@@ -19,17 +19,20 @@ package unit.services.subscription
 import base.{Injector, UnitSpec}
 import common.support.testdata.TestData
 import common.support.testdata.subscription.SubscriptionContactDetailsBuilder
-
-import java.time.{LocalDate, LocalDateTime}
 import org.mockito.ArgumentMatchers.{eq => meq, _}
-import org.mockito.Mockito.{when, _}
+import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.time.{Millis, Seconds, Span}
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.Application
 import play.api.i18n.Lang.defaultLang
 import play.api.i18n.{Messages, MessagesApi, MessagesImpl}
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, Request}
+import play.api.test.Helpers._
+import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.SubscriptionFlowManager
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.SubscriptionCreateResponse.EoriAlreadyExists
@@ -41,11 +44,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
-import play.api.Application
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 
+import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
@@ -350,7 +350,9 @@ class CdsSubscriberSpec extends UnitSpec with MockitoSugar with ScalaFutures wit
     }
 
     "propagate a failure when subscriptionDetailsHolder cache fails to be accessed" in {
-      when(mockCdsFrontendDataCache.registrationDetails(any[Request[AnyContent]])).thenReturn(mockRegistrationDetails)
+      when(mockCdsFrontendDataCache.registrationDetails(any[Request[AnyContent]])).thenReturn(
+        Future.successful(mockRegistrationDetails)
+      )
       when(mockCdsFrontendDataCache.subscriptionDetails(any[Request[AnyContent]])).thenReturn(
         Future.failed(emulatedFailure)
       )

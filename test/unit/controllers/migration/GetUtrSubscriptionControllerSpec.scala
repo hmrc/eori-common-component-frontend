@@ -205,7 +205,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
       ).thenReturn(Future.successful(()))
       submit(Map("utr" -> "11 11 111111k")) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/address"
+        header(LOCATION, result).value shouldBe "/customs-enrolment-services/atar/subscribe/address"
       }
       verify(mockSubscriptionDetailsService).cacheNameAndCustomsId(meq("orgName"), meq(Utr("1111111111K")))(
         any[Request[_]]
@@ -222,7 +222,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
         .thenReturn(Future.successful(Some(nameOrganisationMatchModel)))
       submit(ValidUtrRequest) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/address"
+        header(LOCATION, result).value shouldBe "/customs-enrolment-services/atar/subscribe/address"
       }
       verify(mockSubscriptionDetailsService).cacheCustomsId(meq(ValidUtr))(any[Request[_]])
     }
@@ -251,7 +251,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
 
         submit(ValidUtrRequest, isInReviewMode = true) { result =>
           status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/address"
+          header(LOCATION, result).value shouldBe "/customs-enrolment-services/atar/subscribe/address"
         }
         verify(mockSubscriptionDetailsService).cacheNameAndCustomsId(any(), meq(ValidUtr))(any[Request[_]])
       }
@@ -265,7 +265,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
 
         submit(ValidUtrRequest, isInReviewMode = true) { result =>
           status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/address"
+          header(LOCATION, result).value shouldBe "/customs-enrolment-services/atar/subscribe/address"
         }
         verify(mockSubscriptionDetailsService).cacheCustomsId(meq(ValidUtr))(any[Request[_]])
       }
@@ -284,9 +284,7 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
 
         submit(ValidUtrRequest, isInReviewMode = true) { result =>
           status(result) shouldBe SEE_OTHER
-          result.header.headers(
-            LOCATION
-          ) shouldBe "/customs-enrolment-services/atar/subscribe/matching/review-determine"
+          header(LOCATION, result).value shouldBe "/customs-enrolment-services/atar/subscribe/matching/review-determine"
         }
         verify(mockSubscriptionDetailsService).cacheNameAndCustomsId(any(), meq(ValidUtr))(any[Request[_]])
       }
@@ -295,21 +293,20 @@ class GetUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMoc
 
   private def createForm()(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    test(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }
 
   private def reviewForm()(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    test(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }
 
   private def submit(form: Map[String, String], isInReviewMode: Boolean = false)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(
-      test(
-        controller.submit(isInReviewMode, atarService).apply(
-          SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form)
-        )
+
+    test(
+      controller.submit(isInReviewMode, atarService).apply(
+        SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form)
       )
     )
   }

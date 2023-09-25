@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
-import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import play.twirl.api.HtmlFormat
@@ -25,11 +24,15 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressLookupParams
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.address_lookup_postcode
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{
+  DataUnavailableException,
+  RequestSessionData,
+  SessionCache
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.viewModels.AddressLookupPostcodeViewModel
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.address_lookup_postcode
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

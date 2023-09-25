@@ -22,8 +22,6 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.eoricommoncomponent.frontend.viewModels.EnrolmentPendingViewModel
 import util.ControllerSpec
 
-import scala.concurrent.Future
-
 class EnrolmentPendingViewSpec extends UnitSpec with ControllerSpec {
   val mockMessages: Messages = mock[Messages]
   "EnrolmentPendingViewModel" should {
@@ -33,7 +31,7 @@ class EnrolmentPendingViewSpec extends UnitSpec with ControllerSpec {
       val service          = otherService
 
       when(mockMessages(messages("cds.enrolment.pending.title.user.sameService", otherService))).thenReturn(
-        Future.successful("Some Service")
+        "Some Service"
       )
 
       val viewModel = EnrolmentPendingViewModel
@@ -46,7 +44,7 @@ class EnrolmentPendingViewSpec extends UnitSpec with ControllerSpec {
       val someOtherService = Some(otherService)
       val service          = atarService
       when(mockMessages(messages("cds.enrolment.pending.title.user.processingService", atarService))).thenReturn(
-        Future.successful("Other Service")
+        "Other Service"
       )
 
       val viewModel = EnrolmentPendingViewModel
@@ -60,7 +58,7 @@ class EnrolmentPendingViewSpec extends UnitSpec with ControllerSpec {
       val service          = otherService
 
       when(mockMessages(messages("cds.enrolment.pending.title.group.sameService", atarService))).thenReturn(
-        Future.successful("Some Service")
+        "Some Service"
       )
 
       val viewModel = EnrolmentPendingViewModel
@@ -74,7 +72,7 @@ class EnrolmentPendingViewSpec extends UnitSpec with ControllerSpec {
       val service          = atarService
 
       when(mockMessages(messages("cds.enrolment.pending.title.group.processingService", otherService))).thenReturn(
-        Future.successful("Some Service")
+        "Some Service"
       )
 
       val viewModel = EnrolmentPendingViewModel

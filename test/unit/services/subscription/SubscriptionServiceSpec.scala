@@ -23,8 +23,8 @@ import org.scalatest.BeforeAndAfterAll
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.scalacheck.Checkers
 import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SubscriptionServiceConnector
-
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.{
   SubscriptionRequest,

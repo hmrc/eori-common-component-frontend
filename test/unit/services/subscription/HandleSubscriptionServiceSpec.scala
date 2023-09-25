@@ -18,8 +18,6 @@ package unit.services.subscription
 
 import base.UnitSpec
 import common.support.testdata.TestData
-
-import java.time.LocalDateTime
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfter
@@ -32,6 +30,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.Subscribe
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.HandleSubscriptionService
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDateTime
 import scala.concurrent.Future
 
 class HandleSubscriptionServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfter {

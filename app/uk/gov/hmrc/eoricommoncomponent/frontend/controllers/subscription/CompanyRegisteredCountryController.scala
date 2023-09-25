@@ -16,17 +16,16 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
-import javax.inject.{Inject, Singleton}
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
+import play.api.mvc._
 import play.twirl.api.Html
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.routes.{
   ContactDetailsController,
   DateOfEstablishmentController
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.DetermineReviewPageController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.LoggedInUserWithEnrolments
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.RowOrganisationFlow
@@ -37,6 +36,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries.Countries
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.{country_individual, country_organisation}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

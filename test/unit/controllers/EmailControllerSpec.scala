@@ -16,6 +16,7 @@
 
 package unit.controllers
 
+import cats.data.EitherT
 import common.pages.matching.AddressPageFactoring
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
@@ -25,12 +26,12 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eoricommoncomponent.frontend.connector.ResponseError
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EmailController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{EmailVerificationStatus, ResponseWithURI}
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.ExistingEoriService
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.email.{EmailJourneyService, EmailVerificationService}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
@@ -40,7 +41,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{
   UpdateEmailError,
   UpdateVerifiedEmailService
 }
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.{Save4LaterService, UserGroupIdSubscriptionStatusCheckService}
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.{
+  ExistingEoriService,
+  Save4LaterService,
+  UserGroupIdSubscriptionStatusCheckService
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{
   email_error_template,
   enrolment_pending_against_group_id,
@@ -51,8 +56,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
-import cats.data.EitherT
-import uk.gov.hmrc.eoricommoncomponent.frontend.connector.ResponseError
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

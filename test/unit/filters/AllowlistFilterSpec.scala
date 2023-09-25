@@ -22,8 +22,9 @@ import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.mvc.{Cookie, CookieHeaderEncoding, RequestHeader, Result, Results, SessionCookieBaker}
+import play.api.mvc._
 import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.filters.AllowlistFilter

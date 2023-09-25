@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain
 
-import java.time.format.DateTimeFormatter
-
 import play.api.libs.json.{Json, OFormat}
+
+import java.time.format.DateTimeFormatter
 
 case class KeyValue(key: String, value: String)
 

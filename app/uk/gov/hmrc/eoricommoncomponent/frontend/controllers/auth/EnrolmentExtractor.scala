@@ -18,7 +18,6 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth
 
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.ExistingEori
 
 trait EnrolmentExtractor {
 

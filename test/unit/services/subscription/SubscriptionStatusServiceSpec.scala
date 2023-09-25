@@ -26,7 +26,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Request}
-import play.mvc.Http.Status._
+import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.SubscriptionStatusConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
   Sub01Outcome,

@@ -87,7 +87,9 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
     "return ok for createForm" in {
       when(mockSubscriptionBusinessService.cachedNameOrganisationViewModel(any[Request[AnyContent]]))
         .thenReturn(Future.successful(None))
-      when(mockSessionCache.registrationDetails(any[Request[AnyContent]])).thenReturn(registrationDetails)
+      when(mockSessionCache.registrationDetails(any[Request[AnyContent]])).thenReturn(
+        Future.successful(registrationDetails)
+      )
 
       createForm() { result =>
         status(result) shouldBe OK
@@ -98,9 +100,11 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
 
     "return ok for reviewForm" in {
       when(mockSubscriptionBusinessService.getCachedNameViewModel(any[Request[AnyContent]])).thenReturn(
-        nameOrgMatchModel
+        Future.successful(nameOrgMatchModel)
       )
-      when(mockSessionCache.registrationDetails(any[Request[AnyContent]])).thenReturn(registrationDetails)
+      when(mockSessionCache.registrationDetails(any[Request[AnyContent]])).thenReturn(
+        Future.successful(registrationDetails)
+      )
 
       reviewForm() { result =>
         status(result) shouldBe OK
@@ -110,7 +114,9 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
     }
 
     "return bad request for form with errors " in {
-      when(mockSessionCache.registrationDetails(any[Request[AnyContent]])).thenReturn(registrationDetails)
+      when(mockSessionCache.registrationDetails(any[Request[AnyContent]])).thenReturn(
+        Future.successful(registrationDetails)
+      )
 
       submit(isInReviewMode = false, incorrectForm) { result =>
         status(result) shouldBe BAD_REQUEST
@@ -130,7 +136,7 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
 
       submit(isInReviewMode = false, correcctForm) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
+        header(LOCATION, result).value shouldBe "/customs-enrolment-services/subscribe/address"
       }
     }
 
@@ -148,7 +154,7 @@ class NameOrgControllerSpec extends ControllerSpec with BeforeAndAfterEach with 
 
       submit(isInReviewMode = true, correcctForm) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/matching/review-determine"
+        header(LOCATION, result).value shouldBe "/customs-enrolment-services/atar/subscribe/matching/review-determine"
       }
     }
   }

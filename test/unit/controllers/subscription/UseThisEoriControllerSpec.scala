@@ -22,8 +22,7 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.UseThisEoriController
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.MissingExistingEori
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.{MissingExistingEori, UseThisEoriController}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.ExistingEori
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionDetailsService
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.use_this_eori

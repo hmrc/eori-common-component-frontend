@@ -16,7 +16,6 @@
 
 package unit.services.subscription
 
-import java.time.LocalDate
 import base.UnitSpec
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
@@ -31,6 +30,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{EnrolmentService, MissingEnrolmentException}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 

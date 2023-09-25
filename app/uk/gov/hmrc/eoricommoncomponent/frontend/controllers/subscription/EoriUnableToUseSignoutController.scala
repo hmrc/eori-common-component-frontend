@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription
 
-import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.CdsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
@@ -25,6 +24,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms.eoriSignoutY
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.eori_signout
 
+import javax.inject.Inject
 import scala.concurrent.Future
 
 class EoriUnableToUseSignoutController @Inject() (

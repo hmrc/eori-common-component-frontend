@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
-import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import play.api.libs.json.Json
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
@@ -25,9 +24,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest.GovernmentGatewayEnrolmentRequest
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.events.{IssuerCall, IssuerRequest, IssuerResponse}
 import uk.gov.hmrc.eoricommoncomponent.frontend.util.HttpStatusCheck
-import uk.gov.hmrc.http._
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.{HttpClient, _}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

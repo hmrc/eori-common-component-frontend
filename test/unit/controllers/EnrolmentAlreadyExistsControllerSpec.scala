@@ -45,10 +45,8 @@ class EnrolmentAlreadyExistsControllerSpec extends ControllerSpec with AuthActio
       withAuthorisedUser(defaultUserId, mockAuthConnector)
 
       val result =
-        await(
-          controller.enrolmentAlreadyExists(atarService).apply(
-            SessionBuilder.buildRequestWithSessionAndPath("/atar/", defaultUserId)
-          )
+        controller.enrolmentAlreadyExists(atarService).apply(
+          SessionBuilder.buildRequestWithSessionAndPath("/atar/", defaultUserId)
         )
 
       status(result) shouldBe OK
@@ -69,10 +67,8 @@ class EnrolmentAlreadyExistsControllerSpec extends ControllerSpec with AuthActio
       withAuthorisedUser(defaultUserId, mockAuthConnector)
 
       val result =
-        await(
-          controller.enrolmentAlreadyExists(atarService.copy(callBack = None)).apply(
-            SessionBuilder.buildRequestWithSessionAndPath("/atar/", defaultUserId)
-          )
+        controller.enrolmentAlreadyExists(atarService.copy(callBack = None)).apply(
+          SessionBuilder.buildRequestWithSessionAndPath("/atar/", defaultUserId)
         )
 
       status(result) shouldBe OK
@@ -89,10 +85,8 @@ class EnrolmentAlreadyExistsControllerSpec extends ControllerSpec with AuthActio
       withAuthorisedUser(defaultUserId, mockAuthConnector)
 
       val result =
-        await(
-          controller.enrolmentAlreadyExistsForGroup(atarService).apply(
-            SessionBuilder.buildRequestWithSessionAndPath("/atar/", defaultUserId)
-          )
+        controller.enrolmentAlreadyExistsForGroup(atarService).apply(
+          SessionBuilder.buildRequestWithSessionAndPath("/atar/", defaultUserId)
         )
 
       status(result) shouldBe OK

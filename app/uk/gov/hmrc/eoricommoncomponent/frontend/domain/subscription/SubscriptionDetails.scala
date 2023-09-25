@@ -17,8 +17,6 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription
 
 import play.api.Logging
-
-import java.time.LocalDate
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
@@ -28,6 +26,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
   ContactAddressModel
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.DataUnavailableException
+
+import java.time.LocalDate
 
 case class SubscriptionDetails(
   dateEstablished: Option[LocalDate] = None,

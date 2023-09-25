@@ -15,15 +15,13 @@
  *@
 
 @import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
-@import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries._
-@import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+@import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries._
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.helpers.subscription.ViewHelper
+@import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
+@import uk.gov.hmrc.govukfrontend.views.Aliases.{Button, Text}
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
-@import uk.gov.hmrc.govukfrontend.views.Aliases.Button
-@import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 @import views.html.helper.CSRF
-@import views.html.helper.CSPNonce
 
 @this(layout_di: layout, countryField: helpers.countryField, inputText: helpers.inputText, errorSummary: helpers.errorSummary, govukButton: GovukButton, fieldset: helpers.fieldset)
 

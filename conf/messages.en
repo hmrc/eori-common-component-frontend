@@ -404,7 +404,7 @@ cds.subscription.enter-eori-number.eori-number.label=EORI number
 subscription.subscription-results.subscription-complete=Subscription complete
 subscription.subscription-results.active-from=Received by HMRC on
 cds.subscription.enter-email.page-error.email=Enter your email address
-cds.subscription.contact-details.form-error.email.wrong-format=Enter a valid email address
+cds.subscription.contact-details.form-error.email.wrong-format= Enter an email address in the correct format, like name@example.com
 cds.subscription.check-your-email.page-error.yes-no-answer=Tell us if this is the correct email address
 
 cds.email-confirmed.title-and-heading=Email address confirmed

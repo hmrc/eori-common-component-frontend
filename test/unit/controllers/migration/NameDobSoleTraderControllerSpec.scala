@@ -86,7 +86,9 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
     reset(mockSubscriptionFlowManager)
     reset(mockSubscriptionDetailsHolderService)
 
-    when(mockSubscriptionBusinessService.cachedSubscriptionNameDobViewModel(any[Request[_]])).thenReturn(None)
+    when(mockSubscriptionBusinessService.cachedSubscriptionNameDobViewModel(any[Request[_]])).thenReturn(
+      Future.successful(None)
+    )
     when(mockSubscriptionBusinessService.getCachedSubscriptionNameDobViewModel(any[Request[_]]))
       .thenReturn(Future.successful(NameDobSoleTraderPage.filledValues))
 
@@ -157,7 +159,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
     "fill fields with details if stored in cache" in {
       when(mockSubscriptionBusinessService.cachedSubscriptionNameDobViewModel(any[Request[_]]))
-        .thenReturn(Some(NameDobSoleTraderPage.filledValues))
+        .thenReturn(Future.successful(Some(NameDobSoleTraderPage.filledValues)))
       showCreateForm() { result =>
         val page              = CdsPage(contentAsString(result))
         val expectedFirstName = s"${NameDobSoleTraderPage.filledValues.firstName}"
@@ -188,7 +190,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
     "display relevant data in form fields when subscription details exist in the cache" in {
       when(mockSubscriptionBusinessService.getCachedSubscriptionNameDobViewModel(any()))
-        .thenReturn(NameDobSoleTraderPage.filledValues)
+        .thenReturn(Future.successful(NameDobSoleTraderPage.filledValues))
 
       showReviewForm() { result =>
         val page              = CdsPage(contentAsString(result))
@@ -575,7 +577,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
 
   private def mockFunctionWithRegistrationDetails(registrationDetails: RegistrationDetails): Unit =
     when(mockCdsFrontendDataCache.registrationDetails(any[Request[_]]))
-      .thenReturn(registrationDetails)
+      .thenReturn(Future.successful(registrationDetails))
 
   private def submitFormInCreateMode(
     form: Map[String, String],

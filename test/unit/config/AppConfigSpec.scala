@@ -16,16 +16,14 @@
 
 package unit.config
 
-import java.util.concurrent.TimeUnit
-
 import org.mockito.Mockito
 import org.mockito.Mockito.spy
 import org.scalatest.BeforeAndAfterEach
 import play.api.Configuration
-
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import util.ControllerSpec
 
+import java.util.concurrent.TimeUnit
 import scala.concurrent.duration.Duration
 
 class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {

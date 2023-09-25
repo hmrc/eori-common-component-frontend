@@ -17,16 +17,16 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector
 
 import play.api.Logger
+import play.api.http.HeaderNames.AUTHORIZATION
+import play.api.libs.json.Json
 import play.mvc.Http.Status._
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers._
 import uk.gov.hmrc.http.HttpReads.Implicits.readFromJson
-import javax.inject.Inject
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.http.client.HttpClientV2
-import play.api.http.HeaderNames.AUTHORIZATION
-import play.api.libs.json.Json
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NonFatal
 

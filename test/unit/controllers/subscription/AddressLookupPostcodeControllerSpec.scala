@@ -16,9 +16,9 @@
 
 package unit.controllers.subscription
 
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, verifyNoMoreInteractions, when}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.test.Helpers._

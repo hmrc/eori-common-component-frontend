@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services
 
-import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.Save4LaterConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -25,6 +24,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, Service, 
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.CachedData
 import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

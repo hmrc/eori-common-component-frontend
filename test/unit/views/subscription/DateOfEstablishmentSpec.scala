@@ -16,7 +16,6 @@
 
 package unit.views.subscription
 
-import java.time
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.Form
@@ -26,6 +25,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CorporateBody, LLP, Unin
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription.SubscriptionForm
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.date_of_establishment
 import util.ViewSpec
+
+import java.time
 
 class DateOfEstablishmentSpec extends ViewSpec {
   val form: Form[time.LocalDate] = SubscriptionForm.subscriptionDateOfEstablishmentForm
