@@ -23,28 +23,8 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
-import util.builders.AuthActionMock
-import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
-import util.builders.AuthBuilder._
-import util.builders.SessionBuilder
-import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.RosmRedirectController
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.eori_exists_rosm
-import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
-import play.api.mvc.MessagesControllerComponents
-import scala.concurrent.ExecutionContext.Implicits.global
 
-class RosmRedirectControllerSpec extends ControllerSpec with AuthActionMock {
-
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockAuthAction    = authAction(mockAuthConnector)
-
-  val sut = new RosmRedirectController(
-    authorise = mockAuthAction,
-    eoriExistsView = instanceOf[eori_exists_rosm],
-    enrolmentStoreProxyService = instanceOf[EnrolmentStoreProxyService],
-    mcc = instanceOf[MessagesControllerComponents]
-  )
+class RosmRedirectControllerSpec extends ControllerSpec {
 
   def application: Application = new GuiceApplicationBuilder()
     .overrides(bind[InternalAuthTokenInitialiser].to[NoOpInternalAuthTokenInitialiser])
@@ -52,6 +32,7 @@ class RosmRedirectControllerSpec extends ControllerSpec with AuthActionMock {
 
   Seq(
     "/customs/register-for-cds",
+    "/customs/register-for-cds/are-you-based-in-uk",
     "/customs/subscribe-for-cds",
     "/customs/subscribe-for-cds/are-you-based-in-uk"
   ).foreach { url =>
@@ -66,22 +47,6 @@ class RosmRedirectControllerSpec extends ControllerSpec with AuthActionMock {
           redirectLocation(result).get shouldEqual "/customs-enrolment-services/cds/subscribe"
         }
       }
-    }
-
-  }
-
-  "/customs/register-for-cds/are-you-based-in-uk" should {
-    "redirect the user to our start page if the user does not have an EORI" in {
-      withAuthorisedUser(defaultUserId, mockAuthConnector)
-      val result = sut.checkEoriNumber().apply(SessionBuilder.buildRequestWithSession(defaultUserId))
-      status(result) shouldEqual SEE_OTHER
-      redirectLocation(result).get shouldEqual "/customs-enrolment-services/cds/subscribe"
-    }
-
-    "disply the EORI exists screen if the user has an EORI" in {
-      withAuthorisedUser(defaultUserId, mockAuthConnector, cdsEnrolmentId = Some("GB123456789012"))
-      val result = sut.checkEoriNumber().apply(SessionBuilder.buildRequestWithSession(defaultUserId))
-      status(result) shouldEqual OK
     }
 
   }

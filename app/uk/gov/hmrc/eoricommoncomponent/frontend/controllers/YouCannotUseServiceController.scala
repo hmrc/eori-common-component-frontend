@@ -56,7 +56,7 @@ class YouCannotUseServiceController @Inject() (
     Unauthorized(unauthorisedView(service))
   }
 
-  def unableToUseIdPage(service: Service): Action[AnyContent] = authAction.enrolledUserWithSessionAction(service) {
+  def unableToUseIdPage(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
     implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.cachedEoriNumber.map {
         case Some(eori) => Ok(unableToUseIdPage(service, eori))
