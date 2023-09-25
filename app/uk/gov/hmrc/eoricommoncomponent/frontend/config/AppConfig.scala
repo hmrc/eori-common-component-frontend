@@ -44,9 +44,6 @@ class AppConfig @Inject() (
 
   val contactBaseUrl = servicesConfig.baseUrl("contact-frontend")
 
-  private val serviceIdentifierRegister =
-    config.get[String]("microservice.services.contact-frontend.serviceIdentifierRegister")
-
   val serviceIdentifierSubscribe =
     config.get[String]("microservice.services.contact-frontend.serviceIdentifierSubscribe")
 
