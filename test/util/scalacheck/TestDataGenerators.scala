@@ -16,11 +16,12 @@
 
 package util.scalacheck
 
-import java.time.LocalDate
 import org.scalacheck.{Arbitrary, Gen}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms
 import util.scalacheck.TestDataGenerators.Implicits._
+
+import java.time.LocalDate
 
 trait TestDataGenerators {
 
@@ -50,17 +51,6 @@ trait TestDataGenerators {
 
   def oversizedAddressLineGenerator(maxLengthConstraint: Int = maxLengthOfAddressLine): Gen[String] =
     addressLineGenerator.oversizeWithAlphaNumChars(maxLengthConstraint)
-
-  // Quick and dirty approach for now, may need to extend this if validation tightens up.
-  // TODO: should generate enough space not to breach the limit of an acceptable postcode length.
-  val postcodeGenerator: Gen[String] = for {
-    area     <- Gen.oneOf(Gen.alphaChar map (_.toString), Gen.listOfN(2, Gen.alphaChar) map (_.mkString))
-    district <- Gen.chooseNum(1, 99)
-    space    <- Gen.option(Gen.const(" "))
-    sector   <- Gen.chooseNum(0, 9)
-    unit     <- Gen.listOfN(2, Gen.alphaChar) map (_.mkString)
-    spacePayload = space getOrElse ""
-  } yield s"$area$district$spacePayload$sector$unit"
 
   val GBUpperCase = "GB"
 

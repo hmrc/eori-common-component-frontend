@@ -16,9 +16,10 @@
 
 package util.builders
 
-import java.time.LocalDate
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.SubscriptionDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
+
+import java.time.LocalDate
 
 object SubscriptionFormBuilder {
 

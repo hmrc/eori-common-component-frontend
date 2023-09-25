@@ -116,7 +116,7 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
       mockSubscriptionFlow(nextPageFlowUrl)
       submit(Map("nino" -> "ab 12 34 56 c")) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
+        header(LOCATION, result).value shouldBe "/customs-enrolment-services/subscribe/address"
       }
       verify(mockSubscriptionDetailsService).cacheCustomsId(meq(Nino("AB123456C")))(any[Request[_]])
     }
@@ -131,7 +131,7 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
         mockSubscriptionFlow(nextPageFlowUrl)
         submit(Map("nino" -> "ab 12 34 56 c"), isInReviewMode = true) { result =>
           status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/subscribe/address"
+          header(LOCATION, result).value shouldBe "/customs-enrolment-services/subscribe/address"
         }
         verify(mockSubscriptionDetailsService).cacheCustomsId(meq(Nino("AB123456C")))(any[Request[_]])
       }
@@ -146,9 +146,7 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
         mockSubscriptionFlow(nextPageFlowUrl)
         submit(Map("nino" -> "ab 12 34 56 c"), isInReviewMode = true) { result =>
           status(result) shouldBe SEE_OTHER
-          result.header.headers(
-            LOCATION
-          ) shouldBe "/customs-enrolment-services/atar/subscribe/matching/review-determine"
+          header(LOCATION, result).value shouldBe "/customs-enrolment-services/atar/subscribe/matching/review-determine"
         }
         verify(mockSubscriptionDetailsService).cacheCustomsId(meq(Nino("AB123456C")))(any[Request[_]])
       }
@@ -157,21 +155,20 @@ class GetNinoSubscriptionControllerSpec extends ControllerSpec with BeforeAndAft
 
   private def createForm()(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    test(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }
 
   private def reviewForm()(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    test(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }
 
   private def submit(form: Map[String, String], isInReviewMode: Boolean = false)(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(
-      test(
-        controller.submit(isInReviewMode, atarService).apply(
-          SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form)
-        )
+
+    test(
+      controller.submit(isInReviewMode, atarService).apply(
+        SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form)
       )
     )
   }

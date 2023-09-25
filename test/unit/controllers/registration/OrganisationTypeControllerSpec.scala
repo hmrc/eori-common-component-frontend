@@ -163,7 +163,7 @@ class OrganisationTypeControllerSpec extends ControllerSpec with BeforeAndAfterE
 
         submitForm(Map("organisation-type" -> option)) { result =>
           status(result) shouldBe SEE_OTHER
-          result.header.headers(LOCATION) shouldBe page.url(atarService)
+          header(LOCATION, result).value shouldBe page.url(atarService)
         }
       }
       s"thrown IllegalStateException  '$option' when unable to save " in {

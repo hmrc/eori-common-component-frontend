@@ -17,8 +17,6 @@
 package unit.services.registration
 
 import base.UnitSpec
-
-import java.time.{LocalDate, ZonedDateTime}
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.mockito._
@@ -26,6 +24,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.{AnyContent, Request}
+import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.RegisterWithEoriAndIdConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging._
@@ -46,6 +45,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping.{
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.Reg06Service
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.{LocalDate, ZonedDateTime}
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 import scala.util.Random
@@ -968,10 +968,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
       service
         .sendIndividualRequest(any(), hc, originatingService).futureValue shouldBe true
 
-      val captor =
-        ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
-      verify(mockConnector).register(captor.capture())(meq(hc), any())
-      //TODO What is the point of this captor????  Copy / Paste job???
+      verify(mockConnector).register(any())(meq(hc), any())
     }
 
     "determine correct request for an RegistrationDetailsOrganisation" in {
@@ -1003,12 +1000,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
         .sendOrganisationRequest(any(), hc, originatingService)
         .futureValue shouldBe true
 
-      val captor =
-        ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
-      verify(mockConnector).register(captor.capture())(meq(hc), any())
-
-      //TODO What is the point of this captor????  Copy / Paste job???
-
+      verify(mockConnector).register(any())(meq(hc), any())
     }
 
     "send correct request for  RegistrationDetailsOrganisation" in {
@@ -1036,11 +1028,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
 
       await(service.sendOrganisationRequest(any(), hc, originatingService)) shouldBe true
 
-      val captor =
-        ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
-      verify(mockConnector).register(captor.capture())(meq(hc), any())
-
-      //TODO What is the point of this captor????  Copy / Paste job???
+      verify(mockConnector).register(any())(meq(hc), any())
     }
     "throw DataUnavailableException when orgType is missing from Cache while calling  RegistrationDetailsOrganisation" in {
       val mockSubscriptionDetailsHolder = mock[SubscriptionDetails]
@@ -1129,11 +1117,7 @@ class Reg06ServiceSpec extends UnitSpec with MockitoSugar with ScalaFutures with
 
       await(service.sendIndividualRequest(any(), hc, originatingService)) shouldBe true
 
-      val captor =
-        ArgumentCaptor.forClass(classOf[RegisterWithEoriAndIdRequest])
-      verify(mockConnector).register(captor.capture())(meq(hc), any())
-
-      //TODO What is the point of this captor????  Copy / Paste job???
+      verify(mockConnector).register(any())(meq(hc), any())
     }
 
     "throw DataUnavailableException when OrgType is missing from request session while calling sendIndividualRequest" in {

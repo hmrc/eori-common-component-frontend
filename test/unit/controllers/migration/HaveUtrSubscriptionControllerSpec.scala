@@ -19,7 +19,7 @@ package unit.controllers.migration
 import common.pages.matching.{SubscriptionRowCompanyUtr, SubscriptionRowIndividualsUtr}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito._
-import org.scalatest.BeforeAndAfterEach
+import org.scalatest.{Assertion, BeforeAndAfterEach}
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -85,8 +85,8 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
 
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
       createForm() { result =>
-        status(result) shouldBe OK
-        val page = CdsPage(contentAsString(result))
+        status(Future.successful(result)) shouldBe OK
+        val page = CdsPage(contentAsString(Future.successful(result)))
         page.title() should include(SubscriptionRowCompanyUtr.title)
       }
     }
@@ -95,8 +95,8 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
 
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(SoleTrader))
       createForm() { result =>
-        status(result) shouldBe OK
-        val page = CdsPage(contentAsString(result))
+        status(Future.successful(result)) shouldBe OK
+        val page = CdsPage(contentAsString(Future.successful(result)))
         page.title() should include(SubscriptionRowIndividualsUtr.title)
 
       }
@@ -106,8 +106,8 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
 
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Individual))
       createForm() { result =>
-        status(result) shouldBe OK
-        val page = CdsPage(contentAsString(result))
+        status(Future.successful(result)) shouldBe OK
+        val page = CdsPage(contentAsString(Future.successful(result)))
         page.title() should include(SubscriptionRowIndividualsUtr.title)
       }
     }
@@ -115,7 +115,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
     "throws an exception if orgType is not found" in {
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
       intercept[DataUnavailableException] {
-        createForm()(result => status(result))
+        createForm()(result => status(Future.successful(result)) shouldBe INTERNAL_SERVER_ERROR)
       }.getMessage shouldBe "No organisation type selected by user"
     }
 
@@ -124,8 +124,8 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       when(mockSubscriptionDetailsService.cachedUtrMatch(any[Request[_]]))
         .thenReturn(Future.successful(Some(UtrMatchModel(Some(true), Some("Utr")))))
       createForm() { result =>
-        status(result) shouldBe OK
-        val page = CdsPage(contentAsString(result))
+        status(Future.successful(result)) shouldBe OK
+        val page = CdsPage(contentAsString(Future.successful(result)))
         page.title() should include(SubscriptionRowIndividualsUtr.title)
       }
     }
@@ -136,8 +136,8 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
 
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
       reviewForm() { result =>
-        status(result) shouldBe OK
-        val page = CdsPage(contentAsString(result))
+        status(Future.successful(result)) shouldBe OK
+        val page = CdsPage(contentAsString(Future.successful(result)))
         page.title() should include(SubscriptionRowCompanyUtr.title)
       }
     }
@@ -146,8 +146,8 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
 
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(SoleTrader))
       reviewForm() { result =>
-        status(result) shouldBe OK
-        val page = CdsPage(contentAsString(result))
+        status(Future.successful(result)) shouldBe OK
+        val page = CdsPage(contentAsString(Future.successful(result)))
         page.title() should include(SubscriptionRowIndividualsUtr.title)
 
       }
@@ -157,8 +157,8 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
 
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Individual))
       reviewForm() { result =>
-        status(result) shouldBe OK
-        val page = CdsPage(contentAsString(result))
+        status(Future.successful(result)) shouldBe OK
+        val page = CdsPage(contentAsString(Future.successful(result)))
         page.title() should include(SubscriptionRowIndividualsUtr.title)
       }
     }
@@ -166,7 +166,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
     "throws an exception if orgType is not found" in {
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
       intercept[DataUnavailableException] {
-        reviewForm()(result => status(result))
+        reviewForm()(result => status(Future.successful(result)) shouldBe INTERNAL_SERVER_ERROR)
       }.getMessage shouldBe "No organisation type selected by user"
     }
 
@@ -176,21 +176,21 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
     "throws an exception if orgType is not found" in {
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(None)
       intercept[DataUnavailableException] {
-        submit(ValidUtrRequest)(result => status(result))
+        submit(ValidUtrRequest)(result => status(Future.successful(result)) shouldBe INTERNAL_SERVER_ERROR)
       }.getMessage shouldBe "No organisation type selected by user"
     }
 
     "return BadRequest when no option selected" in {
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
       submit(Map.empty[String, String]) { result =>
-        status(result) shouldBe BAD_REQUEST
+        status(Future.successful(result)) shouldBe BAD_REQUEST
       }
     }
 
     "return BadRequest when invalid option provided" in {
       when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]])).thenReturn(Some(Company))
       submit(Map("have-utr" -> "non")) { result =>
-        status(result) shouldBe BAD_REQUEST
+        status(Future.successful(result)) shouldBe BAD_REQUEST
       }
     }
 
@@ -202,7 +202,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
         .thenReturn(Future.successful(Some(nameOrganisationMatchModel)))
       when(mockSubscriptionDetailsService.cacheUtrMatch(any())(any[Request[_]])).thenReturn(Future.successful(()))
       submit(Map("have-utr" -> "true", "utr" -> "11 11 111111k")) { result =>
-        status(result) shouldBe SEE_OTHER
+        result.header.status shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-get-utr"
       }
       verify(mockSubscriptionDetailsService, times(1)).cacheUtrMatch(meq(Some(UtrMatchModel(Some(true), None))))(
@@ -218,7 +218,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
         .thenReturn(Future.successful(Some(nameOrganisationMatchModel)))
       when(mockSubscriptionDetailsService.cacheUtrMatch(any())(any[Request[_]])).thenReturn(Future.successful(()))
       submit(Map("have-utr" -> "true", "utr" -> "11 11 111111k"), isInReviewMode = true) { result =>
-        status(result) shouldBe SEE_OTHER
+        result.header.status shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-get-utr/review"
       }
       verify(mockSubscriptionDetailsService, times(1)).cacheUtrMatch(meq(Some(UtrMatchModel(Some(true), None))))(
@@ -235,7 +235,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
       when(mockSubscriptionDetailsService.cachedNameDetails(any[Request[_]]))
         .thenReturn(Future.successful(Some(nameOrganisationMatchModel)))
       submit(ValidUtrRequest) { result =>
-        status(result) shouldBe SEE_OTHER
+        result.header.status shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-get-utr"
       }
       verify(mockSubscriptionDetailsService, times(1)).cacheUtrMatch(meq(Some(UtrMatchModel(Some(true), None))))(
@@ -249,7 +249,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
         .thenReturn(Future.successful(()))
       mockSubscriptionFlow(nextPageFlowUrl)
       submit(NoUtrRequest) { result =>
-        status(result) shouldBe SEE_OTHER
+        result.header.status shouldBe SEE_OTHER
         result.header.headers(LOCATION) shouldBe nextPageFlowUrl
       }
     }
@@ -263,7 +263,7 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
         when(mockSubscriptionDetailsService.cacheUtrMatchForNoAnswer(any[Option[UtrMatchModel]])(any[Request[_]]))
           .thenReturn(Future.successful(()))
         submit(NoUtrRequest) { result =>
-          status(result) shouldBe SEE_OTHER
+          result.header.status shouldBe SEE_OTHER
           result.header.headers(LOCATION) shouldBe "/customs-enrolment-services/atar/subscribe/row-country"
         }
       }
@@ -271,20 +271,20 @@ class HaveUtrSubscriptionControllerSpec extends ControllerSpec with AuthActionMo
 
   }
 
-  private def createForm()(test: Future[Result] => Any) = {
+  private def createForm()(test: Result => Assertion) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    test(await(controller.createForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
-  private def reviewForm()(test: Future[Result] => Any) = {
+  private def reviewForm()(test: Result => Assertion) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    test(await(controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
   }
 
-  private def submit(form: Map[String, String], isInReviewMode: Boolean = false)(test: Future[Result] => Any) = {
+  private def submit(form: Map[String, String], isInReviewMode: Boolean = false)(test: Result => Assertion) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(
-      test(
+    test(
+      await(
         controller.submit(isInReviewMode, atarService).apply(
           SessionBuilder.buildRequestWithSessionAndFormValues(defaultUserId, form)
         )

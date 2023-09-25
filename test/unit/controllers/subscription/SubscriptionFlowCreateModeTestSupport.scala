@@ -46,12 +46,12 @@ trait SubscriptionFlowCreateModeTestSupport extends SubscriptionFlowTestSupport 
 
   def verifyRedirectToNextPageInCreateMode: Future[Result] => Any = { result =>
     status(result) shouldBe SEE_OTHER
-    result.header.headers(LOCATION) should endWith(nextPageUrl)
+    header(LOCATION, result).value should endWith(nextPageUrl)
   }
 
   def verifyRedirectToNextPageInReviewMode: Future[Result] => Any = { result =>
     status(result) shouldBe SEE_OTHER
-    result.header.headers(LOCATION) should endWith(
+    header(LOCATION, result).value should endWith(
       "/customs-enrolment-services/atar/subscribe/matching/review-determine"
     )
   }

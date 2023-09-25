@@ -48,7 +48,7 @@ class DetermineReviewPageControllerSpec extends ControllerSpec with BeforeAndAft
     "redirect to to correct page when session data is set with the key journeyType.Subscribe" in {
       determinRouteSubscription { result =>
         val awaitedResult = await(result)
-        status(awaitedResult) shouldBe SEE_OTHER
+        status(Future.successful(awaitedResult)) shouldBe SEE_OTHER
         awaitedResult.header.headers.get("Location") shouldBe
           Some(
             uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.routes.CheckYourDetailsController

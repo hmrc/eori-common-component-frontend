@@ -16,18 +16,17 @@
 
 package unit.controllers
 
-import org.scalatest.BeforeAndAfterEach
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
+import org.scalatest.BeforeAndAfterEach
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.YouCannotUseServiceController
-
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.SubscriptionBusinessService
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{unauthorized, you_cant_use_service}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.unable_to_use_id
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.{unauthorized, you_cant_use_service}
 import util.ControllerSpec
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.{AuthActionMock, SessionBuilder}
@@ -114,10 +113,10 @@ class YouCannotUseServiceControllerSpec extends ControllerSpec with AuthActionMo
 
   private def page()(test: Future[Result] => Any) = {
     withAuthorisedUser(defaultUserId, mockAuthConnector)
-    await(test(controller.page(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId))))
+    test(controller.page(atarService).apply(SessionBuilder.buildRequestWithSession(defaultUserId)))
   }
 
   private def unauthorisedPage()(test: Future[Result] => Any) =
-    await(test(controller.unauthorisedPage(atarService).apply(SessionBuilder.buildRequestWithSessionNoUser)))
+    test(controller.unauthorisedPage(atarService).apply(SessionBuilder.buildRequestWithSessionNoUser))
 
 }

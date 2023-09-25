@@ -20,8 +20,8 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.mvc.Request
 import play.api.test.Helpers.contentAsString
-import util.ViewSpec
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.unable_to_use_id
+import util.ViewSpec
 
 class UnableToUseIdViewSpec extends ViewSpec {
 

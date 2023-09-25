@@ -16,12 +16,12 @@
 
 package unit.services.registration
 
-import java.time.{LocalDate, LocalDateTime}
-
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.MatchingResponse
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, Individual, RequestCommon}
+
+import java.time.{LocalDate, LocalDateTime}
 
 trait MatchingServiceTestData {
   val ninoId: String                        = "AB123456C"

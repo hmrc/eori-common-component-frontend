@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.forms
 
-import play.api.data.Forms.of
-
-import java.time.LocalDate
 import play.api.data.FieldMapping
+import play.api.data.Forms.of
 import play.api.data.validation._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.LocalDateFormatter
+
+import java.time.LocalDate
 
 object FormUtils {
 

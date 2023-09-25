@@ -16,16 +16,16 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.controllers
 
-import javax.inject.{Inject, Singleton}
 import play.api.i18n.Lang
 import play.api.mvc.{Call, ControllerComponents}
 import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class EoriLanguageController @Inject() (languageUtils: LanguageUtils, cc: ControllerComponents)
     extends LanguageController(languageUtils, cc) {
 
-  // TODO Find a way to include a service name in the url
   override protected def fallbackURL: String =
     "/customs-enrolment-services/subscribe" //This will be always register for cds we might need to add a route for fallback cannot be dynamic
 

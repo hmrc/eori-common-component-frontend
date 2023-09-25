@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription
 
 import play.api.libs.json.{Format, Json}
+
 import java.time.LocalDateTime
 
 case class SubmissionCompleteData(

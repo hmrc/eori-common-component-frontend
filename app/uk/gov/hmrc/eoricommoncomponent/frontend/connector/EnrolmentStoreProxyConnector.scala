@@ -147,13 +147,11 @@ class EnrolmentStoreProxyConnector @Inject() (http: HttpClient, appConfig: AppCo
           }
         case Status.NO_CONTENT  => ES1Response(None, None)
         case Status.BAD_REQUEST =>
-          // TODO - ADD alert config for this
           // $COVERAGE-OFF$Loggers
           logger.error(s"ES1 FAIL - Response status: 400 with body ${response.body}")
           // $COVERAGE-ON
           throw new Exception("ES1 call failed with 400 status")
         case _ =>
-          //TODO - ADD alert config for this
           // $COVERAGE-OFF$Loggers
           logger.warn(s"ES1 FAIL - Response status: ${response.status} with body ${response.body}")
           // $COVERAGE-ON

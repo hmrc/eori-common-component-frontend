@@ -17,9 +17,6 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.mapping
 
 import play.api.Logging
-
-import javax.inject.Singleton
-import java.time.LocalDate
 import uk.gov.hmrc.eoricommoncomponent.frontend.DateConverter._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging._
@@ -29,6 +26,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.{
   RegisterWithIDResponse
 }
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.registration.RegistrationDisplayResponse
+
+import java.time.LocalDate
+import javax.inject.Singleton
 
 @Singleton
 class RegistrationDetailsCreator extends Logging {

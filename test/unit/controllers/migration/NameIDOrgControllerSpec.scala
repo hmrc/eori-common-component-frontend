@@ -89,7 +89,9 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     reset(mockSubscriptionFlowManager)
     reset(mockSubscriptionDetailsHolderService)
 
-    when(mockSubscriptionBusinessService.cachedNameIdOrganisationViewModel(any[Request[_]])).thenReturn(None)
+    when(mockSubscriptionBusinessService.cachedNameIdOrganisationViewModel(any[Request[_]])).thenReturn(
+      Future.successful(None)
+    )
     when(mockSubscriptionBusinessService.getCachedNameIdViewModel(any[Request[_]]))
       .thenReturn(Future.successful(NameIdDetailsPage.filledValues))
 
@@ -178,7 +180,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
     "fill fields with details if stored in cache" in {
       when(mockSubscriptionBusinessService.cachedNameIdOrganisationViewModel(any[Request[_]]))
-        .thenReturn(Some(NameIdDetailsPage.filledValues))
+        .thenReturn(Future.successful(Some(NameIdDetailsPage.filledValues)))
       showCreateForm() { result =>
         val page         = CdsPage(contentAsString(result))
         val expectedName = s"${NameIdDetailsPage.filledValues.name}"
@@ -204,7 +206,9 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(mockAuthConnector, controller.reviewForm(atarService))
 
     "display relevant data in form fields when subscription details exist in the cache" in {
-      when(mockSubscriptionBusinessService.getCachedNameIdViewModel(any())).thenReturn(NameIdDetailsPage.filledValues)
+      when(mockSubscriptionBusinessService.getCachedNameIdViewModel(any())).thenReturn(
+        Future.successful(NameIdDetailsPage.filledValues)
+      )
 
       showReviewForm() { result =>
         val page         = CdsPage(contentAsString(result))
@@ -333,7 +337,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
     }
     "validation error when full name is not submitted for Company" in {
 
-      when(mockRequestSessionData.isCompany(any())).thenReturn(Future.successful(true))
+      when(mockRequestSessionData.isCompany(any())).thenReturn(true)
       submitFormInCreateMode(createFormAllFieldsUtrMap + (nameFieldName -> "")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
@@ -346,7 +350,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
     "validation error when full name more than 105 characters for Company" in {
 
-      when(mockRequestSessionData.isCompany(any())).thenReturn(Future.successful(true))
+      when(mockRequestSessionData.isCompany(any())).thenReturn(true)
       submitFormInCreateMode(createFormAllFieldsUtrMap + (nameFieldName -> List.fill(106)("D").mkString)) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
@@ -360,7 +364,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(
         Some(CdsOrganisationType(PartnershipId))
       )
-      when(mockRequestSessionData.isPartnership(any())).thenReturn(Future.successful(true))
+      when(mockRequestSessionData.isPartnership(any())).thenReturn(true)
       submitFormInCreateMode(createFormAllFieldsUtrMap + (nameFieldName -> "")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
@@ -375,7 +379,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(
         Some(CdsOrganisationType(PartnershipId))
       )
-      when(mockRequestSessionData.isPartnership(any())).thenReturn(Future.successful(true))
+      when(mockRequestSessionData.isPartnership(any())).thenReturn(true)
       submitFormInCreateMode(createFormAllFieldsUtrMap + (nameFieldName -> List.fill(106)("D").mkString)) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
@@ -436,7 +440,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
 
   private def mockFunctionWithRegistrationDetails(registrationDetails: RegistrationDetails): Unit =
     when(mockCdsFrontendDataCache.registrationDetails(any[Request[_]]))
-      .thenReturn(registrationDetails)
+      .thenReturn(Future.successful(registrationDetails))
 
   private def submitFormInCreateMode(form: Map[String, String], userId: String = defaultUserId)(
     test: Future[Result] => Any

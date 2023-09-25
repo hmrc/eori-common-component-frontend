@@ -17,8 +17,6 @@
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.cache
 
 import play.api.Logging
-
-import javax.inject.Singleton
 import play.api.mvc.{AnyContent, Request, Session}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
@@ -28,6 +26,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
   SoleTraderFlow,
   SubscriptionFlow
 }
+
+import javax.inject.Singleton
 
 @Singleton
 class RequestSessionData extends Logging {

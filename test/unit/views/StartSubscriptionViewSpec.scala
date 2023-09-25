@@ -17,7 +17,6 @@
 package unit.views
 
 import play.api.mvc.Request
-
 import util.ViewSpec
 
 class StartSubscriptionViewSpec extends ViewSpec {

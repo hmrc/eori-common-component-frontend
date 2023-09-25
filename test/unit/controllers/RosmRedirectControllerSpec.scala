@@ -16,13 +16,13 @@
 
 package unit.controllers.registration
 
-import play.api.test.Helpers._
-import play.api.test.FakeRequest
-import util.ControllerSpec
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
+import util.ControllerSpec
 
 class RosmRedirectControllerSpec extends ControllerSpec {
 

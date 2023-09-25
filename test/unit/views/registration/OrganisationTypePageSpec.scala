@@ -25,9 +25,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.MatchingForms._
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.registration.organisation_type
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-
 import util.ViewSpec
 
 class OrganisationTypePageSpec extends ViewSpec {

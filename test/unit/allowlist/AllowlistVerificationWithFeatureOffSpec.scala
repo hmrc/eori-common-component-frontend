@@ -72,13 +72,17 @@ class AllowlistVerificationWithFeatureOffSpec extends SubscriptionFlowSpec with 
     reset(mockCdsFrontendDataCache)
     reset(mockSubscriptionFlowManager)
     reset(mockSubscriptionDetailsHolderService)
-    when(mockSubscriptionBusinessService.cachedSubscriptionNameDobViewModel(any[Request[_]])).thenReturn(None)
+    when(mockSubscriptionBusinessService.cachedSubscriptionNameDobViewModel(any[Request[_]])).thenReturn(
+      Future.successful(None)
+    )
     when(mockSubscriptionBusinessService.getCachedSubscriptionNameDobViewModel(any[Request[_]]))
       .thenReturn(Future.successful(NameDobSoleTraderPage.filledValues))
     when(mockRequestSessionData.userSelectedOrganisationType(any())).thenReturn(Some(CdsOrganisationType.SoleTrader))
     when(mockSubscriptionDetailsHolderService.cacheNameDobDetails(any[NameDobMatchModel])(any[Request[_]]))
       .thenReturn(Future.successful(()))
-    when(mockCdsFrontendDataCache.registrationDetails(any[Request[_]])).thenReturn(mockRegistrationDetails)
+    when(mockCdsFrontendDataCache.registrationDetails(any[Request[_]])).thenReturn(
+      Future.successful(mockRegistrationDetails)
+    )
     setupMockSubscriptionFlowManager(NameDobDetailsSubscriptionFlowPage)
     when(mockRequestSessionData.selectedUserLocationWithIslands(any())).thenReturn(Some(UserLocation.Eu))
 

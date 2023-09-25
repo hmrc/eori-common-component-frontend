@@ -23,7 +23,6 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.WhatIsYourEmailController
-
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email.EmailStatus
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.Save4LaterService
@@ -95,7 +94,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     "be valid for correct email format" in {
       submitFormInCreateMode(EmailFieldsMap, journey = subscribeJourneyShort) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith(
+        header(LOCATION, result).value should endWith(
           "/customs-enrolment-services/atar/subscribe/autoenrolment/matching/check-your-email"
         )
       }
@@ -104,7 +103,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     "be valid for correct email format (Long Journey)" in {
       submitFormInCreateMode(EmailFieldsMap, journey = subscribeJourneyLong) { result =>
         status(result) shouldBe SEE_OTHER
-        result.header.headers("Location") should endWith(
+        header(LOCATION, result).value should endWith(
           "/customs-enrolment-services/atar/subscribe/longjourney/matching/check-your-email"
         )
       }

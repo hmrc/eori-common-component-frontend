@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.forms.subscription
 
-import play.api.data.{Form, Forms}
 import play.api.data.Forms._
+import play.api.data.{Form, Forms}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormUtils._
 
 case class EoriUnableToUse(answer: Option[String]) {

@@ -95,10 +95,12 @@ class AddressServiceSpec
   override def beforeEach(): Unit = {
     super.beforeEach()
 
-    when(mockSubscriptionBusinessService.address(any[Request[_]])).thenReturn(None)
-    when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[_]])).thenReturn(None)
+    when(mockSubscriptionBusinessService.address(any[Request[_]])).thenReturn(Future.successful(None))
+    when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[_]])).thenReturn(Future.successful(None))
     when(mockSubscriptionDetailsService.cacheAddressDetails(any())(any())).thenReturn(Future.successful((): Unit))
-    when(mockCdsFrontendDataCache.registrationDetails(any[Request[_]])).thenReturn(organisationRegistrationDetails)
+    when(mockCdsFrontendDataCache.registrationDetails(any[Request[_]])).thenReturn(
+      Future.successful(organisationRegistrationDetails)
+    )
     when(mockCdsFrontendDataCache.saveRegistrationDetails(any[RegistrationDetails])(any[Request[_]]))
       .thenReturn(Future.successful(true))
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]]))
@@ -267,7 +269,7 @@ class AddressServiceSpec
     "wait until the saveSubscriptionDetailsHolder is completed before progressing" in {
       registerSaveDetailsMockFailure(emulatedFailure)
       the[UnsupportedOperationException] thrownBy {
-        submitFormInReviewMode(mandatoryFields)(await)
+        submitFormInReviewMode(mandatoryFields)(await(_))
       } should have message emulatedFailure.getMessage
     }
 
@@ -389,7 +391,9 @@ class AddressServiceSpec
   ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
 
-    when(mockCdsFrontendDataCache.registrationDetails(any[Request[_]])).thenReturn(organisationRegistrationDetails)
+    when(mockCdsFrontendDataCache.registrationDetails(any[Request[_]])).thenReturn(
+      Future.successful(organisationRegistrationDetails)
+    )
 
     test(
       service.handleFormDataAndRedirect(addressDetailsCreateForm(), false, atarService)(
@@ -414,8 +418,10 @@ class AddressServiceSpec
     withAuthorisedUser(userId, mockAuthConnector)
     when(mockRequestSessionData.userSelectedOrganisationType(any[Request[AnyContent]]))
       .thenReturn(Some(CdsOrganisationType("individual")))
-    when(mockCdsFrontendDataCache.registrationDetails(any[Request[_]])).thenReturn(individualRegistrationDetails)
-    when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[_]])).thenReturn(None)
+    when(mockCdsFrontendDataCache.registrationDetails(any[Request[_]])).thenReturn(
+      Future.successful(individualRegistrationDetails)
+    )
+    when(mockSubscriptionDetailsService.cachedCustomsId(any[Request[_]])).thenReturn(Future.successful(None))
 
     test(
       service.handleFormDataAndRedirect(addressDetailsCreateForm(), true, atarService)(
@@ -466,8 +472,10 @@ class AddressServiceSpec
 
     when(mockRequestSessionData.isIndividualOrSoleTrader(any[Request[AnyContent]]))
       .thenReturn(isIndividual(userSelectedOrganisationType))
-    when(mockSubscriptionBusinessService.addressOrException(any[Request[_]])).thenReturn(dataToEdit)
-    when(mockCdsFrontendDataCache.registrationDetails(any[Request[_]])).thenReturn(individualRegistrationDetails)
+    when(mockSubscriptionBusinessService.addressOrException(any[Request[_]])).thenReturn(Future.successful(dataToEdit))
+    when(mockCdsFrontendDataCache.registrationDetails(any[Request[_]])).thenReturn(
+      Future.successful(individualRegistrationDetails)
+    )
 
     test(service.populateReviewViewCached(true, atarService)(SessionBuilder.buildRequestWithSession(userId)))
   }

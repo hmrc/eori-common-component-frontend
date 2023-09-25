@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription
 
-import java.time.{LocalDateTime, ZoneId}
-import java.time.format.DateTimeFormatter
-
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+
+import java.time.format.DateTimeFormatter
+import java.time.{LocalDateTime, ZoneId}
 
 case class NotifyRcmRequest(timestamp: String, eori: String, name: String, email: String, serviceName: String)
 

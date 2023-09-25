@@ -31,9 +31,10 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{
   CompanyRegisteredCountry,
   ContactAddressModel
 }
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.check_your_details
 import uk.gov.hmrc.play.language.LanguageUtils
 import util.ViewSpec
-import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.check_your_details
+
 import java.time.LocalDate
 
 class CheckYourDetailsSpec extends ViewSpec {

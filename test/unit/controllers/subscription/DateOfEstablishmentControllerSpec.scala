@@ -101,7 +101,7 @@ class DateOfEstablishmentControllerSpec
     reset(mockSubscriptionBusinessService)
     reset(mockSubscriptionDetailsHolderService)
     setupMockSubscriptionFlowManager(DateOfEstablishmentSubscriptionFlowPageMigrate)
-    when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]])).thenReturn(CorporateBody)
+    when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]])).thenReturn(Future.successful(CorporateBody))
   }
 
   val formModes = Table(
@@ -175,7 +175,7 @@ class DateOfEstablishmentControllerSpec
     }
 
     "use partnership in title and heading for Partnership Org Type" in {
-      when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]])).thenReturn(Partnership)
+      when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]])).thenReturn(Future.successful(Partnership))
       showCreateForm(cachedDate = Some(DateOfEstablishment)) { result =>
         val page = CdsPage(contentAsString(result))
         page.title() should startWith("When was the partnership established?")
@@ -186,7 +186,7 @@ class DateOfEstablishmentControllerSpec
     }
 
     "use partnership in title and heading for Limited Liability Partnership Org Type" in {
-      when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]])).thenReturn(LLP)
+      when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]])).thenReturn(Future.successful(LLP))
       showCreateForm(cachedDate = Some(DateOfEstablishment)) { result =>
         val page = CdsPage(contentAsString(result))
         page.title() should startWith("When was the partnership established?")
@@ -198,7 +198,7 @@ class DateOfEstablishmentControllerSpec
 
     "use business in Date of Establishment title and heading for non-partnership Org Type" in {
       when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]]))
-        .thenReturn(UnincorporatedBody)
+        .thenReturn(Future.successful(UnincorporatedBody))
       showCreateForm(cachedDate = Some(DateOfEstablishment)) { result =>
         val page = CdsPage(contentAsString(result))
         page.title() should startWith("When was the organisation established?")
@@ -209,7 +209,7 @@ class DateOfEstablishmentControllerSpec
     }
 
     "use business in Date of Establishment text and organisation in title and heading for Company Org Type" in {
-      when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]])).thenReturn(CorporateBody)
+      when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]])).thenReturn(Future.successful(CorporateBody))
       showCreateForm(cachedDate = Some(DateOfEstablishment)) { result =>
         val page = CdsPage(contentAsString(result))
 
@@ -403,7 +403,7 @@ class DateOfEstablishmentControllerSpec
     withAuthorisedUser(userId, mockAuthConnector)
 
     when(mockSubscriptionBusinessService.getCachedDateEstablished(any[Request[AnyContent]])).thenReturn(
-      DateOfEstablishment
+      Future.successful(DateOfEstablishment)
     )
 
     val result = controller.reviewForm(atarService).apply(SessionBuilder.buildRequestWithSession(userId))
