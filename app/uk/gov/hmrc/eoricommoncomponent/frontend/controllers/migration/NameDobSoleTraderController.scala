@@ -49,7 +49,7 @@ class NameDobSoleTraderController @Inject() (
     extends CdsController(mcc) {
 
   def createForm(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction {
+    authAction.enrolledUserWithSessionAction(service) {
       implicit request => _: LoggedInUserWithEnrolments =>
         subscriptionBusinessService.cachedSubscriptionNameDobViewModel flatMap { maybeCachedNameDobViewModel =>
           populateOkView(maybeCachedNameDobViewModel, isInReviewMode = false, service)
@@ -57,7 +57,7 @@ class NameDobSoleTraderController @Inject() (
     }
 
   def reviewForm(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction {
+    authAction.enrolledUserWithSessionAction(service) {
       implicit request => _: LoggedInUserWithEnrolments =>
         subscriptionBusinessService.getCachedSubscriptionNameDobViewModel flatMap { cdm =>
           populateOkView(Some(cdm), isInReviewMode = true, service)
@@ -65,7 +65,7 @@ class NameDobSoleTraderController @Inject() (
     }
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
       val form = if (UserLocation.isRow(requestSessionData)) enterNameDobFormRow else enterNameDobForm
       form.bindFromRequest().fold(
         formWithErrors =>

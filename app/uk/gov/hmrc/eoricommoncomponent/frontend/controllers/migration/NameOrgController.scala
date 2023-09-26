@@ -48,21 +48,21 @@ class NameOrgController @Inject() (
     extends CdsController(mcc) {
 
   def createForm(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.cachedNameOrganisationViewModel flatMap { maybeCachedNameViewModel =>
         populateOkView(maybeCachedNameViewModel, isInReviewMode = false, service)
       }
     }
 
   def reviewForm(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
       subscriptionBusinessService.getCachedNameViewModel flatMap { nameOrgMatchModel =>
         populateOkView(Some(nameOrgMatchModel), isInReviewMode = true, service)
       }
     }
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
       nameOrganisationForm.bindFromRequest().fold(
         formWithErrors =>
           sessionCache.registrationDetails map { registrationDetails =>

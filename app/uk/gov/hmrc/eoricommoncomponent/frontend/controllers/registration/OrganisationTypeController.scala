@@ -46,7 +46,7 @@ class OrganisationTypeController @Inject() (
     extends CdsController(mcc) {
 
   def form(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction {
+    authAction.enrolledUserWithSessionAction(service) {
       implicit request => _: LoggedInUserWithEnrolments =>
         subscriptionDetailsService.cachedOrganisationType map { orgType =>
           val isUk       = requestSessionData.selectedUserLocation.forall(_ == UserLocation.Uk)
@@ -59,7 +59,7 @@ class OrganisationTypeController @Inject() (
     }
 
   def submit(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction {
+    authAction.enrolledUserWithSessionAction(service) {
       implicit request =>
         def startSubscription: CdsOrganisationType => Future[Result] = { organisationType =>
           subscriptionFlowManager.startSubscriptionFlow(cdsOrganisationType = organisationType, service = service) map {

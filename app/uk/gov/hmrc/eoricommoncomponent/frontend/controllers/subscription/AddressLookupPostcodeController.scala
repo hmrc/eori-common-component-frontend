@@ -46,7 +46,7 @@ class AddressLookupPostcodeController @Inject() (
     extends CdsController(mcc) {
 
   def displayPage(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
       sessionCache.addressLookupParams.map {
         case Some(addressLookupParams) =>
           Ok(prepareView(AddressLookupParams.form().fill(addressLookupParams), false, service))
@@ -55,7 +55,7 @@ class AddressLookupPostcodeController @Inject() (
     }
 
   def reviewPage(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
       sessionCache.addressLookupParams.map {
         case Some(addressLookupParams) =>
           Ok(prepareView(AddressLookupParams.form().fill(addressLookupParams), true, service))
@@ -75,7 +75,7 @@ class AddressLookupPostcodeController @Inject() (
   }
 
   def submit(service: Service, isInReviewMode: Boolean): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _: LoggedInUserWithEnrolments =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => _: LoggedInUserWithEnrolments =>
       AddressLookupParams.form().bindFromRequest().fold(
         formWithError => Future.successful(BadRequest(prepareView(formWithError, isInReviewMode, service))),
         validAddressParams =>

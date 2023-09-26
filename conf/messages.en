@@ -1522,3 +1522,7 @@ ecc.address-lookup.postcode.partnership.hint.text =We will use this to verify yo
 lockedEmail.heading = You’ve entered an incorrect code too many times
 lockedEmail.para1 = You will not be able to continue with your application.
 lockedEmail.para2 = You can try again in 24 hours.
+
+# ROSM redirect screen where an EORI exists
+cds.eori-exists-rosm.title = You already have an EORI number
+cds.eori-exists-rosm.heading = You already have an EORI number

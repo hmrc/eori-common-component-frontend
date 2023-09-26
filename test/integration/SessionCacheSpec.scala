@@ -570,6 +570,16 @@ class SessionCacheSpec extends IntegrationTestsSpec with MockitoSugar with Mongo
       cached mustBe None
     }
 
+    "save completed when journeyCompleted is called" in {
+
+      when(request.session).thenReturn(Session(Map(("sessionId", "sessionId-" + UUID.randomUUID()))))
+
+      await(sessionCache.isJourneyComplete) mustEqual false
+      await(sessionCache.journeyCompleted)
+      await(sessionCache.isJourneyComplete) mustEqual true
+
+    }
+
   }
 
 }
