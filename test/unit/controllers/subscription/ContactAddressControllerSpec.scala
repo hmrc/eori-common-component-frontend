@@ -267,7 +267,7 @@ class ContactAddressControllerSpec
           "Enter your town or city"
         )
         page.getElementsText(ContactAddressPage.pageLevelErrorSummaryListXPath) should include(
-          "Enter a valid country name"
+          messages("cds.matching-error.country.invalid")
         )
 
         page.getElementsText(
@@ -276,7 +276,9 @@ class ContactAddressControllerSpec
         page.getElementsText(
           ContactAddressPage.fieldLevelErrorAddressLineThree
         ) shouldBe "Error: Enter your town or city"
-        page.getElementsText(ContactAddressPage.fieldLevelErrorCountry) shouldBe "Error: Enter a valid country name"
+        page.getElementsText(ContactAddressPage.fieldLevelErrorCountry) shouldBe "Error: " + messages(
+          "cds.matching-error.country.invalid"
+        )
       }
     }
 

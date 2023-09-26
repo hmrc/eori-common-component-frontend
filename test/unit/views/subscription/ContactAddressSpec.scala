@@ -84,7 +84,7 @@ class ContactAddressSpec extends ViewSpec {
       docWithErrorSummary.getElementsByClass("govuk-error-summary__title").text() mustBe "There is a problem"
       errorList.get(0).text() mustBe "Enter the first line of your address"
       errorList.get(1).text() mustBe "Enter your town or city"
-      errorList.get(2).text() mustBe "Enter a valid country name"
+      errorList.get(2).text() mustBe messages("cds.matching-error.country.invalid")
     }
 
   }
