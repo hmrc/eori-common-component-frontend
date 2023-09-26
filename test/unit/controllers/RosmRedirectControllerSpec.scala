@@ -23,8 +23,33 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
 import util.ControllerSpec
+import util.builders.AuthActionMock
+import uk.gov.hmrc.auth.core.AuthConnector
+import util.builders.AuthBuilder._
+import util.builders.SessionBuilder
+import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.RosmRedirectController
+import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.eori_exists_rosm
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
+import play.api.mvc.MessagesControllerComponents
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{KeyValue, EnrolmentResponse}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 
-class RosmRedirectControllerSpec extends ControllerSpec {
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
+class RosmRedirectControllerSpec extends ControllerSpec with AuthActionMock {
+
+  private val mockAuthConnector = mock[AuthConnector]
+  private val mockAuthAction    = authAction(mockAuthConnector)
+  private val mockEnrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
+
+  val sut = new RosmRedirectController(
+    authorise = mockAuthAction,
+    eoriExistsView = instanceOf[eori_exists_rosm],
+    enrolmentStoreProxyService = mockEnrolmentStoreProxyService,
+    mcc = instanceOf[MessagesControllerComponents]
+  )
 
   def application: Application = new GuiceApplicationBuilder()
     .overrides(bind[InternalAuthTokenInitialiser].to[NoOpInternalAuthTokenInitialiser])
@@ -32,7 +57,6 @@ class RosmRedirectControllerSpec extends ControllerSpec {
 
   Seq(
     "/customs/register-for-cds",
-    "/customs/register-for-cds/are-you-based-in-uk",
     "/customs/subscribe-for-cds",
     "/customs/subscribe-for-cds/are-you-based-in-uk"
   ).foreach { url =>
@@ -47,6 +71,34 @@ class RosmRedirectControllerSpec extends ControllerSpec {
           redirectLocation(result).get shouldEqual "/customs-enrolment-services/cds/subscribe"
         }
       }
+    }
+
+  }
+
+  "/customs/register-for-cds/are-you-based-in-uk" should {
+    "redirect the user to our start page if the user does not have an EORI" in {
+      withAuthorisedUser(defaultUserId, mockAuthConnector)
+
+      when(
+        mockEnrolmentStoreProxyService
+          .enrolmentsForGroup(any())(any())
+      ).thenReturn(Future.successful(Nil))
+
+      val result = sut.checkEoriNumber().apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+      status(result) shouldEqual SEE_OTHER
+      redirectLocation(result).get shouldEqual "/customs-enrolment-services/cds/subscribe"
+    }
+
+    "disply the EORI exists screen if the user has an EORI" in {
+      withAuthorisedUser(defaultUserId, mockAuthConnector, cdsEnrolmentId = Some("GB123456789012"))
+
+      when(
+        mockEnrolmentStoreProxyService
+          .enrolmentsForGroup(any())(any())
+      ).thenReturn(Future.successful(List(EnrolmentResponse("HMRC-CUS-ORG", "Active", List(KeyValue("EORINumber", "GB123456789012"))))))
+
+      val result = sut.checkEoriNumber().apply(SessionBuilder.buildRequestWithSession(defaultUserId))
+      status(result) shouldEqual OK
     }
 
   }
