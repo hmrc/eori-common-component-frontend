@@ -37,7 +37,7 @@ class WhatIsYourEoriCheckFailedController @Inject() (
     extends CdsController(mcc) with EnrolmentExtractor {
 
   def displayPage(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => _ =>
+    authAction.enrolledUserWithSessionAction(service) { implicit request => _ =>
       subscriptionDetailsHolderService.cachedEoriNumber.map { eori =>
         Ok(whatIsYourEoriCheckFailedPage(eori.getOrElse(throw DataUnavailableException("Eori is not cached")), service))
       }

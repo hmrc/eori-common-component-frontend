@@ -43,11 +43,12 @@ class EmailController @Inject() (
     extends CdsController(mcc) with EnrolmentExtractor {
 
   def form(implicit service: Service, subscribeJourney: SubscribeJourney): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction { implicit request => implicit user: LoggedInUserWithEnrolments =>
-      userGroupIdSubscriptionStatusCheckService
-        .checksToProceed(GroupId(user.groupId), InternalId(user.internalId))(
-          emailJourneyService.continue(service, subscribeJourney)
-        )(userIsInProcess(service))(otherUserWithinGroupIsInProcess(service))
+    authAction.enrolledUserClearingCacheOnCompletionAction {
+      implicit request => implicit user: LoggedInUserWithEnrolments =>
+        userGroupIdSubscriptionStatusCheckService
+          .checksToProceed(GroupId(user.groupId), InternalId(user.internalId))(
+            emailJourneyService.continue(service, subscribeJourney)
+          )(userIsInProcess(service))(otherUserWithinGroupIsInProcess(service))
     }
 
   private def userIsInProcess(

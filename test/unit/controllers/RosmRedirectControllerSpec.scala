@@ -31,7 +31,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.RosmRedirectControll
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.eori_exists_rosm
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.EnrolmentStoreProxyService
 import play.api.mvc.MessagesControllerComponents
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{KeyValue, EnrolmentResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EnrolmentResponse, KeyValue}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 
@@ -40,8 +40,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class RosmRedirectControllerSpec extends ControllerSpec with AuthActionMock {
 
-  private val mockAuthConnector = mock[AuthConnector]
-  private val mockAuthAction    = authAction(mockAuthConnector)
+  private val mockAuthConnector              = mock[AuthConnector]
+  private val mockAuthAction                 = authAction(mockAuthConnector)
   private val mockEnrolmentStoreProxyService = mock[EnrolmentStoreProxyService]
 
   val sut = new RosmRedirectController(
@@ -95,7 +95,11 @@ class RosmRedirectControllerSpec extends ControllerSpec with AuthActionMock {
       when(
         mockEnrolmentStoreProxyService
           .enrolmentsForGroup(any())(any())
-      ).thenReturn(Future.successful(List(EnrolmentResponse("HMRC-CUS-ORG", "Active", List(KeyValue("EORINumber", "GB123456789012"))))))
+      ).thenReturn(
+        Future.successful(
+          List(EnrolmentResponse("HMRC-CUS-ORG", "Active", List(KeyValue("EORINumber", "GB123456789012"))))
+        )
+      )
 
       val result = sut.checkEoriNumber().apply(SessionBuilder.buildRequestWithSession(defaultUserId))
       status(result) shouldEqual OK

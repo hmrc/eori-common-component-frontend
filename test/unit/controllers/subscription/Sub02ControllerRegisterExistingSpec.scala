@@ -113,6 +113,8 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
         when(mockSessionCache.remove(any[Request[AnyContent]])).thenReturn(Future.successful(true))
         when(mockSessionCache.saveSub02Outcome(any[Sub02Outcome])(any[Request[AnyContent]]))
           .thenReturn(Future.successful(true))
+        when(mockSessionCache.journeyCompleted(any[Request[AnyContent]]))
+          .thenReturn(Future.successful(true))
 
         val mockSubscribeOutcome = mock[Sub02Outcome]
         when(mockSessionCache.sub02Outcome(any[Request[AnyContent]])).thenReturn(

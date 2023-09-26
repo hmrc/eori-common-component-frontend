@@ -26,19 +26,16 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName.service
 
 import scala.concurrent.Future
 
-trait AccessController extends AllowlistVerification {
+trait AccessController {
 
   def permitUserOrRedirect(
     affinityGroup: Option[AffinityGroup],
     credentialRole: Option[CredentialRole],
-    enrolments: Set[Enrolment],
-    email: Option[String]
+    enrolments: Set[Enrolment]
   )(action: => Future[Result])(implicit request: Request[AnyContent]): Future[Result] = {
 
     def hasEnrolment(implicit request: Request[AnyContent]): Boolean =
       Service.serviceFromRequest.exists(service => enrolments.exists(_.key.equalsIgnoreCase(service.enrolmentKey)))
-
-    def isPermittedEmail(email: Option[String])(implicit request: Request[AnyContent]): Boolean = isAllowlisted(email)
 
     def isPermittedUserType: Boolean =
       affinityGroup match {
@@ -52,9 +49,7 @@ trait AccessController extends AllowlistVerification {
         case _          => false
       }
 
-    if (!isPermittedEmail(email)) // TODO Check if we would like to keep email allowlisting
-      Future.successful(Redirect(routes.YouCannotUseServiceController.unauthorisedPage(service)))
-    else if (!isPermittedUserType)
+    if (!isPermittedUserType)
       Future.successful(Redirect(routes.YouCannotUseServiceController.page(service)))
     else if (hasEnrolment)
       Future.successful(Redirect(routes.EnrolmentAlreadyExistsController.enrolmentAlreadyExists(service)))

@@ -39,7 +39,7 @@ class CheckYourDetailsController @Inject() (
     extends CdsController(mcc) {
 
   def reviewDetails(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction {
+    authAction.enrolledUserWithSessionAction(service) {
       implicit request => _: LoggedInUserWithEnrolments =>
         for {
           subscriptionDetailsHolder <- cdsFrontendCache.subscriptionDetails

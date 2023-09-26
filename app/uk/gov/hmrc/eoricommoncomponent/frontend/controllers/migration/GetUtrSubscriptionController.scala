@@ -43,13 +43,13 @@ class GetUtrSubscriptionController @Inject() (
     extends CdsController(mcc) with Logging {
 
   def createForm(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction {
+    authAction.enrolledUserWithSessionAction(service) {
       implicit request => _: LoggedInUserWithEnrolments =>
         populateView(isInReviewMode = false, service)
     }
 
   def reviewForm(service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction {
+    authAction.enrolledUserWithSessionAction(service) {
       implicit request => _: LoggedInUserWithEnrolments =>
         populateView(isInReviewMode = true, service)
     }
@@ -90,7 +90,7 @@ class GetUtrSubscriptionController @Inject() (
     }
 
   def submit(isInReviewMode: Boolean, service: Service): Action[AnyContent] =
-    authAction.ggAuthorisedUserWithEnrolmentsAction {
+    authAction.enrolledUserWithSessionAction(service) {
       implicit request => _: LoggedInUserWithEnrolments =>
         requestSessionData.userSelectedOrganisationType match {
           case Some(orgType) =>
