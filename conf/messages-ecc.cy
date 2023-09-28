@@ -93,7 +93,7 @@ cds.subscription.outcomes.in-processing.second.title = Os yw’r gwiriadau’n l
 cds.subscription.outcomes.in-processing.ordered.list.para = Ni fyddwn yn anfon e-bost atoch. Gallwch wirio a allwch wneud cais drwy ddilyn y camau hyn:
 cds.subscription.outcomes.in-processing.ordered.list.one = Ewch yn ôl i’r dudalen ar Gov.uk lle gwnaethoch ddechrau’ch cais.
 cds.subscription.outcomes.in-processing.ordered.list.two =  Dechreuwch y cais, a mewngofnodwch drwy ddefnyddio Porth y Llywodraeth.
-cds.subscription.outcomes.in-processing.ordered.list.three = Os ydym wedi cwblhau’r gwiriadau, byddwch yn gallu mynd yn eich blaen. Os nad ydym wedi cwblhau’r gwiriadau, byddwch yn gweld y sgrin hon eto.
+cds.subscription.outcomes.in-processing.ordered.list.three = Os ydym wedi cwblhau’r gwiriadau, byddwch yn gallu mynd yn eich blaen.
 
 cds.subscription.outcomes.pending.steps.next = Os nad yw’r gwiriadau ar eich cais yn llwyddiannus
 cds.subscription.outcomes.pending.steps.next.para = Byddwn yn anfon y rheswm pam atoch.
