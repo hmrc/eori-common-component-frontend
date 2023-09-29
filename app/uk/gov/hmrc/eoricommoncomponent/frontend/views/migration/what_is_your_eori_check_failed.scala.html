@@ -38,12 +38,11 @@
 
         @h2(messages("ecc.subscription.eori-number-invalid-heading-two"), Some("invalid-reason"))
 
-         <table>
-            <tr>
-              <td>@p(messages("ecc.subscription.eori-number-invalid.entered"), Some("rejected-para1"))</td>
-              <td class="govuk-heading-s" id="eori-number">'@eori'</td>
-            </tr>
-         </table>
+        <p class="govuk-body" id="rejected-para1">@messages("ecc.subscription.eori-number-invalid.entered")
+            <span class="govuk-!-font-weight-bold" id="eori-number">'@eori'</span>
+        </p>
+
+
              @link(
                 text = messages("ecc.subscription.eori-number-invalid-para-with-link-try-again"),
                 href = routes.WhatIsYourEoriController.createForm(service).url,
