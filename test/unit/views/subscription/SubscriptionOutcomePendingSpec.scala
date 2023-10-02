@@ -42,7 +42,13 @@ class SubscriptionOutcomePendingSpec extends ViewSpec {
     "have the correct 'what happens next' text" in {
       doc().body
         .getElementById("what-happens-next")
-        .text mustBe "If the checks are successful you need to apply again We will not email you. You can check if you can apply by following these steps: Return to the page on GOV.UK where you started your application. Start the application and sign in using Government Gateway. If we’ve completed the checks you’ll be able to continue. If we’ve not completed the checks you’ll see this screen again. If the checks on your application are unsuccessful We will email you the reason."
+        .text mustBe
+        s"${messages("cds.subscription.outcomes.in-processing.second.title")} ${messages("cds.subscription.outcomes.in-processing.ordered.list.para")} ${messages(
+          "cds.subscription.outcomes.in-processing.ordered.list.one"
+        )} ${messages("cds.subscription.outcomes.in-processing.ordered.list.two")} ${messages(
+          "cds.subscription.outcomes.in-processing.ordered.list.three"
+        )} ${messages("cds.subscription.outcomes.pending.steps.next")} ${messages("cds.subscription.outcomes.pending.steps.next.para")}"
+
     }
 
     "have a feedback 'continue' button" in {
