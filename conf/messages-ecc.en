@@ -56,7 +56,7 @@ cds.you-cant-use-service-standard-organisation.para2=Please log in as an adminis
 
 cds.sub01.outcome.rejected.subscribe.heading=The {0} subscription request for {1} has been unsuccessful
 cds.sub01.outcome.rejected.subscribe.heading-noname=The {0} subscription request has been unsuccessful
-cds.sub01.outcome.rejected.subscribe.title=The {0} subscription request has been unsuccessful
+cds.sub01.outcome.rejected.subscribe.title= Your application has been unsuccessful
 
 cds.sub01.outcome.rejected.register.heading=The {0} registration request for {1} has been unsuccessful
 cds.sub01.outcome.rejected.register.heading-noname=The {0} registration request has been unsuccessful
