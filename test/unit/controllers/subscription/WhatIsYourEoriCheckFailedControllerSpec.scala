@@ -118,23 +118,23 @@ class WhatIsYourEoriCheckFailedControllerSpec extends ControllerSpec with AuthAc
       )
     }
     "have the correct h2 for company" in {
-      doc().body.getElementById("eori-number").text should startWith(eori)
+      doc().body.getElementById("eori-number").text should startWith(s"'$eori'")
     }
 
     "have the correct h2 for corporation" in {
       doc().body.getElementById("invalid-reason").text should startWith(
-        messages("ecc.subscription.eori-number-invalid-reasons-title")
+        messages("ecc.subscription.eori-number-invalid-heading-two")
       )
     }
     "have the correct para 3 " in {
       doc().body.getElementById("eori-number-invalid").text should startWith(
-        messages("ecc.subscription.eori-number-invalid-not-correct-title")
+        messages("ecc.subscription.eori-number-invalid.does-not-match")
       )
     }
 
     "have correct contact us heading" in {
       doc().body.getElementById("eori-number-invalid-title").text should startWith(
-        messages("ecc.subscription.eori-number-invalid-not-activated-title")
+        messages("ecc.subscription.eori-number-invalid-not-correct-body")
       )
     }
 

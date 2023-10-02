@@ -19,26 +19,40 @@
 @import uk.gov.hmrc.eoricommoncomponent.frontend.views.html._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@this(layout_di: layout, govukButton: GovukButton, help_di: partials.if_you_need_help)
+@this(
+        layout_di: layout,
+        govukButton: GovukButton,
+        help_di: partials.if_you_need_help,
+        h1: helpers.h1,
+        h2: helpers.h2,
+        p: helpers.paragraph,
+        link: helpers.linkWithPreTextAndPostText
+)
 
 @(eori: String, service: Service)(implicit request: Request[_], messages: Messages)
 
 @layout_di(messages("ecc.subscription.eori-number-invalid"), service = service) {
     <div class="govuk-body">
-        <h1 class="govuk-heading-l" id="heading">@messages("ecc.subscription.eori-number-invalid")</h1>
 
-        <p id="rejected-para1">@messages("ecc.subscription.eori-number-invalid.entered")</p>
-            <h2 class="govuk-heading-s" id="eori-number">@eori</h2>
-            <p>@messages("ecc.subscription.eori-number-invalid.does-not-match")
-            </p><br>
-            <h2 class="govuk-heading-m" id="invalid-reason">@messages("ecc.subscription.eori-number-invalid-reasons-title")</h2>
-            <br>
-            <h3 class="govuk-heading-s" id="eori-number-invalid">@messages("ecc.subscription.eori-number-invalid-not-correct-title")</h3>
-            <p>@messages("ecc.subscription.eori-number-invalid-not-correct-body")
-            </p>
-            <h3 class="govuk-heading-s" id="eori-number-invalid-title">@messages("ecc.subscription.eori-number-invalid-not-activated-title")</h3>
-            <p>@messages("ecc.subscription.eori-number-invalid-not-activated-body", service.friendlyName)
-            </p>
+        @h1(messages("ecc.subscription.eori-number-invalid"), Some("heading"))
+
+        @h2(messages("ecc.subscription.eori-number-invalid-heading-two"), Some("invalid-reason"))
+
+        <p class="govuk-body" id="rejected-para1">@messages("ecc.subscription.eori-number-invalid.entered")
+            <span class="govuk-!-font-weight-bold" id="eori-number">'@eori'</span>
+        </p>
+
+
+             @link(
+                text = messages("ecc.subscription.eori-number-invalid-para-with-link-try-again"),
+                href = routes.WhatIsYourEoriController.createForm(service).url,
+                preText = Some(messages("ecc.subscription.eori-number-invalid-para-with-link")),
+
+            )
+
+        @h2(messages("ecc.subscription.eori-number-invalid.does-not-match"), Some("eori-number-invalid"))
+         @p(messages("ecc.subscription.eori-number-invalid-not-correct-body"), Some("eori-number-invalid-title"))
+         @p(messages("ecc.subscription.eori-number-invalid-not-activated-body"))
 
 
         @govukButton(Button(
@@ -47,10 +61,7 @@
             id = Some("continue-button")
         ))
 
-        @help_di()
+
     </div>
-
-
-
 
 }

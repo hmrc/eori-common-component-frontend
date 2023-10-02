@@ -440,14 +440,20 @@ ecc.subscription.enter-eori-number.page.title=Beth yw’ch rhif EORI?
 ecc.subscription.enter-eori-number.heading=Beth yw eich rhif EORI sy’n dechrau gyda GB?
 ecc.subscription.enter-eori-number.hint=GB yw’r 2 lythyren gyntaf. Dilynir hyn gan 12 rhif, megis GB123456123456.
 ecc.subscription.enter-eori-number.hint.para1 = Mae angen rhif EORI arnoch sy’n dechrau gyda GB os byddwch yn symud nwyddau i Brydain Fawr neu oddi yno.
-ecc.subscription.eori-number-invalid=Mae’r rhif EORI yn annilys
+ecc.subscription.eori-number-invalid=Nid yw’r rhif EORI hwn yn cyd-fynd â’n cofnodion
+ecc.subscription.eori-number-invalid-heading-two = Gwiriwch eich bod wedi nodi’r rhif cywir
+ecc.subscription.eori-number-invalid-para-with-link = Os nad yw hyn yn gywir, gallwch
+ecc.subscription.eori-number-invalid-para-with-link-try-again = roi cynnig arni.
+
+
+
 ecc.subscription.eori-number-invalid.entered=Rydych wedi nodi:
-ecc.subscription.eori-number-invalid.does-not-match=Nid yw’r rhif EORI hwn sy’n dechrau gyda GB yn cyd-fynd â’n cofnodion.
+ecc.subscription.eori-number-invalid.does-not-match=Os gwnaethoch nodi’r rhif cywir
 ecc.subscription.eori-number-invalid-reasons-title=Rhesymau dros y neges ‘rhif EORI annilys’
 ecc.subscription.eori-number-invalid-not-correct-title=Mae’r rhif EORI yn anghywir
-ecc.subscription.eori-number-invalid-not-correct-body=Gwiriwch eich bod wedi ei deipio’n gywir.
+ecc.subscription.eori-number-invalid-not-correct-body=Nid yw’n barod i’w ddefnyddio. Gall gymryd hyd at 2 awr i rif EORI newydd fod yn barod.
 ecc.subscription.eori-number-invalid-not-activated-title=Nid yw’r rhif EORI wedi ei actifadu
-ecc.subscription.eori-number-invalid-not-activated-body=Yr amser aros cyfartalog ar gyfer actifadu rhif EORI newydd yw 30 munud, ond gall gymryd hyd at 48 awr mewn rhai achosion. Ar ôl i’ch rhif EORI gael ei actifadu, cewch hysbysiad drwy e-bost. Gallwch fynd yn ôl a pharhau â’ch cais ar gyfer {0}.
+ecc.subscription.eori-number-invalid-not-activated-body=Byddwn yn anfon e-bost atoch pan fydd yn barod. Arhoswch am yr e-bost hwn, yna ceisiwch eto.
 ecc.subscription.eori-number-invalid-try-again=Rhowch gynnig arall arni
 
 ecc.subscription.information.titleAndHeading.ars = Tanysgrifio i ddyfarniadau uwch
