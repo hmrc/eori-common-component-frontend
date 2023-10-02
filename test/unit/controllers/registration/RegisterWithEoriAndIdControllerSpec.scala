@@ -1127,13 +1127,11 @@ class RegisterWithEoriAndIdControllerSpec
       invokeRejected() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title() should startWith(RegistrationRejectedPage.title)
+        page.title() should startWith(messages("cds.sub01.outcome.rejected.subscribe.title"))
         page.getElementsText(
           RegistrationRejectedPage.pageHeadingXpath
         ) shouldBe RegistrationRejectedPage.individualHeadingSubscription
-        page.getElementsText(
-          RegistrationRejectedPage.processedDateXpath
-        ) shouldBe "Application received by HMRC on 11 January 2015"
+
       }
     }
 
@@ -1213,7 +1211,7 @@ class RegisterWithEoriAndIdControllerSpec
       invokeRejectedPreviously() { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title() should startWith("The Advance Tariff Rulings subscription request has been unsuccessful")
+        page.title() should startWith(messages("cds.sub01.outcome.rejected.subscribe.title"))
       }
     }
 

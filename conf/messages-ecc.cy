@@ -55,7 +55,7 @@ cds.you-cant-use-service-standard-organisation.para2=Dylech fewngofnodi fel gwei
 
 cds.sub01.outcome.rejected.subscribe.heading=Mae’r cais am danysgrifiad {0} ar gyfer {1} wedi bod yn aflwyddiannus
 cds.sub01.outcome.rejected.subscribe.heading-noname=Mae’r cais am danysgrifiad {0} wedi bod yn aflwyddiannus
-cds.sub01.outcome.rejected.subscribe.title=Mae’r cais am danysgrifiad {0} wedi bod yn aflwyddiannus
+cds.sub01.outcome.rejected.subscribe.title= Mae’ch cais wedi bod yn aflwyddiannus
 
 cds.sub01.outcome.rejected.register.heading=Mae’r cais am {0} ar gyfer {1} wedi bod yn aflwyddiannus
 cds.sub01.outcome.rejected.register.heading-noname=Mae’r cais am {0} wedi bod yn aflwyddiannus
