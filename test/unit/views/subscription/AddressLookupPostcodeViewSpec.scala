@@ -138,7 +138,9 @@ class AddressLookupPostcodeViewSpec extends ViewSpec {
     "display error summary" in {
 
       docWithErrorSummary.getElementsByClass("govuk-error-summary__title").text() mustBe "There is a problem"
-      docWithErrorSummary.getElementsByClass("govuk-error-summary__list").get(0).text() mustBe "Enter a valid postcode"
+      docWithErrorSummary.getElementsByClass("govuk-error-summary__list").get(0).text() mustBe messages(
+        "cds.subscription.contact-details.error.postcode"
+      )
     }
   }
 }

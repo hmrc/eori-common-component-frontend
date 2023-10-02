@@ -295,9 +295,11 @@ class ContactAddressControllerSpec
       ) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(ContactAddressPage.pageLevelErrorSummaryListXPath) shouldBe "Enter a valid postcode"
+        page.getElementsText(ContactAddressPage.pageLevelErrorSummaryListXPath) shouldBe messages(
+          "cds.subscription.contact-details.error.postcode"
+        )
 
-        page.getElementsText(ContactAddressPage.fieldLevelErrorPostcode) shouldBe "Error: Enter a valid postcode"
+        page.getElementsText(ContactAddressPage.fieldLevelErrorPostcode) shouldBe s"Error: ${messages("cds.subscription.contact-details.error.postcode")}"
       }
     }
 
@@ -314,8 +316,10 @@ class ContactAddressControllerSpec
       ) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(ContactAddressPage.pageLevelErrorSummaryListXPath) shouldBe "Enter a valid postcode"
-        page.getElementsText(ContactAddressPage.fieldLevelErrorPostcode) shouldBe "Error: Enter a valid postcode"
+        page.getElementsText(ContactAddressPage.pageLevelErrorSummaryListXPath) shouldBe messages(
+          "cds.subscription.contact-details.error.postcode"
+        )
+        page.getElementsText(ContactAddressPage.fieldLevelErrorPostcode) shouldBe s"Error: ${messages("cds.subscription.contact-details.error.postcode")}"
       }
     }
 
@@ -386,8 +390,10 @@ class ContactAddressControllerSpec
       ) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(ContactAddressPage.pageLevelErrorSummaryListXPath) shouldBe "Enter a valid postcode"
-        page.getElementsText(ContactAddressPage.fieldLevelErrorPostcode) shouldBe "Error: Enter a valid postcode"
+        page.getElementsText(ContactAddressPage.pageLevelErrorSummaryListXPath) shouldBe messages(
+          "cds.subscription.contact-details.error.postcode"
+        )
+        page.getElementsText(ContactAddressPage.fieldLevelErrorPostcode) shouldBe s"Error: ${messages("cds.subscription.contact-details.error.postcode")}"
       }
     }
 

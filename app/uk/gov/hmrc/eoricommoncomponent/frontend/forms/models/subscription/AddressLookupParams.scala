@@ -19,7 +19,8 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.json.Json
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation.postcodeRegex
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation.{postcodeRegex, validPostcode}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.Mappings
 
 case class AddressLookupParams(postcode: String, line1: Option[String], skippedLine1: Boolean = false) {
 
@@ -33,9 +34,9 @@ object AddressLookupParams {
 
   def form(): Form[AddressLookupParams] = Form(
     mapping(
-      "postcode" -> text.verifying(
-        "cds.subscription.contact-details.error.postcode",
-        _.replaceAll(" ", "").matches(postcodeRegex.regex)
+      "postcode" -> Mappings.mandatoryString(
+        "cds.matching.organisation-address.postcode.error.empty",
+        Seq(validPostcode)
       ),
       "line1" -> optional(text.verifying("ecc.address-lookup.postcode.line1.error", _.length < 36))
     )((postcode, line1) => AddressLookupParams(postcode.toUpperCase, line1))(

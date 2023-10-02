@@ -304,8 +304,10 @@ class AddressServiceSpec
       ) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(AddressPage.pageLevelErrorSummaryListXPath) shouldBe "Enter a valid postcode"
-        page.getElementsText(AddressPage.postcodeFieldLevelErrorXPath) shouldBe "Error: Enter a valid postcode"
+        page.getElementsText(AddressPage.pageLevelErrorSummaryListXPath) shouldBe messages(
+          "cds.subscription.contact-details.error.postcode"
+        )
+        page.getElementsText(AddressPage.postcodeFieldLevelErrorXPath) shouldBe s"Error: ${messages("cds.subscription.contact-details.error.postcode")}"
       }
     }
 
@@ -315,8 +317,10 @@ class AddressServiceSpec
       ) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(AddressPage.pageLevelErrorSummaryListXPath) shouldBe "Enter a valid postcode"
-        page.getElementsText(AddressPage.postcodeFieldLevelErrorXPath) shouldBe "Error: Enter a valid postcode"
+        page.getElementsText(AddressPage.pageLevelErrorSummaryListXPath) shouldBe messages(
+          "cds.subscription.contact-details.error.postcode"
+        )
+        page.getElementsText(AddressPage.postcodeFieldLevelErrorXPath) shouldBe s"Error: ${messages("cds.subscription.contact-details.error.postcode")}"
       }
     }
 
@@ -365,8 +369,10 @@ class AddressServiceSpec
       ) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(AddressPage.pageLevelErrorSummaryListXPath) shouldBe "Enter a valid postcode"
-        page.getElementsText(AddressPage.postcodeFieldLevelErrorXPath) shouldBe "Error: Enter a valid postcode"
+        page.getElementsText(AddressPage.pageLevelErrorSummaryListXPath) shouldBe messages(
+          "cds.subscription.contact-details.error.postcode"
+        )
+        page.getElementsText(AddressPage.postcodeFieldLevelErrorXPath) shouldBe s"Error: ${messages("cds.subscription.contact-details.error.postcode")}"
       }
     }
 
