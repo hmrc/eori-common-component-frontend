@@ -229,7 +229,7 @@ cds.subscription.contact-details.intro=We will use these details to contact you 
 # Start Page (end)
 cds.enrolment.pending.title.user.sameService=You have already applied for a subscription to {0}
 cds.enrolment.pending.title.user.processingService=You cannot apply until we have processed your application to {0}
-cds.enrolment.pending.title.group.sameService=Someone in your organisation has already applied for this subscription
+cds.enrolment.pending.title.group.sameService=Someone in your organisation has already applied
 cds.enrolment.pending.title.group.processingService=Someone in your organisation has already applied for a subscription
 cds.enrolment.pending.otherService=another service
 
@@ -237,6 +237,7 @@ cds.enrolment.pending.user.paragraph1=We will send you an email when we have fin
 cds.enrolment.pending.user.paragraph2=You will get this email within either:
 
 cds.enrolment.pending.group.paragraph1=We will send them an email when we have finished processing it.
+cds.enrolment.pending.group.paragraph1.same-service = Only one person from your organisation can apply.
 cds.enrolment.pending.group.paragraph2=They will get this email within either:
 cds.enrolment.pending.group.paragraph3=Only one person from your organisation can apply.
 cds.enrolment.pending.bullet1=2 hours

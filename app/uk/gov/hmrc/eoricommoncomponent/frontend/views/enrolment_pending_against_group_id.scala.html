@@ -23,7 +23,13 @@
 
 
 @layout_di(EnrolmentPendingViewModel.groupIdTitle(otherService, service), suppressTelephoneNumberDetection = false, displayBackLink = false, service = service) {
-    <div>
+    @if(otherService.contains(service)) {
+
+        @h1(EnrolmentPendingViewModel.groupIdTitle(otherService, service), Some("page-heading"), "govuk-heading-l")
+
+        @p(messages("cds.enrolment.pending.group.paragraph1.same-service"), Some("info-para1"))
+    }else{
+
         @h1(EnrolmentPendingViewModel.groupIdTitle(otherService, service), Some("page-heading"), "govuk-heading-l")
 
         @p(messages("cds.enrolment.pending.group.paragraph1"), Some("info-para1"))
@@ -37,5 +43,5 @@
         </ul>
 
         <p class="govuk-body">@messages("cds.enrolment.pending.group.paragraph3")</p>
-    </div>
+    }
 }

@@ -234,13 +234,14 @@ cds.subscription.contact-details.intro=Byddwn yn defnyddio’r manylion hyn i gy
 # Start Page (end)
 cds.enrolment.pending.title.user.sameService=Rydych eisoes wedi gwneud cais am danysgrifiad i’r canlynol: {0}
 cds.enrolment.pending.title.user.processingService=Ni allwch wneud cais hyd nes y byddwn wedi prosesu’ch cais i wneud y canlynol: {0}
-cds.enrolment.pending.title.group.sameService=Mae rhywun yn eich sefydliad eisoes wedi gwneud cais am y tanysgrifiad hwn
+cds.enrolment.pending.title.group.sameService=Mae rhywun yn eich sefydliad eisoes wedi gwneud cais
 cds.enrolment.pending.title.group.processingService=Mae rhywun yn eich sefydliad eisoes wedi gwneud cais am danysgrifiad
 
 cds.enrolment.pending.user.paragraph1=Byddwn yn anfon e-bost atoch pan fyddwn wedi gorffen prosesu’ch cais.
 cds.enrolment.pending.user.paragraph2=Byddwch yn cael yr e-bost hwn o fewn naill ai:
 
 cds.enrolment.pending.group.paragraph1=Byddwn yn anfon e-bost atynt pan fyddwn wedi gorffen ei brosesu.
+cds.enrolment.pending.group.paragraph1.same-service = Dim ond un person o’ch sefydliad a all wneud cais.
 cds.enrolment.pending.group.paragraph2=Byddant yn cael yr e-bost hwn o fewn naill ai:
 cds.enrolment.pending.group.paragraph3=Dim ond un person o’ch sefydliad a all wneud cais.
 cds.enrolment.pending.bullet1=2 awr
