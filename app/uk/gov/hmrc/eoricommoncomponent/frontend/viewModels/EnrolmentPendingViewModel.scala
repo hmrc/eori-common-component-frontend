@@ -30,7 +30,10 @@ object EnrolmentPendingViewModel {
   def title(processingService: Option[Service], service: Service)(implicit messages: Messages): String =
     if (processingService.contains(service))
       messages("cds.enrolment.pending.title.user.sameService", processingServiceName(processingService))
-    else messages("cds.enrolment.pending.title.user.processingService", processingServiceName(processingService))
+    else messages("cds.enrolment.pending.title.user.processingService")
+
+  def otherServiceParagraph(processingService: Option[Service], service: Service)(implicit messages: Messages): String =
+    messages(processingServiceName(processingService))
 
   def groupIdTitle(processingService: Option[Service], service: Service)(implicit messages: Messages): String =
     if (processingService.contains(service))

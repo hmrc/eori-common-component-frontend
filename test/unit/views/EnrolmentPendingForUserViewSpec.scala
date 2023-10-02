@@ -31,7 +31,7 @@ class EnrolmentPendingForUserViewSpec extends ViewSpec {
 
   "Enrolment Pending against group id page" should {
     "display correct title" in {
-      doc.title() must startWith("You cannot apply until we have processed")
+      doc.title() must startWith(messages("cds.enrolment.pending.title.user.processingService"))
     }
   }
 
