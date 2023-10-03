@@ -21,9 +21,7 @@
 @this(layout_di: layout, help_di: partials.if_you_need_help, p: helpers.paragraph, h1: helpers.h1)
 
 @(service: Service, otherService: Option[Service])(implicit messages: Messages, request: Request[_])
-@displayParagraph = @{
-    if(!otherService.contains(service)) p(otherServiceParagraph(otherService, service))
-}
+
 
 @layout_di(title(otherService, service), suppressTelephoneNumberDetection = false, displayBackLink = false, service = service) {
     @if(!otherService.contains(service)) {
@@ -31,7 +29,7 @@
 
             @p(messages("cds.enrolment.pending.user.paragraph1"), Some("info-para1"))
 
-            @displayParagraph
+            @p(otherServiceParagraph(otherService, service))
 
             @p(messages("cds.enrolment.pending.user.paragraph2"), Some("info-para2"))
             <ul id="info-list" class="govuk-list govuk-list--bullet">
