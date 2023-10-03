@@ -314,7 +314,7 @@ class EmailControllerSpec
       callEndpointDefaulting(controller)(journey = subscribeJourneyShort) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title() should startWith("Someone in your organisation has already applied")
+        page.title() should startWith("You cannot subscribe with this Government Gateway user ID")
       }
     }
 
