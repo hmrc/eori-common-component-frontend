@@ -56,7 +56,7 @@ cds.you-cant-use-service-standard-organisation.para2=Please log in as an adminis
 
 cds.sub01.outcome.rejected.subscribe.heading=The {0} subscription request for {1} has been unsuccessful
 cds.sub01.outcome.rejected.subscribe.heading-noname=The {0} subscription request has been unsuccessful
-cds.sub01.outcome.rejected.subscribe.title=The {0} subscription request has been unsuccessful
+cds.sub01.outcome.rejected.subscribe.title= Your application has been unsuccessful
 
 cds.sub01.outcome.rejected.register.heading=The {0} registration request for {1} has been unsuccessful
 cds.sub01.outcome.rejected.register.heading-noname=The {0} registration request has been unsuccessful
@@ -228,14 +228,17 @@ cds.subscription.contact-details.intro=We will use these details to contact you 
 
 # Start Page (end)
 cds.enrolment.pending.title.user.sameService=You have already applied for a subscription to {0}
-cds.enrolment.pending.title.user.processingService=You cannot apply until we have processed your application to {0}
-cds.enrolment.pending.title.group.sameService=Someone in your organisation has already applied
-cds.enrolment.pending.title.group.processingService=You cannot subscribe with this Government Gateway user ID
-cds.enrolment.pending.title.group.processingService.heading2 = If you don’t know this user ID
+
+cds.enrolment.pending.title.user.processingService=You cannot apply just now
+cds.enrolment.pending.title.group.sameService=Someone in your organisation has already applied for this subscription
+cds.enrolment.pending.title.group.processingService=Someone in your organisation has already applied for a subscription
+
 cds.enrolment.pending.otherService=another service
 
-cds.enrolment.pending.user.paragraph1=We will send you an email when we have finished processing it.
-cds.enrolment.pending.user.paragraph2=You will get this email within either:
+cds.enrolment.pending.user.paragraph1=You can apply after we have processed your application to:
+cds.enrolment.pending.user.paragraph1.same-service = We will send you an email when we have finished processing it.
+cds.enrolment.pending.user.paragraph2=This takes either:
+cds.enrolment.pending.user.paragraph2.same-service = You will get this email within either:
 
 cds.enrolment.pending.group.paragraph1=Your organisation used a different user ID to subscribe to another customs service. You need to use that user ID for this service.
 cds.enrolment.pending.group.paragraph1.same-service = Only one person from your organisation can apply.

@@ -327,7 +327,7 @@ class EmailControllerSpec
       callEndpointDefaulting(controller)(journey = subscribeJourneyShort) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title() should startWith("You cannot apply until we have processed your application")
+        page.title() should startWith(messages("cds.enrolment.pending.title.user.processingService"))
       }
     }
 
@@ -340,7 +340,7 @@ class EmailControllerSpec
       callEndpointDefaulting(controller)(journey = subscribeJourneyShort) { result =>
         status(result) shouldBe OK
         val page = CdsPage(contentAsString(result))
-        page.title() should startWith("You cannot apply until we have processed")
+        page.title() should startWith(messages("cds.enrolment.pending.title.user.processingService"))
       }
     }
   }

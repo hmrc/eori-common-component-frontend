@@ -40,10 +40,10 @@ object FormValidation {
       elseValue = (key, data) => data.get(key)
     ).transform[Option[String]](_.map(_.filterNot(_.isWhitespace)), identity).verifying(lift(postcodeMax(9)))
 
-  private def validPostcode: Constraint[String] =
+  def validPostcode: Constraint[String] =
     Constraint({
-      case s if s.matches(postcodeRegex.regex) => Valid
-      case _                                   => Invalid(ValidationError("cds.subscription.contact-details.error.postcode"))
+      case s if s.replaceAll(" ", "").matches(postcodeRegex.regex) => Valid
+      case _                                                       => Invalid(ValidationError("cds.subscription.contact-details.error.postcode"))
     })
 
   private def postcodeMax(limit: Int): Constraint[String] =

@@ -54,7 +54,7 @@ class AddressLookupParamsSpec extends UnitSpec {
 
         val form = AddressLookupParams.form().bind(Map("postcode" -> ""))
 
-        val expectedErrors = Seq(FormError("postcode", "cds.subscription.contact-details.error.postcode"))
+        val expectedErrors = Seq(FormError("postcode", "cds.matching.organisation-address.postcode.error.empty"))
 
         form.errors shouldBe expectedErrors
       }

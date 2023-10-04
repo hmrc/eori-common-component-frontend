@@ -55,7 +55,7 @@ cds.you-cant-use-service-standard-organisation.para2=Dylech fewngofnodi fel gwei
 
 cds.sub01.outcome.rejected.subscribe.heading=Mae’r cais am danysgrifiad {0} ar gyfer {1} wedi bod yn aflwyddiannus
 cds.sub01.outcome.rejected.subscribe.heading-noname=Mae’r cais am danysgrifiad {0} wedi bod yn aflwyddiannus
-cds.sub01.outcome.rejected.subscribe.title=Mae’r cais am danysgrifiad {0} wedi bod yn aflwyddiannus
+cds.sub01.outcome.rejected.subscribe.title= Mae’ch cais wedi bod yn aflwyddiannus
 
 cds.sub01.outcome.rejected.register.heading=Mae’r cais am {0} ar gyfer {1} wedi bod yn aflwyddiannus
 cds.sub01.outcome.rejected.register.heading-noname=Mae’r cais am {0} wedi bod yn aflwyddiannus
@@ -233,17 +233,19 @@ cds.subscription.contact-details.intro=Byddwn yn defnyddio’r manylion hyn i gy
 
 # Start Page (end)
 cds.enrolment.pending.title.user.sameService=Rydych eisoes wedi gwneud cais am danysgrifiad i’r canlynol: {0}
-cds.enrolment.pending.title.user.processingService=Ni allwch wneud cais hyd nes y byddwn wedi prosesu’ch cais i wneud y canlynol: {0}
-cds.enrolment.pending.title.group.sameService=Mae rhywun yn eich sefydliad eisoes wedi gwneud cais
-cds.enrolment.pending.title.group.processingService= Ni allwch danysgrifio gyda Dynodydd Defnyddiwr (ID) hwn ar gyfer Porth y Llywodraeth
-cds.enrolment.pending.title.group.processingService.heading2 = Os nad ydych chi’n gwybod y Dynodydd Defnyddiwr (ID) hwn
-cds.enrolment.pending.user.paragraph1=Byddwn yn anfon e-bost atoch pan fyddwn wedi gorffen prosesu’ch cais.
-cds.enrolment.pending.user.paragraph2=Byddwch yn cael yr e-bost hwn o fewn naill ai:
 
-cds.enrolment.pending.group.paragraph1=Defnyddiodd eich sefydliad Dynodydd Defnyddiwr (ID) gwahanol i danysgrifio i wasanaeth tollau arall. Mae angen i chi ddefnyddio’r Dynodydd Defnyddiwr (ID) hwnnw ar gyfer y gwasanaeth hwn.
-cds.enrolment.pending.group.paragraph1.same-service = Dim ond un person o’ch sefydliad a all wneud cais.
-cds.enrolment.pending.group.paragraph2= Os nad ydych chi’n gwybod y Dynodydd Defnyddiwr (ID) hwn
-cds.enrolment.pending.group.paragraph2.same-sevice = Allgofnodwch ac yna mewngofnodwch gyda’r Dynodydd Defnyddiwr (ID) hwnnw ar gyfer Porth y Llywodraeth.
+cds.enrolment.pending.title.user.processingService=Ni allwch wneud cais ar hyn o bryd
+cds.enrolment.pending.title.group.sameService=Mae rhywun yn eich sefydliad eisoes wedi gwneud cais am y tanysgrifiad hwn
+cds.enrolment.pending.title.group.processingService=Mae rhywun yn eich sefydliad eisoes wedi gwneud cais am danysgrifiad
+
+cds.enrolment.pending.user.paragraph1= Gallwch wneud cais ar ôl i ni brosesu’ch cais i wneud y canlynol:
+cds.enrolment.pending.user.paragraph1.same-service = Byddwn yn anfon e-bost atoch pan fyddwn wedi gorffen prosesu’ch cais.
+cds.enrolment.pending.user.paragraph2=Mae hyn yn cymryd:
+cds.enrolment.pending.user.paragraph2.same-service = Byddwch yn cael yr e-bost hwn o fewn naill ai:
+
+cds.enrolment.pending.group.paragraph1=Gallwch wneud cais ar ôl i ni brosesu’ch cais i wneud y canlynol:
+cds.enrolment.pending.group.paragraph2=Byddant yn cael yr e-bost hwn o fewn naill ai:
+
 cds.enrolment.pending.group.paragraph3=Dim ond un person o’ch sefydliad a all wneud cais.
 cds.enrolment.pending.bullet1=2 awr
 cds.enrolment.pending.bullet2=5 diwrnod gwaith, os bydd angen i ni wneud rhagor o wiriadau

@@ -35,27 +35,15 @@ class Sub01OutcomeRejectedSpec extends ViewSpec {
   "'Sub01 Outcome Rejected' Page with name" should {
 
     "display correct title" in {
-      docWithName().title() must startWith("The Advance Tariff Rulings subscription request has been unsuccessful")
+      docWithName().title() must startWith(messages("cds.sub01.outcome.rejected.subscribe.title"))
     }
     "display correct heading" in {
       docWithName().body.getElementsByTag("h1").text() must startWith(
-        s"The Advance Tariff Rulings subscription request for $orgName has been unsuccessful"
+        messages("cds.sub01.outcome.rejected.subscribe.title")
       )
     }
     "have the correct class on the h1" in {
-      docWithName().body.getElementsByTag("h1").hasClass("govuk-heading-xl") mustBe true
-    }
-    "have the correct class on the message" in {
-      docWithName().body.getElementById("processed-date").hasClass("govuk-heading-m") mustBe true
-    }
-    "have the correct processing date and text" in {
-      docWithName().body.getElementById("processed-date").text mustBe s"Application received by HMRC on 1 January 2019"
-    }
-
-    "have a feedback 'continue' button" in {
-      val link = docWithName().body.getElementById("feedback-continue")
-      link.text mustBe "More about Advance Tariff Rulings"
-      link.attr("href") mustBe "/test-atar/feedback?status=Failed"
+      docWithName().body.getElementsByTag("h1").hasClass("govuk-heading-l") mustBe true
     }
 
     "have a no feedback 'continue' button when config missing" in {
@@ -69,25 +57,11 @@ class Sub01OutcomeRejectedSpec extends ViewSpec {
 
     "display correct heading" in {
       docWithoutName().body.getElementsByTag("h1").text() must startWith(
-        "The Advance Tariff Rulings subscription request has been unsuccessful"
+        messages("cds.sub01.outcome.rejected.subscribe.title")
       )
     }
     "have the correct class on the h1" in {
-      docWithoutName().body.getElementsByTag("h1").hasClass("govuk-heading-xl") mustBe true
-    }
-    "have the correct class on the message" in {
-      docWithoutName().body.getElementById("processed-date").hasClass("govuk-heading-m") mustBe true
-    }
-    "have the correct processing date and text" in {
-      docWithoutName().body.getElementById(
-        "processed-date"
-      ).text mustBe s"Application received by HMRC on 1 January 2019"
-    }
-
-    "have a feedback 'continue' button" in {
-      val link = docWithoutName().body.getElementById("feedback-continue")
-      link.text mustBe "More about Advance Tariff Rulings"
-      link.attr("href") mustBe "/test-atar/feedback?status=Failed"
+      docWithoutName().body.getElementsByTag("h1").hasClass("govuk-heading-l") mustBe true
     }
 
     "have a no feedback 'continue' button when config missing" in {

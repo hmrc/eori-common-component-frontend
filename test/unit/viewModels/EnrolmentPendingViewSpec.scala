@@ -24,9 +24,11 @@ import util.ControllerSpec
 
 class EnrolmentPendingViewSpec extends UnitSpec with ControllerSpec {
   val mockMessages: Messages = mock[Messages]
+  val viewModel              = EnrolmentPendingViewModel
+
   "EnrolmentPendingViewModel" should {
 
-    "should return the appropriate title when the other service is the same as the current service" in {
+    "return the appropriate title when the other service is the same as the current service" in {
       val someOtherService = Some(atarService)
       val service          = otherService
 
@@ -34,25 +36,32 @@ class EnrolmentPendingViewSpec extends UnitSpec with ControllerSpec {
         "Some Service"
       )
 
-      val viewModel = EnrolmentPendingViewModel
-
       val result = viewModel.title(someOtherService, service)
-
-      result shouldEqual "You cannot apply until we have processed your application to ATaR Service"
+      result shouldEqual messages("cds.enrolment.pending.title.user.processingService")
     }
-    "should return the appropriate title when the other service is the same as the other services " in {
+
+    "return the appropriate title when the other service is the same as the other services " in {
       val someOtherService = Some(otherService)
       val service          = atarService
       when(mockMessages(messages("cds.enrolment.pending.title.user.processingService", atarService))).thenReturn(
         "Other Service"
       )
-
-      val viewModel = EnrolmentPendingViewModel
-
       val result = viewModel.title(someOtherService, service)
 
-      result shouldEqual "You cannot apply until we have processed your application to Other Service"
+      result shouldEqual messages("cds.enrolment.pending.title.user.processingService")
     }
+
+    "return the correct service name for paragraph when the other service is the same as the other services " in {
+      val someOtherService = Some(otherService)
+      val service          = atarService
+      val viewModel        = EnrolmentPendingViewModel
+      val result           = viewModel.otherServiceParagraph(someOtherService, service)
+
+      result shouldEqual "Other Service"
+    }
+
+
+
     "return the appropriate groupId title when the other service is the same as the current service" in {
       val someOtherService = Some(atarService)
       val service          = otherService
@@ -61,12 +70,12 @@ class EnrolmentPendingViewSpec extends UnitSpec with ControllerSpec {
         "Some Service"
       )
 
-      val viewModel = EnrolmentPendingViewModel
-
       val result = viewModel.groupIdTitle(someOtherService, service)
+
 
       result shouldEqual messages("cds.enrolment.pending.title.group.processingService")
     }
+
     "return the appropriate groupId title when the other service is the same as the other sevices" in {
       val someOtherService = Some(otherService)
       val service          = atarService
@@ -74,9 +83,6 @@ class EnrolmentPendingViewSpec extends UnitSpec with ControllerSpec {
       when(mockMessages(messages("cds.enrolment.pending.title.group.processingService", otherService))).thenReturn(
         "Some Service"
       )
-
-      val viewModel = EnrolmentPendingViewModel
-
       val result = viewModel.groupIdTitle(someOtherService, service)
 
       result shouldEqual messages("cds.enrolment.pending.title.group.processingService")

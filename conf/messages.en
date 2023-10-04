@@ -639,7 +639,7 @@ cds.matching.organisation-address.line-2.error.too-long=The second line of the a
 cds.matching.organisation-address.line-3.error.empty=Enter your town or city
 cds.matching.organisation-address.line-3.error.too-long=The town or city must be 35 characters or less
 cds.matching.organisation-address.line-4.error.too-long=The Region or state must be 35 characters or less	
-cds.matching.organisation-address.postcode.error.empty=Enter a valid postcode
+cds.matching.organisation-address.postcode.error.empty=Enter a postcode
 cds.matching.organisation-address.country.error.empty=Enter your country
 
 # Name and Utr for an Organisation Match
@@ -1356,7 +1356,7 @@ cds.subscription.contact-details.error.street=Enter the first line of your addre
 cds.subscription.contact-details.error.street.too-long=The street must be 70 characters or less
 cds.subscription.contact-details.error.city=Enter your town or city
 cds.subscription.contact-details.error.city.too-long=The town or city must be 35 characters or less
-cds.subscription.contact-details.error.postcode=Enter a valid postcode
+cds.subscription.contact-details.error.postcode=Enter a real postcode
 cds.subscription.postcode.error.too-long.8=The postcode must be 8 characters or less
 cds.subscription.postcode.error.too-long.9=The postcode must be 9 characters or less
 cds.subscription.contact-details.page-error.countryCode=Enter a valid country name
