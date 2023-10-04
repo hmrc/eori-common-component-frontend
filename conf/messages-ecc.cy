@@ -243,6 +243,7 @@ cds.enrolment.pending.user.paragraph2=Byddwch yn cael yr e-bost hwn o fewn naill
 cds.enrolment.pending.group.paragraph1=Defnyddiodd eich sefydliad Dynodydd Defnyddiwr (ID) gwahanol i danysgrifio i wasanaeth tollau arall. Mae angen i chi ddefnyddio’r Dynodydd Defnyddiwr (ID) hwnnw ar gyfer y gwasanaeth hwn.
 cds.enrolment.pending.group.paragraph1.same-service = Dim ond un person o’ch sefydliad a all wneud cais.
 cds.enrolment.pending.group.paragraph2= Os nad ydych chi’n gwybod y Dynodydd Defnyddiwr (ID) hwn
+cds.enrolment.pending.group.paragraph2.same-sevice = Allgofnodwch ac yna mewngofnodwch gyda’r Dynodydd Defnyddiwr (ID) hwnnw ar gyfer Porth y Llywodraeth.
 cds.enrolment.pending.group.paragraph3=Dim ond un person o’ch sefydliad a all wneud cais.
 cds.enrolment.pending.bullet1=2 awr
 cds.enrolment.pending.bullet2=5 diwrnod gwaith, os bydd angen i ni wneud rhagor o wiriadau
