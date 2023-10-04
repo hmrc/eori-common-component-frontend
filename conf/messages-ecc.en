@@ -228,9 +228,11 @@ cds.subscription.contact-details.intro=We will use these details to contact you 
 
 # Start Page (end)
 cds.enrolment.pending.title.user.sameService=You have already applied for a subscription to {0}
+
 cds.enrolment.pending.title.user.processingService=You cannot apply just now
 cds.enrolment.pending.title.group.sameService=Someone in your organisation has already applied for this subscription
 cds.enrolment.pending.title.group.processingService=Someone in your organisation has already applied for a subscription
+
 cds.enrolment.pending.otherService=another service
 
 cds.enrolment.pending.user.paragraph1=You can apply after we have processed your application to:
@@ -238,8 +240,10 @@ cds.enrolment.pending.user.paragraph1.same-service = We will send you an email w
 cds.enrolment.pending.user.paragraph2=This takes either:
 cds.enrolment.pending.user.paragraph2.same-service = You will get this email within either:
 
-cds.enrolment.pending.group.paragraph1=We will send them an email when we have finished processing it.
-cds.enrolment.pending.group.paragraph2=They will get this email within either:
+cds.enrolment.pending.group.paragraph1=Your organisation used a different user ID to subscribe to another customs service. You need to use that user ID for this service.
+cds.enrolment.pending.group.paragraph1.same-service = Only one person from your organisation can apply.
+cds.enrolment.pending.group.paragraph2= If you don’t know this user ID
+cds.enrolment.pending.group.paragraph2.same-sevice = Sign out and then sign in with that Government Gateway user ID.
 cds.enrolment.pending.group.paragraph3=Only one person from your organisation can apply.
 cds.enrolment.pending.bullet1=2 hours
 cds.enrolment.pending.bullet2=5 working days, if we need to make more checks

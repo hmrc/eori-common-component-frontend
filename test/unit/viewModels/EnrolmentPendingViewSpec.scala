@@ -69,7 +69,8 @@ class EnrolmentPendingViewSpec extends UnitSpec with ControllerSpec {
       )
 
       val result = viewModel.groupIdTitle(someOtherService, service)
-      result shouldEqual "Someone in your organisation has already applied for a subscription"
+
+      result shouldEqual messages("cds.enrolment.pending.title.group.processingService")
     }
 
     "return the appropriate groupId title when the other service is the same as the other sevices" in {
@@ -81,7 +82,7 @@ class EnrolmentPendingViewSpec extends UnitSpec with ControllerSpec {
       )
       val result = viewModel.groupIdTitle(someOtherService, service)
 
-      result shouldEqual "Someone in your organisation has already applied for a subscription"
+      result shouldEqual messages("cds.enrolment.pending.title.group.processingService")
     }
 
   }

@@ -15,7 +15,8 @@ cds.navigation.find-utr-link=https://www.gov.uk/find-utr-number
 cds.navigation.find-lost-utr=find a lost UTR (opens in a new tab)
 cds.navigation.hmrc.online-services =  HMRC online services
 cds.navigation.contact-us= Contact us
-
+cds.navigation.contact-hmrc = Contact HMRC
+cds.navigation.sing-out = Sing Out
 cds.error.page-title=Error
 cds.error.mandatory.field=This field is required
 cds.error.invalid.date.format=Please enter a valid date, for example ''31 3 1980''
