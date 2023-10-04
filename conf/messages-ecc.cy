@@ -242,8 +242,9 @@ cds.enrolment.pending.user.paragraph1= Gallwch wneud cais ar ôl i ni brosesu’
 cds.enrolment.pending.user.paragraph1.same-service = Byddwn yn anfon e-bost atoch pan fyddwn wedi gorffen prosesu’ch cais.
 cds.enrolment.pending.user.paragraph2=Mae hyn yn cymryd:
 cds.enrolment.pending.user.paragraph2.same-service = Byddwch yn cael yr e-bost hwn o fewn naill ai:
-
+cds.enrolment.pending.group.paragraph2.same-sevice = Allgofnodwch ac yna mewngofnodwch gyda’r Dynodydd Defnyddiwr (ID) hwnnw ar gyfer Porth y Llywodraeth.
 cds.enrolment.pending.group.paragraph1=Gallwch wneud cais ar ôl i ni brosesu’ch cais i wneud y canlynol:
+cds.enrolment.pending.group.paragraph1.same-service = Dim ond un person o’ch sefydliad a all wneud cais.
 cds.enrolment.pending.group.paragraph2=Byddant yn cael yr e-bost hwn o fewn naill ai:
 
 cds.enrolment.pending.group.paragraph3=Dim ond un person o’ch sefydliad a all wneud cais.
