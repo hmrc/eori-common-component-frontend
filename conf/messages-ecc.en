@@ -230,8 +230,8 @@ cds.subscription.contact-details.intro=We will use these details to contact you 
 cds.enrolment.pending.title.user.sameService=You have already applied for a subscription to {0}
 
 cds.enrolment.pending.title.user.processingService=You cannot apply just now
-cds.enrolment.pending.title.group.sameService=Someone in your organisation has already applied for this subscription
-cds.enrolment.pending.title.group.processingService=Someone in your organisation has already applied for a subscription
+cds.enrolment.pending.title.group.sameService=Someone in your organisation has already applied
+cds.enrolment.pending.title.group.processingService=You cannot subscribe with this Government Gateway user ID
 
 cds.enrolment.pending.otherService=another service
 
