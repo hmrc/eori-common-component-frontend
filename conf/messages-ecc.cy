@@ -237,7 +237,7 @@ cds.enrolment.pending.title.user.processingService=Ni allwch wneud cais ar hyn o
 cds.enrolment.pending.title.group.sameService=Mae rhywun yn eich sefydliad eisoes wedi gwneud cais am y tanysgrifiad hwn
 cds.enrolment.pending.title.group.processingService=Mae rhywun yn eich sefydliad eisoes wedi gwneud cais am danysgrifiad
 
-cds.enrolment.pending.user.paragraph1=Byddwn yn anfon e-bost atoch pan fyddwn wedi gorffen prosesu’ch cais.
+cds.enrolment.pending.user.paragraph1= Gallwch wneud cais ar ôl i ni brosesu’ch cais i wneud y canlynol:
 cds.enrolment.pending.user.paragraph1.same-service = Byddwn yn anfon e-bost atoch pan fyddwn wedi gorffen prosesu’ch cais.
 cds.enrolment.pending.user.paragraph2=Mae hyn yn cymryd:
 cds.enrolment.pending.user.paragraph2.same-service = Byddwch yn cael yr e-bost hwn o fewn naill ai:
