@@ -24,18 +24,29 @@
 
 
 @layout_di(title(otherService, service), suppressTelephoneNumberDetection = false, displayBackLink = false, service = service) {
-
-        <div>
+    @if(!otherService.contains(service)) {
             @h1(title(otherService, service), Some("page-heading"), "govuk-heading-l")
 
             @p(messages("cds.enrolment.pending.user.paragraph1"), Some("info-para1"))
 
-            @p(messages("cds.enrolment.pending.user.paragraph2"), Some("info-para2"))
+            @p(otherServiceParagraph(otherService, service))
 
+            @p(messages("cds.enrolment.pending.user.paragraph2"), Some("info-para2"))
             <ul id="info-list" class="govuk-list govuk-list--bullet">
                 <li>@messages("cds.enrolment.pending.bullet1")</li>
                 <li>@messages("cds.enrolment.pending.bullet2")</li>
             </ul>
-        </div>
+    }else{
+        @h1(title(otherService, service), Some("page-heading"), "govuk-heading-l")
+
+        @p(messages("cds.enrolment.pending.user.paragraph1.same-service"), Some("info-para1"))
+
+        @p(messages("cds.enrolment.pending.user.paragraph2.same-service"), Some("info-para2"))
+
+        <ul id="info-list" class="govuk-list govuk-list--bullet">
+            <li>@messages("cds.enrolment.pending.bullet1")</li>
+            <li>@messages("cds.enrolment.pending.bullet2")</li>
+        </ul>
+    }
 
     }
