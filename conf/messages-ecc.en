@@ -242,6 +242,7 @@ cds.enrolment.pending.user.paragraph2.same-service = You will get this email wit
 
 cds.enrolment.pending.group.paragraph1=Your organisation used a different user ID to subscribe to another customs service. You need to use that user ID for this service.
 cds.enrolment.pending.group.paragraph1.same-service = Only one person from your organisation can apply.
+cds.enrolment.pending.group.paragraph1.otherService = Your organisation used a different user ID to subscribe to another customs service. You need to use that user ID for this service.
 cds.enrolment.pending.group.paragraph2= If you don’t know this user ID
 cds.enrolment.pending.group.paragraph2.same-sevice = Sign out and then sign in with that Government Gateway user ID.
 cds.enrolment.pending.group.paragraph3=Only one person from your organisation can apply.
