@@ -135,4 +135,7 @@ class AppConfig @Inject() (
   lazy val contactAddress   = config.getOptional[Boolean]("features.contact-address").getOrElse(false)
 
   val internalAuthToken: String = config.get[String]("internal-auth.token")
+
+  val accessibilityStatement: String = config.get[String]("accessibility-statement.service-path")
+
 }

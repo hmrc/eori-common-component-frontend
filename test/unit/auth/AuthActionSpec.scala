@@ -108,7 +108,7 @@ class AuthActionSpec extends AnyWordSpec with MockitoSugar with BeforeAndAfterEa
         .thenReturn(Future.successful(true))
 
       val result =
-        TestController.someCall(Service("cds", "HMRC-CUS-ORG", "", None, "", "", "", None)).apply(withFakeCSRF)
+        TestController.someCall(Service("cds", "HMRC-CUS-ORG", "", None, "", "", None)).apply(withFakeCSRF)
       status(result) shouldEqual SEE_OTHER
       await(result).header.headers("Location") should endWith("/customs-enrolment-services/cds/subscribe")
     }
@@ -122,7 +122,7 @@ class AuthActionSpec extends AnyWordSpec with MockitoSugar with BeforeAndAfterEa
         .thenReturn(Future.successful(true))
 
       val result =
-        TestController.someCall(Service("atar", "HMRC-CUS-ORG", "", None, "", "", "", None)).apply(withFakeCSRF)
+        TestController.someCall(Service("atar", "HMRC-CUS-ORG", "", None, "", "", None)).apply(withFakeCSRF)
       status(result) shouldEqual SEE_OTHER
       await(result).header.headers("Location") should endWith("/customs-enrolment-services/atar/subscribe")
     }
@@ -134,7 +134,7 @@ class AuthActionSpec extends AnyWordSpec with MockitoSugar with BeforeAndAfterEa
         .thenReturn(Future.successful(None))
 
       val result =
-        TestController.someCall(Service("cds", "HMRC-CUS-ORG", "", None, "", "", "", None)).apply(withFakeCSRF)
+        TestController.someCall(Service("cds", "HMRC-CUS-ORG", "", None, "", "", None)).apply(withFakeCSRF)
       status(result) shouldEqual SEE_OTHER
       await(result).header.headers("Location") should endWith("/customs-enrolment-services/cds/subscribe")
     }
@@ -147,7 +147,7 @@ class AuthActionSpec extends AnyWordSpec with MockitoSugar with BeforeAndAfterEa
       AuthBuilder.withAuthorisedUser("user-2300121", mockAuthConnector, userEmail = Some("some@email.com"))
 
       val result =
-        TestController.someCall(Service("cds", "HMRC-CUS-ORG", "", None, "", "", "", None)).apply(withFakeCSRF)
+        TestController.someCall(Service("cds", "HMRC-CUS-ORG", "", None, "", "", None)).apply(withFakeCSRF)
       status(result) shouldEqual OK
     }
 
@@ -163,7 +163,7 @@ class AuthActionSpec extends AnyWordSpec with MockitoSugar with BeforeAndAfterEa
       AuthBuilder.withAuthorisedUser("user-2300121", mockAuthConnector, userEmail = Some("some@email.com"))
 
       val result = TestController.someCallNotRedirecting(
-        Service("cds", "HMRC-CUS-ORG", "", None, "", "", "", None)
+        Service("cds", "HMRC-CUS-ORG", "", None, "", "", None)
       ).apply(withFakeCSRF)
       status(result) shouldEqual OK
     }
@@ -174,7 +174,7 @@ class AuthActionSpec extends AnyWordSpec with MockitoSugar with BeforeAndAfterEa
       AuthBuilder.withAuthorisedUser("user-2300121", mockAuthConnector, userEmail = Some("some@email.com"))
 
       val result = TestController.someCallNotRedirecting(
-        Service("cds", "HMRC-CUS-ORG", "", None, "", "", "", None)
+        Service("cds", "HMRC-CUS-ORG", "", None, "", "", None)
       ).apply(withFakeCSRF)
       status(result) shouldEqual OK
     }

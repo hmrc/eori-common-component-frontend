@@ -141,6 +141,6 @@
     additionalHeadBlock = Some(theHead),
     additionalScriptsBlock = Some(scripts),
     serviceName = Some(messages(s"cds.banner.subscription.${service.code}" )),
-    accessibilityStatementUrl = Some(service.accessibilityUrl),
+    accessibilityStatementUrl = Some(appConfig.accessibilityStatement),
     beforeContentBlock = Some(beforeContent)
 )(mainContent)
