@@ -659,7 +659,7 @@ cds.matching.name-id-organisation.registered-partnership.name.hint=Enter the exa
 cds.matching.name-id-organisation.partnership.utr=What is the partnership’s Self Assessment Unique Taxpayer Reference (UTR)?
 cds.matching.name-id-organisation.Llp-partnership.utr = What is the partnership’s Corporation Tax Unique Taxpayer Reference (UTR)?
 cds.matching.name-id-organisation.organisation.name=What is the registered organisation name?
-cds.matching.name-id-organisation.organisation.name.para=You can find this on the <a class="govuk-link" href="https://beta.companieshouse.gov.uk/" target="_blank">Companies House register (opens in new tab).</a>
+cds.matching.name-id-organisation.organisation.name.para=You can find charities and not for profits on the <a class="govuk-link" href="https://beta.companieshouse.gov.uk/" target="_blank">Companies House register (opens in new tab).</a>
 cds.matching.name-id-organisation.organisation.name.hint=Enter the exact name from the Companies House register.
 cds.matching.name-id-organisation.organisation.utr=What is the organisation’s Corporation Tax Unique Taxpayer Reference (UTR)?
 cds.matching.name-id-organisation.not-registered=If you are not registered for Self Assessment, or if your registration is in progress and you do not yet have a UTR, you can <a href="{0}" class="govuk-link">register using your name and address</a> instead.
