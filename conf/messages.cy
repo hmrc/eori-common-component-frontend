@@ -589,7 +589,7 @@ cds.matching.name-id-organisation.partnership.name=Beth yw enw cofrestredig y ba
 cds.matching.name-id-organisation.partnership.name.para=Dyma’r enw sydd wedi’i gofrestru gyda CThEF. Gallwch ddod o hyd i hyn yng <a class="govuk-link" href="https://www.gov.uk/dod-o-hyd-i-utr-sydd-ar-goll" target="_blank">ngwasanaethau ar-lein CThEF (yn agor tab newydd)</a> neu ar lythyrau oddi wrth CThEF.
 cds.matching.name-id-organisation.partnership.utr=Beth yw Cyfeirnod Unigryw y Trethdalwr (UTR) y bartneriaeth ar gyfer Hunanasesiad?
 cds.matching.name-id-organisation.organisation.name=Beth yw enw cofrestredig y sefydliad?
-cds.matching.name-id-organisation.organisation.name.para=Gallwch ddod o hyd i hwn ar gofrestr <a class="govuk-link" href="https://beta.companieshouse.gov.uk/" target="_blank">Tŷ'’'r Cwmnïau (yn agor tab newydd).</a>
+cds.matching.name-id-organisation.organisation.name.para= Gallwch ddod o hyd i elusennau a sefydliadau nid er elw ar <a class="govuk-link" href="https://beta.companieshouse.gov.uk/" target="_blank">gofrestr Tŷ'’'r Cwmnïau (yn agor tab newydd).</a>
 cds.matching.name-id-organisation.organisation.name.hint=Nodwch yr union enw sydd ar gofrestr Tŷ’r Cwmnïau.
 cds.matching.name-id-organisation.organisation.utr=Beth yw Cyfeirnod Unigryw y Trethdalwr (UTR) y sefydliad ar gyfer Treth Gorfforaeth?
 cds.matching.name-id-organisation.not-registered=Os nad ydych wedi’ch cofrestru ar gyfer Hunanasesiad, neu os yw’ch cofrestriad ar y gweill ac nid oes gennych Gyfeirnod Unigryw y Trethdalwr (UTR) eto, gallwch <a href="{0}" class="govuk-link">gofrestru gan ddefnyddio’ch enw a chyfeiriad</a> yn lle hynny.

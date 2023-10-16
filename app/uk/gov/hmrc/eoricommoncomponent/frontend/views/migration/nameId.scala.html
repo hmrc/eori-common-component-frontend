@@ -39,8 +39,12 @@
 }
 
 @nameHintText = @{
-    if(displayMode==PartnershipDM) messages("cds.matching.name-id-organisation.registered-partnership.name.hint")
-    else messages(s"cds.matching.name-id-organisation.$displayMode.name.hint")
+    displayMode match {
+        case PartnershipDM => Some(messages("cds.matching.name-id-organisation.registered-partnership.name.hint"))
+        case OrganisationModeDM => None
+        case _ => Some(messages(s"cds.matching.name-id-organisation.$displayMode.name.hint"))
+
+    }
 
 }
 
