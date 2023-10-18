@@ -472,8 +472,8 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
       submitFormInCreateMode(createFormAllFieldsNameDobNextYearMap) { result =>
         val page = CdsPage(contentAsString(result))
 
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Date of birth must be in the past"
-        page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Error: Date of birth must be in the past"
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Year must be between 1900 and this year"
+        page.getElementsText(dobFieldLevelErrorXPath) shouldBe "Error: Year must be between 1900 and this year"
         page.getElementsText("title") should startWith("Error: ")
         verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }

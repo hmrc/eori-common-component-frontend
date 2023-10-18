@@ -160,9 +160,9 @@ cds.form.contact-details=Eich cyfeiriad
 
 cds.error.field.hint=Gwall
 
-date.day.error=Nodwch ddiwrnod rhwng 1 a 31
-date.month.error=Nodwch fis rhwng 1 a 12
-date.year.error=Nodwch flwyddyn rhwng {0} a {1}
+date.day.error=Mae’n rhaid i’r diwrnod fod yn rhif o 1 i 31
+date.month.error=Mae’n rhaid i’r mis fod yn rhif o 1 i 12
+date.year.error=Mae’n rhaid i’r flwyddyn fod rhwng {0} ac eleni
 
 dob.error.empty-date=Nodwch eich dyddiad geni
 dob.error.future-date=Mae’n rhaid i’r dyddiad geni fod yn y gorffennol
