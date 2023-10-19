@@ -461,7 +461,7 @@ countries-in-the-eu.title=Countries in the EU
 countries-in-the-eu.list=Austria, Belgium, Bulgaria, Croatia, Republic of Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Poland, Portugal, Romania, Slovakia, Slovenia, Spain, Sweden and the UK.
 
 #How can we identify you?
-subscription-journey.how-confirm-identity=What information can we use to confirm your identity?
+subscription-journey.how-confirm-identity=What can we use to verify your identity?
 subscription-journey.utr.label=Self Assessment Unique Taxpayer Reference (UTR)
 subscription-journey.utr.hint=This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Self Assessment. It may be called ''reference'', ''UTR'' or ''official use''.
 cds.matching.id.page-error.nino=Enter your National Insurance number
