@@ -122,7 +122,7 @@ ecc.subscription.information.section.organisation.list.heading=To verify your id
 ecc.subscription.information.section.organisation.list.first=registered name and address
 
 ecc.subscription.information.section.organisation.list.third=Corporation Tax Unique Taxpayer Reference (UTR), if you pay Corporation Tax in the UK
-ecc.subscription.information.section.organisation.utr.link=<a href="https://www.gov.uk/find-utr-number" class="govuk-link" target="_blank" rel="noopener noreferrer">Find your UTR (opens in a new tab)</a>
+ecc.subscription.information.section.organisation.utr.link=<a href="https://www.gov.uk/find-utr-number" class="govuk-link" target="_blank" rel="noopener noreferrer">Find your UTR (opens in new tab)</a>
 
 
 ecc.subscription.information.section.individual.subheading=If you apply as a sole trader or individual
@@ -181,7 +181,7 @@ cds.subscription.sign-in-with-different-details.para1-noname=You have already re
 
 cds.matching.row-organisation.utr.hint=This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Corporation Tax. It may be called '‘reference’', '‘UTR’' or '‘official use’'.
 cds.matching.row-sole-trader-individual.utr.hint=This is 10 numbers, for example 1234567890, which may be followed by a K. It will be on tax returns and other letters about Self Assessment. It may be called ‘reference’, ‘UTR’ or ‘official use’.
-cds.matching.row-lost-urt.hint.link=find a lost UTR (opens in a new tab)
+cds.matching.row-lost-urt.hint.link=find a lost UTR (opens in new tab)
 
 cds.subscribe.use-this-eori.heading=Your GB Economic Operator Registration and Identification (EORI) number
 cds.subscribe.use-this-eori.paragraph1=This EORI is linked to the Government Gateway account you are using.
