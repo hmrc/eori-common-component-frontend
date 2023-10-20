@@ -1,23 +1,100 @@
 # EORI Common Component Frontend
- 
-This provides frontend services for the ECC (EORI Common Component).
 
-# Requirements
+Frontend application for the the ECC (EORI Common Component) Subscription service. This service handles EORI Subscription journey.
 
-This service is written in [Scala](http://www.scala-lang.org/) and [Play](http://playframework.com/), and requires a Java 8 [JRE] to run.
+Other related ECC services:
+- Backend service: [EORI Common Component](https://github.com/hmrc/eori-common-component)
+- Stubs: [EORI Common Component Stubs](https://github.com/hmrc/eori-common-component-hods-stubs)
+- Proxy: [EORI Common Component Hods Proxy](https://github.com/hmrc/eori-common-component-hods-proxy)
+- Registration service: [EORI Common Component Registration Frontend](https://github.com/hmrc/eori-common-component-registration-frontend)
 
-## Running Locally
-To run using default port number:
-`sbt run`
+## Development
 
-To run all tests:
-`./precheck.sh`
+This service is written in [Scala](http://www.scala-lang.org/) and [Play](http://playframework.com/), and requires Java 11 [JRE](https://www.java.com/en/download/manual.jsp) to run.
 
-# Maintenance
-For information on adding support for a new service - 
-[How to add a new service](https://github.com/hmrc/eori-common-component-frontend/wiki/How-to-add-a-new-service).
+To develop or run service locally you'll also need:
+- [Service Manager](https://github.com/hmrc/service-manager)
+- [SBT](https://www.scala-sbt.org/)
+- [Docker Desktop](https://docs.docker.com/desktop/) (Optional. Makes it easier to run external dependencies, e.g. Mongo Database locally)
+
+### Service Manager Commands
+
+What's running?
+
+    sm2 -s
+
+Start the required development services (make sure your service-manager-config folder is up to date)
+
+    sm2 --start EORI_COMMON_COMPONENT_ALL
+
+Stop all ECC related services
+
+    sm2 --stop EORI_COMMON_COMPONENT_ALL
+
+### Running locally
+
+When running locally the start page can be accessed via Government Gateway login stub [http://localhost:9949/auth-login-stub/gg-sign-in]().
+
+To start the journey redirect URL has to point to [http://localhost:6750/customs-enrolment-services/cds/subscribe]() after all required service-manager services are started.
+
+All pages in the flow are authentication protected.
+
+To run EORI Common Component Frontend using default port number
+
+    sbt run
+
+### Debugging
+
+Before debugging locally you will need to stop the Service Manager-started `eori-common-component-frontend` service
+
+    sm2 --stop EORI_COMMON_COMPONENT_FRONTEND
+
+Then start your local debugging session on the expected port
+
+    sbt -jvm-debug 9999 run
+
+And finally connect and set-up debugger; Intellij set-up example
+
+<img src="docs/debug-settings.png" width=50% height=50% alt="Debbuger Setup">
+
+### Testing
+
+#### [ScalaTest](https://www.scalatest.org/)
+
+We're using ScalaTest for Unit and Integration tests.
+
+You can run unit test suite with
+
+    sbt test
+
+To run integration test suit execute
+
+    sbt it:test
+
+To run all test suites together with Scoverage and ScalaFMT code formatting execute script
+
+    ./precheck.sh
+
+#### [Scoverage](https://github.com/scoverage/sbt-scoverage)
+
+We're using Scoverage to check the code coverage of our test suites.
+
+You can run this on the command line with
+
+    sbt clean coverage test it:test coverageReport
+
+Adjust the following in `build.sbt` to configure Scoverage
+
+    ...
+    ScoverageKeys.coverageMinimum := 80,
+    ScoverageKeys.coverageFailOnMinimum := false,
+    ...
+
+### Architecture and Flows
+
+High level journey diagram with APIs involved is [documented in Confluence](https://confluence.tools.tax.service.gov.uk/pages/viewpage.action?spaceKey=ECC&title=Journey+Flow+maps).
+
+Different journeys and scenarios can be triggered using [documented scenarios](https://confluence.tools.tax.service.gov.uk/display/ECC/Testing+in+Stubbed+Environments+-+Subscription).
 
 # License
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
-
-
