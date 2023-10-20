@@ -15,6 +15,9 @@
  *@
 
 @import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.HmrcStandardPageParams
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.TemplateOverrides
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.ServiceURLs
 @import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 @import uk.gov.hmrc.eoricommoncomponent.frontend.services.countries._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -26,8 +29,10 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{Cy, En}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.reporttechnicalissue.ReportTechnicalIssue
 @import views.html.helper.CSPNonce
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
 
-@this(hmrcLayout: HmrcLayout,
+
+@this(hmrcLayout: HmrcStandardPage,
         govukBackLink: GovukBackLink,
         appConfig: AppConfig,
         reportAProblemLink: HmrcReportTechnicalIssue,
@@ -36,6 +41,7 @@
         autocompleteCss: HmrcAccessibleAutocompleteCss,
         autocompleteJavascript: HmrcAccessibleAutocompleteJavascript
 )
+
 
 @(
         title: String,
@@ -132,15 +138,18 @@
 }
 
 @hmrcLayout(
-    userResearchBannerUrl = None,
+    HmrcStandardPageParams(
+    templateOverrides = TemplateOverrides(
+        additionalHeadBlock = Some(theHead),
+        additionalScriptsBlock = Some(scripts),
+        beforeContentBlock = Some(beforeContent)
+    ),
     pageTitle = Some(titleErr),
     isWelshTranslationAvailable = true, /* or false if your service has not been translated */
-    serviceUrl = Some(serviceUrl),
-    signOutUrl = Some(logOutUrl),
-    phaseBanner = None,
-    additionalHeadBlock = Some(theHead),
-    additionalScriptsBlock = Some(scripts),
+    serviceURLs = ServiceURLs(
+        Some(serviceUrl),
+        Some(logOutUrl)
+    ),
     serviceName = Some(messages(s"cds.banner.subscription.${service.code}" )),
-    accessibilityStatementUrl = Some(service.accessibilityUrl),
-    beforeContentBlock = Some(beforeContent)
+    )
 )(mainContent)
