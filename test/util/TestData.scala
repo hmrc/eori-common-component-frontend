@@ -29,7 +29,6 @@ trait TestData {
       "HMRC-ATAR-ORG",
       "ATaR",
       Some("/test-atar/callback"),
-      "/test-atar/accessibility",
       "ATaR Service",
       "",
       Some("/test-atar/feedback")
@@ -41,7 +40,6 @@ trait TestData {
       "HMRC-GVMS-ORG",
       "GaGMR",
       Some("/test-gagmr/callback"),
-      "/test-gagmr/accessibility",
       "GVMS Service",
       "",
       Some("/test-gvms/feedback")
@@ -53,7 +51,6 @@ trait TestData {
       "HMRC-OTHER-ORG",
       "Other",
       Some("/other-service/callback"),
-      "/other-service/accessibility",
       "Other Service",
       "",
       Some("/other-service/feedback")
@@ -65,7 +62,6 @@ trait TestData {
       "HMRC-CUS-ORG",
       "CDS",
       Some("/test-cds/callback"),
-      "/test-cds/accessibility",
       "the Customs Declaration Service (CDS)",
       "",
       Some("/test-cds/feedback")

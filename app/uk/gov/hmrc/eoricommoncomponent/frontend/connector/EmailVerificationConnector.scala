@@ -58,7 +58,7 @@ class EmailVerificationConnector @Inject() (httpClient: HttpClientV2, appConfig:
       continueUrl = s"$urlPrefix${routes.EmailController.form(service, subscribeJourney).url}",
       origin = "ecc",
       deskproServiceName = "eori-common-component",
-      accessibilityStatementUrl = service.accessibilityUrl,
+      accessibilityStatementUrl = appConfig.accessibilityStatement,
       pageTitle = messages(s"cds.banner.subscription.${service.code}"),
       lang = messages.lang.code,
       email = Some(

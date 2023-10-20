@@ -148,8 +148,10 @@
     isWelshTranslationAvailable = true, /* or false if your service has not been translated */
     serviceURLs = ServiceURLs(
         Some(serviceUrl),
-        Some(logOutUrl)
+        Some(logOutUrl),
+        Some(appConfig.accessibilityStatement)
     ),
     serviceName = Some(messages(s"cds.banner.subscription.${service.code}" )),
     )
+
 )(mainContent)
