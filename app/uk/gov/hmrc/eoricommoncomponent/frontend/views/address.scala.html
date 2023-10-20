@@ -62,7 +62,7 @@
 
 @displayCountryField = {
 @defining(Seq(
-    '_plainLabel -> true)) { args =>
+    Symbol("_plainLabel") -> true)) { args =>
     @countryField(addressForm, "countryCode", "cds.subscription.address-details.country.label", countries, args: _*)
 }
 }
