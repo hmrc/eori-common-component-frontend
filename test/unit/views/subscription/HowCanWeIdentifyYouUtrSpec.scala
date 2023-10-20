@@ -58,11 +58,11 @@ class HowCanWeIdentifyYouUtrSpec extends ViewSpec {
       docWithNoUtrError
         .body()
         .getElementsByClass("govuk-error-summary__list")
-        .text() mustBe "Enter your UTR number"
+        .text() mustBe messages("cds.matching-error.business-details.utr.isEmpty")
     }
 
     "display an field level error if no nino entered" in {
-      docWithNoUtrError.body().getElementsByClass("govuk-error-message").text() mustBe "Error: Enter your UTR number"
+      docWithNoUtrError.body().getElementsByClass("govuk-error-message").text() mustBe s"Error: ${messages("cds.matching-error.business-details.utr.isEmpty")}"
     }
 
   }

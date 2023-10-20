@@ -132,9 +132,9 @@ class HowCanWeIdentifyYouUtrControllerSpec extends ControllerSpec with BeforeAnd
       submitForm(Map("utr" -> "")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(
-          SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
-        ) shouldBe "Enter your UTR number"
+        page.getElementsText(SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath) shouldBe messages(
+          "cds.matching-error.business-details.utr.isEmpty"
+        )
       }
     }
 
@@ -142,12 +142,10 @@ class HowCanWeIdentifyYouUtrControllerSpec extends ControllerSpec with BeforeAnd
       submitForm(Map("utr" -> "12345678901")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(
-          SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
-        ) shouldBe "The UTR number must be 10 numbers"
-        page.getElementsText(
-          SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorUtr
-        ) shouldBe "Error: The UTR number must be 10 numbers"
+        page.getElementsText(SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath) shouldBe messages(
+          "cds.matching-error.utr.length"
+        )
+        page.getElementsText(SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorUtr) shouldBe s"Error: ${messages("cds.matching-error.utr.length")}"
         page.getElementsText(SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorNino) shouldBe empty
       }
     }
@@ -156,12 +154,10 @@ class HowCanWeIdentifyYouUtrControllerSpec extends ControllerSpec with BeforeAnd
       submitForm(Map("utr" -> "ABCDE12345")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(
-          SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath
-        ) shouldBe "Enter a valid UTR number"
-        page.getElementsText(
-          SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorUtr
-        ) shouldBe "Error: Enter a valid UTR number"
+        page.getElementsText(SubscribeHowCanWeIdentifyYouPage.pageLevelErrorSummaryListXPath) shouldBe messages(
+          "cds.matching-error.utr.invalid"
+        )
+        page.getElementsText(SubscribeHowCanWeIdentifyYouPage.fieldLevelErrorUtr) shouldBe s"Error: ${messages("cds.matching-error.utr.invalid")}"
       }
     }
 

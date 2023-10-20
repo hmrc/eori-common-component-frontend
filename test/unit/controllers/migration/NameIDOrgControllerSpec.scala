@@ -288,8 +288,8 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
       submitFormInCreateMode(createFormAllFieldsUtrMap + (utrFieldName -> "")) { result =>
         status(result) shouldBe BAD_REQUEST
         val page = CdsPage(contentAsString(result))
-        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your UTR number"
-        page.getElementsText(utrFieldLevelErrorXPath) shouldBe "Error: Enter your UTR number"
+        page.getElementsText(pageLevelErrorSummaryListXPath) shouldBe "Enter your UTR"
+        page.getElementsText(utrFieldLevelErrorXPath) shouldBe "Error: Enter your UTR"
         page.getElementsText("title") should startWith("Error: ")
         verifyNoMoreInteractions(mockSubscriptionBusinessService)
       }
@@ -301,7 +301,7 @@ class NameIDOrgControllerSpec extends SubscriptionFlowSpec with BeforeAndAfterEa
         val page = CdsPage(contentAsString(result))
         page.getElementsText(
           pageLevelErrorSummaryListXPath
-        ) shouldBe "Enter your registered organisation name Enter your UTR number"
+        ) shouldBe "Enter your registered organisation name Enter your UTR"
         page.getElementsText("title") should startWith("Error: ")
       }
     }
