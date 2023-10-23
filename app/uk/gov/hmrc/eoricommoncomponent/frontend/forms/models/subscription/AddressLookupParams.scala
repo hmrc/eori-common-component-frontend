@@ -19,7 +19,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.json.Json
-import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation.{postcodeRegex, validPostcode}
+import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation.validPostcode
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.Mappings
 
 case class AddressLookupParams(postcode: String, line1: Option[String], skippedLine1: Boolean = false) {

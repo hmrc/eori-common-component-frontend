@@ -23,13 +23,12 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc._
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
-import uk.gov.hmrc.auth.core.{AuthConnector, AuthProviders, AuthorisedFunctions}
+import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.{AuthAction, CacheClearOnCompletionAction}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import org.scalatest.wordspec.AnyWordSpec
-import play.api.mvc.Results.{Ok, Redirect}
+import play.api.mvc.Results.Ok
 import util.builders.AuthBuilder
-import play.api.test.Helpers._
 import play.api.test.CSRFTokenHelper
 import play.api.test.FakeRequest
 import org.scalatest.matchers.should.Matchers._
@@ -58,13 +57,13 @@ class AuthActionSpec extends AnyWordSpec with MockitoSugar with BeforeAndAfterEa
       |services-config.gvms.friendlyNameWelsh=Symud_Cerbydau_Nwyddau_(GVMS)
       """.stripMargin)
 
-  val config                       = Configuration(configuration)
-  val environment                  = Environment.simple()
-  val actionBuilder                = DefaultActionBuilder(stubBodyParser(AnyContentAsEmpty))(global)
-  val mockBodyParsers              = mock[BodyParsers.Default]
-  val mockSessionCache             = mock[SessionCache]
-  val mockAuthConnector            = mock[AuthConnector]
-  val cacheClearOnCompletionAction = new CacheClearOnCompletionAction(mockSessionCache, mockBodyParsers)
+  val config: Configuration                = Configuration(configuration)
+  val environment: Environment             = Environment.simple()
+  val actionBuilder: DefaultActionBuilder  = DefaultActionBuilder(stubBodyParser(AnyContentAsEmpty))(global)
+  val mockBodyParsers: BodyParsers.Default = mock[BodyParsers.Default]
+  val mockSessionCache: SessionCache       = mock[SessionCache]
+  val mockAuthConnector: AuthConnector     = mock[AuthConnector]
+  val cacheClearOnCompletionAction         = new CacheClearOnCompletionAction(mockSessionCache, mockBodyParsers)
 
   val authAction = new AuthAction(
     config,
@@ -78,11 +77,11 @@ class AuthActionSpec extends AnyWordSpec with MockitoSugar with BeforeAndAfterEa
 
   object TestController {
 
-    def someCall(service: Service) = authAction.enrolledUserWithSessionAction(service) { _ => _ =>
+    def someCall(service: Service): Action[AnyContent] = authAction.enrolledUserWithSessionAction(service) { _ => _ =>
       Future.successful(Ok("We succeeded!"))
     }
 
-    def someCallNotRedirecting(service: Service) = authAction.enrolledUserClearingCacheOnCompletionAction {
+    def someCallNotRedirecting(): Action[AnyContent] = authAction.enrolledUserClearingCacheOnCompletionAction {
       _ => _ =>
         Future.successful(Ok("We succeeded!"))
     }
@@ -95,7 +94,7 @@ class AuthActionSpec extends AnyWordSpec with MockitoSugar with BeforeAndAfterEa
     reset(mockBodyParsers)
   }
 
-  def withFakeCSRF = CSRFTokenHelper.addCSRFToken(FakeRequest("GET", "/cds/subscribe"))
+  def withFakeCSRF: Request[AnyContentAsEmpty.type] = CSRFTokenHelper.addCSRFToken(FakeRequest("GET", "/cds/subscribe"))
 
   "enrolledUserWithSessionAction" should {
 
@@ -162,9 +161,7 @@ class AuthActionSpec extends AnyWordSpec with MockitoSugar with BeforeAndAfterEa
         .thenReturn(Future.successful(true))
       AuthBuilder.withAuthorisedUser("user-2300121", mockAuthConnector, userEmail = Some("some@email.com"))
 
-      val result = TestController.someCallNotRedirecting(Service("cds", "HMRC-CUS-ORG", "", None, "", "", None)).apply(
-        withFakeCSRF
-      )
+      val result = TestController.someCallNotRedirecting().apply(withFakeCSRF)
       status(result) shouldEqual OK
     }
 
@@ -173,9 +170,7 @@ class AuthActionSpec extends AnyWordSpec with MockitoSugar with BeforeAndAfterEa
         .thenReturn(Future.successful(false))
       AuthBuilder.withAuthorisedUser("user-2300121", mockAuthConnector, userEmail = Some("some@email.com"))
 
-      val result = TestController.someCallNotRedirecting(Service("cds", "HMRC-CUS-ORG", "", None, "", "", None)).apply(
-        withFakeCSRF
-      )
+      val result = TestController.someCallNotRedirecting().apply(withFakeCSRF)
       status(result) shouldEqual OK
     }
 

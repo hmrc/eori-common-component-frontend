@@ -53,9 +53,8 @@ class EnrolmentPendingViewSpec extends UnitSpec with ControllerSpec {
 
     "return the correct service name for paragraph when the other service is the same as the other services " in {
       val someOtherService = Some(otherService)
-      val service          = atarService
       val viewModel        = EnrolmentPendingViewModel
-      val result           = viewModel.otherServiceParagraph(someOtherService, service)
+      val result           = viewModel.otherServiceParagraph(someOtherService)
 
       result shouldEqual "Other Service"
     }
