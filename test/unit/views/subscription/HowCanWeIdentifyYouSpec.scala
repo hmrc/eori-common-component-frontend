@@ -39,7 +39,7 @@ class HowCanWeIdentifyYouSpec extends ViewSpec {
   "How Can We Identify You Page" should {
 
     "display correct heading" in {
-      doc.body().getElementsByTag("h1").text() mustBe "What information can we use to confirm your identity?"
+      doc.body().getElementsByTag("h1").text() mustBe messages("subscription-journey.how-confirm-identity")
     }
 
     "include the heading in the title" in {
