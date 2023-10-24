@@ -137,16 +137,6 @@ object RegistrationDetails {
 
 object RegistrationDetailsIndividual {
 
-  def apply(fullName: String, dateOfBirth: LocalDate): RegistrationDetailsIndividual =
-    new RegistrationDetailsIndividual(
-      None,
-      TaxPayerId(""),
-      SafeId(""),
-      fullName,
-      Address("", None, None, None, None, ""),
-      dateOfBirth
-    )
-
   def apply(): RegistrationDetailsIndividual =
     new RegistrationDetailsIndividual(
       None,
