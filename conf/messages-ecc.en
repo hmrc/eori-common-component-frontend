@@ -158,9 +158,9 @@ cds.form.contact-details=Your address
 
 cds.error.field.hint=Error
 
-date.day.error=Enter a day between 1 and 31
-date.month.error=Enter a month between 1 and 12
-date.year.error=Enter a year between {0} and {1}
+date.day.error=Day must be a number from 1 to 31
+date.month.error=Month must be a number from 1 to 12
+date.year.error=Year must be between {0} and this year
 
 dob.error.empty-date=Enter your date of birth
 dob.error.future-date=Date of birth must be in the past
