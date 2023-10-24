@@ -12,7 +12,7 @@ cds.navigation.opens-in-new-tab=(opens in new tab)
 cds.navigation.opens-new-page=You can
 cds.navigation.find-utr-link=https://www.gov.uk/find-utr-number
 
-cds.navigation.find-lost-utr=find a lost UTR (opens in a new tab)
+cds.navigation.find-lost-utr=find a lost UTR (opens in new tab)
 cds.navigation.hmrc.online-services =  HMRC online services
 cds.navigation.contact-us= Contact us
 cds.navigation.contact-hmrc = Contact HMRC
@@ -352,7 +352,7 @@ cds.matching-lede=We will attempt to match your details against information we c
 cds.matching.utr.hint=This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Corporation Tax. It may be called ''reference'', ''UTR'' or ''official use''.
 cds.matching.utr.find-lost-utr.hint=find a lost UTR number {0}.
 cds.matching.you-can.text= You can
-cds.matching.utr.lost-utr-description=find a lost UTR (opens in a new tab)
+cds.matching.utr.lost-utr-description=find a lost UTR (opens in new tab)
 cds.matching.partnership.utr.hint=This is 10 numbers, for example 1234567890. It will be on tax returns and other letters about Self Assessment. It may be called ''reference'', ''UTR'' or ''official use''.
 cds.matching.eori.hint=Your EORI number is made up of 14 - 17 characters.
 cds.matching.back=Back
