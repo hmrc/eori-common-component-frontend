@@ -357,7 +357,7 @@ cds.subscription.verify-email.progressive-disclosure.content=Chwiliwch yn eich f
 subscription.enter-email.heading=Beth yw’ch cyfeiriad e-bost?
 cds.subscription.enter-email.heading=Pa gyfeiriad e-bost y gallwn ni ei ddefnyddio ar gyfer hysbysiadau’r tollau?
 cds.subscription.enter-email.list-heading=Y cyfeiriad e-bost rydych yn ei nodi yma fydd yr unig un y byddwn yn ei ddefnyddio i wneud y canlynol:
-cds.subscription.enter-email.list-bullet-1=bullet-1=diweddaru chi ynghylch newidiadau i’r Gwasanaeth Datganiadau Tollau (CDS)
+cds.subscription.enter-email.list-bullet-1=diweddaru chi ynghylch newidiadau i’r Gwasanaeth Datganiadau Tollau (CDS)
 cds.subscription.enter-email.list-bullet-2=rhoi gwybod i chi ynghylch diweddariadau brys am nwyddau mewn tollau, os byddwch yn cyflwyno datganiadau mewnforio neu allforio
 cds.subscription.enter-email.list-bullet-3=anfon hysbysiadau Debyd Uniongyrchol gohirio tollau a datganiadau TAW gohiriedig ar gyfer eich mewnforion
 cds.subscription.enter-email.list-bullet-4=anfon diweddariadau ynghylch eich cyfrifon tollau, mewnforion, allforion a negeseuon am ddatganiadau byw.
