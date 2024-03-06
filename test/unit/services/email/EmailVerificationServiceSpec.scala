@@ -215,8 +215,8 @@ class EmailVerificationServiceSpec
   def mockStartVerificationJourney(response: EitherT[Future, ResponseError, ResponseWithURI]): Unit =
     when(mockConnector.startVerificationJourney(any(), any(), any(), any())(any(), any())) thenReturn response
 
-  val service          = Service.cds
-  val subscribeJourney = SubscribeJourney(AutoEnrolment)
+  val service: Service = Service.cds
+  val subscribeJourney: SubscribeJourney = SubscribeJourney(AutoEnrolment)
 
   "startVerificationJourney" should {
 

@@ -23,8 +23,8 @@ import java.time.LocalDateTime
 
 class SubscriptionStatusQueryParamsSpec extends UnitSpec {
 
-  val receiptDate = LocalDateTime.of(2016, 3, 17, 9, 30, 47, 114)
-  val taxPayerId  = TaxPayerId("1234567890").mdgTaxPayerId
+  val receiptDate: LocalDateTime = LocalDateTime.of(2016, 3, 17, 9, 30, 47, 114)
+  val taxPayerId: String = TaxPayerId("1234567890").mdgTaxPayerId
 
   "SubscriptionStatusQueryParamsSpec" should {
 

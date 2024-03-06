@@ -29,7 +29,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{DataUnavailableE
 class RequestSessionDataSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
 
   private val requestSessionData       = new RequestSessionData()
-  private implicit val mockRequest     = mock[Request[AnyContent]]
+  private implicit val mockRequest: Request[AnyContent] = mock[Request[AnyContent]]
   private val existingSessionValues    = Map("someExistingValue" -> "value")
   private val existingSession: Session = Session(existingSessionValues)
   private val mockOrganisationType     = mock[CdsOrganisationType]

@@ -20,7 +20,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetai
 
 object SubscriptionContactDetailsBuilder {
 
-  val contactDetailsWithMandatoryValuesOnly = ContactDetails(
+  val contactDetailsWithMandatoryValuesOnly: ContactDetails = ContactDetails(
     fullName = "John Doe",
     emailAddress = "john.doe@example.com",
     telephone = "01632961234",
@@ -31,7 +31,7 @@ object SubscriptionContactDetailsBuilder {
     countryCode = "ZZ"
   )
 
-  val contactDetailsWithAllValues = ContactDetails(
+  val contactDetailsWithAllValues: ContactDetails = ContactDetails(
     fullName = "John Doe",
     emailAddress = "john.doe@example.com",
     telephone = "01632961234",

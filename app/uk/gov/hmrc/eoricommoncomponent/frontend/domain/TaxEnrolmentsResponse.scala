@@ -23,7 +23,7 @@ import java.time.format.DateTimeFormatter
 case class KeyValue(key: String, value: String)
 
 object KeyValue {
-  implicit val format = Json.format[KeyValue]
+  implicit val format: OFormat[KeyValue] = Json.format[KeyValue]
 }
 
 case class TaxEnrolmentsRequest(
@@ -34,7 +34,7 @@ case class TaxEnrolmentsRequest(
 )
 
 object TaxEnrolmentsRequest {
-  val pattern = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+  val pattern: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
   implicit val jsonKeyValueFormat: OFormat[KeyValue] = Json.format[KeyValue]
 

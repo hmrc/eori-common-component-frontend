@@ -34,7 +34,7 @@ trait TestDataGenerators {
     name       <- Gen.listOfN(nameLength, Gen.alphaChar) map (_.mkString)
   } yield name
 
-  val dateOfBirthGenerator = for {
+  val dateOfBirthGenerator: Gen[LocalDate] = for {
     days  <- Gen.chooseNum(1, 365)
     years <- Gen.chooseNum(0, 110)
   } yield LocalDate.now() minusYears years minusDays days

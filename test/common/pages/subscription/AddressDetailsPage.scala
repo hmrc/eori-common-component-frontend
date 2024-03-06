@@ -40,7 +40,7 @@ sealed trait AddressDetailsPage extends WebPage {
   val postcodeFieldXPath           = "//*[@id='postcode']"
   val postcodeFieldLevelErrorXPath = "//p[@id='postcode-error'][@class='govuk-error-message']"
 
-  val filledValues =
+  val filledValues: AddressViewModel =
     AddressViewModel(street = "Line 1", city = "city name", postcode = Some("SE28 1AA"), countryCode = "ZZ")
 
 }

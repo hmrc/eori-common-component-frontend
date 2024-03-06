@@ -16,14 +16,14 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.models.events
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.NotifyRcmRequest
 import uk.gov.hmrc.http.HttpResponse
 
 case class NotifyRcm(request: NotifyRcmRequest, response: NotifyRcmResponse)
 
 object NotifyRcm {
-  implicit val format = Json.format[NotifyRcm]
+  implicit val format: OFormat[NotifyRcm] = Json.format[NotifyRcm]
 
   def apply(request: NotifyRcmRequest, response: HttpResponse): NotifyRcm =
     NotifyRcm(request, NotifyRcmResponse(response))

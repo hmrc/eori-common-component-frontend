@@ -40,7 +40,7 @@ class OrganisationViewModelSpec extends UnitSpec with Injector {
 
   implicit val messages: Messages = MessagesImpl(Lang("en"), instanceOf[MessagesApi])
 
-  val ukRadioItems = Seq(
+  val ukRadioItems: Seq[RadioItem] = Seq(
     RadioItem(
       content = Text(messages("cds.matching.organisation-type.radio.company.label")),
       value = Some(CdsOrganisationType.CompanyId),
@@ -85,7 +85,7 @@ class OrganisationViewModelSpec extends UnitSpec with Injector {
     )
   )
 
-  val rowRadioItems = Seq(
+  val rowRadioItems: Seq[RadioItem] = Seq(
     RadioItem(
       content = Text(messages("cds.matching.organisation-type.radio.organisation.label")),
       value = Some(CdsOrganisationType.CompanyId),

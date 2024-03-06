@@ -23,7 +23,7 @@ import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.{Assertion, BeforeAndAfterEach}
 import play.api.i18n.Messages
-import play.api.mvc.{AnyContent, Request, Result, Session}
+import play.api.mvc.{AnyContent, AnyContentAsEmpty, Request, Result, Session}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
@@ -35,11 +35,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.RegisterWithEoriAndIdResp
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Address, ResponseCommon}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.registration.UserLocation
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
-  FormData,
-  SubmissionCompleteData,
-  SubscriptionDetails
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{FormData, SubmissionCompleteData, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.registration.{MatchingService, Reg06Service}
@@ -1254,7 +1250,7 @@ class RegisterWithEoriAndIdControllerSpec
   }
 
   "determineFailView" should {
-    implicit val fakeRequest = defaultLangFakeRequest
+    implicit val fakeRequest: Request[AnyContentAsEmpty.type] = defaultLangFakeRequest
 
     "populate Company view" in {
       val company              = CdsOrganisationType.Company

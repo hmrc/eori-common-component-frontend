@@ -16,16 +16,13 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.models.events
 
-import play.api.libs.json.Json
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.registration.{
-  RegistrationDisplayRequestHolder,
-  RegistrationDisplayResponseHolder
-}
+import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.registration.{RegistrationDisplayRequestHolder, RegistrationDisplayResponseHolder}
 
 case class RegistrationDisplay(request: RegistrationDisplaySubmitted, response: RegistrationDisplayResult)
 
 object RegistrationDisplay {
-  implicit val format = Json.format[RegistrationDisplay]
+  implicit val format: OFormat[RegistrationDisplay] = Json.format[RegistrationDisplay]
 
   def apply(
     request: RegistrationDisplayRequestHolder,

@@ -17,24 +17,18 @@
 package unit.controllers.subscription
 
 import common.pages.subscription.SubscriptionContactDetailsPage._
-import common.pages.subscription.{
-  SubscriptionDateOfBirthPage,
-  SubscriptionDateOfEstablishmentPage,
-  SubscriptionPartnershipDateOfEstablishmentPage
-}
+import common.pages.subscription.{SubscriptionDateOfBirthPage, SubscriptionDateOfEstablishmentPage, SubscriptionPartnershipDateOfEstablishmentPage}
 import org.mockito.ArgumentMatchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.prop.TableDrivenPropertyChecks._
+import org.scalatest.prop.TableFor2
 import org.scalatest.prop.Tables.Table
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.subscription.DateOfEstablishmentController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
-  DateOfEstablishmentSubscriptionFlowPageMigrate,
-  SubscriptionDetails
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{DateOfEstablishmentSubscriptionFlowPageMigrate, SubscriptionDetails}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.RequestSessionData
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.organisation.OrgTypeLookup
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.subscription.date_of_establishment
@@ -87,7 +81,7 @@ class DateOfEstablishmentControllerSpec
     "date-of-establishment.year"  -> DateOfEstablishment.getYear.toString
   )
 
-  val existingSubscriptionDetailsHolder = SubscriptionDetails()
+  val existingSubscriptionDetailsHolder: SubscriptionDetails = SubscriptionDetails()
 
   private val DateOfEstablishmentMissingErrorPage     = "Enter your date of establishment"
   private val DateOfEstablishmentMissingErrorField    = "Error: Enter your date of establishment"
@@ -104,7 +98,7 @@ class DateOfEstablishmentControllerSpec
     when(mockOrgTypeLookup.etmpOrgType(any[Request[AnyContent]])).thenReturn(Future.successful(CorporateBody))
   }
 
-  val formModes = Table(
+  val formModes: TableFor2[String, Map[String, String] => (Future[Result] => Any) => Unit] = Table(
     ("formMode", "submitFormFunction"),
     ("create", (form: Map[String, String]) => submitFormInCreateMode(form) _),
     ("review", (form: Map[String, String]) => submitFormInReviewMode(form) _)

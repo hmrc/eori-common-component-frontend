@@ -16,13 +16,9 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.models.events
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.{Individual, RegistrationInfoRequest}
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{
-  EstablishmentAddress,
-  RegisterWithEoriAndIdOrganisation,
-  RegisterWithEoriAndIdRequest
-}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{EstablishmentAddress, RegisterWithEoriAndIdOrganisation, RegisterWithEoriAndIdRequest}
 
 case class RegistrationSubmitted(
   eori: String,
@@ -41,7 +37,7 @@ case class RegistrationSubmitted(
 )
 
 object RegistrationSubmitted {
-  implicit val format = Json.format[RegistrationSubmitted]
+  implicit val format: OFormat[RegistrationSubmitted] = Json.format[RegistrationSubmitted]
 
   def apply(request: RegisterWithEoriAndIdRequest, originatingService: String): RegistrationSubmitted = {
 

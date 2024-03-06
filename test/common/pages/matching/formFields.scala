@@ -32,5 +32,5 @@ trait IndividualNameDateFields {
   val dateOfBirthMonthField = "date-of-birth.month"
   val dateOfBirthYearField  = "date-of-birth.year"
 
-  val dateOfBirthFields = Set(dateOfBirthDayField, dateOfBirthMonthField, dateOfBirthYearField)
+  val dateOfBirthFields: Set[String] = Set(dateOfBirthDayField, dateOfBirthMonthField, dateOfBirthYearField)
 }

@@ -79,7 +79,7 @@ class TaxEnrolmentsConnectorSpec extends IntegrationTestsSpec with ScalaFutures 
         |    "groupIdentifier": "c808798d-0d81-4a34-82c2-bbf13b3ac2fa"
         |}]""".stripMargin)
 
-  val validTaxEnrolmentsIssuerRequestJson = Json.parse("""{
+  val validTaxEnrolmentsIssuerRequestJson: JsValue = Json.parse("""{
                                                      |    "serviceName": "HMRC-CUS-ORG",
                                                      |    "identifiers": [
                                                      |        {

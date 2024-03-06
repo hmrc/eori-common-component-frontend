@@ -17,14 +17,14 @@
 package unit.domain
 
 import base.UnitSpec
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.TaxEnrolmentsRequest._
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{KeyValue, TaxEnrolmentsRequest}
 
 import java.time.LocalDate
 
 class TaxEnrolmentsRequestSpec extends UnitSpec {
-  def expectedTaxEnrolmentsRequestJson(service: String) = Json.parse(s"""{
+  def expectedTaxEnrolmentsRequestJson(service: String): JsValue = Json.parse(s"""{
                                    |    "serviceName": "$service",
                                    |    "identifiers": [
                                    |        {
@@ -42,7 +42,7 @@ class TaxEnrolmentsRequestSpec extends UnitSpec {
                                    |
                                    |}""".stripMargin)
 
-  def expectedTaxEnrolmentsNoDOERequestJson(service: String) = Json.parse(s"""{
+  def expectedTaxEnrolmentsNoDOERequestJson(service: String): JsValue = Json.parse(s"""{
                                                      |    "serviceName": "$service",
                                                      |    "identifiers": [
                                                      |        {

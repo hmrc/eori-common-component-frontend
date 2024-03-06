@@ -16,14 +16,16 @@
 
 package common.support.testdata.subscription
 
+import org.scalatest.prop.TableFor1
 import org.scalatest.prop.Tables.Table
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
 
 trait BusinessDatesOrganisationTypeTables {
 
-  val dateOfBirthOrganisationTypes = Table("organisationType", SoleTrader, ThirdCountrySoleTrader)
+  val dateOfBirthOrganisationTypes: TableFor1[CdsOrganisationType] = Table("organisationType", SoleTrader, ThirdCountrySoleTrader)
 
-  val dateOfEstablishmentOrganisationTypes = Table(
+  val dateOfEstablishmentOrganisationTypes: TableFor1[CdsOrganisationType] = Table(
     "cdsOrganisationType",
     Company,
     Partnership,

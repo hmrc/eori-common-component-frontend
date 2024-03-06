@@ -18,6 +18,7 @@ package unit.views.subscription
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
@@ -163,7 +164,7 @@ class Reg06IdAlreadyLinkedSpec extends ViewSpec {
     }
   }
 
-  implicit val request = withFakeCSRF(FakeRequest.apply("GET", "/atar/subscribe"))
+  implicit val request: Request[AnyContentAsEmpty.type] = withFakeCSRF(FakeRequest.apply("GET", "/atar/subscribe"))
 
   def docUtr(
     isIndividual: Boolean = true,

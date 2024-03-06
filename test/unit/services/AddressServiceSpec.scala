@@ -22,7 +22,8 @@ import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalacheck.Gen
 import org.scalatest.BeforeAndAfterEach
-import play.api.mvc.{AnyContent, Request, Result}
+import play.api.mvc.{AnyContent, AnyContentAsEmpty, Request, Result}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.submit
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.AddressDetailsSubscriptionFlowPage
@@ -33,11 +34,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionDa
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{AddressService, SubscriptionDetailsService}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.address
 import unit.controllers.CdsPage
-import unit.controllers.subscription.{
-  SubscriptionFlowCreateModeTestSupport,
-  SubscriptionFlowReviewModeTestSupport,
-  SubscriptionFlowTestSupport
-}
+import unit.controllers.subscription.{SubscriptionFlowCreateModeTestSupport, SubscriptionFlowReviewModeTestSupport, SubscriptionFlowTestSupport}
 import util.StringThings._
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.RegistrationDetailsBuilder._
@@ -84,10 +81,10 @@ class AddressServiceSpec
       additionalEnding   <- Gen.alphaStr
     } yield s"$single$baseString$additionalEnding"
 
-  val mandatoryFields      = Map("city" -> "city", "street" -> "street", "postcode" -> "SE28 1AA", "countryCode" -> "GB")
-  val mandatoryFieldsEmpty = Map("city" -> "", "street" -> "", "postcode" -> "", "countryCode" -> "")
+  val mandatoryFields: Map[String, String] = Map("city" -> "city", "street" -> "street", "postcode" -> "SE28 1AA", "countryCode" -> "GB")
+  val mandatoryFieldsEmpty: Map[String, String] = Map("city" -> "", "street" -> "", "postcode" -> "", "countryCode" -> "")
 
-  val fakeRequest = SessionBuilder.buildRequestWithSessionAndPathNoUser(
+  val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = SessionBuilder.buildRequestWithSessionAndPathNoUser(
     method = "GET",
     path = s"/customs-enrolment-services/atar/subscribe/"
   )

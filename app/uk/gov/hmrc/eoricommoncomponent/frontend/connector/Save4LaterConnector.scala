@@ -33,13 +33,13 @@ class Save4LaterConnector @Inject() (httpClient: HttpClientV2, appConfig: AppCon
 
   private val logger = Logger(this.getClass)
 
-  private def logSuccess(method: String, url: String) =
+  private def logSuccess(method: String, url: String): Unit =
     // $COVERAGE-OFF$Loggers
     logger.debug(s"$method complete for call to $url")
 
   // $COVERAGE-ON
 
-  private def logFailure(method: String, url: String, e: Throwable) =
+  private def logFailure(method: String, url: String, e: Throwable): Unit =
     // $COVERAGE-OFF$Loggers
     logger.warn(s"$method request failed for call to $url: ${e.getMessage}", e)
 

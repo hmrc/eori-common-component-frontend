@@ -22,7 +22,7 @@ package object connector {
 
   implicit val httpReads: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
 
-    override def read(method: String, url: String, response: HttpResponse) =
+    override def read(method: String, url: String, response: HttpResponse): HttpResponse =
       response
 
   }

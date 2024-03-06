@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class GovernmentGatewayEnrolmentRequest(identifiers: Seq[Identifier], verifiers: Seq[Verifier])
 
 object GovernmentGatewayEnrolmentRequest {
-  implicit val jsonFormat = Json.format[GovernmentGatewayEnrolmentRequest]
+  implicit val jsonFormat: OFormat[GovernmentGatewayEnrolmentRequest] = Json.format[GovernmentGatewayEnrolmentRequest]
 }

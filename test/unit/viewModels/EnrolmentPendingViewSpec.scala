@@ -24,7 +24,7 @@ import util.ControllerSpec
 
 class EnrolmentPendingViewSpec extends UnitSpec with ControllerSpec {
   val mockMessages: Messages = mock[Messages]
-  val viewModel              = EnrolmentPendingViewModel
+  val viewModel: EnrolmentPendingViewModel.type = EnrolmentPendingViewModel
 
   "EnrolmentPendingViewModel" should {
 

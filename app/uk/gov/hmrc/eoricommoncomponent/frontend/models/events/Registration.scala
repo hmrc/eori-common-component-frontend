@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.models.events
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class Registration(request: RegistrationSubmitted, response: RegistrationResult)
 
 object Registration {
-  implicit val format = Json.format[Registration]
+  implicit val format: OFormat[Registration] = Json.format[Registration]
 }

@@ -6,7 +6,7 @@ object AppDependencies {
   val mongoDbVersion   = "1.7.0"
   val bootstrapVersion = "8.4.0"
 
-  val compileDependencies = Seq(
+  val compileDependencies: Seq[ModuleID] = Seq(
     "org.typelevel"     %% "cats-core"                             % "2.10.0",
     "uk.gov.hmrc"       %% "play-conditional-form-mapping-play-30" % "2.0.0",
     "uk.gov.hmrc"       %% "bootstrap-frontend-play-30"            % bootstrapVersion,
@@ -17,7 +17,7 @@ object AppDependencies {
     "uk.gov.hmrc"       %% "internal-auth-client-play-30"          % "1.10.0"
   )
 
-  val testDependencies = Seq(
+  val testDependencies: Seq[ModuleID] = Seq(
     "org.scalatest"          %% "scalatest"               % "3.2.17"            % "test,it",
     "org.playframework"      %% "play-test"               % PlayVersion.current % "test,it",
     "org.scalatestplus.play" %% "scalatestplus-play"      % "7.0.1"             % "test,it",

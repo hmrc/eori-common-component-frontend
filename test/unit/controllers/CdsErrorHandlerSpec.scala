@@ -29,7 +29,7 @@ import util.ControllerSpec
 import scala.concurrent.Future
 
 class CdsErrorHandlerSpec extends ControllerSpec with ScalaFutures {
-  val configuration = mock[Configuration]
+  val configuration: Configuration = mock[Configuration]
 
   private val errorTemplateView = instanceOf[error_template]
   private val notFoundView      = instanceOf[notFound]

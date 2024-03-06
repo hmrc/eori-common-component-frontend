@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class Verifier(key: String, value: String)
 
 object Verifier {
-  implicit val jsonFormat = Json.format[Verifier]
+  implicit val jsonFormat: OFormat[Verifier] = Json.format[Verifier]
 
   def fromKeyValuePair(keyValuePair: KeyValuePair): Verifier = Verifier(keyValuePair.key, keyValuePair.value)
 }

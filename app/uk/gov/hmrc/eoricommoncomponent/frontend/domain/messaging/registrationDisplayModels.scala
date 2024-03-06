@@ -23,7 +23,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 case class RegistrationInfoRequest(regime: String = "CDS", idType: String, idValue: String)
 
 object RegistrationInfoRequest extends Logging {
-  implicit val jsonFormat = Json.format[RegistrationInfoRequest]
+  implicit val jsonFormat: OFormat[RegistrationInfoRequest] = Json.format[RegistrationInfoRequest]
 
   val UTR  = "UTR"
   val EORI = "EORI"
@@ -51,5 +51,5 @@ object RegistrationInfoRequest extends Logging {
 case class NonUKIdentification(IDNumber: String, issuingInstitution: String, issuingCountryCode: String)
 
 object NonUKIdentification {
-  implicit val jsonFormat = Json.format[NonUKIdentification]
+  implicit val jsonFormat: OFormat[NonUKIdentification] = Json.format[NonUKIdentification]
 }

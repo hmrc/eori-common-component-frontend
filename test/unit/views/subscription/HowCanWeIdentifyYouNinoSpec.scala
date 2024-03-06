@@ -19,6 +19,7 @@ package unit.views.subscription
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.Form
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes
@@ -33,7 +34,7 @@ class HowCanWeIdentifyYouNinoSpec extends ViewSpec {
 
   val isInReviewMode   = false
   val previousPageUrl  = "/"
-  implicit val request = withFakeCSRF(FakeRequest())
+  implicit val request: Request[AnyContentAsEmpty.type] = withFakeCSRF(FakeRequest())
 
   private val view = instanceOf[how_can_we_identify_you_nino]
 

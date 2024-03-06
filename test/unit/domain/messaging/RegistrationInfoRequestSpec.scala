@@ -22,7 +22,7 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.RegistrationInf
 
 class RegistrationInfoRequestSpec extends UnitSpec {
 
-  val id = java.util.UUID.randomUUID.toString
+  val id: String = java.util.UUID.randomUUID.toString
 
   "RegistrationInfoRequest.forMatchingId" should {
     "create proper request from UTR" in {

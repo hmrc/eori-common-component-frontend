@@ -42,9 +42,9 @@ class AppConfig @Inject() (
     nonEmptySubstrings.toIndexedSeq
   }
 
-  val contactBaseUrl = servicesConfig.baseUrl("contact-frontend")
+  val contactBaseUrl: String = servicesConfig.baseUrl("contact-frontend")
 
-  val serviceIdentifierSubscribe =
+  val serviceIdentifierSubscribe: String =
     config.get[String]("microservice.services.contact-frontend.serviceIdentifierSubscribe")
 
   private val feedbackLinkSubscribe = config.get[String]("external-url.feedback-survey-subscribe")
@@ -132,7 +132,7 @@ class AppConfig @Inject() (
   private val addressLookupContext: String = config.get[String]("microservice.services.address-lookup.context")
 
   val addressLookup: String = addressLookupBaseUrl + addressLookupContext
-  lazy val contactAddress   = config.getOptional[Boolean]("features.contact-address").getOrElse(false)
+  lazy val contactAddress: Boolean = config.getOptional[Boolean]("features.contact-address").getOrElse(false)
 
   val internalAuthToken: String = config.get[String]("internal-auth.token")
 

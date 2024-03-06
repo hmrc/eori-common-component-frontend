@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 
 sealed abstract class ES1QueryType(val value: String)
@@ -43,5 +43,5 @@ case class ES1Response(principalGroupIds: Option[Seq[String]], delegatedGroupIds
 }
 
 object ES1Response {
-  implicit val format = Json.format[ES1Response]
+  implicit val format: OFormat[ES1Response] = Json.format[ES1Response]
 }

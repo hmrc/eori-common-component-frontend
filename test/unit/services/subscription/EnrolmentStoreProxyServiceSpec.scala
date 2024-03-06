@@ -41,7 +41,7 @@ class EnrolmentStoreProxyServiceSpec extends UnitSpec with MockitoSugar with Bef
   private val service                               = new EnrolmentStoreProxyService(mockEnrolmentStoreProxyConnector)
   private implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
 
-  val serviceList = List(atarService, gvmsService)
+  val serviceList: List[Service] = List(atarService, gvmsService)
   before {
     reset(mockEnrolmentStoreProxyConnector)
   }

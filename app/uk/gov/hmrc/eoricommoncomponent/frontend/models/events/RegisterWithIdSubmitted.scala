@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.models.events
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.Individual
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.RegistrationInfoRequest.{EORI, NINO, UTR}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.{MatchingRequestHolder, Organisation}
@@ -36,7 +36,7 @@ case class RegisterWithIdSubmitted(
 )
 
 object RegisterWithIdSubmitted {
-  implicit val format = Json.format[RegisterWithIdSubmitted]
+  implicit val format: OFormat[RegisterWithIdSubmitted] = Json.format[RegisterWithIdSubmitted]
 
   def apply(request: MatchingRequestHolder, originatingService: String): RegisterWithIdSubmitted = {
 

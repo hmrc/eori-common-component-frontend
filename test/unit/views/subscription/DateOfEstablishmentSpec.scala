@@ -19,6 +19,7 @@ package unit.views.subscription
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.Form
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{CorporateBody, LLP, UnincorporatedBody}
@@ -31,7 +32,7 @@ import java.time
 class DateOfEstablishmentSpec extends ViewSpec {
   val form: Form[time.LocalDate] = SubscriptionForm.subscriptionDateOfEstablishmentForm
   val isInReviewMode             = false
-  implicit val request           = withFakeCSRF(FakeRequest())
+  implicit val request: Request[AnyContentAsEmpty.type] = withFakeCSRF(FakeRequest())
 
   private val view = instanceOf[date_of_establishment]
 

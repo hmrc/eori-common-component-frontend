@@ -56,7 +56,7 @@ trait NameDobSoleTraderPage extends WebPage {
 
   val continueButtonXpath = "//*[@id='continue-button']"
 
-  val filledValues = NameDobMatchModel(
+  val filledValues: NameDobMatchModel = NameDobMatchModel(
     firstName = "Test First Name",
     middleName = Some("Test Middle Name"),
     lastName = "Test Last Name",
