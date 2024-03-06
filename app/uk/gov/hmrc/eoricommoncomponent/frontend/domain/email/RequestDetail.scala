@@ -16,12 +16,17 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain.email
 
-import org.joda.time.DateTime
-import play.api.libs.json.Json
+import java.time.LocalDateTime
+import play.api.libs.json.{Json, OFormat}
 
-case class RequestDetail(IDType: String, IDNumber: String, emailAddress: String, emailVerificationTimestamp: DateTime)
+case class RequestDetail(
+  IDType: String,
+  IDNumber: String,
+  emailAddress: String,
+  emailVerificationTimestamp: LocalDateTime
+)
 
 object RequestDetail {
   import uk.gov.hmrc.eoricommoncomponent.frontend.domain.email.DateTimeUtil._
-  implicit val formats = Json.format[RequestDetail]
+  implicit val formats: OFormat[RequestDetail] = Json.format[RequestDetail]
 }

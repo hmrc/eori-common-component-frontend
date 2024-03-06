@@ -16,7 +16,7 @@
 
 package integration
 
-import org.joda.time.DateTime
+import java.time.LocalDateTime
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Application
 import play.api.inject.bind
@@ -31,8 +31,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.RequestCommon
 import uk.gov.hmrc.http.HeaderCarrier
 import util.externalservices.ExternalServicesConfig._
 import util.externalservices.UpdateVerifiedEmailMessagingService
-
-import java.time.LocalDateTime
 
 class UpdateVerifiedEmailConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
 
@@ -75,7 +73,7 @@ class UpdateVerifiedEmailConnectorSpec extends IntegrationTestsSpec with ScalaFu
 
   val expectedUrl = "/update-verified-email"
 
-  val dateTime                     = DateTime.now()
+  val dateTime: LocalDateTime      = LocalDateTime.now()
   private val requestDetail        = RequestDetail("idType", "idNumber", "test@email.com", dateTime)
   private val requestDateInd       = LocalDateTime.of(2001, 12, 17, 9, 30, 47, 0)
   private val requestCommon        = RequestCommon("CDS", requestDateInd, "012345678901234")

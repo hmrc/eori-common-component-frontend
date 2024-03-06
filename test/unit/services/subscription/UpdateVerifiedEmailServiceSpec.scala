@@ -79,7 +79,7 @@ class UpdateVerifiedEmailServiceSpec extends UnitSpec with MockitoSugar with Bef
       ResponseCommon(
         "OK",
         None,
-        LocalDateTime.ofEpochSecond(dateTime.getMillis / 1000, 0, ZoneOffset.UTC),
+        LocalDateTime.from(dateTime),
         Some(List(MessagingServiceParam("ETMPFORMBUNDLENUMBER", "077063075008")))
       )
     )
@@ -87,35 +87,18 @@ class UpdateVerifiedEmailServiceSpec extends UnitSpec with MockitoSugar with Bef
 
   private val verifiedEmailResponse003 = VerifiedEmailResponse(
     UpdateVerifiedEmailResponse(
-      ResponseCommon(
-        "OK",
-        Some("003 - Request could not be processed"),
-        LocalDateTime.ofEpochSecond(dateTime.getMillis / 1000, 0, ZoneOffset.UTC),
-        Some(List())
-      )
+      ResponseCommon("OK", Some("003 - Request could not be processed"), LocalDateTime.from(dateTime), Some(List()))
     )
   )
 
   private val verifiedEmailResponseOtherError = VerifiedEmailResponse(
     UpdateVerifiedEmailResponse(
-      ResponseCommon(
-        "OK",
-        Some("Something went wrong"),
-        LocalDateTime.ofEpochSecond(dateTime.getMillis / 1000, 0, ZoneOffset.UTC),
-        Some(List())
-      )
+      ResponseCommon("OK", Some("Something went wrong"), LocalDateTime.from(dateTime), Some(List()))
     )
   )
 
   private val verifiedEmailResponseError = VerifiedEmailResponse(
-    UpdateVerifiedEmailResponse(
-      ResponseCommon(
-        "KO",
-        Some("Bad Request"),
-        LocalDateTime.ofEpochSecond(dateTime.getMillis / 1000, 0, ZoneOffset.UTC),
-        Some(List())
-      )
-    )
+    UpdateVerifiedEmailResponse(ResponseCommon("KO", Some("Bad Request"), LocalDateTime.from(dateTime), Some(List())))
   )
 
   "UpdateVerifiedEmailService" should {

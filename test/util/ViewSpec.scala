@@ -16,7 +16,7 @@
 
 package util
 
-import akka.util.Timeout
+import org.apache.pekko.util.Timeout
 import base.Injector
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
@@ -24,7 +24,7 @@ import play.api.i18n.Lang.defaultLang
 import play.api.i18n._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.Request
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.CSRFTokenHelper
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
 
@@ -51,6 +51,9 @@ trait CSRFTest {
   def withFakeCSRF[T](fakeRequest: FakeRequest[T]): Request[T] =
     CSRFTokenHelper.addCSRFToken(fakeRequest)
 
-  val fakeAtarSubscribeRequest = FakeRequest("GET", "/atar/subscribe")
-  val defaultLangFakeRequest   = FakeRequest("GET", "/atar/subscribe").withTransientLang(defaultLang)
+  val fakeAtarSubscribeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/atar/subscribe")
+
+  val defaultLangFakeRequest: Request[AnyContentAsEmpty.type] =
+    FakeRequest("GET", "/atar/subscribe").withTransientLang(defaultLang)
+
 }
