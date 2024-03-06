@@ -23,9 +23,9 @@ import java.time.LocalDate
 
 object SubscriptionFormBuilder {
 
-  val LegalStatus     = "corporate-body-uk"
-  val ShortName       = "Short Name"
-  val sic             = "9999"
+  val LegalStatus                = "corporate-body-uk"
+  val ShortName                  = "Short Name"
+  val sic                        = "9999"
   val DateEstablished: LocalDate = LocalDate.of(1900, 11, 11)
 
   private val contactDetailsModel = ContactDetailsModel(

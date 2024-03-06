@@ -23,8 +23,8 @@ object IndividualIdFormBuilder {
 
   val ValidUtrId            = "2108834503"
   val ValidEoriId           = "GB012345678912345"
-  val validUtr: Utr = Utr(ValidUtrId)
-  val ValidEori: Eori = Eori(ValidEoriId)
+  val validUtr: Utr         = Utr(ValidUtrId)
+  val ValidEori: Eori       = Eori(ValidEoriId)
   val ValidFirstName        = "John"
   val ValidMiddleName       = "Middle"
   val ValidLastName         = "Doe"

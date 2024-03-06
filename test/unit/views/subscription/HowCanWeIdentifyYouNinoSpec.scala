@@ -32,8 +32,8 @@ class HowCanWeIdentifyYouNinoSpec extends ViewSpec {
   val form: Form[IdMatchModel]                   = subscriptionNinoForm
   val formWithNothingEntered: Form[IdMatchModel] = subscriptionNinoForm.bind(Map("nino" -> ""))
 
-  val isInReviewMode   = false
-  val previousPageUrl  = "/"
+  val isInReviewMode                                    = false
+  val previousPageUrl                                   = "/"
   implicit val request: Request[AnyContentAsEmpty.type] = withFakeCSRF(FakeRequest())
 
   private val view = instanceOf[how_can_we_identify_you_nino]

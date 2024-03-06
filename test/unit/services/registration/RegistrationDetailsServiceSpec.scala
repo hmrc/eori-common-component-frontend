@@ -40,7 +40,7 @@ import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
 class RegistrationDetailsServiceSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
-  implicit val hc: HeaderCarrier = mock[HeaderCarrier]
+  implicit val hc: HeaderCarrier                = mock[HeaderCarrier]
   implicit val mockRequest: Request[AnyContent] = mock[Request[AnyContent]]
 
   private def startingDate = LocalDate.now

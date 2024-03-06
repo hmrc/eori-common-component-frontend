@@ -55,8 +55,8 @@ class ConfirmContactAddressControllerSpec
     confirmContactDetailsView
   )
 
-  val yesForm: Map[String, String] = Map("yes-no-answer" -> "true")
-  val noForm: Map[String, String] = Map("yes-no-answer" -> "false")
+  val yesForm: Map[String, String]   = Map("yes-no-answer" -> "true")
+  val noForm: Map[String, String]    = Map("yes-no-answer" -> "false")
   val emptyForm: Map[String, String] = Map("yes-no-answer" -> " ")
 
   override def beforeEach(): Unit = {

@@ -26,7 +26,12 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.AddressLookupConnector
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.address.{AddressLookup, AddressLookupFailure, AddressLookupSuccess, AddressRequestBody}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.address.{
+  AddressLookup,
+  AddressLookupFailure,
+  AddressLookupSuccess,
+  AddressRequestBody
+}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import unit.connector.AddressLookupConnectorSpec.{jsonResponseWithOneResult, jsonResponseWithTwoResults}
 

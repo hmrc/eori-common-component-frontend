@@ -73,9 +73,9 @@ class EnrolmentJourneyServiceSpec extends ControllerSpec with BeforeAndAfterEach
   private def loggedInUser(enrolments: Set[Enrolment]) =
     LoggedInUserWithEnrolments(None, None, Enrolments(enrolments), None, None, "credId")
 
-  private implicit val hc: HeaderCarrier = HeaderCarrier()
+  private implicit val hc: HeaderCarrier                            = HeaderCarrier()
   private implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-  private val groupId                    = "test-123"
+  private val groupId                                               = "test-123"
 
   "Application Service" should {
 

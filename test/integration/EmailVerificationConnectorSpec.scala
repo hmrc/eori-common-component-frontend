@@ -25,7 +25,11 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.{EmailVerificationConnector, ResponseError}
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{ResponseWithURI, VerificationStatus, VerificationStatusResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{
+  ResponseWithURI,
+  VerificationStatus,
+  VerificationStatusResponse
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{AutoEnrolment, Service, SubscribeJourney}
 import uk.gov.hmrc.http._
 import util.externalservices.EmailVerificationStubService
@@ -145,10 +149,9 @@ class EmailVerificationConnectorSpec extends IntegrationTestsSpec with ScalaFutu
       result mustBe expected
     }
 
-
     "return a Right of Nil response when NOT_FOUND status is returned" in {
 
-      EmailVerificationStubService.stubVerificationStatusResponse("",  NOT_FOUND, credId)
+      EmailVerificationStubService.stubVerificationStatusResponse("", NOT_FOUND, credId)
 
       val expected = Right(VerificationStatusResponse(List()))
       val result: Either[ResponseError, VerificationStatusResponse] =

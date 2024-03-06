@@ -28,11 +28,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.nameOrg
 import util.ViewSpec
 
 class NameOrganisationSpec extends ViewSpec {
-  val form: Form[NameOrganisationMatchModel]          = nameOrganisationForm
-  val formWithError: Form[NameOrganisationMatchModel] = nameOrganisationForm.bind(Map("name" -> ""))
-  val isInReviewMode                                  = false
-  val previousPageUrl                                 = "/"
-  val organisationType                                = "charity-public-body-not-for-profit"
+  val form: Form[NameOrganisationMatchModel]            = nameOrganisationForm
+  val formWithError: Form[NameOrganisationMatchModel]   = nameOrganisationForm.bind(Map("name" -> ""))
+  val isInReviewMode                                    = false
+  val previousPageUrl                                   = "/"
+  val organisationType                                  = "charity-public-body-not-for-profit"
   implicit val request: Request[AnyContentAsEmpty.type] = withFakeCSRF(FakeRequest())
 
   private val view = instanceOf[nameOrg]

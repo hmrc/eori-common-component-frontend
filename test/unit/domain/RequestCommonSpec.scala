@@ -31,7 +31,7 @@ class RequestCommonSpec extends UnitSpec {
   val validReceiptDateBst: LocalDateTime =
     ZonedDateTime.parse(validReceiptDate).withZoneSameInstant(ZoneId.of("Europe/London")).toLocalDateTime
 
-  val invalidReceiptDate       = "2016-07-08 08:35:13Z"
+  val invalidReceiptDate               = "2016-07-08 08:35:13Z"
   val acknowledgementReference: String = UUID.randomUUID().toString
 
   def requestCommonAsJson(receiptDate: String = validReceiptDate): JsValue =

@@ -33,14 +33,18 @@ trait ReviewPageOrganisationTypeTables {
     ThirdCountryOrganisation
   )
 
-  val individualsOnlyOrganisationTypes: TableFor1[CdsOrganisationType] = Table("organisationType", ThirdCountryIndividual, EUIndividual, Individual)
+  val individualsOnlyOrganisationTypes: TableFor1[CdsOrganisationType] =
+    Table("organisationType", ThirdCountryIndividual, EUIndividual, Individual)
 
-  val soleTradersOnlyOrganisationTypes: TableFor1[CdsOrganisationType] = Table("organisationType", SoleTrader, ThirdCountrySoleTrader)
+  val soleTradersOnlyOrganisationTypes: TableFor1[CdsOrganisationType] =
+    Table("organisationType", SoleTrader, ThirdCountrySoleTrader)
 
   val businessDetailsOrganisationTypes: TableFor1[CdsOrganisationType] = organisationTypes
 
-  val contactDetailsOrganisationTypes: TableFor1[CdsOrganisationType] = individualsOnlyOrganisationTypes ++ soleTradersOnlyOrganisationTypes
+  val contactDetailsOrganisationTypes: TableFor1[CdsOrganisationType] =
+    individualsOnlyOrganisationTypes ++ soleTradersOnlyOrganisationTypes
 
-  val shortenedNameOrganisationTypes: TableFor1[CdsOrganisationType] = organisationTypes ++ soleTradersOnlyOrganisationTypes
+  val shortenedNameOrganisationTypes: TableFor1[CdsOrganisationType] =
+    organisationTypes ++ soleTradersOnlyOrganisationTypes
 
 }

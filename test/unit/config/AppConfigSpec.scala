@@ -20,6 +20,7 @@ import org.mockito.Mockito
 import org.mockito.Mockito.spy
 import org.scalatest.BeforeAndAfterEach
 import play.api.Configuration
+import play.api.i18n.{Lang, Messages, MessagesImpl}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import util.ControllerSpec
 
@@ -43,6 +44,11 @@ class AppConfigSpec extends ControllerSpec with BeforeAndAfterEach {
 
     "have ttl defined" in {
       appConfig.ttl shouldBe Duration(40, TimeUnit.MINUTES)
+    }
+
+    "check welsh" in {
+      val msg: Messages = MessagesImpl(Lang("cy"), messagesApi).messages
+      appConfig.findLostUtr()(msg) shouldBe "https://www.gov.uk/dod-o-hyd-i-utr-sydd-ar-goll"
     }
 
     "have allowlistReferrers defined" in {

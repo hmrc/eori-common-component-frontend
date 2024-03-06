@@ -23,7 +23,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
 
 trait BusinessDatesOrganisationTypeTables {
 
-  val dateOfBirthOrganisationTypes: TableFor1[CdsOrganisationType] = Table("organisationType", SoleTrader, ThirdCountrySoleTrader)
+  val dateOfBirthOrganisationTypes: TableFor1[CdsOrganisationType] =
+    Table("organisationType", SoleTrader, ThirdCountrySoleTrader)
 
   val dateOfEstablishmentOrganisationTypes: TableFor1[CdsOrganisationType] = Table(
     "cdsOrganisationType",

@@ -47,9 +47,11 @@ object Users {
 
   def ASampleUserWithoutEmail: User = User(Gen.uuid.sample.get.toString)
 
-  def ACtOrgUser: User = User(Gen.uuid.sample.get.toString, ctUtr = Some(Utr("1234567")), email = Some("ctorg@user.com"))
+  def ACtOrgUser: User =
+    User(Gen.uuid.sample.get.toString, ctUtr = Some(Utr("1234567")), email = Some("ctorg@user.com"))
 
-  def IrSaUtrUser: User = User(Gen.uuid.sample.get.toString, saUtr = Some(Utr("1234567")), email = Some("ctorg@user.com"))
+  def IrSaUtrUser: User =
+    User(Gen.uuid.sample.get.toString, saUtr = Some(Utr("1234567")), email = Some("ctorg@user.com"))
 
   def ASampleUserWithRandomInternalId(internalId: String): User =
     User(internalId = internalId, email = Some("sample@user.com"), groupId = Some("gg-id-rcm-cases"))

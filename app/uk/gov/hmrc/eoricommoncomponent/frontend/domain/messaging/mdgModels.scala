@@ -121,7 +121,7 @@ trait CommonHeader extends Logging {
 
   }
 
-  implicit val dateTimeReads: Reads[LocalDateTime] = dateTimeReadsIso
+  implicit val dateTimeReads: Reads[LocalDateTime]   = dateTimeReadsIso
   implicit val dateTimeWrites: Writes[LocalDateTime] = dateTimeWritesIsoUtc
 }
 
@@ -155,7 +155,7 @@ case class RequestCommon(
 
 object RequestCommon extends CommonHeader {
   implicit val requestParamFormat: OFormat[RequestParameter] = Json.format[RequestParameter]
-  implicit val formats: OFormat[RequestCommon] = Json.format[RequestCommon]
+  implicit val formats: OFormat[RequestCommon]               = Json.format[RequestCommon]
 }
 
 case class ResponseCommon(
@@ -166,7 +166,7 @@ case class ResponseCommon(
 )
 
 object ResponseCommon extends CommonHeader {
-  val StatusOK         = "OK"
-  val StatusNotOK      = "NOT_OK"
+  val StatusOK                                  = "OK"
+  val StatusNotOK                               = "NOT_OK"
   implicit val formats: OFormat[ResponseCommon] = Json.format[ResponseCommon]
 }

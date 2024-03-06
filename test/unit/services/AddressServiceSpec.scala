@@ -34,7 +34,11 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionDa
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription.{AddressService, SubscriptionDetailsService}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.address
 import unit.controllers.CdsPage
-import unit.controllers.subscription.{SubscriptionFlowCreateModeTestSupport, SubscriptionFlowReviewModeTestSupport, SubscriptionFlowTestSupport}
+import unit.controllers.subscription.{
+  SubscriptionFlowCreateModeTestSupport,
+  SubscriptionFlowReviewModeTestSupport,
+  SubscriptionFlowTestSupport
+}
 import util.StringThings._
 import util.builders.AuthBuilder.withAuthorisedUser
 import util.builders.RegistrationDetailsBuilder._
@@ -81,8 +85,11 @@ class AddressServiceSpec
       additionalEnding   <- Gen.alphaStr
     } yield s"$single$baseString$additionalEnding"
 
-  val mandatoryFields: Map[String, String] = Map("city" -> "city", "street" -> "street", "postcode" -> "SE28 1AA", "countryCode" -> "GB")
-  val mandatoryFieldsEmpty: Map[String, String] = Map("city" -> "", "street" -> "", "postcode" -> "", "countryCode" -> "")
+  val mandatoryFields: Map[String, String] =
+    Map("city" -> "city", "street" -> "street", "postcode" -> "SE28 1AA", "countryCode" -> "GB")
+
+  val mandatoryFieldsEmpty: Map[String, String] =
+    Map("city" -> "", "street" -> "", "postcode" -> "", "countryCode" -> "")
 
   val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = SessionBuilder.buildRequestWithSessionAndPathNoUser(
     method = "GET",

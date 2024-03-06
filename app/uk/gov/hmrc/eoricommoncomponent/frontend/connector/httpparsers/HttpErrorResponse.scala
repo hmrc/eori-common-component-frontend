@@ -38,7 +38,7 @@ case class VerifiedEmailResponse(updateVerifiedEmailResponse: UpdateVerifiedEmai
 
 object VerifiedEmailResponse {
   implicit val format: OFormat[VerifiedEmailResponse] = Json.format[VerifiedEmailResponse]
-  val RequestCouldNotBeProcessed = "003 - Request could not be processed"
+  val RequestCouldNotBeProcessed                      = "003 - Request could not be processed"
 }
 
 case class VerifiedEmailRequest(updateVerifiedEmailRequest: UpdateVerifiedEmailRequest)

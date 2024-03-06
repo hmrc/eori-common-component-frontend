@@ -131,7 +131,7 @@ class AppConfig @Inject() (
   private val addressLookupBaseUrl: String = servicesConfig.baseUrl("address-lookup")
   private val addressLookupContext: String = config.get[String]("microservice.services.address-lookup.context")
 
-  val addressLookup: String = addressLookupBaseUrl + addressLookupContext
+  val addressLookup: String        = addressLookupBaseUrl + addressLookupContext
   lazy val contactAddress: Boolean = config.getOptional[Boolean]("features.contact-address").getOrElse(false)
 
   val internalAuthToken: String = config.get[String]("internal-auth.token")

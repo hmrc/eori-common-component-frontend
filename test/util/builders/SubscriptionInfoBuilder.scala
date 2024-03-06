@@ -26,12 +26,12 @@ import java.time.{LocalDate, LocalDateTime}
 
 object SubscriptionInfoBuilder {
 
-  val eori: Option[String] = Some("12345")
-  val CDSOrgName           = "orgName"
-  val orgStreetName        = "Line 1"
-  val orgCity              = "line 2"
+  val eori: Option[String]        = Some("12345")
+  val CDSOrgName                  = "orgName"
+  val orgStreetName               = "Line 1"
+  val orgCity                     = "line 2"
   val orgPostalCode: Some[String] = Some("SE28 1AA")
-  val orgCountryCode       = "ZZ"
+  val orgCountryCode              = "ZZ"
 
   val contactName                  = "John Doe"
   val contactStreet                = "Line 1"
@@ -42,9 +42,11 @@ object SubscriptionInfoBuilder {
   val faxNumber                    = "01632961235"
   val emailAddress                 = "john.doe@example.com"
   val dateOfEstablishmentFormatted = "31 December 2015"
-  val dateOfEstablishment: LocalDate = LocalDate.parse(dateOfEstablishmentFormatted, DateTimeFormatter.ofPattern("d MMMM yyyy"))
 
-  val VATIdNoList: List[String] = List("VAT-1", "VAT-2", "VAT-3", "VAT-4", "VAT-5")
+  val dateOfEstablishment: LocalDate =
+    LocalDate.parse(dateOfEstablishmentFormatted, DateTimeFormatter.ofPattern("d MMMM yyyy"))
+
+  val VATIdNoList: List[String]      = List("VAT-1", "VAT-2", "VAT-3", "VAT-4", "VAT-5")
   val VATIdCountryList: List[String] = List("GB", "FR", "ES", "PT", "IN")
 
   val vatIDList: IndexedSeq[SubscriptionInfoVatId] = for {
@@ -65,7 +67,8 @@ object SubscriptionInfoBuilder {
 
   val establishmentInTheCustomsTerritoryOfTheUnion = "1"
 
-  val fullyPopulatedEstablishmentAddress: EstablishmentAddress = EstablishmentAddress(orgStreetName, orgCity, orgPostalCode, orgCountryCode)
+  val fullyPopulatedEstablishmentAddress: EstablishmentAddress =
+    EstablishmentAddress(orgStreetName, orgCity, orgPostalCode, orgCountryCode)
 
   val fullyPopulatedContactInformation: ContactInformation = ContactInformation(
     personOfContact = Some(contactName),
@@ -151,9 +154,10 @@ object SubscriptionInfoBuilder {
       Some(fullyPopulatedContactInformation.copy(emailVerificationTimestamp = None))
     )
 
-  val responseDetailWithoutPersonOfContact: SubscriptionDisplayResponseDetail = fullyPopulatedResponseDetail.copy(contactInformation =
-    Some(partiallyPopulatedContactInformation.copy(emailAddress = Some(emailAddress)))
-  )
+  val responseDetailWithoutPersonOfContact: SubscriptionDisplayResponseDetail =
+    fullyPopulatedResponseDetail.copy(contactInformation =
+      Some(partiallyPopulatedContactInformation.copy(emailAddress = Some(emailAddress)))
+    )
 
   val sampleResponseCommon: ResponseCommon = ResponseCommon(
     "OK",
@@ -179,7 +183,8 @@ object SubscriptionInfoBuilder {
   val sampleResponseCommonWithNoETMPFORMBUNDLENUMBER: ResponseCommon =
     sampleResponseCommon.copy(returnParameters = Some(List(MessagingServiceParam("POSITION", "GENERATE"))))
 
-  val fullyPopulatedResponse: SubscriptionDisplayResponse = SubscriptionDisplayResponse(sampleResponseCommon, fullyPopulatedResponseDetail)
+  val fullyPopulatedResponse: SubscriptionDisplayResponse =
+    SubscriptionDisplayResponse(sampleResponseCommon, fullyPopulatedResponseDetail)
 
   val fullyPopulatedResponseWithoutFormBundle: SubscriptionDisplayResponse =
     SubscriptionDisplayResponse(sampleResponseCommonWithoutFormBundleNumber, fullyPopulatedResponseDetail)
@@ -214,7 +219,8 @@ object SubscriptionInfoBuilder {
   val responseWithoutContactDetails: SubscriptionDisplayResponse =
     SubscriptionDisplayResponse(sampleResponseCommon, onlyMandatoryPopulatedResponseDetail)
 
-  val responseWithoutEmailAddress: SubscriptionDisplayResponse = SubscriptionDisplayResponse(sampleResponseCommon, responseDetailWithoutEmail)
+  val responseWithoutEmailAddress: SubscriptionDisplayResponse =
+    SubscriptionDisplayResponse(sampleResponseCommon, responseDetailWithoutEmail)
 
   val responseWithUnverifiedEmailAddress: SubscriptionDisplayResponse =
     SubscriptionDisplayResponse(sampleResponseCommon, responseDetailWithUnverifiedEmail)

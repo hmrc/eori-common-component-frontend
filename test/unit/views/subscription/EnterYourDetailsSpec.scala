@@ -29,9 +29,9 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.enter_your_
 import util.ViewSpec
 
 class EnterYourDetailsSpec extends ViewSpec {
-  val form: Form[NameDobMatchModel] = enterNameDobForm
-  val isInReviewMode                = false
-  val previousPageUrl               = "/"
+  val form: Form[NameDobMatchModel]                     = enterNameDobForm
+  val isInReviewMode                                    = false
+  val previousPageUrl                                   = "/"
   implicit val request: Request[AnyContentAsEmpty.type] = withFakeCSRF(FakeRequest())
 
   private val view = instanceOf[enter_your_details]

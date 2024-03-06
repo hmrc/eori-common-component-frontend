@@ -23,7 +23,12 @@ import play.mvc.Http.Status.{CREATED, NOT_FOUND, OK}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.email.{routes => emailRoutes}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes
-import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{ResponseWithURI, StartVerificationJourneyEmail, StartVerificationJourneyRequest, VerificationStatusResponse}
+import uk.gov.hmrc.eoricommoncomponent.frontend.models.email.{
+  ResponseWithURI,
+  StartVerificationJourneyEmail,
+  StartVerificationJourneyRequest,
+  VerificationStatusResponse
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.{Service, SubscribeJourney}
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}

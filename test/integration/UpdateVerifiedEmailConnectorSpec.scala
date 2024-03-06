@@ -22,7 +22,7 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
-import play.mvc.Http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR, GATEWAY_TIMEOUT}
+import play.mvc.Http.Status.{BAD_REQUEST, FORBIDDEN, GATEWAY_TIMEOUT, INTERNAL_SERVER_ERROR}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.UpdateVerifiedEmailConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers._
@@ -114,7 +114,6 @@ class UpdateVerifiedEmailConnectorSpec extends IntegrationTestsSpec with ScalaFu
 
       await(connector.updateVerifiedEmail(verifiedEmailRequest)) must be(Left(UnhandledException))
     }
-
 
   }
 }

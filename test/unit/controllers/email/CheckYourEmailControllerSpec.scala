@@ -76,13 +76,13 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     mockEmailJourneyService
   )
 
-  val email       = "test@example.com"
+  val email                    = "test@example.com"
   val emailStatus: EmailStatus = EmailStatus(Some(email))
 
-  val internalId = "InternalID"
-  val jsonValue: JsValue = Json.toJson(emailStatus)
+  val internalId                 = "InternalID"
+  val jsonValue: JsValue         = Json.toJson(emailStatus)
   val data: Map[String, JsValue] = Map(internalId -> jsonValue)
-  val unit: Unit = ()
+  val unit: Unit                 = ()
 
   override def beforeEach(): Unit =
     when(mockSave4LaterService.fetchEmailForService(any(), any(), any())(any()))

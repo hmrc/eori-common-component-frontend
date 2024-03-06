@@ -39,17 +39,18 @@ trait MatchingServiceTestData {
   val individualWithMiddleName: Individual =
     Individual(individualFirstName, Some(individualMiddleName), individualLastName, individualDateOfBirth)
 
-  val utrId                 = "2108834503"
-  val utr: Utr = Utr(utrId)
-  val eoriId                = "eor-123"
-  val eori: Eori = Eori(eoriId)
-  val nino: Nino = Nino(ninoId)
+  val utrId                                  = "2108834503"
+  val utr: Utr                               = Utr(utrId)
+  val eoriId                                 = "eor-123"
+  val eori: Eori                             = Eori(eoriId)
+  val nino: Nino                             = Nino(ninoId)
   val someEstablishmentDate: Some[LocalDate] = Some(establishmentDate)
 
   val ExpectedRequestCommon: RequestCommon =
     RequestCommon("CDS", LocalDateTime.of(2016, 7, 8, 9, 35, 13, 0), "4482baa8-1c84-4d23-a8db-3fc180325e7a")
 
-  val matchedAddress: Address = Address("Line 1", Some("line 2"), Some("line 3"), Some("line 4"), Some("SE28 1AA"), "GB")
+  val matchedAddress: Address =
+    Address("Line 1", Some("line 2"), Some("line 3"), Some("line 4"), Some("SE28 1AA"), "GB")
 
   def utrOnlyRequestJson(utrIdToMatch: String, isAnAgent: Boolean): JsValue =
     Json.parse(s"""{

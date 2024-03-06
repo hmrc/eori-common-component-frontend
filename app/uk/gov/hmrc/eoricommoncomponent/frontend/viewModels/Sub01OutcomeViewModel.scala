@@ -27,10 +27,11 @@ object Sub01OutcomeViewModel {
     case None       => messages(s"cds.sub01.outcome.rejected.subscribe.heading-noname", longName)
   }
 
-  def headingForProcessing(name: Option[String])(implicit messages: Messages, request: Request[_]): String = name match {
-    case Some(org) => messages("cds.sub01.outcome.processing.heading", shortName, org)
-    case None      => messages("cds.sub01.outcome.processing.heading-noname", shortName)
+  def headingForProcessing(name: Option[String])(implicit messages: Messages, request: Request[_]): String =
+    name match {
+      case Some(org) => messages("cds.sub01.outcome.processing.heading", shortName, org)
+      case None      => messages("cds.sub01.outcome.processing.heading-noname", shortName)
 
-  }
+    }
 
 }
