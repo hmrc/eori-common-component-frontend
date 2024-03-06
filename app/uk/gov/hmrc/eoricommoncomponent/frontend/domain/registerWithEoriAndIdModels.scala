@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain
 
-import org.joda.time.DateTime
-import play.api.libs.json.Json
+import java.time.LocalDateTime
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging._
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressViewModel
 
@@ -26,7 +26,7 @@ import java.lang.reflect.Field
 case class GovGatewayCredentials(email: String)
 
 object GovGatewayCredentials {
-  implicit val format = Json.format[GovGatewayCredentials]
+  implicit val format: OFormat[GovGatewayCredentials] = Json.format[GovGatewayCredentials]
 }
 
 case class EstablishmentAddress(
@@ -42,7 +42,7 @@ case class EstablishmentAddress(
 }
 
 object EstablishmentAddress {
-  implicit val jsonFormat = Json.format[EstablishmentAddress]
+  implicit val jsonFormat: OFormat[EstablishmentAddress] = Json.format[EstablishmentAddress]
 
   def createEstablishmentAddress(address: Address): EstablishmentAddress = {
     val fourLineAddress = AddressViewModel(address)
@@ -59,13 +59,13 @@ object EstablishmentAddress {
 case class RegisterModeEori(EORI: String, fullName: String, address: EstablishmentAddress)
 
 object RegisterModeEori {
-  implicit val format = Json.format[RegisterModeEori]
+  implicit val format: OFormat[RegisterModeEori] = Json.format[RegisterModeEori]
 }
 
 case class RegisterWithEoriAndIdOrganisation(name: String, `type`: String)
 
 object RegisterWithEoriAndIdOrganisation {
-  implicit val formats = Json.format[RegisterWithEoriAndIdOrganisation]
+  implicit val formats: OFormat[RegisterWithEoriAndIdOrganisation] = Json.format[RegisterWithEoriAndIdOrganisation]
 }
 
 case class RegisterModeId(
@@ -79,7 +79,7 @@ case class RegisterModeId(
 }
 
 object RegisterModeId {
-  implicit val format = Json.format[RegisterModeId]
+  implicit val format: OFormat[RegisterModeId] = Json.format[RegisterModeId]
 }
 
 case class RegisterWithEoriAndIdDetail(
@@ -89,25 +89,25 @@ case class RegisterWithEoriAndIdDetail(
 )
 
 object RegisterWithEoriAndIdDetail {
-  implicit val format = Json.format[RegisterWithEoriAndIdDetail]
+  implicit val format: OFormat[RegisterWithEoriAndIdDetail] = Json.format[RegisterWithEoriAndIdDetail]
 }
 
 case class RegisterWithEoriAndIdRequest(requestCommon: RequestCommon, requestDetail: RegisterWithEoriAndIdDetail)
 
 object RegisterWithEoriAndIdRequest {
-  implicit val format = Json.format[RegisterWithEoriAndIdRequest]
+  implicit val format: OFormat[RegisterWithEoriAndIdRequest] = Json.format[RegisterWithEoriAndIdRequest]
 }
 
 case class RegisterWithEoriAndIdRequestHolder(registerWithEORIAndIDRequest: RegisterWithEoriAndIdRequest)
 
 object RegisterWithEoriAndIdRequestHolder {
-  implicit val format = Json.format[RegisterWithEoriAndIdRequestHolder]
+  implicit val format: OFormat[RegisterWithEoriAndIdRequestHolder] = Json.format[RegisterWithEoriAndIdRequestHolder]
 }
 
 case class VatIds(countryCode: String, vatNumber: String)
 
 object VatIds {
-  implicit val format = Json.format[VatIds]
+  implicit val format: OFormat[VatIds] = Json.format[VatIds]
 }
 
 case class ContactDetail(
@@ -119,13 +119,13 @@ case class ContactDetail(
 )
 
 object ContactDetail {
-  implicit val format = Json.format[ContactDetail]
+  implicit val format: OFormat[ContactDetail] = Json.format[ContactDetail]
 }
 
 case class Trader(fullName: String, shortName: String)
 
 object Trader {
-  implicit val format = Json.format[Trader]
+  implicit val format: OFormat[Trader] = Json.format[Trader]
 }
 
 case class ResponseData(
@@ -146,7 +146,7 @@ case class ResponseData(
 )
 
 object ResponseData {
-  implicit val format = Json.format[ResponseData]
+  implicit val format: OFormat[ResponseData] = Json.format[ResponseData]
 }
 
 case class RegisterWithEoriAndIdResponseDetail(
@@ -156,13 +156,13 @@ case class RegisterWithEoriAndIdResponseDetail(
 )
 
 object RegisterWithEoriAndIdResponseDetail {
-  implicit val format = Json.format[RegisterWithEoriAndIdResponseDetail]
+  implicit val format: OFormat[RegisterWithEoriAndIdResponseDetail] = Json.format[RegisterWithEoriAndIdResponseDetail]
 }
 
 case class AdditionalInformation(id: CustomsId, isIndividual: Boolean)
 
 object AdditionalInformation {
-  implicit val format = Json.format[AdditionalInformation]
+  implicit val format: OFormat[AdditionalInformation] = Json.format[AdditionalInformation]
 }
 
 case class RegisterWithEoriAndIdResponse(
@@ -254,30 +254,30 @@ trait CaseClassAuditHelper {
 
   private def isLeafNode(value: Any) =
     value match {
-      case _: String     => true
-      case _: Int        => true
-      case _: Long       => true
-      case _: Boolean    => true
-      case _: Double     => true
-      case _: BigDecimal => true
-      case _: Float      => true
-      case _: DateTime   => true
-      case _             => false
+      case _: String        => true
+      case _: Int           => true
+      case _: Long          => true
+      case _: Boolean       => true
+      case _: Double        => true
+      case _: BigDecimal    => true
+      case _: Float         => true
+      case _: LocalDateTime => true
+      case _                => false
     }
 
   private def isScalaOption(value: Object): Boolean = value.getClass.getSuperclass.equals(Class.forName("scala.Option"))
 }
 
 object RegisterWithEoriAndIdResponse {
-  implicit val format            = Json.format[RegisterWithEoriAndIdResponse]
-  val EoriAlreadyLinked          = "600 - EORI already linked to a different ID"
-  val IDLinkedWithEori           = "602 - ID already linked to a different EORI"
-  val RejectedPreviouslyAndRetry = "601 - Rejected previously and retry failed"
-  val RequestCouldNotBeProcessed = "003 - Request could not be processed"
+  implicit val format: OFormat[RegisterWithEoriAndIdResponse] = Json.format[RegisterWithEoriAndIdResponse]
+  val EoriAlreadyLinked                                       = "600 - EORI already linked to a different ID"
+  val IDLinkedWithEori                                        = "602 - ID already linked to a different EORI"
+  val RejectedPreviouslyAndRetry                              = "601 - Rejected previously and retry failed"
+  val RequestCouldNotBeProcessed                              = "003 - Request could not be processed"
 }
 
 case class RegisterWithEoriAndIdResponseHolder(registerWithEORIAndIDResponse: RegisterWithEoriAndIdResponse)
 
 object RegisterWithEoriAndIdResponseHolder {
-  implicit val format = Json.format[RegisterWithEoriAndIdResponseHolder]
+  implicit val format: OFormat[RegisterWithEoriAndIdResponseHolder] = Json.format[RegisterWithEoriAndIdResponseHolder]
 }
