@@ -21,7 +21,7 @@ import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import play.api.mvc.Results.Ok
 import play.api.test.Helpers._
@@ -76,13 +76,13 @@ class CheckYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEac
     mockEmailJourneyService
   )
 
-  val email       = "test@example.com"
-  val emailStatus = EmailStatus(Some(email))
+  val email                    = "test@example.com"
+  val emailStatus: EmailStatus = EmailStatus(Some(email))
 
-  val internalId = "InternalID"
-  val jsonValue  = Json.toJson(emailStatus)
-  val data       = Map(internalId -> jsonValue)
-  val unit       = ()
+  val internalId                 = "InternalID"
+  val jsonValue: JsValue         = Json.toJson(emailStatus)
+  val data: Map[String, JsValue] = Map(internalId -> jsonValue)
+  val unit: Unit                 = ()
 
   override def beforeEach(): Unit =
     when(mockSave4LaterService.fetchEmailForService(any(), any(), any())(any()))

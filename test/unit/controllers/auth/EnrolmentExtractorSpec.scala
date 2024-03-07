@@ -32,7 +32,7 @@ class EnrolmentExtractorSpec extends UnitSpec {
   private def loggedInUser(enrolments: Set[Enrolment]) =
     LoggedInUserWithEnrolments(None, None, Enrolments(enrolments), None, None, "credId")
 
-  val enrolmentExtractor = new EnrolmentExtractor {}
+  val enrolmentExtractor: EnrolmentExtractor = new EnrolmentExtractor {}
 
   "Enrolment Extractor" should {
 

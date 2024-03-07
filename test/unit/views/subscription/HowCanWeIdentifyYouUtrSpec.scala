@@ -19,6 +19,7 @@ package unit.views.subscription
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.Form
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.registration.routes
@@ -31,9 +32,9 @@ class HowCanWeIdentifyYouUtrSpec extends ViewSpec {
   val form: Form[IdMatchModel]                   = subscriptionUtrForm
   val formWithNothingEntered: Form[IdMatchModel] = subscriptionUtrForm.bind(Map("utr" -> ""))
 
-  val isInReviewMode   = false
-  val previousPageUrl  = "/"
-  implicit val request = withFakeCSRF(FakeRequest())
+  val isInReviewMode                                    = false
+  val previousPageUrl                                   = "/"
+  implicit val request: Request[AnyContentAsEmpty.type] = withFakeCSRF(FakeRequest())
 
   private val view = instanceOf[how_can_we_identify_you_utr]
 

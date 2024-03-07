@@ -27,8 +27,8 @@ class CacheClearOnCompletionAction @Inject() (sessionCache: SessionCache, parser
   ec: ExecutionContext
 ) extends ActionBuilderImpl(parser) with NewUserSession {
 
-  override def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[Result]) = {
-    implicit val req = request
+  override def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[Result]): Future[Result] = {
+    implicit val req: Request[A] = request
 
     for {
       journeyCompleted <- sessionCache.isJourneyComplete

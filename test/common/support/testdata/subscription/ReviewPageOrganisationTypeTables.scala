@@ -16,12 +16,14 @@
 
 package common.support.testdata.subscription
 
+import org.scalatest.prop.TableFor1
 import org.scalatest.prop.Tables.Table
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.CdsOrganisationType._
 
 trait ReviewPageOrganisationTypeTables {
 
-  val organisationTypes = Table(
+  val organisationTypes: TableFor1[CdsOrganisationType] = Table(
     "organisationType",
     Company,
     Partnership,
@@ -31,14 +33,18 @@ trait ReviewPageOrganisationTypeTables {
     ThirdCountryOrganisation
   )
 
-  val individualsOnlyOrganisationTypes = Table("organisationType", ThirdCountryIndividual, EUIndividual, Individual)
+  val individualsOnlyOrganisationTypes: TableFor1[CdsOrganisationType] =
+    Table("organisationType", ThirdCountryIndividual, EUIndividual, Individual)
 
-  val soleTradersOnlyOrganisationTypes = Table("organisationType", SoleTrader, ThirdCountrySoleTrader)
+  val soleTradersOnlyOrganisationTypes: TableFor1[CdsOrganisationType] =
+    Table("organisationType", SoleTrader, ThirdCountrySoleTrader)
 
-  val businessDetailsOrganisationTypes = organisationTypes
+  val businessDetailsOrganisationTypes: TableFor1[CdsOrganisationType] = organisationTypes
 
-  val contactDetailsOrganisationTypes = individualsOnlyOrganisationTypes ++ soleTradersOnlyOrganisationTypes
+  val contactDetailsOrganisationTypes: TableFor1[CdsOrganisationType] =
+    individualsOnlyOrganisationTypes ++ soleTradersOnlyOrganisationTypes
 
-  val shortenedNameOrganisationTypes = organisationTypes ++ soleTradersOnlyOrganisationTypes
+  val shortenedNameOrganisationTypes: TableFor1[CdsOrganisationType] =
+    organisationTypes ++ soleTradersOnlyOrganisationTypes
 
 }

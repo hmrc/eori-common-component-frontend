@@ -29,8 +29,8 @@ class CompletedJourneyFilter @Inject() (service: Service, sessionCache: SessionC
   implicit val executionContext: ExecutionContext
 ) extends ActionBuilder[Request, AnyContent] with ActionFilter[Request] with NewUserSession {
 
-  override protected def filter[A](request: Request[A]) = {
-    implicit val req = request
+  override protected def filter[A](request: Request[A]): Future[Option[Result]] = {
+    implicit val req: Request[A] = request
 
     for {
       journeyCompleted <- sessionCache.isJourneyComplete

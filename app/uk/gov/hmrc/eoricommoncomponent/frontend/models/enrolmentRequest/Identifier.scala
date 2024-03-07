@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.models.enrolmentRequest
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class Identifier(key: String, value: String)
 
 object Identifier {
-  implicit val jsonFormat = Json.format[Identifier]
+  implicit val jsonFormat: OFormat[Identifier] = Json.format[Identifier]
 }

@@ -27,7 +27,7 @@ class RegistrationDetailsFormatSpec extends UnitSpec {
 
   import RegistrationDetails.formats
 
-  val organisationDetails = RegistrationDetailsOrganisation(
+  val organisationDetails: RegistrationDetailsOrganisation = RegistrationDetailsOrganisation(
     customsId = Some(Eori("ZZZ1ZZZZ23ZZZZZZZ")),
     TaxPayerId("sapNumber"),
     safeId = SafeId("safe-id"),
@@ -37,7 +37,7 @@ class RegistrationDetailsFormatSpec extends UnitSpec {
     etmpOrganisationType = Some(CorporateBody)
   )
 
-  val organisationJson = Json.parse("""
+  val organisationJson: JsValue = Json.parse("""
       |{
       |   "customsId": {
       |     "eori": "ZZZ1ZZZZ23ZZZZZZZ"
@@ -59,7 +59,7 @@ class RegistrationDetailsFormatSpec extends UnitSpec {
       |}
     """.stripMargin)
 
-  val organisationDetailsWithDate = RegistrationDetailsOrganisation(
+  val organisationDetailsWithDate: RegistrationDetailsOrganisation = RegistrationDetailsOrganisation(
     customsId = None,
     TaxPayerId("sapNumber"),
     safeId = SafeId("safe-id"),
@@ -69,7 +69,7 @@ class RegistrationDetailsFormatSpec extends UnitSpec {
     etmpOrganisationType = Some(CorporateBody)
   )
 
-  val organisationJsonWithDate = Json.parse("""
+  val organisationJsonWithDate: JsValue = Json.parse("""
       |{
       |   "sapNumber":{ "id": "sapNumber"},
       |   "safeId":{ "id": "safe-id"},
@@ -89,9 +89,9 @@ class RegistrationDetailsFormatSpec extends UnitSpec {
       |}
     """.stripMargin)
 
-  val dateOfBirth = LocalDate.of(1961, 4, 12)
+  val dateOfBirth: LocalDate = LocalDate.of(1961, 4, 12)
 
-  val individualDetails = RegistrationDetailsIndividual(
+  val individualDetails: RegistrationDetailsIndividual = RegistrationDetailsIndividual(
     customsId = None,
     TaxPayerId("sapNumber"),
     safeId = SafeId("safe-id"),
@@ -100,7 +100,7 @@ class RegistrationDetailsFormatSpec extends UnitSpec {
     dateOfBirth
   )
 
-  val individualJson = Json.parse("""
+  val individualJson: JsValue = Json.parse("""
       |{
       |   "sapNumber":{ "id": "sapNumber"},
       |      "safeId":{ "id": "safe-id"},

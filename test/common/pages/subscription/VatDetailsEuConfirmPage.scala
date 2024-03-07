@@ -35,7 +35,7 @@ object VatDetailsEuConfirmPage extends VatDetailsEuConfirmPage {
 
   def apply(numberOfEuCountries: String): VatDetailsEuConfirmPage = new VatDetailsEuConfirmPage {
 
-    override val title =
+    override val title: String =
       if (numberOfEuCountries.toInt <= 1)
         s"You have added VAT details for $numberOfEuCountries EU member country"
       else

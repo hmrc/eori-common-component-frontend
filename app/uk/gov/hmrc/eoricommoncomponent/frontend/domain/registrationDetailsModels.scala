@@ -31,7 +31,7 @@ case class BusinessAddress(
 )
 
 object BusinessAddress {
-  implicit val formats = Json.format[BusinessAddress]
+  implicit val formats: OFormat[BusinessAddress] = Json.format[BusinessAddress]
 }
 
 sealed trait RegistrationDetails {
@@ -115,7 +115,7 @@ object RegistrationDetails {
   private val individualFormat         = Json.format[RegistrationDetailsIndividual]
   private val registrationSafeIdFormat = Json.format[RegistrationDetailsSafeId]
 
-  implicit val formats = Format[RegistrationDetails](
+  implicit val formats: Format[RegistrationDetails] = Format[RegistrationDetails](
     Reads { js =>
       individualFormat.reads(js) match {
         case ok: JsSuccess[RegistrationDetailsIndividual] => ok

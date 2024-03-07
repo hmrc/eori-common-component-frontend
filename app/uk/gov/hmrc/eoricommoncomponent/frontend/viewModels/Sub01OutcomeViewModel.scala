@@ -22,15 +22,16 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName.{longName, sho
 
 object Sub01OutcomeViewModel {
 
-  def headingForRejected(name: Option[String])(implicit messages: Messages, request: Request[_]) = name match {
+  def headingForRejected(name: Option[String])(implicit messages: Messages, request: Request[_]): String = name match {
     case Some(user) => messages(s"cds.sub01.outcome.rejected.subscribe.heading", longName, user)
     case None       => messages(s"cds.sub01.outcome.rejected.subscribe.heading-noname", longName)
   }
 
-  def headingForProcessing(name: Option[String])(implicit messages: Messages, request: Request[_]) = name match {
-    case Some(org) => messages("cds.sub01.outcome.processing.heading", shortName, org)
-    case None      => messages("cds.sub01.outcome.processing.heading-noname", shortName)
+  def headingForProcessing(name: Option[String])(implicit messages: Messages, request: Request[_]): String =
+    name match {
+      case Some(org) => messages("cds.sub01.outcome.processing.heading", shortName, org)
+      case None      => messages("cds.sub01.outcome.processing.heading-noname", shortName)
 
-  }
+    }
 
 }

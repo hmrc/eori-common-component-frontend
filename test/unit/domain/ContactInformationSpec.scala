@@ -17,10 +17,13 @@
 package unit.domain
 
 import base.UnitSpec
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.{ContactDetail, EstablishmentAddress}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.subscription.ContactInformation
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.ContactDetails
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.registration.ContactDetailsModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.ContactAddressModel
+
+import java.time.LocalDateTime
 
 class ContactInformationSpec extends UnitSpec {
 
@@ -161,6 +164,34 @@ class ContactInformationSpec extends UnitSpec {
       contactInformationWithoutContactAddress.countryCode shouldBe None
       contactInformationWithoutContactAddressNoTell.telephoneNumber shouldBe None
 
+    }
+
+    "convert contact Details to ContactInformation" in {
+      val date: LocalDateTime = LocalDateTime.now()
+      val contactDetail = ContactDetail(
+        EstablishmentAddress("Line 1", "City Name", Some("SE28 1AA"), "GB"),
+        "John Contact Doe",
+        Some("1234567"),
+        Some("89067"),
+        Some("john.doe@example.com")
+      )
+      val result =
+        ContactInformation.createContactInformation(contactDetail).copy(emailVerificationTimestamp = Some(date))
+      val expectedResult = ContactInformation(
+        Some("John Contact Doe"),
+        Some(true),
+        Some("Line 1"),
+        Some("City Name"),
+        Some("SE28 1AA"),
+        Some("GB"),
+        Some("1234567"),
+        Some("89067"),
+        Some("john.doe@example.com"),
+        Some(date)
+      )
+
+      result shouldBe expectedResult
+      result.withEmail("test@gmail.com") shouldBe expectedResult.copy(emailAddress = Some("test@gmail.com"))
     }
   }
 }

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services.subscription
 
-import org.joda.time.format.ISODateTimeFormat
+import java.time.ZoneOffset
 import play.api.Logger
 import uk.gov.hmrc.eoricommoncomponent.frontend.audit.Auditable
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
@@ -66,11 +66,8 @@ class UpdateVerifiedEmailService @Inject() (
       emailVerificationTimestamp = DateTimeUtil.dateTime
     )
     val request = VerifiedEmailRequest(UpdateVerifiedEmailRequest(reqCommonGenerator.generate(), requestDetail))
-    val customsDataStoreRequest = CustomsDataStoreRequest(
-      eori,
-      newEmail,
-      requestDetail.emailVerificationTimestamp.toString(ISODateTimeFormat.dateTimeNoMillis().withZoneUTC())
-    )
+    val customsDataStoreRequest =
+      CustomsDataStoreRequest(eori, newEmail, requestDetail.emailVerificationTimestamp.atZone(ZoneOffset.UTC).toString)
     updateVerifiedEmailConnector.updateVerifiedEmail(request).flatMap {
       case Right(res)
           if res.getParameters.exists(

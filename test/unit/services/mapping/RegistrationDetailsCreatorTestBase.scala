@@ -26,15 +26,15 @@ import java.time.LocalDateTime
 private[mapping] abstract class RegistrationDetailsCreatorTestBase
     extends UnitSpec with GenTestRunner with TestDataGenerators {
 
-  protected def uuid() = java.util.UUID.randomUUID.toString
+  protected def uuid(): String = java.util.UUID.randomUUID.toString
 
-  protected val sapNumber = uuid()
+  protected val sapNumber: String = uuid()
 }
 
 private[mapping] trait TestMatchingModels {
   this: RegistrationDetailsCreatorTestBase =>
 
-  val responseCommon = ResponseCommon(
+  val responseCommon: ResponseCommon = ResponseCommon(
     status = "someStatus",
     statusText = Some("Status text"),
     processingDate = LocalDateTime.now(),

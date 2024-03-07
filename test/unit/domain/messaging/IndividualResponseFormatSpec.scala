@@ -24,12 +24,14 @@ class IndividualResponseFormatSpec extends UnitSpec {
 
   import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.matching.IndividualResponse.formats
 
-  val individualResponseFull          = IndividualResponse("John", Some("Middle"), "Doe", Some("1999-12-20"))
-  val individualResponseNoMiddle      = individualResponseFull.copy(middleName = None)
-  val individualResponseNoDate        = individualResponseFull.copy(dateOfBirth = None)
-  val individualResponseOnlyMandatory = individualResponseFull.copy(middleName = None, dateOfBirth = None)
+  val individualResponseFull: IndividualResponse     = IndividualResponse("John", Some("Middle"), "Doe", Some("1999-12-20"))
+  val individualResponseNoMiddle: IndividualResponse = individualResponseFull.copy(middleName = None)
+  val individualResponseNoDate: IndividualResponse   = individualResponseFull.copy(dateOfBirth = None)
 
-  val individualResponseJsonFull = Json.parse("""
+  val individualResponseOnlyMandatory: IndividualResponse =
+    individualResponseFull.copy(middleName = None, dateOfBirth = None)
+
+  val individualResponseJsonFull: JsValue = Json.parse("""
       |      {
       |        "firstName": "John",
       |        "middleName": "Middle",
@@ -38,7 +40,7 @@ class IndividualResponseFormatSpec extends UnitSpec {
       |      }
     """.stripMargin)
 
-  val individualResponseJsonNoMiddle = Json.parse("""
+  val individualResponseJsonNoMiddle: JsValue = Json.parse("""
       |      {
       |        "firstName": "John",
       |        "lastName": "Doe",
@@ -46,7 +48,7 @@ class IndividualResponseFormatSpec extends UnitSpec {
       |      }
     """.stripMargin)
 
-  val individualResponseJsonNoDate = Json.parse("""
+  val individualResponseJsonNoDate: JsValue = Json.parse("""
       |      {
       |        "firstName": "John",
       |        "middleName": "Middle",
@@ -54,7 +56,7 @@ class IndividualResponseFormatSpec extends UnitSpec {
       |      }
     """.stripMargin)
 
-  val individualResponseJsonOnlyMandatory = Json.parse("""
+  val individualResponseJsonOnlyMandatory: JsValue = Json.parse("""
       |      {
       |        "firstName": "John",
       |        "lastName": "Doe"

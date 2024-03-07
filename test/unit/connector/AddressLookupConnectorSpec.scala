@@ -23,7 +23,7 @@ import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.AddressLookupConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.address.{
@@ -46,7 +46,7 @@ class AddressLookupConnectorSpec
 
   private val connector = new AddressLookupConnector(httpClient, appConfig)(global)
 
-  implicit val hc = HeaderCarrier()
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -161,7 +161,7 @@ class AddressLookupConnectorSpec
 
 object AddressLookupConnectorSpec {
 
-  val jsonResponseWithTwoResults = Json.parse("""
+  val jsonResponseWithTwoResults: JsValue = Json.parse("""
       |[
       |    {
       |        "id": "123",
@@ -217,7 +217,7 @@ object AddressLookupConnectorSpec {
       |    }
       |]""".stripMargin)
 
-  val jsonResponseWithOneResult = Json.parse("""
+  val jsonResponseWithOneResult: JsValue = Json.parse("""
       |[
       |    {
       |        "id": "123",

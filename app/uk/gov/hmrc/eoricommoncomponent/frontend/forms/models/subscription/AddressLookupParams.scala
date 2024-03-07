@@ -18,7 +18,7 @@ package uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription
 
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.FormValidation.validPostcode
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.Mappings
 
@@ -30,7 +30,7 @@ case class AddressLookupParams(postcode: String, line1: Option[String], skippedL
 }
 
 object AddressLookupParams {
-  implicit val format = Json.format[AddressLookupParams]
+  implicit val format: OFormat[AddressLookupParams] = Json.format[AddressLookupParams]
 
   def form(): Form[AddressLookupParams] = Form(
     mapping(

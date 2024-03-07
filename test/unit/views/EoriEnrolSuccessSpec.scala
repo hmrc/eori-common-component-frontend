@@ -18,6 +18,7 @@ package unit.views
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.eori_enrol_success
@@ -25,7 +26,7 @@ import util.ViewSpec
 
 class EoriEnrolSuccessSpec extends ViewSpec {
 
-  implicit val request = withFakeCSRF(fakeAtarSubscribeRequest)
+  implicit val request: Request[AnyContentAsEmpty.type] = withFakeCSRF(fakeAtarSubscribeRequest)
 
   private val service              = atarService
   private val serviceNoCallBackUrl = atarService.copy(callBack = None)

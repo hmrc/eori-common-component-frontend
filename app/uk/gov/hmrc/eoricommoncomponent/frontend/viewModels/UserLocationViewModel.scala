@@ -28,7 +28,7 @@ object UserLocationViewModel {
     if (isAffinityOrganisation) messages("cds.registration.user-location.organisation.title-and-heading")
     else messages("cds.registration.user-location.individual.title-and-heading")
 
-  val validOptions =
+  val validOptions: Seq[(String, String)] =
     Seq(
       (UserLocation.Uk, "cds.registration.user-location.location.uk.label"),
       (UserLocation.Islands, "cds.registration.user-location.location.islands-or-iom.label"),

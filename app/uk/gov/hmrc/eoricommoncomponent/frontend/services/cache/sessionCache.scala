@@ -273,7 +273,7 @@ class SessionCache @Inject() (
       }
     }
 
-  private def throwException(name: String)(implicit request: Request[_]) =
+  private def throwException(name: String)(implicit request: Request[_]): Nothing =
     throw DataUnavailableException(s"$name is not cached in data for the sessionId: $sessionId")
 
 }

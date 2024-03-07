@@ -84,7 +84,7 @@ class NameIDOrgController @Inject() (
       }
     }
 
-  private def validateOrganisationType(orgType: String) =
+  private def validateOrganisationType(orgType: String): Unit =
     requireThatUrlValue(OrganisationTypeConfigurations.contains(orgType), invalidOrganisationType(orgType))
 
   def reviewForm(service: Service): Action[AnyContent] =

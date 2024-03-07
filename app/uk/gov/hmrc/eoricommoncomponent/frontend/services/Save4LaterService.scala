@@ -97,7 +97,7 @@ class Save4LaterService @Inject() (save4LaterConnector: Save4LaterConnector) {
     save4LaterConnector.get[CacheIds](groupId.id, CachedData.groupIdKey)
   }
 
-  def deleteCachedGroupId(groupId: GroupId)(implicit hc: HeaderCarrier) =
+  def deleteCachedGroupId(groupId: GroupId)(implicit hc: HeaderCarrier): Future[Unit] =
     save4LaterConnector.deleteKey[CacheIds](groupId.id, CachedData.groupIdKey)
 
   def deleteCacheIds(groupId: GroupId)(implicit hc: HeaderCarrier): Future[Unit] = {

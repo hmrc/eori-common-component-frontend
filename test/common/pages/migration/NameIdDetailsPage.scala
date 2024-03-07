@@ -41,7 +41,8 @@ trait NameIdDetailsPage extends WebPage {
 
   val continueButtonXpath = "//*[@id='continue-button']"
 
-  val filledValues = NameIdOrganisationMatchModel(name = "Test Business Name", id = "2108834503")
+  val filledValues: NameIdOrganisationMatchModel =
+    NameIdOrganisationMatchModel(name = "Test Business Name", id = "2108834503")
 
 }
 

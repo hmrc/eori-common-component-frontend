@@ -37,7 +37,7 @@ class AddressLookupPostcodeViewSpec extends ViewSpec {
 
   private val formWithError = form.bind(Map("postcode" -> "invalid"))
 
-  val viewModel = AddressLookupPostcodeViewModel(
+  val viewModel: AddressLookupPostcodeViewModel = AddressLookupPostcodeViewModel(
     isInReviewMode = true,
     selectedOrganisationType = CdsOrganisationType.Company,
     service = atarService

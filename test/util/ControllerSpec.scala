@@ -16,8 +16,8 @@
 
 package util
 
-import akka.stream.Materializer
-import akka.stream.testkit.NoMaterializer
+import org.apache.pekko.stream.Materializer
+import org.apache.pekko.stream.testkit.NoMaterializer
 import base.{Injector, UnitSpec}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypesConfiguration}
@@ -74,7 +74,7 @@ trait ControllerSpec extends UnitSpec with MockitoSugar with I18nSupport with In
 
   val appConfig: AppConfig = new AppConfig(config, serviceConfig, "eori-common-component-frontend")
 
-  val getRequest = FakeRequest("GET", "")
+  val getRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "")
 
   def postRequest(data: (String, String)*): FakeRequest[AnyContentAsFormUrlEncoded] =
     FakeRequest("POST", "").withFormUrlEncodedBody(data: _*)

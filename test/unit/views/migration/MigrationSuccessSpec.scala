@@ -18,6 +18,7 @@ package unit.views.migration
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers.contentAsString
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.migration_success
@@ -25,7 +26,7 @@ import util.ViewSpec
 
 class MigrationSuccessSpec extends ViewSpec {
 
-  implicit val request = withFakeCSRF(fakeAtarSubscribeRequest)
+  implicit val request: Request[AnyContentAsEmpty.type] = withFakeCSRF(fakeAtarSubscribeRequest)
 
   private val view = instanceOf[migration_success]
 

@@ -66,15 +66,15 @@ class RegistrationDisplayResponseHolderSpec extends UnitSpec {
       |}}
     """.stripMargin)
 
-  val responseCommon = ResponseCommon("OK", None, "2016-09-02T09:30:47Z", None, Some("0100086619"))
+  val responseCommon: ResponseCommon = ResponseCommon("OK", None, "2016-09-02T09:30:47Z", None, Some("0100086619"))
 
-  val individualResponse = IndividualResponse("fname", None, "lname", Some("1989-01-01"))
+  val individualResponse: IndividualResponse = IndividualResponse("fname", None, "lname", Some("1989-01-01"))
 
-  val address = Address("Line1", Some("Line2"), None, None, Some("postcode"), "GB")
+  val address: Address = Address("Line1", Some("Line2"), None, None, Some("postcode"), "GB")
 
-  val contactDetails = ContactResponse(Some("01234567890"), None, None, Some("test@example.com"))
+  val contactDetails: ContactResponse = ContactResponse(Some("01234567890"), None, None, Some("test@example.com"))
 
-  val responseDetail = ResponseDetail(
+  val responseDetail: ResponseDetail = ResponseDetail(
     "XY0000100086619",
     None,
     None,
@@ -87,7 +87,7 @@ class RegistrationDisplayResponseHolderSpec extends UnitSpec {
     contactDetails
   )
 
-  val responseHolder = RegistrationDisplayResponseHolder(
+  val responseHolder: RegistrationDisplayResponseHolder = RegistrationDisplayResponseHolder(
     RegistrationDisplayResponse(responseCommon, Some(responseDetail))
   )
 

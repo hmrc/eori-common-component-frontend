@@ -33,7 +33,7 @@ case class Address(
 )
 
 object Address {
-  implicit val jsonFormat = Json.format[Address]
+  implicit val jsonFormat: OFormat[Address] = Json.format[Address]
 
   def apply(
     addressLine1: String,
@@ -86,7 +86,7 @@ object Individual {
   ): Individual =
     Individual(firstName, middleName, lastName, dateOfBirth.toString)
 
-  implicit val formats = Json.format[Individual]
+  implicit val formats: OFormat[Individual] = Json.format[Individual]
 }
 
 trait CommonHeader extends Logging {
@@ -121,14 +121,14 @@ trait CommonHeader extends Logging {
 
   }
 
-  implicit val dateTimeReads  = dateTimeReadsIso
-  implicit val dateTimeWrites = dateTimeWritesIsoUtc
+  implicit val dateTimeReads: Reads[LocalDateTime]   = dateTimeReadsIso
+  implicit val dateTimeWrites: Writes[LocalDateTime] = dateTimeWritesIsoUtc
 }
 
 case class MessagingServiceParam(paramName: String, paramValue: String)
 
 object MessagingServiceParam {
-  implicit val formats = Json.format[MessagingServiceParam]
+  implicit val formats: OFormat[MessagingServiceParam] = Json.format[MessagingServiceParam]
 
   val positionParamName = "POSITION"
   val Generate          = "GENERATE"
@@ -142,7 +142,7 @@ object MessagingServiceParam {
 case class RequestParameter(paramName: String, paramValue: String)
 
 object RequestParameter {
-  implicit val formats = Json.format[RequestParameter]
+  implicit val formats: OFormat[RequestParameter] = Json.format[RequestParameter]
 }
 
 case class RequestCommon(
@@ -154,8 +154,8 @@ case class RequestCommon(
 )
 
 object RequestCommon extends CommonHeader {
-  implicit val requestParamFormat = Json.format[RequestParameter]
-  implicit val formats            = Json.format[RequestCommon]
+  implicit val requestParamFormat: OFormat[RequestParameter] = Json.format[RequestParameter]
+  implicit val formats: OFormat[RequestCommon]               = Json.format[RequestCommon]
 }
 
 case class ResponseCommon(
@@ -166,7 +166,7 @@ case class ResponseCommon(
 )
 
 object ResponseCommon extends CommonHeader {
-  val StatusOK         = "OK"
-  val StatusNotOK      = "NOT_OK"
-  implicit val formats = Json.format[ResponseCommon]
+  val StatusOK                                  = "OK"
+  val StatusNotOK                               = "NOT_OK"
+  implicit val formats: OFormat[ResponseCommon] = Json.format[ResponseCommon]
 }

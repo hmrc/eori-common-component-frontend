@@ -16,13 +16,13 @@
 
 package integration
 
-import org.joda.time.DateTime
+import java.time.LocalDateTime
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
-import play.mvc.Http.Status.{BAD_REQUEST, FORBIDDEN, INTERNAL_SERVER_ERROR}
+import play.mvc.Http.Status.{BAD_REQUEST, FORBIDDEN, GATEWAY_TIMEOUT, INTERNAL_SERVER_ERROR}
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.{InternalAuthTokenInitialiser, NoOpInternalAuthTokenInitialiser}
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.UpdateVerifiedEmailConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers._
@@ -31,8 +31,6 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.RequestCommon
 import uk.gov.hmrc.http.HeaderCarrier
 import util.externalservices.ExternalServicesConfig._
 import util.externalservices.UpdateVerifiedEmailMessagingService
-
-import java.time.LocalDateTime
 
 class UpdateVerifiedEmailConnectorSpec extends IntegrationTestsSpec with ScalaFutures {
 
@@ -75,7 +73,7 @@ class UpdateVerifiedEmailConnectorSpec extends IntegrationTestsSpec with ScalaFu
 
   val expectedUrl = "/update-verified-email"
 
-  val dateTime                     = DateTime.now()
+  val dateTime: LocalDateTime      = LocalDateTime.now()
   private val requestDetail        = RequestDetail("idType", "idNumber", "test@email.com", dateTime)
   private val requestDateInd       = LocalDateTime.of(2001, 12, 17, 9, 30, 47, 0)
   private val requestCommon        = RequestCommon("CDS", requestDateInd, "012345678901234")
@@ -109,6 +107,12 @@ class UpdateVerifiedEmailConnectorSpec extends IntegrationTestsSpec with ScalaFu
       UpdateVerifiedEmailMessagingService.stubTheResponse(expectedUrl, "", INTERNAL_SERVER_ERROR)
 
       await(connector.updateVerifiedEmail(verifiedEmailRequest)) must be(Left(ServiceUnavailable))
+    }
+
+    "return Left with GATEWAY_TIMEOUT when call returned Upstream5xxResponse with 500" in {
+      UpdateVerifiedEmailMessagingService.stubTheResponse(expectedUrl, "", GATEWAY_TIMEOUT)
+
+      await(connector.updateVerifiedEmail(verifiedEmailRequest)) must be(Left(UnhandledException))
     }
 
   }

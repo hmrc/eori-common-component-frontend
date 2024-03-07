@@ -58,7 +58,7 @@ object SubscriptionForm {
       case _ => Valid
     })
 
-  val eoriNumberForm = Form(
+  val eoriNumberForm: Form[EoriNumberViewModel] = Form(
     Forms.mapping("eori-number" -> text.verifying(validEoriWithOrWithoutGB))(EoriNumberViewModel.apply)(
       EoriNumberViewModel.unapply
     )

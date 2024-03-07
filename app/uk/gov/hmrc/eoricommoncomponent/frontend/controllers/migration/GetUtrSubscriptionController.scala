@@ -150,8 +150,8 @@ class GetUtrSubscriptionController @Inject() (
       }
     else subscriptionDetailsService.cacheCustomsId(Utr(form.id))
 
-  private lazy val noOrgTypeSelected = throw DataUnavailableException("No organisation type selected by user")
-  private lazy val noBusinessName    = throw DataUnavailableException("No business name cached")
+  private lazy val noOrgTypeSelected: Nothing = throw DataUnavailableException("No organisation type selected by user")
+  private lazy val noBusinessName: Nothing    = throw DataUnavailableException("No business name cached")
 
   private def getHintMessage()(implicit request: Request[AnyContent]) =
     requestSessionData.userSelectedOrganisationType.map(

@@ -39,7 +39,7 @@ import java.time.LocalDate
 
 class CheckYourDetailsSpec extends ViewSpec {
 
-  val view = instanceOf[check_your_details]
+  val view: check_your_details = instanceOf[check_your_details]
 
   private val messageApi: MessagesApi = instanceOf[MessagesApi]
 

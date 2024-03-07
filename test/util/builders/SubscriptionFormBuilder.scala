@@ -23,10 +23,10 @@ import java.time.LocalDate
 
 object SubscriptionFormBuilder {
 
-  val LegalStatus     = "corporate-body-uk"
-  val ShortName       = "Short Name"
-  val sic             = "9999"
-  val DateEstablished = LocalDate.of(1900, 11, 11)
+  val LegalStatus                = "corporate-body-uk"
+  val ShortName                  = "Short Name"
+  val sic                        = "9999"
+  val DateEstablished: LocalDate = LocalDate.of(1900, 11, 11)
 
   private val contactDetailsModel = ContactDetailsModel(
     fullName = "John Doe",
@@ -39,7 +39,7 @@ object SubscriptionFormBuilder {
     countryCode = Some("ZZ")
   )
 
-  val orgSubscriptionMandatoryMap = Map(
+  val orgSubscriptionMandatoryMap: Map[String, String] = Map(
     "legal-status"           -> LegalStatus,
     "short-name"             -> ShortName,
     "date-established.day"   -> DateEstablished.getDayOfMonth.toString,
@@ -48,7 +48,7 @@ object SubscriptionFormBuilder {
     "sic"                    -> sic
   )
 
-  val vatSubscriptionMandatorySeq = Seq(
+  val vatSubscriptionMandatorySeq: Seq[(String, String)] = Seq(
     "vat-gb-id"                -> "true",
     "vat-gb-number[]"          -> "123456781",
     "vat-gb-number[]"          -> "123456782",
@@ -59,7 +59,7 @@ object SubscriptionFormBuilder {
     "eu-vats.vat-eu-country[]" -> "CH"
   )
 
-  val vatSubscriptionInvalidSeq = Seq(
+  val vatSubscriptionInvalidSeq: Seq[(String, String)] = Seq(
     "vat-gb-id"                -> "true",
     "vat-gb-number[]"          -> "",
     "vat-eu-id"                -> "true",
@@ -73,7 +73,7 @@ object SubscriptionFormBuilder {
   val vatSubscriptionOptionalInvalidMap: Map[String, Seq[String]] =
     vatSubscriptionInvalidSeq.groupMap(_._1)(_._2)
 
-  val detailsHolderWithAllFields =
+  val detailsHolderWithAllFields: SubscriptionDetails =
     SubscriptionDetails(contactDetails = Some(contactDetailsModel), dateEstablished = Some(DateEstablished))
 
 }

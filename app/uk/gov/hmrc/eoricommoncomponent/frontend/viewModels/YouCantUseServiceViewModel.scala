@@ -24,13 +24,13 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName.longName
 
 object YouCantUseServiceViewModel {
 
-  def firstParagraph(userType: Option[AffinityGroup])(implicit messages: Messages, request: Request[_]) =
+  def firstParagraph(userType: Option[AffinityGroup])(implicit messages: Messages, request: Request[_]): String =
     userType match {
       case Some(Agent) => messages("cds.you-cant-use-service-agent.para1")
       case _           => messages("cds.you-cant-use-service-standard-organisation.para1", longName)
     }
 
-  def secondParagraph(userType: Option[AffinityGroup])(implicit messages: Messages, request: Request[_]) =
+  def secondParagraph(userType: Option[AffinityGroup])(implicit messages: Messages, request: Request[_]): String =
     userType match {
       case Some(Agent) => messages("cds.you-cant-use-service-agent.para2", longName)
       case _           => messages("cds.you-cant-use-service-standard-organisation.para2")

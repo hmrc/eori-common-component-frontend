@@ -40,18 +40,20 @@ object Users {
   val bearerToken =
     "PGdhdGV3YXk6R2F0ZXdheVRva2VuIHhtbG5zOndzdD0iaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNC8wNC90cnVzdCIgeG1sbnM6d3NhPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA0LzAzL2FkZHJlc3NpbmciIHhtbG5zOndzc2U9Imh0dHA6Ly9kb2NzLm9hc2lzLW9wZW4ub3JnL3dzcy8yMDA0LzAxL29hc2lzLTIwMDQwMS13c3Mtd3NzZWN1cml0eS1zZWNleHQtMS4wLnhzZCIgeG1sbnM6d3N1PSJodHRwOi8vZG9jcy5vYXNpcy1vcGVuLm9yZy93c3MvMjAwNC8wMS9vYXNpcy0yMDA0MDEtd3NzLXdzc2VjdXJpdHktdXRpbGl0eS0xLjAueHNkIiB4bWxuczpzb2FwPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VudmVsb3BlLyI"
 
-  def ASampleUser = User(Gen.uuid.sample.get.toString, email = Some("sample@user.com"))
+  def ASampleUser: User = User(Gen.uuid.sample.get.toString, email = Some("sample@user.com"))
 
-  def ASampleGroupIdUserWithEnrolment =
+  def ASampleGroupIdUserWithEnrolment: User =
     User(Gen.uuid.sample.get.toString, email = Some("sample@user.com"), groupId = Some("gg-id-rcm-cases"))
 
-  def ASampleUserWithoutEmail = User(Gen.uuid.sample.get.toString)
+  def ASampleUserWithoutEmail: User = User(Gen.uuid.sample.get.toString)
 
-  def ACtOrgUser = User(Gen.uuid.sample.get.toString, ctUtr = Some(Utr("1234567")), email = Some("ctorg@user.com"))
+  def ACtOrgUser: User =
+    User(Gen.uuid.sample.get.toString, ctUtr = Some(Utr("1234567")), email = Some("ctorg@user.com"))
 
-  def IrSaUtrUser = User(Gen.uuid.sample.get.toString, saUtr = Some(Utr("1234567")), email = Some("ctorg@user.com"))
+  def IrSaUtrUser: User =
+    User(Gen.uuid.sample.get.toString, saUtr = Some(Utr("1234567")), email = Some("ctorg@user.com"))
 
-  def ASampleUserWithRandomInternalId(internalId: String) =
+  def ASampleUserWithRandomInternalId(internalId: String): User =
     User(internalId = internalId, email = Some("sample@user.com"), groupId = Some("gg-id-rcm-cases"))
 
 }

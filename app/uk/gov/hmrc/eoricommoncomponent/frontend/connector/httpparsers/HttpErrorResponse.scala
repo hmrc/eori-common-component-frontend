@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.connector.httpparsers
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.email.{UpdateVerifiedEmailRequest, UpdateVerifiedEmailResponse}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.MessagingServiceParam
 
@@ -37,12 +37,12 @@ case class VerifiedEmailResponse(updateVerifiedEmailResponse: UpdateVerifiedEmai
 }
 
 object VerifiedEmailResponse {
-  implicit val format            = Json.format[VerifiedEmailResponse]
-  val RequestCouldNotBeProcessed = "003 - Request could not be processed"
+  implicit val format: OFormat[VerifiedEmailResponse] = Json.format[VerifiedEmailResponse]
+  val RequestCouldNotBeProcessed                      = "003 - Request could not be processed"
 }
 
 case class VerifiedEmailRequest(updateVerifiedEmailRequest: UpdateVerifiedEmailRequest)
 
 object VerifiedEmailRequest {
-  implicit val formats = Json.format[VerifiedEmailRequest]
+  implicit val formats: OFormat[VerifiedEmailRequest] = Json.format[VerifiedEmailRequest]
 }

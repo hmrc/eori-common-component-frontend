@@ -17,14 +17,14 @@
 package unit.forms
 
 import base.UnitSpec
-import play.api.data.FormError
+import play.api.data.{Form, FormError}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.AddressResultsForm
 
 class AddressResultsFormSpec extends UnitSpec {
 
-  val listOfValidAddresses = Seq("house1", "house2", "house3")
+  val listOfValidAddresses: Seq[String] = Seq("house1", "house2", "house3")
 
-  def form = AddressResultsForm.form(listOfValidAddresses)
+  def form: Form[AddressResultsForm] = AddressResultsForm.form(listOfValidAddresses)
 
   "address result form " should {
 

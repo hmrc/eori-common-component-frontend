@@ -54,7 +54,7 @@ class HandleSubscriptionServiceSpec extends UnitSpec with MockitoSugar with Befo
   val emailVerificationTimestamp: Option[LocalDateTime] = Some(TestData.emailVerificationTimestamp)
   val safeId: SafeId                                    = SafeId("id")
 
-  val handleSubscriptionRequest = HandleSubscriptionRequest(
+  val handleSubscriptionRequest: HandleSubscriptionRequest = HandleSubscriptionRequest(
     recipientDetails,
     formBundleId,
     sapNumber.id,

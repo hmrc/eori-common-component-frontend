@@ -46,11 +46,11 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
   private val controller =
     new WhatIsYourEmailController(mockAuthAction, mcc, whatIsYourEmailView, mockSave4LaterService)
 
-  val email       = "test@example.com"
-  val emailStatus = EmailStatus(Some(email))
+  val email                    = "test@example.com"
+  val emailStatus: EmailStatus = EmailStatus(Some(email))
 
-  val EmailFieldsMap            = Map("email" -> email)
-  val unpopulatedEmailFieldsMap = Map("email" -> "")
+  val EmailFieldsMap: Map[String, String]            = Map("email" -> email)
+  val unpopulatedEmailFieldsMap: Map[String, String] = Map("email" -> "")
 
   override def beforeEach(): Unit = {
     when(mockSave4LaterService.fetchEmailForService(any(), any(), any())(any()))
@@ -64,7 +64,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
 
     assertNotLoggedInAndCdsEnrolmentChecksForSubscribe(
       mockAuthConnector,
-      controller.createForm(atarService, subscribeJourneyShort)
+      controller.createForm(cdsService, subscribeJourneyShort)
     )
 
     "display title as 'What is your email address'" in {
@@ -95,7 +95,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       submitFormInCreateMode(EmailFieldsMap, journey = subscribeJourneyShort) { result =>
         status(result) shouldBe SEE_OTHER
         header(LOCATION, result).value should endWith(
-          "/customs-enrolment-services/atar/subscribe/autoenrolment/matching/check-your-email"
+          "/customs-enrolment-services/cds/subscribe/autoenrolment/matching/check-your-email"
         )
       }
     }
@@ -104,7 +104,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
       submitFormInCreateMode(EmailFieldsMap, journey = subscribeJourneyLong) { result =>
         status(result) shouldBe SEE_OTHER
         header(LOCATION, result).value should endWith(
-          "/customs-enrolment-services/atar/subscribe/longjourney/matching/check-your-email"
+          "/customs-enrolment-services/cds/subscribe/longjourney/matching/check-your-email"
         )
       }
     }
@@ -114,7 +114,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
     form: Map[String, String],
     userId: String = defaultUserId,
     journey: SubscribeJourney,
-    service: Service = atarService,
+    service: Service = cdsService,
     controller: WhatIsYourEmailController = controller
   )(test: Future[Result] => Any): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
@@ -128,7 +128,7 @@ class WhatIsYourEmailControllerSpec extends ControllerSpec with BeforeAndAfterEa
   ): Unit = {
     withAuthorisedUser(userId, mockAuthConnector)
     val result = controller
-      .createForm(atarService, journey)
+      .createForm(cdsService, journey)
       .apply(SessionBuilder.buildRequestWithSession(userId))
     test(result)
   }

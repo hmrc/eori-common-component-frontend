@@ -35,15 +35,15 @@ import scala.concurrent.ExecutionContext.global
 
 trait AuthActionMock extends AnyWordSpec with MockitoSugar with Injector {
 
-  val configuration             = instanceOf[Configuration]
-  val environment               = Environment.simple()
-  val mockedSessionCacheForAuth = mock[SessionCache]
+  val configuration: Configuration            = instanceOf[Configuration]
+  val environment: Environment                = Environment.simple()
+  val mockedSessionCacheForAuth: SessionCache = mock[SessionCache]
   when(mockedSessionCacheForAuth.emailOpt(any[Request[AnyContent]]))
     .thenReturn(Future.successful(Some("some@email.com")))
   when(mockedSessionCacheForAuth.isJourneyComplete(any[Request[AnyContent]]))
     .thenReturn(Future.successful(false))
 
-  val actionBuilder = DefaultActionBuilder(stubBodyParser(AnyContentAsEmpty))(global)
+  val actionBuilder: DefaultActionBuilder = DefaultActionBuilder(stubBodyParser(AnyContentAsEmpty))(global)
 
   def authAction(authConnector: AuthConnector) =
     new AuthAction(

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.filters
 
-import akka.stream.Materializer
+import org.apache.pekko.stream.Materializer
 import play.api.mvc._
 import play.mvc.Http.HeaderNames
 import uk.gov.hmrc.eoricommoncomponent.frontend.config.AppConfig

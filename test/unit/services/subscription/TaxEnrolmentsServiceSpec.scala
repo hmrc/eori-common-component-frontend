@@ -42,11 +42,11 @@ class TaxEnrolmentsServiceSpec extends UnitSpec with MockitoSugar with BeforeAnd
     reset(mockTaxEnrolmentsConnector)
   }
 
-  val testService  = Service.cds
-  val safeId       = SafeId("safeid")
-  val eori         = Eori("GB99999999")
-  val formBundleId = "formBundleId"
-  val date         = LocalDate.parse("2010-04-28")
+  val testService: Service = Service.cds
+  val safeId: SafeId       = SafeId("safeid")
+  val eori: Eori           = Eori("GB99999999")
+  val formBundleId         = "formBundleId"
+  val date: LocalDate      = LocalDate.parse("2010-04-28")
 
   "TaxEnrolmentsService" should {
 

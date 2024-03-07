@@ -16,7 +16,7 @@
 
 package unit.filters
 
-import akka.stream.testkit.NoMaterializer
+import org.apache.pekko.stream.testkit.NoMaterializer
 import base.UnitSpec
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._

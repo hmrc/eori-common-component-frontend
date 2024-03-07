@@ -22,7 +22,8 @@ import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import org.scalacheck.Gen
 import org.scalatest.BeforeAndAfterEach
-import play.api.mvc.{AnyContent, Request, Result}
+import play.api.mvc.{AnyContent, AnyContentAsEmpty, Request, Result}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.AddressController.submit
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.AddressDetailsSubscriptionFlowPage
@@ -84,10 +85,13 @@ class AddressServiceSpec
       additionalEnding   <- Gen.alphaStr
     } yield s"$single$baseString$additionalEnding"
 
-  val mandatoryFields      = Map("city" -> "city", "street" -> "street", "postcode" -> "SE28 1AA", "countryCode" -> "GB")
-  val mandatoryFieldsEmpty = Map("city" -> "", "street" -> "", "postcode" -> "", "countryCode" -> "")
+  val mandatoryFields: Map[String, String] =
+    Map("city" -> "city", "street" -> "street", "postcode" -> "SE28 1AA", "countryCode" -> "GB")
 
-  val fakeRequest = SessionBuilder.buildRequestWithSessionAndPathNoUser(
+  val mandatoryFieldsEmpty: Map[String, String] =
+    Map("city" -> "", "street" -> "", "postcode" -> "", "countryCode" -> "")
+
+  val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = SessionBuilder.buildRequestWithSessionAndPathNoUser(
     method = "GET",
     path = s"/customs-enrolment-services/atar/subscribe/"
   )

@@ -20,7 +20,7 @@ import base.UnitSpec
 import play.api.libs.json.{JsResultException, JsValue, Json}
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain.messaging.RequestCommon
 
-import java.time.{ZoneId, ZonedDateTime}
+import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 import java.util.UUID
 
 class RequestCommonSpec extends UnitSpec {
@@ -28,11 +28,11 @@ class RequestCommonSpec extends UnitSpec {
   val regime           = "CDS"
   val validReceiptDate = "2016-07-08T08:35:13Z"
 
-  val validReceiptDateBst =
+  val validReceiptDateBst: LocalDateTime =
     ZonedDateTime.parse(validReceiptDate).withZoneSameInstant(ZoneId.of("Europe/London")).toLocalDateTime
 
-  val invalidReceiptDate       = "2016-07-08 08:35:13Z"
-  val acknowledgementReference = UUID.randomUUID().toString
+  val invalidReceiptDate               = "2016-07-08 08:35:13Z"
+  val acknowledgementReference: String = UUID.randomUUID().toString
 
   def requestCommonAsJson(receiptDate: String = validReceiptDate): JsValue =
     Json.parse(s"""|{

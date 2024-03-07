@@ -23,8 +23,8 @@ import uk.gov.hmrc.eoricommoncomponent.frontend.viewModels.EnrolmentPendingViewM
 import util.ControllerSpec
 
 class EnrolmentPendingViewSpec extends UnitSpec with ControllerSpec {
-  val mockMessages: Messages = mock[Messages]
-  val viewModel              = EnrolmentPendingViewModel
+  val mockMessages: Messages                    = mock[Messages]
+  val viewModel: EnrolmentPendingViewModel.type = EnrolmentPendingViewModel
 
   "EnrolmentPendingViewModel" should {
 
@@ -59,6 +59,13 @@ class EnrolmentPendingViewSpec extends UnitSpec with ControllerSpec {
       result shouldEqual "Other Service"
     }
 
+    "return the appropriate title when the  pending service is the same as the processing service" in {
+      val someOtherService = Some(atarService)
+      val service          = atarService
+      val result           = viewModel.title(someOtherService, service)
+      result shouldEqual messages("cds.enrolment.pending.title.user.sameService", service.friendlyName)
+    }
+
     "return the appropriate groupId title when the other service is the same as the current service" in {
       val someOtherService = Some(atarService)
       val service          = otherService
@@ -72,7 +79,7 @@ class EnrolmentPendingViewSpec extends UnitSpec with ControllerSpec {
       result shouldEqual messages("cds.enrolment.pending.title.group.processingService")
     }
 
-    "return the appropriate groupId title when the other service is the same as the other sevices" in {
+    "return the appropriate groupId title when the other service is the same as the other services" in {
       val someOtherService = Some(otherService)
       val service          = atarService
 

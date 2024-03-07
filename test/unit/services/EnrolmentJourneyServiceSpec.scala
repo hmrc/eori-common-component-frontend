@@ -22,6 +22,7 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.{AuthConnector, Enrolment, Enrolments}
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.GroupEnrolmentExtractor
@@ -72,9 +73,9 @@ class EnrolmentJourneyServiceSpec extends ControllerSpec with BeforeAndAfterEach
   private def loggedInUser(enrolments: Set[Enrolment]) =
     LoggedInUserWithEnrolments(None, None, Enrolments(enrolments), None, None, "credId")
 
-  private implicit val hc: HeaderCarrier = HeaderCarrier()
-  private implicit val request           = FakeRequest()
-  private val groupId                    = "test-123"
+  private implicit val hc: HeaderCarrier                            = HeaderCarrier()
+  private implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
+  private val groupId                                               = "test-123"
 
   "Application Service" should {
 

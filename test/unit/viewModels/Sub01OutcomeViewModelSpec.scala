@@ -17,13 +17,14 @@
 package unit.viewModels
 
 import base.UnitSpec
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.eoricommoncomponent.frontend.viewModels.Sub01OutcomeViewModel
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.ServiceName.{longName, shortName}
 import util.ControllerSpec
 
 class Sub01OutcomeViewModelSpec extends UnitSpec with ControllerSpec {
-  implicit val fakeRequest = FakeRequest()
+  implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
   "Sub01outcomeView headingForRejected" should {
     "return the correct heading with name for a rejected outcome" in {

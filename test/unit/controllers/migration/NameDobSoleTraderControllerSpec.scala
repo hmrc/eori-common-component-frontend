@@ -104,7 +104,7 @@ class NameDobSoleTraderControllerSpec extends SubscriptionFlowSpec with BeforeAn
   val subscriptionFlows: TableFor2[SubscriptionFlow, String] =
     Table[SubscriptionFlow, String](("Flow name", "Label"), (SoleTraderFlow, "Enter your details"))
 
-  val formModes = Table(
+  val formModes: TableFor2[String, SubscriptionFlow => (Future[Result] => Any) => Unit] = Table(
     ("formMode", "showFormFunction"),
     ("create", (flow: SubscriptionFlow) => showCreateForm(flow)(_)),
     ("review", (flow: SubscriptionFlow) => showReviewForm(flow)(_))

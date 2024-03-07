@@ -28,7 +28,7 @@ import scala.concurrent.Future
 
 object AuthBuilder {
 
-  lazy val notLoggedInException = new NoActiveSession("A user is not logged in") {}
+  lazy val notLoggedInException: NoActiveSession = new NoActiveSession("A user is not logged in") {}
 
   def withAuthorisedUser(
     userId: String,

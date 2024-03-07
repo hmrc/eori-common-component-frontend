@@ -13,9 +13,7 @@ Universal / mappings ++= directory(baseDirectory.value / "public")
 
 name := "eori-common-component-frontend"
 
-targetJvm := "jvm-11"
-
-scalaVersion := "2.13.8"
+scalaVersion := "2.13.13"
 
 majorVersion := 0
 
@@ -122,7 +120,7 @@ scalastyleConfig := baseDirectory.value / "project" / "scalastyle-config.xml"
 libraryDependencies ++= AppDependencies()
 
 lazy val silencerSettings: Seq[Setting[?]] = {
-  val silencerVersion = "1.7.12"
+  val silencerVersion = "1.7.16"
   Seq(
     libraryDependencies ++= Seq(
       compilerPlugin("com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.full)

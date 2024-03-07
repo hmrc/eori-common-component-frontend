@@ -16,14 +16,14 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.email
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsValue, Json, OFormat}
 
 case class EmailViewModel(email: String)
 
 case class EmailStatus(email: Option[String], isVerified: Boolean = false, isConfirmed: Option[Boolean] = None)
 
 object EmailStatus {
-  implicit val jsonFormat = Json.format[EmailStatus]
+  implicit val jsonFormat: OFormat[EmailStatus] = Json.format[EmailStatus]
 
   implicit def toJsonFormat(emailStatus: EmailStatus): JsValue =
     Json.toJson(emailStatus)

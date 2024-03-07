@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.domain
 
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsValue, Json, OFormat}
 
 case class CdsOrganisationType(id: String)
 
 object CdsOrganisationType {
-  implicit val formats                                                          = Json.format[CdsOrganisationType]
+  implicit val formats: OFormat[CdsOrganisationType]                            = Json.format[CdsOrganisationType]
   implicit def toJsonFormat(mayBeOrgType: Option[CdsOrganisationType]): JsValue = Json.toJson(mayBeOrgType)
 
   val CompanyId                       = "company"
@@ -52,7 +52,7 @@ object CdsOrganisationType {
   val ThirdCountrySoleTrader: CdsOrganisationType   = CdsOrganisationType(ThirdCountrySoleTraderId)
   val ThirdCountryIndividual: CdsOrganisationType   = CdsOrganisationType(ThirdCountryIndividualId)
 
-  val rowOrganisationType = Seq(ThirdCountrySoleTrader, ThirdCountryIndividual)
+  val rowOrganisationType: Seq[CdsOrganisationType] = Seq(ThirdCountrySoleTrader, ThirdCountryIndividual)
 
   val validOrganisationTypes: Map[String, CdsOrganisationType] = Map(
     CompanyId                       -> Company,
