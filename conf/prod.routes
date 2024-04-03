@@ -181,5 +181,7 @@ GET         /customs/register-for-cds/are-you-based-in-uk                       
 GET         /customs/subscribe-for-cds                                                                 @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.RosmRedirectController.redirectToStart()
 GET         /customs/subscribe-for-cds/are-you-based-in-uk                                             @uk.gov.hmrc.eoricommoncomponent.frontend.controllers.RosmRedirectController.redirectToStart()
 
+GET         /customs-enrolment-services/:service/subscription-errors/eori-already-used                 uk.gov.hmrc.eoricommoncomponent.frontend.controllers.EoriAlreadyUsedController.displayPage(service: Service)
+
 ->          /                                                                                          health.Routes
     

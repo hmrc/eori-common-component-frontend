@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eoricommoncomponent.frontend.services
 
-import play.api.http.Status.NO_CONTENT
+import play.api.http.Status.{BAD_REQUEST, NO_CONTENT}
 import play.api.i18n.Lang.logger
 import play.api.i18n.Messages
 import play.api.mvc.Results.{Ok, Redirect}
@@ -57,6 +57,7 @@ class ExistingEoriService @Inject() (
     getExistingEORI.flatMap { eori =>
       enrolmentService.enrolWithExistingEnrolment(eori, service).map {
         case NO_CONTENT => Redirect(routes.HasExistingEoriController.enrolSuccess(service))
+        case BAD_REQUEST => Redirect(routes.HasExistingEoriController.enrolSuccess(service))
         case status =>
           val error = s"Failed enrolment exception with status: $status"
           // $COVERAGE-OFF$Loggers
