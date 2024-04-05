@@ -20,21 +20,32 @@ import play.api.mvc._
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.auth.AuthAction
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
 import uk.gov.hmrc.eoricommoncomponent.frontend.models.Service
+import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.SessionCache
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.eori_already_used
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class EoriAlreadyUsedController @Inject() (
   authAction: AuthAction,
+  cache: SessionCache,
   mcc: MessagesControllerComponents,
   eoriAlreadyUsedView: eori_already_used
-) extends CdsController(mcc) {
+)(implicit val ec: ExecutionContext)
+    extends CdsController(mcc) {
 
   def displayPage(service: Service): Action[AnyContent] = authAction.ggAuthorisedUserWithEnrolmentsAction {
-    implicit request => implicit loggedInUser: LoggedInUserWithEnrolments =>
+    implicit request => _: LoggedInUserWithEnrolments =>
       Future.successful(Ok(eoriAlreadyUsedView(service)))
   }
+
+  def signInToAnotherAccount(service: Service): Action[AnyContent] =
+    authAction.ggAuthorisedUserAction {
+      implicit request => _: LoggedInUserWithEnrolments =>
+        cache.remove map { _ =>
+          Redirect(routes.ApplicationController.startSubscription(service)).withNewSession
+        }
+    }
 
 }

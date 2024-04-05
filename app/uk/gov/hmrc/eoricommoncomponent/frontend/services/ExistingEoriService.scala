@@ -56,8 +56,8 @@ class ExistingEoriService @Inject() (
   )(implicit request: Request[_], loggedInUser: LoggedInUserWithEnrolments, hc: HeaderCarrier): Future[Result] =
     getExistingEORI.flatMap { eori =>
       enrolmentService.enrolWithExistingEnrolment(eori, service).map {
-        case NO_CONTENT => Redirect(routes.HasExistingEoriController.enrolSuccess(service))
-        case BAD_REQUEST => Redirect(routes.HasExistingEoriController.enrolSuccess(service))
+        case NO_CONTENT  => Redirect(routes.HasExistingEoriController.enrolSuccess(service))
+        case BAD_REQUEST => Redirect(routes.EoriAlreadyUsedController.displayPage(service))
         case status =>
           val error = s"Failed enrolment exception with status: $status"
           // $COVERAGE-OFF$Loggers
