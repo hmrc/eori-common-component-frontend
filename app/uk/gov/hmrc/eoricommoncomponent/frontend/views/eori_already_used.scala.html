@@ -42,8 +42,6 @@
         postText = Some(messages("cds.eori-already-exists.p3"))
     )
 
-
-
     <div class="govuk-form-group">
         @helpers.form(uk.gov.hmrc.eoricommoncomponent.frontend.controllers.routes.EoriAlreadyUsedController.signInToAnotherAccount(service)) {
             @CSRF.formField
