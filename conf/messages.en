@@ -1537,3 +1537,12 @@ lockedEmail.para2 = You can try again in 24 hours.
 # ROSM redirect screen where an EORI exists
 cds.eori-exists-rosm.title = You already have an EORI number
 cds.eori-exists-rosm.heading = You already have an EORI number
+
+# EORI already exists
+cds.eori-already-exists.title = There is a problem with that EORI number
+cds.eori-already-exists.heading = There is a problem with that EORI number
+cds.eori-already-exists.p1 = You could not be subscribed to the service with the EORI number you entered as it has one or more invalid identifiers. If you or your organisation has multiple Government Gateway accounts, sign in to another one and try again.
+cds.eori-already-exists.ask.HMRC = ask HMRC online,
+cds.eori-already-exists.p2 = If this issue persists, you can
+cds.eori-already-exists.p3 = or call the helpline on 0300 322 9434.
+sign-in-to-another-account = Sign in to another account

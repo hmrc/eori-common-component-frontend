@@ -26,7 +26,11 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eoricommoncomponent.frontend.controllers.migration.CheckYourDetailsController
 import uk.gov.hmrc.eoricommoncomponent.frontend.domain._
-import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{SubscriptionDetails, SubscriptionFlow}
+import uk.gov.hmrc.eoricommoncomponent.frontend.domain.subscription.{
+  RowOrganisationFlow,
+  SubscriptionDetails,
+  SubscriptionFlow
+}
 import uk.gov.hmrc.eoricommoncomponent.frontend.forms.models.subscription.{AddressViewModel, CompanyRegisteredCountry}
 import uk.gov.hmrc.eoricommoncomponent.frontend.services.cache.{RequestSessionData, SessionCache}
 import uk.gov.hmrc.eoricommoncomponent.frontend.views.html.migration.check_your_details
@@ -91,6 +95,18 @@ class CheckYourDetailsControllerSpec
       when(mockCdsDataCache.registrationDetails(any[Request[_]])).thenReturn(
         Future.successful(existingOrganisationRegistrationDetails)
       )
+
+      showForm() { result =>
+        status(result) shouldBe OK
+      }
+    }
+
+    "return ok when data has been provided for RowOrganisationFlow" in {
+      when(mockCdsDataCache.registrationDetails(any[Request[_]])).thenReturn(
+        Future.successful(existingOrganisationRegistrationDetails)
+      )
+
+      when(mockRequestSessionData.userSubscriptionFlow(any())).thenReturn(RowOrganisationFlow)
 
       showForm() { result =>
         status(result) shouldBe OK

@@ -5,7 +5,6 @@ import sbt.Keys.*
 import sbt.*
 import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings, targetJvm}
 
-
 import scala.language.postfixOps
 
 Universal / mappings ++= directory(baseDirectory.value / "public")
@@ -31,16 +30,16 @@ lazy val microservice = (project in file("."))
   .configs(testConfig *)
   .settings(
     scalacOptions ++= Seq(
-      "-deprecation", // Warn if for usages of deprecated APIs.
-      "-Xlint", //Enable recommended additional warnings.
-      "-unchecked", // Enable additional warnings where generated code depends on assumptions.
-      "-Wunused:imports", // Warn if an import selector is not referenced.
-      "-Wunused:privates", // Warn if a private member is unused.
-      "-Wunused:patvars", // Warn if a variable bound in a pattern is unused.
-      "-Wunused:locals", // Warn if a local definition is unused.
+      "-deprecation",       // Warn if for usages of deprecated APIs.
+      "-Xlint",             //Enable recommended additional warnings.
+      "-unchecked",         // Enable additional warnings where generated code depends on assumptions.
+      "-Wunused:imports",   // Warn if an import selector is not referenced.
+      "-Wunused:privates",  // Warn if a private member is unused.
+      "-Wunused:patvars",   // Warn if a variable bound in a pattern is unused.
+      "-Wunused:locals",    // Warn if a local definition is unused.
       "-Wunused:explicits", // Warn if an explicit parameter is unused.
       "-Wunused:implicits", // Warn if an implicit parameter is unused.
-      "-Wunused:nowarn", // Warn if unnecessary @nowarn annotations are used.
+      "-Wunused:nowarn"     // Warn if unnecessary @nowarn annotations are used.
     ),
     commonSettings,
     unitTestSettings,
@@ -106,9 +105,7 @@ lazy val scoverageSettings = {
       ".*(AuthService|BuildInfo|Routes|TestOnly).*"
     ).mkString(";"),
     ScoverageKeys.coverageMinimumStmtTotal := 92,
-
     ScoverageKeys.coverageMinimumBranchTotal := 90,
-
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
     Test / parallelExecution := false

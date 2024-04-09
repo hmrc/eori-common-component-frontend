@@ -1390,3 +1390,12 @@ lockedEmail.para2 = Gallwch roi cynnig arall arni ymhen 24 awr.
 # ROSM redirect screen where an EORI exists
 cds.eori-exists-rosm.title = Mae gennych rif EORI eisoes
 cds.eori-exists-rosm.heading = Mae gennych rif EORI eisoes
+
+# EORI already exists
+cds.eori-already-exists.title = Mae problem gyda'r rhif EORI hwnnw
+cds.eori-already-exists.heading = Mae problem gyda'r rhif EORI hwnnw
+cds.eori-already-exists.p1 = Ni allech fod wedi tanysgrifio i’r gwasanaeth gyda’r rhif EORI a nodwyd gennych, gan ei fod yn cynnwys un neu fwy o ddynodwyr annilys. Os oes gennych chi neu’ch sefydliad sawl cyfrif ar gyfer Porth y Llywodraeth, mewngofnodwch i un gwahanol a rhoi cynnig arall arni.
+cds.eori-already-exists.ask.HMRC = ofyn i CThEF ar-lein,
+cds.eori-already-exists.p2 = Os bydd y broblem hon yn parhau, gallwch
+cds.eori-already-exists.p3 = neu ffonio’r Llinell Gymorth ar 0300 200 1900.
+sign-in-to-another-account = Mewngofnodi i gyfrif arall
