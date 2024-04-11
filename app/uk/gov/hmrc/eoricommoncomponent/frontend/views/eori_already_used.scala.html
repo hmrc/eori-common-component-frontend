@@ -28,7 +28,7 @@
 
 @(service: Service)(implicit request: Request[_], messages: Messages)
 
-@layout_di(messages("cds.eori-already-exists.title"), displayBackLink = false, service = service) {
+@layout_di(messages("cds.eori-already-exists.title"), displayBackLink = true, service = service) {
 <div>
 
     @h1(messages("cds.eori-already-exists.heading"))
