@@ -24,11 +24,11 @@
         hint: Option[Hint] = None,
         classes: String = "govuk-fieldset__legend--xl",
         inline: Boolean = false,
-        formGroupClasses: String = ""
+<!--        formGroupClasses: FormGroup = ""-->
 )(implicit messages: Messages)
 
 @govukRadios(Radios(
-    formGroupClasses = formGroupClasses,
+<!--    formGroupClasses = formGroupClasses,-->
     classes = s"${if(inline){"govuk-radios--inline"}}",
     idPrefix = Some(field.id),
     name = field.name,
