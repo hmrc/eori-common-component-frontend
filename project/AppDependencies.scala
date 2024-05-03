@@ -13,15 +13,15 @@ object AppDependencies {
     "uk.gov.hmrc"       %% "domain-play-30"                        % "9.0.0",
     "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-30"                    % mongoDbVersion,
     "uk.gov.hmrc"       %% "emailaddress-play-30"                  % "4.0.0",
-    "uk.gov.hmrc"       %% "play-frontend-hmrc-play-30"            % "9.6.0",
+    "uk.gov.hmrc"       %% "play-frontend-hmrc-play-30"            % "9.10.0",
     "uk.gov.hmrc"       %% "internal-auth-client-play-30"          % "2.0.0"
   )
 
   val testDependencies: Seq[ModuleID] = Seq(
-    "org.scalatest"          %% "scalatest"               % "3.2.17"            % "test,it",
+    "org.scalatest"          %% "scalatest"               % "3.2.18"            % "test,it",
     "org.playframework"      %% "play-test"               % PlayVersion.current % "test,it",
     "org.scalatestplus.play" %% "scalatestplus-play"      % "7.0.1"             % "test,it",
-    "org.scalacheck"         %% "scalacheck"              % "1.17.0"            % "test,it",
+    "org.scalacheck"         %% "scalacheck"              % "1.18.0"            % "test,it",
     "uk.gov.hmrc"            %% "bootstrap-test-play-30"  % bootstrapVersion    % "test,it",
     "org.scalatestplus"      %% "scalacheck-1-15"         % "3.2.11.0"          % "test,it",
     "org.jsoup"               % "jsoup"                   % "1.17.2"            % "test,it",
