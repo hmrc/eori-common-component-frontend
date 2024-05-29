@@ -42,12 +42,12 @@ class EoriUnableToUseViewSpec extends ViewSpec {
 
     "display correct title" in {
 
-      doc.title() must startWith("Your Government Gateway account is not linked to this EORI")
+      doc.title() must startWith("Your account is not linked to this EORI")
     }
 
     "display correct header" in {
 
-      doc.body().getElementsByTag("h1").text() mustBe "Your Government Gateway account is not linked to this EORI"
+      doc.body().getElementsByTag("h1").text() mustBe "Your account is not linked to this EORI"
     }
 
     "display eori" in {
@@ -62,7 +62,7 @@ class EoriUnableToUseViewSpec extends ViewSpec {
       doc.body().getElementsByClass("govuk-fieldset__legend--m").text() mustBe "What would you like to do?"
 
       questionElement.get(0).text() mustBe "Change the EORI number"
-      questionElement.get(1).text() mustBe "Sign out and sign in again with a different Government Gateway ID"
+      questionElement.get(1).text() mustBe "Sign out and sign in again with a different account"
     }
 
     "display continue button" in {

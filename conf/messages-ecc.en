@@ -184,10 +184,10 @@ cds.matching.row-sole-trader-individual.utr.hint=This is 10 numbers, for example
 cds.matching.row-lost-urt.hint.link=find a lost UTR (opens in new tab)
 
 cds.subscribe.use-this-eori.heading=Your GB Economic Operator Registration and Identification (EORI) number
-cds.subscribe.use-this-eori.paragraph1=This EORI is linked to the Government Gateway account you are using.
-cds.subscribe.use-this-eori.paragraph2=To use a different EORI you must {0} and start again with a different Government Gateway user ID and password.
+cds.subscribe.use-this-eori.paragraph1=This EORI is linked to the account you are using.
+cds.subscribe.use-this-eori.paragraph2=To use a different EORI you must {0} and start again with a different account.
 cds.subscribe.use-this-eori.signout=sign out
-cds.subscribe.use-this-eori.paragraph3=Confirm that this is the EORI number to use for your application.
+cds.subscribe.use-this-eori.paragraph3=Confirm that this is the EORI number you want to use for your application.
 cds.subscribe.use-this-eori.confirm=Confirm and continue
 
 cds.subscription.check-your-email.page-error.yes-no-answer=Select yes if this is the correct email address
@@ -312,11 +312,11 @@ ecc.unable-to-use.this-eori-para-title-three = If you don’t know the user ID y
 ecc.unable-to-use.this-eori-para-title-three-link = Contact HMRC
 ecc.unable-to-use-title-two-para2 = You need to sign out then sign in with that user ID.
 ecc.unable-to-use.this-eori-title-three-para = for help.
-ecc.what-is-your-eori.unable-to-use.title = Your Government Gateway account is not linked to this EORI
+ecc.what-is-your-eori.unable-to-use.title = Your account is not linked to this EORI
 ecc.what-is-your-eori.unable-to-use.question = What would you like to do?
 ecc.what-is-your-eori.unable-to-use.empty = Select what you would like to do
 ecc.what-is-your-eori.unable-to-use.changeEori = Change the EORI number
-ecc.what-is-your-eori.unable-to-use.signout = Sign out and sign in again with a different Government Gateway ID
+ecc.what-is-your-eori.unable-to-use.signout = Sign out and sign in again with a different account
 
 ecc.unable-to-use.signout.title = You are about to sign out
 ecc.unable-to-use.signout.question = Is this what you want to do?
