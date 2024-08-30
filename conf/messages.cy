@@ -1328,6 +1328,12 @@ cds.enrolment-already-exists-against-groupid.step5=Dewiswch ''Gwasanaeth Datgan 
 cds.enrolment-already-exists-against-groupid.step6=Cadwch a gadael.
 cds.enrolment-already-pending-against-groupid-gye.paragraph=Mae’r Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth a ddefnyddioch wrth fewngofnodi yn rhan o dîm sydd eisoes wedi gwneud cais am rif EORI. Mae’r cais hwn wrthi’n cael ei brosesu.
 cds.enrolment-already-pending-against-groupid-migrate.paragraph=Mae’r Dynodydd Defnyddiwr (ID) ar gyfer Porth y Llywodraeth a ddefnyddioch wrth fewngofnodi yn rhan o dîm sydd eisoes wedi gwneud cais i gael mynediad at CDS. Mae’r cais hwn wrthi’n cael ei brosesu.
+
+cds.common.feedback.title = Cyn i chi fynd
+cds.common.feedback.info = Mae’ch adborth yn ein helpu i wella ein gwasanaeth.
+cds.common.feedback.link = Llenwch ein harolwg
+cds.common.feedback.link.description = i rannu’ch adborth ar y gwasanaeth.
+
 cds.skip-link=Ewch yn syth i’r prif gynnwys
 cds.matching.organisation-type.radio.organisation.hint-text=Er enghraifft, cwmni cyfyngedig, corfforaeth, cwmni atebolrwydd cyfyngedig, neu elusen
 cds.matching.organisation-type.radio.sole-trader.hint-text=Enw arall ar hyn yw ‘perchnogaeth unigol’ neu ‘entrepreneuriaeth unigol’
