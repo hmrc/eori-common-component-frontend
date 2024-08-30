@@ -26,7 +26,8 @@
         h1: helpers.h1,
         h2: helpers.h2,
         p: helpers.paragraph,
-        link: helpers.linkWithPreTextAndPostText
+        link: helpers.linkWithPreTextAndPostText,
+        feedback_di: helpers.feedback
 )
 
 @(eori: String, service: Service)(implicit request: Request[_], messages: Messages)
@@ -60,6 +61,8 @@
             href =  Some(routes.WhatIsYourEoriController.createForm(service).url),
             id = Some("continue-button")
         ))
+
+        @feedback_di()
 
 
     </div>

@@ -59,7 +59,9 @@ class Reg06EoriAlreadyLinkedSpec extends ViewSpec {
 
       docUtr()
         .getElementById("what-you-think")
-        .text() must include("What did you think of this service?")
+        .text() must include(
+        "Before you go Your feedback helps us make our service better. Take a short survey to share your feedback on this service."
+      )
       docUtr().getElementById("feedback_link").attributes().get("href") must endWith(
         "/feedback/eori-common-component-subscribe-atar"
       )
