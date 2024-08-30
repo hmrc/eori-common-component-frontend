@@ -474,7 +474,7 @@ ecc.subscription.information.titleAndHeading.ndrc=Tanysgrifio i Wasanaethau Masn
 ecc.subscription.information.titleAndHeading.gbss=Tanysgrifio i’r Gwasanaeth Diogelwch (yn y DU)
 ecc.subscription.information.titleAndHeading.ctc=Tanysgrifio i’r System Gludo Gyfrifiadurol Newydd (NCTS)
 ecc.subscription.information.titleAndHeading.cds=Tanysgrifio i’r Gwasanaeth Datganiadau Tollau
-
+ecc.subscription.information.titleAndHeading.ma=
 
 ecc.matching-error.eori=Nodwch rif EORI yn y fformat cywir
 ecc.matching-error.eori.isEmpty=Nodwch eich rhif EORI
@@ -966,6 +966,7 @@ cds.subscription.outcomes.steps.next.cds = <li>defnyddio’r Gwasanaeth Datgania
 cds.subscription.outcomes.steps.next.route1 = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'''r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
 cds.subscription.outcomes.steps.next.ivd = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'''r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
 cds.subscription.outcomes.steps.next.ndrc = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'''r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
+cds.subscription.outcomes.steps.next.ma =
 
 cds.subscription.outcomes.steps.why=Pam ydw i’n gweld hyn?
 cds.subscription.outcomes.success.title=Cais wedi’i gwblhau
@@ -1369,6 +1370,7 @@ cds.subscription.outcomes.steps.next.new.cds = <li>defnyddio’r Gwasanaeth Datg
 cds.subscription.outcomes.steps.next.new.route1 = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'''r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
 cds.subscription.outcomes.steps.next.new.ivd = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'''r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
 cds.subscription.outcomes.steps.next.new.ndrc = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'''r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
+cds.subscription.outcomes.steps.next.new.ma =
 
 ecc.address-lookup.postcode.hint.link = <p class="govuk-body">Gallwch ddod o hyd i hwn ar gofrestr <a href="https://beta.companieshouse.gov.uk/" target="_blank">Tŷ’r Cwmnïau (yn agor tab newydd).</a></p>
 ecc.address-lookup.postcode.hint.partnership.link = <p class="govuk-body">Dyma’r enw sydd wedi’i gofrestru gyda CThEF. Gallwch ddod o hyd i hyn yng <a href="https://www.gov.uk/log-in-register-hmrc-online-services" target="_blank">ngwasanaethau ar-lein CThEF (yn agor tab newydd)</a> neu ar lythyrau oddi wrth CThEF.</p>
