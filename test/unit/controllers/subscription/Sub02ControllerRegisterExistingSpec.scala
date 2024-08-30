@@ -140,7 +140,7 @@ class Sub02ControllerRegisterExistingSpec extends ControllerSpec with BeforeAndA
           )
           page.elementIsPresent(RegistrationCompletePage.LeaveFeedbackLinkXpath) shouldBe true
           page.getElementsText(RegistrationCompletePage.LeaveFeedbackLinkXpath) should include(
-            "What did you think of this service?"
+            "Take a short survey"
           )
           page.getElementsHref(RegistrationCompletePage.LeaveFeedbackLinkXpath) should endWith(
             "/feedback/eori-common-component-subscribe-atar"
