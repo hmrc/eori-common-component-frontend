@@ -10,6 +10,7 @@ cds.banner.subscription.ndrc=Tanysgrifio i Wasanaethau Masnachwyr Tollau
 cds.banner.subscription.gbss=Tanysgrifio i'''r Gwasanaeth Diogelwch (yn y DU)
 cds.banner.subscription.ctc=Tanysgrifio i'''r System Gludo Gyfrifiadurol Newydd (NCTS)
 cds.banner.subscription.cds=Tanysgrifio i'''r Gwasanaeth Datganiadau Tollau
+cds.banner.subscription.ma=
 
 ecc.subscription.enter-eori-number.heading=Beth yw eich rhif EORI sy’n dechrau gyda GB?
 cds.subscription.enter-eori-number.no-eori.summary=Nid oes gennyf rif EORI sy’n dechrau gyda GB
@@ -45,6 +46,7 @@ cds.existing-eori.enrolment.confirmation.para2.ndrc=Gallwch nawr wneud cais am a
 cds.existing-eori.enrolment.confirmation.para2.esc=Gallwch nawr rhoi gwybod am a rheoli’ch lwfans ar gyfer hawliadau ildio Toll Dramor.
 cds.existing-eori.enrolment.confirmation.para2.cds=Erbyn hyn, gallwch ddefnyddio’r Gwasanaeth Datganiadau Tollau.
 cds.existing-eori.enrolment.confirmation.para2.ars=Erbyn hyn, gallwch wneud cais am Dyfarniad Prisio Uwch.
+cds.existing-eori.enrolment.confirmation.para2.ma=
 
 countries-in-the-eu.list=Yr Almaen, Awstria, Bwlgaria, Croatia, Denmarc, yr Eidal, Estonia, y Ffindir, Ffrainc, Gweriniaeth Cyprus, Gwlad Belg, Gwlad Groeg, Gwlad Pwyl, Hwngari, yr Iseldiroedd, Iwerddon, Latfia, Lithiwania, Lwcsembwrg, Malta, Portiwgal, România, Slofacia, Slofenia, Sbaen, Sweden a’r Weriniaeth Tsiec.
 

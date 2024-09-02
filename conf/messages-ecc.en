@@ -10,6 +10,7 @@ cds.banner.subscription.ndrc=Subscribe to Customs Trader Services
 cds.banner.subscription.gbss=Subscribe to the Safety and Security GB service
 cds.banner.subscription.ctc=Subscribe to the New Computerised Transit System (NCTS)
 cds.banner.subscription.cds=Subscribe to the Customs Declaration Service
+cds.banner.subscription.ma=Subscribe to the Customs Declaration Service
 
 ecc.subscription.enter-eori-number.heading=What is your EORI number starting with GB?
 cds.subscription.enter-eori-number.no-eori.summary=I do not have an EORI number starting with GB
@@ -45,6 +46,7 @@ cds.existing-eori.enrolment.confirmation.para2.ndrc=You can now apply for repaym
 cds.existing-eori.enrolment.confirmation.para2.esc=You can now report and manage your allowance for Customs Duty waiver claims.
 cds.existing-eori.enrolment.confirmation.para2.cds=You can now use the Customs Declaration Service.
 cds.existing-eori.enrolment.confirmation.para2.ars=You can now apply for an Advance Valuation Ruling.
+cds.existing-eori.enrolment.confirmation.para2.ma=You can now apply for customs and excise authorisations.
 
 
 countries-in-the-eu.list=Austria, Belgium, Bulgaria, Croatia, Republic of Cyprus, Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Netherlands, Poland, Portugal, Romania, Slovakia, Slovenia, Spain and Sweden.
