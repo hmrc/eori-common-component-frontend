@@ -10,7 +10,7 @@ cds.banner.subscription.ndrc=Subscribe to Customs Trader Services
 cds.banner.subscription.gbss=Subscribe to the Safety and Security GB service
 cds.banner.subscription.ctc=Subscribe to the New Computerised Transit System (NCTS)
 cds.banner.subscription.cds=Subscribe to the Customs Declaration Service
-cds.banner.subscription.ma=Subscribe to the Customs Declaration Service
+cds.banner.subscription.ma=Subscribe to customs and excise authorisations
 
 ecc.subscription.enter-eori-number.heading=What is your EORI number starting with GB?
 cds.subscription.enter-eori-number.no-eori.summary=I do not have an EORI number starting with GB
@@ -153,6 +153,8 @@ ecc.subscription.information.only.once.para1.ars = Once you have subscribed you 
 ecc.subscription.information.only.once.para1.route1 =Once you have subscribed you can: <ul class="govuk-body"><li>apply for repayment of import duty and VAT (CHIEF)</li><li>send documents for a customs check for declarations made in CHIEF</li><li>tell HMRC about an underpayment of Customs Duty or import VAT</li></ul>
 ecc.subscription.information.only.once.para1.ivd =Once you have subscribed you can: <ul class="govuk-body"><li>apply for repayment of import duty and VAT (CHIEF)</li><li>send documents for a customs check for declarations made in CHIEF</li><li>tell HMRC about an underpayment of Customs Duty or import VAT</li></ul>
 ecc.subscription.information.only.once.para1.ndrc =Once you have subscribed you can: <ul class="govuk-body"><li>apply for repayment of import duty and VAT (CHIEF)</li><li>send documents for a customs check for declarations made in CHIEF</li><li>tell HMRC about an underpayment of Customs Duty or import VAT</li></ul>
+ecc.subscription.information.only.once.para1.ma =Once you have subscribed you can: <ul class="govuk-body"><li>apply for customs and excise authorisations</li><li>manage existing authorisations</li><li>amend your own details and personal information</li></ul>
+
 
 cds.navigation.subscribe=Subscribe
 
