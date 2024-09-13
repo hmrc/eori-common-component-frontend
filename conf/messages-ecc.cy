@@ -147,6 +147,7 @@ ecc.subscription.information.only.once.para1.ars = Unwaith i chi danysgrifio, ga
 ecc.subscription.information.only.once.para1.route1 =Unwaith i chi danysgrifio, gallwch wneud y canlynol: <ul class="govuk-body"><li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy’r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li></ul>
 ecc.subscription.information.only.once.para1.ivd =Unwaith i chi danysgrifio, gallwch wneud y canlynol: <ul class="govuk-body"><li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy’r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li></ul>
 ecc.subscription.information.only.once.para1.ndrc =Unwaith i chi danysgrifio, gallwch wneud y canlynol: <ul class="govuk-body"><li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy’r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li></ul>
+ecc.subscription.information.only.once.para1.ma =todo
 
 ecc.subscription.information.email.confirm=Byddwn yn prosesu’ch cais ac yn anfon e-bost atoch gyda’r canlyniad cyn pen 2 awr.
 
