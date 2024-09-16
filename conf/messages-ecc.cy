@@ -11,6 +11,7 @@ cds.banner.subscription.ndrc=Tanysgrifio i Wasanaethau Masnachwyr Tollau
 cds.banner.subscription.gbss=Tanysgrifio i'''r Gwasanaeth Diogelwch (yn y DU)
 cds.banner.subscription.ctc=Tanysgrifio i'''r System Gludo Gyfrifiadurol Newydd (NCTS)
 cds.banner.subscription.cds=Tanysgrifio i'''r Gwasanaeth Datganiadau Tollau
+cds.banner.subscription.ma=todo
 
 ecc.subscription.enter-eori-number.heading=Beth yw eich rhif EORI sy’n dechrau gyda GB?
 cds.subscription.enter-eori-number.no-eori.summary=Nid oes gennyf rif EORI sy’n dechrau gyda GB
@@ -47,6 +48,7 @@ cds.existing-eori.enrolment.confirmation.para2.esc=Gallwch nawr rhoi gwybod am a
 cds.existing-eori.enrolment.confirmation.para2.cds=Erbyn hyn, gallwch ddefnyddio’r Gwasanaeth Datganiadau Tollau.
 cds.existing-eori.enrolment.confirmation.para2.ars=Erbyn hyn, gallwch wneud cais am Dyfarniad Prisio Uwch.
 cds.existing-eori.enrolment.confirmation.para2.tgp=Gallwch reoli’ch cofnodion nwyddau yn eich Proffil Nwyddau Masnachwyr.
+cds.existing-eori.enrolment.confirmation.para2.ma=todo
 
 countries-in-the-eu.list=Yr Almaen, Awstria, Bwlgaria, Croatia, Denmarc, yr Eidal, Estonia, y Ffindir, Ffrainc, Gweriniaeth Cyprus, Gwlad Belg, Gwlad Groeg, Gwlad Pwyl, Hwngari, yr Iseldiroedd, Iwerddon, Latfia, Lithiwania, Lwcsembwrg, Malta, Portiwgal, România, Slofacia, Slofenia, Sbaen, Sweden a’r Weriniaeth Tsiec.
 
@@ -148,6 +150,7 @@ ecc.subscription.information.only.once.para1.tgp = Unwaith i chi danysgrifio, ga
 ecc.subscription.information.only.once.para1.route1 =Unwaith i chi danysgrifio, gallwch wneud y canlynol: <ul class="govuk-body"><li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy’r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li></ul>
 ecc.subscription.information.only.once.para1.ivd =Unwaith i chi danysgrifio, gallwch wneud y canlynol: <ul class="govuk-body"><li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy’r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li></ul>
 ecc.subscription.information.only.once.para1.ndrc =Unwaith i chi danysgrifio, gallwch wneud y canlynol: <ul class="govuk-body"><li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy’r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li></ul>
+ecc.subscription.information.only.once.para1.ma =todo
 
 ecc.subscription.information.email.confirm=Byddwn yn prosesu’ch cais ac yn anfon e-bost atoch gyda’r canlyniad cyn pen 2 awr.
 
