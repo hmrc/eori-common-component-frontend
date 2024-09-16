@@ -46,7 +46,7 @@ cds.existing-eori.enrolment.confirmation.para2.ndrc=Gallwch nawr wneud cais am a
 cds.existing-eori.enrolment.confirmation.para2.esc=Gallwch nawr rhoi gwybod am a rheoli’ch lwfans ar gyfer hawliadau ildio Toll Dramor.
 cds.existing-eori.enrolment.confirmation.para2.cds=Erbyn hyn, gallwch ddefnyddio’r Gwasanaeth Datganiadau Tollau.
 cds.existing-eori.enrolment.confirmation.para2.ars=Erbyn hyn, gallwch wneud cais am Dyfarniad Prisio Uwch.
-cds.existing-eori.enrolment.confirmation.para2.tgp=NEEDS WELSH
+cds.existing-eori.enrolment.confirmation.para2.tgp=Gallwch reoli’ch cofnodion nwyddau yn eich Proffil Nwyddau Masnachwyr.
 
 countries-in-the-eu.list=Yr Almaen, Awstria, Bwlgaria, Croatia, Denmarc, yr Eidal, Estonia, y Ffindir, Ffrainc, Gweriniaeth Cyprus, Gwlad Belg, Gwlad Groeg, Gwlad Pwyl, Hwngari, yr Iseldiroedd, Iwerddon, Latfia, Lithiwania, Lwcsembwrg, Malta, Portiwgal, România, Slofacia, Slofenia, Sbaen, Sweden a’r Weriniaeth Tsiec.
 
