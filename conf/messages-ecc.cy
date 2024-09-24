@@ -1,6 +1,7 @@
 cds.banner.registration=Cael rhif EORI
 
 cds.banner.subscription.ars = Tanysgrifio i ddyfarniadau uwch
+cds.banner.subscription.tgp = Tanysgrifio i Broffil Nwyddau Masnachwyr
 cds.banner.subscription.gagmr=Tanysgrifio i'''r Gwasanaeth Symud Cerbydau Nwyddau
 cds.banner.subscription.atar=Tanysgrifio i Ddyfarniadau Tariffau Uwch
 cds.banner.subscription.route1=Tanysgrifio i Wasanaethau Masnachwyr Tollau
@@ -46,6 +47,7 @@ cds.existing-eori.enrolment.confirmation.para2.ndrc=Gallwch nawr wneud cais am a
 cds.existing-eori.enrolment.confirmation.para2.esc=Gallwch nawr rhoi gwybod am a rheoli’ch lwfans ar gyfer hawliadau ildio Toll Dramor.
 cds.existing-eori.enrolment.confirmation.para2.cds=Erbyn hyn, gallwch ddefnyddio’r Gwasanaeth Datganiadau Tollau.
 cds.existing-eori.enrolment.confirmation.para2.ars=Erbyn hyn, gallwch wneud cais am Dyfarniad Prisio Uwch.
+cds.existing-eori.enrolment.confirmation.para2.tgp=Gallwch reoli’ch cofnodion nwyddau yn eich Proffil Nwyddau Masnachwyr.
 cds.existing-eori.enrolment.confirmation.para2.ma=todo
 
 countries-in-the-eu.list=Yr Almaen, Awstria, Bwlgaria, Croatia, Denmarc, yr Eidal, Estonia, y Ffindir, Ffrainc, Gweriniaeth Cyprus, Gwlad Belg, Gwlad Groeg, Gwlad Pwyl, Hwngari, yr Iseldiroedd, Iwerddon, Latfia, Lithiwania, Lwcsembwrg, Malta, Portiwgal, România, Slofacia, Slofenia, Sbaen, Sweden a’r Weriniaeth Tsiec.
@@ -144,6 +146,7 @@ ecc.subscription.information.only.once.para1.gagmr = Unwaith i chi danysgrifio, 
 ecc.subscription.information.only.once.para1.ctc = Unwaith i chi danysgrifio, gallwch gyflwyno datganiadau cludo yn yr undeb.
 ecc.subscription.information.only.once.para1.gbss = Unwaith i chi danysgrifio, gallwch wneud datganiadau cryno wrth gyrraedd.
 ecc.subscription.information.only.once.para1.ars = Unwaith i chi danysgrifio, gallwch wneud cais am y canlynol: <ul class="govuk-body"><li>Dyfarniad Tariffau Uwch</li><li>Dyfarniad Prisio Uwch</li></ul>
+ecc.subscription.information.only.once.para1.tgp = Unwaith i chi danysgrifio, gallwch wneud cais am y canlynol: <ul class="govuk-body"><li>bwrw golwg dros restr o symudiadau nwyddau blaenorol os ydych eisoes yn fasnachwr UKIMS sydd wedi symud nwyddau i Ogledd Iwerddon o’r blaen</li><li>ychwanegu cofnodion newydd at eich Proffil Nwyddau Masnachwyr (TGP)</li><li>gofyn i CThEF am gyngor ynghylch cod nwyddau a disgrifiad o’r nwyddau</li><li>gwirio’r categori ar gyfer eich nwyddau, a ph’un a ydynt yn gymwys ar gyfer Gwybodaeth Symud Marchnad Fewnol (IMMI)</li></ul>
 ecc.subscription.information.only.once.para1.route1 =Unwaith i chi danysgrifio, gallwch wneud y canlynol: <ul class="govuk-body"><li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy’r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li></ul>
 ecc.subscription.information.only.once.para1.ivd =Unwaith i chi danysgrifio, gallwch wneud y canlynol: <ul class="govuk-body"><li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy’r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li></ul>
 ecc.subscription.information.only.once.para1.ndrc =Unwaith i chi danysgrifio, gallwch wneud y canlynol: <ul class="govuk-body"><li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy’r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li></ul>

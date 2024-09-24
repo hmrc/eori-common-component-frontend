@@ -1,6 +1,7 @@
 cds.banner.registration=Get an EORI
 
 cds.banner.subscription.ars = Subscribe to advance rulings
+cds.banner.subscription.tgp = Subscribe to Trader Goods Profile
 cds.banner.subscription.gagmr=Subscribe to the Goods Vehicle Movement Service
 cds.banner.subscription.atar=Subscribe to Advance Tariff Rulings
 cds.banner.subscription.esc = Subscribe to Report and manage your allowance for Customs Duty waiver claims
@@ -46,6 +47,7 @@ cds.existing-eori.enrolment.confirmation.para2.ndrc=You can now apply for repaym
 cds.existing-eori.enrolment.confirmation.para2.esc=You can now report and manage your allowance for Customs Duty waiver claims.
 cds.existing-eori.enrolment.confirmation.para2.cds=You can now use the Customs Declaration Service.
 cds.existing-eori.enrolment.confirmation.para2.ars=You can now apply for an Advance Valuation Ruling.
+cds.existing-eori.enrolment.confirmation.para2.tgp=You can manage your goods records in your Trader Goods Profile.
 cds.existing-eori.enrolment.confirmation.para2.ma=You can now apply for customs and excise authorisations.
 
 
@@ -150,6 +152,7 @@ ecc.subscription.information.only.once.para1.esc =  Once you have subscribed you
 ecc.subscription.information.only.once.para1.ctc = Once you have subscribed you can submit union transit declarations.
 ecc.subscription.information.only.once.para1.gbss = Once you have subscribed you can make entry summary declarations.
 ecc.subscription.information.only.once.para1.ars = Once you have subscribed you can apply for an: <ul class="govuk-body"><li>Advance Tariff Ruling</li><li>Advance Valuation Ruling</li></ul>
+ecc.subscription.information.only.once.para1.tgp = Once you have subscribed you can: <ul class="govuk-body"><li>view a list of previous goods movements if you are already a UKIMS trader who has moved goods to Northern Ireland before</li><li>add new records to your Trader Goods Profile (TGP)</li><li>ask HMRC for advice on a commodity code and goods description</li><li>check what category your goods are and if they are eligible for Internal Market Movement Information (IMMI)</li></ul>
 ecc.subscription.information.only.once.para1.route1 =Once you have subscribed you can: <ul class="govuk-body"><li>apply for repayment of import duty and VAT (CHIEF)</li><li>send documents for a customs check for declarations made in CHIEF</li><li>tell HMRC about an underpayment of Customs Duty or import VAT</li></ul>
 ecc.subscription.information.only.once.para1.ivd =Once you have subscribed you can: <ul class="govuk-body"><li>apply for repayment of import duty and VAT (CHIEF)</li><li>send documents for a customs check for declarations made in CHIEF</li><li>tell HMRC about an underpayment of Customs Duty or import VAT</li></ul>
 ecc.subscription.information.only.once.para1.ndrc =Once you have subscribed you can: <ul class="govuk-body"><li>apply for repayment of import duty and VAT (CHIEF)</li><li>send documents for a customs check for declarations made in CHIEF</li><li>tell HMRC about an underpayment of Customs Duty or import VAT</li></ul>

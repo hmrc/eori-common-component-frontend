@@ -517,6 +517,7 @@ ecc.matching-error.eori.not-gb=Enter an EORI number that starts with GB
 ecc.what-is-your-eori.page-error.eori-number=Enter your EORI number
 
 ecc.subscription.information.titleAndHeading.ars = Subscribe to advance rulings
+ecc.subscription.information.titleAndHeading.tgp = Subscribe to Trader Goods Profile
 ecc.subscription.information.titleAndHeading.gagmr=Subscribe to the Goods Vehicle Movement Service
 ecc.subscription.information.titleAndHeading.atar=Subscribe to Advance Tariff Rulings
 ecc.subscription.information.titleAndHeading.esc = Subscribe to Report and manage your allowance for Customs Duty waiver claims
@@ -1084,6 +1085,7 @@ cds.subscription.outcomes.steps.bullet2 = subscribe to more customs services
 
 
 cds.subscription.outcomes.steps.next.ars = <li>apply for an Advance Tariff Ruling</li> <li>apply for an Advance Valuation Ruling </li>
+cds.subscription.outcomes.steps.next.tgp = <li>view a list of previous goods movements if you are already a UKIMS trader who has moved goods to Northern Ireland before</li><li>add new records to your Trader Goods Profile (TGP)</li><li>ask HMRC for advice on a commodity code and goods description</li><li>check what category your goods are and if they are eligible for Internal Market Movement Information (IMMI)</li>
 cds.subscription.outcomes.steps.next.atar = <li>apply for an Advance Tariff Ruling</li>
 cds.subscription.outcomes.steps.next.gagmr = <li>get a goods movement reference (GMR)</li>
 cds.subscription.outcomes.steps.next.cts = <li>apply for repayment of import duty and VAT (CHIEF)</li><li>send documents for a customs check for declarations made in CHIEF</li><li>tell HMRC about an underpayment of Customs Duty or import VAT</li>
@@ -1515,6 +1517,7 @@ confirm-contact-details.page-error.yes-no-answer=Select yes if this address is c
 
 cds.subscription.outcomes.steps.next.new.esc = <li>a subscription to Report and manage your allowance for Customs Duty waiver claims</li>
 cds.subscription.outcomes.steps.next.new.ars = <li>apply for an Advance Tariff Ruling</li> <li>apply for an Advance Valuation Ruling </li>
+cds.subscription.outcomes.steps.next.new.tgp = <li>view a list of previous goods movements if you are already a UKIMS trader who has moved goods to Northern Ireland before</li><li>add new records to your Trader Goods Profile (TGP)</li><li>ask HMRC for advice on a commodity code and goods description</li><li>check what category your goods are and if they are eligible for Internal Market Movement Information (IMMI)</li>
 cds.subscription.outcomes.steps.next.new.atar = <li>apply for an Advance Tariff Ruling</li> <li>apply for an Advance Valuation Ruling </li>
 cds.subscription.outcomes.steps.next.new.gagmr = <li>get a goods movement reference (GMR)</li>
 cds.subscription.outcomes.steps.next.new.cts = <li>apply for repayment of import duty and VAT (CHIEF)</li><li>send documents for a customs check for declarations made in CHIEF</li><li>tell HMRC about an underpayment of Customs Duty or import VAT</li>

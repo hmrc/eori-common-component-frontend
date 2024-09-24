@@ -465,6 +465,7 @@ ecc.subscription.eori-number-invalid-not-activated-body=Byddwn yn anfon e-bost a
 ecc.subscription.eori-number-invalid-try-again=Rhowch gynnig arall arni
 
 ecc.subscription.information.titleAndHeading.ars = Tanysgrifio i ddyfarniadau uwch
+ecc.subscription.information.titleAndHeading.tgp = Tanysgrifio i Broffil Nwyddau Masnachwyr
 ecc.subscription.information.titleAndHeading.gagmr=Tanysgrifio i’r Gwasanaeth Symud Cerbydau Nwyddau
 ecc.subscription.information.titleAndHeading.atar=Tanysgrifio i Ddyfarniadau Tariffau Uwch
 ecc.subscription.information.titleAndHeading.route1=Tanysgrifio i Wasanaethau Masnachwyr Tollau
@@ -957,6 +958,7 @@ cds.subscription.outcomes.steps.next=Yr hyn sy’n digwydd nesaf
 cds.subscription.outcomes.steps.bullet2 =tanysgrifio i ragor o wasanaethau tollau
 
 cds.subscription.outcomes.steps.next.ars= <li>Gwneud cais am Ddyfarniad Tariffau Uwch</li> <li>Gwneud cais am Ddyfarniad Prisio Uwch</li>
+cds.subscription.outcomes.steps.next.tgp = <li>bwrw golwg dros restr o symudiadau nwyddau blaenorol os ydych eisoes yn fasnachwr UKIMS sydd wedi symud nwyddau i Ogledd Iwerddon o’r blaen</li><li>ychwanegu cofnodion newydd at eich Proffil Nwyddau Masnachwyr (TGP)</li><li>gofyn i CThEF am gyngor ynghylch cod nwyddau a disgrifiad o’r nwyddau</li><li>gwirio’r categori ar gyfer eich nwyddau, a ph’un a ydynt yn gymwys ar gyfer Gwybodaeth Symud Marchnad Fewnol (IMMI)</li>
 cds.subscription.outcomes.steps.next.atar= <li>Gwneud cais am Ddyfarniad Tariffau Uwch</li>
 cds.subscription.outcomes.steps.next.gagmr = <li>cael cyfeirnod symud nwyddau</li>
 cds.subscription.outcomes.steps.next.cts = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
@@ -1367,6 +1369,7 @@ confirm-contact-details.page-error.yes-no-answer=Dewiswch ‘Iawn’ os yw’r c
 
 cds.subscription.outcomes.steps.next.new.esc = <li>tanysgrifiad ar gyfer Rhoi gwybod am a rheoli’ch lwfans ar gyfer hawliadau Ildio Toll Dramor</li>
 cds.subscription.outcomes.steps.next.new.ars= <li>gwneud cais am Ddyfarniad Tariffau Uwch</li> <li>gwneud cais am Ddyfarniad Prisio Uwch</li>
+cds.subscription.outcomes.steps.next.new.tgp = <li>bwrw golwg dros restr o symudiadau nwyddau blaenorol os ydych eisoes yn fasnachwr UKIMS sydd wedi symud nwyddau i Ogledd Iwerddon o’r blaen</li><li>ychwanegu cofnodion newydd at eich Proffil Nwyddau Masnachwyr (TGP)</li><li>gofyn i CThEF am gyngor ynghylch cod nwyddau a disgrifiad o’r nwyddau</li><li>gwirio’r categori ar gyfer eich nwyddau, a ph’un a ydynt yn gymwys ar gyfer Gwybodaeth Symud Marchnad Fewnol (IMMI)</li>
 cds.subscription.outcomes.steps.next.new.atar= <li>gwneud cais am Ddyfarniad Tariffau Uwch</li> <li>gwneud cais am Ddyfarniad Prisio Uwch</li>
 cds.subscription.outcomes.steps.next.new.gagmr = <li>cael cyfeirnod symud nwyddau</li>
 cds.subscription.outcomes.steps.next.new.cts = <li>gwneud cais am ad-daliad o dollau mewnforio a TAW (CHIEF)</li><li>anfon dogfennau i’w gwirio gan y tollau ar gyfer datganiadau a wneir drwy'r system CHIEF</li><li>rhoi gwybod i CThEF am dandaliad o ran Toll Dramor neu TAW mewnforio</li>
